@@ -16,7 +16,7 @@ def copyOutline(self, event=None):
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
-    s = c.fileCommands.putLeoOutline()
+    s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
     g.app.gui.replaceClipboardWith(s)
 #@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline

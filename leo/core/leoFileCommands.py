@@ -427,7 +427,7 @@ class FileCommands:
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # This encoding must match the encoding used in putLeoOutline.
+            # This encoding must match the encoding used in outline_to_clipboard_string.
         hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents = []
@@ -465,7 +465,7 @@ class FileCommands:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # This encoding must match the encoding used in putLeoOutline.
+            # This encoding must match the encoding used in outline_to_clipboard_string.
         hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
@@ -879,7 +879,7 @@ class FileCommands:
         oldGnxDict = self.gnxDict
         self.gnxDict = {}  # Fix #943
         try:
-            # This encoding must match the encoding used in putLeoOutline.
+            # This encoding must match the encoding used in outline_to_clipboard_string.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             v = FastRead(c, {}).readFileFromClipboard(s)
             if not v:
@@ -1023,16 +1023,6 @@ class FileCommands:
         return geom
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
-    #@+node:ekr.20070413061552: *5* fc.putSavedMessage
-    def putSavedMessage(self, fileName):
-        c = self.c
-        # #531: Optionally report timestamp...
-        if c.config.getBool('log-show-save-time', default=False):
-            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
-            timestamp = time.strftime(format) + ' '
-        else:
-            timestamp = ''
-        g.es(f"{timestamp}saved: {g.shortFileName(fileName)}")
     #@+node:ekr.20031218072017.1720: *5* fc.save
     def save(self, fileName, silent=False):
         """fc.save: A helper for c.save."""
@@ -1160,18 +1150,6 @@ class FileCommands:
                 self.putSavedMessage(fileName)
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
-    #@+node:ekr.20050404190914.2: *4* fc.deleteFileWithMessage
-    def deleteFileWithMessage(self, fileName, unused_kind):
-        try:
-            os.remove(fileName)
-            return True
-        except Exception:
-            if self.read_only:
-                g.error("read only")
-            if not g.unitTesting:
-                g.error("exception deleting backup file:", fileName)
-                g.es_exception(full=False)
-            return False
     #@+node:ekr.20031218072017.1470: *4* fc.put & helpers
     def put(self, s):
         """Put string s to self.outputFile. All output eventually comes here."""
@@ -1211,8 +1189,101 @@ class FileCommands:
     def putClipboardHeader(self):
         # Put the minimal header.
         self.put('<leo_header file_format="2"/>\n')
-    #@+node:ekr.20040324080819.1: *4* fc.putLeoFile & helpers
-    def putLeoFile(self):
+    #@+node:ekr.20031218072017.1573: *4* fc.outline_to_clipboard_string
+    def outline_to_clipboard_string(self, p=None):
+        """
+        Return a string suitable for pasting to the clipboard.
+        """
+        try:
+            # Save
+            tua = self.descendentTnodeUaDictList
+            vua = self.descendentVnodeUaDictList
+            gnxDict = self.gnxDict
+            vnodesDict = self.vnodesDict
+            # Paste.
+            self.outputFile = StringIO()
+            self.usingClipboard = True
+            self.putProlog()
+            self.putClipboardHeader()
+            self.putVnodes(p or self.c.p)
+            self.putTnodes()
+            self.putPostlog()
+            s = self.outputFile.getvalue()
+            self.outputFile = None
+        finally:
+            # Restore
+            self.descendentTnodeUaDictList = tua
+            self.descendentVnodeUaDictList = vua
+            self.gnxDict = gnxDict
+            self.vnodesDict = vnodesDict
+            self.usingClipboard = False
+        return s
+    #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file
+    def write_Leo_file(self, fileName):
+        """
+        Write the .leo file the format given by the file names's extension."""
+        c, fc = self.c, self
+        if c.checkOutline():
+            g.error('Structural errors in outline! outline not written')
+            return False
+        g.app.recentFilesManager.writeRecentFilesFile(c)
+        fc.writeAllAtFileNodesHelper()  # Ignore any errors.
+        if fc.isReadOnly(fileName):
+            return False
+        if fileName.endswith('.db'):
+            # This handles save-file-as-zipped.
+            return fc.exportToSqlite(fileName)
+        # Write the file in xml format.
+        return fc.writeToFileHelper(fileName)
+
+    write_LEO_file = write_Leo_file  # For compatibility with old plugins.
+    #@+node:ekr.20100119145629.6114: *4* fc.writeAllAtFileNodesHelper
+    def writeAllAtFileNodesHelper(self):
+        """Write all @<file> nodes and set orphan bits."""
+        c = self.c
+        try:
+            # 2010/01/19: Do *not* signal failure here.
+            # This allows Leo to quit properly.
+            c.atFileCommands.writeAll(all=False)
+            return True
+        except Exception:
+            # Work around bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
+            g.es_error("exception writing external files")
+            g.es_exception()
+            g.es('Internal error writing one or more external files.', color='red')
+            g.es('Please report this error to:', color='blue')
+            g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
+            g.es('All changes will be lost unless you', color='red')
+            g.es('can save each changed file.', color='red')
+            return False
+    #@+node:ekr.20100119145629.6111: *4* fc.writeToFileHelper & helpers
+    def writeToFileHelper(self, fileName):
+        """Write the .leo file as xml."""
+        c = self.c
+        ok, backupName = self.createBackupFile(fileName)
+        if not ok:
+            return False
+        f = self.openOutlineForWriting(fileName)
+        if not f:
+            return False
+        self.mFileName = fileName
+        try:
+            s = self.outline_to_xml_string()
+            s = bytes(s, self.leo_file_encoding, 'replace')
+            f.write(s)
+            f.close()
+            c.setFileTimeStamp(fileName)
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteBackupFile(backupName)
+            return True
+        except Exception:
+            self.handleWriteLeoFileException(fileName, backupName, f)
+            return False
+    #@+node:ekr.20040324080819.1: *5* fc.outline_to_xml_string & helpers
+    def outline_to_xml_string(self):
+        """Return the file xml format as a string."""
+        self.outputFile = StringIO()
         self.putProlog()
         self.putHeader()
         self.putGlobals()
@@ -1221,12 +1292,15 @@ class FileCommands:
         self.putVnodes()
         self.putTnodes()
         self.putPostlog()
-    #@+node:ekr.20031218072017.3035: *5* fc.putFindSettings
+        s = self.outputFile.getvalue()
+        self.outputFile = None
+        return s
+    #@+node:ekr.20031218072017.3035: *6* fc.putFindSettings
     def putFindSettings(self):
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position)
+    #@+node:ekr.20031218072017.3037: *6* fc.putGlobals (sets window_position)
     def putGlobals(self):
         """Put a vestigial <globals> element, and write global data to the cache."""
         trace = 'cache' in g.app.debug
@@ -1241,7 +1315,7 @@ class FileCommands:
         if trace:
             g.trace(f"\nset c.db for {c.shortFileName()}")
             print('window_position:', c.db['window_position'])
-    #@+node:ekr.20031218072017.3041: *5* fc.putHeader
+    #@+node:ekr.20031218072017.3041: *6* fc.putHeader
     def putHeader(self):
         tnodes = 0; clone_windows = 0  # Always zero in Leo2.
         if 0:  # For compatibility with versions before Leo 4.5.
@@ -1253,15 +1327,15 @@ class FileCommands:
             self.put("/>"); self.put_nl()
         else:
             self.put('<leo_header file_format="2"/>\n')
-    #@+node:ekr.20031218072017.3042: *5* fc.putPostlog
+    #@+node:ekr.20031218072017.3042: *6* fc.putPostlog
     def putPostlog(self):
         self.put("</leo_file>"); self.put_nl()
-    #@+node:ekr.20031218072017.2066: *5* fc.putPrefs
+    #@+node:ekr.20031218072017.2066: *6* fc.putPrefs
     def putPrefs(self):
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<preferences/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.1246: *5* fc.putProlog
+    #@+node:ekr.20031218072017.1246: *6* fc.putProlog
     def putProlog(self):
         """Put the prolog of the xml file."""
         tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
@@ -1273,7 +1347,7 @@ class FileCommands:
         # Put the namespace
         self.put(f'<leo_file xmlns:leo="{tag}" >')
         self.put_nl()
-    #@+node:ekr.20031218072017.1248: *5* fc.putStyleSheetLine
+    #@+node:ekr.20031218072017.1248: *6* fc.putStyleSheetLine
     def putStyleSheetLine(self):
         """
         Put the xml stylesheet line.
@@ -1292,7 +1366,7 @@ class FileCommands:
             s = f"<?xml-stylesheet {sheet} ?>"
             self.put(s)
             self.put_nl()
-    #@+node:ekr.20031218072017.1577: *5* fc.putTnode
+    #@+node:ekr.20031218072017.1577: *6* fc.putTnode
     def putTnode(self, v):
         # Call put just once.
         gnx = v.fileIndex
@@ -1301,13 +1375,13 @@ class FileCommands:
         b = v.b
         body = xml.sax.saxutils.escape(b) if b else ''
         self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
-    #@+node:ekr.20031218072017.1575: *5* fc.putTnodes
+    #@+node:ekr.20031218072017.1575: *6* fc.putTnodes
     def putTnodes(self):
         """Puts all tnodes as required for copy or save commands"""
         self.put("<tnodes>\n")
         self.putReferencedTnodes()
         self.put("</tnodes>\n")
-    #@+node:ekr.20031218072017.1576: *6* fc.putReferencedTnodes
+    #@+node:ekr.20031218072017.1576: *7* fc.putReferencedTnodes
     def putReferencedTnodes(self):
         """Put all referenced tnodes."""
         c = self.c
@@ -1334,7 +1408,7 @@ class FileCommands:
                 g.trace('can not happen: no VNode for', repr(index))
                 # This prevents the file from being written.
                 raise BadLeoFile(f"no VNode for {repr(index)}")
-    #@+node:ekr.20031218072017.1863: *5* fc.putVnode & helper
+    #@+node:ekr.20031218072017.1863: *6* fc.putVnode & helper
     def putVnode(self, p, isIgnore=False):
         """Write a <v> element corresponding to a VNode."""
         fc = self
@@ -1384,7 +1458,7 @@ class FileCommands:
                 fc.put('</v>\n')
             else:
                 fc.put(f"{v_head}</v>\n")  # Call put only once.
-    #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
+    #@+node:ekr.20031218072017.1865: *7* fc.compute_attribute_bits
     def compute_attribute_bits(self, forceWrite, p):
         """Return the initial values of v's attributes."""
         attrs = []
@@ -1394,7 +1468,7 @@ class FileCommands:
             # Fix #1023: never put marked/expanded bits.
                 # attrs.append(self.putDescendentAttributes(p))
         return ''.join(attrs)
-    #@+node:ekr.20031218072017.1579: *5* fc.putVnodes & helper
+    #@+node:ekr.20031218072017.1579: *6* fc.putVnodes & helper
     new = True
 
     def putVnodes(self, p=None):
@@ -1417,7 +1491,7 @@ class FileCommands:
             # Fix #1018: scan *all* nodes.
             self.setCachedBits()
         self.put("</vnodes>\n")
-    #@+node:ekr.20190328160622.1: *6* fc.setCachedBits
+    #@+node:ekr.20190328160622.1: *7* fc.setCachedBits
     def setCachedBits(self):
         """
         Set the cached expanded and marked bits for *all* nodes.
@@ -1439,7 +1513,7 @@ class FileCommands:
             print('marked:', marked)
             print('current_position:', current)
             print('')
-    #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
+    #@+node:ekr.20031218072017.1247: *6* fc.putXMLLine
     def putXMLLine(self):
         """Put the **properly encoded** <?xml> element."""
         # Use self.leo_file_encoding encoding.
@@ -1447,114 +1521,7 @@ class FileCommands:
             f"{g.app.prolog_prefix_string}"
             f'"{self.leo_file_encoding}"'
             f"{g.app.prolog_postfix_string}\n")
-    #@+node:ekr.20031218072017.1573: *4* fc.putLeoOutline (to clipboard)
-    def putLeoOutline(self, p=None):
-        """
-        Return a string, *not unicode*, encoded with self.leo_file_encoding,
-        suitable for pasting to the clipboard.
-        """
-        try:
-            # g.trace(g.callers(2))
-            # Save
-            tua = self.descendentTnodeUaDictList
-            vua = self.descendentVnodeUaDictList
-            gnxDict = self.gnxDict
-            vnodesDict = self.vnodesDict
-            # Paste.
-            p = p or self.c.p
-            self.outputFile = g.FileLikeObject()
-            self.usingClipboard = True
-            self.putProlog()
-            self.putClipboardHeader()
-            self.putVnodes(p)
-            self.putTnodes()
-            self.putPostlog()
-            s = self.outputFile.getvalue()
-            self.outputFile = None
-        finally:
-            # Restore
-            self.descendentTnodeUaDictList = tua
-            self.descendentVnodeUaDictList = vua
-            self.gnxDict = gnxDict
-            self.vnodesDict = vnodesDict
-            self.usingClipboard = False
-        return s
-    #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers
-    def write_Leo_file(self, fileName):
-        """Write the .leo file."""
-        g.trace(fileName)
-        c, fc = self.c, self
-        structure_errors = c.checkOutline()
-        if structure_errors:
-            g.error('Major structural errors! outline not written')
-            return False
-        g.app.recentFilesManager.writeRecentFilesFile(c)
-        fc.writeAllAtFileNodesHelper()  # Ignore any errors.
-        if fc.isReadOnly(fileName):
-            return False
-        if fileName.endswith('.db'):
-            # This handles save-file-as-zipped.
-            return fc.exportToSqlite(fileName)
-        return fc.writeToFileHelper(fileName)
-
-    write_LEO_file = write_Leo_file  # For compatibility with old plugins.
-    #@+node:ekr.20040324080359.1: *5* fc.isReadOnly
-    def isReadOnly(self, fileName):
-        # self.read_only is not valid for Save As and Save To commands.
-        if g.os_path_exists(fileName):
-            try:
-                if not os.access(fileName, os.W_OK):
-                    g.error("can not write: read only:", fileName)
-                    return True
-            except Exception:
-                pass  # os.access() may not exist on all platforms.
-        return False
-    #@+node:ekr.20100119145629.6114: *5* fc.writeAllAtFileNodesHelper
-    def writeAllAtFileNodesHelper(self):
-        """Write all @<file> nodes and set orphan bits."""
-        c = self.c
-        try:
-            # 2010/01/19: Do *not* signal failure here.
-            # This allows Leo to quit properly.
-            c.atFileCommands.writeAll(all=False)
-            return True
-        except Exception:
-            # Work around bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
-            g.es_error("exception writing external files")
-            g.es_exception()
-            g.es('Internal error writing one or more external files.', color='red')
-            g.es('Please report this error to:', color='blue')
-            g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
-            g.es('All changes will be lost unless you', color='red')
-            g.es('can save each changed file.', color='red')
-            return False
-    #@+node:ekr.20100119145629.6111: *5* fc.writeToFileHelper & helpers
-    def writeToFileHelper(self, fileName):
-        """Write the .leo file as xml."""
-        c = self.c
-        ok, backupName = self.createBackupFile(fileName)
-        if not ok:
-            return False
-        f = self.openOutlineForWriting(fileName)
-        if not f:
-            return False
-        self.mFileName = fileName
-        self.outputFile = StringIO()  # Always write to a string.
-        try:
-            self.putLeoFile()
-            s = self.outputFile.getvalue()
-            s = bytes(s, self.leo_file_encoding, 'replace')
-            f.write(s)
-            f.close()
-            c.setFileTimeStamp(fileName)
-            # Delete backup file.
-            if backupName and g.os_path_exists(backupName):
-                self.deleteFileWithMessage(backupName, 'backup')
-            return True
-        except Exception:
-            self.handleWriteLeoFileException(fileName, backupName, f)
-            return False
-    #@+node:ekr.20031218072017.3047: *6* fc.createBackupFile
+    #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
     def createBackupFile(self, fileName):
         """
             Create a closed backup file and copy the file to it,
@@ -1580,25 +1547,7 @@ class FileCommands:
         else:
             ok, backupName = True, None
         return ok, backupName
-    #@+node:ekr.20100119145629.6108: *6* fc.handleWriteLeoFileException
-    def handleWriteLeoFileException(self, fileName, backupName, f):
-        """Report an exception. f is an open file, or None."""
-        c = self.c
-        g.es("exception writing:", fileName)
-        g.es_exception(full=True)
-        if f:
-            f.close()
-        # Delete fileName.
-        if fileName and g.os_path_exists(fileName):
-            self.deleteFileWithMessage(fileName, '')
-        # Rename backupName to fileName.
-        if backupName and g.os_path_exists(backupName):
-            g.es("restoring", fileName, "from", backupName)
-            # No need to create directories when restoring.
-            g.utils_rename(c, backupName, fileName)
-        else:
-            g.error('backup file does not exist!', repr(backupName))
-    #@+node:ekr.20070412095520: *5* fc.writeZipFile
+    #@+node:ekr.20070412095520: *4* fc.writeZipFile
     def writeZipFile(self, s):
         # The name of the file in the archive.
         contentsName = g.toEncodedString(
@@ -1612,7 +1561,7 @@ class FileCommands:
         theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName, s)
         theFile.close()
-    #@+node:vitalije.20170630172118.1: *5* fc.exportToSqlite
+    #@+node:vitalije.20170630172118.1: *4* fc.exportToSqlite
     def exportToSqlite(self, fileName):
         """Dump all vnodes to sqlite database. Returns True on success."""
         # fc = self
@@ -1652,7 +1601,7 @@ class FileCommands:
         except sqlite3.Error as e:
             g.internalError(e)
         return ok
-    #@+node:vitalije.20170705075107.1: *6* fc.decodePosition
+    #@+node:vitalije.20170705075107.1: *5* fc.decodePosition
     def decodePosition(self, s):
         """Creates position from its string representation encoded by fc.encodePosition."""
         fc = self
@@ -1665,7 +1614,7 @@ class FileCommands:
         v, ci = stack[-1]
         p = leoNodes.Position(v, ci, stack[:-1])
         return p
-    #@+node:vitalije.20170705075117.1: *6* fc.encodePosition
+    #@+node:vitalije.20170705075117.1: *5* fc.encodePosition
     def encodePosition(self, p):
         """New schema for encoding current position hopefully simplier one."""
         jn = '<->'
@@ -1673,7 +1622,7 @@ class FileCommands:
         res = [mk % (x.gnx, y) for x, y in p.stack]
         res.append(mk % (p.gnx, p._childIndex))
         return jn.join(res)
-    #@+node:vitalije.20170811130512.1: *6* fc.prepareDbTables
+    #@+node:vitalije.20170811130512.1: *5* fc.prepareDbTables
     def prepareDbTables(self, conn):
         conn.execute('''drop table if exists vnodes;''')
         conn.execute(
@@ -1690,7 +1639,7 @@ class FileCommands:
         )
         conn.execute(
             '''create table if not exists extra_infos(name primary key, value)''')
-    #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
+    #@+node:vitalije.20170701161851.1: *5* fc.exportVnodesToSqlite
     def exportVnodesToSqlite(self, conn, rows):
         conn.executemany(
             '''insert into vnodes
@@ -1699,7 +1648,7 @@ class FileCommands:
             values(?,?,?,?,?,?,?,?);''',
             rows,
         )
-    #@+node:vitalije.20170701162052.1: *6* fc.exportGeomToSqlite
+    #@+node:vitalije.20170701162052.1: *5* fc.exportGeomToSqlite
     def exportGeomToSqlite(self, conn):
         c = self.c
         data = zip(
@@ -1715,11 +1664,11 @@ class FileCommands:
             )
         )
         conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
-    #@+node:vitalije.20170811130559.1: *6* fc.exportDbVersion
+    #@+node:vitalije.20170811130559.1: *5* fc.exportDbVersion
     def exportDbVersion(self, conn):
         conn.execute(
             "replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
-    #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
+    #@+node:vitalije.20170701162204.1: *5* fc.exportHashesToSqlite
     def exportHashesToSqlite(self, conn):
         c = self.c
 
@@ -1824,6 +1773,44 @@ class FileCommands:
             else:
                 g.warning("ignoring non-dictionary uA for", p)
         return result
+    #@+node:ekr.20050404190914.2: *4* fc.deleteBackupFile
+    def deleteBackupFile(self, fileName):
+        try:
+            os.remove(fileName)
+        except Exception:
+            if self.read_only:
+                g.error("read only")
+            g.error("exception deleting backup file:", fileName)
+            g.es_exception(full=False)
+    #@+node:ekr.20100119145629.6108: *4* fc.handleWriteLeoFileException
+    def handleWriteLeoFileException(self, fileName, backupName, f):
+        """Report an exception. f is an open file, or None."""
+        c = self.c
+        g.es("exception writing:", fileName)
+        g.es_exception(full=True)
+        if f:
+            f.close()
+        # Delete fileName.
+        if fileName and g.os_path_exists(fileName):
+            self.deleteBackupFile(fileName)
+        # Rename backupName to fileName.
+        if backupName and g.os_path_exists(backupName):
+            g.es("restoring", fileName, "from", backupName)
+            # No need to create directories when restoring.
+            g.utils_rename(c, backupName, fileName)
+        else:
+            g.error('backup file does not exist!', repr(backupName))
+    #@+node:ekr.20040324080359.1: *4* fc.isReadOnly
+    def isReadOnly(self, fileName):
+        # self.read_only is not valid for Save As and Save To commands.
+        if g.os_path_exists(fileName):
+            try:
+                if not os.access(fileName, os.W_OK):
+                    g.error("can not write: read only:", fileName)
+                    return True
+            except Exception:
+                pass  # os.access() may not exist on all platforms.
+        return False
     #@+node:ekr.20210315031535.1: *4* fc.openOutlineForWriting
     def openOutlineForWriting(self, fileName):
         """Open a .leo file for writing. Return the open file, or None."""
@@ -1878,6 +1865,16 @@ class FileCommands:
         # pylint: disable=consider-using-ternary
         return d and self.pickle(
             torv=p.v, val=d, tag='descendentVnodeUnknownAttributes') or ''
+    #@+node:ekr.20070413061552: *4* fc.putSavedMessage
+    def putSavedMessage(self, fileName):
+        c = self.c
+        # #531: Optionally report timestamp...
+        if c.config.getBool('log-show-save-time', default=False):
+            format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
+            timestamp = time.strftime(format) + ' '
+        else:
+            timestamp = ''
+        g.es(f"{timestamp}saved: {g.shortFileName(fileName)}")
     #@+node:ekr.20050418161620.2: *4* fc.putUaHelper
     def putUaHelper(self, torv, key, val):
         """Put attribute whose name is key and value is val to the output stream."""

@@ -208,7 +208,7 @@ class LeoGlobals:  # pragma: no cover
             i += 1
         return ','.join(reversed(result))
     #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
-    def es_exception(self):
+    def es_exception(self, full=True):
         typ, val, tb = sys.exc_info()
         for line in traceback.format_exception(typ, val, tb):
             print(line)
