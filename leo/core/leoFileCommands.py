@@ -1023,7 +1023,7 @@ class FileCommands:
         return geom
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
-    #@+node:ekr.20070413061552: *5* fc.putSavedMessage (changed)
+    #@+node:ekr.20070413061552: *5* fc.putSavedMessage
     def putSavedMessage(self, fileName):
         c = self.c
         # #531: Optionally report timestamp...
@@ -1479,7 +1479,7 @@ class FileCommands:
             self.vnodesDict = vnodesDict
             self.usingClipboard = False
         return s
-    #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers (changed)
+    #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers
     def write_Leo_file(self, fileName):
         """Write the .leo file."""
         g.trace(fileName)
@@ -1528,7 +1528,7 @@ class FileCommands:
             g.es('All changes will be lost unless you', color='red')
             g.es('can save each changed file.', color='red')
             return False
-    #@+node:ekr.20100119145629.6111: *5* fc.writeToFileHelper & helpers (changed)
+    #@+node:ekr.20100119145629.6111: *5* fc.writeToFileHelper & helpers
     def writeToFileHelper(self, fileName):
         """Write the .leo file. The file must not be zipped."""
         c = self.c
@@ -1872,13 +1872,13 @@ class FileCommands:
             else:
                 g.warning("ignoring non-dictionary uA for", p)
         return result
-    #@+node:ekr.20210315031535.1: *4* fc.openOutlineForWriting (new)
+    #@+node:ekr.20210315031535.1: *4* fc.openOutlineForWriting
     def openOutlineForWriting(self, fileName):
         """Open a .leo file for writing. Return the open file, or None."""
         try:
-            f = open(fileName, 'wb')
+            f = open(fileName, 'wb')  # Always use binary mode.
         except Exception:
-            g.es(f"can not open {fileName} for writing")
+            g.es(f"can not open {fileName}")
             g.es_exception()
             f = None
         return f

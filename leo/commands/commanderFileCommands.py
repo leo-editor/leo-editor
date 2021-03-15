@@ -595,7 +595,7 @@ def revert(self, event=None):
     c.bringToFront()
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
-#@+node:ekr.20070413045221: *3* c_file.saveAsUnzipped & saveAsZipped (changed)
+#@+node:ekr.20070413045221: *3* c_file.saveAsUnzipped & saveAsZipped
 @g.commander_command('file-save-as-unzipped')
 @g.commander_command('save-file-as-unzipped')
 def saveAsUnzipped(self, event=None):
@@ -618,7 +618,7 @@ def saveAsZipped(self, event=None):
 
 def saveAsZippedHelper(c, zipped):
     #
-    # New in Leo 6.4: Compute the filename here.
+    # New in Leo 6.4: Get the filename here.
     #                 This avoids setting flags.
     fileName = g.app.gui.runSaveFileDialog(c,
         initialfile=c.mFileName,
