@@ -373,7 +373,12 @@ def refreshFromDisk(self, event=None):
 @g.commander_command('file-save')
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):
-    """Save a Leo outline to a file."""
+    """
+    Save a Leo outline to a file, using the existing file name unless
+    the fileName kwarg is given.
+    
+    kwarg: a file name, for use by scripts using Leo's bridge.
+    """
     if False and g.app.gui.guiName() == 'curses':
         g.trace('===== Save disabled in curses gui =====')
         return
@@ -469,7 +474,12 @@ def saveAll(self, event=None):
 @g.commander_command('file-save-as')
 @g.commander_command('save-file-as')
 def saveAs(self, event=None, fileName=None):
-    """Save a Leo outline to a file with a new filename."""
+    """
+    Save a Leo outline to a file, prompting for a new filename unless the
+    fileName kwarg is given.
+    
+    kwarg: a file name, for use by scripts using Leo's bridge.
+    """
     c = self; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
@@ -527,7 +537,12 @@ def saveAs(self, event=None, fileName=None):
 @g.commander_command('file-save-to')
 @g.commander_command('save-file-to')
 def saveTo(self, event=None, fileName=None, silent=False):
-    """Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged."""
+    """
+    Save a Leo outline to a file, prompting for a new file name unless the
+    fileName kwarg is given. Leave the file name of the Leo outline unchanged.
+    
+    kwarg: a file name, for use by scripts using Leo's bridge.
+    """
     c = self; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
