@@ -1054,7 +1054,7 @@ class FileCommands:
         p = c.p
         fc = self
         #@+others
-        #@+node:vitalije.20170831135535.1: *6* putVnodes2
+        #@+node:vitalije.20170831135535.1: *6* function: putVnodes2
         def putVnodes2():
             """Puts all <v> elements in the order in which they appear in the outline."""
             c.clearAllVisited()
@@ -1072,7 +1072,7 @@ class FileCommands:
                 fc.putVnode(p, isIgnore=p.isAtIgnoreNode())
             fc.put("</vnodes>\n")
             return ref_fname
-        #@+node:vitalije.20170831135447.1: *6* getPublicLeoFile
+        #@+node:vitalije.20170831135447.1: *6* function: getPublicLeoFile
         def getPublicLeoFile():
             fc.outputFile = io.StringIO()
             fc.putProlog()
@@ -1147,45 +1147,12 @@ class FileCommands:
                 self.putSavedMessage(fileName)
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
-    #@+node:ekr.20031218072017.1470: *4* fc.put & helpers
+    #@+node:ekr.20031218072017.1470: *4* fc.put
     def put(self, s):
         """Put string s to self.outputFile. All output eventually comes here."""
-        # Improved code: self.outputFile (a cStringIO object) always exists.
         if s:
             self.putCount += 1
             self.outputFile.write(s)
-    #@+node:ekr.20141020112451.18329: *5* put_dquote
-    def put_dquote(self):
-        self.put('"')
-    #@+node:ekr.20141020112451.18330: *5* put_dquoted_bool
-    def put_dquoted_bool(self, b):
-        if b: self.put('"1"')
-        else: self.put('"0"')
-    #@+node:ekr.20141020112451.18331: *5* put_flag
-    def put_flag(self, a, b):
-        if a:
-            self.put(" "); self.put(b); self.put('="1"')
-    #@+node:ekr.20141020112451.18332: *5* put_in_dquotes
-    def put_in_dquotes(self, a):
-        self.put('"')
-        if a: self.put(a)  # will always be True if we use backquotes.
-        else: self.put('0')
-        self.put('"')
-    #@+node:ekr.20141020112451.18333: *5* put_nl
-    def put_nl(self):
-        self.put("\n")
-    #@+node:ekr.20141020112451.18334: *5* put_tab
-    def put_tab(self):
-        self.put("\t")
-    #@+node:ekr.20141020112451.18335: *5* put_tabs
-    def put_tabs(self, n):
-        while n > 0:
-            self.put("\t")
-            n -= 1
-    #@+node:ekr.20031218072017.1971: *4* fc.putClipboardHeader
-    def putClipboardHeader(self):
-        # Put the minimal header.
-        self.put('<leo_header file_format="2"/>\n')
     #@+node:ekr.20031218072017.1573: *4* fc.outline_to_clipboard_string
     def outline_to_clipboard_string(self, p=None):
         """
@@ -1201,7 +1168,7 @@ class FileCommands:
             self.outputFile = io.StringIO()
             self.usingClipboard = True
             self.putProlog()
-            self.putClipboardHeader()
+            self.putHeader()
             self.putVnodes(p or self.c.p)
             self.putTnodes()
             self.putPostlog()
@@ -1295,8 +1262,7 @@ class FileCommands:
     #@+node:ekr.20031218072017.3035: *6* fc.putFindSettings
     def putFindSettings(self):
         # New in 4.3:  These settings never get written to the .leo file.
-        self.put("<find_panel_settings/>")
-        self.put_nl()
+        self.put("<find_panel_settings/>\n")
     #@+node:ekr.20031218072017.3037: *6* fc.putGlobals (sets window_position)
     def putGlobals(self):
         """Put a vestigial <globals> element, and write global data to the cache."""
@@ -1314,36 +1280,24 @@ class FileCommands:
             print('window_position:', c.db['window_position'])
     #@+node:ekr.20031218072017.3041: *6* fc.putHeader
     def putHeader(self):
-        tnodes = 0; clone_windows = 0  # Always zero in Leo2.
-        if 0:  # For compatibility with versions before Leo 4.5.
-            self.put("<leo_header")
-            self.put(" file_format="); self.put_in_dquotes("2")
-            self.put(" tnodes="); self.put_in_dquotes(str(tnodes))
-            self.put(" max_tnode_index="); self.put_in_dquotes(str(0))
-            self.put(" clone_windows="); self.put_in_dquotes(str(clone_windows))
-            self.put("/>"); self.put_nl()
-        else:
-            self.put('<leo_header file_format="2"/>\n')
+        self.put('<leo_header file_format="2"/>\n')
     #@+node:ekr.20031218072017.3042: *6* fc.putPostlog
     def putPostlog(self):
-        self.put("</leo_file>"); self.put_nl()
+        self.put("</leo_file>\n")
     #@+node:ekr.20031218072017.2066: *6* fc.putPrefs
     def putPrefs(self):
         # New in 4.3:  These settings never get written to the .leo file.
-        self.put("<preferences/>")
-        self.put_nl()
+        self.put("<preferences/>\n")
     #@+node:ekr.20031218072017.1246: *6* fc.putProlog
     def putProlog(self):
         """Put the prolog of the xml file."""
         tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
         self.putXMLLine()
         # Put "created by Leo" line.
-        self.put('<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->')
-        self.put_nl()
+        self.put('<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->\n')
         self.putStyleSheetLine()
         # Put the namespace
-        self.put(f'<leo_file xmlns:leo="{tag}" >')
-        self.put_nl()
+        self.put(f'<leo_file xmlns:leo="{tag}" >\n')
     #@+node:ekr.20031218072017.1248: *6* fc.putStyleSheetLine
     def putStyleSheetLine(self):
         """
@@ -1360,9 +1314,8 @@ class FileCommands:
         # sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
         # sheet = sheet or sheet2
         if sheet:
-            s = f"<?xml-stylesheet {sheet} ?>"
-            self.put(s)
-            self.put_nl()
+            self.put(f"<?xml-stylesheet {sheet} ?>\n")
+           
     #@+node:ekr.20031218072017.1577: *6* fc.putTnode
     def putTnode(self, v):
         # Call put just once.
@@ -1518,32 +1471,6 @@ class FileCommands:
             f"{g.app.prolog_prefix_string}"
             f'"{self.leo_file_encoding}"'
             f"{g.app.prolog_postfix_string}\n")
-    #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
-    def createBackupFile(self, fileName):
-        """
-            Create a closed backup file and copy the file to it,
-            but only if the original file exists.
-        """
-        if g.os_path_exists(fileName):
-            fd, backupName = tempfile.mkstemp(text=False)
-            f = open(fileName, 'rb')  # rb is essential.
-            s = f.read()
-            f.close()
-            try:
-                try:
-                    os.write(fd, s)
-                finally:
-                    os.close(fd)
-                ok = True
-            except Exception:
-                g.error('exception creating backup file')
-                g.es_exception()
-                ok, backupName = False, None
-            if not ok and self.read_only:
-                g.error("read only")
-        else:
-            ok, backupName = True, None
-        return ok, backupName
     #@+node:ekr.20070412095520: *4* fc.writeZipFile
     def writeZipFile(self, s):
         # The name of the file in the archive.
@@ -1740,6 +1667,32 @@ class FileCommands:
     def archivedPositionToPosition(self, s):
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
+    #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
+    def createBackupFile(self, fileName):
+        """
+            Create a closed backup file and copy the file to it,
+            but only if the original file exists.
+        """
+        if g.os_path_exists(fileName):
+            fd, backupName = tempfile.mkstemp(text=False)
+            f = open(fileName, 'rb')  # rb is essential.
+            s = f.read()
+            f.close()
+            try:
+                try:
+                    os.write(fd, s)
+                finally:
+                    os.close(fd)
+                ok = True
+            except Exception:
+                g.error('exception creating backup file')
+                g.es_exception()
+                ok, backupName = False, None
+            if not ok and self.read_only:
+                g.error("read only")
+        else:
+            ok, backupName = True, None
+        return ok, backupName
     #@+node:ekr.20080805085257.1: *4* fc.createUaList
     def createUaList(self, aList):
         """
