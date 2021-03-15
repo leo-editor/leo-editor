@@ -633,7 +633,8 @@ def saveAsZippedHelper(c, zipped):
         fileName = fileName[:-3]
         if not fileName.endswith('.leo'):
             fileName = f"{fileName}.leo"
-    c.saveTo(fileName=fileName)  # Leo 6.4: Use save-to not save-as.
+    # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
+    c.saveTo(fileName=fileName)  
     c.fileCommands.putSavedMessage(fileName)
 #@+node:ekr.20031218072017.2849: ** Export
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
