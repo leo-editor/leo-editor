@@ -1530,7 +1530,7 @@ class FileCommands:
             return False
     #@+node:ekr.20100119145629.6111: *5* fc.writeToFileHelper & helpers
     def writeToFileHelper(self, fileName):
-        """Write the .leo file. The file must not be zipped."""
+        """Write the .leo file as xml."""
         c = self.c
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
@@ -1543,7 +1543,6 @@ class FileCommands:
         try:
             self.putLeoFile()
             s = self.outputFile.getvalue()
-            g.app.write_Leo_file_string = s  # 2010/01/19: always set this.
             s = bytes(s, self.leo_file_encoding, 'replace')
             f.write(s)
             f.close()
@@ -1599,20 +1598,6 @@ class FileCommands:
             g.utils_rename(c, backupName, fileName)
         else:
             g.error('backup file does not exist!', repr(backupName))
-    #@+node:ekr.20100119145629.6110: *5* fc.writeToStringHelper
-    def writeToStringHelper(self, fileName):
-        try:
-            self.mFileName = fileName
-            self.outputFile = StringIO()
-            self.putLeoFile()
-            s = self.outputFile.getvalue()
-            g.app.write_Leo_file_string = s
-            return True
-        except Exception:
-            g.es("exception writing:", fileName)
-            g.es_exception(full=True)
-            g.app.write_Leo_file_string = ''
-            return False
     #@+node:ekr.20070412095520: *5* fc.writeZipFile
     def writeZipFile(self, s):
         # The name of the file in the archive.
@@ -1804,9 +1789,9 @@ class FileCommands:
         if fileName and fileName.endswith('.db'):
             return self.exportToSqlite(fileName)
         return self.writeToFileHelper(fileName)
-    #@+node:ekr.20210314171744.1: *4* fc.writeToOPML (new)
+    #@+node:ekr.20210314171744.1: *4* fc.writeToOPML (new, not used)
     def writeToOPML(self, fileName):
-        """Write the .leo file."""
+        """Write the .leo file as OPML."""
         c = self.c
         structure_errors = c.checkOutline()
         if structure_errors:
@@ -1825,7 +1810,6 @@ class FileCommands:
         try:
             c.opmlController.putToOPML(owner=self)
             s = self.outputFile.getvalue()
-            g.app.write_Leo_file_string = s  # 2010/01/19: always set this.
             s = bytes(s, self.leo_file_encoding, 'replace')
             f.write(s)
             f.close()
