@@ -1789,38 +1789,6 @@ class FileCommands:
         if fileName and fileName.endswith('.db'):
             return self.exportToSqlite(fileName)
         return self.writeToFileHelper(fileName)
-    #@+node:ekr.20210314171744.1: *4* fc.writeToOPML (new, not used)
-    def writeToOPML(self, fileName):
-        """Write the .leo file as OPML."""
-        c = self.c
-        structure_errors = c.checkOutline()
-        if structure_errors:
-            g.error('Major structural errors! outline not written')
-            return False
-        if fileName and fileName.endswith('.db'):
-            return False
-        ok, backupName = self.createBackupFile(fileName)
-        if not ok:
-            return False
-        f = self.openOutlineForWriting(fileName)
-        if not f:
-            return False
-        self.mFileName = fileName
-        self.outputFile = StringIO()  # Always write to a string.
-        try:
-            c.opmlController.putToOPML(owner=self)
-            s = self.outputFile.getvalue()
-            s = bytes(s, self.leo_file_encoding, 'replace')
-            f.write(s)
-            f.close()
-            c.setFileTimeStamp(fileName)
-            # Delete backup file.
-            if backupName and g.os_path_exists(backupName):
-                self.deleteFileWithMessage(backupName, 'backup')
-            return True
-        except Exception:
-            self.handleWriteLeoFileException(fileName, backupName, f)
-            return False
     #@+node:ekr.20080805114146.2: *3* fc.Utils
     #@+node:ekr.20061006104837.1: *4* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
