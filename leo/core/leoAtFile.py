@@ -1253,7 +1253,7 @@ class AtFile:
         junk, ext = g.os_path_splitext(fileName)
         writer = at.dispatch(ext, root)
         if writer:
-            at.openOutputStream()
+            at.outputList = []
             writer(root)
             return at.closeOutputStream()
         if root.isAtAutoRstNode():
@@ -1266,7 +1266,7 @@ class AtFile:
         ivar = 'allow_undefined_refs'
         try:
             setattr(at, ivar, True)
-            at.openOutputStream()
+            at.outputList = []
             at.putFile(root, sentinels=False)
             return at.closeOutputStream()
         except Exception:
@@ -1286,7 +1286,7 @@ class AtFile:
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return
-            at.openOutputStream()
+            at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             contents = at.closeOutputStream()
@@ -1338,7 +1338,7 @@ class AtFile:
                     # #1450: No danger of data loss.
                     pass
                 return
-            at.openOutputStream()
+            at.outputList = []
             at.putFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
             contents = at.closeOutputStream()
@@ -1580,7 +1580,7 @@ class AtFile:
             # Write the public and private files to strings.
 
             def put(sentinels):
-                at.openOutputStream()
+                at.outputList = []
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
                 return at.closeOutputStream()
@@ -1632,7 +1632,7 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root, root.atAsisFileNodeName())
-            at.openOutputStream()
+            at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
             return at.closeOutputStream()
@@ -1684,7 +1684,7 @@ class AtFile:
         try:
             c.endEditing()
             at.initWriteIvars(root, "<string-file>", sentinels=sentinels)
-            at.openOutputStream()
+            at.outputList = []
             at.putFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
             result = at.closeOutputStream()
@@ -1716,7 +1716,7 @@ class AtFile:
                 forcePythonSentinels=forcePythonSentinels,
                 sentinels=sentinels,
             )
-            at.openOutputStream()
+            at.outputList = []
             at.putFile(root, fromString=s, sentinels=sentinels)
             result = at.closeOutputStream()
             # Major bug: failure to clear this wipes out headlines!
@@ -2456,13 +2456,15 @@ class AtFile:
     #@+node:ekr.20190109145850.1: *5* at.open/closeOutputStream
     # open/close methods used by top-level atFile.write logic.
 
-    def openOutputStream(self):
-        """Open the output stream, which a list, *not* a file-like object."""
-        at = self
-        at.outputList = []
-        # Can't be inited in initWriteIvars because not valid in @shadow logic.
-        ### if g.app.unitTesting:
-        ###    at.output_newline = '\n'
+    if 0:
+
+        def openOutputStream(self):
+            """Open the output stream, which a list, *not* a file-like object."""
+            at = self
+            at.outputList = []
+            # Can't be inited in initWriteIvars because not valid in @shadow logic.
+            ### if g.app.unitTesting:
+            ###    at.output_newline = '\n'
 
     def closeOutputStream(self):
         """Close the output stream, returning its contents."""
