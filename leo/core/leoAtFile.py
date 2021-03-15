@@ -1255,7 +1255,10 @@ class AtFile:
         if writer:
             at.outputList = []
             writer(root)
-            return at.closeOutputStream()
+            ### return at.closeOutputStream()
+            contents = '' if at.errors else ''.join(at.outputList)
+            at.outputList = []
+            return contents
         if root.isAtAutoRstNode():
             # An escape hatch: fall back to the theRst writer
             # if there is no rst writer plugin.
@@ -1268,7 +1271,10 @@ class AtFile:
             setattr(at, ivar, True)
             at.outputList = []
             at.putFile(root, sentinels=False)
-            return at.closeOutputStream()
+            ### return at.closeOutputStream()
+            contents = '' if at.errors else ''.join(at.outputList)
+            at.outputList = []
+            return contents
         except Exception:
             return None
         finally:
@@ -1289,8 +1295,10 @@ class AtFile:
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            contents = at.closeOutputStream()
-            at.replaceFile(contents, at.encoding, fileName, root)
+            ### contents = at.closeOutputStream()
+            if not at.errors:
+                contents = ''.join(at.outputList)
+                at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
 
@@ -1341,7 +1349,9 @@ class AtFile:
             at.outputList = []
             at.putFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
-            contents = at.closeOutputStream()
+            ### contents = at.closeOutputStream()
+            contents = '' if at.errors else ''.join(at.outputList)
+            at.outputList = []
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
                 at.addToOrphanList(root)
@@ -1583,7 +1593,10 @@ class AtFile:
                 at.outputList = []
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
-                return at.closeOutputStream()
+                ### return at.closeOutputStream()
+                contents = '' if at.errors else ''.join(at.outputList)
+                at.outputList = []
+                return contents
 
             at.public_s = put(False)
             at.private_s = put(True)
@@ -1635,7 +1648,10 @@ class AtFile:
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            return at.closeOutputStream()
+            ### return at.closeOutputStream()
+            contents = '' if at.errors else ''.join(at.outputList)
+            at.outputList = []
+            return contents
         except Exception:
             at.writeException(fileName, root)
             return ''
@@ -1687,13 +1703,15 @@ class AtFile:
             at.outputList = []
             at.putFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
-            result = at.closeOutputStream()
+            ### result = at.closeOutputStream()
+            contents = '' if at.errors else ''.join(at.outputList)
+            at.outputList = []
             # Major bug: failure to clear this wipes out headlines!
             #            Sometimes this causes slight problems...
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
                 root.v._p_changed = True
-            return result
+            return contents
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -1718,14 +1736,16 @@ class AtFile:
             )
             at.outputList = []
             at.putFile(root, fromString=s, sentinels=sentinels)
-            result = at.closeOutputStream()
+            ### result = at.closeOutputStream()
+            contents = '' if at.errors else ''.join(at.outputList)
+            at.outputList = []
             # Major bug: failure to clear this wipes out headlines!
             #            Sometimes this causes slight problems...
             if root:
                 if hasattr(self.root.v, 'tnodeList'):
                     delattr(self.root.v, 'tnodeList')
                 root.v._p_changed = True
-            return result
+            return contents
         except Exception:
             at.exception("exception preprocessing script")
             return ''
@@ -2453,25 +2473,6 @@ class AtFile:
         if i > -1:
             return True, i + 2
         return False, -1
-    #@+node:ekr.20190109145850.1: *5* at.open/closeOutputStream
-    # open/close methods used by top-level atFile.write logic.
-
-    if 0:
-
-        def openOutputStream(self):
-            """Open the output stream, which a list, *not* a file-like object."""
-            at = self
-            at.outputList = []
-            # Can't be inited in initWriteIvars because not valid in @shadow logic.
-            ### if g.app.unitTesting:
-            ###    at.output_newline = '\n'
-
-    def closeOutputStream(self):
-        """Close the output stream, returning its contents."""
-        at = self
-        contents = '' if at.errors else ''.join(at.outputList)
-        at.outputList = []
-        return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
     def oblank(self):
