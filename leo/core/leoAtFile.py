@@ -1255,7 +1255,6 @@ class AtFile:
         if writer:
             at.outputList = []
             writer(root)
-            ### return at.closeOutputStream()
             contents = '' if at.errors else ''.join(at.outputList)
             at.outputList = []
             return contents
@@ -1271,7 +1270,6 @@ class AtFile:
             setattr(at, ivar, True)
             at.outputList = []
             at.putFile(root, sentinels=False)
-            ### return at.closeOutputStream()
             contents = '' if at.errors else ''.join(at.outputList)
             at.outputList = []
             return contents
@@ -1295,7 +1293,6 @@ class AtFile:
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            ### contents = at.closeOutputStream()
             if not at.errors:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
@@ -1349,7 +1346,6 @@ class AtFile:
             at.outputList = []
             at.putFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
-            ### contents = at.closeOutputStream()
             contents = '' if at.errors else ''.join(at.outputList)
             at.outputList = []
             if at.errors:
@@ -1593,7 +1589,6 @@ class AtFile:
                 at.outputList = []
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
-                ### return at.closeOutputStream()
                 contents = '' if at.errors else ''.join(at.outputList)
                 at.outputList = []
                 return contents
@@ -1648,7 +1643,6 @@ class AtFile:
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            ### return at.closeOutputStream()
             contents = '' if at.errors else ''.join(at.outputList)
             at.outputList = []
             return contents
@@ -1703,7 +1697,6 @@ class AtFile:
             at.outputList = []
             at.putFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
-            ### result = at.closeOutputStream()
             contents = '' if at.errors else ''.join(at.outputList)
             at.outputList = []
             # Major bug: failure to clear this wipes out headlines!
@@ -1736,7 +1729,6 @@ class AtFile:
             )
             at.outputList = []
             at.putFile(root, fromString=s, sentinels=sentinels)
-            ### result = at.closeOutputStream()
             contents = '' if at.errors else ''.join(at.outputList)
             at.outputList = []
             # Major bug: failure to clear this wipes out headlines!
