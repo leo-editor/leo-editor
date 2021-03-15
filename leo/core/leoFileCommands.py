@@ -1036,6 +1036,7 @@ class FileCommands:
         g.es(f"{timestamp} saved: {zipMark}{g.shortFileName(fileName)}")
     #@+node:ekr.20031218072017.1720: *5* fc.save
     def save(self, fileName, silent=False):
+        """fc.save: A helper for c.save."""
         c = self.c
         p = c.p
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
@@ -1118,6 +1119,7 @@ class FileCommands:
         return ok
     #@+node:ekr.20031218072017.3043: *5* fc.saveAs
     def saveAs(self, fileName):
+        """fc.saveAs: A helper for c.saveAs."""
         c = self.c
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
@@ -1139,6 +1141,7 @@ class FileCommands:
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
     def saveTo(self, fileName, silent=False):
+        """fc.saveTo: A helper for c.saveTo."""
         c = self.c
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
@@ -1533,11 +1536,8 @@ class FileCommands:
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
             return False
-        try:
-            theActualFile = open(fileName, 'wb')
-        except Exception:
-            g.es(f"can not create {fileName}")
-            g.es_exception()
+        f = self.openOutlineForWriting(fileName)
+        if not f:
             return False
         self.mFileName = fileName
         self.outputFile = StringIO()  # Always write to a string.
@@ -1546,15 +1546,15 @@ class FileCommands:
             s = self.outputFile.getvalue()
             g.app.write_Leo_file_string = s  # 2010/01/19: always set this.
             s = bytes(s, self.leo_file_encoding, 'replace')
-            theActualFile.write(s)
-            theActualFile.close()
+            f.write(s)
+            f.close()
             c.setFileTimeStamp(fileName)
             # Delete backup file.
             if backupName and g.os_path_exists(backupName):
                 self.deleteFileWithMessage(backupName, 'backup')
             return True
         except Exception:
-            self.handleWriteLeoFileException(fileName, backupName, theActualFile)
+            self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20031218072017.3047: *6* fc.createBackupFile
     def createBackupFile(self, fileName):
@@ -1583,12 +1583,13 @@ class FileCommands:
             ok, backupName = True, None
         return ok, backupName
     #@+node:ekr.20100119145629.6108: *6* fc.handleWriteLeoFileException
-    def handleWriteLeoFileException(self, fileName, backupName, theActualFile):
+    def handleWriteLeoFileException(self, fileName, backupName, f):
+        """Report an exception. f is an open file, or None."""
         c = self.c
         g.es("exception writing:", fileName)
         g.es_exception(full=True)
-        if theActualFile:
-            theActualFile.close()
+        if f:
+            f.close()
         # Delete fileName.
         if fileName and g.os_path_exists(fileName):
             self.deleteFileWithMessage(fileName, '')
@@ -1817,11 +1818,8 @@ class FileCommands:
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
             return False
-        try:
-            theActualFile = open(fileName, 'wb')
-        except Exception:
-            g.es(f"can not create {fileName}")
-            g.es_exception()
+        f = self.openOutlineForWriting(fileName)
+        if not f:
             return False
         self.mFileName = fileName
         self.outputFile = StringIO()  # Always write to a string.
@@ -1830,15 +1828,15 @@ class FileCommands:
             s = self.outputFile.getvalue()
             g.app.write_Leo_file_string = s  # 2010/01/19: always set this.
             s = bytes(s, self.leo_file_encoding, 'replace')
-            theActualFile.write(s)
-            theActualFile.close()
+            f.write(s)
+            f.close()
             c.setFileTimeStamp(fileName)
             # Delete backup file.
             if backupName and g.os_path_exists(backupName):
                 self.deleteFileWithMessage(backupName, 'backup')
             return True
         except Exception:
-            self.handleWriteLeoFileException(fileName, backupName, theActualFile)
+            self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20080805114146.2: *3* fc.Utils
     #@+node:ekr.20061006104837.1: *4* fc.archivedPositionToPosition
@@ -1875,6 +1873,16 @@ class FileCommands:
             else:
                 g.warning("ignoring non-dictionary uA for", p)
         return result
+    #@+node:ekr.20210315031535.1: *4* fc.openOutlineForWriting (new)
+    def openOutlineForWriting(self, fileName):
+        """Open a .leo file for writing. Return the open file, or None."""
+        try:
+            f = open(fileName, 'wb')
+        except Exception:
+            g.es(f"can not open {fileName} for writing")
+            g.es_exception()
+            f = None
+        return f
     #@+node:ekr.20080805085257.2: *4* fc.pickle
     def pickle(self, torv, val, tag):
         """Pickle val and return the hexlified result."""

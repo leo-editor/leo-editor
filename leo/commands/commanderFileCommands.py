@@ -615,6 +615,7 @@ def saveAsZipped(self, event=None):
     """
     c = self
     saveAsZippedHelper(c, True)
+
 def saveAsZippedHelper(c, isZipped):
     oldZipped = c.isZipped
     c.isZipped = isZipped
