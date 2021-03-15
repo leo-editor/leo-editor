@@ -478,7 +478,8 @@ def saveAs(self, event=None, fileName=None):
     Save a Leo outline to a file, prompting for a new filename unless the
     fileName kwarg is given.
     
-    kwarg: a file name, for use by scripts using Leo's bridge.
+    kwarg: a file name, for use by file-save-as-zipped,
+    file-save-as-unzipped and scripts using Leo's bridge.
     """
     c = self; p = c.p
     # Do this now: w may go away.
@@ -594,7 +595,7 @@ def revert(self, event=None):
     c.bringToFront()
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
-#@+node:ekr.20070413045221: *3* c_file.saveAsUnzipped & saveAsZipped
+#@+node:ekr.20070413045221: *3* c_file.saveAsUnzipped & saveAsZipped (changed)
 @g.commander_command('file-save-as-unzipped')
 @g.commander_command('save-file-as-unzipped')
 def saveAsUnzipped(self, event=None):
@@ -615,13 +616,25 @@ def saveAsZipped(self, event=None):
     c = self
     saveAsZippedHelper(c, True)
 
-def saveAsZippedHelper(c, isZipped):
-    oldZipped = c.isZipped
-    c.isZipped = isZipped
-    try:
-        c.saveAs()
-    finally:
-        c.isZipped = oldZipped
+def saveAsZippedHelper(c, zipped):
+    #
+    # New in Leo 6.4: Compute the filename here.
+    #                 This avoids setting flags.
+    fileName = g.app.gui.runSaveFileDialog(c,
+        initialfile=c.mFileName,
+        title="Save As Zipped" if zipped else "Save As Unzipped",
+        filetypes=[("Leo files", "*.leo *.db")] if zipped else [("Leo files", "*.leo")],
+        defaultextension=g.defaultLeoFileExtension(c))
+    if not fileName:
+        return
+    if zipped and not fileName.endswith('.db'):
+            fileName = f"{fileName}.db"
+    elif not zipped and fileName.endswith('.db'):
+        fileName = fileName[:-3]
+        if not fileName.endswith('.leo'):
+            fileName = f"{fileName}.leo"
+    c.saveTo(fileName=fileName)  # Leo 6.4: Use save-to not save-as.
+    c.fileCommands.putSavedMessage(fileName)
 #@+node:ekr.20031218072017.2849: ** Export
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
 @g.commander_command('export-headlines')

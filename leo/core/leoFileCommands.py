@@ -1023,7 +1023,7 @@ class FileCommands:
         return geom
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
-    #@+node:ekr.20070413061552: *5* fc.putSavedMessage
+    #@+node:ekr.20070413061552: *5* fc.putSavedMessage (changed)
     def putSavedMessage(self, fileName):
         c = self.c
         # #531: Optionally report timestamp...
@@ -1032,8 +1032,7 @@ class FileCommands:
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
-        zipMark = '[zipped] ' if c.isZipped else ''
-        g.es(f"{timestamp} saved: {zipMark}{g.shortFileName(fileName)}")
+        g.es(f"{timestamp}saved: {g.shortFileName(fileName)}")
     #@+node:ekr.20031218072017.1720: *5* fc.save
     def save(self, fileName, silent=False):
         """fc.save: A helper for c.save."""
@@ -1483,6 +1482,7 @@ class FileCommands:
     #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers (changed)
     def write_Leo_file(self, fileName):
         """Write the .leo file."""
+        g.trace(fileName)
         c, fc = self.c, self
         structure_errors = c.checkOutline()
         if structure_errors:
@@ -1492,7 +1492,7 @@ class FileCommands:
         fc.writeAllAtFileNodesHelper()  # Ignore any errors.
         if fc.isReadOnly(fileName):
             return False
-        if fileName and fileName.endswith('.db'):
+        if fileName.endswith('.db'):
             # This handles save-file-as-zipped.
             return fc.exportToSqlite(fileName)
         return fc.writeToFileHelper(fileName)
@@ -1532,8 +1532,6 @@ class FileCommands:
     def writeToFileHelper(self, fileName):
         """Write the .leo file. The file must not be zipped."""
         c = self.c
-        if c.isZipped:
-            return False
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
             return False
