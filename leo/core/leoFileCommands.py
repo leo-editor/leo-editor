@@ -1146,11 +1146,140 @@ class FileCommands:
                 self.putSavedMessage(fileName)
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
-    #@+node:ekr.20031218072017.1470: *4* fc.put
-    def put(self, s):
-        """Put string s to self.outputFile. All output eventually comes here."""
-        if s:
-            self.outputFile.write(s)
+    #@+node:vitalije.20170630172118.1: *4* fc.exportToSqlite
+    def exportToSqlite(self, fileName):
+        """Dump all vnodes to sqlite database. Returns True on success."""
+        # fc = self
+        c = self.c; fc = self
+        if c.sqlite_connection is None:
+            c.sqlite_connection = sqlite3.connect(fileName,
+                                        isolation_level='DEFERRED')
+        conn = c.sqlite_connection
+
+        def dump_u(v):
+            try:
+                s = pickle.dumps(v.u, protocol=1)
+            except pickle.PicklingError:
+                s = ''
+                g.trace('unpickleable value', repr(v.u))
+            return s
+
+        dbrow = lambda v: (
+                v.gnx,
+                v.h,
+                v.b,
+                ' '.join(x.gnx for x in v.children),
+                ' '.join(x.gnx for x in v.parents),
+                v.iconVal,
+                v.statusBits,
+                dump_u(v)
+            )
+        ok = False
+        try:
+            fc.prepareDbTables(conn)
+            fc.exportDbVersion(conn)
+            fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_nodes()))
+            fc.exportGeomToSqlite(conn)
+            fc.exportHashesToSqlite(conn)
+            conn.commit()
+            ok = True
+        except sqlite3.Error as e:
+            g.internalError(e)
+        return ok
+    #@+node:vitalije.20170705075107.1: *5* fc.decodePosition
+    def decodePosition(self, s):
+        """Creates position from its string representation encoded by fc.encodePosition."""
+        fc = self
+        if not s:
+            return fc.c.rootPosition()
+        sep = '<->'
+        comma = ','
+        stack = [x.split(comma) for x in s.split(sep)]
+        stack = [(fc.gnxDict[x], int(y)) for x, y in stack]
+        v, ci = stack[-1]
+        p = leoNodes.Position(v, ci, stack[:-1])
+        return p
+    #@+node:vitalije.20170705075117.1: *5* fc.encodePosition
+    def encodePosition(self, p):
+        """New schema for encoding current position hopefully simplier one."""
+        jn = '<->'
+        mk = '%s,%s'
+        res = [mk % (x.gnx, y) for x, y in p.stack]
+        res.append(mk % (p.gnx, p._childIndex))
+        return jn.join(res)
+    #@+node:vitalije.20170811130512.1: *5* fc.prepareDbTables
+    def prepareDbTables(self, conn):
+        conn.execute('''drop table if exists vnodes;''')
+        conn.execute(
+            '''
+            create table if not exists vnodes(
+                gnx primary key,
+                head,
+                body,
+                children,
+                parents,
+                iconVal,
+                statusBits,
+                ua);''',
+        )
+        conn.execute(
+            '''create table if not exists extra_infos(name primary key, value)''')
+    #@+node:vitalije.20170701161851.1: *5* fc.exportVnodesToSqlite
+    def exportVnodesToSqlite(self, conn, rows):
+        conn.executemany(
+            '''insert into vnodes
+            (gnx, head, body, children, parents,
+                iconVal, statusBits, ua)
+            values(?,?,?,?,?,?,?,?);''',
+            rows,
+        )
+    #@+node:vitalije.20170701162052.1: *5* fc.exportGeomToSqlite
+    def exportGeomToSqlite(self, conn):
+        c = self.c
+        data = zip(
+            (
+                'width', 'height', 'left', 'top',
+                'ratio', 'secondary_ratio',
+                'current_position'
+            ),
+            c.frame.get_window_info() +
+            (
+                c.frame.ratio, c.frame.secondary_ratio,
+                self.encodePosition(c.p)
+            )
+        )
+        conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
+    #@+node:vitalije.20170811130559.1: *5* fc.exportDbVersion
+    def exportDbVersion(self, conn):
+        conn.execute(
+            "replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
+    #@+node:vitalije.20170701162204.1: *5* fc.exportHashesToSqlite
+    def exportHashesToSqlite(self, conn):
+        c = self.c
+
+        def md5(x):
+            try:
+                s = open(x, 'rb').read()
+            except Exception:
+                return ''
+            s = s.replace(b'\r\n', b'\n')
+            return hashlib.md5(s).hexdigest()
+
+        files = set()
+
+        p = c.rootPosition()
+        while p:
+            if p.isAtIgnoreNode():
+                p.moveToNodeAfterTree()
+            elif p.isAtAutoNode() or p.isAtFileNode():
+                fn = c.getNodeFileName(p)
+                files.add((fn, 'md5_' + p.gnx))
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        conn.executemany(
+            'replace into extra_infos(name, value) values(?,?)',
+            map(lambda x: (x[1], md5(x[0])), files))
     #@+node:ekr.20031218072017.1573: *4* fc.outline_to_clipboard_string
     def outline_to_clipboard_string(self, p=None):
         """
@@ -1180,6 +1309,11 @@ class FileCommands:
             self.vnodesDict = vnodesDict
             self.usingClipboard = False
         return s
+    #@+node:ekr.20031218072017.1470: *4* fc.put
+    def put(self, s):
+        """Put string s to self.outputFile. All output eventually comes here."""
+        if s:
+            self.outputFile.write(s)
     #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file
     def write_Leo_file(self, fileName):
         """
@@ -1218,6 +1352,49 @@ class FileCommands:
             g.es('All changes will be lost unless you', color='red')
             g.es('can save each changed file.', color='red')
             return False
+    #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
+    @cmd('write-at-file-nodes')
+    def writeAtFileNodes(self, event=None):
+        """Write all @file nodes in the selected outline."""
+        c = self.c
+        c.init_error_dialogs()
+        c.atFileCommands.writeAll(all=True)
+        c.raise_error_dialogs(kind='write')
+    #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
+    @cmd('write-dirty-at-file-nodes')
+    def writeDirtyAtFileNodes(self, event=None):
+        """Write all changed @file Nodes."""
+        c = self.c
+        c.init_error_dialogs()
+        c.atFileCommands.writeAll(dirty=True)
+        c.raise_error_dialogs(kind='write')
+    #@+node:ekr.20080801071227.6: *4* fc.writeDirtyAtShadowNodes
+    def writeDirtyAtShadowNodes(self, event=None):
+        """Write all changed @shadow Nodes."""
+        self.c.atFileCommands.writeDirtyAtShadowNodes()
+    #@+node:ekr.20031218072017.2013: *4* fc.writeMissingAtFileNodes
+    @cmd('write-missing-at-file-nodes')
+    def writeMissingAtFileNodes(self, event=None):
+        """Write all @file nodes for which the corresponding external file does not exist."""
+        c = self.c
+        if c.p:
+            c.atFileCommands.writeMissing(c.p)
+    #@+node:ekr.20031218072017.3050: *4* fc.writeOutlineOnly
+    @cmd('write-outline-only')
+    def writeOutlineOnly(self, event=None):
+        """Write the entire outline without writing any derived files."""
+        c = self.c
+        c.endEditing()
+        fileName = self.mFileName
+        structure_errors = c.checkOutline()
+        if structure_errors:
+            g.error('Major structural errors! outline not written')
+            return False
+        if self.isReadOnly(fileName):
+            return False
+        if fileName and fileName.endswith('.db'):
+            return self.exportToSqlite(fileName)
+        return self.writeToFileHelper(fileName)
     #@+node:ekr.20100119145629.6111: *4* fc.writeToFileHelper & helpers
     def writeToFileHelper(self, fileName):
         """Write the .leo file as xml."""
@@ -1483,183 +1660,6 @@ class FileCommands:
         theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName, s)
         theFile.close()
-    #@+node:vitalije.20170630172118.1: *4* fc.exportToSqlite
-    def exportToSqlite(self, fileName):
-        """Dump all vnodes to sqlite database. Returns True on success."""
-        # fc = self
-        c = self.c; fc = self
-        if c.sqlite_connection is None:
-            c.sqlite_connection = sqlite3.connect(fileName,
-                                        isolation_level='DEFERRED')
-        conn = c.sqlite_connection
-
-        def dump_u(v):
-            try:
-                s = pickle.dumps(v.u, protocol=1)
-            except pickle.PicklingError:
-                s = ''
-                g.trace('unpickleable value', repr(v.u))
-            return s
-
-        dbrow = lambda v: (
-                v.gnx,
-                v.h,
-                v.b,
-                ' '.join(x.gnx for x in v.children),
-                ' '.join(x.gnx for x in v.parents),
-                v.iconVal,
-                v.statusBits,
-                dump_u(v)
-            )
-        ok = False
-        try:
-            fc.prepareDbTables(conn)
-            fc.exportDbVersion(conn)
-            fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_nodes()))
-            fc.exportGeomToSqlite(conn)
-            fc.exportHashesToSqlite(conn)
-            conn.commit()
-            ok = True
-        except sqlite3.Error as e:
-            g.internalError(e)
-        return ok
-    #@+node:vitalije.20170705075107.1: *5* fc.decodePosition
-    def decodePosition(self, s):
-        """Creates position from its string representation encoded by fc.encodePosition."""
-        fc = self
-        if not s:
-            return fc.c.rootPosition()
-        sep = '<->'
-        comma = ','
-        stack = [x.split(comma) for x in s.split(sep)]
-        stack = [(fc.gnxDict[x], int(y)) for x, y in stack]
-        v, ci = stack[-1]
-        p = leoNodes.Position(v, ci, stack[:-1])
-        return p
-    #@+node:vitalije.20170705075117.1: *5* fc.encodePosition
-    def encodePosition(self, p):
-        """New schema for encoding current position hopefully simplier one."""
-        jn = '<->'
-        mk = '%s,%s'
-        res = [mk % (x.gnx, y) for x, y in p.stack]
-        res.append(mk % (p.gnx, p._childIndex))
-        return jn.join(res)
-    #@+node:vitalije.20170811130512.1: *5* fc.prepareDbTables
-    def prepareDbTables(self, conn):
-        conn.execute('''drop table if exists vnodes;''')
-        conn.execute(
-            '''
-            create table if not exists vnodes(
-                gnx primary key,
-                head,
-                body,
-                children,
-                parents,
-                iconVal,
-                statusBits,
-                ua);''',
-        )
-        conn.execute(
-            '''create table if not exists extra_infos(name primary key, value)''')
-    #@+node:vitalije.20170701161851.1: *5* fc.exportVnodesToSqlite
-    def exportVnodesToSqlite(self, conn, rows):
-        conn.executemany(
-            '''insert into vnodes
-            (gnx, head, body, children, parents,
-                iconVal, statusBits, ua)
-            values(?,?,?,?,?,?,?,?);''',
-            rows,
-        )
-    #@+node:vitalije.20170701162052.1: *5* fc.exportGeomToSqlite
-    def exportGeomToSqlite(self, conn):
-        c = self.c
-        data = zip(
-            (
-                'width', 'height', 'left', 'top',
-                'ratio', 'secondary_ratio',
-                'current_position'
-            ),
-            c.frame.get_window_info() +
-            (
-                c.frame.ratio, c.frame.secondary_ratio,
-                self.encodePosition(c.p)
-            )
-        )
-        conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
-    #@+node:vitalije.20170811130559.1: *5* fc.exportDbVersion
-    def exportDbVersion(self, conn):
-        conn.execute(
-            "replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
-    #@+node:vitalije.20170701162204.1: *5* fc.exportHashesToSqlite
-    def exportHashesToSqlite(self, conn):
-        c = self.c
-
-        def md5(x):
-            try:
-                s = open(x, 'rb').read()
-            except Exception:
-                return ''
-            s = s.replace(b'\r\n', b'\n')
-            return hashlib.md5(s).hexdigest()
-
-        files = set()
-
-        p = c.rootPosition()
-        while p:
-            if p.isAtIgnoreNode():
-                p.moveToNodeAfterTree()
-            elif p.isAtAutoNode() or p.isAtFileNode():
-                fn = c.getNodeFileName(p)
-                files.add((fn, 'md5_' + p.gnx))
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        conn.executemany(
-            'replace into extra_infos(name, value) values(?,?)',
-            map(lambda x: (x[1], md5(x[0])), files))
-    #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
-    @cmd('write-at-file-nodes')
-    def writeAtFileNodes(self, event=None):
-        """Write all @file nodes in the selected outline."""
-        c = self.c
-        c.init_error_dialogs()
-        c.atFileCommands.writeAll(all=True)
-        c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
-    @cmd('write-dirty-at-file-nodes')
-    def writeDirtyAtFileNodes(self, event=None):
-        """Write all changed @file Nodes."""
-        c = self.c
-        c.init_error_dialogs()
-        c.atFileCommands.writeAll(dirty=True)
-        c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080801071227.6: *4* fc.writeDirtyAtShadowNodes
-    def writeDirtyAtShadowNodes(self, event=None):
-        """Write all changed @shadow Nodes."""
-        self.c.atFileCommands.writeDirtyAtShadowNodes()
-    #@+node:ekr.20031218072017.2013: *4* fc.writeMissingAtFileNodes
-    @cmd('write-missing-at-file-nodes')
-    def writeMissingAtFileNodes(self, event=None):
-        """Write all @file nodes for which the corresponding external file does not exist."""
-        c = self.c
-        if c.p:
-            c.atFileCommands.writeMissing(c.p)
-    #@+node:ekr.20031218072017.3050: *4* fc.writeOutlineOnly (changed)
-    @cmd('write-outline-only')
-    def writeOutlineOnly(self, event=None):
-        """Write the entire outline without writing any derived files."""
-        c = self.c
-        c.endEditing()
-        fileName = self.mFileName
-        structure_errors = c.checkOutline()
-        if structure_errors:
-            g.error('Major structural errors! outline not written')
-            return False
-        if self.isReadOnly(fileName):
-            return False
-        if fileName and fileName.endswith('.db'):
-            return self.exportToSqlite(fileName)
-        return self.writeToFileHelper(fileName)
     #@+node:ekr.20080805114146.2: *3* fc.Utils
     #@+node:ekr.20061006104837.1: *4* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
