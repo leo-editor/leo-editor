@@ -1139,6 +1139,8 @@ class FileCommands:
                 c.ignoreChangedPaths = False  # #1367.
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
+    #@+node:ekr.20210315033915.1: *5* fc.saveAsUnzipped (new)
+    #@+node:ekr.20210315033926.1: *5* fc.saveAsZipped (new)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
     def saveTo(self, fileName, silent=False):
         """fc.saveTo: A helper for c.saveTo."""

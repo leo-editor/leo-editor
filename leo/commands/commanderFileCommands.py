@@ -605,8 +605,7 @@ def saveAsUnzipped(self, event=None):
     c = self
     saveAsZippedHelper(c, False)
 
-g.commander_command('file-save-as-zipped')
-
+@g.commander_command('file-save-as-zipped')
 @g.commander_command('save-file-as-zipped')
 def saveAsZipped(self, event=None):
     """
