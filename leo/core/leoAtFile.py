@@ -6,6 +6,7 @@
 """Classes to read and write @file nodes."""
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile.py)
+import io
 import os
 import re
 import sys
@@ -1258,7 +1259,7 @@ class AtFile:
         if root.isAtAutoRstNode():
             # An escape hatch: fall back to the theRst writer
             # if there is no rst writer plugin.
-            outputFile = at.openOutputFile()
+            at.outputFile = outputFile = io.StringIO()
             ok = c.rstCommands.writeAtAutoFile(root, fileName, outputFile)
             return outputFile.close() if ok else None
         # leo 5.6: allow undefined section references in all @auto files.
@@ -2452,23 +2453,6 @@ class AtFile:
         if i > -1:
             return True, i + 2
         return False, -1
-    #@+node:ekr.20190113043601.1: *5* at.open/closeOutputFile
-    def openOutputFile(self):
-        """Open the output file, which must be file-like"""
-        at = self
-        at.outputFile = g.FileLikeObject()
-        # Can't be inited in initWriteIvars because not valid in @shadow logic.
-        if g.app.unitTesting:
-            at.output_newline = '\n'
-
-    def closeOutputFile(self):
-        """Close the output file, returning its contents."""
-        at = self
-        at.outputFile.flush()
-        contents = g.toUnicode('' if at.errors else at.outputFile.get())
-        at.outputFile.close()
-        at.outputFile = None
-        return contents
     #@+node:ekr.20190109145850.1: *5* at.open/closeOutputStream
     # open/close methods used by top-level atFile.write logic.
 

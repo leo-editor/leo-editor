@@ -20,9 +20,6 @@ import xml.sax
 import xml.sax.saxutils
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-# Abbreviations
-StringIO = io.StringIO
-BytesIO = io.BytesIO
 #@-<< imports >>
 PRIVAREA = '---begin-private-area---'
 #@+others
@@ -1077,7 +1074,7 @@ class FileCommands:
             return ref_fname
         #@+node:vitalije.20170831135447.1: *6* getPublicLeoFile
         def getPublicLeoFile():
-            fc.outputFile = g.FileLikeObject()
+            fc.outputFile = io.StringIO()
             fc.putProlog()
             fc.putHeader()
             fc.putGlobals()
@@ -1201,7 +1198,7 @@ class FileCommands:
             gnxDict = self.gnxDict
             vnodesDict = self.vnodesDict
             # Paste.
-            self.outputFile = StringIO()
+            self.outputFile = io.StringIO()
             self.usingClipboard = True
             self.putProlog()
             self.putClipboardHeader()
@@ -1283,7 +1280,7 @@ class FileCommands:
     #@+node:ekr.20040324080819.1: *5* fc.outline_to_xml_string & helpers
     def outline_to_xml_string(self):
         """Return the file xml format as a string."""
-        self.outputFile = StringIO()
+        self.outputFile = io.StringIO()
         self.putProlog()
         self.putHeader()
         self.putGlobals()
