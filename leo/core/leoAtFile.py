@@ -2461,8 +2461,8 @@ class AtFile:
         at = self
         at.outputList = []
         # Can't be inited in initWriteIvars because not valid in @shadow logic.
-        if g.app.unitTesting:
-            at.output_newline = '\n'
+        ### if g.app.unitTesting:
+        ###    at.output_newline = '\n'
 
     def closeOutputStream(self):
         """Close the output stream, returning its contents."""

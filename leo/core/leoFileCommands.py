@@ -395,7 +395,6 @@ class FileCommands:
         self.rootPosition = None
         self.outputFile = None
         self.openDirectory = None
-        self.putCount = 0
         self.usingClipboard = False
         self.currentPosition = None
         # New in 3.12...
@@ -1151,7 +1150,6 @@ class FileCommands:
     def put(self, s):
         """Put string s to self.outputFile. All output eventually comes here."""
         if s:
-            self.putCount += 1
             self.outputFile.write(s)
     #@+node:ekr.20031218072017.1573: *4* fc.outline_to_clipboard_string
     def outline_to_clipboard_string(self, p=None):
