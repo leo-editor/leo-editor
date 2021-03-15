@@ -1740,14 +1740,6 @@ class FileCommands:
     def archivedPositionToPosition(self, s):
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
-    #@+node:ekr.20031218072017.1570: *4* fc.assignFileIndices & compactFileIndices
-    def assignFileIndices(self):
-        """Assign a file index to all tnodes"""
-        pass  # No longer needed: we assign indices as needed.
-
-    # Indices are now immutable, so there is no longer any difference between these two routines.
-
-    compactFileIndices = assignFileIndices
     #@+node:ekr.20080805085257.1: *4* fc.createUaList
     def createUaList(self, aList):
         """
