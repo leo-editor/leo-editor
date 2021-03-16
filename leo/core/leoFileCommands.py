@@ -1042,8 +1042,9 @@ class FileCommands:
     #@+node:ekr.20210316043902.1: *5* fc.read_leojs
     def read_leojs(self, theFile, fileName):
         """Read a JSON (.leojs) file and create the outline."""
-        g.trace(fileName)
-        v = None  ###
+        c = self.c
+        v = c.frame.createFirstTreeNode() ### Temp.
+        v._headString = f"Dummy vnode for {fileName}"
         return v
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.

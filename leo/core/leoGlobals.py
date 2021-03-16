@@ -3795,7 +3795,7 @@ def createHiddenCommander(fn):
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
-    theFile = g.app.loadManager.openLeoOrZipFile(fn)
+    theFile = g.app.loadManager.openAnyLeoFile(fn)
     if theFile:
         c.fileCommands.openLeoFile(
             theFile, fn, readAtFileNodesFlag=True, silent=True)

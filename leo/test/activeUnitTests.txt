@@ -589,7 +589,7 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
-#@+node:ekr.20100131180007.5417: *4* @test lm.openLeoOrZipFile
+#@+node:ekr.20100131180007.5417: *4* @test lm.openAnyLeoFile
 import zipfile
 lm = g.app.loadManager
 
@@ -603,7 +603,7 @@ theFile.writestr('leo-zip-file',s)
 theFile.close()
 
 # Open the file, and use read (with no args) to get the contents.
-theFile = lm.openLeoOrZipFile(path)
+theFile = lm.openAnyLeoFile(path)
 assert theFile
 s2 = theFile.read()
 assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
