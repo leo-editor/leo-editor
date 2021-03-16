@@ -1040,11 +1040,23 @@ class FileCommands:
         restore_priv(privnodes, toppriv)
         c.redraw()
     #@+node:ekr.20210316043902.1: *5* fc.read_leojs
+    dumped_flag = False
+
     def read_leojs(self, theFile, fileName):
         """Read a JSON (.leojs) file and create the outline."""
         c = self.c
         v = c.frame.createFirstTreeNode() ### Temp.
         v._headString = f"Dummy vnode for {fileName}"
+        s = theFile.read()
+        try:
+            d = json.loads(s)
+            g.trace(len(list(d.keys())), fileName, g.callers())
+            if 0:
+                if not self.dumped_flag:
+                    self.dumped_flag = True
+                    g.printObj(d, tag=g.shortFileName(fileName))
+        except Exception:
+            g.es_exception()
         return v
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
