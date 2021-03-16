@@ -1563,7 +1563,7 @@ class FileCommands:
             # Create the dict corresponding to the JSON.
             d = self.leojs_file()
             # Convert the dict to JSON.
-            json_s = json.dumps(d)
+            json_s = json.dumps(d, indent=2)
             s = bytes(json_s, self.leo_file_encoding, 'replace')
             f.write(s)
             f.close()
@@ -1620,7 +1620,7 @@ class FileCommands:
             'gnx': v.fileIndex, 
             'vh': v._headString,
             'status': v.statusBits,
-            'children': [self.leojs_vnode(child) for child in v.children()]
+            'children': [self.leojs_vnode(child) for child in v.children]
         }
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName):

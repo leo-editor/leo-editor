@@ -566,7 +566,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
-        fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
+        ### fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
         c.fileCommands.saveTo(fileName, silent=silent)
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)
@@ -596,8 +596,8 @@ def revert(self, event=None):
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
 #@+node:ekr.20210316075815.1: *3* c_file.save-as-leojs
-@g.commander_command('file-save-as-zipped')
-@g.commander_command('save-file-as-zipped')
+@g.commander_command('file-save-as-leojs')
+@g.commander_command('save-as-leojs')
 def save_as_leojs(self, event=None):
     """
     Save a Leo outline as a JSON (.leojs) file with a new file name.
@@ -610,14 +610,14 @@ def save_as_leojs(self, event=None):
         defaultextension='.leojs')
     if not fileName:
         return
-    if not fileName.endswith('.db'):
-        fileName = f"{fileName}.db"
+    if not fileName.endswith('.leojs'):
+        fileName = f"{fileName}.leojs"
     # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
     c.saveTo(fileName=fileName)  
     c.fileCommands.putSavedMessage(fileName)
 #@+node:ekr.20070413045221: *3* c_file.save-as-zipped
 @g.commander_command('file-save-as-zipped')
-@g.commander_command('save-file-as-zipped')
+@g.commander_command('save-as-zipped')
 def save_as_zipped(self, event=None):
     """
     Save a Leo outline as a zipped (.db) file with a new file name.
