@@ -1255,9 +1255,7 @@ class AtFile:
         if writer:
             at.outputList = []
             writer(root)
-            contents = '' if at.errors else ''.join(at.outputList)
-            at.outputList = []
-            return contents
+            return '' if at.errors else ''.join(at.outputList)
         if root.isAtAutoRstNode():
             # An escape hatch: fall back to the theRst writer
             # if there is no rst writer plugin.
@@ -1270,9 +1268,7 @@ class AtFile:
             setattr(at, ivar, True)
             at.outputList = []
             at.putFile(root, sentinels=False)
-            contents = '' if at.errors else ''.join(at.outputList)
-            at.outputList = []
-            return contents
+            return '' if at.errors else ''.join(at.outputList)
         except Exception:
             return None
         finally:
@@ -1346,12 +1342,11 @@ class AtFile:
             at.outputList = []
             at.putFile(root, sentinels=sentinels)
             at.warnAboutOrphandAndIgnoredNodes()
-            contents = '' if at.errors else ''.join(at.outputList)
-            at.outputList = []
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
                 at.addToOrphanList(root)
             else:
+                contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
@@ -1589,17 +1584,14 @@ class AtFile:
                 at.outputList = []
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
-                contents = '' if at.errors else ''.join(at.outputList)
-                at.outputList = []
-                return contents
+                return '' if at.errors else ''.join(at.outputList)
 
             at.public_s = put(False)
             at.private_s = put(True)
             at.warnAboutOrphandAndIgnoredNodes()
             if g.app.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
-                assert g.checkUnchangedIvars(
-                    at, ivars_dict, exceptions), 'writeOneAtShadowNode'
+                assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if not at.errors:
                 # Write the public and private files.
                 x.makeShadowDirectory(full_path)
@@ -1643,9 +1635,7 @@ class AtFile:
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
-            contents = '' if at.errors else ''.join(at.outputList)
-            at.outputList = []
-            return contents
+            return '' if at.errors else ''.join(at.outputList)
         except Exception:
             at.writeException(fileName, root)
             return ''
@@ -1698,7 +1688,6 @@ class AtFile:
             at.putFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
             contents = '' if at.errors else ''.join(at.outputList)
-            at.outputList = []
             # Major bug: failure to clear this wipes out headlines!
             #            Sometimes this causes slight problems...
             if hasattr(self.root.v, 'tnodeList'):
@@ -1730,7 +1719,6 @@ class AtFile:
             at.outputList = []
             at.putFile(root, fromString=s, sentinels=sentinels)
             contents = '' if at.errors else ''.join(at.outputList)
-            at.outputList = []
             # Major bug: failure to clear this wipes out headlines!
             #            Sometimes this causes slight problems...
             if root:
