@@ -2186,7 +2186,7 @@ class LoadManager:
                 assert commandName
                 result.add_to_list(commandName, bi)
         return result
-    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile (new trace)
+    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
     def openSettingsFile(self, fn):
         """
         Open a settings file with a null gui.  Return the commander.
