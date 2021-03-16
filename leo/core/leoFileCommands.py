@@ -9,6 +9,7 @@ from contextlib import contextmanager
 import difflib
 import hashlib
 import io
+import json
 import os
 import pickle
 import sqlite3
@@ -1040,6 +1041,7 @@ class FileCommands:
         c.redraw()
     #@+node:ekr.20210316043902.1: *5* fc.read_leojs
     def read_leojs(self, theFile, fileName):
+        """Read a JSON (.leojs) file and create the outline."""
         g.trace(fileName)
         v = None  ###
         return v
@@ -1547,9 +1549,79 @@ class FileCommands:
         return fc.writeOutline(fileName)
 
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
-    #@+node:ekr.20210316050301.1: *5* fc.write_leojs
+    #@+node:ekr.20210316050301.1: *5* fc.write_leojs & helpers
     def write_leojs(self, fileName):
-        return False
+        """Write the outine as JSON (.leojs)."""
+        c = self.c
+        ok, backupName = self.createBackupFile(fileName)
+        if not ok:
+            return False
+        f = self.openOutlineForWriting(fileName)
+        if not f:
+            return False
+        try:
+            # Create the dict corresponding to the JSON.
+            d = self.leojs_file()
+            # Convert the dict to JSON.
+            json_s = json.dumps(d)
+            s = bytes(json_s, self.leo_file_encoding, 'replace')
+            f.write(s)
+            f.close()
+            c.setFileTimeStamp(fileName)
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteBackupFile(backupName)
+            self.mFileName = fileName
+            return True
+        except Exception:
+            self.handleWriteLeoFileException(fileName, backupName, f)
+            return False
+    #@+node:ekr.20210316095706.1: *6* fc.leojs_file
+    def leojs_file(self):
+        """Return a dict representing the outline."""
+        c = self.c
+        return {
+            'leoHeader': {'fileFormat': 2},
+            'globals': self.leojs_globals(),
+            'tnodes': [
+                {
+                    'tx': v.fileIndex,
+                    'body': v._bodyString,
+                } for v in c.all_unique_nodes()
+            ],
+            'vnodes': [
+                self.leojs_vnode(p.v) for p in c.rootPosition().self_and_siblings()
+            ],
+        }
+    #@+node:ekr.20210316092313.1: *6* fc.leojs_globals
+    def leojs_globals(self):
+        """Put json representation of Leo's cached globals."""
+        c = self.c
+        if 1:
+            # Leo no longer writes global data.
+            d = {}
+        else:
+            width, height, left, top = c.frame.get_window_info()
+            d = {
+                'body_outline_ratio': c.frame.ratio,
+                'body_secondary_ratio': c.frame.secondary_ratio,
+                'globalWindowPosition': {
+                    'top': top,
+                    'left': left,
+                    'width': width,
+                    'height': height,
+                },
+            }
+        return d
+    #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
+    def leojs_vnode(self, v):
+        """Return a jsonized vnode."""
+        return {
+            'gnx': v.fileIndex, 
+            'vh': v._headString,
+            'status': v.statusBits,
+            'children': [self.leojs_vnode(child) for child in v.children()]
+        }
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName):
         """Write the .leo file as xml."""
