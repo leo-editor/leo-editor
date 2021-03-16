@@ -1545,18 +1545,6 @@ class FileCommands:
         g.app.recentFilesManager.writeRecentFilesFile(c)
         fc.writeAllAtFileNodes()  # Ignore any errors.
         return fc.writeOutline(fileName)
-        
-        ###
-            # if fc.isReadOnly(fileName):
-                # return False
-            # if fileName.endswith('.db'):
-                # # Handle save-file-as-zipped.
-                # return fc.exportToSqlite(fileName)
-            # if fileName.endswith('.leojs'):
-                # return fc.write_leojs_outline(fileName)
-            # #
-            # # Write the file in xml format.
-            # return fc.write_xml_file(fileName)
 
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
     #@+node:ekr.20210316050301.1: *5* fc.write_leojs
