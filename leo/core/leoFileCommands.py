@@ -697,6 +697,7 @@ class FileCommands:
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
             elif fileName.endswith('.leojs'):
                 v = fc.read_leojs(theFile, fileName)
+                readAtFileNodesFlag = False  # Suppress post-processing.
             else:
                 v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
                 if v:
@@ -1040,24 +1041,31 @@ class FileCommands:
         restore_priv(privnodes, toppriv)
         c.redraw()
     #@+node:ekr.20210316043902.1: *5* fc.read_leojs
-    dumped_flag = False
-
     def read_leojs(self, theFile, fileName):
         """Read a JSON (.leojs) file and create the outline."""
         c = self.c
-        v = c.frame.createFirstTreeNode() ### Temp.
-        v._headString = f"Dummy vnode for {fileName}"
         s = theFile.read()
         try:
             d = json.loads(s)
-            g.trace(len(list(d.keys())), fileName, g.callers())
-            if 0:
-                if not self.dumped_flag:
-                    self.dumped_flag = True
-                    g.printObj(d, tag=g.shortFileName(fileName))
         except Exception:
+            g.trace(f"Error reading {fileName}")
             g.es_exception()
-        return v
+            return None
+        tnodes_dict = d.get('tnodes')
+        vnodes_list = d.get('vnodes')
+        c.hiddenRootNode.children = []  # Necessary.
+        for i, v_dict in enumerate(vnodes_list):
+            gnx = v_dict.get('gnx')
+            if gnx:
+                v = leoNodes.VNode(context=c, gnx=gnx)
+                c.hiddenRootNode.children.append(v)
+                v._headString = v_dict.get('vh', '')
+                body = tnodes_dict.get(gnx, '')
+                v._bodyString = body
+            else:
+                g.trace('gnx not found!')
+                g.printObj(v_dict)
+        return c.hiddenRootNode.children[0]
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
     #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
