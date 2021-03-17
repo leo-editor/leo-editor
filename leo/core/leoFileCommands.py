@@ -1040,7 +1040,7 @@ class FileCommands:
             fc.getLeoFile(theFile, fname, checkOpenFiles=False)
         restore_priv(privnodes, toppriv)
         c.redraw()
-    #@+node:ekr.20210316043902.1: *5* fc.read_leojs
+    #@+node:ekr.20210316043902.1: *5* fc.read_leojs & helper
     def read_leojs(self, theFile, fileName):
         """Read a JSON (.leojs) file and create the outline."""
         c = self.c
@@ -1053,18 +1053,29 @@ class FileCommands:
             return None
         tnodes_dict = d.get('tnodes')
         vnodes_list = d.get('vnodes')
-        c.hiddenRootNode.children = []  # Necessary.
-        for i, v_dict in enumerate(vnodes_list):
+        #@+others
+        #@+node:ekr.20210317155137.1: *6* function: create_vnode_from_dicts
+        def create_vnode_from_dicts(i, parent_v, v_dict):
+            """Create a new vnode as the i'th child of the parent vnode."""
             gnx = v_dict.get('gnx')
-            if gnx:
-                v = leoNodes.VNode(context=c, gnx=gnx)
-                c.hiddenRootNode.children.append(v)
-                v._headString = v_dict.get('vh', '')
-                body = tnodes_dict.get(gnx, '')
-                v._bodyString = body
-            else:
+            if not gnx:
                 g.trace('gnx not found!')
                 g.printObj(v_dict)
+                return
+            assert len(parent_v.children) == i, (i, parent_v, parent_v.children)
+            v = leoNodes.VNode(context=c, gnx=gnx)
+            parent_v.children.append(v)
+            v._headString = v_dict.get('vh', '')
+            v._bodyString = tnodes_dict.get(gnx, '')
+            #
+            # Recursively create the children.
+            for i2, v_dict2 in enumerate(v_dict.get('children', [])):
+                create_vnode_from_dicts(i2, v, v_dict2)
+        #@-others
+        c.hiddenRootNode.children = []  # Necessary.
+        parent_v = c.hiddenRootNode
+        for i, v_dict in enumerate(vnodes_list):
+            create_vnode_from_dicts(i, parent_v, v_dict)
         return c.hiddenRootNode.children[0]
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
