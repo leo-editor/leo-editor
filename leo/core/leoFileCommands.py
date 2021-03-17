@@ -1048,20 +1048,34 @@ class FileCommands:
         try:
             d = json.loads(s)
         except Exception:
-            g.trace(f"Error reading {fileName}")
+            g.trace(f"Error reading .leojs file: {fileName}")
             g.es_exception()
             return None
+        #
+        # Get the top-level dicts.
         tnodes_dict = d.get('tnodes')
         vnodes_list = d.get('vnodes')
+        if not tnodes_dict:
+            g.trace(f"Bad .leojs file: no tnodes dict: {fileName}")
+            return None
+        if not vnodes_list:
+            g.trace(f"Bad .leojs file: no vnodes list: {fileName}")
+            return None
+        #
+        # Define function: create_vnode_from_dicts.
         #@+others
         #@+node:ekr.20210317155137.1: *6* function: create_vnode_from_dicts
         def create_vnode_from_dicts(i, parent_v, v_dict):
             """Create a new vnode as the i'th child of the parent vnode."""
+            #
+            # Get the gnx.
             gnx = v_dict.get('gnx')
             if not gnx:
-                g.trace('gnx not found!')
+                g.trace(f"Bad .leojs file: no gnx in v_dict: {fileName}")
                 g.printObj(v_dict)
                 return
+            #
+            # Create the vnode.
             assert len(parent_v.children) == i, (i, parent_v, parent_v.children)
             v = leoNodes.VNode(context=c, gnx=gnx)
             parent_v.children.append(v)
@@ -1072,6 +1086,8 @@ class FileCommands:
             for i2, v_dict2 in enumerate(v_dict.get('children', [])):
                 create_vnode_from_dicts(i2, v, v_dict2)
         #@-others
+        #
+        # Start the recursion by creating the top-level vnodes.
         c.hiddenRootNode.children = []  # Necessary.
         parent_v = c.hiddenRootNode
         for i, v_dict in enumerate(vnodes_list):
