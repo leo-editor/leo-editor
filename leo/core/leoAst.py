@@ -1354,6 +1354,7 @@ class TokenOrderGenerator:
                 break  # Benign: use the token's value, a string, instead of a number.
             if is_significant_token(token):  # pragma: no cover
                 line_s = f"line {token.line_number}:"
+                val = str(val)  # for g.truncate.
                 raise AssignLinksError(
                     f"       file: {self.filename}\n"
                     f"{line_s:>12} {token.line.strip()}\n"
@@ -1508,16 +1509,29 @@ class TokenOrderGenerator:
     #   )
 
     def do_arguments(self, node):
-
         """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
-
+        #
         # No need to generate commas anywhere below.
+        #
         n_plain = len(node.args) - len(node.defaults)
+        #
         # Add the plain arguments.
         i = 0
         while i < n_plain:
             yield from self.gen(node.args[i])
             i += 1
+        #
+        # #1851: Support keyword-only args.
+        kwonlyargs = getattr(node, 'kwonlyargs', None)
+        kw_defaults = getattr(node, 'kw_defaults', None)
+        if kwonlyargs:
+            yield from self.gen_op('*')
+            for n, kwonlyarg in enumerate(kwonlyargs):
+                yield from self.gen(kwonlyarg)
+                if kw_defaults and kw_defaults[n] is not None:
+                    yield from self.gen_op('=')
+                    yield from self.gen(kw_defaults[n])
+        #
         # Add the arguments with defaults.
         j = 0
         while i < len(node.args) and j < len(node.defaults):
@@ -1528,6 +1542,7 @@ class TokenOrderGenerator:
             j += 1
         assert i == len(node.args)
         assert j == len(node.defaults)
+        #
         # Add the vararg and kwarg expressions.
         vararg = getattr(node, 'vararg', None)
         if vararg is not None:
@@ -2020,8 +2035,9 @@ class TokenOrderGenerator:
         yield from self.gen(node.target)
         yield from self.gen_op(':')
         yield from self.gen(node.annotation)
-        yield from self.gen_op('=')
-        yield from self.gen(node.value)
+        if node.value is not None:  # #1851
+            yield from self.gen_op('=')
+            yield from self.gen(node.value)
     #@+node:ekr.20191113063144.62: *5* tog.Assert
     # Assert(expr test, expr? msg)
 
@@ -3950,8 +3966,8 @@ class TestFstringify(BaseTest):
 
     f = TestClass('abc', 0, 10)
     """
-        expected = contents
         contents, tokens, tree = self.make_data(contents)
+        expected = g.adjustTripleString(contents).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200111043311.2: *5* TestFstringify.test_crash_1
@@ -4298,9 +4314,9 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20210318055702.1: *4* TestOrange.test_bug_1851
     def test_bug_1851(self):
-        
+
         contents = r'''\
-    def foo(bar, *, baz,):
+    def foo(a1, *, k1, k2=1, k3):
         pass
     '''
         contents, tokens, tree = self.make_data(contents)
