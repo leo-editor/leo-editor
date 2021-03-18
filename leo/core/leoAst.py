@@ -2317,7 +2317,10 @@ class TokenOrderGenerator:
         yield from self.gen_name('import')
         # No need to put commas.
         for alias in node.names:
-            yield from self.gen_name(alias.name)
+            if alias.name == '*':  # #1851.
+                yield from self.gen_op('*')
+            else:
+                yield from self.gen_name(alias.name)
             if alias.asname:
                 yield from self.gen_name('as')
                 yield from self.gen_name(alias.asname)
@@ -5695,7 +5698,7 @@ class TestTOG(BaseTest):
         contents = r"""from a import b as c"""
         self.make_data(contents)
     #@+node:ekr.20210318174705.1: *5* test_ImportFromStar
-    def test_ImportFrom(self):
+    def test_ImportFromStar(self):
         contents = r"""from sys import *"""
         self.make_data(contents)
     #@+node:ekr.20200206040424.1: *5* test_Lambda
