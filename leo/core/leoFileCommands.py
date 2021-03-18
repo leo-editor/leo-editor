@@ -1040,7 +1040,7 @@ class FileCommands:
             fc.getLeoFile(theFile, fname, checkOpenFiles=False)
         restore_priv(privnodes, toppriv)
         c.redraw()
-    #@+node:ekr.20210316043902.1: *5* fc.read_leojs & helper
+    #@+node:ekr.20210316043902.1: *5* fc.read_leojs & helpers
     def read_leojs(self, theFile, fileName):
         """Read a JSON (.leojs) file and create the outline."""
         c = self.c
@@ -1085,6 +1085,41 @@ class FileCommands:
             # Recursively create the children.
             for i2, v_dict2 in enumerate(v_dict.get('children', [])):
                 create_vnode_from_dicts(i2, v, v_dict2)
+        #@+node:ekr.20210318125522.1: *6* function: scan_leojs_globals
+        def scan_leojs_globals(json_d):
+            """Set the geometries from the globals dict."""
+            # Like fast.scanGlobals.
+            d = json_d.get('globals', {})
+            windowSize = g.app.loadManager.options.get('windowSize')
+            windowSpot = g.app.loadManager.options.get('windowSpot')
+            if windowSize is None:
+                w, h = d.get('width', 600), d.get('height', 500)
+            else:
+                h, w = windowSize  # checked in LM.scanOption.
+            if windowSpot is None:
+                x, y = d.get('left', 50), d.get('top', 50)
+            else:
+                y, x = windowSpot
+            if 'size' in g.app.debug:
+                g.trace(w, h, x, y, c.shortFileName())
+            # c.frame may be a NullFrame.
+            c.frame.setTopGeometry(w, h, x, y)
+            r1, r2 = d.get('r1', 0.5), d.get('r2', 0.5)
+            c.frame.resizePanesToRatio(r1, r2)
+            frameFactory = getattr(g.app.gui, 'frameFactory', None)
+            if not frameFactory:
+                return
+            assert frameFactory is not None
+            mf = frameFactory.masterFrame
+            if g.app.start_minimized:
+                mf.showMinimized()
+            elif g.app.start_maximized:
+                # #1189: fast.scanGlobals calls showMaximized later.
+                mf.showMaximized()
+            elif g.app.start_fullscreen:
+                mf.showFullScreen()
+            else:
+                mf.show()
         #@-others
         #
         # Start the recursion by creating the top-level vnodes.
@@ -1092,6 +1127,7 @@ class FileCommands:
         parent_v = c.hiddenRootNode
         for i, v_dict in enumerate(vnodes_list):
             create_vnode_from_dicts(i, parent_v, v_dict)
+        scan_leojs_globals(d)
         return c.hiddenRootNode.children[0]
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
