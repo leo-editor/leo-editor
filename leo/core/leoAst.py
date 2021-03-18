@@ -5694,6 +5694,10 @@ class TestTOG(BaseTest):
     def test_ImportFrom(self):
         contents = r"""from a import b as c"""
         self.make_data(contents)
+    #@+node:ekr.20210318174705.1: *5* test_ImportFromStar
+    def test_ImportFrom(self):
+        contents = r"""from sys import *"""
+        self.make_data(contents)
     #@+node:ekr.20200206040424.1: *5* test_Lambda
     def test_Lambda(self):
 
