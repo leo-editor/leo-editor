@@ -1364,6 +1364,7 @@ class TokenOrderGenerator:
             # Skip the insignificant token.
             px += 1
         else:  # pragma: no cover
+            val = str(val)  # for g.truncate.
             raise AssignLinksError(
                  f"       file: {self.filename}\n"
                  f"Looking for: {kind}.{g.truncate(val, 40)}\n"
