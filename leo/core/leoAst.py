@@ -2019,15 +2019,15 @@ class TokenOrderGenerator:
         yield from self.gen(node.test)
         yield from self.gen_name('else')
         yield from self.gen(node.orelse)
-    #@+node:ekr.20191113063144.60: *4* tog: Statements
-    #@+node:ekr.20191113063144.83: *5*  tog.Starred
+    #@+node:ekr.20191113063144.60: *5* tog: Statements
+    #@+node:ekr.20191113063144.83: *6*  tog.Starred
     # Starred(expr value, expr_context ctx)
 
     def do_Starred(self, node):
         """A starred argument to an ast.Call"""
         yield from self.gen_op('*')
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.61: *5* tog.AnnAssign
+    #@+node:ekr.20191113063144.61: *6* tog.AnnAssign
     # AnnAssign(expr target, expr annotation, expr? value, int simple)
 
     def do_AnnAssign(self, node):
@@ -2039,7 +2039,7 @@ class TokenOrderGenerator:
         if node.value is not None:  # #1851
             yield from self.gen_op('=')
             yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.62: *5* tog.Assert
+    #@+node:ekr.20191113063144.62: *6* tog.Assert
     # Assert(expr test, expr? msg)
 
     def do_Assert(self, node):
@@ -2051,14 +2051,14 @@ class TokenOrderGenerator:
         yield from self.gen(node.test)
         if msg is not None:
             yield from self.gen(node.msg)
-    #@+node:ekr.20191113063144.63: *5* tog.Assign
+    #@+node:ekr.20191113063144.63: *6* tog.Assign
     def do_Assign(self, node):
 
         for z in node.targets:
             yield from self.gen(z)
             yield from self.gen_op('=')
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.64: *5* tog.AsyncFor
+    #@+node:ekr.20191113063144.64: *6* tog.AsyncFor
     def do_AsyncFor(self, node):
 
         # The def line...
@@ -2079,13 +2079,13 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
         self.level -= 1
-    #@+node:ekr.20191113063144.65: *5* tog.AsyncWith
+    #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node):
 
         async_token_type = 'async' if use_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'async')
         yield from self.do_With(node)
-    #@+node:ekr.20191113063144.66: *5* tog.AugAssign
+    #@+node:ekr.20191113063144.66: *6* tog.AugAssign
     # AugAssign(expr target, operator op, expr value)
 
     def do_AugAssign(self, node):
@@ -2095,7 +2095,7 @@ class TokenOrderGenerator:
         yield from self.gen(node.target)
         yield from self.gen_op(op_name_ + '=')
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.67: *5* tog.Await
+    #@+node:ekr.20191113063144.67: *6* tog.Await
     # Await(expr value)
 
     def do_Await(self, node):
@@ -2104,11 +2104,11 @@ class TokenOrderGenerator:
         async_token_type = 'await' if use_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'await')
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.68: *5* tog.Break
+    #@+node:ekr.20191113063144.68: *6* tog.Break
     def do_Break(self, node):
 
         yield from self.gen_name('break')
-    #@+node:ekr.20191113063144.31: *5* tog.Call & helpers
+    #@+node:ekr.20191113063144.31: *6* tog.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
 
     # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
@@ -2122,7 +2122,7 @@ class TokenOrderGenerator:
         # No need to generate any commas.
         yield from self.handle_call_arguments(node)
         yield from self.gen_op(')')
-    #@+node:ekr.20191204114930.1: *6* tog.arg_helper
+    #@+node:ekr.20191204114930.1: *7* tog.arg_helper
     def arg_helper(self, node):
         """
         Yield the node, with a special case for strings.
@@ -2134,7 +2134,7 @@ class TokenOrderGenerator:
             yield from self.gen_token('name', node)
         else:
             yield from self.gen(node)
-    #@+node:ekr.20191204105506.1: *6* tog.handle_call_arguments
+    #@+node:ekr.20191204105506.1: *7* tog.handle_call_arguments
     def handle_call_arguments(self, node):
         """
         Generate arguments in the correct order.
@@ -2148,6 +2148,9 @@ class TokenOrderGenerator:
         positional args, then keyword args, then * arg the ** kwargs.
         """
         trace = False
+        if 0:
+            g.printObj([ast.dump(z) for z in node.args], tag='args')
+            g.printObj([ast.dump(z) for z in node.keywords], tag='keywords')
         #
         # Filter the * arg from args.
         args = [z for z in node.args or [] if not isinstance(z, ast.Starred)]
@@ -2158,7 +2161,7 @@ class TokenOrderGenerator:
         kwarg_arg = [z for z in node.keywords or [] if not z.arg]
         if trace:
             #@+<< trace the ast.Call arguments >>
-            #@+node:ekr.20191204113843.1: *7* << trace the ast.Call arguments >>
+            #@+node:ekr.20191204113843.1: *8* << trace the ast.Call arguments >>
             def show_fields(node):
                 class_name = 'None' if node is None else node.__class__.__name__
                 return AstDumper().show_fields(class_name, node, 40)
@@ -2201,17 +2204,17 @@ class TokenOrderGenerator:
             assert isinstance(kwarg, ast.keyword)
             yield from self.gen_op('**')
             yield from self.gen(kwarg.value)
-    #@+node:ekr.20191113063144.69: *5* tog.Continue
+    #@+node:ekr.20191113063144.69: *6* tog.Continue
     def do_Continue(self, node):
 
         yield from self.gen_name('continue')
-    #@+node:ekr.20191113063144.70: *5* tog.Delete
+    #@+node:ekr.20191113063144.70: *6* tog.Delete
     def do_Delete(self, node):
 
         # No need to put commas.
         yield from self.gen_name('del')
         yield from self.gen(node.targets)
-    #@+node:ekr.20191113063144.71: *5* tog.ExceptHandler
+    #@+node:ekr.20191113063144.71: *6* tog.ExceptHandler
     def do_ExceptHandler(self, node):
 
         # Except line...
@@ -2226,7 +2229,7 @@ class TokenOrderGenerator:
         self.level += 1
         yield from self.gen(node.body)
         self.level -= 1
-    #@+node:ekr.20191113063144.73: *5* tog.For
+    #@+node:ekr.20191113063144.73: *6* tog.For
     def do_For(self, node):
 
         # The def line...
@@ -2244,7 +2247,7 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
         self.level -= 1
-    #@+node:ekr.20191113063144.74: *5* tog.Global
+    #@+node:ekr.20191113063144.74: *6* tog.Global
     # Global(identifier* names)
 
     def do_Global(self, node):
@@ -2252,12 +2255,12 @@ class TokenOrderGenerator:
         yield from self.gen_name('global')
         for z in node.names:
             yield from self.gen_name(z)
-    #@+node:ekr.20191113063144.75: *5* tog.If & helpers
+    #@+node:ekr.20191113063144.75: *6* tog.If & helpers
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(self, node):
         #@+<< do_If docstring >>
-        #@+node:ekr.20191122222412.1: *6* << do_If docstring >>
+        #@+node:ekr.20191122222412.1: *7* << do_If docstring >>
         """
         The parse trees for the following are identical!
 
@@ -2295,7 +2298,7 @@ class TokenOrderGenerator:
             else:
                 yield from self.gen(node.orelse)
             self.level -= 1
-    #@+node:ekr.20191113063144.76: *5* tog.Import & helper
+    #@+node:ekr.20191113063144.76: *6* tog.Import & helper
     def do_Import(self, node):
 
         yield from self.gen_name('import')
@@ -2304,7 +2307,7 @@ class TokenOrderGenerator:
             if alias.asname:
                 yield from self.gen_name('as')
                 yield from self.gen_name(alias.asname)
-    #@+node:ekr.20191113063144.77: *5* tog.ImportFrom
+    #@+node:ekr.20191113063144.77: *6* tog.ImportFrom
     # ImportFrom(identifier? module, alias* names, int? level)
 
     def do_ImportFrom(self, node):
@@ -2324,7 +2327,7 @@ class TokenOrderGenerator:
             if alias.asname:
                 yield from self.gen_name('as')
                 yield from self.gen_name(alias.asname)
-    #@+node:ekr.20191113063144.78: *5* tog.Nonlocal
+    #@+node:ekr.20191113063144.78: *6* tog.Nonlocal
     # Nonlocal(identifier* names)
 
     def do_Nonlocal(self, node):
@@ -2334,11 +2337,11 @@ class TokenOrderGenerator:
         yield from self.gen_name('nonlocal')
         for z in node.names:
             yield from self.gen_name(z)
-    #@+node:ekr.20191113063144.79: *5* tog.Pass
+    #@+node:ekr.20191113063144.79: *6* tog.Pass
     def do_Pass(self, node):
 
         yield from self.gen_name('pass')
-    #@+node:ekr.20191113063144.81: *5* tog.Raise
+    #@+node:ekr.20191113063144.81: *6* tog.Raise
     # Raise(expr? exc, expr? cause)
 
     def do_Raise(self, node):
@@ -2351,12 +2354,12 @@ class TokenOrderGenerator:
         yield from self.gen(exc)
         yield from self.gen(cause)
         yield from self.gen(tback)
-    #@+node:ekr.20191113063144.82: *5* tog.Return
+    #@+node:ekr.20191113063144.82: *6* tog.Return
     def do_Return(self, node):
 
         yield from self.gen_name('return')
         yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.85: *5* tog.Try
+    #@+node:ekr.20191113063144.85: *6* tog.Try
     # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
     def do_Try(self, node):
@@ -2379,7 +2382,7 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(node.finalbody)
         self.level -= 1
-    #@+node:ekr.20191113063144.88: *5* tog.While
+    #@+node:ekr.20191113063144.88: *6* tog.While
     def do_While(self, node):
 
         # While line...
@@ -2396,7 +2399,7 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(node.orelse)
         self.level -= 1
-    #@+node:ekr.20191113063144.89: *5* tog.With
+    #@+node:ekr.20191113063144.89: *6* tog.With
     # With(withitem* items, stmt* body)
 
     # withitem = (expr context_expr, expr? optional_vars)
@@ -2420,13 +2423,13 @@ class TokenOrderGenerator:
         self.level += 1
         yield from self.gen(node.body)
         self.level -= 1
-    #@+node:ekr.20191113063144.90: *5* tog.Yield
+    #@+node:ekr.20191113063144.90: *6* tog.Yield
     def do_Yield(self, node):
 
         yield from self.gen_name('yield')
         if hasattr(node, 'value'):
             yield from self.gen(node.value)
-    #@+node:ekr.20191113063144.91: *5* tog.YieldFrom
+    #@+node:ekr.20191113063144.91: *6* tog.YieldFrom
     # YieldFrom(expr value)
 
     def do_YieldFrom(self, node):
@@ -3409,6 +3412,7 @@ class BaseTest(unittest.TestCase):
     # Statistics.
     counts: Dict[str, int] = {}
     times: Dict[str, float] = {}
+    print_full_exception = True
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
     def adjust_expected(self, s):
@@ -3421,11 +3425,13 @@ class BaseTest(unittest.TestCase):
         results = tokens_to_string(tokens)
         assert contents == results, expected_got(contents, results)
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
-    def make_data(self, contents, description=None):
+    def make_data(self, contents, description=None, dump=None):
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:  # pragma: no cover
             return '', None, None
+        if dump is None:
+            dump = []
         t1 = get_time()
         self.update_counts('characters', len(contents))
         # Ensure all tests end in exactly one newline.
@@ -3440,11 +3446,14 @@ class BaseTest(unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:  # pragma: no cover
             return '', None, None
-        if 0: # Sometimes useful.
+        if 'contents' in dump: # Sometimes useful.
             dump_contents(contents)
-        if 0:  # Excellent traces for tracking down mysteries.
+        if 'ast' in dump:
+            print('ast.dump...')
+            print(ast.dump(tree))
+        if 'tree' in dump:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
-        if 0:  # Sometimes useful.
+        if 'tokens' in dump:  # Sometimes useful.
             dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links
@@ -3533,7 +3542,8 @@ class BaseTest(unittest.TestCase):
             g.trace(f"Exception...\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
             print(e)
-            g.es_exception()
+            if self.print_full_exception:
+                g.es_exception()
             raise
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
     def fstringify(self, contents, tokens, tree, filename=None, silent=False):
@@ -5119,6 +5129,51 @@ class TestTOG(BaseTest):
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
     #@+others
+    #@+node:ekr.20210318213945.1: *4* py_test_grammar.py
+    #@+node:ekr.20210318213133.1: *5* test_full_grammar
+    def test_full_grammar(self):
+        
+        path = r'c:\test\PyGrammar\py3_test_grammar.py'
+        contents = read_file(path)
+        ### self.print_full_exception = False ###
+        self.make_data(contents)
+    #@+node:ekr.20210318214057.1: *5* test_line_315
+    def test_line_315(self):
+        
+    # self.assertEquals(f(1, x=2, *[3, 4], y=5), ((1, 3, 4), {'x':2, 'y':5}))
+        contents = '''f(1, x=2, *[3, 4], y=5)'''
+        self.print_full_exception = False ###
+        self.make_data(contents, dump=['contents']) # , 'tree'])
+    #@+node:ekr.20210319125937.1: *5* test_line_337
+    def test_line_337(self):
+        
+        # def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10,
+                  # **k:11) -> 12: pass
+            # self.assertEquals(f.__annotations__,
+                              # {'b': 1, 'c': 2, 'e': 3, 'g': 6, 'h': 7, 'j': 9,
+                               # 'k': 11, 'return': 12})
+
+        contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
+        self.print_full_exception = False ###
+        self.make_data(contents, dump=['contents']) # , 'tree'])
+    #@+node:ekr.20210319130349.1: *5* test_line_875
+    def test_line_875(self):
+        
+    # self.assertEqual(list((x, y) for x in 'abcd' for y in 'abcd'), [(x, y) for x in 'abcd' for y in 'abcd'])
+
+        contents = '''list((x, y) for x in 'abcd' for y in 'abcd')'''
+        self.print_full_exception = False ###
+        self.make_data(contents, dump=['contents']) # , 'tree'])
+    #@+node:ekr.20210319130616.1: *5* test_line_898
+    def test_line_898(self):
+
+        # Probably the same as line 900.
+        
+        # x = 10; t = False; g = ((i,j) for i in range(x) if t for j in range(x))
+        
+        contents = '''g = ((i,j) for i in range(x) if t for j in range(x))'''
+        self.print_full_exception = False ###
+        self.make_data(contents, dump=['contents']) # , 'tree'])
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
