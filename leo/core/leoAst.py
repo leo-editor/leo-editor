@@ -2159,7 +2159,7 @@ class TokenOrderGenerator:
         # *[a, 3]:  in node.args[]:     Starred(value=List(elts=[Name(id='a'), Num(n=3)])
         # **kwargs: in node.keywords[]: keyword(arg=None, value=Name(id='kwargs'))
         #
-        # Scan for *name or *[...]
+        # Scan args for *name or *List
         star_arg = star_list = None
         args = node.args or []
         for z in args:
@@ -2171,10 +2171,8 @@ class TokenOrderGenerator:
                 elif isinstance(z.value, ast.List):  # *[...]
                     star_list = z
                     break
-                else:
-                    g.trace('Invalid * expression', ast.dump(z))
-        #
-        # Scan for **name.
+                raise AttributeError(f"Invalid * expression: {ast.dump(z)}")
+        # Scan keywords for **name.
         kwarg_arg = None
         keywords = node.keywords or []
         for z in keywords:
@@ -2186,19 +2184,18 @@ class TokenOrderGenerator:
             g.trace(f"star_arg: {star_arg!r}, kwarg_arg: {kwarg_arg!r} star_list: {star_list!r}")
             g.trace('args', [ast.dump(z) for z in node.args])
             g.trace('kwargs', [ast.dump(z) for z in node.keywords])
-        #
-        # Add the plain arguments.
+        # Sync the plain arguments.
         for z in args:
             yield from self.arg_helper(z)
-        # Add the keyword args.
+        # Sync the keyword args.
         for z in keywords:
             yield from self.arg_helper(z.arg)
             yield from self.gen_op('=')
             yield from self.arg_helper(z.value)
-        # Add the * arg.
+        # Sync the * arg.
         if star_arg:
             yield from self.arg_helper(star_arg)
-        # Add the ** kwarg.
+        # Sync the ** kwarg.
         if kwarg_arg:
             yield from self.gen_op('**')
             yield from self.gen(kwarg_arg)
