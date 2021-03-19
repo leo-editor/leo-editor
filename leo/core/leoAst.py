@@ -3463,7 +3463,6 @@ class BaseTest(unittest.TestCase):
             # self.create_links has already given the exception.
                 # g.trace('BaseTest.make_data: Exception in create_links...')
                 # print(e)
-            assert e
             return '', None, None
         if 0:  # Sometimes useful.
             dump_tree(tokens, tree)
@@ -5132,10 +5131,12 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210318213945.1: *4* py_test_grammar.py
     #@+node:ekr.20210318213133.1: *5* test_full_grammar
     def test_full_grammar(self):
+
+        self.skipTest('Temporary test')
         
         path = r'c:\test\PyGrammar\py3_test_grammar.py'
         contents = read_file(path)
-        ### self.print_full_exception = False ###
+        self.print_full_exception = False ###
         self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):
@@ -5143,7 +5144,8 @@ class TestTOG(BaseTest):
     # self.assertEquals(f(1, x=2, *[3, 4], y=5), ((1, 3, 4), {'x':2, 'y':5}))
         contents = '''f(1, x=2, *[3, 4], y=5)'''
         self.print_full_exception = False ###
-        self.make_data(contents, dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents) #, dump=['contents']) # , 'tree'])
+        assert tree
     #@+node:ekr.20210319125937.1: *5* test_line_337
     def test_line_337(self):
         
@@ -5155,7 +5157,8 @@ class TestTOG(BaseTest):
 
         contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
         self.print_full_exception = False ###
-        self.make_data(contents, dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents) # , dump=['contents']) # , 'tree'])
+        assert tree
     #@+node:ekr.20210319130349.1: *5* test_line_875
     def test_line_875(self):
         
@@ -5163,7 +5166,8 @@ class TestTOG(BaseTest):
 
         contents = '''list((x, y) for x in 'abcd' for y in 'abcd')'''
         self.print_full_exception = False ###
-        self.make_data(contents, dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents) #, dump=['contents']) # , 'tree'])
+        assert tree
     #@+node:ekr.20210319130616.1: *5* test_line_898
     def test_line_898(self):
 
@@ -5173,7 +5177,8 @@ class TestTOG(BaseTest):
         
         contents = '''g = ((i,j) for i in range(x) if t for j in range(x))'''
         self.print_full_exception = False ###
-        self.make_data(contents, dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents) # , dump=['contents']) # , 'tree'])
+        assert tree
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
