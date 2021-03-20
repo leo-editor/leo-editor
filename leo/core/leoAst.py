@@ -159,7 +159,10 @@ v1, v2, junk1, junk2, junk3 = sys.version_info
 #
 # https://docs.python.org/3/library/token.html
 # Async tokens exist in Python 3.5+, but *not* in Python 3.7.
-use_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
+has_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
+has_generalized_unpacking = (v1, v2) >= (3, 8)
+has_position_only_params = (v1, v2) >= (3, 8)
+has_walrus_operator = (v1, v2) >= (3, 8)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -1559,7 +1562,7 @@ class TokenOrderGenerator:
                 yield from self.gen(z)
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
-        async_token_type = 'async' if use_async_tokens else 'name'
+        async_token_type = 'async' if has_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'async')
         yield from self.gen_name('def')
         yield from self.gen_name(node.name)  # A string
@@ -2053,7 +2056,7 @@ class TokenOrderGenerator:
 
         # The def line...
         # Py 3.8 changes the kind of token.
-        async_token_type = 'async' if use_async_tokens else 'name'
+        async_token_type = 'async' if has_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'async')
         yield from self.gen_name('for')
         yield from self.gen(node.target)
@@ -2072,7 +2075,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node):
 
-        async_token_type = 'async' if use_async_tokens else 'name'
+        async_token_type = 'async' if has_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'async')
         yield from self.do_With(node)
     #@+node:ekr.20191113063144.66: *6* tog.AugAssign
@@ -2091,7 +2094,7 @@ class TokenOrderGenerator:
     def do_Await(self, node):
 
         #'await %s\n'
-        async_token_type = 'await' if use_async_tokens else 'name'
+        async_token_type = 'await' if has_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'await')
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.68: *6* tog.Break
@@ -5113,8 +5116,8 @@ class TestTOG(BaseTest):
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
     #@+others
-    #@+node:ekr.20210318213945.1: *4* Recent bugs
-    #@+node:ekr.20210318213133.1: *5* test_full_grammar
+    #@+node:ekr.20210318213945.1: *4* Recent bugs & features
+    #@+node:ekr.20210318213133.1: *5* test_full_grammar (py3_test_grammar.py exists)
     def test_full_grammar(self):
         
         dir_ = os.path.dirname(__file__)
@@ -5128,12 +5131,12 @@ class TestTOG(BaseTest):
     def test_line_315(self):
         
         # self.assertEquals(f(1, x=2, *[3, 4], y=5), ((1, 3, 4), {'x':2, 'y':5}))
-        if 1: # Expected order. 
-            contents = '''f(1, *[a, 3], x=2, y=5)'''
-        elif 1:
-            contents = '''f(a, *args, **kwargs)'''
-        else:
+        if has_position_only_params:
             contents = '''f(1, x=2, *[3, 4], y=5)'''
+        elif 1: # Expected order. 
+            contents = '''f(1, *[a, 3], x=2, y=5)'''
+        else:  # Legacy.
+            contents = '''f(a, *args, **kwargs)'''
         contents, tokens, tree = self.make_data(contents) #, dump=['contents']) # , 'tree'])
         assert tree
     #@+node:ekr.20210319125937.1: *5* test_line_337
@@ -5144,21 +5147,41 @@ class TestTOG(BaseTest):
             # self.assertEquals(f.__annotations__,
                               # {'b': 1, 'c': 2, 'e': 3, 'g': 6, 'h': 7, 'j': 9,
                                # 'k': 11, 'return': 12})
-
+                               
+        if not has_position_only_params:
+            self.skipTest(f"Python {v1}.{v2} does not support position-only params")
         contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
         contents, tokens, tree = self.make_data(contents)
         assert tree
-    #@+node:ekr.20210320065202.1: *5* test_line_483 (python 3.9)
+    #@+node:ekr.20210320065202.1: *5* test_line_483
     def test_line_483(self):
         
-        self.skipTest('Python 3.9')
+        if not has_generalized_unpacking:
+            # Python 3.8: https://bugs.python.org/issue32117
+            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")
         contents = '''def g3(): return 1, *return_list'''
         contents, tokens, tree = self.make_data(contents)
         assert tree
-    #@+node:ekr.20210320065344.1: *5* test_line_494 (python 3.9)
+    #@+node:ekr.20210320065344.1: *5* test_line_494
     def test_line_494(self):
         
-        self.skipTest('Python 3.9')
+        """
+        https://docs.python.org/3/whatsnew/3.8.html#other-language-changes
+        
+        Generalized iterable unpacking in yield and return statements no longer
+        requires enclosing parentheses. This brings the yield and return syntax
+        into better agreement with normal assignment syntax: >>>
+
+        >>> def parse(family):
+                lastname, *members = family.split()
+                return lastname.upper(), *members
+        
+        >>> parse('simpsons homer marge bart lisa maggie')
+        ('SIMPSONS', 'homer', 'marge', 'bart', 'lisa', 'maggie')
+        """
+        if not has_generalized_unpacking:
+            # Python 3.8: https://bugs.python.org/issue32117
+            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")
         contents = '''def g2(): yield 1, *yield_list'''
         contents, tokens, tree = self.make_data(contents)
         assert tree
@@ -5171,13 +5194,14 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210319130616.1: *5* test_line_898
     def test_line_898(self):
 
-        # Probably the same as line 900.
-        
-        # x = 10; t = False; g = ((i,j) for i in range(x) if t for j in range(x))
-        
         contents = '''g = ((i,j) for i in range(x) if t for j in range(x))'''
-        contents, tokens, tree = self.make_data(contents) # , dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents)
         assert tree
+    #@+node:ekr.20210320085705.1: *5* test_walrus_operator (to do)
+    def test_walrus_operator(self):
+        
+        if not has_walrus_operator:
+            self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
