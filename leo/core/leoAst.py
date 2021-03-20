@@ -1483,15 +1483,8 @@ class TokenOrderGenerator:
         filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
             f"file: {filename}\n"
-            f"do_keyword should never be called")
-
-        # if node.arg:
-            # yield from self.gen_name(node.arg)
-            # yield from self.gen_op('=')
-            # yield from self.gen(node.value)
-        # else:
-            # yield from self.gen_op('**')
-            # yield from self.gen(node.value)
+            f"do_keyword should never be called\n"
+            f"{g.callers(6)}")
     #@+node:ekr.20191113063144.14: *5* tog: Contexts
     #@+node:ekr.20191113063144.28: *6*  tog.arg
     # arg = (identifier arg, expr? annotation)
@@ -1666,7 +1659,6 @@ class TokenOrderGenerator:
         # '<gen %s for %s>' % (elt, ','.join(gens))
         # No need to put parentheses or commas.
         yield from self.gen(node.elt)
-        yield from self.gen_name('for')
         yield from self.gen(node.generators)
     #@+node:ekr.20191113063144.26: *5* tog: Operands
     #@+node:ekr.20191113063144.29: *6* tog.Attribute
@@ -1692,6 +1684,7 @@ class TokenOrderGenerator:
     def do_comprehension(self, node):
 
         # No need to put parentheses.
+        yield from self.gen_name('for')  # #1858.
         yield from self.gen(node.target)  # A name
         yield from self.gen_name('in')
         yield from self.gen(node.iter)
@@ -1756,7 +1749,6 @@ class TokenOrderGenerator:
         yield from self.gen_op(':')
         yield from self.gen(node.value)
         for z in node.generators or []:
-            yield from self.gen_name('for')
             yield from self.gen(z)
             yield from self.gen_token('op', '}')
     #@+node:ekr.20191113063144.37: *6* tog.Ellipsis
@@ -1833,7 +1825,6 @@ class TokenOrderGenerator:
         yield from self.gen_op('[')
         yield from self.gen(node.elt)
         for z in node.generators:
-            yield from self.gen_name('for')
             yield from self.gen(z)
         yield from self.gen_op(']')
     #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant
@@ -1865,7 +1856,6 @@ class TokenOrderGenerator:
         yield from self.gen_op('{')
         yield from self.gen(node.elt)
         for z in node.generators or []:
-            yield from self.gen_name('for')
             yield from self.gen(z)
         yield from self.gen_op('}')
     #@+node:ekr.20191113063144.49: *6* tog.Slice
@@ -2168,7 +2158,7 @@ class TokenOrderGenerator:
                     star_arg = z
                     args.remove(z)
                     break
-                elif isinstance(z.value, ast.List):  # *[...]
+                elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
                     star_list = z
                     break
                 raise AttributeError(f"Invalid * expression: {ast.dump(z)}")
@@ -2180,7 +2170,7 @@ class TokenOrderGenerator:
                 kwarg_arg = z
                 keywords.remove(z)
                 break
-        if 1:
+        if 0:
             g.trace(f"star_arg: {star_arg!r}, kwarg_arg: {kwarg_arg!r} star_list: {star_list!r}")
             g.trace('args', [ast.dump(z) for z in node.args])
             g.trace('kwargs', [ast.dump(z) for z in node.keywords])
@@ -3407,7 +3397,7 @@ class BaseTest(unittest.TestCase):
     # Statistics.
     counts: Dict[str, int] = {}
     times: Dict[str, float] = {}
-    print_full_exception = True
+    print_full_exception = False
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
     def adjust_expected(self, s):
@@ -5124,26 +5114,24 @@ class TestTOG(BaseTest):
     """
     #@+others
     #@+node:ekr.20210318213945.1: *4* Recent bugs
-    #@+node:ekr.20210318213133.1: *5* test_full_grammar (disabled)
-    if 0:
-        def test_full_grammar(self):
+    #@+node:ekr.20210318213133.1: *5* test_full_grammar
+    def test_full_grammar(self):
 
-            # self.skipTest('Temporary test')
-            path = r'c:\test\PyGrammar\py3_test_grammar.py'
-            contents = read_file(path)
-            self.print_full_exception = False ###
-            self.make_data(contents)
+        if 0:
+            self.skipTest('Temporary test')
+        path = r'c:\test\PyGrammar\py3_test_grammar.py'
+        contents = read_file(path)
+        self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):
         
-    # self.assertEquals(f(1, x=2, *[3, 4], y=5), ((1, 3, 4), {'x':2, 'y':5}))
+        # self.assertEquals(f(1, x=2, *[3, 4], y=5), ((1, 3, 4), {'x':2, 'y':5}))
         if 1: # Expected order. 
             contents = '''f(1, *[a, 3], x=2, y=5)'''
         elif 1:
             contents = '''f(a, *args, **kwargs)'''
         else:
             contents = '''f(1, x=2, *[3, 4], y=5)'''
-        self.print_full_exception = False ###
         contents, tokens, tree = self.make_data(contents) #, dump=['contents']) # , 'tree'])
         assert tree
     #@+node:ekr.20210319125937.1: *5* test_line_337
@@ -5156,17 +5144,13 @@ class TestTOG(BaseTest):
                                # 'k': 11, 'return': 12})
 
         contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
-        self.print_full_exception = False ###
-        contents, tokens, tree = self.make_data(contents) # , dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents)
         assert tree
     #@+node:ekr.20210319130349.1: *5* test_line_875
     def test_line_875(self):
         
-    # self.assertEqual(list((x, y) for x in 'abcd' for y in 'abcd'), [(x, y) for x in 'abcd' for y in 'abcd'])
-
         contents = '''list((x, y) for x in 'abcd' for y in 'abcd')'''
-        self.print_full_exception = False ###
-        contents, tokens, tree = self.make_data(contents) #, dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents)
         assert tree
     #@+node:ekr.20210319130616.1: *5* test_line_898
     def test_line_898(self):
@@ -5176,7 +5160,6 @@ class TestTOG(BaseTest):
         # x = 10; t = False; g = ((i,j) for i in range(x) if t for j in range(x))
         
         contents = '''g = ((i,j) for i in range(x) if t for j in range(x))'''
-        self.print_full_exception = False ###
         contents, tokens, tree = self.make_data(contents) # , dump=['contents']) # , 'tree'])
         assert tree
     #@+node:ekr.20191227052446.10: *4* Contexts...
