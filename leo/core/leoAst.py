@@ -158,6 +158,7 @@ except Exception:
 v1, v2, junk1, junk2, junk3 = sys.version_info
 #
 # https://docs.python.org/3/library/token.html
+isPy38 = (v1, v2) >= (3, 8)
 # Async tokens exist in Python 3.5+, but *not* in Python 3.7.
 has_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
 has_generalized_unpacking = (v1, v2) >= (3, 8)
@@ -1483,11 +1484,13 @@ class TokenOrderGenerator:
 
     def do_keyword(self, node):  # pragma: no cover
         """A keyword arg in an ast.Call."""
+        # This should never be called.
+        # tog.hande_call_arguments calls self.gen(kwarg_arg.value) instead.
         filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
             f"file: {filename}\n"
             f"do_keyword should never be called\n"
-            f"{g.callers(6)}")
+            f"{g.callers(8)}")
     #@+node:ekr.20191113063144.14: *5* tog: Contexts
     #@+node:ekr.20191113063144.28: *6*  tog.arg
     # arg = (identifier arg, expr? annotation)
@@ -2191,7 +2194,7 @@ class TokenOrderGenerator:
         # Sync the ** kwarg.
         if kwarg_arg:
             yield from self.gen_op('**')
-            yield from self.gen(kwarg_arg)
+            yield from self.gen(kwarg_arg.value)
     #@+node:ekr.20191113063144.69: *6* tog.Continue
     def do_Continue(self, node):
 
@@ -3400,7 +3403,14 @@ class BaseTest(unittest.TestCase):
     # Statistics.
     counts: Dict[str, int] = {}
     times: Dict[str, float] = {}
-    print_full_exception = False
+    
+    # Debugging traces & behavior.
+    # create_links: 'full-traceback'
+    # make_data: 'contents', 'tokens', 'tree',
+    #            'post-tokens', 'post-tree',
+    #            'unit-test'
+    debug = [] 
+    
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
     def adjust_expected(self, s):
@@ -3413,13 +3423,11 @@ class BaseTest(unittest.TestCase):
         results = tokens_to_string(tokens)
         assert contents == results, expected_got(contents, results)
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
-    def make_data(self, contents, description=None, dump=None):
+    def make_data(self, contents, description=None):
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:  # pragma: no cover
             return '', None, None
-        if dump is None:
-            dump = []
         t1 = get_time()
         self.update_counts('characters', len(contents))
         # Ensure all tests end in exactly one newline.
@@ -3434,14 +3442,14 @@ class BaseTest(unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:  # pragma: no cover
             return '', None, None
-        if 'contents' in dump: # Sometimes useful.
+        if 'contents' in self.debug: # Sometimes useful.
             dump_contents(contents)
-        if 'ast' in dump:
+        if 'ast' in self.debug:
             print('ast.dump...')
             print(ast.dump(tree))
-        if 'tree' in dump:  # Excellent traces for tracking down mysteries.
+        if 'tree' in self.debug:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
-        if 'tokens' in dump:  # Sometimes useful.
+        if 'tokens' in self.debug:  # Sometimes useful.
             dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links
@@ -3452,16 +3460,18 @@ class BaseTest(unittest.TestCase):
                 # g.trace('BaseTest.make_data: Exception in create_links...')
                 # print(e)
             return '', None, None
-        if 0:  # Sometimes useful.
+        if 'post-tree' in self.debug:  # Sometimes useful.
             dump_tree(tokens, tree)
-        if 0:  # Sometimes useful.
+        if 'post-tokens' in self.debug:  # Sometimes useful.
             dump_tokens(tokens)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
+        if 'unit-test' in self.debug:
+            assert tree and tokens
         return contents, tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
-        """Return (contents, tokens, tree) corresponding to the contents of the given file."""
+        """Return (contents, tokens, tree) from the given file."""
         directory = os.path.dirname(__file__)
         filename = os.path.join(directory, filename)
         assert os.path.exists(filename), repr(filename)
@@ -3529,8 +3539,7 @@ class BaseTest(unittest.TestCase):
             g.trace(f"Exception...\n")
             # Don't use g.trace.  It doesn't handle newlines properly.
             print(e)
-            if self.print_full_exception:
-                g.es_exception()
+            g.es_exception()
             raise
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
     def fstringify(self, contents, tokens, tree, filename=None, silent=False):
@@ -5115,6 +5124,9 @@ class TestTOG(BaseTest):
     
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
+    
+    debug = ['unit-test']
+    
     #@+others
     #@+node:ekr.20210318213945.1: *4* Recent bugs & features
     #@+node:ekr.20210318213133.1: *5* test_full_grammar (py3_test_grammar.py exists)
@@ -5124,7 +5136,8 @@ class TestTOG(BaseTest):
         path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
         if not os.path.exists(path):
             self.skipTest(f"not found: {path}")
-        self.skipTest('Covered by separate tests')
+        if not isPy38:
+            self.skipTest('Requires Python 3.8 or above')
         contents = read_file(path)
         self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
