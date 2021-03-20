@@ -5138,7 +5138,7 @@ class TestTOG(BaseTest):
             self.skipTest('Requires Python 3.8 or above')
         contents = read_file(path)
         self.make_data(contents)
-    #@+node:ekr.20210318214057.1: *5* test_line_315
+    #@+node:ekr.20210318214057.1: *5* test_line_315 (fails)
     def test_line_315(self):  # pragma: no cover
 
         if has_position_only_params:
@@ -5149,7 +5149,7 @@ class TestTOG(BaseTest):
             contents = '''f(a, *args, **kwargs)'''
         contents, tokens, tree = self.make_data(contents)
         assert tree
-    #@+node:ekr.20210320095504.8: *5* test_line_337
+    #@+node:ekr.20210320095504.8: *5* test_line_337 (fails)
     def test_line_337(self):  # pragma: no cover
 
         if not has_position_only_params:
