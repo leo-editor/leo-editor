@@ -5116,10 +5116,12 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210318213945.1: *4* Recent bugs
     #@+node:ekr.20210318213133.1: *5* test_full_grammar
     def test_full_grammar(self):
-
-        if 0:
-            self.skipTest('Temporary test')
-        path = r'c:\test\PyGrammar\py3_test_grammar.py'
+        
+        dir_ = os.path.dirname(__file__)
+        path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
+        if not os.path.exists(path):
+            self.skipTest(f"not found: {path}")
+        self.skipTest('Covered by separate tests')
         contents = read_file(path)
         self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
@@ -5144,6 +5146,20 @@ class TestTOG(BaseTest):
                                # 'k': 11, 'return': 12})
 
         contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
+        contents, tokens, tree = self.make_data(contents)
+        assert tree
+    #@+node:ekr.20210320065202.1: *5* test_line_483 (python 3.9)
+    def test_line_483(self):
+        
+        self.skipTest('Python 3.9')
+        contents = '''def g3(): return 1, *return_list'''
+        contents, tokens, tree = self.make_data(contents)
+        assert tree
+    #@+node:ekr.20210320065344.1: *5* test_line_494 (python 3.9)
+    def test_line_494(self):
+        
+        self.skipTest('Python 3.9')
+        contents = '''def g2(): yield 1, *yield_list'''
         contents, tokens, tree = self.make_data(contents)
         assert tree
     #@+node:ekr.20210319130349.1: *5* test_line_875
