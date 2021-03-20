@@ -2167,7 +2167,7 @@ class TokenOrderGenerator:
                 elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
                     star_list = z
                     break
-                raise AttributeError(f"Invalid * expression: {ast.dump(z)}")
+                raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover 
         # Scan keywords for **name.
         kwarg_arg = None
         keywords = node.keywords or []
@@ -3423,10 +3423,10 @@ class BaseTest(unittest.TestCase):
         results = tokens_to_string(tokens)
         assert contents == results, expected_got(contents, results)
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
-    def make_data(self, contents, description=None):
+    def make_data(self, contents, description=None):  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
-        if not contents:  # pragma: no cover
+        if not contents: 
             return '', None, None
         t1 = get_time()
         self.update_counts('characters', len(contents))
@@ -3437,32 +3437,30 @@ class BaseTest(unittest.TestCase):
         self.tog.filename = description or g.callers(2).split(',')[0]
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
-        if not tokens:  # pragma: no cover
+        if not tokens:
             return '', None, None
         tree = self.make_tree(contents)
-        if not tree:  # pragma: no cover
+        if not tree:
             return '', None, None
-        if 'contents' in self.debug: # Sometimes useful.
+        if 'contents' in self.debug:
             dump_contents(contents)
         if 'ast' in self.debug:
             print('ast.dump...')
             print(ast.dump(tree))
         if 'tree' in self.debug:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
-        if 'tokens' in self.debug:  # Sometimes useful.
-            dump_tokens(tokens)
+        if 'tokens' in self.debug:
+            dump_tokens(tokens) 
         self.balance_tokens(tokens)
         # Pass 1: create the links
         try:
             self.create_links(tokens, tree)
         except Exception as e:
             # self.create_links has already given the exception.
-                # g.trace('BaseTest.make_data: Exception in create_links...')
-                # print(e)
             return '', None, None
-        if 'post-tree' in self.debug:  # Sometimes useful.
+        if 'post-tree' in self.debug:
             dump_tree(tokens, tree)
-        if 'post-tokens' in self.debug:  # Sometimes useful.
+        if 'post-tokens' in self.debug:
             dump_tokens(tokens)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
@@ -5130,8 +5128,8 @@ class TestTOG(BaseTest):
     #@+others
     #@+node:ekr.20210318213945.1: *4* Recent bugs & features
     #@+node:ekr.20210318213133.1: *5* test_full_grammar (py3_test_grammar.py exists)
-    def test_full_grammar(self):
-        
+    def test_full_grammar(self):  # pragma: no cover 
+
         dir_ = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
         if not os.path.exists(path):
@@ -5141,56 +5139,42 @@ class TestTOG(BaseTest):
         contents = read_file(path)
         self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
-    def test_line_315(self):
-        
-        # self.assertEquals(f(1, x=2, *[3, 4], y=5), ((1, 3, 4), {'x':2, 'y':5}))
+    def test_line_315(self):  # pragma: no cover
+
         if has_position_only_params:
             contents = '''f(1, x=2, *[3, 4], y=5)'''
         elif 1: # Expected order. 
             contents = '''f(1, *[a, 3], x=2, y=5)'''
         else:  # Legacy.
             contents = '''f(a, *args, **kwargs)'''
-        contents, tokens, tree = self.make_data(contents) #, dump=['contents']) # , 'tree'])
+        contents, tokens, tree = self.make_data(contents)
         assert tree
-    #@+node:ekr.20210319125937.1: *5* test_line_337
-    def test_line_337(self):
-        
-        # def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10,
-                  # **k:11) -> 12: pass
-            # self.assertEquals(f.__annotations__,
-                              # {'b': 1, 'c': 2, 'e': 3, 'g': 6, 'h': 7, 'j': 9,
-                               # 'k': 11, 'return': 12})
-                               
+    #@+node:ekr.20210320095504.8: *5* test_line_337
+    def test_line_337(self):  # pragma: no cover
+
         if not has_position_only_params:
             self.skipTest(f"Python {v1}.{v2} does not support position-only params")
         contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
         contents, tokens, tree = self.make_data(contents)
         assert tree
     #@+node:ekr.20210320065202.1: *5* test_line_483
-    def test_line_483(self):
-        
+    def test_line_483(self):  # pragma: no cover
+
         if not has_generalized_unpacking:
             # Python 3.8: https://bugs.python.org/issue32117
-            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")
+            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment") 
         contents = '''def g3(): return 1, *return_list'''
         contents, tokens, tree = self.make_data(contents)
         assert tree
     #@+node:ekr.20210320065344.1: *5* test_line_494
-    def test_line_494(self):
+    def test_line_494(self):  # pragma: no cover
         
         """
         https://docs.python.org/3/whatsnew/3.8.html#other-language-changes
         
         Generalized iterable unpacking in yield and return statements no longer
         requires enclosing parentheses. This brings the yield and return syntax
-        into better agreement with normal assignment syntax: >>>
-
-        >>> def parse(family):
-                lastname, *members = family.split()
-                return lastname.upper(), *members
-        
-        >>> parse('simpsons homer marge bart lisa maggie')
-        ('SIMPSONS', 'homer', 'marge', 'bart', 'lisa', 'maggie')
+        into better agreement with normal assignment syntax.
         """
         if not has_generalized_unpacking:
             # Python 3.8: https://bugs.python.org/issue32117
@@ -5211,8 +5195,8 @@ class TestTOG(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         assert tree
     #@+node:ekr.20210320085705.1: *5* test_walrus_operator (to do)
-    def test_walrus_operator(self):
-        
+    def test_walrus_operator(self):  # pragma: no cover
+
         if not has_walrus_operator:
             self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")
     #@+node:ekr.20191227052446.10: *4* Contexts...
