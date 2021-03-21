@@ -5244,11 +5244,13 @@ class TestTOG(BaseTest):
 
         contents = '''g = ((i,j) for i in range(x) if t for j in range(x))'''
         contents, tokens, tree = self.make_data(contents)
-    #@+node:ekr.20210320085705.1: *5* test_walrus_operator (to do)
+    #@+node:ekr.20210320085705.1: *5* test_walrus_operator
     def test_walrus_operator(self):  # pragma: no cover
 
         if py_version < (3, 8):
             self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")
+        contents = '''if (n := len(a)) > 10: pass'''
+        contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
