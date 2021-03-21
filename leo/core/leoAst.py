@@ -1682,6 +1682,14 @@ class TokenOrderGenerator:
         # No need to put parentheses or commas.
         yield from self.gen(node.elt)
         yield from self.gen(node.generators)
+    #@+node:ekr.20210321171703.1: *6* tog.NamedExpr
+    # NamedExpr(expr target, expr value)
+
+    def do_NamedExpr(self, node):
+
+        yield from self.gen(node.target)
+        yield from self.gen_op(':=')
+        yield from self.gen(node.value)
     #@+node:ekr.20191113063144.26: *5* tog: Operands
     #@+node:ekr.20191113063144.29: *6* tog.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
