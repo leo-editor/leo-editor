@@ -1539,18 +1539,18 @@ class TokenOrderGenerator:
             g.printObj([ast.dump(z) for z in posonlyargs], tag='node.posonlyargs')
             g.printObj([ast.dump(z) for z in kwonlyargs], tag='kwonlyargs')
             g.printObj([ast.dump(z) if z else 'None' for z in kw_defaults], tag='kw_defaults')
-        # 1. Sync all args.
+        # 1. Sync the position-only args.
+        if posonlyargs:
+            for n, z in enumerate(posonlyargs):
+                # g.trace('pos-only', ast.dump(z))
+                yield from self.gen(z)
+            yield from self.gen_op('/')
+        # 2. Sync all args.
         for i, z in enumerate(node.args):
             yield from self.gen(z)
             if i >= n_plain:
                 yield from self.gen_op('=')
                 yield from self.gen(node.defaults[i-n_plain])
-        # 2. Sync the position-only args.
-        if posonlyargs:
-            yield from self.gen_op('/')
-            for n, z in enumerate(posonlyargs):
-                # g.trace('pos-only', ast.dump(z))
-                yield from self.gen(z)
         # 3. Sync the vararg.
         if vararg:
             # g.trace('vararg', ast.dump(vararg))
@@ -1690,7 +1690,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20210321171703.1: *6* tog.NamedExpr
     # NamedExpr(expr target, expr value)
 
-    def do_NamedExpr(self, node):
+    def do_NamedExpr(self, node):  # Python 3.8+
 
         yield from self.gen(node.target)
         yield from self.gen_op(':=')
@@ -1795,7 +1795,7 @@ class TokenOrderGenerator:
 
     # ExtSlice(slice* dims)
 
-    def do_ExtSlice(self, node):
+    def do_ExtSlice(self, node):  # pragma: no cover (deprecated)
 
         # ','.join(node.dims)
         for i, z in enumerate(node.dims):
@@ -1803,7 +1803,7 @@ class TokenOrderGenerator:
             if i < len(node.dims) - 1:
                 yield from self.gen_op(',')
     #@+node:ekr.20191113063144.40: *6* tog.Index
-    def do_Index(self, node):
+    def do_Index(self, node):  # pragma: no cover (deprecated)
 
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.39: *6* tog.FormattedValue: not called!
@@ -2203,7 +2203,7 @@ class TokenOrderGenerator:
                         for z2 in z.value.elts:
                             yield from self.arg_helper(z2)
                         yield from self.gen_op(']')
-                    elif isinstance(z.value, ast.Tuple):  # *(...)
+                    elif isinstance(z.value, ast.Tuple):  # pragma: no cover *(...)
                         yield from self.gen_op('(')
                         for z2 in z.value.elts:
                             yield from self.arg_helper(z2)
@@ -2220,44 +2220,43 @@ class TokenOrderGenerator:
                         yield from self.arg_helper(z.value)
                 else:
                     yield from self.arg_helper(z)
-            return
-        #
-        # Legacy code: May fail for Python 3.8
-        #
-        # Scan args for *arg and *[...]
-        kwarg_arg = star_arg = star_list = None
-        for z in args:
-            if isinstance(z, ast.Starred):
-                if isinstance(z.value, ast.Name): # *Name.
-                    star_arg = z
-                    args.remove(z)
-                    break
-                elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
-                    star_list = z
-                    break
-                raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
-        # Scan keywords for **name.
-        for z in keywords:
-            if hasattr(z, 'arg') and z.arg is None:
-                kwarg_arg = z
-                keywords.remove(z)
-                break 
-        ### g.trace(f"star_arg: {star_arg!r}, kwarg_arg: {kwarg_arg!r} star_list: {star_list!r}")
-        # Sync the plain arguments.
-        for z in args:
-            yield from self.arg_helper(z)
-        # Sync the keyword args.
-        for z in keywords:
-            yield from self.arg_helper(z.arg)
-            yield from self.gen_op('=')
-            yield from self.arg_helper(z.value)
-        # Sync the * arg.
-        if star_arg:
-            yield from self.arg_helper(star_arg)
-        # Sync the ** kwarg.
-        if kwarg_arg:
-            yield from self.gen_op('**')
-            yield from self.gen(kwarg_arg.value)
+        else:  # pragma: no cover
+            #
+            # Legacy code: May fail for Python 3.8
+            #
+            # Scan args for *arg and *[...]
+            kwarg_arg = star_arg = star_list = None
+            for z in args:
+                if isinstance(z, ast.Starred):
+                    if isinstance(z.value, ast.Name): # *Name.
+                        star_arg = z
+                        args.remove(z)
+                        break
+                    elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
+                        star_list = z
+                        break
+                    raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
+            # Scan keywords for **name.
+            for z in keywords:
+                if hasattr(z, 'arg') and z.arg is None:
+                    kwarg_arg = z
+                    keywords.remove(z)
+                    break 
+            # Sync the plain arguments.
+            for z in args:
+                yield from self.arg_helper(z)
+            # Sync the keyword args.
+            for z in keywords:
+                yield from self.arg_helper(z.arg)
+                yield from self.gen_op('=')
+                yield from self.arg_helper(z.value)
+            # Sync the * arg.
+            if star_arg:
+                yield from self.arg_helper(star_arg)
+            # Sync the ** kwarg.
+            if kwarg_arg:
+                yield from self.gen_op('**')
+                yield from self.gen(kwarg_arg.value)
     #@+node:ekr.20191113063144.69: *6* tog.Continue
     def do_Continue(self, node):
 
@@ -5202,7 +5201,7 @@ class TestTOG(BaseTest):
     def test_bug_1851(self):
 
         contents = r'''\
-    def foo(a1, *, k1, k2=1, k3):
+    def foo(a1, /, p1, *, k1, k2=1, k3):
         pass
     '''
         contents, tokens, tree = self.make_data(contents)
