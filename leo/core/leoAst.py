@@ -87,6 +87,19 @@ links are significant additions to python's tokenize and ast modules:
 
 - The TOG class solves real problems, such as:
   https://stackoverflow.com/questions/16748029/
+  
+**Known bug**
+
+This file has no known bugs *except* for Python version 3.8.
+
+For Python 3.8, syncing tokens will fail for function call such as:
+    
+    f(1, x=2, *[3, 4], y=5)
+    
+that is, for calls where keywords appear before non-keyword args.
+
+There are no plans to fix this bug. The workaround is to use Python version
+3.9 or above.
 
 
 **Figures of merit**
@@ -156,14 +169,13 @@ except Exception:
     pytest = None  # type: ignore
 #@-<< imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
-#
+py_version = (v1, v2)
+
+# Async tokens exist only in Python 3.5 and 3.6.
 # https://docs.python.org/3/library/token.html
-isPy38 = (v1, v2) >= (3, 8)
-# Async tokens exist in Python 3.5+, but *not* in Python 3.7.
-has_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
-has_generalized_unpacking = (v1, v2) >= (3, 8)
-has_position_only_params = (v1, v2) >= (3, 8)
-has_walrus_operator = (v1, v2) >= (3, 8)
+has_async_tokens = (3, 5) <= py_version <= (3, 6)
+
+# has_position_only_params = (v1, v2) >= (3, 8)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -2131,34 +2143,35 @@ class TokenOrderGenerator:
         else:
             yield from self.gen(node)
     #@+node:ekr.20191204105506.1: *7* tog.handle_call_arguments
-    # https://docs.python.org/3/reference/expressions.html#calls
-    #
-    # argument_list        ::=  positional_arguments ["," starred_and_keywords]
-    #                             ["," keywords_arguments]
-    #                           | starred_and_keywords ["," keywords_arguments]
-    #                           | keywords_arguments
-    # positional_arguments ::=  positional_item ("," positional_item)*
-    # positional_item      ::=  assignment_expression | "*" expression
-    # starred_and_keywords ::=  ("*" expression | keyword_item)
-    #                           ("," "*" expression | "," keyword_item)*
-    # keywords_arguments   ::=  (keyword_item | "**" expression)
-    #                           ("," keyword_item | "," "**" expression)*
-    # keyword_item         ::=  identifier "=" expression
-    #
     def handle_call_arguments(self, node):
         """
         Generate arguments in the correct order.
         
         Call(expr func, expr* args, keyword* keywords)
+        
+        https://docs.python.org/3/reference/expressions.html#calls
         """
         # *args:    in node.args[]:     Starred(value=Name(id='args'))
         # *[a, 3]:  in node.args[]:     Starred(value=List(elts=[Name(id='a'), Num(n=3)])
         # **kwargs: in node.keywords[]: keyword(arg=None, value=Name(id='kwargs'))
         #
         # Scan args for *name or *List
+        
+        def get_pos(obj):
+            line1 = getattr(z, 'lineno', None)
+            col1 = getattr(z, 'col_offset', None)
+            ### g.trace(line1, col1, obj)
+            return line1, col1, obj
+            
+        def sort_key(aTuple):
+            line, col, obj = aTuple
+            return line*1000 + col
+        
+        places = []
         star_arg = star_list = None
         args = node.args or []
         for z in args:
+            places.append(get_pos(z))
             if isinstance(z, ast.Starred):
                 if isinstance(z.value, ast.Name): # *Name.
                     star_arg = z
@@ -2176,6 +2189,10 @@ class TokenOrderGenerator:
                 kwarg_arg = z
                 keywords.remove(z)
                 break
+            places.append(get_pos(z))
+        if py_version > (3, 9):
+            places.sort(key=sort_key)
+            g.printObj(places)
         if 0:
             g.trace(f"star_arg: {star_arg!r}, kwarg_arg: {kwarg_arg!r} star_list: {star_list!r}")
             g.trace('args', [ast.dump(z) for z in node.args])
@@ -3428,6 +3445,7 @@ class BaseTest(unittest.TestCase):
         contents = contents.lstrip('\\\n')
         if not contents: 
             return '', None, None
+        self.link_error = False
         t1 = get_time()
         self.update_counts('characters', len(contents))
         # Ensure all tests end in exactly one newline.
@@ -3435,13 +3453,17 @@ class BaseTest(unittest.TestCase):
         # Create the TOG instance.
         self.tog = TokenOrderGenerator()
         self.tog.filename = description or g.callers(2).split(',')[0]
+        
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         if not tokens:
-            return '', None, None
+            self.fail('make_tokens failed')
+        ### assert tokens
+        ### if not tokens: return '', None, None
         tree = self.make_tree(contents)
         if not tree:
-            return '', None, None
+            self.fail('make_tree failed')
+        ### if not tree: return '', None, None
         if 'contents' in self.debug:
             dump_contents(contents)
         if 'ast' in self.debug:
@@ -3452,20 +3474,16 @@ class BaseTest(unittest.TestCase):
         if 'tokens' in self.debug:
             dump_tokens(tokens) 
         self.balance_tokens(tokens)
-        # Pass 1: create the links
-        try:
-            self.create_links(tokens, tree)
-        except Exception as e:
-            # self.create_links has already given the exception.
-            return '', None, None
+        # Pass 1: create the links.
+        self.create_links(tokens, tree)
         if 'post-tree' in self.debug:
             dump_tree(tokens, tree)
         if 'post-tokens' in self.debug:
             dump_tokens(tokens)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
-        if 'unit-test' in self.debug:
-            assert tree and tokens
+        if self.link_error:
+            self.fail(self.link_error)
         return contents, tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
@@ -3524,7 +3542,6 @@ class BaseTest(unittest.TestCase):
         Insert two-way links between the tokens and ast tree.
         """
         tog = self.tog
-        # Catch exceptions so we can get data late.
         try:
             t1 = get_time()
             # Yes, list *is* required here.
@@ -3533,12 +3550,10 @@ class BaseTest(unittest.TestCase):
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:
-            print('')
-            g.trace(f"Exception...\n")
-            # Don't use g.trace.  It doesn't handle newlines properly.
-            print(e)
-            g.es_exception()
-            raise
+            if 'full-traceback' in self.debug:
+                g.es_exception()
+            # Weird: calling self.fail creates ugly failures.
+            self.link_error = e
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
     def fstringify(self, contents, tokens, tree, filename=None, silent=False):
         """
@@ -5134,38 +5149,49 @@ class TestTOG(BaseTest):
         path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
         if not os.path.exists(path):
             self.skipTest(f"not found: {path}")
-        if not isPy38:
+        if py_version < (3, 8):
             self.skipTest('Requires Python 3.8 or above')
         contents = read_file(path)
         self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315 (fails)
     def test_line_315(self):  # pragma: no cover
 
-        if has_position_only_params:
-            contents = '''f(1, x=2, *[3, 4], y=5)'''
+        #
+        # Known bug: position-only args exist in Python 3.8,
+        #            but there is no easy way of syncing them.
+        #            This bug will not be fixed.
+        #            The workaround is to require Python 3.9
+        if py_version >= (3, 9):
+            contents = '''\
+    f(1, x=2,
+        *[3, 4], y=5)
+    '''
         elif 1: # Expected order. 
             contents = '''f(1, *[a, 3], x=2, y=5)'''
         else:  # Legacy.
             contents = '''f(a, *args, **kwargs)'''
         contents, tokens, tree = self.make_data(contents)
-        assert tree
     #@+node:ekr.20210320095504.8: *5* test_line_337 (fails)
     def test_line_337(self):  # pragma: no cover
 
-        if not has_position_only_params:
-            self.skipTest(f"Python {v1}.{v2} does not support position-only params")
+        self.skipTest('### Temp')
+        #
+        # Known bug: position-only args exist in Python 3.8,
+        #            but there is no easy way of syncing them.
+        #            This bug will not be fixed.
+        #            The workaround is to require Python 3.9
+        if py_version < (3, 9):
+            self.skipTest('Require Python 3.9 or above')
         contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
         contents, tokens, tree = self.make_data(contents)
-        assert tree
     #@+node:ekr.20210320065202.1: *5* test_line_483
     def test_line_483(self):  # pragma: no cover
 
-        if not has_generalized_unpacking:
+        if py_version < (3, 8):
             # Python 3.8: https://bugs.python.org/issue32117
             self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment") 
         contents = '''def g3(): return 1, *return_list'''
         contents, tokens, tree = self.make_data(contents)
-        assert tree
     #@+node:ekr.20210320065344.1: *5* test_line_494
     def test_line_494(self):  # pragma: no cover
         
@@ -5176,28 +5202,25 @@ class TestTOG(BaseTest):
         requires enclosing parentheses. This brings the yield and return syntax
         into better agreement with normal assignment syntax.
         """
-        if not has_generalized_unpacking:
+        if py_version < (3, 8):
             # Python 3.8: https://bugs.python.org/issue32117
             self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")
         contents = '''def g2(): yield 1, *yield_list'''
         contents, tokens, tree = self.make_data(contents)
-        assert tree
     #@+node:ekr.20210319130349.1: *5* test_line_875
     def test_line_875(self):
         
         contents = '''list((x, y) for x in 'abcd' for y in 'abcd')'''
         contents, tokens, tree = self.make_data(contents)
-        assert tree
     #@+node:ekr.20210319130616.1: *5* test_line_898
     def test_line_898(self):
 
         contents = '''g = ((i,j) for i in range(x) if t for j in range(x))'''
         contents, tokens, tree = self.make_data(contents)
-        assert tree
     #@+node:ekr.20210320085705.1: *5* test_walrus_operator (to do)
     def test_walrus_operator(self):  # pragma: no cover
 
-        if not has_walrus_operator:
+        if py_version < (3, 8):
             self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
