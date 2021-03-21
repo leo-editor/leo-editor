@@ -1515,38 +1515,40 @@ class TokenOrderGenerator:
             yield from self.gen_op(':')
             yield from self.gen(node.annotation)
     #@+node:ekr.20191113063144.27: *6*  tog.arguments
-    #arguments = (
+    # arguments = (
     #       arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,
     #       expr* kw_defaults, arg? kwarg, expr* defaults
-    #   )
+    # )
 
     def do_arguments(self, node):
         """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
         #
         # No need to generate commas anywhere below.
         #
+        # Let block. Some fields may not exist pre Python 3.8.
         n_plain = len(node.args) - len(node.defaults)
-        #
-        # Add the plain arguments.
+        posonlyargs = getattr(node, 'posonlyargs', [])
+        vararg = getattr(node, 'vararg', None)
+        kwonlyargs = getattr(node, 'kwonlyargs', [])
+        kw_defaults = getattr(node, 'kw_defaults', [])
+        kwarg = getattr(node, 'kwarg', None)
+        if 0:
+            g.printObj(ast.dump(node.vararg) if node.vararg else 'None', tag='node.vararg')
+            g.printObj([ast.dump(z) for z in node.args], tag='node.args')
+            g.printObj([ast.dump(z) for z in node.defaults], tag='node.defaults')
+            g.printObj([ast.dump(z) for z in posonlyargs], tag='node.posonlyargs')
+            g.printObj([ast.dump(z) for z in kwonlyargs], tag='kwonlyargs')
+            g.printObj([ast.dump(z) if z else 'None' for z in kw_defaults], tag='kw_defaults')
+        # 1. Sync the plain args.
         i = 0
         while i < n_plain:
+            # g.trace('plain', ast.dump(node.args[i]))
             yield from self.gen(node.args[i])
             i += 1
-        #
-        # #1851: Support keyword-only args.
-        kwonlyargs = getattr(node, 'kwonlyargs', None)
-        kw_defaults = getattr(node, 'kw_defaults', None)
-        if kwonlyargs:
-            yield from self.gen_op('*')
-            for n, kwonlyarg in enumerate(kwonlyargs):
-                yield from self.gen(kwonlyarg)
-                if kw_defaults and kw_defaults[n] is not None:
-                    yield from self.gen_op('=')
-                    yield from self.gen(kw_defaults[n])
-        #
-        # Add the arguments with defaults.
+        # 2. Sync the args with defaults.
         j = 0
         while i < len(node.args) and j < len(node.defaults):
+            # g.trace('arg with default', ast.dump(node.args[i]))
             yield from(self.gen(node.args[i]))
             yield from self.gen_op('=')
             yield from self.gen(node.defaults[j])
@@ -1554,16 +1556,29 @@ class TokenOrderGenerator:
             j += 1
         assert i == len(node.args)
         assert j == len(node.defaults)
-        #
-        # Add the vararg and kwarg expressions.
-        vararg = getattr(node, 'vararg', None)
-        if vararg is not None:
+        # 3. Sync the position-only args.
+        for n, z in enumerate(posonlyargs):
+            # g.trace('pos-only', ast.dump(z))
+            yield from self.gen(z)
+        # 4. Sync the vararg.
+        if vararg:
+            # g.trace('vararg', ast.dump(vararg))
             yield from self.gen_op('*')
             yield from self.gen(vararg)
-        kwarg = getattr(node, 'kwarg', None)
-        if kwarg is not None:
+        # 5. Sync the keyword-only args.
+        for n, z in enumerate(kwonlyargs):
+            # g.trace('keyword-only', ast.dump(z))
+            yield from self.gen(z)
+            val = kw_defaults [n]
+            if val is not None:
+                yield from self.gen_op('=')
+                yield from self.gen(val)
+        # 6. Sync the kwarg.
+        if kwarg:
+            # g.trace('kwarg', ast.dump(kwarg))
             yield from self.gen_op('**')
             yield from self.gen(kwarg)
+        
     #@+node:ekr.20191113063144.15: *6* tog.AsyncFunctionDef
     # AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
@@ -2172,20 +2187,19 @@ class TokenOrderGenerator:
             return line*1000 + col
 
         if 0:
-            g.trace('args', [ast.dump(z) for z in args])
-            g.trace('kwargs', [ast.dump(z) for z in keywords])
+            g.printObj([ast.dump(z) for z in args], tag='args')
+            g.printObj([ast.dump(z) for z in keywords], tag = 'keywords')
 
-        if py_version >= (3, 8):
+        if py_version >= (3, 9):
             places = [get_pos(z) for z in args + keywords]
             places.sort(key=sort_key)
-            # g.printObj(places)
             ordered_args = [z[2] for z in places]
             for z in ordered_args:
-                g.trace('-----', ast.dump(z))
+                ### g.trace('-----', ast.dump(z))
                 if isinstance(z, ast.Starred):
                     yield from self.gen_op('*')
                     if isinstance(z.value, ast.Name): # *Name.
-                        yield from self.arg_helper(z)
+                        yield from self.arg_helper(z.value)
                     elif isinstance(z.value, ast.List):  # *[...]
                         yield from self.gen_op('[')
                         for z2 in z.value.elts:
@@ -2199,9 +2213,13 @@ class TokenOrderGenerator:
                     else:
                         raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
                 elif isinstance(z, ast.keyword):
-                    yield from self.arg_helper(z.arg)
-                    yield from self.gen_op('=')
-                    yield from self.arg_helper(z.value)
+                    if getattr(z, 'arg', None) is None:
+                        yield from self.gen_op('**')
+                        yield from self.arg_helper(z.value)
+                    else:
+                        yield from self.arg_helper(z.arg)
+                        yield from self.gen_op('=')
+                        yield from self.arg_helper(z.value)
                 else:
                     yield from self.arg_helper(z)
             return
@@ -5182,7 +5200,7 @@ class TestTOG(BaseTest):
             self.skipTest('Requires Python 3.8 or above')
         contents = read_file(path)
         self.make_data(contents)
-    #@+node:ekr.20210318214057.1: *5* test_line_315 (fails)
+    #@+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):  # pragma: no cover
 
         #
@@ -5203,15 +5221,10 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210320095504.8: *5* test_line_337 (fails)
     def test_line_337(self):  # pragma: no cover
 
-        self.skipTest('### Temp')
-        #
-        # Known bug: position-only args exist in Python 3.8,
-        #            but there is no easy way of syncing them.
-        #            This bug will not be fixed.
-        #            The workaround is to require Python 3.9
-        if py_version < (3, 9):
-            self.skipTest('Require Python 3.9 or above')
-        contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
+        if py_version >= (3, 8):  # Requires neither line_no nor col_offset fields.
+            contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
+        else:
+            contents = '''def f(a, b, d=4, *arg, **keys): pass'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320065202.1: *5* test_line_483
     def test_line_483(self):  # pragma: no cover
