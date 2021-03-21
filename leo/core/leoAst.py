@@ -1546,22 +1546,27 @@ class TokenOrderGenerator:
                 yield from self.gen_op('=')
                 yield from self.gen(node.defaults[i-n_plain])
         # 2. Sync the position-only args.
-        for n, z in enumerate(posonlyargs):
-            # g.trace('pos-only', ast.dump(z))
-            yield from self.gen(z)
+        if posonlyargs:
+            yield from self.gen_op('/')
+            for n, z in enumerate(posonlyargs):
+                # g.trace('pos-only', ast.dump(z))
+                yield from self.gen(z)
         # 3. Sync the vararg.
         if vararg:
             # g.trace('vararg', ast.dump(vararg))
             yield from self.gen_op('*')
             yield from self.gen(vararg)
         # 4. Sync the keyword-only args.
-        for n, z in enumerate(kwonlyargs):
-            # g.trace('keyword-only', ast.dump(z))
-            yield from self.gen(z)
-            val = kw_defaults [n]
-            if val is not None:
-                yield from self.gen_op('=')
-                yield from self.gen(val)
+        if kwonlyargs:
+            if not vararg:
+                yield from self.gen_op('*')
+            for n, z in enumerate(kwonlyargs):
+                # g.trace('keyword-only', ast.dump(z))
+                yield from self.gen(z)
+                val = kw_defaults [n]
+                if val is not None:
+                    yield from self.gen_op('=')
+                    yield from self.gen(val)
         # 5. Sync the kwarg.
         if kwarg:
             # g.trace('kwarg', ast.dump(kwarg))
@@ -5193,6 +5198,14 @@ class TestTOG(BaseTest):
             self.skipTest('Requires Python 3.8 or above')
         contents = read_file(path)
         self.make_data(contents)
+    #@+node:ekr.20210321172902.1: *5* test_bug_1851
+    def test_bug_1851(self):
+
+        contents = r'''\
+    def foo(a1, *, k1, k2=1, k3):
+        pass
+    '''
+        contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):  # pragma: no cover
 
