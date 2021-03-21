@@ -2150,28 +2150,67 @@ class TokenOrderGenerator:
         Call(expr func, expr* args, keyword* keywords)
         
         https://docs.python.org/3/reference/expressions.html#calls
+        
+        Warning: This code will fail on Python 3.8 only for calls
+                 containing kwargs in unexpected places.
         """
         # *args:    in node.args[]:     Starred(value=Name(id='args'))
         # *[a, 3]:  in node.args[]:     Starred(value=List(elts=[Name(id='a'), Num(n=3)])
         # **kwargs: in node.keywords[]: keyword(arg=None, value=Name(id='kwargs'))
         #
         # Scan args for *name or *List
+        args = node.args or []
+        keywords = node.keywords or []
         
         def get_pos(obj):
-            line1 = getattr(z, 'lineno', None)
-            col1 = getattr(z, 'col_offset', None)
-            ### g.trace(line1, col1, obj)
+            line1 = getattr(obj, 'lineno', None)
+            col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
             
         def sort_key(aTuple):
             line, col, obj = aTuple
             return line*1000 + col
-        
-        places = []
-        star_arg = star_list = None
-        args = node.args or []
+
+        if 0:
+            g.trace('args', [ast.dump(z) for z in args])
+            g.trace('kwargs', [ast.dump(z) for z in keywords])
+
+        if py_version >= (3, 8):
+            places = [get_pos(z) for z in args + keywords]
+            places.sort(key=sort_key)
+            # g.printObj(places)
+            ordered_args = [z[2] for z in places]
+            for z in ordered_args:
+                g.trace('-----', ast.dump(z))
+                if isinstance(z, ast.Starred):
+                    yield from self.gen_op('*')
+                    if isinstance(z.value, ast.Name): # *Name.
+                        yield from self.arg_helper(z)
+                    elif isinstance(z.value, ast.List):  # *[...]
+                        yield from self.gen_op('[')
+                        for z2 in z.value.elts:
+                            yield from self.arg_helper(z2)
+                        yield from self.gen_op(']')
+                    elif isinstance(z.value, ast.Tuple):  # *(...)
+                        yield from self.gen_op('(')
+                        for z2 in z.value.elts:
+                            yield from self.arg_helper(z2)
+                        yield from self.gen_op(')')
+                    else:
+                        raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
+                elif isinstance(z, ast.keyword):
+                    yield from self.arg_helper(z.arg)
+                    yield from self.gen_op('=')
+                    yield from self.arg_helper(z.value)
+                else:
+                    yield from self.arg_helper(z)
+            return
+        #
+        # Legacy code: May fail for Python 3.8
+        #
+        # Scan args for *arg and *[...]
+        kwarg_arg = star_arg = star_list = None
         for z in args:
-            places.append(get_pos(z))
             if isinstance(z, ast.Starred):
                 if isinstance(z.value, ast.Name): # *Name.
                     star_arg = z
@@ -2180,23 +2219,14 @@ class TokenOrderGenerator:
                 elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
                     star_list = z
                     break
-                raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover 
+                raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
         # Scan keywords for **name.
-        kwarg_arg = None
-        keywords = node.keywords or []
         for z in keywords:
             if hasattr(z, 'arg') and z.arg is None:
                 kwarg_arg = z
                 keywords.remove(z)
-                break
-            places.append(get_pos(z))
-        if py_version > (3, 9):
-            places.sort(key=sort_key)
-            g.printObj(places)
-        if 0:
-            g.trace(f"star_arg: {star_arg!r}, kwarg_arg: {kwarg_arg!r} star_list: {star_list!r}")
-            g.trace('args', [ast.dump(z) for z in node.args])
-            g.trace('kwargs', [ast.dump(z) for z in node.keywords])
+                break 
+        ### g.trace(f"star_arg: {star_arg!r}, kwarg_arg: {kwarg_arg!r} star_list: {star_list!r}")
         # Sync the plain arguments.
         for z in args:
             yield from self.arg_helper(z)
@@ -3458,12 +3488,9 @@ class BaseTest(unittest.TestCase):
         tokens = self.make_tokens(contents)
         if not tokens:
             self.fail('make_tokens failed')
-        ### assert tokens
-        ### if not tokens: return '', None, None
         tree = self.make_tree(contents)
         if not tree:
             self.fail('make_tree failed')
-        ### if not tree: return '', None, None
         if 'contents' in self.debug:
             dump_contents(contents)
         if 'ast' in self.debug:
@@ -3550,6 +3577,8 @@ class BaseTest(unittest.TestCase):
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:
+            print('\n')
+            g.trace(g.callers(), '\n')
             if 'full-traceback' in self.debug:
                 g.es_exception()
             # Weird: calling self.fail creates ugly failures.
