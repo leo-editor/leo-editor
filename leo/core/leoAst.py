@@ -1539,33 +1539,22 @@ class TokenOrderGenerator:
             g.printObj([ast.dump(z) for z in posonlyargs], tag='node.posonlyargs')
             g.printObj([ast.dump(z) for z in kwonlyargs], tag='kwonlyargs')
             g.printObj([ast.dump(z) if z else 'None' for z in kw_defaults], tag='kw_defaults')
-        # 1. Sync the plain args.
-        i = 0
-        while i < n_plain:
-            # g.trace('plain', ast.dump(node.args[i]))
-            yield from self.gen(node.args[i])
-            i += 1
-        # 2. Sync the args with defaults.
-        j = 0
-        while i < len(node.args) and j < len(node.defaults):
-            # g.trace('arg with default', ast.dump(node.args[i]))
-            yield from(self.gen(node.args[i]))
-            yield from self.gen_op('=')
-            yield from self.gen(node.defaults[j])
-            i += 1
-            j += 1
-        assert i == len(node.args)
-        assert j == len(node.defaults)
-        # 3. Sync the position-only args.
+        # 1. Sync all args.
+        for i, z in enumerate(node.args):
+            yield from self.gen(z)
+            if i >= n_plain:
+                yield from self.gen_op('=')
+                yield from self.gen(node.defaults[i-n_plain])
+        # 2. Sync the position-only args.
         for n, z in enumerate(posonlyargs):
             # g.trace('pos-only', ast.dump(z))
             yield from self.gen(z)
-        # 4. Sync the vararg.
+        # 3. Sync the vararg.
         if vararg:
             # g.trace('vararg', ast.dump(vararg))
             yield from self.gen_op('*')
             yield from self.gen(vararg)
-        # 5. Sync the keyword-only args.
+        # 4. Sync the keyword-only args.
         for n, z in enumerate(kwonlyargs):
             # g.trace('keyword-only', ast.dump(z))
             yield from self.gen(z)
@@ -1573,7 +1562,7 @@ class TokenOrderGenerator:
             if val is not None:
                 yield from self.gen_op('=')
                 yield from self.gen(val)
-        # 6. Sync the kwarg.
+        # 5. Sync the kwarg.
         if kwarg:
             # g.trace('kwarg', ast.dump(kwarg))
             yield from self.gen_op('**')
@@ -2150,9 +2139,6 @@ class TokenOrderGenerator:
         """
         Yield the node, with a special case for strings.
         """
-        if 0:
-            g.trace(AstDumper().show_fields(node.__class__.__name__, node, 40))
-
         if isinstance(node, str):
             yield from self.gen_token('name', node)
         else:
@@ -2195,7 +2181,6 @@ class TokenOrderGenerator:
             places.sort(key=sort_key)
             ordered_args = [z[2] for z in places]
             for z in ordered_args:
-                ### g.trace('-----', ast.dump(z))
                 if isinstance(z, ast.Starred):
                     yield from self.gen_op('*')
                     if isinstance(z.value, ast.Name): # *Name.
@@ -5218,7 +5203,7 @@ class TestTOG(BaseTest):
         else:  # Legacy.
             contents = '''f(a, *args, **kwargs)'''
         contents, tokens, tree = self.make_data(contents)
-    #@+node:ekr.20210320095504.8: *5* test_line_337 (fails)
+    #@+node:ekr.20210320095504.8: *5* test_line_337
     def test_line_337(self):  # pragma: no cover
 
         if py_version >= (3, 8):  # Requires neither line_no nor col_offset fields.
