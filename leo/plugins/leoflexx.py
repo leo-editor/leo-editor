@@ -2124,13 +2124,13 @@ class LeoFlexxMiniBuffer(JS_Editor):
         
     @flx.action
     def set_insert(self, i):
-        if False and 'select' in g.app.debug:
+        if False and 'select' in g.app.debug:  # pylint: disable=condition-evals-to-constant
             print('flx.mini.set_insert', i)
         # Where is call?
 
     @flx.action
     def set_selection(self, i, j):
-        if False and 'select' in g.app.debug:
+        if False and 'select' in g.app.debug:  # pylint: disable=condition-evals-to-constant
             print('flx.mini.set_selection', i, j)
         # Where is the call?
         
@@ -2559,7 +2559,7 @@ class LeoFlexxTree(flx.Widget):
         #
         # Reselect the present ap if there are no selection events.
         # This ensures that clicking a headline twice has no effect.
-        if not any([ev.new_value for ev in events]):
+        if not any(ev.new_value for ev in events):
             ev = events[0]
             self.assert_exists(ev)
             ap = ev.source.leo_ap

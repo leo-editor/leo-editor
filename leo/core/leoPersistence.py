@@ -108,9 +108,8 @@ class PersistenceDataController:
                 p2.h = '@ua:' + p.v.gnx
                 p2.b = f"unl:{self.relative_unl(p, root)}\nua:{self.pickle(p)}"
         # This is no longer necessary because of at.saveOutlineIfPossible.
-        if False and not g.app.initing and not g.unitTesting:
             # Explain why the .leo file has become dirty.
-            g.es_print(f"updated: @data:{root.h} ")
+            # g.es_print(f"updated: @data:{root.h} ")
         return at_data  # For at-file-to-at-auto command.
     #@+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
     def delete_at_data_children(self, at_data, root):

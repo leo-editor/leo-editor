@@ -111,7 +111,7 @@ def create_app():
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
     # dump_leo_modules()
     t4 = time.process_time()
-    if False and t4 - t3 > 0.1:
+    if False and t4 - t3 > 0.1:  # pylint: disable=condition-evals-to-constant
         print('create_app\n'
             f"  imports: {(t2-t1):.3f}\n"
             f"      gui: {(t3-t2):.3f}\n"

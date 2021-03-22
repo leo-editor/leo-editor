@@ -371,11 +371,11 @@ class Flake8Command:
                     break
         # If still not found, expand the search if root is a clone.
         if not found:
-            isCloned = any([p.isCloned() for p in root.self_and_parents()])
+            isCloned = any(p.isCloned() for p in root.self_and_parents())
             if isCloned:
                 for p in c.all_positions():
                     if p.isAnyAtFileNode():
-                        isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                        isAncestor = any(z.v == root.v for z in p.self_and_subtree())
                         if isAncestor and self.find(p):
                             break
         paths = list(set(self.seen))
@@ -426,7 +426,7 @@ class PyflakesCommand:
             fn = self.finalize(root)
             sfn = g.shortFileName(fn)
             # #1306: nopyflakes
-            if any([z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)]):
+            if any(z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)):
                 continue
             # Report the file name.
             s = g.readFileIntoEncodedString(fn)
