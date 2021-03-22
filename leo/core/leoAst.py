@@ -3509,8 +3509,7 @@ class BaseTest(unittest.TestCase):
         if 'contents' in self.debug:
             dump_contents(contents)
         if 'ast' in self.debug:
-            print('ast.dump...')
-            print(ast.dump(tree))
+            g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
         if 'tree' in self.debug:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
         if 'tokens' in self.debug:
