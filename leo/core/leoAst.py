@@ -3509,7 +3509,11 @@ class BaseTest(unittest.TestCase):
         if 'contents' in self.debug:
             dump_contents(contents)
         if 'ast' in self.debug:
-            g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
+            if py_version >= (3, 9):
+                # pylint: disable=unexpected-keyword-arg
+                g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
+            else:
+                g.printObj(ast.dump(tree), tag='ast.dump')
         if 'tree' in self.debug:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
         if 'tokens' in self.debug:
@@ -5184,7 +5188,7 @@ class TestTOG(BaseTest):
     debug = ['unit-test']
     
     #@+others
-    #@+node:ekr.20210318213945.1: *4* Recent bugs & features
+    #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features
     #@+node:ekr.20210318213133.1: *5* test_full_grammar (py3_test_grammar.py exists)
     def test_full_grammar(self):  # pragma: no cover 
 
@@ -5270,7 +5274,7 @@ class TestTOG(BaseTest):
             self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")
         contents = '''if (n := len(a)) > 10: pass'''
         contents, tokens, tree = self.make_data(contents)
-    #@+node:ekr.20191227052446.10: *4* Contexts...
+    #@+node:ekr.20191227052446.10: *4* TestTOG.Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
         contents = """\
@@ -5316,7 +5320,7 @@ class TestTOG(BaseTest):
         self.make_data(contents)
         # contents, tokens, tree = self.make_data(contents)
         # dump_ast(tree)
-    #@+node:ekr.20191227052446.14: *4* Expressions & operators...
+    #@+node:ekr.20191227052446.14: *4* TestTOG.Expressions & operators...
     #@+node:ekr.20191227052446.15: *5* test_attribute
     def test_attribute(self):
         contents = r"""\
@@ -5394,7 +5398,7 @@ class TestTOG(BaseTest):
     print(-(2))
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.65: *4* f-strings....
+    #@+node:ekr.20191227052446.65: *4* TestTOG.f-strings....
     #@+node:ekr.20191227052446.66: *5* test_fstring01: complex Call
     def test_fstring1(self):
         # Line 1177, leoApp.py
@@ -5539,7 +5543,7 @@ class TestTOG(BaseTest):
     fr"""{kinds}://[^\s'"]+[\w=/]"""
     '''
         self.make_data(contents)
-    #@+node:ekr.20191227052446.32: *4* If...
+    #@+node:ekr.20191227052446.32: *4* TestTOG.If...
     #@+node:ekr.20191227052446.33: *5* test_from leoTips.py
     def test_if1(self):
         # Line 93, leoTips.py
@@ -5652,7 +5656,7 @@ class TestTOG(BaseTest):
         print('2')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227145620.1: *4* Miscellaneous...
+    #@+node:ekr.20191227145620.1: *4* TestTOG.Miscellaneous...
     #@+node:ekr.20200206041753.1: *5* test_comment_in_set_links
     def test_comment_in_set_links(self):
         contents = """
@@ -5678,7 +5682,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20191227075951.1: *5* test_end_of_line
     def test_end_of_line(self):
         self.make_data("""# Only a comment.""")
-    #@+node:ekr.20191227052446.50: *4* Plain Strings...
+    #@+node:ekr.20191227052446.50: *4* TestTOG.Plain Strings...
     #@+node:ekr.20191227052446.52: *5* test_\x and \o escapes
     def test_escapes(self):
         # Line 4609, leoGlobals.py
@@ -5780,7 +5784,7 @@ class TestTOG(BaseTest):
         # Crash in leoCheck.py.
         contents = """return self.Type('error', 'no member %s' % ivar)"""
         self.make_data(contents)
-    #@+node:ekr.20191227052446.43: *4* Statements...
+    #@+node:ekr.20191227052446.43: *4* TestTOG.Statements...
     #@+node:ekr.20200112075707.1: *5* test_AnnAssign
     def test_AnnAssign(self):
         contents = """x: int = 0"""
@@ -5925,7 +5929,7 @@ class TestTOG(BaseTest):
         print('done')
     """
         self.make_data(contents)
-    #@+node:ekr.20191228193740.1: *4* test_aa && zz
+    #@+node:ekr.20191228193740.1: *4* TestTOG.test_aa && zz
     def test_aaa(self):
         """The first test."""
         g.total_time = get_time()
