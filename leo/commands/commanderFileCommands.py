@@ -374,9 +374,6 @@ def refreshFromDisk(self, event=None):
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):
     """Save a Leo outline to a file."""
-    if False and g.app.gui.guiName() == 'curses':
-        g.trace('===== Save disabled in curses gui =====')
-        return
     c = self
     p = c.p
     # Do this now: w may go away.

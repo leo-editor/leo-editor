@@ -2124,13 +2124,13 @@ class LeoFlexxMiniBuffer(JS_Editor):
         
     @flx.action
     def set_insert(self, i):
-        if False and 'select' in g.app.debug:  # pylint: disable=condition-evals-to-constant
+        if False and 'select' in g.app.debug:
             print('flx.mini.set_insert', i)
         # Where is call?
 
     @flx.action
     def set_selection(self, i, j):
-        if False and 'select' in g.app.debug:  # pylint: disable=condition-evals-to-constant
+        if False and 'select' in g.app.debug:
             print('flx.mini.set_selection', i, j)
         # Where is the call?
         

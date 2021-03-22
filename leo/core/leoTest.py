@@ -1542,7 +1542,7 @@ class TestManager:
             h = headline.strip().lower()
             if p.h.strip().lower() == h:
                 return p.copy()
-        if False and breakOnError:  # pylint: disable=condition-evals-to-constant # useful for debugging.
+        if False and breakOnError:
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print('\n'.join(aList))
         return None

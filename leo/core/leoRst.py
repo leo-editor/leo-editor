@@ -1571,11 +1571,11 @@ class RstCommands:
                 g.error(f"unknown docutils extension: {ext}")
                 return None
         # SilverCity seems not to be supported, so this warning is strange.
-        if False and ext in ('.html', '.htm') and not SilverCity:
-            if not self.silverCityWarningGiven:
-                self.silverCityWarningGiven = True
-                if not g.unitTesting:
-                    g.es('SilverCity not present so no syntax highlighting')
+            # if ext in ('.html', '.htm') and not SilverCity:
+                # if not self.silverCityWarningGiven:
+                    # self.silverCityWarningGiven = True
+                    # if not g.unitTesting:
+                        # g.es('SilverCity not present so no syntax highlighting')
         # Make the stylesheet path relative to the directory containing the output file.
         rel_stylesheet_path = self.getOption(p, 'stylesheet_path') or ''
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
