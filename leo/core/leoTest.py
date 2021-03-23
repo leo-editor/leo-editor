@@ -1484,7 +1484,7 @@ class TestManager:
                         p.moveToThreadNext()
         # Special case 0:
         # Look backward for the first @testsetup node.
-        if not any([tm.isTestSetupNode(z) for z in result]):
+        if not any(tm.isTestSetupNode(z) for z in result):
             p2 = p.threadBack()
             while p2:
                 if tm.isTestSetupNode(p2):
@@ -1542,7 +1542,7 @@ class TestManager:
             h = headline.strip().lower()
             if p.h.strip().lower() == h:
                 return p.copy()
-        if False and breakOnError:  # useful for debugging.
+        if False and breakOnError:
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print('\n'.join(aList))
         return None

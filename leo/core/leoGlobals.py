@@ -146,6 +146,7 @@ def callback(func):
             return func(*args, **keys)
         except Exception:
             g.es_exception()
+            return None
 
     return callback_wrapper
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
@@ -1737,7 +1738,7 @@ class SherlockTracer:
             self.do_call(frame, arg)
         elif event == 'return' and self.show_return:
             self.do_return(frame, arg)
-        elif True and event == 'line' and self.trace_lines:
+        elif event == 'line' and self.trace_lines:
             self.do_line(frame, arg)
         # Queue the SherlockTracer instance again.
         return self
@@ -2388,7 +2389,7 @@ def null_object_print_attr(id_, attr):
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers = ','.join(callers[:-1])
-    in_callers = any([z in callers for z in suppress_callers])
+    in_callers = any(z in callers for z in suppress_callers)
     s = f"{tag}.{attr}"
     if suppress:
         # Filter traces.
@@ -4419,7 +4420,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     if soft_idx and depth + 2 < len(unlList):
         aList = []
         for p in c.all_unique_positions():
-            if any([p.h.replace('--%3E', '-->') in unl for unl in unlList]):
+            if any(p.h.replace('--%3E', '-->') in unl for unl in unlList):
                 aList.append((p.copy(), p.get_UNL(False, False, True)))
         maxcount = 0
         singleMatch = True

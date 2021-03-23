@@ -198,7 +198,7 @@ class CS_Importer(Importer):
                 body_lines.append(s)
                 trailing_lines = []
         # Clear trailing lines if they are all blank.
-        if all([z.isspace() for z in trailing_lines]):
+        if all(z.isspace() for z in trailing_lines):
             trailing_lines = []
         self.set_lines(p, body_lines)
         return trailing_lines

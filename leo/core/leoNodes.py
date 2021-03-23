@@ -403,7 +403,7 @@ class Position:
     def following_siblings(self, copy: bool = True):
         """Yield all siblings positions that follow p, not including p."""
         p = self
-        p = p.next()
+        p = p.next()  # pylint: disable=not-callable
         while p:
             yield p.copy() if copy else p
             p.moveToNext()
@@ -907,7 +907,7 @@ class Position:
         nodes, but the pattern above handles this complication cleanly.
         """
         p = self
-        next = p.next()
+        next = p.next()  # pylint: disable=not-callable
         if next:
             # The new position will be the same as p, except for p.v.
             p = p.copy()
@@ -1823,8 +1823,8 @@ class Position:
         """Return True if p.b contains an @all directive."""
         p = self
         return (
-            p.isAnyAtFileNode() and
-            any([g.match_word(s, 0, '@all') for s in g.splitLines(p.b)]))
+            p.isAnyAtFileNode()
+            and any(g.match_word(s, 0, '@all') for s in g.splitLines(p.b)))
 
     def in_at_all_tree(self):
         """Return True if p or one of p's ancestors is an @all node."""

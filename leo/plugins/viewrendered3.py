@@ -1895,7 +1895,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 with open(o_path, 'r', encoding='utf-8') as f:
                     return f.read()
             except Exception as e:
-                g.es(f'asciidoc output file not found\n {e}')
+                message = f'asciidoc output file not found\n {e}'
+                g.es(message)
+                return message
         else:
             return 'Asciidoc processor not found - cannot render the text'
 

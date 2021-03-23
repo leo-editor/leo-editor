@@ -6,7 +6,6 @@
 #@+<< debugCommands.py imports >>
 #@+node:ekr.20181006100818.1: ** << debugCommands.py imports >>
 import os
-import subprocess
 import sys
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -50,12 +49,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
             return
         # Invoke the debugger, retaining the present environment.
         os.chdir(g.app.loadDir)
-        if False and subprocess:
-            cmdline = f"{python} {winpdb} -t {filename}"
-            subprocess.Popen(cmdline)
-        else:
-            args = [sys.executable, winpdb, '-t', filename]
-            os.spawnv(os.P_NOWAIT, python, args)
+        args = [sys.executable, winpdb, '-t', filename]
+        os.spawnv(os.P_NOWAIT, python, args)
     #@+node:ekr.20150514063305.105: *3* debug.findDebugger
     def findDebugger(self):
         """Find the debugger using settings."""

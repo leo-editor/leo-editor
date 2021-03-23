@@ -848,7 +848,7 @@ class LeoFind:
             if (
                 p.anyAtFileNodeName()
                 and not p.v.isDirty()
-                and any([p2.v.isDirty() for p2 in p.subtree()])
+                and any(p2.v.isDirty() for p2 in p.subtree())
             ):
                 p.setDirty()
         c.redraw()

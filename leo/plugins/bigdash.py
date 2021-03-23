@@ -256,10 +256,7 @@ class GlobalSearch:
                 hits.append("</div>")
                 # always show opener link because r['f'] is True when
                 # outline was open but isn't any more (GnxCache stale)
-                if False and r['f']:
-                    opener = ""
-                else:
-                    opener = ' (<a href="unl!%s">open</a>)' % r["parent"]
+                opener = ' (<a href="unl!%s">open</a>)' % r["parent"]
                 hl = r.get("highlight")
                 if hl:
                     hits.append("<pre>%s</pre>" % hl)

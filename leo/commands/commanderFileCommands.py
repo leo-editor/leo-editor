@@ -379,9 +379,6 @@ def save(self, event=None, fileName=None):
     
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
-    if False and g.app.gui.guiName() == 'curses':
-        g.trace('===== Save disabled in curses gui =====')
-        return
     c = self
     p = c.p
     # Do this now: w may go away.

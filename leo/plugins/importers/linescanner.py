@@ -778,7 +778,7 @@ class Importer:
             if back and back.v != parent.v and back.v != self.root.v and not p.isCloned():
                 lines = self.get_lines(p)
                 # Move the whitespace from p to back.
-                if all([z.isspace() for z in lines]):
+                if all(z.isspace() for z in lines):
                     self.extend_lines(back, lines)
                     # New in Leo 5.7: empty nodes may have children.
                     if p.hasChildren():
@@ -838,7 +838,7 @@ class Importer:
         '''Unindent all nodes in parent's tree.'''
         for p in parent.subtree():
             lines = self.get_lines(p)
-            if all([z.isspace() for z in lines]):
+            if all(z.isspace() for z in lines):
                 # Somewhat dubious, but i.check covers for us.
                 self.clear_lines(p)
             else:
