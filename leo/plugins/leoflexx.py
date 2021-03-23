@@ -1029,21 +1029,27 @@ class LeoBrowserApp(flx.PyComponent):
                 return pattern
             def get_change_text(self):
                 return ''
+            def get_settings(self):
+                return g.Bunch(
+                    # Find/change strings...
+                    find_text   = pattern,
+                    change_text = '',
+                    # Find options...
+                    ignore_case     = True,
+                    mark_changes    = False,
+                    mark_finds      = False,
+                    node_only       = False,
+                    pattern_match   = False,
+                    search_body     = True,
+                    search_headline = True,
+                    suboutline_only = False,
+                    whole_word      = True,
+                )
 
         # Init the search.
-        if 1:
-            fc.ftm = DummyFTM()
-        if 1:
-            fc.find_text = pattern
-            fc.change_text = ''
-            fc.find_seen = set()
-            fc.pattern_match = False
-            fc.in_headline = False
-            fc.search_body = True
-            ### fc.was_in_headline = False
-            fc.wrapping = False
+        fc.ftm = DummyFTM()
         # Do the search.
-        fc.findNext()
+        fc.find_next()
         if 1: # Testing only?
             w = self.root.main_window
             c.k.keyboardQuit()
