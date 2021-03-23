@@ -11,6 +11,7 @@ import stat
 import zlib
 from leo.core import leoGlobals as g
 #@-<< imports >>
+# pylint: disable=raise-missing-from
 # Abbreviations used throughout.
 abspath = g.os_path_abspath
 basename = g.os_path_basename
@@ -87,7 +88,7 @@ class CommanderCacher:
         db.clear()
         return True
     #@+node:ekr.20100210163813.5747: *3* cacher.save
-    def save(self, c, fn, changeName):
+    def save(self, c, fn):
         """
         Save the per-commander cache.
         
@@ -96,7 +97,7 @@ class CommanderCacher:
         save and save-as set changeName to True, save-to does not.
         """
         self.commit()
-        if fn and changeName:
+        if fn:
             # 1484: Change only the key!
             if isinstance(c.db, CommanderWrapper):
                 c.db.key = fn
@@ -162,6 +163,7 @@ class GlobalCacher:
         if 'cache' in g.app.debug:
             g.trace('clear g.app.db')
         try:
+            # pylint: disable=unexpected-keyword-arg
             self.db.clear(verbose=True)
         except TypeError:
             self.db.clear()

@@ -101,8 +101,6 @@ class Commands:
             # True: disable path changed message in at.WriteAllHelper.
         self.inCommand = False
             # Interlocks to prevent premature closing of a window.
-        self.isZipped = False
-            # Set by g.openWithFileName.
         self.outlineToNowebDefaultFileName = "noweb.nw"
             # For Outline To Noweb dialog.
         # For tangle/untangle

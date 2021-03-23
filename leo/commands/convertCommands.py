@@ -43,9 +43,9 @@ class To_Python:
         for p in self.p.self_and_subtree(copy=False):
             if p.b:
                 n_nodes += 1
-                if any([p.h.startswith(z) for z in special]):
+                if any(p.h.startswith(z) for z in special):
                     g.es_print(p.h)
-                    if any([p.h.startswith(z) for z in files]):
+                    if any(p.h.startswith(z) for z in files):
                         n_files += 1
                 bunch = u.beforeChangeNodeContents(p)
                 s = pp.indent(p, giveWarnings=False)
@@ -1251,7 +1251,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 """convert (public|private|export) aLine to aLine # (public|private|export)"""
                 scope_ids = ('public', 'private', 'export',)
                 i = 0
-                if any([self.match_word(aList, i, z) for z in scope_ids]):
+                if any(self.match_word(aList, i, z) for z in scope_ids):
                     i = self.handle_scope_keyword(aList, i)
                 while i < len(aList):
                     progress = i
@@ -1260,7 +1260,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     elif aList[i] == '\n':
                         i += 1
                         i = self.skip_ws(aList, i)
-                        if any([self.match_word(aList, i, z) for z in scope_ids]):
+                        if any(self.match_word(aList, i, z) for z in scope_ids):
                             i = self.handle_scope_keyword(aList, i)
                     else:
                         i += 1
@@ -1297,7 +1297,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 while i < len(aList):
                     if self.is_string_or_comment(aList, i):
                         i = self.skip_string_or_comment(aList, i)
-                    elif any([self.match_word(aList, i, z) for z in statements]):
+                    elif any(self.match_word(aList, i, z) for z in statements):
                         i = self.handle_keyword(aList, i)
                     # elif (
                         # self.match_word(aList,i,"if") or

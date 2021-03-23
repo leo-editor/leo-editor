@@ -249,7 +249,7 @@ class ParserBaseClass:
         try:
             # Copy the entire tree to s.
             c.fileCommands.leo_file_encoding = 'utf-8'
-            s = c.fileCommands.putLeoOutline(p)
+            s = c.fileCommands.outline_to_clipboard_string(p)
             s = g.toUnicode(s, encoding='utf-8')
         except Exception:
             g.es_exception()

@@ -2559,7 +2559,7 @@ class LeoFlexxTree(flx.Widget):
         #
         # Reselect the present ap if there are no selection events.
         # This ensures that clicking a headline twice has no effect.
-        if not any([ev.new_value for ev in events]):
+        if not any(ev.new_value for ev in events):
             ev = events[0]
             self.assert_exists(ev)
             ap = ev.source.leo_ap

@@ -2186,7 +2186,7 @@ class LoadManager:
                 assert commandName
                 result.add_to_list(commandName, bi)
         return result
-    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile (new trace)
+    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
     def openSettingsFile(self, fn):
         """
         Open a settings file with a null gui.  Return the commander.
@@ -2196,7 +2196,7 @@ class LoadManager:
         lm = self
         if not fn:
             return None
-        theFile = lm.openLeoOrZipFile(fn)
+        theFile = lm.openAnyLeoFile(fn)
         if not theFile:
             return None  # Fix #843.
         if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
@@ -3056,7 +3056,7 @@ class LoadManager:
     def loadLocalFile(self, fn, gui, old_c):
         """Completely read a file, creating the corresonding outline.
 
-        1. If fn is an existing .leo file (possibly zipped), read it twice:
+        1. If fn is an existing .leo, .db or .leojs file, read it twice:
         the first time with a NullGui to discover settings,
         the second time with the requested gui to create the outline.
 
@@ -3069,17 +3069,19 @@ class LoadManager:
         or open an empty outline.
         """
         lm = self
-        # Step 0: Return if the file is already open.
+        # Step 1: Return if the file is already open.
         fn = g.os_path_finalize(fn)
         if fn:
             c = lm.findOpenFile(fn)
             if c:
                 return c
-        # Step 1: get the previous settings.
+        #
+        # Step 2: get the previous settings.
         # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
         # Otherwise, get settings from leoSettings.leo, myLeoSettings.leo, or default settings.
         previousSettings = lm.getPreviousSettings(fn)
-        # Step 2: open the outline in the requested gui.
+        #
+        # Step 3: open the outline in the requested gui.
         # For .leo files (and zipped .leo file) this opens the file a second time.
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
         return c
@@ -3105,7 +3107,7 @@ class LoadManager:
         c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
         # Open the file, if possible.
         g.doHook('open0')
-        theFile = lm.openLeoOrZipFile(fn)
+        theFile = lm.openAnyLeoFile(fn)
         if isinstance(theFile, sqlite3.Connection):
             # this commander is associated with sqlite db
             c.sqlite_connection = theFile
@@ -3234,19 +3236,20 @@ class LoadManager:
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
-        return fn and (
-            zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
+        if not fn:
+            return False
+        return zipfile.is_zipfile(fn) or fn.endswith(('.leo', 'db', '.leojs'))
 
     def isZippedFile(self, fn):
         return fn and zipfile.is_zipfile(fn)
-    #@+node:ekr.20120224161905.10030: *6* LM.openLeoOrZipFile
-    def openLeoOrZipFile(self, fn):
+    #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile
+    def openAnyLeoFile(self, fn):
+        """Open a .leo, .leojs or .db file."""
         lm = self
         if fn.endswith('.db'):
             return sqlite3.connect(fn)
-        zipped = lm.isZippedFile(fn)
         if lm.isLeoFile(fn) and g.os_path_exists(fn):
-            if zipped:
+            if lm.isZippedFile(fn):
                 theFile = lm.openZipFile(fn)
             else:
                 theFile = lm.openLeoFile(fn)
@@ -3304,7 +3307,7 @@ class LoadManager:
         lm = self
         fn = c.mFileName
         # Re-read the file.
-        theFile = lm.openLeoOrZipFile(fn)
+        theFile = lm.openAnyLeoFile(fn)
         if theFile:
             c.fileCommands.initIvars()
             c.fileCommands.getLeoFile(theFile, fn, checkOpenFiles=False)

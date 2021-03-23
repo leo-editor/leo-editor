@@ -146,6 +146,7 @@ def callback(func):
             return func(*args, **keys)
         except Exception:
             g.es_exception()
+            return None
 
     return callback_wrapper
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
@@ -559,14 +560,15 @@ class EmergencyDialog:
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
     #@-others
-#@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
-# Note: we could use StringIo for this.
-
-
+#@+node:ekr.20040331083824.1: *3* class g.FileLikeObject (Deprecated)
 class FileLikeObject:
-    """Define a file-like object for redirecting writes to a string.
+    """
+    This class is deprecated: use io.StringIO(initial_value='', newline='\n')
 
-    The caller is responsible for handling newlines correctly."""
+    Define a file-like object for redirecting writes to a string.
+
+    The caller is responsible for handling newlines correctly.
+    """
     #@+others
     #@+node:ekr.20050404151753: *4*  ctor (g.FileLikeObject)
     def __init__(self, encoding='utf-8', fromString=None):
@@ -610,6 +612,7 @@ class FileLikeObject:
                 s = g.toUnicode(s, self.encoding)
             self.list.append(s)
     #@-others
+
 fileLikeObject = FileLikeObject
     # For compatibility.
 #@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
@@ -1735,7 +1738,7 @@ class SherlockTracer:
             self.do_call(frame, arg)
         elif event == 'return' and self.show_return:
             self.do_return(frame, arg)
-        elif True and event == 'line' and self.trace_lines:
+        elif event == 'line' and self.trace_lines:
             self.do_line(frame, arg)
         # Queue the SherlockTracer instance again.
         return self
@@ -2386,7 +2389,7 @@ def null_object_print_attr(id_, attr):
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers = ','.join(callers[:-1])
-    in_callers = any([z in callers for z in suppress_callers])
+    in_callers = any(z in callers for z in suppress_callers)
     s = f"{tag}.{attr}"
     if suppress:
         # Filter traces.
@@ -3793,7 +3796,7 @@ def createHiddenCommander(fn):
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
-    theFile = g.app.loadManager.openLeoOrZipFile(fn)
+    theFile = g.app.loadManager.openAnyLeoFile(fn)
     if theFile:
         c.fileCommands.openLeoFile(
             theFile, fn, readAtFileNodesFlag=True, silent=True)
@@ -4417,7 +4420,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     if soft_idx and depth + 2 < len(unlList):
         aList = []
         for p in c.all_unique_positions():
-            if any([p.h.replace('--%3E', '-->') in unl for unl in unlList]):
+            if any(p.h.replace('--%3E', '-->') in unl for unl in unlList):
                 aList.append((p.copy(), p.get_UNL(False, False, True)))
         maxcount = 0
         singleMatch = True

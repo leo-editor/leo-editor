@@ -6,6 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20170806094317.4: ** << imports >> (editFileCommands.py)
 import difflib
+import io
 import os
 import re
 from leo.core import leoGlobals as g
@@ -1054,7 +1055,7 @@ class GitDiffController:
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
         hidden_c.fileCommands.getLeoFile(
-            theFile=g.FileLikeObject(fromString=s),
+            theFile=io.StringIO(initial_value=s),
             fileName=path,
             readAtFileNodesFlag=False,
             silent=False,

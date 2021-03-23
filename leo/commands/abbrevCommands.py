@@ -220,7 +220,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # #926: Allow organizer nodes by searching all descendants.
                     for child in p.subtree():
                         if child.h.strip() == abbrev_name:
-                            abbrev_s = c.fileCommands.putLeoOutline(child)
+                            abbrev_s = c.fileCommands.outline_to_clipboard_string(child)
                             d[abbrev_name] = abbrev_s
                             break
                     else:

@@ -13,29 +13,22 @@ from leo.core import leoImport
 def reloadSettings(self, event=None):
     """Reload settings for the selected outline, saving it if necessary."""
     c = self
-    reloadSettingsHelper(c, all=False)
-
-@g.commander_command('reload-all-settings')
-def reloadAllSettings(self, event=None):
-    """Reload settings for all open outlines, saving them if necessary."""
-    c = self
-    reloadSettingsHelper(c, all=True)
+    reloadSettingsHelper(c)
 #@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
-def reloadSettingsHelper(c, all):
+def reloadSettingsHelper(c):
     """
     Reload settings in all commanders, or just c.
     
     A helper function for reload-settings and reload-all-settings.
     """
     lm = g.app.loadManager
-    commanders = g.app.commanders() if all else [c]
     # Save any changes so they can be seen.
-    for c2 in commanders:
+    for c2 in g.app.commanders():
         if c2.isChanged():
             c2.save()
     lm.readGlobalSettingsFiles()
         # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
-    for c in commanders:
+    for c in g.app.commanders():
         previousSettings = lm.getPreviousSettings(fn=c.mFileName)
             # Read the local file, using a null gui.
         c.initSettings(previousSettings)
@@ -380,10 +373,12 @@ def refreshFromDisk(self, event=None):
 @g.commander_command('file-save')
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):
-    """Save a Leo outline to a file."""
-    if False and g.app.gui.guiName() == 'curses':
-        g.trace('===== Save disabled in curses gui =====')
-        return
+    """
+    Save a Leo outline to a file, using the existing file name unless
+    the fileName kwarg is given.
+    
+    kwarg: a file name, for use by scripts using Leo's bridge.
+    """
     c = self
     p = c.p
     # Do this now: w may go away.
@@ -476,7 +471,13 @@ def saveAll(self, event=None):
 @g.commander_command('file-save-as')
 @g.commander_command('save-file-as')
 def saveAs(self, event=None, fileName=None):
-    """Save a Leo outline to a file with a new filename."""
+    """
+    Save a Leo outline to a file, prompting for a new filename unless the
+    fileName kwarg is given.
+    
+    kwarg: a file name, for use by file-save-as-zipped,
+    file-save-as-unzipped and scripts using Leo's bridge.
+    """
     c = self; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
@@ -534,7 +535,12 @@ def saveAs(self, event=None, fileName=None):
 @g.commander_command('file-save-to')
 @g.commander_command('save-file-to')
 def saveTo(self, event=None, fileName=None, silent=False):
-    """Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged."""
+    """
+    Save a Leo outline to a file, prompting for a new file name unless the
+    fileName kwarg is given. Leave the file name of the Leo outline unchanged.
+    
+    kwarg: a file name, for use by scripts using Leo's bridge.
+    """
     c = self; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
@@ -557,7 +563,6 @@ def saveTo(self, event=None, fileName=None, silent=False):
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
-        fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
         c.fileCommands.saveTo(fileName, silent=silent)
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)
@@ -586,34 +591,67 @@ def revert(self, event=None):
     c.bringToFront()
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
-#@+node:ekr.20070413045221: *3* c_file.saveAsUnzipped & saveAsZipped
-@g.commander_command('file-save-as-unzipped')
-@g.commander_command('save-file-as-unzipped')
-def saveAsUnzipped(self, event=None):
+#@+node:ekr.20210316075815.1: *3* c_file.save-as-leojs
+@g.commander_command('file-save-as-leojs')
+@g.commander_command('save-as-leojs')
+def save_as_leojs(self, event=None):
     """
-    Save a Leo outline to a file with a new filename,
-    ensuring that the file is not compressed.
-    """
-    c = self
-    saveAsZippedHelper(c, False)
-
-g.commander_command('file-save-as-zipped')
-
-@g.commander_command('save-file-as-zipped')
-def saveAsZipped(self, event=None):
-    """
-    Save a Leo outline to a file with a new filename,
-    ensuring that the file is compressed.
+    Save a Leo outline as a JSON (.leojs) file with a new file name.
     """
     c = self
-    saveAsZippedHelper(c, True)
-def saveAsZippedHelper(c, isZipped):
-    oldZipped = c.isZipped
-    c.isZipped = isZipped
-    try:
-        c.saveAs()
-    finally:
-        c.isZipped = oldZipped
+    fileName = g.app.gui.runSaveFileDialog(c,
+        initialfile=c.mFileName,  # .leojs will be added if necessary.
+        title="Save As JSON (.leojs)",
+        filetypes=[("Leo files", "*.leojs")],
+        defaultextension='.leojs')
+    if not fileName:
+        return
+    if not fileName.endswith('.leojs'):
+        fileName = f"{fileName}.leojs"
+    # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
+    c.saveTo(fileName=fileName)  
+    c.fileCommands.putSavedMessage(fileName)
+#@+node:ekr.20070413045221: *3* c_file.save-as-zipped
+@g.commander_command('file-save-as-zipped')
+@g.commander_command('save-as-zipped')
+def save_as_zipped(self, event=None):
+    """
+    Save a Leo outline as a zipped (.db) file with a new file name.
+    """
+    c = self
+    fn = c.mFileName
+    fileName = g.app.gui.runSaveFileDialog(c,
+        initialfile=c.mFileName,  # .db will be added if necessary.
+        title="Save As Zipped",
+        filetypes=[("Leo files", "*.db")],
+        defaultextension='.db')
+    if not fileName:
+        return
+    if not fileName.endswith('.db'):
+        fileName = f"{fileName}.db"
+    # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
+    c.saveTo(fileName=fileName)  
+    c.fileCommands.putSavedMessage(fileName)
+#@+node:ekr.20210316075357.1: *3* c_file.save-as-xml
+@g.commander_command('file-save-as-xml')
+@g.commander_command('save-as-xml')
+def save_as_xml(self, event=None):
+    """
+    Save a Leo outline as a .leo file with a new file name.
+    """
+    c = self
+    fileName = g.app.gui.runSaveFileDialog(c,
+        initialfile=c.mFileName,  # .leo will be added if necessary.
+        title="Save As XML",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=g.defaultLeoFileExtension(c))
+    if not fileName:
+        return
+    if not fileName.endswith('.leo'):
+        fileName = f"{fileName}.leo"
+    # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
+    c.saveTo(fileName=fileName)  
+    c.fileCommands.putSavedMessage(fileName)
 #@+node:ekr.20031218072017.2849: ** Export
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
 @g.commander_command('export-headlines')

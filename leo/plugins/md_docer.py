@@ -33,7 +33,7 @@
     
     Author: vitalije(at)kviziracija.net
 """
-__version__ = "0.1"
+import io
 import re
 from leo.core import leoGlobals as g
 pat = re.compile(r'^(\s*)LEOGNX:(.+)$')
@@ -161,10 +161,10 @@ def sync_transformations(event):
     for dst, args in trtargets.items():
         name, src = args
         code = trscripts.get(name, 'out.write("not found transformer code")')
-        out = g.fileLikeObject()
+        out = io.StringIO()
         try:
             exec(code, dict(v=gnxDict[src], out=out, g=g, c=c))
-            gnxDict[dst].b = out.get()
+            gnxDict[dst].b = out.getvalue()
             count += 1
         except Exception:
             g.es_exception(True, c)
