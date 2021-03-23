@@ -563,7 +563,6 @@ def saveTo(self, event=None, fileName=None, silent=False):
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
-        ### fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
         c.fileCommands.saveTo(fileName, silent=silent)
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)

@@ -1090,6 +1090,7 @@ class FileCommands:
             """Set the geometries from the globals dict."""
             # Like fast.scanGlobals.
             d = json_d.get('globals', {})
+            g.trace('d', d)
             windowSize = g.app.loadManager.options.get('windowSize')
             windowSpot = g.app.loadManager.options.get('windowSpot')
             if windowSize is None:
@@ -1326,7 +1327,7 @@ class FileCommands:
         if ok is None:
             c.endEditing()  # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
-            g.app.commander_cacher.save(c, fileName, changeName=True)
+            g.app.commander_cacher.save(c, fileName)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
                 if c.sqlite_connection:
@@ -1410,7 +1411,7 @@ class FileCommands:
                 c.sqlite_connection.close()
                 c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
-            g.app.commander_cacher.save(c, fileName, changeName=True)
+            g.app.commander_cacher.save(c, fileName)
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
@@ -1432,7 +1433,7 @@ class FileCommands:
                 c.sqlite_connection.close()
                 c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
-            g.app.commander_cacher.save(c, fileName, changeName=False)
+            g.app.commander_cacher.commit()  # Commit, but don't save file name.
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
@@ -1651,6 +1652,7 @@ class FileCommands:
             s = bytes(json_s, self.leo_file_encoding, 'replace')
             f.write(s)
             f.close()
+            g.app.commander_cacher.save(c, fileName)
             c.setFileTimeStamp(fileName)
             # Delete backup file.
             if backupName and g.os_path_exists(backupName):
