@@ -37,7 +37,7 @@ def _get_action_list():
     """
     import inspect
     import os
-    import leoserver
+    import leo.core.leoserver as leoserver
     server = leoserver.LeoServer()
     # file_name = "xyzzy.leo"
     file_name = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')

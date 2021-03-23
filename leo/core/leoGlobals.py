@@ -560,14 +560,15 @@ class EmergencyDialog:
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
     #@-others
-#@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
-# Note: we could use StringIo for this.
-
-
+#@+node:ekr.20040331083824.1: *3* class g.FileLikeObject (Deprecated)
 class FileLikeObject:
-    """Define a file-like object for redirecting writes to a string.
+    """
+    This class is deprecated: use io.StringIO(initial_value='', newline='\n')
 
-    The caller is responsible for handling newlines correctly."""
+    Define a file-like object for redirecting writes to a string.
+
+    The caller is responsible for handling newlines correctly.
+    """
     #@+others
     #@+node:ekr.20050404151753: *4*  ctor (g.FileLikeObject)
     def __init__(self, encoding='utf-8', fromString=None):
@@ -611,6 +612,7 @@ class FileLikeObject:
                 s = g.toUnicode(s, self.encoding)
             self.list.append(s)
     #@-others
+
 fileLikeObject = FileLikeObject
     # For compatibility.
 #@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
@@ -3794,7 +3796,7 @@ def createHiddenCommander(fn):
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
-    theFile = g.app.loadManager.openLeoOrZipFile(fn)
+    theFile = g.app.loadManager.openAnyLeoFile(fn)
     if theFile:
         c.fileCommands.openLeoFile(
             theFile, fn, readAtFileNodesFlag=True, silent=True)

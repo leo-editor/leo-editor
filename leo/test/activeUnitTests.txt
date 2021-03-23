@@ -589,7 +589,7 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
-#@+node:ekr.20100131180007.5417: *4* @test lm.openLeoOrZipFile
+#@+node:ekr.20100131180007.5417: *4* @test lm.openAnyLeoFile
 import zipfile
 lm = g.app.loadManager
 
@@ -603,7 +603,7 @@ theFile.writestr('leo-zip-file',s)
 theFile.close()
 
 # Open the file, and use read (with no args) to get the contents.
-theFile = lm.openLeoOrZipFile(path)
+theFile = lm.openAnyLeoFile(path)
 assert theFile
 s2 = theFile.read()
 assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
@@ -11723,15 +11723,6 @@ g.pr('\nEnd of typing tests')
 g.pr('\nEnd of leoEditCommands tests.')
 #@+node:ekr.20061001114637: *3* leoFileCommands
 # 3 failures with Alt-5
-#@+node:ekr.20071113145804.18: *4* @test fc.deleteFileWithMessage
-fc=c.fileCommands
-fc.deleteFileWithMessage('xyzzy','test')
-
-if 0: # one-time test of es statements.
-    fileName = 'fileName' ; kind = 'kind'
-    g.es("read only",color="red")
-    g.es("exception deleting %s file: %s" % (fileName,kind))
-    g.es("exception deleting backup file:" + fileName)
 #@+node:ekr.20080806072412.1: *4* @test fc.resolveArchivedPosition
 child1 = p.firstChild()
 child2 = p.firstChild().next()

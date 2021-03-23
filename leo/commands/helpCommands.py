@@ -5,6 +5,7 @@
 """Leo's help commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050337.1: ** << imports >> (helpCommands.py)
+import io
 import re
 import sys
 from leo.core import leoGlobals as g
@@ -1174,7 +1175,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             # Capture the output of Python's help command.
             old = sys.stdout
             try:
-                sys.stdout = stdout = g.FileLikeObject()
+                sys.stdout = stdout = io.StringIO()
                 help(str(s))
                 s2 = stdout.read()
             finally:

@@ -714,6 +714,7 @@ class LeoFrame:
         # New in Leo 4.5: p.moveToRoot would be wrong:
         #                 the node hasn't been linked yet.
         p._linkAsRoot()
+        return v
     #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
     #@+node:ekr.20071027150501: *4* LeoFrame.event handlers
     def OnBodyClick(self, event=None):
