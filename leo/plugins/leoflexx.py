@@ -71,6 +71,10 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
 # pylint: disable=logging-not-lazy
+
+# flexx can't handle generators, so we *must* use comprehensions instead.
+# pylint: disable=use-a-generator
+
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181121091633.1: *3* dump_event
@@ -2559,7 +2563,8 @@ class LeoFlexxTree(flx.Widget):
         #
         # Reselect the present ap if there are no selection events.
         # This ensures that clicking a headline twice has no effect.
-        if not any(ev.new_value for ev in events):
+        if not any([ev.new_value for ev in events]):
+                # Must use a comprehension above. flexx can't handle generator expressions.
             ev = events[0]
             self.assert_exists(ev)
             ap = ev.source.leo_ap
