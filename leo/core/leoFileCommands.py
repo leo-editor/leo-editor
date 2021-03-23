@@ -1088,24 +1088,47 @@ class FileCommands:
         #@+node:ekr.20210318125522.1: *6* function: scan_leojs_globals
         def scan_leojs_globals(json_d):
             """Set the geometries from the globals dict."""
-            # Like fast.scanGlobals.
-            d = json_d.get('globals', {})
-            g.trace('d', d)
+            
+            def toInt(x, default):
+                try:
+                    return int(x)
+                except Exception:
+                    return default
+           
+            # Priority 1: command-line args
             windowSize = g.app.loadManager.options.get('windowSize')
             windowSpot = g.app.loadManager.options.get('windowSpot')
-            if windowSize is None:
-                w, h = d.get('width', 600), d.get('height', 500)
-            else:
-                h, w = windowSize  # checked in LM.scanOption.
-            if windowSpot is None:
-                x, y = d.get('left', 50), d.get('top', 50)
-            else:
-                y, x = windowSpot
+            #
+            # Priority 2: The cache.
+            db_top, db_left, db_height, db_width = c.db.get('window_position', (None, None, None, None))
+            #
+            # Priority 3: The globals dict in the .leojs file.
+            #             Leo doesn't write the globals element, but leoInteg might.
+            d = json_d.get('globals', {})
+            #
+            # height & width
+            height, width = windowSize or (None, None)
+            if height is None:
+                height, width = d.get('height'),  d.get('width')
+            if height is None:
+                height, width = db_height, db_width
+            height, width = toInt(height, 500), toInt(width, 800)
+            #
+            # top, left.
+            top, left = windowSpot or (None, None)
+            if top is None:
+                top, left = d.get('top'), d.get('left')
+            if top is None:
+                top, left = db_top, db_left
+            top, left = toInt(top, 50), toInt(left, 50)
+            #
+            # r1, r2.
+            r1 = float(c.db.get('body_outline_ratio', '0.5'))
+            r2 = float(c.db.get('body_secondary_ratio', '0.5'))
             if 'size' in g.app.debug:
-                g.trace(w, h, x, y, c.shortFileName())
+                g.trace(width, height, left, top, c.shortFileName())
             # c.frame may be a NullFrame.
-            c.frame.setTopGeometry(w, h, x, y)
-            r1, r2 = d.get('r1', 0.5), d.get('r2', 0.5)
+            c.frame.setTopGeometry(width, height, left, top)
             c.frame.resizePanesToRatio(r1, r2)
             frameFactory = getattr(g.app.gui, 'frameFactory', None)
             if not frameFactory:
@@ -1680,15 +1703,19 @@ class FileCommands:
                 self.leojs_vnode(p.v) for p in c.rootPosition().self_and_siblings()
             ],
         }
-    #@+node:ekr.20210316092313.1: *6* fc.leojs_globals
+    #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
     def leojs_globals(self):
         """Put json representation of Leo's cached globals."""
         c = self.c
-        if 1:
-            # Leo no longer writes global data.
+        width, height, left, top = c.frame.get_window_info()
+        if 1:  # Write to the cache, not the file.
             d = {}
+            c.db['body_outline_ratio'] = str(c.frame.ratio)
+            c.db['body_secondary_ratio'] = str(c.frame.secondary_ratio)
+            c.db['window_position'] = str(top), str(left), str(height), str(width)
+            if 'size' in g.app.debug:
+                g.trace('set window_position:', c.db['window_position'], c.shortFileName())
         else:
-            width, height, left, top = c.frame.get_window_info()
             d = {
                 'body_outline_ratio': c.frame.ratio,
                 'body_secondary_ratio': c.frame.secondary_ratio,

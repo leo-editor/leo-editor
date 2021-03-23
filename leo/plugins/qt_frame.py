@@ -2984,9 +2984,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20190611053431.9: *4* qtFrame.setTopGeometry
     def setTopGeometry(self, w, h, x, y):
         # self.top is a DynamicWindow.
-        if 'size' in g.app.debug:
-            g.trace(bool(self.top), w, h, x, y)
         if self.top:
+            if 'size' in g.app.debug:
+                g.trace(w, h, x, y, self.c.shortFileName(), g.callers())
             self.top.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20190611053431.10: *4* qtFrame.update
     def update(self, *args, **keys):
