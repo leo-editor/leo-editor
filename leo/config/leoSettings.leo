@@ -681,7 +681,6 @@
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
-<v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
@@ -1001,8 +1000,9 @@
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
-<v t="ekr.20131213135427.21836"><vh>@item save-file-as-unzipped</vh></v>
-<v t="ekr.20131213135427.21837"><vh>@item save-file-as-zipped</vh></v>
+<v t="ekr.20131213135427.21837"><vh>@item save-file-as-leojs</vh></v>
+<v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
+<v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
@@ -1282,7 +1282,6 @@
 <v t="ekr.20131213135427.21929"><vh>@item &amp;toggle-find-mark-finds-option</vh></v>
 <v t="ekr.20131213135427.21930"><vh>@item &amp;toggle-find-regex-option</vh></v>
 <v t="ekr.20131213135427.21931"><vh>@item &amp;toggle-find-word-option</vh></v>
-<v t="ekr.20131213135427.21932"><vh>@item &amp;toggle-find-wrap-around-option</vh></v>
 </v>
 <v t="ekr.20180403115410.1"><vh>@menu &amp;Find One Character</vh>
 <v t="ekr.20131213135427.21938"><vh>@item &amp;find-character</vh></v>
@@ -1313,7 +1312,6 @@
 <v t="ekr.20131213135427.22204"><vh>@item show-&amp;fonts</vh></v>
 </v>
 <v t="ekr.20180403122225.1"><vh>@menu &amp;Reload Settings</vh>
-<v t="ekr.20171229135829.1"><vh>@item reload-all-settings</vh></v>
 <v t="ekr.20171229135843.1"><vh>@item reload-settings</vh></v>
 <v t="tbrown.20140814090009.57476"><vh>@item reload-style-sheets</vh></v>
 </v>
@@ -1451,8 +1449,6 @@
 <v t="ekr.20131213135427.22131"><vh>@menu &amp;Control Garbage Collection</vh>
 <v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
 <v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
-<v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
-<v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
 <v t="ekr.20131213135427.22136"><vh>@item gc-show-&amp;summary</vh></v>
 </v>
 <v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Shell Commands</vh>
@@ -2302,6 +2298,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3294,7 +3291,6 @@ replace-string
 search-again
 search-backward
 search-forward
-set-replace-string
 
 Setting find options:
 
@@ -3310,7 +3306,6 @@ toggle-find-mark-changes-option
 toggle-find-mark-finds-option
 toggle-find-regex-option
 toggle-find-word-option
-toggle-find-wrap-around-option
 word-search-backward
 word-search-forward</t>
 <t tx="ekr.20060323131801">True: warn if a command has no setting.</t>
@@ -3358,7 +3353,6 @@ find-character-extend-selection             = None ### = Alt-Shift-P
 
 # To start finds and changes...
 start-search                        = Ctrl-f
-set-replace-string                  = None # Ctrl-Shift-r
 find-tab-hide                       = None
 find-tab-open                       = None
 
@@ -3369,7 +3363,6 @@ isearch-forward                     = Alt-I # Alt-S conflicts with &amp;Search a
 isearch-forward-regexp              = None
 search-backward                     = None
 search-forward                      = None
-search-return-to-origin             = None
 word-search-backward                = None 
 word-search-forward                 = None
 
@@ -3390,10 +3383,7 @@ toggle-find-in-headline-option      = Alt-Ctrl-h
 toggle-find-mark-changes-option     = Alt-Ctrl-c
 toggle-find-mark-finds-option       = Alt-Ctrl-f
 toggle-find-regex-option            = Alt-Ctrl-x
-toggle-find-word-option             = Alt-Ctrl-w
-toggle-find-wrap-around-option      = Alt-Ctrl-a
-
-search-return-to-origin             = Alt+F3</t>
+toggle-find-word-option             = Alt-Ctrl-w</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
 # negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
@@ -5532,7 +5522,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21929"></t>
 <t tx="ekr.20131213135427.21930"></t>
 <t tx="ekr.20131213135427.21931"></t>
-<t tx="ekr.20131213135427.21932"></t>
 <t tx="ekr.20131213135427.21933"></t>
 <t tx="ekr.20131213135427.21934"></t>
 <t tx="ekr.20131213135427.21935"></t>
@@ -5698,8 +5687,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22131"></t>
 <t tx="ekr.20131213135427.22132"></t>
 <t tx="ekr.20131213135427.22133"></t>
-<t tx="ekr.20131213135427.22134"></t>
-<t tx="ekr.20131213135427.22135"></t>
 <t tx="ekr.20131213135427.22136"></t>
 <t tx="ekr.20131213135427.22139"></t>
 <t tx="ekr.20131213135427.22140"></t>
@@ -6145,7 +6132,6 @@ toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
 toggle-find-word-option             = None
-toggle-find-wrap-around-option      = None
 toggle-split-direction          = None
 transpose-chars                 = Ctrl-t
 transpose-lines                 = None
@@ -6392,17 +6378,9 @@ forward-sentence-extend-selection   = None
 forward-word                        = None
 forward-word-extend-selection       = None
 full-command                        = None
-# fully-expand-body-pane              = None
-# fully-expand-log-pane               = None
-# fully-expand-outline-pane           = None
-# fully-expand-pane                   = None
 gc-collect-garbage                  = None
 gc-dump-all-objects                 = None
-gc-dump-new-objects                 = None
-gc-dump-objects-verbose             = None
 gc-show-summary                     = None
-# gc-trace-disable                  = None
-# gc-trace-enable                   = None
 get-ipython-results                 = None
 go-back                             = None
 go-forward                          = None
@@ -6579,7 +6557,6 @@ scroll-up-line                      = None
 scroll-up-page                      = None
 search-backward                     = None
 search-forward                      = None
-search-return-to-origin             = None
 select-all                          = None
 set-colors                          = None
 set-comment-column                  = None
@@ -6594,7 +6571,6 @@ set-command-state                   = None
 set-insert-state                    = None
 # set-mark-command                  = None
 set-overwrite-state                 = None
-set-replace-string                  = None
 settings                            = None
 shell-command                       = None
 shell-command-on-region             = None
@@ -6641,7 +6617,6 @@ toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
 toggle-find-word-option             = None
-toggle-find-wrap-around-option      = None
 toggle-split-direction              = None
 transpose-chars                     = None
 transpose-lines                     = None
@@ -9659,8 +9634,6 @@ To enable:
 <t tx="ekr.20150626060719.1"></t>
 <t tx="ekr.20150626060837.1"></t>
 <t tx="ekr.20150626061905.1"></t>
-<t tx="ekr.20150629172742.1">True: Match each cloned node only once.
-False: Match each cloned node for every cloned instance.</t>
 <t tx="ekr.20150701052157.1"></t>
 <t tx="ekr.20150701052212.2"></t>
 <t tx="ekr.20150701052212.3"></t>
@@ -10198,7 +10171,6 @@ find-character-extend-selection             = None
 
 # To start finds and changes...
 # start-search                        = Ctrl-f
-set-replace-string                  = Ctrl-Alt-e
 #find-tab-hide                       = None
 #find-tab-open                       = None
 
@@ -10232,7 +10204,6 @@ toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
 toggle-find-word-option             = None
-toggle-find-wrap-around-option      = None
 
 ###
 
@@ -10913,7 +10884,6 @@ arg:    C:\apps\SciTE\scite.exe
 kind:   subprocess.Popen
 arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"
 </t>
-<t tx="ekr.20171229135829.1"></t>
 <t tx="ekr.20171229135843.1"></t>
 <t tx="ekr.20180117074230.1"># True: Show user tips on startup.</t>
 <t tx="ekr.20180124050114.1">For each @button node, Leo adds right-click menu items for:
@@ -11586,6 +11556,7 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
+<t tx="ekr.20210324162150.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
