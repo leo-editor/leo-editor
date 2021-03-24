@@ -1806,7 +1806,6 @@ class LeoServer:
             'reformat-body',
             'reformat-paragraph',
             'refresh-from-disk',
-            'reload-all-settings',
             'reload-settings',
             'reload-style-sheets',
             'revert',
