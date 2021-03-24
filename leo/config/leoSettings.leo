@@ -1002,6 +1002,7 @@
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-leojs</vh></v>
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
+<v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
@@ -2297,6 +2298,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11554,6 +11556,7 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
+<t tx="ekr.20210324162150.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
