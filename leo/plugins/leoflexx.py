@@ -71,6 +71,10 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
 # pylint: disable=logging-not-lazy
+
+# flexx can't handle generators, so we *must* use comprehensions instead.
+# pylint: disable=use-a-generator
+
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181121091633.1: *3* dump_event
@@ -1025,21 +1029,27 @@ class LeoBrowserApp(flx.PyComponent):
                 return pattern
             def get_change_text(self):
                 return ''
+            def get_settings(self):
+                return g.Bunch(
+                    # Find/change strings...
+                    find_text   = pattern,
+                    change_text = '',
+                    # Find options...
+                    ignore_case     = True,
+                    mark_changes    = False,
+                    mark_finds      = False,
+                    node_only       = False,
+                    pattern_match   = False,
+                    search_body     = True,
+                    search_headline = True,
+                    suboutline_only = False,
+                    whole_word      = True,
+                )
 
         # Init the search.
-        if 1:
-            fc.ftm = DummyFTM()
-        if 1:
-            fc.find_text = pattern
-            fc.change_text = ''
-            fc.find_seen = set()
-            fc.pattern_match = False
-            fc.in_headline = False
-            fc.search_body = True
-            ### fc.was_in_headline = False
-            fc.wrapping = False
+        fc.ftm = DummyFTM()
         # Do the search.
-        fc.findNext()
+        fc.find_next()
         if 1: # Testing only?
             w = self.root.main_window
             c.k.keyboardQuit()
@@ -2559,7 +2569,8 @@ class LeoFlexxTree(flx.Widget):
         #
         # Reselect the present ap if there are no selection events.
         # This ensures that clicking a headline twice has no effect.
-        if not any(ev.new_value for ev in events):
+        if not any([ev.new_value for ev in events]):
+                # Must use a comprehension above. flexx can't handle generator expressions.
             ev = events[0]
             self.assert_exists(ev)
             ap = ev.source.leo_ap
