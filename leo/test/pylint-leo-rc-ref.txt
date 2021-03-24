@@ -47,11 +47,13 @@ disable=
         assignment-from-none, # Causes problems when base class return None.
         attribute-defined-outside-init,
         broad-except, # except Exception is justified if followed by g.es_exception.
+        condition-evals-to-constant,
         consider-using-in,
         consider-using-dict-comprehension,
         consider-using-set-comprehension,
         consider-using-ternary,
         exec-used,
+        f-string-without-interpolation,  # Useful for concatenated f-strings.
         global-statement, #  Assume we know what we are doing.
         global-variable-not-assigned, # not helpful.
         import-outside-toplevel, # Requires substantial code changes.
