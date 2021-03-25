@@ -517,7 +517,8 @@ class JsLexer(Lexer):
     #@+others
     #@+node:ekr.20200131110322.11: *4* JsLexer.__init__
     def __init__(self):
-        super(JsLexer, self).__init__(self.states, 'reg')
+        ### super(JsLexer, self).__init__(self.states, 'reg')
+        super().__init__(self.states, 'reg')
 
 
     #@-others
