@@ -17,6 +17,7 @@ from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
+# pylint: disable=no-member,not-callable
 #@@language python
 #@@tabwidth -4
 #@+others

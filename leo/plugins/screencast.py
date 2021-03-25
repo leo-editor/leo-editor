@@ -221,6 +221,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< imports >>
+# pylint: disable=not-callable
 #@+at
 # To do:
 # - Document this plugin in the docstring and with a screencast.

@@ -72,7 +72,7 @@ if QtWidgets:
     class MyInterpreter(QtWidgets.QWidget):
     
         def __init__(self, parent, c):
-            super(MyInterpreter, self).__init__(parent)
+            super().__init__(parent)
             hBox = QtWidgets.QHBoxLayout()
             self.setLayout(hBox)
             self.textEdit = PyInterp(self, c)
@@ -290,7 +290,7 @@ if QtWidgets:
                     self.doEnter(event)
                     return
                 # allow all other key events
-                super(PyInterp, self).keyPressEvent(event)
+                super().keyPressEvent(event)
             except Exception:
                 g.es_exception()
 

@@ -483,7 +483,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     def __init__(self, *args, **kwargs):
 
         self.leo_c = None  # Injected later.
-        super(LeoTreeLine, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Done in TreeLine.init:
             # self._tree_real_value   = None
                 # A weakproxy to LeoTreeData.
@@ -773,9 +773,7 @@ def es(*args, **keys):
 def has_logger():
 
     logger = logging.getLogger()
-    return any([
-        isinstance(z, logging.handlers.SocketHandler) for z in logger.handlers or []
-    ])
+    return any(isinstance(z, logging.handlers.SocketHandler) for z in logger.handlers or [])
 #@+node:ekr.20170501043411.1: *4* curses2: pr
 def pr(*args, **keys):
     """Monkey-patch for g.pr."""
@@ -2344,7 +2342,7 @@ class CoreFrame (leoFrame.LeoFrame):
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
         if trace: g.trace('wname', wname, 'len(s)', len(s))
-        single_line = any([wname.startswith(z) for z in ('head', 'minibuffer')])
+        single_line = any(wname.startswith(z) for z in ('head', 'minibuffer'))
         if single_line:
             # Strip trailing newlines so the truncation doesn't cause confusion.
             while s and s[-1] in ('\n', '\r'):
@@ -2732,7 +2730,7 @@ class LeoBody (npyscreen.MultiLineEditable):
     _contained_widgets = LeoBodyTextfield
 
     def __init__ (self, *args, **kwargs):
-        super(LeoBody, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.leo_box = None
         self.leo_c = None
         self.leo_wrapper = None
@@ -2960,7 +2958,7 @@ class LeoLog (npyscreen.MultiLineEditable):
     _contained_widgets = LeoLogTextfield
 
     def __init__ (self, *args, **kwargs):
-        super(LeoLog, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.set_handlers()
         self.leo_box = None
         self.leo_c = None
@@ -3109,18 +3107,18 @@ class LeoForm (npyscreen.Form):
     how_exited = None
 
     def display(self, *args, **kwargs):
-        changed = any([z.c.isChanged() for z in g.app.windowList])
+        changed = any(z.c.isChanged() for z in g.app.windowList)
         c = g.app.log.c
         self.name = 'Welcome to Leo: %s%s' % (
             '(changed) ' if changed else '',
             c.fileName() if c else '')
-        super(LeoForm, self).display(*args, **kwargs)
+        super().display(*args, **kwargs)
 #@+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
 class LeoMiniBuffer(npyscreen.Textfield):
     '''An npyscreen class representing Leo's minibuffer, with binding.'''
 
     def __init__(self, *args, **kwargs):
-        super(LeoMiniBuffer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.leo_c = None # Set later
         self.leo_wrapper = None # Set later.
         self.leo_completion_index = 0
@@ -3274,7 +3272,7 @@ class LeoStatusLine(npyscreen.Textfield):
     '''An npyscreen class representing Leo's status line'''
 
     def __init__(self, *args, **kwargs):
-        super(LeoStatusLine, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # These are injected later.
         self.leo_c = None
         self.leo_wrapper = None
@@ -3732,7 +3730,7 @@ class LeoMLTree(npyscreen.MLTree):
         self.handlers = d
     #@+node:ekr.20170516100256.1: *5* LeoMLTree.set_up_handlers
     def set_up_handlers(self):
-        super(LeoMLTree, self).set_up_handlers()
+        super().set_up_handlers()
         assert not hasattr(self, 'hidden_root_node'), repr(self)
         self.leo_c = None # Set later.
         self.currentItem = None
@@ -3952,7 +3950,7 @@ class LeoValues(npyscreen.TreeData):
     #@+node:ekr.20170619070717.1: *4* values.__init__
     def __init__(self, c, tree):
         '''Ctor for LeoValues class.'''
-        super(LeoValues, self).__init__()
+        super().__init__()
             # Init the base class.
         self.c = c
             # The commander of this outline.
