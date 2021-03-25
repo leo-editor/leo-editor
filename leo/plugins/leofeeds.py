@@ -19,11 +19,12 @@ Do alt-x act-on-node on that node to populate the subtree from the feed data. Re
 #@+<< imports >>
 #@+node:ville.20110206142055.10643: ** << imports >>
 import html.parser as HTMLParser
+# Third-party imports
+import feedparser
+# Leo imports.
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
-# Third-party imports
-import feedparser
 #@-<< imports >>
 
 #@+others

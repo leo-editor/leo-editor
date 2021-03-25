@@ -23,6 +23,7 @@ import websockets
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
 #@-<< imports >>
+# pylint: disable=raise-missing-from
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 # For unit tests.
 g_leoserver = None

@@ -46,7 +46,7 @@ def to_html(text, from_='markdown'):
 
 try:
     to_html("test")
-except:
+except:  # pylint: disable=raise-missing-from
     raise ImportError
 #@+node:tbrown.20171028115505.3: ** class LEP_PanDownView
 class LEP_PanDownView(HtmlView):
@@ -59,7 +59,7 @@ class LEP_PanDownView(HtmlView):
     #@+node:tbrown.20171028115505.4: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_PanDownView, self).__init__(c=c, lep=lep, *args, **kwargs)
+        super().__init__(c=c, lep=lep, *args, **kwargs)
         self.c = c
         self.lep = lep
     #@+node:tbrown.20171028115505.5: *3* new_text
@@ -94,7 +94,7 @@ class LEP_PanDownHtmlView(TextView):
     #@+node:tbrown.20171028115505.8: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_PanDownHtmlView, self).__init__(c=c, lep=lep, *args, **kwargs)
+        super().__init__(c=c, lep=lep, *args, **kwargs)
         self.c = c
         self.lep = lep
     #@+node:tbrown.20171028115505.9: *3* new_text

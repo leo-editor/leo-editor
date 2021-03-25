@@ -53,7 +53,7 @@ Davide Salomoni
 
 # EKR: This plugin does not appear to be ready for Python 3.
 
-# pylint: disable=not-callable
+# pylint: disable=not-callable,raise-missing-from
 
 #@+<< imports >>
 #@+node:ekr.20050311091110.1: ** << imports >>

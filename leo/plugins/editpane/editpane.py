@@ -89,7 +89,7 @@ class LeoEditPane(QtWidgets.QWidget):
         :param dict **kwargs: pass through
         """
         DBG("__init__ LEP")
-        super(LeoEditPane, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.setAttribute(QtConst.WA_DeleteOnClose)
 
         lep_type = lep_type or ['EDITOR', 'TEXT']

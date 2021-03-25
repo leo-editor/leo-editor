@@ -20,7 +20,7 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
     #@+node:tbrown.20171028115459.3: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_WebEngineView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
     #@+node:tbrown.20171028115459.4: *3* new_text
