@@ -1786,8 +1786,9 @@ class LinkAnchorParserClass(HTMLParser.HTMLParser):
     #@+node:ekr.20120219194520.10446: *4* __init__
     def __init__(self, rst, p):
         """Ctor for the LinkAnchorParserClass class."""
-        super().__init__(p)
+        super().__init__()
         self.rst = rst
+        self.p = p.copy()
         # Set ivars from options.
         # This works only if we don't change nodes!
         self.node_begin_marker = rst.getOption(p, 'node_begin_marker')
@@ -1973,8 +1974,7 @@ class LinkHtmlparserClass(LinkAnchorParserClass):
     #@+node:ekr.20120219194520.10460: *4* __init__
     def __init__(self, rst, p):
         """Ctor for the LinkHtmlParserClass class."""
-        super().__init__(rst)
-        self.p = p.copy()
+        super().__init__(rst, p)
         self.anchor_map = rst.anchor_map
         self.replacements = []
     #@+node:ekr.20120219194520.10461: *4* handle_starttag
