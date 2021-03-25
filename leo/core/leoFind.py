@@ -422,7 +422,7 @@ class LeoFind:
         while True:
             p, pos, newpos = self.find_next_match(p)
             found = pos is not None
-            if not found or not g.inAtNosearch(c.p):
+            if not found or not g.inAtNosearch(p):  # 2021/03/25: do *not* use c.p.
                 break
         if not found and def_flag and not strict:
             # Leo 5.7.3: Look for an alternative defintion of function/methods.

@@ -471,7 +471,7 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+others
     #@+node:ekr.20140226075611.16793: *3* vr2.ctor (WebViewPlus) & helpers
     def __init__(self, pc):
-        super(WebViewPlus, self).__init__()
+        super().__init__()
         self.app = QtCore.QCoreApplication.instance()
         self.c = c = pc.c
         self.docutils_settings = None # Set below.

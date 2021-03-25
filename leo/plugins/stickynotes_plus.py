@@ -180,8 +180,7 @@ class notetextedit(QTextEdit):
     #@+others
     #@+node:ekr.20100103100944.5397: *3* __init__
     def __init__(self, get_markdown, save, parent=None):
-        super(notetextedit, self).__init__(parent)
-
+        super().__init__(parent)
         self.save = save
         self.setLineWrapMode(QTextEdit.WidgetWidth)
         self.setTabChangesFocus(True)

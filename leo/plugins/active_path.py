@@ -266,25 +266,6 @@ def getPath(c, p):
         else:
             path = os.path.join(path, p.h.strip())
     return path
-#@+node:tbrown.20090219133655.230: ** getPathOld
-def getPathOld(p):
-    # NOT USED, my version which does its own @path scanning
-    p = p.copy()
-    path = []
-    while p:
-        h = p.h
-        if g.match_word(h,0,"@path"):  # top of the tree
-            path.insert(0,os.path.expanduser(h[6:].strip()))
-            d = os.path.join(*path)
-            return d
-        if h.startswith('@'):  # some other directive, run away
-            break
-        elif isDirNode(p):  # a directory
-            path.insert(0,h.strip('/*'))
-        elif not p.hasChildren():  # a leaf node, assume a file
-            path.insert(0,h.strip('*'))
-        p = p.parent()
-    return None
 #@+node:tbrown.20080613095157.5: ** flattenOrganizers
 def flattenOrganizers(p):
     """Children of p, some of which may be in organizer nodes

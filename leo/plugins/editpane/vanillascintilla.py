@@ -32,7 +32,7 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
     #@+node:tbrown.20171028115501.4: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_VanillaScintilla, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)

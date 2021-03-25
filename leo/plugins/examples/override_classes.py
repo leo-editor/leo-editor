@@ -19,9 +19,9 @@ def init():
 
             class myLeoFrame(leoFrame.LeoFrame):
 
-                def __init__(self, title=None):
+                def __init__(self, c, title=None):
                     g.pr("myLeoFrame ctor", title)
-                    super().__init__(title)
+                    super().__init__(c, gui=None)
 
             leoFrame.LeoFrame = myLeoFrame
         if 0:

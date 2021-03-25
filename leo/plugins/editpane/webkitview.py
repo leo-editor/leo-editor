@@ -57,7 +57,7 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
     #@+node:tbrown.20171028115457.4: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_WebKitView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
 
