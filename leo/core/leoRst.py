@@ -672,7 +672,22 @@ class RstCommands:
     #@+node:ekr.20210325092821.1: *6* rst.insertBody
     def insertBody(self, p):
         """
-        Handle @rst-include-body.
+        Handle @rst-insert-body.
+        
+        Insert p2.b into the output, where p2 has the given gnx.
+        """
+        c = self.c
+        lines = g.splitLines(p.b.strip())
+        gnx = lines and lines[0].strip()
+        p2 = self.findGnx(c, gnx)
+        if p2:
+            self.write(f"\n\n{p2.b.strip()}\n\n")
+        else:
+            g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+    #@+node:ekr.20210325141809.1: *6* rst.insertPreformattedBody
+    def insertPreformattedBody(self, p):
+        """
+        Handle @rst-insert-preformatted-body.
         
         Insert p2.b into the output, where p2 has the given gnx.
         """
@@ -690,7 +705,7 @@ class RstCommands:
     #@+node:ekr.20210325125709.1: *6* rst.insertHead
     def insertHead(self, p):
         """
-        Handle @rst-include-head.
+        Handle @rst-insert-head.
         
         Insert p2.h into the output, where p2 has the given gnx.
         """
@@ -705,7 +720,7 @@ class RstCommands:
     #@+node:ekr.20210325092836.1: *6* rst.insertTree
     def insertTree(self, p):
         """
-        Handle @rst-include-tree.
+        Handle @rst-insert-tree.
         
         Insert a representation of the tree of headlines.
         """
@@ -716,7 +731,7 @@ class RstCommands:
         if p2:
             level0 = p.level()
             tree = [f"    {' '*2*(z.level()-level0)}- {z.h}\n" for z in p2.self_and_subtree()]
-            self.write(f"\n\n::\n\n{''.join(tree)}\n")
+            self.write(f"\n\n::\n\n{''.join(tree)}\n\n")
         else:
             g.es_print(f"gnx not found: {gnx!r} in {p.h}")
     #@+node:ekr.20090502071837.77: *6* rst.isAnyDocPart
@@ -1065,9 +1080,6 @@ class RstCommands:
         else:
             self.write(f"\n**{h.replace('*', '')}**\n\n")
     #@+node:ekr.20090502071837.85: *6* rst.writeNode
-    # insert_body_pat = re.compile(r'^@rst-insert-body\s+(.*)\s*$')
-    # insert_tree_pat = re.compile(r'^@rst-insert-tree\s+(.*)\s*$')
-
     def writeNode(self, p):
         """Format a node according to the options presently in effect."""
         self.initCodeBlockString(p)
@@ -1091,6 +1103,10 @@ class RstCommands:
             return
         if g.match_word(h, 0, '@rst-insert-body'):
             self.insertBody(p)
+            p.moveToThreadNext()
+            return
+        if g.match_word(h, 0, '@rst-insert-preformatted-body'):
+            self.insertPreformattedBody(p)
             p.moveToThreadNext()
             return
         if g.match_word(h, 0, '@rst-insert-head'):
@@ -1346,7 +1362,10 @@ class RstCommands:
                 if h == '@rst':
                     d['ignore_this_headline'] = True
                 return d
-        if h.startswith(('@rst-insert-body', '@rst-insert-head', '@rst-insert-tree')):
+        if h.startswith((
+            '@rst-insert-body', '@rst-insert-preformatted-body',
+            '@rst-insert-head', '@rst-insert-tree',
+        )):
             return {}  # #1843.
         if h.startswith('@rst'):
             g.trace('unknown kind of @rst headline', p.h, g.callers(4))
