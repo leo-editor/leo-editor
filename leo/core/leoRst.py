@@ -669,6 +669,56 @@ class RstCommands:
             else:
                 result.append(s)
         return result
+    #@+node:ekr.20210325092821.1: *6* rst.insertBody
+    def insertBody(self, p):
+        """
+        Handle @rst-include-body.
+        
+        Insert p2.b into the output, where p2 has the given gnx.
+        """
+        c = self.c
+        lines = g.splitLines(p.b.strip())
+        gnx = lines and lines[0].strip()
+        p2 = self.findGnx(c, gnx)
+        if p2:
+            self.write('\n\n::\n\n')
+            for line in g.splitlines(p2.b):
+                self.write(f"    {line}")
+            self.write('\n\n')
+        else:
+            g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+    #@+node:ekr.20210325125709.1: *6* rst.insertHead
+    def insertHead(self, p):
+        """
+        Handle @rst-include-head.
+        
+        Insert p2.h into the output, where p2 has the given gnx.
+        """
+        c = self.c
+        lines = g.splitLines(p.b.strip())
+        gnx = lines and lines[0].strip()
+        p2 = self.findGnx(c, gnx)
+        if p2:
+            self.write(f"\n\n{p2.h}\n\n")
+        else:
+            g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+    #@+node:ekr.20210325092836.1: *6* rst.insertTree
+    def insertTree(self, p):
+        """
+        Handle @rst-include-tree.
+        
+        Insert a representation of the tree of headlines.
+        """
+        c = self.c
+        lines = g.splitLines(p.b.strip())
+        gnx = lines and lines[0].strip()
+        p2 = self.findGnx(c, gnx)
+        if p2:
+            level0 = p.level()
+            tree = [f"    {' '*2*(z.level()-level0)}- {z.h}\n" for z in p2.self_and_subtree()]
+            self.write(f"\n\n::\n\n{''.join(tree)}\n")
+        else:
+            g.es_print(f"gnx not found: {gnx!r} in {p.h}")
     #@+node:ekr.20090502071837.77: *6* rst.isAnyDocPart
     def isAnyDocPart(self, s):
         if s.startswith('@doc'):
@@ -1015,6 +1065,9 @@ class RstCommands:
         else:
             self.write(f"\n**{h.replace('*', '')}**\n\n")
     #@+node:ekr.20090502071837.85: *6* rst.writeNode
+    # insert_body_pat = re.compile(r'^@rst-insert-body\s+(.*)\s*$')
+    # insert_tree_pat = re.compile(r'^@rst-insert-tree\s+(.*)\s*$')
+
     def writeNode(self, p):
         """Format a node according to the options presently in effect."""
         self.initCodeBlockString(p)
@@ -1023,20 +1076,36 @@ class RstCommands:
             self.http_addNodeMarker(p)
             self.writePreformat(p)
             p.moveToThreadNext()
-        elif self.getOption(p, 'ignore_this_tree'):
+            return
+        if self.getOption(p, 'ignore_this_tree'):
             p.moveToNodeAfterTree()
-        elif self.getOption(p, 'ignore_this_node'):
+            return
+        if self.getOption(p, 'ignore_this_node'):
             p.moveToThreadNext()
-        elif (
+            return
+        if (
             g.match_word(h, 0, '@rst-options') and
             not self.getOption(p, 'show_options_nodes')
         ):
             p.moveToThreadNext()
-        else:
-            self.http_addNodeMarker(p)
-            self.writeHeadline(p)
-            self.writeBody(p)
+            return
+        if g.match_word(h, 0, '@rst-insert-body'):
+            self.insertBody(p)
             p.moveToThreadNext()
+            return
+        if g.match_word(h, 0, '@rst-insert-head'):
+            self.insertHead(p)
+            p.moveToThreadNext()
+            return
+        if g.match_word(h, 0, '@rst-insert-tree'):
+            self.insertTree(p)
+            p.moveToThreadNext()
+            return
+        # Default.
+        self.http_addNodeMarker(p)
+        self.writeHeadline(p)
+        self.writeBody(p)
+        p.moveToThreadNext()
     #@+node:ekr.20090502071837.86: *6* rst.writePreformat
     def writePreformat(self, p):
         """Write p's body text lines as if preformatted.
@@ -1277,6 +1346,8 @@ class RstCommands:
                 if h == '@rst':
                     d['ignore_this_headline'] = True
                 return d
+        if h.startswith(('@rst-insert-body', '@rst-insert-head', '@rst-insert-tree')):
+            return {}  # #1843.
         if h.startswith('@rst'):
             g.trace('unknown kind of @rst headline', p.h, g.callers(4))
         return {}
@@ -1768,6 +1839,25 @@ class RstCommands:
         n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
         return f"{s.strip()}\n{ch * n}\n\n"
             # Fixes bug 618570:
+    #@+node:ekr.20210325123313.1: *4* rst.findGnx
+    def findGnx(self, c, gnx):
+        """
+        Return a position in any open commander having the given gnx.
+        
+        Prefer c, in case nodes pasted with paste-retaining-clones have
+        gotten out of sync.
+        """
+        if not gnx:
+            return None
+        # Search c first.
+        commanders = g.app.commanders()[:]
+        commanders.remove(c)
+        commanders.insert(0, c)
+        for commander in commanders:
+            for p in commander.all_unique_positions():
+                if p.v.fileIndex == gnx:
+                    return p
+        return None
     #@-others
 #@+node:ekr.20120219194520.10444: ** html parser classes
 # pylint: disable=abstract-method
