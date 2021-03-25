@@ -287,8 +287,8 @@ class RstCommands:
         if not mod_http and c.config.getBool('http-server-support'):
             g.error('No http_server_support: can not import mod_http plugin')
             d['http_server_support'] = False
-    #@+node:ekr.20100813041139.5920: *3* rst.Entry points
-    #@+node:ekr.20100812082517.5945: *4* rst.code_to_rst_command & helpers
+    #@+node:ekr.20210325070528.1: *3* rst.Commands
+    #@+node:ekr.20100812082517.5945: *4* rst.code-to-rst & helpers
     @cmd('code-to-rst')
     def code_to_rst_command(
         self, event=None, p=None, scriptSettingsDict=None, toString=False):
@@ -783,6 +783,7 @@ class RstCommands:
         elif self.getOption(p, 'doc_only_mode'):
             lines = self.handleDocOnlyMode(p, lines)
         else:
+            # Default.
             lines = self.handleSpecialDocParts(lines, '@rst-options',
                 retainContents=False)
             lines = self.handleSpecialDocParts(lines, '@rst-markup',
@@ -799,8 +800,10 @@ class RstCommands:
             lines = self.removeLeoDirectives(lines)
             if self.getOption(p, 'expand_noweb_references'):
                 lines = self.expandSectionRefs(lines, p, seen=[])
-            if self.getOption(
-                p, 'generate_rst') and self.getOption(p, 'use_alternate_code_block'):
+            if (
+                self.getOption(p, 'generate_rst') and
+                self.getOption(p, 'use_alternate_code_block')
+            ):
                 lines = self.replaceCodeBlockDirectives(lines)
         # Write the lines.
         s = ''.join(lines)
@@ -1062,6 +1065,7 @@ class RstCommands:
         after = p.nodeAfterTree()
         while p and p != after:
             self.writeNode(p)  # Side effect: advances p.
+    #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString
     def writeNodeToString(self, p=None, ext=None):
         """

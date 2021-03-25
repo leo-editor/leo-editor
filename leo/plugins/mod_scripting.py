@@ -232,7 +232,7 @@ from leo.core import leoGui
 __version__ = '3.0' # Added EvalController class.
 
 #@+others
-#@+node:ekr.20210228135810.1: ** cmd decorator
+#@+node:ekr.20210228135810.1: ** eval_cmd decorator
 def eval_cmd(name):
     '''Command decorator for the EvalController class.'''
     return g.new_cmd_decorator(name, ['c', 'evalController',])
