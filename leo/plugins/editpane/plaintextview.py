@@ -17,7 +17,7 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
     #@+node:tbrown.20171028115502.3: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_PlainTextView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
         self.setStyleSheet("* {background: #998; color: #222; }")
@@ -52,7 +52,7 @@ class LEP_PlainTextViewB(LEP_PlainTextView):
     #@+node:tbrown.20171028115502.7: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_PlainTextViewB, self).__init__(c=c, lep=lep, *args, **kwargs)
+        super().__init__(c=c, lep=lep, *args, **kwargs)
         self.setStyleSheet("* {background: #899; color: #222; }")
     #@-others
 #@-others
