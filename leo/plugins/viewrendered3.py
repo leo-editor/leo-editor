@@ -1781,6 +1781,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         global AsciiDocError
+        h = None
         if self.prefer_external:
             h =  self.convert_to_asciidoc_external(s)
             self.rst_html = h
@@ -1839,9 +1840,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return h
                 except Exception:
                     g.es_exception()
+                    return None
             finally:
                 infile.close()
                 outfile.close()
+        return h
 
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
     def convert_to_asciidoc_external(self, s):

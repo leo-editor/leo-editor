@@ -485,14 +485,13 @@ class FlowLayout(QtWidgets.QLayout):
     #@+node:ekr.20140917180536.17897: *3* __init__
     def __init__(self, parent=None, margin=0, spacing=-1):
         '''Ctor for FlowLayout class.'''
-        super(FlowLayout, self).__init__(parent)
+        super().__init__(parent)
         if parent is not None:
             self.setMargin(margin)
         else:
             self.setMargin(0)
         self.setSpacing(spacing)
         self.itemList = []
-
     #@+node:ekr.20140917180536.17898: *3* __del__
     def __del__(self):
         item = self.takeAt(0)
@@ -540,7 +539,7 @@ class FlowLayout(QtWidgets.QLayout):
 
     #@+node:ekr.20140917180536.17907: *3* setGeometry
     def setGeometry(self, rect):
-        super(FlowLayout, self).setGeometry(rect)
+        super().setGeometry(rect)
         self.doLayout(rect, False)
 
     #@+node:ekr.20140917180536.17908: *3* sizeHint

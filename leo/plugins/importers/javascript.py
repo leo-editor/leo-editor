@@ -76,7 +76,6 @@ class JS_Importer(Importer):
     def remove_organizer_nodes(self, parent):
         '''Removed all organizer nodes created by i.delete_all_empty_nodes.'''
         # Careful: Restart this loop whenever we find an organizer.
-        ### g.trace(parent.h)
         found = True
         while found:
             found = False
@@ -209,7 +208,6 @@ class JS_Importer(Importer):
         '''True if line ends the block.'''
         # Comparing new_state against prev_state does not work for python.
         top = stack[-1]
-        ### g.trace(f"{new_state.level() < top.state.level():1}") # , {line!r}")
         return new_state.level() < top.state.level()
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     clean_regex_list1 = [
@@ -517,9 +515,7 @@ class JsLexer(Lexer):
     #@+others
     #@+node:ekr.20200131110322.11: *4* JsLexer.__init__
     def __init__(self):
-        super(JsLexer, self).__init__(self.states, 'reg')
-
-
+        super().__init__(self.states, 'reg')
     #@-others
 #@+node:ekr.20200131070055.1: ** class TestJSImporter (importers/javascript.py)
 class TestJSImporter(unittest.TestCase):

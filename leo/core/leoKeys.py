@@ -706,17 +706,14 @@ class AutoCompleterClass:
         if jedi_line is not None:
             import jedi
             try:
-                script = jedi.Script(
-                    source=source,
+                # https://jedi.readthedocs.io/en/latest/docs/api.html#script
+                script = jedi.Script(source, path=g.shortFileName(fileName))
+                completions = script.complete(
                     line=1 + n0 + jedi_line,
                     column=column,
-                    path=g.shortFileName(fileName),
-                    # encoding='utf-8',
-                    # sys_path=None):
                 )
-                completions = script.completions()
                 t3 = time.process_time()
-            except ValueError:
+            except Exception:
                 t3 = time.process_time()
                 completions = None
                 g.printObj(source_lines[n0 - 1 : n0 + 30])

@@ -999,8 +999,8 @@ class LeoApp:
             import curses
             assert curses
         except Exception:
-            g.es_exception()
-            print('can not import _curses.')
+            # g.es_exception()
+            print('can not import curses.')
             if g.isWindows:
                 print('Windows: pip install windows-curses')
             sys.exit()

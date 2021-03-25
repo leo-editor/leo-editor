@@ -2342,6 +2342,7 @@ class AtFile:
             return True  # Suppress error if pyflakes can not be imported.
         except Exception:
             g.es_exception()
+            return False
     #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
     def tabNannyNode(self, p, body, suppress=False):
         import parser

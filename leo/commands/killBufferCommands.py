@@ -110,7 +110,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         except Exception:
             g.es_exception()
         return None
-    #@+node:ekr.20150514063305.416: *3* iterateKillBuffer
+    #@+node:ekr.20150514063305.416: *3* class iterateKillBuffer
     class KillBufferIterClass:
         """Returns a list of positions in a subtree, possibly including the root of the subtree."""
         #@+others
@@ -122,8 +122,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
         def __iter__(self):
             return self
-        #@+node:ekr.20150514063305.418: *4* next
-        def next(self):
+        #@+node:ekr.20150514063305.418: *4* __next__
+        def __next__(self):
             commands = self.c.killBufferCommands
             aList = g.app.globalKillBuffer  # commands.killBuffer
             if not aList:
@@ -139,8 +139,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.index = i + 1
             return val
 
-        __next__ = next
         #@-others
+
     def iterateKillBuffer(self):
         return self.KillBufferIterClass(self.c)
     #@+node:ekr.20150514063305.419: *3* kill (helper)
@@ -294,7 +294,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         try:
             if not pop or self.lastYankP and self.lastYankP != current:
                 self.reset = 0
-            s = self.kbiterator.next()
+            s = self.kbiterator.__next__()
             if s is None: s = clip_text or ''
             if i != j: w.deleteTextSelection()
             if s != s.lstrip():  # s contains leading whitespace.

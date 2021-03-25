@@ -45,7 +45,7 @@ class LEP_MarkdownView(HtmlView):
     #@+node:tbrown.20171028115507.4: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_MarkdownView, self).__init__(c=c, lep=lep, *args, **kwargs)
+        super().__init__(c=c, lep=lep, *args, **kwargs)
         self.c = c
         self.lep = lep
     #@+node:tbrown.20171028115507.5: *3* new_text
@@ -79,7 +79,7 @@ class LEP_MarkdownHtmlView(TextView):
     #@+node:tbrown.20171028115507.8: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_MarkdownHtmlView, self).__init__(c=c, lep=lep, *args, **kwargs)
+        super().__init__(c=c, lep=lep, *args, **kwargs)
         self.c = c
         self.lep = lep
     #@+node:tbrown.20171028115507.9: *3* new_text
