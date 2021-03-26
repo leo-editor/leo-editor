@@ -323,8 +323,8 @@ class RstCommands:
     #@+node:ekr.20090502071837.59: *3* rst.Shared write code
     #@+node:ekr.20210326165315.1: *4* rst.compute_result
     def compute_result(self):
-        """Return the result of concatenating all strings in self.result."""
-        return ''.join(f"{s.rstrip()}\n\n" for s in self.result_list if s.lstrip())
+        """Concatenate all strings in self.result, ensuring exactly one blank line between strings."""
+        return ''.join(f"{s.rstrip()}\n\n" for s in self.result_list if s.strip())
     #@+node:ekr.20090502071837.60: *4* rst.init_write
     def init_write(self, p):
         """Init self.encoding and self.path ivars."""
