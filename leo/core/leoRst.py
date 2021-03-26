@@ -80,21 +80,6 @@ class RstCommands:
         # Debugging and statistics.
         self.n_written = 0
             # Number of files written.
-        ###
-            # self.silverCityWarningGiven = False
-            # self.dd = {}
-                # A dict of dict. Keys are vnodes.
-                # Values are dicts of settings defined in that vnode *only*.
-            # self.d0 = self.createD0()
-                # Keys are vnodes, values are optionsDict's.
-            # self.scriptSettingsDict = {}
-                # For format-code command.
-            # self.singleNodeOptions = [
-                # 'ignore_this_headline', 'ignore_this_node', 'ignore_this_tree',
-                # 'preformat_this_node', 'show_this_headline',
-            # ]
-            # self.code_block_string = ''
-            # self.use_alternate_code_block = SilverCity is None
         # Formatting...
         self.node_counter = 0
         self.topLevel = 0
@@ -131,15 +116,11 @@ class RstCommands:
             # The written source as a string.
         # Complete the init.
         self.reloadSettings()
-        ###
-            # self.updateD0FromSettings()
-            #self.initHeadlineCommands()
-
     #@+node:ekr.20210326084034.1: *4* rst.reloadSettings
     def reloadSettings(self):
         """RstCommand.reloadSettings"""
         c = self.c
-        ###
+        ### To do: get the user settings.
         self.default_path = ''
         self.call_docutils = True
         self.generate_rst = True
@@ -150,14 +131,11 @@ class RstCommands:
         self.silent = False
         self.stylesheet_embed = False
         self.stylesheet_name = 'default.css'
-        self.stylesheet_path = ''  # Can be '' or None.
+        self.stylesheet_path = ''
         self.underline_characters = '''#=+*^~"'`-:><_'''
         self.verbose = False
         self.write_intermediate_extension = '.txt'
         self.write_intermediate_file = True
-        
-        ### call_docutils = self.getOption(p, 'call_docutils')
-        ### writeIntermediateFile = self.getOption(p, 'write_intermediate_file')
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
@@ -242,8 +220,7 @@ class RstCommands:
         ext = ext.lower()
         if not ext.startswith('.'): ext = '.' + ext
         self.init_write(p)  # sets self.path and self.encoding.
-        ### callDocutils = self.getOption(p, 'call_docutils')
-        ### writeIntermediateFile = self.getOption(p, 'write_intermediate_file')
+        #
         # Write the rst sources to self.source.
         self.outputFile = StringIO()
         self.writeTree(p, fn)
@@ -251,9 +228,7 @@ class RstCommands:
         self.outputFile = None
         self.stringOutput = None
         if self.call_docutils or self.write_intermediate_file:
-            self.write_files(ext, fn, p, toString=toString)
-                ### callDocutils=callDocutils,
-                ### writeIntermediateFile=writeIntermediateFile)
+            self.write_files(ext, fn, p, toString)
     #@+node:ekr.20100822092546.5835: *5* rst.write_slides & helper
     def write_slides(self, p, toString=False):
         """Convert p's children to slides."""
@@ -280,9 +255,6 @@ class RstCommands:
             self.source = self.outputFile.getvalue()  # the rST sources.
             self.outputFile, self.stringOutput = None, None
             self.write_files(ext, fn2, p, toString=toString)
-                ### callDocutils=self.getOption(p, 'call_docutils'),
-                ### toString=toString,
-                ### writeIntermediateFile=self.getOption(p, 'write_intermediate_file'))
     #@+node:ekr.20100822174725.5836: *6* rst.writeSlideTitle
     def writeSlideTitle(self, title, n, n_tot):
         """Write the title, underlined with the '#' character."""
@@ -295,97 +267,15 @@ class RstCommands:
     #@+node:ekr.20090502071837.71: *6* rst.writeBody & helpers
     def writeBody(self, p):
         """Write p.b as rST."""
-        
-        ###
-            # if self.getOption(p, 'ignore_noweb_definitions'):
-                # # Ignore section definition nodes.
-                # name = self.isSectionDef(p)
-                # if name:
-                    # return
-        # remove trailing cruft and split into lines.
-        lines = g.splitLines(p.b)
-        
-        ###
-            # if self.getOption(p, 'code_mode'):
-                # # Important: code mode is no longer documented!
-                # if not self.getOption(p, 'show_options_doc_parts'):
-                    # lines = self.handleSpecialDocParts(lines, '@rst-options',
-                        # retainContents=False)
-                # if not self.getOption(p, 'show_markup_doc_parts'):
-                    # lines = self.handleSpecialDocParts(lines, '@rst-markup',
-                        # retainContents=False)
-                # if not self.getOption(p, 'show_leo_directives'):
-                    # lines = self.removeLeoDirectives(lines)
-                # lines = self.handleCodeMode(p, lines)
-                # s = ''.join(lines)
-                # s = g.ensureTrailingNewlines(s, 2)
-                # self.write(s)
-                # return
-        
-            # if self.getOption(p, 'doc_only_mode'):
-                # lines = self.handleDocOnlyMode(p, lines)
-                # s = ''.join(lines)
-                # s = g.ensureTrailingNewlines(s, 2)
-                # self.write(s)
-                # return
-                
-            
-            # lines = self.handleSpecialDocParts(lines, '@rst-options',
-                # retainContents=False)
-            # lines = self.handleSpecialDocParts(lines, '@rst-markup',
-                # retainContents=self.getOption(p, 'generate_rst'))
-            
-            # if self.getOption(p, 'show_doc_parts_in_rst_mode') is True:
-                # pass  # original behaviour, treat as plain text
-            # elif self.getOption(p, 'show_doc_parts_in_rst_mode'):
-                # # use value as class for content
-                # lines = self.handleSpecialDocParts(lines, None,
-                    # retainContents=True, asClass=self.getOption(
-                    # p, 'show_doc_parts_in_rst_mode'))
-            # else:  # option evaluates to false, cut them out
-                # lines = self.handleSpecialDocParts(lines, None, retainContents=False)
-            
-            # lines = self.removeLeoDirectives(lines)
-            # if self.getOption(p, 'expand_noweb_references'):
-                # lines = self.expandSectionRefs(lines, p, seen=[])
-            # if self.getOption(
-                # p, 'generate_rst') and self.getOption(p, 'use_alternate_code_block'):
-                # lines = self.replaceCodeBlockDirectives(lines)
-            
-            
-        # Write the lines.
-        s = ''.join(lines)
-        # if self.getOption(p, 'table'):
-            # # Support @rst-table: Leo 5.3.
-            # s = s.rstrip() + '\n'
-        # else:
-            # # We no longer add newlines to the start of nodes because
-            # # we write a blank line after all sections.
-            # s = g.ensureTrailingNewlines(s, 2)
-        s = g.ensureTrailingNewlines(s, 2)
+        s = g.ensureTrailingNewlines(p.b, 2)
         self.write(s)
     #@+node:ekr.20090502071837.85: *6* rst.writeNode
     def writeNode(self, p):
         """Format a node according to the options presently in effect."""
-        ### self.initCodeBlockString(p)
         h = p.h.strip()
-        ### No longer supported
-            # if self.getOption(p, 'preformat_this_node'):
-                # self.http_addNodeMarker(p)
-                # self.writePreformat(p)
-                # p.moveToThreadNext()
-                # return
-            # if (
-                # g.match_word(h, 0, '@rst-options') and
-                # not self.getOption(p, 'show_options_nodes')
-            # ):
-                # p.moveToThreadNext()
-                # return
-        ### if self.getOption(p, 'ignore_this_tree'):
         if g.match_word(h, 0, '@rst-ignore-tree'):
             p.moveToNodeAfterTree()
             return
-        ### if self.getOption(p, 'ignore_this_node'):
         if g.match_word(h, 0, '@rst-ignore'):
             p.moveToThreadNext()
             return
@@ -418,8 +308,6 @@ class RstCommands:
     def writeTree(self, p, fn):
         """Write p's tree to self.outputFile."""
         if self.generate_rst and self.generate_rst_header_comment:
-            ### self.getOption(p, 'generate_rst') and
-            ### self.getOption(p, 'generate_rst_header_comment')
             self.write(self.rstComment(f"rst3: filename: {fn}\n\n"))
         # We can't use an iterator because we may skip parts of the tree.
         p = p.copy()
@@ -513,10 +401,7 @@ class RstCommands:
     def http_addNodeMarker(self, p):
         """Add a node marker for the mod_http plugin."""
         if self.http_server_support and self.generate_rst:
-            # self.getOption(p, 'http_server_support') and
-            # self.getOption(p, 'generate_rst')):
             self.nodeNumber += 1
-            ### anchorname = f"{self.getOption(p, 'node_begin_marker')}{self.nodeNumber}"
             anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
             s = f"\n\n.. _{anchorname}:\n\n"
             self.write(s)
@@ -537,7 +422,7 @@ class RstCommands:
             s = self.encode(s)
         theFile.write(s)
     #@+node:ekr.20100813041139.5919: *4* rst.write_files & helpers
-    def write_files(self, ext, fn, p, toString): ###  callDocutils, writeIntermediateFile):
+    def write_files(self, ext, fn, p, toString):
         """Write a file to the indicated locations."""
         isHtml = ext in ('.html', '.htm')
         fn = self.computeOutputFileName(fn)
@@ -616,6 +501,7 @@ class RstCommands:
             return None
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding}
+        #
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs(p)
         if ext == '.pdf':
@@ -630,36 +516,24 @@ class RstCommands:
                 ('.html', 'html'),
                 ('.htm', 'html'),
                 ('.tex', 'latex'),
-                ('.pdf', 'leo.plugins.leo_pdf'),  # 2011/11/03
-                ('.s5', 's5'),  # 2011/03/27
-                ('.odt', 'odt'),  # 2011/03/27
+                ('.pdf', 'leo.plugins.leo_pdf'),
+                ('.s5', 's5'), 
+                ('.odt', 'odt'),
             ):
                 if ext2 == ext: break
             else:
                 g.error(f"unknown docutils extension: {ext}")
                 return None
-        # SilverCity seems not to be supported, so this warning is strange.
-            # if ext in ('.html', '.htm') and not SilverCity:
-                # if not self.silverCityWarningGiven:
-                    # self.silverCityWarningGiven = True
-                    # if not g.unitTesting:
-                        # g.es('SilverCity not present so no syntax highlighting')
-        # Make the stylesheet path relative to the directory containing the output file.
-        
-        ### rel_stylesheet_path = self.getOption(p, 'stylesheet_path') or ''
+        #
+        # Make the stylesheet path relative to open directory.
         rel_stylesheet_path = self.stylesheet_path or ''
-        # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
         stylesheet_path = g.os_path_finalize_join(openDirectory, rel_stylesheet_path)
-        
-        ### stylesheet_name = self.getOption(p, 'stylesheet_name')
         assert self.stylesheet_name
-
         path = g.os_path_finalize_join(self.stylesheet_path, self.stylesheet_name)
-        ### if self.getOption(p, 'stylesheet_embed') is False:
         if not self.stylesheet_embed:
             rel_path = g.os_path_join(
-                rel_stylesheet_path, self.stylesheet_name)  ### self.getOption(p, 'stylesheet_name'))
-            rel_path = rel_path.replace('\\', '/')  # 2010/01/28
+                rel_stylesheet_path, self.stylesheet_name)
+            rel_path = rel_path.replace('\\', '/')
             overrides['stylesheet'] = rel_path
             overrides['stylesheet_path'] = None
             overrides['embed_stylesheet'] = None
@@ -669,8 +543,7 @@ class RstCommands:
                 overrides['stylesheet_path'] = None
         elif styleSheetArgsDict:
             g.es_print('using publish_argv_for_missing_stylesheets', styleSheetArgsDict)
-            overrides.update(styleSheetArgsDict)
-                # MWC add args to settings
+            overrides.update(styleSheetArgsDict)  # MWC add args to settings
         elif rel_stylesheet_path == stylesheet_path:
             g.error(f"stylesheet not found: {path}")
         else:
@@ -696,7 +569,6 @@ class RstCommands:
             if isinstance(result, bytes):
                 result = g.toUnicode(result)
         except docutils.ApplicationError as error:
-            # g.error('Docutils error (%s):' % (error.__class__.__name__))
             g.error('Docutils error:')
             g.blue(error)
         except Exception:
@@ -716,9 +588,8 @@ class RstCommands:
                 'documentoptions': 'english,12pt,lettersize',
             }
         if not s:
-            ### s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
-            
             ### To do: getOption searches up p's tree!
+                # s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
             s = self.publish_argv_for_missing_stylesheets
         if not s:
             return {}
@@ -761,7 +632,8 @@ class RstCommands:
                         s = s[cm + 1 :].strip()
             if not key:
                 break
-            if not val.strip(): val = '1'
+            if not val.strip():
+                val = '1'
             d[str(key)] = str(val)
         return d
     #@+node:ekr.20090502071837.88: *3* rst.Utils
@@ -770,6 +642,8 @@ class RstCommands:
         """Return the full path to the output file."""
         c = self.c
         openDirectory = c.frame.openDirectory
+        
+        ### getOption searched up the tree.
         ### default_path = self.getOption(self.root or c.p, 'default_path')
             # Subtle change, part of #362: scan options starting at self.root, not c.p.
         if self.default_path:
@@ -794,11 +668,9 @@ class RstCommands:
     #@+node:ekr.20090502071837.91: *4* rst.report
     def report(self, name, p):
         """Issue a report to the log pane."""
-        ### if self.getOption(p, 'silent'):
         if self.silent:
             return
         name = g.os_path_finalize(name)  # 1341
-        ### f = g.blue if self.getOption(p, 'verbose') else g.pr
         f = g.blue if self.verbose else g.pr
         f(f"wrote: {name}")
     #@+node:ekr.20090502071837.92: *4* rst.rstComment
@@ -833,16 +705,15 @@ class RstCommands:
             if level == 0 and self.underlines2:
                 return f"{ch * n}\n{p.h}\n{ch * n}\n\n"
             return f"{p.h}\n{ch * n}\n\n"
+        #
         # The user is responsible for top-level overlining.
-        ### u = self.getOption(p, 'underline_characters')  #  '''#=+*^~"'`-:><_'''
         u = self.underline_characters  #  '''#=+*^~"'`-:><_'''
         level = max(0, p.level() - self.topLevel)
         level = min(
             level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
         ch = u[level]
         n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
-        return f"{s.strip()}\n{ch * n}\n\n"
-            # Fixes bug 618570:
+        return f"{s.strip()}\n{ch * n}\n\n"  # #618570.
     #@+node:ekr.20210326091013.1: *3* initSettings (TEMP)
     def initSettings(self, p, script_d=None):
         g.trace(p)
