@@ -383,6 +383,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20210326081805.1"><vh>Archive</vh>
 <v t="ekr.20180523093753.1"><vh>Backup of GitHub issues</vh>
 <v t="ekr.20180523101625.1"><vh>GitHub LeoU issues</vh>
 <v t="ekr.20180523101514.14"><vh>#816: Summary: Leo University</vh>
@@ -447,6 +448,11 @@
 <v t="ekr.20180523095245.10"><vh>#907: Info: Borrow key features from other IDE's and editors</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20170206073747.6"><vh>@rst-ignore-tree Installing Leo on Linux</vh>
+<v t="ekr.20170206073747.7"><vh>Installing from a debian package</vh></v>
+</v>
+<v t="ekr.20170206073747.8"><vh>@rst-ignore-tree Installing from sources (Linux)</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -554,10 +560,6 @@
 </v>
 <v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
 <v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
-<v t="ekr.20170206073747.6"><vh>@rst-ignore-tree Installing Leo on Linux</vh>
-<v t="ekr.20170206073747.7"><vh>Installing from a debian package</vh></v>
-</v>
-<v t="ekr.20170206073747.8"><vh>@rst-ignore-tree Installing from sources (Linux)</vh></v>
 <v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
 </v>
 <v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
@@ -2382,8 +2384,8 @@
 </v>
 <v t="ekr.20201017061850.1"></v>
 <v t="ekr.20201014052236.1"></v>
-<v t="ekr.20050901101608.2"></v>
-<v t="ekr.20110521135104.18151"></v>
+<v t="ekr.20210326082417.1"><vh>---- revise or eliminate</vh></v>
+<v t="ekr.20050818163826"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31897,6 +31899,8 @@ Features:
 - Added support for @language json.
 
 Fixed all known bugs.</t>
+<t tx="ekr.20210326081805.1"></t>
+<t tx="ekr.20210326082417.1"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
