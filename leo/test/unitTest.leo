@@ -254,7 +254,6 @@
 </v>
 <v t="ekr.20091219121039.5065"><vh>@test c.rstCommands.handleMissingStyleSheetArgs</vh></v>
 <v t="ekr.20111103213154.3823"><vh>@test c.rstCommands.writeToDocutils: pdf</vh></v>
-<v t="ekr.20100131180007.5459"><vh>@test rst.initAtAutoWrite</vh></v>
 <v t="ekr.20100813100841.5850"><vh>##@test rst3Test @no-head (fails)</vh>
 <v t="ekr.20100813100841.5854"><vh>source</vh>
 <v t="ekr.20100813100841.5855"><vh>@rst test.html</vh>
@@ -974,20 +973,6 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
-</t>
-<t tx="ekr.20100131180007.5459">rst = c.rstCommands
-rst.initAtAutoWrite(p,fileName='&lt;test file&gt;',outputFile=None)
-
-# Ensure we are actually testing the default logic.
-d = p.v.u.get('rst-import',{})
-underlines = d.get('underline_characters')
-assert underlines is None,'fail 1: %s' % repr(underlines)
-assert d == {},'fail 2: %s' % repr(d)
-# Now test the logic.
-assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
-assert rst.underlines1 == '=+*^~"\'`-:&gt;&lt;_', 'fail4 %s' % repr(rst.underlines1)
-assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:&gt;&lt;_', 'fail 5: %s' % (
-    repr(rst.atAutoWriteUnderlines))
 </t>
 <t tx="ekr.20100812172232.5801">try:
     import docutils

@@ -13061,6 +13061,20 @@ def test_beautifier(c, h, p, settings):
         print('*************** fail: %s ***************' % (h))
     return beautifier
         # For statistics.
+#@+node:ekr.20210326183053.1: *3* @@test rst.initAtAutoWrite
+rst = c.rstCommands
+rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
+
+# Ensure we are actually testing the default logic.
+d = p.v.u.get('rst-import',{})
+underlines = d.get('underline_characters')
+assert underlines is None,'fail 1: %s' % repr(underlines)
+assert d == {},'fail 2: %s' % repr(d)
+# Now test the logic.
+assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
+assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
+assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
+    repr(rst.atAutoWriteUnderlines))
 #@+node:ekr.20050817132814: ** plugins/rst3
 @nocolor-node
 

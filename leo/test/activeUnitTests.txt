@@ -24439,20 +24439,6 @@ import leo.plugins.leo_pdf
 s = '''This is a test.'''
 result = c.rstCommands.writeToDocutils(p, s, '.pdf')
 assert result,result
-#@+node:ekr.20100131180007.5459: *4* @test rst.initAtAutoWrite
-rst = c.rstCommands
-rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
-
-# Ensure we are actually testing the default logic.
-d = p.v.u.get('rst-import',{})
-underlines = d.get('underline_characters')
-assert underlines is None,'fail 1: %s' % repr(underlines)
-assert d == {},'fail 2: %s' % repr(d)
-# Now test the logic.
-assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
-assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
-assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
-    repr(rst.atAutoWriteUnderlines))
 #@+node:ekr.20100813100841.5850: *4* ##@test rst3Test @no-head (fails)
 try:
     import docutils
