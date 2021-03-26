@@ -22302,7 +22302,7 @@ for fn,expected in table:
     # Make sure that calling regularizeName twice is benign.
     result2 = pc.regularizeName(result)
     assert result2==result
-#@+node:ekr.20091219122958.5066: *3* leoRst
+#@+node:ekr.20091219122958.5066: *3* @ignore leoRst
 # Warning: these depend on the .css files in leo\test\unittest.
 #@+node:ekr.20100813100841.5847: *4* @ignore
 #@+node:ekr.20100812213445.5824: *5* @test code_mode: rst3 show_doc_parts_as_paragraphs

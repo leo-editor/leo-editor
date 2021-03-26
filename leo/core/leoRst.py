@@ -14,9 +14,9 @@ available."""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
-# import html.parser as HTMLParser
+import html.parser as HTMLParser
 import io
-# import pprint
+import pprint
 import re
 import time
 #
@@ -28,10 +28,12 @@ try:
     from docutils.parsers import rst
 except Exception:
     docutils = None  # type: ignore
-try:
-    import SilverCity
-except ImportError:
-    SilverCity = None  # type: ignore
+    
+###
+    # try:
+        # import SilverCity
+    # except ImportError:
+        # SilverCity = None  # type: ignore
 #
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -70,35 +72,33 @@ class RstCommands:
     """
     #@+others
     #@+node:ekr.20090502071837.34: *3* rst.Birth
-    #@+node:ekr.20090502071837.35: *4*  rst.ctor & rst.reloadSettings
+    #@+node:ekr.20090502071837.35: *4* rst__init__
     def __init__(self, c):
         """Ctor for the RstCommand class."""
         global SilverCity
         self.c = c
         # Debugging and statistics.
-        self.debug = False  # Set in reloadSettings.
         self.n_written = 0
             # Number of files written.
-        # Warning flags.
-        self.silverCityWarningGiven = False
-        # Settings.
-        self.dd = {}
-            # A dict of dict. Keys are vnodes.
-            # Values are dicts of settings defined in that vnode *only*.
-        self.d0 = self.createD0()
-            # Keys are vnodes, values are optionsDict's.
-        self.scriptSettingsDict = {}
-            # For format-code command.
-        self.singleNodeOptions = [
-            'ignore_this_headline', 'ignore_this_node', 'ignore_this_tree',
-            'preformat_this_node', 'show_this_headline',
-        ]
+        ###
+            # self.silverCityWarningGiven = False
+            # self.dd = {}
+                # A dict of dict. Keys are vnodes.
+                # Values are dicts of settings defined in that vnode *only*.
+            # self.d0 = self.createD0()
+                # Keys are vnodes, values are optionsDict's.
+            # self.scriptSettingsDict = {}
+                # For format-code command.
+            # self.singleNodeOptions = [
+                # 'ignore_this_headline', 'ignore_this_node', 'ignore_this_tree',
+                # 'preformat_this_node', 'show_this_headline',
+            # ]
+            # self.code_block_string = ''
+            # self.use_alternate_code_block = SilverCity is None
         # Formatting...
-        self.code_block_string = ''
         self.node_counter = 0
         self.topLevel = 0
         self.topNode = None
-        self.use_alternate_code_block = SilverCity is None
         # Http support...
         self.nodeNumber = 0
             # All nodes are numbered so that unique anchors can be generated.
@@ -131,317 +131,34 @@ class RstCommands:
             # The written source as a string.
         # Complete the init.
         self.reloadSettings()
-        self.updateD0FromSettings()
-        self.initHeadlineCommands()
+        ###
+            # self.updateD0FromSettings()
+            #self.initHeadlineCommands()
 
+    #@+node:ekr.20210326084034.1: *4* rst.reloadSettings
     def reloadSettings(self):
         """RstCommand.reloadSettings"""
-        self.debug = self.c.config.getBool('rst3-debug', default=False)
-    #@+node:ekr.20090502071837.42: *4* rst.createD0
-    def createD0(self):
-        """Create the default options dict."""
-        d = {
-            # Reporting options...
-            'debug': False,  # True: enables debug output.
-            'silent': False,  # True: suppresses report()
-            'verbose': True,  # True: rst.report() sends to log.
-            # Http options...
-            'clear_http_attributes': False,
-            'http_server_support': False,
-            'http_attributename': 'rst_http_attribute',
-            'node_begin_marker': 'http-node-marker-',
-            # Path options...
-            'default_path': None,
-                # Must be None, not ''.
-                # computeOutputFileName() uses it instead of self.path.
-            'stylesheet_name': 'default.css',
-            'stylesheet_path': None,  # Must be None, not ''.
-            'stylesheet_embed': True,
-            'publish_argv_for_missing_stylesheets': None,
-            # Code generation options...
-            'call_docutils': True,
-            'code_block_string': '',
-            'number_code_lines': True,
-            'underline_characters': """#=+*^~"'`-:><_""",
-            'write_intermediate_file': False,
-                # Used only if generate_rst is True.
-            'write_intermediate_extension': '.txt',
-            # Mode options...
-            'code_mode': False,
-                # True: generate rst markup from @code and @doc parts.
-            'doc_only_mode': False,
-                # True: generate only from @doc parts.
-            'generate_rst': True,
-                # True: generate rst markup. False: generate plain text.
-            'generate_rst_header_comment': True,
-                # True generate header comment (requires generate_rst option)
-            # Formatting options that apply to both code and rst modes....
-            'expand_noweb_references': False,
-            'ignore_noweb_definitions': False,
-            'expand_noweb_recursively': True,
-            'show_headlines': True,  # Can be set by @rst-no-head headlines.
-            'show_organizer_nodes': True,
-            'show_options_nodes': False,
-            'show_sections': True,
-            'strip_at_file_prefixes': True,
-            'show_doc_parts_in_rst_mode': True,
-            # Formatting options that apply only to code mode.
-            'show_doc_parts_as_paragraphs': False,
-            'show_leo_directives': True,
-            'show_markup_doc_parts': False,
-            'show_options_doc_parts': False,
-        }
-        # Check that all dictionary keys are already munged.
-        for key in sorted(d.keys()):
-            assert key == self.munge(key), key
-        return d
-    #@+node:ekr.20090502071837.38: *4* rst.initHeadlineCommands
-    def initHeadlineCommands(self):
-        """Init the list of headline commands used by writeHeadline."""
-        self.headlineCommands = [
-            '@rst',
-            '@rst-code',
-            '@rst-default-path',
-            '@rst-doc-only',
-            '@rst-head',
-            '@rst-ignore-node',
-            '@rst-ignore-tree',
-            '@rst-ignore',
-            '@rst-no-head',
-            '@rst-no-headlines',
-            '@rst-table',  # New in Leo 5.3.
-            '@rst-option',
-            '@rst-options',
-            '@rst-preformat',  # Fix #286.
-        ]
-    #@+node:ekr.20090502071837.40: *4* rst.munge
-    def munge(self, name):
-        """Convert an option name to the equivalent ivar name."""
-        i = 3 if name.startswith('rst') else 0
-        while i < len(name) and name[i].isdigit():
-            i += 1
-        if i < len(name) and name[i] == '_':
-            i += 1
-        s = name[i:].lower()
-        s = s.replace('-', '_')
-        return s
-    #@+node:ekr.20150320033317.10: *4* rst.updateD0FromSettings
-    def updateD0FromSettings(self):
-        """Update entries in self.d0 from user seettings."""
-        c, d = self.c, self.d0
-        table = (
-            ('@bool', c.config.getBool),
-            ('@string', c.config.getString),
-        )
-        for key in sorted(d):
-            for kind, f in table:
-                val = f('rst3_' + key)
-                if val is not None:
-                    old = d.get(key)
-                    if val != old:
-                        d[key] = val
-                    break
-        # Special warning for mod_http plugin.
-        if not mod_http and c.config.getBool('http-server-support'):
-            g.error('No http_server_support: can not import mod_http plugin')
-            d['http_server_support'] = False
-    #@+node:ekr.20100813041139.5920: *3* rst.Entry points
-    #@+node:ekr.20100812082517.5945: *4* rst.code_to_rst_command & helpers
-    @cmd('code-to-rst')
-    def code_to_rst_command(
-        self, event=None, p=None, scriptSettingsDict=None, toString=False):
-        """
-        Format the presently selected node as computer code.
-        Settings from scriptSettingsDict override normal settings.
-
-        On exit:
-            self.source contains rst sources
-            self.stringOutput contains docutils output if docutils called.
-
-        **Important**: This command works as much like the rst3 command as possible.
-        Difference arise because there is no @rst node to specify a filename.
-        Instead we get the filename from scriptSettingsDict, or use 'code_to_rst.html'
-        """
         c = self.c
-        if p: p = p.copy()
-        else: p = c.p
-        self.topNode = p.copy()
-        self.topLevel = p.level()
-        self.initSettings(p, script_d=scriptSettingsDict)
-        callDocutils = self.getOption(p, 'call_docutils')
-        writeIntermediateFile = self.getOption(p, 'write_intermediate_file')
-        fn = self.getOption(p, 'output-file-name') or 'code_to_rst.html'
-        junk, ext = g.os_path_splitext(fn)
-        # Write the rst sources to self.sources...
-        self.outputFile = StringIO()
-        self.write_code_tree(p, fn)
-        self.source = self.outputFile.getvalue()
-        self.outputFile = None
-        if callDocutils or writeIntermediateFile:
-            self.write_files(ext, fn, p,
-                callDocutils=callDocutils,
-                toString=toString,
-                writeIntermediateFile=writeIntermediateFile)
-    #@+node:ekr.20100812082517.5963: *5* rst.write_code_body & helpers
-    def write_code_body(self, p):
-
-        self.p = p.copy()  # for traces.
-        if not p.b.strip():
-            return  # No need to write any more newlines.
-        showDocsAsParagraphs = self.getOption(p, 'show_doc_parts_as_paragraphs')
-        lines = g.splitLines(p.b)
-        parts = self.split_parts(lines, showDocsAsParagraphs)
-        result = []
-        for kind, lines in parts:
-            if kind == '@rst-option':  # Also handles '@rst-options'
-                pass  # The prepass has already handled the options.
-            elif kind == '@rst-markup':
-                lines.extend('\n')
-                result.extend(lines)
-            elif kind == '@doc':
-                if showDocsAsParagraphs:
-                    result.extend(lines)
-                    result.append('\n')
-                else:
-                    result.extend(self.write_code_block(p, lines))
-            elif kind == 'code':
-                result.extend(self.write_code_block(p, lines))
-            else:
-                g.trace('Can not happen', kind)
-        # Write the lines with exactly two trailing newlines.
-        s = ''.join(result).rstrip() + '\n\n'
-        self.write(s)
-    #@+node:ekr.20100812082517.5964: *6* rst.split_parts
-    def split_parts(self, lines, showDocsAsParagraphs):
-        """Split a list of body lines into a list of tuples (kind,lines)."""
-        kind, parts, part_lines = 'code', [], []
-        for s in lines:
-            if g.match_word(s, 0, '@ @rst-markup'):
-                if part_lines: parts.append((kind, part_lines[:]),)
-                kind = '@rst-markup'
-                n = len('@ @rst-markup')
-                after = s[n:].strip()
-                part_lines = [after] if after else []
-            elif s.startswith('@ @rst-option'):
-                if part_lines: parts.append((kind, part_lines[:]),)
-                kind, part_lines = '@rst-option', [s]  # part_lines will be ignored.
-            elif s.startswith('@ ') or s.startswith('@\n') or s.startswith('@doc'):
-                if showDocsAsParagraphs:
-                    if part_lines: parts.append((kind, part_lines[:]),)
-                    kind = '@doc'
-                    # Put only what follows @ or @doc
-                    n = 4 if s.startswith('@doc') else 1
-                    after = s[n:].lstrip()
-                    part_lines = [after] if after else []
-                else:
-                    part_lines.append(s)  # still in code mode.
-            elif g.match_word(s, 0, '@c') and kind != 'code':
-                if kind == '@doc' and not showDocsAsParagraphs:
-                    part_lines.append(s)  # Show the @c as code.
-                parts.append((kind, part_lines[:]),)
-                kind, part_lines = 'code', []
-            else:
-                part_lines.append(s)
-        if part_lines:
-            parts.append((kind, part_lines[:]),)
-        return parts
-    #@+node:ekr.20100812082517.5965: *6* rst.write_code_block
-    def write_code_block(self, p, lines):
-        """Write a docutils code-block directive."""
-        result = ['::\n\n']  # ['[**code block**]\n\n']
-        if self.getOption(p, 'number-code-lines'):
-            for i, s in enumerate(lines):
-                result.append(f"    {i}: {s}")
-        else:
-            result.extend([f"    {z}" for z in lines])
-        s = ''.join(result).rstrip() + '\n\n'
-        return g.splitLines(s)
-    #@+node:ekr.20100812082517.5966: *5* rst.write_code_headline & helper
-    def write_code_headline(self, p):
-        """
-        Generate an rST section if options permit it.
-        Remove headline commands from the headline first,
-        and never generate an rST section for @rst-option and @rst-options.
-        """
-        docOnly = self.getOption(p, 'doc_only_mode')
-        ignore = self.getOption(p, 'ignore_this_headline')
-        showHeadlines = self.getOption(p, 'show_headlines')
-        showThisHeadline = self.getOption(p, 'show_this_headline')
-        showOrganizers = self.getOption(p, 'show_organizer_nodes')
-        if (
-            p == self.topNode or
-            ignore or
-            docOnly or  # handleDocOnlyMode handles this.
-            not showHeadlines and not showThisHeadline or
-            # docOnly and not showOrganizers and not thisHeadline or
-            not p.h.strip() and not showOrganizers or
-            not p.b.strip() and not showOrganizers
-        ):
-            return
-        self.write_code_headline_helper(p)
-    #@+node:ekr.20100812082517.5967: *6* rst.write_code_headline_helper
-    def write_code_headline_helper(self, p):
-        """Write a headline in code mode."""
-        h = p.h.strip()
-        # Remove any headline command before writing the headline.
-        i = g.skip_ws(h, 0)
-        i = g.skip_id(h, 0, chars='@-')
-        word = h[:i].strip()
-        if word:
-            # Never generate a section for these:
-            # @rst-option or @rst-options or @rst-no-head.
-            if word in (
-                '@rst-option', '@rst-options',
-                '@rst-no-head', '@rst-no-headlines',
-                '@rst-table',  # New in Leo 5.3.
-            ):
-                return
-            for prefix in (
-                '@rst-ignore-node',
-                '@rst-ignore-tree',
-                '@rst-ignore',
-            ):
-                if word == prefix:
-                    h = h[len(word) :].strip()
-                    break
-        if not h.strip():
-            pass
-        elif self.getOption(p, 'show_sections'):
-            self.write(self.underline(h, p))
-        else:
-            self.write(f"\n**{h.replace('*', '')}**\n\n")
-    #@+node:ekr.20100812082517.5968: *5* rst.write_code_node
-    def write_code_node(self, p):
-        """
-        Format a node according to the options presently in effect.
-        Side effect: advance p
-        """
-        h = p.h.strip()
-        if self.getOption(p, 'ignore_this_tree'):
-            p.moveToNodeAfterTree()
-        elif self.getOption(p, 'ignore_this_node'):
-            p.moveToThreadNext()
-        elif (
-            g.match_word(h, 0, '@rst-options') and
-            not self.getOption(p, 'show_options_nodes')
-        ):
-            p.moveToThreadNext()
-        else:
-            self.http_addNodeMarker(p)
-            self.write_code_headline(p)
-            self.write_code_body(p)
-            p.moveToThreadNext()
-    #@+node:ekr.20100812082517.5939: *5* rst.write_code_tree
-    def write_code_tree(self, p, fn):
-        """Write p's tree as code to self.outputFile."""
-        if self.getOption(p, 'generate_rst_header_comment'):
-            self.write(f".. rst3: filename: {fn}\n\n")
-        # We can't use an iterator because we may skip parts of the tree.
-        p = p.copy()
-        self.topNode = p.copy()
-        after = p.nodeAfterTree()
-        while p and p != after:
-            self.write_code_node(p)  # Side effect: advances p.
+        ###
+        self.default_path = ''
+        self.call_docutils = True
+        self.generate_rst = True
+        self.generate_rst_header_comment = True
+        self.http_server_support = True
+        self.node_begin_marker = 'http-node-marker-'
+        self.publish_argv_for_missing_stylesheets = None
+        self.silent = False
+        self.stylesheet_embed = False
+        self.stylesheet_name = ''
+        self.stylesheet_path = ''  # Can be '' or None.
+        self.underline_characters = '''#=+*^~"'`-:><_'''
+        self.verbose = False
+        self.write_intermediate_extension = '.txt'
+        self.write_intermediate_file = True
+        
+        ### call_docutils = self.getOption(p, 'call_docutils')
+        ### writeIntermediateFile = self.getOption(p, 'write_intermediate_file')
+    #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
     def rst3(self, event=None):
@@ -525,19 +242,18 @@ class RstCommands:
         ext = ext.lower()
         if not ext.startswith('.'): ext = '.' + ext
         self.init_write(p)  # sets self.path and self.encoding.
-        callDocutils = self.getOption(p, 'call_docutils')
-        writeIntermediateFile = self.getOption(p, 'write_intermediate_file')
+        ### callDocutils = self.getOption(p, 'call_docutils')
+        ### writeIntermediateFile = self.getOption(p, 'write_intermediate_file')
         # Write the rst sources to self.source.
         self.outputFile = StringIO()
         self.writeTree(p, fn)
         self.source = self.outputFile.getvalue()  # the rST sources.
         self.outputFile = None
         self.stringOutput = None
-        if callDocutils or writeIntermediateFile:
-            self.write_files(ext, fn, p,
-                callDocutils=callDocutils,
-                toString=toString,
-                writeIntermediateFile=writeIntermediateFile)
+        if self.call_docutils or self.write_intermediate_file:
+            self.write_files(ext, fn, p, toString=toString)
+                ### callDocutils=callDocutils,
+                ### writeIntermediateFile=writeIntermediateFile)
     #@+node:ekr.20100822092546.5835: *5* rst.write_slides & helper
     def write_slides(self, p, toString=False):
         """Convert p's children to slides."""
@@ -563,10 +279,10 @@ class RstCommands:
             self.writeBody(child)
             self.source = self.outputFile.getvalue()  # the rST sources.
             self.outputFile, self.stringOutput = None, None
-            self.write_files(ext, fn2, p,
-                callDocutils=self.getOption(p, 'call_docutils'),
-                toString=toString,
-                writeIntermediateFile=self.getOption(p, 'write_intermediate_file'))
+            self.write_files(ext, fn2, p, toString=toString)
+                ### callDocutils=self.getOption(p, 'call_docutils'),
+                ### toString=toString,
+                ### writeIntermediateFile=self.getOption(p, 'write_intermediate_file'))
     #@+node:ekr.20100822174725.5836: *6* rst.writeSlideTitle
     def writeSlideTitle(self, title, n, n_tot):
         """Write the title, underlined with the '#' character."""
@@ -576,422 +292,113 @@ class RstCommands:
             encoding=self.encoding, reportErrors=False)))
         self.write(f"{title}\n{'#' * width} \n\n")
     #@+node:ekr.20090502071837.58: *5* rst.write methods
-    #@+node:ekr.20090502071837.68: *6* rst.getDocPart
-    def getDocPart(self, lines, n):
-
-        result = []
-        #@+<< Append whatever follows @doc or @space to result >>
-        #@+node:ekr.20090502071837.69: *7* << Append whatever follows @doc or @space to result >>
-        if n > 0:
-            line = lines[n - 1]
-            if line.startswith('@doc'):
-                s = line[4:].lstrip()
-            elif line.startswith('@'):
-                s = line[1:].lstrip()
-            else:
-                s = ''
-            # New in Leo 4.4.4: remove these special tags.
-            for tag in ('@rst-options', '@rst-option', '@rst-markup'):
-                if g.match_word(s, 0, tag):
-                    s = s[len(tag) :].strip()
-            if s.strip():
-                result.append(s)
-        #@-<< Append whatever follows @doc or @space to result >>
-        while n < len(lines):
-            s = lines[n]; n += 1
-            if g.match_word(s, 0, '@code') or g.match_word(s, 0, '@c'):
-                break
-            result.append(s)
-        return n, result
-    #@+node:ekr.20090502071837.81: *6* rst.handleSpecialDocParts
-    def handleSpecialDocParts(self, lines, kind, retainContents, asClass=None):
-
-        result = []; n = 0
-        while n < len(lines):
-            s = lines[n]; n += 1
-            if s.strip().endswith('::'):
-                n, lit = self.skip_literal_block(lines, n - 1)
-                result.extend(lit)
-            elif self.isSpecialDocPart(s, kind):
-                n, lines2 = self.getDocPart(lines, n)
-                if retainContents:
-                    result.extend([''])
-                    if asClass:
-                        result.extend(['.. container:: ' + asClass, ''])
-                        if 'literal' in asClass.split():
-                            result.extend(['  ::', ''])
-                        for l2 in lines2: result.append('    ' + l2)
-                    else:
-                        result.extend(lines2)
-                    result.extend([''])
-            else:
-                result.append(s)
-        return result
-    #@+node:ekr.20090502071837.77: *6* rst.isAnyDocPart
-    def isAnyDocPart(self, s):
-        if s.startswith('@doc'):
-            return True
-        if not s.startswith('@'):
-            return False
-        return len(s) == 1 or s[1].isspace()
-    #@+node:ekr.20090502071837.79: *6* rst.isAnySpecialDocPart
-    def isAnySpecialDocPart(self, s):
-        for kind in (
-            '@rst-markup',
-            '@rst-option',
-            '@rst-options',
-        ):
-            if self.isSpecialDocPart(s, kind):
-                return True
-        return False
-    #@+node:ekr.20090502071837.78: *6* rst.isSpecialDocPart
-    def isSpecialDocPart(self, s, kind):
-        """
-        Return True if s is a special doc part of the indicated kind.
-
-        If kind is None, return True if s is any doc part.
-        """
-        if s.startswith('@') and len(s) > 1 and s[1].isspace():
-            if kind:
-                i = g.skip_ws(s, 1)
-                result = g.match_word(s, i, kind)
-            else:
-                result = True
-        elif not kind:
-            result = g.match_word(s, 0, '@doc') or g.match_word(s, 0, '@')
-        else:
-            result = False
-        return result
-    #@+node:ekr.20090502071837.80: *6* rst.removeLeoDirectives
-    def removeLeoDirectives(self, lines):
-        """Remove all Leo directives, except within literal blocks."""
-        n = 0; result = []
-        while n < len(lines):
-            s = lines[n]; n += 1
-            if s.strip().endswith('::'):
-                n, lit = self.skip_literal_block(lines, n - 1)
-                result.extend(lit)
-            elif s.startswith('@') and not self.isAnySpecialDocPart(s):
-                for key in self.leoDirectivesList:
-                    if g.match_word(s, 1, key):
-                        break
-                else:
-                    result.append(s)
-            else:
-                result.append(s)
-        return result
-    #@+node:ekr.20090502071837.82: *6* rst.replaceCodeBlockDirectives
-    def replaceCodeBlockDirectives(self, lines):
-        """Replace code-block directive, but not in literal blocks."""
-        n = 0; result = []
-        while n < len(lines):
-            s = lines[n]; n += 1
-            if s.strip().endswith('::'):
-                n, lit = self.skip_literal_block(lines, n - 1)
-                result.extend(lit)
-            else:
-                i = g.skip_ws(s, 0)
-                if g.match(s, i, '..'):
-                    i = g.skip_ws(s, i + 2)
-                    if g.match_word(s, i, 'code-block'):
-                        if 1:  # Create a literal block to hold the code.
-                            result.append('::\n')
-                        else:  # This 'annotated' literal block is confusing.
-                            result.append(f"{s[i + len('code-block') :]} code::\n")
-                    else:
-                        result.append(s)
-                else:
-                    result.append(s)
-        return result
-    #@+node:ekr.20090502071837.70: *6* rst.skip_literal_block
-    def skip_literal_block(self, lines, n):
-        s = lines[n]; result = [s]; n += 1
-        indent = g.skip_ws(s, 0)
-        # Skip lines until a non-blank line is found with same or less indent.
-        while n < len(lines):
-            s = lines[n]
-            indent2 = g.skip_ws(s, 0)
-            if s and not s.isspace() and indent2 <= indent:
-                break  # We will rescan lines [n]
-            n += 1
-            result.append(s)
-        # g.printList(result,tag='literal block')
-        return n, result
     #@+node:ekr.20090502071837.71: *6* rst.writeBody & helpers
     def writeBody(self, p):
         """Write p.b as rST."""
-        if self.getOption(p, 'ignore_noweb_definitions'):
-            # Ignore section definition nodes.
-            name = self.isSectionDef(p)
-            if name:
-                return
+        
+        ###
+            # if self.getOption(p, 'ignore_noweb_definitions'):
+                # # Ignore section definition nodes.
+                # name = self.isSectionDef(p)
+                # if name:
+                    # return
         # remove trailing cruft and split into lines.
         lines = g.splitLines(p.b)
-        if self.getOption(p, 'code_mode'):
-            # Important: code mode is no longer documented!
-            if not self.getOption(p, 'show_options_doc_parts'):
-                lines = self.handleSpecialDocParts(lines, '@rst-options',
-                    retainContents=False)
-            if not self.getOption(p, 'show_markup_doc_parts'):
-                lines = self.handleSpecialDocParts(lines, '@rst-markup',
-                    retainContents=False)
-            if not self.getOption(p, 'show_leo_directives'):
-                lines = self.removeLeoDirectives(lines)
-            lines = self.handleCodeMode(p, lines)
-        elif self.getOption(p, 'doc_only_mode'):
-            lines = self.handleDocOnlyMode(p, lines)
-        else:
-            lines = self.handleSpecialDocParts(lines, '@rst-options',
-                retainContents=False)
-            lines = self.handleSpecialDocParts(lines, '@rst-markup',
-                retainContents=self.getOption(p, 'generate_rst'))
-            if self.getOption(p, 'show_doc_parts_in_rst_mode') is True:
-                pass  # original behaviour, treat as plain text
-            elif self.getOption(p, 'show_doc_parts_in_rst_mode'):
-                # use value as class for content
-                lines = self.handleSpecialDocParts(lines, None,
-                    retainContents=True, asClass=self.getOption(
-                    p, 'show_doc_parts_in_rst_mode'))
-            else:  # option evaluates to false, cut them out
-                lines = self.handleSpecialDocParts(lines, None, retainContents=False)
-            lines = self.removeLeoDirectives(lines)
-            if self.getOption(p, 'expand_noweb_references'):
-                lines = self.expandSectionRefs(lines, p, seen=[])
-            if self.getOption(
-                p, 'generate_rst') and self.getOption(p, 'use_alternate_code_block'):
-                lines = self.replaceCodeBlockDirectives(lines)
+        
+        ###
+            # if self.getOption(p, 'code_mode'):
+                # # Important: code mode is no longer documented!
+                # if not self.getOption(p, 'show_options_doc_parts'):
+                    # lines = self.handleSpecialDocParts(lines, '@rst-options',
+                        # retainContents=False)
+                # if not self.getOption(p, 'show_markup_doc_parts'):
+                    # lines = self.handleSpecialDocParts(lines, '@rst-markup',
+                        # retainContents=False)
+                # if not self.getOption(p, 'show_leo_directives'):
+                    # lines = self.removeLeoDirectives(lines)
+                # lines = self.handleCodeMode(p, lines)
+                # s = ''.join(lines)
+                # s = g.ensureTrailingNewlines(s, 2)
+                # self.write(s)
+                # return
+        
+            # if self.getOption(p, 'doc_only_mode'):
+                # lines = self.handleDocOnlyMode(p, lines)
+                # s = ''.join(lines)
+                # s = g.ensureTrailingNewlines(s, 2)
+                # self.write(s)
+                # return
+                
+            
+            # lines = self.handleSpecialDocParts(lines, '@rst-options',
+                # retainContents=False)
+            # lines = self.handleSpecialDocParts(lines, '@rst-markup',
+                # retainContents=self.getOption(p, 'generate_rst'))
+            
+            # if self.getOption(p, 'show_doc_parts_in_rst_mode') is True:
+                # pass  # original behaviour, treat as plain text
+            # elif self.getOption(p, 'show_doc_parts_in_rst_mode'):
+                # # use value as class for content
+                # lines = self.handleSpecialDocParts(lines, None,
+                    # retainContents=True, asClass=self.getOption(
+                    # p, 'show_doc_parts_in_rst_mode'))
+            # else:  # option evaluates to false, cut them out
+                # lines = self.handleSpecialDocParts(lines, None, retainContents=False)
+            
+            # lines = self.removeLeoDirectives(lines)
+            # if self.getOption(p, 'expand_noweb_references'):
+                # lines = self.expandSectionRefs(lines, p, seen=[])
+            # if self.getOption(
+                # p, 'generate_rst') and self.getOption(p, 'use_alternate_code_block'):
+                # lines = self.replaceCodeBlockDirectives(lines)
+            
+            
         # Write the lines.
         s = ''.join(lines)
-        if self.getOption(p, 'table'):
-            # Support @rst-table: Leo 5.3.
-            s = s.rstrip() + '\n'
-        else:
-            # We no longer add newlines to the start of nodes because
-            # we write a blank line after all sections.
-            s = g.ensureTrailingNewlines(s, 2)
+        # if self.getOption(p, 'table'):
+            # # Support @rst-table: Leo 5.3.
+            # s = s.rstrip() + '\n'
+        # else:
+            # # We no longer add newlines to the start of nodes because
+            # # we write a blank line after all sections.
+            # s = g.ensureTrailingNewlines(s, 2)
+        s = g.ensureTrailingNewlines(s, 2)
         self.write(s)
-    #@+node:ekr.20110610144305.6749: *7* rst.isSectionDef/Ref
-    def isSectionDef(self, p):
-        return self.isSectionRef(p.h)
-
-    def isSectionRef(self, s):
-        n1 = s.find("<<", 0)
-        n2 = s.find(">>", 0)
-        return -1 < n1 < n2 and s[n1 + 2 : n2].strip()
-    #@+node:ekr.20110610144305.6750: *7* rst.expandSectionRefs
-    def expandSectionRefs(self, lines, p, seen):
-        """Expand section references in lines."""
-        result = []
-        for s in lines:
-            name = self.isSectionRef(s)
-            if name:
-                p2 = self.findSectionDef(name, p)
-                if p2:
-                    g.trace(f"expanding: {name} from {p2.h}")
-                    result.append(s)  # Append the section reference line.
-                    lines2 = g.splitLines(p2.b)
-                    if self.getOption(p, 'expand_noweb_recursively'):
-                        if name in seen:
-                            pass  # Prevent unbounded recursion
-                        else:
-                            seen.append(name)
-                            result.extend(self.expandSectionRefs(lines2, p, seen))
-                    else:
-                        result.extend(lines2)
-                else:
-                    # Undefined reference.
-                    result.append(s)
-            else:
-                result.append(s)
-        return result
-    #@+node:ekr.20110610144305.6751: *7* rst.findSectionDef
-    def findSectionDef(self, name, p):
-        for p2 in p.subtree():
-            name2 = self.isSectionDef(p2)
-            if name2:
-                return p2
-        return None
-    #@+node:ekr.20090502071837.72: *7* rst.handleCodeMode & helper
-    def handleCodeMode(self, p, lines):
-        """
-        Handle the preprocessed body text in code mode as follows:
-
-        - Blank lines are copied after being cleaned.
-        - @ @rst-markup lines get copied as is.
-        - Everything else gets put into a code-block directive.
-        """
-        result = []; n = 0; code = []
-        while n < len(lines):
-            s = lines[n]; n += 1
-            if (
-                self.isSpecialDocPart(s, '@rst-markup') or (
-                    self.getOption(p, 'show_doc_parts_as_paragraphs') and
-                    self.isSpecialDocPart(s, None)
-                )
-            ):
-                if code:
-                    self.finishCodePart(code, p, result)
-                    code = []
-                result.append('')
-                n, lines2 = self.getDocPart(lines, n)
-                # A fix, perhaps dubious, to a bug discussed at
-                # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-                result.extend(lines2)
-            elif not s.strip() and not code:
-                pass  # Ignore blank lines before the first code block.
-            else:
-                if not code:  # Start the code block.
-                    result.append('')
-                    result.append(self.code_block_string)
-                code.append(s)
-        if code:
-            self.finishCodePart(code, p, result)
-            code = []
-        # Munge the result so as to keep docutils happy.
-        # Don't use self.rstripList: it's not the same.
-        result2 = []
-        for z in result:
-            if z == '': result2.append('\n\n')
-            # Fix bug 618482.
-            elif z.endswith('\n\n'):
-                result2.append(z)  # Leave alone.
-            else:
-                result2.append(f"{z.rstrip()}\n")
-        return result2
-    #@+node:ekr.20090502071837.73: *8* rst.formatCodeModeLine
-    def formatCodeModeLine(self, s, n, numberOption):
-        if not s.strip(): s = ''
-        if numberOption:
-            return f"	{n}: {s}"
-        return f"\t{s}"
-    #@+node:ekr.20090502071837.74: *8* rst.rstripList
-    def rstripList(self, theList):
-        """Removed trailing blank lines from theList."""
-        # 2010/08/27: fix bug 618482.
-        s = ''.join(theList).rstrip()
-        return s.split('\n')
-    #@+node:ekr.20090502071837.75: *8* rst.finishCodePart
-    def finishCodePart(self, code, p, result):
-        """Finish writing a code part."""
-        numberOption = self.getOption(p, 'number_code_lines')
-        lines = self.rstripList(code)
-        for i, line in enumerate(lines):
-            result.append(self.formatCodeModeLine(line, i + 1, numberOption))
-    #@+node:ekr.20090502071837.76: *7* rst.handleDocOnlyMode
-    def handleDocOnlyMode(self, p, lines):
-        """
-        Handle the preprocessed body text in doc_only mode as follows:
-
-        - Blank lines are copied after being cleaned.
-        - @ @rst-markup lines get copied as is.
-        - All doc parts get copied.
-        - All code parts are ignored.
-        """
-        showHeadlines = self.getOption(p, 'show_headlines')
-        showThisHeadline = self.getOption(p, 'show_this_headline')
-        showOrganizers = self.getOption(p, 'show_organizer_nodes')
-        n, result = 0, []
-        while n < len(lines):
-            s = lines[n]; n += 1
-            if self.isSpecialDocPart(s, '@rst-options'):
-                n, lines2 = self.getDocPart(lines, n)  # ignore.
-            elif self.isAnyDocPart(s):
-                # Handle any other doc part, including @rst-markup.
-                n, lines2 = self.getDocPart(lines, n)
-                if lines2: result.extend(lines2)
-        if showHeadlines:
-            if result or showThisHeadline or showOrganizers or p == self.topNode:
-                self.writeHeadlineHelper(p)
-        return result
-    #@+node:ekr.20090502071837.83: *6* rst.writeHeadline & helper
-    def writeHeadline(self, p):
-        """
-        Generate an rST section if options permit it.
-        Remove headline commands from the headline first,
-        and never generate an rST section for @rst-option and @rst-options.
-        """
-        docOnly = self.getOption(p, 'doc_only_mode')
-        ignore = self.getOption(p, 'ignore_this_headline')
-        ignoreNowebDefs = self.getOption(p, 'ignore_noweb_definitions')
-        showHeadlines = self.getOption(p, 'show_headlines')
-        showOrganizers = self.getOption(p, 'show_organizer_nodes')
-        showThisHeadline = self.getOption(p, 'show_this_headline')
-        table = self.getOption(p, 'table')  # Leo 5.3.
-        if (
-            p == self.topNode or
-            ignore or
-            table or  # Leo 5.3
-            docOnly or  # handleDocOnlyMode handles this.
-            not showHeadlines and not showThisHeadline or
-            # docOnly and not showOrganizers and not thisHeadline or
-            not p.h.strip() and not showOrganizers or
-            not p.b.strip() and not showOrganizers or
-            ignoreNowebDefs and self.isSectionDef(p)  # 2011/06/10.
-        ):
-            return
-        self.writeHeadlineHelper(p)
-    #@+node:ekr.20090502071837.84: *7* rst.writeHeadlineHelper
-    def writeHeadlineHelper(self, p):
-        """Write the headline of p as rST."""
-        h = p.h
-        if not self.atAutoWrite:
-            h = h.strip()
-        # Remove any headline command before writing the headline.
-        i = g.skip_ws(h, 0)
-        i = g.skip_id(h, 0, chars='@-')
-        word = h[:i].strip()
-        if word:
-            # Never generate a section for these...
-            if word in (
-                '@rst-option', '@rst-options',
-                '@rst-no-head', '@rst-no-headlines',
-                '@rst-table',  # new in Leo 5.3.
-                '@rst-preformat',  # Fix #286.
-            ):
-                return
-            # Remove all other headline commands from the headline.
-            for command in self.headlineCommands:
-                if word == command:
-                    h = h[len(word) :].strip()
-                    break
-            # New in Leo 4.4.4.
-            if word.startswith('@'):
-                if self.getOption(p, 'strip_at_file_prefixes'):
-                    for s in ('@auto', '@clean', '@file', '@nosent', '@thin',):
-                        if g.match_word(word, 0, s):
-                            h = h[len(s) :].strip()
-        if not h.strip():
-            pass
-        elif self.getOption(p, 'show_sections'):
-            if self.getOption(p, 'generate_rst'):
-                self.write(self.underline(h, p))  # Used by @auto-rst.
-            else:
-                self.write(f"\n{h}\n\n")
-        else:
-            self.write(f"\n**{h.replace('*', '')}**\n\n")
     #@+node:ekr.20090502071837.85: *6* rst.writeNode
     def writeNode(self, p):
         """Format a node according to the options presently in effect."""
-        self.initCodeBlockString(p)
+        ### self.initCodeBlockString(p)
         h = p.h.strip()
-        if self.getOption(p, 'preformat_this_node'):
-            self.http_addNodeMarker(p)
-            self.writePreformat(p)
-            p.moveToThreadNext()
-        elif self.getOption(p, 'ignore_this_tree'):
+        ### No longer supported
+            # if self.getOption(p, 'preformat_this_node'):
+                # self.http_addNodeMarker(p)
+                # self.writePreformat(p)
+                # p.moveToThreadNext()
+                # return
+            # if (
+                # g.match_word(h, 0, '@rst-options') and
+                # not self.getOption(p, 'show_options_nodes')
+            # ):
+                # p.moveToThreadNext()
+                # return
+        ### if self.getOption(p, 'ignore_this_tree'):
+        if g.match_word(h, 0, '@rst-ignore-tree'):
             p.moveToNodeAfterTree()
-        elif self.getOption(p, 'ignore_this_node'):
+            return
+        ### if self.getOption(p, 'ignore_this_node'):
+        if g.match_word(h, 0, '@rst-ignore'):
             p.moveToThreadNext()
-        elif (
-            g.match_word(h, 0, '@rst-options') and
-            not self.getOption(p, 'show_options_nodes')
-        ):
-            p.moveToThreadNext()
-        else:
-            self.http_addNodeMarker(p)
-            self.writeHeadline(p)
+            return
+        if g.match_word(h, 0, '@rst-ignore-head'):
             self.writeBody(p)
             p.moveToThreadNext()
+            return
+        # Default: write the entire node.
+        self.http_addNodeMarker(p)
+        ### self.writeHeadline(p)
+        self.write(f"\n**{h.replace('*', '')}**\n\n")
+        self.writeBody(p)
+        p.moveToThreadNext()
     #@+node:ekr.20090502071837.86: *6* rst.writePreformat
     def writePreformat(self, p):
         """Write p's body text lines as if preformatted.
@@ -1010,10 +417,9 @@ class RstCommands:
     #@+node:ekr.20090502071837.87: *6* rst.writeTree
     def writeTree(self, p, fn):
         """Write p's tree to self.outputFile."""
-        if (
-            self.getOption(p, 'generate_rst') and
-            self.getOption(p, 'generate_rst_header_comment')
-        ):
+        if self.generate_rst and self.generate_rst_header_comment:
+            ### self.getOption(p, 'generate_rst') and
+            ### self.getOption(p, 'generate_rst_header_comment')
             self.write(self.rstComment(f"rst3: filename: {fn}\n\n"))
         # We can't use an iterator because we may skip parts of the tree.
         p = p.copy()
@@ -1043,8 +449,10 @@ class RstCommands:
     #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
     def writeAtAutoFile(self, p, fileName, outputFile):
         """
-        Write an @auto tree containing imported rST code.
-        The caller will close the output file.
+        at.writeAtAutoContents calls this method to write an @auto tree
+        containing imported rST code.
+        
+        at.writeAtAutoContents will close the output file.
         """
         self.initSettings(p)
         try:
@@ -1100,226 +508,16 @@ class RstCommands:
                 g.es('body text will be ignored in\n', p.h)
                 return False
         return True
-    #@+node:ekr.20090502071837.41: *3* rst.Options
-    #@+node:ekr.20090502071837.44: *4* rst.getOption
-    def getOption(self, p, name):
-        """Return the value of the named option at node p."""
-        d = self.scriptSettingsDict
-        name = self.munge(name)
-        assert p, g.callers()
-            # We may as well fail here.
-
-        def dump(kind, p, val):
-            pass
-
-        # 1. Search scriptSettingsDict.
-
-        val = d.get(name)
-        if val is not None:
-            dump('script', p, val)
-            return val
-        # 2. Handle single-node options
-        if name in self.singleNodeOptions:
-            d = self.dd.get(p.v, {})
-            val = d.get(name)
-            dump('single', p, val)
-            return val
-        # 3. Search all parents, using self.dd.
-        root = self.root if self.root and p.isAncestorOf(self.root) else p
-            # Fix #362.
-        for p2 in root.self_and_parents(copy=False):
-            d = self.dd.get(p2.v, {})
-            val = d.get(name)
-            if val is not None:
-                dump('node', p2, val)
-                return val
-        # 4. Search self.d0
-        val = self.d0.get(name)
-        dump('default', p, val)
-        return val  # May be None.
-    #@+node:ekr.20090502071837.45: *4* rst.initCodeBlockString
-    def initCodeBlockString(self, p):
-        """Init the string used to write code-block directives."""
-        c = self.c
-        d = c.scanAllDirectives(p)
-        language = d.get('language', 'python').lower()
-        syntax = SilverCity is not None
-        # Note: lines that end with '\n\n' are a signal to handleCodeMode.
-        s = self.getOption(p, 'code_block_string')
-        if s:
-            self.code_block_string = s.replace('\\n', '\n')
-        elif syntax and language in ('python', 'ruby', 'perl', 'c'):
-            self.code_block_string = f"**code**:\n\n.. code-block:: {language.title()}\n\n"
-        else:
-            self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-    #@+node:ekr.20150319125851.8: *4* rst.initSettings
-    def initSettings(self, p, script_d=None):
-        """
-        Init all settings for a command rooted in p.
-        There is no need to create self.d0 again.
-        """
-        self.scriptSettingsDict = script_d or {}
-        self.init_write(p)
-        self.preprocessTree(p)
-    #@+node:ekr.20090502071837.46: *4* rst.preprocessTree & helpers
-    def preprocessTree(self, root):
-        """Init settings in root, its subtree and all parents."""
-        self.dd = {}
-        # Bug fix 12/4/05: must preprocess parents too.
-        for p in root.parents():
-            self.preprocessNode(p)
-        for p in root.self_and_subtree(copy=False):
-            self.preprocessNode(p)
-    #@+node:ekr.20090502071837.47: *5* rst.preprocessNode & helper
-    def preprocessNode(self, p):
-        """Set self.dd for p.v."""
-        d = self.dd.get(p.v)
-        if d is None:
-            d = self.scanNodeForOptions(p)
-            self.dd[p.v] = d
-    #@+node:ekr.20090502071837.51: *6* rst.scanNodeForOptions & helpers
-    def scanNodeForOptions(self, p):
-        """
-        Return a dictionary containing all the option-name:value entries in p.
-
-        Such entries may arise from @rst-option or @rst-options in the headline,
-        or from @ @rst-options doc parts.
-        """
-        # A fine point: body options over-ride headline options.
-        d = self.scanHeadlineForOptions(p)
-        d2 = self.scanForOptionDocParts(p, p.b)
-        d.update(d2)
-        return d
-    #@+node:ekr.20090502071837.50: *7* rst.scanHeadlineForOptions
-    def scanHeadlineForOptions(self, p):
-        """Return a dictionary containing the options implied by p's headline."""
-        h = p.h.strip()
-        if p == self.topNode:
-            return {}  # Don't mess with the root node.
-        if g.match_word(h, 0, '@rst-option'):
-            s = h[len('@rst-option') :]
-            d = self.scanOption(p, s)
-            return d
-        if g.match_word(h, 0, '@rst-options'):
-            d = self.scanOptions(p, p.b)
-            return d
-        # Careful: can't use g.match_word because options may have '-' chars.
-        i = g.skip_id(h, 0, chars='@-')
-        word = h[0:i]
-        for option, ivar, val in (
-            ('@rst', 'code_mode', False),
-            ('@rst-code', 'code_mode', True),
-            ('@rst-default-path', 'default_prefix', ''),
-            ('@rst-doc-only', 'doc_only_mode', True),
-            ('@rst-head', 'show_this_headline', True),
-            # ('@rst-head' ,        'show_headlines',False),
-            ('@rst-ignore', 'ignore_this_node', True),
-            ('@rst-ignore-node', 'ignore_this_node', True),
-            ('@rst-ignore-tree', 'ignore_this_tree', True),
-            ('@rst-no-head', 'ignore_this_headline', True),
-            ('@rst-table', 'table', True),  # Leo 5.3.
-            ('@rst-preformat', 'preformat_this_node', True),
-        ):
-            if word == option:
-                d = {ivar: val}
-                # Special case: code mode and doc-only modes are linked.
-                if ivar == 'code_mode':
-                    d['doc_only_mode'] = False
-                elif ivar == 'doc_only_mode':
-                    d['code_mode'] = False
-                # Special case: Treat a bare @rst like @rst-no-head
-                if h == '@rst':
-                    d['ignore_this_headline'] = True
-                return d
-        if h.startswith('@rst'):
-            g.trace('unknown kind of @rst headline', p.h, g.callers(4))
-        return {}
-    #@+node:ekr.20090502071837.49: *7* rst.scanForOptionDocParts
-    def scanForOptionDocParts(self, p, s):
-        """
-        Return a dictionary containing all options from @rst-options doc parts in p.
-        Multiple @rst-options doc parts are allowed: this code aggregates all options.
-        """
-        d, n = {}, 0
-        lines = g.splitLines(s)
-        while n < len(lines):
-            line = lines[n]; n += 1
-            if line.startswith('@'):
-                i = g.skip_ws(line, 1)
-                for kind in ('@rst-options', '@rst-option'):
-                    if g.match_word(line, i, kind):
-                        # Allow options on the same line.
-                        line = line[i + len(kind) :]
-                        d.update(self.scanOption(p, line))
-                        # Add options until the end of the doc part.
-                        while n < len(lines):
-                            line = lines[n]; n += 1; found = False
-                            for stop in ('@c', '@code', '@'):
-                                if g.match_word(line, 0, stop):
-                                    found = True; break
-                            if found:
-                                break
-                            else:
-                                d.update(self.scanOption(p, line))
-                        break
-        return d
-    #@+node:ekr.20090502071837.53: *5* rst.scanOptions & helper
-    def scanOptions(self, p, s):
-        """Return a dictionary containing all the options in s."""
-        d = {}
-        for line in g.splitLines(s):
-            d2 = self.scanOption(p, line)
-            if d2: d.update(d2)
-        return d
-    #@+node:ekr.20090502071837.52: *6* rst.scanOption & helper
-    def scanOption(self, p, s):
-        """
-        Return { name:val } if s is a line of the form name=val.
-        Otherwise return {}
-        """
-        if not s.strip() or s.strip().startswith('..'):
-            return {}
-        data = self.parseOptionLine(s)
-        if data:
-            name, val = data
-            if self.munge(name) in list(self.d0.keys()):
-                if val.lower() == 'true': val = True
-                elif val.lower() == 'false': val = False
-                d = {self.munge(name): val}
-                return d
-            g.error('ignoring unknown option:', name)
-            return {}
-        g.trace(repr(s))
-        g.error('bad rst3 option', s, 'in', p.h)
-        return {}
-    #@+node:ekr.20090502071837.48: *7* rst.parseOptionLine
-    def parseOptionLine(self, s):
-        """
-        Parse a line containing name=val and return (name,value) or None.
-        If no value is found, default to True.
-        """
-        s = s.strip()
-        if s.endswith(','): s = s[:-1]
-        # Get name.  Names may contain '-' and '_'.
-        i = g.skip_id(s, 0, chars='-_')
-        name = s[:i]
-        if not name:
-            return None, False
-        j = g.skip_ws(s, i)
-        if g.match(s, j, '='):
-            val = s[j + 1 :].strip()
-            return name, val
-        return name, 'True'
     #@+node:ekr.20090502071837.59: *3* rst.Shared write code
     #@+node:ekr.20090502071837.96: *4* rst.http_addNodeMarker
     def http_addNodeMarker(self, p):
         """Add a node marker for the mod_http plugin."""
-        if (
-            self.getOption(p, 'http_server_support') and
-            self.getOption(p, 'generate_rst')
-        ):
+        if self.http_server_support and self.generate_rst:
+            # self.getOption(p, 'http_server_support') and
+            # self.getOption(p, 'generate_rst')):
             self.nodeNumber += 1
-            anchorname = f"{self.getOption(p, 'node_begin_marker')}{self.nodeNumber}"
+            ### anchorname = f"{self.getOption(p, 'node_begin_marker')}{self.nodeNumber}"
+            anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
             s = f"\n\n.. _{anchorname}:\n\n"
             self.write(s)
             self.http_map[anchorname] = p.copy()
@@ -1339,17 +537,17 @@ class RstCommands:
             s = self.encode(s)
         theFile.write(s)
     #@+node:ekr.20100813041139.5919: *4* rst.write_files & helpers
-    def write_files(self, ext, fn, p, callDocutils, toString, writeIntermediateFile):
+    def write_files(self, ext, fn, p, toString): ###  callDocutils, writeIntermediateFile):
         """Write a file to the indicated locations."""
         isHtml = ext in ('.html', '.htm')
         fn = self.computeOutputFileName(fn)
         if not toString:
             if not self.createDirectoryForFile(fn):
                 return
-        if writeIntermediateFile:
+        if self.write_intermediate_file:
             if not toString:
                 self.createIntermediateFile(fn, p, self.source)
-        if callDocutils and ext in ('.htm', '.html', '.tex', '.pdf', '.s5', '.odt'):
+        if self.call_docutils and ext in ('.htm', '.html', '.tex', '.pdf', '.s5', '.odt'):
             self.stringOutput = s = self.writeToDocutils(p, self.source, ext)
             if s and isHtml:
                 self.stringOutput = s = self.addTitleToHtml(s)
@@ -1402,7 +600,8 @@ class RstCommands:
     #@+node:ekr.20100813041139.5912: *5* rst.createIntermediateFile
     def createIntermediateFile(self, fn, p, s):
         """Write s to to the file whose name is fn."""
-        ext = self.getOption(p, 'write_intermediate_extension')
+        # ext = self.getOption(p, 'write_intermediate_extension')
+        ext = self.write_intermediate_extension
         ext = ext or '.txt'  # .txt by default.
         if not ext.startswith('.'): ext = '.' + ext
         fn = fn + ext
@@ -1446,16 +645,19 @@ class RstCommands:
                     # if not g.unitTesting:
                         # g.es('SilverCity not present so no syntax highlighting')
         # Make the stylesheet path relative to the directory containing the output file.
-        rel_stylesheet_path = self.getOption(p, 'stylesheet_path') or ''
+        
+        ### rel_stylesheet_path = self.getOption(p, 'stylesheet_path') or ''
+        rel_stylesheet_path = self.stylesheet_path or ''
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
         stylesheet_path = g.os_path_finalize_join(
             openDirectory, rel_stylesheet_path)
-        stylesheet_name = self.getOption(p, 'stylesheet_name')
-        assert stylesheet_name
-        path = g.os_path_finalize_join(stylesheet_path, stylesheet_name)
-        if self.getOption(p, 'stylesheet_embed') is False:
+        ### stylesheet_name = self.getOption(p, 'stylesheet_name')
+        assert self.stylesheet_name
+        path = g.os_path_finalize_join(self.stylesheet_path, self.stylesheet_name)
+        ### if self.getOption(p, 'stylesheet_embed') is False:
+        if not self.stylesheet_embed:
             rel_path = g.os_path_join(
-                rel_stylesheet_path, self.getOption(p, 'stylesheet_name'))
+                rel_stylesheet_path, self.stylesheet_name)  ### self.getOption(p, 'stylesheet_name'))
             rel_path = rel_path.replace('\\', '/')  # 2010/01/28
             overrides['stylesheet'] = rel_path
             overrides['stylesheet_path'] = None
@@ -1465,8 +667,7 @@ class RstCommands:
                 overrides['stylesheet'] = path
                 overrides['stylesheet_path'] = None
         elif styleSheetArgsDict:
-            g.es_print('using publish_argv_for_missing_stylesheets',
-                styleSheetArgsDict)
+            g.es_print('using publish_argv_for_missing_stylesheets', styleSheetArgsDict)
             overrides.update(styleSheetArgsDict)
                 # MWC add args to settings
         elif rel_stylesheet_path == stylesheet_path:
@@ -1513,7 +714,8 @@ class RstCommands:
             return {
                 'documentclass': 'report', 'documentoptions': 'english,12pt,lettersize'}
         if not s:
-            s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
+            ### s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
+            s = self.publish_argv_for_missing_stylesheets
         if not s:
             return {}
         # Handle argument lists such as this:
@@ -1563,10 +765,10 @@ class RstCommands:
         """Return the full path to the output file."""
         c = self.c
         openDirectory = c.frame.openDirectory
-        default_path = self.getOption(self.root or c.p, 'default_path')
+        ### default_path = self.getOption(self.root or c.p, 'default_path')
             # Subtle change, part of #362: scan options starting at self.root, not c.p.
-        if default_path:
-            path = g.os_path_finalize_join(self.path, default_path, fn)
+        if self.default_path:
+            path = g.os_path_finalize_join(self.path, self.default_path, fn)
         elif self.path:
             path = g.os_path_finalize_join(self.path, fn)
         elif openDirectory:
@@ -1587,10 +789,12 @@ class RstCommands:
     #@+node:ekr.20090502071837.91: *4* rst.report
     def report(self, name, p):
         """Issue a report to the log pane."""
-        if self.getOption(p, 'silent'):
+        ### if self.getOption(p, 'silent'):
+        if self.silent:
             return
         name = g.os_path_finalize(name)  # 1341
-        f = g.blue if self.getOption(p, 'verbose') else g.pr
+        ### f = g.blue if self.getOption(p, 'verbose') else g.pr
+        f = g.blue if self.verbose else g.pr
         f(f"wrote: {name}")
     #@+node:ekr.20090502071837.92: *4* rst.rstComment
     def rstComment(self, s):
@@ -1625,7 +829,8 @@ class RstCommands:
                 return f"{ch * n}\n{p.h}\n{ch * n}\n\n"
             return f"{p.h}\n{ch * n}\n\n"
         # The user is responsible for top-level overlining.
-        u = self.getOption(p, 'underline_characters')  #  '''#=+*^~"'`-:><_'''
+        ### u = self.getOption(p, 'underline_characters')  #  '''#=+*^~"'`-:><_'''
+        u = self.underline_characters  #  '''#=+*^~"'`-:><_'''
         level = max(0, p.level() - self.topLevel)
         level = min(
             level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
@@ -1633,6 +838,251 @@ class RstCommands:
         n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
         return f"{s.strip()}\n{ch * n}\n\n"
             # Fixes bug 618570:
+    #@+node:ekr.20210326091013.1: *3* initSettings (TEMP)
+    def initSettings(self, p, script_d=None):
+        g.trace(p)
+    #@-others
+#@+node:ekr.20120219194520.10444: ** html parser classes
+# pylint: disable=abstract-method
+# The lack of an 'error' method is not serious.
+#@+node:ekr.20120219194520.10445: *3*  class LinkAnchorParserClass (HTMLParser)
+class LinkAnchorParserClass(HTMLParser.HTMLParser):
+    """
+    The base class to recognize anchors and links in HTML documents. A
+    special marker is the "node_marker" which marks the border between node
+    and the next.
+
+    The parser classes are used to construct the html code for nodes.
+
+    The algorithm has two phases:
+    - Phase 1 AnchorHtmlParserClass: gets the html code for each node.
+    - Phase 2 LinkHtmlParserClass: finds all links and checks whethr
+      these links need to be modified.
+    """
+    #@+others
+    #@+node:ekr.20120219194520.10446: *4* __init__
+    def __init__(self, rst, p):
+        """Ctor for the LinkAnchorParserClass class."""
+        super().__init__()
+        self.rst = rst
+        self.p = p.copy()
+        # Set ivars from options.
+        # This works only if we don't change nodes!
+        self.node_begin_marker = rst.getOption(p, 'node_begin_marker')
+        self.clear_http_attributes = rst.getOption(p, 'clear_http_attributes')
+        self.current_file = rst.outputFileName
+    #@+node:ekr.20120219194520.10447: *4* is_anchor
+    def is_anchor(self, tag, attrs):
+        """
+        Check if the current tag is an anchor.
+        Returns *all* anchors.
+        Works with docutils 0.4
+        """
+        if tag == 'a':
+            return True
+        if self.is_node_marker(attrs):
+            return True
+        return tag == "span"
+    #@+node:ekr.20120219194520.10448: *4* is_link
+    def is_link(self, tag, attrs):
+        """Return True if tag, attrs is represents a link."""
+        if tag == 'a':
+            return 'href' in dict(attrs)
+        return False
+    #@+node:ekr.20120219194520.10449: *4* is_node_marker
+    def is_node_marker(self, attrs):
+        """
+        Return the name of the anchor, if this is an anchor for the beginning of a node,
+        False otherwise.
+        """
+        d = dict(attrs)
+        if d.get('id', '').startswith(self.node_begin_marker):
+            return d['id']
+        return False
+    #@-others
+#@+node:ekr.20120219194520.10450: *3* class HtmlParserClass (LinkAnchorParserClass)
+class HtmlParserClass(LinkAnchorParserClass):
+    """
+    The responsibility of the html parser is:
+        1. Find out which html code belongs to which node.
+        2. Keep a stack of open tags which apply to the current node.
+        3. Keep a list of tags which should be included in the nodes, even
+           though they might be closed.
+           The <style> tag is one example of that.
+
+    Later, we have to relocate inter-file links: if a reference to another location
+    is in a file, we must change the link.
+
+    """
+    #@+others
+    #@+node:ekr.20120219194520.10451: *4* __init__
+    def __init__(self, rst, p):
+        """Ctor for the HtmlParserClass class."""
+        super().__init__(rst, p)
+        self.stack = None
+            # The stack contains lists of the form:
+            # [text1, text2, previous].
+            # text1 is the opening tag
+            # text2 is the closing tag
+            # previous points to the previous stack element
+        self.node_marker_stack = []
+            # self.node_marker_stack.pop() returns True for a closing tag if
+            # the opening tag identified an anchor belonging to a VNode.
+        self.node_code = []
+            # Accumulated html code.
+            # Once the hmtl code is assigned a VNode, it is deleted here.
+        self.deleted_lines = 0
+            # Number of lines deleted in self.node_code
+        self.endpos_pending = False
+            # Do not include self.node_code[0:self.endpos_pending] in the html code.
+        self.last_position = None
+            # Last position; we must attach html code to this node.
+        self.last_marker = None
+    #@+node:ekr.20120219194520.10452: *4* handle_starttag
+    def handle_starttag(self, tag, attrs):
+        """
+        1. Find out if the current tag is an achor.
+        2. If it is an anchor, we check if this anchor marks the beginning of a new
+           node
+        3. If a new node begins, then we might have to store html code for the previous
+           node.
+        4. In any case, put the new tag on the stack.
+        """
+        is_node_marker = False
+        if self.is_anchor(tag, attrs) and self.is_node_marker(attrs):
+            is_node_marker = self.is_node_marker(attrs)
+            line, column = self.getpos()
+            if self.last_position:
+                lines = self.node_code[:]
+                lines[0] = lines[0][self.startpos:]
+                del lines[line - self.deleted_lines - 1 :]
+                mod_http.get_http_attribute(self.last_position).extend(lines)
+                #@+<< trace the unknownAttribute >>
+                #@+node:ekr.20120219194520.10453: *5* << trace the unknownAttribute >>
+                if 0:
+                    g.pr("rst3: unknownAttributes[self.http_attributename]")
+                    g.pr("For:", self.last_position)
+                    pprint.pprint(mod_http.get_http_attribute(self.last_position))
+                #@-<< trace the unknownAttribute >>
+            if self.deleted_lines < line - 1:
+                del self.node_code[: line - 1 - self.deleted_lines]
+                self.deleted_lines = line - 1
+                self.endpos_pending = True
+        starttag = self.get_starttag_text()
+        self.stack = [starttag, None, self.stack]
+        self.node_marker_stack.append(is_node_marker)
+    #@+node:ekr.20120219194520.10454: *4* handle_endtag
+    def handle_endtag(self, tag):
+        """
+        1. Set the second element of the current top of stack.
+        2. If this is the end tag for an anchor for a node,
+           store the current stack for that node.
+        """
+        self.stack[1] = "</" + tag + ">"
+        if self.endpos_pending:
+            line, column = self.getpos()
+            self.startpos = self.node_code[0].find(">", column) + 1
+            self.endpos_pending = False
+        is_node_marker = self.node_marker_stack.pop()
+        if is_node_marker and not self.clear_http_attributes:
+            self.last_position = self.rst.http_map[is_node_marker]
+            if is_node_marker != self.last_marker:
+                # if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
+                mod_http.set_http_attribute(
+                    self.rst.http_map[is_node_marker], self.stack)
+                self.last_marker = is_node_marker
+                # bwm: last_marker is not needed?
+        self.stack = self.stack[2]
+    #@+node:ekr.20120219194520.10455: *4* feed
+    def feed(self, line):
+        # pylint: disable=arguments-differ
+        self.node_code.append(line)
+        HTMLParser.HTMLParser.feed(self, line)  # Call the base class's feed().
+    #@-others
+#@+node:ekr.20120219194520.10456: *3* class AnchorHtmlParserClass (LinkAnchorParserClass)
+class AnchorHtmlParserClass(LinkAnchorParserClass):
+    """
+    This htmlparser does the first step of relocating: finding all the
+    anchors within the html nodes.
+
+    Each anchor is mapped to a tuple: (current_file, position).
+
+    Filters out markers which mark the beginning of the html code for a node.
+    """
+    #@+others
+    #@+node:ekr.20120219194520.10457: *4*  __init__
+    def __init__(self, rst, p):
+        """Ctor for the AnchorHtmlParserClass class."""
+        super().__init__(rst, p)
+        self.p = p.copy()
+        self.anchor_map = rst.anchor_map
+    #@+node:ekr.20120219194520.10458: *4* handle_starttag
+    def handle_starttag(self, tag, attrs):
+        """
+        1. Find out if the current tag is an achor.
+        2. If the current tag is an anchor, update the mapping;
+             anchor -> (filename, p)
+        """
+        if not self.is_anchor(tag, attrs):
+            return
+        if self.current_file not in self.anchor_map:
+            self.anchor_map[self.current_file] = (self.current_file, self.p)
+            simple_name = g.os_path_split(self.current_file)[1]
+            self.anchor_map[simple_name] = self.anchor_map[self.current_file]
+            # if bwm_file:
+            #   print >> bwm_file, "anchor(1): current_file:",
+            #   self.current_file, "position:", self.p, "Simple name:", simple_name
+            # Not sure what to do here, exactly. Do I need to manipulate
+            # the pathname?
+        for name, value in attrs:
+            if name == 'name' or tag == 'span' and name == 'id':
+                if not value.startswith(self.node_begin_marker):
+                    # if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
+                    self.anchor_map[value] = (self.current_file, self.p.copy())
+    #@-others
+#@+node:ekr.20120219194520.10459: *3* class LinkHtmlParserClass (LinkAnchorParserClass)
+class LinkHtmlparserClass(LinkAnchorParserClass):
+    """This html parser does the second step of relocating links:
+    1. It scans the html code for links.
+    2. If there is a link which links to a previously processed file
+       then this link is changed so that it now refers to the node.
+    """
+    #@+others
+    #@+node:ekr.20120219194520.10460: *4* __init__
+    def __init__(self, rst, p):
+        """Ctor for the LinkHtmlParserClass class."""
+        super().__init__(rst, p)
+        self.anchor_map = rst.anchor_map
+        self.replacements = []
+    #@+node:ekr.20120219194520.10461: *4* handle_starttag
+    def handle_starttag(self, tag, attrs):
+        """
+        1. Find out if the current tag is an achor.
+        2. If the current tag is an anchor, update the mapping;
+             anchor -> p
+            Update the list of replacements for the document.
+        """
+        if not self.is_link(tag, attrs):
+            return
+        marker = self.node_begin_marker
+        for name, value in attrs:
+            if name == 'href':
+                href = value
+                href_parts = href.split("#")
+                if len(href_parts) == 1:
+                    href_a = href_parts[0]
+                else:
+                    href_a = href_parts[1]
+                if not href_a.startswith(marker):
+                    if href_a in self.anchor_map:
+                        href_file, href_node = self.anchor_map[href_a]
+                        http_node_ref = mod_http.node_reference(href_node)
+                        line, column = self.getpos()
+                        self.replacements.append(
+                            (line, column, href, href_file, http_node_ref))
+    #@+node:ekr.20120219194520.10462: *4* get_replacements
+    def get_replacements(self):
+        return self.replacements
     #@-others
 #@-others
 #@@language python
