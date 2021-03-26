@@ -164,7 +164,7 @@ class rst3Test:
         self.run()
 
     @others
-#@+node:ekr.20100827194549.5963: *5* report
+#@+node:ekr.20100827194549.5963: *5* rst3Test.report
 def report (self,expected,got):
     '''Report errors in an rst test.'''
     verbose = True
@@ -178,7 +178,7 @@ def report (self,expected,got):
             print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
         if not verbose and not match:
             break
-#@+node:ekr.20100827183358.5957: *5* run
+#@+node:ekr.20100827183358.5957: *5* rst3Test.run
 def run(self):
     '''run an rst test.'''
 
@@ -192,7 +192,7 @@ def run(self):
     expected,got,source = self.setup()
     root = source.firstChild()
     ### rc.preprocessTree(root)
-    rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
+    rc.processTree(p=root,ext='.html',toString=True) ###,justOneFile=True)
     ### assert rc.getOption(root, 'call_docutils'), 'call_docutils'
     assert rc.source is not None, 'rc.source should not be None'
     assert rc.stringOutput is not None, 'rc.stringOutput should not be None'
@@ -224,14 +224,14 @@ def run(self):
         child.h,child.b = 'rst',rst
         child = expected.insertAsNthChild(1)
         child.h,child.b = ' html',html
-#@+node:ekr.20171223221351.1: *5* munge NEW
+#@+node:ekr.20171223221351.1: *5* rst3Test.munge NEW
 def munge(self, html):
     '''Ignore local differences in output of docutils.'''
     import re
     html = re.sub(r'Docutils [\.0-9]*:','Docutils VER:',html)
     html = re.sub(r'<title>.*</title>','<title></title>',html)
     return html
-#@+node:ekr.20100827183358.5958: *5* setup
+#@+node:ekr.20100827183358.5958: *5* rst3Test.setup
 def setup (self):
     
     c,p = self.c, self.p
@@ -241,7 +241,7 @@ def setup (self):
     assert source,'source'
     assert expected,'expected'
     return expected,got,source
-#@+node:ekr.20100827183358.5959: *5* set_got
+#@+node:ekr.20100827183358.5959: *5* rst3Test.set_got
 def set_got (self,expected,got):
 
     c,p = self.c, self.p
@@ -24453,7 +24453,7 @@ assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
 assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
 assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
     repr(rst.atAutoWriteUnderlines))
-#@+node:ekr.20100813100841.5850: *4* @test rst3Test @no-head (fails)
+#@+node:ekr.20100813100841.5850: *4* ##@test rst3Test @no-head (fails)
 try:
     import docutils
 except Exception:
@@ -24816,7 +24816,7 @@ call_docutils=True
 </div>
 </body>
 </html>
-#@+node:ekr.20100812172232.5801: *4* @test rst3Test default (fails)
+#@+node:ekr.20100812172232.5801: *4* ##@test rst3Test default (fails)
 try:
     import docutils
 except Exception:
@@ -25197,7 +25197,7 @@ This is the body of the section.</p>
 </div>
 </body>
 </html>
-#@+node:ekr.20120307070541.3937: *4* @test rst3Test unicode characters (fails)
+#@+node:ekr.20120307070541.3937: *4* ##@test rst3Test unicode characters (fails)
 @first # -*- coding: utf-8 -*-
 
 # Note: rst3Test.munge in *this* file accounts for local docutils differences.

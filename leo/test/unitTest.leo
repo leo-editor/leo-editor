@@ -180,11 +180,11 @@
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100812182942.5804"><vh>class rst3Test</vh>
-<v t="ekr.20100827194549.5963"><vh>report</vh></v>
-<v t="ekr.20100827183358.5957"><vh>run</vh></v>
-<v t="ekr.20171223221351.1"><vh>munge NEW</vh></v>
-<v t="ekr.20100827183358.5958"><vh>setup</vh></v>
-<v t="ekr.20100827183358.5959"><vh>set_got</vh></v>
+<v t="ekr.20100827194549.5963"><vh>rst3Test.report</vh></v>
+<v t="ekr.20100827183358.5957"><vh>rst3Test.run</vh></v>
+<v t="ekr.20171223221351.1"><vh>rst3Test.munge NEW</vh></v>
+<v t="ekr.20100827183358.5958"><vh>rst3Test.setup</vh></v>
+<v t="ekr.20100827183358.5959"><vh>rst3Test.set_got</vh></v>
 </v>
 <v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20100813100841.5847"><vh>@ignore older ignored</vh>
@@ -255,7 +255,7 @@
 <v t="ekr.20091219121039.5065"><vh>@test c.rstCommands.handleMissingStyleSheetArgs</vh></v>
 <v t="ekr.20111103213154.3823"><vh>@test c.rstCommands.writeToDocutils: pdf</vh></v>
 <v t="ekr.20100131180007.5459"><vh>@test rst.initAtAutoWrite</vh></v>
-<v t="ekr.20100813100841.5850"><vh>@test rst3Test @no-head (fails)</vh>
+<v t="ekr.20100813100841.5850"><vh>##@test rst3Test @no-head (fails)</vh>
 <v t="ekr.20100813100841.5854"><vh>source</vh>
 <v t="ekr.20100813100841.5855"><vh>@rst test.html</vh>
 <v t="ekr.20100813100841.5856"><vh>@rst-no-head section</vh></v>
@@ -270,7 +270,7 @@
 <v t="ekr.20100827182529.6845"><vh>html</vh></v>
 </v>
 </v>
-<v t="ekr.20100812172232.5801"><vh>@test rst3Test default (fails)</vh>
+<v t="ekr.20100812172232.5801"><vh>##@test rst3Test default (fails)</vh>
 <v t="ekr.20100812182942.5805"><vh>source</vh>
 <v t="ekr.20100812182942.5807"><vh>@rst test.html</vh>
 <v t="ekr.20100812182942.5808"><vh>section</vh></v>
@@ -285,7 +285,7 @@
 <v t="ekr.20100827182529.6842"><vh>html</vh></v>
 </v>
 </v>
-<v t="ekr.20120307070541.3937"><vh>@test rst3Test unicode characters (fails)</vh>
+<v t="ekr.20120307070541.3937"><vh>##@test rst3Test unicode characters (fails)</vh>
 <v t="ekr.20120307070541.3941"><vh>source</vh>
 <v t="ekr.20120307070541.3942"><vh>@rst test.html</vh></v>
 </v>
@@ -3861,7 +3861,7 @@ This is the body of the section.&lt;/p&gt;
     expected,got,source = self.setup()
     root = source.firstChild()
     ### rc.preprocessTree(root)
-    rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
+    rc.processTree(p=root,ext='.html',toString=True) ###,justOneFile=True)
     ### assert rc.getOption(root, 'call_docutils'), 'call_docutils'
     assert rc.source is not None, 'rc.source should not be None'
     assert rc.stringOutput is not None, 'rc.stringOutput should not be None'

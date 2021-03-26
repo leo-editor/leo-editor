@@ -1673,29 +1673,6 @@ class TestManager:
     #@+node:ekr.20051104075904.95: *4* TM.throwAssertionError
     def throwAssertionError(self):
         assert 0, 'assert(0) as a test of catching assertions'
-    #@+node:ekr.20051104075904.37: *4* TM.writeNodesToNode
-    def writeNodesToNode(self, c, p, output, sentinels=True):
-        result = []
-        for p2 in p.self_and_subtree():
-            s = self.writeNodeToString(c, p2, sentinels)
-            result.append(s)
-        result = ''.join(result)
-        output.scriptSetBodyString(result)
-    #@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
-    def writeNodeToNode(self, c, p, output, sentinels=True):
-        """Write the p's tree to the body text of the output node."""
-        s = self.writeNodeToString(c, p, sentinels)
-        output.scriptSetBodyString(s)
-    #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
-    def writeNodeToString(self, c, p, sentinels):
-        """Return an AtFile.write of p's tree to a string."""
-        at = c.atFileCommands
-        ni = g.app.nodeIndices
-        for p2 in p.self_and_subtree():
-            if not p2.v.fileIndex:
-                p2.v.fileIndex = ni.getNewIndex(p2.v)
-        # Write the file to a string.
-        return at.atFileToString(p, sentinels=sentinels)
     #@-others
 #@-others
 #@@language python
