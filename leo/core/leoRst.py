@@ -146,10 +146,10 @@ class RstCommands:
         self.generate_rst_header_comment = True
         self.http_server_support = True
         self.node_begin_marker = 'http-node-marker-'
-        self.publish_argv_for_missing_stylesheets = None
+        self.publish_argv_for_missing_stylesheets = ''
         self.silent = False
         self.stylesheet_embed = False
-        self.stylesheet_name = ''
+        self.stylesheet_name = 'default.css'
         self.stylesheet_path = ''  # Can be '' or None.
         self.underline_characters = '''#=+*^~"'`-:><_'''
         self.verbose = False
@@ -649,10 +649,11 @@ class RstCommands:
         ### rel_stylesheet_path = self.getOption(p, 'stylesheet_path') or ''
         rel_stylesheet_path = self.stylesheet_path or ''
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
-        stylesheet_path = g.os_path_finalize_join(
-            openDirectory, rel_stylesheet_path)
+        stylesheet_path = g.os_path_finalize_join(openDirectory, rel_stylesheet_path)
+        
         ### stylesheet_name = self.getOption(p, 'stylesheet_name')
         assert self.stylesheet_name
+
         path = g.os_path_finalize_join(self.stylesheet_path, self.stylesheet_name)
         ### if self.getOption(p, 'stylesheet_embed') is False:
         if not self.stylesheet_embed:
@@ -708,16 +709,20 @@ class RstCommands:
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.
         """
-        force = False
-        if force:
+        if 0:
             # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
             return {
-                'documentclass': 'report', 'documentoptions': 'english,12pt,lettersize'}
+                'documentclass': 'report',
+                'documentoptions': 'english,12pt,lettersize',
+            }
         if not s:
             ### s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
+            
+            ### To do: getOption searches up p's tree!
             s = self.publish_argv_for_missing_stylesheets
         if not s:
             return {}
+        #
         # Handle argument lists such as this:
         # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
         d = {}
