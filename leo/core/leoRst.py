@@ -146,7 +146,8 @@ class RstCommands:
             elif g.match_word(h, 0, "@rst") and not g.match(h, 0, "@rst-"):
                 fn = h[4:].strip()
                 if fn:
-                    self.write_rst_tree(p, fn)
+                    source = self.write_rst_tree(p, fn)
+                    self.write_docutils_files(fn, p, source)
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
@@ -157,7 +158,7 @@ class RstCommands:
                 p.moveToThreadNext()
         return None, None
     #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree
-    def write_rst_tree(self, p, fn, testing=False):
+    def write_rst_tree(self, p, fn):
         """
         Convert p's tree to rst sources.
         Optionally call docutils to convert rst to output.
@@ -183,12 +184,8 @@ class RstCommands:
         while p and p != after:
             self.writeNode(p)  # Side effect: advances p.
         source = self.compute_result()
-        if testing:
-            # Don't write either external file.
-            html = self.writeToDocutils(p, source, ext='.html')
-        else:
-            html = self.write_docutils_files(fn, p, source)
-        return html, source
+        return source
+       
     #@+node:ekr.20100822092546.5835: *5* rst.write_slides & helper
     def write_slides(self, p):
         """Convert p's children to slides."""
@@ -274,12 +271,14 @@ class RstCommands:
         Write p's tree to a string as if it were an @rst node.
         Return the string.
         """
-        p = p.copy()
-        self.result_list = []
-        after = p.nodeAfterTree()
-        while p and p != after:
-            self.writeNode(p)  # Side effect: advances p.
-        return self.compute_result()
+        return self.write_rst_tree(p, fn=p.h)
+        ###
+            # p = p.copy()
+            # self.result_list = []
+            # after = p.nodeAfterTree()
+            # while p and p != after:
+                # self.writeNode(p)  # Side effect: advances p.
+            # return self.compute_result()
     #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
     def writeAtAutoFile(self, p, fileName, outputFile):
         """
@@ -664,16 +663,17 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         source_p = g.findNodeInTree(c, p, 'source')
         source_s1 = source_p.firstChild().b
         expected_p = g.findNodeInTree(c, p, 'expected')
-        expected_s = expected_p.firstChild().b
+        expected_source = expected_p.firstChild().b
         root = source_p.firstChild()
         #
         # Compute the result.
         rc.nodeNumber = 0
-        html, got_s = rc.write_rst_tree(root, fn, testing=True)
+        source = rc.write_rst_tree(root, fn)
+        html = rc.writeToDocutils(p, source, ext='.html')
         #
         # Tests...
         # Don't bother testing the html. It will depend on docutils.
-        self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
+        self.assertEqual(expected_source, source, msg='expected_s != got_s')
         assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
     #@+node:ekr.20210327092009.1: *3* TestRst3.test_1
     def test_1(self):
@@ -733,15 +733,16 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         '''
         #@-<< define child_b >>
         child.b = g.adjustTripleString(child_b, -4)
-        expected_s = g.adjustTripleString(expected_s, -4)
+        expected_source = g.adjustTripleString(expected_s, -4)
         #
         # Compute the result.
         rc.nodeNumber = 0
-        html, got_s = rc.write_rst_tree(root, fn, testing=True)
+        source = rc.write_rst_tree(root, fn)
+        html = rc.writeToDocutils(root, source, ext='.html')
         #
         # Tests...
         # Don't bother testing the html. It will depend on docutils.
-        self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
+        self.assertEqual(expected_source, source, msg='expected_source != source')
         assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
     #@-others
 #@-others
