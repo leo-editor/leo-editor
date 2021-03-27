@@ -31,10 +31,12 @@ except Exception:
 #
 # Leo imports.
 from leo.core import leoGlobals as g
+import leo.core.leoTest2 as leoTest2
+
 #
 # Aliases & traces.
 StringIO = io.StringIO
-if 'plugins' in g.app.debug:
+if 'plugins' in getattr(g.app, 'debug', []):
     print('leoRst.py: docutils:', repr(docutils))
     print('leoRst.py:  parsers:', repr(parsers))
     print('leoRst.py:      rst:', repr(rst))
@@ -640,74 +642,47 @@ class RstCommands:
         return f"{s.strip()}\n{ch * n}"
     #@-others
 #@+node:ekr.20210327072030.1: ** class TestRst3 (unittest.TestCase)
-class TestRst3(unittest.TestCase):
+class TestRst3(unittest.TestCase):  # pragma: no cover
     '''A class to run rst-related unit tests.'''
 
     #@+others
-    #@+node:ekr.20210327072030.2: *3* rst3Test.report
-    def report (self,expected,got):
-        '''Report errors in an rst test.'''
-        verbose = True
-        expected_lines = g.splitLines(expected.b)
-        got_lines = g.splitLines(got.b)
-        for i in range(min(len(expected_lines),len(got_lines))):
-            match = expected_lines[i]==got_lines[i]
-            if verbose or not match:
-                tag = g.choose(match,'  ','**')
-                print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
-                print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
-            if not verbose and not match:
-                break
-    #@+node:ekr.20210327072030.3: *3* rst3Test.run
-    def run(self, c, p):
+    #@+node:ekr.20210327072030.3: *3* TestRst3.run
+    def run(self, c=None, p=None):  # pylint: disable=arguments-differ
         '''run an rst test.'''
         #
         # Setup.
-        rc = c.rstCommands
-        fn = p.h
-        source_p = g.findNodeInTree(c, p, 'source')
-        source_s1 = source_p.firstChild().b
-        expected_p = g.findNodeInTree(c, p, 'expected')
-        expected_s = expected_p.firstChild().b
-        root = source_p.firstChild()
-        #
-        # Compute the result.
-        rc.nodeNumber = 0
-        html, got_s = rc.write_rst_tree(root, fn, testing=True)
-        #
-        # Tests...
-        # Don't bother testing the html. It will depend on docutils.
-        self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
-        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
-    #@+node:ekr.20210327072030.5: *3* rst3Test.setup
-    def setup (self):
-        
-        c,p = self.c, self.p
-        expected = g.findNodeInTree(c,p, 'expected')
-        got = g.findNodeInTree(c,p, 'got')
-        source = g.findNodeInTree(c,p, 'source')
-        assert source, 'source'
-        assert expected, 'expected'
-        return expected, got, source
-    #@+node:ekr.20210327072030.6: *3* rst3Test.set_got
-    def set_got (self,expected,got):
+        if c and p: ### Temp.
+            self.c = c
+            rc = c.rstCommands
+            fn = p.h
+            source_p = g.findNodeInTree(c, p, 'source')
+            source_s1 = source_p.firstChild().b
+            expected_p = g.findNodeInTree(c, p, 'expected')
+            expected_s = expected_p.firstChild().b
+            root = source_p.firstChild()
+            #
+            # Compute the result.
+            rc.nodeNumber = 0
+            html, got_s = rc.write_rst_tree(root, fn, testing=True)
+            #
+            # Tests...
+            # Don't bother testing the html. It will depend on docutils.
+            self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
+            assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
+    #@+node:ekr.20210327090734.1: *3* TestRst3.setUp & tearDown
+    def setUp(self):
+        """TestRst3.setUp"""
+        ### from leo.core import leoRst  # pylint: disable=import-self
+        g.unitTesting = True
+        self.c = c = leoTest2.create_app()
+        c.selectPosition(c.rootPosition())
 
-        c,p = self.c, self.p
-        if got:
-            got_rst = g.findNodeInTree(c,got,'rst')
-            got_html = g.findNodeInTree(c,got,'html')
-            assert got_rst
-            assert got_html
-        else:
-            got = p.insertAsLastChild()
-            got.h = 'got'
-            got_rst = got.insertAsNthChild(0)
-            got_rst.h = 'rst'
-            got_html = got.insertAsNthChild(1)
-            got_html.h = 'html'
-        return got_html,got_rst
+    def tearDown(self):
+        g.unitTesting = False
     #@-others
 #@-others
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
