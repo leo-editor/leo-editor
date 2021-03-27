@@ -54,21 +54,7 @@ def cmd(name):
 #@+node:ekr.20090502071837.33: ** class RstCommands
 class RstCommands:
     """
-    A class to write rst markup in Leo outlines.
-
-    This class optionally stores information for the http plugin.
-    Each node may have an rst_http_attributename attribute, a list.
-    The first three elements are a stack of tags, the rest is html code::
-
-        [
-            <tag n start>, <tag n end>, <other stack elements>,
-            <html line 1>, <html line 2>, ...
-        ]
-
-    <other stack elements> has the same structure::
-
-        [<tag n-1 start>, <tag n-1 end>, <other stack elements>]
-
+    A class to convert @rst nodes to rST markup.
     """
     #@+others
     #@+node:ekr.20090502071837.34: *3* rst.Birth
@@ -78,13 +64,12 @@ class RstCommands:
         self.c = c
         #
         # Statistics.
-        self.n_written = 0  # Number of files written.
-        self.node_counter = 0  # Number of nodes written.
+        self.n_written = 0  # Number of files written.  Set by write_rst_tree.
         #
-        # Http support for HtmlParserClass.
-        self.anchor_map = {}  # Maps are anchors. Values are positions
+        # Http support for HtmlParserClass.  See http_addNodeMarker.
+        self.anchor_map = {}  # Keys are anchors. Values are positions
         self.http_map = {}  # Keys are named hyperlink targets.  Value are positions.
-        self.nodeNumber = 0  # For unique anchors.
+        self.nodeNumber = 0  # Unique node number.
         #
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
@@ -92,7 +77,6 @@ class RstCommands:
         self.path = ''  # The path from any @path directive.
         self.result_list = []  # The intermediate results.
         self.root = None  # The @rst node being processed.
-        self.topLevel = 0  # self.root.level().
         #
         # Complete the init.
         self.reloadSettings()
@@ -137,7 +121,6 @@ class RstCommands:
         roots = g.findRootsWithPredicate(self.c, p, predicate=predicate)
         if roots:
             for p in roots:
-                self.root = p.copy()
                 self.processTree(p)
         else:
             g.warning('No @rst or @slides nodes in', p.h)
@@ -179,6 +162,10 @@ class RstCommands:
         Return the sources past to docutils.
         """
         c = self.c
+        p = p.copy()  # The loop below modifies p.
+        #
+        # Init self.root.
+        self.root = p.copy()
         #
         # Init encoding and path.
         d = c.scanAllDirectives(p)
@@ -187,8 +174,6 @@ class RstCommands:
         #
         # Write the output to self.result_list.
         self.n_written += 1
-        self.topLevel = p.level()
-        p = p.copy()  # The loop below modifies p.
         self.result_list = []  # All output goes here.
         if self.generate_rst_header_comment:
             self.result_list.append(f"rst3: filename: {fn}")
@@ -256,7 +241,20 @@ class RstCommands:
         p.moveToThreadNext()
     #@+node:ekr.20090502071837.96: *6* rst.http_addNodeMarker
     def http_addNodeMarker(self, p):
-        """Add a node marker for the mod_html plugin (HtmlParserClass class)."""
+        """
+        Add a node marker for the mod_http plugin (HtmlParserClass class).
+        
+        The first three elements are a stack of tags, the rest is html code::
+
+            [
+                <tag n start>, <tag n end>, <other stack elements>,
+                <html line 1>, <html line 2>, ...
+            ]
+
+        <other stack elements> has the same structure::
+
+            [<tag n-1 start>, <tag n-1 end>, <other stack elements>]
+        """
         if self.http_server_support:
             self.nodeNumber += 1
             anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
@@ -285,8 +283,8 @@ class RstCommands:
         at.writeAtAutoContents will close the output file.
         """
         self.result_list = []
-        self.initAtAutoWrite(p) ###, fileName, outputFile)
-        self.topLevel = p.level()
+        self.initAtAutoWrite(p)
+        self.root = p.copy()
         after = p.nodeAfterTree()
         if not self.isSafeWrite(p):
             return False
@@ -613,7 +611,7 @@ class RstCommands:
         if self.at_auto_write:
             # We *might* generate overlines for top-level sections.
             u = self.at_auto_underlines
-            level = p.level() - self.topLevel
+            level = p.level() - self.root.level()
             # This is tricky. The index n depends on several factors.
             if self.underlines2:
                 level -= 1  # There *is* a double-underlined section.
@@ -637,7 +635,7 @@ class RstCommands:
         #
         # The user is responsible for top-level overlining.
         u = self.underline_characters  #  '''#=+*^~"'`-:><_'''
-        level = max(0, p.level() - self.topLevel)
+        level = max(0, p.level() - self.root.level())
         level = min(level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
         ch = u[level]
         n = max(4, len(encoded_s))
