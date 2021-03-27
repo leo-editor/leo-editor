@@ -16,6 +16,7 @@ available."""
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
 import html.parser as HTMLParser
 import io
+import os
 import pprint
 import re
 import time
@@ -28,12 +29,6 @@ try:
     from docutils.parsers import rst
 except Exception:
     docutils = None  # type: ignore
-    
-###
-    # try:
-        # import SilverCity
-    # except ImportError:
-        # SilverCity = None  # type: ignore
 #
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -80,24 +75,31 @@ class RstCommands:
         #
         # Complete the init.
         self.reloadSettings()
-    #@+node:ekr.20210326084034.1: *4* rst.reloadSettings
+    #@+node:ekr.20210326084034.1: *4* rst.reloadSettings (to do)
     def reloadSettings(self):
         """RstCommand.reloadSettings"""
         c = self.c
         ### To do: get the user settings.
-        self.default_path = ''
+        #
+        # Reporting options.
+        self.silent = False
+        #
+        # For writeNode and helpers.
         self.generate_rst_header_comment = True
         self.http_server_support = True
         self.node_begin_marker = 'http-node-marker-'
+        self.underline_characters = '''#=+*^~"'`-:><_'''
+        #
+        # For write_docutils_files.
+        self.default_path = ''
+        self.write_intermediate_extension = '.txt'
+        self.write_intermediate_file = True
+        #
+        # For writeToDocutils & helpers.
         self.publish_argv_for_missing_stylesheets = ''
-        self.silent = False
         self.stylesheet_embed = False
         self.stylesheet_name = 'default.css'
         self.stylesheet_path = ''
-        self.underline_characters = '''#=+*^~"'`-:><_'''
-        self.verbose = False
-        self.write_intermediate_extension = '.txt'
-        self.write_intermediate_file = True
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
@@ -382,7 +384,7 @@ class RstCommands:
             s = s.replace('<title></title>',
                 f"<title>{m.group(1)}</title>")
         return s
-    #@+node:ekr.20090502071837.89: *5* rst.computeOutputFileName
+    #@+node:ekr.20090502071837.89: *5* rst.computeOutputFileName (to do)
     def computeOutputFileName(self, fn):
         """Return the full path to the output file."""
         c = self.c
@@ -438,6 +440,7 @@ class RstCommands:
         if not docutils:
             g.error('writeToDocutils: docutils not present')
             return None
+        join = g.os_path_finalize_join
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding}
         #
@@ -466,17 +469,16 @@ class RstCommands:
         #
         # Make the stylesheet path relative to open directory.
         rel_stylesheet_path = self.stylesheet_path or ''
-        stylesheet_path = g.os_path_finalize_join(openDirectory, rel_stylesheet_path)
+        stylesheet_path = join(openDirectory, rel_stylesheet_path)
         assert self.stylesheet_name
-        path = g.os_path_finalize_join(self.stylesheet_path, self.stylesheet_name)
+        path = join(self.stylesheet_path, self.stylesheet_name)
         if not self.stylesheet_embed:
-            rel_path = g.os_path_join(
-                rel_stylesheet_path, self.stylesheet_name)
+            rel_path = join(rel_stylesheet_path, self.stylesheet_name)
             rel_path = rel_path.replace('\\', '/')
             overrides['stylesheet'] = rel_path
             overrides['stylesheet_path'] = None
             overrides['embed_stylesheet'] = None
-        elif g.os_path_exists(path):
+        elif os.path.exists(path):
             if ext != '.pdf':
                 overrides['stylesheet'] = path
                 overrides['stylesheet_path'] = None
@@ -487,7 +489,8 @@ class RstCommands:
             g.error(f"stylesheet not found: {path}")
         else:
             g.error('stylesheet not found\n', path)
-            if self.path: g.es_print('@path:', self.path)
+            if self.path:
+                g.es_print('@path:', self.path)
             g.es_print('open path:', openDirectory)
             if rel_stylesheet_path:
                 g.es_print('relative path:', rel_stylesheet_path)
@@ -596,8 +599,7 @@ class RstCommands:
         if self.silent:
             return
         name = g.os_path_finalize(name)  # 1341
-        f = g.blue if self.verbose else g.pr
-        f(f"wrote: {name}")
+        g.pr(f"wrote: {name}")
     #@+node:ekr.20090502071837.92: *4* rst.rstComment
     def rstComment(self, s):
         return f".. {s}"
