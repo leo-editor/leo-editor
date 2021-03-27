@@ -18,6 +18,7 @@ import io
 import os
 import re
 import time
+import unittest
 #
 # Third-part imports...
 try:
@@ -65,6 +66,7 @@ class RstCommands:
         #
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
+        self.at_auto_write = False  # Flag for underline.
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list = []  # The intermediate results.
@@ -127,7 +129,6 @@ class RstCommands:
     def processTree(self, p):
         """
         Process all @rst nodes in a tree.
-        ext is the docutils extention: it's useful for scripts and unit tests.
         """
         p = p.copy()
         after = p.nodeAfterTree()
@@ -143,7 +144,7 @@ class RstCommands:
             elif g.match_word(h, 0, "@rst") and not g.match(h, 0, "@rst-"):
                 fn = h[4:].strip()
                 if fn:
-                    s = self.write_rst_tree(p, fn)
+                    self.write_rst_tree(p, fn)
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
@@ -154,7 +155,7 @@ class RstCommands:
                 p.moveToThreadNext()
         return None, None
     #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree
-    def write_rst_tree(self, p, fn):
+    def write_rst_tree(self, p, fn, testing=False):
         """
         Convert p's tree to rst sources.
         Optionally call docutils to convert rst to output.
@@ -180,8 +181,12 @@ class RstCommands:
         while p and p != after:
             self.writeNode(p)  # Side effect: advances p.
         source = self.compute_result()
-        self.write_docutils_files(fn, p, source)
-        return source
+        if testing:
+            # Don't write either external file.
+            html = self.writeToDocutils(p, source, ext='.html')
+        else:
+            html = self.write_docutils_files(fn, p, source)
+        return html, source
     #@+node:ekr.20100822092546.5835: *5* rst.write_slides & helper
     def write_slides(self, p):
         """Convert p's children to slides."""
@@ -492,13 +497,7 @@ class RstCommands:
             if rel_stylesheet_path:
                 g.es_print('relative path:', rel_stylesheet_path)
         try:
-            # All paths now come through here.
-            result = None  # Ensure that result is defined.
-            # #1454: This call may print a -Wd warning:
-                # site-packages\docutils\io.py:245:
-                # DeprecationWarning: 'U' mode is deprecated
-                #
-                # The actual culprit is 'rU' mode at line 207.
+            result = None
             result = docutils.core.publish_string(source=s,
                     reader_name='standalone',
                     parser_name='restructuredtext',
@@ -639,6 +638,74 @@ class RstCommands:
         ch = u[level]
         n = max(4, len(encoded_s))
         return f"{s.strip()}\n{ch * n}"
+    #@-others
+#@+node:ekr.20210327072030.1: ** class TestRst3 (unittest.TestCase)
+class TestRst3(unittest.TestCase):
+    '''A class to run rst-related unit tests.'''
+
+    #@+others
+    #@+node:ekr.20210327072030.2: *3* rst3Test.report
+    def report (self,expected,got):
+        '''Report errors in an rst test.'''
+        verbose = True
+        expected_lines = g.splitLines(expected.b)
+        got_lines = g.splitLines(got.b)
+        for i in range(min(len(expected_lines),len(got_lines))):
+            match = expected_lines[i]==got_lines[i]
+            if verbose or not match:
+                tag = g.choose(match,'  ','**')
+                print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
+                print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
+            if not verbose and not match:
+                break
+    #@+node:ekr.20210327072030.3: *3* rst3Test.run
+    def run(self, c, p):
+        '''run an rst test.'''
+        #
+        # Setup.
+        rc = c.rstCommands
+        fn = p.h
+        source_p = g.findNodeInTree(c, p, 'source')
+        source_s1 = source_p.firstChild().b
+        expected_p = g.findNodeInTree(c, p, 'expected')
+        expected_s = expected_p.firstChild().b
+        root = source_p.firstChild()
+        #
+        # Compute the result.
+        rc.nodeNumber = 0
+        html, got_s = rc.write_rst_tree(root, fn, testing=True)
+        #
+        # Tests...
+        # Don't bother testing the html. It will depend on docutils.
+        self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
+        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
+    #@+node:ekr.20210327072030.5: *3* rst3Test.setup
+    def setup (self):
+        
+        c,p = self.c, self.p
+        expected = g.findNodeInTree(c,p, 'expected')
+        got = g.findNodeInTree(c,p, 'got')
+        source = g.findNodeInTree(c,p, 'source')
+        assert source, 'source'
+        assert expected, 'expected'
+        return expected, got, source
+    #@+node:ekr.20210327072030.6: *3* rst3Test.set_got
+    def set_got (self,expected,got):
+
+        c,p = self.c, self.p
+        if got:
+            got_rst = g.findNodeInTree(c,got,'rst')
+            got_html = g.findNodeInTree(c,got,'html')
+            assert got_rst
+            assert got_html
+        else:
+            got = p.insertAsLastChild()
+            got.h = 'got'
+            got_rst = got.insertAsNthChild(0)
+            got_rst.h = 'rst'
+            got_html = got.insertAsNthChild(1)
+            got_html.h = 'html'
+        return got_html,got_rst
     #@-others
 #@-others
 #@@language python
