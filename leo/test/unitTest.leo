@@ -176,9 +176,6 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
 <v t="ekr.20111112092813.4060"><vh>@mark-for-unit-tests</vh>
 <v t="ekr.20111113102936.4600"><vh>Test headline abc</vh></v>
 <v t="ekr.20120212130242.3980"><vh>newHeadline</vh></v>
@@ -240,6 +237,9 @@
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20100813100841.5847"><vh>@ignore older ignored</vh>
@@ -348,7 +348,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100812172232.5801"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1079,7 +1078,7 @@ except Exception:
     self.skipTest('no docutils')
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
-leoRst.TestRst3().run(c, p)
+leoRst.TestRst3().runLegacyTest(c, p)
 </t>
 <t tx="ekr.20100812182942.5805">@language rest
 </t>

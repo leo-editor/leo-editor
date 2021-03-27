@@ -646,39 +646,103 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
     '''A class to run rst-related unit tests.'''
 
     #@+others
-    #@+node:ekr.20210327072030.3: *3* TestRst3.run
-    def run(self, c=None, p=None):  # pylint: disable=arguments-differ
-        '''run an rst test.'''
-        #
-        # Setup.
-        if c and p: ### Temp.
-            self.c = c
-            rc = c.rstCommands
-            fn = p.h
-            source_p = g.findNodeInTree(c, p, 'source')
-            source_s1 = source_p.firstChild().b
-            expected_p = g.findNodeInTree(c, p, 'expected')
-            expected_s = expected_p.firstChild().b
-            root = source_p.firstChild()
-            #
-            # Compute the result.
-            rc.nodeNumber = 0
-            html, got_s = rc.write_rst_tree(root, fn, testing=True)
-            #
-            # Tests...
-            # Don't bother testing the html. It will depend on docutils.
-            self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
-            assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
     #@+node:ekr.20210327090734.1: *3* TestRst3.setUp & tearDown
     def setUp(self):
         """TestRst3.setUp"""
-        ### from leo.core import leoRst  # pylint: disable=import-self
         g.unitTesting = True
         self.c = c = leoTest2.create_app()
         c.selectPosition(c.rootPosition())
+        self.maxDiff = None  # Allow big diffs.
 
     def tearDown(self):
         g.unitTesting = False
+    #@+node:ekr.20210327072030.3: *3* TestRst3.runLegacyTest
+    def runLegacyTest(self, c, p):
+        '''run a legacy rst test.'''
+        rc = c.rstCommands
+        fn = p.h
+        source_p = g.findNodeInTree(c, p, 'source')
+        source_s1 = source_p.firstChild().b
+        expected_p = g.findNodeInTree(c, p, 'expected')
+        expected_s = expected_p.firstChild().b
+        root = source_p.firstChild()
+        #
+        # Compute the result.
+        rc.nodeNumber = 0
+        html, got_s = rc.write_rst_tree(root, fn, testing=True)
+        #
+        # Tests...
+        # Don't bother testing the html. It will depend on docutils.
+        self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
+        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
+    #@+node:ekr.20210327092009.1: *3* TestRst3.test_1
+    def test_1(self):
+        #@+<< define expected_s >>
+        #@+node:ekr.20210327092210.1: *4* << define expected_s >>
+        expected_s = '''\
+        rst3: filename: @rst test.html
+
+        .. _http-node-marker-1:
+
+        @rst test.html
+        ==============
+
+
+        #####
+        Title
+        #####
+
+        This is test.html
+
+        .. _http-node-marker-2:
+
+        section
+        +++++++
+
+        #@+at This is a doc part
+        # it has two lines.
+        #@@c
+        This is the body of the section.
+
+        '''
+        #@-<< define expected_s >>
+        c = self.c
+        rc = c.rstCommands
+        root = c.rootPosition().insertAfter()
+        root.h = fn = '@rst test.html'
+        #@+<< define root_b >>
+        #@+node:ekr.20210327092818.1: *4* << define root_b >>
+        root_b = '''
+        #####
+        Title
+        #####
+
+        This is test.html
+        '''
+        #@-<< define root_b >>
+        root.b = g.adjustTripleString(root_b, -4)
+        child = root.insertAsLastChild()
+        child.h = 'section'
+        #@+<< define child_b >>
+        #@+node:ekr.20210327093238.1: *4* << define child_b >>
+        child_b = '''\
+        #@+at This is a doc part
+        # it has two lines.
+        #@@c
+        This is the body of the section.
+        '''
+        #@-<< define child_b >>
+        child.b = g.adjustTripleString(child_b, -4)
+        expected_s = g.adjustTripleString(expected_s, -4)
+        #
+        # Compute the result.
+        rc.nodeNumber = 0
+        html, got_s = rc.write_rst_tree(root, fn, testing=True)
+        #
+        # Tests...
+        # Don't bother testing the html. It will depend on docutils.
+        self.assertEqual(expected_s, got_s, msg='expected_s != got_s')
+        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
     #@-others
 #@-others
 if __name__ == '__main__':

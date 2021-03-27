@@ -24703,7 +24703,7 @@ except Exception:
     self.skipTest('no docutils')
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
-leoRst.TestRst3().run(c, p)
+leoRst.TestRst3().runLegacyTest(c, p)
 #@+node:ekr.20100812182942.5805: *5* source
 @language rest
 #@+node:ekr.20100812182942.5807: *6* @rst test.html

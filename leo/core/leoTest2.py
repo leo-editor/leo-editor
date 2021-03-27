@@ -85,16 +85,15 @@ def create_app():
     
     Thereafter, recreating g.app, g.app.gui, and new commands is fast.
     """
-    # dump_leo_modules()
-    t1 = time.process_time()
+    # t1 = time.process_time()
     from leo.core import leoGlobals as g
     from leo.core import leoApp
+    g.app = leoApp.LeoApp()  # Do this first, to avoid circular dependencies.
     from leo.core import leoConfig
     from leo.core import leoNodes
     from leo.core import leoCommands
     from leo.core import leoGui
-    t2 = time.process_time()
-    g.app = leoApp.LeoApp()
+    # t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.computeStandardDirectories()
@@ -106,17 +105,17 @@ def create_app():
     g.app.pluginsController = g.NullObject('g.app.pluginsController')
     g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
     g.app.gui=leoGui.NullGui()
-    t3 = time.process_time()
+    # t3 = time.process_time()
+    #
     # Create a dummy commander, to do the imports in c.initObjects.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-    # dump_leo_modules()
-    t4 = time.process_time()
-    if False and t4 - t3 > 0.1:
-        print('create_app\n'
-            f"  imports: {(t2-t1):.3f}\n"
-            f"      gui: {(t3-t2):.3f}\n"
-            f"commander: {(t4-t2):.3f}\n"
-            f"    total: {(t4-t1):.3f}\n")
+    # t4 = time.process_time()
+    # if t4 - t3 > 0.1:
+        # print('create_app\n'
+            # f"  imports: {(t2-t1):.3f}\n"
+            # f"      gui: {(t3-t2):.3f}\n"
+            # f"commander: {(t4-t2):.3f}\n"
+            # f"    total: {(t4-t1):.3f}\n")
     return c
 #@+node:ekr.20201201144934.1: *3* function: dump_leo_modules
 def dump_leo_modules():
