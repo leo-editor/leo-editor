@@ -439,6 +439,30 @@
 <v t="ekr.20170206073747.7"><vh>Installing from a debian package</vh></v>
 </v>
 <v t="ekr.20170206073747.8"><vh>@rst-ignore-tree Installing from sources (Linux)</vh></v>
+<v t="ekr.20050818163826"><vh>@@rst html/rstplugin3.html</vh>
+<v t="ekr.20100813075851.4296"><vh>Options</vh>
+<v t="ekr.20100809122216.4286"><vh>General options</vh></v>
+<v t="ekr.20050818163826.7"><vh>Headline commands</vh></v>
+<v t="ekr.20050818163826.8"><vh>Option doc parts</vh></v>
+<v t="ekr.20050818163826.9"><vh>Settings give defaults for options</vh></v>
+<v t="ekr.20050818163826.5"><vh>Http plugin options</vh></v>
+<v t="ekr.20110612104631.16414"><vh>Section expansion options</vh></v>
+</v>
+<v t="ekr.20100813075851.4297"><vh>Other topics</vh>
+<v t="ekr.20100810091118.4298"><vh>Markup doc parts</vh></v>
+<v t="ekr.20050818163826.11"><vh>Required cascading style sheets</vh></v>
+<v t="ekr.20060527103630"><vh>Controlling the rst3 command from scripts</vh></v>
+</v>
+<v t="ekr.20050818163826.13"><vh>Further study</vh></v>
+<v t="ekr.20050818163826.14"><vh>Theory of operation</vh></v>
+<v t="ekr.20050818163826.4"><vh>Advanced topics</vh>
+<v t="ekr.20100810203016.4298"><vh>Modes</vh></v>
+<v t="ekr.20100810091118.4301"><vh>Code mode options</vh></v>
+<v t="ekr.20100810091118.4306"><vh>Rst mode options</vh></v>
+<v t="ekr.20050818163826.10"><vh>The code-block directive</vh></v>
+</v>
+<v t="ekr.20050818163826.16"><vh>Acknowledgements</vh></v>
+</v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
@@ -868,30 +892,6 @@
 </v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
-</v>
-<v t="ekr.20050818163826"><vh>@rst html/rstplugin3.html</vh>
-<v t="ekr.20100813075851.4296"><vh>Options</vh>
-<v t="ekr.20100809122216.4286"><vh>General options</vh></v>
-<v t="ekr.20050818163826.7"><vh>Headline commands</vh></v>
-<v t="ekr.20050818163826.8"><vh>Option doc parts</vh></v>
-<v t="ekr.20050818163826.9"><vh>Settings give defaults for options</vh></v>
-<v t="ekr.20050818163826.5"><vh>Http plugin options</vh></v>
-<v t="ekr.20110612104631.16414"><vh>Section expansion options</vh></v>
-</v>
-<v t="ekr.20100813075851.4297"><vh>Other topics</vh>
-<v t="ekr.20100810091118.4298"><vh>Markup doc parts</vh></v>
-<v t="ekr.20050818163826.11"><vh>Required cascading style sheets</vh></v>
-<v t="ekr.20060527103630"><vh>Controlling the rst3 command from scripts</vh></v>
-</v>
-<v t="ekr.20050818163826.13"><vh>Further study</vh></v>
-<v t="ekr.20050818163826.14"><vh>Theory of operation</vh></v>
-<v t="ekr.20050818163826.4"><vh>Advanced topics</vh>
-<v t="ekr.20100810203016.4298"><vh>Modes</vh></v>
-<v t="ekr.20100810091118.4301"><vh>Code mode options</vh></v>
-<v t="ekr.20100810091118.4306"><vh>Rst mode options</vh></v>
-<v t="ekr.20050818163826.10"><vh>The code-block directive</vh></v>
-</v>
-<v t="ekr.20050818163826.16"><vh>Acknowledgements</vh></v>
 </v>
 <v t="ekr.20050912125144.1"><vh>@rst html/plugins.html</vh>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
@@ -2372,7 +2372,6 @@
 <v t="ekr.20201014052236.1"></v>
 <v t="ekr.20210326082417.1"><vh>---- revise or eliminate</vh></v>
 <v t="ekr.20210328063952.1"><vh>@rst html/rst3.html</vh></v>
-<v t="ekr.20050818163826"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15255,8 +15254,7 @@ Leo has hundreds of commands, described in `Leo's Command Reference`_. Please fe
 
 - CheatSheet.leo contains an expanded version of the example used in this tutorial. |br|
   You can open CheatSheet.leo from Leo's help menu.
-  
-- See `the rst3 reference &lt;rst3.html&gt;`_ for more details.
+
   </t>
 <t tx="ekr.20131007143750.16070">#################
 Leo's Cheat Sheet
@@ -15394,10 +15392,11 @@ This is Leo's Users Guide. It covers additional material not covered in the
 
    leomarkup
    customizing
-   rstplugin3
    plugins
    commands
    directives
+
+..  rstplugin3
 
 </t>
 <t tx="ekr.20131008041326.16091"></t>
@@ -30831,7 +30830,7 @@ Runs the adoc command, then shows the resulting html in the default browser.
 
 </t>
 <t tx="ekr.20191004123555.1">``rst3``
-    Converts @rst nodes to restructured text. This command automatically creates underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.
+    Converts @rst nodes to restructured text. This command automatically creates underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand. Search or "rst" in leoSettings.leo to see the pertinent settings.
     
 ``adoc``
      Converts @adoc nodes to asciidoc text. This command automatically creates markup for asciidoctor sections. To reorganize a document, just reorganize the corresponding Leo outline: you don't have to change markup by hand.</t>

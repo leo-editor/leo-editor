@@ -59,7 +59,8 @@ class RstCommands:
         self.c = c
         #
         # Statistics.
-        self.n_written = 0  # Number of files written.  Set by write_rst_tree.
+        self.n_intermediate = 0  # Number of intermediate files written.
+        self.n_docutils = 0  # Number of docutils files written.
         #
         # Http support for HtmlParserClass.  See http_addNodeMarker.
         self.anchor_map = {}  # Keys are anchors. Values are positions
@@ -95,7 +96,9 @@ class RstCommands:
         # Output options.
         self.default_path = getString('rst3-default-path') or ''
         self.generate_rst_header_comment = getBool('rst3-generate-rst-header-comment', default=True)
-        self.underline_characters = getString('rst3-underline-characters') or self.default_underline_characters
+        self.underline_characters = (
+            getString('rst3-underline-characters')
+            or self.default_underline_characters)
         self.write_intermediate_file = getBool('rst3-write-intermediate-file', default=True)
         self.write_intermediate_extension = getString('rst3-write-intermediate-extension') or '.txt'
         #
@@ -111,10 +114,14 @@ class RstCommands:
     def rst3(self, event=None):
         """Write all @rst nodes."""
         t1 = time.time()
-        self.n_written = 0
+        self.n_intermediate = self.n_docutils = 0
         self.processTopTree(self.c.p)
         t2 = time.time()
-        g.es_print(f"rst3: {self.n_written} files in {t2 - t1:4.2f} sec.")
+        g.es_print(
+            f"rst3: wrote...\n"
+            f"{self.n_intermediate:4} intermediate file{g.plural(self.n_intermediate)}\n"
+            f"{self.n_docutils:4} docutils file{g.plural(self.n_docutils)}\n"
+            f"in {t2 - t1:4.2f} sec.")
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p):
         """Find and handle all @rst and @slides node associated with p."""
@@ -180,7 +187,6 @@ class RstCommands:
         self.path = d.get('path') or ''
         #
         # Write the output to self.result_list.
-        self.n_written += 1
         self.result_list = []  # All output goes here.
         if self.generate_rst_header_comment:
             self.result_list.append(f".. rst3: filename: {fn}")
@@ -344,10 +350,7 @@ class RstCommands:
     #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers
     def write_docutils_files(self, fn, p, source):
         """Write source to the intermediate file and write the output from docutils.."""
-        #
-        # Do nothing if we aren't going to call docutils.
-        if not self.call_docutils:
-            return
+
         junk, ext = g.os_path_splitext(fn)
         ext = ext.lower()
         fn = self.computeOutputFileName(fn)
@@ -359,7 +362,11 @@ class RstCommands:
         #
         # Write the intermediate file.
         if self.write_intermediate_file:
-            self.createIntermediateFile(fn, p, source)
+            self.writeIntermediateFile(fn, p, source)
+        #
+        # Do nothing if we aren't going to call docutils.
+        if not self.call_docutils:
+            return
         #
         # Write the result from docutils.
         s = self.writeToDocutils(p, source, ext)
@@ -370,6 +377,7 @@ class RstCommands:
         s = g.toEncodedString(s, 'utf-8')
         with open(fn, 'wb') as f:
             f.write(s)
+            self.n_docutils += 1
         self.report(fn, p)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s):
@@ -421,16 +429,17 @@ class RstCommands:
             if not ok:
                 g.error('did not create:', theDir)
         return ok
-    #@+node:ekr.20100813041139.5912: *5* rst.createIntermediateFile
-    def createIntermediateFile(self, fn, p, s):
+    #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile
+    def writeIntermediateFile(self, fn, p, s):
         """Write s to to the file whose name is fn."""
         # ext = self.getOption(p, 'write_intermediate_extension')
         ext = self.write_intermediate_extension
-        ext = ext or '.txt'  # .txt by default.
-        if not ext.startswith('.'): ext = '.' + ext
+        if not ext.startswith('.'):
+            ext = '.' + ext
         fn = fn + ext
         with open(fn, 'w', encoding=self.encoding) as f:
             f.write(s)
+            self.n_intermediate += 1
         self.report(fn, p)
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, p, s, ext):
