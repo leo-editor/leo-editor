@@ -37,19 +37,6 @@
 <v t="ekr.20050407144342.3"><vh>@string rst_http_attributename = rst_http_attribute</vh></v>
 </v>
 <v t="ekr.20050812123002"><vh>rst3 options</vh>
-<v t="ekr.20210328061632.1"><vh> ### no longer used: to be deleted after testing ###</vh>
-<v t="ekr.20050812123002.2"><vh>@@@bool rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20131009050634.17625"><vh>@@@bool rst3_code_mode = False</vh></v>
-<v t="ekr.20150319142303.4"><vh>@@@bool rst3_debug = False</vh></v>
-<v t="ekr.20050812123002.7"><vh>@@@bool rst3_format_headlines = True</vh></v>
-<v t="ekr.20131009050634.17627"><vh>@@@bool rst3_generate_rst = True</vh></v>
-<v t="ekr.20050812123002.6"><vh>@@@bool rst3_massage_body = False</vh></v>
-<v t="ekr.20131009050634.17630"><vh>@@@bool rst3_show_headlines = True</vh></v>
-<v t="ekr.20131009052848.6456"><vh>@@@bool rst3_show_leo_directives = True</vh></v>
-<v t="ekr.20131009050634.17631"><vh>@@@bool rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20150320085538.4"><vh>@@@bool rst3_silent = True</vh></v>
-<v t="ekr.20050812123002.3"><vh>@@@string rst3_http_attributename = rst_http_attribute</vh></v>
-</v>
 <v t="ekr.20131009050634.17658"><vh>@bool rst3_call_docutils = False</vh></v>
 <v t="ekr.20131009050634.17610"><vh>@bool rst3_http_server_support = False</vh></v>
 <v t="ekr.20131009050634.17622"><vh>@bool rst3_verbose = False</vh></v>
@@ -3895,18 +3882,7 @@ See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.p
     return bool(theFile)
 </t>
 <t tx="ekr.20050812123002">.. Important: These options are for Sphinx.</t>
-<t tx="ekr.20050812123002.2">Deletes p.v.rst2_http_attributename from all nodes after writing.
-
-Deletes p.v.unknownAttributes if it then becomes empty.
-</t>
-<t tx="ekr.20050812123002.3"></t>
 <t tx="ekr.20050812123002.5"></t>
-<t tx="ekr.20050812123002.6">True: call body_filter to massage text.
-
-Removes @ignore, @nocolor, @wrap directives.
-</t>
-<t tx="ekr.20050812123002.7">Used differently.  See rst2_pure_document.
-</t>
 <t tx="ekr.20050818163826">######################
 rst3 Command Reference
 ######################
@@ -15741,12 +15717,7 @@ Appendices
 <t tx="ekr.20131009050634.17616"></t>
 <t tx="ekr.20131009050634.17622"># True: rst.report() sends output to log pane and the console pane.</t>
 <t tx="ekr.20131009050634.17623"># Used only if generate_rst is True.</t>
-<t tx="ekr.20131009050634.17625"># True: generate rst markup from @code and @doc parts.</t>
-<t tx="ekr.20131009050634.17627"># True: generate rst markup. False: generate plain text.</t>
-<t tx="ekr.20131009050634.17630"># Can be set by @rst-no-head headlines.</t>
-<t tx="ekr.20131009050634.17631"></t>
 <t tx="ekr.20131009050634.17658"></t>
-<t tx="ekr.20131009052848.6456"></t>
 <t tx="ekr.20131009065148.31758">####################
 Directives Reference
 ####################
@@ -20158,8 +20129,6 @@ The following commands work much like the `Emacs cursor commands`_::
     :wq
     :xa
 </t>
-<t tx="ekr.20150319142303.4"></t>
-<t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
 <t tx="ekr.20150323102036.1">@language rest
 
 Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
@@ -31877,7 +31846,6 @@ Features:
 Fixed all known bugs.</t>
 <t tx="ekr.20210326081805.1"></t>
 <t tx="ekr.20210326082417.1"></t>
-<t tx="ekr.20210328061632.1"></t>
 <t tx="ekr.20210328063952.1">######################
 rst3 Command Reference
 ######################
