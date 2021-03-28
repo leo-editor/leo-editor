@@ -386,15 +386,11 @@ class RstCommands:
             s = s.replace('<title></title>',
                 f"<title>{m.group(1)}</title>")
         return s
-    #@+node:ekr.20090502071837.89: *5* rst.computeOutputFileName (to do)
+    #@+node:ekr.20090502071837.89: *5* rst.computeOutputFileName
     def computeOutputFileName(self, fn):
         """Return the full path to the output file."""
         c = self.c
         openDirectory = c.frame.openDirectory
-        
-        ### getOption searched up the tree.
-        ### default_path = self.getOption(self.root or c.p, 'default_path')
-            # Subtle change, part of #362: scan options starting at self.root, not c.p.
         if self.default_path:
             path = g.os_path_finalize_join(self.path, self.default_path, fn)
         elif self.path:
@@ -526,8 +522,6 @@ class RstCommands:
                 'documentoptions': 'english,12pt,lettersize',
             }
         if not s:
-            ### To do: getOption searches up p's tree!
-                # s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
             s = self.publish_argv_for_missing_stylesheets
         if not s:
             return {}
