@@ -2384,6 +2384,7 @@
 <v t="ekr.20201017061850.1"></v>
 <v t="ekr.20201014052236.1"></v>
 <v t="ekr.20210326082417.1"><vh>---- revise or eliminate</vh></v>
+<v t="ekr.20210328063952.1"><vh>@rst html/rst3.html</vh></v>
 <v t="ekr.20050818163826"></v>
 </vnodes>
 <tnodes>
@@ -15279,7 +15280,7 @@ Leo has hundreds of commands, described in `Leo's Command Reference`_. Please fe
 - CheatSheet.leo contains an expanded version of the example used in this tutorial. |br|
   You can open CheatSheet.leo from Leo's help menu.
   
-- The rst3 command provides *many* other capabilities. For details, see `the rst3 chapter &lt;rstplugin3.html&gt;`_.
+- See `the rst3 reference &lt;rst3.html&gt;`_ for more details.
   </t>
 <t tx="ekr.20131007143750.16070">#################
 Leo's Cheat Sheet
@@ -31877,6 +31878,16 @@ Fixed all known bugs.</t>
 <t tx="ekr.20210326081805.1"></t>
 <t tx="ekr.20210326082417.1"></t>
 <t tx="ekr.20210328061632.1"></t>
+<t tx="ekr.20210328063952.1">######################
+rst3 Command Reference
+######################
+
+.. _`rst3 tutorial`: tutorial-rst3.html
+
+Please read the `rst3 tutorial`_ before reading this chapter.
+
+This chapter covers all of the settings related to the rst3 command. It also discusses how to create content using Leo's scripting features.
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:

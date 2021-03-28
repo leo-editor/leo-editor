@@ -2304,6 +2304,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20071213060239"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3920,17 +3921,53 @@ True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 <t tx="ekr.20071213060514.1"></t>
 <t tx="ekr.20071213060514.2"># Formatting options that apply to both code and rst modes....</t>
 <t tx="ekr.20071213061454"></t>
-<t tx="ekr.20071213061454.1"></t>
+<t tx="ekr.20071213061454.1">True: Writes **node markers** for use by the http plugin.
+
+Node markers are rst named hyperlink targets. By default they look like:
+``.. _http-node-marker-N``, where N is a unique node number.
+
+`@string rst3-node-begin-marker` specifies the format of these node markers.
+
+</t>
 <t tx="ekr.20071213061454.2"></t>
-<t tx="ekr.20071213061454.3"></t>
-<t tx="ekr.20071213061504"></t>
-<t tx="ekr.20071213061504.1"></t>
-<t tx="ekr.20071213061504.2"></t>
-<t tx="ekr.20071213061504.3"></t>
+<t tx="ekr.20071213061454.3">The string used for node markers.  See `@bool rst3-http-server-support`.
+</t>
+<t tx="ekr.20071213061504">The path to be prepended to *relative* filenames given in @rst nodes.
+
+This setting has no effect for *absolute* filenames.</t>
+<t tx="ekr.20071213061504.1">The name of the stylesheet passed to docutils.
+
+This setting has effect only if `@bool rst3-call-docutils = True`.
+</t>
+<t tx="ekr.20071213061504.2">The directory containing the stylesheet passed to docutils.
+
+This setting has effect only if `@bool rst3-call-docutils = True`.
+</t>
+<t tx="ekr.20071213061504.3">This setting has effect only if `@bool rst3-call-docutils = True`.
+
+This setting gives arguments to be passed to ``docutils.core.Publisher().publish()``
+when no stylesheet is in effect.
+
+The setting should be comma-separated list of strings: For example, the option::
+
+    publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
+
+results in the call::
+
+    publish(['--language=de','--documentclass=report','--use-latex-toc'])</t>
 <t tx="ekr.20071213061811"></t>
-<t tx="ekr.20071213061811.1"></t>
-<t tx="ekr.20071213061811.2"></t>
-<t tx="ekr.20071213061811.3">Required if using Sphinx markup.</t>
+<t tx="ekr.20071213061811.1">The underlining characters to be used to specify rST sections.
+
+The first character is reserved (not used) so you can specify the top-level
+section explicitly.</t>
+<t tx="ekr.20071213061811.2">**True**: write additional informational messages to the log.</t>
+<t tx="ekr.20071213061811.3">True: writes the intermediate file to the external file system.
+      Must be True when using Sphinx.
+    
+The name of the intermediate file is the name of the output file with the extension given by
+
+`@string rst3-write-intermediate-extension`.
+</t>
 <t tx="ekr.20071213061923"># True: generate rst markup from @code and @doc parts.</t>
 <t tx="ekr.20071213061923.1"># True: generate only from @doc parts.</t>
 <t tx="ekr.20071213061923.2"># True: generate rst markup. False: generate plain text.</t>
@@ -4652,8 +4689,7 @@ print ('done')
     
 .. rst3: filename: &lt;filename&gt;
 
-at start of intermediate file. Requires rst3_generate_rst and
-rst3_write_intermediate_file options both to be true.</t>
+at these start of the output.</t>
 <t tx="ekr.20090430173906.1">@nocolor-node
 
 The rST markup string preceding code parts.
@@ -5363,8 +5399,12 @@ action will be used instead.</t>
 vr-toggle = Alt-0</t>
 <t tx="ekr.20131007055150.13034"></t>
 <t tx="ekr.20131008181812.17533">False: disable all drag and drop operations in the outline.</t>
-<t tx="ekr.20131009050634.17656"></t>
-<t tx="ekr.20131027064821.18683"></t>
+<t tx="ekr.20131009050634.17656">True: Call docutils to process the intermediate file.
+
+Set this option to False when using Sphinx.</t>
+<t tx="ekr.20131027064821.18683">The extention appended to the names of intermediate files.
+
+See `@bool rst3-write-intermediate-file`</t>
 <t tx="ekr.20131112150804.18737">True: the execute-script command executes the entire body, even if text is selected.</t>
 <t tx="ekr.20131112161153.4420">True: use built-in vim emulation.</t>
 <t tx="ekr.20131115075142.18226">\@outline-data nodes and their descendants create settings whose values are
@@ -11560,7 +11600,10 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20210324162150.1"></t>
 <t tx="ekr.20210327192658.1"></t>
 <t tx="ekr.20210327193058.1"></t>
-<t tx="ekr.20210327193418.1"></t>
+<t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.
+
+True: Docutils will embed a the stylesheet in the output file.
+False: Docutils will link to an external stylesheet file.</t>
 <t tx="ekr.20210327193736.1"></t>
 <t tx="ekr.20210327193806.1"></t>
 <t tx="ekr.20210327193854.1"></t>
