@@ -267,7 +267,7 @@ class RstCommands:
             anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
             self.result_list.append(f".. _{anchorname}:")
             self.http_map[anchorname] = p.copy()
-    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString (New, test)
+    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString (New)
     def writeNodeToString(self, p):
         """
         rst.writeNodeToString: A utility for scripts. Not used in Leo.
@@ -599,6 +599,9 @@ class RstCommands:
         Return the underlining string to be used at the given level for string s.
         This includes the headline, and possibly a leading overlining line.
         """
+        # Never add the root's headline.
+        if p == self.root:
+            return ''
         encoded_s = g.toEncodedString(s, encoding=self.encoding, reportErrors=False)
         if self.at_auto_write:
             # We *might* generate overlines for top-level sections.
@@ -681,10 +684,6 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
 
         .. _http-node-marker-1:
 
-        @rst test.html
-        ==============
-
-
         #####
         Title
         #####
@@ -709,7 +708,7 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         root.h = fn = '@rst test.html'
         #@+<< define root_b >>
         #@+node:ekr.20210327092818.1: *4* << define root_b >>
-        root_b = '''
+        root_b = '''\
         #####
         Title
         #####

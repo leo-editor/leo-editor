@@ -1432,9 +1432,6 @@ it has two lines.
 
 .. _http-node-marker-1:
 
-@rst test.html
-==============
-
 @language rest
 
 #####
@@ -1480,9 +1477,6 @@ This is test.html
 <t tx="ekr.20100813100841.5858">.. rst3: filename: @test rst3Test @no-head
 
 .. _http-node-marker-1:
-
-@rst test.html
-==============
 
 #####
 Title
@@ -3474,9 +3468,6 @@ End of test.
 <t tx="ekr.20120307070541.3946">.. rst3: filename: @test rst3Test unicode characters
 
 .. _http-node-marker-1:
-
-@rst test.html
-==============
 
 Test of unicode characters: ÀǋϢﻙ
 

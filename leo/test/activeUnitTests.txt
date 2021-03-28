@@ -24363,9 +24363,6 @@ This is the body of the section.
 
 .. _http-node-marker-1:
 
-@rst test.html
-==============
-
 @language rest
 
 #####
@@ -24410,9 +24407,6 @@ End of test.
 
 .. _http-node-marker-1:
 
-@rst test.html
-==============
-
 Test of unicode characters: ÀǋϢﻙ
 
 End of test.
@@ -24444,9 +24438,6 @@ This is the body of the section.
 .. rst3: filename: @test rst3Test @no-head
 
 .. _http-node-marker-1:
-
-@rst test.html
-==============
 
 #####
 Title
