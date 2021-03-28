@@ -74,33 +74,37 @@ class RstCommands:
         self.result_list = []  # The intermediate results.
         self.root = None  # The @rst node being processed.
         #
+        # Default settings.
+        self.default_underline_characters = '#=+*^~`-:><-'
+        #
         # Complete the init.
         self.reloadSettings()
-    #@+node:ekr.20210326084034.1: *4* rst.reloadSettings (to do)
+    #@+node:ekr.20210326084034.1: *4* rst.reloadSettings
     def reloadSettings(self):
         """RstCommand.reloadSettings"""
         c = self.c
-        ### To do: get the user settings.
+        getBool, getString = c.config.getBool, c.config.getString
         #
         # Reporting options.
-        self.silent = False
+        self.silent = not getBool('rst3-verbose', default=True)
         #
-        # For writeNode and helpers.
-        self.generate_rst_header_comment = True
-        self.http_server_support = True
-        self.node_begin_marker = 'http-node-marker-'
-        self.underline_characters = '''#=+*^~"'`-:><_'''
+        # Http options.
+        self.http_server_support = getBool('rst3-http-server-support', default=False)
+        self.node_begin_marker = getString('rst3-node-begin-marker') or 'http-node-marker-'
         #
-        # For write_docutils_files.
-        self.default_path = ''
-        self.write_intermediate_extension = '.txt'
-        self.write_intermediate_file = True
+        # Output options.
+        self.default_path = getString('rst3-default-path') or ''
+        self.generate_rst_header_comment = getBool('rst3-generate-rst-header-comment', default=True)
+        self.underline_characters = getString('rst3-underline-characters') or self.default_underline_characters
+        self.write_intermediate_file = getBool('rst3-write-intermediate-file', default=True)
+        self.write_intermediate_extension = getString('rst3-write-intermediate-extension') or '.txt'
         #
-        # For writeToDocutils & helpers.
-        self.publish_argv_for_missing_stylesheets = ''
-        self.stylesheet_embed = False
-        self.stylesheet_name = 'default.css'
-        self.stylesheet_path = ''
+        # Docutils options.
+        self.call_docutils = getBool('rst3-call-docutils', default=True)
+        self.publish_argv_for_missing_stylesheets = getString('rst3-publish-argv-for-missing-stylesheets') or ''
+        self.stylesheet_embed = getBool('rst3-stylesheet-embed', default=False)  # New in leoSettings.leo.
+        self.stylesheet_name = getString('rst3-stylesheet-name') or 'default.css'
+        self.stylesheet_path = getString('rst3-stylesheet-path') or ''
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
@@ -179,7 +183,7 @@ class RstCommands:
         self.n_written += 1
         self.result_list = []  # All output goes here.
         if self.generate_rst_header_comment:
-            self.result_list.append(f"rst3: filename: {fn}")
+            self.result_list.append(f".. rst3: filename: {fn}")
         after = p.nodeAfterTree()
         while p and p != after:
             self.writeNode(p)  # Side effect: advances p.
@@ -233,7 +237,7 @@ class RstCommands:
         if g.match_word(h, 0, '@rst-ignore'):
             p.moveToThreadNext()
             return
-        if g.match_word(h, 0, '@rst-ignore-head'):
+        if g.match_word(h, 0, '@rst-no-head'):
             self.result_list.append(p.b)
             p.moveToThreadNext()
             return
@@ -272,13 +276,6 @@ class RstCommands:
         Return the string.
         """
         return self.write_rst_tree(p, fn=p.h)
-        ###
-            # p = p.copy()
-            # self.result_list = []
-            # after = p.nodeAfterTree()
-            # while p and p != after:
-                # self.writeNode(p)  # Side effect: advances p.
-            # return self.compute_result()
     #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
     def writeAtAutoFile(self, p, fileName, outputFile):
         """
@@ -349,6 +346,8 @@ class RstCommands:
         """Write source to the intermediate file and write the output from docutils.."""
         #
         # Do nothing if we aren't going to call docutils.
+        if not self.call_docutils:
+            return
         junk, ext = g.os_path_splitext(fn)
         ext = ext.lower()
         fn = self.computeOutputFileName(fn)
@@ -665,6 +664,7 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         expected_p = g.findNodeInTree(c, p, 'expected')
         expected_source = expected_p.firstChild().b
         root = source_p.firstChild()
+        rc.http_server_support = True  # Override setting for testing.
         #
         # Compute the result.
         rc.nodeNumber = 0
@@ -673,6 +673,9 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         #
         # Tests...
         # Don't bother testing the html. It will depend on docutils.
+        if 0:
+            g.printObj(g.splitLines(source), tag='source')
+            g.printObj(g.splitLines(expected_source), tag='expected source')
         self.assertEqual(expected_source, source, msg='expected_s != got_s')
         assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
     #@+node:ekr.20210327092009.1: *3* TestRst3.test_1
@@ -737,6 +740,7 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         #
         # Compute the result.
         rc.nodeNumber = 0
+        rc.http_server_support = True  # Override setting for testing.
         source = rc.write_rst_tree(root, fn)
         html = rc.writeToDocutils(root, source, ext='.html')
         #

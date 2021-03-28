@@ -96,6 +96,31 @@
 <v t="ekr.20141010095448.19779"><vh>@@bool beautify-keep-comment-indentation = True</vh></v>
 <v t="ekr.20110510071925.14590"><vh>@@bool use_codewise = False</vh></v>
 <v t="ekr.20200227181439.1"><vh>@@bool find-def-creates-clones = False</vh></v>
+<v t="ekr.20210327192658.1"><vh>rst No longer used</vh>
+<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
+<v t="ekr.20071213061923"><vh>@bool rst3-code-mode = False</vh></v>
+<v t="ekr.20071213061923.1"><vh>@bool rst3-doc-only-mode = False</vh></v>
+</v>
+<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
+<v t="ekr.20071213061811"><vh>@bool rst3-number-code-lines = True</vh></v>
+<v t="ekr.20071213061930.1"><vh>@bool rst3-show-headlines = True</vh></v>
+<v t="ekr.20071213061930.3"><vh>@bool rst3-show-options-nodes = False</vh></v>
+<v t="ekr.20071213061930.2"><vh>@bool rst3-show-organizer-nodes = True</vh></v>
+<v t="ekr.20071213061930.4"><vh>@bool rst3-strip-at-file-prefixes = True</vh></v>
+</v>
+<v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
+<v t="ekr.20071213062019"><vh>@bool rst3-show-doc-parts-as-paragraphs = False</vh></v>
+<v t="ekr.20071213062019.1"><vh>@bool rst3-show-leo-directives = True</vh></v>
+<v t="ekr.20071213062019.2"><vh>@bool rst3-show-markup-doc-parts = False</vh></v>
+<v t="ekr.20071213062019.3"><vh>@bool rst3-show-options-doc-parts = False</vh></v>
+<v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
+</v>
+<v t="ekr.20210327193058.1"><vh>rst3 http options</vh>
+<v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
+<v t="ekr.20071213061454.2"><vh>@string rst3-http-attributename = rst-http-attribute</vh></v>
+</v>
+<v t="ekr.20071213061923.2"><vh>@bool rst3-generate-rst = True</vh></v>
+</v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -561,44 +586,26 @@
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 command settings</vh>
-<v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
+<v t="ekr.20210327193736.1"><vh>rst3 reporting options</vh>
+<v t="ekr.20071213061811.2"><vh>@bool rst3-verbose = True</vh></v>
+</v>
+<v t="ekr.20210327193806.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454.1"><vh>@bool rst3-http-server-support = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>@string rst3-http-attributename = rst-http-attribute</vh></v>
 <v t="ekr.20071213061454.3"><vh>@string rst3-node-begin-marker = http-node-marker-</vh></v>
 </v>
-<v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
-<v t="ekr.20131027064821.18683"><vh>@string rst3-write-intermediate-extension = .txt</vh></v>
+<v t="ekr.20210327193854.1"><vh>rst3 output options</vh>
 <v t="ekr.20071213061504"><vh>@string rst3-default-path = None</vh></v>
+<v t="ekr.20090430075506.7"><vh>@bool rst3-generate-rst-header-comment = True</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~`-:&gt;&lt;-</vh></v>
+<v t="ekr.20071213061811.3"><vh>@bool rst3-write-intermediate-file = True</vh></v>
+<v t="ekr.20131027064821.18683"><vh>@string rst3-write-intermediate-extension = .txt</vh></v>
+</v>
+<v t="ekr.20210327194119.1"><vh>rst3 docutils options</vh>
+<v t="ekr.20131009050634.17656"><vh>@bool rst3-call-docutils = True</vh></v>
+<v t="ekr.20210327193418.1"><vh>@bool rst3-stylesheet-embed = False</vh></v>
+<v t="ekr.20071213061504.3"><vh>@string rst3-publish-argv-for-missing-stylesheets = None</vh></v>
 <v t="ekr.20071213061504.1"><vh>@string rst3-stylesheet-name = default.css</vh></v>
 <v t="ekr.20071213061504.2"><vh>@string rst3-stylesheet-path = None</vh></v>
-<v t="ekr.20071213061504.3"><vh>@string rst3-publish-argv-for-missing-stylesheets = None</vh></v>
-</v>
-<v t="ekr.20071213060514"><vh>rst3 global options</vh>
-<v t="ekr.20131009050634.17656"><vh>@bool rst3-call-docutils = True</vh></v>
-<v t="ekr.20071213061811"><vh>@bool rst3-number-code-lines = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~`-:&gt;&lt;-</vh></v>
-<v t="ekr.20071213061811.2"><vh>@bool rst3-verbose = True</vh></v>
-<v t="ekr.20071213061811.3"><vh>@bool rst3-write-intermediate-file = True</vh></v>
-</v>
-<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>@bool rst3-code-mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>@bool rst3-doc-only-mode = False</vh></v>
-<v t="ekr.20071213061923.2"><vh>@bool rst3-generate-rst = True</vh></v>
-<v t="ekr.20090430075506.7"><vh>@bool rst3-generate-rst-header-comment = True</vh></v>
-</v>
-<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061930.1"><vh>@bool rst3-show-headlines = True</vh></v>
-<v t="ekr.20071213061930.2"><vh>@bool rst3-show-organizer-nodes = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>@bool rst3-show-options-nodes = False</vh></v>
-<v t="ekr.20071213061930.4"><vh>@bool rst3-strip-at-file-prefixes = True</vh></v>
-</v>
-<v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>@bool rst3-show-doc-parts-as-paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>@bool rst3-show-leo-directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>@bool rst3-show-markup-doc-parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>@bool rst3-show-options-doc-parts = False</vh></v>
-<v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16477"><vh>Undo settings</vh>
@@ -1243,7 +1250,6 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22223"><vh>@menu &amp;Format Text</vh>
-<v t="ekr.20131213135427.22224"><vh>@item &amp;code-to-rst</vh></v>
 <v t="ekr.20131213135427.21896"><vh>@item &amp;insert-body-&amp;time</vh></v>
 <v t="ekr.20131213135427.21897"><vh>@item &amp;reformat-paragraph</vh></v>
 <v t="ekr.20131213135427.22225"><vh>@item &amp;rst3</vh></v>
@@ -2298,7 +2304,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3912,9 +3917,6 @@ for which leading whitespace is not terribly significant.
 True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 <t tx="ekr.20071114072753">True: the vim plugin will open @url nodes when they are double clicked.</t>
 <t tx="ekr.20071213060239">@color</t>
-<t tx="ekr.20071213060239.1"></t>
-<t tx="ekr.20071213060239.2"></t>
-<t tx="ekr.20071213060514"></t>
 <t tx="ekr.20071213060514.1"></t>
 <t tx="ekr.20071213060514.2"># Formatting options that apply to both code and rst modes....</t>
 <t tx="ekr.20071213061454"></t>
@@ -5724,7 +5726,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22211"></t>
 <t tx="ekr.20131213135427.22212"></t>
 <t tx="ekr.20131213135427.22223"></t>
-<t tx="ekr.20131213135427.22224"></t>
 <t tx="ekr.20131213135427.22225"></t>
 <t tx="ekr.20131213135427.22226"></t>
 <t tx="ekr.20131213135427.22229"></t>
@@ -11366,7 +11367,7 @@ Bookmarks are created as the first node in the outline which has been
 opened longest. You can this setting to specify an alternative location.
 For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 </t>
-<t tx="ekr.20200227064211.1"></t>
+<t tx="ekr.20200227064211.1">@nosearch</t>
 <t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
 <t tx="ekr.20200229053354.1"></t>
 <t tx="ekr.20200518065357.1">True: Remove Shift modifier when the desired key is a colon or semicolon.
@@ -11557,6 +11558,13 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
 <t tx="ekr.20210324162150.1"></t>
+<t tx="ekr.20210327192658.1"></t>
+<t tx="ekr.20210327193058.1"></t>
+<t tx="ekr.20210327193418.1"></t>
+<t tx="ekr.20210327193736.1"></t>
+<t tx="ekr.20210327193806.1"></t>
+<t tx="ekr.20210327193854.1"></t>
+<t tx="ekr.20210327194119.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
