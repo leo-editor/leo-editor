@@ -677,7 +677,7 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         #@+<< define expected_s >>
         #@+node:ekr.20210327092210.1: *4* << define expected_s >>
         expected_s = '''\
-        rst3: filename: @rst test.html
+        .. rst3: filename: @rst test.html
 
         .. _http-node-marker-1:
 
