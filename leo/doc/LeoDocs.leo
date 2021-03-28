@@ -37,28 +37,27 @@
 <v t="ekr.20050407144342.3"><vh>@string rst_http_attributename = rst_http_attribute</vh></v>
 </v>
 <v t="ekr.20050812123002"><vh>rst3 options</vh>
+<v t="ekr.20210328061632.1"><vh> ### no longer used: to be deleted after testing ###</vh>
+<v t="ekr.20050812123002.2"><vh>@@@bool rst3_clear_http_attributes = False</vh></v>
+<v t="ekr.20131009050634.17625"><vh>@@@bool rst3_code_mode = False</vh></v>
+<v t="ekr.20150319142303.4"><vh>@@@bool rst3_debug = False</vh></v>
+<v t="ekr.20050812123002.7"><vh>@@@bool rst3_format_headlines = True</vh></v>
+<v t="ekr.20131009050634.17627"><vh>@@@bool rst3_generate_rst = True</vh></v>
+<v t="ekr.20050812123002.6"><vh>@@@bool rst3_massage_body = False</vh></v>
+<v t="ekr.20131009050634.17630"><vh>@@@bool rst3_show_headlines = True</vh></v>
+<v t="ekr.20131009052848.6456"><vh>@@@bool rst3_show_leo_directives = True</vh></v>
+<v t="ekr.20131009050634.17631"><vh>@@@bool rst3_show_organizer_nodes = True</vh></v>
+<v t="ekr.20150320085538.4"><vh>@@@bool rst3_silent = True</vh></v>
+<v t="ekr.20050812123002.3"><vh>@@@string rst3_http_attributename = rst_http_attribute</vh></v>
+</v>
 <v t="ekr.20131009050634.17658"><vh>@bool rst3_call_docutils = False</vh></v>
-<v t="ekr.20131009050634.17625"><vh>@bool rst3_code_mode = False</vh></v>
-<v t="ekr.20150319142303.4"><vh>@bool rst3_debug = False</vh></v>
-<v t="ekr.20050812123002.7"><vh>@bool rst3_format_headlines = True</vh></v>
-<v t="ekr.20131009050634.17627"><vh>@bool rst3_generate_rst = True</vh></v>
 <v t="ekr.20131009050634.17610"><vh>@bool rst3_http_server_support = False</vh></v>
-<v t="ekr.20050812123002.6"><vh>@bool rst3_massage_body = False</vh></v>
-<v t="ekr.20131009050634.17630"><vh>@bool rst3_show_headlines = True</vh></v>
-<v t="ekr.20131009052848.6456"><vh>@bool rst3_show_leo_directives = True</vh></v>
-<v t="ekr.20131009050634.17631"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20150320085538.4"><vh>@bool rst3_silent = True</vh></v>
 <v t="ekr.20131009050634.17622"><vh>@bool rst3_verbose = False</vh></v>
 <v t="ekr.20131009050634.17623"><vh>@bool rst3_write_intermediate_file = True</vh></v>
 <v t="ekr.20051202072010"><vh>@string rst3_default_path =</vh></v>
+<v t="ekr.20050812123002.5"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
 <v t="ekr.20131009050634.17616"><vh>@string rst3_stylesheet_path = ..\doc</vh></v>
 <v t="ekr.20131027064821.18685"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
-<v t="ekr.20050812123002.1"><vh>Http options...</vh>
-<v t="ekr.20050812123002.2"><vh>@bool rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20050812123002.3"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
-<v t="ekr.20050812123002.4"><vh>@bool rst3_http_server_support = False</vh></v>
-<v t="ekr.20050812123002.5"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20131017051340.16847"><vh>Buttons</vh>
@@ -3894,36 +3893,12 @@ See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.p
             theFile.close()
     return bool(theFile)
 </t>
-<t tx="ekr.20050812123002"></t>
-<t tx="ekr.20050812123002.1"></t>
+<t tx="ekr.20050812123002">.. Important: These options are for Sphinx.</t>
 <t tx="ekr.20050812123002.2">Deletes p.v.rst2_http_attributename from all nodes after writing.
 
 Deletes p.v.unknownAttributes if it then becomes empty.
 </t>
 <t tx="ekr.20050812123002.3"></t>
-<t tx="ekr.20050812123002.4">@nocolor
-
-If False, add_node_marker and http_support_main  do nothing.  Otherwise add_node_marker does the following:
-
-1. add_node_marker writes a string using generate_node_marker.
-
-Generates 'http-node-marker-'+str(number), where number is config.node_counter
-(incremented each time add_node_marker is called.
-
-2. Enables the following code in :
-@color
-
-    if config.tag == 'open2':
-        http_map = self.http_map
-    else:
-        http_map = {}
-        config.anchormap = {}
-        # maps v nodes to markers.
-        config.node_counter = 0
-    # [snip] code to write the tree
-    if config.rst2_http_server_support:
-        self.http_map = http_map
-</t>
 <t tx="ekr.20050812123002.5"></t>
 <t tx="ekr.20050812123002.6">True: call body_filter to massage text.
 
@@ -31901,6 +31876,7 @@ Features:
 Fixed all known bugs.</t>
 <t tx="ekr.20210326081805.1"></t>
 <t tx="ekr.20210326082417.1"></t>
+<t tx="ekr.20210328061632.1"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
