@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210329114352.1: * @file ../plugins/example_rst_filter.py
-"""Do-nothing filters for the rst3 command."""
+"""Filters for the rst3 command."""
 from leo.core import leoGlobals as g
 
 def init():
