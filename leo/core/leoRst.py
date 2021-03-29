@@ -52,7 +52,7 @@ class RstCommands:
     A class to convert @rst nodes to rST markup.
     """
     #@+others
-    #@+node:ekr.20090502071837.34: *3* rst.Birth
+    #@+node:ekr.20090502071837.34: *3* rst: Birth
     #@+node:ekr.20090502071837.35: *4* rst.__init__
     def __init__(self, c):
         """Ctor for the RstCommand class."""
@@ -77,6 +77,8 @@ class RstCommands:
         #
         # Default settings.
         self.default_underline_characters = '#=+*^~`-:><-'
+        self.user_filter_b = None
+        self.user_filter_h = None
         #
         # Complete the init.
         self.reloadSettings()
@@ -108,7 +110,7 @@ class RstCommands:
         self.stylesheet_embed = getBool('rst3-stylesheet-embed', default=False)  # New in leoSettings.leo.
         self.stylesheet_name = getString('rst3-stylesheet-name') or 'default.css'
         self.stylesheet_path = getString('rst3-stylesheet-path') or ''
-    #@+node:ekr.20100813041139.5920: *3* rst.Entry points
+    #@+node:ekr.20100813041139.5920: *3* rst: Entry points
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
     def rst3(self, event=None):
@@ -236,6 +238,7 @@ class RstCommands:
     #@+node:ekr.20090502071837.85: *5* rst.writeNode & helper
     def writeNode(self, p):
         """Format a node according to the options presently in effect."""
+        c = self.c
         h = p.h.strip()
         if g.match_word(h, 0, '@rst-ignore-tree'):
             p.moveToNodeAfterTree()
@@ -244,13 +247,14 @@ class RstCommands:
             p.moveToThreadNext()
             return
         if g.match_word(h, 0, '@rst-no-head'):
-            self.result_list.append(p.b)
+            self.result_list.append(self.filter_b(c, p))
             p.moveToThreadNext()
             return
         # Default: write the entire node.
         self.http_addNodeMarker(p)
-        self.result_list.append(self.underline(h, p))
-        self.result_list.append(p.b)
+        if p != self.root:
+            self.result_list.append(self.underline(p, self.filter_h(c, p)))
+        self.result_list.append(self.filter_b(c, p))
         p.moveToThreadNext()
     #@+node:ekr.20090502071837.96: *6* rst.http_addNodeMarker
     def http_addNodeMarker(self, p):
@@ -577,7 +581,38 @@ class RstCommands:
                 val = '1'
             d[str(key)] = str(val)
         return d
-    #@+node:ekr.20090502071837.88: *3* rst.Utils
+    #@+node:ekr.20210329105456.1: *3* rst: Filters
+    #@+node:ekr.20210329105948.1: *4* rst.filter_b & self.filter_h
+    def filter_b (self, c, p):
+        """Filter p.b with user_filter_b function."""
+        if self.user_filter_b:
+            try:
+                # pylint: disable=not-callable
+                return self.user_filter_b(c, p)
+            except Exception:
+                g.es_exception()
+                self.user_filter_b = None
+        return p.b
+                    
+    def filter_h (self, c, p):
+        """Filter p.h with user_filter_h function."""
+        if self.user_filter_h:
+            try:
+                # pylint: disable=not-callable
+                return self.user_filter_h(c, p)
+            except Exception:
+                g.es_exception()
+                self.user_filter_h = None
+        return p.h
+    #@+node:ekr.20210329111528.1: *4* rst.register_*_filter
+    def register_body_filter(self, f):
+        """Register the user body filter."""
+        self.user_filter_b = f
+
+    def register_headline_filter(self, f):
+        """Register the user headline filter."""
+        self.user_filter_h = f
+    #@+node:ekr.20090502071837.88: *3* rst: Utils
     #@+node:ekr.20210326165315.1: *4* rst.compute_result
     def compute_result(self):
         """Concatenate all strings in self.result, ensuring exactly one blank line between strings."""
@@ -603,13 +638,13 @@ class RstCommands:
     def rstComment(self, s):
         return f".. {s}"
     #@+node:ekr.20090502071837.93: *4* rst.underline
-    def underline(self, s, p):
+    def underline(self, p, s):
         """
         Return the underlining string to be used at the given level for string s.
         This includes the headline, and possibly a leading overlining line.
         """
         # Never add the root's headline.
-        if p == self.root:
+        if not s:
             return ''
         encoded_s = g.toEncodedString(s, encoding=self.encoding, reportErrors=False)
         if self.at_auto_write:
