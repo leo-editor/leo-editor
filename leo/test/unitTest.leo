@@ -179,6 +179,16 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
+<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
+<v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
+<v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
+<v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
+<v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
+<v t="ekr.20161129104243.1"><vh>@test leo_rst</vh></v>
+</v>
+<v t="ekr.20161129104243.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -627,6 +637,310 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
+</t>
+<t tx="ekr.20090529141856.4784"></t>
+<t tx="ekr.20090529141856.4785">### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+s = '''\
+.. toc
+
+====
+top
+====
+
+The top section
+
+section 1
+---------
+
+section 1, line 1
+--
+section 1, line 2
+
+section 2
+---------
+
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
+'''
+table = (
+    '!Dummy chapter',
+    'top',
+    'section 1',
+    'section 2',
+    'section 2.1',
+    'section 2.1.1',
+    'section 3',
+    'placeholder',
+    'section 3.1.1',
+)
+try:
+    ic.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+</t>
+<t tx="ekr.20090529141856.4786">### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+s = '''\
+.. toc
+
+top
+====
+
+The top section
+
+section 1
+---------
+
+section 1, line 1
+--
+section 1, line 2
+
+section 2
+---------
+
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
+'''
+table = (
+    '!Dummy chapter',
+    'top',
+    'section 1',
+    'section 2',
+    'section 2.1',
+    'section 2.1.1',
+    'section 3',
+    'placeholder',
+    'section 3.1.1',
+)
+try:
+    ic.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+</t>
+<t tx="ekr.20090529141856.4787">### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+s = '''\
+.. toc
+
+top
+-------------
+
+The top section
+'''
+table = (
+    '!Dummy chapter',
+    'top',
+)
+try:
+    ic.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+</t>
+<t tx="ekr.20090529141856.4788">### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+s = '''\
+.. toc
+
+======
+top
+======
+
+The top section
+'''
+table = (
+    "!Dummy chapter",
+    "top",
+)
+try:
+    ic.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+</t>
+<t tx="ekr.20090529141856.4789">### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+
+s = '''\
+.. toc
+
+.. The section name contains trailing whitespace.
+
+======
+top 
+======
+
+The top section.
+'''
+table = (
+    "!Dummy chapter",
+    "top",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
@@ -1201,6 +1515,42 @@ char t
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
+<t tx="ekr.20140725132959.4593">### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+
+s = '''\
+.. toc
+
+.. The section name contains trailing whitespace.
+
+=======
+Chapter 
+=======
+
+The top chapter.
+'''
+table = (
+    "!Dummy chapter",
+    "Chapter",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+</t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
@@ -1230,6 +1580,66 @@ if p.parent() and p.parent().h.startswith('@test'):
 else:
     print('select a child of an @test node node')</t>
 <t tx="ekr.20161129030232.1"></t>
+<t tx="ekr.20161129104243.1">### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+
+if 0:
+    # The preamble...
+    if c.isChanged(): c.save()
+    import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst as leo_rst
+    # Reload all.
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.leo_rst)
+    importlib.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+# Notes:
+# All heading must be followed by an empty line.
+s = '''\
+  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+section 1
++++++++++
+
+Sec 1.
+section 2
++++++++++
+
+Sec 2.
+'''
+table = (
+    '!Dummy chapter',
+    'section 1',
+    'section 2',
+)
+try:
+    ic.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
+        c.redraw()
+</t>
 <t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
 
 html
