@@ -169,7 +169,6 @@ class RstCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        return None, None
     #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree
     def write_rst_tree(self, p, fn):
         """
