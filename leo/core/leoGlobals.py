@@ -4853,7 +4853,7 @@ def match_c_word(s, i, name):
 #@+node:ekr.20031218072017.3183: *4* match_ignoring_case
 def match_ignoring_case(s1, s2):
     return s1 and s2 and s1.lower() == s2.lower()
-#@+node:ekr.20031218072017.3184: *4* g.match_word
+#@+node:ekr.20031218072017.3184: *4* g.match_word & g.match_words
 def match_word(s, i, pattern):
 
     # Using a regex is surprisingly tricky.
@@ -4870,6 +4870,9 @@ def match_word(s, i, pattern):
         return True
     ch = s[i + j]
     return not g.isWordChar(ch)
+
+def match_words(s, i, patterns):
+    return any(g.match_word(s, i, pattern) for pattern in patterns)
 #@+node:ekr.20031218072017.3185: *4* skip_blank_lines
 # This routine differs from skip_ws_and_nl in that
 # it does not advance over whitespace at the start
