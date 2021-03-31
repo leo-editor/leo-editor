@@ -20279,7 +20279,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 0:
         p.deleteAllChildren()
         c.redraw()
 #@+node:ekr.20161204041557.1: *4* All other importer tests
