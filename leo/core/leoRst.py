@@ -41,7 +41,6 @@ if 'plugins' in getattr(g.app, 'debug', []):
     print('leoRst.py:  parsers:', repr(parsers))
     print('leoRst.py:      rst:', repr(rst))
 #@-<< imports >>
-new = True
 #@+others
 #@+node:ekr.20150509035745.1: ** cmd (decorator)
 def cmd(name):
@@ -127,15 +126,10 @@ class RstCommands:
             f"in {t2 - t1:4.2f} sec.")
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p):
-        """Find and handle all @rst and @slides node associated with p."""
+        """Call processTree for @rst and @slides node p's subtree or p's ancestors."""
 
         def predicate(p):
             return self.is_rst_node(p) or g.match_word(p.h, 0, '@slides')
-            # return g.match_words(p.h, 0, ('@rst', '@slides')) and not p.h.startswith('@rst-')
-            # h = p.h
-            # return (
-                # h.startswith('@rst') and not h.startswith('@rst-') or
-                # h.startswith('@slides'))
 
         roots = g.findRootsWithPredicate(self.c, p, predicate=predicate)
         if roots:
@@ -145,82 +139,42 @@ class RstCommands:
             g.warning('No @rst or @slides nodes in', p.h)
     #@+node:ekr.20090502071837.63: *5* rst.processTree
     def processTree(self, root):
-        """
-        Process all @rst nodes in a tree.
-        """
-        if new:  ### New, experimental
-            for p in root.self_and_subtree():
-                if self.is_rst_node(p):
-                    if self.in_rst_tree(p):
-                        g.trace(f"ignoring nested @rst node: {p.h}")
-                    else:
-                        h = p.h.strip()
-                        fn = h[4:].strip()
-                        if fn:
-                            source = self.write_rst_tree(p, fn)
-                            self.write_docutils_files(fn, p, source)
-                elif g.match_word(h, 0, "@slides"):
-                    if self.in_slides_tree(p):
-                        g.trace(f"ignoring nested @slides node: {p.h}")
-                    else:
-                        self.write_slides(p)
-            return
-        p = root.copy()
-        after = p.nodeAfterTree()
-        while p and p != after:
-            h = p.h.strip()
-            if g.match_word(h, 0, '@rst-ignore-tree'):
-                p.moveToNodeAfterTree()
-            elif (
-                g.match_word(h, 0, '@rst-ignore') or
-                g.match_word(h, 0, '@rst-ignore-node')
-            ):
-                p.moveToThreadNext()
-            elif g.match_word(h, 0, "@rst") and not g.match(h, 0, "@rst-"):
-                fn = h[4:].strip()
-                if fn:
-                    source = self.write_rst_tree(p, fn)
-                    self.write_docutils_files(fn, p, source)
-                    p.moveToNodeAfterTree()
+        """Process all @rst nodes in a tree."""
+        for p in root.self_and_subtree():
+            if self.is_rst_node(p):
+                if self.in_rst_tree(p):
+                    g.trace(f"ignoring nested @rst node: {p.h}")
                 else:
-                    p.moveToThreadNext()
-            elif g.match(h, 0, "@slides"):
-                self.write_slides(p)
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
+                    h = p.h.strip()
+                    fn = h[4:].strip()
+                    if fn:
+                        source = self.write_rst_tree(p, fn)
+                        self.write_docutils_files(fn, p, source)
+            elif g.match_word(h, 0, "@slides"):
+                if self.in_slides_tree(p):
+                    g.trace(f"ignoring nested @slides node: {p.h}")
+                else:
+                    self.write_slides(p)
+            
     #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree
     def write_rst_tree(self, p, fn):
-        """
-        Convert p's tree to rst sources.
-        Optionally call docutils to convert rst to output.
-        Return the sources past to docutils.
-        """
+        """Convert p's tree to rst sources."""
         c = self.c
-        #
-        # Init self.root.
         self.root = p.copy()
         #
         # Init encoding and path.
         d = c.scanAllDirectives(p)
         self.encoding = d.get('encoding') or 'utf-8'
         self.path = d.get('path') or ''
-        #
         # Write the output to self.result_list.
         self.result_list = []  # All output goes here.
         if self.generate_rst_header_comment:
             self.result_list.append(f".. rst3: filename: {fn}")
-        if new:
-            for p in self.root.self_and_subtree():
-                self.writeNode(p)  # Does *not* change p.
-        else:
-            p = p.copy()  # The loop below modifies p.
-            after = p.nodeAfterTree()
-            while p and p != after:
-                self.writeNode(p)  # Side effect: advances p.
+        for p in self.root.self_and_subtree():
+            self.writeNode(p)
         source = self.compute_result()
         return source
-       
+
     #@+node:ekr.20100822092546.5835: *5* rst.write_slides & helper
     def write_slides(self, p):
         """Convert p's children to slides."""
@@ -260,36 +214,17 @@ class RstCommands:
         self.result_list.append(f"{title}\n{'#' * width}")
     #@+node:ekr.20090502071837.85: *5* rst.writeNode & helper
     def writeNode(self, p):
-        """Format a node according to the options presently in effect."""
+        """Append the rst srouces to self.result_list."""
         c = self.c
-        h = p.h.strip()
-        if new:  ### New, experimental: Does *not* change p.
-            if self.is_ignore_node(p) or self.in_ignore_tree(p):
-                return
-            if g.match_word(h, 0, '@rst-no-head'):
-                self.result_list.append(self.filter_b(c, p))
-            else:
-                self.http_addNodeMarker(p)
-                if p != self.root:
-                    self.result_list.append(self.underline(p, self.filter_h(c, p)))
-                self.result_list.append(self.filter_b(c, p))
+        if self.is_ignore_node(p) or self.in_ignore_tree(p):
             return
-        if g.match_word(h, 0, '@rst-ignore-tree'):
-            p.moveToNodeAfterTree()
-            return
-        if g.match_word(h, 0, '@rst-ignore'):
-            p.moveToThreadNext()
-            return
-        if g.match_word(h, 0, '@rst-no-head'):
+        if g.match_word(p.h, 0, '@rst-no-head'):
             self.result_list.append(self.filter_b(c, p))
-            p.moveToThreadNext()
-            return
-        # Default: write the entire node.
-        self.http_addNodeMarker(p)
-        if p != self.root:
-            self.result_list.append(self.underline(p, self.filter_h(c, p)))
-        self.result_list.append(self.filter_b(c, p))
-        p.moveToThreadNext()
+        else:
+            self.http_addNodeMarker(p)
+            if p != self.root:
+                self.result_list.append(self.underline(p, self.filter_h(c, p)))
+            self.result_list.append(self.filter_b(c, p))
     #@+node:ekr.20090502071837.96: *6* rst.http_addNodeMarker
     def http_addNodeMarker(self, p):
         """
