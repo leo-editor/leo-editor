@@ -499,7 +499,7 @@
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090620131445.5595"><vh>Post from ville</vh></v>
-<v t="ekr.20090401113141.2"><vh>@rst test.html</vh>
+<v t="ekr.20090401113141.2"><vh>@@rst test.html</vh>
 <v t="ekr.20090401113141.4"><vh>section 1</vh></v>
 </v>
 </v>
@@ -7676,7 +7676,7 @@ After you create the intermediate file, in this case, test.html.txt, You can cre
 
     python &lt;path-to-python&gt;/scripts/rst2odt.py test.html.txt test.odt
 
-I a batch file, rst2odt.bat, like this:
+I use a batch file, rst2odt.bat, like this:
 
     rst2odt test
 
