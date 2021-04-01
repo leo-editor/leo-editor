@@ -69,7 +69,7 @@ class RstCommands:
         #
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
-        self.at_auto_write = False  # Flag for underline.
+        self.at_auto_write = False  # True: in @auto-rst importer.
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list = []  # The intermediate results.
@@ -306,7 +306,7 @@ class RstCommands:
         self.at_auto_underlines = underlines2 + underlines1
         self.underlines1 = underlines1
         self.underlines2 = underlines2
-    #@+node:ekr.20091228080620.6499: *5* rst.isSafeWrite
+    #@+node:ekr.20210401155057.7: *5* rst.isSafeWrite
     def isSafeWrite(self, p):
         """
         Return True if node p contributes nothing but
@@ -553,8 +553,11 @@ class RstCommands:
     #@+node:ekr.20210329105456.1: *3* rst: Filters
     #@+node:ekr.20210329105948.1: *4* rst.filter_b & self.filter_h
     def filter_b (self, c, p):
-        """Filter p.b with user_filter_b function."""
-        if self.user_filter_b:
+        """
+        Filter p.b with user_filter_b function.
+        Don't allow filtering when in the @auto-rst logic.
+        """
+        if self.user_filter_b and not self.at_auto_write:
             try:
                 # pylint: disable=not-callable
                 return self.user_filter_b(c, p)
@@ -564,8 +567,11 @@ class RstCommands:
         return p.b
                     
     def filter_h (self, c, p):
-        """Filter p.h with user_filter_h function."""
-        if self.user_filter_h:
+        """
+        Filter p.h with user_filter_h function.
+        Don't allow filtering when in the @auto-rst logic.
+        """
+        if self.user_filter_h and not self.at_auto_write:
             try:
                 # pylint: disable=not-callable
                 return self.user_filter_h(c, p)
