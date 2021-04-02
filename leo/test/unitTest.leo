@@ -327,7 +327,7 @@
 <v t="ekr.20120307070541.3946"><vh>rst</vh></v>
 </v>
 </v>
-<v t="ekr.20100813100841.5850"><vh>@test rst3Test @no-head</vh>
+<v t="ekr.20100813100841.5850"><vh>@test @rst-no-head</vh>
 <v t="ekr.20100813100841.5854"><vh>source</vh>
 <v t="ekr.20100813100841.5855"><vh>@rst test.html</vh>
 <v t="ekr.20100813100841.5856"><vh>@rst-no-head section</vh></v>
@@ -335,6 +335,16 @@
 </v>
 <v t="ekr.20100813100841.5857"><vh>expected</vh>
 <v t="ekr.20100813100841.5858"><vh>rst</vh></v>
+</v>
+</v>
+<v t="ekr.20210402164814.1"><vh>@test @rst-preformat</vh>
+<v t="ekr.20210402164907.1"><vh>source</vh>
+<v t="ekr.20210402164907.2"><vh>@rst test.html</vh>
+<v t="ekr.20210402164907.3"><vh>@rst-preformat</vh></v>
+</v>
+</v>
+<v t="ekr.20210402164916.1"><vh>expected</vh>
+<v t="ekr.20210402164916.2"><vh>rst</vh></v>
 </v>
 </v>
 </v>
@@ -1474,7 +1484,7 @@ This is test.html
 </t>
 <t tx="ekr.20100813100841.5857">@language rest
 </t>
-<t tx="ekr.20100813100841.5858">.. rst3: filename: @test rst3Test @no-head
+<t tx="ekr.20100813100841.5858">.. rst3: filename: @test @rst-no-head
 
 .. _http-node-marker-1:
 
@@ -3867,5 +3877,47 @@ nodeB
     pass
 </t>
 <t tx="ekr.20210326120225.1"></t>
+<t tx="ekr.20210402164814.1">import leo.core.leoRst as leoRst
+import importlib
+importlib.reload(leoRst)
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+leoRst.TestRst3().runLegacyTest(c, p)
+</t>
+<t tx="ekr.20210402164907.1">@language rest
+</t>
+<t tx="ekr.20210402164907.2">#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20210402164907.3">Line 1.
+Line 2.
+Line 3.
+</t>
+<t tx="ekr.20210402164916.1">@language rest
+</t>
+<t tx="ekr.20210402164916.2">.. rst3: filename: @test @rst-preformat
+
+.. _http-node-marker-1:
+
+#####
+Title
+#####
+
+This is test.html
+
+::
+
+    Line 1.
+    Line 2.
+    Line 3.
+
+</t>
 </tnodes>
 </leo_file>

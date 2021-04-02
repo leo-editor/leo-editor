@@ -24411,7 +24411,7 @@ Test of unicode characters: ÀǋϢﻙ
 
 End of test.
 
-#@+node:ekr.20100813100841.5850: *4* @test rst3Test @no-head
+#@+node:ekr.20100813100841.5850: *4* @test @rst-no-head
 import leo.core.leoRst as leoRst
 # import importlib
 # importlib.reload(leoRst)
@@ -24435,7 +24435,7 @@ This is the body of the section.
 #@+node:ekr.20100813100841.5857: *5* expected
 @language rest
 #@+node:ekr.20100813100841.5858: *6* rst
-.. rst3: filename: @test rst3Test @no-head
+.. rst3: filename: @test @rst-no-head
 
 .. _http-node-marker-1:
 
@@ -24446,6 +24446,48 @@ Title
 This is test.html
 
 This is the body of the section.
+
+#@+node:ekr.20210402164814.1: *4* @test @rst-preformat
+import leo.core.leoRst as leoRst
+import importlib
+importlib.reload(leoRst)
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+leoRst.TestRst3().runLegacyTest(c, p)
+#@+node:ekr.20210402164907.1: *5* source
+@language rest
+#@+node:ekr.20210402164907.2: *6* @rst test.html
+#####
+Title
+#####
+
+This is test.html
+#@+node:ekr.20210402164907.3: *7* @rst-preformat
+Line 1.
+Line 2.
+Line 3.
+#@+node:ekr.20210402164916.1: *5* expected
+@language rest
+#@+node:ekr.20210402164916.2: *6* rst
+.. rst3: filename: @test @rst-preformat
+
+.. _http-node-marker-1:
+
+#####
+Title
+#####
+
+This is test.html
+
+::
+
+    Line 1.
+    Line 2.
+    Line 3.
 
 #@+node:ekr.20090529115704.4396: *3* leoShadow
 #@+node:ekr.20090529115704.4397: *4* @suite run @shadow-test nodes in the @shadow-tests tree

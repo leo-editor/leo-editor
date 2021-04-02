@@ -212,7 +212,7 @@ class RstCommands:
         width = max(4, len(g.toEncodedString(title,
             encoding=self.encoding, reportErrors=False)))
         self.result_list.append(f"{title}\n{'#' * width}")
-    #@+node:ekr.20090502071837.85: *5* rst.writeNode & helper
+    #@+node:ekr.20090502071837.85: *5* rst.writeNode & helpers
     def writeNode(self, p):
         """Append the rst srouces to self.result_list."""
         c = self.c
@@ -220,6 +220,8 @@ class RstCommands:
             return
         if g.match_word(p.h, 0, '@rst-no-head'):
             self.result_list.append(self.filter_b(c, p))
+        elif g.match_word(p.h, 0, '@rst-preformat'):  # #1876
+            self.result_list.append(self.preformat(self.filter_b(c, p)))
         else:
             self.http_addNodeMarker(p)
             if p != self.root:
@@ -246,6 +248,18 @@ class RstCommands:
             anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
             self.result_list.append(f".. _{anchorname}:")
             self.http_map[anchorname] = p.copy()
+    #@+node:ekr.20210402162150.1: *6* rst.preformat
+    def preformat(self, s):
+        """Write the lines of s as if preformatted.
+
+         ::
+
+            line 1
+            line 2 etc.
+        """
+        lines = [(' ' * 4 + z) for z in g.splitLines(s)]
+        lines.insert(0, '::\n\n')
+        return ''.join(lines)
     #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString (New)
     def writeNodeToString(self, p):
         """
