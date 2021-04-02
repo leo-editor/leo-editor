@@ -250,7 +250,7 @@ class RstCommands:
             self.http_map[anchorname] = p.copy()
     #@+node:ekr.20210402162150.1: *6* rst.preformat
     def preformat(self, s):
-        """Write the lines of s as if preformatted.
+        """Return the lines of s as if preformatted.
 
          ::
 
