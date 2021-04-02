@@ -860,7 +860,7 @@
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
 <v t="ekr.20200909171301.1"><vh>@rst html/leomarkup.html</vh></v>
 <v t="ekr.20050901101608.4"><vh>@rst html/customizing.html</vh>
-<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140"><vh>Using settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
 <v t="ekr.20090116094356.2"><vh>Search order for settings files</vh></v>
 <v t="ekr.20090116094356.3"><vh>Safe rules for local settings</vh></v>
@@ -882,6 +882,7 @@
 <v t="ekr.20090116094356.12"><vh>\@shortcuts</vh></v>
 </v>
 </v>
+<v t="ekr.20210402080752.1"><vh>Customizing the rst3 command</vh></v>
 <v t="ekr.20180404065846.1"><vh>Theme files</vh></v>
 <v t="ekr.20060105214753"><vh>Input modes</vh></v>
 <v t="ekr.20050306090601"><vh>uA's: extensible attribues of nodes</vh></v>
@@ -2370,6 +2371,9 @@
 </v>
 <v t="ekr.20201017061850.1"></v>
 <v t="ekr.20201014052236.1"></v>
+<v t="ekr.20131008041326.16241"></v>
+<v t="ekr.20050901101608.4"></v>
+<v t="ekr.20210402080752.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4739,16 +4743,17 @@ This chapter lists almost all of Leo's commands. It starts with a discussion of 
     :local:
 
 </t>
-<t tx="ekr.20050901101608.4">################
+<t tx="ekr.20050901101608.4">&lt;customizing.html#specifying-settings&gt;`_
+
+################
 Customizing Leo
 ################
 
-This chapter discusses how to customize Leo using the plugins and other means. See `Specifying settings`_ for a description of how to change Leo's settings.
+This chapter discusses how to customize Leo using the plugins and other means. See `Using settings`_ for a description of how to change Leo's settings.
 
 .. contents:: Contents
     :depth: 3
     :local:
-
 </t>
 <t tx="ekr.20050902105852">Leo grew out of my efforts to use Donald Knuth's "CWEB system of Structured documentation." I had known of literate programming since the mid 1980's, but I never understood how to make it work for me. In November 1995 I started thinking about programming in earnest. Over the holidays I mused about making programs more understandable. </t>
 <t tx="ekr.20050902105852.1">In January 1996 the fog of confusion suddenly cleared. I summarized my thinking with the phrase, **web are outlines in disguise**. I suspected that outline views were the key to programming, but many details remained obscure.
@@ -31781,6 +31786,109 @@ Features:
 
 Fixed all known bugs.</t>
 <t tx="ekr.20210326081805.1"></t>
+<t tx="ekr.20210402080752.1">.. _`docutils`: http://docutils.sourceforge.net
+.. _`LaTeX`:    http://www.latex-project.org/
+.. _`Sphinx`:   http://sphinx-doc.org/
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+
+This section explains how to use **user filters** to alter the output of
+the rst3 command.
+
+**Background**
+
+The rst3 command converts @rst trees containing `reStructuredText`_ (rST)
+or `Sphinx`_ markup to an **intermediate string**. Depending on user
+options, rst3 will:
+
+- write the intermediate string to an **intermediate file**.
+- send the intermediate string to `docutils`_ for conversion to HTML, PDF,
+  `LaTeX`_, etc.
+  
+**User filters**
+
+Plugins or scripts may define two functions: a **headline filter** and a
+**body filter**:
+
+- rst3 calls the body filter for all nodes except descendants of
+  `@rst-ignore` or `@rst-ignore-tree` nodes.
+
+- rst3 calls the headline filter for all nodes except:
+    - `rst-no-head` nodes or
+    - descendants of `@rst-ignore` or `@rst-ignore-tree` nodes.
+    
+- plugins or scripts register filters as follows::
+
+    c.rstCommands.register_body_filter(body_filter)
+    c.rstCommands.register_headline_filter(headline_filter)
+    
+- The signature of all filters is `filter-name (c, p)` where c and p are
+  defined as usual.
+  
+**Example filters**
+  
+Do-nothing filters would be defined like this::
+  
+    def body_filter(c, p):
+        return p.b
+    
+    def headline_filter(c, p):
+        return p.h
+        
+The following filters would simulate the frequently-requested "half clone" feature.
+That is, within any @rst tree, the following filters would skip the children of all clones::
+
+    def has_cloned_parent(c, p):
+        """Return True if p has a cloned parent within the @rst tree."""
+        root = c.rstCommands.root  # The @rst node.
+        p = p.parent()
+        while p and p != root:
+            if p.isCloned():
+                return True
+            p.moveToParent()
+        return False
+            
+    def body_filter(c, p):
+        return '' if has_cloned_parent(c, p) else p.b
+        
+    def headline_filter(c, p):
+        return '' if has_cloned_parent(c, p) else p.h
+        
+Folks, this might send a shiver down your spine. Both filters ignore all
+descendants of clones in the @rst tree. We have the effect of half clones,
+with no changes to Leo's core!
+
+Note: has_cloned_parent stops the scan at the @rst node itself, ensuring
+that the rst3 command includes "top-level" clones themselves.
+
+See leo/plugins/example_rst_filter.py for a complete example.
+
+**Filters can do practically anything**
+
+Filters can use the data in p.b, p.h, p.u, or p.gnx, but filters are not *limited* to the data in p. The has_cloned_parent filter shows that filters can access:
+
+- Any ancestor or descendant of node p.
+- Any data accessible from c, that is, *all* the data in the outline, including cached data!
+
+Indeed, has_cloned_parent gets the current `@rst` node using `root = c.rstCommands.root`.
+
+Moreover, filters can define special conventions, including:
+
+- Special-format comments embedded in p.b,
+- Special-purpose headlines.
+
+**Summary**
+
+Plugins and scripts can define headline and body filters that alter the intermediate string.
+
+The leo/plugins/example_rst_filter.py plugin shows how to set up plugins that define custom filters.
+
+Filters have easy access to all data within the outline, including:
+
+- c.rstCommands.root, the `@rst` node containing p.
+- All ancestors or descendants of p.
+- All data contained *anywhere* in the outline.
+
+The example filters shown above simulate the often-requested "half clone" feature.</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
