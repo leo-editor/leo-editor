@@ -111,6 +111,49 @@ class RstCommands:
         self.stylesheet_name = getString('rst3-stylesheet-name') or 'default.css'
         self.stylesheet_path = getString('rst3-stylesheet-path') or ''
     #@+node:ekr.20100813041139.5920: *3* rst: Entry points
+    #@+node:ekr.20210403150303.1: *4* rst.rst-convert-legacy-outline
+    @cmd('rst-convert-legacy-outline')
+    @cmd('convert-legacy-rst-outline')
+    def convert_legacy_outline(self, event=None):
+        """
+        Convert @rst-preformat nodes and `@ @rst-options` doc parts.
+        """
+        c = self.c
+        for p in c.all_unique_positions():
+            if g.match_word(p.h, 0, '@rst-preformat'):
+                self.preformat(p)
+            self.convert_rst_options(p)
+    #@+node:ekr.20210403153112.1: *5* rst.convert_rst_options
+    options_pat = re.compile(r'^@ @rst-options', re.MULTILINE)
+    default_pat = re.compile(r'^default_path\s*=(.*)$', re.MULTILINE)
+
+    def convert_rst_options (self, p):
+        """
+        Convert options @doc parts. Change headline to @path <fn>.
+        """
+        m1 = self.options_pat.search(p.b)
+        m2 = self.default_pat.search(p.b)
+        if m1 and m2 and m2.start() > m1.start():
+            fn = m2.group(1).strip()
+            if fn:
+                old_h = p.h
+                p.h = f"@path {fn}"
+                print(f"{old_h} => {p.h}")
+    #@+node:ekr.20210403151958.1: *5* rst.preformat
+    def preformat(self, p):
+        """Convert p.b as if preformatted. Change headline to @rst-no-head"""
+        if not p.b.strip():
+            return
+        result = ['::\n\n']
+        for s in g.splitLines(p.b):
+            if s.strip():
+                result.append(f"    {s}")
+            else:
+                result.append('\n')
+        p.b = ''.join(result)
+        old_h = p.h
+        p.h = '@rst-no-head'
+        print(f"{old_h} => {p.h}")
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
     def rst3(self, event=None):
@@ -246,80 +289,6 @@ class RstCommands:
             anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
             self.result_list.append(f".. _{anchorname}:")
             self.http_map[anchorname] = p.copy()
-    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString (New)
-    def writeNodeToString(self, p):
-        """
-        rst.writeNodeToString: A utility for scripts. Not used in Leo.
-            
-        Write p's tree to a string as if it were an @rst node.
-        Return the string.
-        """
-        return self.write_rst_tree(p, fn=p.h)
-    #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
-    def writeAtAutoFile(self, p, fileName, outputFile):
-        """
-        at.writeAtAutoContents calls this method to write an @auto tree
-        containing imported rST code.
-        
-        at.writeAtAutoContents will close the output file.
-        """
-        self.result_list = []
-        self.initAtAutoWrite(p)
-        self.root = p.copy()
-        after = p.nodeAfterTree()
-        if not self.isSafeWrite(p):
-            return False
-        try:
-            self.at_auto_write = True  # Set the flag for underline.
-            p = p.firstChild()  # A hack: ignore the root node.
-            while p and p != after:
-                self.writeNode(p)  # side effect: advances p
-            s = self.compute_result()
-            outputFile.write(s)
-            ok = True
-        except Exception:
-            ok = False
-        finally:
-            self.at_auto_write = False
-        return ok
-    #@+node:ekr.20090513073632.5733: *5* rst.initAtAutoWrite
-    def initAtAutoWrite(self, p):
-        """Init underlining for for an @auto write."""
-        # User-defined underlining characters make no sense in @auto-rst.
-        d = p.v.u.get('rst-import', {})
-        underlines2 = d.get('underlines2', '')
-        #
-        # Do *not* set a default for overlining characters.
-        if len(underlines2) > 1:
-            underlines2 = underlines2[0]
-            g.warning(f"too many top-level underlines, using {underlines2}")
-        underlines1 = d.get('underlines1', '')
-        #
-        # Pad underlines with default characters.
-        default_underlines = '=+*^~"\'`-:><_'
-        if underlines1:
-            for ch in default_underlines[1:]:
-                if ch not in underlines1:
-                    underlines1 = underlines1 + ch
-        else:
-            underlines1 = default_underlines
-        self.at_auto_underlines = underlines2 + underlines1
-        self.underlines1 = underlines1
-        self.underlines2 = underlines2
-    #@+node:ekr.20210401155057.7: *5* rst.isSafeWrite
-    def isSafeWrite(self, p):
-        """
-        Return True if node p contributes nothing but
-        rst-options to the write.
-        """
-        lines = g.splitLines(p.b)
-        for z in lines:
-            if z.strip() and not z.startswith('@') and not z.startswith('.. '):
-                # A real line that will not be written.
-                g.error('unsafe @auto-rst')
-                g.es('body text will be ignored in\n', p.h)
-                return False
-        return True
     #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers
     def write_docutils_files(self, fn, p, source):
         """Write source to the intermediate file and write the output from docutils.."""
@@ -550,6 +519,80 @@ class RstCommands:
                 val = '1'
             d[str(key)] = str(val)
         return d
+    #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
+    def writeAtAutoFile(self, p, fileName, outputFile):
+        """
+        at.writeAtAutoContents calls this method to write an @auto tree
+        containing imported rST code.
+        
+        at.writeAtAutoContents will close the output file.
+        """
+        self.result_list = []
+        self.initAtAutoWrite(p)
+        self.root = p.copy()
+        after = p.nodeAfterTree()
+        if not self.isSafeWrite(p):
+            return False
+        try:
+            self.at_auto_write = True  # Set the flag for underline.
+            p = p.firstChild()  # A hack: ignore the root node.
+            while p and p != after:
+                self.writeNode(p)  # side effect: advances p
+            s = self.compute_result()
+            outputFile.write(s)
+            ok = True
+        except Exception:
+            ok = False
+        finally:
+            self.at_auto_write = False
+        return ok
+    #@+node:ekr.20090513073632.5733: *5* rst.initAtAutoWrite
+    def initAtAutoWrite(self, p):
+        """Init underlining for for an @auto write."""
+        # User-defined underlining characters make no sense in @auto-rst.
+        d = p.v.u.get('rst-import', {})
+        underlines2 = d.get('underlines2', '')
+        #
+        # Do *not* set a default for overlining characters.
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.warning(f"too many top-level underlines, using {underlines2}")
+        underlines1 = d.get('underlines1', '')
+        #
+        # Pad underlines with default characters.
+        default_underlines = '=+*^~"\'`-:><_'
+        if underlines1:
+            for ch in default_underlines[1:]:
+                if ch not in underlines1:
+                    underlines1 = underlines1 + ch
+        else:
+            underlines1 = default_underlines
+        self.at_auto_underlines = underlines2 + underlines1
+        self.underlines1 = underlines1
+        self.underlines2 = underlines2
+    #@+node:ekr.20210401155057.7: *5* rst.isSafeWrite
+    def isSafeWrite(self, p):
+        """
+        Return True if node p contributes nothing but
+        rst-options to the write.
+        """
+        lines = g.splitLines(p.b)
+        for z in lines:
+            if z.strip() and not z.startswith('@') and not z.startswith('.. '):
+                # A real line that will not be written.
+                g.error('unsafe @auto-rst')
+                g.es('body text will be ignored in\n', p.h)
+                return False
+        return True
+    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString (New)
+    def writeNodeToString(self, p):
+        """
+        rst.writeNodeToString: A utility for scripts. Not used in Leo.
+            
+        Write p's tree to a string as if it were an @rst node.
+        Return the string.
+        """
+        return self.write_rst_tree(p, fn=p.h)
     #@+node:ekr.20210329105456.1: *3* rst: Filters
     #@+node:ekr.20210329105948.1: *4* rst.filter_b & self.filter_h
     def filter_b (self, c, p):
