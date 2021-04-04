@@ -144,13 +144,9 @@ class RstCommands:
         """Convert p.b as if preformatted. Change headline to @rst-no-head"""
         if not p.b.strip():
             return
-        result = ['::\n\n']
-        for s in g.splitLines(p.b):
-            if s.strip():
-                result.append(f"    {s}")
-            else:
-                result.append('\n')
-        p.b = ''.join(result)
+        p.b = '::\n\n' + ''.join(
+            f"    {s}" if s.strip() else '\n'
+                for s in g.splitLines(p.b))
         old_h = p.h
         p.h = '@rst-no-head'
         print(f"{old_h} => {p.h}")
