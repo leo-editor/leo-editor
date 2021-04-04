@@ -1035,7 +1035,7 @@ class StringFindTabManager:
         w.toggle() # Only toggles w's internal value.
         # g.trace(checkbox_name, getattr(fc, checkbox_name, None))
     #@-others
-#@+node:edward.20170428174322.1: *3* class KeyEvent (object)
+#@+node:edward.20170428174322.1: *3* class KeyEvent
 class KeyEvent:
     '''A gui-independent wrapper for gui events.'''
     #@+others
@@ -1077,7 +1077,7 @@ class KeyEvent:
     def type(self):
         return 'KeyEvent'
     #@-others
-#@+node:ekr.20170430114840.1: *3* class KeyHandler (object)
+#@+node:ekr.20170430114840.1: *3* class KeyHandler
 class KeyHandler:
 
     #@+others
@@ -2669,7 +2669,7 @@ class CoreTree (leoFrame.LeoTree):
             # Now done after c.p has been changed.
                 # p.restoreCursorAndScroll()
     #@-others
-#@+node:ekr.20171129200050.1: *3* class CoreStatusLine (object)
+#@+node:ekr.20171129200050.1: *3* class CoreStatusLine
 class CoreStatusLine:
     '''A do-nothing status line.'''
 
@@ -2687,7 +2687,7 @@ class CoreStatusLine:
 
     #@+others
     #@-others
-#@+node:ekr.20170502093200.1: *3* class TopFrame (object)
+#@+node:ekr.20170502093200.1: *3* class TopFrame
 class TopFrame :
     '''A representation of c.frame.top.'''
 
@@ -4022,7 +4022,7 @@ class LeoValues(npyscreen.TreeData):
     #@-others
 #@+node:ekr.20170522081122.1: ** Wrapper classes
 #@+others
-#@+node:ekr.20170511053143.1: *3*  class TextMixin (object)
+#@+node:ekr.20170511053143.1: *3*  class TextMixin
 class TextMixin:
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
     #@+others

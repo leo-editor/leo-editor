@@ -23,7 +23,7 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c',])
 
 #@+others
-#@+node:ekr.20160514120615.1: ** class Commands (object)
+#@+node:ekr.20160514120615.1: ** class Commands
 class Commands:
     """
     A per-outline class that implements most of Leo's commands. The
