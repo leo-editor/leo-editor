@@ -580,7 +580,7 @@ class RstCommands:
                 g.es('body text will be ignored in\n', p.h)
                 return False
         return True
-    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString (New)
+    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString
     def writeNodeToString(self, p):
         """
         rst.writeNodeToString: A utility for scripts. Not used in Leo.
