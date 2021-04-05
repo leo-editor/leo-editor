@@ -357,7 +357,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
     def selectAndDismiss(self):
         self.hide()
     #@-others
-#@+node:ville.20090314215508.12: ** class QuickSearchController (Object)
+#@+node:ville.20090314215508.12: ** class QuickSearchController
 class QuickSearchController:
 
     #@+others

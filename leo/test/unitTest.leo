@@ -176,6 +176,68 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
+<v t="ekr.20111112092813.4060"><vh>@mark-for-unit-tests</vh>
+<v t="ekr.20111113102936.4600"><vh>Test headline abc</vh></v>
+<v t="ekr.20120212130242.3980"><vh>newHeadline</vh></v>
+<v t="ekr.20090529141856.4700"><vh>importTests</vh>
+<v t="ekr.20090529141856.4710"><vh>importCWEBFiles</vh>
+<v t="ekr.20090529141856.4711"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4704"><vh>importDerivedFile</vh>
+<v t="ekr.20090529141856.4705"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4708"><vh>importFlattenedOutline</vh>
+<v t="ekr.20090529141856.4709"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20161006155420.1"><vh>importMOREFiles</vh>
+<v t="ekr.20161006155420.2"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4706"><vh>importNowebFiles</vh>
+<v t="ekr.20090529141856.4707"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20161006154740.1"><vh>importTabFiles</vh>
+<v t="ekr.20161006154802.1"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4712"><vh>removeSentinels</vh>
+<v t="ekr.20090529141856.4713"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4701"><vh>tempNode</vh></v>
+</v>
+<v t="ekr.20090529141856.4686"><vh>exportTests</vh>
+<v t="ekr.20111115105448.3880"><vh>tempNode</vh></v>
+<v t="ekr.20090529141856.4688"><vh>exportHeadlines</vh>
+<v t="ekr.20090529141856.4689"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4690"><vh>flattenOutline</vh>
+<v t="ekr.20090529141856.4691"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4692"><vh>weave</vh>
+<v t="ekr.20090529141856.4693"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4694"><vh>outlineToNoweb</vh>
+<v t="ekr.20090529141856.4695"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4696"><vh>outlineToCWEB</vh>
+<v t="ekr.20090529141856.4697"><vh>dialog</vh></v>
+</v>
+</v>
+<v t="ekr.20111006072734.3640"><vh>@common x-marked-nodes test code</vh>
+<v t="ekr.20111006072734.3641"><vh>setup_test</vh></v>
+<v t="ekr.20111006115024.3613"><vh>tear_down</vh></v>
+<v t="ekr.20111006105711.3734"><vh>delete_children</vh></v>
+<v t="ekr.20111006072734.3642"><vh>test_children</vh></v>
+<v t="ekr.20111211094602.3972"><vh>data</vh>
+<v t="ekr.20111211094602.3978"><vh>a</vh>
+<v t="ekr.20111211094602.3979"><vh>b</vh></v>
+</v>
+<v t="ekr.20111211094602.3975"><vh>c</vh></v>
+<v t="ekr.20111211094602.3976"><vh>d</vh></v>
+<v t="ekr.20111211094602.3977"><vh>e</vh>
+<v t="ekr.20111211094602.3978"></v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
@@ -628,6 +690,51 @@ for h in sorted(d2.keys()):
 
 Important: this may cause crashes on some platforms.
 </t>
+<t tx="ekr.20090529141856.4686">@language plain
+</t>
+<t tx="ekr.20090529141856.4688"></t>
+<t tx="ekr.20090529141856.4689">saveFileDialog
+test\\unittest\\output\\exportHeadlines.txt
+</t>
+<t tx="ekr.20090529141856.4690"></t>
+<t tx="ekr.20090529141856.4691">saveFileDialog
+test\\unittest\\output\\flattenOutline.txt
+</t>
+<t tx="ekr.20090529141856.4692"></t>
+<t tx="ekr.20090529141856.4693">saveFileDialog
+test\\unittest\\output\\weave.txt
+</t>
+<t tx="ekr.20090529141856.4694"></t>
+<t tx="ekr.20090529141856.4695">saveFileDialog
+test\\unittest\\output\\outlineToNoweb.txt
+</t>
+<t tx="ekr.20090529141856.4696"></t>
+<t tx="ekr.20090529141856.4697">saveFileDialog
+test\\unittest\\output\\outlineToCweb.txt
+</t>
+<t tx="ekr.20090529141856.4700">@language plain
+</t>
+<t tx="ekr.20090529141856.4701"></t>
+<t tx="ekr.20090529141856.4704"></t>
+<t tx="ekr.20090529141856.4705">openFileDialog
+core\\runLeo.py
+</t>
+<t tx="ekr.20090529141856.4706"></t>
+<t tx="ekr.20090529141856.4707">openFileDialog
+test\\unittest\\input\\noweave.nw.txt
+</t>
+<t tx="ekr.20090529141856.4708"></t>
+<t tx="ekr.20090529141856.4709">openFileDialog
+test\\unittest\\input\\flat.txt
+</t>
+<t tx="ekr.20090529141856.4710"></t>
+<t tx="ekr.20090529141856.4711">openFileDialog
+test\\unittest\\input\\cweave.w
+</t>
+<t tx="ekr.20090529141856.4712"></t>
+<t tx="ekr.20090529141856.4713">openFileDialog
+test\\unittest\\input\\testLeoAtFile.py
+</t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
 for p in c.all_unique_positions():
@@ -850,6 +957,80 @@ for tag,aList in table:
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
+<t tx="ekr.20111006072734.3640">@others
+</t>
+<t tx="ekr.20111006072734.3641">def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    if 1: # This is correct.
+        for child in target.children():
+            if child.h == 'a':
+                assert child.isCloned(),'not cloned!: %s' % (child)
+            else:
+                assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+    
+</t>
+<t tx="ekr.20111006072734.3642">def test_children(p):
+    
+    n = p.numberOfChildren()
+    assert n == 3 ,'children: %s' % (n)
+    
+    child = p.firstChild()
+    assert child.h == 'a','child1: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'c','child2: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'a','child3: %s' % (child)
+</t>
+<t tx="ekr.20111006105711.3734">def delete_children(p):
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+</t>
+<t tx="ekr.20111006115024.3613">def tear_down(p,h=None):
+    
+    if 1:
+        delete_children(p)
+    
+    if h:
+        node = g.findNodeAnywhere(c,h)
+        if node:
+            node.doDelete()
+            # g.trace('deleted',node.h)
+
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    common.contract()
+
+    c.selectPosition(p)
+    c.redraw()
+</t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
 html
@@ -859,6 +1040,11 @@ div
 table
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111112092813.4060">@nocolor-node
+
+All support code should be placed as a child of this @mark-for-unit-test node
+so that it will be copied to dynamicUnitTest.leo when running tests externally.
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -871,7 +1057,9 @@ run-all-unit-tests-locally          = Alt-6
 
 # Important: Alt-9 is used by a unit test
 </t>
+<t tx="ekr.20111113102936.4600"></t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111115105448.3880"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put
@@ -928,7 +1116,14 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
+<t tx="ekr.20111211094602.3972"></t>
+<t tx="ekr.20111211094602.3975"></t>
+<t tx="ekr.20111211094602.3976"></t>
+<t tx="ekr.20111211094602.3977"></t>
+<t tx="ekr.20111211094602.3978"></t>
+<t tx="ekr.20111211094602.3979"></t>
 <t tx="ekr.20111211094936.3970"></t>
+<t tx="ekr.20120212130242.3980"></t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
 
@@ -1208,6 +1403,14 @@ char t
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20161006154740.1"></t>
+<t tx="ekr.20161006154802.1">openFileDialog
+test\\unittest\\perfectImport\\tab_file_test.txt
+</t>
+<t tx="ekr.20161006155420.1"></t>
+<t tx="ekr.20161006155420.2">openFileDialog
+test\\unittest\\perfectImport\\MORE_file_test.txt
+</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>

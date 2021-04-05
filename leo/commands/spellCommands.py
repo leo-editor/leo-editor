@@ -120,7 +120,7 @@ class BaseSpellWrapper:
             return None
         return d.suggest(word)
     #@-others
-#@+node:ekr.20180207075606.1: ** class DefaultDict (object)
+#@+node:ekr.20180207075606.1: ** class DefaultDict
 class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
