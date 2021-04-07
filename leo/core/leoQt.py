@@ -11,7 +11,7 @@ Provides the *PyQt5* spellings of Qt modules, classes and constants:
 
 Note: In Python 3 QString does not exist.
 """
-# pylint: disable=unused-wildcard-import,wildcard-import
+import leo.core.leoGlobals as g
 #
 # Set defaults.
 isQt6 = isQt5 = isQt4 = False
@@ -22,18 +22,22 @@ QtMultimedia = None  # Replacement for phonon.
 qt_version = '<no qt version>'
 printsupport = Signal = None
 #
-# Do the imports. Set the isQt* constants only if all required imports succeed.
-try:
-    from leo.core.leoQt6 import *
-    isQt6 = True
-except Exception:
+# Skip all imports in the bridge.
+if not g.in_bridge:
+    # pylint: disable=unused-wildcard-import,wildcard-import
+    #
+    # Set the isQt* constants only if all required imports succeed.
     try:
-        from leo.core.leoQt5 import *
-        isQt5 = True
+        from leo.core.leoQt6 import *
+        isQt6 = True
     except Exception:
         try:
-            from leo.core.leoQt4 import *
-            isQt4 = True
+            from leo.core.leoQt5 import *
+            isQt5 = True
         except Exception:
-            pass
+            try:
+                from leo.core.leoQt4 import *
+                isQt4 = True
+            except Exception:
+                pass
 #@-leo
