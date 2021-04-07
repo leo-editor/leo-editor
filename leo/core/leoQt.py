@@ -8,22 +8,18 @@ Provides the *PyQt5* spellings of Qt modules, classes and constants:
 - QtWidgets, not QtGui, for all widget classes.
 - QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - QtWebKitWidgets, not QtWebKit.
+
+Note: In Python 3 QString does not exist.
 """
 # pylint: disable=unused-wildcard-import,wildcard-import
-
-#
-### To do: remove QString.
-# QString is a synonym for g.u, which is a do-nothing.
-def QString(s):
-    return s
 #
 # Set defaults.
-isQt6, isQt5, isQt4 = False, False, False
+isQt6 = isQt5 = isQt4 = False
 Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
 QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
 phonon = uic = None
 QtMultimedia = None  # Replacement for phonon.
-qt_version = '<no version>'
+qt_version = '<no qt version>'
 printsupport = Signal = None
 #
 # Do the imports. Set the isQt* constants only if all required imports succeed.

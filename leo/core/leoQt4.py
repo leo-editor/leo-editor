@@ -5,10 +5,9 @@
 from PyQt4 import Qt
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+from PyQt4.QtCore import QString
 from PyQt4.QtCore import QUrl
 from PyQt4.QtCore import pyqtSignal as Signal
-# assert QUrl  # for pyflakes.
-# assert Signal  # for pyflakes.
 QtConst = QtCore.Qt
 QtWidgets = QtGui
 printsupport = QtWidgets

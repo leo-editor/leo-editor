@@ -12,18 +12,16 @@ from typing import List
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, Qsci, QString, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, Qsci, QtCore, QtGui, QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
 from leo.plugins import qt_events
 from leo.plugins import qt_frame
 from leo.plugins import qt_idle_time
 from leo.plugins import qt_text
-if 1:
-    # This defines the commands defined by @g.command.
-    # pylint: disable=unused-import
-    from leo.plugins import qt_commands
-    assert qt_commands
+# This defines the commands defined by @g.command.
+from leo.plugins import qt_commands
+assert qt_commands
 qt = QtCore.Qt
 #@-<< imports >>
 #@+others
@@ -161,7 +159,7 @@ class LeoQtGui(leoGui.LeoGui):
             s = g.toUnicode(s)
             QtWidgets.QApplication.processEvents()
             # Fix #241: QMimeData object error
-            cb.setText(QString(s))
+            cb.setText(s)
             QtWidgets.QApplication.processEvents()
         else:
             g.trace('no clipboard!')
@@ -186,7 +184,7 @@ class LeoQtGui(leoGui.LeoGui):
         if s:
             # This code generates a harmless, but annoying warning on PyQt5.
             cb = self.qtApp.clipboard()
-            cb.setText(QString(s), mode=cb.Selection)
+            cb.setText(s, mode=cb.Selection)
     #@+node:ekr.20110605121601.18487: *3* qt_gui.Dialogs & panels
     #@+node:ekr.20110605121601.18488: *4* qt_gui.alert
     def alert(self, c, message):

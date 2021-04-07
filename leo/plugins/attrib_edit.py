@@ -256,7 +256,7 @@ class AttributeGetterUA(AttributeGetter):
             "Enter attribute path",
             "Enter path to attribute (space separated words)")
 
-        ns = str(path).split()  # not the QString
+        ns = str(path).split()
         if not ok or not ns:
             g.es("Cancelled")
             return
@@ -487,8 +487,6 @@ class editWatcher:
         if not self._widget:
             self._widget = w = QtWidgets.QLineEdit(str(self.value))
             w.textChanged.connect(self.updateValue)
-                # QtCore.QObject.connect(w,
-                    # QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
             self._widget.focusOutEvent = self.lostFocus
             # see lostFocus()
         return self._widget

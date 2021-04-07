@@ -13,7 +13,7 @@ alt-x stickynote to pop out current node as a note.
 #@+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
 import webbrowser
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QString, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 # Third-party tools.
 try:
     # pylint: disable=import-error
@@ -528,7 +528,7 @@ class notetextedit(QTextEdit):
         else:
             QTextEdit.insertFromMimeData(self, source)
 
-    #@+node:ekr.20100103100944.5419: *3* toMarkdown
+    #@+node:ekr.20100103100944.5419: *3* toMarkdown (stickynotes)
     def toMarkdown(self):
         references = ''
         i = 1
@@ -548,7 +548,6 @@ class notetextedit(QTextEdit):
             else:
                 if block.textList():
                     doc += '  '+block.textList().itemText(block) + ' '
-                # para = QString()
                 para = ''
                 iterator = block.begin()
                 while iterator != block.end():
@@ -576,13 +575,13 @@ class notetextedit(QTextEdit):
                             else:
                                 text = '###{0}'.format(text)
                         elif char_format.fontFixedPitch(): #or format.fontFamily=='courier':
-                            text = QString("`%1`").arg(text)
+                            text = "`%1`".arg(text)
                         elif char_format.fontItalic():
-                            text = QString("*%1*").arg(text)
+                            text = "*%1*".arg(text)
                         elif char_format.fontWeight() > QFont.Normal:
                             #font-weight:600; same as for an H1;
                             #H1 font-size:xx-large; H1 20; H2 15 H3 12
-                            text = QString("**%1**").arg(text)
+                            text = "**%1**".arg(text)
 
                         para += text
                     iterator += 1
