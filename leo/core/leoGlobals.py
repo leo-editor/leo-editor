@@ -5967,11 +5967,9 @@ def u(s):
     """
     Return s, converted to unicode from Qt widgets.
     
-    leoQt.py uses this as a stand-in for QString, but all other calls
-    to g.u can and should be removed.
+    Deprecated. QString does not exist on Python 3.
     
-    Neither Leo's core nor any of Leo's official plugins call this
-    method directly.
+    No calls to g.u exist in Leo's core or official plugins.
     """
     return s
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
