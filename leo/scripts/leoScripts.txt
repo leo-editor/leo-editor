@@ -14370,7 +14370,7 @@ errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
 # for s in errors: print(s)
 if 1: # A a list of files.
-    short_files = ['asciidoc']
+    short_files = ['assembly_6502']
     files = [rf"{theDir}{os.path.sep}{z}.xml" for z in short_files]
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
