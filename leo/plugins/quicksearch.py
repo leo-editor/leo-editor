@@ -410,22 +410,11 @@ class QuickSearchController:
         #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
         self.worker.start()
-        if 1: # Compatible with PyQt5
-            # we want both single-clicks and activations (press enter)
-            w.itemActivated.connect(self.onActivated)
-            w.itemPressed.connect(self.onSelectItem)
-            w.currentItemChanged.connect(self.onSelectItem)
-        # else:
-            # we want both single-clicks and activations (press enter)
-            # w.connect(w,
-                # QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
-                # self.onActivated)
-            # w.connect(w,
-                # QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
-                # self.onSelectItem)
-            # w.connect(w,
-                # QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem *)"),
-                # self.onSelectItem)
+        # we want both single-clicks and activations (press enter)
+        w.itemActivated.connect(self.onActivated)
+        w.itemPressed.connect(self.onSelectItem)
+        w.currentItemChanged.connect(self.onSelectItem)
+        
     #@+node:ville.20121120225024.3636: *3* freeze
     def freeze(self, val = True):
         self.frozen = val

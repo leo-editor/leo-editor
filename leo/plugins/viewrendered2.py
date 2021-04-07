@@ -1686,10 +1686,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         #            sb.setSliderPosition(pos)
     #@+node:ekr.20140226074510.4228: *4* vr2.update_movie
     def update_movie(self, s, keywords):
-        # pylint: disable=maybe-no-member
-            # 'PyQt4.phonon' has no 'VideoPlayer' member
-            # 'PyQt4.phonon' has no 'VideoCategory' member
-            # 'PyQt4.phonon' has no 'MediaSource' member
         pc = self
         ok, path = pc.get_fn(s, '@movie')
         if not ok:

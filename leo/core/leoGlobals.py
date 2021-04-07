@@ -2295,11 +2295,6 @@ class TracingNullObject:
             if tag not in suppress:
                 print('='*10, 'NullObject.__init__:', id(self), tag)
     def __call__(self, *args, **kwargs):
-        if 0:
-            suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
-            for z in suppress:
-                if z not in repr(args):
-                    print(f"%30s"  % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
@@ -2789,18 +2784,11 @@ def pdb(message=''):
     """Fall into pdb."""
     import pdb  # Required: we have just defined pdb as a function!
     if app and not app.useIpython:
-        # from leo.core.leoQt import QtCore
-        # This is more portable.
         try:
-            import PyQt5.QtCore as QtCore
-        except ImportError:
-            try:
-                import PyQt4.QtCore as QtCore
-            except ImportError:
-                QtCore = None
-        if QtCore:
-            # pylint: disable=no-member
+            from leo.core.leoQt import QtCore
             QtCore.pyqtRemoveInputHook()
+        except Exception:
+            pass
     if message:
         print(message)
     pdb.set_trace()

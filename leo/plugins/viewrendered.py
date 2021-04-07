@@ -1267,10 +1267,6 @@ if QtWidgets: # NOQA
 
         def update_movie(self, s, keywords):
             '''Update a movie in the vr pane.'''
-            # pylint: disable=maybe-no-member
-                # 'PyQt4.phonon' has no 'VideoPlayer' member
-                # 'PyQt4.phonon' has no 'VideoCategory' member
-                # 'PyQt4.phonon' has no 'MediaSource' member
             pc = self
             ok, path = pc.get_fn(s, '@movie')
             if not ok:

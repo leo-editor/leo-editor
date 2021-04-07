@@ -137,9 +137,6 @@ if QtWidgets:
             self.interpreter.runIt('p = c.p')
         #@+node:peckj.20150428142729.11: *3* PyInterp.printBanner
         def printBanner(self):
-            #self.write(sys.version)
-            #self.write(' on ' + sys.platform + '\n')
-            #self.write('PyQt4 ' + PYQT_VERSION_STR + '\n')
             banner = [
                 'Type !hist for a history view and !hist(n) history index recall\n',
                 'Type !clear to clear this pane\n'
