@@ -1081,10 +1081,6 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setText(0, item._real_text)
         w.editItem(item)
         e = w.itemWidget(item, 0)  # e is a QLineEdit
-        if not e:
-            g.trace('===== no e =====', repr(item))  ###
-            return None, None  ### To be fixed.
-        g.trace(f"item: {bool(item)} e: {e!r}")  ###
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e, item)
         self.sizeTreeEditor(c, e)
@@ -1096,15 +1092,16 @@ class LeoQtTree(leoFrame.LeoTree):
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
-            ### policy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-            pass  ### Not ready yet.
+            qt_flags = QtCore.Qt.ItemFlags
+            item.setFlags(item.flags() | qt_flags.ItemIsEditable)
+            policy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
+            item.setChildIndicatorPolicy(policy.DontShowIndicatorWhenChildless)
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
         try:
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
             pass
-        #print "item",item
         return item
     #@+node:ekr.20110605121601.18423: *4* qtree.getCurrentItem
     def getCurrentItem(self):
@@ -1289,9 +1286,6 @@ class LeoQtTree(leoFrame.LeoTree):
         w.editItem(item)
             # Generates focus-in event that tree doesn't report.
         e = w.itemWidget(item, 0)  # A QLineEdit.
-        if not e:
-            g.trace("===== no e =====", repr(item))
-            return None, None ### Experimental.
         s = e.text()
         if s == 'newHeadline':
             selectAll = True
@@ -1339,7 +1333,8 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
+        hint = QtWidgets.QAbstractItemDelegate.EndEditHint if isQt6 else QtWidgets.QAbstractItemDelegate
+        w.closeEditor(e, hint.NoHint)
         w.setCurrentItem(item)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self):
