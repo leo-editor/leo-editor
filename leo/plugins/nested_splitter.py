@@ -2,7 +2,7 @@
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Qt, QtCore, QtConst, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, Qt, QtCore, QtConst, QtGui, QtWidgets
 # pylint: disable=cell-var-from-loop
 #@+others
 #@+node:ekr.20110605121601.17956: ** init
@@ -352,11 +352,10 @@ class NestedSplitter(QtWidgets.QSplitter):
         # allow special behavior to be turned of at import stage
         # useful if other code must run to set up callbacks, that
         # other code can re-enable
+    orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
     other_orientation = {
-        QtCore.Qt.Vertical: QtCore.Qt.Horizontal,
-        QtCore.Qt.Horizontal: QtCore.Qt.Vertical
-        # QtConst.Vertical: QtConst.Horizontal,
-        # QtConst.Horizontal: QtConst.Vertical
+        orientations.Vertical: orientations.Horizontal,
+        orientations.Horizontal: orientations.Vertical
     }
     # a regular signal, but you can't use its .connect() directly,
     # use splitterClicked_connect()

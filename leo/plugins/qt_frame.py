@@ -302,9 +302,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
-             hPolicy=QtWidgets.QSizePolicy.Expanding,
-             vPolicy=QtWidgets.QSizePolicy.Expanding,
+             hPolicy=policy.Expanding,
+             vPolicy=policy.Expanding,
         )
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
@@ -342,17 +343,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars.
         self.centralwidget = w
         return w
-    #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers (legacy)
+    #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers
     def createLogPane(self, parent):
         """Create all parts of Leo's log pane."""
         c = self.leo_c
+        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         #
         # Create the log frame.
-        logFrame = self.createFrame(parent, 'logFrame',
-            vPolicy=QtWidgets.QSizePolicy.Minimum)
+        logFrame = self.createFrame(parent, 'logFrame', vPolicy=policy.Minimum)
         innerFrame = self.createFrame(logFrame, 'logInnerFrame',
-            hPolicy=QtWidgets.QSizePolicy.Preferred,
-            vPolicy=QtWidgets.QSizePolicy.Expanding)
+            hPolicy=policy.Preferred, vPolicy=policy.Expanding)
         tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
         #
         # Pack.
@@ -398,13 +398,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createMainLayout(self, parent):
         """Create the layout for Leo's main window."""
         # c = self.leo_c
+        orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         main_splitter = NestedSplitter(parent)
         main_splitter.setObjectName('main_splitter')
-        main_splitter.setOrientation(QtCore.Qt.Vertical)
+        main_splitter.setOrientation(orientations.Vertical)
         secondary_splitter = NestedSplitter(main_splitter)
         secondary_splitter.setObjectName('secondary_splitter')
-        secondary_splitter.setOrientation(QtCore.Qt.Horizontal)
+        secondary_splitter.setOrientation(orientations.Horizontal)
         # Official ivar:
         self.verticalLayout = vLayout
         self.setSizePolicy(secondary_splitter)
@@ -424,10 +425,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
     def createMiniBuffer(self, parent):
         """Create the widgets for Leo's minibuffer area."""
+        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         # Create widgets.
         frame = self.createFrame(parent, 'minibufferFrame',
-            hPolicy=QtWidgets.QSizePolicy.MinimumExpanding,
-            vPolicy=QtWidgets.QSizePolicy.Fixed)
+            hPolicy=policy.MinimumExpanding, vPolicy=policy.Fixed)
         frame.setMinimumSize(QtCore.QSize(100, 0))
         label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
 
@@ -488,11 +489,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
     def createOutlinePane(self, parent):
         """Create the widgets and ivars for Leo's outline."""
+        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         # Create widgets.
-        treeFrame = self.createFrame(parent, 'outlineFrame',
-            vPolicy=QtWidgets.QSizePolicy.Expanding)
-        innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame',
-            hPolicy=QtWidgets.QSizePolicy.Preferred)
+        treeFrame = self.createFrame(parent, 'outlineFrame', vPolicy=policy.Expanding)
+        innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame', hPolicy=policy.Preferred)
         treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
         grid = self.createGrid(treeFrame, 'outlineGrid')
         grid.addWidget(innerFrame, 0, 0, 1, 1)
@@ -557,12 +557,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
         lineWidth=1,
-        shadow=QtWidgets.QFrame.Plain,
-        shape=QtWidgets.QFrame.NoFrame,
+        shadow=None, ### QtWidgets.QFrame.Plain,
+        shape=None, ###QtWidgets.QFrame.NoFrame,
     ):
         """Create a Qt Frame."""
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        qt_shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
+        qt_shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
+        if shadow is None:
+            shadow = qt_shadow.Plain
+        if shape is None:
+            shape = qt_shape.NoFrame
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
         w.setLineWidth(lineWidth)
@@ -630,8 +636,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18163: *5* dw.createText (creates QTextBrowser)
     def createText(self, parent, name,
         lineWidth=0,
-        shadow=QtWidgets.QFrame.Plain,
-        shape=QtWidgets.QFrame.NoFrame,
+        shadow=None, ### QtWidgets.QFrame.Plain,
+        shape=None, ### QtWidgets.QFrame.NoFrame,
     ):
         # Create a text widget.
         c = self.leo_c
@@ -640,7 +646,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w = Qsci.QsciScintilla(parent)
             self.scintilla_widget = w
         else:
+            qt_shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
+            qt_shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
             w = qt_text.LeoQTextBrowser(parent, c, None)
+            if shadow is None:
+                shadow = qt_shadow.Plain
+            if shape is None:
+                shape = qt_shape.NoFrame
             w.setFrameShape(shape)
             w.setFrameShadow(shadow)
             w.setLineWidth(lineWidth)
@@ -667,6 +679,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
     def createSpellTab(self, parent):
         # dw = self
+        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
         spellFrame = self.createFrame(parent, 'spellFrame')
         vLayout2 = self.createVLayout(spellFrame, 'spellVLayout')
@@ -688,19 +701,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # This name is significant.
             setattr(self, f"leo_spell_btn_{ivar}", button)
         self.leo_spell_btn_Hide.setCheckable(False)
-        spacerItem = QtWidgets.QSpacerItem(20, 40,
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, policy.Minimum, policy.Expanding)
         grid.addItem(spacerItem, 5, 0, 1, 1)
         listBox = QtWidgets.QListWidget(spellFrame)
-        self.setSizePolicy(listBox,
-            kind1=QtWidgets.QSizePolicy.MinimumExpanding,
-            kind2=QtWidgets.QSizePolicy.Expanding)
+        self.setSizePolicy(listBox, kind1=policy.MinimumExpanding, kind2=policy.Expanding)
         listBox.setMinimumSize(QtCore.QSize(0, 0))
         listBox.setMaximumSize(QtCore.QSize(150, 150))
         listBox.setObjectName("leo_spell_listBox")
         grid.addWidget(listBox, 1, 0, 1, 2)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20,
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, policy.Expanding, policy.Minimum)
         grid.addItem(spacerItem1, 2, 2, 1, 1)
         lab = self.createLabel(spellFrame, 'spellLabel', 'spellLabel')
         grid.addWidget(lab, 0, 0, 1, 2)

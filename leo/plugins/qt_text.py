@@ -454,8 +454,8 @@ if QtWidgets:
             
             # Connect event handlers...
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
-                self.textChanged.connect(self.onTextChanged)
             # #1286
+                self.textChanged.connect(self.onTextChanged)
             self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
