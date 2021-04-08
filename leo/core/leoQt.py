@@ -14,7 +14,7 @@ Note: In Python 3 QString does not exist.
 import leo.core.leoGlobals as g
 #
 # Set defaults.
-isQt6 = isQt5 = isQt4 = False
+isQt6 = isQt5 = isQt4 = isQt56 = False
 Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
 QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
 phonon = uic = None
@@ -41,6 +41,9 @@ if not g.in_bridge:
                 isQt4 = True
             except Exception:
                 pass
+    #
+    # Summary constants.
+    isQt56 = isQt5 or isQt6
     if isQt6:  ### Temporary.
         print('\n===== pyQt6 =====')
     if 0: # A good trace for testing.
