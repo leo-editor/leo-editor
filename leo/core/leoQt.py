@@ -40,4 +40,22 @@ if not g.in_bridge:
                 isQt4 = True
             except Exception:
                 pass
+    if 1: # A good trace for testing.
+        # Define m only when tracing.
+        if isQt6:
+            import leo.core.leoQt6 as m
+        if isQt5:
+            import leo.core.leoQt5 as m
+        if isQt4:
+            import leo.core.leoQt4 as m
+        for z in sorted(dir()):
+            if z.startswith('_'):
+                continue
+            val = getattr(m, z, None) 
+            if val is None:
+                continue
+            if repr(val).startswith('<module'):
+                val = val.__class__.__name__
+            print(f"{z:>20}: {val}")
+
 #@-leo

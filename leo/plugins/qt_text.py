@@ -6,7 +6,7 @@
 import time
 assert time
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, Qsci, QtWidgets
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -1285,7 +1285,10 @@ class QTextEditWrapper(QTextMixin):
         w = self.widget
         w.setWordWrapMode(QtGui.QTextOption.NoWrap)
         # tab stop in pixels - no config for this (yet)
-        w.setTabStopWidth(24)
+        if isQt6:
+            w.setTabStopDistance(24)
+        else:
+            w.setTabStopWidth(24)
     #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed?)
     def set_signals(self):
         """Set up signals."""

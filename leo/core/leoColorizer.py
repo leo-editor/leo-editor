@@ -22,7 +22,7 @@ except ImportError:
 #
 # Leo imports...
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Qsci, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, Qsci, QtGui, QtWidgets
 from leo.core.leoColor import leo_color_database
 
 
@@ -238,7 +238,10 @@ class BaseJEditColorizer(BaseColorizer):
             size = info.pointSizeF()
             pixels_per_point = 1.0  # 0.9
             hard_tab_width = abs(int(pixels_per_point * size * c.tab_width))
-            wrapper.widget.setTabStopWidth(hard_tab_width)
+            if isQt6:
+                wrapper.widget.setTabStopDistance(hard_tab_width)
+            else:
+                wrapper.widget.setTabStopWidth(hard_tab_width)
         else:
             # To do: configure the QScintilla widget.
             pass

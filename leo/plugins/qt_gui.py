@@ -12,7 +12,7 @@ from typing import List
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, Qsci, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, Qsci, QtCore, QtGui, QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
 from leo.plugins import qt_events
@@ -437,7 +437,10 @@ class LeoQtGui(leoGui.LeoGui):
         d.setIcon(b.Information)
         d.addButton(text, b.YesRole)
         c.in_qt_dialog = True
-        d.exec_()
+        if isQt6:
+            d.exec()
+        else:
+            d.exec_()
         c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self, c, title,
@@ -1248,7 +1251,10 @@ class LeoQtGui(leoGui.LeoGui):
             self.runWithIpythonKernel()
         else:
             # This can be alarming when using Python's -i option.
-            sys.exit(self.qtApp.exec_())
+            if isQt6:
+                sys.exit(self.qtApp.exec())
+            else:
+                sys.exit(self.qtApp.exec_())
     #@+node:ekr.20130930062914.16001: *4* qt_gui.runWithIpythonKernel (commands)
     def runWithIpythonKernel(self):
         """Init Leo to run in an IPython shell."""
@@ -1436,7 +1442,7 @@ class LeoQtGui(leoGui.LeoGui):
             name = repr(w)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
-    if isQt5:
+    if isQt5 or isQt6:
         # To do: https://doc.qt.io/qt-5/qsignalspy.html
         from PyQt5.QtTest import QSignalSpy
         assert QSignalSpy

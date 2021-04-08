@@ -17,7 +17,7 @@ from leo.core import leoColorizer
 from leo.core import leoFrame
 from leo.core import leoMenu
 from leo.commands import gotoCommands
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import Qsci
 from leo.plugins import qt_events
 from leo.plugins import qt_text
@@ -1009,7 +1009,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18171: *5* dw.tr
     def tr(self, s):
         # pylint: disable=no-member
-        if isQt5:
+        if isQt5 or isQt6:
             # QApplication.UnicodeUTF8 no longer exists.
             return QtWidgets.QApplication.translate('MainWindow', s, None)
         return QtWidgets.QApplication.translate(
@@ -1899,7 +1899,8 @@ class LeoQtBody(leoFrame.LeoBody):
         # Apparently benign.
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-out', obj)
-            obj.setReadOnly(True)
+            if hasattr(obj, 'setReadOnly'):
+                obj.setReadOnly(True)
     #@+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper (revised)
     # badFocusColors = []
 
@@ -2145,6 +2146,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
             return
         #
         # Change the style and palette.
+        if isQt6:
+            return ###
         QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
         qstyle = QtWidgets.qApp.setStyle(stylename)
         if not qstyle:

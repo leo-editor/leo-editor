@@ -8,7 +8,7 @@
 import re
 import time
 assert time
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoNodes
@@ -1089,7 +1089,10 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
+        if isQt6:
+            pass  ### Not ready yet.
+        else:
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
         try:
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
