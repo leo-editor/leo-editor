@@ -25,7 +25,7 @@ class Ui_LeoQuickSearchWidget:
         self.lineEdit.setObjectName("lineEditNav")
         self.verticalLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
         self.listWidget = QtGui.QListWidget(LeoQuickSearchWidget)
-        policy = QtGui.QSizePolicy.Policy if isQt6 else QtGui.QSizePolicy  ###
+        policy = QtGui.QSizePolicy.Policy if isQt6 else QtGui.QSizePolicy
         sizePolicy = QtGui.QSizePolicy(policy.Expanding, policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

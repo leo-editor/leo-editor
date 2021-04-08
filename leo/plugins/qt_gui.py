@@ -1525,8 +1525,8 @@ class LeoQtGui(leoGui.LeoGui):
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
         lineWidth=1,
-        shadow=None, ### QtWidgets.QFrame.Plain,
-        shape=None, ### QtWidgets.QFrame.NoFrame,
+        shadow=None,
+        shape=None,
     ):
         """Create a Qt Frame."""
         qt_shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame

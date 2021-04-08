@@ -144,7 +144,6 @@ class LeoQtEventFilter(QtCore.QObject):
         so the following hack is required.
         """
         c = self.c
-        ### ev = QtCore.QEvent
         ev_type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))

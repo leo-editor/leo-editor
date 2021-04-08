@@ -558,8 +558,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
         lineWidth=1,
-        shadow=None, ### QtWidgets.QFrame.Plain,
-        shape=None, ###QtWidgets.QFrame.NoFrame,
+        shadow=None,
+        shape=None,
     ):
         """Create a Qt Frame."""
         qt_shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
@@ -638,8 +638,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18163: *5* dw.createText (creates QTextBrowser)
     def createText(self, parent, name,
         lineWidth=0,
-        shadow=None, ### QtWidgets.QFrame.Plain,
-        shape=None, ### QtWidgets.QFrame.NoFrame,
+        shadow=None,
+        shape=None,
     ):
         # Create a text widget.
         c = self.leo_c
@@ -1541,7 +1541,6 @@ class LeoQtBody(leoFrame.LeoBody):
             return
         c = self.c
         w = c.frame.body.wrapper.widget
-        ### option, qt = QtGui.QTextOption, QtCore.Qt
         option = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
         policy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
         if force:
@@ -2430,7 +2429,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)
             qaction = keys.get('qaction')
-            ### g.trace('(QtIconBarClass) qaction', repr(qaction), g.callers(2))
             if not text and not qaction:
                 g.es('bad toolbar item')
             kind = keys.get('kind') or 'generic-button'
@@ -2447,7 +2445,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     self.toolbar = toolbar
 
                 def createWidget(self, parent):
-                    ### g.trace('===== (leoIconBarButton)', g.callers())
                     self.button = b = QtWidgets.QPushButton(self.text, parent)
                     self.button.setProperty('button_kind', kind)  # for styling
                     return b

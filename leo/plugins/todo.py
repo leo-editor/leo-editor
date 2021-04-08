@@ -104,15 +104,15 @@ def popup_entry(c,p,menu):
 if g.app.gui.guiName() == "qt":
     class todoQtUI(QtWidgets.QWidget):
         #@+others
-        #@+node:ekr.20111118104929.10204: *3* ctor (todo.py) *** FAIL in setupUi
+        #@+node:ekr.20111118104929.10204: *3* ctor (todo.py)
         def __init__(self, owner, logTab=True):
 
             self.owner = owner
             super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
+            #
             # change dir to get themed icons, needed for uic resources
-            # 20180327 this is working, these are icons for todo UI, not
-            # the tree.
+            # These are icons for todo UI, not the tree.
             theme = g.app.config.getString('color-theme')
             if theme:
                 testPath = g.os_path_join(
