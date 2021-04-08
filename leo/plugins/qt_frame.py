@@ -2164,15 +2164,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
             return
         #
         # Change the style and palette.
+        app = g.app.gui.qtApp
         if isQt6:
-            return ###
-        QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
-        qstyle = QtWidgets.qApp.setStyle(stylename)
-        if not qstyle:
-            g.es_print(f"failed to set Qt style name: {stylename!r}")
-            return
-        g.app.gui.qtApp.setPalette(QtWidgets.qApp.nativePalette)
-        # g.es_print('set qt style: %r' % stylename)
+            qstyle = app.setStyle(stylename)
+            if not qstyle:
+                g.es_print(f"failed to set Qt style name: {stylename!r}")
+        else:
+            QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
+            qstyle = QtWidgets.qApp.setStyle(stylename)
+            if not qstyle:
+                g.es_print(f"failed to set Qt style name: {stylename!r}")
+                return
+            app.setPalette(QtWidgets.qApp.nativePalette)
     #@+node:ekr.20110605121601.18252: *4* qtFrame.initCompleteHint
     def initCompleteHint(self):
         """A kludge: called to enable text changed events."""
