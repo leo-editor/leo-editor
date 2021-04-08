@@ -523,7 +523,7 @@ import leo.core.leoGlobals as g
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
@@ -1303,7 +1303,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             """
 
             setattr(self, menu_var_name, False)
-            _action = QtWidgets.QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
         #@+node:TomP.20200329223820.8: *5* function: vr3.set_default_kind
@@ -1328,7 +1328,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing.
             """
 
-            _action = QtWidgets.QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_default_kind(kind))
             group.addAction(_action)
             menu.addAction(_action)
@@ -1360,7 +1360,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
 
-        _action = QtWidgets.QAction('Freeze', self, checkable=True)
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+
+        _action = QAction('Freeze', self, checkable=True)
         _action.triggered.connect(lambda checked: set_freeze(checked))
         menu.addAction(_action)
 
@@ -1945,7 +1947,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             assert w == pc.w
         else:
             w = pc.w
-        if isQt5:
+        if isQt5 or isQt6:
             w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()
@@ -2012,7 +2014,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             w = pc.w
         s = self.get_jupyter_source(c)
-        if isQt5:
+        if isQt5 or isQt6:
             w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()

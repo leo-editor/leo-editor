@@ -195,7 +195,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
         self.glue = glue
         self.current_scale = 0
         super().__init__(*args)
-    #@+node:tbrown.20110122085529.15399: *3* wheelEvent
+    #@+node:tbrown.20110122085529.15399: *3* wheelEvent (graphcanvas.py)
     def wheelEvent(self, event):
 
         if int(event.modifiers() & QtConst.ControlModifier):

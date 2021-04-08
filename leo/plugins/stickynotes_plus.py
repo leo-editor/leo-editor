@@ -13,7 +13,7 @@ alt-x stickynote to pop out current node as a note.
 #@+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
 import webbrowser
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 # Third-party tools.
 try:
     # pylint: disable=import-error
@@ -30,7 +30,7 @@ g.assertUi('qt')
 # Abbreviations...
 Qt = QtCore.Qt
 # Widgets
-QAction = QtWidgets.QAction
+QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 QMenu = QtWidgets.QMenu
 QPlainTextEdit = QtWidgets.QPlainTextEdit
 QTextEdit = QtWidgets.QTextEdit
@@ -343,7 +343,7 @@ class notetextedit(QTextEdit):
     def contextMenuEvent(self, event): # this catches the context menu right click
         self.textEffectMenu()
 
-    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__
+    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes)
     def keyPressEvent__(self, event):
         # needed because text edit is not going to recognize short cuts because will do something with control key
         # not needed if have global shortcuts

@@ -217,7 +217,7 @@ from io import StringIO
 from leo.core import leoGlobals as g
 from leo.plugins import qt_text
 from leo.plugins import free_layout
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets, QUrl
 
 # pylint: disable=import-error
@@ -491,6 +491,7 @@ class WebViewPlus(QtWidgets.QWidget):
         '''Init the vr pane.'''
             # QWebView parts, including progress bar
         view = QtWebKitWidgets.QWebView()
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         try:
             # PyQt4
             mf = view.page().mainFrame()
@@ -545,7 +546,7 @@ class WebViewPlus(QtWidgets.QWidget):
         menu = QtWidgets.QMenu()
 
         def action(label):
-            action = QtWidgets.QAction(label, self, checkable=True, triggered=self.state_change)
+            action = QAction(label, self, checkable=True, triggered=self.state_change)
             menu.addAction(action)
             return action
 

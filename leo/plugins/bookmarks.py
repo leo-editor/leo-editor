@@ -217,7 +217,7 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
@@ -759,6 +759,7 @@ class BookMarkDisplay:
         """
 
         menu = QtWidgets.QMenu()
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 
         actions = [
             ("Link to this node", self.update_bookmark),
@@ -773,7 +774,7 @@ class BookMarkDisplay:
         ]
         for action in actions:
             # pylint: disable=cell-var-from-loop
-            act = QtWidgets.QAction(action[0], menu)
+            act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
@@ -782,7 +783,7 @@ class BookMarkDisplay:
             manager.second = True
             manager.upwards = False
             manager.show_list(manager.get_list(), up=False)
-        act = QtWidgets.QAction("Show child bookmarks", menu)
+        act = QAction("Show child bookmarks", menu)
         act.triggered.connect(follow)
         menu.addAction(act)
 
@@ -794,6 +795,7 @@ class BookMarkDisplay:
         """
 
         menu = QtWidgets.QMenu()
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         bm = self.c._bookmarks
 
         actions = [
@@ -807,7 +809,7 @@ class BookMarkDisplay:
             # pylint: disable=cell-var-from-loop
             # pylint: disable=undefined-variable
             # weird: bm clearly *is* defined.
-            act = QtWidgets.QAction(action[0], menu)
+            act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 

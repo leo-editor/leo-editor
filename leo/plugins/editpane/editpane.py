@@ -426,6 +426,7 @@ class LeoEditPane(QtWidgets.QWidget):
     def misc_menu(self):
         """build menu on Action button"""
 
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         # info needed to separate edit and view widgets in self.widget_classes
         name_test_current = [
             ("Editor", lambda x: x.lep_type == 'EDITOR', self.edit_widget.__class__),
@@ -440,7 +441,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 def cb(checked, widget_class=widget_class):
                     self.set_widget(widget_class=widget_class)
 
-                act = QtWidgets.QAction(f"{name}: {widget_class.lep_name}", self)
+                act = QAction(f"{name}: {widget_class.lep_name}", self)
                 act.setCheckable(True)
                 act.setChecked(widget_class == current)
                 act.triggered.connect(cb)
@@ -450,9 +451,9 @@ class LeoEditPane(QtWidgets.QWidget):
     def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
-
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         for mode in 'edit', 'view', 'split':
-            act = QtWidgets.QAction(mode.title(), self)
+            act = QAction(mode.title(), self)
 
             def cb(checked, self=self, mode=mode):
                 self.set_mode(mode)

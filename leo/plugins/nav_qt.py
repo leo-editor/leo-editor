@@ -75,13 +75,13 @@ class NavController:
         w = c.frame.iconBar.w
         if not w:
             return [] # EKR: can be an empty list when unit testing.
-        qt_style = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
-        icon_l = w.style().standardIcon(qt_style.SP_ArrowLeft)
-        icon_r = w.style().standardIcon(qt_style.SP_ArrowRight)
+        QStyle = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
+        icon_l = w.style().standardIcon(QStyle.SP_ArrowLeft)
+        icon_r = w.style().standardIcon(QStyle.SP_ArrowRight)
         # Create the actions.
-        qt_action = QtGui.QAction if isQt6 else QtWidgets.QAction
-        act_l = qt_action(icon_l,'prev',w)
-        act_r = qt_action(icon_r,'next',w)
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        act_l = QAction(icon_l,'prev',w)
+        act_r = QAction(icon_r,'next',w)
         # Use the new commands.
         act_l.triggered.connect(lambda checked: c.goToPrevHistory())
         act_r.triggered.connect(lambda checked: c.goToNextHistory())

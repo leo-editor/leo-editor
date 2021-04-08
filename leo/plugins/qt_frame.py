@@ -2428,6 +2428,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             if not self.w:
                 return None
+            QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             command = keys.get('command')
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)
@@ -2473,8 +2474,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             def delete_callback(checked, action=action,):
                 self.w.removeAction(action)
                 
-            qt_action = QtGui.QAction if isQt6 else QtWidgets.QAction
-            b.leo_removeAction = rb = qt_action('Remove Button', b)
+            b.leo_removeAction = rb = QAction('Remove Button', b)
             b.addAction(rb)
             rb.triggered.connect(delete_callback)
             if command:
@@ -2563,8 +2563,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
             def goto_callback(checked, controller=controller, gnx=gnx):
                 self.goto_command(controller, gnx)
 
-            qt_action = QtGui.QAction if isQt6 else QtWidgets.QAction
-            b.goto_script = gts = qt_action('Goto Script', b)
+            QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+            b.goto_script = gts = QAction('Goto Script', b)
             b.addAction(gts)
             gts.triggered.connect(goto_callback)
             rclicks = build_rclick_tree(command_p, top_level=True)
@@ -2576,13 +2576,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
             script=None
         ):
             c = controller.c
+            QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             top_offset = -2  # insert before the remove button and goto script items
             if top_level:
                 button = action_container
             for rc in rclicks:
                 # pylint: disable=cell-var-from-loop
                 headline = rc.position.h[8:].strip()
-                act = QtWidgets.QAction(headline, action_container)
+                act = QAction(headline, action_container)
                 if '---' in headline and headline.strip().strip('-') == '':
                     act.setSeparator(True)
                 elif rc.position.b.strip():
@@ -2610,7 +2611,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 else:
                     action_container.addAction(act)
             if top_level and rclicks:
-                act = QtWidgets.QAction('---', action_container)
+                act = QAction('---', action_container)
                 act.setSeparator(True)
                 action_container.insertAction(
                     action_container.actions()[top_offset], act)

@@ -70,13 +70,13 @@ except ImportError:
 #
 # Leo imports.
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Qt, QtCore, QtWidgets
+from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
 #
 # Aliases...
 QTimer = QtCore.QTimer
 QFont = QtCore.QFont
 QTextCharFormat = QtCore.QTextCharFormat
-QAction = QtWidgets.QAction
+QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 QInputDialog = QtWidgets.QInputDialog
 QLineEdit = QtWidgets.QLineEdit
 QMainWindow = QtWidgets.QMainWindow

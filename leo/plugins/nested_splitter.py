@@ -106,7 +106,8 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
     #@+node:ekr.20110605121601.17964: *3* nsh.add_item
     def add_item(self, func, menu, name, tooltip=None):
         """helper for splitter_menu menu building"""
-        act = QtWidgets.QAction(name, self)
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        act = QAction(name, self)
         act.setObjectName(name.lower().replace(' ', '-'))
         act.triggered.connect(lambda checked: func())
         if tooltip:
@@ -133,6 +134,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
     #@+node:ekr.20110605121601.17965: *3* nsh.splitter_menu
     def splitter_menu(self, pos):
         """build the context menu for NestedSplitter"""
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         splitter = self.splitter()
         if not splitter.enabled:
             g.trace('splitter not enabled')
@@ -293,7 +295,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
 
                         self.add_item(cb, submenu, title)
         submenu = menu.addMenu('Debug')
-        act = QtWidgets.QAction("Print splitter layout", self)
+        act = QAction("Print splitter layout", self)
 
         def print_layout_c(checked, splitter=splitter):
             layout = splitter.top().get_layout()
@@ -313,7 +315,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                     def cb(checked, id_=id_):
                         splitter.context_cb(id_, index)
 
-                    act = QtWidgets.QAction(title, self)
+                    act = QAction(title, self)
                     act.triggered.connect(cb)
                     menu.addAction(act)
 
@@ -542,12 +544,13 @@ class NestedSplitter(QtWidgets.QSplitter):
     def choice_menu(self, button, pos):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         index = self.indexOf(button)
         if (self.root.marked and
             not self.invalid_swap(button, self.root.marked[3]) and
             self.top().max_count() > 2
         ):
-            act = QtWidgets.QAction("Move marked here", self)
+            act = QAction("Move marked here", self)
             act.triggered.connect(
                 lambda checked: self.replace_widget(button, self.root.marked[3]))
             menu.addAction(act)
@@ -558,11 +561,11 @@ class NestedSplitter(QtWidgets.QSplitter):
                     def cb(checked, id_=id_):
                         self.place_provided(id_, index)
 
-                    act = QtWidgets.QAction(title, self)
+                    act = QAction(title, self)
                     act.triggered.connect(cb)
                     menu.addAction(act)
         if menu.isEmpty():
-            act = QtWidgets.QAction("Nothing marked, and no options", self)
+            act = QAction("Nothing marked, and no options", self)
             menu.addAction(act)
         menu.exec_(button.mapToGlobal(pos))
     #@+node:tbrown.20120418121002.25712: *3* ns.closing

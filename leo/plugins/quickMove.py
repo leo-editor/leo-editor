@@ -361,6 +361,7 @@ class quickMove:
         p = c.p
         if v is None:
             v = p.v
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         sc = scriptingController(c)
         mb = quickMoveButton(self,v,which,type_=type_)
         txt=self.txts[type_]
@@ -379,9 +380,10 @@ class quickMove:
         text = txt + ":" + header if txt else header
         # createButton truncates text.
 
+
         if parent and g.app.gui.guiName().startswith("qt"):
             pb = parent.button
-            rc = QtWidgets.QAction(text, pb)
+            rc = QAction(text, pb)
             rc.triggered.connect(mb.moveCurrentNodeToTarget)
             pb.insertAction(pb.actions()[0], rc) # insert at top
             b = None
@@ -423,7 +425,7 @@ class quickMove:
                     (cb_set_parent, 'Set parent'),
                 ]:
                     but = b.button
-                    rc = QtWidgets.QAction(txt, but)
+                    rc = QAction(txt, but)
                     rc.triggered.connect(cb)
                     but.insertAction(but.actions()[-1], rc)
                         # insert rc before Remove Button
@@ -480,10 +482,11 @@ class quickMove:
         """make popup menu entry for tree context menu"""
         # pylint: disable=function-redefined
         # several callbacks have the same name.
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         if c != self.c:
             return  # wrong commander
         for cb, name in reversed(self.recent_moves):
-            a = QtWidgets.QAction(name, menu)
+            a = QAction(name, menu)
             a.triggered.connect(lambda checked, cb=cb, name=name: self.do_wrap(cb, name))
             menu.insertAction(menu.actions()[0], a)
         pathmenu = menu.addMenu("Move")
