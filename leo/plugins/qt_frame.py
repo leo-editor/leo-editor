@@ -2371,7 +2371,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     class QtIconBarClass:
         """A class representing the singleton Icon bar"""
         #@+others
-        #@+node:ekr.20110605121601.18263: *4*  ctor & reloadSettings (QtIconBarClass)
+        #@+node:ekr.20110605121601.18263: *4*  QtIconBar.ctor & reloadSettings
         def __init__(self, c, parentFrame):
             """Ctor for QtIconBarClass."""
             # Copy ivars
@@ -2389,7 +2389,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c.registerReloadSettings(self)
             self.buttonColor = c.config.getString('qt-button-color')
             self.toolbar_orientation = c.config.getString('qt-toolbar-location')
-        #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
+        #@+node:ekr.20110605121601.18264: *4*  QtIconBar.do-nothings
         # These *are* called from Leo's core.
 
         def addRow(self, height=None):
@@ -2397,7 +2397,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
         def getNewFrame(self):
             return None  # To do
-        #@+node:ekr.20110605121601.18265: *4* add (QtIconBarClass)
+        #@+node:ekr.20110605121601.18265: *4* QtIconBar.add
         def add(self, *args, **keys):
             """Add a button to the icon bar."""
             c = self.c
@@ -2459,7 +2459,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
                 b.clicked.connect(button_callback)
             return action
-        #@+node:ekr.20110605121601.18266: *4* addRowIfNeeded
+        #@+node:ekr.20110605121601.18266: *4* QtIconBar.addRowIfNeeded (not used)
         def addRowIfNeeded(self):
             """Add a new icon row if there are too many widgets."""
             # n = g.app.iconWidgetCount
@@ -2467,16 +2467,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # g.app.iconWidgetCount = 0
                 # self.addRow()
             # g.app.iconWidgetCount += 1
-        #@+node:ekr.20110605121601.18267: *4* addWidget
+        #@+node:ekr.20110605121601.18267: *4* QtIconBar.addWidget
         def addWidget(self, w):
             self.w.addWidget(w)
-        #@+node:ekr.20110605121601.18268: *4* clear (QtIconBarClass)
+        #@+node:ekr.20110605121601.18268: *4* QtIconBar.clear
         def clear(self):
             """Destroy all the widgets in the icon bar"""
             self.w.clear()
             self.actions = []
             g.app.iconWidgetCount = 0
-        #@+node:ekr.20110605121601.18269: *4* createChaptersIcon
+        #@+node:ekr.20110605121601.18269: *4* QtIconBar.createChaptersIcon
         def createChaptersIcon(self):
 
             c = self.c
@@ -2484,13 +2484,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if f.use_chapters and f.use_chapter_tabs:
                 return LeoQtTreeTab(c, f.iconBar)
             return None
-        #@+node:ekr.20110605121601.18270: *4* deleteButton
+        #@+node:ekr.20110605121601.18270: *4* QtIconBar.deleteButton
         def deleteButton(self, w):
             """ w is button """
             self.w.removeAction(w)
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@+node:ekr.20141031053508.14: *4* goto_command (QtIconBarClass)
+        #@+node:ekr.20141031053508.14: *4* QtIconBar.goto_command
         def goto_command(self, controller, gnx):
             """
             Select the node corresponding to the given gnx.
@@ -2510,7 +2510,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     c2.selectPosition(p)
             else:
                 g.trace('not found', gnx)
-        #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper
+        #@+node:ekr.20110605121601.18271: *4* QtIconBar.setCommandForButton (@rclick nodes) & helper
         # qtFrame.QtIconBarClass.setCommandForButton
 
         def setCommandForButton(
@@ -2528,6 +2528,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if not command:
                 return
             # Fix bug 74: use the controller and gnx arguments.
+            g.trace(button)
             b = button.button
             b.clicked.connect(command)
 
