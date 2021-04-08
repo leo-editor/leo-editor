@@ -2430,6 +2430,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)
             qaction = keys.get('qaction')
+            ### g.trace('(QtIconBarClass) qaction', repr(qaction), g.callers(2))
             if not text and not qaction:
                 g.es('bad toolbar item')
             kind = keys.get('kind') or 'generic-button'
@@ -2446,6 +2447,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     self.toolbar = toolbar
 
                 def createWidget(self, parent):
+                    ### g.trace('===== (leoIconBarButton)', g.callers())
                     self.button = b = QtWidgets.QPushButton(self.text, parent)
                     self.button.setProperty('button_kind', kind)  # for styling
                     return b
@@ -2460,17 +2462,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.actions.append(action)
             b = self.w.widgetForAction(action)
             # Set the button's object name so we can use the stylesheet to color it.
-            if not button_name: button_name = 'unnamed'
+            if not button_name:
+                button_name = 'unnamed'
             button_name = button_name + '-button'
             b.setObjectName(button_name)
+            
             policy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
             b.setContextMenuPolicy(policy.ActionsContextMenu)
 
             def delete_callback(checked, action=action,):
                 self.w.removeAction(action)
                 
-            action = QtGui.QAction if isQt6 else QtWidgets.QAction
-            b.leo_removeAction = rb = action('Remove Button', b)
+            qt_action = QtGui.QAction if isQt6 else QtWidgets.QAction
+            b.leo_removeAction = rb = qt_action('Remove Button', b)
             b.addAction(rb)
             rb.triggered.connect(delete_callback)
             if command:
@@ -2538,8 +2542,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         #@+node:ekr.20110605121601.18271: *4* QtIconBar.setCommandForButton (@rclick nodes) & helper
         # qtFrame.QtIconBarClass.setCommandForButton
 
-        def setCommandForButton(
-            self, button, command, command_p, controller, gnx, script):
+        def setCommandForButton(self, button, command, command_p, controller, gnx, script):
             """
             Set the "Goto Script" rlick item of an @button button.
             Called from mod_scripting.py plugin.
@@ -2558,7 +2561,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 ### action = QtGui.QAction if isQt6 else QtWidgets.QAction
                 g.trace('===== not ready yet: button', button)
                 return
-            g.trace(button)
+            g.trace(button.__class__.__name__, g.callers(2))  ###
+            if not hasattr(button, 'button'):
+                g.trace('no button.button') ###
+                return
             b = button.button
             b.clicked.connect(command)
 

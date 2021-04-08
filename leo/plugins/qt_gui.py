@@ -178,7 +178,7 @@ class LeoQtGui(leoGui.LeoGui):
         Set the clipboard selection to s.
         There are problems with PyQt5.
         """
-        if isQt5:
+        if isQt5 or isQt6:
             # Alas, returning s reopens #218.
             return
         if s:
@@ -577,7 +577,7 @@ class LeoQtGui(leoGui.LeoGui):
             val = func(parent=None, caption=title, directory=startpath, filter=filter_)
         finally:
             c.in_qt_dialog = False
-        if isQt5:  # this is a *Py*Qt change rather than a Qt change
+        if isQt5 or isQt6:  # this is a *Py*Qt change rather than a Qt change
             val, junk_selected_filter = val
         if multiple:
             files = [g.os_path_normslashes(s) for s in val]
@@ -1337,7 +1337,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.setStandardButtons(self.Ok)  # | self.Close)
             self.setDefaultButton(self.Ok)
             c.styleSheetManager.set_style_sheets(w=self)
-            if isQt5:
+            if isQt5 or isQt6:
                 # Workaround #693.
                 layout = self.layout()
                 cb = QtWidgets.QCheckBox()
@@ -1456,9 +1456,12 @@ class LeoQtGui(leoGui.LeoGui):
             name = repr(w)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
-    if isQt5 or isQt6:
+    if isQt5:
         # To do: https://doc.qt.io/qt-5/qsignalspy.html
         from PyQt5.QtTest import QSignalSpy
+        assert QSignalSpy
+    elif isQt6:
+        from PyQt6.QtTest import QSignalSpy
         assert QSignalSpy
     else:
         # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.

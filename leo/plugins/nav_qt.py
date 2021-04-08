@@ -75,6 +75,7 @@ class NavController:
         w = c.frame.iconBar.w
         if not w:
             return [] # EKR: can be an empty list when unit testing.
+        ### g.trace('(NavController)')  ###
         qt_style = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
         icon_l = w.style().standardIcon(qt_style.SP_ArrowLeft)
         icon_r = w.style().standardIcon(qt_style.SP_ArrowRight)
