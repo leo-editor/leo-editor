@@ -2555,25 +2555,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
             """
             if not command:
                 return
-            ### setCommandForButton <LeoQtFrame.QtIconBarClass.add.<locals>.leoIconBarButton>
-            ###
-                # if isQt6:
-                    # ### action = QtGui.QAction if isQt6 else QtWidgets.QAction
-                    # g.trace('===== not ready yet: button', button)
-                    # return
-            # Fix bug 74: use the controller and gnx arguments.
-            ###
-                # g.trace(button.__class__.__name__, g.callers(2))  ###
-                # if not hasattr(button, 'button'):
-                    # g.trace('no button.button') ###
-                    # return
             b = button.button
             b.clicked.connect(command)
+            
+            # Fix bug 74: use the controller and gnx arguments.
 
             def goto_callback(checked, controller=controller, gnx=gnx):
                 self.goto_command(controller, gnx)
 
-            b.goto_script = gts = QtWidgets.QAction('Goto Script', b)
+            qt_action = QtGui.QAction if isQt6 else QtWidgets.QAction
+            b.goto_script = gts = qt_action('Goto Script', b)
             b.addAction(gts)
             gts.triggered.connect(goto_callback)
             rclicks = build_rclick_tree(command_p, top_level=True)

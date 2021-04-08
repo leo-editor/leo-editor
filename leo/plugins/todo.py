@@ -74,7 +74,7 @@ from leo.core import leoGlobals as g
 NO_TIME = datetime.date(3000, 1, 1)
 
 if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import QtConst,QtCore,QtGui,QtWidgets,uic
+    from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20090119215428.6: ** init (todo.py)
@@ -258,10 +258,10 @@ if g.app.gui.guiName() == "qt":
                 if value:
                     getattr(edit, method)(value)
                     # edit.setEnabled(True)
-                    toggle.setChecked(QtConst.Checked)
+                    toggle.setChecked(True if isQt6 else QtConst.Checked)
                 else:
                     getattr(edit, method)(default)
-                    toggle.setChecked(QtConst.Unchecked)
+                    toggle.setChecked(False if isQt6 else QtConst.Unchecked)
                 edit.blockSignals(False)
                 toggle.blockSignals(False)
 
@@ -1202,13 +1202,15 @@ class todoController:
         # check work date < due date and do stylesheet re-evaluation stuff
         nwd = self.getat(v, 'nextworkdate')
         due = self.getat(v, 'duedate')
-        w = self.ui.UI.frmDates
-        if nwd and due and str(nwd) > str(due):
-            w.setProperty('style_class', 'tododate_error')
-        else:
-            w.setProperty('style_class', '')
-        # update style on this widget on idle, see updateStyle()
-        self._widget_to_style = (w, time.time())
+        if hasattr(self.ui.UI, "frmDates"):
+            w = self.ui.UI.frmDates
+            if nwd and due and str(nwd) > str(due):
+                w.setProperty('style_class', 'tododate_error')
+            else:
+                w.setProperty('style_class', '')
+            # update style on this widget on idle, see updateStyle()
+            self._widget_to_style = (w, time.time())
+        ### else: g.trace('todoController: no frmDates:', self.ui.UI.__class__.__name__)
 
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
