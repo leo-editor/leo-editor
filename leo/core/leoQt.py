@@ -28,7 +28,7 @@ if not g.in_bridge:
     #
     # Set the isQt* constants only if all required imports succeed.
     try:
-        raise AttributeError  ### Testing.
+        ### raise AttributeError  ### Testing.
         from leo.core.leoQt6 import *
         isQt6 = True
     except Exception:

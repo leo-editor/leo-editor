@@ -2556,11 +2556,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if not command:
                 return
             ### setCommandForButton <LeoQtFrame.QtIconBarClass.add.<locals>.leoIconBarButton>
+            ###
+                # if isQt6:
+                    # ### action = QtGui.QAction if isQt6 else QtWidgets.QAction
+                    # g.trace('===== not ready yet: button', button)
+                    # return
             # Fix bug 74: use the controller and gnx arguments.
-            if isQt6:
-                ### action = QtGui.QAction if isQt6 else QtWidgets.QAction
-                g.trace('===== not ready yet: button', button)
-                return
             ###
                 # g.trace(button.__class__.__name__, g.callers(2))  ###
                 # if not hasattr(button, 'button'):
