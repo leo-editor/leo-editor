@@ -700,7 +700,7 @@ class LeoQtTree(leoFrame.LeoTree):
             self.busy = True
             qt_modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             p = self.item2position(item)
-            g.trace(f"item: {bool(item)}: {p and p.h!r}")  ###
+            ### g.trace(f"item: {bool(item)}: {p and p.h!r}")  ###
             if p:
                 auto_edit = self.prev_v == p.v
                     # Fix #1049.
