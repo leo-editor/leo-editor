@@ -434,8 +434,10 @@ class LeoQtGui(leoGui.LeoGui):
             d.setStyleSheet(stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
-        d.setIcon(b.Information)
-        d.addButton(text, b.YesRole)
+        icon_info = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        button_role = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        d.setIcon(icon_info.Information)
+        d.addButton(text, button_role.YesRole)
         c.in_qt_dialog = True
         if isQt6:
             d.exec()
@@ -942,14 +944,15 @@ class LeoQtGui(leoGui.LeoGui):
         except Exception:
             size = 0
         if size < 1: size = defaultSize
+        qt_weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
         d = {
-            'black': QtGui.QFont.Black,
-            'bold': QtGui.QFont.Bold,
-            'demibold': QtGui.QFont.DemiBold,
-            'light': QtGui.QFont.Light,
-            'normal': QtGui.QFont.Normal,
+            'black': qt_weight.Black,
+            'bold': qt_weight.Bold,
+            'demibold': qt_weight.DemiBold,
+            'light': qt_weight.Light,
+            'normal': qt_weight.Normal,
         }
-        weight_val = d.get(weight.lower(), QtGui.QFont.Normal)
+        weight_val = d.get(weight.lower(), qt_weight.Normal)
         italic = slant == 'italic'
         if not family:
             family = g.app.config.defaultFontFamily
@@ -1508,10 +1511,17 @@ class LeoQtGui(leoGui.LeoGui):
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
         lineWidth=1,
-        shadow=QtWidgets.QFrame.Plain,
-        shape=QtWidgets.QFrame.NoFrame,
+        shadow=None, ### QtWidgets.QFrame.Plain,
+        shape=None, ### QtWidgets.QFrame.NoFrame,
     ):
         """Create a Qt Frame."""
+        qt_shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
+        qt_shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
+        if shadow is None:
+            shadow = qt_shadow.Plain
+        if shape is None:
+            shape = qt_shape.NoFrame
+        #
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
@@ -1554,8 +1564,11 @@ class LeoQtGui(leoGui.LeoGui):
         return w
     #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
     def setSizePolicy(self, widget, kind1=None, kind2=None):
-        if kind1 is None: kind1 = QtWidgets.QSizePolicy.Ignored
-        if kind2 is None: kind2 = QtWidgets.QSizePolicy.Ignored
+        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        if kind1 is None:
+            kind1 = policy.Ignored
+        if kind2 is None:
+            kind2 = policy.Ignored
         sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

@@ -1027,6 +1027,7 @@ class BaseJEditColorizer(BaseColorizer):
                 return
         underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
+        qt_format = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)
@@ -1037,22 +1038,17 @@ class BaseJEditColorizer(BaseColorizer):
                 format.setBackground(color)
         elif underline:
             format.setForeground(color)
-            format.setUnderlineStyle(format.SingleUnderline)
+            format.setUnderlineStyle(qt_format.SingleUnderline)
             format.setFontUnderline(True)
         elif dots or tag == 'trailing_whitespace':
             format.setForeground(color)
-            format.setUnderlineStyle(format.DotLine)
+            format.setUnderlineStyle(qt_format.DotLine)
         else:
             format.setForeground(color)
-            format.setUnderlineStyle(format.NoUnderline)
+            format.setUnderlineStyle(qt_format.NoUnderline)
         self.tagCount += 1
         if trace:
-            # A superb trace.
-            ###
-                # p = self.c and self.c.p
-                # if p and p.v != self.last_v:
-                    # print(f'\nsetTag: NEW NODE: {p.h}\n')
-                    # self.last_v = p.v
+            # A superb trace. Do not delete it!
             if len(repr(s[i:j])) <= 20:
                 s2 = repr(s[i:j])
             else:

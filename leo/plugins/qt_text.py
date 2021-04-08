@@ -456,7 +456,8 @@ if QtWidgets:
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
                 self.textChanged.connect(self.onTextChanged)
-            self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+            menu_policy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+            self.setContextMenuPolicy(menu_policy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
             self.leo_vsb = vsb = self.verticalScrollBar()
@@ -1283,7 +1284,8 @@ class QTextEditWrapper(QTextMixin):
     def set_config(self):
         """Set configuration options for QTextEdit."""
         w = self.widget
-        w.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        mode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
+        w.setWordWrapMode(mode.NoWrap)
         # tab stop in pixels - no config for this (yet)
         if isQt6:
             w.setTabStopDistance(24)

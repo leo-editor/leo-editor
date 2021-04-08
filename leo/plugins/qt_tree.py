@@ -912,7 +912,8 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
-        pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+        qt_format = QtGui.QImage.Format if isQt6 else QtGui.QImage
+        pix = QtGui.QImage(width, height, qt_format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
         # .rgba() call required for Qt4.7, later versions work with straight color
         painter = QtGui.QPainter()
@@ -1090,6 +1091,7 @@ class LeoQtTree(leoFrame.LeoTree):
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
+            ### policy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
             pass  ### Not ready yet.
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)

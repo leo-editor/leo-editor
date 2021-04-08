@@ -95,7 +95,8 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         super().__init__(owner.orientation(), owner)
         # Confusing!
             # self.setStyleSheet("background-color: green;")
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        menu_policy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+        self.setContextMenuPolicy(menu_policy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.splitter_menu)
     #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
     def __repr__(self):
@@ -142,7 +143,8 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         lr = 'Left', 'Right'
         ab = 'Above', 'Below'
         split_dir = 'Vertically'
-        if self.orientation() == QtCore.Qt.Vertical:
+        qt_orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        if self.orientation() == qt_orientations.Vertical:
             lr, ab = ab, lr
             split_dir = 'Horizontally'
         # blue/orange - color-blind friendly
@@ -368,8 +370,11 @@ class NestedSplitter(QtWidgets.QSplitter):
     )
     #@+others
     #@+node:ekr.20110605121601.17967: *3* ns.__init__
-    def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
+    def __init__(self, parent=None, orientation=None, root=None):
         """Ctor for NestedSplitter class."""
+        qt_orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        if orientation is None:
+            orientation = qt_orientations.Horizontal
         super().__init__(orientation, parent)
             # This creates a NestedSplitterHandle.
         if root is None:

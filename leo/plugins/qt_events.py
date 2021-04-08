@@ -37,7 +37,7 @@
 #@-<< about internal bindings >>
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 #@+others
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
@@ -119,21 +119,21 @@ class LeoQtEventFilter(QtCore.QObject):
     def doNonKeyEvent(self, event, obj):
         """Handle all non-key event. """
         c = self.c
-        ev = QtCore.QEvent
+        ev_type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         eventType = event.type()
-        if eventType == ev.WindowActivate:
+        if eventType == ev_type.WindowActivate:
             g.app.gui.onActivateEvent(event, c, obj, self.tag)
-        elif eventType == ev.WindowDeactivate:
+        elif eventType == ev_type.WindowDeactivate:
             g.app.gui.onDeactivateEvent(event, c, obj, self.tag)
-        elif eventType == ev.FocusIn:
+        elif eventType == ev_type.FocusIn:
             if self.tag == 'body':
                 c.frame.body.onFocusIn(obj)
             if c.frame and c.frame.top and obj is c.frame.top.lineEdit:
                 if c.k.getStateKind() == 'getArg':
                     c.frame.top.lineEdit.restore_selection()
-        elif eventType == ev.FocusOut and self.tag == 'body':
+        elif eventType == ev_type.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
-        return eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease)
+        return eventType not in (ev_type.ShortcutOverride, ev_type.KeyPress, ev_type.KeyRelease)
             # Return True unless we have a key event.
     #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
     def shouldIgnoreKeyEvent(self, event, obj):
@@ -144,13 +144,14 @@ class LeoQtEventFilter(QtCore.QObject):
         so the following hack is required.
         """
         c = self.c
-        ev = QtCore.QEvent
+        ### ev = QtCore.QEvent
+        ev_type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
             return t != ev.KeyRelease
                 # QLineEdit: ignore all key events except keyRelease events.
-        if t == ev.KeyPress:
+        if t == ev_type.KeyPress:
             return False  # Never ignore KeyPress events.
         # This doesn't work. Two shortcut-override events are generated!
             # if t == ev.ShortcutOverride and event.text():
