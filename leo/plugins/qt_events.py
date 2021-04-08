@@ -149,7 +149,7 @@ class LeoQtEventFilter(QtCore.QObject):
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
-            return t != ev.KeyRelease
+            return t != ev_type.KeyRelease
                 # QLineEdit: ignore all key events except keyRelease events.
         if t == ev_type.KeyPress:
             return False  # Never ignore KeyPress events.
@@ -191,7 +191,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
     def doAltTweaks(self, actual_ch, keynum, mods, toString):
         """Turn AltGr and some Alt-Ctrl keys into plain keys."""
-        qt = QtCore.Qt
+        qt_key = QtCore.Qt.Key if isQt6 else QtCore.Qt
 
         def removeAltCtrl(mods):
             for mod in ('Alt', 'Control'):
@@ -203,7 +203,7 @@ class LeoQtEventFilter(QtCore.QObject):
         # Remove Alt, Ctrl for AltGr keys.
         # See https://en.wikipedia.org/wiki/AltGr_key
 
-        if keynum == qt.Key_AltGr:
+        if keynum == qt_key.Key_AltGr:
             return removeAltCtrl(mods)
         #
         # Never alter complex characters.
@@ -283,24 +283,24 @@ class LeoQtEventFilter(QtCore.QObject):
             For all others:   QtGui.QKeySequence(keynum).toString()
         text:   event.text()
         """
+        qt_key = QtCore.Qt.Key if isQt6 else QtCore.Qt
         keynum = event.key()
         text = event.text()  # This is the unicode character!
-        qt = QtCore.Qt
         d = {
-            qt.Key_Alt: 'Key_Alt',
-            qt.Key_AltGr: 'Key_AltGr',
+            qt_key.Key_Alt: 'Key_Alt',
+            qt_key.Key_AltGr: 'Key_AltGr',
                 # On Windows, when the KeyDown event for this key is sent,
                 # the Ctrl+Alt modifiers are also set.
-            qt.Key_Control: 'Key_Control',  # MacOS: Command key
-            qt.Key_Meta: 'Key_Meta',
+            qt_key.Key_Control: 'Key_Control',  # MacOS: Command key
+            qt_key.Key_Meta: 'Key_Meta',
                 # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
-            qt.Key_Shift: 'Key_Shift',
-            qt.Key_NumLock: 'Num_Lock',
+            qt_key.Key_Shift: 'Key_Shift',
+            qt_key.Key_NumLock: 'Num_Lock',
                 # 868.
-            qt.Key_Super_L: 'Key_Super_L',
-            qt.Key_Super_R: 'Key_Super_R',
-            qt.Key_Hyper_L: 'Key_Hyper_L',
-            qt.Key_Hyper_R: 'Key_Hyper_R',
+            qt_key.Key_Super_L: 'Key_Super_L',
+            qt_key.Key_Super_R: 'Key_Super_R',
+            qt_key.Key_Hyper_L: 'Key_Hyper_L',
+            qt_key.Key_Hyper_R: 'Key_Hyper_R',
         }
         if d.get(keynum):
             if 0:  # Allow bare modifier key.
@@ -323,14 +323,14 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         """Return the text version of the modifiers of the key event."""
-        qt = QtCore.Qt
+        qt_modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = event.modifiers()
         mod_table = (
-            (qt.AltModifier, 'Alt'),
-            (qt.ControlModifier, 'Control'),
-            (qt.MetaModifier, 'Meta'),
-            (qt.ShiftModifier, 'Shift'),
-            (qt.KeypadModifier, 'KeyPad'),
+            (qt_modifiers.AltModifier, 'Alt'),
+            (qt_modifiers.ControlModifier, 'Control'),
+            (qt_modifiers.MetaModifier, 'Meta'),
+            (qt_modifiers.ShiftModifier, 'Shift'),
+            (qt_modifiers.KeypadModifier, 'KeyPad'),
                 # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         mods = [b for a, b in mod_table if (modifiers & a)]

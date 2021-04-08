@@ -961,7 +961,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@+node:ekr.20131118172620.16893: *8* wrapper
             def wrapper(self, event):
 
-                ### e = QtCore.QEvent
                 ev_type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
                 type_ = event.type()
                 # Must intercept KeyPress for events that generate FocusOut!
@@ -2464,12 +2463,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if not button_name: button_name = 'unnamed'
             button_name = button_name + '-button'
             b.setObjectName(button_name)
-            b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+            policy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+            b.setContextMenuPolicy(policy.ActionsContextMenu)
 
             def delete_callback(checked, action=action,):
                 self.w.removeAction(action)
-
-            b.leo_removeAction = rb = QtWidgets.QAction('Remove Button', b)
+                
+            action = QtGui.QAction if isQt6 else QtWidgets.QAction
+            b.leo_removeAction = rb = action('Remove Button', b)
             b.addAction(rb)
             rb.triggered.connect(delete_callback)
             if command:

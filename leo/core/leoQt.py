@@ -41,7 +41,9 @@ if not g.in_bridge:
                 isQt4 = True
             except Exception:
                 pass
-    if 1: # A good trace for testing.
+    if isQt6:  ### Temporary.
+        print('\n===== pyQt6 =====')
+    if 0: # A good trace for testing.
         # Define m only when tracing.
         if isQt6:
             import leo.core.leoQt6 as m

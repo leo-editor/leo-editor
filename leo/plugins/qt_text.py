@@ -1317,7 +1317,8 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                if QtCore.Qt.ControlModifier & event.modifiers():
+                modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+                if modifiers.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:
                     if name == 'body':

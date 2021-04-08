@@ -428,14 +428,14 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return
         b = QtWidgets.QMessageBox
+        icon_info = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        button_role = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             d.setStyleSheet(stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
-        icon_info = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
-        button_role = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         d.setIcon(icon_info.Information)
         d.addButton(text, button_role.YesRole)
         c.in_qt_dialog = True
@@ -456,31 +456,42 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run an askYesNo dialog."""
         if g.unitTesting:
             return None
+        icon_info = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        button_role = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             d.setStyleSheet(stylesheet)
-        if message: d.setText(message)
-        d.setIcon(b.Warning)
+        if message:
+            d.setText(message)
+        d.setIcon(icon_info.Warning)
         d.setWindowTitle(title)
-        yes = d.addButton(yesMessage, b.YesRole)
-        no = d.addButton(noMessage, b.NoRole)
-        yesToAll = d.addButton(yesToAllMessage, b.YesRole) if yesToAllMessage else None
-        if cancelMessage:
-            cancel = d.addButton(cancelMessage, b.RejectRole)
+        yes = d.addButton(yesMessage, button_role.YesRole)
+        no = d.addButton(noMessage, button_role.NoRole)
+        if yesToAllMessage:
+            d.addButton(yesToAllMessage, button_role.YesRole)
+        cancel = d.addButton(cancelMessage or 'Cancel', button_role.RejectRole)
+        if defaultButton == "Yes":
+            d.setDefaultButton(yes)
+        elif defaultButton == "No":
+            d.setDefaultButton(no)
         else:
-            cancel = d.addButton(b.Cancel)
-        if defaultButton == "Yes": d.setDefaultButton(yes)
-        elif defaultButton == "No": d.setDefaultButton(no)
-        else: d.setDefaultButton(cancel)
+            d.setDefaultButton(cancel)
         c.in_qt_dialog = True
-        val = d.exec_()
+        if isQt6:
+            val = d.exec()
+        else:
+            val = d.exec_()
         c.in_qt_dialog = False
-        if val == 0: val = 'yes'
-        elif val == 1: val = 'no'
-        elif yesToAll and val == 2: val = 'yes-to-all'
-        else: val = 'cancel'
+        if val == 0:
+            val = 'yes'
+        elif val == 1:
+            val = 'no'
+        elif yesToAllMessage and val == 2:
+            val = 'yes-to-all'
+        else:
+            val = 'cancel'
         return val
     #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):

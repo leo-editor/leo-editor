@@ -698,7 +698,9 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
+            qt_modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             p = self.item2position(item)
+            g.trace(f"item: {bool(item)}: {p and p.h!r}")  ###
             if p:
                 auto_edit = self.prev_v == p.v
                     # Fix #1049.
@@ -708,7 +710,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & QtConst.ControlModifier)
+                    isCtrl = bool(mods & qt_modifiers.ControlModifier)
                     # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
                     # & QtConst.MetaModifier.
                     if isCtrl:
@@ -1080,6 +1082,10 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setText(0, item._real_text)
         w.editItem(item)
         e = w.itemWidget(item, 0)  # e is a QLineEdit
+        if not e:
+            g.trace('===== no e =====', repr(item))  ###
+            return None, None  ### To be fixed.
+        g.trace(f"item: {bool(item)} e: {e!r}")  ###
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e, item)
         self.sizeTreeEditor(c, e)
@@ -1284,34 +1290,39 @@ class LeoQtTree(leoFrame.LeoTree):
         w.editItem(item)
             # Generates focus-in event that tree doesn't report.
         e = w.itemWidget(item, 0)  # A QLineEdit.
-        if e:
-            s = e.text(); len_s = len(s)
-            if s == 'newHeadline': selectAll = True
-            if selection:
-                # pylint: disable=unpacking-non-sequence
-                # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-                # Note: negative lengths are allowed.
-                i, j, ins = selection
-                if ins is None:
-                    start, n = i, abs(i - j)
-                    # This case doesn't happen for searches.
-                elif ins == j:
-                    start, n = i, j - i
-                else:
-                    start = start, n = j, i - j
-            elif selectAll: start, n, ins = 0, len_s, len_s
-            else: start, n, ins = len_s, 0, len_s
-            e.setObjectName('headline')
-            e.setSelection(start, n)
-            # e.setCursorPosition(ins) # Does not work.
-            e.setFocus()
-            wrapper = self.connectEditorWidget(e, item)  # Hook up the widget.
-            if vc and c.vim_mode:  #  and selectAll
-                # For now, *always* enter insert mode.
-                if vc.is_text_wrapper(wrapper):
-                    vc.begin_insert_mode(w=wrapper)
-                else:
-                    g.trace('not a text widget!', wrapper)
+        if not e:
+            g.trace("===== no e =====", repr(item))
+            return None, None ### Experimental.
+        s = e.text()
+        if s == 'newHeadline':
+            selectAll = True
+        if selection:
+            # pylint: disable=unpacking-non-sequence
+            # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+            # Note: negative lengths are allowed.
+            i, j, ins = selection
+            if ins is None:
+                start, n = i, abs(i - j)
+                # This case doesn't happen for searches.
+            elif ins == j:
+                start, n = i, j - i
+            else:
+                start = start, n = j, i - j
+        elif selectAll:
+            start, n, ins = 0, len(s), len(s)
+        else:
+            start, n, ins = len(s), 0, len(s)
+        e.setObjectName('headline')
+        e.setSelection(start, n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        wrapper = self.connectEditorWidget(e, item)  # Hook up the widget.
+        if vc and c.vim_mode:  #  and selectAll
+            # For now, *always* enter insert mode.
+            if vc.is_text_wrapper(wrapper):
+                vc.begin_insert_mode(w=wrapper)
+            else:
+                g.trace('not a text widget!', wrapper)
         return e, wrapper
     #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
     def endEditLabel(self):
