@@ -2561,10 +2561,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 ### action = QtGui.QAction if isQt6 else QtWidgets.QAction
                 g.trace('===== not ready yet: button', button)
                 return
-            g.trace(button.__class__.__name__, g.callers(2))  ###
-            if not hasattr(button, 'button'):
-                g.trace('no button.button') ###
-                return
+            ###
+                # g.trace(button.__class__.__name__, g.callers(2))  ###
+                # if not hasattr(button, 'button'):
+                    # g.trace('no button.button') ###
+                    # return
             b = button.button
             b.clicked.connect(command)
 
