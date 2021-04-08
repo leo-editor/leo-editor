@@ -350,7 +350,8 @@ progress</string></property><property name="text">
          <width>16</width><height>16</height></size></property></widget></item></layout></item><item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum></property><item>
+    <enum>QLayout::SetMinimumSize</enum>  <!-- EKR: Fails on Qt6 -->
+    </property><item>
       <widget class="QPushButton" name="butMenu">
        <property name="sizePolicy">
         <sizepolicy vsizetype="Fixed" hsizetype="Minimum">

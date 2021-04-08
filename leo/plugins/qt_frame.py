@@ -2553,6 +2553,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if not command:
                 return
             # Fix bug 74: use the controller and gnx arguments.
+            if isQt6:
+                ### action = QtGui.QAction if isQt6 else QtWidgets.QAction
+                g.trace('===== not ready yet: button', button)
+                return
             b = button.button
             b.clicked.connect(command)
 
