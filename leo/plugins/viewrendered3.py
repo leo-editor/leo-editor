@@ -3196,14 +3196,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         QObject-descended objects. Currently, check only for <CNTRL-=> and
         <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
         """
-
+        
         mod = ''
         modifiers = event.modifiers()
         bare_key = event.text()
-
-        if modifiers and modifiers == QtCore.Qt.ControlModifier:
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        if modifiers and modifiers == KeyboardModifiers.ControlModifier:
             mod = 'cntrl'
-
         if bare_key == '=' and mod == 'cntrl':
             self.zoomView()
         elif bare_key == '-' and mod == 'cntrl':

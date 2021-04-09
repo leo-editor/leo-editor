@@ -83,7 +83,7 @@ import fnmatch
 import itertools
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtConst, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtConst, QtWidgets
 from leo.core import leoNodes
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
@@ -696,7 +696,7 @@ class QuickSearchController:
                 pl.append(p.copy())
         self.addHeadlineMatches(pl)
     #@+node:ekr.20111015194452.15700: *3* Event handlers
-    #@+node:ekr.20111015194452.15686: *4* onSelectItem
+    #@+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it, it_prev=None):
 
         c = self.c
@@ -705,8 +705,9 @@ class QuickSearchController:
             return
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = QtWidgets.QApplication.keyboardModifiers()
-        if modifiers == QtCore.Qt.ControlModifier:
+        if modifiers == KeyboardModifiers.ControlModifier:
             row = self.lw.row(it)
             init_indent = len(it.text()) - len(str(it.text()).lstrip())
             self.lw.blockSignals(True)

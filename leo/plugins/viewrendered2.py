@@ -1799,11 +1799,12 @@ class ViewRenderedController(QtWidgets.QWidget):
     def ensure_text_widget(self):
         '''Swap a text widget into the rendering pane if necessary.'''
         pc = self
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         if pc.must_change_widget(pc.text_class):
             w = pc.text_class()
 
             def mouseReleaseHelper(w, event):
-                if QtCore.Qt.ControlModifier & event.modifiers():
+                if KeyboardModifiers.ControlModifier & event.modifiers():
                     event2 = {'c': self.c, 'w': w.leo_wrapper}
                     g.openUrlOnClick(event2)
                 else:

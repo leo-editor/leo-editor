@@ -1524,6 +1524,8 @@ class QTextEditWrapper(QTextMixin):
         straight port of the C++ code found in the pageUpDown method of
         gui/widgets/qtextedit.cpp.
         """
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
+        SliderAction = QtWidgets.QAbstractSlider.SliderAction if isQt6 else QtWidgets.QAbstractSlider
         control = self.widget
         cursor = control.textCursor()
         moved = False
@@ -1537,15 +1539,14 @@ class QTextEditWrapper(QTextMixin):
             moved = cursor.movePosition(op, moveMode)
             if (not moved or distance >= control.height()):
                 break
-        tc = QtGui.QTextCursor
         sb = control.verticalScrollBar()
         if moved:
-            if (op == tc.Up):
-                cursor.movePosition(tc.Down, moveMode)
-                sb.triggerAction(QtWidgets.QAbstractSlider.SliderPageStepSub)
+            if (op == MoveOperation.Up):
+                cursor.movePosition(MoveOperation.Down, moveMode)
+                sb.triggerAction(SliderAction.SliderPageStepSub)
             else:
-                cursor.movePosition(tc.Up, moveMode)
-                sb.triggerAction(QtWidgets.QAbstractSlider.SliderPageStepAdd)
+                cursor.movePosition(MoveOperation.Up, moveMode)
+                sb.triggerAction(SliderAction.SliderPageStepAdd)
         control.setTextCursor(cursor)
     #@+node:ekr.20110605121601.18087: *4* qtew.linesPerPage
     def linesPerPage(self):

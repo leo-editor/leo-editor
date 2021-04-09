@@ -347,7 +347,8 @@ class notetextedit(QTextEdit):
     def keyPressEvent__(self, event):
         # needed because text edit is not going to recognize short cuts because will do something with control key
         # not needed if have global shortcuts
-        if event.modifiers() & Qt.ControlModifier:
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        if event.modifiers() & KeyboardModifiers.ControlModifier:
             handled = False
             if event.key() == Qt.Key_A:
                 self.create_anchor()
