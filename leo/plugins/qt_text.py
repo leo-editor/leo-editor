@@ -1339,6 +1339,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i, j=None):
         """QTextEditWrapper."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
@@ -1358,7 +1360,7 @@ class QTextEditWrapper(QTextMixin):
             else:
                 cursor.setPosition(i)
                 moveCount = abs(j - i)
-                cursor.movePosition(cursor.Right, cursor.KeepAnchor, moveCount)
+                cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, moveCount)
                 w.setTextCursor(cursor)  # Bug fix: 2010/01/27
                 cursor.removeSelectedText()
         finally:
@@ -1367,6 +1369,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18080: *4* qtew.flashCharacter
     def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
         """QTextEditWrapper."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         # numbered color names don't work in Ubuntu 8.10, so...
         if bg[-1].isdigit() and bg[0] != '#':
             bg = bg[:-1]
@@ -1377,7 +1381,7 @@ class QTextEditWrapper(QTextMixin):
         if g.app.unitTesting:
             return
         w = self.widget  # A QTextEdit.
-        e = QtGui.QTextCursor
+        ### e = QtGui.QTextCursor
 
         def after(func):
             QtCore.QTimer.singleShot(delay, func)
@@ -1386,11 +1390,13 @@ class QTextEditWrapper(QTextMixin):
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
             cursor.setPosition(i)
-            cursor.movePosition(e.Right, e.KeepAnchor, 1)
+            cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, 1)
             extra = w.ExtraSelection()
             extra.cursor = cursor
-            if self.flashBg: extra.format.setBackground(QtGui.QColor(self.flashBg))
-            if self.flashFg: extra.format.setForeground(QtGui.QColor(self.flashFg))
+            if self.flashBg:
+                extra.format.setBackground(QtGui.QColor(self.flashBg))
+            if self.flashFg:
+                extra.format.setForeground(QtGui.QColor(self.flashFg))
             self.extraSelList = [extra]  # keep the reference.
             w.setExtraSelections(self.extraSelList)
             self.flashCount -= 1
@@ -1462,24 +1468,25 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18077: *4* qtew.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind, extend=False, linesPerPage=15):
         """QTextEditWrapper."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
-        tc = QtGui.QTextCursor
         d = {
-            'begin-line': tc.StartOfLine,  # Was start-line
-            'down': tc.Down,
-            'end': tc.End,
-            'end-line': tc.EndOfLine,  # Not used.
+            'begin-line': MoveOperation.StartOfLine,  # Was start-line
+            'down': MoveOperation.Down,
+            'end': MoveOperation.End,
+            'end-line': MoveOperation.EndOfLine,  # Not used.
             'exchange': True,  # Dummy.
-            'home': tc.Start,
-            'left': tc.Left,
-            'page-down': tc.Down,
-            'page-up': tc.Up,
-            'right': tc.Right,
-            'up': tc.Up,
+            'home': MoveOperation.Start,
+            'left': MoveOperation.Left,
+            'page-down': MoveOperation.Down,
+            'page-up': MoveOperation.Up,
+            'right': MoveOperation.Right,
+            'up': MoveOperation.Up,
         }
         kind = kind.lower()
         op = d.get(kind)
-        mode = tc.KeepAnchor if extend else tc.MoveAnchor
+        mode = MoveMode.KeepAnchor if extend else MoveMode.MoveAnchor
         if not op:
             g.trace(f"can not happen: bad kind: {kind}")
             return
@@ -1489,8 +1496,8 @@ class QTextEditWrapper(QTextMixin):
             cursor = w.textCursor()
             anchor = cursor.anchor()
             pos = cursor.position()
-            cursor.setPosition(pos, tc.MoveAnchor)
-            cursor.setPosition(anchor, tc.KeepAnchor)
+            cursor.setPosition(pos, MoveOperation.MoveAnchor)
+            cursor.setPosition(anchor, MoveOperation.KeepAnchor)
             w.setTextCursor(cursor)
         else:
             if not extend:
@@ -1611,6 +1618,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         """Set the selection range and the insert point."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         #
         # Part 1
         w = self.widget
@@ -1636,15 +1644,15 @@ class QTextEditWrapper(QTextMixin):
         elif ins == j:
             # Put the insert point at j
             tc.setPosition(i)
-            tc.setPosition(j, tc.KeepAnchor)
+            tc.setPosition(j, MoveMode.KeepAnchor)
         elif ins == i:
             # Put the insert point at i
             tc.setPosition(j)
-            tc.setPosition(i, tc.KeepAnchor)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         else:
             # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
             tc.setPosition(j)
-            tc.setPosition(i, tc.KeepAnchor)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         w.setTextCursor(tc)
         # #218.
         if hasattr(g.app.gui, 'setClipboardSelection'):
