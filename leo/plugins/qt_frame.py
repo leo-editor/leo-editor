@@ -2864,7 +2864,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                w.setWindowState(QtCore.Qt.WindowMinimized)
+                WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
+                w.setWindowState(WindowStates.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
     def toggleSplitDirection(self, event=None):
@@ -2885,7 +2886,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                w.setWindowState(QtCore.Qt.WindowMaximized)
+                WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
+                w.setWindowState(WindowStates.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
     #@+node:ekr.20110605121601.18310: *5* qtFrame.leoHelp
     @frame_cmd('open-offline-tutorial')
