@@ -865,10 +865,6 @@ class Text (QtWidgets.QPlainTextEdit):
         else:
             geom = self._parent.geometry()
             w.resize(geom.width(), min(150, geom.height() / 2))
-        if 0:
-            off = QtCore.Qt.ScrollBarAlwaysOff
-            w.setHorizontalScrollBarPolicy(off)
-            w.setVerticalScrollBarPolicy(off)
         if stylesheet:
             w.setStyleSheet(stylesheet)
         else:

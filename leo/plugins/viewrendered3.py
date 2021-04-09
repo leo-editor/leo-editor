@@ -851,14 +851,14 @@ def viewrendered(event):
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
     vr3._ns_id = VR3_NS_ID # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
-
+    Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
     if splitter:
         vr3.store_layout('closed')
         sizes = split_last_sizes(splitter.sizes())
         ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr3)
-        elif splitter.orientation() == QtCore.Qt.Horizontal:
+        elif splitter.orientation() == Orientations.Horizontal:
             splitter.setSizes(sizes)
         vr3.adjust_layout('open')
 

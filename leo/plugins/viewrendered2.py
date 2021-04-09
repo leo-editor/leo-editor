@@ -1531,21 +1531,6 @@ class ViewRenderedController(QtWidgets.QWidget):
                     pc.deactivate()
                 if sb:
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-            # Saving scroll position for QWebView used in new html_class
-            #            elif w.__class__ == pc.html_class:
-            #                # The widge may no longer exist.
-            #                mf = None
-            #                try:
-            #                    mf = w.view.page().mainFrame()
-            #                except Exception:
-            #                    g.es_exception()
-            #                    pc.deactivate()
-            #                if mf:
-            #                    pos = mf.scrollBarValue(QtCore.Qt.Vertical)
-            #                    pc.scrollbar_pos_dict[p.v] = pos
-            #                    print 'saved1 scroll pos', pos
-            # Will be called at idle time.
-            # if trace: g.trace('no update')
     #@+node:ekr.20140226074510.4221: *4* vr2.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         '''Embed widget w in the free_layout splitter.'''

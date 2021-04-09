@@ -481,9 +481,6 @@ if QtWidgets:
                 super().__init__()
                 WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
                 self.setWindowFlags(WindowFlags.Popup | self.windowFlags())
-                # Make this window a modal window.
-                # Calling this does not fix the Ubuntu-specific modal behavior.
-                # self.setWindowModality(QtCore.Qt.NonModal) # WindowModal)
                 # Inject the ivars
                 self.leo_w = c.frame.body.wrapper.widget
                     # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
