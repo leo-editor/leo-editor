@@ -723,11 +723,9 @@ class LeoQtGui(leoGui.LeoGui):
         msg='',
         c=None, **keys
     ):
-        # pylint: disable=dangerous-default-value
-        # How are we supposed to avoid **keys?
         if g.unitTesting: return None
 
-        def send(title=title, label=label, msg=msg, c=c, keys=keys):
+        def send(): ### title=title, label=label, msg=msg, c=c, keys=keys):
             return g.doHook('scrolledMessage',
                 short_title=short_title, title=title,
                 label=label, msg=msg, c=c, **keys)
@@ -772,8 +770,10 @@ class LeoQtGui(leoGui.LeoGui):
         d.setWindowFlags(QtCore.Qt.Dialog)
             # That is, not a fixed size dialog.
         d.setWindowTitle(title)
-        if msg: d.setText(msg)
-        d.setIcon(b.Information)
+        if msg:
+            d.setText(msg)
+        Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
+        d.setIcon(Icon.Information)
         d.addButton('Ok', b.YesRole)
         c.in_qt_dialog = True
         d.exec_()

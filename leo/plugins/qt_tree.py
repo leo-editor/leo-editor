@@ -8,7 +8,7 @@
 import re
 import time
 assert time
-from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoNodes
@@ -160,13 +160,14 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             first_p = c.rootPosition()
             target_p = None
+        ItemFlags = QtCore.Qt.ItemFlags if isQt6 else QtCore.Qt
         n = 0
         for p in self.yieldVisible(first_p, target_p):
             n += 1
             level = p.level()
             parent_item = w if level == 0 else parents[level - 1]
             item = QtWidgets.QTreeWidgetItem(parent_item)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
             item.setChildIndicatorPolicy(
                 item.ShowIndicator if p.hasChildren()
                 else item.DontShowIndicator)

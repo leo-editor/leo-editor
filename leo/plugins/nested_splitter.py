@@ -488,7 +488,8 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
     def add_adjacent(self, what, widget_id, side='right-of'):
         """add a widget relative to another already present widget"""
-        horizontal, vertical = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        horizontal, vertical = Orientations.Horizontal, Orientations.Vertical
         layout = self.top().get_layout()
 
         def hunter(layout, id_):
@@ -966,9 +967,10 @@ class NestedSplitter(QtWidgets.QSplitter):
         The content entry for non-NestedSplitter items is the provider ID
         string for the item, or 'UNKNOWN', and the splitter entry is omitted.
         """
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         ans = {
             'content': [],
-            'orientation': self.orientation(),
+            'orientation': 1 if self.orientation() == Orientations.Horizontal else 2,
             'sizes': self.sizes(),
         }
         for i in range(self.count()):
