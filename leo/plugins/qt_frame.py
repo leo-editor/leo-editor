@@ -3733,16 +3733,24 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         """Handle a drop event in the QTreeWidget."""
         if not ev:
             return
+        DropActions = QtCore.Qt.DropActions if isQt6 else QtCore.Qt
+        Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         md = ev.mimeData()
         if not md:
             g.trace('no mimeData!')
             return
-        mods = int(ev.keyboardModifiers())
-        self.was_alt_drag = (mods & QtCore.Qt.AltModifier) != 0
-        self.was_control_drag = (mods & QtCore.Qt.ControlModifier) != 0
+        if isQt6:
+            mods = ev.modifiers()  # The documentation is wrong.
+            self.was_alt_drag = bool(mods & Modifiers.AltModifier)
+            self.was_control_drag = bool(mods & Modifiers.ControlModifier)
+        else:
+            mods = int(ev.keyboardModifiers())
+            self.was_alt_drag = (mods & Modifiers.AltModifier) != 0
+            self.was_control_drag = (mods & Modifiers.ControlModifier) != 0
         c, tree = self.c, self.c.frame.tree
         p = None
-        item = self.itemAt(ev.pos())
+        point = ev.position().toPoint() if isQt6 else ev.pos()
+        item = self.itemAt(point)
         if item:
             itemHash = tree.itemHash(item)
             p = tree.item2positionDict.get(itemHash)
@@ -3752,7 +3760,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             while p.hasNext():
                 p.moveToNext()
         formats = set(str(f) for f in md.formats())
-        ev.setDropAction(QtCore.Qt.IgnoreAction)
+        ev.setDropAction(DropActions.IgnoreAction)
         ev.accept()
         hookres = g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats)
         if hookres:

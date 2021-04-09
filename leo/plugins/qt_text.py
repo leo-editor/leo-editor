@@ -785,7 +785,8 @@ if QtWidgets:
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
-            if QtCore.Qt.ControlModifier & event.modifiers():
+            Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+            if Modifiers.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
                 if isQt5:
                     point = event.angleDelta()
@@ -1317,8 +1318,8 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-                if modifiers.ControlModifier & event.modifiers():
+                Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+                if Modifiers.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:
                     if name == 'body':
