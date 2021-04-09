@@ -479,7 +479,8 @@ if QtWidgets:
             def __init__(self, c):
                 """ctor for LeoQListWidget class"""
                 super().__init__()
-                self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
+                WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
+                self.setWindowFlags(WindowFlags.Popup | self.windowFlags())
                 # Make this window a modal window.
                 # Calling this does not fix the Ubuntu-specific modal behavior.
                 # self.setWindowModality(QtCore.Qt.NonModal) # WindowModal)
@@ -696,12 +697,13 @@ if QtWidgets:
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
         def leo_dumpButton(self, event, tag):
 
+            MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
             button = event.button()
             table = (
-                (QtCore.Qt.NoButton, 'no button'),
-                (QtCore.Qt.LeftButton, 'left-button'),
-                (QtCore.Qt.RightButton, 'right-button'),
-                (QtCore.Qt.MidButton, 'middle-button'),
+                (MouseButtons.NoButton, 'no button'),
+                (MouseButtons.LeftButton, 'left-button'),
+                (MouseButtons.RightButton, 'right-button'),
+                (MouseButtons.MiddleButton, 'middle-button'),
             )
             for val, s in table:
                 if button == val:

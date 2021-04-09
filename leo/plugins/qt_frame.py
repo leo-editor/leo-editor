@@ -765,8 +765,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def create_find_header(self, grid, parent, row):
         if False:
             dw = self
+            Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
             lab1 = dw.createLabel(parent, 'findHeading', 'Find/Change Settings...')
-            grid.addWidget(lab1, row, 0, 1, 2, QtCore.Qt.AlignLeft)
+            grid.addWidget(lab1, row, 0, 1, 2, Alignment.AlignLeft)
                 # AlignHCenter
             row += 1
         return row
@@ -2014,7 +2015,8 @@ class LeoQtBody(leoFrame.LeoBody):
         lab.setObjectName(f"{name} Label")
         lab.setText(name)
         # Pack the label and the widget.
-        layout.addWidget(lab, 0, max(0, n - 1), QtCore.Qt.AlignVCenter)
+        Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+        layout.addWidget(lab, 0, max(0, n - 1), Alignment.AlignVCenter)
         layout.addWidget(w, 1, max(0, n - 1))
         layout.setRowStretch(0, 0)
         layout.setRowStretch(1, 1)  # Give row 1 as much as possible.
@@ -4402,7 +4404,8 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
     def mouseReleaseEvent(self, event):
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
-        if event.button() == QtCore.Qt.MidButton:
+        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        if event.button() == MouseButtons.Qt.MiddleButton:
             self.tabCloseRequested.emit(self.tabAt(event.pos()))
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)
     #@-others
