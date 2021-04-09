@@ -153,7 +153,7 @@ from leo.plugins.mod_scripting import scriptingController
 
 if g.app.gui.guiName() == "qt":
     # for the right click context menu, and child items
-    from leo.core.leoQt import QtWidgets # QtCore,QtGui
+    from leo.core.leoQt import isQt6, QtGui, QtWidgets # QtCore
     from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop

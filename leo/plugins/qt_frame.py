@@ -1542,7 +1542,7 @@ class LeoQtBody(leoFrame.LeoBody):
         WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
         ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
         if force:
-            wrap = option.WrapAtWordBoundaryOrAnywhere
+            wrap = WrapMode.WrapAtWordBoundaryOrAnywhere
         else:
             wrap = g.scanAllAtWrapDirectives(c, p)
             w.setHorizontalScrollBarPolicy(

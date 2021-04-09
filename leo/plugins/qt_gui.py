@@ -470,7 +470,7 @@ class LeoQtGui(leoGui.LeoGui):
         yes = d.addButton(yesMessage, ButtonRole.YesRole)
         no = d.addButton(noMessage, ButtonRole.NoRole)
         if yesToAllMessage:
-            d.addButton(yesToAllMessage, button_role.YesRole)
+            d.addButton(yesToAllMessage, ButtonRole.YesRole)
         cancel = d.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
         if defaultButton == "Yes":
             d.setDefaultButton(yes)
@@ -1461,7 +1461,9 @@ class LeoQtGui(leoGui.LeoGui):
         from PyQt5.QtTest import QSignalSpy
         assert QSignalSpy
     elif isQt6:
-        from PyQt6.QtTest import QSignalSpy
+        # pylint: disable=c-extension-no-member
+        import PyQt6.QtTest as QtTest
+        QSignalSpy = QtTest.QSignalSpy
         assert QSignalSpy
     else:
         # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.

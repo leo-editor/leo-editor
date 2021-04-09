@@ -698,7 +698,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
-            qt_modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             p = self.item2position(item)
             if p:
                 auto_edit = self.prev_v == p.v
@@ -709,7 +709,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & qt_modifiers.ControlModifier)
+                    isCtrl = bool(mods & KeyboardModifiers.ControlModifier)
                     # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
                     # & QtConst.MetaModifier.
                     if isCtrl:
