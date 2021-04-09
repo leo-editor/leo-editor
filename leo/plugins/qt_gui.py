@@ -428,16 +428,16 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return
         b = QtWidgets.QMessageBox
-        icon_info = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
-        button_role = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             d.setStyleSheet(stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
-        d.setIcon(icon_info.Information)
-        d.addButton(text, button_role.YesRole)
+        d.setIcon(Information.Information)
+        d.addButton(text, ButtonRole.YesRole)
         c.in_qt_dialog = True
         if isQt6:
             d.exec()
@@ -456,8 +456,8 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run an askYesNo dialog."""
         if g.unitTesting:
             return None
-        icon_info = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
-        button_role = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
@@ -465,13 +465,13 @@ class LeoQtGui(leoGui.LeoGui):
             d.setStyleSheet(stylesheet)
         if message:
             d.setText(message)
-        d.setIcon(icon_info.Warning)
+        d.setIcon(Information.Warning)
         d.setWindowTitle(title)
-        yes = d.addButton(yesMessage, button_role.YesRole)
-        no = d.addButton(noMessage, button_role.NoRole)
+        yes = d.addButton(yesMessage, ButtonRole.YesRole)
+        no = d.addButton(noMessage, ButtonRole.NoRole)
         if yesToAllMessage:
             d.addButton(yesToAllMessage, button_role.YesRole)
-        cancel = d.addButton(cancelMessage or 'Cancel', button_role.RejectRole)
+        cancel = d.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
         if defaultButton == "Yes":
             d.setDefaultButton(yes)
         elif defaultButton == "No":
@@ -955,15 +955,15 @@ class LeoQtGui(leoGui.LeoGui):
         except Exception:
             size = 0
         if size < 1: size = defaultSize
-        qt_weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
+        Weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
         d = {
-            'black': qt_weight.Black,
-            'bold': qt_weight.Bold,
-            'demibold': qt_weight.DemiBold,
-            'light': qt_weight.Light,
-            'normal': qt_weight.Normal,
+            'black': Weight.Black,
+            'bold': Weight.Bold,
+            'demibold': Weight.DemiBold,
+            'light': Weight.Light,
+            'normal': Weight.Normal,
         }
-        weight_val = d.get(weight.lower(), qt_weight.Normal)
+        weight_val = d.get(weight.lower(), Weight.Normal)
         italic = slant == 'italic'
         if not family:
             family = g.app.config.defaultFontFamily
@@ -1529,12 +1529,12 @@ class LeoQtGui(leoGui.LeoGui):
         shape=None,
     ):
         """Create a Qt Frame."""
-        qt_shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
-        qt_shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
+        Shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
+        Shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
         if shadow is None:
-            shadow = qt_shadow.Plain
+            shadow = Shadow.Plain
         if shape is None:
-            shape = qt_shape.NoFrame
+            shape = Shape.NoFrame
         #
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
@@ -1578,11 +1578,11 @@ class LeoQtGui(leoGui.LeoGui):
         return w
     #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
     def setSizePolicy(self, widget, kind1=None, kind2=None):
-        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         if kind1 is None:
-            kind1 = policy.Ignored
+            kind1 = Policy.Ignored
         if kind2 is None:
-            kind2 = policy.Ignored
+            kind2 = Policy.Ignored
         sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

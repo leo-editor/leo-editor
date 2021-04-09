@@ -619,7 +619,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
         # pylint:disable=no-member
-        if isQt5:
+        if isQt5 or isQt6:
             pass # not ready yet.
         else:
             view.settings().setAttribute(QtWebKitWidgets.QWebSettings.PluginsEnabled, True)
@@ -1568,7 +1568,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             # pylint: disable=no-member
-            QTextOption = QtGui.QTextOption if isQt5 else QtWidgets.QTextOption
+            QTextOption = QtGui.QTextOption if isQt5 or isQt6 else QtWidgets.QTextOption
             w.setWordWrapMode(QTextOption.WrapAtWordBoundaryOrAnywhere)
     #@+node:ekr.20140226074510.4222: *5* vr2.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):

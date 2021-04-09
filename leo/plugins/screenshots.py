@@ -326,7 +326,7 @@ import tempfile
 import xml.etree.ElementTree as etree
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtGui
+from leo.core.leoQt import isQt5, isQt6, QtGui
 # Third-party imports.
 # Warnings are given later.
 try:
@@ -398,7 +398,7 @@ def make_screen_shot(path):
     This is a callback called from make_screen_shot in runLeo.py'''
     app = g.app.gui.qtApp
     # pylint: disable=no-member
-    if isQt5:
+    if isQt5 or isQt6:
         screen = QtGui.QScreen()
         w = screen.grabWindow(app.activeWindow().winId())
     else:

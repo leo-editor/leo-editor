@@ -7,7 +7,7 @@ Edit several nodes at once, in a pannable "notebook" view.
 Use <Alt-x>nb-<tab> to see the list of commands.
 '''
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtDeclarative, QtGui
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtDeclarative, QtGui
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
@@ -70,7 +70,7 @@ class NbController:
         self.mw = ModelWrapper(["h", "b", "gnx", "level", "style"])
         #self.add_all_nodes()
         #self.add_subtree(p)
-        if isQt5:
+        if isQt5 or isQt6:
             from PyQt5.QtQuick import QQuickView
             self.view = view = QQuickView()
         else:
@@ -91,7 +91,7 @@ class NbController:
         ctx.setContextProperty("nodesModel", self.mw.model)
         path = g.os_path_join(g.computeLeoDir(), 'plugins', 'qmlnb', 'qml', 'leonbmain.qml')
         view.setSource(QtCore.QUrl(path))
-        if isQt5:
+        if isQt5 or isQt6:
             mode = view.SizeRootObjectToView
         else:
             mode = QtDeclarative.QDeclarativeView.SizeRootObjectToView

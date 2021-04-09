@@ -1027,7 +1027,7 @@ class BaseJEditColorizer(BaseColorizer):
                 return
         underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
-        qt_format = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
+        UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)
@@ -1038,14 +1038,14 @@ class BaseJEditColorizer(BaseColorizer):
                 format.setBackground(color)
         elif underline:
             format.setForeground(color)
-            format.setUnderlineStyle(qt_format.SingleUnderline)
+            format.setUnderlineStyle(UnderlineStyle.SingleUnderline)
             format.setFontUnderline(True)
         elif dots or tag == 'trailing_whitespace':
             format.setForeground(color)
-            format.setUnderlineStyle(qt_format.DotLine)
+            format.setUnderlineStyle(UnderlineStyle.DotLine)
         else:
             format.setForeground(color)
-            format.setUnderlineStyle(qt_format.NoUnderline)
+            format.setUnderlineStyle(UnderlineStyle.NoUnderline)
         self.tagCount += 1
         if trace:
             # A superb trace. Do not delete it!

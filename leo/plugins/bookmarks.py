@@ -604,20 +604,20 @@ class FlowLayout(QtWidgets.QLayout):
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
-    Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+    KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
 
     # modifier to string mapping
     ModMap = {
-        int(Modifiers.NoModifier): 'None',
-        int(Modifiers.AltModifier): 'Alt',
-        int(Modifiers.AltModifier | Modifiers.ControlModifier): 'AltControl',
-        int(Modifiers.AltModifier | Modifiers.ControlModifier | \
-            Modifiers.ShiftModifier): 'AltControlShift',
-        int(Modifiers.AltModifier | Modifiers.ShiftModifier): 'AltShift',
-        int(Modifiers.ControlModifier): 'Control',
-        int(Modifiers.ControlModifier | Modifiers.ShiftModifier): 'ControlShift',
-        int(Modifiers.ShiftModifier): 'Shift'
+        int(KeyboardModifiers.NoModifier): 'None',
+        int(KeyboardModifiers.AltModifier): 'Alt',
+        int(KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier): 'AltControl',
+        int(KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier | \
+            KeyboardModifiers.ShiftModifier): 'AltControlShift',
+        int(KeyboardModifiers.AltModifier | KeyboardModifiers.ShiftModifier): 'AltShift',
+        int(KeyboardModifiers.ControlModifier): 'Control',
+        int(KeyboardModifiers.ControlModifier | KeyboardModifiers.ShiftModifier): 'ControlShift',
+        int(KeyboardModifiers.ShiftModifier): 'Shift'
     }
 
     #@+others

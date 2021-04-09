@@ -322,14 +322,14 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         """Return the text version of the modifiers of the key event."""
-        qt_modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = event.modifiers()
         mod_table = (
-            (qt_modifiers.AltModifier, 'Alt'),
-            (qt_modifiers.ControlModifier, 'Control'),
-            (qt_modifiers.MetaModifier, 'Meta'),
-            (qt_modifiers.ShiftModifier, 'Shift'),
-            (qt_modifiers.KeypadModifier, 'KeyPad'),
+            (KeyboardModifiers.AltModifier, 'Alt'),
+            (KeyboardModifiers.ControlModifier, 'Control'),
+            (KeyboardModifiers.MetaModifier, 'Meta'),
+            (KeyboardModifiers.ShiftModifier, 'Shift'),
+            (KeyboardModifiers.KeypadModifier, 'KeyPad'),
                 # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         mods = [b for a, b in mod_table if (modifiers & a)]

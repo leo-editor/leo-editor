@@ -913,8 +913,8 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
-        qt_format = QtGui.QImage.Format if isQt6 else QtGui.QImage
-        pix = QtGui.QImage(width, height, qt_format.Format_ARGB32_Premultiplied)
+        Format = QtGui.QImage.Format if isQt6 else QtGui.QImage
+        pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
         # .rgba() call required for Qt4.7, later versions work with straight color
         painter = QtGui.QPainter()
@@ -1092,10 +1092,10 @@ class LeoQtTree(leoFrame.LeoTree):
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
-            qt_flags = QtCore.Qt.ItemFlags
-            item.setFlags(item.flags() | qt_flags.ItemIsEditable)
-            policy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-            item.setChildIndicatorPolicy(policy.DontShowIndicatorWhenChildless)
+            ItemFlags = QtCore.Qt.ItemFlags
+            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
+            ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
+            item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
         try:
@@ -1333,8 +1333,8 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        hint = QtWidgets.QAbstractItemDelegate.EndEditHint if isQt6 else QtWidgets.QAbstractItemDelegate
-        w.closeEditor(e, hint.NoHint)
+        EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint if isQt6 else QtWidgets.QAbstractItemDelegate
+        w.closeEditor(e, EndEditHint.NoHint)
         w.setCurrentItem(item)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self):

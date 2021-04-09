@@ -74,7 +74,7 @@ from leo.core import leoGlobals as g
 NO_TIME = datetime.date(3000, 1, 1)
 
 if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
+    from leo.core.leoQt import isQt4, isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20090119215428.6: ** init (todo.py)
@@ -380,8 +380,8 @@ class todoController:
         Add labels and tooltips for all buttons.
         """
         # Patch the buttons only if the pyqt version is greater than 5.12.
-        from leo.core.leoQt import isQt5, isQt6, qt_version
-        if not isQt5 and not isQt6:
+        from leo.core.leoQt import isQt4, qt_version
+        if isQt4:
             return
         qt_version = [int(z) for z in qt_version.split('.')]
         if qt_version[1] <= 12:

@@ -43,8 +43,8 @@ class ClickySplitter(QtWidgets.QSplitter):
             self.insertWidget(0, self.widget(1))
             self._click_state = 'spin'
         else:
-            orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
-            vertical, horizontal = orientations.Vertical, orientations.Horizontal
+            Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+            vertical, horizontal = Orientations.Vertical, Orientations.Horizontal
             self.setOrientation(vertical if self.orientation() == horizontal else vertical)
             self._click_state = 'flip'
 #@-leo

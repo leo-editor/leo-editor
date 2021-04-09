@@ -14,7 +14,7 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtConst
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if QtCore is not None:
@@ -171,8 +171,8 @@ class LeoEditPane(QtWidgets.QWidget):
         i.e. a container we can hide / show easily"""
         w = QtWidgets.QWidget(self)
         self.layout().addWidget(w)
-        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
-        w.setSizePolicy(policy.Expanding, policy.Maximum)
+        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        w.setSizePolicy(Policy.Expanding, Policy.Maximum)
         w.setLayout(QtWidgets.QHBoxLayout())
         w.layout().setContentsMargins(0, 0, 0, 0)
         w.layout().setSpacing(0)
@@ -305,13 +305,13 @@ class LeoEditPane(QtWidgets.QWidget):
             lambda checked: self.misc_menu())
 
         # padding
-        policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
-        self.control.layout().addItem(QtWidgets.QSpacerItem(0, 0, hPolicy=policy.Expanding))
+        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        self.control.layout().addItem(QtWidgets.QSpacerItem(0, 0, hPolicy=Policy.Expanding))
 
         # content
         self.splitter = ClickySplitter(self)
-        orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
-        self.splitter.setOrientation(orientations.Vertical)
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        self.splitter.setOrientation(Orientations.Vertical)
         self.layout().addWidget(self.splitter)
         self.edit_frame = self._add_frame()
         self.splitter.addWidget(self.edit_frame)

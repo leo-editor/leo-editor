@@ -456,8 +456,8 @@ if QtWidgets:
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
                 self.textChanged.connect(self.onTextChanged)
-            menu_policy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
-            self.setContextMenuPolicy(menu_policy.CustomContextMenu)
+            ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+            self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
             self.leo_vsb = vsb = self.verticalScrollBar()
@@ -785,8 +785,8 @@ if QtWidgets:
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
-            Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-            if Modifiers.ControlModifier & event.modifiers():
+            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+            if KeyboardModifiers.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
                 if isQt5:
                     point = event.angleDelta()
@@ -1285,8 +1285,8 @@ class QTextEditWrapper(QTextMixin):
     def set_config(self):
         """Set configuration options for QTextEdit."""
         w = self.widget
-        mode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
-        w.setWordWrapMode(mode.NoWrap)
+        WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
+        w.setWordWrapMode(WrapMode.NoWrap)
         # tab stop in pixels - no config for this (yet)
         if isQt6:
             w.setTabStopDistance(24)
@@ -1318,8 +1318,8 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-                if Modifiers.ControlModifier & event.modifiers():
+                KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+                if KeyboardModifiers.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:
                     if name == 'body':

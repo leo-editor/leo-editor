@@ -8,9 +8,9 @@
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 from leo.core import leoGlobals as g
 from leo.plugins import viewrendered as vr
-from leo.core.leoQt import isQt5, QtCore, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets
 try:
-    if isQt5:
+    if isQt5 or isQt6:
         import matplotlib.backends.backend_qt5agg as backend_qt5agg
         FigureCanvasQTAgg = backend_qt5agg.FigureCanvasQTAgg
     else:
@@ -110,7 +110,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
             self.statusbar_label = QtWidgets.QLabel()
             layout.addWidget(self.statusbar_label)
             # pylint: disable=no-member
-            if isQt5:
+            if isQt5 or isQt6:
                 pass # The status bar doesn't work yet.
             else:
                 self.toolbar.message.connect(self._show_message)

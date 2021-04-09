@@ -95,8 +95,8 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         super().__init__(owner.orientation(), owner)
         # Confusing!
             # self.setStyleSheet("background-color: green;")
-        menu_policy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
-        self.setContextMenuPolicy(menu_policy.CustomContextMenu)
+        ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+        self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.splitter_menu)
     #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
     def __repr__(self):
@@ -145,8 +145,8 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         lr = 'Left', 'Right'
         ab = 'Above', 'Below'
         split_dir = 'Vertically'
-        qt_orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
-        if self.orientation() == qt_orientations.Vertical:
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        if self.orientation() == Orientations.Vertical:
             lr, ab = ab, lr
             split_dir = 'Horizontally'
         # blue/orange - color-blind friendly
@@ -356,10 +356,10 @@ class NestedSplitter(QtWidgets.QSplitter):
         # allow special behavior to be turned of at import stage
         # useful if other code must run to set up callbacks, that
         # other code can re-enable
-    orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+    Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
     other_orientation = {
-        orientations.Vertical: orientations.Horizontal,
-        orientations.Horizontal: orientations.Vertical
+        Orientations.Vertical: Orientations.Horizontal,
+        Orientations.Horizontal: Orientations.Vertical,
     }
     # a regular signal, but you can't use its .connect() directly,
     # use splitterClicked_connect()
@@ -374,9 +374,9 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:ekr.20110605121601.17967: *3* ns.__init__
     def __init__(self, parent=None, orientation=None, root=None):
         """Ctor for NestedSplitter class."""
-        qt_orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         if orientation is None:
-            orientation = qt_orientations.Horizontal
+            orientation = Orientations.Horizontal
         super().__init__(orientation, parent)
             # This creates a NestedSplitterHandle.
         if root is None:

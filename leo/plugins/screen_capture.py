@@ -34,7 +34,7 @@ Terry Brown, Terry_N_Brown@yahoo.com, Fri Apr 19 16:33:45 2013
 import os
 import time
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtGui
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui
 #@+others
 #@+node:tbrown.20130419143128.29676: ** init
 def init():
@@ -82,16 +82,9 @@ class Recorder:
     #@+node:tbrown.20130419143128.29671: *3* grab_frame
     def grab_frame(self, filename=None):
         """Grab one frame."""
-
         if not self.recording and not filename:
             return
-
-        # performance measuring
-        # self.times.append(time.time() - self.last_time)
-        # self.last_time = time.time()
-
-        # pylint: disable=no-member
-        if isQt5:
+        if isQt5 or isQt6:
             # screen = QtGui.QtGuiApplication.primaryScreen()
             screen = g.app.gui.qtApp.primaryScreen()
             pm = screen.grabWindow(self.winId)
