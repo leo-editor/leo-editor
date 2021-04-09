@@ -22,7 +22,6 @@ from leo.plugins import qt_text
 # This defines the commands defined by @g.command.
 from leo.plugins import qt_commands
 assert qt_commands
-qt = QtCore.Qt
 #@-<< imports >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -1438,7 +1437,8 @@ class LeoQtGui(leoGui.LeoGui):
             if g.os_path_exists(fn):
                 pm = QtGui.QPixmap(fn)
                 if not pm.isNull():
-                    splash = QtWidgets.QSplashScreen(pm, qt.WindowStaysOnTopHint)
+                    WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
+                    splash = QtWidgets.QSplashScreen(pm, WindowFlags.WindowStaysOnTopHint)
                     splash.show()
                     # This sleep is required to do the repaint.
                     QtCore.QThread.msleep(10)
