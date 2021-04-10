@@ -325,10 +325,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                 
         point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
         global_point = self.mapToGlobal(point)
-        if False and isQt6:
-            menu.exec(global_point)
-        else:
-            menu.exec_(global_point)
+        menu.exec_(global_point)
         
         for i in 0, 1:
             widget[i].setStyleSheet(sheet[i])
@@ -578,10 +575,7 @@ class NestedSplitter(QtWidgets.QSplitter):
 
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
-        if False and isQt6:
-            menu.exec(global_point)
-        else:
-            menu.exec_(global_point)
+        menu.exec_(global_point)
 
 
     #@+node:tbrown.20120418121002.25712: *3* ns.closing

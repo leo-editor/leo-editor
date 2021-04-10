@@ -276,11 +276,7 @@ class PrintingController:
         dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)
         dialog.paintRequested.connect(doc.print_)
-        
-        if False and isQt6:
-            dialog.exec()
-        else:
-            dialog.exec_()
+        dialog.exec_()
     #@-others
 #@-others
 #@@language python

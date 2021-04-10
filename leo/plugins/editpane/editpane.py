@@ -450,10 +450,7 @@ class LeoEditPane(QtWidgets.QWidget):
         button = self.control_menu_button
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
-        if False and isQt6:
-            menu.exec(global_point)
-        else:
-            menu.exec_(global_point)
+        menu.exec_(global_point)
     #@+node:tbrown.20171028115438.28: *3* mode_menu
     def mode_menu(self):
         """build menu on Action button"""
@@ -473,10 +470,7 @@ class LeoEditPane(QtWidgets.QWidget):
         button = self.btn_mode
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
-        if False and isQt6:
-            menu.exec(global_point)
-        else:
-            menu.exec_(global_point)
+        menu.exec_(global_point)
 
     #@+node:tbrown.20171028115438.29: *3* new_position
     def new_position(self, p):

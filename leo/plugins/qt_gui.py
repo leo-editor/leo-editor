@@ -199,10 +199,7 @@ class LeoQtGui(leoGui.LeoGui):
         d.addButton('Ok', ButtonRole.YesRole)
         try:
             c.in_qt_dialog = True
-            if False and isQt6:
-                d.exec()
-            else:
-                d.exec_()
+            d.exec_()
         finally:
             c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
@@ -235,10 +232,7 @@ class LeoQtGui(leoGui.LeoGui):
             d.activateWindow()
         else:
             d.show()
-            if False and isQt6:
-                d.exec()
-            else:
-                d.exec_()
+            d.exec_()
     #@+node:ekr.20150619053138.1: *5* qt_gui.createFindDialog
     def createFindDialog(self, c):
         """Create and init a non-modal Find dialog."""
@@ -293,10 +287,7 @@ class LeoQtGui(leoGui.LeoGui):
         d.setDefaultButton(yes)
         try:
             c.in_qt_dialog = True
-            if False and isQt6:
-                d.exec()
-            else:
-                d.exec_()
+            d.exec_()
         finally:
             c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18496: *4* qt_gui.runAskDateTimeDialog
@@ -416,10 +407,7 @@ class LeoQtGui(leoGui.LeoGui):
         if okButtonText:
             d.setOkButtonText(okButtonText)
         self.attachLeoIcon(d)
-        if False and isQt6:
-            ok = d.exec()
-        else:
-            ok = d.exec_()
+        ok = d.exec_()
         n = d.textValue()
         try:
             n = float(n)
@@ -446,10 +434,7 @@ class LeoQtGui(leoGui.LeoGui):
         if okButtonText:
             d.setOkButtonText(okButtonText)
         self.attachLeoIcon(d)
-        if False and isQt6:
-            ok = d.exec()
-        else:
-            ok = d.exec_()
+        ok = d.exec_()
         return str(d.textValue()) if ok else None
     #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog
     def runAskOkDialog(self, c, title, message=None, text="Ok"):
@@ -469,10 +454,7 @@ class LeoQtGui(leoGui.LeoGui):
         d.addButton(text, ButtonRole.YesRole)
         try:
             c.in_qt_dialog = True
-            if False and isQt6:
-                d.exec()
-            else:
-                d.exec_()
+            d.exec_()
         finally:
             c.in_qt_dialog = False
 
@@ -1411,10 +1393,7 @@ class LeoQtGui(leoGui.LeoGui):
                 m = self.DialogWithCheckBox(controller=self, tip=tip)
                 try:
                     c.in_qt_dialog = True
-                    if False and isQt6:
-                        m.exec()
-                    else:
-                        m.exec_()
+                    m.exec_()
                 finally:
                     c.in_qt_dialog = False
                 b = m.clickedButton()

@@ -1362,10 +1362,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                 a.triggered.connect(lambda checked: self.reattach_all())
 
             global_point = self.mapToGlobal(point)
-            if False and isQt6:
-                menu.exec(global_point)
-            else:
-                menu.exec_(global_point)
+            menu.exec_(global_point)
             
         ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
         self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
@@ -2277,10 +2274,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 menu = w2.createStandardContextMenu()
                 menu.addSeparator()
                 menu.addAction("Toggle UNL mode", cycle_unl_mode)
-                if False and isQt6:
-                    menu.exec(event.globalPos())
-                else:
-                    menu.exec_(event.globalPos())
+                menu.exec_(event.globalPos())
 
             w2.contextMenuEvent = add_item
             self.put('')

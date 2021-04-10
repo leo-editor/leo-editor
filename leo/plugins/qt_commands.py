@@ -122,10 +122,7 @@ def showColorWheel(self, event=None):
     except(ValueError, IndexError) as e:
         g.trace('error caught', e)
         
-    if False and isQt6:
-        result = picker.exec()
-    else:
-        result = picker.exec_()
+    result = picker.exec_()
     if not result:
         g.es("No color selected")
     elif in_color_setting:
@@ -156,10 +153,7 @@ def showFonts(self, event=None):
         picker.setCurrentFont(font)
     except ValueError:
         pass
-    if False and isQt6:
-        result = picker.exec()
-    else:
-        result = picker.exec_()
+    result = picker.exec_()
     if not result:
         g.es("No font selected")
     else:
