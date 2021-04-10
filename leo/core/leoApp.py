@@ -548,6 +548,7 @@ class LeoApp:
             # relax_ng_compact, rtf, svn_commit.
 
         # These have extensions which conflict with other languages.
+            # assembly_6502:    .asm or .a or .s
             # assembly_macro32: .asm or .a
             # assembly_mcs51:   .asm or .a
             # assembly_parrot:  .asm or .a
@@ -589,6 +590,7 @@ class LeoApp:
             "applescript"        : "-- (* *)",
             "asp"                : "<!-- -->",
             "aspect_j"           : "// /* */",
+            "assembly_6502"      : ";",
             "assembly_macro32"   : ";",
             "assembly_mcs51"     : ";",
             "assembly_parrot"    : "#",
@@ -916,6 +918,7 @@ class LeoApp:
             # relax_ng_compact, rtf, svn_commit.
 
         # These have extensions which conflict with other languages.
+            # assembly_6502:    .asm or .a or .s
             # assembly_macro32: .asm or .a
             # assembly_mcs51:   .asm or .a
             # assembly_parrot:  .asm or .a
