@@ -1362,8 +1362,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                 a.triggered.connect(lambda checked: self.reattach_all())
 
             ### menu.exec_(self.mapToGlobal(point))
-            point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
-            global_point = but.mapToGlobal(point)
+            global_point = self.mapToGlobal(point)
             if False and isQt6:
                 menu.exec(global_point)
             else:

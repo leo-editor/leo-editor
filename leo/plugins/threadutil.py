@@ -2,18 +2,12 @@
 #@+node:ekr.20121126095734.12418: * @file ../plugins/threadutil.py
 #@@language python
 #@@tabwidth -4
-#@+<< threadutils imports >>
-#@+node:ekr.20161223141850.1: ** << threadutils imports >>
 from collections import deque
 import logging
 import time
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
-#@-<< threadutils imports >>
-if 1:
-    log = None
-else:
-    log = logging.getLogger("out")
+from leo.core.leoQt import isQt6, QtCore, QtWidgets
+log = None # log = logging.getLogger("out")
 #@+others
 #@+node:ekr.20140911023403.17845: **  top-level
 #@+node:ekr.20121126095734.12432: *3* async_syscmd
