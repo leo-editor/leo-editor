@@ -526,7 +526,9 @@ class FlowLayout(QtWidgets.QLayout):
 
     #@+node:ekr.20140917180536.17904: *3* expandingDirections
     def expandingDirections(self):
-        return QtCore.Qt.Orientations(QtCore.Qt.Orientation(0))
+        
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        return Orientations(QtCore.Qt.Orientation(0))
 
     #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
     def hasHeightForWidth(self):
@@ -582,7 +584,6 @@ class FlowLayout(QtWidgets.QLayout):
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())
         return y + lineHeight - rect.y()
-
     #@+node:tbnorth.20160315104244.1: *3* margin
     def margin(self):
         """margin - return margin
@@ -683,13 +684,15 @@ class BookMarkDisplay:
         - `bookmarks`: bookmarks in this pane
         """
 
-        if event.button() == QtCore.Qt.RightButton:
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        if event.button() == MouseButtons.RightButton:
             self.context_menu(event, container=row_parent)
             return
 
         # Alt => edit bookmarks in the outline
         mods = event.modifiers()
-        if mods == QtCore.Qt.AltModifier:
+        if mods == KeyboardModifiers.AltModifier:
             self.edit_bookmark(None, v=row_parent)
             return
         cmd_bookmark(event={'c': row_parent.context}, container=row_parent)
@@ -704,7 +707,8 @@ class BookMarkDisplay:
         - `but`: button widget
         """
 
-        if event.button() == QtCore.Qt.RightButton:
+        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        if event.button() == MouseButtons.RightButton:
             self.button_menu(event, bm, but, up=up)
             return
 

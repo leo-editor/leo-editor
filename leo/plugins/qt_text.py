@@ -514,16 +514,17 @@ if QtWidgets:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
-                qt = QtCore.Qt
+                Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+                Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
                 key = event.key()
-                if event.modifiers() != qt.NoModifier and not event.text():
+                if event.modifiers() != Modifiers.NoModifier and not event.text():
                     # A modifier key on it's own.
                     pass
-                elif key in (qt.Key_Up, qt.Key_Down):
+                elif key in (Key.Key_Up, Key.Key_Down):
                     QtWidgets.QListWidget.keyPressEvent(self, event)
-                elif key == qt.Key_Tab:
+                elif key == Key.Key_Tab:
                     self.tab_callback()
-                elif key in (qt.Key_Enter, qt.Key_Return):
+                elif key in (Key.Key_Enter, Key.Key_Return):
                     self.select_callback()
                 else:
                     # Pass all other keys to the autocompleter via the event filter.

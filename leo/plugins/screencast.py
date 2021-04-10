@@ -219,7 +219,7 @@ You will find this stylesheet in the node @data
 import random
 from leo.core import leoGlobals as g
 from leo.core import leoGui # for LeoKeyEvents.
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 #@-<< imports >>
 # pylint: disable=not-callable
 #@+at
@@ -330,9 +330,9 @@ class ScreenCastController:
         w2 = m.pane_widget(pane)
         geom = w2.geometry()
         w.resize(geom.width(), min(150, geom.height() / 2))
-        off = QtCore.Qt.ScrollBarAlwaysOff
-        w.setHorizontalScrollBarPolicy(off)
-        w.setVerticalScrollBarPolicy(off)
+        ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
+        w.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+        w.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
         w.show()
         return w
 

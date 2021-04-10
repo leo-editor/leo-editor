@@ -977,7 +977,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # Move focus to next widget.
                     if s == '\t':
                         if self.next_w:
-                            self.next_w.setFocus(QtCore.Qt.TabFocusReason)
+                            FocusReason = QtCore.Qt.FocusReason if isQt6 else QtCore.Qt
+                            self.next_w.setFocus(FocusReason.TabFocusReason)
                         else:
                             # Do the normal processing.
                             return self.oldEvent(event)
@@ -4405,7 +4406,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
         MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
-        if event.button() == MouseButtons.Qt.MiddleButton:
+        if event.button() == MouseButtons.MiddleButton:
             self.tabCloseRequested.emit(self.tabAt(event.pos()))
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)
     #@-others

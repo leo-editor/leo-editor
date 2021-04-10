@@ -105,7 +105,7 @@ plugins. Here are some points of interest:
 
 from leo.core import leoGlobals as g
 if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import QtCore,QtWidgets
+    from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
@@ -422,7 +422,7 @@ AttributeGetter.register(AttributeGetterColon)
 class ListDialog(QtWidgets.QDialog):
 
     #@+others
-    #@+node:tbrown.20091028131637.1354: *3* __init__
+    #@+node:tbrown.20091028131637.1354: *3* __init__ (attrib_edit.py)
     def __init__(self, parent, title, text, entries):
 
         self.entries = entries
@@ -438,7 +438,7 @@ class ListDialog(QtWidgets.QDialog):
             cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setCheckState(QtCore.Qt.Checked)
+                cb.setChecked(True if isQt6 else QtConst.Checked)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
         sa.setWidget(frame)
@@ -538,7 +538,8 @@ class attrib_edit_Controller:
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
         if self.guiMode == 'body':
-            self.holder = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+            Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+            self.holder = QtWidgets.QSplitter(Orientations.Vertical)
             self.holder.setMinimumWidth(300)
             parent = c.frame.top.leo_body_frame.parent()
             self.holder.addWidget(c.frame.top.leo_body_frame)

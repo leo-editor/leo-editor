@@ -832,11 +832,12 @@ class NestedSplitter(QtWidgets.QSplitter):
         the same orientation - avoiding that would mean doing rotation by
         inserting out widgets into our ancestors, etc.
         """
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         for i in self.top().self_and_descendants():
-            if i.orientation() == QtCore.Qt.Vertical:
-                i.setOrientation(QtCore.Qt.Horizontal)
+            if i.orientation() == Orientations.Vertical:
+                i.setOrientation(Orientations.Horizontal)
             else:
-                i.setOrientation(QtCore.Qt.Vertical)
+                i.setOrientation(Orientations.Vertical)
     #@+node:vitalije.20170713085342.1: *3* ns.rotateOne
     def rotateOne(self, index):
         """Change orientation - only of splithandle at index."""

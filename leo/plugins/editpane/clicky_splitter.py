@@ -20,7 +20,8 @@ class ClickySplitterHandle(QtWidgets.QSplitterHandle):
         Args:
             event (QMouseEvent): mouse event
         """
-        if event.button() == QtCore.Qt.LeftButton:
+        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        if event.button() == MouseButtons.LeftButton:
             return  # might have been resizing panes
         self.splitter().flip_spin()
 

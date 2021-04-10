@@ -97,7 +97,8 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         self.window = DummyWindow(c)
 
         # See comments in the base class ctor, in backend_qt5.py.
-        self.canvas.setFocusPolicy(QtCore.Qt.StrongFocus)
+        FocusPolicy = QtCore.Qt.FocusPolicy if isQt6 else QtCore.Qt
+        self.canvas.setFocusPolicy(FocusPolicy.StrongFocus)
         self.canvas.setFocus()
         self.canvas._destroying = False
 
