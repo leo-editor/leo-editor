@@ -583,7 +583,10 @@ class quickMove:
                 current_submenu.addAction(k)
 
         pos = c.frame.top.window().frameGeometry().center()
-        action = menu.exec_(pos)
+        if isQt6:
+            action = menu.exec(pos)
+        else:
+            action = menu.exec_(pos)
         if action is None:
             return
         k = str(action.text())
@@ -635,7 +638,10 @@ class quickMove:
             return
 
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
-        ld.exec_()
+        if isQt6:
+            ld.exec()
+        else:
+            ld.exec_()
 
         if ld.result() == QtWidgets.QDialog.Rejected:
             return

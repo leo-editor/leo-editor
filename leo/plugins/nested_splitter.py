@@ -322,7 +322,15 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         for provider in splitter.root.providers:
             if hasattr(provider, 'ns_context'):
                 load_items(menu, provider.ns_context())
-        menu.exec_(self.mapToGlobal(pos))
+                
+        ### menu.exec_(self.mapToGlobal(pos))
+        point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
+        global_point = but.mapToGlobal(point)
+        if isQt6:
+            menu.exec(global_point)
+        else:
+            menu.exec_(global_point)
+        
         for i in 0, 1:
             widget[i].setStyleSheet(sheet[i])
     #@+node:tbnorth.20160510091151.1: *3* nsh.mouseEvents
@@ -568,7 +576,16 @@ class NestedSplitter(QtWidgets.QSplitter):
         if menu.isEmpty():
             act = QAction("Nothing marked, and no options", self)
             menu.addAction(act)
-        menu.exec_(button.mapToGlobal(pos))
+
+        ### menu.exec_(button.mapToGlobal(pos))
+        point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
+        global_point = but.mapToGlobal(point)
+        if isQt6:
+            menu.exec(global_point)
+        else:
+            menu.exec_(global_point)
+
+
     #@+node:tbrown.20120418121002.25712: *3* ns.closing
     def closing(self, window):
         """forget a top-level additional layout which was closed"""
@@ -1002,7 +1019,14 @@ class NestedSplitter(QtWidgets.QSplitter):
             g.trace('level', level)
             tag = f"layout: {c.shortFileName()}"
             g.printObj(layout, tag=tag)
-        self.setOrientation(layout['orientation'])
+        if isQt6:
+            Orientations = QtCore.Qt.Orientations
+            if layout['orientation'] == 1: 
+                self.setOrientation(Orientations.Horizontal)
+            else:
+                self.setOrientation(Orientations.Vertical)
+        else:
+            self.setOrientation(layout['orientation'])
         found = 0
         if level == 0:
             for i in self.self_and_descendants():

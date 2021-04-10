@@ -454,8 +454,13 @@ class notetextedit(QTextEdit):
         action.setData(notetextedit.Save)
 
         self.ensureCursorVisible()
-        menu.exec_(self.viewport().mapToGlobal(self.cursorRect().center()))
-
+        
+        ###menu.exec_(self.viewport().mapToGlobal(self.cursorRect().center()))
+        global_point = self.viewport().mapToGlobal(self.cursorRect().center())
+        if isQt6:
+            menu.exec(global_point)
+        else:
+            menu.exec_(global_point)
     #@+node:ekr.20100103100944.5415: *3* setTextEffect
     def setTextEffect(self):
         action = self.sender()

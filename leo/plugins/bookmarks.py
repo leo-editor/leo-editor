@@ -842,8 +842,12 @@ class BookMarkDisplay:
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
-        menu.exec_(self.w.mapToGlobal(event.pos()))
-
+        point = event.position().toPoint() if isQt6 else event.pos()   # Qt6 documentation is wrong.
+        global_point = but.mapToGlobal(point)
+        if isQt6:
+            menu.exec(global_point)
+        else:
+            menu.exec_(global_point)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""

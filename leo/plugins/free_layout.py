@@ -445,7 +445,10 @@ def free_layout_load(event):
     for k in d:
         menu.addAction(k)
     pos = c.frame.top.window().frameGeometry().center()
-    action = menu.exec_(pos)
+    if isQt6:
+        action = menu.exec(pos)
+    else:
+        action = menu.exec_(pos)
     if action is None:
         return
     name = str(action.text())

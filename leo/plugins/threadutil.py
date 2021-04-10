@@ -87,7 +87,10 @@ def main():
     g.procs.add(['ls', '-la'])
     #a.setMainWidget(b)
     b.show()
-    a.exec_()
+    if isQt6:
+        a.exec()
+    else:
+        a.exec_()
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others

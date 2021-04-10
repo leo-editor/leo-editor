@@ -723,8 +723,10 @@ class attrib_edit_Controller:
             "Enter path to attribute (space separated words)",
             dat)
 
-        res.exec_()
-
+        if isQt6:
+            res.exec()
+        else:
+            res.exec_()
         if res.result() == QtWidgets.QDialog.Rejected:
             return
 

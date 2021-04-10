@@ -266,7 +266,13 @@ class PrintingController:
     def print_doc(self, doc):
         """Print the document."""
         dialog = printsupport.QPrintDialog()
-        if dialog.exec_() == dialog.Accepted:
+        
+        if isQt6:
+            result = dialog.exec()
+        else:
+            result = dialog.exec_()
+
+        if result == dialog.Accepted:
             doc.print_(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
     def preview_doc(self, doc):
@@ -274,7 +280,11 @@ class PrintingController:
         dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)
         dialog.paintRequested.connect(doc.print_)
-        dialog.exec_()
+        
+        if isQt6:
+            dialog.exec()
+        else:
+            dialog.exec_()
     #@-others
 #@-others
 #@@language python

@@ -446,7 +446,16 @@ class LeoEditPane(QtWidgets.QWidget):
                 act.setChecked(widget_class == current)
                 act.triggered.connect(cb)
                 menu.addAction(act)
-        menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
+                
+        
+        ### menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
+        button = self.control_menu_button
+        point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
+        global_point = but.mapToGlobal(point)
+        if isQt6:
+            menu.exec(global_point)
+        else:
+            menu.exec_(global_point)
     #@+node:tbrown.20171028115438.28: *3* mode_menu
     def mode_menu(self):
         """build menu on Action button"""
@@ -462,7 +471,16 @@ class LeoEditPane(QtWidgets.QWidget):
             act.setCheckable(True)
             act.setChecked(mode == self.mode)
             menu.addAction(act)
-        menu.exec_(self.mapToGlobal(self.btn_mode.pos()))
+        
+        ### menu.exec_(self.mapToGlobal(self.btn_mode.pos()))
+        button = self.btn_mode
+        point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
+        global_point = but.mapToGlobal(point)
+        if isQt6:
+            menu.exec(global_point)
+        else:
+            menu.exec_(global_point)
+
     #@+node:tbrown.20171028115438.29: *3* new_position
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
