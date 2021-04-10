@@ -4,7 +4,7 @@
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
-from leo.core.leoQt import isQt6, QtGui, QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
 def init():

@@ -147,7 +147,6 @@ import time
 import tempfile
 import difflib
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6
 try:
     from leo.plugins import stickynotes
 except ImportError:
