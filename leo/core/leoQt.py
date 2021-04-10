@@ -48,8 +48,6 @@ if not g.in_bridge:
                 isQt4 = True
             except Exception:
                 pass
-    #
-    # Summary constants.
     if isQt6:  ### Temporary.
         print('\n===== pyQt6 =====')
     if 0: # A good trace for testing.
