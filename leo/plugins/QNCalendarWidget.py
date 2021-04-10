@@ -11,7 +11,7 @@ Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 import sys
 import datetime
 
-from leo.core.leoQt import QtCore,QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtWidgets
 
 def init():
     return True # For unit tests.

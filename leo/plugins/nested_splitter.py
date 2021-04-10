@@ -325,7 +325,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                 
         ### menu.exec_(self.mapToGlobal(pos))
         point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
-        global_point = but.mapToGlobal(point)
+        global_point = self.mapToGlobal(point)
         if isQt6:
             menu.exec(global_point)
         else:
@@ -579,7 +579,7 @@ class NestedSplitter(QtWidgets.QSplitter):
 
         ### menu.exec_(button.mapToGlobal(pos))
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
-        global_point = but.mapToGlobal(point)
+        global_point = button.mapToGlobal(point)
         if isQt6:
             menu.exec(global_point)
         else:

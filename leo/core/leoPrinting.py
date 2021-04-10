@@ -5,7 +5,7 @@ Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.
 """
 from leo.core import leoGlobals as g
-from leo.core.leoQt import printsupport, QtGui
+from leo.core.leoQt import isQt6, printsupport, QtGui
 #@+others
 #@+node:ekr.20150509035503.1: ** cmd (decorator)
 def cmd(name):
