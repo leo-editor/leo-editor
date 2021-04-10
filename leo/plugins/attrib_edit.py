@@ -723,7 +723,7 @@ class attrib_edit_Controller:
             "Enter path to attribute (space separated words)",
             dat)
 
-        if isQt6:
+        if False and isQt6:
             res.exec()
         else:
             res.exec_()

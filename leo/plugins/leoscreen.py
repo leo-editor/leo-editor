@@ -390,7 +390,7 @@ class leoscreen_Controller:
                    for i in out.split('\n') if i.startswith('\t')]
 
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
-        if isQt6:
+        if False and isQt6:
             ld.exec()
         else:
             ld.exec_()

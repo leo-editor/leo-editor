@@ -199,7 +199,7 @@ class LeoQtGui(leoGui.LeoGui):
         d.addButton('Ok', ButtonRole.YesRole)
         try:
             c.in_qt_dialog = True
-            if isQt6:
+            if False and isQt6:
                 d.exec()
             else:
                 d.exec_()
@@ -235,7 +235,7 @@ class LeoQtGui(leoGui.LeoGui):
             d.activateWindow()
         else:
             d.show()
-            if isQt6:
+            if False and isQt6:
                 d.exec()
             else:
                 d.exec_()
@@ -293,7 +293,7 @@ class LeoQtGui(leoGui.LeoGui):
         d.setDefaultButton(yes)
         try:
             c.in_qt_dialog = True
-            if isQt6:
+            if False and isQt6:
                 d.exec()
             else:
                 d.exec_()
@@ -416,7 +416,7 @@ class LeoQtGui(leoGui.LeoGui):
         if okButtonText:
             d.setOkButtonText(okButtonText)
         self.attachLeoIcon(d)
-        if isQt6:
+        if False and isQt6:
             ok = d.exec()
         else:
             ok = d.exec_()
@@ -446,7 +446,7 @@ class LeoQtGui(leoGui.LeoGui):
         if okButtonText:
             d.setOkButtonText(okButtonText)
         self.attachLeoIcon(d)
-        if isQt6:
+        if False and isQt6:
             ok = d.exec()
         else:
             ok = d.exec_()
@@ -469,7 +469,7 @@ class LeoQtGui(leoGui.LeoGui):
         d.addButton(text, ButtonRole.YesRole)
         try:
             c.in_qt_dialog = True
-            if isQt6:
+            if False and isQt6:
                 d.exec()
             else:
                 d.exec_()
@@ -1410,7 +1410,7 @@ class LeoQtGui(leoGui.LeoGui):
                 m = self.DialogWithCheckBox(controller=self, tip=tip)
                 try:
                     c.in_qt_dialog = True
-                    if isQt6:
+                    if False and isQt6:
                         m.exec()
                     else:
                         m.exec_()

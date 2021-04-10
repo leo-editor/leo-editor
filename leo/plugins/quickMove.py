@@ -583,7 +583,7 @@ class quickMove:
                 current_submenu.addAction(k)
 
         pos = c.frame.top.window().frameGeometry().center()
-        if isQt6:
+        if False and isQt6:
             action = menu.exec(pos)
         else:
             action = menu.exec_(pos)
@@ -638,7 +638,7 @@ class quickMove:
             return
 
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
-        if isQt6:
+        if False and isQt6:
             ld.exec()
         else:
             ld.exec_()

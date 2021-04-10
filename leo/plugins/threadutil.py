@@ -87,7 +87,7 @@ def main():
     g.procs.add(['ls', '-la'])
     #a.setMainWidget(b)
     b.show()
-    if isQt6:
+    if False and isQt6:
         a.exec()
     else:
         a.exec_()

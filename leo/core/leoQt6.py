@@ -2,6 +2,7 @@
 #@+node:ekr.20210407011013.1: * @file leoQt6.py
 """Import wrapper for pyQt6"""
 # pylint: disable=c-extension-no-member,import-error,no-name-in-module,unused-import
+
 #
 # Required imports
 from PyQt6 import Qt

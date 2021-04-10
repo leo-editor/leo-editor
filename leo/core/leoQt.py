@@ -30,6 +30,12 @@ if not g.in_bridge:
     try:
         ### raise AttributeError  ### Testing: Force Qt5.
         from leo.core.leoQt6 import *
+        #
+        # Restore the exec_method!
+        def exec_(self, *args, **kwargs):
+            return self.exec(*args, **kwargs)
+
+        g.funcToMethod(exec_, QtWidgets.QWidget)
         isQt6 = True
     except Exception:
         try:

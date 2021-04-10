@@ -1364,7 +1364,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             ### menu.exec_(self.mapToGlobal(point))
             point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
             global_point = but.mapToGlobal(point)
-            if isQt6:
+            if False and isQt6:
                 menu.exec(global_point)
             else:
                 menu.exec_(global_point)
@@ -2279,7 +2279,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 menu = w2.createStandardContextMenu()
                 menu.addSeparator()
                 menu.addAction("Toggle UNL mode", cycle_unl_mode)
-                if isQt6:
+                if False and isQt6:
                     menu.exec(event.globalPos())
                 else:
                     menu.exec_(event.globalPos())

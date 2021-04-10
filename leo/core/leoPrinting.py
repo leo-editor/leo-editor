@@ -267,7 +267,7 @@ class PrintingController:
         """Print the document."""
         dialog = printsupport.QPrintDialog()
         
-        if isQt6:
+        if False and isQt6:
             result = dialog.exec()
         else:
             result = dialog.exec_()
@@ -281,7 +281,7 @@ class PrintingController:
         dialog.setSizeGripEnabled(True)
         dialog.paintRequested.connect(doc.print_)
         
-        if isQt6:
+        if False and isQt6:
             dialog.exec()
         else:
             dialog.exec_()

@@ -814,7 +814,7 @@ class BookMarkDisplay:
 
         point = event.position().toPoint() if isQt6 else event.pos()   # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
-        if isQt6:
+        if False and isQt6:
             menu.exec(global_point)
         else:
             menu.exec_(global_point)
@@ -844,7 +844,7 @@ class BookMarkDisplay:
 
         point = event.position().toPoint() if isQt6 else event.pos()   # Qt6 documentation is wrong.
         global_point = menu.mapToGlobal(point)
-        if isQt6:
+        if False and isQt6:
             menu.exec(global_point)
         else:
             menu.exec_(global_point)
