@@ -35,6 +35,7 @@ if not g.in_bridge:
         def exec_(self, *args, **kwargs):
             return self.exec(*args, **kwargs)
 
+        # pylint: disable=c-extension-no-member
         g.funcToMethod(exec_, QtWidgets.QWidget)
         isQt6 = True
     except Exception:
