@@ -3073,11 +3073,6 @@ if pygments:
                         for attr in attrs
                 ])
                 return f"PygmentsBlockUserData({kwds})"
-
-    ###
-    # else:
-        # # For TravisCi.
-        # PygmentsBlockUserData = g.NullObject  # type: ignore
     #@-others
 #@-others
 #@@language python

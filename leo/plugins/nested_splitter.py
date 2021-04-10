@@ -323,7 +323,6 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
             if hasattr(provider, 'ns_context'):
                 load_items(menu, provider.ns_context())
                 
-        ### menu.exec_(self.mapToGlobal(pos))
         point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
         global_point = self.mapToGlobal(point)
         if False and isQt6:
@@ -577,7 +576,6 @@ class NestedSplitter(QtWidgets.QSplitter):
             act = QAction("Nothing marked, and no options", self)
             menu.addAction(act)
 
-        ### menu.exec_(button.mapToGlobal(pos))
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
         if False and isQt6:

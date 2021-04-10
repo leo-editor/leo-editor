@@ -537,7 +537,6 @@ class FlowLayout(QtWidgets.QLayout):
         
         Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         return Orientations.Horizontal  # Best guess.
-        ### return Orientations(QtCore.Qt.Orientation(0))
 
     #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
     def hasHeightForWidth(self):
@@ -732,7 +731,6 @@ class BookMarkDisplay:
             self.button_menu(event, bm, but, up=up)
             return
 
-        ### action_name = self.mod_map.get(self.ModMap.get(int(event.modifiers())))
         action_name = self.mod_map.get(self.ModMap.get(event.modifiers()))
         if action_name is None:
             g.es("Bookmarks: unknown click type")

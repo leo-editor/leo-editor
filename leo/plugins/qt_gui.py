@@ -756,9 +756,10 @@ class LeoQtGui(leoGui.LeoGui):
         msg='',
         c=None, **keys
     ):
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return None
 
-        def send(): ### title=title, label=label, msg=msg, c=c, keys=keys):
+        def send():
             return g.doHook('scrolledMessage',
                 short_title=short_title, title=title,
                 label=label, msg=msg, c=c, **keys)

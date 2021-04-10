@@ -703,31 +703,20 @@ class attrib_edit_Controller:
     def manageAttrib(self):
 
         attribs = [(i[0],i[1],i[3]) for i in self.getAttribs()]
-
         dat = []
         for attr in self.attrPaths:
-
             txt = attr[0].longDescrip(attr[2])
-
             active = attr in attribs
-
             dat.append([txt, active, attr])
-
         if not dat:
             g.es('No attributes seen (yet)')
             return
-
         dat.sort(key=lambda x: x[0])
-
         res = ListDialog(self.parent, "Enter attribute path",
-            "Enter path to attribute (space separated words)",
-            dat)
-
-        if False and isQt6:
-            res.exec()
-        else:
-            res.exec_()
-        if res.result() == QtWidgets.QDialog.Rejected:
+            "Enter path to attribute (space separated words)", dat)
+        res.exec_()
+        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        if res.result() == DialogCode.Rejected:
             return
 
         # check for deletions
@@ -761,7 +750,8 @@ class attrib_edit_Controller:
 
         res.exec_()
 
-        if res.result() == QtWidgets.QDialog.Rejected:
+        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        if res.result() == DialogCode.Rejected:
             return
 
         for n,i in enumerate(modes):

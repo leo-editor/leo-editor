@@ -1210,7 +1210,6 @@ class todoController:
                 w.setProperty('style_class', '')
             # update style on this widget on idle, see updateStyle()
             self._widget_to_style = (w, time.time())
-        ### else: g.trace('todoController: no frmDates:', self.ui.UI.__class__.__name__)
 
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))

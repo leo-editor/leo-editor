@@ -12,7 +12,7 @@ from PyQt6 import QtWidgets
 from PyQt6.QtCore import QUrl
 from PyQt6.QtCore import pyqtSignal as Signal
 QtConst = QtCore.Qt
-printsupport = Qt
+printsupport = Qt.printsupport
 qt_version = QtCore.QT_VERSION_STR
 
 # Optional imports...

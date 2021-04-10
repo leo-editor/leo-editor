@@ -1361,7 +1361,6 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                 a = menu.addAction("Re-attach All")
                 a.triggered.connect(lambda checked: self.reattach_all())
 
-            ### menu.exec_(self.mapToGlobal(point))
             global_point = self.mapToGlobal(point)
             if False and isQt6:
                 menu.exec(global_point)

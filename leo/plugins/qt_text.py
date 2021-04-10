@@ -1382,7 +1382,6 @@ class QTextEditWrapper(QTextMixin):
         if g.app.unitTesting:
             return
         w = self.widget  # A QTextEdit.
-        ### e = QtGui.QTextCursor
 
         def after(func):
             QtCore.QTimer.singleShot(delay, func)

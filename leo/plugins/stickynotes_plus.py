@@ -455,7 +455,6 @@ class notetextedit(QTextEdit):
 
         self.ensureCursorVisible()
         
-        ###menu.exec_(self.viewport().mapToGlobal(self.cursorRect().center()))
         global_point = self.viewport().mapToGlobal(self.cursorRect().center())
         if False and isQt6:
             menu.exec(global_point)
