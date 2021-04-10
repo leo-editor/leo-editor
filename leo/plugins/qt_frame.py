@@ -960,12 +960,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@+node:ekr.20131118172620.16893: *8* wrapper
             def wrapper(self, event):
 
-                ev_type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
+                Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
                 type_ = event.type()
                 # Must intercept KeyPress for events that generate FocusOut!
-                if type_ == ev_type.KeyPress:
+                if type_ == Type.KeyPress:
                     return self.keyPress(event)
-                if type_ == ev_type.KeyRelease:
+                if type_ == Type.KeyRelease:
                     return self.keyRelease(event)
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper)

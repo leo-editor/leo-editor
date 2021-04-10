@@ -119,21 +119,21 @@ class LeoQtEventFilter(QtCore.QObject):
     def doNonKeyEvent(self, event, obj):
         """Handle all non-key event. """
         c = self.c
-        ev_type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
+        Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         eventType = event.type()
-        if eventType == ev_type.WindowActivate:
+        if eventType == Type.WindowActivate:
             g.app.gui.onActivateEvent(event, c, obj, self.tag)
-        elif eventType == ev_type.WindowDeactivate:
+        elif eventType == Type.WindowDeactivate:
             g.app.gui.onDeactivateEvent(event, c, obj, self.tag)
-        elif eventType == ev_type.FocusIn:
+        elif eventType == Type.FocusIn:
             if self.tag == 'body':
                 c.frame.body.onFocusIn(obj)
             if c.frame and c.frame.top and obj is c.frame.top.lineEdit:
                 if c.k.getStateKind() == 'getArg':
                     c.frame.top.lineEdit.restore_selection()
-        elif eventType == ev_type.FocusOut and self.tag == 'body':
+        elif eventType == Type.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
-        return eventType not in (ev_type.ShortcutOverride, ev_type.KeyPress, ev_type.KeyRelease)
+        return eventType not in (Type.ShortcutOverride, Type.KeyPress, Type.KeyRelease)
             # Return True unless we have a key event.
     #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
     def shouldIgnoreKeyEvent(self, event, obj):
@@ -144,13 +144,13 @@ class LeoQtEventFilter(QtCore.QObject):
         so the following hack is required.
         """
         c = self.c
-        ev_type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
+        Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
-            return t != ev_type.KeyRelease
+            return t != Type.KeyRelease
                 # QLineEdit: ignore all key events except keyRelease events.
-        if t == ev_type.KeyPress:
+        if t == Type.KeyPress:
             return False  # Never ignore KeyPress events.
         # This doesn't work. Two shortcut-override events are generated!
             # if t == ev.ShortcutOverride and event.text():
@@ -190,7 +190,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
     def doAltTweaks(self, actual_ch, keynum, mods, toString):
         """Turn AltGr and some Alt-Ctrl keys into plain keys."""
-        qt_key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+        Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
 
         def removeAltCtrl(mods):
             for mod in ('Alt', 'Control'):
@@ -202,7 +202,7 @@ class LeoQtEventFilter(QtCore.QObject):
         # Remove Alt, Ctrl for AltGr keys.
         # See https://en.wikipedia.org/wiki/AltGr_key
 
-        if keynum == qt_key.Key_AltGr:
+        if keynum == Key.Key_AltGr:
             return removeAltCtrl(mods)
         #
         # Never alter complex characters.
@@ -282,24 +282,24 @@ class LeoQtEventFilter(QtCore.QObject):
             For all others:   QtGui.QKeySequence(keynum).toString()
         text:   event.text()
         """
-        qt_key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+        Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
         keynum = event.key()
         text = event.text()  # This is the unicode character!
         d = {
-            qt_key.Key_Alt: 'Key_Alt',
-            qt_key.Key_AltGr: 'Key_AltGr',
+            Key.Key_Alt: 'Key_Alt',
+            Key.Key_AltGr: 'Key_AltGr',
                 # On Windows, when the KeyDown event for this key is sent,
                 # the Ctrl+Alt modifiers are also set.
-            qt_key.Key_Control: 'Key_Control',  # MacOS: Command key
-            qt_key.Key_Meta: 'Key_Meta',
+            Key.Key_Control: 'Key_Control',  # MacOS: Command key
+            Key.Key_Meta: 'Key_Meta',
                 # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
-            qt_key.Key_Shift: 'Key_Shift',
-            qt_key.Key_NumLock: 'Num_Lock',
+            Key.Key_Shift: 'Key_Shift',
+            Key.Key_NumLock: 'Num_Lock',
                 # 868.
-            qt_key.Key_Super_L: 'Key_Super_L',
-            qt_key.Key_Super_R: 'Key_Super_R',
-            qt_key.Key_Hyper_L: 'Key_Hyper_L',
-            qt_key.Key_Hyper_R: 'Key_Hyper_R',
+            Key.Key_Super_L: 'Key_Super_L',
+            Key.Key_Super_R: 'Key_Super_R',
+            Key.Key_Hyper_L: 'Key_Hyper_L',
+            Key.Key_Hyper_R: 'Key_Hyper_R',
         }
         if d.get(keynum):
             if 0:  # Allow bare modifier key.
