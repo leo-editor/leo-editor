@@ -74,8 +74,8 @@ from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
 #
 # Aliases...
 QTimer = QtCore.QTimer
-QFont = QtCore.QFont
-QTextCharFormat = QtCore.QTextCharFormat
+QFont = QtGui.QFont
+QTextCharFormat = QtGui.QTextCharFormat
 QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 QInputDialog = QtWidgets.QInputDialog
 QLineEdit = QtWidgets.QLineEdit
