@@ -1275,6 +1275,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
         c = self.c
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         _toolbar = QtWidgets.QToolBar('Menus')
         _options_button = QtWidgets.QPushButton("View Options")
         _options_button.setDefault(True)
@@ -1359,8 +1360,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _action = QtWidgets.QAction('Lock to Tree Root', self, checkable=True)
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
-
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 
         _action = QAction('Freeze', self, checkable=True)
         _action.triggered.connect(lambda checked: set_freeze(checked))
