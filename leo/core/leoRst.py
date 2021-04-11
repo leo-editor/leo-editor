@@ -288,24 +288,20 @@ class RstCommands:
     #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers
     def write_docutils_files(self, fn, p, source):
         """Write source to the intermediate file and write the output from docutils.."""
-
         junk, ext = g.os_path_splitext(fn)
         ext = ext.lower()
         fn = self.computeOutputFileName(fn)
-        if ext not in ('.htm', '.html', '.tex', '.pdf', '.s5', '.odt'):
-            return
         ok = self.createDirectoryForFile(fn)
         if not ok:
             return
-        #
         # Write the intermediate file.
         if self.write_intermediate_file:
             self.writeIntermediateFile(fn, p, source)
-        #
-        # Do nothing if we aren't going to call docutils.
+        # Should we call docutils?
         if not self.call_docutils:
             return
-        #
+        if ext not in ('.htm', '.html', '.tex', '.pdf', '.s5', '.odt'):  # #1884: test now.
+            return
         # Write the result from docutils.
         s = self.writeToDocutils(p, source, ext)
         if s and ext in ('.html', '.htm'):
