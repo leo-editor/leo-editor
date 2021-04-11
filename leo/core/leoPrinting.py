@@ -265,6 +265,9 @@ class PrintingController:
     #@+node:ekr.20150419124739.12: *4* pr.print_doc
     def print_doc(self, doc):
         """Print the document."""
+        if not printsupport:
+            g.trace('Qt.printsupport not found.')
+            return
         dialog = printsupport.QPrintDialog()
         result = dialog.exec_()
         DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
