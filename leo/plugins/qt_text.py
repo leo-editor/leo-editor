@@ -410,10 +410,12 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
-        Shadow = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
-        self.setFrameStyle(self.StyledPanel | Shadow.Sunken)
+        Sunken = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
+        Raised = QtWidgets.QFrame.Shadow.Raised if isQt6 else self.StyledPanel
+        NoFrame = QtWidgets.QFrame.Shape.NoFrame if isQt6 else self.NoFrame
+        self.setFrameStyle(Raised)
         self.edit = e  # A QTextEdit
-        e.setFrameStyle(self.NoFrame)
+        e.setFrameStyle(NoFrame)
         # e.setAcceptRichText(False)
         self.number_bar = NumberBar(c, e)
         hbox = QtWidgets.QHBoxLayout(self)
@@ -868,7 +870,11 @@ class NumberBar(QtWidgets.QFrame):
         """
         # w_adjust is used to compensate for the current line being bold.
         # Always allocate room for 2 columns
-        width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
+        #width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
+        if isQt6:
+            width = self.fm.boundingRect(str(max(1000, self.highest_line))).width()
+        else:
+            width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if self.width() != width:
             self.setFixedWidth(width)
         QtWidgets.QWidget.update(self, *args)
