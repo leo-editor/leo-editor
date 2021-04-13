@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.1b1
+About Viewrendered3 V3.2b1
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -618,7 +618,7 @@ try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
-    from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+    from leo.core.leoQt import phonon, QtMultimedia, QtSvg#, QtWebKitWidgets
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -678,7 +678,8 @@ except ImportError:
     pygments = None
     print('VR3: *** no pygments')
 try:
-    QWebView = QtWebKitWidgets.QWebView
+    #QWebView = QtWebKitWidgets.QWebView
+    QWebView = QtWidgets.QTextBrowser
 except Exception:
     QWebView = None
     # The top-level init function gives the error.
@@ -1301,7 +1302,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         w = QWebView()
         n = c.config.getInt('qweb-view-font-size')
-        if n is not None:
+        if hasattr(w, 'settings') and n is not None:
             settings = w.settings()
             settings.setFontSize(settings.DefaultFontSize, n)
         return w
@@ -1397,6 +1398,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         c = self.c
         QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
         
         _toolbar = QtWidgets.QToolBar('Menus')
         _options_button = QtWidgets.QPushButton("View Options")
@@ -1479,7 +1481,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200329223820.13: *5* << vr3: create menus >>
         menu = QtWidgets.QMenu()
         set_action("Entire Tree", 'show_whole_tree')
-        _action = QtWidgets.QAction('Lock to Tree Root', self, checkable=True)
+        _action = QAction('Lock to Tree Root', self, checkable=True)
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
 
@@ -1491,7 +1493,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _options_button.setMenu(menu)
 
         menu = QtWidgets.QMenu()
-        group = QtWidgets.QActionGroup(self)
+        group = QActionGroup(self)
         set_group_action('RsT', RST)
         set_group_action('MD', MD)
         set_group_action('Text', TEXT)
@@ -1754,7 +1756,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
+            print('==== got here')
+            if isQt6:
+                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
+            else:
+                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere
+            w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""
@@ -3400,8 +3407,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
-        url_base = QtCore.QUrl('file:///' + path + '/')
-        w.setHtml(s, url_base)
+        url_base = QtCore.QUrl('file:///' + path + '/' + s)
+        #w.setHtml(s, url_base)
+        w.setHtml(s)
         w.show()
     #@+node:TomP.20200329230503.3: *5* vr3.underline
     def underline(self, s):
