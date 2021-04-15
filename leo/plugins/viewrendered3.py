@@ -624,6 +624,9 @@ except ImportError:
     raise ImportError from None
     #QtWidgets = False
 
+if isQt5:
+    from leo.core.leoQt import QtWebKitWidgets
+
 # Optional imports...
 try:
     import docutils
@@ -677,12 +680,19 @@ try:
 except ImportError:
     pygments = None
     print('VR3: *** no pygments')
-try:
-    #QWebView = QtWebKitWidgets.QWebView
-    QWebView = QtWidgets.QTextBrowser
-except Exception:
-    QWebView = None
-    # The top-level init function gives the error.
+
+if isQt5:
+    try:
+        QWebView = QtWebKitWidgets.QWebView
+    except Exception:
+        QWebView = None
+else:
+    try:
+        #QWebView = QtWebKitWidgets.QWebView
+        QWebView = QtWidgets.QTextBrowser
+    except Exception:
+        QWebView = None
+        # The top-level init function gives the error.
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
@@ -1756,7 +1766,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            print('==== got here')
+
             if isQt6:
                 WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
             else:
@@ -2550,6 +2560,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 h = self.convert_to_html(node_list, s)
             if h:
                 self.set_html(h, w)
+                g.es('===', type(w))
         else:
             _text_list = [n.b for n in node_list]
             s = '<pre>' + '\n'.join(_text_list)  + r'\</pre>'
@@ -3407,9 +3418,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
-        url_base = QtCore.QUrl('file:///' + path + '/' + s)
-        #w.setHtml(s, url_base)
-        w.setHtml(s)
+        if isQt6:
+            url_base = QtCore.QUrl('file:///' + path + '/' + s)
+            w.setHtml(s)
+        else:
+            url_base = QtCore.QUrl('file:///' + path + '/')
+            w.setHtml(s, url_base)
         w.show()
     #@+node:TomP.20200329230503.3: *5* vr3.underline
     def underline(self, s):
