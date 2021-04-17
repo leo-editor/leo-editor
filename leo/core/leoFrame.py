@@ -2004,7 +2004,10 @@ class NullTree(LeoTree):
     def scrollTo(self, p):
         pass
         
-    def updateIcon(self, p, force=False):
+    def updateAllIcons(self, p):
+        pass
+        
+    def updateIcon(self, p):
         pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p, s):
