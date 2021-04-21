@@ -332,7 +332,7 @@ class AtFile:
     ):
         """Read an @thin or @file tree."""
         at, c = self, self.c
-        fileName = at.initFileName(fromString, importFileName, root)
+        fileName = g.fullPath(c, root)  # #1341. #1889.
         if not fileName:
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
@@ -436,19 +436,6 @@ class AtFile:
                 g.blue('in file:', root.h)
 
         return callback
-    #@+node:ekr.20041005105605.22: *6* at.initFileName
-    def initFileName(self, fromString, importFileName, root):
-        """Return the fileName to be used in messages."""
-        # at = self
-        c = self.c
-        if fromString:
-            return "<string-file>"
-        if importFileName:
-            # Called from ic.importDerivedFiles.
-            return importFileName
-        if not root.isAnyAtFileNode():
-            return None
-        return g.fullPath(c, root)  # #1341. #1889.
     #@+node:ekr.20100224050618.11547: *6* at.isFileLike
     def isFileLike(self, s):
         """Return True if s has file-like sentinels."""
@@ -3725,9 +3712,9 @@ class TestAtFile(unittest.TestCase):
         warnings.simplefilter("ignore")
         import tempfile
         return tempfile.NamedTemporaryFile(mode='w')
-    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
+    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
     def test_save_after_external_file_rename(self):
-        """Test #1469."""
+        """Test #1469: saves renaming an external file."""
         # Create a new outline with @file node and save it
         bridge = self.bridge()
         temp_dir = self.temp_dir()
@@ -3754,8 +3741,8 @@ class TestAtFile(unittest.TestCase):
         p1 = c.rootPosition()
         assert p1.h == "@file 1_renamed", repr(p1.h)
         assert p1.b == "b_1_changed\n", repr(p1.b)
-    #@+node:ekr.20210421035527.1: *3* TestAtFile.test_at_path
-    def test_at_path(self):
+    #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
+    def test_bug_1889(self):
         """
         Test #1889: Honor ~ in ancestor @path nodes.
         """
@@ -3769,8 +3756,7 @@ class TestAtFile(unittest.TestCase):
         child = root.insertAsLastChild()
         child.h = '@file test_bug_1889.py'
         child.b = '@language python\n# test #1889'
-        path = c.atFileCommands.initFileName(
-            fromString=None, importFileName=None, root=child)
+        path = g.fullPath(c, child)
         assert '~' not in path, repr(path)
     #@-others
 #@-others
