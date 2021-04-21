@@ -446,7 +446,7 @@ class AtFile:
         if importFileName:
             # Called from ic.importDerivedFiles.
             return importFileName
-        elif not root.isAnyAtFileNode():
+        if not root.isAnyAtFileNode():
             return None
         return g.fullPath(c, root)  # #1341. #1889.
     #@+node:ekr.20100224050618.11547: *6* at.isFileLike
