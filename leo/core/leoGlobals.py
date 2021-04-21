@@ -7016,7 +7016,7 @@ def os_path_finalize_join(*args, **keys):
     """
     Join and finalize.
     
-    **keys may contain a 'c' kwarg, used by c.os_path_join.
+    **keys may contain a 'c' kwarg, used by g.os_path_join.
     """
     # Old code
         # path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys)))
@@ -7085,7 +7085,7 @@ def os_path_join(*args, **keys):
         path = ''
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
