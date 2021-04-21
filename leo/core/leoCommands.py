@@ -2064,8 +2064,9 @@ class Commands:
                 base = g.app.loadDir
             elif base and base == ".":
                 base = c.openDirectory
-        base = c.expand_path_expression(base)  # #1341:
-        absbase = g.os_path_finalize_join(g.app.loadDir, base)  # #1341:
+        base = c.expand_path_expression(base)  # #1341.
+        base = g.os_path_expanduser(base)  # #1889.
+        absbase = g.os_path_finalize_join(g.app.loadDir, base)  # #1341.
         # Step 2: look for @path directives.
         paths = []
         for d in aList:
@@ -2077,6 +2078,7 @@ class Commands:
                 path = g.stripPathCruft(path)
                 if path and not warning:
                     path = c.expand_path_expression(path)  # #1341.
+                    path = g.os_path_expanduser(path)  # #1889.
                     paths.append(path)
                 # We will silently ignore empty @path directives.
         # Add absbase and reverse the list.
