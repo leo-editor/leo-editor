@@ -2560,7 +2560,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 h = self.convert_to_html(node_list, s)
             if h:
                 self.set_html(h, w)
-                g.es('===', type(w))
         else:
             _text_list = [n.b for n in node_list]
             s = '<pre>' + '\n'.join(_text_list)  + r'\</pre>'
