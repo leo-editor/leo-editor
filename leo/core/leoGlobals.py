@@ -3832,6 +3832,7 @@ def fullPath(c, p, simulate=False):
         if fn:
             # Fix #102: expand path expressions.
             fn = c.expand_path_expression(fn)  # #1341.
+            fn = os.path.expanduser(fn)  # 1900.
             return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory

@@ -200,7 +200,8 @@ class AtFile:
             # For at.putBody only.
         at.outputList = []
             # For stream output.
-        at.targetFileName = targetFileName
+        targetFileName = os.path.expanduser(targetFileName or '')  # #1900.
+        at.targetFileName = targetFileName 
             # For at.writeError only.
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
