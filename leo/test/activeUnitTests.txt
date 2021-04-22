@@ -237,7 +237,7 @@ leo_file   = g.os_path_join(src_path,"launchLeo.py")
 batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
-assert g.os_path_exists(batch_file), batchTest
+assert os.path.exists(batch_file), batchTest
 
 # Execute this command: python launchLeo.py --script test\unittest\batchTest.py
 # Note: batchTest.py is defined in this file, unitTest.leo.
@@ -255,7 +255,7 @@ removeFile(test_file)
 if trace:
     print('command: %s' %  command)
 os.system(command)
-assert g.os_path_exists(test_file), repr(test_file)
+assert os.path.exists(test_file), repr(test_file)
 #@+node:ekr.20100131171342.5484: *4* removeFile
 def removeFile(path):
 
@@ -1074,8 +1074,7 @@ import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
 encoding = 'utf-8'
-exists = g.os_path_exists
-at.outputFileName = None
+exists = os.path.exists  ### g.os_path_exists
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
 try:
     # Create both paths (different contents)
@@ -1094,10 +1093,6 @@ try:
     at.shortFileName = at.targetFileName
     val = at.replaceFile(contents, encoding, fn, at.root)
     assert val
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName), 'oops, output file exists'
     assert exists(at.targetFileName), 'oops, target file does not exist'
     f = open(at.targetFileName)
     s = f.read()
@@ -1105,16 +1100,15 @@ try:
     assert s == contents,s
 finally:
     if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
+        fn = at.targetFileName
+        if fn and exists(fn):
+            os.remove(fn)
 #@+node:ekr.20050105095743: *4* @test at.replaceFile (same contents)
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
 encoding = 'utf-8'
 exists = g.os_path_exists
-at.outputFileName = None
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
 # Create both paths (identical contents)
 contents = g.toUnicode('test contents')
@@ -1132,10 +1126,6 @@ try:
     at.toString = False # Set by execute script stuff.
     at.shortFileName = at.targetFileName
     assert not at.replaceFile(contents, encoding, fn, at.root)
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName)
     assert exists(at.targetFileName)
     f = open(at.targetFileName)
     s = f.read()
@@ -1143,31 +1133,26 @@ try:
     assert s == contents,contents
 finally:
     if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
+        fn = at.targetFileName
+        if fn and exists(fn):
+            os.remove(fn)
 #@+node:ekr.20050105100227: *4* @test at.replaceFile (no target file)
 import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
 encoding = 'utf-8'
 exists = g.os_path_exists
-at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
 # Remove both files.
-for fn in (at.outputFileName,at.targetFileName):
-    if fn and exists(fn):
-        os.remove(fn)
+fn = at.targetFileName
+if fn and exists(fn):
+    os.remove(fn)
 try:
     # Create the output file or contents.
     at.outputContents = contents = g.toUnicode('test output')
     at.shortFileName = at.targetFileName
     val = at.replaceFile(contents, encoding, fn, at.root)
     assert not val
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName),at.outputFileName
     assert exists(at.targetFileName),at.targetFileName
     f = open(at.targetFileName)
     s = f.read()
@@ -1175,9 +1160,9 @@ try:
     assert s == contents,'%s len(%s)' % (fn,len(s))
 finally:
     if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
+        fn = at.targetFileName
+        if fn and exists(fn):
+            os.remove(fn)
 #@+node:ekr.20060602195313: *4* @test at.write using @comment
 import re
 at = c.atFileCommands
@@ -20282,6 +20267,21 @@ finally:
     if 0:
         p.deleteAllChildren()
         c.redraw()
+#@+node:ekr.20210422075322.85: *6* @@auto-rst @test leo_rst
+@language rest
+@tabwidth -4
+#@+node:ekr.20210422075322.86: *7* !Dummy chapter
+  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+#@+node:ekr.20210422075322.87: *7* section 1
+
+Sec 1.
+#@+node:ekr.20210422075322.88: *7* section 2
+
+Sec 2.
 #@+node:ekr.20161204041557.1: *4* All other importer tests
 #@+node:ekr.20140723134017.4464: *5* @test @auto importers
 # This causes problems!
@@ -20940,9 +20940,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20210327194532.1: *5* insertAsFirstChild
-#@+node:ekr.20210327194532.3: *5* insertAsNthChild(1)
-#@+node:ekr.20210327194532.2: *5* insertAsLastChild
+#@+node:ekr.20210422075324.1: *5* insertAsFirstChild
+#@+node:ekr.20210422075324.3: *5* insertAsNthChild(1)
+#@+node:ekr.20210422075324.2: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -21570,9 +21570,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20210327194532.19: *6* A
-#@+node:ekr.20210327194532.21: *6* inserted
-#@+node:ekr.20210327194532.20: *6* B
+#@+node:ekr.20210422075324.19: *6* A
+#@+node:ekr.20210422075324.21: *6* inserted
+#@+node:ekr.20210422075324.20: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -25508,6 +25508,27 @@ assert do.b == do_undo_redo.b, "Redo should do the operation again"
 line 1
     line 2
       line 3
+line4
+#@+node:ekr.20210422075326.6: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20210422075326.7: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20210422075327.1: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
 line4
 #@+node:ekr.20201018151721.1: *5* do and undo
 @tabwidth -4
