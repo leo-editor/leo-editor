@@ -37,9 +37,9 @@ import leo.core.leoTest2 as leoTest2
 # Aliases & traces.
 StringIO = io.StringIO
 if 'plugins' in getattr(g.app, 'debug', []):
-    print('leoRst.py: docutils:', repr(docutils))
-    print('leoRst.py:  parsers:', repr(parsers))
-    print('leoRst.py:      rst:', repr(rst))
+    print('leoRst.py: docutils:', bool(docutils))
+    print('leoRst.py:  parsers:', bool(parsers))
+    print('leoRst.py:      rst:', bool(rst))
 #@-<< imports >>
 #@+others
 #@+node:ekr.20150509035745.1: ** cmd (decorator)
