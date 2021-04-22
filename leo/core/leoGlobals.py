@@ -7229,19 +7229,22 @@ def os_startfile(fname):
             # so that Leo-Editor is usable while the file is open.
         except Exception:
             g.es_exception(f"exception executing g.startfile for {fname!r}")
-#@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
+#@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding (to be deleted)
 def toUnicodeFileEncoding(path):
     
-    if path is None: g.trace(g.callers(8))
-    return g.toUnicode(path or '')
+    return path
     
-    
-    # # Fix bug 735938: file association crash
-    # if path and isinstance(path, str):
-        # path = path.replace('\\', os.sep)
-        # # Yes, this is correct.  All os_path_x functions return Unicode strings.
-        # return g.toUnicode(path)
-    # return ''
+    ### New shim code.
+        # if path is None: g.trace(g.callers(8))
+        # return g.toUnicode(path or '')
+
+    ### Old code:
+        # # Fix bug 735938: file association crash
+        # if path and isinstance(path, str):
+            # path = path.replace('\\', os.sep)
+            # # Yes, this is correct.  All os_path_x functions return Unicode strings.
+            # return g.toUnicode(path)
+        # return ''
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c, root=None, useHeadlines=False):

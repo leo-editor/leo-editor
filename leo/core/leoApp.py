@@ -1726,7 +1726,8 @@ class LoadManager:
             join(g.app.globalConfigDir, settings_fn),
         )
         for path in table:
-            if g.os_path_exists(path):
+            ### if g.os_path_exists(path):
+            if path and os.path.exists(path):
                 break
         else:
             path = None
