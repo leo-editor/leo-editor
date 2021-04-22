@@ -3832,7 +3832,9 @@ def fullPath(c, p, simulate=False):
         if fn:
             # Fix #102: expand path expressions.
             fn = c.expand_path_expression(fn)  # #1341.
-            return g.os_path_finalize_join(path, fn)  # #1341.
+            fn = os.path.expanduser(fn)  # #1900.
+            fn = g.os_path_finalize_join(path, fn)  # #1341.
+            return fn
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory, kinds=None, recursive=True):
@@ -7067,7 +7069,7 @@ def os_path_join(*args, **keys):
            provided there is a 'c' kwarg.
     """
     c = keys.get('c')
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+    uargs = [g.toUnicodeFileEncoding(arg) for arg in args if arg]  ###
     # Note:  This is exactly the same convention as used by getBaseDirectory.
     if uargs and uargs[0] == '!!':
         uargs[0] = g.app.loadDir
@@ -7229,12 +7231,17 @@ def os_startfile(fname):
             g.es_exception(f"exception executing g.startfile for {fname!r}")
 #@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
-    # Fix bug 735938: file association crash
-    if path and isinstance(path, str):
-        path = path.replace('\\', os.sep)
-        # Yes, this is correct.  All os_path_x functions return Unicode strings.
-        return g.toUnicode(path)
-    return ''
+    
+    if path is None: g.trace(g.callers(8))
+    return g.toUnicode(path or '')
+    
+    
+    # # Fix bug 735938: file association crash
+    # if path and isinstance(path, str):
+        # path = path.replace('\\', os.sep)
+        # # Yes, this is correct.  All os_path_x functions return Unicode strings.
+        # return g.toUnicode(path)
+    # return ''
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c, root=None, useHeadlines=False):
