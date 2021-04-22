@@ -6941,7 +6941,9 @@ def glob_glob(pattern):
 def os_path_abspath(path):
     """Convert a path to an absolute path."""
     path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = g.toUnicodeFileEncoding(path)
     if g.isWindows:
@@ -6969,7 +6971,9 @@ def os_path_dirname(path):
 def os_path_exists(path):
     """Return True if path exists."""
     path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     return os.path.exists(path)
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper (deprecated)
 deprecated_messages = []
@@ -7004,7 +7008,9 @@ def os_path_finalize(path):
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     """
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.expanduser(path)  # #1383.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
@@ -7086,7 +7092,9 @@ def os_path_join(*args, **keys):
         path = ''
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
