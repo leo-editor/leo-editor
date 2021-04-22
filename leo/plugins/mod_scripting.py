@@ -885,28 +885,19 @@ class ScriptingController:
         g.app.config.atLocalCommandsList.append(p.copy())
     #@+node:ekr.20060328125248.13: *4* sc.handleAtPluginNode @plugin
     def handleAtPluginNode(self, p):
-        '''Handle @plugin nodes.'''
-        g.trace('=====', p.h)
+        """Handle @plugin nodes."""
         tag = "@plugin"
         h = p.h
         assert(g.match(h, 0, tag))
         # Get the name of the module.
-        theFile = h[len(tag):].strip()
-        ### #1880
-            # # The following two lines break g.loadOnePlugin
-            # #if theFile[-3:] == ".py":
-            # #    theFile = theFile[:-3]
-            # # in fact, I believe the opposite behavior is intended: add .py if it doesn't exist
-            # if theFile[-3:] != ".py":
-                # theFile = theFile + ".py"
-        theFile = g.toUnicode(theFile)
+        moduleOrFileName = h[len(tag):].strip()
         if not self.atPluginNodes:
-            g.warning("disabled @plugin: %s" % (theFile))
+            g.warning("disabled @plugin: %s" % (moduleOrFileName))
         # elif theFile in g.app.loadedPlugins:
-        elif g.pluginIsLoaded(theFile):
-            g.warning("plugin already loaded: %s" % (theFile))
+        elif g.pluginIsLoaded(moduleOrFileName):
+            g.warning("plugin already loaded: %s" % (moduleOrFileName))
         else:
-            g.loadOnePlugin(theFile)
+            g.loadOnePlugin(moduleOrFileName)
     #@+node:peckj.20131113130420.6851: *4* sc.handleAtRclickNode @rclick
     def handleAtRclickNode(self, p):
         '''Handle @rclick name [@key[=]shortcut].'''
