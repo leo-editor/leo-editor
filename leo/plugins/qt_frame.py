@@ -3926,7 +3926,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         path = g.scanAtPathDirectives(c, aList)
         if path:
             fn = os.path.relpath(fn, path)
-            ### fn = g.toUnicodeFileEncoding(fn)
         self.createAtFileNode(fn, p2, s)
         u.afterInsertNode(p2, undoType, undoData)
         c.selectPosition(p2)
