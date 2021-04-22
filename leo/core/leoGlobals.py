@@ -7236,7 +7236,7 @@ def os_startfile(fname):
             # so that Leo-Editor is usable while the file is open.
         except Exception:
             g.es_exception(f"exception executing g.startfile for {fname!r}")
-#@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
+#@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding (to be removed)
 def toUnicodeFileEncoding(path):
     
     return path or ''  ### Temporary.
