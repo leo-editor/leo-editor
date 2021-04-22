@@ -7230,12 +7230,16 @@ def os_startfile(fname):
             g.es_exception(f"exception executing g.startfile for {fname!r}")
 #@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
-    # Fix bug 735938: file association crash
-    if path and isinstance(path, str):
-        path = path.replace('\\', os.sep)
-        # Yes, this is correct.  All os_path_x functions return Unicode strings.
-        return g.toUnicode(path)
-    return ''
+    
+    return path or ''  ### Temporary.
+    
+    ### # Experimental.
+        # # Fix bug 735938: file association crash
+        # if path and isinstance(path, str):
+            # path = path.replace('\\', os.sep)
+            # # Yes, this is correct.  All os_path_x functions return Unicode strings.
+            # return g.toUnicode(path)
+        # return ''
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c, root=None, useHeadlines=False):
