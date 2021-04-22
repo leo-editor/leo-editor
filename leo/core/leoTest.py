@@ -23,10 +23,6 @@ import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoGui  # For UnitTestGui.
 #@-<< imports >>
-if g.app:  # Make sure we can import this module stand-alone.
-    newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
-else:
-    newAtFile = False
 #@+others
 #@+node:ekr.20200219074036.1: ** Top-level functions
 #@+node:ekr.20051104075904.17: *3* function: runGC & helpers
