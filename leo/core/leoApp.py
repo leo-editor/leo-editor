@@ -3516,7 +3516,7 @@ class RecentFilesManager:
         # The order of files in this list affects the order of the recent files list.
         rf = self
         seen = []
-        localConfigPath = g.os_path_dirname(localConfigFile) if localConfigFile else None
+        localConfigPath = g.os_path_dirname(localConfigFile)
         for path in (g.app.homeLeoDir, g.app.globalConfigDir, localConfigPath):
             if path:
                 path = g.os_path_realpath(g.os_path_finalize(path))

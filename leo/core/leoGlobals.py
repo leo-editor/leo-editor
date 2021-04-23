@@ -7001,6 +7001,7 @@ def os_path_expanduser(path):
     if not path:
         return ''
     result = os.path.normpath(os.path.expanduser(path))
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return result
@@ -7016,6 +7017,7 @@ def os_path_finalize(path):
     path = os.path.expanduser(path)  # #1383.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     # calling os.path.realpath here would cause problems in some situations.
@@ -7100,6 +7102,7 @@ def os_path_join(*args, **keys):
     if '\x00' in path:
         g.trace('NULL in', repr(path), g.callers())
         path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
@@ -7118,6 +7121,7 @@ def os_path_normpath(path):
     if not path:
         return ''
     path = os.path.normpath(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
