@@ -6934,6 +6934,7 @@ def windows():
 def glob_glob(pattern):
     """Return the regularized glob.glob(pattern)"""
     aList = glob.glob(pattern)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         aList = [z.replace('\\', '/') for z in aList]
     return aList
@@ -6946,6 +6947,7 @@ def os_path_abspath(path):
         g.trace('NULL in', repr(path), g.callers())
         path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.abspath(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
@@ -6955,6 +6957,7 @@ def os_path_basename(path):
     if not path:
         return ''
     path = os.path.basename(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
@@ -6964,6 +6967,7 @@ def os_path_dirname(path):
     if not path:
         return ''
     path = os.path.dirname(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
@@ -7029,14 +7033,6 @@ def os_path_finalize_join(*args, **keys):
     
     **keys may contain a 'c' kwarg, used by g.os_path_join.
     """
-    # Old code
-        # path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys)))
-        # if g.isWindows:
-            # path = path.replace('\\','/')
-    #
-    # #1383: Call both wrappers, to ensure ~ is always expanded.
-    #        This is significant change, to undo previous mistakes.
-    #        Revs cbbf5e8b and 6e461196 in devel were the likely culprits.
     path = g.os_path_join(*args, **keys)
     path = g.os_path_finalize(path)
     return path
@@ -7052,27 +7048,19 @@ def os_path_getmtime(path):
 #@+node:ekr.20080729142651.2: *3* g.os_path_getsize
 def os_path_getsize(path):
     """Return the size of path."""
-    if not path:
-        return 0
-    return os.path.getsize(path)
+    return os.path.getsize(path) if path else 0
 #@+node:ekr.20031218072017.2151: *3* g.os_path_isabs
 def os_path_isabs(path):
     """Return True if path is an absolute path."""
-    if not path:
-        return False
-    return os.path.isabs(path)
+    return os.path.isabs(path) if path else False
 #@+node:ekr.20031218072017.2152: *3* g.os_path_isdir
 def os_path_isdir(path):
     """Return True if the path is a directory."""
-    if not path:
-        return False
-    return os.path.isdir(path)
+    return os.path.isdir(path) if path else False
 #@+node:ekr.20031218072017.2153: *3* g.os_path_isfile
 def os_path_isfile(path):
     """Return True if path is a file."""
-    if not path:
-        return False
-    return os.path.isfile(path)
+    return os.path.isfile(path) if path else False
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args, **keys):
     """
@@ -7127,6 +7115,8 @@ def os_path_normpath(path):
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path):
+    
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows and path:
         path = path.replace('\\', '/')
     return path
@@ -7139,6 +7129,7 @@ def os_path_realpath(path):
     if not path:
         return ''
     path = os.path.realpath(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
