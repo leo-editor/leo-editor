@@ -3065,8 +3065,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 _headline_str = p.h
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
-            _headline_str.replace('\\', '\\\\')
+            _headline_str = _headline_str.replace('\\', r'\\')
             _underline = '-'*len(_headline_str)
+            g.es(_headline_str)
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
