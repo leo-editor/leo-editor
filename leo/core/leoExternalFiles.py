@@ -37,7 +37,7 @@ class ExternalFile:
     #@-others
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
 class ExternalFilesController:
-    '''
+    """
     A class tracking changes to external files:
 
     - temp files created by open-with commands.
@@ -51,11 +51,11 @@ class ExternalFilesController:
       This dict describes *only* how to open the file.
 
     - ef is always an ExternalFiles instance.
-    '''
+    """
     #@+others
     #@+node:ekr.20150404083533.1: *3* efc.ctor
     def __init__(self, c=None):
-        '''Ctor for ExternalFiles class.'''
+        """Ctor for ExternalFiles class."""
         self.checksum_d = {}
             # Keys are full paths, values are file checksums.
         self.enabled_d = {}
@@ -80,19 +80,20 @@ class ExternalFilesController:
     #@+node:ekr.20150405105938.1: *3* efc.entries
     #@+node:ekr.20150405194745.1: *4* efc.check_overwrite (called from c.checkTimeStamp)
     def check_overwrite(self, c, path):
-        '''
+        """
         Implements c.checkTimeStamp.
 
         Return True if the file given by fn has not been changed
         since Leo read it or if the user agrees to overwrite it.
-        '''
+        """
         if c.sqlite_connection and c.mFileName == path:
             # sqlite database file is never actually overwriten by Leo
             # so no need to check its timestamp. It is modified through
             # sqlite methods.
             return True
         if self.has_changed(path):
-            return self.ask(c, path)
+            val = self.ask(c, path)
+            return val in ('yes', 'yes-all')  # #1888
         return True
     #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame
     def destroy_frame(self, frame):
@@ -107,10 +108,10 @@ class ExternalFilesController:
         self.files = [z for z in self.files if z.path not in paths]
     #@+node:ekr.20150407141838.1: *4* efc.find_path_for_node (called from vim.py)
     def find_path_for_node(self, p):
-        '''
+        """
         Find the path corresponding to node p.
         called from vim.py.
-        '''
+        """
         for ef in self.files:
             if ef.p and ef.p.v == p.v:
                 path = ef.path
@@ -122,10 +123,10 @@ class ExternalFilesController:
     on_idle_count = 0
 
     def on_idle(self):
-        '''
+        """
         Check for changed open-with files and all external files in commanders
         for which @bool check_for_changed_external_file is True.
-        '''
+        """
         #
         # #1240: Note: The "asking" dialog prevents idle time.
         #
@@ -140,9 +141,11 @@ class ExternalFilesController:
         # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
         if self.unchecked_files:
             # Check all external files.
-            for ef in self.unchecked_files:
-                self.idle_check_open_with_file(ef)
-            self.unchecked_files = []
+            while self.unchecked_files:
+                n = len(self.unchecked_files)
+                ef = self.unchecked_files[0]
+                self.idle_check_open_with_file(c, ef)
+                assert len(self.unchecked_files) < n
         elif self.unchecked_commanders:
             # Check the next commander for which
             # @bool check_for_changed_external_file is True.
@@ -157,77 +160,96 @@ class ExternalFilesController:
             self.unchecked_files = [z for z in self.files if z.exists()]
     #@+node:ekr.20150404045115.1: *5* efc.idle_check_commander
     def idle_check_commander(self, c):
-        '''
+        """
         Check all external files corresponding to @<file> nodes in c for
         changes.
-        '''
+        """
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
         #
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
+        state = 'no'
         for p in c.all_unique_positions():
-            if p.isAnyAtFileNode():
-                self.idle_check_at_file_node(c, p)
-    #@+node:ekr.20150403044823.1: *5* efc.idle_check_at_file_node
-    def idle_check_at_file_node(self, c, p):
-        '''Check the @<file> node at p for external changes.'''
-        path = g.fullPath(c, p)
-        if not self.has_changed(path):
-            return
-        if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-            # Fix #1081: issue a warning.
-            self.warn(c, path, p=p)
-        elif self.ask(c, path, p=p):
-            c.redraw(p=p)
-            c.refreshFromDisk(p)
-            c.redraw()
-        # Always update the path & time to prevent future warnings.
-        self.set_time(path)
-        self.checksum_d[path] = self.checksum(path)
+            if not p.isAnyAtFileNode():
+                continue
+            path = g.fullPath(c, p)
+            if not self.has_changed(path):
+                continue
+            # Prevent further checks for path.
+            self.set_time(path)
+            self.checksum_d[path] = self.checksum(path)
+            # Check file.
+            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                # #1081: issue a warning.
+                self.warn(c, path, p=p)
+                continue
+            if state in ('yes', 'no'):
+                state = self.ask(c, path, p=p)
+            if state in ('yes', 'yes-all'):
+                c.redraw(p=p)
+                c.refreshFromDisk(p)
+                c.redraw()
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c):
         """Check c's .leo file for external changes."""
         path = c.fileName()
         if not self.has_changed(path):
             return
-        #
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
-        if self.ask(c, path):
+        # #1888:
+        val = self.ask(c, path)
+        if val in ('yes', 'yes-all'):
             # Do a complete restart of Leo.
             g.es_print('restarting Leo...')
             c.restartLeo()
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
-    def idle_check_open_with_file(self, ef):
-        '''Update the open-with node given by ef.'''
+    def idle_check_open_with_file(self, c, ef):
+        """
+        Update the open-with node given by ef.
+        Remove at least ef from self.unchecked_files.
+        """
         assert isinstance(ef, ExternalFile), ef
-        if ef.path and os.path.exists(ef.path):
-            time = self.get_mtime(ef.path)
-            if time and time != ef.time:
-                ef.time = time  # inhibit endless dialog loop.
+        if not ef.path or not os.path.exists(ef.path):
+            return
+        time = self.get_mtime(ef.path)
+        if not time or time == ef.time:
+            return
+        # inhibit endless dialog loop.
+        ef.time = time  
+        # #1888: Handle all possible user responses to self.ask.
+        val = self.ask(c, ef.path, p=ef.p.copy())
+        if val == 'yes-all':
+            for ef in self.unchecked_files:
                 self.update_open_with_node(ef)
+            self.unchecked_files = []
+        elif val == 'no-all':
+            self.unchecked_files = []
+        elif val == 'yes':
+            self.update_open_with_node(ef)
+            self.unchecked_files.remove(ef)
+        elif val == 'no':
+            self.unchecked_files.remove(ef)
     #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node
     def update_open_with_node(self, ef):
-        '''Update the body text of ef.p to the contents of ef.path.'''
+        """Update the body text of ef.p to the contents of ef.path."""
         assert isinstance(ef, ExternalFile), ef
         c, p = ef.c, ef.p.copy()
-        # Ask the user how to resolve the conflict.
-        if self.ask(c, ef.path, p=p):
-            g.blue(f"updated {p.h}")
-            s, e = g.readFileIntoString(ef.path)
-            p.b = s
-            if c.config.getBool('open-with-goto-node-on-update'):
-                c.selectPosition(p)
-            if c.config.getBool('open-with-save-on-update'):
-                c.save()
-            else:
-                p.setDirty()
-                c.setChanged()
+        g.blue(f"updated {p.h}")
+        s, e = g.readFileIntoString(ef.path)
+        p.b = s
+        if c.config.getBool('open-with-goto-node-on-update'):
+            c.selectPosition(p)
+        if c.config.getBool('open-with-save-on-update'):
+            c.save()
+        else:
+            p.setDirty()
+            c.setChanged()
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
     def open_with(self, c, d):
-        '''
+        """
         Called by c.openWith to handle items in the Open With... menu.
 
         'd' a dict created from an @openwith settings node with these keys:
@@ -238,7 +260,7 @@ class ExternalFilesController:
             'name':     menu label (used only by the menu code).
             'p':        the nearest @<file> node, or None.
             'shortcut': menu shortcut (used only by the menu code).
-        '''
+        """
         try:
             ext = d.get('ext')
             if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
@@ -264,7 +286,7 @@ class ExternalFilesController:
             g.es_exception()
     #@+node:ekr.20031218072017.2824: *5* efc.compute_ext
     def compute_ext(self, c, p, ext):
-        '''Return the file extension to be used in the temp file.'''
+        """Return the file extension to be used in the temp file."""
         if ext:
             for ch in ("'", '"'):
                 if ext.startswith(ch): ext = ext.strip(ch)
@@ -286,7 +308,7 @@ class ExternalFilesController:
         return ext
     #@+node:ekr.20031218072017.2832: *5* efc.compute_temp_file_path & helpers
     def compute_temp_file_path(self, c, p, ext):
-        '''Return the path to the temp file for p and ext.'''
+        """Return the path to the temp file for p and ext."""
         if c.config.getBool('open-with-clean-filenames'):
             path = self.clean_file_name(c, ext, p)
         else:
@@ -296,7 +318,7 @@ class ExternalFilesController:
         return path
     #@+node:ekr.20150406055221.2: *6* efc.clean_file_name
     def clean_file_name(self, c, ext, p):
-        '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
+        """Compute the file name when subdirectories mirror the node's hierarchy in Leo."""
         use_extentions = c.config.getBool('open-with-uses-derived-file-extensions')
         ancestors, found = [], False
         for p2 in p.self_and_parents(copy=False):
@@ -324,7 +346,7 @@ class ExternalFilesController:
         return path
     #@+node:ekr.20150406055221.3: *6* efc.legacy_file_name
     def legacy_file_name(self, c, ext, p):
-        '''Compute a legacy file name for unsupported operating systems.'''
+        """Compute a legacy file name for unsupported operating systems."""
         try:
             leoTempDir = getpass.getuser() + "_" + "Leo"
         except Exception:
@@ -339,10 +361,10 @@ class ExternalFilesController:
         return path
     #@+node:ekr.20100203050306.5937: *5* efc.create_temp_file
     def create_temp_file(self, c, ext, p):
-        '''
+        """
         Create the file used by open-with if necessary.
         Add the corresponding ExternalFile instance to self.files
-        '''
+        """
         path = self.compute_temp_file_path(c, p, ext)
         exists = g.os_path_exists(path)
         # Compute encoding and s.
@@ -369,7 +391,7 @@ class ExternalFilesController:
         return path
     #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
     def open_file_in_external_editor(self, c, d, fn, testing=False):
-        '''
+        """
         Open a file fn in an external editor.
 
         This will be an entire external file, or a temp file for a single node.
@@ -382,7 +404,7 @@ class ExternalFilesController:
             'name':     menu label (used only by the menu code).
             'p':        the nearest @<file> node, or None.
             'shortcut': menu shortcut (used only by the menu code).
-        '''
+        """
         testing = testing or g.unitTesting
         arg_tuple = d.get('args', [])
         arg = ' '.join(arg_tuple)
@@ -442,9 +464,9 @@ class ExternalFilesController:
             return f"oops: {command}"
     #@+node:ekr.20190123051253.1: *5* efc.remove_temp_file
     def remove_temp_file(self, p, path):
-        '''
+        """
         Remove any existing *temp* file for p and path, updating self.files.
-        '''
+        """
         for ef in self.files:
             if path and path == ef.path and p.v == ef.p.v:
                 self.destroy_temp_file(ef)
@@ -452,12 +474,12 @@ class ExternalFilesController:
                 return
     #@+node:ekr.20150404092538.1: *4* efc.shut_down
     def shut_down(self):
-        '''
+        """
         Destroy all temporary open-with files.
         This may fail if the files are still open.
 
         Called by g.app.finishQuit.
-        '''
+        """
         # Dont call g.es or g.trace! The log stream no longer exists.
         for ef in self.files[:]:
             self.destroy_temp_file(ef)
@@ -466,10 +488,10 @@ class ExternalFilesController:
     # pylint: disable=no-value-for-parameter
     #@+node:ekr.20150405200212.1: *4* efc.ask
     def ask(self, c, path, p=None):
-        '''
+        """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees.
-        '''
+        """
         if g.unitTesting:
             return False
         if c not in g.app.commanders():
@@ -498,11 +520,11 @@ class ExternalFilesController:
             yes_all=is_external_file,
             no_all=is_external_file,
         )
-        return bool(result and 'yes' in result.lower())
-            # Careful: may be unit testing.
+        # #1888: return one of ('yes', 'no', 'yes-all', 'no-all'
+        return result.lower() if result else 'no'
     #@+node:ekr.20150404052819.1: *4* efc.checksum
     def checksum(self, path):
-        '''Return the checksum of the file at the given path.'''
+        """Return the checksum of the file at the given path."""
         import hashlib
         # #1454: Explicitly close the file.
         with open(path, 'rb') as f:
@@ -510,7 +532,7 @@ class ExternalFilesController:
         return hashlib.md5(s).hexdigest()
     #@+node:ekr.20031218072017.2614: *4* efc.destroy_temp_file
     def destroy_temp_file(self, ef):
-        '''Destroy the *temp* file corresponding to ef, an ExternalFile instance.'''
+        """Destroy the *temp* file corresponding to ef, an ExternalFile instance."""
         # Do not use g.trace here.
         if ef.path and g.os_path_exists(ef.path):
             try:
@@ -519,19 +541,19 @@ class ExternalFilesController:
                 pass
     #@+node:ekr.20150407204201.1: *4* efc.get_mtime
     def get_mtime(self, path):
-        '''Return the modification time for the path.'''
+        """Return the modification time for the path."""
         return g.os_path_getmtime(g.os_path_realpath(path))
     #@+node:ekr.20150405122428.1: *4* efc.get_time
     def get_time(self, path):
-        '''
+        """
         return timestamp for path
 
         see set_time() for notes
-        '''
+        """
         return self._time_d.get(g.os_path_realpath(path))
     #@+node:ekr.20150403045207.1: *4* efc.has_changed
     def has_changed(self, path):
-        '''Return True if the file at path has changed outside of Leo.'''
+        """Return True if the file at path has changed outside of Leo."""
         if not path:
             return False
         if not g.os_path_exists(path):
@@ -564,7 +586,7 @@ class ExternalFilesController:
         return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c):
-        '''Return the cached @bool check_for_changed_external_file setting.'''
+        """Return the cached @bool check_for_changed_external_file setting."""
         d = self.enabled_d
         val = d.get(c)
         if val is None:
@@ -573,11 +595,11 @@ class ExternalFilesController:
         return val
     #@+node:ekr.20150404083049.1: *4* efc.join
     def join(self, s1, s2):
-        '''Return s1 + ' ' + s2'''
+        """Return s1 + ' ' + s2"""
         return f"{s1} {s2}"
     #@+node:tbrown.20150904102518.1: *4* efc.set_time
     def set_time(self, path, new_time=None):
-        '''
+        """
         Implements c.setTimeStamp.
 
         Update the timestamp for path.
@@ -586,16 +608,16 @@ class ExternalFilesController:
         resolved depending on the code call path.  This inconsistency is
         probably not Leo's fault but an underlying Python issue.
         Hence the need to call realpath() here.
-        '''
+        """
         t = new_time or self.get_mtime(path)
         self._time_d[g.os_path_realpath(path)] = t
     #@+node:ekr.20190218055230.1: *4* efc.warn
     def warn(self, c, path, p):
-        '''
+        """
         Warn that an @asis or @nosent node has been changed externally.
         
         There is *no way* to update the tree automatically.
-        '''
+        """
         if g.unitTesting or c not in g.app.commanders():
             return
         if not p:
