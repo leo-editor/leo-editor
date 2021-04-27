@@ -520,7 +520,7 @@ class ExternalFilesController:
             yes_all=is_external_file,
             no_all=is_external_file,
         )
-        # #1888: return one of ('yes', 'no', 'yes-all', 'no-all'
+        # #1888: return one of ('yes', 'no', 'yes-all', 'no-all')
         return result.lower() if result else 'no'
     #@+node:ekr.20150404052819.1: *4* efc.checksum
     def checksum(self, path):
