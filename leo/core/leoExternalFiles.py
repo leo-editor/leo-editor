@@ -6,6 +6,7 @@ import getpass
 import os
 import subprocess
 import tempfile
+import unittest
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
@@ -635,6 +636,8 @@ class ExternalFilesController:
         )
     #@-others
 #@-others
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
