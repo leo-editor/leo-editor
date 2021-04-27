@@ -1714,7 +1714,7 @@ class LoadManager:
         machine_fn = lm.computeMachineName() + settings_fn
         # First, compute the directory of the first loaded file.
         # All entries in lm.files are full, absolute paths.
-        localDir = g.os_path_dirname(lm.files[0]) if lm.files else None
+        localDir = g.os_path_dirname(lm.files[0]) if lm.files else ''
         table = (
             # First, myLeoSettings.leo in the local directory
             join(localDir, settings_fn),
