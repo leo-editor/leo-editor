@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 import unittest
 from leo.core import leoGlobals as g
+from leo.core import leoTest2
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile:
@@ -634,6 +635,33 @@ class ExternalFilesController:
             ]),
             title='External file changed',
         )
+    #@-others
+#@+node:ekr.20210427165225.1: ** class TestExternalFiles (unittest.TestCase)
+class TestExternalFiles(unittest.TestCase):
+    #@+others
+    #@+node:ekr.20210428090950.1: *3* TEF.setUp & tearDown
+    def setUp(self):
+        """setUp for TestFind class"""
+        # pylint: disable=import-self
+        import leo.core.leoApp as leoApp
+        import leo.core.leoExternalFiles as leoExternalFiles
+        self.c = c = leoTest2.create_app()
+        g.app.idleTimeManager = leoApp.IdleTimeManager()
+        g.app.idleTimeManager.start()
+        g.app.externalFilesController = leoExternalFiles.ExternalFilesController(c=c)
+
+    def tearDown(self):
+        pass
+    #@+node:ekr.20210428094339.1: *3* TEF.test_on_idle
+    def test_on_idle(self):
+        """
+        A minimal test of the on_idle and all its helpers.
+        
+        More detail tests would be difficult.
+        """
+        efc = g.app.externalFilesController
+        for i in range(100):
+            efc.on_idle()
     #@-others
 #@-others
 if __name__ == '__main__':
