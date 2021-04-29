@@ -237,7 +237,7 @@ def new(self, event=None, gui=None):
     g.app.disable_redraw = False
     c.redraw()
     return c  # For unit tests and scripts.
-#@+node:ekr.20031218072017.2821: *3* c_file.open_outline & callback
+#@+node:ekr.20031218072017.2821: *3* c_file.open_outline
 @g.commander_command('open-outline')
 def open_outline(self, event=None):
     """Open a Leo window containing the contents of a .leo file."""
@@ -293,14 +293,6 @@ def open_outline(self, event=None):
     fileName = ''.join(c.k.givenArgs)
     if fileName:
         c.open_completer(c, closeFlag, fileName)
-        return
-    if False:  # This seems not to be worth the trouble.
-        g.app.gui.runOpenFileDialog(c,
-            callback=open_completer,
-            defaultextension=g.defaultLeoFileExtension(c),
-            filetypes=table,
-            title="Open",
-        )
         return
     # Equivalent to legacy code.
     fileName = g.app.gui.runOpenFileDialog(c,

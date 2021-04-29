@@ -374,48 +374,44 @@ class todoController:
         self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
     #@+node:ekr.20201111052557.1: *4* todo_c.patch_1591
     def patch_1591(self):
-        """
-        A workaround for #1591.
-        
-        Add labels and tooltips for all buttons.
-        """
-        # Patch the buttons only if the pyqt version is greater than 5.12.
-        from leo.core.leoQt import isQt5, qt_version
-        if not isQt5:
-            return
-        qt_version = [int(z) for z in qt_version.split('.')]
-        if qt_version[1] <= 12:
-            return
+        ''' behavior change in PyQt versions greater than 5.12 --
+            workaround is to manually set the button icons /and/ sizes
+        '''
+
+        size = QtCore.QSize(16,16)
         ui = self.ui.UI
-        # Add text and tooltips to all numeric priority buttons.
+
         for i in range(10):
             button = getattr(ui, f"butPri{i}")
-            button.setText(f"{i}")
+            path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', "cleo", f"pri{i}.png")
+            button.setIcon(QtGui.QIcon(path))
+            button.setIconSize(size)
             button.setToolTip(f"Priority {i}")
-        # Add text and tooltips to other buttons...
+
         table = (
-            # Alternate priorities...
-            ('butPriChk', 'Check', 'Check Mark'),
-            ('butPriToDo', 'Box', 'Box Mark'),
-            ('butPriX', 'X', 'Black X'),
-            ('butPriXgry', 'X', 'Gray X'),
-            ('butPriBang', '!', 'Exclamation Point'),
-            ('butPriQuery', '?', 'Question Mark'),
-            ('butPriBullet', '•', 'Bullet'),
-            ('butPriClr', 'Clear', 'Clear Priority'),
-            # Other labels...
-            ('butDetails', 'Details', 'Toggle Details'),
-            ('butNext', 'Next Node', 'Next Node'),
-            ('butNextTodo', 'Next Todo', 'Next To Do'),
-            ('butClrTime', 'Clear Time', 'Clear Required Time'),
-            ('butClrProg', 'Clear Progress', 'Clear Progress')
-        )
-        for attr, text, tooltip in table:
+                # Alternate priorities...
+                ('butPriChk', 'chkblk.png', 'Check Mark'),
+                ('butPriToDo', 'chkboxblk.png', 'Box Mark'),
+                ('butPriX', 'xblk.png', 'Black X'),
+                ('butPriXgry', 'xgry.png', 'Gray X'),
+                ('butPriBang', 'bngblk.png', 'Exclamation Point'),
+                ('butPriQuery', 'qryblk.png', 'Question Mark'),
+                ('butPriBullet', 'bullet.png', 'Bullet'),
+                ('butPriClr', 'edit-clear.png', 'Clear Priority'),
+                # Other labels...
+                ('butDetails', 'document-save.png', 'Toggle Details'),
+                ('butNext', 'down.png', 'Next Node'),
+                ('butNextTodo', 'bottom.png', 'Next To Do'),
+                ('butClrTime', 'edit-clear.png', 'Clear Required Time'),
+                ('butClrProg', 'edit-clear.png', 'Clear Progress')
+            )
+
+        for attr, icon, tooltip in table:
             button = getattr(ui, attr)
-            button.setText(text)
+            path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', "cleo", icon)
+            button.setIcon(QtGui.QIcon(path))
+            button.setIconSize(size)
             button.setToolTip(tooltip)
-            
-            
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:

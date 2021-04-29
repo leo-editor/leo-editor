@@ -17,13 +17,6 @@ from leo.core import leoGlobals as g
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     return True
-#@+node:ville.20090804155017.7596: ** g.toUnicodeFileEncoding
-def speedup_toUnicodeFileEncoding(s, arg = None):
-    #if g:
-        #print s,g.callers(10)
-    return s
-
-g.toUnicodeFileEncoding = speedup_toUnicodeFileEncoding
 #@+node:ville.20090804155017.12332: ** os.path shortcuts
 g.os_path_basename = os.path.basename
 g.os_path_split = os.path.split

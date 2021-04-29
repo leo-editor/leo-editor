@@ -523,15 +523,13 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(d)
         s = d.getExistingDirectory(parent, title, startdir)
         return s
-    #@+node:ekr.20110605121601.18500: *4* qt_gui.runOpenFileDialog & helper
+    #@+node:ekr.20110605121601.18500: *4* qt_gui.runOpenFileDialog
     def runOpenFileDialog(self, c,
         title,
         filetypes,
         defaultextension='',
         multiple=False,
         startpath=None,
-        callback=None,
-            # New in Leo 6.0.  If a callback is given, use the pyzo file browser.
     ):
         """
         Create and run an Qt open file dialog.
@@ -546,13 +544,6 @@ class LeoQtGui(leoGui.LeoGui):
         if not startpath:
             startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
                 # Returns c.last_dir or os.curdir
-        if callback:
-            dialog = self.PyzoFileDialog()
-            dialog.init()
-            dialog.open_dialog(c, callback, defaultextension, startpath)
-            return None
-        #
-        # No callback: use the legacy file browser.
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
         dialog.setStyleSheet(c.active_stylesheet)
@@ -574,94 +565,6 @@ class LeoQtGui(leoGui.LeoGui):
         if s:
             c.last_dir = g.os_path_dirname(s)
         return s
-    #@+node:ekr.20190518102229.1: *5* class PyzoFileDialog
-    class PyzoFileDialog:
-        """A class supporting the pyzo file dialog."""
-
-        file_browser = None
-            # A module.
-        #@+others
-        #@+node:ekr.20190518102720.1: *6* pfd.init & helpers
-        def init(self):
-            """
-            Initialize the browser code, using the actual pyzo if possible, or the
-            code in leo/external/pyzo otherwise.    
-            """
-            if g.app.pluginsController.isLoaded('pyzo_support.py'):
-                self.init_real_pyzo()
-            else:
-                self.init_internal_pyzo()
-        #@+node:ekr.20190518102823.1: *7* pfd.init_internal_pyzo
-        def init_internal_pyzo(self):
-            """
-            Init the internal version of pyzo in leo/external/pyzo.
-            """
-            # Adjust sys.path.
-            g.trace()
-            path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-            assert g.os_path_exists(path), repr(path)
-            if not path in sys.path:
-                sys.path.append(path)
-            #
-            # Imports.
-            # pylint: disable=import-error
-            import pyzo
-            import pyzo.core.menu as menu
-            pyzo.core.menu = menu
-                # Looks weird, but needed to import pyzoFileBrowser.
-            import pyzo.tools.pyzoFileBrowser as fb
-            self.file_browser = fb
-                # For open_dialog.
-            #
-            # Instantiate the browser.
-            from pyzo.core.main import loadIcons
-            loadIcons()
-                # Required to instantiate PyzoFileBrowser.
-        #@+node:ekr.20190518110307.1: *7* pfd.init_real_pyzo
-        def init_real_pyzo(self):
-            """Init the real pyzo, which has already been inited by pyzo_support.py"""
-            # pylint: disable=import-error
-            g.trace()
-            if 0:  # Probably already done.
-                import pyzo
-                import pyzo.core.menu as menu
-                pyzo.core.menu = menu
-                    # Looks weird, but needed to import pyzoFileBrowser.
-            import pyzo.tools.pyzoFileBrowser as fb
-            self.file_browser = fb
-                # For open_dialog.
-        #@+node:ekr.20190518103005.1: *6* pfd.open_dialog
-        def open_dialog(self, c, callback, defaultextension, startpath, parent=None):
-            """Open pyzo's file browser."""
-            w = self.file_browser.PyzoFileBrowser(parent=parent)
-                # Instantiate a file browser.
-            g.app.permanentScriptDict['file_browser'] = w
-                # Save reference to the window so it won't disappear.
-            g.trace('startpath:', startpath)
-            g.app.gui.attachLeoIcon(w)
-            w.setPath(startpath)
-                # Tell it what to look at.
-            w.setStyleSheet("background: #657b83;")
-                # Use dark background.
-            #
-            # Monkey patch double-clicks.
-            tree = w._browsers[0]._tree
-
-            def double_click_callback(event, self=tree):
-                # From Tree.mouseDoubleClickEvent
-                item = self.itemAt(event.x(), event.y())
-                    # item is a tree.DirItem or tree.FileItem
-                    # item._proxy is a DirProxy or FileProxy.
-                path = item._proxy.path()
-                if g.os_path_isfile(path):
-                    callback(c, False, path)
-                        # This is the open_completer function.
-
-            tree.mouseDoubleClickEvent = double_click_callback
-            #
-            # Show it!
-            w.show()
-        #@-others
     #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
     def runPropertiesDialog(self,
         title='Properties',
