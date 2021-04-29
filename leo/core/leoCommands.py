@@ -2219,8 +2219,9 @@ class Commands:
             g.blue(c.disableCommandsMessage)
             return None
         if c.exists and c.inCommand and not g.unitTesting:
-            g.app.commandInterruptFlag = True
-            g.error('ignoring command: already executing a command.')
+            g.app.commandInterruptFlag = True  # For sc.make_slide_show_command.
+            # 1912: This message is annoying and unhelpful.
+            # g.error('ignoring command: already executing a command.')
             return None
         g.app.commandInterruptFlag = False
         if not g.doHook("command1", c=c, p=p, label=command_name):
