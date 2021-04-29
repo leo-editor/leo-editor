@@ -252,27 +252,27 @@ class AtFile:
             g.os_path_finalize_join(at.default_directory, targetFileName))
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
-    #@+node:ekr.20070919133659: *5* at.checkDerivedFile
-    @cmd('check-derived-file')
-    def checkDerivedFile(self, event=None):
+    #@+node:ekr.20070919133659: *5* at.checkExternalFile
+    @cmd('check-external-file')
+    def checkExternalFile(self, event=None):
         """Make sure an external file written by Leo may be read properly."""
-        at = self; c = at.c; p = c.p
+        at, c, p = self, self.c, self.c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
-            return g.red('Please select an @thin or @file node')
-        fn = p.anyAtFileNodeName()
-        path = g.os_path_dirname(c.mFileName)
-        fn = g.os_path_finalize_join(g.app.loadDir, path, fn)
+            g.red('Please select an @thin or @file node')
+            return
+        fn = g.fullPath(c, p)  # #1910.
         if not g.os_path_exists(fn):
-            return g.error(f"file not found: {fn}")
+            g.red(f"file not found: {fn}")
+            return
         s, e = g.readFileIntoString(fn)
         if s is None:
-            return None
+            g.red(f"empty file: {fn}")
+            return
         #
         # Create a dummy, unconnected, VNode as the root.
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
-        return c
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
         """
