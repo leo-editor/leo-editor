@@ -767,7 +767,7 @@
 <v t="ekr.20131009100732.19038"><vh>Plugins</vh></v>
 <v t="ekr.20170215082032.1"><vh>Scripting basics</vh>
 <v t="ekr.20170217093636.1"><vh>Scripting markup</vh></v>
-<v t="ekr.20170217093639.1"><vh>c, g and p</vh></v>
+<v t="ekr.20170217093639.1"><vh>c, g, and p</vh></v>
 <v t="ekr.20170217093640.1"><vh>Accessing outline data</vh></v>
 <v t="ekr.20170217093640.2"><vh>\@button and @command nodes</vh></v>
 <v t="ekr.20170217093640.3"><vh>\@test nodes</vh></v>
@@ -777,7 +777,7 @@
 </v>
 <v t="ekr.20131008041326.16222"><vh>@rst html\tutorial-pim.html</vh>
 <v t="ekr.20131004073415.16044"><vh>Clones</vh></v>
-<v t="ekr.20131018100353.16706"><vh>Clones accelerate work flow by creating views</vh></v>
+<v t="ekr.20131018100353.16706"><vh>Clones create views</vh></v>
 <v t="ekr.20131009100732.16760"><vh>Using abbreviations and templates</vh></v>
 <v t="ekr.20131009100732.16737"><vh>Using URLs</vh></v>
 <v t="ekr.20170312083548.1"><vh>Using Chapters</vh></v>
@@ -9649,7 +9649,7 @@ Leo's Tutorials
 ..  "We who use Leo know that it is a breakthrough tool and a whole new way
 ..  of writing code."---Joe Orr
     
-Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Personal Information Manager and scripting environment. The first three tutorials are for everyone:
+Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Personal Information Manager, and scripting environment. The first three tutorials are for everyone:
 
 .. toctree::
     :maxdepth: 1
@@ -16691,7 +16691,7 @@ Leo uses outlines for just about *everything*, including configuring Leo:
 
 - **leo/config/leoSettings.leo** contains Leo's default **global settings**. Don't change this file unless you are one of Leo's developers.
    
-- **~/myLeoSettings.leo** contains your **personal settings**. Leo will create this file automatically if it doesn't exist when using *Settings &gt;&gt; Open myLeoSettings* menu item. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
+- **~/myLeoSettings.leo** contains your **personal settings**. Leo will create this file automatically if it doesn't exist when using the *Settings &gt;&gt; Open myLeoSettings* menu item. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
    
 - Any other .leo file may also contain **local settings**. Local settings apply only to that file and override all other settings.
 
@@ -16824,7 +16824,15 @@ These commands discuss special topics::
 
 Leo's main window consists of an **icon area** just below the menus, an **outline pane** at the top left, a **log pane** at the top right, a **body pane** at the bottom left, and an optional **viewrendered pane** at the bottom right. The **minibuffer** and **status line** lie at the bottom of the main window.
 
-The log pane contains several tabs. The **Log tab** shows messages from Leo, the **Find Tab** shows the status of Leo's Find/Replace commands. Other tabs may also appear in the log pane: The **Spell Tab** controls Leo's spell-checking. The **Completion Tab** shows available typing completions.
+The log pane contains several tabs:
+
+- The **Log tab** shows messages from Leo.
+- The **Find tab** shows the status of Leo's Find/Replace commands.
+
+Other tabs may also appear in the log pane:
+
+- The **Spell tab** controls Leo's spell-checking.
+- The **Completion tab** shows available typing completions.
 
 .. index::
     pair: Icon box; Tutorial
@@ -16832,7 +16840,7 @@ The log pane contains several tabs. The **Log tab** shows messages from Leo, the
     pair: Headline; Tutorial
     pair: Body text; Tutorial
 
-Leo stores all data in **nodes**. Nodes have **headlines**, shown in the outline pane, and **body text**. The body pane shows the body text of the **presently selected node**, the node whose headline is selected in the outline pane.  Headlines have an **icon box** indicating a nodes status. For example, the icon box has a black border when the node has been changed. 
+Leo stores all data in **nodes**. Nodes have **headlines** (shown in the outline pane) and **body text**. The body pane shows the body text of the **presently selected node**, the node whose headline is selected in the outline pane.  Headlines have an **icon box** indicating a node's status. For example, the icon box has a red border when the node has been changed.
 
 </t>
 <t tx="ekr.20131002055813.19036">You may select, expand and contract outline nodes with the mouse as usual, but using arrow keys is *highly recommended*. When focus is in the outline pane, *plain* arrows keys change the selected node:
@@ -16899,14 +16907,14 @@ The first two entries of the ``Edit`` menu show what the next undo or redo opera
 <t tx="ekr.20131004064408.16020">.. index::
    pair: Directive; Tutorial
 
-Leo **directives** control Leo's operations. Directives start with ``@`` in the leftmost column of body text. Directives **apply to descendants** until overridden in descendant nodes.
+Leo **directives** control Leo's operations. Directives start with ``@`` in the leftmost column of body text. Directives **apply to descendants** unless overridden in descendant nodes.
 
 .. index::
     pair: @color; Tutorial
     pair: @nocolor; Tutorial
     pair: @nocolor-node; Tutorial
 
-The **@color**, **nocolor** and **nocolor-node** directives control syntax coloring. **Note**: Nodes containing multiple color directives do *not* affect coloring of descendant nodes::
+The **@color**, **@nocolor**, and **@nocolor-node** directives control syntax coloring. **Note**: Nodes containing multiple color directives do *not* affect the coloring of descendant nodes::
 
     @color
     @nocolor
@@ -16955,15 +16963,14 @@ Leo has many other directives, described in the `directives reference page`_.
 <t tx="ekr.20131004073415.16044">.. index::
     pair: Clone; Tutorial
     
-A **clone** is a node that appears in more than one place in a Leo outline. Clones are marked with a small red arrow in its icon box. All clones of a node are actually *the same node*:
+A **clone** is a node that appears in more than one place in a Leo outline. A small red arrow in the icon box marks each clone. All clones of a node are actually *the same node*:
 
 - Any change to one clone affects all clones.
-- Inserting, moving or deleting any child of a clone will change all other clones on the screen.
+- Inserting, moving, or deleting any child of a clone will change all other clones on the screen.
 
-Clones allow data to be stored in multiple places within an outline.
 
 ``Ctrl-` (clone-node)``
-    Clones node A. The shortcut is a grave accent, *not* a single quote.  This is often on the same keyboard key as the tilde ``~`` character.
+    Clones node A. The shortcut is a grave accent, *not* a single quote.  This character is often on the same keyboard key as the tilde ``~`` character.
 
 Please take a few moments to experiment with clones:
 
@@ -16975,7 +16982,7 @@ Please take a few moments to experiment with clones:
 - Notice that *all* the A nodes now have a B child.
 - See what happens if you clone B.
 - See what happens if you insert, delete or move nodes that are children of A.
-- When you delete a node's penultimate clone, the node becomes a regular node again.
+- When you delete a node's penultimate clone, the node is no longer a clone.
 </t>
 <t tx="ekr.20131004191204.16079">Here are Leo's basic file commands:
 
@@ -17109,7 +17116,7 @@ Some plugins inject ivars into the Commands class rather than using a global con
 
 Once c is determined, the presently selected position is simply c.p.
 </t>
-<t tx="ekr.20131008041326.16066">Clones are nodes appearing multiple places in the outline.
+<t tx="ekr.20131008041326.16066">Clones are nodes appearing in multiple places in the outline.
 
 - Changes to one clone affect all other clones.
 - All clones of a node are *exactly the same node*.
@@ -17117,7 +17124,6 @@ Once c is determined, the presently selected position is simply c.p.
 Views allow multiple views of data to exist in a single outline.
 
 - A view is simply a collection of nodes.
-- Because of clones, a node may appear in many views at once.
 - View focus attention on tasks and reduce searching for nodes.
 
 Leo expands abbreviations as you type.
@@ -17451,7 +17457,7 @@ Creating Documents from Outlines
 ..  Python language) has utterly changed my view of programming (indeed of
 ..  writing) forever."---Shakeeb Alireza
     
-Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST) or `Sphinx`_ markup to HTML, PDF, `LaTeX`_ and other kinds of output files. This tutorial gives step-by-step instructions for using the rst3 command.
+Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST) or `Sphinx`_ markup to HTML, PDF, `LaTeX`_, and other kinds of output files. This tutorial gives step-by-step instructions for using the rst3 command.
 
 **Prerequisites**: Please make sure you have read the `first tutorial`_ before reading this one. If you are new to rST, please read the `rST primer`_. For full information about Sphinx, please read the `Sphinx documentation`_.
 
@@ -17543,14 +17549,14 @@ Leo highlights URLs whenever syntax is coloring is enabled.
 ``Ctrl-Left-Click (open-url-under-cursor)``
     Opens the URL under the cursor.
 ``open-url``
-    Opens a URL appearing either in the headline or the first line of body text. If a headline starts with ``@url``, the rest of the headline is take to be a url.
+    Opens a URL appearing either in the headline or the first line of body text. If a headline starts with ``@url``, the rest of the headline is taken to be a url.
     
 **Note**:
 
 - Leo opens URLs that look like file names using os.startfile.
 - Leo opens all other URLs with your default web browser.
 - Any scheme (http, mailto, ftp, file, etc.) supported by your browser is valid.
-- URL's should contain no spaces: use ``%20`` instead of spaces.
+- URLs should contain no spaces: use ``%20`` instead.
 
 `See the Appendix &lt;appendices.html#valid-url-s&gt;`_ for a complete description of valid URLs.
 </t>
@@ -17563,22 +17569,22 @@ Leo highlights URLs whenever syntax is coloring is enabled.
 
         @rst myDocument.html
         
-The @rst node, and all its descendants, represents your document.</t>
+The @rst node, including its descendants, represents your document.</t>
 <t tx="ekr.20131009100732.16750">Put something like this in the body of the @rst node::
 
     #############
     War and Peace
     #############
     
-rST markup uses over/underlining to indicate chapter titles. Put a **overline** consisting of pounds signs above the title (War and Peace), and an identical **underline** of pound signs below as shown. rST markup for chapter titles is a bit picky:
+rST markup uses over/underlining to indicate chapter titles. Put an **overline** consisting of pounds signs above the title (War and Peace), and an identical **underline** of pound signs below as shown. rST markup for chapter titles is a bit picky:
 
 - under/overlines must be at least 4 characters long
 - under/overlines must be at least as long as the title.
 - The overline and underline must be identical.
 
-In addition, the rst3 command requires that the "#" character be used in the over/underlines for chapter titles.
+Note: the rst3 command requires that the "#" character be used in the over/underlines for chapter titles.
 </t>
-<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever. Organize your work as always:
+<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation, or whatever. Organize your work as always:
 
 | **nodes create sections, subsections, sub-sub-sections, etc.**
 | **depending on their position in the outline**.
@@ -17588,11 +17594,11 @@ In addition, the rst3 command requires that the "#" character be used in the ove
 
 ``&lt;Alt-X&gt;rst3&lt;Return&gt;`` runs the rst3 command.
 
-- If the present node is an @rst node, or a descendant node of an @rst node, the rst3 command applies to the nearest ancestor @rst node.
+- If the present node is an @rst node (or a descendant of an @rst node) the rst3 command applies to the nearest ancestor @rst node.
 
 - Otherwise, the rst3 command applies to all descendant @rst trees.
 
-If @bool rst3_call_docutils is True, the rst3 command will call docutils automatically to create the output files. For more information about Leo settings, see `this section &lt;tutorial-basics.html#configuring-leo&gt;`_.
+If @bool rst3_call_docutils is True, the rst3 command will call docutils automatically to create the output files. For more information about Leo's settings, see `this section &lt;tutorial-basics.html#configuring-leo&gt;`_.
 
 When using sphinx, run sphinx's "make" utility after running the rst3 command to create the final output files.
 
@@ -17648,7 +17654,7 @@ To use abbreviations, you must enable them in myLeoSettings.leo::
 
 You define abbreviations in ``@data abbreviations`` nodes or ``@data global-abbreviations`` nodes. None come predefined, but ``leo/config/exampleSettings.leo`` contains example abbreviations in the node ``@data abbreviations examples``
 
-Abbreviations can simply be shortcuts::
+Abbreviations can be shortcuts::
 
     ncn;;=@nocolor
     
@@ -18461,7 +18467,7 @@ tutorial`_ explains the basic features. You can learn more advanced
 features later. Please `ask for help`_ immediately if you get stuck.
 
 </t>
-<t tx="ekr.20131018100353.16706">Clones can greatly accelerate your work flow. To start a project, clone nodes related to the project and drag them at or near the top level, where you can get at them easily. When the project is complete, just delete the clones. This work flow is surprisingly effective:
+<t tx="ekr.20131018100353.16706">To start a project, clone nodes related to the project and drag them at or near the top level, where you can get at them easily. When the project is complete, just delete the clones. This workflow is surprisingly effective:
 
 - The original nodes never move, but they change whenever their clones do.
 
@@ -18903,7 +18909,7 @@ The rST ``|`` markup breaks text into specific lines, but there are times when i
 
     @rst myDocument.html
     
-will generate an **output file**, myDocument.html, from this node and its children, grand-children, etc. The rst3 command creates the output file in the same directory as the .leo file containing the @rst node. You can specify other directories using absolute or relative paths. Examples::
+will generate an **output file**, myDocument.html, from this node and its children, grandchildren, etc. The rst3 command creates the output file in the same directory as the .leo file containing the @rst node. You can specify other directories using absolute or relative paths. Examples::
 
     @rst myDocument.html        # in same folder as the .leo file
     @rst html/myDocument.html   # in a subfolder
@@ -18928,7 +18934,7 @@ and the default value for the rst3_write_intermediate_extension setting::
 
     @string rst3_write_intermediate_extension = .txt
     
-the name of intermediate file will be::
+the name of the intermediate file will be::
 
     myDocument.html.txt
 
@@ -19107,7 +19113,7 @@ Leo 4.11.1 final was released December 20, 2013.
     Rewrote and simplified Leo's tutorials
     A colored border highlights the pane with focus
 </t>
-<t tx="ekr.20131102044158.16488">The rst3 command requires the `docutils`_ Python package. You must also install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's and `Python's`_ web sites their distinctive appearance and features. After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.
+<t tx="ekr.20131102044158.16488">The rst3 command requires the `docutils`_ Python package. You must also install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's and `Python's`_ websites their distinctive appearance and features. After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.
 </t>
 <t tx="ekr.20131115075142.16636">Use .leo files to test settings rather than to contain data. These files would typically contain just an @settings tree, and one or two nodes illustrating their effect. Opening such files limits the effects of experimental/non-standard/risky settings. This is a great tip to know.
 
@@ -24715,7 +24721,7 @@ You could type the full command name in the minibuffer, followed by the ``&lt;Re
 
     &lt;Alt-X&gt;so&lt;Tab&gt;
     
-Now the minibuffer will list common prefix of all commands that start with "so", namely::
+Now the minibuffer will list the common prefix of all commands that start with "so", namely::
 
     sort-
     
@@ -24745,7 +24751,7 @@ The following commands pertain to the minibuffer itself:
 ``Ctrl-P (repeat-complex-command``
     Repeats the last command entered by name in the minibuffer.
     
-When in the minibuffer, the following keys are treated in special ways:
+The following keys have special meaning in the minibuffer:
 
 ``&lt;Return&gt;``
     Executes the command.
@@ -24757,7 +24763,7 @@ When in the minibuffer, the following keys are treated in special ways:
     Shows more completions.
     
 ``Ctrl-G``
-    Exits the minibuffer and puts focus in the body pane.
+    Exits the minibuffer and puts the focus in the body pane.
     
 ``UpArrow``
     Moves backward through command history. The first ``UpArrow`` is the same as ``Ctrl-P``.
@@ -24767,7 +24773,7 @@ When in the minibuffer, the following keys are treated in special ways:
 </t>
 <t tx="ekr.20170217093636.1">.. in tutorial-basics.html (Scripting basics)
 
-Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
+Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example, this body text defines the top-level part of a script::
 
     '''My script'''
     &lt;&lt; imports &gt;&gt;
@@ -24806,7 +24812,7 @@ For more information, see Leo's `scripting tutorial`_.</t>
     pair: @button Node; Tutorial
     pair: @command Node; Tutorial
 
-**@command nodes** define a command. Running the command runs a script that can be applied to any outline node. That is, p is bound to the presently selected node, *not* the @button node. **@button nodes** work the same way, and in addition create a button in the icon area. Pressing that button runs the command. For example, this node defines the print-tree command bound to Ctrl-9::
+**@command nodes** define a command. Running the command runs a script that can be applied to any outline node. That is, p is bound to the presently selected node, *not* the @button node. **@button nodes** work the same way, and also create a button in the icon area. Pressing that button runs the command. For example, this node defines the print-tree command bound to Ctrl-9::
 
     @command print-tree @key=Ctrl-9 # in the headline
     
@@ -24832,7 +24838,7 @@ For more information, see Leo's `scripting tutorial`_.</t>
     for p in c.all_positions():
         assert c.positionExists(p)
     
-Within @test nodes, c, g, and p are predefined as usual. In addition, **self** is the instance of unittest.TestCase created by the @test node. For example::
+Within @test nodes, c, g, and p are predefined as usual. Also, **self** is the instance of unittest.TestCase created by the @test node. For example::
   
     self.assertTrue(g)
     
@@ -25468,7 +25474,7 @@ There are two kinds of markup: **section references** (&lt;&lt; this is my secti
     @language python
     @tabwidth -4
     
-A child node must define the &lt;&lt; import &gt;&gt; node. Other children will typically define classes, methods, functions and data.
+A child node must define the &lt;&lt; import &gt;&gt; node. Other children will typically define classes, methods, functions, and data.
 
 When writing this file, Leo writes the first two lines::
 
