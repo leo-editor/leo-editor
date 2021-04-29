@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2b1
+About Viewrendered3 V3.2b2
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -196,6 +196,62 @@ example for the VR3 plugin::
 
     vr3-toggle = Alt+0
 
+#@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
+VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
+
+    <processor> [optional parameters] filename
+
+External language processors must be specified in the file `vr3_config.ini`.  This file is located in the `vr3` directory under Leo's Home directory.  The must be entered in the `[executables]` section. Here is an example::
+
+    [executables]
+    javascript = D:\usr\graalvm-ce-java11-20.0.0\languages\js\bin\js.exe
+    julia = C:\Users\tom\AppData\Local\Programs\Julia 1.5.3\bin\julia.exe
+
+Note that
+
+1. The name of the language (e.g., `julia`) **must** agree with the name of the language used in `@language` directives;
+
+2. The full path to the processing executable **must** be included.  VR3 will not use the system path, and the processor need not be on the system path.
+
+This directory and .ini file must be created by the user.  VR3 will not create them.
+
+A language that is specified here will not automatically be executed: only languages known by VR3 will be executed.  Code in known languages will be colorized provided that Leo has a colorizing mode file for that language.  This should normally be the case.  For example, colorizer mode files for both julia and javascript are included in the version of Leo that includes this version of VR3.
+
+VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
+#@+node:TomP.20210423000029.1: *5* @param Optional Parameters
+\@param - Specify parameter(s) to be passed to a non-Python language processor.
+-------------------------------------------------------------------------------
+The `@param` directive specifies command-line parameters to be passed
+to an external language processor.  These parameters will be inserted
+between the name of the processor and the name of a temporary file that
+VR3 will write the program code to.
+
+For example if we include the following directives::
+
+    @language julia
+    @param -q
+
+then the julia processor will be invoked with the command line::
+
+    <path-to-julia> -q <progfile>
+
+Any number of parameters may be included on one @param line, and
+multiple @param directives are allowed.
+
+Only @param directives that occur inside a code block are recognized.  Thus the following @param directive is not recognized because it is
+outside a code block::
+
+    @language rest
+    @param -q
+
+    @language julia
+    # code to execute
+    # ...
+
+#@+node:TomP.20210423002026.1: *5* Limitations
+1. The ability to launch an external processor currently works only for ReStructuredText markup language nodes or trees.
+
+2. The supported command line format is fairly simple, so a language that needs separate compile and run stages will be difficult to use.
 #@+node:TomP.20200115200324.1: *3* Commands
 Commands
 ========
@@ -265,40 +321,15 @@ Examples of ``@language`` directives::
 
 
 \@image - Alternate Method For Inserting an Image
-------------------------------------------------------
+--------------------------------------------------
 In addition to the image syntax of the structured text in use, the `@image`
 directive can be used::
 
     @image url-or-file_url-or-data_url
 
-\@param - Specify parameter(s) to be passed to a non-Python language processor.
--------------------------------------------------------------------------------
-The `@param` directive specifies command-line parameters to be passed
-to an external language processor.  These parameters will be inserted
-between the name of the processor and the name of a temporary file that
-VR3 will write the program code to.
-
-For example if we include the following directives::
-
-    @language julia
-    @param -q
-
-then the julia processor will be invoked with the command line::
-
-    <path-to-julia> -q <progfile>
-
-Any number of parameters may be included on one @param line, and
-multiple @param directives are allowed.
-
-Only @param directives that occur inside a code block are recognized.  Thus the following @param directive is not recognized because it is
-outside a code block::
-
-    @language rest
-    @param -q
-
-    @language julia
-    # code to execute
-    # ...
+\@param - Insert optional parameters for an external language processor
+------------------------------------------------------------------------
+See `Settings and Configuration/External Processors/Optional Parameters`.
 
 #@+node:TomP.20200115200601.1: *4* Rendering reStructuredText
 Rendering reStructuredText
@@ -404,6 +435,9 @@ be used can be set by the setting
 Its default setting is False, meaning that Asciidoc will be preferred
 over Asciidoc3.
 
+AsciiDoctor
+-----------
+
 Installing the ``asciidoctor`` Ruby Program
 ===========================================
 First install the Ruby code environment.  It is not necessary to install 
@@ -413,8 +447,8 @@ Next, run the following commands in a terminal or Windows console::
     gem install asciidoctor
     gem install pygments.rb
 
-Specifying a Preference for the External Processor
-==================================================
+Specifying a Preference for the External AsciiDoctor Processor
+==============================================================
 To specify that VR3 should use the ``asciidoctor`` external program, add a
 setting to the @settings tree in MyLeoSettings.leo or
 in an outline you wish to render, then reload the settings. This
@@ -2560,7 +2594,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 h = self.convert_to_html(node_list, s)
             if h:
                 self.set_html(h, w)
-                g.es('===', type(w))
         else:
             _text_list = [n.b for n in node_list]
             s = '<pre>' + '\n'.join(_text_list)  + r'\</pre>'
@@ -2921,7 +2954,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                             break
             elif line.find('@language') == 0 and not _in_quotes:
                 _got_language = True
-                _language = line.split()[1]
+                # Check if there really is a language named after the '@language' directive
+                _language = line.split()[1] if ' ' in (line := line.strip()) else TEXT
                 _in_rst_block = False
                 _in_code_block = _language in LANGUAGES
                 if _in_code_block and not self.controlling_code_lang:
@@ -3031,8 +3065,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 _headline_str = p.h
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
-            _headline_str.replace('\\', '\\\\')
+            _headline_str = _headline_str.replace('\\', r'\\')
             _underline = '-'*len(_headline_str)
+            g.es(_headline_str)
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
