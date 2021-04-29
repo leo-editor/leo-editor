@@ -3832,6 +3832,7 @@ def fullPath(c, p, simulate=False):
         if fn:
             # Fix #102: expand path expressions.
             fn = c.expand_path_expression(fn)  # #1341.
+            fn = os.path.expanduser(fn)  # 1900.
             return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
@@ -6933,42 +6934,51 @@ def windows():
 def glob_glob(pattern):
     """Return the regularized glob.glob(pattern)"""
     aList = glob.glob(pattern)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         aList = [z.replace('\\', '/') for z in aList]
     return aList
 #@+node:ekr.20031218072017.2146: *3* g.os_path_abspath
 def os_path_abspath(path):
     """Convert a path to an absolute path."""
-    path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if not path:
+        return ''
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.abspath(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2147: *3* g.os_path_basename
 def os_path_basename(path):
     """Return the second half of the pair returned by split(path)."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.basename(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2148: *3* g.os_path_dirname
 def os_path_dirname(path):
     """Return the first half of the pair returned by split(path)."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.dirname(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path):
     """Return True if path exists."""
-    path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if not path:
+        return False
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     return os.path.exists(path)
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper (deprecated)
 deprecated_messages = []
@@ -6992,8 +7002,10 @@ def os_path_expandExpression(s, **keys):
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
     """wrap os.path.expanduser"""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     result = os.path.normpath(os.path.expanduser(path))
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return result
@@ -7003,10 +7015,13 @@ def os_path_finalize(path):
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     """
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.expanduser(path)  # #1383.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     # calling os.path.realpath here would cause problems in some situations.
@@ -7016,23 +7031,16 @@ def os_path_finalize_join(*args, **keys):
     """
     Join and finalize.
     
-    **keys may contain a 'c' kwarg, used by c.os_path_join.
+    **keys may contain a 'c' kwarg, used by g.os_path_join.
     """
-    # Old code
-        # path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys)))
-        # if g.isWindows:
-            # path = path.replace('\\','/')
-    #
-    # #1383: Call both wrappers, to ensure ~ is always expanded.
-    #        This is significant change, to undo previous mistakes.
-    #        Revs cbbf5e8b and 6e461196 in devel were the likely culprits.
     path = g.os_path_join(*args, **keys)
     path = g.os_path_finalize(path)
     return path
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
 def os_path_getmtime(path):
     """Return the modification time of path."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return 0
     try:
         return os.path.getmtime(path)
     except Exception:
@@ -7040,23 +7048,19 @@ def os_path_getmtime(path):
 #@+node:ekr.20080729142651.2: *3* g.os_path_getsize
 def os_path_getsize(path):
     """Return the size of path."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.getsize(path)
+    return os.path.getsize(path) if path else 0
 #@+node:ekr.20031218072017.2151: *3* g.os_path_isabs
 def os_path_isabs(path):
     """Return True if path is an absolute path."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.isabs(path)
+    return os.path.isabs(path) if path else False
 #@+node:ekr.20031218072017.2152: *3* g.os_path_isdir
 def os_path_isdir(path):
     """Return True if the path is a directory."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.isdir(path)
+    return os.path.isdir(path) if path else False
 #@+node:ekr.20031218072017.2153: *3* g.os_path_isfile
 def os_path_isfile(path):
     """Return True if path is a file."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.isfile(path)
+    return os.path.isfile(path) if path else False
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args, **keys):
     """
@@ -7067,48 +7071,52 @@ def os_path_join(*args, **keys):
            provided there is a 'c' kwarg.
     """
     c = keys.get('c')
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+    uargs = [z for z in args if z]
+    if not uargs:
+        return ''
     # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
+    if uargs[0] == '!!':
         uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
+    elif uargs[0] == '.':
         c = keys.get('c')
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
-    if uargs:
-        try:
-            path = os.path.join(*uargs)
-        except TypeError:
-            g.trace(uargs, args, keys, g.callers())
-            raise
-    else:
-        path = ''
+    try:
+        path = os.path.join(*uargs)
+    except TypeError:
+        g.trace(uargs, args, keys, g.callers())
+        raise
     # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path):
     """Normalize the path's case."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.normcase(path)
-    path = g.toUnicodeFileEncoding(path)
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
 def os_path_normpath(path):
     """Normalize the path."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.normpath(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path):
+    
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows and path:
         path = path.replace('\\', '/')
     return path
@@ -7118,25 +7126,25 @@ def os_path_realpath(path):
     symbolic links encountered in the path (if they are supported by the
     operating system).
     """
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.realpath(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2158: *3* g.os_path_split
 def os_path_split(path):
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return '', ''
     head, tail = os.path.split(path)
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
     return head, tail
 #@+node:ekr.20031218072017.2159: *3* g.os_path_splitext
 def os_path_splitext(path):
-    path = g.toUnicodeFileEncoding(path)
+    
+    if not path:
+        return ''
     head, tail = os.path.splitext(path)
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
     return head, tail
 #@+node:ekr.20090829140232.6036: *3* g.os_startfile
 def os_startfile(fname):
@@ -7227,14 +7235,6 @@ def os_startfile(fname):
             # so that Leo-Editor is usable while the file is open.
         except Exception:
             g.es_exception(f"exception executing g.startfile for {fname!r}")
-#@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-    # Fix bug 735938: file association crash
-    if path and isinstance(path, str):
-        path = path.replace('\\', os.sep)
-        # Yes, this is correct.  All os_path_x functions return Unicode strings.
-        return g.toUnicode(path)
-    return ''
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c, root=None, useHeadlines=False):

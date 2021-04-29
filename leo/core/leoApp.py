@@ -548,6 +548,7 @@ class LeoApp:
             # relax_ng_compact, rtf, svn_commit.
 
         # These have extensions which conflict with other languages.
+            # assembly_6502:    .asm or .a or .s
             # assembly_macro32: .asm or .a
             # assembly_mcs51:   .asm or .a
             # assembly_parrot:  .asm or .a
@@ -589,6 +590,7 @@ class LeoApp:
             "applescript"        : "-- (* *)",
             "asp"                : "<!-- -->",
             "aspect_j"           : "// /* */",
+            "assembly_6502"      : ";",
             "assembly_macro32"   : ";",
             "assembly_mcs51"     : ";",
             "assembly_parrot"    : "#",
@@ -916,6 +918,7 @@ class LeoApp:
             # relax_ng_compact, rtf, svn_commit.
 
         # These have extensions which conflict with other languages.
+            # assembly_6502:    .asm or .a or .s
             # assembly_macro32: .asm or .a
             # assembly_mcs51:   .asm or .a
             # assembly_parrot:  .asm or .a
@@ -1456,12 +1459,13 @@ class LeoApp:
         ):
             return
         # #1519: check os.path.exists.
-        aList = g.app.db.get(tag) or []
-        if [x for x in aList if os.path.exists(x) and os.path.samefile(x, fn)]:
+        aList = g.app.db.get(tag) or []  # A list of normalized file names.
+        if any(os.path.exists(z) and os.path.samefile(z, fn) for z in aList):
             # The file may be open in another copy of Leo, or not:
             # another Leo may have been killed prematurely.
             # Put the file on the global list.
             # A dialog will warn the user such files later.
+            fn = os.path.normpath(fn)
             if fn not in g.app.already_open_files:
                 g.es('may be open in another Leo:', color='red')
                 g.es(fn)
@@ -1480,6 +1484,7 @@ class LeoApp:
             d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             return
         aList = d.get(tag) or []
+        fn = os.path.normpath(fn)
         if fn in aList:
             aList.remove(fn)
             if trace:
@@ -1499,7 +1504,7 @@ class LeoApp:
         else:
             aList = d.get(tag) or []
             # It's proper to add duplicates to this list.
-            aList.append(fn)
+            aList.append(os.path.normpath(fn))
             d[tag] = aList
     #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
     def runAlreadyOpenDialog(self, c):
@@ -1709,7 +1714,7 @@ class LoadManager:
         machine_fn = lm.computeMachineName() + settings_fn
         # First, compute the directory of the first loaded file.
         # All entries in lm.files are full, absolute paths.
-        localDir = g.os_path_dirname(lm.files[0]) if lm.files else None
+        localDir = g.os_path_dirname(lm.files[0]) if lm.files else ''
         table = (
             # First, myLeoSettings.leo in the local directory
             join(localDir, settings_fn),

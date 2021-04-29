@@ -55,8 +55,8 @@ class LeoQtEventFilter(QtCore.QObject):
         close_flashers = c.config.getString('close-flash-brackets') or ''
         open_flashers = c.config.getString('open-flash-brackets') or ''
         self.flashers = open_flashers + close_flashers
-        # #1563: Support German keyboards.
-        self.use_german_keyboard = c.config.getBool('use-german-keyboard', default=False)
+        # #1563: Support alternate keyboards.
+        self.keyboard_kind = c.config.getString('keyboard-kind') or 'default-keyboard'
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
@@ -209,16 +209,18 @@ class LeoQtEventFilter(QtCore.QObject):
         if len(actual_ch) != 1:
             return mods
         #
-        # #1563: A hack for German keyboards:
+        # #1563: A hack for German and Spanish keyboards:
         #        Remove *plain* Shift modifier for colon and semicolon.
         #        https://en.m.wikipedia.org/wiki/German_keyboard_layout
-        if (
-            self.use_german_keyboard
-            and actual_ch in ":;" and 'Shift' in mods
+        kind = self.keyboard_kind.lower()
+        if (kind in ('german', 'spanish')
+            and actual_ch in ":;"
+            and 'Shift' in mods
             and 'Alt' not in mods and 'Control' not in mods
         ):
             mods.remove('Shift')
-            # g.trace('mods', mods, 'ch', repr(actual_ch))
+        elif kind == 'us-international':
+            pass  ### To do.
         #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.

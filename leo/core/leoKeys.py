@@ -699,8 +699,9 @@ class AutoCompleterClass:
         else:
             completions = None
             jedi_line, indent1, indent2 = None, None, None
-            g.printObj(source_lines[n0 - 1 : n0 + 30])
-            print(f"can not happen: not found: {line!r}")
+            if 0:  # This *can* happen.
+                g.printObj(source_lines[n0 - 1 : n0 + 30])
+                print(f"can not happen: not found: {line!r}")
         #
         # Get the jedi completions.
         if jedi_line is not None:
