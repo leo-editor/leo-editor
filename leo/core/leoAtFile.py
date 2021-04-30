@@ -1349,9 +1349,6 @@ class AtFile:
                 fileName = p.anyAtFileNodeName()
                 if fileName:
                     fileName = g.fullPath(c, p)  # #1914.
-                    ###
-                        # fileName = c.expand_path_expression(fileName)  # #1341
-                        # fileName = g.os_path_finalize_join(at.default_directory, fileName)  # #1341
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
                         writtenFiles = True

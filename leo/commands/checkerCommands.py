@@ -260,7 +260,6 @@ class MypyCommand:
         bpm = g.app.backgroundProcessManager
         for root in roots:
             fn = self.finalize(root)
-            g.trace(fn)
             bpm.start_process(c,
                 command = f"mypy {fn}",
                 fn=fn,
@@ -275,16 +274,6 @@ class MypyCommand:
         c = self.c
         # Use os.path.normpath to give system separators.
         return os.path.normpath(g.fullPath(c, p))  # #1914.
-        ###
-            # aList = g.get_directives_dict_list(p)
-            # path = self.c.scanAtPathDirectives(aList)
-            # path = c.expand_path_expression(path)  # #1341.
-            # fn = p.anyAtFileNodeName()
-            # fn = c.expand_path_expression(fn)  # #1341.
-            # fn = g.os_path_finalize_join(path, fn)
-            # fn = os.path.normpath(fn)
-            # g.trace(fn)
-            # return fn
     #@+node:ekr.20210302111935.7: *3* mypy.run
     def run(self, p):
         """Run mypy on all Python @<file> nodes in c.p's tree."""
@@ -330,19 +319,6 @@ class Flake8Command:
             path = g.fullPath(c, p)  # #1914.
             self.seen.append(path)
         return found
-        
-        ###
-            # found = False
-            # if p.isAnyAtFileNode():
-                # aList = g.get_directives_dict_list(p)
-                # path = c.scanAtPathDirectives(aList)
-                # fn = p.anyAtFileNodeName()
-                # if fn.endswith('.py'):
-                    # fn = g.os_path_finalize_join(path, fn)
-                    # if fn not in self.seen:
-                        # self.seen.append(fn)
-                        # found = True
-            # return found
     #@+node:ekr.20160517133049.4: *3* flake8.get_flake8_config
     def get_flake8_config(self):
         """Return the path to the pylint configuration file."""
@@ -480,14 +456,6 @@ class PyflakesCommand:
         c = self.c
         # Use os.path.normpath to give system separators.
         return os.path.normpath(g.fullPath(c, p))  # #1914.
-        
-        ###
-            # aList = g.get_directives_dict_list(p)
-            # path = self.c.scanAtPathDirectives(aList)
-            # path = c.expand_path_expression(path)  # #1341.
-            # fn = p.anyAtFileNodeName()
-            # fn = c.expand_path_expression(fn)  # #1341.
-            # return g.os_path_finalize_join(path, fn)
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
     def run(self, p=None, force=False, pyflakes_errors_only=False):
         """Run Pyflakes on all Python @<file> nodes in c.p's tree."""
@@ -603,20 +571,6 @@ class PylintCommand:
             g.trace(f"not an @<file> node: {p.h!r}")
             return None
         return g.fullPath(c, p)  # #1914
-            
-        
-        ###
-            # if not p.isAnyAtFileNode():
-                # g.trace(f"not an @<file> node: {p.h!r}")
-                # return None
-            # # #67.
-            # aList = g.get_directives_dict_list(p)
-            # path = c.scanAtPathDirectives(aList)
-            # fn = p.anyAtFileNodeName()
-            # if not fn.endswith('.py'):
-                # g.trace(f"not a python file: {p.h!r}")
-                # return None
-            # return g.os_path_finalize_join(path, fn)
     #@+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint
     def run_pylint(self, fn, p):
         """Run pylint on fn with the given pylint configuration file."""

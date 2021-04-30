@@ -270,10 +270,6 @@ class ExternalFilesController:
                 if root:
                     # Open the external file itself.
                     path = g.fullPath(c, root)  # #1914.
-                    ###
-                        # directory = g.setDefaultDirectory(c, root)
-                        # fn = c.expand_path_expression(root.anyAtFileNodeName())  # 1341
-                        # path = g.os_path_finalize_join(directory, fn)  # 1341
                     self.open_file_in_external_editor(c, d, path)
                 else:
                     # Open a temp file containing just the node.

@@ -331,10 +331,6 @@ class VimCommander:
             args.append('+0') # Go to first line of the file. This is an Ex command.
             assert root.isAnyAtFileNode(), root
             fn = g.fullPath(c, root)  # #1914.
-            ###
-                # dir_ = g.setDefaultDirectory(c, root)
-                # fn = c.expand_path_expression(root.anyAtFileNodeName()) # #1341.
-                # fn = c.os_path_finalize_join(dir_, fn)
         else:
             # vim-open-node
             args.append(self.get_cursor_arg())
