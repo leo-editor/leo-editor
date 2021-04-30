@@ -83,7 +83,6 @@ class AtFile:
         at = self
         c = at.c
         at.at_auto_encoding = c.config.default_at_auto_file_encoding
-        ### at.default_directory = None
         at.encoding = c.config.default_derived_file_encoding
         at.endSentinelComment = ""
         at.errors = 0
@@ -205,7 +204,6 @@ class AtFile:
             # For at.writeError only.
         d = at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
-                ### # at.default_directory
                 # at.encoding
                 # at.explicitLineEnding
                 # at.language
@@ -214,9 +212,6 @@ class AtFile:
                 # at.tab_width
         #
         # Overrides of at.scanAllDirectives...
-        ###
-            # if defaultDirectory:
-                # at.default_directory = defaultDirectory
         if defaultDirectory is None:
             defaultDirectory = d.get('path')  # #1914
         if at.language == 'python':
@@ -234,12 +229,9 @@ class AtFile:
         # Return the finalized file name.
         # #1341 and #1450.
         make_dirs = c and c.config and c.config.create_nonexistent_directories
-        ##
-        if defaultDirectory:  ###if at.default_directory:
-            ### at.default_directory = c.expand_path_expression(at.default_directory)
+        if defaultDirectory:
             defaultDirectory = c.expand_path_expression(defaultDirectory)
             if make_dirs:
-                ### ok = g.makeAllNonExistentDirectories(at.default_directory)
                 ok = g.makeAllNonExistentDirectories(defaultDirectory)
                 if not ok:
                     g.error(f"Did not create default directory: {defaultDirectory}")
@@ -254,9 +246,7 @@ class AtFile:
                     g.trace(f"Did not create {theDir} for {targetFileName}")
                     return None
         # #1341.
-        return g.os_path_realpath(
-            ### g.os_path_finalize_join(at.default_directory, targetFileName))
-            g.os_path_finalize_join(defaultDirectory, targetFileName))
+        return g.os_path_realpath(g.os_path_finalize_join(defaultDirectory, targetFileName))
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile
@@ -365,7 +355,6 @@ class AtFile:
         root.clearVisitedInTree()
         at.scanAllDirectives(root, importing=at.importing, reading=True)
             # Sets the following ivars:
-                ### # at.default_directory
                 # at.encoding: **changed later** by readOpenFile/at.scanHeader.
                 # at.explicitLineEnding
                 # at.language
@@ -552,7 +541,6 @@ class AtFile:
         '''Read an @auto file into p. Return the *new* position.'''
         at, c, ic = self, self.c, self.c.importCommands
         fileName = g.fullPath(c, p)  # #1521, #1341, #1914.
-        ### at.default_directory = g.os_path_dirname(fileName)
         if not g.os_path_exists(fileName):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
             return p
@@ -597,7 +585,6 @@ class AtFile:
         ic = c.importCommands
         # #1521
         fn = g.fullPath(c, p)
-        ### at.default_directory = g.os_path_dirname(fn)
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -626,7 +613,6 @@ class AtFile:
         at, c = self, self.c
         # #1521 & #1341.
         fn = g.fullPath(c, p)
-        ### at.default_directory = g.os_path_dirname(fn)
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -717,9 +703,7 @@ class AtFile:
                 f"can not happen: fn: {fn} != atShadowNodeName: "
                 f"{p.atShadowFileNodeName()}")
             return
-        # #1521 & #1341.
-        fn = g.fullPath(c, p)
-        ### at.default_directory = g.os_path_dirname(fn)
+        fn = g.fullPath(c, p)  # #1521 & #1341.
         # #889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         shadow_fn = x.shadowPathName(fn)
@@ -1550,8 +1534,6 @@ class AtFile:
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
             )
-            ### at.default_directory = g.os_path_dirname(full_path)
-                # Override.
             # Make sure we can compute the shadow directory.
             private_fn = x.shadowPathName(full_path)
             if not private_fn:
@@ -2954,7 +2936,6 @@ class AtFile:
         #@+node:ekr.20080923070954.14: *5* << Set ivars >> (at.scanAllDirectives)
         at.page_width = c.page_width
         at.tab_width = c.tab_width
-        ### at.default_directory = None  # 8/2: will be set later.
         if c.target_language:
             c.target_language = c.target_language.lower()
         delims = g.set_delims_from_language(c.target_language)
@@ -2992,7 +2973,6 @@ class AtFile:
         at.explicitLineEnding = bool(lineending)
         at.output_newline = lineending or g.getOutputNewline(c=c)
         at.page_width = d.get('pagewidth')
-        ### at.default_directory = d.get('path')
         at.tab_width = d.get('tabwidth')
         if not importing and not reading:
             # Don't override comment delims when reading!
@@ -3030,7 +3010,7 @@ class AtFile:
             "language": at.language,
             "lineending": at.output_newline,
             "pagewidth": at.page_width,
-            "path": d.get('path'),  ### at.default_directory,
+            "path": d.get('path'),
             "tabwidth": at.tab_width,
         }
         return d

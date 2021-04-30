@@ -204,7 +204,6 @@ class LeoImportCommands:
     def __init__(self, c):
         """ctor for LeoImportCommands class."""
         self.c = c
-        ### self.default_directory = None  # For @path logic.
         self.encoding = 'utf-8'
         self.errors = 0
         self.fileName = None  # The original file name, say x.cpp
@@ -677,10 +676,12 @@ class LeoImportCommands:
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
     #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
     def get_import_filename(self, fileName, parent):
-        """Return the absolute path of the file and set .default_directory."""
+        """Return the absolute path of the file."""
         c = self.c
-        self.default_directory = g.setDefaultDirectory(c, parent, importing=False)
-        fileName = g.os_path_finalize_join(self.default_directory, fileName)  # 1341
+        ### self.default_directory = g.setDefaultDirectory(c, parent, importing=False)
+        directory = g.setDefaultDirectory(c, parent, importing=False)
+        ### fileName = g.os_path_finalize_join(self.default_directory, fileName)  # 1341
+        fileName = g.os_path_finalize_join(directory, fileName)  # 1341
         fileName = fileName.replace('\\', '/')  # 2011/11/25
         return fileName
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
