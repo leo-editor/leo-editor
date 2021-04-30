@@ -72,10 +72,6 @@ def onPostSave(tag=None, keywords=None):
         for p in nosentNodes:
             g.red("node %s found" % p.h)
             fname = g.fullPath(c, p)  # #1914.
-            ###
-                # at.scanAllDirectives(p)
-                # name = p.atNoSentinelsFileNodeName()
-                # fname = g.os_path_join(at.default_directory,name)
             f = open(fname,"r")
             lines = f.readlines()
             f.close()

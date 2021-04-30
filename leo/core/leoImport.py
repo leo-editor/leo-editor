@@ -678,9 +678,7 @@ class LeoImportCommands:
     def get_import_filename(self, fileName, parent):
         """Return the absolute path of the file."""
         c = self.c
-        ### self.default_directory = g.setDefaultDirectory(c, parent, importing=False)
         directory = g.setDefaultDirectory(c, parent, importing=False)
-        ### fileName = g.os_path_finalize_join(self.default_directory, fileName)  # 1341
         fileName = g.os_path_finalize_join(directory, fileName)  # 1341
         fileName = fileName.replace('\\', '/')  # 2011/11/25
         return fileName
