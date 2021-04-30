@@ -611,13 +611,10 @@ class LeoImportCommands:
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self,
-        ### fileName,
-        parent,
+    def createOutline(self, parent,
         atShadow=False,  # For error messages only.
         ext=None,
         s=None,
-        # force_at_others=False,  # tag:no-longer-used
     ):
         """
         Create an outline by importing a file, reading the file with the
@@ -632,10 +629,7 @@ class LeoImportCommands:
         p = parent.copy()
         self.treeType = '@file'
             # Fix #352.
-        ### fn = self.get_import_filename(fileName, parent)
-        fileName = g.fullPath(c, parent)  ###
-        ### g.trace(parent and parent.h, fileName)
-        
+        fileName = g.fullPath(c, parent)
         if g.is_binary_external_file(fileName):
             return self.import_binary_file(fileName, parent)
         # Init ivars.
@@ -782,8 +776,6 @@ class LeoImportCommands:
         # Initial open from command line is not undoable.
         if command:
             u.beforeChangeGroup(current, command)
-        g.trace(paths) ###
-        g.pdb() ###
         for fileName in paths:
             fileName = fileName.replace('\\', '/')  # 2011/10/09.
             g.setGlobalOpenDir(fileName)
@@ -831,7 +823,6 @@ class LeoImportCommands:
                 p = parent.insertAsLastChild()
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
-                ### p = self.createOutline(fn, parent=p)
                 p = self.createOutline(parent=p)
                 if p:  # createOutline may fail.
                     if not g.unitTesting:
@@ -1293,12 +1284,7 @@ class LeoImportCommands:
             parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
-        self.createOutline(
-            parent=parent.copy(),
-            ext=ext,
-            ### fileName=title.strip(),
-            s=s,
-        )
+        self.createOutline(parent=parent.copy(), ext=ext, s=s)
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True

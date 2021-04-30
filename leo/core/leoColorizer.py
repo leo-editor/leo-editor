@@ -1045,11 +1045,6 @@ class BaseJEditColorizer(BaseColorizer):
         self.tagCount += 1
         if trace:
             # A superb trace.
-            ###
-                # p = self.c and self.c.p
-                # if p and p.v != self.last_v:
-                    # print(f'\nsetTag: NEW NODE: {p.h}\n')
-                    # self.last_v = p.v
             if len(repr(s[i:j])) <= 20:
                 s2 = repr(s[i:j])
             else:

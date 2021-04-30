@@ -160,10 +160,9 @@ class AtFile:
         at.thinNodeStack = []  # Entries are vnodes.
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
-    def initWriteIvars(self, root, targetFileName,
+    def initWriteIvars(self, root,
         atEdit=False,
         atShadow=False,
-        defaultDirectory=None,
         forcePythonSentinels=False,
         kind=None,
         sentinels=True,
@@ -199,8 +198,7 @@ class AtFile:
             # For at.putBody only.
         at.outputList = []
             # For stream output.
-        targetFileName = os.path.expanduser(targetFileName or '')  # #1900.
-        at.targetFileName = targetFileName 
+        at.targetFileName = targetFileName = root.anyAtFileNodeName() or ''  # #1914.
             # For at.writeError only.
         d = at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
@@ -212,8 +210,7 @@ class AtFile:
                 # at.tab_width
         #
         # Overrides of at.scanAllDirectives...
-        if defaultDirectory is None:
-            defaultDirectory = d.get('path')  # #1914
+        defaultDirectory = d.get('path')  # #1914
         if at.language == 'python':
             # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
@@ -514,7 +511,6 @@ class AtFile:
         if p.isAtThinFileNode() or p.isAtFileNode():
             at.read(p, force=force)
         elif p.isAtAutoNode():
-            ### at.readOneAtAutoNode(fileName, p)
             at.readOneAtAutoNode(p)
         elif p.isAtEditNode():
             at.readOneAtEditNode(fileName, p)
@@ -538,7 +534,7 @@ class AtFile:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
-    def readOneAtAutoNode(self, p): ### fileName, p):
+    def readOneAtAutoNode(self, p):
         '''Read an @auto file into p. Return the *new* position.'''
         at, c, ic = self, self.c, self.c.importCommands
         fileName = g.fullPath(c, p)  # #1521, #1341, #1914.
@@ -560,7 +556,6 @@ class AtFile:
             )
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
-            ### p = ic.createOutline(fileName, parent=p.copy())
             p = ic.createOutline(parent=p.copy())
             # Do *not* select a postion here.
             # That would improperly expand nodes.
@@ -716,14 +711,12 @@ class AtFile:
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
-            ### ok = at.importAtShadowNode(fn, p)
             ok = at.importAtShadowNode(p)
             if ok:
                 # Create the private file automatically.
                 at.writeOneAtShadowNode(p)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
-    def importAtShadowNode(self, p):  ### fn, p):
-        ### at = self; c = at.c; ic = c.importCommands
+    def importAtShadowNode(self, p):
         at, c, ic = self, self.c, self.c.importCommands
         fn = g.fullPath(c, p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fn):
@@ -733,13 +726,11 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         # Import the outline, exactly as @auto does.
-        ### ic.createOutline(fn, parent=p.copy(), atShadow=True)
         ic.createOutline(parent=p.copy(), atShadow=True)
         if ic.errors:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):
             p.clearDirty()
-        # else: g.doHook('after-shadow', p = p)
         return ic.errors == 0
     #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root
     def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
@@ -1309,8 +1300,7 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            fileName = at.initWriteIvars(
-                root, root.anyAtFileNodeName(), kind=kind, sentinels=sentinels)
+            fileName = at.initWriteIvars(root, kind=kind, sentinels=sentinels)
             if not fileName or not at.precheck(fileName, root):
                 if sentinels:
                     # Raise dialog warning of data loss.
@@ -1338,7 +1328,7 @@ class AtFile:
         writtenFiles = False
         c.init_error_dialogs()
         # #1450.
-        at.initWriteIvars(root=p.copy(), targetFileName='')
+        at.initWriteIvars(root=p.copy())
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:  # Don't use iterator.
@@ -1395,10 +1385,7 @@ class AtFile:
             c.endEditing()
             if not p.atAutoNodeName():
                 return False
-            fileName = at.initWriteIvars(root, p.atAutoNodeName(),
-                ### defaultDirectory=g.setDefaultDirectory(c, p, importing=True),
-                sentinels=False,
-            )
+            fileName = at.initWriteIvars(root, sentinels=False)
             # #1450.
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
@@ -1501,11 +1488,7 @@ class AtFile:
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
-            fileName = at.initWriteIvars(root, p.atEditNodeName(),
-                atEdit=True,
-                ### defaultDirectory=g.setDefaultDirectory(c, p, importing=True),
-                sentinels=False,
-            )
+            fileName = at.initWriteIvars(root, atEdit=True, sentinels=False)
             # #1450.
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
@@ -1538,7 +1521,6 @@ class AtFile:
             full_path = g.fullPath(c, p)
             at.initWriteIvars(root, None,
                 atShadow=True,
-                defaultDirectory=g.os_path_dirname(full_path),
                 forcePythonSentinels=True,
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
@@ -1625,7 +1607,7 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            fileName = at.initWriteIvars(root, root.atAutoNodeName(), sentinels=False)
+            fileName = at.initWriteIvars(root, sentinels=False)
             # #1450.
             if not fileName:
                 at.addToOrphanList(root)
@@ -1644,8 +1626,7 @@ class AtFile:
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
-            fileName = at.initWriteIvars(
-                root, root.atEditNodeName(), atEdit=True, sentinels=False)
+            fileName = at.initWriteIvars(root, atEdit=True, sentinels=False)
             # #1450.
             if not fileName:
                 at.addToOrphanList(root)
@@ -1663,7 +1644,7 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root, "<string-file>", sentinels=sentinels)
+            at.initWriteIvars(root, sentinels=sentinels)
             at.outputList = []
             at.putFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
@@ -1690,12 +1671,8 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(
-                root,
-                targetFileName="<string-file>",
-                forcePythonSentinels=forcePythonSentinels,
-                sentinels=sentinels,
-            )
+            at.initWriteIvars(root,
+                forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
             at.outputList = []
             at.putFile(root, fromString=s, sentinels=sentinels)
             contents = '' if at.errors else ''.join(at.outputList)
