@@ -203,7 +203,7 @@ class AtFile:
         targetFileName = os.path.expanduser(targetFileName or '')  # #1900.
         at.targetFileName = targetFileName 
             # For at.writeError only.
-        at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
+        d = at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
                 ### # at.default_directory
                 # at.encoding
@@ -218,7 +218,7 @@ class AtFile:
             # if defaultDirectory:
                 # at.default_directory = defaultDirectory
         if defaultDirectory is None:
-            defaultDirectory = ''
+            defaultDirectory = d.get('path')  # #1914
         if at.language == 'python':
             # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
