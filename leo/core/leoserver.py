@@ -114,7 +114,7 @@ class LeoServer:
         try:
             button.command()
         except Exception as e:
-            raise ServerError(f"{tag}: exception clicking button {name}: {e}")
+            raise ServerError(f"{tag}: exception clicking button {name!r}: {e}")
         return self._make_response()
     #@+node:ekr.20210202183724.2: *5* server.get_buttons
     def get_buttons(self, package):  # pragma: no cover (no scripting controller)
@@ -136,7 +136,7 @@ class LeoServer:
         try:
             del d [name]
         except Exception as e:
-            raise ServerError(f"{tag}: exception removing button {name}: {e}")
+            raise ServerError(f"{tag}: exception removing button {name!r}: {e}")
         return self._make_response({
             "buttons": sorted(list(d.get.keys()))
         })
@@ -321,7 +321,7 @@ class LeoServer:
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
         p, pos, newpos = fc.do_find_def(settings, word=find_text, strict=False)
         if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
         return self._make_response({"p": p, "pos": pos, "newpos": newpos})
     #@+node:ekr.20210221042808.1: *5* server.find_next
     def find_next(self, package):
@@ -338,7 +338,7 @@ class LeoServer:
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
         p, pos, newpos = fc.do_find_next(settings)
         if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
         return self._make_response({"p": p, "pos": pos, "newpos": newpos})
     #@+node:ekr.20210221042851.1: *5* server.find_previous
     def find_previous(self, package):
@@ -355,7 +355,7 @@ class LeoServer:
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
         p, pos, newpos = fc.do_find_prev(settings)
         if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
         return self._make_response({"p": p, "pos": pos, "newpos": newpos})
     #@+node:ekr.20210221043134.1: *5* server.find_var
     def find_var(self, package):
@@ -372,7 +372,7 @@ class LeoServer:
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
         p, pos, newpos = fc.do_find_var(settings, word=find_text)
         if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
         return self._make_response({"p": p, "pos": pos, "newpos": newpos})
     #@+node:ekr.20210221043224.1: *5* server.tag_children
     def tag_children(self, package):
@@ -1902,7 +1902,7 @@ class LeoServer:
         gnx_d = c.fileCommands.gnxDict
         outer_stack = ap.get('stack')
         if outer_stack is None:  # pragma: no cover.
-            raise ServerError(f"{tag}: no stack in ap: {ap}")
+            raise ServerError(f"{tag}: no stack in ap: {ap!r}")
         if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
             raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
         
@@ -1920,7 +1920,7 @@ class LeoServer:
                 raise ServerError(f"{tag}: no gnx in {d}.")
             v = gnx_d.get(gnx)
             if v is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: gnx not found: {gnx}")
+                raise ServerError(f"{tag}: gnx not found: {gnx!r}")
             return childIndex, v
         #
         # Compute p.childIndex and p.v.
@@ -1936,10 +1936,10 @@ class LeoServer:
         p = Position(v, childIndex, stack)
         if not c.positionExists(p):  # pragma: no cover.
             print(
-                f"{tag}: Bad ap: {ap}\n"
+                f"{tag}: Bad ap: {ap!r}\n"
                 # f"{tag}: position: {p!r}\n"
-                f"{tag}: v {v!r} childIndex: {childIndex}\n"
-                f"{tag}: stack: {stack}")
+                f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
+                f"{tag}: stack: {stack!r}")
             raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
         return p
     #@+node:ekr.20210207054237.1: *4* server._check_c
@@ -1963,7 +1963,7 @@ class LeoServer:
         tag = '_check_outline_positions'
         for p in c.all_positions(copy=False):
             if not c.positionExists(p):  # pragma: no cover
-                message = f"{tag}: position {p} does not exist in {c.shortFileName()}"
+                message = f"{tag}: position {p!r} does not exist in {c.shortFileName()}"
                 print(message)
                 self._dump_position(p)
                 raise ServerError(message)
@@ -1983,10 +1983,10 @@ class LeoServer:
         if not command_name:  # pragma: no cover
             raise ServerError(f"{tag}: no 'leo-command-name' key in package")
         if command_name in self.bad_commands_list:  # pragma: no cover
-            raise ServerError(f"{tag}: disallowed command: {command_name}")
+            raise ServerError(f"{tag}: disallowed command: {command_name!r}")
         func = c.commandsDict.get(command_name)
         if not func:  # pragma: no cover
-            raise ServerError(f"{tag}: Leo command not found: {command_name}")
+            raise ServerError(f"{tag}: Leo command not found: {command_name!r}")
         value = func(event={"c":c})
         return self._make_response({"return-value": value})
     #@+node:ekr.20210202110128.54: *4* server._do_message
@@ -1998,7 +1998,8 @@ class LeoServer:
         - "id": A positive integer.
         - "action": A string, which is either:
             - The name of public method of this class.
-            - The name of a Leo command.
+            - "execute-leo-command".
+              d["package"]["leo-command-name"] should be the name of a Leo command.
         
         Return a dict, created by _make_response, containing least these keys:
 
@@ -2028,20 +2029,20 @@ class LeoServer:
             func = self._do_server_command
         result = func(action, package)
         if result is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no response: {action}")
+            raise ServerError(f"{tag}: no response: {action!r}")
         return result
     #@+node:ekr.20210209085438.1: *4* server._do_server_command
     def _do_server_command(self, action, package):
         tag = '_do_server_command'
         # Disallow hidden methods.
         if action.startswith('_'):  # pragma: no cover
-            raise ServerError(f"{tag}: action starts with '_': {action}")
+            raise ServerError(f"{tag}: action starts with '_': {action!r}")
         # Find and execute the server method.
         func = getattr(self, action, None)
         if not func:
-            raise ServerError(f"{tag}: action not found: {action}")  # pragma: no cover
+            raise ServerError(f"{tag}: action not found: {action!r}")  # pragma: no cover
         if not callable(func):
-            raise ServerError(f"{tag}: not callable: {func}")  # pragma: no cover
+            raise ServerError(f"{tag}: not callable: {func!r}")  # pragma: no cover
         return func(package)
     #@+node:ekr.20210211131707.1: *4* server._dump_*
     def _dump_outline(self, c):  # pragma: no cover
@@ -2077,7 +2078,7 @@ class LeoServer:
         if self.web_socket:
             await self.web_socket.send(bytes(json, 'utf-8'))
         else:
-            g.trace(f"{tag}: no web socket. json: {json}")
+            g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:ekr.20210210081236.1: *4* server._get_p
     def _get_p(self, package):
         """Return _ap_to_p(package["ap"]) or c.p."""
@@ -2091,7 +2092,7 @@ class LeoServer:
             if not p:  # pragma: no cover
                 raise ServerError(f"{tag}: no p")
             if not c.positionExists(p):  # pragma: no cover
-                raise ServerError(f"{tag}: position does not exist. ap: {ap}")
+                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
         return c.p
@@ -2158,7 +2159,7 @@ class LeoServer:
         if p and not c:  # pragma: no cover
             raise InternalServerError(f"{tag}: p but not c")
         if p and not c.positionExists(p):  # pragma: no cover
-            raise InternalServerError(f"{tag}: p does not exist")
+            raise InternalServerError(f"{tag}: p does not exist: {p!r}")
         if c and not c.p:  # pragma: no cover
             raise InternalServerError(f"{tag}: empty c.p")
         #
@@ -2179,7 +2180,7 @@ class LeoServer:
             redraw_d = self._get_position_d(p)
             for key, value in redraw_d.items():
                 if key in package:  # pragma: no cover
-                    raise InternalServerError(f"{tag}: key {key} in package: {package}")
+                    raise InternalServerError(f"{tag}: key {key!r} in package: {package!r}")
                 package [key] = value
         if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
@@ -2209,7 +2210,7 @@ class LeoServer:
             p2 = self._ap_to_p(ap)
             if p != p2:
                 self._dump_outline(c)
-                raise ServerError(f"{tag}: round-trip failed: ap: {ap}, p: {p}, p2: {p2}")
+                raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
     #@-others
 #@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
@@ -2261,7 +2262,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
         if log_flag:
-            g.printObj(answer, tag=f"response to {action}")
+            g.printObj(answer, tag=f"response to {action!r}")
         return answer
     #@+node:ekr.20210210174801.1: *3* test.test_leo_commands
     def test_leo_commands (self):
@@ -2336,7 +2337,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
-                            print(f"Exception in test_most_public_server_methods: {method_name} {e}")
+                            print(f"Exception in test_most_public_server_methods: {method_name!r} {e}")
         finally:
             server.close_file({"filename": test_dot_leo})
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
