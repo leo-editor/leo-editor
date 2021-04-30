@@ -71,7 +71,8 @@ def onPostSave(tag=None, keywords=None):
         at = c.atFileCommands
         for p in nosentNodes:
             g.red("node %s found" % p.h)
-            fname = g.fullPath(c, p)  # #1914.
+            # Use os.path.normpath to give system separators.
+            fname = os.path.normpath(g.fullPath(c, p))  # #1914.
             f = open(fname,"r")
             lines = f.readlines()
             f.close()
