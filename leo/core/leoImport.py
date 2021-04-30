@@ -612,7 +612,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self,
-        fileName,
+        ### fileName,
         parent,
         atShadow=False,  # For error messages only.
         ext=None,
@@ -632,9 +632,12 @@ class LeoImportCommands:
         p = parent.copy()
         self.treeType = '@file'
             # Fix #352.
-        fn = self.get_import_filename(fileName, parent)
+        ### fn = self.get_import_filename(fileName, parent)
+        fileName = g.fullPath(c, parent)  ###
+        ### g.trace(parent and parent.h, fileName)
+        
         if g.is_binary_external_file(fileName):
-            return self.import_binary_file(fn, parent)
+            return self.import_binary_file(fileName, parent)
         # Init ivars.
         self.setEncoding(
             p=parent,
@@ -674,14 +677,6 @@ class LeoImportCommands:
         # Match the @auto type first, then the file extension.
         c = self.c
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
-    #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
-    def get_import_filename(self, fileName, parent):
-        """Return the absolute path of the file."""
-        c = self.c
-        directory = g.setDefaultDirectory(c, parent, importing=False)
-        fileName = g.os_path_finalize_join(directory, fileName)  # 1341
-        fileName = fileName.replace('\\', '/')  # 2011/11/25
-        return fileName
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
     def import_binary_file(self, fileName, parent):
 
@@ -785,7 +780,10 @@ class LeoImportCommands:
         if not paths:
             return None
         # Initial open from command line is not undoable.
-        if command: u.beforeChangeGroup(current, command)
+        if command:
+            u.beforeChangeGroup(current, command)
+        g.trace(paths) ###
+        g.pdb() ###
         for fileName in paths:
             fileName = fileName.replace('\\', '/')  # 2011/10/09.
             g.setGlobalOpenDir(fileName)
@@ -824,7 +822,7 @@ class LeoImportCommands:
         if not parent:
             g.trace('===== no parent', g.callers())
             return
-        for fn in files:
+        for fn in files or []:
             # Report exceptions here, not in the caller.
             try:
                 g.setGlobalOpenDir(fn)
@@ -833,7 +831,8 @@ class LeoImportCommands:
                 p = parent.insertAsLastChild()
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(fn, parent=p)
+                ### p = self.createOutline(fn, parent=p)
+                p = self.createOutline(parent=p)
                 if p:  # createOutline may fail.
                     if not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -1295,9 +1294,9 @@ class LeoImportCommands:
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
         self.createOutline(
-            ext=ext,
-            fileName=title.strip(),
             parent=parent.copy(),
+            ext=ext,
+            ### fileName=title.strip(),
             s=s,
         )
         # Set ok.

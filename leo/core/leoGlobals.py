@@ -3663,46 +3663,6 @@ def set_language(s, i, issue_errors_flag=False):
     if issue_errors_flag:
         g.es("ignoring:", g.get_line(s, i))
     return None, None, None, None
-#@+node:ekr.20081001062423.9: *3* g.setDefaultDirectory & helper
-def setDefaultDirectory(c, p, importing=False):
-    """ Return a default directory by scanning @path directives."""
-    if p:
-        name = p.anyAtFileNodeName()
-        if name:
-            # An absolute path overrides everything.
-            d = g.os_path_dirname(name)
-            if d and g.os_path_isabs(d):
-                return d
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-            # Returns g.getBaseDirectory(c) by default.
-            # However, g.getBaseDirectory can return ''
-    else:
-        path = None
-    if path:
-        path = g.os_path_finalize(path)
-    else:
-        g.checkOpenDirectory(c)
-        for d in (c.openDirectory, g.getBaseDirectory(c)):
-            # Errors may result in relative or invalid path.
-            if d and g.os_path_isabs(d):
-                path = d
-                break
-        else:
-            path = ''
-    if not importing and not path:
-        # This should never happen, but is not serious if it does.
-        g.warning("No absolute directory specified anywhere.")
-    return path
-#@+node:ekr.20101022124309.6132: *4* g.checkOpenDirectory
-def checkOpenDirectory(c):
-    if c.openDirectory != c.frame.openDirectory:
-        g.error(
-            f"Error: c.openDirectory != c.frame.openDirectory\n"
-            f"c.openDirectory: {c.openDirectory}\n"
-            f"c.frame.openDirectory: {c.frame.openDirectory}")
-    if not g.os_path_isabs(c.openDirectory):
-        g.error(f"Error: relative c.openDirectory: {c.openDirectory}")
 #@+node:ekr.20071109165315: *3* g.stripPathCruft
 def stripPathCruft(path):
     """Strip cruft from a path name."""

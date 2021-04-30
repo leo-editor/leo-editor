@@ -12681,7 +12681,7 @@ for language,s,expected in table:
     result = g.set_delims_from_string(s)
     assert result==expected,'language %s expected %s, got %s' % (
         language,expected,result)
-#@+node:ekr.20100131180007.5421: *4* @test g.setDefaultDirectory
+#@+node:ekr.20100131180007.5421: *4* @@@@test g.setDefaultDirectory
 c,p = g.getTestVars()
 
 # result,error = g.setDefaultDirectory(c,p,importing=False)

@@ -514,7 +514,8 @@ class AtFile:
         if p.isAtThinFileNode() or p.isAtFileNode():
             at.read(p, force=force)
         elif p.isAtAutoNode():
-            at.readOneAtAutoNode(fileName, p)
+            ### at.readOneAtAutoNode(fileName, p)
+            at.readOneAtAutoNode(p)
         elif p.isAtEditNode():
             at.readOneAtEditNode(fileName, p)
         elif p.isAtShadowFileNode():
@@ -537,7 +538,7 @@ class AtFile:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
-    def readOneAtAutoNode(self, fileName, p):
+    def readOneAtAutoNode(self, p): ### fileName, p):
         '''Read an @auto file into p. Return the *new* position.'''
         at, c, ic = self, self.c, self.c.importCommands
         fileName = g.fullPath(c, p)  # #1521, #1341, #1914.
@@ -559,7 +560,8 @@ class AtFile:
             )
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
-            p = ic.createOutline(fileName, parent=p.copy())
+            ### p = ic.createOutline(fileName, parent=p.copy())
+            p = ic.createOutline(parent=p.copy())
             # Do *not* select a postion here.
             # That would improperly expand nodes.
                 # c.selectPosition(p)
@@ -714,18 +716,25 @@ class AtFile:
         if shadow_exists:
             at.read(p, atShadow=True, force=force)
         else:
-            ok = at.importAtShadowNode(fn, p)
+            ### ok = at.importAtShadowNode(fn, p)
+            ok = at.importAtShadowNode(p)
             if ok:
                 # Create the private file automatically.
                 at.writeOneAtShadowNode(p)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
-    def importAtShadowNode(self, fn, p):
-        at = self; c = at.c; ic = c.importCommands
+    def importAtShadowNode(self, p):  ### fn, p):
+        ### at = self; c = at.c; ic = c.importCommands
+        at, c, ic = self, self.c, self.c.importCommands
+        fn = g.fullPath(c, p)  # #1521, #1341, #1914.
+        if not g.os_path_exists(fn):
+            g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
+            return p
         # Delete all the child nodes.
         while p.hasChildren():
             p.firstChild().doDelete()
         # Import the outline, exactly as @auto does.
-        ic.createOutline(fn, parent=p.copy(), atShadow=True)
+        ### ic.createOutline(fn, parent=p.copy(), atShadow=True)
+        ic.createOutline(parent=p.copy(), atShadow=True)
         if ic.errors:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):
@@ -1387,7 +1396,7 @@ class AtFile:
             if not p.atAutoNodeName():
                 return False
             fileName = at.initWriteIvars(root, p.atAutoNodeName(),
-                defaultDirectory=g.setDefaultDirectory(c, p, importing=True),
+                ### defaultDirectory=g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
             # #1450.
@@ -1494,7 +1503,7 @@ class AtFile:
                 return False
             fileName = at.initWriteIvars(root, p.atEditNodeName(),
                 atEdit=True,
-                defaultDirectory=g.setDefaultDirectory(c, p, importing=True),
+                ### defaultDirectory=g.setDefaultDirectory(c, p, importing=True),
                 sentinels=False,
             )
             # #1450.
