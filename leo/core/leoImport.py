@@ -204,7 +204,7 @@ class LeoImportCommands:
     def __init__(self, c):
         """ctor for LeoImportCommands class."""
         self.c = c
-        self.default_directory = None  # For @path logic.
+        ### self.default_directory = None  # For @path logic.
         self.encoding = 'utf-8'
         self.errors = 0
         self.fileName = None  # The original file name, say x.cpp
