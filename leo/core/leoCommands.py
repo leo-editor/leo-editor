@@ -1931,9 +1931,6 @@ class Commands:
                 n += len(s)
         return language
     #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
-    # Not used in Leo's core.
-    # Used by the UNl plugin.  Does not need to create a path.
-
     def getNodePath(self, p):
         """Return the path in effect at node p."""
         c = self
@@ -1941,26 +1938,31 @@ class Commands:
         path = c.scanAtPathDirectives(aList)
         return path
 
-    # Not used in Leo's core.
-
     def getNodeFileName(self, p):
         """
         Return the full file name at node p,
         including effects of all @path directives.
-        Return None if p is no kind of @file node.
+        Return '' if p is no kind of @file node.
         """
         c = self
-        path = g.scanAllAtPathDirectives(c, p)
-        name = ''
         for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
-            if name: break
-        if name:
-            # The commander method supports {{expr}}; the global function does not.
-            path = c.expand_path_expression(path)  # #1341.
-            name = c.expand_path_expression(name)  # #1341.
-            name = g.os_path_finalize_join(path, name)
-        return name
+            if name:
+                return g.fullPath(c, p)  # #1914.
+        return ''
+
+        ###
+            # path = g.scanAllAtPathDirectives(c, p)
+            # name = ''
+            # for p in p.self_and_parents(copy=False):
+                # name = p.anyAtFileNodeName()
+                # if name: break
+            # if name:
+                # # The commander method supports {{expr}}; the global function does not.
+                # path = c.expand_path_expression(path)  # #1341.
+                # name = c.expand_path_expression(name)  # #1341.
+                # name = g.os_path_finalize_join(path, name)
+            # return name
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
         """Return True if p.b contains different @language directives."""

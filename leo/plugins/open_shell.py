@@ -69,18 +69,12 @@ class pluginController:
             table = (("Open &xterm",None,self.launchxTerm),)
         c.frame.menu.createNewMenu("E&xtensions","top")
         c.frame.menu.createMenuItemsFromTable("Extensions", table)
-    #@+node:EKR.20040517080049.7: *3* _getpath
-    def _getpath (self,p):
-
+    #@+node:EKR.20040517080049.7: *3* _getpath (open_shell.py)
+    def _getpath (self, p):
+        
         c = self.c
-        dict = c.scanAllDirectives(p)
-        d = dict.get("path")
-        if p.isAnyAtFileNode():
-            filename = p.anyAtFileNodeName()
-            filename = g.os_path_join(d,filename)
-            if filename:
-                d = g.os_path_dirname(filename)
-        return '' if d is None else g.os_path_normpath(d)
+        path = g.fullPath(c, p)  # #1914
+        return os.path.normpath(g.os_path_dirname(path))  # #1914
     #@+node:EKR.20040517080049.8: *3* _getCurrentNodePath
     def _getCurrentNodePath(self):
 

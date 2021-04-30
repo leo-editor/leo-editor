@@ -1348,9 +1348,10 @@ class AtFile:
             ):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
-                    fileName = c.expand_path_expression(fileName)  # #1341
-                    fileName = g.os_path_finalize_join(
-                        at.default_directory, fileName)  # #1341
+                    fileName = g.fullPath(c, p)  # #1914.
+                    ###
+                        # fileName = c.expand_path_expression(fileName)  # #1341
+                        # fileName = g.os_path_finalize_join(at.default_directory, fileName)  # #1341
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
                         writtenFiles = True
@@ -1373,14 +1374,18 @@ class AtFile:
         at = self
         if p.isAtAsisFileNode():
             at.asisWrite(p)
+        elif p.isAtCleanNode():
+            at.write('@clean', p, sentinels=False)
         elif p.isAtNoSentFileNode():
             at.write('@nosent', p, sentinels=False)
+        elif p.isAtEditNode():
+            at.writeOneAtEditNode(p)
         elif p.isAtFileNode():
             at.write('@file', p)
         elif p.isAtAutoNode() or p.isAtAutoRstNode():
             g.es('Can not write missing @auto node', p.h, color='red')
         else:
-            g.trace('can not happen: unknown @file node')
+            g.trace('can not happen: unknown @file node', p.h)
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self, p):
         '''
