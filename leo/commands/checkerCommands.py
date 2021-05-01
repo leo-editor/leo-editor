@@ -459,7 +459,7 @@ class PyflakesCommand:
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
     def run(self, p=None, force=False, pyflakes_errors_only=False):
         """Run Pyflakes on all Python @<file> nodes in c.p's tree."""
-        if not flake8:
+        if not pyflakes:
             return True  # Pretend all is fine.
         c = self.c
         root = p or c.p
