@@ -256,7 +256,7 @@ class AtFile:
     @cmd('check-external-file')
     def checkExternalFile(self, event=None):
         """Make sure an external file written by Leo may be read properly."""
-        at, c, p = self, self.c, self.c.p
+        c, p = self.c, self.c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             g.red('Please select an @thin or @file node')
             return
