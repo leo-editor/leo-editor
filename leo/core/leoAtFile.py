@@ -144,8 +144,7 @@ class AtFile:
             # synonym for at.readVersion >= '5' and not atShadow.
         at.root = root
         at.rootSeen = False
-        ### at.atShadow = atShadow
-        at.targetFileName = fileName
+        at.targetFileName = fileName ###
             # For at.writeError only.
         at.tnodeList = []
             # Needed until old-style @file nodes are no longer supported.
@@ -168,7 +167,6 @@ class AtFile:
         assert at.underindentEscapeString is not None
         #
         # Copy args
-        ### at.atShadow = False
         at.root = root
         at.sentinels = True
         #
@@ -264,7 +262,6 @@ class AtFile:
         is_at_shadow = self.root.isAtShadowFileNode()
         if fromString:
             if is_at_shadow:
-            ### if at.atShadow:
                 return at.error(
                     'can not call at.read from string for @shadow files')
             at.initReadLine(fromString)
@@ -275,7 +272,6 @@ class AtFile:
             # Returns full path, including file name.
         at.setPathUa(at.root, fn)
             # Remember the full path to this node.
-        ### if at.atShadow:
         if is_at_shadow:
             fn = at.openAtShadowFileForReading(fn)
             if not fn:
@@ -325,7 +321,6 @@ class AtFile:
             # Fix bug 760531: always mark the root as read, even if there was an error.
             # Fix bug 889175: Remember the full fileName.
         at.initReadIvars(root, fileName)
-        ### at.atShadow = atShadow  ### New
         at.fromString = fromString
         at.importing = bool(importFileName)  ### New.
         if at.errors:
@@ -1563,7 +1558,6 @@ class AtFile:
                 ### ???
                 # Force python sentinels to suppress an error message.
                 # The actual sentinels will be set below.
-            ### at.atShadow = True  ### To do ???
             # Make sure we can compute the shadow directory.
             private_fn = x.shadowPathName(full_path)
             if not private_fn:
