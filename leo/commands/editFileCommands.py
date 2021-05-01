@@ -1030,7 +1030,7 @@ class GitDiffController:
         hidden_c.frame.createFirstTreeNode()
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
-        at.initReadIvars(root, fn) ###, importFileName=None, atShadow=None)
+        at.initReadIvars(root, fn)
         if at.errors > 0:
             g.trace('***** errors')
             return None

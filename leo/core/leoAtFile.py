@@ -120,7 +120,7 @@ class AtFile:
         at.endSentinelNodeStack = []
             # Used only when readVersion5.
         at.fromString = False
-        at.importing = False ### bool(importFileName)
+        at.importing = False
         at.importRootSeen = False
         at.indentStack = []
         at.lastLines = []  # The lines after @-leo
@@ -312,8 +312,11 @@ class AtFile:
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
         return shadow_fn
     #@+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root, importFileName=None,
-        fromString=None, atShadow=False, force=False
+    def read(self, root,
+        importFileName=None,
+        fromString=None,
+        atShadow=False,
+        force=False
     ):
         """Read an @thin or @file tree."""
         at, c = self, self.c
@@ -2962,7 +2965,7 @@ class AtFile:
         #@-<< Init ivars >>
         # Create the language dict.
         delims = g.set_delims_from_language(c.target_language)
-        lang_dict = {'language': at.language, 'delims': delims,}
+        lang_dict = {'language': at.language, 'delims': delims}
         table = (
             ('encoding', at.encoding, g.scanAtEncodingDirectives),
             # ('lang-dict', lang_dict, g.scanAtCommentAndAtLanguageDirectives),
