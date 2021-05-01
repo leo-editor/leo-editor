@@ -98,11 +98,7 @@ class AtFile:
         at.tab_width = c.tab_width or -4
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
-    def initReadIvars(self, root, fileName,
-        ### importFileName=None,
-        perfectImportRoot=None,
-        ### atShadow=False,
-    ):
+    def initReadIvars(self, root, fileName, perfectImportRoot=None):
         at = self
         at.initCommonIvars()
         at.bom_encoding = None
@@ -161,10 +157,8 @@ class AtFile:
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root,
-        ### atEdit=False,
-        atShadow=False,
+        atShadow=False,  ### To do.
         forcePythonSentinels=False,
-        ### kind=None,
         sentinels=True,
     ):
         """
@@ -178,8 +172,6 @@ class AtFile:
         assert at.underindentEscapeString is not None
         #
         # Copy args
-        ### at.kind = kind
-        ###at.atEdit = atEdit # WRONG: Used only by putBody.
         at.atShadow = atShadow  ### To be eliminated
         at.root = root
         at.sentinels = sentinels  ### To be eliminated
@@ -333,8 +325,7 @@ class AtFile:
         at.rememberReadPath(g.fullPath(c, root), root)
             # Fix bug 760531: always mark the root as read, even if there was an error.
             # Fix bug 889175: Remember the full fileName.
-        at.initReadIvars(root, fileName) ###, importFileName=importFileName)
-            ###, atShadow=atShadow)
+        at.initReadIvars(root, fileName)
         at.atShadow = atShadow  ### New
         at.fromString = fromString
         at.importing = bool(importFileName)  ### New.
@@ -1254,7 +1245,7 @@ class AtFile:
         try:
             c.endEditing()
             c.init_error_dialogs()
-            fileName = at.initWriteIvars(root) ###, root.atAsisFileNodeName())
+            fileName = at.initWriteIvars(root)
             # #1450.
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
@@ -1486,7 +1477,6 @@ class AtFile:
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
             fileName = at.initWriteIvars(root, sentinels=False)
-                ### atEdit=True, 
             # #1450.
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
@@ -1568,8 +1558,8 @@ class AtFile:
             self.adjustTargetLanguage(fn)
                 # A hack to support unknown extensions. May set c.target_language.
             full_path = g.fullPath(c, p)
-            at.initWriteIvars(root, ### None,
-                atShadow=True,
+            at.initWriteIvars(root,
+                atShadow=True,  ### to do.
                 forcePythonSentinels=True,
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
@@ -1642,7 +1632,7 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            fileName = at.initWriteIvars(root) ###, root.atAsisFileNodeName())
+            fileName = at.initWriteIvars(root)
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
@@ -1676,7 +1666,6 @@ class AtFile:
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
             fileName = at.initWriteIvars(root, sentinels=False)
-                ### atEdit=True, 
             # #1450.
             if not fileName:
                 at.addToOrphanList(root)
@@ -1994,7 +1983,7 @@ class AtFile:
         """Put a line containing one or more references."""
         at = self
         ref = at.findReference(name, p)
-        is_clean = at.root.h.startswith('@clean')  ### Replaces at.kind.
+        is_clean = at.root.h.startswith('@clean')
         if not ref:
             if hasattr(at, 'allow_undefined_refs'):
                 # Allow apparent section reference: just write the line.
@@ -2011,7 +2000,6 @@ class AtFile:
             i = n2
             n_refs += 1
             name, n1, n2 = at.findSectionName(s, i)
-            ### if self.kind == '@clean' and n_refs > 1:
             if is_clean and n_refs > 1:
                 # #1232: allow only one section reference per line in @clean.
                 i1, i2 = g.getLine(s, i)

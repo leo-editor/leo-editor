@@ -1262,7 +1262,6 @@ class LeoImportCommands:
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        ### c, h = self.c, p.h
         c = self.c
         old_root = p.copy()
         self.treeType = '@file'
@@ -1274,9 +1273,10 @@ class LeoImportCommands:
         else:
             d = {}
         g.app.unitTestDict = d
-        if not fileName: fileName = p.h
-        if not s: s = self.removeSentinelsCommand([fileName], toString=True)
-        ### title = h[5:] if h.startswith('@test') else h
+        if not fileName:
+            fileName = p.h
+        if not s:
+            s = self.removeSentinelsCommand([fileName], toString=True)
         # Run the actual test using the **GeneralTestCase** class.
         # Leo 5.6: Compute parent here.
         if p:
