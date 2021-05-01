@@ -116,14 +116,9 @@ class ConvertAtRoot:
 
     def make_clones(self, p):
         """Make clones for all undefined sections in p.b."""
-        header = False
         for s in g.splitLines(p.b):
             m = self.section_pat.match(s)
             if m:
-                # if not header:
-                    # header = True
-                    # print('')
-                    # print(p.h)
                 section_name = g.angleBrackets(m.group(1).strip())
                 section_p = self.make_clone(p, section_name)
                 if not section_p:
@@ -738,7 +733,7 @@ class GitDiffController:
         """
         if not directory:
             directory = os.path.join(g.app.loadDir, '..', '..')
-        aList = g.execGitCommand(f"git rev-parse devel", directory)
+        aList = g.execGitCommand("git rev-parse devel", directory)
         if aList:
             devel_rev = aList[0]
             devel_rev = devel_rev[:8]
