@@ -733,7 +733,7 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         rc = c.rstCommands
         fn = p.h
         source_p = g.findNodeInTree(c, p, 'source')
-        source_s1 = source_p.firstChild().b
+        # source_s1 = source_p.firstChild().b
         expected_p = g.findNodeInTree(c, p, 'expected')
         expected_source = expected_p.firstChild().b
         root = source_p.firstChild()

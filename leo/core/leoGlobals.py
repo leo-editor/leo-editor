@@ -413,7 +413,7 @@ class BindingInfo:
                     s = f"{ivar}: {val!r}"
                     result.append(s)
         # Clearer w/o f-string.
-        return f"[%s]" % ' '.join(result).strip()
+        return "[%s]" % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self):
         return self.kind.startswith('*mode')
@@ -555,7 +555,7 @@ class EmergencyDialog:
     def run(self):
         """Run the modal emergency dialog."""
         # Suppress f-stringify.
-        self.top.geometry(f"%dx%d%+d%+d" % (300, 200, 50, 50))
+        self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
         self.top.lift()
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
@@ -1764,7 +1764,7 @@ class SherlockTracer:
         dots = '.' * max(0, n - self.n) if self.dots else ''
         path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
         leadin = '+' if self.show_return else ''
-        args = f"(%s)" % self.get_args(frame1) if self.show_args else ''
+        args = "(%s)" % self.get_args(frame1) if self.show_args else ''
         print(f"{path}:{dots}{leadin}{full_name}{args}")
         # Always update stats.
         d = self.stats.get(file_name, {})
@@ -1787,7 +1787,7 @@ class SherlockTracer:
                 if arg:
                     if isinstance(arg, (list, tuple)):
                         # Clearer w/o f-string
-                        val = f"[%s]" % ','.join(
+                        val = "[%s]" % ','.join(
                             [self.show(z) for z in arg if self.show(z)])
                     else:
                         val = self.show(arg)
@@ -1860,10 +1860,10 @@ class SherlockTracer:
                 ret = '<generator>'
             elif isinstance(arg, (tuple, list)):
                 # Clearer w/o f-string.
-                ret = f"[%s]" % ','.join([self.show(z) for z in arg])
+                ret = "[%s]" % ','.join([self.show(z) for z in arg])
                 if len(ret) > 40:
                     # Clearer w/o f-string.
-                    ret = f"[\n%s]" % ('\n,'.join([self.show(z) for z in arg]))
+                    ret = "[\n%s]" % ('\n,'.join([self.show(z) for z in arg]))
             elif arg:
                 ret = self.show(arg)
                 if len(ret) > 40:
@@ -1873,8 +1873,7 @@ class SherlockTracer:
         except Exception:
             exctype, value = sys.exc_info()[:2]
             s = f"<**exception: {exctype.__name__}, {value} arg: {arg !r}**>"
-            # Clearer w/o f-string.
-            ret = f" ->\n    %s" % s if len(s) > 40 else f" -> {s}"
+            ret = f" ->\n    {s}" if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
     #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
     def fn_is_enabled(self, func, patterns):
@@ -2032,7 +2031,7 @@ class SherlockTracer:
 
     def run(self, frame=None):
         """Trace from the given frame or the caller's frame."""
-        print(f"SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
+        print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
         # Compute self.n, the number of frames to ignore.
@@ -2299,7 +2298,7 @@ class TracingNullObject:
             suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
             for z in suppress:
                 if z not in repr(args):
-                    print(f"%30s"  % 'NullObject.__call__:', args, kwargs)
+                    print("%30s"  % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
@@ -3684,7 +3683,7 @@ def update_directives_pat():
     aList = [
         fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
     ]
-    pat = f"^@(%s)" % "|".join(aList)
+    pat = "^@(%s)" % "|".join(aList)
     directives_pat = re.compile(pat, re.MULTILINE)
 
 # #1688: Initialize g.directives_pat
