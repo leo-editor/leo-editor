@@ -231,7 +231,7 @@ class FreeLayoutController:
         d = g.app.db.get('ns_layouts') or {}
         if trace:
             g.trace(tag)
-            g.printObj(keys, tag=f"keys")
+            g.printObj(keys, tag="keys")
         layout = c.config.getData("free-layout-layout")
         if layout:
             layout = json.loads('\n'.join(layout))
