@@ -783,7 +783,7 @@ class LeoServer:
     #@+node:ekr.20210205102818.1: *5* server.error
     def error(self, package):
         """For unit testing. Raise ServerError"""
-        raise ServerError(f"error called")
+        raise ServerError("error called")
     #@+node:ekr.20210202183724.5: *5* server.get_all_leo_commands & helper
     def get_all_leo_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
@@ -1889,7 +1889,7 @@ class LeoServer:
         n = len(g.app.commanders())
         if n:  # pragma: no cover
             raise ServerError(f"{tag}: {n} open outlines")
-        raise TerminateServer(f"client requested shut down")
+        raise TerminateServer("client requested shut down")
     #@+node:ekr.20210204154548.1: *3* server:server utils
     #@+node:ekr.20210202110128.85: *4* server._ap_to_p
     def _ap_to_p(self, ap):
