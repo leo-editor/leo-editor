@@ -1905,7 +1905,7 @@ class LoadManager:
                     path = resolve(setting, tag=tag)
                     if path:
                         # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
-                        if trace: g.trace(f"First loaded file", theme_c.shortFileName(), path)
+                        if trace: g.trace("First loaded file", theme_c.shortFileName(), path)
                         return path
         #
         # Step 3: use the @string theme-name setting in myLeoSettings.leo.
@@ -1913,7 +1913,7 @@ class LoadManager:
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
         path = resolve(setting, tag=tag)
-        if trace: g.trace(f"myLeoSettings.leo", path)
+        if trace: g.trace("myLeoSettings.leo", path)
         return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):

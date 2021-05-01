@@ -2841,7 +2841,7 @@ class TestFind(unittest.TestCase):
         c = self.c
         root = c.rootPosition()
         root.h = 'Root'
-        root.b = f"def root():\n    pass\n"
+        root.b = "def root():\n    pass\n"
         last = root
 
         def make_child(n, p):
