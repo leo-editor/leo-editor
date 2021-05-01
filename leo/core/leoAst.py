@@ -767,7 +767,7 @@ if 1:  # pragma: no cover
             dump_ast(ast2, tag='AST AFTER')
             return False
         except Exception:
-            g.trace(f"Unexpected exception")
+            g.trace("Unexpected exception")
             g.es_exception()
             return False
         return True
@@ -2225,7 +2225,7 @@ class TokenOrderGenerator:
             # Legacy code: May fail for Python 3.8
             #
             # Scan args for *arg and *[...]
-            kwarg_arg = star_arg = star_list = None
+            kwarg_arg = star_arg = None
             for z in args:
                 if isinstance(z, ast.Starred):
                     if isinstance(z.value, ast.Name): # *Name.
@@ -2233,7 +2233,7 @@ class TokenOrderGenerator:
                         args.remove(z)
                         break
                     elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
-                        star_list = z
+                        # star_list = z
                         break
                     raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
             # Scan keywords for **name.
@@ -3850,23 +3850,23 @@ class AstDumper:  # pragma: no cover
         """
         Dump an ast tree. Adapted from ast.dump.
         """
-        sep1 = f'\n%s' % (self.indent_ws * (level + 1))
+        sep1 = '\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
             fields = [(a, self.dump_ast(b, level + 1)) for a, b in self.get_fields(node)]
             if self.include_attributes and node._attributes:
                 fields.extend([(a, self.dump_ast(getattr(node, a), level + 1))
                     for a in node._attributes])
             if self.annotate_fields:
-                aList = [f'%s=%s' % (a, b) for a, b in fields]
+                aList = ['%s=%s' % (a, b) for a, b in fields]
             else:
                 aList = [b for a, b in fields]
             name = node.__class__.__name__
             sep = '' if len(aList) <= 1 else sep1
-            return f'%s(%s%s)' % (name, sep, sep1.join(aList))
+            return '%s(%s%s)' % (name, sep, sep1.join(aList))
         if isinstance(node, list):
             sep = sep1
-            return f'LIST[%s]' % ''.join(
-                [f'%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
+            return 'LIST[%s]' % ''.join(
+                ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
         return repr(node)
     #@+node:ekr.20141012064706.18393: *5* dumper.get_fields
     def get_fields(self, node):
@@ -4069,14 +4069,14 @@ class TestFstringify(BaseTest):
         fs.silent = False
         # Test message.
         fs.message(
-            f"Test:\n"
-            f"<  Left align\n"
-            f":Colon: align\n"
-            f">  Right align\n"
-            f"   Default align")
+            "Test:\n"
+            "<  Left align\n"
+            ":Colon: align\n"
+            ">  Right align\n"
+            "   Default align")
         #
         # change_quotes...
-        fs.message(f"can't create f-fstring: no lt_s!")
+        fs.message("can't create f-fstring: no lt_s!")
         lt_s = "lt_s"
         delim = 'Delim'
         token = Token('Kind', 'Value')
@@ -4397,7 +4397,7 @@ class TestOrange(BaseTest):
     def test_at_doc_part(self):
 
         line_length = 40  # For testing.
-        contents = f"""\
+        contents = """\
     #@+at Line 1
     # Line 2
     #@@c
@@ -6435,7 +6435,7 @@ class Fstringify(TokenOrderTraverser):
         if len(aList) < 4:
             return True  # pragma: no cover (defensive)
         if not lt_s:  # pragma: no cover (defensive)
-            self.message(f"can't create f-fstring: no lt_s!")
+            self.message("can't create f-fstring: no lt_s!")
             return False
         delim = lt_s[0]
         # Check tokens 0, 1 and -1.
