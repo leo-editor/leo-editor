@@ -156,11 +156,7 @@ class AtFile:
         at.thinNodeStack = []  # Entries are vnodes.
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
-    def initWriteIvars(self, root,
-        atShadow=False,  ### To do.
-        forcePythonSentinels=False,
-        sentinels=True,
-    ):
+    def initWriteIvars(self, root, forcePythonSentinels=False):
         """
         Compute default values of all write-related ivars.
         Return the finalized name of the output file.
@@ -172,9 +168,9 @@ class AtFile:
         assert at.underindentEscapeString is not None
         #
         # Copy args
-        at.atShadow = atShadow  ### To be eliminated
+        ### at.atShadow = False
         at.root = root
-        at.sentinels = sentinels  ### To be eliminated
+        at.sentinels = True
         #
         # Override initCommonIvars.
         if forcePythonSentinels:
@@ -265,8 +261,10 @@ class AtFile:
         This will be the private file for @shadow nodes.
         """
         at, c = self, self.c
+        is_at_shadow = self.root.isAtShadowFileNode()
         if fromString:
-            if at.atShadow:
+            if is_at_shadow:
+            ### if at.atShadow:
                 return at.error(
                     'can not call at.read from string for @shadow files')
             at.initReadLine(fromString)
@@ -277,7 +275,8 @@ class AtFile:
             # Returns full path, including file name.
         at.setPathUa(at.root, fn)
             # Remember the full path to this node.
-        if at.atShadow:
+        ### if at.atShadow:
+        if is_at_shadow:
             fn = at.openAtShadowFileForReading(fn)
             if not fn:
                 return None, None
@@ -326,7 +325,7 @@ class AtFile:
             # Fix bug 760531: always mark the root as read, even if there was an error.
             # Fix bug 889175: Remember the full fileName.
         at.initReadIvars(root, fileName)
-        at.atShadow = atShadow  ### New
+        ### at.atShadow = atShadow  ### New
         at.fromString = fromString
         at.importing = bool(importFileName)  ### New.
         if at.errors:
@@ -1348,7 +1347,8 @@ class AtFile:
             c.endEditing()
             if not p.atAutoNodeName():
                 return False
-            fileName = at.initWriteIvars(root, sentinels=False)
+            fileName = at.initWriteIvars(root)
+            at.sentinels = False
             # #1450.
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
@@ -1476,7 +1476,8 @@ class AtFile:
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
-            fileName = at.initWriteIvars(root, sentinels=False)
+            fileName = at.initWriteIvars(root)
+            at.sentinels = False
             # #1450.
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
@@ -1558,12 +1559,11 @@ class AtFile:
             self.adjustTargetLanguage(fn)
                 # A hack to support unknown extensions. May set c.target_language.
             full_path = g.fullPath(c, p)
-            at.initWriteIvars(root,
-                atShadow=True,  ### to do.
-                forcePythonSentinels=True,
-                    # Force python sentinels to suppress an error message.
-                    # The actual sentinels will be set below.
-            )
+            at.initWriteIvars(root, forcePythonSentinels=True)
+                ### ???
+                # Force python sentinels to suppress an error message.
+                # The actual sentinels will be set below.
+            ### at.atShadow = True  ### To do ???
             # Make sure we can compute the shadow directory.
             private_fn = x.shadowPathName(full_path)
             if not private_fn:
@@ -1646,7 +1646,8 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            fileName = at.initWriteIvars(root, sentinels=False)
+            fileName = at.initWriteIvars(root)
+            at.sentinels = False
             # #1450.
             if not fileName:
                 at.addToOrphanList(root)
@@ -1665,7 +1666,8 @@ class AtFile:
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
-            fileName = at.initWriteIvars(root, sentinels=False)
+            fileName = at.initWriteIvars(root)
+            at.sentinels = False
             # #1450.
             if not fileName:
                 at.addToOrphanList(root)
@@ -1683,7 +1685,8 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root, sentinels=sentinels)
+            at.initWriteIvars(root)
+            at.sentinels = sentinels
             at.outputList = []
             at.putFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
@@ -1710,8 +1713,8 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root,
-                forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
+            at.initWriteIvars(root, forcePythonSentinels=forcePythonSentinels) ###
+            at.sentinels = sentinels
             at.outputList = []
             at.putFile(root, fromString=s, sentinels=sentinels)
             contents = '' if at.errors else ''.join(at.outputList)
