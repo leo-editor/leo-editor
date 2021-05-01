@@ -250,7 +250,7 @@ class AtFile:
     @cmd('check-external-file')
     def checkExternalFile(self, event=None):
         """Make sure an external file written by Leo may be read properly."""
-        at, c, p = self, self.c, self.c.p
+        c, p = self.c, self.c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             g.red('Please select an @thin or @file node')
             return
@@ -717,7 +717,7 @@ class AtFile:
                 at.writeOneAtShadowNode(p)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p):
-        at, c, ic = self, self.c, self.c.importCommands
+        c, ic =self.c, self.c.importCommands
         fn = g.fullPath(c, p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fn):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
