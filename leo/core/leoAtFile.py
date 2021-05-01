@@ -2950,7 +2950,8 @@ class AtFile:
         '''
         at, c = self, self.c
         g.app.atPathInBodyWarning = None
-        # Set initial ivars.
+        #@+<< Init ivars >>
+        #@+node:ekr.20210501135624.1: *5* << Init ivars >>
         at.page_width = c.page_width
         at.tab_width = c.tab_width
         if c.target_language:
@@ -2958,6 +2959,7 @@ class AtFile:
         at.language = c.target_language
         at.encoding = c.config.default_derived_file_encoding
         at.output_newline = g.getOutputNewline(c=c)  # Init from config settings.
+        #@-<< Init ivars >>
         # Create the language dict.
         delims = g.set_delims_from_language(c.target_language)
         lang_dict = {'language': at.language, 'delims': delims,}
