@@ -43,12 +43,12 @@ class FastRedraw:
             if kind == 'replace':
                 kind, i1, gnxs1, gnxs2 = z
                 print(kind, i1)
-                print(f"  a: [%s]" % ',\n    '.join(gnxs1))
-                print(f"  b: [%s]" % ',\n    '.join(gnxs2))
+                print("  a: [%s]" % ',\n    '.join(gnxs1))
+                print("  b: [%s]" % ',\n    '.join(gnxs2))
             elif kind in ('delete', 'insert'):
                 kind, i1, gnxs = z
                 print(kind, i1)
-                print(f"  [%s]" % ',\n    '.join(gnxs))
+                print("  [%s]" % ',\n    '.join(gnxs))
             else:
                 print(z)
     #@+node:ekr.20181202060924.2: ** LeoGui.flatten_outline
