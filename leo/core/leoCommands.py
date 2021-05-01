@@ -2077,24 +2077,6 @@ class Commands:
         path = g.os_path_finalize_join(*paths)  # #1341.
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
-    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives (no longer used)
-    # No longer used. Was called only by scanLanguageDirectives.
-
-    def scanAtRootDirectives(self, aList):
-        """Scan aList for @root-code and @root-doc directives."""
-        c = self
-        # To keep pylint happy.
-        tag = 'at_root_bodies_start_in_doc_mode'
-        start_in_doc = hasattr(c.config, tag) and getattr(c.config, tag)
-        # New in Leo 4.6: dashes are valid in directive names.
-        for d in aList:
-            if 'root-code' in d:
-                return 'code'
-            if 'root-doc' in d:
-                return 'doc'
-            if 'root' in d:
-                return 'doc' if start_in_doc else 'code'
-        return None
     #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
     def expand_path_expression(self, s):
         """Expand all {{anExpression}} in c's context."""

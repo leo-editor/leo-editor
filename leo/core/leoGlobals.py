@@ -3461,46 +3461,6 @@ def scanAllAtPathDirectives(c, p):
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
-#@+node:ekr.20100507084415.5760: *3* g.scanAtRootDirectives
-def scanAtRootDirectives(aList):
-    """Scan aList for @root directives."""
-    for d in aList:
-        s = d.get('root')
-        if s is not None:
-            i, mode = g.scanAtRootOptions(s, 0)
-            return mode
-    return None
-#@+node:ekr.20031218072017.3154: *3* g.scanAtRootOptions
-def scanAtRootOptions(s, i, err_flag=False):
-    # The @root has been eaten when called from tangle.scanAllDirectives.
-    if g.match(s, i, "@root"):
-        i += len("@root")
-        i = g.skip_ws(s, i)
-    mode = None
-    while g.match(s, i, '-'):
-        #@+<< scan another @root option >>
-        #@+node:ekr.20031218072017.3155: *4* << scan another @root option >>
-        i += 1; err = -1
-        if g.match_word(s, i, "code"):  # Just match the prefix.
-            if not mode: mode = "code"
-            elif err_flag: g.es("modes conflict in:", g.get_line(s, i))
-        elif g.match(s, i, "doc"):  # Just match the prefix.
-            if not mode: mode = "doc"
-            elif err_flag: g.es("modes conflict in:", g.get_line(s, i))
-        else:
-            err = i - 1
-        # Scan to the next minus sign.
-        while i < len(s) and s[i] not in (' ', '\t', '\n', '-'):
-            i += 1
-        if err > -1 and err_flag:
-            z_opt = s[err:i]
-            z_line = g.get_line(s, i)
-            g.es("unknown option:", z_opt, "in", z_line)
-        #@-<< scan another @root option >>
-    if mode is None:
-        doc = app.config.at_root_bodies_start_in_doc_mode
-        mode = "doc" if doc else "code"
-    return i, mode
 #@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 def scanAtTabwidthDirectives(aList, issue_error_flag=False):
     """Scan aList for @tabwidth directives."""

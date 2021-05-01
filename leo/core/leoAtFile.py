@@ -534,12 +534,7 @@ class AtFile:
         try:
             # For #451: return p.
             old_p = p.copy()
-            at.scanAllDirectives(
-                p,
-                forcePythonSentinels=False,
-                importing=True,
-                reading=True,
-            )
+            at.scanAllDirectives(p, forcePythonSentinels=False, importing=True, reading=True)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -2944,11 +2939,9 @@ class AtFile:
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self,
-        p,
+    def scanAllDirectives(self, p,
         forcePythonSentinels=False,
         importing=False,
-        issuePathWarning=False,
         reading=False,
     ):
         '''
