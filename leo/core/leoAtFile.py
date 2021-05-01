@@ -185,7 +185,7 @@ class AtFile:
             # For stream output.
         at.targetFileName = targetFileName = root.anyAtFileNodeName() or ''  # #1914.
             # For at.writeError only.
-        d = at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
+        d = at.scanAllDirectives(root)
             # Sets the following ivars:
                 # at.encoding
                 # at.explicitLineEnding
@@ -193,6 +193,10 @@ class AtFile:
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
+        if forcePythonSentinels:
+            at.startSentinelComment = '#'
+            at.endSentinelComment = ""  # Must not be None.
+            at.language = "python"
         #
         # Overrides of at.scanAllDirectives...
         defaultDirectory = d.get('path')  # #1914
@@ -534,7 +538,7 @@ class AtFile:
         try:
             # For #451: return p.
             old_p = p.copy()
-            at.scanAllDirectives(p, forcePythonSentinels=False, importing=True, reading=True)
+            at.scanAllDirectives(p, importing=True, reading=True)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -2939,32 +2943,27 @@ class AtFile:
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p,
-        forcePythonSentinels=False,
-        importing=False,
-        reading=False,
-    ):
+    def scanAllDirectives(self, p, importing=False, reading=False):
         '''
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
         '''
         at, c = self, self.c
         g.app.atPathInBodyWarning = None
-        #@+<< set ivars >>
-        #@+node:ekr.20080923070954.14: *5* << Set ivars >> (at.scanAllDirectives)
+        # Set initial ivars.
         at.page_width = c.page_width
         at.tab_width = c.tab_width
         if c.target_language:
             c.target_language = c.target_language.lower()
-        delims = g.set_delims_from_language(c.target_language)
         at.language = c.target_language
         at.encoding = c.config.default_derived_file_encoding
         at.output_newline = g.getOutputNewline(c=c)  # Init from config settings.
-        #@-<< set ivars >>
+        # Create the language dict.
+        delims = g.set_delims_from_language(c.target_language)
         lang_dict = {'language': at.language, 'delims': delims,}
         table = (
             ('encoding', at.encoding, g.scanAtEncodingDirectives),
-            # ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            # ('lang-dict', lang_dict, g.scanAtCommentAndAtLanguageDirectives),
             ('lang-dict', None, g.scanAtCommentAndAtLanguageDirectives),
             ('lineending', None, g.scanAtLineendingDirectives),
             ('pagewidth', c.page_width, g.scanAtPagewidthDirectives),
@@ -2996,12 +2995,7 @@ class AtFile:
             # Don't override comment delims when reading!
             #@+<< set comment strings from delims >>
             #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
-            if forcePythonSentinels:
-                # Force Python language.
-                delim1, delim2, delim3 = g.set_delims_from_language("python")
-                self.language = "python"
-            else:
-                delim1, delim2, delim3 = delims
+            delim1, delim2, delim3 = delims
             # Use single-line comments if we have a choice.
             # delim1,delim2,delim3 now correspond to line,start,end
             if delim1:
