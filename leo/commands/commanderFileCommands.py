@@ -611,7 +611,7 @@ def save_as_zipped(self, event=None):
     Save a Leo outline as a zipped (.db) file with a new file name.
     """
     c = self
-    fn = c.mFileName
+    ### fn = c.mFileName
     fileName = g.app.gui.runSaveFileDialog(c,
         initialfile=c.mFileName,  # .db will be added if necessary.
         title="Save As Zipped",
