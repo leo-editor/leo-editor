@@ -210,7 +210,6 @@ class LeoImportCommands:
         self.fileType = None  # ".py", ".c", etc.
         self.methodName = None  # x, as in < < x methods > > =
         self.output_newline = g.getOutputNewline(c=c)  # Value of @bool output_newline
-        ### self.rootLine = ""  # Empty or @root + self.fileName
         self.tab_width = c.tab_width
         self.treeType = "@file"  # None or "@file"
         self.webType = "@noweb"  # "cweb" or "noweb"
@@ -612,7 +611,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self, parent,
-        atShadow=False,  # For error messages only.
+        ### atShadow=False,  # For error messages only.
         ext=None,
         s=None,
     ):
@@ -637,7 +636,7 @@ class LeoImportCommands:
             p=parent,
             default=c.config.default_at_auto_file_encoding,
         )
-        ext, s = self.init_import(atShadow, ext, fileName, s)
+        ext, s = self.init_import(ext, fileName, s)
         if s is None:
             return None
         # Get the so-called scanning func.
@@ -684,7 +683,7 @@ class LeoImportCommands:
         p.h = f"@url file://{fileName}"
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, atShadow, ext, fileName, s):
+    def init_import(self, ext, fileName, s):  ### atShadow, 
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -695,20 +694,11 @@ class LeoImportCommands:
         ext = ext.lower()
         if not s:
             # Set the kind for error messages in readFileIntoString.
-            s, e = g.readFileIntoString(
-                fileName,
-                encoding=self.encoding,
-                kind='@shadow ' if atShadow else '@auto ',
-            )
-                # Kind is used only for messages.
+            s, e = g.readFileIntoString(fileName, encoding=self.encoding)
             if s is None:
                 return None, None
-            if e: self.encoding = e
-        ###
-            # if self.treeType == '@root':
-                # self.rootLine = "@root-code " + self.fileName + '\n'
-            # else:
-                # self.rootLine = ''
+            if e:
+                self.encoding = e
         return ext, s
     #@+node:ekr.20070713075352: *5* ic.scanUnknownFileType & helper
     def scanUnknownFileType(self, s, p, ext):

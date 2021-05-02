@@ -707,7 +707,7 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         # Import the outline, exactly as @auto does.
-        ic.createOutline(parent=p.copy(), atShadow=True)
+        ic.createOutline(parent=p.copy())
         if ic.errors:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):
