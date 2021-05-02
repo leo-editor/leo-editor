@@ -785,10 +785,10 @@ class LeoImportCommands:
             if isThin:
                 # Create @file node, not a deprecated @thin node.
                 p.initHeadString("@file " + fileName)
-                at.read(p) ###, force=True)
+                at.read(p)
             else:
                 p.initHeadString("Imported @file " + fileName)
-                at.read(p) ###, force=True, importFileName=fileName, 
+                at.read(p)
             p.contract()
             p.setDirty()  # 2011/10/09: tell why the file is dirty!
             if command: u.afterInsertNode(p, command, undoData)

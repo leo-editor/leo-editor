@@ -690,7 +690,7 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         if shadow_exists:
-            at.read(p)  ### atShadow=True, force=force
+            at.read(p)
         else:
             ok = at.importAtShadowNode(p)
             if ok:

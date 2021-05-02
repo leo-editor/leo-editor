@@ -332,7 +332,7 @@ def refreshFromDisk(self, event=None):
         p = at.readOneAtAutoNode(fn, p)
     elif word in ('@thin', '@file'):
         if shouldDelete: p.v._deleteAllChildren()
-        at.read(p) ###, force=True)
+        at.read(p)
     elif word == '@clean':
         # Wishlist 148: use @auto parser if the node is empty.
         if p.b.strip() or p.hasChildren():
@@ -341,8 +341,9 @@ def refreshFromDisk(self, event=None):
             # Fix #451: refresh-from-disk selects wrong node.
             p = at.readOneAtAutoNode(fn, p)
     elif word == '@shadow':
-        if shouldDelete: p.v._deleteAllChildren()
-        at.read(p) ### force=True, atShadow=True
+        if shouldDelete:
+            p.v._deleteAllChildren()
+        at.read(p)
     elif word == '@edit':
         at.readOneAtEditNode(fn, p)
             # Always deletes children.
