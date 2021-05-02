@@ -610,11 +610,7 @@ class LeoImportCommands:
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self, parent,
-        ### atShadow=False,  # For error messages only.
-        ext=None,
-        s=None,
-    ):
+    def createOutline(self, parent, ext=None, s=None):
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -683,7 +679,7 @@ class LeoImportCommands:
         p.h = f"@url file://{fileName}"
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, ext, fileName, s):  ### atShadow, 
+    def init_import(self, ext, fileName, s):
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -709,7 +705,6 @@ class LeoImportCommands:
         else:
             language = self.languageForExtension(ext)
             if language: body += f"@language {language}\n"
-        ### self.setBodyString(p, body + self.rootLine + s)
         self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
             p.clearDirty()
@@ -866,7 +861,6 @@ class LeoImportCommands:
         p = parent.insertAsLastChild()
         p.initHeadString(fileName)
         if self.webType == "cweb":
-            ### self.setBodyString(p, "@ignore\n" + self.rootLine + "@language cweb")
             self.setBodyString(p, "@ignore\n@language cweb")
         # Scan the file, creating one section for each function definition.
         self.scanWebFile(path, p)
