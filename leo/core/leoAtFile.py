@@ -120,7 +120,6 @@ class AtFile:
         at.endSentinelNodeStack = []
             # Used only when readVersion5.
         at.fromString = False
-        at.importing = False
         at.importRootSeen = False
         at.indentStack = []
         at.lastLines = []  # The lines after @-leo
@@ -329,7 +328,6 @@ class AtFile:
             # Fix bug 889175: Remember the full fileName.
         at.initReadIvars(root, fileName)
         at.fromString = fromString
-        at.importing = bool(importFileName)  ### New.
         if at.errors:
             return False
         fileName, file_s = at.openFileForReading(fromString=fromString)
