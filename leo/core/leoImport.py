@@ -210,7 +210,7 @@ class LeoImportCommands:
         self.fileType = None  # ".py", ".c", etc.
         self.methodName = None  # x, as in < < x methods > > =
         self.output_newline = g.getOutputNewline(c=c)  # Value of @bool output_newline
-        self.rootLine = ""  # Empty or @root + self.fileName
+        ### self.rootLine = ""  # Empty or @root + self.fileName
         self.tab_width = c.tab_width
         self.treeType = "@file"  # None or "@file"
         self.webType = "@noweb"  # "cweb" or "noweb"
@@ -704,10 +704,11 @@ class LeoImportCommands:
             if s is None:
                 return None, None
             if e: self.encoding = e
-        if self.treeType == '@root':
-            self.rootLine = "@root-code " + self.fileName + '\n'
-        else:
-            self.rootLine = ''
+        ###
+            # if self.treeType == '@root':
+                # self.rootLine = "@root-code " + self.fileName + '\n'
+            # else:
+                # self.rootLine = ''
         return ext, s
     #@+node:ekr.20070713075352: *5* ic.scanUnknownFileType & helper
     def scanUnknownFileType(self, s, p, ext):
@@ -718,7 +719,8 @@ class LeoImportCommands:
         else:
             language = self.languageForExtension(ext)
             if language: body += f"@language {language}\n"
-        self.setBodyString(p, body + self.rootLine + s)
+        ### self.setBodyString(p, body + self.rootLine + s)
+        self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
             p.clearDirty()
         g.app.unitTestDict = {'result': True}
@@ -874,7 +876,8 @@ class LeoImportCommands:
         p = parent.insertAsLastChild()
         p.initHeadString(fileName)
         if self.webType == "cweb":
-            self.setBodyString(p, "@ignore\n" + self.rootLine + "@language cweb")
+            ### self.setBodyString(p, "@ignore\n" + self.rootLine + "@language cweb")
+            self.setBodyString(p, "@ignore\n@language cweb")
         # Scan the file, creating one section for each function definition.
         self.scanWebFile(path, p)
         u.afterInsertNode(p, 'Import', undoData)
