@@ -3980,7 +3980,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c; at = c.atFileCommands
         p.h = f"@file {fn}"
         # Read the file into p.
-        ok = at.read(root=p.copy(), fromString=s, force=True)  # Disable caching.
+        ok = at.read(root=p.copy(), fromString=s) ###, force=True)  # Disable caching.
         if not ok:
             g.error('Error reading', fn)
             p.b = ''  # Safe: will not cause a write later.

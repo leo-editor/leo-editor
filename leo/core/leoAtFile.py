@@ -311,12 +311,7 @@ class AtFile:
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
         return shadow_fn
     #@+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root,
-        ### importFileName=None,
-        fromString=None,
-        ### atShadow=False,
-        force=False
-    ):
+    def read(self, root, fromString=None):
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = g.fullPath(c, root)  # #1341. #1889.
@@ -500,7 +495,7 @@ class AtFile:
         '''Read the @<file> node at p.'''
         at, c, fileName = self, self.c, p.anyAtFileNodeName()
         if p.isAtThinFileNode() or p.isAtFileNode():
-            at.read(p, force=force)
+            at.read(p)
         elif p.isAtAutoNode():
             at.readOneAtAutoNode(p)
         elif p.isAtEditNode():
@@ -695,7 +690,7 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         if shadow_exists:
-            at.read(p, force=force)  ### atShadow=True, 
+            at.read(p)  ### atShadow=True, force=force
         else:
             ok = at.importAtShadowNode(p)
             if ok:
@@ -1432,7 +1427,7 @@ class AtFile:
             return writer_for_ext_cb
 
         return None
-    #@+node:ekr.20210501064359.1: *6* at.writeOneAtCleanNode (NEW)
+    #@+node:ekr.20210501064359.1: *6* at.writeOneAtCleanNode
     def writeOneAtCleanNode(self, root):
         """Write one @clean file..
         root is the position of an @clean node.
@@ -1485,7 +1480,7 @@ class AtFile:
         except Exception:
             at.writeException(fileName, root)
             return False
-    #@+node:ekr.20210501075610.1: *6* at.writeOneAtFileNode (NEW)
+    #@+node:ekr.20210501075610.1: *6* at.writeOneAtFileNode
     def writeOneAtFileNode(self, root):
         """Write @file or @thin file."""
         at, c = self, self.c
@@ -1510,7 +1505,7 @@ class AtFile:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
-    #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode (NEW)
+    #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
     def writeOneAtNosentNode(self, root):
         """Write one @nosent node.
         root is the position of an @<file> node.
