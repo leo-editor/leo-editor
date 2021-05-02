@@ -176,150 +176,8 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
-<v t="ekr.20111112092813.4060"><vh>@mark-for-unit-tests</vh>
-<v t="ekr.20111113102936.4600"><vh>Test headline abc</vh></v>
-<v t="ekr.20120212130242.3980"><vh>newHeadline</vh></v>
-<v t="ekr.20090529141856.4700"><vh>importTests</vh>
-<v t="ekr.20090529141856.4710"><vh>importCWEBFiles</vh>
-<v t="ekr.20090529141856.4711"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4704"><vh>importDerivedFile</vh>
-<v t="ekr.20090529141856.4705"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4708"><vh>importFlattenedOutline</vh>
-<v t="ekr.20090529141856.4709"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20161006155420.1"><vh>importMOREFiles</vh>
-<v t="ekr.20161006155420.2"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4706"><vh>importNowebFiles</vh>
-<v t="ekr.20090529141856.4707"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20161006154740.1"><vh>importTabFiles</vh>
-<v t="ekr.20161006154802.1"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4712"><vh>removeSentinels</vh>
-<v t="ekr.20090529141856.4713"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4701"><vh>tempNode</vh></v>
-</v>
-<v t="ekr.20090529141856.4686"><vh>exportTests</vh>
-<v t="ekr.20111115105448.3880"><vh>tempNode</vh></v>
-<v t="ekr.20090529141856.4688"><vh>exportHeadlines</vh>
-<v t="ekr.20090529141856.4689"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4690"><vh>flattenOutline</vh>
-<v t="ekr.20090529141856.4691"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4692"><vh>weave</vh>
-<v t="ekr.20090529141856.4693"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4694"><vh>outlineToNoweb</vh>
-<v t="ekr.20090529141856.4695"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20090529141856.4696"><vh>outlineToCWEB</vh>
-<v t="ekr.20090529141856.4697"><vh>dialog</vh></v>
-</v>
-</v>
-<v t="ekr.20111006072734.3640"><vh>@common x-marked-nodes test code</vh>
-<v t="ekr.20111006072734.3641"><vh>setup_test</vh></v>
-<v t="ekr.20111006115024.3613"><vh>tear_down</vh></v>
-<v t="ekr.20111006105711.3734"><vh>delete_children</vh></v>
-<v t="ekr.20111006072734.3642"><vh>test_children</vh></v>
-<v t="ekr.20111211094602.3972"><vh>data</vh>
-<v t="ekr.20111211094602.3978"><vh>a</vh>
-<v t="ekr.20111211094602.3979"><vh>b</vh></v>
-</v>
-<v t="ekr.20111211094602.3975"><vh>c</vh></v>
-<v t="ekr.20111211094602.3976"><vh>d</vh></v>
-<v t="ekr.20111211094602.3977"><vh>e</vh>
-<v t="ekr.20111211094602.3978"></v>
-</v>
-</v>
-</v>
-</v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
-<v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
-<v t="ekr.20041021065844"><vh>@test @asis</vh>
-<v t="ekr.20041021065903"><vh>#@asis</vh>
-<v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
-<v t="ekr.20041021065903.2"><vh>unnamed node</vh></v>
-</v>
-<v t="ekr.20041021065844.1"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
-<v t="ekr.20200205065605.1"><vh>@test @asis: @@ in headline</vh></v>
-<v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
-<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
-<v t="ekr.20090627070131.4976"><vh>spam</vh></v>
-<v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
-</v>
-<v t="ekr.20090627070131.4978"><vh>Output</vh></v>
-</v>
-<v t="ekr.20100801125533.5787"><vh>@test @auto (no newline at end of nodes)</vh>
-<v t="ekr.20100801125533.5788"><vh>#@auto</vh>
-<v t="ekr.20100801125533.5789"><vh>spam</vh></v>
-<v t="ekr.20100801125533.5790"><vh>cheese</vh></v>
-</v>
-<v t="ekr.20100801125533.5791"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20191207060127.1"><vh>@test @clean &amp; at.shouldPrompt...</vh></v>
-<v t="ekr.20191207064106.1"><vh>@test @clean &amp; at.precheck</vh></v>
-<v t="ekr.20090225102051.2"><vh>@test @edit</vh>
-<v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
-<v t="ekr.20090225102051.4"><vh>Output</vh></v>
-</v>
-<v t="ekr.20111021115306.3696"><vh>@test @file: tex bug</vh></v>
-<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
-<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
-<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
-<v t="ekr.20170410084645.1"><vh>Old-Output</vh></v>
-</v>
-<v t="ekr.20040707141957.12"><vh>@test @thin: @last</vh>
-<v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
-<v t="ekr.20040707141957.14"><vh>Output</vh></v>
-</v>
-<v t="ekr.20100731163237.5778"><vh>@test @thin: html section references</vh></v>
-<v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
-<v t="ekr.20071113145804.8"><vh>@test at.directiveKind4</vh></v>
-<v t="ekr.20170123035753.1"><vh>@test at.directiveKind4 (new)</vh></v>
-<v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
-<v t="ekr.20071113145804.7"><vh>@test at.parseLeoSentinel</vh></v>
-<v t="ekr.20170408233251.1"><vh>@test at.putRefLine 1</vh>
-<v t="ekr.20170408234524.1"><vh>&lt;&lt; a &gt;&gt;</vh></v>
-<v t="ekr.20170408234531.1"><vh>&lt;&lt; b &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20170409003052.1"><vh>@test at.putRefLine 2</vh>
-<v t="ekr.20170409003052.2"><vh>&lt;&lt; a &gt;&gt;</vh></v>
-<v t="ekr.20170409003052.3"><vh>&lt;&lt; b &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
-</v>
-<v t="ekr.20050105093136"><vh>@test at.remove</vh></v>
-<v t="ekr.20050105094311"><vh>@test at.replaceFile (different contents)</vh></v>
-<v t="ekr.20050105095743"><vh>@test at.replaceFile (same contents)</vh></v>
-<v t="ekr.20050105100227"><vh>@test at.replaceFile (no target file)</vh></v>
-<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
-<v t="ekr.20060602195313.2"><vh>root</vh>
-<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
-<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
-</v>
-<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
-<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
-<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
-<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
-<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
-<v t="ekr.20200308204241.1"><vh>@test fast.readWithElementTree</vh></v>
-<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -344,180 +202,8 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
-<t tx="ekr.20040707141957.12"># Doesn't work when run externally because the copy operation changes the gnx.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-c.testManager.runAtFileTest(p)
-</t>
-<t tx="ekr.20040707141957.13">Line 1
-
-@last last line 1: no newline
-</t>
-<t tx="ekr.20040707141957.14">#@+leo-ver=5-thin
-#@+node:ekr.20040707141957.13: * #@thin
-Line 1
-
-#@@last
-#@-leo
-last line 1: no newline
-</t>
-<t tx="ekr.20041021065844">c.testManager.runAtFileTest(p)
-</t>
-<t tx="ekr.20041021065844.1"># Test that @nosent generates no sentinels
-
-&lt;&lt; section &gt;&gt;
-
-@others
-
-last line
-section line 1
-unnamed node line 1
-</t>
-<t tx="ekr.20041021065903"># Test that @nosent generates no sentinels
-
-&lt;&lt; section &gt;&gt;
-
-@others
-
-last line
-</t>
-<t tx="ekr.20041021065903.1">section line 1
-</t>
-<t tx="ekr.20041021065903.2">unnamed node line 1
-</t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
-<t tx="ekr.20050105093136">import os
-
-at = c.atFileCommands
-exists = g.os_path_exists
-
-path = g.os_path_join(g.app.testDir,'xyzzy')
-if exists(path):
-    os.remove(path)
-
-assert not exists(path)
-assert not at.remove(path,verbose=False)
-
-f = open(path,'w')
-f.write('test')
-f.close()
-
-assert exists(path)
-assert at.remove(path)
-assert not exists(path)
-</t>
-<t tx="ekr.20050105094311">import os
-import leo.core.leoAtFile as leoAtFile
-at = c.atFileCommands
-encoding = 'utf-8'
-exists = g.os_path_exists
-at.outputFileName = None
-at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-try:
-    # Create both paths (different contents)
-    table = (at.targetFileName,)
-    at.outputContents = contents = g.toUnicode('test contents')
-    for fn in table:
-        if fn and exists(fn):
-            os.remove(fn)
-        assert not exists(fn)
-        f = open(fn,'w')
-        s = 'test %s' % fn
-        f.write(s)
-        f.close()
-        assert exists(fn),fn
-    at.toString = False # Set by execute script stuff.
-    at.shortFileName = at.targetFileName
-    val = at.replaceFile(contents, encoding, fn, at.root)
-    assert val
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName), 'oops, output file exists'
-    assert exists(at.targetFileName), 'oops, target file does not exist'
-    f = open(at.targetFileName)
-    s = f.read()
-    f.close()
-    assert s == contents,s
-finally:
-    if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
-</t>
-<t tx="ekr.20050105095743">import os
-import leo.core.leoAtFile as leoAtFile
-at = c.atFileCommands
-encoding = 'utf-8'
-exists = g.os_path_exists
-at.outputFileName = None
-at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-# Create both paths (identical contents)
-contents = g.toUnicode('test contents')
-try:
-    table = (at.targetFileName,)
-    at.outputContents = contents
-    for fn in table:
-        if fn and exists(fn):
-            os.remove(fn)
-        assert not exists(fn)
-        f = open(fn,'w')
-        f.write(contents)
-        f.close()
-        assert exists(fn)
-    at.toString = False # Set by execute script stuff.
-    at.shortFileName = at.targetFileName
-    assert not at.replaceFile(contents, encoding, fn, at.root)
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName)
-    assert exists(at.targetFileName)
-    f = open(at.targetFileName)
-    s = f.read()
-    f.close()
-    assert s == contents,contents
-finally:
-    if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
-</t>
-<t tx="ekr.20050105100227">import os
-import leo.core.leoAtFile as leoAtFile
-at = c.atFileCommands
-encoding = 'utf-8'
-exists = g.os_path_exists
-at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
-at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
-# Remove both files.
-for fn in (at.outputFileName,at.targetFileName):
-    if fn and exists(fn):
-        os.remove(fn)
-try:
-    # Create the output file or contents.
-    at.outputContents = contents = g.toUnicode('test output')
-    at.shortFileName = at.targetFileName
-    val = at.replaceFile(contents, encoding, fn, at.root)
-    assert not val
-    if 0:
-        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-    assert not exists(at.outputFileName),at.outputFileName
-    assert exists(at.targetFileName),at.targetFileName
-    f = open(at.targetFileName)
-    s = f.read()
-    f.close()
-    assert s == contents,'%s len(%s)' % (fn,len(s))
-finally:
-    if 1:
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
-</t>
-<t tx="ekr.20050112095306.1"># Node 1 should be the first node.
-</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -759,64 +445,6 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957">@nosearch</t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20060602195313">import re
-at = c.atFileCommands
-expected = '''\
-/*@+leo-ver=5-thin*/
-/*@+node:GNX: * root*/
-/*@@language c*/
-#ifdef COMMENT
-/*@@comment /* */ */
-#endif
-/*@@tabwidth 4*/
-/*@@lineending crlf*/
-
-/*@+others*/
-/*@-others*/
-
-/*@+&lt; &lt; Get LRR Task &gt; &gt;*/
-/*@+node:GNX: ** &lt; &lt; Get LRR Task &gt; &gt;*/
-/*@-&lt; &lt; Get LRR Task &gt; &gt;*/
-/*@+&lt; &lt; Start LRR &gt; &gt;*/
-/*@+node:GNX: ** &lt; &lt; Start LRR &gt; &gt;*/
-/*@-&lt; &lt; Start LRR &gt; &gt;*/
-/*@-leo*/
-'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
-
-child = p.firstChild()
-result = at.atFileToString(child)
-result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
-if result != expected: # Show unexpected mismatches.
-    g.printObj(result, tag='result')
-    g.printObj(expected, tag='expected')
-    result = g.splitLines(result)
-    expected = g.splitLines(expected)
-    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
-    for i, s in enumerate(result):
-        if expected[i] != result[i]:
-            print(i)
-            print('expected: %r' % expected[i])
-            print('result:   %r' % result[i])
-            break
-elif 0:
-    g.printObj(result, tag='result')
-
-assert result == expected
-</t>
-<t tx="ekr.20060602195313.2">@language c
-#ifdef COMMENT
-@comment /* */ 
-#endif
-@tabwidth 4
-@lineending crlf
-
-@others
-
-&lt;&lt; Get LRR Task &gt;&gt;
-&lt;&lt; Start LRR &gt;&gt;
-</t>
-<t tx="ekr.20060602195313.3"></t>
-<t tx="ekr.20060602195313.4"></t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -971,19 +599,6 @@ else:
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
-<t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
-@language python
-@tabwidth -4
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-@pagewidth 120
-
-d = c.atFileCommands.scanAllDirectives(p)
-
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == -4
-# assert d.get('path').endswith('xyzzy')
-assert d.get('pagewidth') == 120
-</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -1009,240 +624,9 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
-<t tx="ekr.20071113145804.7">at=c.atFileCommands # self is a dummy argument.
-table = (
-    # start, end, new_df, isThin, encoding
-    # pre 4.2 formats...
-    ('#',   '',   False,  True, 'utf-8', '#@+leo-thin-encoding=utf-8.'),
-    ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
-    # 4.2 formats...
-    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
-    ('/*',  '*/', True,   True, 'utf-8',  r'\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
-    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
-    ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
-)
-try:
-    for start, end, new_df, isThin, encoding, s in table:
-        valid, new_df2, start2, end2, isThin2 = at.parseLeoSentinel(s)
-        # g.trace('start',start,'end',repr(end),'len(s)',len(s))
-        assert valid, s
-        assert new_df == new_df2, s
-        assert isThin == isThin2, s
-        assert end == end2, (end, end2, s)
-        assert at.encoding == encoding, s
-finally:
-    at.encoding = 'utf-8'
-</t>
-<t tx="ekr.20071113145804.8">at=c.atFileCommands
-table = [
-    ('@=',0,at.noDirective),
-    ('@',0,at.atDirective),
-    ('@ ',0,at.atDirective),
-    ('@\t',0,at.atDirective),
-    ('@\n',0,at.atDirective),
-    ('@all',0,at.allDirective),
-    ('    @all',4,at.allDirective),
-    ("@c",0,at.cDirective),
-    ("@code",0,at.codeDirective),
-    ("@doc",0,at.docDirective),
-    ("@end_raw",0,at.endRawDirective),
-    ('@others',0,at.othersDirective),
-    ('    @others',4,at.othersDirective),
-    ("@raw",0,at.rawDirective),
-]
-for name in g.globalDirectiveList:
-    # Note: entries in g.globalDirectiveList do not start with '@'
-    if name not in ('all','c','code','doc','end_raw','others','raw',):
-        table.append(('@' + name,0,at.miscDirective),)
-
-for s,i,expected in table:
-    result = at.directiveKind4(s,i)
-    assert result == expected, '%d %s result: %s expected: %s' % (
-        i,repr(s),at.sentinelName(result),at.sentinelName(expected))
-</t>
-<t tx="ekr.20071113201736"># Print does not work: it is redirected.
-g.pr('\nEnd of leoAtFile tests')
-</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
-</t>
-<t tx="ekr.20090225102051.2">c.testManager.runAtFileTest(p)
-</t>
-<t tx="ekr.20090225102051.3">Line 1
-
-Last line: no newline
-</t>
-<t tx="ekr.20090225102051.4">Line 1
-
-Last line: no newline
-</t>
-<t tx="ekr.20090529115704.4564">at = c.atFileCommands
-x = c.shadowController
-changed = c.changed
-child = p.firstChild()
-s = child.b
-try:
-    fn = 'unittest/read_test.py'
-    child.setHeadString('@shadow %s' % fn)
-    at.writeOneAtShadowNode(child, testing=True)
-    at.readOneAtShadowNode(fn,child)
-finally:
-    child.setHeadString('@@shadow %s' % fn)
-    ### c.setChanged(changed)
-    c.clearChanged()
-</t>
-<t tx="ekr.20090529115704.4565">@language python
-@tabwidth -4
-@others
-</t>
-<t tx="ekr.20090529115704.4567">at = c.atFileCommands
-x = c.shadowController
-changed = c.changed
-child = p.firstChild()
-s = child.b
-
-try:
-    child.setHeadString('@shadow unittest/test_1.py')
-    fn = 'unittest/test_1.py'
-    shadow_fn = x.shadowPathName(fn)
-    shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir)
-    if g.os_path_exists(shadow_fn):
-        g.utils_remove(shadow_fn,verbose=True)
-    at.writeOneAtShadowNode(child, testing=True)
-    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
-        repr(at.startSentinelComment))
-    assert at.endSentinelComment == '','endSentinelComment: %s' % (
-        repr(at.endSentinelComment))
-    if 0:
-        print('public...\n',at.public_s)
-        print('private...\n',at.private_s)
-    at.writeOneAtShadowNode(child, testing=False)
-    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
-    # No need to remove this: it's in the unittest directory.
-    # g.utils_remove(shadow_fn,verbose=True)
-finally:
-
-    child.setHeadString('@@shadow unittest/test_1.py')
-    ### c.setChanged(changed)
-    c.clearChanged()
-    # c.redraw_now()
-</t>
-<t tx="ekr.20090529115704.4568"># body of @shadow test node
-# The last line.
-</t>
-<t tx="ekr.20090529141856.4686">@language plain
-</t>
-<t tx="ekr.20090529141856.4688"></t>
-<t tx="ekr.20090529141856.4689">saveFileDialog
-test\\unittest\\output\\exportHeadlines.txt
-</t>
-<t tx="ekr.20090529141856.4690"></t>
-<t tx="ekr.20090529141856.4691">saveFileDialog
-test\\unittest\\output\\flattenOutline.txt
-</t>
-<t tx="ekr.20090529141856.4692"></t>
-<t tx="ekr.20090529141856.4693">saveFileDialog
-test\\unittest\\output\\weave.txt
-</t>
-<t tx="ekr.20090529141856.4694"></t>
-<t tx="ekr.20090529141856.4695">saveFileDialog
-test\\unittest\\output\\outlineToNoweb.txt
-</t>
-<t tx="ekr.20090529141856.4696"></t>
-<t tx="ekr.20090529141856.4697">saveFileDialog
-test\\unittest\\output\\outlineToCweb.txt
-</t>
-<t tx="ekr.20090529141856.4700">@language plain
-</t>
-<t tx="ekr.20090529141856.4701"></t>
-<t tx="ekr.20090529141856.4704"></t>
-<t tx="ekr.20090529141856.4705">openFileDialog
-core\\runLeo.py
-</t>
-<t tx="ekr.20090529141856.4706"></t>
-<t tx="ekr.20090529141856.4707">openFileDialog
-test\\unittest\\input\\noweave.nw.txt
-</t>
-<t tx="ekr.20090529141856.4708"></t>
-<t tx="ekr.20090529141856.4709">openFileDialog
-test\\unittest\\input\\flat.txt
-</t>
-<t tx="ekr.20090529141856.4710"></t>
-<t tx="ekr.20090529141856.4711">openFileDialog
-test\\unittest\\input\\cweave.w
-</t>
-<t tx="ekr.20090529141856.4712"></t>
-<t tx="ekr.20090529141856.4713">openFileDialog
-test\\unittest\\input\\testLeoAtFile.py
-</t>
-<t tx="ekr.20090627070131.4971">c.testManager.runAtFileTest(p)
-</t>
-<t tx="ekr.20090627070131.4975">@language python
-@tabwidth -4
-@others
-#end
-</t>
-<t tx="ekr.20090627070131.4976">def spam(cheese):
-
-    print(cheese)
-</t>
-<t tx="ekr.20090627070131.4977">def cheese():
-
-    pass
-</t>
-<t tx="ekr.20090627070131.4978">def spam(cheese):
-
-    print(cheese)
-def cheese():
-
-    pass
-#end
-</t>
-<t tx="ekr.20090704085350.5044">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-h = '@asis unittest/at-asis-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-table = (
-    (p.firstChild(),'spam'),
-    (p.firstChild().next(),'eggs')
-)
-assert not p.isDirty(),p.h # Do not ignore this failure!
-for p2,h2 in table:
-    assert p2.h == h2
-    assert len(p2.b) &gt; 10
-</t>
-<t tx="ekr.20090704085350.5046">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-h = '@thin unittest/at-thin-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p
-table = (
-    (p.firstChild(),'spam'),
-    (p.firstChild().next(),'eggs')
-)
-assert not p.isDirty(),p.h # Do not ignore this failure!
-for p2,h2 in table:
-    assert p2.h == h2
-    assert len(p2.b) &gt; 10
-</t>
-<t tx="ekr.20090704085350.5052">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-if g.in_bridge:
-    self.skipTest('Not for TravisCI')
-h = '@auto unittest/at-auto-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-table = (
-    (p.firstChild(),'spam'),
-    (p.firstChild().next(),'eggs')
-)
-assert not p.isDirty(), p.h # Do not ignore this failure!
-for p2, h2 in table:
-    assert p2 and p2.h == h2, (p2 and p2.h, h2)
-    assert len(p2.b) &gt; 10
 </t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
@@ -1453,90 +837,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131180007.5454">at = c.atFileCommands
-
-at.setPathUa(p,'abc')
-d = p.v.tempAttributes
-d2 = d.get('read-path')
-val1 = d2.get('path')
-val2 = at.getPathUa(p)
-
-table = (
-    ('d2.get',val1),
-    ('at.getPathUa',val2),
-)
-for kind,val in table:
-    assert val == 'abc','kind %s expected %s got %s' % (
-        kind,'abc',val)
-</t>
-<t tx="ekr.20100131180007.5458">at = c.atFileCommands
-d = at.scanAllDirectives(p)
-</t>
-<t tx="ekr.20100131180007.5462"># Here is something that should generate a verbtim sentinel::
-
-#@+leo-encoding=iso-8859-1.
-
-# The length of this node should remain constant.
-
-assert len(p.b) == 175,len(p.b)
-</t>
-<t tx="ekr.20100225094004.5385">s1 = '''
-#@+leo-ver=4
-#@+node:#@file
-Line 1
-#@-node:#@file
-#@-leo
-'''
-
-s2 = '''
-#@+leo-ver=4-thin
-#@+node:ekr.20040707141957.13:#@thin
-#@-node:ekr.20040707141957.13:#@thin
-#@-leo
-'''
-
-at = c.atFileCommands
-assert at.isFileLike(s1),'fail1'
-assert not at.isFileLike(s2),'fail2'
-</t>
-<t tx="ekr.20100731163237.5778">@language python
-
-if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-#
-# html uses block comments.  This is an important test.
-h = '@thin unittest/at-thin-html-test.html'
-p = g.findNodeAnywhere(c,h)
-assert p
-s = (
-    '@language html\n\n&lt;&lt; ' +
-    'a section reference &gt;&gt;\n\n' +
-    'after.\n')
-assert p.b == s,'body failure'
-</t>
-<t tx="ekr.20100801125533.5787">c.testManager.runAtFileTest(p)
-</t>
-<t tx="ekr.20100801125533.5788">@language python
-@tabwidth -4
-@others
-#end
-</t>
-<t tx="ekr.20100801125533.5789">def spam(cheese):
-
-    print(cheese)
-</t>
-<t tx="ekr.20100801125533.5790">def cheese():
-
-    pass
-</t>
-<t tx="ekr.20100801125533.5791">def spam(cheese):
-
-    print(cheese)
-def cheese():
-
-    pass
-#end
-</t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
 # Dec. 2019: 938 tests, 16 skipped.
@@ -1550,123 +850,6 @@ def cheese():
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
-<t tx="ekr.20110524120515.3489">c.testManager.runAtFileTest(p)
-</t>
-<t tx="ekr.20110524120515.3490"># before
-
-@raw
-
-@c
-
-&lt;&lt; ref &gt;&gt;
-
-@end_raw
-
-#after
-</t>
-<t tx="ekr.20110524120515.3491">#@+leo-ver=5-thin
-#@+node:ekr.20110524120515.3490: * #@file
-# before
-
-#@@raw
-
-@c
-
-&lt;&lt; ref &gt;&gt;
-
-#@@end_raw
-
-#after
-#@-leo
-</t>
-<t tx="ekr.20111006072734.3640">@others
-</t>
-<t tx="ekr.20111006072734.3641">def setup_test(target):
-    
-    c.unmarkAll() # Make sure we move only the test nodes!
-    
-    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
-    assert common,'no common'
-    data = g.findNodeInTree(c,common,'data')
-    assert data,'no data'
-    
-    delete_children(target)
-
-    # Copy the nodes.
-    c.selectPosition(data)
-    c.copyOutline()
-    c.selectPosition(target)
-    c.pasteOutline()
-    c.moveOutlineRight()
-    c.promote()
-    c.deleteOutline()
-    c.redraw()
-        
-    for h in ('a','b','c'):
-        p2 = g.findNodeInTree(c,target,h)
-        assert p2,'not found: %s' % (h)
-        p2.setMarked()
-        
-    if 1: # This is correct.
-        for child in target.children():
-            if child.h == 'a':
-                assert child.isCloned(),'not cloned!: %s' % (child)
-            else:
-                assert not child.isCloned(),'cloned!: %s' % (child)
-        
-    # g.trace('setup complete')
-    
-</t>
-<t tx="ekr.20111006072734.3642">def test_children(p):
-    
-    n = p.numberOfChildren()
-    assert n == 3 ,'children: %s' % (n)
-    
-    child = p.firstChild()
-    assert child.h == 'a','child1: %s' % (child)
-    
-    child = child.next()
-    assert child.h == 'c','child2: %s' % (child)
-    
-    child = child.next()
-    assert child.h == 'a','child3: %s' % (child)
-</t>
-<t tx="ekr.20111006105711.3734">def delete_children(p):
-
-    while p.hasChildren():
-        p.firstChild().doDelete()
-</t>
-<t tx="ekr.20111006115024.3613">def tear_down(p,h=None):
-    
-    if 1:
-        delete_children(p)
-    
-    if h:
-        node = g.findNodeAnywhere(c,h)
-        if node:
-            node.doDelete()
-            # g.trace('deleted',node.h)
-
-    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
-    common.contract()
-
-    c.selectPosition(p)
-    c.redraw()
-</t>
-<t tx="ekr.20111021115306.3696">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-p = g.findNodeAnywhere(c,"@file unittest/tex-error.tex")
-assert(p)
-s1 = r"""\begin{document}
-&lt;&lt; Document """
-s2 = r"""&gt;&gt;
-% hidden comment
-\end{document}
-"""
-s = s1 + s2
-s = g.adjustTripleString(s,c.tab_width)
-assert p.b == s, (repr(p.b), repr(s))
-</t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
 html
@@ -1676,11 +859,6 @@ div
 table
 nodeA
 nodeB
-</t>
-<t tx="ekr.20111112092813.4060">@nocolor-node
-
-All support code should be placed as a child of this @mark-for-unit-test node
-so that it will be copied to dynamicUnitTest.leo when running tests externally.
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -1693,9 +871,7 @@ run-all-unit-tests-locally          = Alt-6
 
 # Important: Alt-9 is used by a unit test
 </t>
-<t tx="ekr.20111113102936.4600"></t>
 <t tx="ekr.20111115080347.3872"></t>
-<t tx="ekr.20111115105448.3880"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put
@@ -1752,28 +928,7 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
-<t tx="ekr.20111211094602.3972"></t>
-<t tx="ekr.20111211094602.3975"></t>
-<t tx="ekr.20111211094602.3976"></t>
-<t tx="ekr.20111211094602.3977"></t>
-<t tx="ekr.20111211094602.3978"></t>
-<t tx="ekr.20111211094602.3979"></t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20120212130242.3980"></t>
-<t tx="ekr.20120228174052.3929"># node 1 text A.
-</t>
-<t tx="ekr.20130912092638.4151">import sys
-if g.app.isExternalUnitTest:
-    self.skipTest('external test')
-h = '@file unittest/utf-16-test.txt'
-p = g.findNodeAnywhere(c,h)
-s = 'Test of utf-16.'
-assert p,h
-# It's hard to test the utf-16 text directly.
-assert p.b
-assert p.b.find(s) &gt; -1
-assert len(p.b)==66,len(p.b)
-</t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
 
@@ -2053,14 +1208,6 @@ char t
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20161006154740.1"></t>
-<t tx="ekr.20161006154802.1">openFileDialog
-test\\unittest\\perfectImport\\tab_file_test.txt
-</t>
-<t tx="ekr.20161006155420.1"></t>
-<t tx="ekr.20161006155420.2">openFileDialog
-test\\unittest\\perfectImport\\MORE_file_test.txt
-</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
@@ -2083,142 +1230,6 @@ if p.parent() and p.parent().h.startswith('@test'):
 else:
     print('select a child of an @test node node')</t>
 <t tx="ekr.20161129030232.1"></t>
-<t tx="ekr.20170123035753.1">at = c.atFileCommands
-table = (
-    (at.othersDirective, '@others'),
-    (at.othersDirective, '@others\n'),
-    (at.othersDirective, '    @others'),
-    (at.miscDirective,   '@tabwidth -4'),
-    (at.miscDirective,   '@tabwidth -4\n'),
-    (at.miscDirective,   '@encoding'),
-    (at.noDirective,     '@encoding.setter'),
-    (at.noDirective,     '@encoding("abc")'),
-    (at.noDirective,     'encoding = "abc"'),
-    (at.noDirective,     '@directive'), # A crucial new test.
-)
-for expected, s in table:
-    result = at.directiveKind4(s, 0)
-    assert expected == result, (expected, result, repr(s))
-</t>
-<t tx="ekr.20170408233251.1">import re
-import leo.core.leoAtFile as atFile
-if 0: # prefix
-    import importlib
-    importlib.reload(atFile)
-at = atFile.AtFile(c)
-s = '''\
-if (
-    %s and 
-    %s &gt; 3
-):
-    pass
-''' % (g.angleBrackets('a'), g.angleBrackets('b'))
-# Careful: avoid @verbatim and other substitutions.
-expected = '''\
-AT+leo-ver=5-thin
-AT+node:GNX: * @test at.putRefLine 1
-if (
-    AT+&lt; &lt;a&gt; &gt;
-    AT+node:GNX: ** &lt; &lt; a &gt; &gt;
-    a
-    AT-&lt; &lt;a&gt; &gt;
-    ATafterref
- and 
-    AT+&lt; &lt;b&gt; &gt;
-    AT+node:GNX: ** &lt; &lt; b &gt; &gt;
-    b
-    AT-&lt; &lt;b&gt; &gt;
-    ATafterref
- &gt; 3
-):
-    pass
-AT-leo
-'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
-
-result = at.stringToString(c.p, s)
-result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
-    # Don't test actual gnx's, so we can copy/paste this test.
-if 0: # Show unexpected mismatches.
-    result = g.splitLines(result)
-    expected = g.splitLines(expected)
-    assert len(expected) == len(result)
-    for i, s in enumerate(result):
-        if expected[i] != result[i]:
-            print(i)
-            print('expected: %r' % expected[i])
-            print('result:   %r' % result[i])
-            break
-assert result == expected
-</t>
-<t tx="ekr.20170408234524.1">a
-</t>
-<t tx="ekr.20170408234531.1">b
-</t>
-<t tx="ekr.20170409003052.1">import re
-import leo.core.leoAtFile as atFile
-if 0: # prefix
-    import importlib
-    importlib.reload(atFile)
-at = atFile.AtFile(c)
-s = '''\
-if (%s and %s &gt; 3):
-    pass
-''' % (g.angleBrackets('a'), g.angleBrackets('b'))
-# Careful: avoid @verbatim and other substitutions.
-expected = '''\
-AT+leo-ver=5-thin
-AT+node:GNX: * @test at.putRefLine 2
-if (
-AT+&lt; &lt;a&gt; &gt;
-AT+node:GNX: ** &lt; &lt; a &gt; &gt;
-a
-AT-&lt; &lt;a&gt; &gt;
-ATafterref
- and 
-AT+&lt; &lt;b&gt; &gt;
-AT+node:GNX: ** &lt; &lt; b &gt; &gt;
-b
-AT-&lt; &lt;b&gt; &gt;
-ATafterref
- &gt; 3):
-    pass
-AT-leo
-'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
-    # Recreate expected string.
-result = at.stringToString(c.p, s)
-result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
-    # Don't test actual gnx's, so we can copy/paste this test.
-if 0: # Show unexpected mismatches.
-    result = g.splitLines(result)
-    expected = g.splitLines(expected)
-    # assert len(expected) == len(result)
-    for i, s in enumerate(result):
-        if expected[i] != result[i]:
-            print(i)
-            print('expected: %r' % expected[i])
-            print('result:   %r' % result[i])
-            break
-assert result == expected
-</t>
-<t tx="ekr.20170409003052.2">a
-</t>
-<t tx="ekr.20170409003052.3">b
-</t>
-<t tx="ekr.20170410084645.1">#@+leo-ver=5
-#@+node:#@file
-# before
-
-#@@raw
-
-@c
-
-&lt;&lt; ref &gt;&gt;
-
-#@@end_raw
-
-#after
-#@-leo
-</t>
 <t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
 
 html
@@ -2278,29 +1289,6 @@ nodeB
 </t>
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
-<t tx="ekr.20191207060127.1">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-if g.in_bridge:
-    self.skipTest('Not for TravisCI')
-h = '@clean unittest/at-clean-write-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-#
-# Enable --trace=save
-at = c.atFileCommands
-# Get the correct file name.
-fn = p.anyAtFileNodeName()
-path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
-assert g.os_path_exists(path), path
-#
-# Run the test.
-if 0:
-    g.app.debug.append('save')
-    g.cls() ###
-    print(f"Running {c.p.h}...\n")
-val = at.shouldPromptForDangerousWrite(path, p)
-assert val is False
-</t>
 <t tx="ekr.20191207060251.1">@language python
 @tabwidth -4
 @others
@@ -2311,49 +1299,12 @@ assert val is False
 <t tx="ekr.20191207060251.3">def eggs():
     pass
 </t>
-<t tx="ekr.20191207064106.1">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-if g.in_bridge:
-    self.skipTest('Not for TravisCI')
-h = '@clean unittest/at-clean-write-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-#
-# Enable --trace=save
-at = c.atFileCommands
-# Get the correct file name.
-fn = p.anyAtFileNodeName()
-path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
-assert g.os_path_exists(path), path
-#
-# Run the test.
-if 0:
-    g.app.debug.append('save')
-    g.cls() ###
-    print(f"Running {c.p.h}...\n")
-val = at.precheck(path, p)
-assert val is True
-</t>
 <t tx="ekr.20191215093835.12"></t>
 <t tx="ekr.20191215093835.13"></t>
 <t tx="ekr.20191215093835.14"></t>
 <t tx="ekr.20191215093835.15"></t>
 <t tx="ekr.20191215093835.16"></t>
 <t tx="ekr.20191215093835.9"></t>
-<t tx="ekr.20200205065605.1">if g.app.isExternalUnitTest:
-    self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
-h = '@asis unittest/at-asis-test2.txt'
-p = g.findNodeAnywhere(c,h)
-assert p, h
-table = (
-    (p.firstChild(),'spam'),
-    (p.firstChild().next(),'@@eggs')
-)
-assert not p.isDirty(),p.h # Do not ignore this failure!
-for p2,h2 in table:
-    assert p2.h == h2
-    assert len(p2.b) &gt; 10
-</t>
 <t tx="ekr.20200205065723.1">@language python
 @others
 </t>
@@ -2361,14 +1312,6 @@ for p2,h2 in table:
     pass</t>
 <t tx="ekr.20200205065723.3">def eggs():
     pass
-</t>
-<t tx="ekr.20200308204241.1">"""This code tests the translation table and associated logic."""
-import leo.core.leoFileCommands as leoFileCommands
-table = leoFileCommands.FastRead(c, {}).translate_table
-s = chr(0) + "a" + chr(0) + "b"
-assert len(s) == 4, len(s)
-s = s.translate(table)
-assert len(s) == 2, len(s)
 </t>
 </tnodes>
 </leo_file>

@@ -705,7 +705,7 @@ class AtFile:
         return ic.errors == 0
     #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root
     def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
-        """A convenience wrapper for FastAtReAD.read_into_root()"""
+        """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
@@ -946,6 +946,32 @@ class AtFile:
         c.init_error_dialogs()
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
+    #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
+    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
+        """Write @auto nodes in the selected outline"""
+        at = self; c = at.c
+        p = c.p; after = p.nodeAfterTree()
+        found = False
+        while p and p != after:
+            if (
+                p.isAtAutoNode() and not p.isAtIgnoreNode() and
+                (p.isDirty() or not writeDirtyOnly)
+            ):
+                ok = at.writeOneAtAutoNode(p)
+                if ok:
+                    found = True
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+        if not g.unitTesting:
+            if found:
+                g.es("finished")
+            elif writeDirtyOnly:
+                g.es("no dirty @auto nodes in the selected tree")
+            else:
+                g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
     @cmd('write-at-shadow-nodes')
     def writeAtShadowNodes(self, event=None):
@@ -1346,32 +1372,6 @@ class AtFile:
         except Exception:
             at.writeException(fileName, root)
             return False
-    #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
-    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
-        """Write @auto nodes in the selected outline"""
-        at = self; c = at.c
-        p = c.p; after = p.nodeAfterTree()
-        found = False
-        while p and p != after:
-            if (
-                p.isAtAutoNode() and not p.isAtIgnoreNode() and
-                (p.isDirty() or not writeDirtyOnly)
-            ):
-                ok = at.writeOneAtAutoNode(p)
-                if ok:
-                    found = True
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-            else:
-                p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @auto nodes in the selected tree")
-            else:
-                g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
     def dispatch(self, ext, p):
         """Return the correct writer function for p, an @auto node."""
