@@ -341,7 +341,7 @@ class AtFile:
         elif not fileName and not fromString and not file_s:
             return False
         root.clearVisitedInTree()
-        at.scanAllDirectives(root) ###, importing=at.importing, reading=True)
+        at.scanAllDirectives(root)
             # Sets the following ivars:
                 # at.encoding: **changed later** by readOpenFile/at.scanHeader.
                 # at.explicitLineEnding
@@ -539,7 +539,7 @@ class AtFile:
         try:
             # For #451: return p.
             old_p = p.copy()
-            at.scanAllDirectives(p) ### , importing=True, reading=True)
+            at.scanAllDirectives(p)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -2944,7 +2944,7 @@ class AtFile:
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p): ###, importing=False, reading=False):
+    def scanAllDirectives(self, p):
         '''
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
