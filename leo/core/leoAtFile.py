@@ -98,7 +98,7 @@ class AtFile:
         at.tab_width = c.tab_width or -4
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
-    def initReadIvars(self, root, fileName, perfectImportRoot=None):
+    def initReadIvars(self, root, fileName): ###, perfectImportRoot=None):
         at = self
         at.initCommonIvars()
         at.bom_encoding = None
@@ -134,7 +134,7 @@ class AtFile:
         at.lineNumber = 0  # New in Leo 4.4.8.
         at.out = None
         at.outStack = []
-        at.perfectImportRoot = perfectImportRoot
+        ### at.perfectImportRoot = perfectImportRoot
         at.read_i = 0
         at.read_lines = []
         at.readVersion = ''
@@ -143,8 +143,7 @@ class AtFile:
             # synonym for at.readVersion >= '5'
         at.root = root
         at.rootSeen = False
-        at.targetFileName = fileName ###
-            # For at.writeError only.
+        at.targetFileName = fileName  # For at.writeError only.
         at.tnodeList = []
             # Needed until old-style @file nodes are no longer supported.
         at.tnodeListIndex = 0
@@ -154,7 +153,7 @@ class AtFile:
         at.thinNodeStack = []  # Entries are vnodes.
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
-    def initWriteIvars(self, root): ###, forcePythonSentinels=False):
+    def initWriteIvars(self, root):
         """
         Compute default values of all write-related ivars.
         Return the finalized name of the output file.
@@ -170,16 +169,11 @@ class AtFile:
         at.sentinels = True
         #
         # Override initCommonIvars.
-        ###
-            # if forcePythonSentinels:
-                # at.endSentinelComment = None
-                # at.startSentinelComment = "#"
         if g.app.unitTesting:
             at.output_newline = '\n'
         #
         # Set other ivars.
-        at.force_newlines_in_at_nosent_bodies = c.config.getBool(
-            'force-newlines-in-at-nosent-bodies')
+        at.force_newlines_in_at_nosent_bodies = c.config.getBool('force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
         at.outputList = []
             # For stream output.
@@ -193,11 +187,6 @@ class AtFile:
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
-        ###
-            # if forcePythonSentinels:
-                # at.startSentinelComment = '#'
-                # at.endSentinelComment = ""  # Must not be None.
-                # at.language = "python"
         #
         # Overrides of at.scanAllDirectives...
         defaultDirectory = d.get('path')  # #1914
@@ -1551,12 +1540,11 @@ class AtFile:
             self.adjustTargetLanguage(fn)
                 # A hack to support unknown extensions. May set c.target_language.
             full_path = g.fullPath(c, p)
-            at.initWriteIvars(root) ###, forcePythonSentinels=True)
+            at.initWriteIvars(root)
             # Force python sentinels to suppress an error message.
             # The actual sentinels will be set below.
             at.endSentinelComment = None
             at.startSentinelComment = "#"
-                ### ???
             # Make sure we can compute the shadow directory.
             private_fn = x.shadowPathName(full_path)
             if not private_fn:
@@ -1699,14 +1687,14 @@ class AtFile:
     #@+node:ekr.20050506084734: *6* at.stringToString
     def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):
         """
-        Write a 4.x derived file from a string.
+        Write an external file from a string.
 
         This is at.write specialized for scripting.
         """
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root) ###, forcePythonSentinels=forcePythonSentinels) ###
+            at.initWriteIvars(root)
             if forcePythonSentinels:
                 at.endSentinelComment = None
                 at.startSentinelComment = "#"
