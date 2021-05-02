@@ -72,7 +72,6 @@ globalDirectiveList = [
     'nosearch',  # Leo 5.3.
     'others', 'pagewidth', 'path', 'quiet',
     'raw',
-    ### 'root-code', 'root-doc', 'root',
     'silent',
     'tabwidth', 'terse',
     'unit', 'verbose', 'wrap',
@@ -3257,11 +3256,7 @@ def get_directives_dict(p, root=None):
                     # A unit test tests that @path:any is invalid.
             k = g.skip_line(s, j)
             val = s[j:k].strip()
-            ### if word in ('root-doc', 'root-code'):
-            ###    d['root'] = val  # in addition to optioned version
             d[word] = val
-            # New in Leo 5.7.1: @path is allowed in body text.
-            # This is very useful when doing recursive imports.
     if root:
         anIter = g_noweb_root.finditer(p.b)
         for m in anIter:

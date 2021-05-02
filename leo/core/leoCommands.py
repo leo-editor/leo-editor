@@ -1999,16 +1999,10 @@ class Commands:
         """
         c = self
         p = p or c.p
-        # Set defaults
-        language = c.target_language and c.target_language.lower()
-        lang_dict = {
-            'language':language,
-            'delims':g.set_delims_from_language(language),
-        }
         wrap = c.config.getBool("body-pane-wraps")
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
-            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
             ('path',        None,           c.scanAtPathDirectives),
@@ -2025,13 +2019,15 @@ class Commands:
         lang_dict = d.get('lang-dict')
         d = {
             "delims":       lang_dict.get('delims'),
+            "comment":      lang_dict.get('comment'),  # Leo 6.4: New.
             "encoding":     d.get('encoding'),
-            "language":     lang_dict.get('language'),
+            # Note: at.scanAllDirectives does not use the defaults for "language".
+            "language":     lang_dict.get('language') or c.target_language and c.target_language.lower(),
+            "lang-dict":    lang_dict,  # Leo 6.4: New.
             "lineending":   d.get('lineending'),
             "pagewidth":    d.get('pagewidth'),
             "path":         d.get('path'), # Redundant: or g.getBaseDirectory(c),
             "tabwidth":     d.get('tabwidth'),
-            "pluginsList":  [], # No longer used.
             "wrap":         d.get('wrap'),
         }
         return d

@@ -2952,53 +2952,22 @@ class AtFile:
         setting corresponding AtFile ivars.
         '''
         at, c = self, self.c
-        g.app.atPathInBodyWarning = None
-        #@+<< Init ivars >>
-        #@+node:ekr.20210501135624.1: *5* << Init ivars >>
-        at.page_width = c.page_width
-        at.tab_width = c.tab_width
-        if c.target_language:
-            c.target_language = c.target_language.lower()
-        at.language = c.target_language
-        at.encoding = c.config.default_derived_file_encoding
-        at.output_newline = g.getOutputNewline(c=c)  # Init from config settings.
-        #@-<< Init ivars >>
-        # Create the language dict.
-        delims = g.set_delims_from_language(c.target_language)
-        lang_dict = {'language': at.language, 'delims': delims}
-        table = (
-            ('encoding', at.encoding, g.scanAtEncodingDirectives),
-            # ('lang-dict', lang_dict, g.scanAtCommentAndAtLanguageDirectives),
-            ('lang-dict', None, g.scanAtCommentAndAtLanguageDirectives),
-            ('lineending', None, g.scanAtLineendingDirectives),
-            ('pagewidth', c.page_width, g.scanAtPagewidthDirectives),
-            ('path', None, c.scanAtPathDirectives),
-            ('tabwidth', c.tab_width, g.scanAtTabwidthDirectives),
-        )
-        # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
-        d = {}
-        for key, default, func in table:
-            val = func(aList)
-            d[key] = default if val is None else val
-        # Post process.
-        lineending = d.get('lineending')
-        lang_dict = d.get('lang-dict')
+        d = c.scanAllDirectives(p)
+        #
+        # Language & delims: Do *not* use the default language returned by c.scanAllDirectives.
+        lang_dict = d.get('lang-dict') or {}
         if lang_dict:
             delims = lang_dict.get('delims')
-            at.language = lang_dict.get('language')
+            language = lang_dict.get('language')
         else:
             # No language directive.  Look for @<file> nodes.
-            language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+            language = d.get('language')
             delims = g.set_delims_from_language(language)
-        at.encoding = d.get('encoding')
-        at.explicitLineEnding = bool(lineending)
-        at.output_newline = lineending or g.getOutputNewline(c=c)
-        at.page_width = d.get('pagewidth')
-        at.tab_width = d.get('tabwidth')
-        if not importing and not reading:
-            # Don't override comment delims when reading!
-            #@+<< set comment strings from delims >>
+        if not language:  # Defensive code.
+            language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+        at.language = language
+        if True: ### not importing and not reading:
+            #@+<< Set comment strings from delims >>
             #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
             delim1, delim2, delim3 = delims
             # Use single-line comments if we have a choice.
@@ -3019,10 +2988,16 @@ class AtFile:
                     g.es_print("c.target_language:", c.target_language)
                 at.startSentinelComment = "#"  # This should never happen!
                 at.endSentinelComment = ""
-            #@-<< set comment strings from delims >>
-        # For unit testing.
-        d = {
-            "all": all,
+            #@-<< Set comment strings from delims >>
+        #
+        # Easy cases
+        at.encoding = d.get('encoding') or c.config.default_derived_file_encoding
+        lineending = d.get('lineending')
+        at.explicitLineEnding = bool(lineending)
+        at.output_newline = lineending or g.getOutputNewline(c=c)
+        at.page_width = d.get('pagewidth') or c.page_width
+        at.tab_width = d.get('tabwidth') or c.tab_width
+        return {
             "encoding": at.encoding,
             "language": at.language,
             "lineending": at.output_newline,
@@ -3030,7 +3005,6 @@ class AtFile:
             "path": d.get('path'),
             "tabwidth": at.tab_width,
         }
-        return d
     #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self, fn, p):
         '''
