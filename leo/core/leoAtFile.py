@@ -2942,18 +2942,22 @@ class AtFile:
         at, c = self, self.c
         d = c.scanAllDirectives(p)
         #
-        # Language & delims: Do *not* use the default language returned by c.scanAllDirectives.
+        # Language & delims: Tricky.
         lang_dict = d.get('lang-dict') or {}
         if lang_dict:
+            # There was an @delims or @language directive.
             delims = lang_dict.get('delims')
             language = lang_dict.get('language')
         else:
             # No language directive.  Look for @<file> nodes.
+            # Do *not* use the default language returned by c.scanAllDirectives.
             language = d.get('language')
             delims = g.set_delims_from_language(language)
         if not language:  # Defensive code.
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
         at.language = language
+        #
+        # Previously, setting delims was sometimes skipped, depending on kwargs.
         #@+<< Set comment strings from delims >>
         #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
         delim1, delim2, delim3 = delims
