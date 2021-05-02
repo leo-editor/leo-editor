@@ -788,7 +788,7 @@ class LeoImportCommands:
                 at.read(p, force=True)
             else:
                 p.initHeadString("Imported @file " + fileName)
-                at.read(p, importFileName=fileName, force=True)
+                at.read(p, force=True)  ### importFileName=fileName, 
             p.contract()
             p.setDirty()  # 2011/10/09: tell why the file is dirty!
             if command: u.afterInsertNode(p, command, undoData)

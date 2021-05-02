@@ -342,7 +342,7 @@ def refreshFromDisk(self, event=None):
             p = at.readOneAtAutoNode(fn, p)
     elif word == '@shadow':
         if shouldDelete: p.v._deleteAllChildren()
-        at.read(p, force=True, atShadow=True)
+        at.read(p, force=True)  # , atShadow=True
     elif word == '@edit':
         at.readOneAtEditNode(fn, p)
             # Always deletes children.

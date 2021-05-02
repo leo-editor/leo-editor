@@ -140,7 +140,7 @@ class AtFile:
         at.readVersion = ''
             # New in Leo 4.8: "4" or "5" for new-style thin files.
         at.readVersion5 = False
-            # synonym for at.readVersion >= '5' and not atShadow.
+            # synonym for at.readVersion >= '5'
         at.root = root
         at.rootSeen = False
         at.targetFileName = fileName ###
@@ -312,9 +312,9 @@ class AtFile:
         return shadow_fn
     #@+node:ekr.20041005105605.21: *5* at.read & helpers
     def read(self, root,
-        importFileName=None,
+        ### importFileName=None,
         fromString=None,
-        atShadow=False,
+        ### atShadow=False,
         force=False
     ):
         """Read an @thin or @file tree."""
@@ -695,7 +695,7 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         if shadow_exists:
-            at.read(p, atShadow=True, force=force)
+            at.read(p, force=force)  ### atShadow=True, 
         else:
             ok = at.importAtShadowNode(p)
             if ok:
