@@ -343,7 +343,7 @@ class AtFile:
         elif not fileName and not fromString and not file_s:
             return False
         root.clearVisitedInTree()
-        at.scanAllDirectives(root, importing=at.importing, reading=True)
+        at.scanAllDirectives(root) ###, importing=at.importing, reading=True)
             # Sets the following ivars:
                 # at.encoding: **changed later** by readOpenFile/at.scanHeader.
                 # at.explicitLineEnding
@@ -541,7 +541,7 @@ class AtFile:
         try:
             # For #451: return p.
             old_p = p.copy()
-            at.scanAllDirectives(p, importing=True, reading=True)
+            at.scanAllDirectives(p) ### , importing=True, reading=True)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -2946,7 +2946,7 @@ class AtFile:
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p, importing=False, reading=False):
+    def scanAllDirectives(self, p): ###, importing=False, reading=False):
         '''
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
@@ -2966,29 +2966,28 @@ class AtFile:
         if not language:  # Defensive code.
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
         at.language = language
-        if True: ### not importing and not reading:
-            #@+<< Set comment strings from delims >>
-            #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
-            delim1, delim2, delim3 = delims
-            # Use single-line comments if we have a choice.
-            # delim1,delim2,delim3 now correspond to line,start,end
-            if delim1:
-                at.startSentinelComment = delim1
-                at.endSentinelComment = ""  # Must not be None.
-            elif delim2 and delim3:
-                at.startSentinelComment = delim2
-                at.endSentinelComment = delim3
-            else:  # Emergency!
-                #
-                # Issue an error only if at.language has been set.
-                # This suppresses a message from the markdown importer.
-                if not g.app.unitTesting and at.language:
-                    g.trace(repr(at.language), g.callers())
-                    g.es_print("unknown language: using Python comment delimiters")
-                    g.es_print("c.target_language:", c.target_language)
-                at.startSentinelComment = "#"  # This should never happen!
-                at.endSentinelComment = ""
-            #@-<< Set comment strings from delims >>
+        #@+<< Set comment strings from delims >>
+        #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
+        delim1, delim2, delim3 = delims
+        # Use single-line comments if we have a choice.
+        # delim1,delim2,delim3 now correspond to line,start,end
+        if delim1:
+            at.startSentinelComment = delim1
+            at.endSentinelComment = ""  # Must not be None.
+        elif delim2 and delim3:
+            at.startSentinelComment = delim2
+            at.endSentinelComment = delim3
+        else:  # Emergency!
+            #
+            # Issue an error only if at.language has been set.
+            # This suppresses a message from the markdown importer.
+            if not g.app.unitTesting and at.language:
+                g.trace(repr(at.language), g.callers())
+                g.es_print("unknown language: using Python comment delimiters")
+                g.es_print("c.target_language:", c.target_language)
+            at.startSentinelComment = "#"  # This should never happen!
+            at.endSentinelComment = ""
+        #@-<< Set comment strings from delims >>
         #
         # Easy cases
         at.encoding = d.get('encoding') or c.config.default_derived_file_encoding
