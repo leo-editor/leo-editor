@@ -98,7 +98,7 @@ class AtFile:
         at.tab_width = c.tab_width or -4
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
-    def initReadIvars(self, root, fileName): ###, perfectImportRoot=None):
+    def initReadIvars(self, root, fileName):
         at = self
         at.initCommonIvars()
         at.bom_encoding = None
@@ -134,7 +134,6 @@ class AtFile:
         at.lineNumber = 0  # New in Leo 4.4.8.
         at.out = None
         at.outStack = []
-        ### at.perfectImportRoot = perfectImportRoot
         at.read_i = 0
         at.read_lines = []
         at.readVersion = ''
