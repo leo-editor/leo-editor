@@ -154,7 +154,7 @@ class AtFile:
         at.thinNodeStack = []  # Entries are vnodes.
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
-    def initWriteIvars(self, root, forcePythonSentinels=False):
+    def initWriteIvars(self, root): ###, forcePythonSentinels=False):
         """
         Compute default values of all write-related ivars.
         Return the finalized name of the output file.
@@ -170,9 +170,10 @@ class AtFile:
         at.sentinels = True
         #
         # Override initCommonIvars.
-        if forcePythonSentinels:
-            at.endSentinelComment = None
-            at.startSentinelComment = "#"
+        ###
+            # if forcePythonSentinels:
+                # at.endSentinelComment = None
+                # at.startSentinelComment = "#"
         if g.app.unitTesting:
             at.output_newline = '\n'
         #
@@ -192,10 +193,11 @@ class AtFile:
                 # at.output_newline
                 # at.page_width
                 # at.tab_width
-        if forcePythonSentinels:
-            at.startSentinelComment = '#'
-            at.endSentinelComment = ""  # Must not be None.
-            at.language = "python"
+        ###
+            # if forcePythonSentinels:
+                # at.startSentinelComment = '#'
+                # at.endSentinelComment = ""  # Must not be None.
+                # at.language = "python"
         #
         # Overrides of at.scanAllDirectives...
         defaultDirectory = d.get('path')  # #1914
@@ -1549,10 +1551,12 @@ class AtFile:
             self.adjustTargetLanguage(fn)
                 # A hack to support unknown extensions. May set c.target_language.
             full_path = g.fullPath(c, p)
-            at.initWriteIvars(root, forcePythonSentinels=True)
+            at.initWriteIvars(root) ###, forcePythonSentinels=True)
+            # Force python sentinels to suppress an error message.
+            # The actual sentinels will be set below.
+            at.endSentinelComment = None
+            at.startSentinelComment = "#"
                 ### ???
-                # Force python sentinels to suppress an error message.
-                # The actual sentinels will be set below.
             # Make sure we can compute the shadow directory.
             private_fn = x.shadowPathName(full_path)
             if not private_fn:
@@ -1702,7 +1706,11 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root, forcePythonSentinels=forcePythonSentinels) ###
+            at.initWriteIvars(root) ###, forcePythonSentinels=forcePythonSentinels) ###
+            if forcePythonSentinels:
+                at.endSentinelComment = None
+                at.startSentinelComment = "#"
+                at.language = "python"
             at.sentinels = sentinels
             at.outputList = []
             at.putFile(root, fromString=s, sentinels=sentinels)
