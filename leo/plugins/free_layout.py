@@ -41,7 +41,7 @@ def init():
     return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
-    
+
     #@+<< FreeLayoutController docstring >>
     #@+node:ekr.20201013042712.1: *3* << FreeLayoutController docstring >>
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware

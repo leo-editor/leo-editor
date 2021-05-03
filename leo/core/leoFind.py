@@ -2401,7 +2401,7 @@ class LeoFind:
             g.app.gui.show_find_success(c, self.in_headline, insert, p)
         c.frame.bringToFront()
         return w  # Support for isearch.
-        
+
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20210112192011.1: *4* LeoFind.Isearch commands
     #@+node:ekr.20131117164142.16941: *5* find.isearch_forward
@@ -2864,7 +2864,7 @@ class TestFind(unittest.TestCase):
         for p in c.all_positions():
             p.v.clearDirty()
             p.v.clearVisited()
-            
+
         # Always start with the root selected.
         c.selectPosition(c.rootPosition())
     #@+node:ekr.20210110073117.57: *4* TestFind.setUp & tearDown
@@ -2889,7 +2889,7 @@ class TestFind(unittest.TestCase):
     def test_change_all(self):
         c, settings, x = self.c, self.settings, self.x
         root = c.rootPosition()
-        
+
         def init():
             self.make_test_tree()  # Reinit the whole tree.
             settings.change_text = '_DEF_'
@@ -3034,7 +3034,7 @@ class TestFind(unittest.TestCase):
     #@+node:ekr.20210110073117.63: *4* TestFind.find-all
     def test_find_all(self):
         settings, x = self.settings, self.x
-        
+
         def init():
             self.make_test_tree()  # Reinit the whole tree.
             x.findAllUniqueFlag = False
@@ -3071,7 +3071,7 @@ class TestFind(unittest.TestCase):
         init()
         settings.find_text = 'not-found-xyzzy'
         x.do_find_all(settings)
-        
+
     #@+node:ekr.20210110073117.65: *4* TestFind.find-def
     def test_find_def(self):
         settings, x = self.settings, self.x
@@ -3218,15 +3218,15 @@ class TestFind(unittest.TestCase):
             settings=settings)
         assert n == 2, n  # Test 2.
         # Test 3: node-only.
-        settings ['node_only'] = True
+        settings['node_only'] = True
         n = x.batch_change(
             root=c.rootPosition(),
             replacements=((r'^DEF\b', 'def'),),
             settings=settings)
         assert n == 1, n  # Text 3.
         # Test 4: suboutline-only.
-        settings ['node_only'] = False
-        settings ['suboutline_only'] = True
+        settings['node_only'] = False
+        settings['suboutline_only'] = True
         n = x.batch_change(
             root=c.rootPosition(),
             replacements=((r'^def\b', 'DEF'),),
@@ -3250,7 +3250,7 @@ class TestFind(unittest.TestCase):
             replacements=(('def', 'DEF'),),
             settings=settings)
         assert n > 0
-        
+
     #@+node:ekr.20210110073117.58: *4* TestFind.test_tree
     def test_tree(self):
         table = (

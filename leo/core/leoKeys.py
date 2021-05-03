@@ -906,7 +906,7 @@ class AutoCompleterClass:
                     # oldSel=oldSel,
                     # oldText=oldText,
                     # newText=w.getAllText(),
-                    # newInsert=w.getInsertPoint(), 
+                    # newInsert=w.getInsertPoint(),
                     # newSel=w.getSelectionRange())
             # else:
                 # u.afterChangeBody(p, 'auto-complete', bunch)
@@ -1672,7 +1672,7 @@ class KeyHandlerClass:
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode promopt.
         self.state = g.bunch(kind=None, n=None, handler=None)
-        
+
         # Remove ???
         self.givenArgs = []  # Args specified after the command name in k.simulateCommand.
         self.functionTail = None  # For commands that take minibuffer arguments.
@@ -3377,7 +3377,7 @@ class KeyHandlerClass:
         #
         # #327: Ignore killed bindings.
         if bi and bi.commandName in k.killedBindings:
-            return False  
+            return False
         #
         # Execute the command if the binding exists.
         if bi:

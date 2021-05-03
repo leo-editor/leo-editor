@@ -262,7 +262,7 @@ class LeoKeyEvent:
         else:
             stroke = g.KeyStroke(binding) if binding else None
         assert g.isStrokeOrNone(stroke), f"(LeoKeyEvent) {stroke!r} {g.callers()}"
-        if 0: # Doesn't add much.
+        if 0:  # Doesn't add much.
             if 'keys' in g.app.debug:
                 print(f"LeoKeyEvent: binding: {binding}, stroke: {stroke}, char: {char!r}")
         self.c = c
@@ -460,7 +460,7 @@ class StringCheckBox:
 
     def checkState(self):
         return self.value
-        
+
     isChecked = checkState
 
     def objectName(self):
