@@ -172,7 +172,8 @@ class AtFile:
             at.output_newline = '\n'
         #
         # Set other ivars.
-        at.force_newlines_in_at_nosent_bodies = c.config.getBool('force-newlines-in-at-nosent-bodies')
+        at.force_newlines_in_at_nosent_bodies = c.config.getBool(
+            'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
         at.outputList = []
             # For stream output.
@@ -221,7 +222,8 @@ class AtFile:
                     g.trace(f"Did not create {theDir} for {targetFileName}")
                     return None
         # #1341.
-        return g.os_path_realpath(g.os_path_finalize_join(defaultDirectory, targetFileName))
+        return g.os_path_realpath(
+            g.os_path_finalize_join(defaultDirectory, targetFileName))
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile
@@ -688,7 +690,7 @@ class AtFile:
                 at.writeOneAtShadowNode(p)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p):
-        c, ic =self.c, self.c.importCommands
+        c, ic = self.c, self.c.importCommands
         fn = g.fullPath(c, p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fn):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
@@ -822,7 +824,7 @@ class AtFile:
         """Open a file, reporting all exceptions."""
         at = self
         # #1798: return None as a flag on any error.
-        s = None 
+        s = None
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
@@ -1573,7 +1575,8 @@ class AtFile:
             at.warnAboutOrphandAndIgnoredNodes()
             if g.app.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
-                assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
+                assert g.checkUnchangedIvars(
+                    at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if not at.errors:
                 # Write the public and private files.
                 x.makeShadowDirectory(full_path)
