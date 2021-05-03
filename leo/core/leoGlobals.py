@@ -191,7 +191,7 @@ class Command:
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
-        func.__func_name__ = func.__name__ # For leoInteg.
+        func.__func_name__ = func.__name__  # For leoInteg.
         func.is_command = True
         func.command_name = self.name
         return func
@@ -234,7 +234,7 @@ class CommanderCommand:
             method(event=event)
 
         # Inject ivars for plugins_menu.py.
-        commander_command_wrapper.__func_name__ = func.__name__ # For leoInteg.
+        commander_command_wrapper.__func_name__ = func.__name__  # For leoInteg.
         commander_command_wrapper.__name__ = self.name
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
@@ -292,7 +292,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
-        new_cmd_wrapper.__func_name__ = func.__name__ # For leoInteg.
+        new_cmd_wrapper.__func_name__ = func.__name__  # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
@@ -1880,7 +1880,7 @@ class SherlockTracer:
         """Return True if tracing for the given function is enabled."""
         if func in self.ignored_functions:
             return False
-            
+
         def ignore_function():
             if func not in self.ignored_functions:
                 self.ignored_functions.append(func)
@@ -1895,9 +1895,9 @@ class SherlockTracer:
             '.*__next\b',
             '<frozen>', '<genexpr>', '<listcomp>',
             # '<decorator-gen-.*>',
-            'get\b', 
+            'get\b',
             # String primitives.
-            'append\b', 'split\b', 'join\b', 
+            'append\b', 'split\b', 'join\b',
             # File primitives...
             'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
             'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
@@ -1908,7 +1908,7 @@ class SherlockTracer:
                 ignore_function()
                 return False
         #
-        # Legacy code.  
+        # Legacy code.
         try:
             enabled, pattern = False, None
             for pattern in patterns:
@@ -1951,12 +1951,12 @@ class SherlockTracer:
             if not base_name in self.ignored_files:
                 self.ignored_files.append(base_name)
                 # print(f"Ignore file: {base_name}")
-                
+
         def ignore_function():
             if function_name not in self.ignored_functions:
                 self.ignored_functions.append(function_name)
                 # print(f"Ignore function: {function_name}")
-                
+
         if f"{os.sep}lib{os.sep}" in file_name:
             ignore_file()
             return False
@@ -1973,9 +1973,9 @@ class SherlockTracer:
             '.*__next\b',
             '<frozen>', '<genexpr>', '<listcomp>',
             # '<decorator-gen-.*>',
-            'get\b', 
+            'get\b',
             # String primitives.
-            'append\b', 'split\b', 'join\b', 
+            'append\b', 'split\b', 'join\b',
             # File primitives...
             'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
             'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
@@ -2094,7 +2094,7 @@ class TkIDDialog(EmergencyDialog):
     def __init__(self):
         super().__init__(self.title, self.message)
         self.val = ''
-        
+
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
     def onKey(self, event):
@@ -3002,7 +3002,7 @@ def printGcObjects():
     for obj in gc.get_objects():
         key = str(type(obj))
         n = d.get(key, 0)
-        d [key] = n + 1
+        d[key] = n + 1
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
@@ -3168,9 +3168,9 @@ def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
     if c is None or p is None:
         return None  # c may be None for testing.
-        
+
     v0 = p.v
-        
+
     def find_language(p_or_v):
         for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
@@ -3185,8 +3185,8 @@ def findLanguageDirectives(c, p):
         if language:
             return language
     # #1625: Second, expand the search for cloned nodes.
-    seen = [] # vnodes that have already been searched.
-    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    seen = []  # vnodes that have already been searched.
+    parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
     while parents:
         parent_v = parents.pop()
         if parent_v in seen:
@@ -3290,7 +3290,7 @@ def getLanguageFromAncestorAtFileNode(p):
     2. The file extension of the @<file> node.
     """
     v0 = p.v
-        
+
     def find_language(p):
         # #1693: First, scan p.b for an *unambiguous* @language directive.
         if p.b.strip():
@@ -3315,8 +3315,8 @@ def getLanguageFromAncestorAtFileNode(p):
             return language
     #
     # #1625: Expand the search for cloned nodes.
-    seen = [] # vnodes that have already been searched.
-    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    seen = []  # vnodes that have already been searched.
+    parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
     while parents:
         parent_v = parents.pop()
         if parent_v in seen:
@@ -4318,7 +4318,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         c.redraw()
         c.frame.bringToFront()
         c.bodyWantsFocusNow()
-    
+
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp, soft_idx=soft_idx, hard_idx=hard_idx)
     if maxp:
@@ -5934,7 +5934,7 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 unicode_warnings: Dict[str, bool] = {}  # Keys are g.callers.
 
-def toUnicode(s: Any, encoding: Optional[str] = None, reportErrors: bool = False) -> str:
+def toUnicode(s: Any, encoding: Optional[str]=None, reportErrors: bool=False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
@@ -7114,7 +7114,7 @@ def os_path_normpath(path):
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path):
-    
+
     # os.path.normpath does the *reverse* of what we want.
     if g.isWindows and path:
         path = path.replace('\\', '/')
@@ -7140,7 +7140,7 @@ def os_path_split(path):
     return head, tail
 #@+node:ekr.20031218072017.2159: *3* g.os_path_splitext
 def os_path_splitext(path):
-    
+
     if not path:
         return ''
     head, tail = os.path.splitext(path)

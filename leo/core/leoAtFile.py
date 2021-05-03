@@ -201,7 +201,7 @@ class AtFile:
         at.outputList = []
             # For stream output.
         targetFileName = os.path.expanduser(targetFileName or '')  # #1900.
-        at.targetFileName = targetFileName 
+        at.targetFileName = targetFileName
             # For at.writeError only.
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
             # Sets the following ivars:
@@ -861,7 +861,7 @@ class AtFile:
         """Open a file, reporting all exceptions."""
         at = self
         # #1798: return None as a flag on any error.
-        s = None 
+        s = None
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()

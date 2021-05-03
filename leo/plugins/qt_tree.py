@@ -37,7 +37,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.items = []
         self.item2positionDict = {}
         self.item2vnodeDict = {}
-        self.nodeIconsDict = {} # keys are gnx, values are declutter generated icons
+        self.nodeIconsDict = {}  # keys are gnx, values are declutter generated icons
         self.position2itemDict = {}
         self.vnode2itemsDict = {}  # values are lists of items.
         self.editWidgetsDict = {}  # keys are native edit widgets, values are wrappers.
@@ -957,7 +957,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if p.v.iconVal != val:
             self.nodeIconsDict.pop(p.gnx, None)
             self.getIcon(p)  # sets p.v.iconVal
-                
+
     def updateAllIcons(self, p):
         if not p:
             return

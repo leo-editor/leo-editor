@@ -220,7 +220,7 @@ class ExternalFilesController:
         if not time or time == ef.time:
             return
         # inhibit endless dialog loop.
-        ef.time = time  
+        ef.time = time
         # #1888: Handle all possible user responses to self.ask.
         val = self.ask(c, ef.path, p=ef.p.copy())
         if val == 'yes-all':

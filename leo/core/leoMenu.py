@@ -307,19 +307,19 @@ class LeoMenu:
             return w
 
         if isinstance(command, str):
-            
+
             def static_menu_callback():
                 event = g.app.gui.create_key_event(c, w=getWidget())
                 c.doCommandByName(commandName, event)
 
             return static_menu_callback
-            
+
         # The command must be a callable.
         if not callable(command):
 
             def dummy_menu_callback(event=None):
                 pass
-        
+
             g.trace(f"bad command: {command!r}", color='red')
             return dummy_menu_callback
 
