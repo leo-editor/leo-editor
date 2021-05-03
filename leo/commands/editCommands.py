@@ -1695,7 +1695,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         #@-<< set local vars >>
         if not ch:
             return
-        if trace: g.trace('ch', repr(ch)) # and ch in '\n\r\t'
+        if trace: g.trace('ch', repr(ch))  # and ch in '\n\r\t'
         assert g.isStrokeOrNone(stroke)
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
             return
