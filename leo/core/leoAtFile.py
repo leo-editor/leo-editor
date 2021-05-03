@@ -663,7 +663,7 @@ class AtFile:
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
-    def readOneAtShadowNode(self, fn, p, force=False):
+    def readOneAtShadowNode(self, fn, p):
 
         at = self; c = at.c; x = c.shadowController
         if not fn == p.atShadowFileNodeName():
@@ -1528,6 +1528,7 @@ class AtFile:
         File indices *must* have already been assigned.
         
         testing: set by unit tests to suppress the call to at.precheck.
+                 Testing is not the same as g.unitTesting.
         '''
         at, c = self, self.c
         root = p.copy()
@@ -1579,7 +1580,7 @@ class AtFile:
                     # makeShadowDirectory takes a *public* file name.
                 x.replaceFileWithString(at.encoding, private_fn, at.private_s)
                 x.replaceFileWithString(at.encoding, full_path, at.public_s)
-            at.checkPythonCode(contents=at.private_s, fileName=full_path, root=root,)
+            at.checkPythonCode(contents=at.private_s, fileName=full_path, root=root)
             if at.errors:
                 g.error("not written:", full_path)
                 at.addToOrphanList(root)
@@ -2209,6 +2210,7 @@ class AtFile:
     #@+node:ekr.20041005105605.193: *5* at.putOpenNodeSentinel
     def putOpenNodeSentinel(self, p, inAtAll=False):
         """Write @+node sentinel for p."""
+        # Note: lineNumbers.py overrides this method.
         at = self
         if not inAtAll and p.isAtFileNode() and p != at.root:
             at.writeError("@file not valid in: " + p.h)
@@ -2824,9 +2826,16 @@ class AtFile:
     #@+node:ekr.20050104131820: *5* at.chmod
     def chmod(self, fileName, mode):
         # Do _not_ call self.error here.
-        return g.utils_chmod(fileName, mode)
+        if mode is None:
+            return
+        try:
+            os.chmod(fileName, mode)
+        except Exception:
+            g.es("exception in os.chmod", fileName)
+            g.es_exception()
+
     #@+node:ekr.20050104132018: *5* at.remove
-    def remove(self, fileName, verbose=True):
+    def remove(self, fileName):
         if not fileName:
             g.trace('No file name', g.callers())
             return False
@@ -2834,16 +2843,20 @@ class AtFile:
             os.remove(fileName)
             return True
         except Exception:
-            if verbose:
+            if not g.unitTesting:
                 self.error(f"exception removing: {fileName}")
                 g.es_exception()
-                g.trace(g.callers(5))
             return False
     #@+node:ekr.20050104132026: *5* at.stat
     def stat(self, fileName):
         '''Return the access mode of named file, removing any setuid, setgid, and sticky bits.'''
         # Do _not_ call self.error here.
-        return g.utils_stat(fileName)
+        try:
+            mode = (os.stat(fileName))[0] & (7 * 8 * 8 + 7 * 8 + 7)  # 0777
+        except Exception:
+            mode = None
+        return mode
+
     #@+node:ekr.20090530055015.6023: *4* at.get/setPathUa
     def getPathUa(self, p):
         if hasattr(p.v, 'tempAttributes'):
@@ -3156,7 +3169,7 @@ class FastAtRead:
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, path, start, test=False):
+    def scan_lines(self, delims, first_lines, lines, path, start):
         '''Scan all lines of the file, creating vnodes.'''
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>

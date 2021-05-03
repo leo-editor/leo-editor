@@ -28,7 +28,6 @@ from pathlib import Path
               # We shall define pdb as a _function_ below.
 import re
 import shlex
-import shutil
 import string
 import sys
 import subprocess
@@ -4074,47 +4073,6 @@ def splitLongFileName(fn, limit=40):
             result.append('\n')
             n = 0
     return ''.join(result)
-#@+node:ekr.20050104135720: *3* g.Used by tangle code & leoFileCommands
-#@+node:ekr.20050104123726.3: *4* g.utils_remove
-def utils_remove(fileName, verbose=True):
-    try:
-        os.remove(fileName)
-        return True
-    except Exception:
-        if verbose:
-            g.es("exception removing:", fileName)
-            g.es_exception()
-        return False
-#@+node:ekr.20031218072017.1263: *4* g.utils_rename
-def utils_rename(c, src, dst, verbose=True):
-    """Platform independent rename."""
-    # Don't call g.makeAllNonExistentDirectories here!
-    try:
-        shutil.move(src, dst)
-        return True
-    except Exception:
-        if verbose:
-            g.error('exception renaming', src, 'to', dst)
-            g.es_exception(full=False)
-        return False
-#@+node:ekr.20050104124903: *4* g.utils_chmod
-def utils_chmod(fileName, mode, verbose=True):
-    if mode is None:
-        return
-    try:
-        os.chmod(fileName, mode)
-    except Exception:
-        if verbose:
-            g.es("exception in os.chmod", fileName)
-            g.es_exception()
-#@+node:ekr.20050104123726.4: *4* g.utils_stat
-def utils_stat(fileName):
-    """Return the access mode of named file, removing any setuid, setgid, and sticky bits."""
-    try:
-        mode = (os.stat(fileName))[0] & (7 * 8 * 8 + 7 * 8 + 7)  # 0777
-    except Exception:
-        mode = None
-    return mode
 #@+node:ekr.20190114061452.26: *3* g.writeFile
 def writeFile(contents, encoding, fileName):
     """Create a file with the given contents."""
