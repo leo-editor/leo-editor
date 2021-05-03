@@ -127,7 +127,7 @@ class RstCommands:
     options_pat = re.compile(r'^@ @rst-options', re.MULTILINE)
     default_pat = re.compile(r'^default_path\s*=(.*)$', re.MULTILINE)
 
-    def convert_rst_options (self, p):
+    def convert_rst_options(self, p):
         """
         Convert options @doc parts. Change headline to @path <fn>.
         """
@@ -194,7 +194,7 @@ class RstCommands:
                     g.trace(f"ignoring nested @slides node: {p.h}")
                 else:
                     self.write_slides(p)
-            
+
     #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree
     def write_rst_tree(self, p, fn):
         """Convert p's tree to rst sources."""
@@ -400,7 +400,7 @@ class RstCommands:
                 ('.htm', 'html'),
                 ('.tex', 'latex'),
                 ('.pdf', 'leo.plugins.leo_pdf'),
-                ('.s5', 's5'), 
+                ('.s5', 's5'),
                 ('.odt', 'odt'),
             ):
                 if ext2 == ext: break
@@ -587,7 +587,7 @@ class RstCommands:
         return self.write_rst_tree(p, fn=p.h)
     #@+node:ekr.20210329105456.1: *3* rst: Filters
     #@+node:ekr.20210329105948.1: *4* rst.filter_b & self.filter_h
-    def filter_b (self, c, p):
+    def filter_b(self, c, p):
         """
         Filter p.b with user_filter_b function.
         Don't allow filtering when in the @auto-rst logic.
@@ -600,8 +600,8 @@ class RstCommands:
                 g.es_exception()
                 self.user_filter_b = None
         return p.b
-                    
-    def filter_h (self, c, p):
+
+    def filter_h(self, c, p):
         """
         Filter p.h with user_filter_h function.
         Don't allow filtering when in the @auto-rst logic.
@@ -626,19 +626,19 @@ class RstCommands:
     def in_ignore_tree(self, p):
         return any(g.match_word(p2.h, 0, '@rst-ignore-tree')
             for p2 in self.rst_parents(p))
-            
+
     def in_rst_tree(self, p):
         return any(self.is_rst_node(p2) for p2 in self.rst_parents(p))
-        
+
     def in_slides_tree(self, p):
         return any(g.match_word(p.h, 0, "@slides") for p2 in self.rst_parents(p))
 
     def is_ignore_node(self, p):
         return g.match_words(p.h, 0, ('@rst-ignore', '@rst-ignore-node'))
-        
+
     def is_rst_node(self, p):
         return g.match_word(p.h, 0, "@rst") and not g.match(p.h, 0, "@rst-")
-        
+
     def rst_parents(self, p):
         for p2 in p.parents():
             if p2 == self.root:
@@ -733,7 +733,7 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         rc = c.rstCommands
         fn = p.h
         source_p = g.findNodeInTree(c, p, 'source')
-        source_s1 = source_p.firstChild().b
+        # source_s1 = source_p.firstChild().b
         expected_p = g.findNodeInTree(c, p, 'expected')
         expected_source = expected_p.firstChild().b
         root = source_p.firstChild()

@@ -782,7 +782,7 @@ class todoController:
             p = self.c.currentPosition()
 
         for nd in p.self_and_subtree():
-            p.h = re.sub(' <[^>]*>$', '', nd.headString())
+            nd.h = re.sub(' <[^>]*>$', '', nd.headString())
             tr = self.getat(nd.v, 'time_req')
             pr = self.getat(nd.v, 'progress')
             try: pr = float(pr)

@@ -383,7 +383,7 @@ class LeoPluginsController:
                 for tag in tags:
                     n = max(n, len(tag))
                     data.append((tag, key),)
-        lines = [f"%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
+        lines = ["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100908125007.6026: *4* plugins.printPlugins
     def printPlugins(self, c):
@@ -412,7 +412,7 @@ class LeoPluginsController:
             fileName = d.get(moduleName)
             n = max(n, len(moduleName))
             data.append((moduleName, fileName),)
-        lines = [f"%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
+        lines = ["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100909065501.5949: *4* plugins.regularizeName
     def regularizeName(self, moduleOrFileName):

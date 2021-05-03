@@ -445,7 +445,7 @@ class FileCommands:
         c = self.c
         c.endEditing()
         self.writeOutline(fileName=self.mFileName)
-        
+
     #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
     @cmd('write-dirty-at-file-nodes')
     def writeDirtyAtFileNodes(self, event=None):
@@ -758,14 +758,14 @@ class FileCommands:
         return ok
     #@+node:ekr.20031218072017.3029: *5* fc.readAtFileNodes
     def readAtFileNodes(self):
-        
+
         c, p = self.c, self.c.p
         c.endEditing()
         c.atFileCommands.readAll(p, force=True)
         c.redraw()
         # Force an update of the body pane.
         c.setBodyString(p, p.b)  # Not a do-nothing!
-        
+
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self, fileName):
         """Read all external files."""
@@ -1088,13 +1088,13 @@ class FileCommands:
         #@+node:ekr.20210318125522.1: *6* function: scan_leojs_globals
         def scan_leojs_globals(json_d):
             """Set the geometries from the globals dict."""
-            
+
             def toInt(x, default):
                 try:
                     return int(x)
                 except Exception:
                     return default
-           
+
             # Priority 1: command-line args
             windowSize = g.app.loadManager.options.get('windowSize')
             windowSpot = g.app.loadManager.options.get('windowSpot')
@@ -1109,7 +1109,7 @@ class FileCommands:
             # height & width
             height, width = windowSize or (None, None)
             if height is None:
-                height, width = d.get('height'),  d.get('width')
+                height, width = d.get('height'), d.get('width')
             if height is None:
                 height, width = db_height, db_width
             height, width = toInt(height, 500), toInt(width, 800)
@@ -1731,7 +1731,7 @@ class FileCommands:
     def leojs_vnode(self, v):
         """Return a jsonized vnode."""
         return {
-            'gnx': v.fileIndex, 
+            'gnx': v.fileIndex,
             'vh': v._headString,
             'status': v.statusBits,
             'children': [self.leojs_vnode(child) for child in v.children]
@@ -1780,7 +1780,7 @@ class FileCommands:
             return False
     #@+node:ekr.20210316041806.1: *5* fc.writeOutline (write switch)
     def writeOutline(self, fileName):
-        
+
         c = self.c
         if c.checkOutline():
             g.error('Structure errors in outline! outline not written')
@@ -1945,7 +1945,7 @@ class FileCommands:
         # sheet = sheet or sheet2
         if sheet:
             self.put(f"<?xml-stylesheet {sheet} ?>\n")
-           
+
     #@+node:ekr.20031218072017.1577: *5* fc.putTnode
     def putTnode(self, v):
         # Call put just once.

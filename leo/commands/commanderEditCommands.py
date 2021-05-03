@@ -233,7 +233,7 @@ def convertTabs(self, event=None):
         return False
     #
     # Calculate the result.
-    changed,result = False, []
+    changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
         s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]
@@ -285,7 +285,7 @@ def dedentBody(self, event=None):
     # Set p.b and w's text first.
     middle = ''.join(result)
     all = head + middle + tail
-    p.b = all # Sets dirty and changed bits.
+    p.b = all  # Sets dirty and changed bits.
     w.setAllText(all)
     #
     # Calculate the proper selection range (i, j, ins).
@@ -296,7 +296,7 @@ def dedentBody(self, event=None):
     else:
         i = len(head)
         j = len(head) + len(middle)
-        if middle.endswith('\n'): # #1742.
+        if middle.endswith('\n'):  # #1742.
             j -= 1
     #
     # Set the selection range and scroll position.
@@ -466,7 +466,7 @@ def extract(self, event=None):
     bunch = u.beforeChangeBody(c.p)  # Not p.
     #
     # Update the text and selection
-    c.p.v.b = head + middle + tail # Don't redraw.
+    c.p.v.b = head + middle + tail  # Don't redraw.
     w.setAllText(head + middle + tail)
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
@@ -680,7 +680,7 @@ def alwaysIndentBody(self, event=None):
     # Set p.b and w's text first.
     middle = ''.join(result)
     all = head + middle + tail
-    p.b = all # Sets dirty and changed bits.
+    p.b = all  # Sets dirty and changed bits.
     w.setAllText(all)
     #
     # Calculate the proper selection range (i, j, ins).

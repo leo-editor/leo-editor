@@ -41,7 +41,7 @@ def init():
     return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
-    
+
     #@+<< FreeLayoutController docstring >>
     #@+node:ekr.20201013042712.1: *3* << FreeLayoutController docstring >>
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
@@ -231,7 +231,7 @@ class FreeLayoutController:
         d = g.app.db.get('ns_layouts') or {}
         if trace:
             g.trace(tag)
-            g.printObj(keys, tag=f"keys")
+            g.printObj(keys, tag="keys")
         layout = c.config.getData("free-layout-layout")
         if layout:
             layout = json.loads('\n'.join(layout))

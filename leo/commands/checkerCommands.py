@@ -239,7 +239,7 @@ def pylint_command(event):
 #@+node:ekr.20210302111917.1: ** class MypyCommand
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
-    
+
     # bpm.put_log uses this pattern and assumes the pattern has these groups:
     # m.group(1): A full file path.
     # m.group(2): The line number.
@@ -262,7 +262,7 @@ class MypyCommand:
             ### Report the file name.
             ### g.es(f"mypy: {g.shortFileName(fn)}")
             bpm.start_process(c,
-                command = f"mypy {fn}",
+                command=f"mypy {fn}",
                 fn=fn,
                 kind='mypy',
                 link_pattern=self.link_pattern,
@@ -487,7 +487,7 @@ class PyflakesCommand:
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
     def run(self, p=None, force=False, pyflakes_errors_only=False):
         """Run Pyflakes on all Python @<file> nodes in c.p's tree."""
-        if not flake8:
+        if not pyflakes:
             return True  # Pretend all is fine.
         c = self.c
         root = p or c.p
