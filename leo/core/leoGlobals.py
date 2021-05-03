@@ -191,7 +191,7 @@ class Command:
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
-        func.__func_name__ = func.__name__ # For leoInteg.
+        func.__func_name__ = func.__name__  # For leoInteg.
         func.is_command = True
         func.command_name = self.name
         return func
@@ -234,7 +234,7 @@ class CommanderCommand:
             method(event=event)
 
         # Inject ivars for plugins_menu.py.
-        commander_command_wrapper.__func_name__ = func.__name__ # For leoInteg.
+        commander_command_wrapper.__func_name__ = func.__name__  # For leoInteg.
         commander_command_wrapper.__name__ = self.name
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
@@ -292,7 +292,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
-        new_cmd_wrapper.__func_name__ = func.__name__ # For leoInteg.
+        new_cmd_wrapper.__func_name__ = func.__name__  # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
@@ -413,7 +413,7 @@ class BindingInfo:
                     s = f"{ivar}: {val!r}"
                     result.append(s)
         # Clearer w/o f-string.
-        return f"[%s]" % ' '.join(result).strip()
+        return "[%s]" % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self):
         return self.kind.startswith('*mode')
@@ -555,7 +555,7 @@ class EmergencyDialog:
     def run(self):
         """Run the modal emergency dialog."""
         # Suppress f-stringify.
-        self.top.geometry(f"%dx%d%+d%+d" % (300, 200, 50, 50))
+        self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
         self.top.lift()
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
@@ -1764,7 +1764,7 @@ class SherlockTracer:
         dots = '.' * max(0, n - self.n) if self.dots else ''
         path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
         leadin = '+' if self.show_return else ''
-        args = f"(%s)" % self.get_args(frame1) if self.show_args else ''
+        args = "(%s)" % self.get_args(frame1) if self.show_args else ''
         print(f"{path}:{dots}{leadin}{full_name}{args}")
         # Always update stats.
         d = self.stats.get(file_name, {})
@@ -1787,7 +1787,7 @@ class SherlockTracer:
                 if arg:
                     if isinstance(arg, (list, tuple)):
                         # Clearer w/o f-string
-                        val = f"[%s]" % ','.join(
+                        val = "[%s]" % ','.join(
                             [self.show(z) for z in arg if self.show(z)])
                     else:
                         val = self.show(arg)
@@ -1860,10 +1860,10 @@ class SherlockTracer:
                 ret = '<generator>'
             elif isinstance(arg, (tuple, list)):
                 # Clearer w/o f-string.
-                ret = f"[%s]" % ','.join([self.show(z) for z in arg])
+                ret = "[%s]" % ','.join([self.show(z) for z in arg])
                 if len(ret) > 40:
                     # Clearer w/o f-string.
-                    ret = f"[\n%s]" % ('\n,'.join([self.show(z) for z in arg]))
+                    ret = "[\n%s]" % ('\n,'.join([self.show(z) for z in arg]))
             elif arg:
                 ret = self.show(arg)
                 if len(ret) > 40:
@@ -1873,15 +1873,14 @@ class SherlockTracer:
         except Exception:
             exctype, value = sys.exc_info()[:2]
             s = f"<**exception: {exctype.__name__}, {value} arg: {arg !r}**>"
-            # Clearer w/o f-string.
-            ret = f" ->\n    %s" % s if len(s) > 40 else f" -> {s}"
+            ret = f" ->\n    {s}" if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
     #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
     def fn_is_enabled(self, func, patterns):
         """Return True if tracing for the given function is enabled."""
         if func in self.ignored_functions:
             return False
-            
+
         def ignore_function():
             if func not in self.ignored_functions:
                 self.ignored_functions.append(func)
@@ -1896,9 +1895,9 @@ class SherlockTracer:
             '.*__next\b',
             '<frozen>', '<genexpr>', '<listcomp>',
             # '<decorator-gen-.*>',
-            'get\b', 
+            'get\b',
             # String primitives.
-            'append\b', 'split\b', 'join\b', 
+            'append\b', 'split\b', 'join\b',
             # File primitives...
             'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
             'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
@@ -1909,7 +1908,7 @@ class SherlockTracer:
                 ignore_function()
                 return False
         #
-        # Legacy code.  
+        # Legacy code.
         try:
             enabled, pattern = False, None
             for pattern in patterns:
@@ -1952,12 +1951,12 @@ class SherlockTracer:
             if not base_name in self.ignored_files:
                 self.ignored_files.append(base_name)
                 # print(f"Ignore file: {base_name}")
-                
+
         def ignore_function():
             if function_name not in self.ignored_functions:
                 self.ignored_functions.append(function_name)
                 # print(f"Ignore function: {function_name}")
-                
+
         if f"{os.sep}lib{os.sep}" in file_name:
             ignore_file()
             return False
@@ -1974,9 +1973,9 @@ class SherlockTracer:
             '.*__next\b',
             '<frozen>', '<genexpr>', '<listcomp>',
             # '<decorator-gen-.*>',
-            'get\b', 
+            'get\b',
             # String primitives.
-            'append\b', 'split\b', 'join\b', 
+            'append\b', 'split\b', 'join\b',
             # File primitives...
             'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
             'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
@@ -2032,7 +2031,7 @@ class SherlockTracer:
 
     def run(self, frame=None):
         """Trace from the given frame or the caller's frame."""
-        print(f"SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
+        print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
         # Compute self.n, the number of frames to ignore.
@@ -2095,7 +2094,7 @@ class TkIDDialog(EmergencyDialog):
     def __init__(self):
         super().__init__(self.title, self.message)
         self.val = ''
-        
+
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
     def onKey(self, event):
@@ -2991,7 +2990,7 @@ def printGcObjects():
     for obj in gc.get_objects():
         key = str(type(obj))
         n = d.get(key, 0)
-        d [key] = n + 1
+        d[key] = n + 1
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
@@ -3157,9 +3156,9 @@ def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
     if c is None or p is None:
         return None  # c may be None for testing.
-        
+
     v0 = p.v
-        
+
     def find_language(p_or_v):
         for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
@@ -3174,8 +3173,8 @@ def findLanguageDirectives(c, p):
         if language:
             return language
     # #1625: Second, expand the search for cloned nodes.
-    seen = [] # vnodes that have already been searched.
-    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    seen = []  # vnodes that have already been searched.
+    parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
     while parents:
         parent_v = parents.pop()
         if parent_v in seen:
@@ -3279,7 +3278,7 @@ def getLanguageFromAncestorAtFileNode(p):
     2. The file extension of the @<file> node.
     """
     v0 = p.v
-        
+
     def find_language(p):
         # #1693: First, scan p.b for an *unambiguous* @language directive.
         if p.b.strip():
@@ -3304,8 +3303,8 @@ def getLanguageFromAncestorAtFileNode(p):
             return language
     #
     # #1625: Expand the search for cloned nodes.
-    seen = [] # vnodes that have already been searched.
-    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    seen = []  # vnodes that have already been searched.
+    parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
     while parents:
         parent_v = parents.pop()
         if parent_v in seen:
@@ -3712,7 +3711,7 @@ def update_directives_pat():
     aList = [
         fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
     ]
-    pat = f"^@(%s)" % "|".join(aList)
+    pat = "^@(%s)" % "|".join(aList)
     directives_pat = re.compile(pat, re.MULTILINE)
 
 # #1688: Initialize g.directives_pat
@@ -3820,6 +3819,7 @@ def fullPath(c, p, simulate=False):
         if fn:
             # Fix #102: expand path expressions.
             fn = c.expand_path_expression(fn)  # #1341.
+            fn = os.path.expanduser(fn)  # 1900.
             return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
@@ -4306,7 +4306,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         c.redraw()
         c.frame.bringToFront()
         c.bodyWantsFocusNow()
-    
+
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp, soft_idx=soft_idx, hard_idx=hard_idx)
     if maxp:
@@ -5922,7 +5922,7 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 unicode_warnings: Dict[str, bool] = {}  # Keys are g.callers.
 
-def toUnicode(s: Any, encoding: Optional[str] = None, reportErrors: bool = False) -> str:
+def toUnicode(s: Any, encoding: Optional[str]=None, reportErrors: bool=False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
@@ -6919,42 +6919,51 @@ def windows():
 def glob_glob(pattern):
     """Return the regularized glob.glob(pattern)"""
     aList = glob.glob(pattern)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         aList = [z.replace('\\', '/') for z in aList]
     return aList
 #@+node:ekr.20031218072017.2146: *3* g.os_path_abspath
 def os_path_abspath(path):
     """Convert a path to an absolute path."""
-    path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if not path:
+        return ''
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.abspath(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2147: *3* g.os_path_basename
 def os_path_basename(path):
     """Return the second half of the pair returned by split(path)."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.basename(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2148: *3* g.os_path_dirname
 def os_path_dirname(path):
     """Return the first half of the pair returned by split(path)."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.dirname(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path):
     """Return True if path exists."""
-    path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if not path:
+        return False
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     return os.path.exists(path)
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper (deprecated)
 deprecated_messages = []
@@ -6978,8 +6987,10 @@ def os_path_expandExpression(s, **keys):
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
     """wrap os.path.expanduser"""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     result = os.path.normpath(os.path.expanduser(path))
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return result
@@ -6989,10 +7000,13 @@ def os_path_finalize(path):
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     """
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.expanduser(path)  # #1383.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     # calling os.path.realpath here would cause problems in some situations.
@@ -7002,23 +7016,16 @@ def os_path_finalize_join(*args, **keys):
     """
     Join and finalize.
     
-    **keys may contain a 'c' kwarg, used by c.os_path_join.
+    **keys may contain a 'c' kwarg, used by g.os_path_join.
     """
-    # Old code
-        # path = os.path.normpath(os.path.abspath(g.os_path_join(*args, **keys)))
-        # if g.isWindows:
-            # path = path.replace('\\','/')
-    #
-    # #1383: Call both wrappers, to ensure ~ is always expanded.
-    #        This is significant change, to undo previous mistakes.
-    #        Revs cbbf5e8b and 6e461196 in devel were the likely culprits.
     path = g.os_path_join(*args, **keys)
     path = g.os_path_finalize(path)
     return path
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
 def os_path_getmtime(path):
     """Return the modification time of path."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return 0
     try:
         return os.path.getmtime(path)
     except Exception:
@@ -7026,23 +7033,19 @@ def os_path_getmtime(path):
 #@+node:ekr.20080729142651.2: *3* g.os_path_getsize
 def os_path_getsize(path):
     """Return the size of path."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.getsize(path)
+    return os.path.getsize(path) if path else 0
 #@+node:ekr.20031218072017.2151: *3* g.os_path_isabs
 def os_path_isabs(path):
     """Return True if path is an absolute path."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.isabs(path)
+    return os.path.isabs(path) if path else False
 #@+node:ekr.20031218072017.2152: *3* g.os_path_isdir
 def os_path_isdir(path):
     """Return True if the path is a directory."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.isdir(path)
+    return os.path.isdir(path) if path else False
 #@+node:ekr.20031218072017.2153: *3* g.os_path_isfile
 def os_path_isfile(path):
     """Return True if path is a file."""
-    path = g.toUnicodeFileEncoding(path)
-    return os.path.isfile(path)
+    return os.path.isfile(path) if path else False
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args, **keys):
     """
@@ -7053,48 +7056,52 @@ def os_path_join(*args, **keys):
            provided there is a 'c' kwarg.
     """
     c = keys.get('c')
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+    uargs = [z for z in args if z]
+    if not uargs:
+        return ''
     # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
+    if uargs[0] == '!!':
         uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
+    elif uargs[0] == '.':
         c = keys.get('c')
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
-    if uargs:
-        try:
-            path = os.path.join(*uargs)
-        except TypeError:
-            g.trace(uargs, args, keys, g.callers())
-            raise
-    else:
-        path = ''
+    try:
+        path = os.path.join(*uargs)
+    except TypeError:
+        g.trace(uargs, args, keys, g.callers())
+        raise
     # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path)
-    path = path.replace('\x00', '')  # Fix Pytyon 3 bug on Windows 10.
+    if '\x00' in path:
+        g.trace('NULL in', repr(path), g.callers())
+        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path):
     """Normalize the path's case."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.normcase(path)
-    path = g.toUnicodeFileEncoding(path)
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
 def os_path_normpath(path):
     """Normalize the path."""
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.normpath(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path):
+
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows and path:
         path = path.replace('\\', '/')
     return path
@@ -7104,25 +7111,25 @@ def os_path_realpath(path):
     symbolic links encountered in the path (if they are supported by the
     operating system).
     """
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return ''
     path = os.path.realpath(path)
-    path = g.toUnicodeFileEncoding(path)
+    # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2158: *3* g.os_path_split
 def os_path_split(path):
-    path = g.toUnicodeFileEncoding(path)
+    if not path:
+        return '', ''
     head, tail = os.path.split(path)
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
     return head, tail
 #@+node:ekr.20031218072017.2159: *3* g.os_path_splitext
 def os_path_splitext(path):
-    path = g.toUnicodeFileEncoding(path)
+
+    if not path:
+        return ''
     head, tail = os.path.splitext(path)
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
     return head, tail
 #@+node:ekr.20090829140232.6036: *3* g.os_startfile
 def os_startfile(fname):
@@ -7213,14 +7220,6 @@ def os_startfile(fname):
             # so that Leo-Editor is usable while the file is open.
         except Exception:
             g.es_exception(f"exception executing g.startfile for {fname!r}")
-#@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-    # Fix bug 735938: file association crash
-    if path and isinstance(path, str):
-        path = path.replace('\\', os.sep)
-        # Yes, this is correct.  All os_path_x functions return Unicode strings.
-        return g.toUnicode(path)
-    return ''
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c, root=None, useHeadlines=False):

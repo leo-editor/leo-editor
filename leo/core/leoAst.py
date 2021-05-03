@@ -309,7 +309,7 @@ class LeoGlobals:  # pragma: no cover
             print(f"toEncodedString: Error converting {s!r} to {encoding}")
         return s
     #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s: Any, encoding: str = 'utf-8') -> str:
+    def toUnicode(self, s: Any, encoding: str='utf-8') -> str:
         """Convert bytes to unicode if necessary."""
         if isinstance(s, str):
             return s
@@ -354,7 +354,7 @@ def fstringify_command(files):
     """
     for filename in files:  # pragma: no cover
         if os.path.exists(filename):
-            print(f"fstringify {filename}") 
+            print(f"fstringify {filename}")
             Fstringify().fstringify_file_silent(filename)
         else:
             print(f"file not found: {filename}")
@@ -415,7 +415,7 @@ if 1:  # pragma: no cover
         add = group.add_argument
         add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
-        add('--orange', dest='o' , action='store_true', help='leonine Black')
+        add('--orange', dest='o', action='store_true', help='leonine Black')
         add('--orange-diff', dest='od', action='store_true', help='show orange diff')
         add('--py-cov', dest='pycov', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest --cov')
         add('--pytest', dest='pytest', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest')
@@ -434,7 +434,7 @@ if 1:  # pragma: no cover
                 'leo/core/leoAst.py',
             ]
             pytest.main(args=pycov_args)
-            return # Seems necessary.
+            return  # Seems necessary.
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
@@ -767,7 +767,7 @@ if 1:  # pragma: no cover
             dump_ast(ast2, tag='AST AFTER')
             return False
         except Exception:
-            g.trace(f"Unexpected exception")
+            g.trace("Unexpected exception")
             g.es_exception()
             return False
         return True
@@ -1550,7 +1550,7 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i >= n_plain:
                 yield from self.gen_op('=')
-                yield from self.gen(node.defaults[i-n_plain])
+                yield from self.gen(node.defaults[i - n_plain])
         # 3. Sync the vararg.
         if vararg:
             # g.trace('vararg', ast.dump(vararg))
@@ -1563,7 +1563,7 @@ class TokenOrderGenerator:
             for n, z in enumerate(kwonlyargs):
                 # g.trace('keyword-only', ast.dump(z))
                 yield from self.gen(z)
-                val = kw_defaults [n]
+                val = kw_defaults[n]
                 if val is not None:
                     yield from self.gen_op('=')
                     yield from self.gen(val)
@@ -1572,7 +1572,7 @@ class TokenOrderGenerator:
             # g.trace('kwarg', ast.dump(kwarg))
             yield from self.gen_op('**')
             yield from self.gen(kwarg)
-        
+
     #@+node:ekr.20191113063144.15: *6* tog.AsyncFunctionDef
     # AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
@@ -1737,11 +1737,11 @@ class TokenOrderGenerator:
         immutable container types (tuples and frozensets) if all of their
         elements are constant.
         """
-        
+
         # Support Python 3.8.
         if node.value is None or isinstance(node.value, bool):
             # Weird: return a name!
-            yield from self.gen_token('name', repr(node.value))  
+            yield from self.gen_token('name', repr(node.value))
         elif node.value == Ellipsis:
             yield from self.gen_op('...')
         elif isinstance(node.value, str):
@@ -1787,7 +1787,7 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             yield from self.gen_token('op', '}')
     #@+node:ekr.20191113063144.37: *6* tog.Ellipsis
-    def do_Ellipsis(self, node): # pragma: no cover (Does not exist for python 3.8+)
+    def do_Ellipsis(self, node):  # pragma: no cover (Does not exist for python 3.8+)
 
         yield from self.gen_op('...')
     #@+node:ekr.20191113063144.38: *6* tog.ExtSlice
@@ -2175,19 +2175,19 @@ class TokenOrderGenerator:
         # Scan args for *name or *List
         args = node.args or []
         keywords = node.keywords or []
-        
+
         def get_pos(obj):
             line1 = getattr(obj, 'lineno', None)
             col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
-            
+
         def sort_key(aTuple):
             line, col, obj = aTuple
-            return line*1000 + col
+            return line * 1000 + col
 
         if 0:
             g.printObj([ast.dump(z) for z in args], tag='args')
-            g.printObj([ast.dump(z) for z in keywords], tag = 'keywords')
+            g.printObj([ast.dump(z) for z in keywords], tag='keywords')
 
         if py_version >= (3, 9):
             places = [get_pos(z) for z in args + keywords]
@@ -2196,7 +2196,7 @@ class TokenOrderGenerator:
             for z in ordered_args:
                 if isinstance(z, ast.Starred):
                     yield from self.gen_op('*')
-                    if isinstance(z.value, ast.Name): # *Name.
+                    if isinstance(z.value, ast.Name):  # *Name.
                         yield from self.arg_helper(z.value)
                     elif isinstance(z.value, ast.List):  # *[...]
                         yield from self.gen_op('[')
@@ -2225,15 +2225,15 @@ class TokenOrderGenerator:
             # Legacy code: May fail for Python 3.8
             #
             # Scan args for *arg and *[...]
-            kwarg_arg = star_arg = star_list = None
+            kwarg_arg = star_arg = None
             for z in args:
                 if isinstance(z, ast.Starred):
-                    if isinstance(z.value, ast.Name): # *Name.
+                    if isinstance(z.value, ast.Name):  # *Name.
                         star_arg = z
                         args.remove(z)
                         break
                     elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
-                        star_list = z
+                        # star_list = z
                         break
                     raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
             # Scan keywords for **name.
@@ -2241,7 +2241,7 @@ class TokenOrderGenerator:
                 if hasattr(z, 'arg') and z.arg is None:
                     kwarg_arg = z
                     keywords.remove(z)
-                    break 
+                    break
             # Sync the plain arguments.
             for z in args:
                 yield from self.arg_helper(z)
@@ -2560,7 +2560,7 @@ class TokenOrderTraverser:
                 stack.pop()
             # not found.
             else:
-                break   # pragma: no cover 
+                break  # pragma: no cover
         return self.last_node_index
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
@@ -3464,14 +3464,14 @@ class BaseTest(unittest.TestCase):
     # Statistics.
     counts: Dict[str, int] = {}
     times: Dict[str, float] = {}
-    
+
     # Debugging traces & behavior.
     # create_links: 'full-traceback'
     # make_data: 'contents', 'tokens', 'tree',
     #            'post-tokens', 'post-tree',
     #            'unit-test'
-    debug = [] 
-    
+    debug = []
+
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
     def adjust_expected(self, s):
@@ -3487,7 +3487,7 @@ class BaseTest(unittest.TestCase):
     def make_data(self, contents, description=None):  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
-        if not contents: 
+        if not contents:
             return '', None, None
         self.link_error = False
         t1 = get_time()
@@ -3497,7 +3497,7 @@ class BaseTest(unittest.TestCase):
         # Create the TOG instance.
         self.tog = TokenOrderGenerator()
         self.tog.filename = description or g.callers(2).split(',')[0]
-        
+
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         if not tokens:
@@ -3516,7 +3516,7 @@ class BaseTest(unittest.TestCase):
         if 'tree' in self.debug:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
         if 'tokens' in self.debug:
-            dump_tokens(tokens) 
+            dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links.
         self.create_links(tokens, tree)
@@ -3850,23 +3850,23 @@ class AstDumper:  # pragma: no cover
         """
         Dump an ast tree. Adapted from ast.dump.
         """
-        sep1 = f'\n%s' % (self.indent_ws * (level + 1))
+        sep1 = '\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
             fields = [(a, self.dump_ast(b, level + 1)) for a, b in self.get_fields(node)]
             if self.include_attributes and node._attributes:
                 fields.extend([(a, self.dump_ast(getattr(node, a), level + 1))
                     for a in node._attributes])
             if self.annotate_fields:
-                aList = [f'%s=%s' % (a, b) for a, b in fields]
+                aList = ['%s=%s' % (a, b) for a, b in fields]
             else:
                 aList = [b for a, b in fields]
             name = node.__class__.__name__
             sep = '' if len(aList) <= 1 else sep1
-            return f'%s(%s%s)' % (name, sep, sep1.join(aList))
+            return '%s(%s%s)' % (name, sep, sep1.join(aList))
         if isinstance(node, list):
             sep = sep1
-            return f'LIST[%s]' % ''.join(
-                [f'%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
+            return 'LIST[%s]' % ''.join(
+                ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
         return repr(node)
     #@+node:ekr.20141012064706.18393: *5* dumper.get_fields
     def get_fields(self, node):
@@ -3889,31 +3889,31 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
     #@+others
     #@+node:ekr.20200726145235.2: *4* TestFiles.test_leoApp
     def test_leoApp(self):
-        
+
         self.make_file_data('leoApp.py')
     #@+node:ekr.20200726145235.1: *4* TestFiles.test_leoAst
     def test_leoAst(self):
-        
+
         self.make_file_data('leoAst.py')
     #@+node:ekr.20200726145333.1: *4* TestFiles.test_leoDebugger
     def test_leoDebugger(self):
-        
+
         self.make_file_data('leoDebugger.py')
     #@+node:ekr.20200726145333.2: *4* TestFiles.test_leoFind
     def test_leoFind(self):
-        
+
         self.make_file_data('leoFind.py')
     #@+node:ekr.20200726145333.3: *4* TestFiles.test_leoGlobals
     def test_leoGlobals(self):
-        
+
         self.make_file_data('leoGlobals.py')
     #@+node:ekr.20200726145333.4: *4* TestFiles.test_leoTips
     def test_leoTips(self):
-        
+
         self.make_file_data('leoTips.py')
     #@+node:ekr.20200726145735.1: *4* TestFiles.test_runLeo
     def test_runLeo(self):
-        
+
         self.make_file_data('runLeo.py')
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
@@ -4069,14 +4069,14 @@ class TestFstringify(BaseTest):
         fs.silent = False
         # Test message.
         fs.message(
-            f"Test:\n"
-            f"<  Left align\n"
-            f":Colon: align\n"
-            f">  Right align\n"
-            f"   Default align")
+            "Test:\n"
+            "<  Left align\n"
+            ":Colon: align\n"
+            ">  Right align\n"
+            "   Default align")
         #
         # change_quotes...
-        fs.message(f"can't create f-fstring: no lt_s!")
+        fs.message("can't create f-fstring: no lt_s!")
         lt_s = "lt_s"
         delim = 'Delim'
         token = Token('Kind', 'Value')
@@ -4359,7 +4359,7 @@ class TestOrange(BaseTest):
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20200228074455.1: *4* TestOrange.test_bug_1429
     def test_bug_1429(self):
-        
+
         contents = r'''\
     def get_semver(tag):
         """bug 1429 docstring"""
@@ -4397,7 +4397,7 @@ class TestOrange(BaseTest):
     def test_at_doc_part(self):
 
         line_length = 40  # For testing.
-        contents = f"""\
+        contents = """\
     #@+at Line 1
     # Line 2
     #@@c
@@ -5104,7 +5104,7 @@ class TestOrange(BaseTest):
         assert results == expected, message
     #@+node:ekr.20200729083027.1: *4* TestOrange.verbatim2
     def test_verbatim2(self):
-        
+
         contents = """\
     #@@beautify
     #@@nobeautify
@@ -5183,13 +5183,13 @@ class TestTOG(BaseTest):
     
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
-    
+
     debug = ['unit-test']
-    
+
     #@+others
     #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features
     #@+node:ekr.20210318213133.1: *5* test_full_grammar (py3_test_grammar.py exists)
-    def test_full_grammar(self):  # pragma: no cover 
+    def test_full_grammar(self):  # pragma: no cover
 
         dir_ = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
@@ -5220,7 +5220,7 @@ class TestTOG(BaseTest):
     f(1, x=2,
         *[3, 4], y=5)
     '''
-        elif 1: # Expected order. 
+        elif 1:  # Expected order.
             contents = '''f(1, *[a, 3], x=2, y=5)'''
         else:  # Legacy.
             contents = '''f(a, *args, **kwargs)'''
@@ -5238,12 +5238,12 @@ class TestTOG(BaseTest):
 
         if py_version < (3, 8):
             # Python 3.8: https://bugs.python.org/issue32117
-            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment") 
+            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")
         contents = '''def g3(): return 1, *return_list'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320065344.1: *5* test_line_494
     def test_line_494(self):  # pragma: no cover
-        
+
         """
         https://docs.python.org/3/whatsnew/3.8.html#other-language-changes
         
@@ -5258,7 +5258,7 @@ class TestTOG(BaseTest):
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210319130349.1: *5* test_line_875
     def test_line_875(self):
-        
+
         contents = '''list((x, y) for x in 'abcd' for y in 'abcd')'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210319130616.1: *5* test_line_898
@@ -6435,7 +6435,7 @@ class Fstringify(TokenOrderTraverser):
         if len(aList) < 4:
             return True  # pragma: no cover (defensive)
         if not lt_s:  # pragma: no cover (defensive)
-            self.message(f"can't create f-fstring: no lt_s!")
+            self.message("can't create f-fstring: no lt_s!")
             return False
         delim = lt_s[0]
         # Check tokens 0, 1 and -1.
@@ -6515,7 +6515,7 @@ class Fstringify(TokenOrderTraverser):
         result = list(re.finditer(self.format_pat, s))
         return result
     #@+node:ekr.20200726125841.1: *5* fs.scan_for_values (token based, not used)
-    def scan_for_values(self):  # pragma: no cover 
+    def scan_for_values(self):  # pragma: no cover
         """
         **Important**: This method is not used. It shows how to "parse"
         the RHS of an % operator using tokens instead of a parse tree. 
@@ -6529,7 +6529,7 @@ class Fstringify(TokenOrderTraverser):
         
         If all goes well, we'll skip all tokens in the tokens list.
         """
-        
+
         # pylint: disable=no-member # This is example code.
         # Skip the '%'
         new_token = self.new_token
@@ -6557,7 +6557,7 @@ class Fstringify(TokenOrderTraverser):
                 # The newline ends the scan.
                 values.append(value_list)
                     # Retain the tokens!
-                if not include_paren: # Bug fix.
+                if not include_paren:  # Bug fix.
                     tokens.pop()  # Rescan the ')'
                 break
             if (kind, val) == ('op', ')'):
@@ -6574,9 +6574,9 @@ class Fstringify(TokenOrderTraverser):
                 values.append(value_list)
                 value_list = []
             elif kind == 'op' and val in '([{':
-                values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
+                values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
                 value_list.extend(values_list2)
-                tokens.extend(self.tokens[token_i : token_i2])
+                tokens.extend(self.tokens[token_i:token_i2])
                 token_i = token_i2
             elif kind == 'name':
                 # Ensure separation of names.

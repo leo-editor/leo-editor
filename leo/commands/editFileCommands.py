@@ -28,7 +28,7 @@ class ConvertAtRoot:
     - Make clones of section references defined outside of @clean nodes,
       moving them so they are children of the nodes that reference them.
     """
-    
+
     errors = 0
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
@@ -83,7 +83,7 @@ class ConvertAtRoot:
     def dump(self, c):
         print(f"Dump of {c.shortFileName()}...")
         for p in c.all_positions():
-            print(' '*2*p.level(), p.h)
+            print(' ' * 2 * p.level(), p.h)
     #@+node:ekr.20210307075117.1: *3* atRoot.do_root
     def do_root(self, p):
         """
@@ -100,15 +100,15 @@ class ConvertAtRoot:
     #@+node:ekr.20210307082125.1: *3* atRoot.find_section
     def find_section(self, root, section_name):
         """Find the section definition node in root's subtree for the given section."""
-        
+
         def munge(s):
-            return s.strip().replace(' ','').lower()
-            
+            return s.strip().replace(' ', '').lower()
+
         for p in root.subtree():
             if munge(p.h).startswith(munge(section_name)):
                 # print(f"      Found {section_name:30} in {root.h}::{root.gnx}")
                 return p
-            
+
         # print(f"  Not found {section_name:30} in {root.h}::{root.gnx}")
         return None
     #@+node:ekr.20210307075325.1: *3* atRoot.make_clones
@@ -116,14 +116,9 @@ class ConvertAtRoot:
 
     def make_clones(self, p):
         """Make clones for all undefined sections in p.b."""
-        header = False
         for s in g.splitLines(p.b):
             m = self.section_pat.match(s)
             if m:
-                # if not header:
-                    # header = True
-                    # print('')
-                    # print(p.h)
                 section_name = g.angleBrackets(m.group(1).strip())
                 section_p = self.make_clone(p, section_name)
                 if not section_p:
@@ -132,7 +127,7 @@ class ConvertAtRoot:
     #@+node:ekr.20210307080500.1: *3* atRoot.make_clone
     def make_clone(self, p, section_name):
         """Make c clone for section, if necessary."""
-        
+
         def clone_and_move(parent, section_p):
             clone = section_p.clone()
             if self.check_clone_move(clone, parent):
@@ -738,13 +733,13 @@ class GitDiffController:
         """
         if not directory:
             directory = os.path.join(g.app.loadDir, '..', '..')
-        aList = g.execGitCommand(f"git rev-parse devel", directory)
+        aList = g.execGitCommand("git rev-parse devel", directory)
         if aList:
             devel_rev = aList[0]
             devel_rev = devel_rev[:8]
             self.diff_two_revs(
                 rev1=devel_rev,  # Before: Latest devel commit.
-                rev2='HEAD',     # After: Lastest branch commit
+                rev2='HEAD',  # After: Lastest branch commit
                 directory=directory,
             )
         else:

@@ -23,10 +23,6 @@ import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoGui  # For UnitTestGui.
 #@-<< imports >>
-if g.app:  # Make sure we can import this module stand-alone.
-    newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
-else:
-    newAtFile = False
 #@+others
 #@+node:ekr.20200219074036.1: ** Top-level functions
 #@+node:ekr.20051104075904.17: *3* function: runGC & helpers
@@ -62,7 +58,7 @@ def printGc():
     for obj in gc.get_objects():
         key = str(type(obj))
         n = d.get(key, 0)
-        d [key] = n + 1
+        d[key] = n + 1
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
@@ -441,7 +437,7 @@ class LinterTable():
             'leofts.py',  # Not (yet) in leoPlugins.leo.
             'qtGui.py',  # Dummy file
             'qt_main.py',  # Created automatically.
-            'viewrendered2.py', # To be removed.
+            'viewrendered2.py',  # To be removed.
             'rst3.py',  # Obsolete
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]

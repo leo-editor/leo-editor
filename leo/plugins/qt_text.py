@@ -97,7 +97,7 @@ class QTextMixin:
     # These are independent of the kind of Qt widget.
     #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
-        
+
         c = self.c
         name = c.widget_name(self)
         # Apparently, this does not cause problems
@@ -454,7 +454,7 @@ if QtWidgets:
             self.htmlFlag = True
             super().__init__(parent)
             self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
-            
+
             # Connect event handlers...
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
@@ -748,13 +748,13 @@ if QtWidgets:
             #
             # First, call the base class paintEvent.
             QtWidgets.QTextBrowser.paintEvent(self, event)
-            
+
             def set_cursor_width(width):
                 """Set the cursor width, but only if necessary."""
                 if self.leo_cursor_width != width:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
-            
+
             #
             # Are we in vim mode?
             if self.leo_vim_mode is None:
@@ -1287,7 +1287,7 @@ class QTextEditWrapper(QTextMixin):
             self.widget.setUndoRedoEnabled(False)
             self.set_config()
             self.set_signals()
-            
+
     #@+node:ekr.20110605121601.18076: *4* qtew.set_config
     def set_config(self):
         """Set configuration options for QTextEdit."""
@@ -1340,7 +1340,7 @@ class QTextEditWrapper(QTextMixin):
     def __repr__(self):
         # Add a leading space to align with StringTextWrapper.
         return f" <QTextEditWrapper: {id(self)} {self.name}>"
-        
+
     __str__ = __repr__
     #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
     # These are all widget-dependent

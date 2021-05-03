@@ -976,7 +976,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         self._setIconListHelper(p, l, p.v, setDirty)
         if g.app.gui.guiName() == 'qt':
-            self.c.frame.tree.updateIcon(p, True)
+            self.c.frame.tree.updateAllIcons(p)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
     def _setIconListHelper(self, p, subl, uaLoc, setDirty):
         """icon setting code common between v and t nodes
@@ -1695,7 +1695,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         #@-<< set local vars >>
         if not ch:
             return
-        if trace: g.trace('ch', repr(ch)) # and ch in '\n\r\t'
+        if trace: g.trace('ch', repr(ch))  # and ch in '\n\r\t'
         assert g.isStrokeOrNone(stroke)
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
             return

@@ -37,7 +37,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.items = []
         self.item2positionDict = {}
         self.item2vnodeDict = {}
-        self.nodeIconsDict = {} # keys are gnx, values are declutter generated icons
+        self.nodeIconsDict = {}  # keys are gnx, values are declutter generated icons
         self.position2itemDict = {}
         self.vnode2itemsDict = {}  # values are lists of items.
         self.editWidgetsDict = {}  # keys are native edit widgets, values are wrappers.
@@ -951,29 +951,30 @@ class LeoQtTree(leoFrame.LeoTree):
             # but there is no itemChanged event handler.
             item.setIcon(0, icon)
 
-    #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon
-    def updateIcon(self, p, force=False):
+    #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon & updateAllIcons
+    def updateIcon(self, p):
         """Update p's icon."""
-        if not p: return
+        if not p:
+            return
         val = p.v.computeIcon()
-        # The force arg is needed:
-        # Leo's core may have updated p.v.iconVal.
-        if not force:
-            if p.v.iconVal == val:
-                return
-        else:
+        if p.v.iconVal != val:
             self.nodeIconsDict.pop(p.gnx, None)
-            icon = self.getIcon(p)  # sets p.v.iconVal
-            # Update all cloned items.
-            items = self.vnode2items(p.v)
-            # if not items: g.trace(f'no-items for {p.h}[{p.gnx}]')
-            for item in items:
-                self.setItemIcon(item, icon)
+            self.getIcon(p)  # sets p.v.iconVal
+
+    def updateAllIcons(self, p):
+        if not p:
+            return
+        self.nodeIconsDict.pop(p.gnx, None)
+        icon = self.getIcon(p)  # sets p.v.iconVal
+        # Update all cloned items.
+        items = self.vnode2items(p.v)
+        for item in items:
+            self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons
     def updateVisibleIcons(self, p):
         """Update the icon for p and the icons
         for all visible descendants of p."""
-        self.updateIcon(p, force=True)
+        self.updateAllIcons(p)
         if p.hasChildren() and p.isExpanded():
             for child in p.children():
                 self.updateVisibleIcons(child)

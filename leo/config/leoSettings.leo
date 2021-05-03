@@ -736,10 +736,10 @@
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
-<v t="ekr.20200518065357.1"><vh>@bool use-german-keyboard = False</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn-about-redefined-shortcuts = True</vh></v>
 <v t="ekr.20181018113612.1"><vh>@string default-editing-state = insert</vh></v>
+<v t="ekr.20210412113510.1"><vh>@string keyboard-kind = default-keyboard</vh></v>
 <v t="ekr.20181018113656.1"><vh>@string top-level-unbound-key-action = insert</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
@@ -2305,6 +2305,7 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20071213060239"></v>
+<v t="ekr.20210412113510.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11410,9 +11411,6 @@ For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 <t tx="ekr.20200227064211.1">@nosearch</t>
 <t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
 <t tx="ekr.20200229053354.1"></t>
-<t tx="ekr.20200518065357.1">True: Remove Shift modifier when the desired key is a colon or semicolon.
-      This fixes an infelicity in German keyboards.
-</t>
 <t tx="ekr.20200620060909.1">True: The cython importer will copy the first decorator preceding a
       function/method into the headline of the imported node.
       
@@ -11608,6 +11606,10 @@ False: Docutils will link to an external stylesheet file.</t>
 <t tx="ekr.20210327193806.1"></t>
 <t tx="ekr.20210327193854.1"></t>
 <t tx="ekr.20210327194119.1"></t>
+<t tx="ekr.20210412113510.1">default-keyboard: No late alterations.
+
+german:  Remove *plain* Shift modifier for colon and semicolon.
+spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -71,7 +71,7 @@ def restartLeo(self, event=None):
         # This is similar to g.app.closeLeoWindow.
         g.doHook("close-frame", c=c)
         # Save the window state
-        g.app.commander_cacher.commit() # store cache, but don't close it.
+        g.app.commander_cacher.commit()  # store cache, but don't close it.
         # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
@@ -237,7 +237,7 @@ def new(self, event=None, gui=None):
     g.app.disable_redraw = False
     c.redraw()
     return c  # For unit tests and scripts.
-#@+node:ekr.20031218072017.2821: *3* c_file.open_outline & callback
+#@+node:ekr.20031218072017.2821: *3* c_file.open_outline
 @g.commander_command('open-outline')
 def open_outline(self, event=None):
     """Open a Leo window containing the contents of a .leo file."""
@@ -293,14 +293,6 @@ def open_outline(self, event=None):
     fileName = ''.join(c.k.givenArgs)
     if fileName:
         c.open_completer(c, closeFlag, fileName)
-        return
-    if False:  # This seems not to be worth the trouble.
-        g.app.gui.runOpenFileDialog(c,
-            callback=open_completer,
-            defaultextension=g.defaultLeoFileExtension(c),
-            filetypes=table,
-            title="Open",
-        )
         return
     # Equivalent to legacy code.
     fileName = g.app.gui.runOpenFileDialog(c,
@@ -609,7 +601,7 @@ def save_as_leojs(self, event=None):
     if not fileName.endswith('.leojs'):
         fileName = f"{fileName}.leojs"
     # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
-    c.saveTo(fileName=fileName)  
+    c.saveTo(fileName=fileName)
     c.fileCommands.putSavedMessage(fileName)
 #@+node:ekr.20070413045221: *3* c_file.save-as-zipped
 @g.commander_command('file-save-as-zipped')
@@ -619,7 +611,6 @@ def save_as_zipped(self, event=None):
     Save a Leo outline as a zipped (.db) file with a new file name.
     """
     c = self
-    fn = c.mFileName
     fileName = g.app.gui.runSaveFileDialog(c,
         initialfile=c.mFileName,  # .db will be added if necessary.
         title="Save As Zipped",
@@ -630,7 +621,7 @@ def save_as_zipped(self, event=None):
     if not fileName.endswith('.db'):
         fileName = f"{fileName}.db"
     # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
-    c.saveTo(fileName=fileName)  
+    c.saveTo(fileName=fileName)
     c.fileCommands.putSavedMessage(fileName)
 #@+node:ekr.20210316075357.1: *3* c_file.save-as-xml
 @g.commander_command('file-save-as-xml')
@@ -650,7 +641,7 @@ def save_as_xml(self, event=None):
     if not fileName.endswith('.leo'):
         fileName = f"{fileName}.leo"
     # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
-    c.saveTo(fileName=fileName)  
+    c.saveTo(fileName=fileName)
     c.fileCommands.putSavedMessage(fileName)
 #@+node:ekr.20031218072017.2849: ** Export
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
@@ -1102,7 +1093,7 @@ def open_theme_file(self, event):
     #
     # #1425: Open the theme file in a separate process.
     command = f'{g.sys.executable} {g.app.loadDir}/runLeo.py "{fn}"'
-    g.execute_shell_commands(command) # #1564.
+    g.execute_shell_commands(command)  # #1564.
     os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll

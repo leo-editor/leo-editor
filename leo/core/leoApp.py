@@ -1459,12 +1459,13 @@ class LeoApp:
         ):
             return
         # #1519: check os.path.exists.
-        aList = g.app.db.get(tag) or []
-        if [x for x in aList if os.path.exists(x) and os.path.samefile(x, fn)]:
+        aList = g.app.db.get(tag) or []  # A list of normalized file names.
+        if any(os.path.exists(z) and os.path.samefile(z, fn) for z in aList):
             # The file may be open in another copy of Leo, or not:
             # another Leo may have been killed prematurely.
             # Put the file on the global list.
             # A dialog will warn the user such files later.
+            fn = os.path.normpath(fn)
             if fn not in g.app.already_open_files:
                 g.es('may be open in another Leo:', color='red')
                 g.es(fn)
@@ -1483,6 +1484,7 @@ class LeoApp:
             d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             return
         aList = d.get(tag) or []
+        fn = os.path.normpath(fn)
         if fn in aList:
             aList.remove(fn)
             if trace:
@@ -1502,7 +1504,7 @@ class LeoApp:
         else:
             aList = d.get(tag) or []
             # It's proper to add duplicates to this list.
-            aList.append(fn)
+            aList.append(os.path.normpath(fn))
             d[tag] = aList
     #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
     def runAlreadyOpenDialog(self, c):
@@ -1712,7 +1714,7 @@ class LoadManager:
         machine_fn = lm.computeMachineName() + settings_fn
         # First, compute the directory of the first loaded file.
         # All entries in lm.files are full, absolute paths.
-        localDir = g.os_path_dirname(lm.files[0]) if lm.files else None
+        localDir = g.os_path_dirname(lm.files[0]) if lm.files else ''
         table = (
             # First, myLeoSettings.leo in the local directory
             join(localDir, settings_fn),
@@ -1903,7 +1905,7 @@ class LoadManager:
                     path = resolve(setting, tag=tag)
                     if path:
                         # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
-                        if trace: g.trace(f"First loaded file", theme_c.shortFileName(), path)
+                        if trace: g.trace("First loaded file", theme_c.shortFileName(), path)
                         return path
         #
         # Step 3: use the @string theme-name setting in myLeoSettings.leo.
@@ -1911,7 +1913,7 @@ class LoadManager:
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
         path = resolve(setting, tag=tag)
-        if trace: g.trace(f"myLeoSettings.leo", path)
+        if trace: g.trace("myLeoSettings.leo", path)
         return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
@@ -2352,7 +2354,7 @@ class LoadManager:
             print('')
         # #1128: support for restart-leo.
         if not g.app.start_minimized:
-            try: # Careful: we may be unit testing.
+            try:  # Careful: we may be unit testing.
                 g.app.log.c.frame.bringToFront()
             except Exception:
                 pass

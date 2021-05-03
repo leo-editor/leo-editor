@@ -200,6 +200,7 @@ class AtFile:
             # For at.putBody only.
         at.outputList = []
             # For stream output.
+        targetFileName = os.path.expanduser(targetFileName or '')  # #1900.
         at.targetFileName = targetFileName
             # For at.writeError only.
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
@@ -251,27 +252,27 @@ class AtFile:
             g.os_path_finalize_join(at.default_directory, targetFileName))
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
-    #@+node:ekr.20070919133659: *5* at.checkDerivedFile
-    @cmd('check-derived-file')
-    def checkDerivedFile(self, event=None):
+    #@+node:ekr.20070919133659: *5* at.checkExternalFile
+    @cmd('check-external-file')
+    def checkExternalFile(self, event=None):
         """Make sure an external file written by Leo may be read properly."""
-        at = self; c = at.c; p = c.p
+        c, p = self.c, self.c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
-            return g.red('Please select an @thin or @file node')
-        fn = p.anyAtFileNodeName()
-        path = g.os_path_dirname(c.mFileName)
-        fn = g.os_path_finalize_join(g.app.loadDir, path, fn)
+            g.red('Please select an @thin or @file node')
+            return
+        fn = g.fullPath(c, p)  # #1910.
         if not g.os_path_exists(fn):
-            return g.error(f"file not found: {fn}")
+            g.red(f"file not found: {fn}")
+            return
         s, e = g.readFileIntoString(fn)
         if s is None:
-            return None
+            g.red(f"empty file: {fn}")
+            return
         #
         # Create a dummy, unconnected, VNode as the root.
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
-        return c
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
         """
@@ -332,7 +333,7 @@ class AtFile:
     ):
         """Read an @thin or @file tree."""
         at, c = self, self.c
-        fileName = at.initFileName(fromString, importFileName, root)
+        fileName = g.fullPath(c, root)  # #1341. #1889.
         if not fileName:
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
@@ -436,26 +437,6 @@ class AtFile:
                 g.blue('in file:', root.h)
 
         return callback
-    #@+node:ekr.20041005105605.22: *6* at.initFileName
-    def initFileName(self, fromString, importFileName, root):
-        """Return the fileName to be used in messages."""
-        # at = self
-        c = self.c
-        if fromString:
-            fileName = "<string-file>"
-        elif importFileName:
-            fileName = importFileName
-        elif root.isAnyAtFileNode():
-            # #1798: It's not possible to honor the @path directive in @file nodes!
-            #        @file nodes have empty bodies here, before Leo reads the outline.
-            fileName = root.anyAtFileNodeName()
-            # #102, #1341: expand user expression.
-            fileName = c.expand_path_expression(fileName)  # #1341:
-        else:
-            fileName = None
-        if fileName:
-            fileName = g.os_path_finalize(fileName)  # #1341:
-        return fileName
     #@+node:ekr.20100224050618.11547: *6* at.isFileLike
     def isFileLike(self, s):
         """Return True if s has file-like sentinels."""
@@ -880,7 +861,7 @@ class AtFile:
         """Open a file, reporting all exceptions."""
         at = self
         # #1798: return None as a flag on any error.
-        s = None 
+        s = None
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
@@ -3732,9 +3713,9 @@ class TestAtFile(unittest.TestCase):
         warnings.simplefilter("ignore")
         import tempfile
         return tempfile.NamedTemporaryFile(mode='w')
-    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
+    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
     def test_save_after_external_file_rename(self):
-        """Test #1469."""
+        """Test #1469: saves renaming an external file."""
         # Create a new outline with @file node and save it
         bridge = self.bridge()
         temp_dir = self.temp_dir()
@@ -3761,6 +3742,23 @@ class TestAtFile(unittest.TestCase):
         p1 = c.rootPosition()
         assert p1.h == "@file 1_renamed", repr(p1.h)
         assert p1.b == "b_1_changed\n", repr(p1.b)
+    #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
+    def test_bug_1889(self):
+        """
+        Test #1889: Honor ~ in ancestor @path nodes.
+        """
+        # Create a new outline with @file node and save it
+        bridge = self.bridge()
+        temp_dir = self.temp_dir()
+        filename = f"{temp_dir.name}{os.sep}test_file.leo"
+        c = bridge.openLeoFile(filename)
+        root = c.rootPosition()
+        root.h = '@path ~/sub-directory/'
+        child = root.insertAsLastChild()
+        child.h = '@file test_bug_1889.py'
+        child.b = '@language python\n# test #1889'
+        path = g.fullPath(c, child)
+        assert '~' not in path, repr(path)
     #@-others
 #@-others
 if __name__ == '__main__':

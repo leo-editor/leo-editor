@@ -38,7 +38,7 @@ def contractBodyPane(event):
     f = c.frame
     r = min(1.0, f.ratio + 0.1)
     f.divideLeoSplitter1(r)
-    
+
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
 @g.command('contract-log-pane')
@@ -331,7 +331,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_body_frame = bodyFrame
         self.leo_body_inner_frame = innerFrame
         return bodyFrame
-     
+
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
     def createCentralWidget(self):
         """Create the central widget."""
@@ -862,12 +862,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
-            (0, 2, 'find-next'),  # 'findButton', 
-            (1, 2, 'find-prev'),  # 'findPreviousButton', 
-            (2, 2, 'find-all'),   # 'findAllButton', 
-            (3, 2, 'replace'),    # 'changeButton', 
-            (4, 2, 'replace-then-find'), # 'changeThenFindButton', 
-            (5, 2, 'replace-all'), # 'changeAllButton', 
+            (0, 2, 'find-next'),  # 'findButton',
+            (1, 2, 'find-prev'),  # 'findPreviousButton',
+            (2, 2, 'find-all'),  # 'findAllButton',
+            (3, 2, 'replace'),  # 'changeButton',
+            (4, 2, 'replace-then-find'),  # 'changeThenFindButton',
+            (5, 2, 'replace-all'),  # 'changeAllButton',
         )
         for row2, col, cmd_name in table:
             stroke = k.getStrokeForCommandName(cmd_name)
@@ -1136,19 +1136,19 @@ class FindTabManager:
         """
         return g.Bunch(
             # Find/change strings...
-            find_text = self.find_findbox.text(),
-            change_text = self.find_replacebox.text(),
+            find_text=self.find_findbox.text(),
+            change_text=self.find_replacebox.text(),
             # Find options...
-            ignore_case = self.check_box_ignore_case.isChecked(),
-            mark_changes = self.check_box_mark_changes.isChecked(),
-            mark_finds = self.check_box_mark_finds.isChecked(),
-            node_only = self.radio_button_node_only.isChecked(),
-            pattern_match = self.check_box_regexp.isChecked(),
+            ignore_case=self.check_box_ignore_case.isChecked(),
+            mark_changes=self.check_box_mark_changes.isChecked(),
+            mark_finds=self.check_box_mark_finds.isChecked(),
+            node_only=self.radio_button_node_only.isChecked(),
+            pattern_match=self.check_box_regexp.isChecked(),
             # reverse = False,
-            search_body =  self.check_box_search_body.isChecked(),
-            search_headline = self.check_box_search_headline.isChecked(),
-            suboutline_only = self.radio_button_suboutline_only.isChecked(),
-            whole_word = self.check_box_whole_word.isChecked(),
+            search_body=self.check_box_search_body.isChecked(),
+            search_headline=self.check_box_search_headline.isChecked(),
+            suboutline_only=self.radio_button_suboutline_only.isChecked(),
+            whole_word=self.check_box_whole_word.isChecked(),
             # wrapping = self.check_box_wrap_around.isChecked(),
         )
     #@+node:ekr.20131117120458.16789: *3* ftm.init_widgets (creates callbacks)
@@ -1571,7 +1571,7 @@ class LeoQtBody(leoFrame.LeoBody):
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
-            d ['1'] = wrapper
+            d['1'] = wrapper
             # Pack the original body editor.
             # Fix #1021: Pack differently depending on whether the gutter exists.
             if self.use_gutter:
@@ -3975,7 +3975,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         path = g.scanAtPathDirectives(c, aList)
         if path:
             fn = os.path.relpath(fn, path)
-            fn = g.toUnicodeFileEncoding(fn)
         self.createAtFileNode(fn, p2, s)
         u.afterInsertNode(p2, undoType, undoData)
         c.selectPosition(p2)

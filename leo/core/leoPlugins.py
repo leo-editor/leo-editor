@@ -383,7 +383,7 @@ class LeoPluginsController:
                 for tag in tags:
                     n = max(n, len(tag))
                     data.append((tag, key),)
-        lines = [f"%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
+        lines = ["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100908125007.6026: *4* plugins.printPlugins
     def printPlugins(self, c):
@@ -412,23 +412,23 @@ class LeoPluginsController:
             fileName = d.get(moduleName)
             n = max(n, len(moduleName))
             data.append((moduleName, fileName),)
-        lines = [f"%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
+        lines = ["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100909065501.5949: *4* plugins.regularizeName
-    def regularizeName(self, fn):
-        """Return the name used as a key to this modules dictionaries."""
-        if not fn.endswith('.py'):
-            return fn
+    def regularizeName(self, moduleOrFileName):
+        """
+        Return the module name used as a key to this modules dictionaries.
+        
+        We *must* allow .py suffixes, for compatibility with @enabled-plugins nodes.
+        """
+        if not moduleOrFileName.endswith('.py'):
+            # A module name. Return it unchanged.
+            return moduleOrFileName
         #
-        # Allow .leo/plugins
-        path = g.os_path_finalize_join('~', '.leo', 'plugins', fn)
-        if g.os_path_exists(path):
-            return fn[:-3]
-        # Return the default module for leo plugins.
+        # 1880: The legacy code implictly assumed that os.path.dirname(fn) was empty!
+        #       The new code explicitly ignores any directories in the path.
+        fn = g.os_path_basename(moduleOrFileName)
         return "leo.plugins." + fn[:-3]
-    #@+node:ekr.20100909104341.5979: *4* plugins.setLoaded
-    def setLoaded(self, fn, m):
-        self.loadedModules[self.regularizeName(fn)] = m
     #@+node:ekr.20100909065501.5953: *3* plugins.Load & unload
     #@+node:ekr.20100908125007.6022: *4* plugins.loadHandlers
     def loadHandlers(self, tag, keys):

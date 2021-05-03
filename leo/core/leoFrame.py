@@ -51,7 +51,7 @@ def log_cmd(name):  # Not used.
 def body_cmd(name):
     """Command decorator for the c.frame.body class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
-    
+
 def frame_cmd(name):
     """Command decorator for the LeoFrame class."""
     return g.new_cmd_decorator(name, ['c', 'frame',])
@@ -610,7 +610,7 @@ class LeoBody:
             i, j = g.getLine(s, i)
         else:
             # #1742: Move j back if it is at the start of a line.
-            if j > i and j > 0 and s[j-1] == '\n':
+            if j > i and j > 0 and s[j - 1] == '\n':
                 j -= 1
             i, junk = g.getLine(s, i)
             junk, j = g.getLine(s, j)
@@ -2003,8 +2003,11 @@ class NullTree(LeoTree):
 
     def scrollTo(self, p):
         pass
-        
-    def updateIcon(self, p, force=False):
+
+    def updateAllIcons(self, p):
+        pass
+
+    def updateIcon(self, p):
         pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p, s):
