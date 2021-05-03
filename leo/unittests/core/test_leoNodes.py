@@ -23,7 +23,7 @@ class LeoNodesTest(unittest.TestCase):
         from leo.core import leoCommands
         self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
         c.selectPosition(c.rootPosition())
-        
+
     def tearDown(self):
         self.c = None
     #@+node:ekr.20201203042409.4: ** LeoNodesTest.setUpClass
