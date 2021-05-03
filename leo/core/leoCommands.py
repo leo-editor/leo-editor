@@ -1283,7 +1283,7 @@ class Commands:
         if current and p.v == current.v:
             w = c.frame.body.wrapper
             w.setAllText(s)
-            v.setSelection(0,0)
+            v.setSelection(0, 0)
             c.recolor()
         # Keep the body text in the VNode up-to-date.
         if v.b != s:
@@ -3884,7 +3884,7 @@ class Commands:
 
         See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.
         """
-        # New implementation by Vitalije 2020-03-17 17:29 
+        # New implementation by Vitalije 2020-03-17 17:29
         c = self
         # Ensure all positions are valid.
         aList = [p for p in aList if c.positionExists(p)]
@@ -3895,7 +3895,7 @@ class Commands:
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
             return p._childIndex, parent_v
 
-        links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+        links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x: -x[0])
         undodata = []
         for i, v in links_to_be_cut:
             ch = v.children.pop(i)

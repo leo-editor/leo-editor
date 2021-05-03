@@ -1155,7 +1155,7 @@ class LeoImportCommands:
     def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
             p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
-            
+
     def cythonUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
             p, fileName=fileName, s=s, showTree=showTree, ext='.pyx')
@@ -1224,7 +1224,7 @@ class LeoImportCommands:
         if docutils:
             return self.scannerUnitTest(
                 p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
-       
+
         # print('leoImport.py: can not import docutils')
         return None
 
@@ -1768,7 +1768,7 @@ class RecursiveImportController:
             if val not in (True, False):
                 return
             c.config.set(None, 'bool', setting, val, warn=True)
-            
+
         set_bool('add-context-to-headlines', add_context)
         set_bool('add-file-context-to-headlines', add_file_context)
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
@@ -2155,7 +2155,7 @@ class TabImporter:
     #@-others
 #@+node:ekr.20200310060123.1: ** class ToDoImporter
 class ToDoImporter:
-    
+
     def __init__(self, c):
         self.c = c
 
@@ -2189,7 +2189,7 @@ class ToDoImporter:
                 with open(path, 'r') as f:
                     contents = f.read()
                     tasks = self.parse_file_contents(contents)
-                    d [path] = tasks
+                    d[path] = tasks
             except Exception:
                 print(f"unexpected exception in {tag}")
                 g.es_exception()
@@ -2202,7 +2202,7 @@ class ToDoImporter:
     task_s = r'\s*(.+)'
     line_s = fr"^{mark_s}?{priority_s}?{date_s}?{date_s}?{task_s}$"
     line_pat = re.compile(line_s)
-        
+
     def parse_file_contents(self, s):
         """
         Parse the contents of a file.
@@ -2487,14 +2487,14 @@ class LegacyExternalFileImporter:
     """
     # Sentinels to ignore, without the leading comment delim.
     ignore = ('@+at', '@-at', '@+leo', '@-leo', '@nonl', '@nl', '@-others')
-    
+
     def __init__(self, c):
         self.c = c
-    
+
     #@+others
     #@+node:ekr.20200424093946.1: *3* class Node
     class Node:
-        
+
         def __init__(self, h, level):
             """Hold node data."""
             self.h = h.strip()
@@ -2545,7 +2545,7 @@ class LegacyExternalFileImporter:
         stack = []  # A stack of nodes.
         for line in g.splitLines(s):
             s = line.lstrip()
-            lws = line[:len(line) - len(line.lstrip())]
+            lws = line[: len(line) - len(line.lstrip())]
             if s.startswith(delim1 + '@@'):
                 self.add(lws + s[2:], stack)
             elif s.startswith(ignore):
@@ -2564,7 +2564,7 @@ class LegacyExternalFileImporter:
                 if stack:
                     h = s[8:]
                     i = h.find(':')
-                    h = h[i+1:] if ':' in h else h
+                    h = h[i + 1 :] if ':' in h else h
                 else:
                     h = root_h
                 # Create a node and push it.
@@ -2592,12 +2592,12 @@ class LegacyExternalFileImporter:
                 root.h = root_h
                 root.b = b
             else:
-                parent = stack[level-1]
+                parent = stack[level - 1]
                 p = parent.insertAsLastChild()
                 p.b = b
                 p.h = node.h
                 # Good for debugging.
-                # p.h = f"{level} {node.h}"  
+                # p.h = f"{level} {node.h}"
                 stack = stack[:level] + [p]
         c.selectPosition(root)
         root.expand()  # c.expandAllSubheads()

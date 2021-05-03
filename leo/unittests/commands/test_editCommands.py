@@ -42,7 +42,7 @@ class EditCommandsTest(unittest.TestCase):
         w.setSelectionRange(i, j, insert=j)
         # Run the command!
         c.k.simulateCommand(command_name)
-        
+
         s1 = self.tempNode.b
         s2 = self.after_p.b
         if s1 != s2:  # pragma: no cover
@@ -67,17 +67,17 @@ class EditCommandsTest(unittest.TestCase):
             else:
                 message = f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
                 assert sel2 == sel3, message
-        
+
             # c.selectPosition(atTest)
             # atTest.contract()
             # Don't redraw.
-            
-                
+
+
             # if 0: # Not correct!
-            
+
                 # def compare(before, after, report):
                     # return self.compareOutlines(before, after, compareHeadlines=False, report=report)
-            
+
                 # # Call the undoer only if we expect a change.
                 # same = compare(self.before_p, self.after_p, False)
                 # if same:
@@ -112,7 +112,7 @@ class EditCommandsTest(unittest.TestCase):
         self.before_p.h = 'before'
         self.after_p.h = 'after'
         c.selectPosition(self.tempNode)
-        
+
     def tearDown(self):
         self.c = None
     #@+node:ekr.20201201084702.1: ** EditCommandsTest.setUpClass
@@ -864,7 +864,7 @@ class EditCommandsTest(unittest.TestCase):
             before_sel=("1.0", "7.0"),
             after_sel=("1.0", "7.0"),
             command_name="center-region",
-            directives = "@pagewidth 70",
+            directives="@pagewidth 70",
         )
     #@+node:ekr.20201130090918.30: *3* clean-lines
     def test_clean_lines(self):
@@ -1990,7 +1990,7 @@ class EditCommandsTest(unittest.TestCase):
         line b
     last line
     """
-        self.c.editCommands.ccolumn = 4 # Set the comment column
+        self.c.editCommands.ccolumn = 4  # Set the comment column
         self.run_test(
             before_b=before_b,
             after_b=after_b,

@@ -26,7 +26,7 @@ silent = True
 controller = leoBridge.controller(
     gui='nullGui',  # 'nullGui', 'qt'
     loadPlugins=False,  # True: attempt to load plugins.,
-    readSettings = True,  # True: read standard settings files.
+    readSettings=True,  # True: read standard settings files.
     silent=silent,  # True: don't print signon messages.
     verbose=True,
 )

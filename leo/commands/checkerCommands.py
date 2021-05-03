@@ -240,7 +240,7 @@ def pylint_command(event):
 #@+node:ekr.20210302111917.1: ** class MypyCommand
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
-    
+
     # bpm.put_log uses this pattern and assumes the pattern has these groups:
     # m.group(1): A full file path.
     # m.group(2): The line number.
@@ -261,7 +261,7 @@ class MypyCommand:
         for root in roots:
             fn = self.finalize(root)
             bpm.start_process(c,
-                command = f"mypy {fn}",
+                command=f"mypy {fn}",
                 fn=fn,
                 kind='mypy',
                 link_pattern=self.link_pattern,

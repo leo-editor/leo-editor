@@ -2354,7 +2354,7 @@ class LoadManager:
             print('')
         # #1128: support for restart-leo.
         if not g.app.start_minimized:
-            try: # Careful: we may be unit testing.
+            try:  # Careful: we may be unit testing.
                 g.app.log.c.frame.bringToFront()
             except Exception:
                 pass

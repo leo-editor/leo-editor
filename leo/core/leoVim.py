@@ -1016,7 +1016,7 @@ class VimCommands:
                 # #1757: Create a LeoKeyEvent.
                 event = LeoKeyEvent(
                     binding=g.KeyStroke(event.stroke),
-                    c = self.c,
+                    c=self.c,
                     char=event.char,
                     event=event,
                     w=self.w,

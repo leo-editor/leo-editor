@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210202110128.1: * @file leoserver.py
+#@+node:ekr.20210202110128.1: * @file ../../leoserver.py
 #@@language python
 #@@tabwidth -4
 """

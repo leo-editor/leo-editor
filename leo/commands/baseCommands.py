@@ -43,7 +43,7 @@ class BaseEditCommandsClass:
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
         """
-        k, p, u= self.c.k, self.c.p, self.c.undoer
+        k, p, u = self.c.k, self.c.p, self.c.undoer
         w = self.editWidget(event=None)
         b = self.undoData
         if b and b.name.startswith('body') and changed:
@@ -53,7 +53,7 @@ class BaseEditCommandsClass:
             else:
                 p.v.b = newText  # p.b would cause a redraw.
                 u.afterChangeBody(p, b.undoType, b.undoer_bunch)
-                
+
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.
