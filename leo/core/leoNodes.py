@@ -82,7 +82,7 @@ class NodeIndices:
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
-    def getNewIndex(self, v: "VNode", cached: bool = False):
+    def getNewIndex(self, v: "VNode", cached: bool=False):
         """
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
@@ -110,7 +110,7 @@ class NodeIndices:
         else:
             v.fileIndex = ni.getNewIndex(v)
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
-    def scanGnx(self, s: str, i: int = 0):
+    def scanGnx(self, s: str, i: int=0):
         """Create a gnx from its string representation."""
         if not isinstance(s, str):
             g.error("scanGnx: unexpected index type:", type(s), '', s)
@@ -216,8 +216,8 @@ class Position:
     #@+node:ekr.20080416161551.190: *4*  p.__init__
     def __init__(self,
         v: "VNode",
-        childIndex: int = 0,
-        stack: List[Tuple["VNode", int]] = None
+        childIndex: int=0,
+        stack: List[Tuple["VNode", int]]=None
     ):
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex: int = childIndex
@@ -288,7 +288,7 @@ class Position:
 
     __repr__ = __str__
     #@+node:ekr.20061006092649: *4* p.archivedPosition
-    def archivedPosition(self, root_p: "Position" = None):
+    def archivedPosition(self, root_p: "Position"=None):
         """Return a representation of a position suitable for use in .leo files."""
         p = self
         if root_p is None:
@@ -353,7 +353,7 @@ class Position:
                 array.append(body + '\n')
         return ''.join(array)
     #@+node:ekr.20040315023430.2: *4* p.moreHead
-    def moreHead(self, firstLevel: int, useVerticalBar: bool = False):
+    def moreHead(self, firstLevel: int, useVerticalBar: bool=False):
         """Return the headline string in MORE format."""
         # useVerticalBar is unused, but it would be useful in over-ridden methods.
         p = self
@@ -388,7 +388,7 @@ class Position:
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.generators
     #@+node:ekr.20091001141621.6055: *4* p.children
-    def children(self, copy: bool = True):
+    def children(self, copy: bool=True):
         """Yield all child positions of p."""
         p = self
         p = p.firstChild()
@@ -400,7 +400,7 @@ class Position:
 
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
-    def following_siblings(self, copy: bool = True):
+    def following_siblings(self, copy: bool=True):
         """Yield all siblings positions that follow p, not including p."""
         p = self
         p = p.next()  # pylint: disable=not-callable
@@ -412,7 +412,7 @@ class Position:
 
     following_siblings_iter = following_siblings
     #@+node:ekr.20161120105707.1: *4* p.nearest_roots
-    def nearest_roots(self, copy: bool = True, predicate: Optional[Callable] = None):
+    def nearest_roots(self, copy: bool=True, predicate: Optional[Callable]=None):
         """
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -426,7 +426,7 @@ class Position:
         """
         def default_predicate(p):
             return p.isAnyAtFileNode()
-            
+
         the_predicate = predicate or default_predicate
 
         # First, look up the tree.
@@ -445,7 +445,7 @@ class Position:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, copy: bool = True, predicate: Optional[Callable] = None):
+    def nearest_unique_roots(self, copy: bool=True, predicate: Optional[Callable]=None):
         """
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -458,10 +458,10 @@ class Position:
         satisfy the predicate. Once a root is found, the generator skips its
         subtree.
         """
-        
+
         def default_predicate(p):
             return p.isAnyAtFileNode()
-        
+
         the_predicate = predicate or default_predicate
 
         # First, look up the tree.
@@ -499,7 +499,7 @@ class Position:
     tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
-    def parents(self, copy: bool = True):
+    def parents(self, copy: bool=True):
         """Yield all parent positions of p."""
         p = self
         p = p.parent()
@@ -511,7 +511,7 @@ class Position:
 
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
-    def self_and_parents(self, copy: bool = True):
+    def self_and_parents(self, copy: bool=True):
         """Yield p and all parent positions of p."""
         p = self
         p = p.copy()
@@ -523,7 +523,7 @@ class Position:
 
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
-    def self_and_siblings(self, copy: bool = True):
+    def self_and_siblings(self, copy: bool=True):
         """Yield all sibling positions of p including p."""
         p = self
         p = p.copy()
@@ -537,7 +537,7 @@ class Position:
 
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
-    def self_and_subtree(self, copy: bool = True):
+    def self_and_subtree(self, copy: bool=True):
         """Yield p and all positions in p's subtree."""
         p = self
         p = p.copy()
@@ -550,7 +550,7 @@ class Position:
 
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
-    def subtree(self, copy: bool = True):
+    def subtree(self, copy: bool=True):
         """Yield all positions in p's subtree, but not p."""
         p = self
         p = p.copy()
@@ -578,7 +578,7 @@ class Position:
     unique_tnodes_iter = unique_nodes
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
-    def unique_subtree(self, copy: bool = True):
+    def unique_subtree(self, copy: bool=True):
         """Yield p and all other unique positions in p's subtree."""
         p = self
         seen = set()
@@ -968,7 +968,7 @@ class Position:
                 p._childIndex -= 1
                 return
         # Adjust p's stack.
-        stack: List[Tuple[VNode, int]] = [] 
+        stack: List[Tuple[VNode, int]] = []
         changed, i = False, 0
         while i < len(p.stack):
             v, childIndex = p.stack[i]
@@ -1368,15 +1368,15 @@ class Position:
 
     # To do: use v.copyTree instead.
 
-    def copyTreeAfter(self, copyGnxs: bool = False) -> "Position":
+    def copyTreeAfter(self, copyGnxs: bool=False) -> "Position":
         """Copy p and insert it after itself."""
         p = self
         p2 = p.insertAfter()
         p.copyTreeFromSelfTo(p2, copyGnxs=copyGnxs)
         return p2
-        
 
-    def copyTreeFromSelfTo(self, p2: "Position", copyGnxs: bool = False):
+
+    def copyTreeFromSelfTo(self, p2: "Position", copyGnxs: bool=False):
         p = self
         p2.v._headString = g.toUnicode(p.h, reportErrors=True)  # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True)  # 2017/01/24
@@ -1390,7 +1390,7 @@ class Position:
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2, copyGnxs=copyGnxs)
     #@+node:ekr.20160502095354.1: *4* p.copyWithNewVnodes
-    def copyWithNewVnodes(self, copyMarked: bool = False):
+    def copyWithNewVnodes(self, copyMarked: bool=False):
         """
         Return an **unliked** copy of p with a new vnode v.
         The new vnode is complete copy of v and all its descendants.
@@ -1398,7 +1398,7 @@ class Position:
         p = self
         return Position(v=p.v.copyTree(copyMarked))
     #@+node:peckj.20131023115434.10115: *4* p.createNodeHierarchy
-    def createNodeHierarchy(self, heads: List[str], forcecreate: bool = False):
+    def createNodeHierarchy(self, heads: List[str], forcecreate: bool=False):
         """ Create the proper hierarchy of nodes with headlines defined in
             'heads' as children of the current position
 
@@ -1425,7 +1425,7 @@ class Position:
         while p.hasChildren():
             p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
-    def doDelete(self, newNode: "Position" = None):
+    def doDelete(self, newNode: "Position"=None):
         """
         Deletes position p from the outline.
         
@@ -1922,7 +1922,7 @@ class VNode:
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init
-    def __init__(self, context: Cmdr, gnx: Optional[str] = None):
+    def __init__(self, context: Cmdr, gnx: Optional[str]=None):
         """
         Ctor for the VNode class.
         To support ZODB, the code must set v._p_changed = 1 whenever
@@ -1987,7 +1987,7 @@ class VNode:
         print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
-    def findAtFileName(self, names: Sequence[str], h: str = '') -> str:
+    def findAtFileName(self, names: Sequence[str], h: str='') -> str:
         """Return the name following one of the names in nameList or """ ""
         # Allow h argument for unit testing.
         if not h:
@@ -2135,7 +2135,7 @@ class VNode:
         return h.startswith(pattern)
     #@+node:ekr.20160502100151.1: *3* v.copyTree
 
-    def copyTree(self, copyMarked: bool = False):
+    def copyTree(self, copyMarked: bool=False):
         """
         Return an all-new tree of vnodes that are copies of self and all its
         descendants.

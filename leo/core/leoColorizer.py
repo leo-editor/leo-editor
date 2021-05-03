@@ -1878,7 +1878,7 @@ class JEditColorizer(BaseJEditColorizer):
         no_escape, no_line_break, no_word_break
     ):
         """Remain in this state until 'end' is seen."""
-        self.matcher_name = 'restart:' + self.matcher_name.replace('restart:','')
+        self.matcher_name = 'restart:' + self.matcher_name.replace('restart:', '')
         i = 0
         j = self.match_span_helper(s, i, end, no_escape, no_line_break, no_word_break)
         if j == -1:

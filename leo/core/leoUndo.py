@@ -433,7 +433,7 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
-        # 
+        #
         if g.unitTesting:
             assert command.lower() != 'typing', g.callers()
         elif command.lower() == 'typing':
@@ -1108,7 +1108,7 @@ class Undoer:
                 undoType=undo_type,  # capitalized.
                 undoHelper=u.undoTyping,
                 redoHelper=u.redoTyping,
-                oldMarked=old_p.isMarked() if old_p else p.isMarked(), # #1694
+                oldMarked=old_p.isMarked() if old_p else p.isMarked(),  # #1694
                 oldText=u.oldText,
                 oldSel=u.oldSel,
                 oldNewlines=u.oldNewlines,
@@ -1119,7 +1119,7 @@ class Undoer:
             bunch = old_d
         bunch.leading = u.leading
         bunch.trailing = u.trailing
-        bunch.newMarked = p.isMarked()  # #1694 
+        bunch.newMarked = p.isMarked()  # #1694
         bunch.newNewlines = u.newNewlines
         bunch.newMiddleLines = u.newMiddleLines
         bunch.newSel = u.newSel
@@ -1134,7 +1134,7 @@ class Undoer:
         # Finish updating the text.
         p.v.setBodyString(newText)
         u.updateAfterTyping(p, w)
-            
+
     # Compatibility
 
     setUndoTypingParams = doTyping
@@ -1237,7 +1237,7 @@ class Undoer:
         if p.isDirty():
             redraw_flag = False
         else:
-            p.setDirty() # Do not call p.v.setDirty!
+            p.setDirty()  # Do not call p.v.setDirty!
             redraw_flag = True
         if not c.isChanged():
             c.setChanged()

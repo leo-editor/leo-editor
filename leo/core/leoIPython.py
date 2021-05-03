@@ -115,7 +115,7 @@ class InternalIPKernel:
             # console is a process returned by the Python subprocess module.
             if trace: g.trace('kill', console)
             # #1677: neither console.kill nor console.kill works!
-            # console.terminate()  
+            # console.terminate()
             console.kill()
     #@+node:ekr.20130930062914.15997: *3* ileo.count
     def count(self, event=None):
