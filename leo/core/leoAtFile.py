@@ -2960,18 +2960,24 @@ class AtFile:
         #
         # Language & delims: Tricky.
         lang_dict = d.get('lang-dict') or {}
+        trace = False and p.h.startswith('@file') and not g.unitTesting ###
+        delims, language = None, None
         if lang_dict:
             # There was an @delims or @language directive.
-            delims = lang_dict.get('delims')
             language = lang_dict.get('language')
-        else:
+            delims = lang_dict.get('delims')
+            if trace:
+                g.trace(lang_dict, tag=f"lang_dict: {p.h}")   ###
+        if not language:
             # No language directive.  Look for @<file> nodes.
             # Do *not* use the default language returned by c.scanAllDirectives.
-            language = d.get('language')
-            delims = g.set_delims_from_language(language)
-        if not language:  # Defensive code.
+                # language = d.get('language')
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+            if trace: g.trace('language', language)
         at.language = language
+        if not delims:
+            delims = g.set_delims_from_language(language)
+            if trace: g.trace('delims', delims)  ###
         #
         # Previously, setting delims was sometimes skipped, depending on kwargs.
         #@+<< Set comment strings from delims >>
