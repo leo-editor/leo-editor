@@ -226,19 +226,27 @@ class BaseJEditColorizer(BaseColorizer):
                     theList.append(rule)
                 theDict[ch] = theList
     #@+node:ekr.20111024091133.16702: *3* bjc.configure_hard_tab_width
-    def configure_hard_tab_width(self):
-        """Set the width of a hard tab.
-        The stated default is 40, but apparently it must be set explicitly.
+    def configure_hard_tab_width(self, font):
         """
-        c, widget, wrapper = self.c, self.widget, self.wrapper
-        # For some reason, the size is not accurate.
+        Set the width of a hard tab.
+        
+        Qt does not appear to have the required methods. Indeed,
+        https://stackoverflow.com/questions/13027091/how-to-override-tab-width-in-qt
+        assumes that QTextEdit's have only a single font(!).
+        
+        This method probabably only works probably if the body text contains
+        a single @language directive, and it may not work properly even then.
+        """
+        c, widget = self.c, self.widget
         if isinstance(widget, QtWidgets.QTextEdit):
-            font = wrapper.widget.currentFont()
-            info = QtGui.QFontInfo(font)
-            size = info.pointSizeF()
-            pixels_per_point = 1.0  # 0.9
-            hard_tab_width = abs(int(pixels_per_point * size * c.tab_width))
-            wrapper.widget.setTabStopWidth(hard_tab_width)
+            # #1919: https://forum.qt.io/topic/99371/how-to-set-tab-stop-width-and-space-width
+            fm = QtGui.QFontMetrics(font)
+            try:  # fm.horizontalAdvance
+                width = fm.horizontalAdvance(' ') * abs(c.tab_width)
+                widget.setTabStopDistance(width)
+            except Exception:
+                width = fm.width(' ') * abs(c.tab_width)
+                widget.setTabStopWidth(width)  # Obsolete.
         else:
             # To do: configure the QScintilla widget.
             pass
@@ -307,6 +315,8 @@ class BaseJEditColorizer(BaseColorizer):
                     wrapper.tag_configure(key, font=font)
                     if isQt and key == 'url':
                         font.setUnderline(True)
+                    # #1919: This really isn't correct.
+                    self.configure_hard_tab_width(font)
                     break
             else:
                 # Neither setting exists.
@@ -1027,6 +1037,7 @@ class BaseJEditColorizer(BaseColorizer):
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)
+            self.configure_hard_tab_width(font)  # #1919.
         if tag in ('blank', 'tab'):
             if tag == 'tab' or colorName == 'black':
                 format.setFontUnderline(True)
@@ -1045,11 +1056,6 @@ class BaseJEditColorizer(BaseColorizer):
         self.tagCount += 1
         if trace:
             # A superb trace.
-            ###
-                # p = self.c and self.c.p
-                # if p and p.v != self.last_v:
-                    # print(f'\nsetTag: NEW NODE: {p.h}\n')
-                    # self.last_v = p.v
             if len(repr(s[i:j])) <= 20:
                 s2 = repr(s[i:j])
             else:
@@ -1115,7 +1121,6 @@ class JEditColorizer(BaseJEditColorizer):
         self.prev = None
         # Must be done to support per-language @font/@color settings.
         self.configure_tags()
-        self.configure_hard_tab_width()  # 2011/10/04
     #@+node:ekr.20170201082248.1: *4* jedit.init_all_state
     def init_all_state(self, v):
         """Completely init all state data."""
