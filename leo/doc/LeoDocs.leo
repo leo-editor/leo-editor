@@ -1766,6 +1766,7 @@
 <v t="ekr.20210429042049.1943"><vh>#1900: ~ in paths</vh></v>
 <v t="ekr.20210429061759.1"><vh>#1910: checkDerivedFiles</vh></v>
 <v t="ekr.20210429064509.1"><vh>#1912 ignoring command: already</vh></v>
+<v t="ekr.20210505081910.1"><vh>#1919: width of hard tabs</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -32135,6 +32136,8 @@ Change commands:
 <t tx="ekr.20210429044504.1">https://github.com/leo-editor/leo-editor/issues/1888</t>
 <t tx="ekr.20210429061759.1">https://github.com/leo-editor/leo-editor/issues/1910</t>
 <t tx="ekr.20210429064509.1">https://github.com/leo-editor/leo-editor/issues/1912</t>
+<t tx="ekr.20210505081910.1">https://github.com/leo-editor/leo-editor/issues/1919
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
