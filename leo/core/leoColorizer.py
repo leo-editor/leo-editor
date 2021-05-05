@@ -2576,7 +2576,6 @@ class PygmentsColorizer(BaseJEditColorizer):
         self.prev = None
             # Used by setTag.
         self.configure_tags()
-        self.configure_hard_tab_width()
 
     def addLeoRules(self, theDict):
         pass
