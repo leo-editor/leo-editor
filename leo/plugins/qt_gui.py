@@ -1762,7 +1762,7 @@ class StyleSheetManager:
     #@+node:ekr.20140915062551.19510: *4* ssm.expand_css_constants & helpers
     css_warning_given = False
 
-    def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
+    def expand_css_constants(self, sheet, settingsDict=None):
         """Expand @ settings into their corresponding constants."""
         c = self.c
         trace = 'zoom' in g.app.debug
@@ -1773,7 +1773,7 @@ class StyleSheetManager:
             g.trace('===== settingsDict...')
             for key in settingsDict.keys():
                 print(f"{key:40}: {settingsDict.get(key)}")
-        constants, deltas = self.adjust_sizes(font_size_delta, settingsDict)
+        constants, deltas = self.adjust_sizes(settingsDict)
         if trace:
             print('')
             g.trace(f"zoom constants: {constants}")
@@ -1796,13 +1796,11 @@ class StyleSheetManager:
         sheet = sheet.replace('\\\n', '')  # join lines ending in \
         return sheet
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
-    def adjust_sizes(self, font_size_delta, settingsDict):
+    def adjust_sizes(self, settingsDict):
         """Adjust constants to reflect c._style_deltas."""
         c = self.c
         constants = {}  # old: self.find_constants_defined(sheet)
         deltas = c._style_deltas
-        if font_size_delta:
-            deltas['font-size-body'] = font_size_delta
         for delta in c._style_deltas:
             # adjust @font-size-body by font_size_delta
             # easily extendable to @font-size-*
