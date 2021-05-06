@@ -383,6 +383,7 @@ class todoController:
         from leo.core.leoQt import isQt4, qt_version
         if isQt4:
             return
+        size = QtCore.QSize(16,16)
         qt_version = [int(z) for z in qt_version.split('.')]
         if qt_version[1] <= 12:
             return
