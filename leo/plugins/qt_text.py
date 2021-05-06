@@ -34,6 +34,10 @@ def zoom_helper(event, delta):
     c = event.get('c')
     if not c:
         return
+    if not c.config.getBool('allow-text-zoom', default=True):
+        if 'zoom' in g.app.debug:
+            g.trace('text zoom disabled')
+        return
     wrapper = c.frame.body.wrapper
     #
     # For performance, don't call c.styleSheetManager.reload_style_sheets().
