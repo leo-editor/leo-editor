@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20131004162848.11444: * @file ../plugins/rss.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20131002201824.5539: ** << docstring >>
 '''Adds primitive RSS reader functionality to Leo.
@@ -129,17 +126,6 @@ Clears the viewed stories history of every `@feed` node in the current outline.
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.3'
-#@+<< version history >>
-#@+node:peckj.20131002201824.5540: ** << version history >>
-#@+at
-#
-# Version 0.1 - initial functionality.  NO UNDO.
-# Version 0.2 - bugfix for bug reported by Viktor Ransmayr regarding not having dates in the feed.
-# Version 0.3 - configurable with a few @settings in myLeoSettings.leo
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:peckj.20131002201824.5541: ** << imports >>
 try:
@@ -356,4 +342,6 @@ class RSSController:
             self.clear_history(self.c.vnode2position(feed))
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

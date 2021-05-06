@@ -2,7 +2,8 @@
 #@+node:vitalije.20170727201534.1: * @file ../plugins/line_numbering.py
 #@+others
 #@+node:vitalije.20170727201830.1: ** About line_numbering plugin
-"""This plugin makes line numbers in gutter (if used), to represent
+"""
+This plugin makes line numbers in gutter (if used), to represent
    real line numbers in generated file. Root of file is either a
    first of ancestor nodes with heading at-(file,clean,...), or first
    of ancestor nodes which was marked as root for line numbering  using
@@ -10,7 +11,7 @@
    
    Author: vitalije(at)kviziracija.net
 """
-__version__ = "0.2"
+
 #@+node:vitalije.20170727201931.1: ** imports
 from contextlib import contextmanager
 import re

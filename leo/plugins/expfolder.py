@@ -24,16 +24,11 @@ Manager's Plugin Load Order pane.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
 import os
 import os.path
 import configparser as ConfigParser
 from leo.core import leoGlobals as g
 from leo.plugins.textnode import savetextnode
-
-__version__ = "1.0"
 
 textexts = []
 
@@ -106,4 +101,6 @@ def on_icondclick(tag, keywords):
             c.setHeadString(pn, "@expfolder "+d)
         c.expandSubtree(p)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

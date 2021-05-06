@@ -1,10 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.919: * @file ../plugins/examples/override_commands.py
 """Override the Equal Sized Pane command"""
-#@@language python
-#@@tabwidth -4
+
 from leo.core import leoGlobals as g
-__version__ = "1.2"
+
 #@+others
 #@+node:ekr.20111104210837.9691: ** init
 def init():
@@ -24,4 +23,6 @@ def onCommand(tag, keywords):
         return "override" # Anything other than None overrides.
     return None
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

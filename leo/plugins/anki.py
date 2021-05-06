@@ -25,10 +25,7 @@ Create headline like this:
 Select any of these nodes (@anki, @anki front, @anki back), do `alt-x act-on-node`. This pushes the card to AnkiConnect. If any errors happen, a child to `@anki` called `@anki error` is populated with the relevant error details.
 '''
 
-__version__ = '0.1'
-
 import leo.core.leoGlobals as g
-
 from leo.core import leoPlugins
 
 try:
@@ -161,3 +158,4 @@ def anki_act_on_node(c, p, event):
             },
             'tags' : tag.split(",")
         })
+        

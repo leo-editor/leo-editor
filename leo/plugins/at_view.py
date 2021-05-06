@@ -17,7 +17,7 @@ r''' Adds support for \@clip, \@view and \@strip nodes.
 This plugin also accumulates the effect of all \@path nodes.
 '''
 #@-<< docstring >>
-__version__ = "0.9"
+
 from leo.core import leoGlobals as g
 path           = g.import_module('path')
 win32clipboard = g.import_module('win32clipboard')

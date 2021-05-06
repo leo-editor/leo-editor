@@ -1,11 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:danr7.20060902215215.1: * @file ../plugins/leo_to_html.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:danr7.20060902215215.2: ** << docstring >>
-r''' Converts a leo outline to an html web page.
+r"""
+Converts a leo outline to an html web page.
 
 This plugin takes an outline stored in Leo and converts it to html which is then
 either saved in a file or shown in a browser. It is based on the original
@@ -119,49 +117,11 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration
 settings. In particular, the default export path, "c:\" must be changed for \*nix
 systems.
 
-'''
+"""
 #@-<< docstring >>
-#@+<< version history >>
-#@+node:danr7.20060902215215.3: ** << version history >>
-#@@killcolor
-#@+at
-#
-# 1.00 - Finished testing with 4 different options & outlines
-# 0.91 - Got initial headline export code working. Resolved bug in INI file checking
-# 0.90 - Created initial plug-in framework
-# 1.1 ekr: Added init method.
-# 2.0 plumloco:
-#     - made gui independent
-#     - made output xhtml compliant
-#     - added ini options
-#         - use_xhtml: 'Yes' to included xhtml headers in output.
-#         - bullet_type: 'number', 'bullet', or 'head'.
-#         - browser_command: the command needed to launch a browser.
-#     - removed bullet/headlines dialog in favour of bullet_type ini option.
-#     - added option to show output in a browser instead of saving to a file
-#     - added extra menu items to save/show current node only
-#     - added export-html-*-* commands
-#     - added show-html-*-* commands
-#     - added Leo_to_HTML object so all the plugins functionality can be scripted.
-# 2.1 plumloco:
-#     - fixed bug in export of single nodes
-#     - fixed to use tempdir to get a temp dir
-#     - improved (and spellchecked :) docstring.
-#     - added abspath module level method
-# 2.2 bobjack:
-#     - fixed tempdir bug
-#     - converted docstring to rst
-#     - removed trace
-# 2.3 bobjack:
-#     - adopt 'every method must have a docstring' ( however inane :) ) rule
-#     - added support for @string leo_to_html_no_menus setting.
-#     - changed browser_command property default to empty string
-#     - use webbrowser module if browser_command property is empty or does not work.
-#
-#
-#
-#
-#@-<< version history >>
+
+# Edited by plumloco, bobjack, and EKR.
+
 #@+<< imports >>
 #@+node:danr7.20060902215215.4: ** << imports >>
 import configparser as ConfigParser
@@ -171,8 +131,6 @@ import tempfile
 import webbrowser
 from leo.core import leoGlobals as g
 #@-<< imports >>
-
-__version__ = '2.3'
 
 #@+others
 #@+node:bob.20080107154936: ** module level functions
@@ -754,4 +712,6 @@ class Leo_to_HTML:
     """
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

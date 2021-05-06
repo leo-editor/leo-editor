@@ -312,8 +312,6 @@ the @slideshow tree whose sanitized name is
 """
 #@@pagewidth 50
 #@-<< docstring >>
-# To do: create _static folder.
-__version__ = '1.0.3'
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
 import copy
@@ -338,6 +336,9 @@ except ImportError:
 # Alias.
 got_qt = QtGui is not None
 #@-<< imports >>
+
+# To do: create _static folder.
+
 #@+others
 #@+node:ekr.20100914090933.5771: ** Top level
 #@+node:ekr.20100908110845.5581: *3* g.command(apropos-slides)
@@ -1952,4 +1953,6 @@ class ScreenShotController:
         return False
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

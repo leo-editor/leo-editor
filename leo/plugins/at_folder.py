@@ -16,7 +16,7 @@ while keep every files in a flat/single directory on your computer.
 
 import os
 from leo.core import leoGlobals as g
-__version__ = "1.4"
+
 #@+others
 #@+node:ekr.20140920173002.17961: ** init
 def init():
@@ -65,5 +65,4 @@ def sync_node_to_folder(c,parent,d):
 #@-others
 #@@language python
 #@@tabwidth -4
-
 #@-leo

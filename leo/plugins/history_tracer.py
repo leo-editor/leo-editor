@@ -41,8 +41,9 @@ from leo.core.leoQt import QtCore
 #@-<< imports >>
 #@afterref
  # history_tracer.py
-__version__ = "0.1"
+
 idle_checker = None
+
 #@+others
 #@+node:vitalije.20190928154420.4: ** init
 def init():

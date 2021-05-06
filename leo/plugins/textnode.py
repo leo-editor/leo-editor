@@ -17,14 +17,10 @@ node.
 '''
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
+# Terry Brown: support for @path ancestors and uses universal newline mode for opening.
 
 import os.path
 from leo.core import leoGlobals as g
-
-__version__ = "1.1"
-    # Terry Brown: support for @path ancestors and uses universal newline mode for opening.
 
 #@+others
 #@+node:ajones.20070122160142.2: ** init (textnode.py)
@@ -102,4 +98,6 @@ def savetextnode(c, p):
         p.setDirty()
         p.setMarked()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

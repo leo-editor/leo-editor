@@ -2,8 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20040828105233: * @file ../plugins/examples/chinese_menu.py
 #@@first
-#@@language python
-#@@tabwidth -4
+
 """
 Translate a few menu items into Simplified Chinese
 本插件将部分Leo菜单翻译成简体中文
@@ -20,7 +19,7 @@ Translate a few menu items into Simplified Chinese
 # Note 2 (EKR):  The menu names themselves did not translate on my XP machine.
 # All the headlines appear as "??".
 from leo.core import leoGlobals as g
-__version__ = "1.1" # Set version for the plugin handler.
+
 #@+others
 #@+node:ekr.20111104210837.9689: ** init
 def init():
@@ -214,4 +213,6 @@ def onMenu (tag,keywords):
     # Call the convenience routine to do the work.
     c.frame.menu.setRealMenuNamesFromTable(table)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

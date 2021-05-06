@@ -2,12 +2,12 @@
 #@+node:ekr.20090430075506.3: * @file ../plugins/leoPluginNotes.txt
 #@+all
 #@+node:ekr.20071113084440.1: ** @@file test/syntax_error_plugin.py
-# pylint: disable=syntax-error
-
-'''
+"""
 This plugin intentially has a syntax error.
 It is used for testing Leo's plugin loading logic.
-'''
+"""
+
+# pylint: disable=syntax-error
 
 a = # This is the syntax error
 

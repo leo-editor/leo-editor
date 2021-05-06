@@ -41,51 +41,10 @@ Settings
 
 '''
 #@-<< docstring >>
-#@+<< version history >>
-#@+node:ekr.20050226184411.1: ** << version history >>
-#@@killcolor
-#@+at
-#
+
 # Contributed by Andrea Galimberti.
-# Edited by Felix Breuer.
-#
-# 1.5 EKR:
-#     - Added new sections.
-#     - Move most comments into docstring.
-#     - Added useDoubleClick variable.
-#     - Added init function.
-#     - Init _vim_cmd depending on sys.platform.
-# 1.6 EKR:
-#     - Use keywords to get c, not g.top().
-#     - Don't use during unit testing: prefer xemacs instead.
-#     - Added _vim_exe
-#     - Use "os.spawnv" instead of os.system.
-#     - Simplified the search of g.app.openWithFiles.
-#     - Fixed bug in open_in_vim: hanged v.bodyString to v.bodyString()
-# 1.7 EKR: Excellent new code by Jim Sizelove solves weird message on first open of vim.
-# 1.8 EKR: Set subprocess = None if import fails.
-# 1.9 EKR:
-#     - Document how install subproces, and use g.importExtension to import subprocess.
-#     - Import subprocess with g.importExtension.
-# 1.10 EKR:
-#     - Support 'vim_cmd' and 'vim_exe' settings.
-#     - These override the default _vim_cmd and _vim_exe settings.
-# 1.11 EKR: Emergency default for window is now the default location: c:\Program Files\vim\vim63
-# 1.12 EKR:
-#     - Added emergency default for 'darwin'.
-#     - Corrected the call to openWith.  It must now use data=data due to a new event param.
-# 1.13 EKR: The docstring now states that the open_with plugin must be enabled for this to work.
-# 1.14 EKR: Emphasized that the open_with plugin must be enabled.
-# 1.15 EKR: Don't open @url nodes in vim if @bool vim_plugin_opens_url_nodes setting is False.
-# 1.16 TL: open_in_vim modifications
-#     - support file open in gVim at same line number as Leo cursor location
-#     - support file open in a gVim tab
-# 1.17 EKR: Give a location message to help with settings.
-# 1.18 VMV:
-#     - Use gvim on Linux too, emergency default on Windows doesn't have explicit path
-#     - Works when subprocess.Popen(shell=True)
-# 2.0 EKR: Use *only* the vim-open-node command.  Do not pollute click handlers.
-#@-<< version history >>
+# Edited by Felix Breuer, TL, VMV and EKR.
+
 #@+<< documentation from Jim Sizelove >>
 #@+node:ekr.20050909102921: ** << documentation from Jim Sizelove >>
 #@+at
@@ -163,6 +122,7 @@ import subprocess
 import sys
 from leo.core import leoGlobals as g
 #@-<< imports >>
+
 # This command is used to communicate with the vim server. If you use gvim
 # you can leave the command as is, you do not need to change it to "gvim ..."
 # New in version 1.10 of this plugin: these are emergency defaults only.

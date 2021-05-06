@@ -2,9 +2,6 @@
 #@+node:tbrown.20091214233510.5347: * @file ../plugins/geotag.py
 ''' Tags nodes with latitude and longitude. '''
 
-#@@language python
-#@@tabwidth -4
-
 #@+<< imports >>
 #@+node:tbrown.20091214233510.5349: ** << imports >>
 import socket
@@ -12,7 +9,6 @@ from leo.core import leoGlobals as g
 from leo.plugins.pygeotag import pygeotag
 
 #@-<< imports >>
-__version__ = "0.1"
 
 #@+others
 #@+node:tbrown.20091214233510.5351: ** init
@@ -103,4 +99,6 @@ def cmd_ShowNode(event):
         data = {'description':c.p.h}
     g.pygeotag.show_position(data)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

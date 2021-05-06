@@ -1,10 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.730: * @file ../plugins/dump_globals.py
 """Dumps Python globals at startup."""
-#@@language python
-#@@tabwidth -4
 from leo.core import leoGlobals as g
-__version__ = "1.2"
 #@+others
 #@+node:ekr.20100128091412.5380: ** init
 def init():
@@ -25,4 +22,6 @@ def onStart(tag, keywords):
         if s not in __builtins__:
             g.pr(s)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

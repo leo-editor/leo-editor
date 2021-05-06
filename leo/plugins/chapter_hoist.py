@@ -13,20 +13,12 @@ Requires at least version 0.19 of mod_scripting.
 
 """
 #@-<< docstring >>
+
+# By btheado. Edited by EKR.
+
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
-__version__ = "0.5"
-#@+<< version history >>
-#@+node:ekr.20060328125925.3: ** << version history >>
-#@+at
-#
-# 0.1 btheado: initial creation.
-# 0.2 EKR: changed to @thin.
-# 0.3 EKR: init now succeeds for unit tests.
-# 0.4 EKR: use new calling sequences for sc.createIconButton.
-#          Among other things, this creates the save-hoist commnand.
-# 0.5 EKR: Made gui-independent.
-#@-<< version history >>
+
 #@+others
 #@+node:ekr.20060328125925.4: ** init
 def init ():

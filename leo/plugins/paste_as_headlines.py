@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:danr7.20060912105041.1: * @file ../plugins/paste_as_headlines.py
 #@@first
-
 #@+<< docstring >>
 #@+node:danr7.20060912105041.2: ** << docstring >>
 ''' Creates new headlines from clipboard text.
@@ -14,28 +13,12 @@ under the existing Paste option.
 
 '''
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
-#@+<< version history >>
-#@+node:danr7.20060912105041.3: ** << version history >>
-#@+at
-# 0.91 - Added headline truncate code
-# 0.90 - Created initial plug-in framework
-# 1.0: Dan Rahmel
-# 1.1 EKR:
-# - Converted code to use c.setHead/BodyString rather than the old position setters.
-# - Added call to currentNode.expand in paste_as_headlines, enclosed in c.begin/endUpate.
-#@-<< version history >>
+# By Dan Rahmel.
 #@+<< imports >>
 #@+node:danr7.20060912105041.4: ** << imports >>
 from leo.core import leoGlobals as g
 
 #@-<< imports >>
-
-__version__ = "1.1"
-
 #@+others
 #@+node:ekr.20100128073941.5377: ** init
 def init():
@@ -97,4 +80,6 @@ def paste_as_headlines(c):
     currentPos.expand()
     c.redraw()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
