@@ -199,16 +199,6 @@ execute a command in the first line of the body of a double-clicked node::
 # Derived from the fileActions plugin.
 # Distributed under the same licence as Leo.
 
-__version__ = "0.5"
-#@+<< version history >>
-#@+node:TL.20080507213950.4: ** << version history >>
-#@@nocolor
-#@+at
-# 0.5 : 02-Ago-20 : XC : Added a command annotation, fixed handler registering and @files pattern recognition, removed functionality of doubtful utility
-# 0.3 : 02-Apr-10 : TL : Support search all sub-nodes for pattern match
-# 0.2 : 02-Mar-09 : TL : Support for 'X', 'V', and  '>' directives added
-# 0.1 : 27-Feb-09 : TL : Initial code (modified from FileActions plugin)
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040915110738.1: ** << imports >>
 import fnmatch

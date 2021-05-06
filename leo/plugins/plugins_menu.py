@@ -61,10 +61,11 @@ import configparser as ConfigParser
 import os
 from leo.core import leoGlobals as g
 #@-<< imports >>
-__version__ = "2.3"
+
 __plugin_name__ = "Plugins Menu"
 __plugin_priority__ = -100
 __plugin_group__ = "Core"
+
 #@+others
 #@+node:ekr.20060107091318: ** Functions
 #@+node:EKR.20040517080555.24: *3* addPluginMenuItem

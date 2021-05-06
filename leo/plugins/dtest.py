@@ -34,16 +34,6 @@ import os
 from leo.core import leoGlobals as g
 from leo.core.leoPlugins import BaseLeoPlugin
 #@-<< imports >>
-#@+<< version history >>
-#@+node:ekr.20070119094733.3: ** << version history >>
-#@@nocolor
-
-#@+at
-# v 0.1 EKR: modified slightly from original by ktenney.
-# v 0.2 EKR: modified from mod_dtest by ktenney:
-# - Converted to @thin
-# - Use section references for code that must be in a particular place.
-#@-<< version history >>
 
 #@+others
 #@+node:ekr.20070119094733.5: ** init
@@ -140,6 +130,6 @@ class DT(BaseLeoPlugin):
     #@-others
 
 #@-others
-
-
+#@@language python
+#@@tabwidth -4
 #@-leo

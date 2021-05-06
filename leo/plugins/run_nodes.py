@@ -36,33 +36,8 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 '''
 #@-<< docstring >>
 
-# At present, this plugin is experimental, that is, broken.
+# At present, this plugin is *broken*.
 
-#@+<< version history >>
-#@+node:ekr.20040910070811.3: ** << version history >>
-#@@nocolor
-#@+at
-#
-# 0.13 EKR:
-# - use import leo.core.leoGlobals as leoGlobals and import leoPlugins rather from x import *
-# - Made positions explicit and use position iterators.
-# - Support @arg nodes.
-# - Support @run # comment (or #comment)
-# - Support @run command args # comment (or #comment)
-# - Allow @input as well as @in.
-# - Simpler log messages.
-# 0.14 EKR:
-# - Removed call to g.top()
-# - Added init function.
-# 0.15 EKR: Corrected the call to os.popen3 in OpenProcess per
-# http://sourceforge.net/forum/message.php?msg_id=3761385
-# 0.16 EKR:
-# - replaced os.popen3 by calls to subprocess.Popen.
-#   This probably altered the intension of this plugin.
-# - Fixed several other crashers.
-#
-# Important: at present, this plugin must be considered broken.
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040910070811.4: ** << imports >>
 import os

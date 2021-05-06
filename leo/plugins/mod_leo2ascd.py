@@ -1,97 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110093449.5822: * @file ../plugins/mod_leo2ascd.py
-__version__ = ".7" # Set version for the plugin handler.
-
 import re
 import os
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-#@+<< define classes >>
-#@+node:ekr.20141110071911.17: ** << define classes >>
-#@+others
-#@+node:ekr.20101110094152.5824: *3* class _AssignUniqueConstantValue
-class   _AssignUniqueConstantValue:
-    """ Provide unique value to be used as a constant """
 
-    #@+others
-    #@+node:ekr.20101110094152.5825: *4* __init__
-    def __init__(self):
-        self.UniqueInternalValue = 0
-        self.Assign_at_start()
-
-    #@+node:ekr.20101110094152.5826: *4* class ConstError
-    class ConstError(TypeError):
-        pass
-    #@+node:ekr.20101110094152.5827: *4* __setattr__
-    def __setattr__(self,name,value):
-
-        if name in self.__dict__:
-            if name != "UniqueInternalValue":
-                raise self.ConstError("Can't rebind const(%s)"%name)
-        self.__dict__[name]=value
-    #@+node:ekr.20101110094152.5828: *4* Assign_at_start
-    def Assign_at_start(self):
-        self.END_PROGRAM = self.Next()   # signal abort
-        self.LINE_WAS_NONE = self.Next() # describe last line printed
-        self.LINE_WAS_CODE = self.Next()
-        self.LINE_WAS_DOC  = self.Next()
-        self.LINE_WAS_HEAD = self.Next()
-        self.LINE_PENDING_NONE  = self.Next() # describe next line to be printed
-        self.LINE_PENDING_CODE  = self.Next()
-        self.LINE_PENDING_DOC   = self.Next()
-    #@+node:ekr.20101110094152.5829: *4* Next
-    def Next(self):
-        self.UniqueInternalValue += 1
-        return(self.UniqueInternalValue)
-    #@-others
-#@+node:ekr.20101110094152.5830: *3* class _ConfigOptions
-class _ConfigOptions:
-    """Hold current configuration options."""
-    #@+others
-    #@+node:ekr.20101110094152.5831: *4* __init__
-    def __init__(self):
-        self.current = {}
-        self.default = {}
-        self.default["maxCodeLineLength"] = '76'
-        self.default["delimiterForCodeStart"] = '~-~--- code starts --------'
-        self.default["delimiterForCodeEnd"]   = '~-~--- code ends ----------'
-        self.default["delimiterForCodeSectionDefinition"] = '*example*'
-        self.default["headingUnderlines"] = '=-~^+'
-        self.default["asciiDocSectionLevels"] = '5'
-        self.default["PrintHeadings"] = "on"
-
-    #@+node:ekr.20101110094152.5832: *4* __GetNodeOptions
-    def __GetNodeOptions(self, vnode):
-        bodyString = vnode.bodyString()
-        lines = bodyString.splitlines()
-        for line in lines:
-            containsAscConfigDirective = patternAscDirectiveConfig.match(line)
-            if containsAscConfigDirective:
-                # Leo uses unicode, convert to plain ascii
-                name = str(containsAscConfigDirective.group(1))
-                value = str(containsAscConfigDirective.group(2))
-                if name in self.current:
-                    self.current[name] = value
-                else:
-                    g.es(vnode.headString())
-                    g.es("  No such config option: %s" % name)
-
-    #@+node:ekr.20101110094152.5833: *4* GetCurrentOptions
-    def GetCurrentOptions(self,c,p):
-        self.current.clear()
-        self.current = self.default.copy()
-        self.__GetNodeOptions(c.rootPosition())
-        self.__GetNodeOptions(p)
-
-    #@-others
-#@-others
-#@-<< define classes >>
-#@+<< constants >>
-#@+node:ekr.20101110094152.5834: ** << constants >> (mod_leo2ascd.py)
-CV = _AssignUniqueConstantValue()
-CV.NODE_IGNORE = CV.Next()      # demo of adding in code
-Conf = _ConfigOptions()
-
+#@+<< patterns >>
+#@+node:ekr.20101110094152.5834: ** << patterns >> (mod_leo2ascd.py)
 # compile the patterns we'll be searching for frequently
 patternSectionName = re.compile(r"\<\< *(.+?) *\>\>")
 patternSectionDefinition = re.compile(r"(\<\< *)(.+?)( *\>\>)(=)")
@@ -108,7 +23,8 @@ patternAscDirectiveExit = re.compile(r"^@ascexit")
 patternAscDirectiveIgnore = re.compile(r"^@ascignore")
 patternAscDirectiveSkip = re.compile(r"^@ascskip")
 patternAscDirectiveSkipToggle = re.compile(r"^@ascskip\s*(\w+)+.*")
-#@-<< constants >>
+#@-<< patterns >>
+
 #@+others
 #@+node:ekr.20140920145803.17999: ** init
 def init():
@@ -394,6 +310,86 @@ def WriteTreeOfCurrentNode(c):
         g.es("Sorry, there was no @ascfile directive in this outline tree.")
     else:
         WriteTreeAsAsc(p,ascFileN)
+#@+node:ekr.20101110094152.5824: ** class _AssignUniqueConstantValue
+class   _AssignUniqueConstantValue:
+    """ Provide unique value to be used as a constant """
+
+    #@+others
+    #@+node:ekr.20101110094152.5825: *3* __init__
+    def __init__(self):
+        self.UniqueInternalValue = 0
+        self.Assign_at_start()
+
+    #@+node:ekr.20101110094152.5826: *3* class ConstError
+    class ConstError(TypeError):
+        pass
+    #@+node:ekr.20101110094152.5827: *3* __setattr__
+    def __setattr__(self,name,value):
+
+        if name in self.__dict__:
+            if name != "UniqueInternalValue":
+                raise self.ConstError("Can't rebind const(%s)"%name)
+        self.__dict__[name]=value
+    #@+node:ekr.20101110094152.5828: *3* Assign_at_start
+    def Assign_at_start(self):
+        self.END_PROGRAM = self.Next()   # signal abort
+        self.LINE_WAS_NONE = self.Next() # describe last line printed
+        self.LINE_WAS_CODE = self.Next()
+        self.LINE_WAS_DOC  = self.Next()
+        self.LINE_WAS_HEAD = self.Next()
+        self.LINE_PENDING_NONE  = self.Next() # describe next line to be printed
+        self.LINE_PENDING_CODE  = self.Next()
+        self.LINE_PENDING_DOC   = self.Next()
+    #@+node:ekr.20101110094152.5829: *3* Next
+    def Next(self):
+        self.UniqueInternalValue += 1
+        return(self.UniqueInternalValue)
+    #@-others
+
+CV = _AssignUniqueConstantValue()
+CV.NODE_IGNORE = CV.Next()      # demo of adding in code
+#@+node:ekr.20101110094152.5830: ** class _ConfigOptions
+class _ConfigOptions:
+    """Hold current configuration options."""
+    #@+others
+    #@+node:ekr.20101110094152.5831: *3* __init__
+    def __init__(self):
+        self.current = {}
+        self.default = {}
+        self.default["maxCodeLineLength"] = '76'
+        self.default["delimiterForCodeStart"] = '~-~--- code starts --------'
+        self.default["delimiterForCodeEnd"]   = '~-~--- code ends ----------'
+        self.default["delimiterForCodeSectionDefinition"] = '*example*'
+        self.default["headingUnderlines"] = '=-~^+'
+        self.default["asciiDocSectionLevels"] = '5'
+        self.default["PrintHeadings"] = "on"
+
+    #@+node:ekr.20101110094152.5832: *3* __GetNodeOptions
+    def __GetNodeOptions(self, vnode):
+        bodyString = vnode.bodyString()
+        lines = bodyString.splitlines()
+        for line in lines:
+            containsAscConfigDirective = patternAscDirectiveConfig.match(line)
+            if containsAscConfigDirective:
+                # Leo uses unicode, convert to plain ascii
+                name = str(containsAscConfigDirective.group(1))
+                value = str(containsAscConfigDirective.group(2))
+                if name in self.current:
+                    self.current[name] = value
+                else:
+                    g.es(vnode.headString())
+                    g.es("  No such config option: %s" % name)
+
+    #@+node:ekr.20101110094152.5833: *3* GetCurrentOptions
+    def GetCurrentOptions(self,c,p):
+        self.current.clear()
+        self.current = self.default.copy()
+        self.__GetNodeOptions(c.rootPosition())
+        self.__GetNodeOptions(p)
+
+    #@-others
+
+Conf = _ConfigOptions()
 #@-others
 #@@language python
 #@@tabwidth -4

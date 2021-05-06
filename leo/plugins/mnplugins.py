@@ -27,8 +27,6 @@ from leo.core import leoCommands
 #@-<< imports >>
 
 OKFLAG='OK '  # Space required.
-__version__ = "0.2"
-    # 0.2: EKR: added c arg to setOK: fixes bug reported by pylint.
 
 #@+others
 #@+node:ekr.20100128091412.5381: ** init (mnplugins.py)
@@ -126,4 +124,6 @@ def create_UserMenu (tag,keywords):
     ]
     c.frame.menu.createMenuEntries(c.pluginMenu, table)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

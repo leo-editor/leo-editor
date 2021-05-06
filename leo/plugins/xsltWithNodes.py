@@ -18,10 +18,6 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 
 """
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
 #@+<< imports >>
 #@+node:mork.20041025113509: ** << imports >>
 import io
@@ -57,34 +53,6 @@ StringIO = io.StringIO
 #
 #     I dont know at this point if its just illegal xml, or its a problem in the parser. ??
 #@-<<parser problems>>
-#@+<<future directions>>
-#@+node:mork.20041025101943: ** <<future directions>>
-#@+at
-# 1. Add more XSLT boilerplate insertions.( done in .3 )
-# 2. Maybe add a well-formedness check. (done in .3, test with minidom )
-#@-<<future directions>>
-__version__ = '0.6'
-#@+<< version history >>
-#@+node:mork.20041025113211: ** << version history >>
-#@@killcolor
-
-#@+at
-#
-# 0.1: Original code.
-#
-# 0.2 EKR: Converted to outline.
-#
-# 0.3: Added more XSLT boilerplate. Added Test with Minidom Discovered parser problem(?).
-#
-# 0.4 EKR:
-#     - Added init function.
-# 0.5 EKR:
-#     - Remove 'start2' hook & haveseen dict.
-#     - Use keywords.get('c') instead of g.top().
-# 0.6 EKR:
-#     - Removed g.top from example code.
-#@-<< version history >>
-
 #@+others
 #@+node:ekr.20050226120104.1: ** init
 def init():
@@ -538,7 +506,6 @@ class CSVVisualizer:
     if 1:
 
         registerHandler( ('start2' , 'open2', "new") , addMenu )
-        __version__ = ".125"
         g.plugin_signon( __name__ )
 
     #@-others
@@ -591,4 +558,7 @@ class CSVVisualizer:
 #@-others
 '''
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

@@ -9,8 +9,6 @@
 import time
 from leo.core import leoGlobals as g
 
-__version__ = "0.1"
-
 #@+others
 #@+node:ekr.20100128073941.5374: ** init
 def init():

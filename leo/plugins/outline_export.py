@@ -7,8 +7,6 @@
 
 from leo.core import leoGlobals as g
 
-__version__ = "1.2" # Set version for the plugin handler.
-
 #@+others
 #@+node:ekr.20100128073941.5375: ** init
 def init():

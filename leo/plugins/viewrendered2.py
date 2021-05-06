@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140225222704.16748: * @file ../plugins/viewrendered2.py
-#@@language python
+
 #@+<< docstring >>
 #@+node:ekr.20140226074510.4187: ** << docstring >> (VR2)
 '''
@@ -202,11 +202,11 @@ See the viewrendered.py plugin for additional acknowledgments.
 
 '''
 #@-<< docstring >>
+
 # 2018/03/05:
 # - New code by Tom Passin, per #756.
 # - EKR added previous fix for #734.
 # Porting to PyQt5: https://wiki.qt.io/Porting_from_QtWebKit_to_QtWebEngine
-__version__ = '1.2' # tbp: added "Code Only" option to emit only code.
 
 #@+<< imports >>
 #@+node:ekr.20140226074510.4188: ** << imports >> (VR2)
@@ -1890,4 +1890,6 @@ class ViewRenderedController(QtWidgets.QWidget):
     #@-others
 #@-others
 # print('vr2 imported correctly')
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -229,7 +229,6 @@ from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
 #@-<< imports >>
-__version__ = '3.0' # Added EvalController class.
 
 #@+others
 #@+node:ekr.20210228135810.1: ** cmd decorator
@@ -1554,4 +1553,6 @@ class EvalController:
         return s
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

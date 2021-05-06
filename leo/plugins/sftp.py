@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:peckj.20140811080604.9496: * @file ../plugins/sftp.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20140218144401.6036: ** << docstring >>
 '''@edit-like functionality for remote files over SFTP
@@ -96,16 +93,6 @@ sftp-cache-credentials = True`.
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:peckj.20140218144401.6037: ** << version history >>
-#@+at
-#
-# Version 0.1 - initial functionality
-# Version 0.2 - use leoQt instead of PyQt4
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:peckj.20140218144401.6038: ** << imports >>
 try:
@@ -342,4 +329,6 @@ class SFTPController:
         g.user_dict['sftp'] = {}
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -1,10 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.736: * @file ../plugins/trace_keys.py
 """ Traces keystrokes in the outline and body panes."""
-#@@language python
-#@@tabwidth -4
+
 from leo.core import leoGlobals as g
-__version__ = "1.2"
+
 #@+others
 #@+node:ekr.20100128091412.5387: ** init
 def init():
@@ -20,4 +19,6 @@ def onKey(tag, keywords):
     if ch:
         g.es("key", repr(ch))
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

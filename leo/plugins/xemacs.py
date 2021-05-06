@@ -12,44 +12,17 @@ appear in Leo.
 
 '''
 #@-<< docstring >>
-#@@language python
-#@@tabwidth -4
+
+# Initial version: http://www.cs.mu.oz.au/~markn/leo/external_editors.leo
+# Edited by EKR.
+
 #@+<< imports >>
 #@+node:ekr.20050218024153: ** << imports >> (xemacs.py)
 import os
 import sys
 from leo.core import leoGlobals as g
 #@-<< imports >>
-__version__ = "2.0"
-#@+<< version history >>
-#@+node:ekr.20050218024153.1: ** << version history >> (xemacs.py)
-#@@killcolor
-#@+at
-#
-# Initial version: http://www.cs.mu.oz.au/~markn/leo/external_editors.leo
-#
-# 1.5 EKR:
-# - Added commander-specific callback in onCreate.
-# - Added init method.
-# 1.6 MCM
-# - Added sections from Vim mode and some clean-up.
-# 1.7 EKR:
-# - Select _emacs_cmd using sys.platform.
-# 1.8 EKR:
-# - Get c from keywords, not g.top().
-# - Simplified the search of g.app.openWithFiles.
-# - Fixed bug in open_in_emacs: hanged v.bodyString to v.bodyString()
-# 1.9 EKR:
-# - Installed patch from mackal to find client on Linux.
-#   See http://sourceforge.net/forum/message.php?msg_id=3219471
-# 1.10 EKR:
-# - Corrected the call to openWith.  It must now use data=data due to a new event param.
-# 1.11 EKR:
-# - The docstring now states that the open_with plugin must be enabled for this to work.
-# 2.0 EKR:
-# - Use only the emacs-open-node command.  Don't pollute clicks.
-#@-<< version history >>
-# useDoubleClick = True
+
 # Full path of emacsclient executable. We need the full path as spawnlp
 # is not yet implemented in leoCommands.py
 if sys.platform == "win32":
@@ -68,6 +41,7 @@ elif sys.platform.startswith("linux"):
         print("Unable to locate a usable version of *Emacs")
 else:
     _emacs_cmd = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+
 #@+others
 #@+node:ekr.20050218023308: ** xemacs.init
 def init():
@@ -133,4 +107,6 @@ def open_in_emacs_command(event):
     if c:
         open_in_emacs_helper(c, c.p)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

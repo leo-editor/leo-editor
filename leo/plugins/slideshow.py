@@ -20,33 +20,15 @@ All these commands ignore @ignore trees.
 
 '''
 #@-<< docstring >>
-__version__ = '0.4'
-#@+at
-# To do:
-# - Add sound/script support for slides.
-# - Save/restore changes to slides when entering/leaving a slide.
-#@@c
-#@+<< version history >>
-#@+node:ekr.20060831165845.2: ** << version history >>
-#@@killcolor
-#@+at
-#
-# 0.01 EKR: Initial version.
-# 0.02 EKR: Improved docstring and added todo notes.
-# 0.03 EKR: Simplified createCommands.
-# 0.1  EKR: A big step forward.
-# The next/prev-slide-show commands allow easy management of multiple slideshows.
-# 0.2  EKR: next/pref-slide-show commands work properly when
-# a) c.currentPosition changes and
-# b) @slideshow nodes inserted or deleted.
-# 0.3 EKR:
-# - next-slide and prev-slide now work more intuitively when current position changes.
-# 0.4 EKR: Support @ignore nodes in all commands.
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20060831165845.3: ** << imports >>
 from leo.core import leoGlobals as g
 #@-<< imports >>
+
+# To do:
+# - Add sound/script support for slides.
+# - Save/restore changes to slides when entering/leaving a slide.
+
 #@+others
 #@+node:ekr.20060831165845.4: ** init
 def init():

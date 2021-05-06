@@ -2,28 +2,9 @@
 #@+node:ekr.20040915073259.1: * @file ../plugins/maximizeNewWindows.py
 """Maximizes all new windows."""
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "1.4"
-#@+<< version history >>
-#@+node:Dmitry.20101128013501.1257: ** << version history >>
-#@+at
-#
 # Original written by Jaakko Kourula.
-#
-# 1.0 EKR:
-#     - Enabled only for windows platform.
-#     - Minor style changes.
-# 1.1 EKR: Make sure c exists in maximize_window.
-# 1.2 EKR:
-#     - The proper guard is:
-#         if c and c.exists and c.frame and not c.frame.isNullFrame:
-#     - Added init function.
-# 1.3 EKR: Now works on Linux.
-# 1.4 Ivanov Dmitriy, Ville M. Vainio:
-#     Added the support for Qt UI, removed Tk check in init function
-#@-<< version history >>
+# Edited by EKR.
+
 #@+<< imports >>
 #@+node:Dmitry.20101128013501.1258: ** << imports >>
 from leo.core import leoGlobals as g
@@ -51,4 +32,6 @@ def maximize_window(tag, keywords):
         # elif gui == 'tkinter':
             # c.frame.resizeToScreen()
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
