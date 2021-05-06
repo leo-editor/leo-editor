@@ -5,6 +5,7 @@
 """Commands that invoke external checkers"""
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
+import os
 import shlex
 import sys
 import time
@@ -259,25 +260,20 @@ class MypyCommand:
         bpm = g.app.backgroundProcessManager
         for root in roots:
             fn = self.finalize(root)
-            ### Report the file name.
-            ### g.es(f"mypy: {g.shortFileName(fn)}")
             bpm.start_process(c,
                 command=f"mypy {fn}",
                 fn=fn,
                 kind='mypy',
                 link_pattern=self.link_pattern,
                 link_root=None,  # Use the file name in the mypy error messages.
+                shell=True, # 2021/04/30.
             )
     #@+node:ekr.20210302111935.5: *3* mypy.finalize
     def finalize(self, p):
         """Finalize p's path."""
         c = self.c
-        aList = g.get_directives_dict_list(p)
-        path = self.c.scanAtPathDirectives(aList)
-        path = c.expand_path_expression(path)  # #1341.
-        fn = p.anyAtFileNodeName()
-        fn = c.expand_path_expression(fn)  # #1341.
-        return g.os_path_finalize_join(path, fn)
+        # Use os.path.normpath to give system separators.
+        return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20210302111935.7: *3* mypy.run
     def run(self, p):
         """Run mypy on all Python @<file> nodes in c.p's tree."""
@@ -317,16 +313,11 @@ class Flake8Command:
     def find(self, p):
         """Return True and add p's path to self.seen if p is a Python @<file> node."""
         c = self.c
-        found = False
-        if p.isAnyAtFileNode():
-            aList = g.get_directives_dict_list(p)
-            path = c.scanAtPathDirectives(aList)
-            fn = p.anyAtFileNodeName()
-            if fn.endswith('.py'):
-                fn = g.os_path_finalize_join(path, fn)
-                if fn not in self.seen:
-                    self.seen.append(fn)
-                    found = True
+        fn = p.anyAtFileNodeName()
+        found = fn and fn.endswith('.py')
+        if found:
+            path = g.fullPath(c, p)  # #1914.
+            self.seen.append(path)
         return found
     #@+node:ekr.20160517133049.4: *3* flake8.get_flake8_config
     def get_flake8_config(self):
@@ -463,27 +454,8 @@ class PyflakesCommand:
     def finalize(self, p):
         """Finalize p's path."""
         c = self.c
-        aList = g.get_directives_dict_list(p)
-        path = self.c.scanAtPathDirectives(aList)
-        path = c.expand_path_expression(path)  # #1341.
-        fn = p.anyAtFileNodeName()
-        fn = c.expand_path_expression(fn)  # #1341.
-        return g.os_path_finalize_join(path, fn)
-    #@+node:ekr.20160516072613.3: *3* pyflakes.find (no longer used)
-    def find(self, p):
-        """Return True and add p's path to self.seen if p is a Python @<file> node."""
-        c = self.c
-        found = False
-        if p.isAnyAtFileNode():
-            aList = g.get_directives_dict_list(p)
-            path = c.scanAtPathDirectives(aList)
-            fn = p.anyAtFileNodeName()
-            if fn.endswith('.py'):
-                fn = g.os_path_finalize_join(path, fn)
-                if fn not in self.seen:
-                    self.seen.append(fn)
-                    found = True
-        return found
+        # Use os.path.normpath to give system separators.
+        return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
     def run(self, p=None, force=False, pyflakes_errors_only=False):
         """Run Pyflakes on all Python @<file> nodes in c.p's tree."""
@@ -594,17 +566,11 @@ class PylintCommand:
         Return if p is not an @file node for a python file.
         """
         c = self.c
-        if not p.isAnyAtFileNode():
+        fn = p.isAnyAtFileNode()
+        if not fn:
             g.trace(f"not an @<file> node: {p.h!r}")
             return None
-        # #67.
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if not fn.endswith('.py'):
-            g.trace(f"not a python file: {p.h!r}")
-            return None
-        return g.os_path_finalize_join(path, fn)
+        return g.fullPath(c, p)  # #1914
     #@+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint
     def run_pylint(self, fn, p):
         """Run pylint on fn with the given pylint configuration file."""

@@ -28,7 +28,6 @@ from pathlib import Path
               # We shall define pdb as a _function_ below.
 import re
 import shlex
-import shutil
 import string
 import sys
 import subprocess
@@ -71,7 +70,8 @@ globalDirectiveList = [
     'nopyflakes',  # Leo 6.1.
     'nosearch',  # Leo 5.3.
     'others', 'pagewidth', 'path', 'quiet',
-    'raw', 'root-code', 'root-doc', 'root', 'silent',
+    'raw',
+    'silent',
     'tabwidth', 'terse',
     'unit', 'verbose', 'wrap',
 ]
@@ -3255,11 +3255,7 @@ def get_directives_dict(p, root=None):
                     # A unit test tests that @path:any is invalid.
             k = g.skip_line(s, j)
             val = s[j:k].strip()
-            if word in ('root-doc', 'root-code'):
-                d['root'] = val  # in addition to optioned version
             d[word] = val
-            # New in Leo 5.7.1: @path is allowed in body text.
-            # This is very useful when doing recursive imports.
     if root:
         anIter = g_noweb_root.finditer(p.b)
         for m in anIter:
@@ -3461,46 +3457,6 @@ def scanAllAtPathDirectives(c, p):
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
-#@+node:ekr.20100507084415.5760: *3* g.scanAtRootDirectives
-def scanAtRootDirectives(aList):
-    """Scan aList for @root directives."""
-    for d in aList:
-        s = d.get('root')
-        if s is not None:
-            i, mode = g.scanAtRootOptions(s, 0)
-            return mode
-    return None
-#@+node:ekr.20031218072017.3154: *3* g.scanAtRootOptions
-def scanAtRootOptions(s, i, err_flag=False):
-    # The @root has been eaten when called from tangle.scanAllDirectives.
-    if g.match(s, i, "@root"):
-        i += len("@root")
-        i = g.skip_ws(s, i)
-    mode = None
-    while g.match(s, i, '-'):
-        #@+<< scan another @root option >>
-        #@+node:ekr.20031218072017.3155: *4* << scan another @root option >>
-        i += 1; err = -1
-        if g.match_word(s, i, "code"):  # Just match the prefix.
-            if not mode: mode = "code"
-            elif err_flag: g.es("modes conflict in:", g.get_line(s, i))
-        elif g.match(s, i, "doc"):  # Just match the prefix.
-            if not mode: mode = "doc"
-            elif err_flag: g.es("modes conflict in:", g.get_line(s, i))
-        else:
-            err = i - 1
-        # Scan to the next minus sign.
-        while i < len(s) and s[i] not in (' ', '\t', '\n', '-'):
-            i += 1
-        if err > -1 and err_flag:
-            z_opt = s[err:i]
-            z_line = g.get_line(s, i)
-            g.es("unknown option:", z_opt, "in", z_line)
-        #@-<< scan another @root option >>
-    if mode is None:
-        doc = app.config.at_root_bodies_start_in_doc_mode
-        mode = "doc" if doc else "code"
-    return i, mode
 #@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 def scanAtTabwidthDirectives(aList, issue_error_flag=False):
     """Scan aList for @tabwidth directives."""
@@ -3662,46 +3618,6 @@ def set_language(s, i, issue_errors_flag=False):
     if issue_errors_flag:
         g.es("ignoring:", g.get_line(s, i))
     return None, None, None, None
-#@+node:ekr.20081001062423.9: *3* g.setDefaultDirectory & helper
-def setDefaultDirectory(c, p, importing=False):
-    """ Return a default directory by scanning @path directives."""
-    if p:
-        name = p.anyAtFileNodeName()
-        if name:
-            # An absolute path overrides everything.
-            d = g.os_path_dirname(name)
-            if d and g.os_path_isabs(d):
-                return d
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-            # Returns g.getBaseDirectory(c) by default.
-            # However, g.getBaseDirectory can return ''
-    else:
-        path = None
-    if path:
-        path = g.os_path_finalize(path)
-    else:
-        g.checkOpenDirectory(c)
-        for d in (c.openDirectory, g.getBaseDirectory(c)):
-            # Errors may result in relative or invalid path.
-            if d and g.os_path_isabs(d):
-                path = d
-                break
-        else:
-            path = ''
-    if not importing and not path:
-        # This should never happen, but is not serious if it does.
-        g.warning("No absolute directory specified anywhere.")
-    return path
-#@+node:ekr.20101022124309.6132: *4* g.checkOpenDirectory
-def checkOpenDirectory(c):
-    if c.openDirectory != c.frame.openDirectory:
-        g.error(
-            f"Error: c.openDirectory != c.frame.openDirectory\n"
-            f"c.openDirectory: {c.openDirectory}\n"
-            f"c.frame.openDirectory: {c.frame.openDirectory}")
-    if not g.os_path_isabs(c.openDirectory):
-        g.error(f"Error: relative c.openDirectory: {c.openDirectory}")
 #@+node:ekr.20071109165315: *3* g.stripPathCruft
 def stripPathCruft(path):
     """Strip cruft from a path name."""
@@ -4157,47 +4073,6 @@ def splitLongFileName(fn, limit=40):
             result.append('\n')
             n = 0
     return ''.join(result)
-#@+node:ekr.20050104135720: *3* g.Used by tangle code & leoFileCommands
-#@+node:ekr.20050104123726.3: *4* g.utils_remove
-def utils_remove(fileName, verbose=True):
-    try:
-        os.remove(fileName)
-        return True
-    except Exception:
-        if verbose:
-            g.es("exception removing:", fileName)
-            g.es_exception()
-        return False
-#@+node:ekr.20031218072017.1263: *4* g.utils_rename
-def utils_rename(c, src, dst, verbose=True):
-    """Platform independent rename."""
-    # Don't call g.makeAllNonExistentDirectories here!
-    try:
-        shutil.move(src, dst)
-        return True
-    except Exception:
-        if verbose:
-            g.error('exception renaming', src, 'to', dst)
-            g.es_exception(full=False)
-        return False
-#@+node:ekr.20050104124903: *4* g.utils_chmod
-def utils_chmod(fileName, mode, verbose=True):
-    if mode is None:
-        return
-    try:
-        os.chmod(fileName, mode)
-    except Exception:
-        if verbose:
-            g.es("exception in os.chmod", fileName)
-            g.es_exception()
-#@+node:ekr.20050104123726.4: *4* g.utils_stat
-def utils_stat(fileName):
-    """Return the access mode of named file, removing any setuid, setgid, and sticky bits."""
-    try:
-        mode = (os.stat(fileName))[0] & (7 * 8 * 8 + 7 * 8 + 7)  # 0777
-    except Exception:
-        mode = None
-    return mode
 #@+node:ekr.20190114061452.26: *3* g.writeFile
 def writeFile(contents, encoding, fileName):
     """Create a file with the given contents."""

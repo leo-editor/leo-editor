@@ -12,6 +12,7 @@ import io
 import json
 import os
 import pickle
+import shutil
 import sqlite3
 import tempfile
 import time
@@ -501,7 +502,7 @@ class FileCommands:
     #@+node:ekr.20100119145629.6108: *4* fc.handleWriteLeoFileException
     def handleWriteLeoFileException(self, fileName, backupName, f):
         """Report an exception. f is an open file, or None."""
-        c = self.c
+        # c = self.c
         g.es("exception writing:", fileName)
         g.es_exception(full=True)
         if f:
@@ -513,7 +514,13 @@ class FileCommands:
         if backupName and g.os_path_exists(backupName):
             g.es("restoring", fileName, "from", backupName)
             # No need to create directories when restoring.
-            g.utils_rename(c, backupName, fileName)
+            ### g.utils_rename(c, backupName, fileName)
+            src, dst = backupName, fileName
+            try:
+                shutil.move(src, dst)
+            except Exception:
+                g.error('exception renaming', src, 'to', dst)
+                g.es_exception(full=False)
         else:
             g.error('backup file does not exist!', repr(backupName))
     #@+node:ekr.20040324080359.1: *4* fc.isReadOnly

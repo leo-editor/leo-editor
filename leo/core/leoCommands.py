@@ -1931,9 +1931,6 @@ class Commands:
                 n += len(s)
         return language
     #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
-    # Not used in Leo's core.
-    # Used by the UNl plugin.  Does not need to create a path.
-
     def getNodePath(self, p):
         """Return the path in effect at node p."""
         c = self
@@ -1941,26 +1938,18 @@ class Commands:
         path = c.scanAtPathDirectives(aList)
         return path
 
-    # Not used in Leo's core.
-
     def getNodeFileName(self, p):
         """
         Return the full file name at node p,
         including effects of all @path directives.
-        Return None if p is no kind of @file node.
+        Return '' if p is no kind of @file node.
         """
         c = self
-        path = g.scanAllAtPathDirectives(c, p)
-        name = ''
         for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
-            if name: break
-        if name:
-            # The commander method supports {{expr}}; the global function does not.
-            path = c.expand_path_expression(path)  # #1341.
-            name = c.expand_path_expression(name)  # #1341.
-            name = g.os_path_finalize_join(path, name)
-        return name
+            if name:
+                return g.fullPath(c, p)  # #1914.
+        return ''
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
         """Return True if p.b contains different @language directives."""
@@ -2010,16 +1999,10 @@ class Commands:
         """
         c = self
         p = p or c.p
-        # Set defaults
-        language = c.target_language and c.target_language.lower()
-        lang_dict = {
-            'language':language,
-            'delims':g.set_delims_from_language(language),
-        }
         wrap = c.config.getBool("body-pane-wraps")
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
-            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
             ('path',        None,           c.scanAtPathDirectives),
@@ -2036,13 +2019,15 @@ class Commands:
         lang_dict = d.get('lang-dict')
         d = {
             "delims":       lang_dict.get('delims'),
+            "comment":      lang_dict.get('comment'),  # Leo 6.4: New.
             "encoding":     d.get('encoding'),
-            "language":     lang_dict.get('language'),
+            # Note: at.scanAllDirectives does not use the defaults for "language".
+            "language":     lang_dict.get('language') or c.target_language and c.target_language.lower(),
+            "lang-dict":    lang_dict,  # Leo 6.4: New.
             "lineending":   d.get('lineending'),
             "pagewidth":    d.get('pagewidth'),
             "path":         d.get('path'), # Redundant: or g.getBaseDirectory(c),
             "tabwidth":     d.get('tabwidth'),
-            "pluginsList":  [], # No longer used.
             "wrap":         d.get('wrap'),
         }
         return d
@@ -2088,24 +2073,6 @@ class Commands:
         path = g.os_path_finalize_join(*paths)  # #1341.
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
-    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives (no longer used)
-    # No longer used. Was called only by scanLanguageDirectives.
-
-    def scanAtRootDirectives(self, aList):
-        """Scan aList for @root-code and @root-doc directives."""
-        c = self
-        # To keep pylint happy.
-        tag = 'at_root_bodies_start_in_doc_mode'
-        start_in_doc = hasattr(c.config, tag) and getattr(c.config, tag)
-        # New in Leo 4.6: dashes are valid in directive names.
-        for d in aList:
-            if 'root-code' in d:
-                return 'code'
-            if 'root-doc' in d:
-                return 'doc'
-            if 'root' in d:
-                return 'doc' if start_in_doc else 'code'
-        return None
     #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
     def expand_path_expression(self, s):
         """Expand all {{anExpression}} in c's context."""

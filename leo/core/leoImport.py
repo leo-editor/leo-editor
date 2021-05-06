@@ -204,14 +204,12 @@ class LeoImportCommands:
     def __init__(self, c):
         """ctor for LeoImportCommands class."""
         self.c = c
-        self.default_directory = None  # For @path logic.
         self.encoding = 'utf-8'
         self.errors = 0
         self.fileName = None  # The original file name, say x.cpp
         self.fileType = None  # ".py", ".c", etc.
         self.methodName = None  # x, as in < < x methods > > =
         self.output_newline = g.getOutputNewline(c=c)  # Value of @bool output_newline
-        self.rootLine = ""  # Empty or @root + self.fileName
         self.tab_width = c.tab_width
         self.treeType = "@file"  # None or "@file"
         self.webType = "@noweb"  # "cweb" or "noweb"
@@ -612,14 +610,7 @@ class LeoImportCommands:
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self,
-        fileName,
-        parent,
-        atShadow=False,  # For error messages only.
-        ext=None,
-        s=None,
-        # force_at_others=False,  # tag:no-longer-used
-    ):
+    def createOutline(self, parent, ext=None, s=None):
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -633,15 +624,15 @@ class LeoImportCommands:
         p = parent.copy()
         self.treeType = '@file'
             # Fix #352.
-        fn = self.get_import_filename(fileName, parent)
+        fileName = g.fullPath(c, parent)
         if g.is_binary_external_file(fileName):
-            return self.import_binary_file(fn, parent)
+            return self.import_binary_file(fileName, parent)
         # Init ivars.
         self.setEncoding(
             p=parent,
             default=c.config.default_at_auto_file_encoding,
         )
-        ext, s = self.init_import(atShadow, ext, fileName, s)
+        ext, s = self.init_import(ext, fileName, s)
         if s is None:
             return None
         # Get the so-called scanning func.
@@ -675,14 +666,6 @@ class LeoImportCommands:
         # Match the @auto type first, then the file extension.
         c = self.c
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
-    #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
-    def get_import_filename(self, fileName, parent):
-        """Return the absolute path of the file and set .default_directory."""
-        c = self.c
-        self.default_directory = g.setDefaultDirectory(c, parent, importing=False)
-        fileName = g.os_path_finalize_join(self.default_directory, fileName)  # 1341
-        fileName = fileName.replace('\\', '/')  # 2011/11/25
-        return fileName
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
     def import_binary_file(self, fileName, parent):
 
@@ -696,7 +679,7 @@ class LeoImportCommands:
         p.h = f"@url file://{fileName}"
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, atShadow, ext, fileName, s):
+    def init_import(self, ext, fileName, s):
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -707,19 +690,11 @@ class LeoImportCommands:
         ext = ext.lower()
         if not s:
             # Set the kind for error messages in readFileIntoString.
-            s, e = g.readFileIntoString(
-                fileName,
-                encoding=self.encoding,
-                kind='@shadow ' if atShadow else '@auto ',
-            )
-                # Kind is used only for messages.
+            s, e = g.readFileIntoString(fileName, encoding=self.encoding)
             if s is None:
                 return None, None
-            if e: self.encoding = e
-        if self.treeType == '@root':
-            self.rootLine = "@root-code " + self.fileName + '\n'
-        else:
-            self.rootLine = ''
+            if e:
+                self.encoding = e
         return ext, s
     #@+node:ekr.20070713075352: *5* ic.scanUnknownFileType & helper
     def scanUnknownFileType(self, s, p, ext):
@@ -730,7 +705,7 @@ class LeoImportCommands:
         else:
             language = self.languageForExtension(ext)
             if language: body += f"@language {language}\n"
-        self.setBodyString(p, body + self.rootLine + s)
+        self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
             p.clearDirty()
         g.app.unitTestDict = {'result': True}
@@ -786,7 +761,8 @@ class LeoImportCommands:
         if not paths:
             return None
         # Initial open from command line is not undoable.
-        if command: u.beforeChangeGroup(current, command)
+        if command:
+            u.beforeChangeGroup(current, command)
         for fileName in paths:
             fileName = fileName.replace('\\', '/')  # 2011/10/09.
             g.setGlobalOpenDir(fileName)
@@ -796,10 +772,10 @@ class LeoImportCommands:
             if isThin:
                 # Create @file node, not a deprecated @thin node.
                 p.initHeadString("@file " + fileName)
-                at.read(p, force=True)
+                at.read(p)
             else:
                 p.initHeadString("Imported @file " + fileName)
-                at.read(p, importFileName=fileName, force=True)
+                at.read(p)
             p.contract()
             p.setDirty()  # 2011/10/09: tell why the file is dirty!
             if command: u.afterInsertNode(p, command, undoData)
@@ -825,7 +801,7 @@ class LeoImportCommands:
         if not parent:
             g.trace('===== no parent', g.callers())
             return
-        for fn in files:
+        for fn in files or []:
             # Report exceptions here, not in the caller.
             try:
                 g.setGlobalOpenDir(fn)
@@ -834,7 +810,7 @@ class LeoImportCommands:
                 p = parent.insertAsLastChild()
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(fn, parent=p)
+                p = self.createOutline(parent=p)
                 if p:  # createOutline may fail.
                     if not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -885,7 +861,7 @@ class LeoImportCommands:
         p = parent.insertAsLastChild()
         p.initHeadString(fileName)
         if self.webType == "cweb":
-            self.setBodyString(p, "@ignore\n" + self.rootLine + "@language cweb")
+            self.setBodyString(p, "@ignore\n@language cweb")
         # Scan the file, creating one section for each function definition.
         self.scanWebFile(path, p)
         u.afterInsertNode(p, 'Import', undoData)
@@ -1273,7 +1249,7 @@ class LeoImportCommands:
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        c, h = self.c, p.h
+        c = self.c
         old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
@@ -1284,9 +1260,10 @@ class LeoImportCommands:
         else:
             d = {}
         g.app.unitTestDict = d
-        if not fileName: fileName = p.h
-        if not s: s = self.removeSentinelsCommand([fileName], toString=True)
-        title = h[5:] if h.startswith('@test') else h
+        if not fileName:
+            fileName = p.h
+        if not s:
+            s = self.removeSentinelsCommand([fileName], toString=True)
         # Run the actual test using the **GeneralTestCase** class.
         # Leo 5.6: Compute parent here.
         if p:
@@ -1295,12 +1272,7 @@ class LeoImportCommands:
             parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
-        self.createOutline(
-            ext=ext,
-            fileName=title.strip(),
-            parent=parent.copy(),
-            s=s,
-        )
+        self.createOutline(parent=parent.copy(), ext=ext, s=s)
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
