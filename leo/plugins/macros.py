@@ -63,26 +63,7 @@ It's a lot easier to use than to explain!
 
 '''
 #@-<< docstring >>
-__version__ = "2.0" # BobS & EKR.
-#@+<< version history >>
-#@+node:ekr.20040916091520: ** << version history >>
-#@+at
-#
-# 1.2 EKR:
-# - Converted to outline.
-# - Use g.angleBrackets to enclose lines with < < and > >.
-# - Use new instead of start2 hook.
-# - onCreate creates a new class for each commander.
-# - Removed all globals.
-# 1.3 EKR: Changed 'new_c' logic to 'c' logic.
-# 1.4 EKR: Replaced tree.begin/endUpdate by c.beginEndUpdate.
-# 1.5 EKR: Added event param to parameterize.
-# 1.6 EKR: imported leoNodes.
-# 1.7 Rich Ries: improved the docstring.
-# 1.8 EKR: Add the menu only for the tkinter gui.
-# 1.9 BobS: Revised self.pattern & added traces.
-# 2.0 EKR: Many code cleanups & fixed several crashers.
-#@-<< version history >>
+# BobS & EKR.
 import re
 from leo.core import leoGlobals as g
 #@+others

@@ -39,18 +39,12 @@ Settings
     The pattern will be applied only for strings starting with the leadin character.
 """
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.1"
 #@+<< imports >>
 #@+node:tbrown.20141101114322.3: ** << imports >>
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtGui
 #@-<< imports >>
-
 #@+others
 #@+node:tbrown.20141101114322.4: ** init
 def init():
@@ -205,4 +199,6 @@ class WikiView:
                 # Triggers a recolor.
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

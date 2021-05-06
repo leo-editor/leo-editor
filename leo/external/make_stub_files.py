@@ -1149,7 +1149,7 @@ class LeoGlobals:
         except ImportError:
             print(args, keys)
     #@-others
-#@+node:ekr.20160317054700.95: ** class Pattern(object)
+#@+node:ekr.20160317054700.95: ** class Pattern
 class Pattern:
     '''
     A class representing regex or balanced patterns.
@@ -1956,7 +1956,7 @@ class StandAloneMakeStubFile:
                 print('')
         return aList
     #@-others
-#@+node:ekr.20160317054700.134: ** class Stub(object)
+#@+node:ekr.20160317054700.134: ** class Stub
 class Stub:
     '''
     A class representing all the generated stub for a class or def.

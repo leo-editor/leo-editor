@@ -38,27 +38,9 @@ actions, Leo does not do anything with or to such files.
 #@-<< docstring >>
 
 # Written by Konrad Hinsen <konrad.hinsen@laposte.net>
+# Edited by TL and EKR.
 # Distributed under the same licence as Leo.
 
-__version__ = "0.4"
-#@+<< version history >>
-#@+node:ekr.20040915110738: ** << version history >>
-#@@nocolor
-#@+at
-#
-# 0.2 EKR:
-# - Convert to a typical outline.
-# 0.3 EKR:
-# - Removed all calls to g.top()
-# - Simplified definition of shellScriptInWindow.
-# - Added c arg to shellScriptInWindow.
-#   This may change existing scripts.
-# - Added c arg to g.findNodeAnywhere.
-# - Execute scripts with 'c' and 'g' predefined.
-# 0.4 TL: Double-click does nothing for non @file/@thin etc. nodes.
-# 0.5 TL: Replaced logic for obtaining filename to fix problems with spaces
-#         Fixed problem with @file-ref feature created by 0.4 release
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20090317093747.1: ** << imports >>
 import fnmatch

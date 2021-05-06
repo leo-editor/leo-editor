@@ -2,23 +2,10 @@
 #@+node:edream.110203113231.925: * @file ../plugins/script_io_to_body.py
 """Sends output from the Execute Script command to the end of the body pane."""
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "1.5"
-
 #@+<< imports >>
 #@+node:ekr.20050101090207.4: ** << imports >>
 from leo.core import leoGlobals as g
 #@-<< imports >>
-#@+<< version history >>
-#@+node:ekr.20071212114235: ** << version history >>
-#@@nocolor
-#@+at
-#
-# 1.5 EKR: A complete rewrite. Now works with Leo 4.4.5 code base.
-# 2.0 EKR: Gui independent.
-#@-<< version history >>
 
 #@+others
 #@+node:ekr.20071025195133: ** init
@@ -93,4 +80,7 @@ def undirect (c):
     g.funcToMethod(c.script_io_to_body_oldput,log,"put")
     g.funcToMethod(c.script_io_to_body_oldputnl,log,"putnl")
 #@-others
+#@@language python
+#@@tabwidth -4
+
 #@-leo

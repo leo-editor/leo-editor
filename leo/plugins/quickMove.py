@@ -128,23 +128,9 @@ Tags
 
 """
 #@-<< docstring >>
-__version__ = '0.7'
-#@+<< version history >>
-#@+node:tbrown.20070117104409.6: ** << version history >>
-#@+at
-# 0.1 by Terry Brown, 2007-01-12
-# 0.2 EKR:
-# - Revised docstring.
-# - Use positions and position methods rather than vnodes.
-# - Use checkMoveWithParentWithWarning.
-# - Support undo.
-# - Clearer command names.
-# 0.3 EKR: Various small mods suggested by Terry.
-# 0.4 EKR: Added checkMove method.
-# 0.5 EKR: Added c arg to p.visNext & p.visBack.
-# 0.6 TNB: Store vnodes rather than positions, vnodes are more durable
-# 0.7 TNB: Added "clone to" as well as "move to"
-#@-<< version history >>
+
+# By Terry Brown, 2007-01-12
+
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy

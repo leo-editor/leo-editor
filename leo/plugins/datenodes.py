@@ -2,7 +2,8 @@
 #@+node:ekr.20060807103814.1: * @file ../plugins/datenodes.py
 #@+<< docstring >>
 #@+node:bobjack.20080615065747.4: ** << docstring >>
-""" Allows users to insert headlines containing dates.
+"""
+Allows users to insert headlines containing dates.
 
 'Date nodes' are nodes that have dates in their headlines. They may be added to
 the outline one at a time, a month's-worth at a time, or a year's-worth at a
@@ -26,31 +27,6 @@ The following commands are available for use via the minibuffer or in
 """
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.7"
-#@+<< version history >>
-#@+node:gfunch.20041207100416.2: ** << version history >>
-#@@nocolor
-#@+at
-#
-# 0.1: Initial version.
-# 0.2: Improved menu structure. Added ini file.
-# 0.3: Changed docstring slightly.
-# 0.4: Added event=None to insert_xxx_node.
-# 0.5: Added options to omit saturdays and sundays. Use leoSettings.leo instead of datenodes.ini for storing options.
-# 0.6: Removed @c from most nodes: this is not needed.  Also removed .ini file from cvs.
-# 0.7 bobjack:
-#     - added plugin init method
-#     - exposed the pluginController as c.theDateNodesController
-#     - added support for settings:
-#         - @bool suppress-datenodes-menus
-#     - added minibuffer commands
-#         - datenodes-today
-#         - datenodes-this-month
-#         - datenodes-this-year
-#@-<< version history >>
 #@+<< todo >>
 #@+node:bobjack.20080615065747.5: ** << todo >>
 #@@nocolor
@@ -262,5 +238,7 @@ def on_create(tag, keywords):
     #@-<< Create the plug-in menu. >>
 
 #@-others
+#@@language python
+#@@tabwidth -4
 
 #@-leo

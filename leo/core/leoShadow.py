@@ -178,15 +178,6 @@ class ShadowController:
                 fileDir,  # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,
                 x.shadow_prefix + g.shortFileName(filename))
-    #@+node:ekr.20080711063656.3: *4* x.unlink
-    def unlink(self, filename, silent=False):
-        """Unlink filename from the file system.
-        Give an error on failure."""
-        x = self
-        ok = g.utils_remove(filename, verbose=not silent)
-        if not ok:
-            x.error(f"can not delete {filename}", silent=silent)
-        return ok
     #@+node:ekr.20080708192807.1: *3* x.Propagation
     #@+node:ekr.20080708094444.35: *4* x.check_output
     def check_output(self):

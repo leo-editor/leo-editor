@@ -4025,17 +4025,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         p.clearDirty()  # Don't automatically rewrite this node.
     #@+node:ekr.20110605121601.18375: *9* LeoQTreeWidget.createAtFileTree
     def createAtFileTree(self, fn, p, s):
-        """Make p an @file node and create the tree using
-        s, the file's contents.
-        """
+        """Make p an @file node and create the tree using s, the file's contents."""
         c = self.c; at = c.atFileCommands
         p.h = f"@file {fn}"
         # Read the file into p.
-        ok = at.read(root=p.copy(),
-            importFileName=None,
-            fromString=s,
-            atShadow=False,
-            force=True)  # Disable caching.
+        ok = at.read(root=p.copy(), fromString=s)
         if not ok:
             g.error('Error reading', fn)
             p.b = ''  # Safe: will not cause a write later.

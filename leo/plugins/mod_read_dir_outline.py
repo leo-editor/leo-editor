@@ -5,7 +5,8 @@
 
 #@+<< docstring >>
 #@+node:ekr.20050301084207: ** << docstring >>
-''' Allows Leo to read a complete directory tree into a Leo outline. Converts
+'''
+Allows Leo to read a complete directory tree into a Leo outline. Converts
 directories into headlines and puts the list of file names into bodies.
 
 Ce plug-in permet de traduire l'arborescence d'un répertoire en une arborescence
@@ -26,31 +27,6 @@ Feedback on this plugin can be sent to::
 
 import os
 from leo.core import leoGlobals as g
-
-__version__ = '2.0'
-#@+<< version history >>
-#@+node:ekr.20050301083306.3: ** << version history >>
-#@@killcolor
-
-#@+at
-#
-# 1.3 Original version by Frédéric Momméja
-#
-# 1.4 EKR:  Changes for 4.3 code base and new plugins style.
-#
-#     - Created typical init and onCreate functions.
-#     - Created language global.
-#     - Changed true/false to True/False.
-#     - Used g.os_path functions to support Unicode properly.
-#     - Added '@first # -*- coding: utf-8 -*-' to suppress deprecation warning.
-# 1.5 EKR:
-#     - use g.importExtension to import tkFileDialog.
-#     - Redraw the screen only once (in readDir instead of importDir).
-# 1.6 EKR:
-#     - Changed 'new_c' logic to 'c' logic.
-#     - Added init function.
-# 2.0 EKR: now gui independent.
-#@-<< version history >>
 
 language = 'english' # Anything except 'french' uses english.
 

@@ -3,11 +3,11 @@
 #@+node:EKR.20040517080202.3: * @file ../plugins/examples/french_fm.py
 #@@first
 """traduit les menus en Français"""
-#@@language python
-#@@tabwidth -4
+
 # French translation completed by Frédéric Momméja, Spring 2003
+
 from leo.core import leoGlobals as g
-__version__ = "1.4" # Set version for the plugin handler.
+
 #@+others
 #@+node:ekr.20111104210837.9688: ** init
 def init():
@@ -173,4 +173,6 @@ def onMenu(tag, keywords):
     # Call the convenience routine to do the work.
     c.frame.menu.setRealMenuNamesFromTable(table)
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

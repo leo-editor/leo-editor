@@ -535,6 +535,7 @@
 <v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
+<v t="ekr.20210506073820.1"><vh>@bool allow-text-zoom = True</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
@@ -11610,6 +11611,7 @@ False: Docutils will link to an external stylesheet file.</t>
 
 german:  Remove *plain* Shift modifier for colon and semicolon.
 spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
+<t tx="ekr.20210506073820.1">True: allow scroll-wheel zooming.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

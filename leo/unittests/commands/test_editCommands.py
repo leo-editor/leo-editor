@@ -37,7 +37,6 @@ class EditCommandsTest(unittest.TestCase):
         # Set the selection range and insert point.
         w = c.frame.body.wrapper
         i, j = before_sel
-        ### g.trace(i, j)
         i = g.toPythonIndex(before_b, i)
         j = g.toPythonIndex(before_b, j)
         w.setSelectionRange(i, j, insert=j)

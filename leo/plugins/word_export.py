@@ -1,31 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517075715.14: * @file ../plugins/word_export.py
-r'''
+r"""
 Adds the Plugins\:Word Export\:Export menu item to format and export
 the selected outline to a Word document, starting Word if necessary.
-'''
+"""
 
 __plugin_name__ = "Word Export"
-__version__ = "0.8"
 
-#@+<< version history >>
-#@+node:ekr.20040909110753: ** << version history >>
-#@@killcolor
-#@+at
-#
-# 0.3 EKR:
-#     - Changed os.path.x to g.os_path_x for better handling of unicode filenames.
-#     - Better error messages.
-# 0.4 EKR:
-#     - Added autostart code per http://sourceforge.net/forum/message.php?msg_id=2842589
-# 0.5 EKR:
-#     - Added init function so that a proper message is given if win32com can not be imported.
-# 0.6 EKR: (eliminated g.top)
-#     - Add c arg to writeNodeAndTree.
-#     - Set encoding to sys.getdefaultencoding() if there is no @encoding directive in effect.
-# 0.7 EKR: cmd_ functions now get c arg.
-# 0.8 EKR: set __plugin_name__ rather than __name__
-#@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040909105522: ** << imports >>
 import configparser as ConfigParser

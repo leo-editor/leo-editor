@@ -8,8 +8,6 @@
 import os
 from leo.core import leoGlobals as g
 
-__version__ = "1.2"
-
 #@+<< define minimal .leo file >>
 #@+node:EKR.20040517080049.2: ** << define minimal .leo file >>
 empty_leo_file = """<?xml version="1.0" encoding="UTF-8"?>

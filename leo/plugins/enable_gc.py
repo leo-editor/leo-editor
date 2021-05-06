@@ -1,10 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.732: * @file ../plugins/enable_gc.py
 """Enables debugging and tracing for Python's garbage collector."""
-#@@language python
-#@@tabwidth -4
+
 from leo.core import leoGlobals as g
-__version__ = "1.2"
+
 #@+others
 #@+node:ekr.20100128091412.5385: ** init
 def init():
@@ -22,4 +21,6 @@ def onStart(tag, keywords):
     except Exception:
         pass
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -20,17 +20,7 @@ Requires "valuespace" plugin. Fetches vars from valuespace.
 '''
 #@-<< docstring >>
 
-__version__ = '0.1'
-#@+<< version history >>
-#@+node:ville.20110409151021.5701: ** << version history >>
-#@@killcolor
-#@+at
-#
-# 0.1 Ville M. Vainio:
-#
-#     * First version
-#
-#@-<< version history >>
+# By Ville M. Vainio.
 
 #@+<< imports >>
 #@+node:ville.20110409151021.5702: ** << imports >>
@@ -106,4 +96,6 @@ class JinjaCl:
 
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

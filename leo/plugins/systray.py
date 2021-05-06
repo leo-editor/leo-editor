@@ -1,10 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ville.20110304230157.6513: * @file ../plugins/systray.py
-''' systray'''
+"""systray"""
+
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtGui, QtWidgets
-__version__ = '0.2'
+
 g.assertUi('qt')
+
 #@+others
 #@+node:ville.20110219221839.6553: ** init
 def init ():

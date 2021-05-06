@@ -1,8 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:peckj.20140113150237.7083: * @file ../plugins/nodediff.py
-#@@language python
-#@@tabwidth -4
-
 #@+<< docstring >>
 #@+node:peckj.20140113131037.5792: ** << docstring >>
 '''Provides commands to run text diffs on node bodies within Leo.
@@ -83,13 +80,7 @@ positions as input::
 '''
 #@-<< docstring >>
 
-__version__ = '0.1'
-#@+<< version history >>
-#@+node:peckj.20140113131037.5793: ** << version history >>
-#@+at
-#
-# JMP 0.1 - initial version
-#@-<< version history >>
+# By JMP.
 
 #@+<< imports >>
 #@+node:peckj.20140113131037.5794: ** << imports >>
@@ -336,4 +327,6 @@ class NodeDiffController:
 
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

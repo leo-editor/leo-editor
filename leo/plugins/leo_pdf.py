@@ -5,14 +5,15 @@
 #@@first
 #@@first
 
-''' This NOT a Leo plugin: this is a docutils writer for .pdf files.
+"""
+This NOT a Leo plugin: this is a docutils writer for .pdf files.
 
 That file uses the reportlab module to convert html markup to pdf.
 
 The original code written by Engelbert Gruber.
 
 Rewritten by Edward K. Ream for the Leo rst3 plugin.
-'''
+"""
 
 # Note: you must copy this file to the Python/Lib/site-packages/docutils/writers folder.
 
@@ -118,124 +119,13 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #
 #####################################################################################
 #@-<< copyright >>
-#@+<< version history >>
-#@+node:ekr.20090704103932.5165: ** << version history >>
-#@@nocolor
-#@+others
-#@+node:ekr.20090704103932.5166: *3* Early versions
-#@+node:ekr.20090704103932.5167: *4* Initial conversion
-#@+at
-#
-# - Added 'c:\reportlab_1_20' to sys.path.
-#
-# - Obtained this file and stylesheet.py from
-#   http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
-#
-# - Put stylesheet.py in docutils/writers directory.
-#   This is a stylesheet class used by the file.
-#
-# - Made minor mods to stop crashes.
-#     - Added support for the '--stylesheet' option.
-#         - This may be doing more harm than good.
-#     - Changed the following methods of the PDFTranslator class:
-#         - createParagraph
-#         - depart_title
-#@+node:ekr.20090704103932.5168: *4* 0.0.1
-#@+at
-#
-# - Removed '\r' characters in Writer.translate.
-# - Created self.push and self.pop.
-# - Rewrote visit/depart_title.  The code now is clear and works properly.
-#
-# To do:
-#     The code in several places uses x in self.context.
-#     This won't work when g.Bunches are on the context stack,
-#     so we shall need a method that searches the bunches on the stack.
-#@+node:ekr.20090704103932.5169: *4* 0.0.2
-#@+at
-#
-# - Fixed bug in visit_reference: added self.push(b).
-# - Added putHead, putTail utilities.
-# - Simplified most of the code.
-# - Reorganized node handlers so that it is clear what the important methods are.
-# - Almost all the grunt work is done.
-#@+node:ekr.20090704103932.5170: *4* 0.0.3
-#@+at
-#
-# All grunt work completed:
-#
-# - Moved Bunch class into this file (so no dependencies on leoGlobals.py).
-#
-# - Simplified calls to self.push
-#
-# - Finish all simple methods.
-#
-# - Better dumps in createParagraph.
-#@+node:ekr.20090704103932.5171: *4* 0.0.4
-#@+at
-#
-# - Added dummyPDFTranslator class.
-#
-# - Added support for this dummy class to Writer.translate.
-#@+node:ekr.20090704103932.5172: *4* 0.0.5
-#@+at
-#
-# - First working version.
-#
-#@+node:ekr.20090704103932.5173: *3* 0.1
-#@+at
-#
-# - Completed the conversion to using Bunches on the context stack.
-#     - Added peek method.
-#     - In context now searches from top of context stack and returns a Bunch.
-#     - Rewrote the footnote logic to use bunches:
-#         - footnote_backrefs sets b.setLink and b.links.  Much clearer code.
-#         - visit/depart_label uses b.setLink and b.links to generate code.
-# - The code now passes a minimal test of footnote code.
-#
-# - WARNING: auto-footnote numbering does not work.  I doubt it ever did.  I feel under no obligation to make it work.
-#@+node:ekr.20090704103932.5174: *3* 0.2
-#@+at
-#
-# - Added 'about this code' section.
-#@+node:ekr.20090704103932.5175: *3* 0.3
-#@+at Minor improvements to documentation.
-#@+node:ekr.20090704103932.5176: *3* 0.4
-#@+at
-#
-# - Added warning to docstring that this is not a valid Leo plugin.
-#
-# - Added init function that always returns False.  This helps Leo's unit tests.
-#@-others
 
-#@+at
-# 0.5 EKR:
-# - Define subclasses of docutils classes only if docutils can be imported.
-# - This supresses errors during unit tests.
-#
-# 1.0 EKR 2011/11/03:
-# - Various changes to come accomodate docutils changes.
-#     - Added dummy Reporter class for use by get_language.
-#     - I suspect this should be logger class, but I don't much care.
-# - Incorporate getStyleSheet from stylesheet.py, obtained from:
-#     http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
-#
-# Note: passing writer_name = leo.plugins.leo_pdf to docutils does not work,
-# presumably because __import__('leo.plugins.leo_pdf') returns the *leo* module,
-# and docutils seems not to be aware of it. Thus, the new rst3 code passes writer
-# = Writer() (an instance) instead.
-#@-<< version history >>
-#@+<< to do >>
-#@+node:ekr.20090704103932.5177: ** << to do >>
-#@@nocolor
-#@+at
-#
+# To do:
 # - Bullets show up as a black 2 ball.
 # - More flexible handling of style sheets.
 # - Auto-footnote numbering does not work.
 # - Test rST raw: pdf feature.
-#@-<< to do >>
-__version__ = '1.0'
+
 __docformat__ = 'reStructuredText'
 
 #@+<< imports >>

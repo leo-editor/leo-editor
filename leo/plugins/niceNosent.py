@@ -9,28 +9,8 @@ adds a newline before class and functions in the derived file.
 """
 #@-<< docstring >>
 
-#@@language python
-#@@tabwidth -4
-
-__version__ = "0.3"
-#@+<< version history >>
-#@+node:ekr.20040909122647: ** << version history >>
-#@+at
-#
-# 0.2 EKR:
-#     - Use isAtNoSentinelsFileNode and atNoSentinelsFileNodeName.
-#     - Use g.os_path_x methods for better unicode support.
-# 0.3 EKR:
-#     - Converted to 4.2 code base:
-#         - Use keywords.get('c') instead of g.top().
-#         - Use explicit positions everywhere.
-#         - removed reference to new_df.
-#@-<< version history >>
-#@+<< imports >>
-#@+node:ekr.20040909122647.1: ** << imports >>
+import os
 from leo.core import leoGlobals as g
-
-#@-<< imports >>
 
 NSPACES = ' '*4
 nosentNodes = []
@@ -68,12 +48,10 @@ def onPostSave(tag=None, keywords=None):
     global nosentNodes
     c = keywords.get('c')
     if c:
-        at = c.atFileCommands
         for p in nosentNodes:
             g.red("node %s found" % p.h)
-            at.scanAllDirectives(p)
-            name = p.atNoSentinelsFileNodeName()
-            fname = g.os_path_join(at.default_directory,name)
+            # Use os.path.normpath to give system separators.
+            fname = os.path.normpath(g.fullPath(c, p))  # #1914.
             f = open(fname,"r")
             lines = f.readlines()
             f.close()
@@ -95,7 +73,8 @@ def onPostSave(tag=None, keywords=None):
             fh.write(s.replace("\t",NSPACES))
             fh.close()
             #@-<< replace tabs with spaces >>
-
     nosentNodes = []
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo

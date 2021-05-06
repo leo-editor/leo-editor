@@ -12,16 +12,6 @@ will be available. The buttons use the icon specified in the active Qt style
 
 '''
 #@-<< docstring >>
-
-__version__ = '0.2'
-#@+<< version history >>
-#@+node:ville.20110115234843.8744: ** << version history >>
-#@@killcolor
-#@+at
-#
-# 0.1 Functionally complete version
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:ville.20110115234843.8745: ** << imports >>
 from leo.core import leoGlobals as g
@@ -83,4 +73,6 @@ class pluginController:
 
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
 #@-leo
