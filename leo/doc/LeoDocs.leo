@@ -2445,7 +2445,6 @@
 </v>
 <v t="ekr.20210405104357.1"></v>
 <v t="ekr.20210405104422.1"></v>
-<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25831,7 +25830,7 @@ scripts, c.p is the presently selected outline node.
 <t tx="ekr.20180126061429.13">Become familiar with Leo's most important plugins:
     
 - bookmarks.py manages bookmarks.
-- contextmenu.py shows a menu when when right-clicking.
+- contextmenu.py shows a menu when right-clicking.
 - mod_scripting.py supports @button and @command nodes.
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
@@ -25852,14 +25851,14 @@ Clones are "live" copies of the node itself and all its descendants.
 See the `clones tutorial`_ for more details.</t>
 <t tx="ekr.20180126061429.16">.. _`commands tutorial`: tutorial-basics.html#commands
 
-To execute a command, type `Alt-X` followed by the first few characters of command name, followed by `Tab`. The list of commands matching what you have typed appears.
+To execute a command, type `Alt-X`, followed by the first few characters of the command name, followed by `Tab`. The list of commands matching what you have typed appears.
 For more details, see the `commands tutorial`_.
 </t>
 <t tx="ekr.20180126061429.17">The cff command (aka clone-find-flattened) prompts for a search pattern,
 then clones all matching nodes so they are the children of a new last
-top-level node. This is a great way to study code.</t>
+top-level node. This command is a great way to study code.</t>
 <t tx="ekr.20180126061429.18">The cff command (aka clone-find-flattened-marked) clones all marked nodes
-as a children of a new node, created as the last top-level node. Use this
+as children of a new node, created as the last top-level node. Use this
 to gather nodes throughout an outline.</t>
 <t tx="ekr.20180126061429.19">g.callers() returns the last n callers (default 4) callers of a function or
 method. The verbose option shows each caller on a separate line. For
@@ -25869,13 +25868,13 @@ example::
 
 You must `launch Leo from a console window`_.
 </t>
-<t tx="ekr.20180126061429.2">You can have a personal shortcut to run script while developing it. For
-example: put `@key=Alt-4` in headline. If your script grows to several
-subnodes, you won't have to select top node every time you wish to run
-script. It would be enough to just press your universal shortcut.</t>
-<t tx="ekr.20180126061429.20">The g.trace function prints all its arguments to the console. It's great
-for seeing patterns in running code.
-You must `launch Leo from a console window`_ to see the output of g.trace.
+<t tx="ekr.20180126061429.2">You can have a personal shortcut to run a script while developing it. For
+example: put `@key=Alt-4` in the headline. If your script grows to several
+subnodes, you won't have to select the top node every time you wish to run
+the script. Just press your universal shortcut.</t>
+<t tx="ekr.20180126061429.20">The g.trace function prints all its arguments to the console. g.trace shows
+patterns in running code. You must `launch Leo from a console window`_ to
+see the output of g.trace.
 </t>
 <t tx="ekr.20180126061429.21">.. _`Python's pdb debugger`: https://docs.python.org/3/library/pdb.html
 
@@ -25885,26 +25884,26 @@ You must `launch Leo from a console window`_ to use the pdb debugger.
 <t tx="ekr.20180126061429.22">The find-quick-selected (Ctrl-Shift-F) command finds all nodes containing the selected text.</t>
 <t tx="ekr.20180126061429.23">The parse-body command parses p.b (the body text of the selected node) into separate nodes.</t>
 <t tx="ekr.20180126061429.24">The sort-siblings (Alt-A) command sorts all the child nodes of their parent, or all top-level nodes.</t>
-<t tx="ekr.20180126061429.25">leoSettings.leo contains the defaults for all of Leo's
-settings, with documentation for each. Searching
-leoSettings.leo is thus a good way to find settings.</t>
+<t tx="ekr.20180126061429.25">leoSettings.leo contains the defaults for all of Leo's settings, with
+documentation for each.</t>
 <t tx="ekr.20180126061429.26">Use Alt-N to cycle through the clones of the present cloned node.
-This is a fast way of finding the clone whose ancestor is an @&lt;file&gt; node.</t>
+This command is a fast way of finding the clone whose ancestor is an @&lt;file&gt; node.</t>
 <t tx="ekr.20180126061429.27">.. _`cloning nodes`: tutorial-pim.html#clones
 
-Focus your attention of the task at hand by `cloning nodes`, including
+Focus your attention on the task at hand by `cloning nodes`, including
 \@file nodes, then moving those clones so they are the last top-level nodes
-in the outline. This allows you to work on nodes scattered throughout an
-outline without altering the structure of @file nodes.
+in the outline. This organization allows you to work on nodes scattered
+throughout an outline without altering the structure of @file nodes.
 </t>
-<t tx="ekr.20180126061429.3">When developing scripts that use Log window to display results, it is
-sometimes useful to clear Log window by inserting the following two lines
+<t tx="ekr.20180126061429.3">When developing scripts that use the Log window to display results, it is
+sometimes useful to clear the Log window by inserting the following two lines
 at the beginning of your script::
 
     c.frame.log.selectTab('Log')
     c.frame.log.clearLog()</t>
-<t tx="ekr.20180126061429.4">Within scripts, use section references only when code must be placed
-exactly. Here is a common pattern for @file nodes for python files::
+<t tx="ekr.20180126061429.4">Use section references only when the exact position of a section within a file matters. 
+
+Here is a common pattern for @file nodes for python files::
 
     @first # -*- coding: utf-8 -*-
     &lt;&lt;imports&gt;&gt;
@@ -25916,7 +25915,8 @@ your document. The selected outline node should be an `@auto-md` node.</t>
 
 `pyflakes`_ is a superb programming tool. It checks python files almost instantly.
 
-These settings cause Leo to run pyflakes whenever saving a .py file and to raise a dialog if any errors are found::
+These settings cause Leo to run pyflakes whenever saving a .py file and to
+raise a dialog if pyflakes finds any errors::
 
     @bool run-pyflakes-on-write = True
     @bool syntax-error-popup = True
