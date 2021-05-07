@@ -808,7 +808,7 @@
 <v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
 <v t="ekr.20170313111502.1"><vh>Create outline nodes</vh></v>
 <v t="ekr.20170313111626.1"><vh>Generate an output file from nodes</vh></v>
-<v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
+<v t="ekr.20070120075236"><vh>Predefined symbols: c, g, and p</vh></v>
 <v t="ekr.20131014050027.16801"><vh>Positions and vnodes</vh></v>
 <v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
 <v t="ekr.20150312080344.12"><vh>wrappers vs. widgets</vh></v>
@@ -2445,6 +2445,7 @@
 </v>
 <v t="ekr.20210405104357.1"></v>
 <v t="ekr.20210405104422.1"></v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3551,14 +3552,7 @@ def onQuit(self, event=None):
     # Essential when opening multiple files...
     g.app.setLog(None)
 </t>
-<t tx="ekr.20040403171740">@ @rst-options
-.. A very cool option: doc parts will be rendered properly,
-.. but will be ignored by the Execute script command.
-..
-show_doc_parts_as_paragraphs = True
-@c
-
-.. |---| unicode:: U+02015 .. for quotes
+<t tx="ekr.20040403171740">.. |---| unicode:: U+02015 .. for quotes
    :trim:
 
 #############################
@@ -3572,11 +3566,9 @@ Writing Leo scripts in Python
 
 This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent `Python Tutorial &lt;http://docs.python.org/2/tutorial/&gt;`_. Jacob Peck has written a more `informal scripting tutorial &lt;http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/&gt;`_.
 
-.. ``Ctrl-B (execute-script)`` executes the body text of the presently selected node. Guided by Leo's markup, execute-script **composes** the script from the node and possibly some or all of its descendants.
+Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access to all the data in the outline. These symbols also allow Leo scripts to execute any code in Leo's own codebase.
 
-Three predefined symbols, **c**, **g** and **p** give Leo scripts easy access to all the data in the outline. These symbols also allow Leo scripts to execute any code in Leo's own code base.
-
-**Positions** and **vnodes** are the foundation of Leo scripting. leo/core/leoNodes.py defines the corresponding Position and VNode classes. These classes provide access to all outline data, and allow Leo scripts to create and change outlines.
+**Positions** and **vnodes** are the foundation of Leo scripting. leo/core/leoNodes.py defines the corresponding Position and VNode classes. These classes provide access to all outline data and allow Leo scripts to create and change outlines.
 
 .. _`Leo's cheat sheet`: cheatsheet.html
 .. _`scripting portion`: cheatsheet.html#scripting
@@ -6598,7 +6590,7 @@ My second choice is using g.pdb to set breakpoints for the `pdb`_ debugger. Pdb 
 <t tx="ekr.20070120075236">.. index::
     pair: Predefined Symbols; Tutorial
     
-The execute-script command predefines the symbols c, g and p.
+The execute-script command predefines the symbols c, g, and p.
 
 c is the **commander** of the outline containing the script. Commanders are instances of the Commands class, defined in leoCommands.py. Commanders provide access to all outline data *and* all of Leo's source code.
 
@@ -16243,7 +16235,7 @@ In more detail:
 
 A **position** represents an outline node at a *specific position* in the outline. Positions provide methods to insert, delete and move outline nodes. The `scripting portion`_ of `Leo's cheat sheet`_ lists the most important methods of the position class.
 
-Because of clones, the *same* node may appear at *multiple positions* in the outline. A **vnode** represents the node's data, which is shared all positions referring to that node.
+Because of clones, the *same* node may appear at *multiple positions* in the outline. A **vnode** represents the node's data, which is shared by all positions referring to that node.
 
 .. _`user attributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
 
@@ -16531,11 +16523,11 @@ Downloading, Installing &amp; Running Leo
    installing
    running
 </t>
-<t tx="ekr.20131016021541.16893">- execute-script predefines c, g and p.
+<t tx="ekr.20131016021541.16893">- execute-script predefines c, g, and p.
 - c is a commander, g is the leoGlobals module, and p is the current position.
 - Vnodes contain all outline data.
 - Positions provide easy access to vnodes.
-- Positions become invalid when outline nodes are inserted, deleted or moved.
+- Positions become invalid when outline nodes are inserted, deleted, or moved.
 - Generators visit all or parts of the outline, in a specified order.
 
 For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `Leo's scripting miscellany &lt;scripting-miscellany.html&gt;`_</t>
