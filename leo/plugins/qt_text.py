@@ -414,7 +414,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
-        Sunken = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
+        # Sunken = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
         Raised = QtWidgets.QFrame.Shadow.Raised if isQt6 else self.StyledPanel
         NoFrame = QtWidgets.QFrame.Shape.NoFrame if isQt6 else self.NoFrame
         self.setFrameStyle(Raised)

@@ -27,5 +27,5 @@ qt_version = QtCore.QT_VERSION_STR
 try:
     printsupport = Qt.printsupport
 except Exception:
-    print('Qt6: Qt.printsupport not found')
+    pass
 #@-leo
