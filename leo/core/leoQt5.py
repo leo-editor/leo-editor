@@ -8,11 +8,13 @@ from PyQt5 import Qt
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
+assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
 from PyQt5.QtCore import QUrl
 from PyQt5.QtCore import pyqtSignal as Signal
 QtConst = QtCore.Qt
 printsupport = Qt
 qt_version = QtCore.QT_VERSION_STR
+assert QUrl and Signal  # For pyflakes.
 #
 # Optional imports.
 try:

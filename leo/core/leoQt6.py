@@ -13,9 +13,11 @@ from PyQt6 import Qt
 from PyQt6 import QtCore
 from PyQt6 import QtGui
 from PyQt6 import QtWidgets
+assert QtGui and QtWidgets  # For pyflakes.
 from PyQt6.QtCore import QUrl
 from PyQt6.QtCore import pyqtSignal as Signal
 from PyQt6 import uic
+assert QUrl and Signal and uic  # For pyflakes.
 #
 # Standard abbreviations.
 QtConst = QtCore.Qt

@@ -24,6 +24,9 @@ printsupport = Signal = None
 #
 # Skip all imports in the bridge.
 if not g.in_bridge:
+    #
+    # Pyflakes will complaint about * imports.
+    #
     # pylint: disable=unused-wildcard-import,wildcard-import
     #
     # Set the isQt* constants only if all required imports succeed.
@@ -48,24 +51,24 @@ if not g.in_bridge:
                 isQt4 = True
             except Exception:
                 pass
-    if isQt6:  ### Temporary.
-        print('\n===== pyQt6 =====')
-    if 0: # A good trace for testing.
-        # Define m only when tracing.
-        if isQt6:
-            import leo.core.leoQt6 as m
-        if isQt5:
-            import leo.core.leoQt5 as m
-        if isQt4:
-            import leo.core.leoQt4 as m
-        for z in sorted(dir()):
-            if z.startswith('_'):
-                continue
-            val = getattr(m, z, None) 
-            if val is None:
-                continue
-            if repr(val).startswith('<module'):
-                val = val.__class__.__name__
-            print(f"{z:>20}: {val}")
+    #
+    # A good trace for testing, but generates warnings about m.
+        # #
+        # # Define m only when tracing.
+        # if isQt6:
+            # import leo.core.leoQt6 as m
+        # if isQt5:
+            # import leo.core.leoQt5 as m
+        # if isQt4:
+            # import leo.core.leoQt4 as m
+        # for z in sorted(dir()):
+            # if z.startswith('_'):
+                # continue
+            # val = getattr(m, z, None) 
+            # if val is None:
+                # continue
+            # if repr(val).startswith('<module'):
+                # val = val.__class__.__name__
+            # print(f"{z:>20}: {val}")
 
 #@-leo
