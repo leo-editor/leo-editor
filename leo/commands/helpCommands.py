@@ -965,7 +965,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         to associate persistent data with vnodes. For details see the section about
         userAttributes in the Customizing Leo chapter.
 
-        position class
+        Position class
         ==============
 
         A position represents the state of a traversal of an outline.
