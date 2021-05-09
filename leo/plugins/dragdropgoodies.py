@@ -18,8 +18,6 @@ from leo.core import leoGlobals as g
 
 g.assertUi('qt')
 
-# from PyQt4 import QtGui, QtCore
-
 # Whatever other imports your plugins uses.
 #@-<< imports >>
 

@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from leo.core.leoQt import isQt5, QtCore, QtWidgets  # QtGui,
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets  # QtGui,
 QtGui = QtWidgets
 
 
@@ -33,7 +33,7 @@ class Ui_LeoQuickSearchWidget:
 
     def retranslateUi(self, LeoQuickSearchWidget):
         # pylint: disable=no-member
-        if isQt5:
+        if isQt5 or isQt6:
             # QApplication.UnicodeUTF8 no longer exists.
             LeoQuickSearchWidget.setWindowTitle(
                 QtWidgets.QApplication.translate("LeoQuickSearchWidget", "Form", None))

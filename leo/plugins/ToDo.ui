@@ -1,380 +1,976 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class><widget class="QWidget" name="Form">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
-    <x>0</x><y>0</y><width>483</width><height>332</height></rect></property><property name="windowTitle">
-   <string>Form</string></property><layout class="QVBoxLayout" name="verticalLayout">
+    <x>0</x>
+    <y>0</y>
+    <width>483</width>
+    <height>332</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>2</number></property><property name="margin">
-    <number>2</number></property><item>
+    <number>2</number>
+   </property>
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
+   <item>
     <layout class="QGridLayout" name="gridLayout">
      <property name="leftMargin">
-      <number>6</number></property><property name="topMargin">
-      <number>0</number></property><property name="rightMargin">
-      <number>6</number></property><property name="bottomMargin">
-      <number>0</number></property><property name="horizontalSpacing">
-      <number>2</number></property><property name="verticalSpacing">
-      <number>0</number></property><item column="0" row="0">
+      <number>6</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>6</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <property name="horizontalSpacing">
+      <number>2</number>
+     </property>
+     <property name="verticalSpacing">
+      <number>0</number>
+     </property>
+     <item row="0" column="0">
       <widget class="QPushButton" name="butPri1">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri1.png</normaloff>cleo/pri1.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri1.png</normaloff>cleo/pri1.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>1</number></property></widget></item><item column="0" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
       <widget class="QPushButton" name="butPriChk">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/chkblk.png</normaloff>cleo/chkblk.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/chkblk.png</normaloff>cleo/chkblk.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>100</number></property></widget></item><item column="2" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
       <widget class="QPushButton" name="butPri2">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri2.png</normaloff>cleo/pri2.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri2.png</normaloff>cleo/pri2.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>2</number></property></widget></item><item column="4" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>2</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
       <widget class="QPushButton" name="butPri4">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri4.png</normaloff>cleo/pri4.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri4.png</normaloff>cleo/pri4.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>4</number></property></widget></item><item column="5" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>4</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
       <widget class="QPushButton" name="butPri5">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri5.png</normaloff>cleo/pri5.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri5.png</normaloff>cleo/pri5.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>5</number></property></widget></item><item column="2" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
       <widget class="QPushButton" name="butPriToDo">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/chkboxblk.png</normaloff>cleo/chkboxblk.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/chkboxblk.png</normaloff>cleo/chkboxblk.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>19</number></property></widget></item><item column="4" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>19</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
       <widget class="QPushButton" name="butPriXgry">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/xgry.png</normaloff>cleo/xgry.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/xgry.png</normaloff>cleo/xgry.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>22</number></property></widget></item><item column="5" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>22</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="5">
       <widget class="QPushButton" name="butPriBang">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/bngblk.png</normaloff>cleo/bngblk.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/bngblk.png</normaloff>cleo/bngblk.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>20</number></property></widget></item><item column="3" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>20</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
       <widget class="QPushButton" name="butPriX">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/xblk.png</normaloff>cleo/xblk.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/xblk.png</normaloff>cleo/xblk.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>21</number></property></widget></item><item column="3" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>21</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
       <widget class="QPushButton" name="butPri3">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri3.png</normaloff>cleo/pri3.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri3.png</normaloff>cleo/pri3.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>3</number></property></widget></item><item column="6" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>3</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
       <widget class="QPushButton" name="butPri6">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri6.png</normaloff>cleo/pri6.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri6.png</normaloff>cleo/pri6.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>6</number></property></widget></item><item column="7" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>6</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="7">
       <widget class="QPushButton" name="butPri7">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri7.png</normaloff>cleo/pri7.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri7.png</normaloff>cleo/pri7.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>7</number></property></widget></item><item column="8" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>7</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="8">
       <widget class="QPushButton" name="butPri8">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri8.png</normaloff>cleo/pri8.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri8.png</normaloff>cleo/pri8.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>8</number></property></widget></item><item column="9" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>8</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="9">
       <widget class="QPushButton" name="butPri9">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri9.png</normaloff>cleo/pri9.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri9.png</normaloff>cleo/pri9.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>9</number></property></widget></item><item column="10" row="0">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>9</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="10">
       <widget class="QPushButton" name="butPri0">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/pri0.png</normaloff>cleo/pri0.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/pri0.png</normaloff>cleo/pri0.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>10</number></property></widget></item><item column="6" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="6">
       <widget class="QPushButton" name="butPriQuery">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/qryblk.png</normaloff>cleo/qryblk.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/qryblk.png</normaloff>cleo/qryblk.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>23</number></property></widget></item><item column="7" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>23</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="7">
       <widget class="QPushButton" name="butPriBullet">
        <property name="text">
-        <string></string></property><property name="icon">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/bullet.png</normaloff>cleo/bullet.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/bullet.png</normaloff>cleo/bullet.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property><property stdset="0" name="priority">
-        <number>24</number></property></widget></item><item column="9" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="priority" stdset="0">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="9">
       <widget class="QPushButton" name="butPriClr">
        <property name="toolTip">
         <string>Clear priority
-setting</string></property><property name="text">
-        <string></string></property><property name="icon">
+setting</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property></widget></item><item column="10" row="2">
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="10">
       <widget class="QPushButton" name="butDetails">
        <property name="toolTip">
         <string>Show / hide more
-interface</string></property><property name="text">
-        <string></string></property><property name="icon">
+interface</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/document-save.png</normaloff>cleo/document-save.png</iconset></property></widget></item></layout></item><item>
+         <normaloff>cleo/document-save.png</normaloff>cleo/document-save.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QFrame" name="frmDetails">
      <property name="enabled">
-      <bool>true</bool></property><property name="sizePolicy">
-      <sizepolicy vsizetype="Minimum" hsizetype="Minimum">
-       <horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="lineWidth">
-      <number>0</number></property><layout class="QHBoxLayout" name="horizontalLayout_6">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
       <property name="leftMargin">
-       <number>3</number></property><property name="topMargin">
-       <number>0</number></property><property name="rightMargin">
-       <number>5</number></property><property name="bottomMargin">
-       <number>0</number></property><item>
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
        <widget class="QLabel" name="txtDetails">
         <property name="sizePolicy">
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred">
-          <horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="font">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
          <font>
-          <pointsize>9</pointsize></font></property><property name="text">
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text">
          <string>
-                                            TextLabel</string></property><property name="textFormat">
-         <enum>Qt::PlainText</enum></property></widget></item><item>
+                                            TextLabel</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::PlainText</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="butNextTodo">
         <property name="toolTip">
          <string>Next TODO
-node</string></property><property name="text">
-         <string></string></property><property name="icon">
+node</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
          <iconset>
-          <normaloff>cleo/bottom.png</normaloff>cleo/bottom.png</iconset></property></widget></item><item>
+          <normaloff>cleo/bottom.png</normaloff>cleo/bottom.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="butNext">
         <property name="toolTip">
          <string>Next
-node</string></property><property name="text">
-         <string></string></property><property name="icon">
+node</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
          <iconset>
-          <normaloff>cleo/down.png</normaloff>cleo/down.png</iconset></property></widget></item></layout></widget></item><item>
-    <widget class="QWidget" name="frmDates">
-     <layout class="QGridLayout" name="gridLayout_2">
-     <item column="1" row="0">
+          <normaloff>cleo/down.png</normaloff>cleo/down.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="1">
       <widget class="QTimeEdit" name="dueTimeEdit">
        <property name="enabled">
-        <bool>true</bool></property><property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum">
-         <horstretch>6</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="toolTip">
-        <string>Time of day for alarm / item due</string></property><property name="displayFormat">
-        <string>HH:mm</string></property></widget></item><item column="0" row="0">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>6</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Time of day for alarm / item due</string>
+       </property>
+       <property name="displayFormat">
+        <string>HH:mm</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
       <widget class="QLabel" name="label_3">
        <property name="toolTip">
-        <string></string></property><property name="text">
-        <string>Due:</string></property></widget></item><item column="2" row="0">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Due:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
       <widget class="QCheckBox" name="dueTimeToggle">
        <property name="toolTip">
-        <string>Enable / disable due time</string></property><property name="text">
-        <string></string></property></widget></item><item column="4" row="0">
+        <string>Enable / disable due time</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
       <widget class="QCheckBox" name="dueDateToggle">
        <property name="toolTip">
-        <string>Enable / disable due date</string></property><property name="text">
-        <string></string></property></widget></item><item column="3" row="0">
+        <string>Enable / disable due date</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
       <widget class="QNDateEdit" name="dueDateEdit">
        <property name="enabled">
-        <bool>true</bool></property><property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum">
-         <horstretch>9</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="minimumSize">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>9</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
         <size>
-         <width>0</width><height>0</height></size></property><property name="toolTip">
-        <string>Date for alarm / item due</string></property><property name="displayFormat">
-        <string>d MMM yy</string></property><property name="calendarPopup">
-        <bool>true</bool></property></widget></item><item column="4" row="1">
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Date for alarm / item due</string>
+       </property>
+       <property name="displayFormat">
+        <string>d MMM yy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
       <widget class="QCheckBox" name="nxtwkDateToggle">
        <property name="toolTip">
-        <string>Enable / disable next work date</string></property><property name="text">
-        <string></string></property></widget></item><item column="1" row="1">
+        <string>Enable / disable next work date</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
       <widget class="QTimeEdit" name="nxtwkTimeEdit">
        <property name="enabled">
-        <bool>true</bool></property><property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding">
-         <horstretch>6</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="toolTip">
-        <string>Time of day to next work on this item</string></property><property name="displayFormat">
-        <string>HH:mm</string></property></widget></item><item column="2" row="1">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>6</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Time of day to next work on this item</string>
+       </property>
+       <property name="displayFormat">
+        <string>HH:mm</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
       <widget class="QCheckBox" name="nxtwkTimeToggle">
        <property name="toolTip">
-        <string>Enable / disable next work time</string></property><property name="text">
-        <string></string></property></widget></item><item column="0" row="1">
+        <string>Enable / disable next work time</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
       <widget class="QLabel" name="label_4">
        <property name="toolTip">
-        <string></string></property><property name="text">
-        <string>Work:</string></property></widget></item><item column="3" row="1">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Work:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
       <widget class="QNDateEdit" name="nxtwkDateEdit">
        <property name="enabled">
-        <bool>true</bool></property><property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding">
-         <horstretch>9</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="minimumSize">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>9</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
         <size>
-         <width>0</width><height>0</height></size></property><property name="toolTip">
-        <string>Date of day to next work on this item</string></property><property name="displayFormat">
-        <string>d MMM yy</string></property><property name="calendarPopup">
-        <bool>true</bool></property></widget></item><item column="5" row="1">
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Date of day to next work on this item</string>
+       </property>
+       <property name="displayFormat">
+        <string>d MMM yy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5">
       <widget class="QComboBox" name="nxtwkDateOffset">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding">
-         <horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="toolTip">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
         <string>+n -n days from now, or
 &lt;n &gt;n to subtract / add n
-days to existing date</string></property></widget></item><item column="6" row="1">
+days to existing date</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="6">
       <widget class="QPushButton" name="butApplyOffset">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum">
-         <horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="maximumSize">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
         <size>
-         <width>20</width><height>16777215</height></size></property><property name="baseSize">
+         <width>20</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="baseSize">
         <size>
-         <width>20</width><height>0</height></size></property><property name="toolTip">
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
         <string>Set Next Work Date to offset
-shown</string></property><property name="text">
-        <string>=</string></property><property name="iconSize">
+shown</string>
+       </property>
+       <property name="text">
+        <string>=</string>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>24</height></size></property></widget></item><item column="5" row="0">
+         <width>16</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
       <widget class="QComboBox" name="dueDateOffset">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="Preferred">
-         <horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy></property></widget></item><item column="6" row="0">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
       <widget class="QPushButton" name="butApplyDueOffset">
        <property name="maximumSize">
         <size>
-         <width>20</width><height>16777215</height></size></property><property name="text">
-        <string>=</string></property></widget></item></layout></widget></item><item>
+         <width>20</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>=</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label">
        <property name="toolTip">
-        <string></string></property><property name="text">
-        <string>Needs:</string></property></widget></item><item>
+        <string/>
+       </property>
+       <property name="text">
+        <string>Needs:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QDoubleSpinBox" name="spinTime">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding">
-         <horstretch>2</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="minimumSize">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>2</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
         <size>
-         <width>30</width><height>0</height></size></property><property name="toolTip">
-        <string>Time required to complete item</string></property><property name="suffix">
-        <string>days</string></property><property name="decimals">
-        <number>1</number></property><property name="minimum">
-        <double>-1.000000000000000</double></property><property name="maximum">
-        <double>9999.000000000000000</double></property><property name="singleStep">
-        <double>0.100000000000000</double></property></widget></item><item>
+         <width>30</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Time required to complete item</string>
+       </property>
+       <property name="suffix">
+        <string>days</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="minimum">
+        <double>-1.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>9999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="butClrTime">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding">
-         <horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="toolTip">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
         <string>Clear time
-required</string></property><property name="text">
-        <string></string></property><property name="icon">
+required</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property></widget></item><item>
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Done:</string></property></widget></item><item>
+        <string>Done:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QSpinBox" name="spinProg">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding">
-         <horstretch>1</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="minimumSize">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
         <size>
-         <width>20</width><height>0</height></size></property><property name="toolTip">
-        <string>Percent complete</string></property><property name="buttonSymbols">
-        <enum>QAbstractSpinBox::UpDownArrows</enum></property><property name="specialValueText">
-        <string></string></property><property name="suffix">
-        <string>%</string></property><property name="prefix">
-        <string></string></property><property name="maximum">
-        <number>100</number></property><property name="singleStep">
-        <number>10</number></property></widget></item><item>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Percent complete</string>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::UpDownArrows</enum>
+       </property>
+       <property name="specialValueText">
+        <string/>
+       </property>
+       <property name="suffix">
+        <string>%</string>
+       </property>
+       <property name="prefix">
+        <string/>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="butClrProg">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding">
-         <horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="toolTip">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
         <string>Clear
-progress</string></property><property name="text">
-        <string></string></property><property name="icon">
+progress</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
         <iconset>
-         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset></property><property name="iconSize">
+         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>16</width><height>16</height></size></property></widget></item></layout></item><item>
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+      <!-- EKR
      <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum></property><item>
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+      -->
+     <item>
       <widget class="QPushButton" name="butMenu">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum">
-         <horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="minimumSize">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
         <size>
-         <width>0</width><height>0</height></size></property><property name="text">
-        <string>Menu</string></property><property name="flat">
-        <bool>false</bool></property></widget></item><item>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Menu</string>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="createdTxt">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding">
-         <horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="text">
-        <string></string></property><property name="alignment">
-        <set>Qt::AlignCenter</set></property></widget></item><item>
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="butHelp">
        <property name="sizePolicy">
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum">
-         <horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property><property name="text">
-        <string>Help</string></property><property name="flat">
-        <bool>false</bool></property></widget></item></layout></item><item>
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Help</string>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Vertical</enum></property><property stdset="0" name="sizeHint">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
       <size>
-       <width>20</width><height>40</height></size></property></spacer></item></layout></widget><customwidgets>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
   <customwidget>
-   <class>QNDateEdit</class><extends>QDateEdit</extends><header>leo.plugins.QNCalendarWidget</header></customwidget></customwidgets><resources></resources><connections></connections></ui>
+   <class>QNDateEdit</class>
+   <extends>QDateEdit</extends>
+   <header>leo.plugins.QNCalendarWidget</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

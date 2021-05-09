@@ -32111,7 +32111,8 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.4+lab
 Change commands:
 - reload-settings now changes settings in all open outlines.
 </t>
-<t tx="ekr.20210405104825.1"></t>
+<t tx="ekr.20210405104825.1">- Add @bool allow-text-zoom = True
+https://github.com/leo-editor/leo-editor/issues/1923</t>
 <t tx="ekr.20210405110053.1"></t>
 <t tx="ekr.20210405110145.1"></t>
 <t tx="ekr.20210429042049.1771">https://github.com/leo-editor/leo-editor/issues/1880</t>

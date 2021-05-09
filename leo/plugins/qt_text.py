@@ -6,7 +6,7 @@
 import time
 assert time
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, Qsci, QtWidgets
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -414,9 +414,12 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
-        self.setFrameStyle(self.StyledPanel | self.Sunken)
+        # Sunken = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
+        Raised = QtWidgets.QFrame.Shadow.Raised if isQt6 else self.StyledPanel
+        NoFrame = QtWidgets.QFrame.Shape.NoFrame if isQt6 else self.NoFrame
+        self.setFrameStyle(Raised)
         self.edit = e  # A QTextEdit
-        e.setFrameStyle(self.NoFrame)
+        e.setFrameStyle(NoFrame)
         # e.setAcceptRichText(False)
         self.number_bar = NumberBar(c, e)
         hbox = QtWidgets.QHBoxLayout(self)
@@ -458,9 +461,10 @@ if QtWidgets:
 
             # Connect event handlers...
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
-                self.textChanged.connect(self.onTextChanged)
             # #1286
-            self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+                self.textChanged.connect(self.onTextChanged)
+            ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+            self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
             self.leo_vsb = vsb = self.verticalScrollBar()
@@ -482,10 +486,8 @@ if QtWidgets:
             def __init__(self, c):
                 """ctor for LeoQListWidget class"""
                 super().__init__()
-                self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
-                # Make this window a modal window.
-                # Calling this does not fix the Ubuntu-specific modal behavior.
-                # self.setWindowModality(QtCore.Qt.NonModal) # WindowModal)
+                WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
+                self.setWindowFlags(WindowFlags.Popup | self.windowFlags())
                 # Inject the ivars
                 self.leo_w = c.frame.body.wrapper.widget
                     # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
@@ -519,16 +521,17 @@ if QtWidgets:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
-                qt = QtCore.Qt
+                Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+                Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
                 key = event.key()
-                if event.modifiers() != qt.NoModifier and not event.text():
+                if event.modifiers() != Modifiers.NoModifier and not event.text():
                     # A modifier key on it's own.
                     pass
-                elif key in (qt.Key_Up, qt.Key_Down):
+                elif key in (Key.Key_Up, Key.Key_Down):
                     QtWidgets.QListWidget.keyPressEvent(self, event)
-                elif key == qt.Key_Tab:
+                elif key == Key.Key_Tab:
                     self.tab_callback()
-                elif key in (qt.Key_Enter, qt.Key_Return):
+                elif key in (Key.Key_Enter, Key.Key_Return):
                     self.select_callback()
                 else:
                     # Pass all other keys to the autocompleter via the event filter.
@@ -699,12 +702,13 @@ if QtWidgets:
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
         def leo_dumpButton(self, event, tag):
 
+            MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
             button = event.button()
             table = (
-                (QtCore.Qt.NoButton, 'no button'),
-                (QtCore.Qt.LeftButton, 'left-button'),
-                (QtCore.Qt.RightButton, 'right-button'),
-                (QtCore.Qt.MidButton, 'middle-button'),
+                (MouseButtons.NoButton, 'no button'),
+                (MouseButtons.LeftButton, 'left-button'),
+                (MouseButtons.RightButton, 'right-button'),
+                (MouseButtons.MiddleButton, 'middle-button'),
             )
             for val, s in table:
                 if button == val:
@@ -788,7 +792,8 @@ if QtWidgets:
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
-            if QtCore.Qt.ControlModifier & event.modifiers():
+            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+            if KeyboardModifiers.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
                 if isQt5:
                     point = event.angleDelta()
@@ -869,7 +874,11 @@ class NumberBar(QtWidgets.QFrame):
         """
         # w_adjust is used to compensate for the current line being bold.
         # Always allocate room for 2 columns
-        width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
+        #width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
+        if isQt6:
+            width = self.fm.boundingRect(str(max(1000, self.highest_line))).width()
+        else:
+            width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if self.width() != width:
             self.setFixedWidth(width)
         QtWidgets.QWidget.update(self, *args)
@@ -1287,9 +1296,13 @@ class QTextEditWrapper(QTextMixin):
     def set_config(self):
         """Set configuration options for QTextEdit."""
         w = self.widget
-        w.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
+        w.setWordWrapMode(WrapMode.NoWrap)
         # tab stop in pixels - no config for this (yet)
-        w.setTabStopWidth(24)
+        if isQt6:
+            w.setTabStopDistance(24)
+        else:
+            w.setTabStopWidth(24)
     #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed?)
     def set_signals(self):
         """Set up signals."""
@@ -1316,7 +1329,8 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                if QtCore.Qt.ControlModifier & event.modifiers():
+                KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+                if KeyboardModifiers.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:
                     if name == 'body':
@@ -1337,6 +1351,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i, j=None):
         """QTextEditWrapper."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
@@ -1356,7 +1372,7 @@ class QTextEditWrapper(QTextMixin):
             else:
                 cursor.setPosition(i)
                 moveCount = abs(j - i)
-                cursor.movePosition(cursor.Right, cursor.KeepAnchor, moveCount)
+                cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, moveCount)
                 w.setTextCursor(cursor)  # Bug fix: 2010/01/27
                 cursor.removeSelectedText()
         finally:
@@ -1365,6 +1381,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18080: *4* qtew.flashCharacter
     def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
         """QTextEditWrapper."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         # numbered color names don't work in Ubuntu 8.10, so...
         if bg[-1].isdigit() and bg[0] != '#':
             bg = bg[:-1]
@@ -1375,7 +1393,6 @@ class QTextEditWrapper(QTextMixin):
         if g.app.unitTesting:
             return
         w = self.widget  # A QTextEdit.
-        e = QtGui.QTextCursor
 
         def after(func):
             QtCore.QTimer.singleShot(delay, func)
@@ -1384,11 +1401,13 @@ class QTextEditWrapper(QTextMixin):
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
             cursor.setPosition(i)
-            cursor.movePosition(e.Right, e.KeepAnchor, 1)
+            cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, 1)
             extra = w.ExtraSelection()
             extra.cursor = cursor
-            if self.flashBg: extra.format.setBackground(QtGui.QColor(self.flashBg))
-            if self.flashFg: extra.format.setForeground(QtGui.QColor(self.flashFg))
+            if self.flashBg:
+                extra.format.setBackground(QtGui.QColor(self.flashBg))
+            if self.flashFg:
+                extra.format.setForeground(QtGui.QColor(self.flashFg))
             self.extraSelList = [extra]  # keep the reference.
             w.setExtraSelections(self.extraSelList)
             self.flashCount -= 1
@@ -1460,24 +1479,25 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18077: *4* qtew.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind, extend=False, linesPerPage=15):
         """QTextEditWrapper."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
-        tc = QtGui.QTextCursor
         d = {
-            'begin-line': tc.StartOfLine,  # Was start-line
-            'down': tc.Down,
-            'end': tc.End,
-            'end-line': tc.EndOfLine,  # Not used.
+            'begin-line': MoveOperation.StartOfLine,  # Was start-line
+            'down': MoveOperation.Down,
+            'end': MoveOperation.End,
+            'end-line': MoveOperation.EndOfLine,  # Not used.
             'exchange': True,  # Dummy.
-            'home': tc.Start,
-            'left': tc.Left,
-            'page-down': tc.Down,
-            'page-up': tc.Up,
-            'right': tc.Right,
-            'up': tc.Up,
+            'home': MoveOperation.Start,
+            'left': MoveOperation.Left,
+            'page-down': MoveOperation.Down,
+            'page-up': MoveOperation.Up,
+            'right': MoveOperation.Right,
+            'up': MoveOperation.Up,
         }
         kind = kind.lower()
         op = d.get(kind)
-        mode = tc.KeepAnchor if extend else tc.MoveAnchor
+        mode = MoveMode.KeepAnchor if extend else MoveMode.MoveAnchor
         if not op:
             g.trace(f"can not happen: bad kind: {kind}")
             return
@@ -1487,8 +1507,8 @@ class QTextEditWrapper(QTextMixin):
             cursor = w.textCursor()
             anchor = cursor.anchor()
             pos = cursor.position()
-            cursor.setPosition(pos, tc.MoveAnchor)
-            cursor.setPosition(anchor, tc.KeepAnchor)
+            cursor.setPosition(pos, MoveOperation.MoveAnchor)
+            cursor.setPosition(anchor, MoveOperation.KeepAnchor)
             w.setTextCursor(cursor)
         else:
             if not extend:
@@ -1514,6 +1534,8 @@ class QTextEditWrapper(QTextMixin):
         straight port of the C++ code found in the pageUpDown method of
         gui/widgets/qtextedit.cpp.
         """
+        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
+        SliderAction = QtWidgets.QAbstractSlider.SliderAction if isQt6 else QtWidgets.QAbstractSlider
         control = self.widget
         cursor = control.textCursor()
         moved = False
@@ -1527,15 +1549,14 @@ class QTextEditWrapper(QTextMixin):
             moved = cursor.movePosition(op, moveMode)
             if (not moved or distance >= control.height()):
                 break
-        tc = QtGui.QTextCursor
         sb = control.verticalScrollBar()
         if moved:
-            if (op == tc.Up):
-                cursor.movePosition(tc.Down, moveMode)
-                sb.triggerAction(QtWidgets.QAbstractSlider.SliderPageStepSub)
+            if (op == MoveOperation.Up):
+                cursor.movePosition(MoveOperation.Down, moveMode)
+                sb.triggerAction(SliderAction.SliderPageStepSub)
             else:
-                cursor.movePosition(tc.Up, moveMode)
-                sb.triggerAction(QtWidgets.QAbstractSlider.SliderPageStepAdd)
+                cursor.movePosition(MoveOperation.Up, moveMode)
+                sb.triggerAction(SliderAction.SliderPageStepAdd)
         control.setTextCursor(cursor)
     #@+node:ekr.20110605121601.18087: *4* qtew.linesPerPage
     def linesPerPage(self):
@@ -1609,6 +1630,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         """Set the selection range and the insert point."""
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         #
         # Part 1
         w = self.widget
@@ -1634,15 +1656,15 @@ class QTextEditWrapper(QTextMixin):
         elif ins == j:
             # Put the insert point at j
             tc.setPosition(i)
-            tc.setPosition(j, tc.KeepAnchor)
+            tc.setPosition(j, MoveMode.KeepAnchor)
         elif ins == i:
             # Put the insert point at i
             tc.setPosition(j)
-            tc.setPosition(i, tc.KeepAnchor)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         else:
             # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
             tc.setPosition(j)
-            tc.setPosition(i, tc.KeepAnchor)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         w.setTextCursor(tc)
         # #218.
         if hasattr(g.app.gui, 'setClipboardSelection'):

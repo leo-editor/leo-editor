@@ -220,7 +220,7 @@ from leo.core import leoGlobals as g
 try:
     from leo.plugins import qt_text
     from leo.plugins import free_layout
-    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except Exception:
     QtWidgets = False
@@ -424,12 +424,13 @@ def viewrendered(event):
     vr._ns_id = '_leo_viewrendered' # for free_layout load/save
     vr.splitter = splitter = c.free_layout.get_top_splitter()
     if splitter:
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         vr.store_layout('closed')
         sizes = split_last_sizes(splitter.sizes())
         ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr)
-        elif splitter.orientation() == QtCore.Qt.Horizontal:
+        elif splitter.orientation() == Orientations.Horizontal:
             splitter.setSizes(sizes)
         vr.adjust_layout('open')
     c.bodyWantsFocusNow()
@@ -853,7 +854,8 @@ if QtWidgets: # NOQA
         #@+node:vitalije.20170712183618.1: *3* vr.store_layout
         def store_layout(self, which):
             global layouts
-            c = self.c; h = c.hash()
+            c = self.c
+            h = c.hash()
             splitter = self.splitter
             deflo = c.db.get('viewrendered_default_layouts', (None, None))
             (loc, loo) = layouts.get(c.hash(), deflo)
@@ -952,6 +954,7 @@ if QtWidgets: # NOQA
             w.show()
             # Special inits for text widgets...
             if w.__class__ == QtWidgets.QTextBrowser:
+                WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
                 text_name = 'body-text-renderer'
                 w.setObjectName(text_name)
                 # Do not do this! It interferes with themes.
@@ -962,7 +965,7 @@ if QtWidgets: # NOQA
                 wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
                 w.leo_wrapper = wrapper
                 c.k.completeAllBindingsForWidget(wrapper)
-                w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
+                w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
         #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
         def setBackgroundColor(self, colorName, name, w):
             '''Set the background color of the vr pane.'''
@@ -1267,10 +1270,6 @@ if QtWidgets: # NOQA
 
         def update_movie(self, s, keywords):
             '''Update a movie in the vr pane.'''
-            # pylint: disable=maybe-no-member
-                # 'PyQt4.phonon' has no 'VideoPlayer' member
-                # 'PyQt4.phonon' has no 'VideoCategory' member
-                # 'PyQt4.phonon' has no 'MediaSource' member
             pc = self
             ok, path = pc.get_fn(s, '@movie')
             if not ok:
@@ -1621,7 +1620,8 @@ if QtWidgets: # NOQA
                 # Allow non-ctrl clicks to open url's.
                 w = QtWidgets.QTextBrowser()
                 # #1286.
-                w.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+                ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+                w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
                 w.customContextMenuRequested.connect(self.onContextMenuCallback)
 
                 def handleClick(url, w=w):

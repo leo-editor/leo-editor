@@ -8,7 +8,7 @@
 import re
 import time
 assert time
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoNodes
@@ -160,13 +160,14 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             first_p = c.rootPosition()
             target_p = None
+        ItemFlags = QtCore.Qt.ItemFlags if isQt6 else QtCore.Qt
         n = 0
         for p in self.yieldVisible(first_p, target_p):
             n += 1
             level = p.level()
             parent_item = w if level == 0 else parents[level - 1]
             item = QtWidgets.QTreeWidgetItem(parent_item)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
             item.setChildIndicatorPolicy(
                 item.ShowIndicator if p.hasChildren()
                 else item.DontShowIndicator)
@@ -698,6 +699,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
+            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             p = self.item2position(item)
             if p:
                 auto_edit = self.prev_v == p.v
@@ -708,7 +710,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & QtConst.ControlModifier)
+                    isCtrl = bool(mods & KeyboardModifiers.ControlModifier)
                     # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
                     # & QtConst.MetaModifier.
                     if isCtrl:
@@ -912,7 +914,8 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
-        pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+        Format = QtGui.QImage.Format if isQt6 else QtGui.QImage
+        pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
         # .rgba() call required for Qt4.7, later versions work with straight color
         painter = QtGui.QPainter()
@@ -1090,12 +1093,17 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
+        if isQt6:
+            ItemFlags = QtCore.Qt.ItemFlags
+            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
+            ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
+            item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
+        else:
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
         try:
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
             pass
-        #print "item",item
         return item
     #@+node:ekr.20110605121601.18423: *4* qtree.getCurrentItem
     def getCurrentItem(self):
@@ -1280,34 +1288,36 @@ class LeoQtTree(leoFrame.LeoTree):
         w.editItem(item)
             # Generates focus-in event that tree doesn't report.
         e = w.itemWidget(item, 0)  # A QLineEdit.
-        if e:
-            s = e.text(); len_s = len(s)
-            if s == 'newHeadline': selectAll = True
-            if selection:
-                # pylint: disable=unpacking-non-sequence
-                # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-                # Note: negative lengths are allowed.
-                i, j, ins = selection
-                if ins is None:
-                    start, n = i, abs(i - j)
-                    # This case doesn't happen for searches.
-                elif ins == j:
-                    start, n = i, j - i
-                else:
-                    start = start, n = j, i - j
-            elif selectAll: start, n, ins = 0, len_s, len_s
-            else: start, n, ins = len_s, 0, len_s
-            e.setObjectName('headline')
-            e.setSelection(start, n)
-            # e.setCursorPosition(ins) # Does not work.
-            e.setFocus()
-            wrapper = self.connectEditorWidget(e, item)  # Hook up the widget.
-            if vc and c.vim_mode:  #  and selectAll
-                # For now, *always* enter insert mode.
-                if vc.is_text_wrapper(wrapper):
-                    vc.begin_insert_mode(w=wrapper)
-                else:
-                    g.trace('not a text widget!', wrapper)
+        s = e.text()
+        if s == 'newHeadline':
+            selectAll = True
+        if selection:
+            # pylint: disable=unpacking-non-sequence
+            # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+            # Note: negative lengths are allowed.
+            i, j, ins = selection
+            if ins is None:
+                start, n = i, abs(i - j)
+                # This case doesn't happen for searches.
+            elif ins == j:
+                start, n = i, j - i
+            else:
+                start = start, n = j, i - j
+        elif selectAll:
+            start, n, ins = 0, len(s), len(s)
+        else:
+            start, n, ins = len(s), 0, len(s)
+        e.setObjectName('headline')
+        e.setSelection(start, n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        wrapper = self.connectEditorWidget(e, item)  # Hook up the widget.
+        if vc and c.vim_mode:  #  and selectAll
+            # For now, *always* enter insert mode.
+            if vc.is_text_wrapper(wrapper):
+                vc.begin_insert_mode(w=wrapper)
+            else:
+                g.trace('not a text widget!', wrapper)
         return e, wrapper
     #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
     def endEditLabel(self):
@@ -1325,7 +1335,8 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
+        EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint if isQt6 else QtWidgets.QAbstractItemDelegate
+        w.closeEditor(e, EndEditHint.NoHint)
         w.setCurrentItem(item)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self):

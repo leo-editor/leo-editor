@@ -53,29 +53,10 @@ process for each one.
 '''
 #@-<< docstring >>
 #@+<< imports >>
-#@+node:vivainio2.20091008133028.5823: ** << imports >>
+#@+node:vivainio2.20091008133028.5823: ** << imports >> (stickynotes.py)
 import os
 import time
-from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, Qt, QtWidgets
-# pylint: disable=no-name-in-module,import-error
-if isQt5:
-    from PyQt5.QtCore import QTimer
-    try:
-        from PyQt5.QtCore import QString
-    except ImportError:
-        QString = str
-    from PyQt5.QtGui import QFont,QTextCharFormat
-    from PyQt5.QtWidgets import (
-        QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QTextEdit)
-else:
-    from PyQt4.QtCore import QTimer
-    try:
-        from PyQt4.QtCore import QString
-    except ImportError:
-        QString = str
-    from PyQt4.QtGui import QAction,QFont,QTextCharFormat,QTextEdit
-    from PyQt4.QtGui import QInputDialog,QMainWindow,QMdiArea,QLineEdit
+#
 # Third-party imports.   
 try:
     from Crypto.Cipher import AES
@@ -86,6 +67,22 @@ try:
     encOK = True
 except ImportError:
     encOK = False
+#
+# Leo imports.
+from leo.core import leoGlobals as g
+from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
+#
+# Aliases...
+QTimer = QtCore.QTimer
+QFont = QtGui.QFont
+QTextCharFormat = QtGui.QTextCharFormat
+QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+QInputDialog = QtWidgets.QInputDialog
+QLineEdit = QtWidgets.QLineEdit
+QMainWindow = QtWidgets.QMainWindow
+QMdiArea = QtWidgets.QMdiArea
+QTextEdit = QtWidgets.QTextEdit
+#
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 #@-<< imports >>
@@ -269,10 +266,9 @@ if encOK:
         )
         if not ok:
             return
-        if str(txt).startswith('v0:'):
-            txt = QString(txt[3:])
-        else:
-            txt = g.toUnicode(txt)
+        txt = g.toUnicode(txt)
+        if txt.startswith('v0:'):
+            txt = txt[3:]
         # arbitrary kludge to convert string to 256 bits - don't change
         sha = SHA.new()
         md5 = MD5.new()

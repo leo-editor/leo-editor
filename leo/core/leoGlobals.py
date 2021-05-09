@@ -2294,11 +2294,6 @@ class TracingNullObject:
             if tag not in suppress:
                 print('='*10, 'NullObject.__init__:', id(self), tag)
     def __call__(self, *args, **kwargs):
-        if 0:
-            suppress = ('PyQt5.QtGui.QIcon', 'LeoQtTree.onItemCollapsed',)
-            for z in suppress:
-                if z not in repr(args):
-                    print("%30s"  % 'NullObject.__call__:', args, kwargs)
         return self
     def __repr__(self):
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
@@ -2788,18 +2783,11 @@ def pdb(message=''):
     """Fall into pdb."""
     import pdb  # Required: we have just defined pdb as a function!
     if app and not app.useIpython:
-        # from leo.core.leoQt import QtCore
-        # This is more portable.
         try:
-            import PyQt5.QtCore as QtCore
-        except ImportError:
-            try:
-                import PyQt4.QtCore as QtCore
-            except ImportError:
-                QtCore = None
-        if QtCore:
-            # pylint: disable=no-member
+            from leo.core.leoQt import QtCore
             QtCore.pyqtRemoveInputHook()
+        except Exception:
+            pass
     if message:
         print(message)
     pdb.set_trace()
@@ -5839,11 +5827,9 @@ def u(s):
     """
     Return s, converted to unicode from Qt widgets.
     
-    leoQt.py uses this as a stand-in for QString, but all other calls
-    to g.u can and should be removed.
+    Deprecated. QString does not exist on Python 3.
     
-    Neither Leo's core nor any of Leo's official plugins call this
-    method directly.
+    No calls to g.u exist in Leo's core or official plugins.
     """
     return s
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace

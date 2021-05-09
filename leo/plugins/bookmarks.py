@@ -217,7 +217,7 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 
@@ -475,7 +475,7 @@ def cmd_use_other_outline(event):
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 
-#@+node:ekr.20140917180536.17896: ** class FlowLayout
+#@+node:ekr.20140917180536.17896: ** class FlowLayout (QLayout)
 class FlowLayout(QtWidgets.QLayout):
     """
     from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/
@@ -524,9 +524,19 @@ class FlowLayout(QtWidgets.QLayout):
             return self.itemList.pop(index)
         return None
 
-    #@+node:ekr.20140917180536.17904: *3* expandingDirections
+    #@+node:ekr.20140917180536.17904: *3* expandingDirections (override)
     def expandingDirections(self):
-        return QtCore.Qt.Orientations(QtCore.Qt.Orientation(0))
+        
+        """
+        Override of QLayout.expandingDirections.
+        
+        Returns whether this layout can make use of more space than sizeHint().
+        A value of Qt::Vertical or Qt::Horizontal means that it wants to grow in only one dimension,
+        whereas Qt::Vertical | Qt::Horizontal means that it wants to grow in both dimensions.
+        """
+        
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        return Orientations.Horizontal  # Best guess.
 
     #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
     def hasHeightForWidth(self):
@@ -558,19 +568,17 @@ class FlowLayout(QtWidgets.QLayout):
     #@+node:ekr.20140917180536.17910: *3* doLayout
     def doLayout(self, rect, testOnly):
 
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ControlTypes = QtWidgets.QSizePolicy.ControlTypes if isQt6 else QtWidgets.QSizePolicy
         x = rect.x()
         y = rect.y()
         lineHeight = 0
         for item in self.itemList:
             wid = item.widget()
             spaceX = self.spacing() + wid.style().layoutSpacing(
-                QtWidgets.QSizePolicy.PushButton,
-                QtWidgets.QSizePolicy.PushButton,
-                QtCore.Qt.Horizontal)
+                ControlTypes.PushButton, ControlTypes.PushButton, Orientations.Horizontal)
             spaceY = self.spacing() + wid.style().layoutSpacing(
-                QtWidgets.QSizePolicy.PushButton,
-                QtWidgets.QSizePolicy.PushButton,
-                QtCore.Qt.Vertical)
+                ControlTypes.PushButton, ControlTypes.PushButton, Orientations.Vertical)
             nextX = x + item.sizeHint().width() + spaceX
             if nextX - spaceX > rect.right() and lineHeight > 0:
                 x = rect.x()
@@ -582,7 +590,6 @@ class FlowLayout(QtWidgets.QLayout):
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())
         return y + lineHeight - rect.y()
-
     #@+node:tbnorth.20160315104244.1: *3* margin
     def margin(self):
         """margin - return margin
@@ -604,21 +611,34 @@ class FlowLayout(QtWidgets.QLayout):
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
-
+    KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
+    
+    ModMap = {
+        KeyboardModifiers.NoModifier: 'None',
+        KeyboardModifiers.AltModifier: 'Alt',
+        KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier: 'AltControl',
+        (KeyboardModifiers.AltModifier
+        | KeyboardModifiers.ControlModifier
+        | KeyboardModifiers.ShiftModifier): 'AltControlShift',
+        KeyboardModifiers.AltModifier | KeyboardModifiers.ShiftModifier: 'AltShift',
+        KeyboardModifiers.ControlModifier: 'Control',
+        KeyboardModifiers.ControlModifier | KeyboardModifiers.ShiftModifier: 'ControlShift',
+        KeyboardModifiers.ShiftModifier: 'Shift'
+    }
 
     # modifier to string mapping
-    ModMap = {
-        int(QtCore.Qt.NoModifier): 'None',
-        int(QtCore.Qt.AltModifier): 'Alt',
-        int(QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier): 'AltControl',
-        int(QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier | \
-            QtCore.Qt.ShiftModifier): 'AltControlShift',
-        int(QtCore.Qt.AltModifier | QtCore.Qt.ShiftModifier): 'AltShift',
-        int(QtCore.Qt.ControlModifier): 'Control',
-        int(QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier): 'ControlShift',
-        int(QtCore.Qt.ShiftModifier): 'Shift'
-    }
+    # ModMap = {
+        # int(KeyboardModifiers.NoModifier): 'None',
+        # int(KeyboardModifiers.AltModifier): 'Alt',
+        # int(KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier): 'AltControl',
+        # int(KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier | \
+            # KeyboardModifiers.ShiftModifier): 'AltControlShift',
+        # int(KeyboardModifiers.AltModifier | KeyboardModifiers.ShiftModifier): 'AltShift',
+        # int(KeyboardModifiers.ControlModifier): 'Control',
+        # int(KeyboardModifiers.ControlModifier | KeyboardModifiers.ShiftModifier): 'ControlShift',
+        # int(KeyboardModifiers.ShiftModifier): 'Shift'
+    # }
 
     #@+others
     #@+node:tbrown.20110712100955.18926: *3* __init__ & reloadSettings (BookMarkDisplay)
@@ -683,13 +703,15 @@ class BookMarkDisplay:
         - `bookmarks`: bookmarks in this pane
         """
 
-        if event.button() == QtCore.Qt.RightButton:
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        if event.button() == MouseButtons.RightButton:
             self.context_menu(event, container=row_parent)
             return
 
         # Alt => edit bookmarks in the outline
         mods = event.modifiers()
-        if mods == QtCore.Qt.AltModifier:
+        if mods == KeyboardModifiers.AltModifier:
             self.edit_bookmark(None, v=row_parent)
             return
         cmd_bookmark(event={'c': row_parent.context}, container=row_parent)
@@ -704,11 +726,12 @@ class BookMarkDisplay:
         - `but`: button widget
         """
 
-        if event.button() == QtCore.Qt.RightButton:
+        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        if event.button() == MouseButtons.RightButton:
             self.button_menu(event, bm, but, up=up)
             return
 
-        action_name = self.mod_map.get(self.ModMap.get(int(event.modifiers())))
+        action_name = self.mod_map.get(self.ModMap.get(event.modifiers()))
         if action_name is None:
             g.es("Bookmarks: unknown click type")
             print(int(event.modifiers()))
@@ -759,6 +782,7 @@ class BookMarkDisplay:
         """
 
         menu = QtWidgets.QMenu()
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 
         actions = [
             ("Link to this node", self.update_bookmark),
@@ -773,7 +797,7 @@ class BookMarkDisplay:
         ]
         for action in actions:
             # pylint: disable=cell-var-from-loop
-            act = QtWidgets.QAction(action[0], menu)
+            act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
@@ -782,18 +806,20 @@ class BookMarkDisplay:
             manager.second = True
             manager.upwards = False
             manager.show_list(manager.get_list(), up=False)
-        act = QtWidgets.QAction("Show child bookmarks", menu)
+        act = QAction("Show child bookmarks", menu)
         act.triggered.connect(follow)
         menu.addAction(act)
 
-        menu.exec_(but.mapToGlobal(event.pos()))
-
+        point = event.position().toPoint() if isQt6 else event.pos()   # Qt6 documentation is wrong.
+        global_point = but.mapToGlobal(point)
+        menu.exec_(global_point)
     #@+node:tbnorth.20160830110146.1: *3* context_menu
     def context_menu(self, event, container=None):
         """context_menu
         """
 
         menu = QtWidgets.QMenu()
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         bm = self.c._bookmarks
 
         actions = [
@@ -807,12 +833,13 @@ class BookMarkDisplay:
             # pylint: disable=cell-var-from-loop
             # pylint: disable=undefined-variable
             # weird: bm clearly *is* defined.
-            act = QtWidgets.QAction(action[0], menu)
+            act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
-        menu.exec_(self.w.mapToGlobal(event.pos()))
-
+        point = event.position().toPoint() if isQt6 else event.pos()   # Qt6 documentation is wrong.
+        global_point = menu.mapToGlobal(point)
+        menu.exec_(global_point)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -945,7 +972,7 @@ class BookMarkDisplay:
         current_url = None
         showing_chain = []
         row_parent = self.v
-
+        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         while todo:
             links = todo.pop(0) if todo else []
             top = QtWidgets.QWidget()
@@ -955,11 +982,7 @@ class BookMarkDisplay:
             top.mouseReleaseEvent = (lambda event, links=links, row_parent=row_parent:
                 self.background_clicked(event, links, row_parent))
             top.setMinimumSize(10,10)  # so there's something to click when empty
-
-            size_policy = QtWidgets.QSizePolicy(
-                QtWidgets.QSizePolicy.Expanding,
-                QtWidgets.QSizePolicy.Expanding
-            )
+            size_policy = QtWidgets.QSizePolicy(Policy.Expanding, Policy.Expanding)
             size_policy.setHorizontalStretch(1)
             size_policy.setVerticalStretch(1)
             top.setSizePolicy(size_policy)

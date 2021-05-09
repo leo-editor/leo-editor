@@ -29,8 +29,8 @@ search.
 #@+node:ekr.20161223144720.1: ** << ctagscompleter imports >>
 import os
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
-if isQt5:
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
+if isQt5 or isQt6:
     QCompleter = QtWidgets.QCompleter
     QStringListModel = QtCore.QStringListModel
 else:

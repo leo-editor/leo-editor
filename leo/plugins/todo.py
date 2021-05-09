@@ -74,7 +74,7 @@ from leo.core import leoGlobals as g
 NO_TIME = datetime.date(3000, 1, 1)
 
 if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import QtConst,QtCore,QtGui,QtWidgets,uic
+    from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20090119215428.6: ** init (todo.py)
@@ -110,9 +110,9 @@ if g.app.gui.guiName() == "qt":
             self.owner = owner
             super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
+            #
             # change dir to get themed icons, needed for uic resources
-            # 20180327 this is working, these are icons for todo UI, not
-            # the tree.
+            # These are icons for todo UI, not the tree.
             theme = g.app.config.getString('color-theme')
             if theme:
                 testPath = g.os_path_join(
@@ -258,10 +258,10 @@ if g.app.gui.guiName() == "qt":
                 if value:
                     getattr(edit, method)(value)
                     # edit.setEnabled(True)
-                    toggle.setChecked(QtConst.Checked)
+                    toggle.setChecked(True if isQt6 else QtConst.Checked)
                 else:
                     getattr(edit, method)(default)
-                    toggle.setChecked(QtConst.Unchecked)
+                    toggle.setChecked(False if isQt6 else QtConst.Unchecked)
                 edit.blockSignals(False)
                 toggle.blockSignals(False)
 
@@ -374,11 +374,19 @@ class todoController:
         self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
     #@+node:ekr.20201111052557.1: *4* todo_c.patch_1591
     def patch_1591(self):
-        ''' behavior change in PyQt versions greater than 5.12 --
-            workaround is to manually set the button icons /and/ sizes
-        '''
-
+        """
+        A workaround for #1591.
+        
+        Add labels and tooltips for all buttons.
+        """
+        # Patch the buttons only if the pyqt version is greater than 5.12.
+        from leo.core.leoQt import isQt4, qt_version
+        if isQt4:
+            return
         size = QtCore.QSize(16,16)
+        qt_version = [int(z) for z in qt_version.split('.')]
+        if qt_version[1] <= 12:
+            return
         ui = self.ui.UI
 
         for i in range(10):
@@ -1200,13 +1208,14 @@ class todoController:
         # check work date < due date and do stylesheet re-evaluation stuff
         nwd = self.getat(v, 'nextworkdate')
         due = self.getat(v, 'duedate')
-        w = self.ui.UI.frmDates
-        if nwd and due and str(nwd) > str(due):
-            w.setProperty('style_class', 'tododate_error')
-        else:
-            w.setProperty('style_class', '')
-        # update style on this widget on idle, see updateStyle()
-        self._widget_to_style = (w, time.time())
+        if hasattr(self.ui.UI, "frmDates"):
+            w = self.ui.UI.frmDates
+            if nwd and due and str(nwd) > str(due):
+                w.setProperty('style_class', 'tododate_error')
+            else:
+                w.setProperty('style_class', '')
+            # update style on this widget on idle, see updateStyle()
+            self._widget_to_style = (w, time.time())
 
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))

@@ -5,7 +5,7 @@ Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
 '''
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore,QtGui,QtWidgets # QtConst
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 controllers = {}
     # Keys are 
 #@+others
@@ -103,7 +103,8 @@ if g.app.gui.guiName() == "qt":
             # Create the output area.
             self.output_area = w = QtWidgets.QTextEdit()
             w.setStyleSheet('background: white; color: black;')
-            w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+            ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
+            w.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAsNeeded)
             w.setWordWrapMode(QtGui.QTextOption.NoWrap)
             # Add the widgets to a new layout.
             vlayout = QtWidgets.QVBoxLayout()

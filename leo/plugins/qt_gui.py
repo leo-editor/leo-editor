@@ -12,19 +12,16 @@ from typing import List
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, Qsci, QString, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, Qsci, QtCore, QtGui, QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
 from leo.plugins import qt_events
 from leo.plugins import qt_frame
 from leo.plugins import qt_idle_time
 from leo.plugins import qt_text
-if 1:
-    # This defines the commands defined by @g.command.
-    # pylint: disable=unused-import
-    from leo.plugins import qt_commands
-    assert qt_commands
-qt = QtCore.Qt
+# This defines the commands defined by @g.command.
+from leo.plugins import qt_commands
+assert qt_commands
 #@-<< imports >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -161,7 +158,7 @@ class LeoQtGui(leoGui.LeoGui):
             s = g.toUnicode(s)
             QtWidgets.QApplication.processEvents()
             # Fix #241: QMimeData object error
-            cb.setText(QString(s))
+            cb.setText(s)
             QtWidgets.QApplication.processEvents()
         else:
             g.trace('no clipboard!')
@@ -180,26 +177,31 @@ class LeoQtGui(leoGui.LeoGui):
         Set the clipboard selection to s.
         There are problems with PyQt5.
         """
-        if isQt5:
+        if isQt5 or isQt6:
             # Alas, returning s reopens #218.
             return
         if s:
             # This code generates a harmless, but annoying warning on PyQt5.
             cb = self.qtApp.clipboard()
-            cb.setText(QString(s), mode=cb.Selection)
+            cb.setText(s, mode=cb.Selection)
     #@+node:ekr.20110605121601.18487: *3* qt_gui.Dialogs & panels
     #@+node:ekr.20110605121601.18488: *4* qt_gui.alert
     def alert(self, c, message):
-        if g.unitTesting: return
+        if g.unitTesting:
+            return
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         d = b(None)
         d.setWindowTitle('Alert')
         d.setText(message)
-        d.setIcon(b.Warning)
-        d.addButton('Ok', b.YesRole)
-        c.in_qt_dialog = True
-        d.exec_()
-        c.in_qt_dialog = False
+        d.setIcon(Icon.Warning)
+        d.addButton('Ok', ButtonRole.YesRole)
+        try:
+            c.in_qt_dialog = True
+            d.exec_()
+        finally:
+            c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
     def makeFilter(self, filetypes):
         """Return the Qt-style dialog filter from filetypes list."""
@@ -275,15 +277,19 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run a qt About Leo dialog."""
         if g.unitTesting:
             return
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         d.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
-        d.setIcon(b.Information)
-        yes = d.addButton('Ok', b.YesRole)
+        d.setIcon(Icon.Information)
+        yes = d.addButton('Ok', ButtonRole.YesRole)
         d.setDefaultButton(yes)
-        c.in_qt_dialog = True
-        d.exec_()
-        c.in_qt_dialog = False
+        try:
+            c.in_qt_dialog = True
+            d.exec_()
+        finally:
+            c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18496: *4* qt_gui.runAskDateTimeDialog
     def runAskDateTimeDialog(self, c, title,
         message='Select Date/Time',
@@ -305,6 +311,11 @@ class LeoQtGui(leoGui.LeoGui):
               step_min={QtWidgets.QDateTimeEdit.MinuteSection: 5})
 
         """
+        QDialog = QtWidgets.QDialog
+        QDialogButtonBox = QtWidgets.QDialogButtonBox
+        #
+        DialogCode = QDialog.DialogCode if isQt6 else QDialog
+        StandardButtons = QDialogButtonBox.StandardButtons if isQt6 else QDialogButtonBox
 
 
         class DateTimeEditStepped(QtWidgets.QDateTimeEdit):
@@ -344,14 +355,13 @@ class LeoQtGui(leoGui.LeoGui):
                 self.dt = DateTimeEditStepped(init=init, step_min=step_min)
                 self.dt.setCalendarPopup(True)
                 layout.addWidget(self.dt)
-                buttonBox = QtWidgets.QDialogButtonBox(
-                    QtWidgets.QDialogButtonBox.Ok |
-                    QtWidgets.QDialogButtonBox.Cancel)
+                buttonBox = QtWidgets.QDialogButtonBox(StandardButtons.Ok | StandardButtons.Cancel)
                 layout.addWidget(buttonBox)
                 buttonBox.accepted.connect(self.accept)
                 buttonBox.rejected.connect(self.reject)
 
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return None
         if step_min is None: step_min = {}
         b = Calendar
         if not init:
@@ -359,12 +369,14 @@ class LeoQtGui(leoGui.LeoGui):
         d = b(c.frame.top, message=message, init=init, step_min=step_min)
         d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
-        c.in_qt_dialog = True
-        val = d.exec_()
-        c.in_qt_dialog = False
-        if val != d.Accepted:
-            return None
-        return d.dt.dateTime().toPyDateTime()
+        try:
+            c.in_qt_dialog = True
+            val = d.exec() if isQt6 else d.exec_()
+        finally:
+            c.in_qt_dialog = False
+        if val == DialogCode.Accepted:
+            return d.dt.dateTime().toPyDateTime()
+        return None
     #@+node:ekr.20110605121601.18494: *4* qt_gui.runAskLeoIDDialog (not used)
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
@@ -430,17 +442,22 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return
         b = QtWidgets.QMessageBox
+        Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             d.setStyleSheet(stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
-        d.setIcon(b.Information)
-        d.addButton(text, b.YesRole)
-        c.in_qt_dialog = True
-        d.exec_()
-        c.in_qt_dialog = False
+        d.setIcon(Information.Information)
+        d.addButton(text, ButtonRole.YesRole)
+        try:
+            c.in_qt_dialog = True
+            d.exec_()
+        finally:
+            c.in_qt_dialog = False
+
     #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self, c, title,
         message=None,
@@ -453,31 +470,41 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run an askYesNo dialog."""
         if g.unitTesting:
             return None
+        Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             d.setStyleSheet(stylesheet)
-        if message: d.setText(message)
-        d.setIcon(b.Warning)
+        if message:
+            d.setText(message)
+        d.setIcon(Information.Warning)
         d.setWindowTitle(title)
-        yes = d.addButton(yesMessage, b.YesRole)
-        no = d.addButton(noMessage, b.NoRole)
-        yesToAll = d.addButton(yesToAllMessage, b.YesRole) if yesToAllMessage else None
-        if cancelMessage:
-            cancel = d.addButton(cancelMessage, b.RejectRole)
+        yes = d.addButton(yesMessage, ButtonRole.YesRole)
+        no = d.addButton(noMessage, ButtonRole.NoRole)
+        if yesToAllMessage:
+            d.addButton(yesToAllMessage, ButtonRole.YesRole)
+        cancel = d.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
+        if defaultButton == "Yes":
+            d.setDefaultButton(yes)
+        elif defaultButton == "No":
+            d.setDefaultButton(no)
         else:
-            cancel = d.addButton(b.Cancel)
-        if defaultButton == "Yes": d.setDefaultButton(yes)
-        elif defaultButton == "No": d.setDefaultButton(no)
-        else: d.setDefaultButton(cancel)
-        c.in_qt_dialog = True
-        val = d.exec_()
-        c.in_qt_dialog = False
-        if val == 0: val = 'yes'
-        elif val == 1: val = 'no'
-        elif yesToAll and val == 2: val = 'yes-to-all'
-        else: val = 'cancel'
+            d.setDefaultButton(cancel)
+        try:
+            c.in_qt_dialog = True
+            val = d.exec() if isQt6 else d.exec_()
+        finally:
+            c.in_qt_dialog = False
+        if val == 0:
+            val = 'yes'
+        elif val == 1:
+            val = 'no'
+        elif yesToAllMessage and val == 2:
+            val = 'yes-to-all'
+        else:
+            val = 'cancel'
         return val
     #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
@@ -506,9 +533,11 @@ class LeoQtGui(leoGui.LeoGui):
         if message: d.setText(message)
         d.setIcon(b.Information)
         d.setDefaultButton(b.Yes)
-        c.in_qt_dialog = True
-        val = d.exec_()
-        c.in_qt_dialog = False
+        try:
+            c.in_qt_dialog = True
+            val = d.exec() if isQt6 else d.exec_()
+        finally:
+            c.in_qt_dialog = False
         return {
             b.Yes: 'yes',
             b.No: 'no',
@@ -554,7 +583,7 @@ class LeoQtGui(leoGui.LeoGui):
             val = func(parent=None, caption=title, directory=startpath, filter=filter_)
         finally:
             c.in_qt_dialog = False
-        if isQt5:  # this is a *Py*Qt change rather than a Qt change
+        if isQt5 or isQt6:  # this is a *Py*Qt change rather than a Qt change
             val, junk_selected_filter = val
         if multiple:
             files = [g.os_path_normslashes(s) for s in val]
@@ -612,11 +641,10 @@ class LeoQtGui(leoGui.LeoGui):
         msg='',
         c=None, **keys
     ):
-        # pylint: disable=dangerous-default-value
-        # How are we supposed to avoid **keys?
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return None
 
-        def send(title=title, label=label, msg=msg, c=c, keys=keys):
+        def send():
             return g.doHook('scrolledMessage',
                 short_title=short_title, title=title,
                 label=label, msg=msg, c=c, **keys)
@@ -658,15 +686,24 @@ class LeoQtGui(leoGui.LeoGui):
         #@+node:ekr.20110605121601.18507: *5* << emergency fallback >>
         b = QtWidgets.QMessageBox
         d = b(None)  # c.frame.top)
-        d.setWindowFlags(QtCore.Qt.Dialog)
+        Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
+        d.setWindowFlags(WindowFlags.Dialog)
             # That is, not a fixed size dialog.
         d.setWindowTitle(title)
-        if msg: d.setText(msg)
-        d.setIcon(b.Information)
-        d.addButton('Ok', b.YesRole)
-        c.in_qt_dialog = True
-        d.exec_()
-        c.in_qt_dialog = False
+        if msg:
+            d.setText(msg)
+        d.setIcon(Icon.Information)
+        d.addButton('Ok', ButtonRole.YesRole)
+        try:
+            c.in_qt_dialog = True
+            if isQt6:
+                d.exec()
+            else:
+                d.exec_()
+        finally:
+            c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
@@ -844,14 +881,15 @@ class LeoQtGui(leoGui.LeoGui):
         except Exception:
             size = 0
         if size < 1: size = defaultSize
+        Weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
         d = {
-            'black': QtGui.QFont.Black,
-            'bold': QtGui.QFont.Bold,
-            'demibold': QtGui.QFont.DemiBold,
-            'light': QtGui.QFont.Light,
-            'normal': QtGui.QFont.Normal,
+            'black': Weight.Black,
+            'bold': Weight.Bold,
+            'demibold': Weight.DemiBold,
+            'light': Weight.Light,
+            'normal': Weight.Normal,
         }
-        weight_val = d.get(weight.lower(), QtGui.QFont.Normal)
+        weight_val = d.get(weight.lower(), Weight.Normal)
         italic = slant == 'italic'
         if not family:
             family = g.app.config.defaultFontFamily
@@ -1153,7 +1191,10 @@ class LeoQtGui(leoGui.LeoGui):
             self.runWithIpythonKernel()
         else:
             # This can be alarming when using Python's -i option.
-            sys.exit(self.qtApp.exec_())
+            if isQt6:
+                sys.exit(self.qtApp.exec())
+            else:
+                sys.exit(self.qtApp.exec_())
     #@+node:ekr.20130930062914.16001: *4* qt_gui.runWithIpythonKernel (commands)
     def runWithIpythonKernel(self):
         """Init Leo to run in an IPython shell."""
@@ -1222,7 +1263,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.setStandardButtons(self.Ok)  # | self.Close)
             self.setDefaultButton(self.Ok)
             c.styleSheetManager.set_style_sheets(w=self)
-            if isQt5:
+            if isQt5 or isQt6:
                 # Workaround #693.
                 layout = self.layout()
                 cb = QtWidgets.QCheckBox()
@@ -1253,9 +1294,11 @@ class LeoQtGui(leoGui.LeoGui):
             while True:
                 tip = tm.get_next_tip()
                 m = self.DialogWithCheckBox(controller=self, tip=tip)
-                c.in_qt_dialog = True
-                m.exec_()
-                c.in_qt_dialog = False
+                try:
+                    c.in_qt_dialog = True
+                    m.exec_()
+                finally:
+                    c.in_qt_dialog = False
                 b = m.clickedButton()
                 self.update_tips_setting()
                 if b != m.next_tip_button:
@@ -1293,7 +1336,8 @@ class LeoQtGui(leoGui.LeoGui):
             if g.os_path_exists(fn):
                 pm = QtGui.QPixmap(fn)
                 if not pm.isNull():
-                    splash = QtWidgets.QSplashScreen(pm, qt.WindowStaysOnTopHint)
+                    WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
+                    splash = QtWidgets.QSplashScreen(pm, WindowFlags.WindowStaysOnTopHint)
                     splash.show()
                     # This sleep is required to do the repaint.
                     QtCore.QThread.msleep(10)
@@ -1344,6 +1388,11 @@ class LeoQtGui(leoGui.LeoGui):
     if isQt5:
         # To do: https://doc.qt.io/qt-5/qsignalspy.html
         from PyQt5.QtTest import QSignalSpy
+        assert QSignalSpy
+    elif isQt6:
+        # pylint: disable=c-extension-no-member
+        import PyQt6.QtTest as QtTest
+        QSignalSpy = QtTest.QSignalSpy
         assert QSignalSpy
     else:
         # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
@@ -1407,10 +1456,17 @@ class LeoQtGui(leoGui.LeoGui):
     def createFrame(self, parent, name,
         hPolicy=None, vPolicy=None,
         lineWidth=1,
-        shadow=QtWidgets.QFrame.Plain,
-        shape=QtWidgets.QFrame.NoFrame,
+        shadow=None,
+        shape=None,
     ):
         """Create a Qt Frame."""
+        Shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
+        Shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
+        if shadow is None:
+            shadow = Shadow.Plain
+        if shape is None:
+            shape = Shape.NoFrame
+        #
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
@@ -1453,8 +1509,11 @@ class LeoQtGui(leoGui.LeoGui):
         return w
     #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
     def setSizePolicy(self, widget, kind1=None, kind2=None):
-        if kind1 is None: kind1 = QtWidgets.QSizePolicy.Ignored
-        if kind2 is None: kind2 = QtWidgets.QSizePolicy.Ignored
+        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        if kind1 is None:
+            kind1 = Policy.Ignored
+        if kind2 is None:
+            kind2 = Policy.Ignored
         sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

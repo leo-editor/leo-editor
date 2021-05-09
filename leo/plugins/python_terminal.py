@@ -52,7 +52,7 @@ import sys
 import code
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets,QtCore
+from leo.core.leoQt import isQt6, QtCore, QtWidgets
 
 use_rlcompleter = False
     # A workaround for #1212: segfaults at startup when importing this file.
@@ -137,9 +137,6 @@ if QtWidgets:
             self.interpreter.runIt('p = c.p')
         #@+node:peckj.20150428142729.11: *3* PyInterp.printBanner
         def printBanner(self):
-            #self.write(sys.version)
-            #self.write(' on ' + sys.platform + '\n')
-            #self.write('PyQt4 ' + PYQT_VERSION_STR + '\n')
             banner = [
                 'Type !hist for a history view and !hist(n) history index recall\n',
                 'Type !clear to clear this pane\n'
@@ -240,17 +237,18 @@ if QtWidgets:
             return False
         #@+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
         def keyPressEvent(self, event):
-            qt = QtCore.Qt
+
+            Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
             try:
                 # #1212: Disable this by default.
-                if use_rlcompleter and event.key() == qt.Key_Tab:
+                if use_rlcompleter and event.key() == Key.Key_Tab:
                     line = str(self.document().lastBlock().text())[4:]
                     completer = Completer(self.interpreter.locals)
                     suggestion = completer.complete(line, 0)
                     if suggestion is not None:
                         self.insertPlainText(suggestion[len(line):])
                     return
-                if event.key() == qt.Key_Down:
+                if event.key() == Key.Key_Down:
                     if self.historyIndex == len(self.history):
                         self.historyIndex -= 1
                     try:
@@ -262,7 +260,7 @@ if QtWidgets:
                     except Exception:
                         pass
                     return
-                if event.key() == qt.Key_Up:
+                if event.key() == Key.Key_Up:
                     try:
                         if len(self.history) - 1 > self.historyIndex:
                             self.historyIndex += 1
@@ -272,7 +270,7 @@ if QtWidgets:
                     except Exception:
                         pass
                     return
-                if event.key() == qt.Key_Home:
+                if event.key() == Key.Key_Home:
                     # set cursor to position 4 in current block. 4 because that's where
                     # the marker stops
                     blockLength = len(self.document().lastBlock().text()[4:])
@@ -282,11 +280,11 @@ if QtWidgets:
                     textCursor.setPosition(position)
                     self.setTextCursor(textCursor)
                     return
-                if event.key() in [qt.Key_Left, qt.Key_Backspace]:
+                if event.key() in [Key.Key_Left, Key.Key_Backspace]:
                     # don't allow deletion of marker
                     if self.textCursor().positionInBlock() == 4:
                         return
-                if event.key() in [qt.Key_Return, qt.Key_Enter]:
+                if event.key() in [Key.Key_Return, Key.Key_Enter]:
                     self.doEnter(event)
                     return
                 # allow all other key events

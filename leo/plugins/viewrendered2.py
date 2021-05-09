@@ -217,7 +217,7 @@ from io import StringIO
 from leo.core import leoGlobals as g
 from leo.plugins import qt_text
 from leo.plugins import free_layout
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets, QUrl
 
 # pylint: disable=import-error
@@ -491,6 +491,7 @@ class WebViewPlus(QtWidgets.QWidget):
         '''Init the vr pane.'''
             # QWebView parts, including progress bar
         view = QtWebKitWidgets.QWebView()
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         try:
             # PyQt4
             mf = view.page().mainFrame()
@@ -545,7 +546,7 @@ class WebViewPlus(QtWidgets.QWidget):
         menu = QtWidgets.QMenu()
 
         def action(label):
-            action = QtWidgets.QAction(label, self, checkable=True, triggered=self.state_change)
+            action = QAction(label, self, checkable=True, triggered=self.state_change)
             menu.addAction(action)
             return action
 
@@ -590,8 +591,10 @@ class WebViewPlus(QtWidgets.QWidget):
         #   spacer.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         #   self.toolbar.addWidget(spacer)
         self.title = QtWidgets.QLabel()
-        self.title.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        self.title.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        self.title.setSizePolicy(Policy.Expanding, Policy.Expanding)
+        Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+        self.title.setAlignment(Alignment.AlignRight | Alignment.AlignVCenter)
         self.title.setTextFormat(1) # Set to rich text interpretation
         # None of this font stuff works! - instead I've gone for rich text above
         # font = QtGui.QFont("Sans Serif", 12, QtGui.QFont.Bold)
@@ -618,7 +621,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
         # pylint:disable=no-member
-        if isQt5:
+        if isQt5 or isQt6:
             pass # not ready yet.
         else:
             view.settings().setAttribute(QtWebKitWidgets.QWebSettings.PluginsEnabled, True)
@@ -630,7 +633,6 @@ class WebViewPlus(QtWidgets.QWidget):
         except AttributeError:
             # PyQt5
             pass
-        #self.toolbar.setToolButtonStyle(Qt.ToolButtonTextOnly)
         # Set up other widget states
         return view
     #@+node:ekr.20140227055626.16843: *4* vr2.init_config
@@ -740,8 +742,9 @@ class WebViewPlus(QtWidgets.QWidget):
             self.plock = self.pc.c.p.copy() # make a copy of node position
             self.plockmode = self.get_mode() # make a copy of the current node
             if self.pr:
-                self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page().\
-                mainFrame().scrollBarValue(QtCore.Qt.Vertical)
+                Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+                main_frame = self.view.page().mainFrame()
+                self.pc.scrollbar_pos_dict[self.pr.v] = main_frame.scrollBarValue(Alignment.Vertical)
         else:
             self.render_delegate()
                 # Render again since root node may have changed now
@@ -807,15 +810,16 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:ekr.20140226075611.16802: *4* vr2.restore_scroll_position
     def restore_scroll_position(self):
         # Restore scroll bar position for (possibly) new node
+        Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
         d = self.pc.scrollbar_pos_dict
         mf = self.view.page().mainFrame()
         # Set the scrollbar.
         if self.pr is not None:
-            spos = d.get(self.pr.v, mf.scrollBarValue(QtCore.Qt.Vertical))
+            spos = d.get(self.pr.v, mf.scrollBarValue(Alignment.Vertical))
         else:
             spos = 0
-        mf.setScrollBarValue(QtCore.Qt.Vertical, spos)
-        #print 'remembered scroll pos restored, re-read pos:', spos, mf.scrollBarValue(QtCore.Qt.Vertical)
+        mf.setScrollBarValue(Alignment.Vertical, spos)
+
     #@+node:ekr.20160325203354.1: *4* vr2.setHtml
     def setHtml(self, s):
 
@@ -885,7 +889,8 @@ class WebViewPlus(QtWidgets.QWidget):
         if os.path.isdir(path):
             os.chdir(path)
         # Need to save position of last node before rendering
-        ps = mf.scrollBarValue(QtCore.Qt.Vertical)
+        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ps = mf.scrollBarValue(Orientations.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
         if self.lock_mode:
@@ -1143,7 +1148,8 @@ class WebViewPlus(QtWidgets.QWidget):
         if os.path.isdir(path):
             os.chdir(path)
         # Need to save position of last node before rendering
-        ps = mf.scrollBarValue(QtCore.Qt.Vertical)
+        Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+        ps = mf.scrollBarValue(Alignment.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
         if self.lock_mode:
@@ -1176,7 +1182,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # tbp: this is a kludge to change the background color of the rendering pane.  
             # Markdown does not emit a css style sheet, but the browser will apply
             # a style element at the top of the page to the whole page.
-            html = '<style type="text/css">body{background-color:%s;}</style>\n' %(self.background_color) + html
+            html = '<style type="text/css">body{background-color:%s;}</style>\n' % (self.background_color) + html
             return g.toUnicode(html)
         except Exception as e:
             print(e)
@@ -1530,21 +1536,6 @@ class ViewRenderedController(QtWidgets.QWidget):
                     pc.deactivate()
                 if sb:
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-            # Saving scroll position for QWebView used in new html_class
-            #            elif w.__class__ == pc.html_class:
-            #                # The widge may no longer exist.
-            #                mf = None
-            #                try:
-            #                    mf = w.view.page().mainFrame()
-            #                except Exception:
-            #                    g.es_exception()
-            #                    pc.deactivate()
-            #                if mf:
-            #                    pos = mf.scrollBarValue(QtCore.Qt.Vertical)
-            #                    pc.scrollbar_pos_dict[p.v] = pos
-            #                    print 'saved1 scroll pos', pos
-            # Will be called at idle time.
-            # if trace: g.trace('no update')
     #@+node:ekr.20140226074510.4221: *4* vr2.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         '''Embed widget w in the free_layout splitter.'''
@@ -1567,7 +1558,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             # pylint: disable=no-member
-            QTextOption = QtGui.QTextOption if isQt5 else QtWidgets.QTextOption
+            QTextOption = QtGui.QTextOption if isQt5 or isQt6 else QtWidgets.QTextOption
             w.setWordWrapMode(QTextOption.WrapAtWordBoundaryOrAnywhere)
     #@+node:ekr.20140226074510.4222: *5* vr2.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
@@ -1686,10 +1677,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         #            sb.setSliderPosition(pos)
     #@+node:ekr.20140226074510.4228: *4* vr2.update_movie
     def update_movie(self, s, keywords):
-        # pylint: disable=maybe-no-member
-            # 'PyQt4.phonon' has no 'VideoPlayer' member
-            # 'PyQt4.phonon' has no 'VideoCategory' member
-            # 'PyQt4.phonon' has no 'MediaSource' member
         pc = self
         ok, path = pc.get_fn(s, '@movie')
         if not ok:
@@ -1802,11 +1789,12 @@ class ViewRenderedController(QtWidgets.QWidget):
     def ensure_text_widget(self):
         '''Swap a text widget into the rendering pane if necessary.'''
         pc = self
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         if pc.must_change_widget(pc.text_class):
             w = pc.text_class()
 
             def mouseReleaseHelper(w, event):
-                if QtCore.Qt.ControlModifier & event.modifiers():
+                if KeyboardModifiers.ControlModifier & event.modifiers():
                     event2 = {'c': self.c, 'w': w.leo_wrapper}
                     g.openUrlOnClick(event2)
                 else:

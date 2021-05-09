@@ -2770,7 +2770,7 @@ class LeoFind:
             ('mark-Changes', ftm.check_box_mark_changes),
             ('mark-Finds', ftm.check_box_mark_finds),
         )
-        result = [option for option, ivar in table if ivar.checkState()]
+        result = [option for option, ivar in table if ivar.isChecked()]
         table2 = (
             ('Suboutline', ftm.radio_button_suboutline_only),
             ('Node', ftm.radio_button_node_only),

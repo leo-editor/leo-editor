@@ -19,7 +19,7 @@ the left side of toolbar.
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import isQt6, QtGui, QtWidgets
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 #@-<< imports >>
@@ -68,27 +68,26 @@ class NavController:
         c._prev_next = self
         self._buttons = self.makeButtons()
 
-    #@+node:ville.20090518182905.5427: *3* makeButtons
+    #@+node:ville.20090518182905.5427: *3* makeButtons (NavController)
     def makeButtons(self):
 
         c = self.c
         w = c.frame.iconBar.w
         if not w:
             return [] # EKR: can be an empty list when unit testing.
-
-        icon_l = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowLeft)
-        icon_r = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowRight)
-
-        act_l = QtWidgets.QAction(icon_l,'prev',w)
-        act_r = QtWidgets.QAction(icon_r,'next',w)
-
-        # 2011/04/02: Use the new commands.
+        QStyle = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
+        icon_l = w.style().standardIcon(QStyle.SP_ArrowLeft)
+        icon_r = w.style().standardIcon(QStyle.SP_ArrowRight)
+        # Create the actions.
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        act_l = QAction(icon_l,'prev',w)
+        act_r = QAction(icon_r,'next',w)
+        # Use the new commands.
         act_l.triggered.connect(lambda checked: c.goToPrevHistory())
         act_r.triggered.connect(lambda checked: c.goToNextHistory())
-
-        # 2011/04/02: Don't execute the command twice.
-        self.c.frame.iconBar.add(qaction = act_l) #, command = self.clickPrev)
-        self.c.frame.iconBar.add(qaction = act_r) #, command = self.clickNext)
+        # Don't execute the command twice.
+        self.c.frame.iconBar.add(qaction = act_l)
+        self.c.frame.iconBar.add(qaction = act_r)
         return act_l, act_r
         
     def removeButtons(self):

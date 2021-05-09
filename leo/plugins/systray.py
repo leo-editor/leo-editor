@@ -3,7 +3,7 @@
 """systray"""
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtGui, QtWidgets
 
 g.assertUi('qt')
 
@@ -54,18 +54,22 @@ class pluginController:
 
         self.c = c
 
-    #@+node:ville.20110219221839.6557: *3* makeButtons
+    #@+node:ville.20110219221839.6557: *3* makeButtons (systray.py)
     def makeButtons(self):
         ib_w = self.c.frame.iconBar.w
-        if not ib_w: return # EKR: can be None when unit testing.
-        icon_l = ib_w.style().standardIcon(QtWidgets.QStyle.SP_ArrowLeft)
-        icon_r = ib_w.style().standardIcon(QtWidgets.QStyle.SP_ArrowRight)
-        act_l = QtWidgets.QAction(icon_l, 'prev', ib_w)
-        act_r = QtWidgets.QAction(icon_r, 'next', ib_w)
-        # act_l.connect(act_l, QtCore.SIGNAL("triggered()"), self.clickPrev)
-        # act_r.connect(act_r, QtCore.SIGNAL("triggered()"), self.clickNext)
+        if not ib_w:
+            return # EKR: can be None when unit testing.
+        StandardPixmap = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
+        icon_l = ib_w.style().standardIcon(StandardPixmap.SP_ArrowLeft)
+        icon_r = ib_w.style().standardIcon(StandardPixmap.SP_ArrowRight)
+        # Create the actions.
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        act_l = QAction(icon_l, 'prev', ib_w)
+        act_r = QAction(icon_r, 'next', ib_w)
+        # Use the new commands.
         act_l.triggered.connect(self.clickPrev)
         act_r.triggered.connect(self.clickNext)
+        # Don't execute the command twice.
         self.c.frame.iconBar.add(qaction = act_l, command = self.clickPrev)
         self.c.frame.iconBar.add(qaction = act_r, command = self.clickNext)
     #@+node:ville.20110219221839.6558: *3* clickPrev

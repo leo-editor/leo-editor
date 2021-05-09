@@ -11,7 +11,7 @@ Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 import sys
 import datetime
 
-from leo.core.leoQt import QtCore,QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtWidgets
 
 def init():
     return True # For unit tests.
@@ -144,7 +144,11 @@ def main():
     last.calendarWidget().build(5,4)
 
     win.show()
-    sys.exit(app.exec_())
+
+    if isQt6:
+        sys.exit(app.exec())
+    else:
+        sys.exit(app.exec_())
 
 if __name__ == '__main__':
     main()

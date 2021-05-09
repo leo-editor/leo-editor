@@ -83,7 +83,7 @@ import fnmatch
 import itertools
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtConst, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtConst, QtWidgets
 from leo.core import leoNodes
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
@@ -410,22 +410,11 @@ class QuickSearchController:
         #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
         self.worker.start()
-        if 1: # Compatible with PyQt5
-            # we want both single-clicks and activations (press enter)
-            w.itemActivated.connect(self.onActivated)
-            w.itemPressed.connect(self.onSelectItem)
-            w.currentItemChanged.connect(self.onSelectItem)
-        # else:
-            # we want both single-clicks and activations (press enter)
-            # w.connect(w,
-                # QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
-                # self.onActivated)
-            # w.connect(w,
-                # QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
-                # self.onSelectItem)
-            # w.connect(w,
-                # QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem *)"),
-                # self.onSelectItem)
+        # we want both single-clicks and activations (press enter)
+        w.itemActivated.connect(self.onActivated)
+        w.itemPressed.connect(self.onSelectItem)
+        w.currentItemChanged.connect(self.onSelectItem)
+        
     #@+node:ville.20121120225024.3636: *3* freeze
     def freeze(self, val = True):
         self.frozen = val
@@ -707,7 +696,7 @@ class QuickSearchController:
                 pl.append(p.copy())
         self.addHeadlineMatches(pl)
     #@+node:ekr.20111015194452.15700: *3* Event handlers
-    #@+node:ekr.20111015194452.15686: *4* onSelectItem
+    #@+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it, it_prev=None):
 
         c = self.c
@@ -716,8 +705,9 @@ class QuickSearchController:
             return
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = QtWidgets.QApplication.keyboardModifiers()
-        if modifiers == QtCore.Qt.ControlModifier:
+        if modifiers == KeyboardModifiers.ControlModifier:
             row = self.lw.row(it)
             init_indent = len(it.text()) - len(str(it.text()).lstrip())
             self.lw.blockSignals(True)

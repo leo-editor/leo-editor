@@ -105,7 +105,7 @@ plugins. Here are some points of interest:
 
 from leo.core import leoGlobals as g
 if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import QtCore,QtWidgets
+    from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
@@ -256,7 +256,7 @@ class AttributeGetterUA(AttributeGetter):
             "Enter attribute path",
             "Enter path to attribute (space separated words)")
 
-        ns = str(path).split()  # not the QString
+        ns = str(path).split()
         if not ok or not ns:
             g.es("Cancelled")
             return
@@ -422,7 +422,7 @@ AttributeGetter.register(AttributeGetterColon)
 class ListDialog(QtWidgets.QDialog):
 
     #@+others
-    #@+node:tbrown.20091028131637.1354: *3* __init__
+    #@+node:tbrown.20091028131637.1354: *3* __init__ (attrib_edit.py)
     def __init__(self, parent, title, text, entries):
 
         self.entries = entries
@@ -438,7 +438,7 @@ class ListDialog(QtWidgets.QDialog):
             cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setCheckState(QtCore.Qt.Checked)
+                cb.setChecked(True if isQt6 else QtConst.Checked)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
         sa.setWidget(frame)
@@ -487,8 +487,6 @@ class editWatcher:
         if not self._widget:
             self._widget = w = QtWidgets.QLineEdit(str(self.value))
             w.textChanged.connect(self.updateValue)
-                # QtCore.QObject.connect(w,
-                    # QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
             self._widget.focusOutEvent = self.lostFocus
             # see lostFocus()
         return self._widget
@@ -540,7 +538,8 @@ class attrib_edit_Controller:
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
         if self.guiMode == 'body':
-            self.holder = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+            Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+            self.holder = QtWidgets.QSplitter(Orientations.Vertical)
             self.holder.setMinimumWidth(300)
             parent = c.frame.top.leo_body_frame.parent()
             self.holder.addWidget(c.frame.top.leo_body_frame)
@@ -704,29 +703,20 @@ class attrib_edit_Controller:
     def manageAttrib(self):
 
         attribs = [(i[0],i[1],i[3]) for i in self.getAttribs()]
-
         dat = []
         for attr in self.attrPaths:
-
             txt = attr[0].longDescrip(attr[2])
-
             active = attr in attribs
-
             dat.append([txt, active, attr])
-
         if not dat:
             g.es('No attributes seen (yet)')
             return
-
         dat.sort(key=lambda x: x[0])
-
         res = ListDialog(self.parent, "Enter attribute path",
-            "Enter path to attribute (space separated words)",
-            dat)
-
+            "Enter path to attribute (space separated words)", dat)
         res.exec_()
-
-        if res.result() == QtWidgets.QDialog.Rejected:
+        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        if res.result() == DialogCode.Rejected:
             return
 
         # check for deletions
@@ -760,7 +750,8 @@ class attrib_edit_Controller:
 
         res.exec_()
 
-        if res.result() == QtWidgets.QDialog.Rejected:
+        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        if res.result() == DialogCode.Rejected:
             return
 
         for n,i in enumerate(modes):

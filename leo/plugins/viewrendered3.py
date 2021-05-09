@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.02
+About Viewrendered3 V3.2b2
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -26,6 +26,8 @@ the plugin can:
     #. Display just the code blocks;
     #. Colorize code blocks;
     #. Execute Python code in the code blocks;
+    #. Execute non-Python code blocks for certain languages.  Command line
+       parameters can be passed to these language processors.
     #. Insert the print() output of an execution at the bottom of the rendered display;
     #. Identify code blocks by either an @language directive or by the code block
        syntax normally used by RsT, MD, or Asciidoc (e.g., code fences for MD);
@@ -80,9 +82,15 @@ Limitations and Quirks
        With MD, mathematical symbols are not rendered without MathJax.
 
     #. Code blocks for several programming languages can be colorized, even
-       within a single node.  But only Python blocks can be executed.  Blocks
-       intended for another language (such as javascript) will cause syntax
-       errors if an attempt is made to execute the node.
+       within a single node.  Python, and certain other languages can be
+       executed if they have been installed.  Python code blocks are
+       executed with a Leo environment the includes the standard Leo
+       variables c, g, and c.p.
+
+    #. All code blocks in a node or subtree must contain the same code language 
+       or they cannot be executed.
+
+    #. Non-Python code can currently only be executed in RsT trees.
 
     #. Text nodes and subtrees that have no language specified are rendered as
        preformated text.  They cannot be executed.
@@ -188,6 +196,62 @@ example for the VR3 plugin::
 
     vr3-toggle = Alt+0
 
+#@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
+VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
+
+    <processor> [optional parameters] filename
+
+External language processors must be specified in the file `vr3_config.ini`.  This file is located in the `vr3` directory under Leo's Home directory.  The must be entered in the `[executables]` section. Here is an example::
+
+    [executables]
+    javascript = D:\usr\graalvm-ce-java11-20.0.0\languages\js\bin\js.exe
+    julia = C:\Users\tom\AppData\Local\Programs\Julia 1.5.3\bin\julia.exe
+
+Note that
+
+1. The name of the language (e.g., `julia`) **must** agree with the name of the language used in `@language` directives;
+
+2. The full path to the processing executable **must** be included.  VR3 will not use the system path, and the processor need not be on the system path.
+
+This directory and .ini file must be created by the user.  VR3 will not create them.
+
+A language that is specified here will not automatically be executed: only languages known by VR3 will be executed.  Code in known languages will be colorized provided that Leo has a colorizing mode file for that language.  This should normally be the case.  For example, colorizer mode files for both julia and javascript are included in the version of Leo that includes this version of VR3.
+
+VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
+#@+node:TomP.20210423000029.1: *5* @param Optional Parameters
+\@param - Specify parameter(s) to be passed to a non-Python language processor.
+-------------------------------------------------------------------------------
+The `@param` directive specifies command-line parameters to be passed
+to an external language processor.  These parameters will be inserted
+between the name of the processor and the name of a temporary file that
+VR3 will write the program code to.
+
+For example if we include the following directives::
+
+    @language julia
+    @param -q
+
+then the julia processor will be invoked with the command line::
+
+    <path-to-julia> -q <progfile>
+
+Any number of parameters may be included on one @param line, and
+multiple @param directives are allowed.
+
+Only @param directives that occur inside a code block are recognized.  Thus the following @param directive is not recognized because it is
+outside a code block::
+
+    @language rest
+    @param -q
+
+    @language julia
+    # code to execute
+    # ...
+
+#@+node:TomP.20210423002026.1: *5* Limitations
+1. The ability to launch an external processor currently works only for ReStructuredText markup language nodes or trees.
+
+2. The supported command line format is fairly simple, so a language that needs separate compile and run stages will be difficult to use.
 #@+node:TomP.20200115200324.1: *3* Commands
 Commands
 ========
@@ -257,12 +321,15 @@ Examples of ``@language`` directives::
 
 
 \@image - Alternate Method For Inserting an Image
-------------------------------------------------------
+--------------------------------------------------
 In addition to the image syntax of the structured text in use, the `@image`
 directive can be used::
 
     @image url-or-file_url-or-data_url
 
+\@param - Insert optional parameters for an external language processor
+------------------------------------------------------------------------
+See `Settings and Configuration/External Processors/Optional Parameters`.
 
 #@+node:TomP.20200115200601.1: *4* Rendering reStructuredText
 Rendering reStructuredText
@@ -368,6 +435,9 @@ be used can be set by the setting
 Its default setting is False, meaning that Asciidoc will be preferred
 over Asciidoc3.
 
+AsciiDoctor
+-----------
+
 Installing the ``asciidoctor`` Ruby Program
 ===========================================
 First install the Ruby code environment.  It is not necessary to install 
@@ -377,8 +447,8 @@ Next, run the following commands in a terminal or Windows console::
     gem install asciidoctor
     gem install pygments.rb
 
-Specifying a Preference for the External Processor
-==================================================
+Specifying a Preference for the External AsciiDoctor Processor
+==============================================================
 To specify that VR3 should use the ``asciidoctor`` external program, add a
 setting to the @settings tree in MyLeoSettings.leo or
 in an outline you wish to render, then reload the settings. This
@@ -405,7 +475,61 @@ Colorized Languages
 ===================
 
 Currently the languages that can be colorized are python, javascript,
-java, css, xml, and sql.
+java, julia, css, xml, and sql.
+
+#@+node:TomP.20210225000326.1: *3* Code Execution
+Code that occurs inside one or more code blocks can be executed.
+Execution is initiated when the "Execute" button on the
+VR3 toolbar is pressed.  Output from the processor to stdout and 
+stderr is displayed under the node (or last node of a subtree).
+
+A node may contain multiple code blocks, but they can only successfully
+be executed if they are all for the same code language.
+
+Command line parameters can be specified using one or more `@param`
+directives (see above at Structured Languages/Special Directives).
+
+Python code will be executed within a Leo environment that includes
+the standard Leo variables g, c, and c.p.  Thus, Leo-specific
+commands like g.es() can be invoked.
+
+If View Options/Entire Tree is checked on the VR3 toolbar, then
+all code blocks in the current node and all its child nodes
+(to any nesting depth) will be executed.  Otherwise only the current
+node will be executed.
+
+If only the current node is to be executed, note that if imports occur or variables are declared in a parent node, then execution of the node
+will fail because the current node being executed will not know
+about them.
+
+Processor output for stdout (i.e., print() statements, etc. and
+stderr are captured and displayed inline below the code.
+
+Non-Python code can be executed if
+
+    #. A language processor for the target language has been installed
+       on the computer;
+
+    #. The processor invokes a program using a command line like thus::
+
+        <path-to-processor> [parameters] <program file>
+
+The full path to non-Python processors is specified in a configuration
+file located in Leo's home directory, `.leo`.  This file is at::
+
+    .leo/vr3/vr3_config.ini
+
+The language processor(s) must be defined in an ``[executables]`` section
+of the configuration file, like this::
+
+    [executables]
+    javascript = D:\usr\graalvm-ce-java11-20.0.0\languages\js\bin\js.exe
+    julia = C:\Users\tom\AppData\Local\Programs\Julia 1.5.3\bin\julia.exe
+
+The names of the languages **must** be spelled exactly as they are used
+in `@language` directives.
+
+The languages that can currently be used are `javascript` and `julia`.  This list may be expanded in the future.
 
 #@+node:TomP.20200115200704.1: *3* Special Renderings
 Special Renderings
@@ -499,6 +623,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 #@+node:TomP.20191215195433.4: ** << imports >>
 #
 # Stdlib...
+from configparser import ConfigParser
 from contextlib import redirect_stdout
 from enum import Enum, auto
 import html
@@ -509,9 +634,11 @@ import os
 import os.path
 import shutil
 import string
+import subprocess
 import sys
 import webbrowser
 from urllib.request import urlopen
+
 #@+at
 #     import warnings
 #     # Ignore *all* warnings.
@@ -520,15 +647,19 @@ from urllib.request import urlopen
 
 # Leo imports...
 import leo.core.leoGlobals as g
+from leo.core.leoApp import LoadManager as LM
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-    from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+    from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import phonon, QtMultimedia, QtSvg#, QtWebKitWidgets
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
     #QtWidgets = False
+
+if isQt5:
+    from leo.core.leoQt import QtWebKitWidgets
 
 # Optional imports...
 try:
@@ -583,11 +714,19 @@ try:
 except ImportError:
     pygments = None
     print('VR3: *** no pygments')
-try:
-    QWebView = QtWebKitWidgets.QWebView
-except Exception:
-    QWebView = None
-    # The top-level init function gives the error.
+
+if isQt5:
+    try:
+        QWebView = QtWebKitWidgets.QWebView
+    except Exception:
+        QWebView = None
+else:
+    try:
+        #QWebView = QtWebKitWidgets.QWebView
+        QWebView = QtWidgets.QTextBrowser
+    except Exception:
+        QWebView = None
+        # The top-level init function gives the error.
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
@@ -602,6 +741,7 @@ CSS = 'css'
 ENCODING = 'utf-8'
 JAVA = 'java'
 JAVASCRIPT = 'javascript'
+JULIA = 'julia'
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
@@ -637,7 +777,7 @@ MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS, XML, SQL)
+LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, CSS, XML, SQL)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
@@ -648,6 +788,12 @@ ASCDOC_FENCE_MARKER = '----'
 RST_INDENT = '    '
 SKIPBLOCKS = ('.. toctree::', '.. index::')
 ASCDOC_PYGMENTS_ATTRIBUTE = ':source-highlighter: pygments'
+
+_in_code_block = False
+
+VR3_DIR = 'vr3'
+VR3_CONFIG_FILE = 'vr3_config.ini'
+EXECUTABLES_SECTION = 'executables'
 
 #@-<< declarations >>
 
@@ -686,7 +832,7 @@ controllers = {}
     # Keys are c.hash(): values are PluginControllers (QWidget's).
 layouts = {}
     # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
-
+##
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
 def find_exe(exename):
@@ -722,6 +868,23 @@ def find_exe(exename):
 asciidoctor_exec = find_exe('asciidoc') or None
 asciidoc3_exec = find_exe('asciidoc3') or None
 pandoc_exec = find_exe('pandoc') or None
+#@+node:TomP.20210218231600.1: ** Find executables in VR3_CONFIG_FILE
+#@@language python
+# Get paths for executables from the VR3_CONFIG_FILE file
+lm = LM()
+leodir = os.path.abspath(g.app.homeLeoDir)
+
+inifile = os.path.join(leodir, VR3_DIR, VR3_CONFIG_FILE)
+inifile_exists = os.path.exists(inifile)
+
+exepaths = {}
+if inifile_exists:
+    config=ConfigParser()
+    config.read(inifile)
+    if config.has_section(EXECUTABLES_SECTION):
+        exepaths = dict(config[EXECUTABLES_SECTION])
+else:
+    g.es(f"Can't find {inifile} so VR3 cannot execute non-Python code")
 #@+node:TomP.20191215195433.7: ** vr3.Top-level
 #@+node:TomP.20191215195433.8: *3* vr3.decorate_window
 def decorate_window(w):
@@ -851,6 +1014,7 @@ def viewrendered(event):
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
     vr3._ns_id = VR3_NS_ID # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
+    Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
 
     if splitter:
         vr3.store_layout('closed')
@@ -858,7 +1022,7 @@ def viewrendered(event):
         ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr3)
-        elif splitter.orientation() == QtCore.Qt.Horizontal:
+        elif splitter.orientation() == Orientations.Horizontal:
             splitter.setSizes(sizes)
         vr3.adjust_layout('open')
 
@@ -1116,6 +1280,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class."""
+        global _in_code_block
+
         self.c = c
         # Create the widget.
         QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
@@ -1180,7 +1346,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         w = QWebView()
         n = c.config.getInt('qweb-view-font-size')
-        if n is not None:
+        if hasattr(w, 'settings') and n is not None:
             settings = w.settings()
             settings.setFontSize(settings.DefaultFontSize, n)
         return w
@@ -1275,6 +1441,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
         c = self.c
+        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
+        
         _toolbar = QtWidgets.QToolBar('Menus')
         _options_button = QtWidgets.QPushButton("View Options")
         _options_button.setDefault(True)
@@ -1303,7 +1472,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             """
 
             setattr(self, menu_var_name, False)
-            _action = QtWidgets.QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
         #@+node:TomP.20200329223820.8: *5* function: vr3.set_default_kind
@@ -1328,7 +1497,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing.
             """
 
-            _action = QtWidgets.QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_default_kind(kind))
             group.addAction(_action)
             menu.addAction(_action)
@@ -1356,11 +1525,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200329223820.13: *5* << vr3: create menus >>
         menu = QtWidgets.QMenu()
         set_action("Entire Tree", 'show_whole_tree')
-        _action = QtWidgets.QAction('Lock to Tree Root', self, checkable=True)
+        _action = QAction('Lock to Tree Root', self, checkable=True)
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
 
-        _action = QtWidgets.QAction('Freeze', self, checkable=True)
+        _action = QAction('Freeze', self, checkable=True)
         _action.triggered.connect(lambda checked: set_freeze(checked))
         menu.addAction(_action)
 
@@ -1368,7 +1537,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _options_button.setMenu(menu)
 
         menu = QtWidgets.QMenu()
-        group = QtWidgets.QActionGroup(self)
+        group = QActionGroup(self)
         set_group_action('RsT', RST)
         set_group_action('MD', MD)
         set_group_action('Text', TEXT)
@@ -1527,6 +1696,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _root = p
 
+        self.controlling_code_lang = None
+        self.params = []
+
         if tag in ('show-scrolled-message',):
             # If we are called as a "scrolled message" - usually for display of
             # docstrings.  keywords will contain the RsT to be displayed.
@@ -1628,7 +1800,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
+
+            if isQt6:
+                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
+            else:
+                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere
+            w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""
@@ -1845,7 +2022,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 infile.close()
                 outfile.close()
         return h
-
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
     def convert_to_asciidoc_external(self, s):
         """Convert s to html using external asciidoc or asciidoc3 processor."""
@@ -1945,7 +2121,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             assert w == pc.w
         else:
             w = pc.w
-        if isQt5:
+        if isQt5 or isQt6:
             w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()
@@ -2012,7 +2188,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             w = pc.w
         s = self.get_jupyter_source(c)
-        if isQt5:
+        if isQt5 or isQt6:
             w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()
@@ -2436,6 +2612,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         # pylint: disable=R0914 # Too many local variables
+        # pylint: disable=R0912 # too-many-branches
+
         #@+others
         #@+node:TomP.20200105214716.1: *6* vr3.setup
         #@@language python
@@ -2476,13 +2654,22 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@@language python
         # Execute code blocks; capture and insert execution results.
         # This means anything written to stdout or stderr.
+        # The paths to known executables are in the exepaths dictionary, which
+        # was loaded at startup from data in the VR3_CONFIG_FILE.
         if self.execute_flag and codelist:
             code = '\n'.join(codelist)
             c = self.c
             environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
-            # Assumes Python code will be executed
-            execution_result, err_result = self.exec_code(code, environment)
+            execution_result = err_result = ''
+
+            if self.controlling_code_lang == PYTHON:
+                execution_result, err_result = self.exec_code(code, environment)
+            # Otherwise check VR3_CONFIG_FILE to see if we know how to run this language
+            elif self.controlling_code_lang in exepaths:
+                execution_result, err_result = self.ext_execute_code(self.controlling_code_lang, code)
+            else:
+                err_result = f"Can't execute {self.controlling_code_lang} today."
 
             # Format execution result
             ex = execution_result.split('\n') if execution_result.strip() else []
@@ -2527,6 +2714,39 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@-others
 
 
+    #@+node:TomP.20210218003018.1: *5* execution helpers
+    # Helper functions to execute non-python languages.
+    #@+others
+    #@+node:TomP.20210218232648.1: *6* ext_execute_code
+    def ext_execute_code(self, lang, code):
+        """Execute code using an external processor.
+        
+        The path to the processor will have been stored in
+        the exepath dictionary.
+        
+        ARGUMENTS
+        lang -- a string representing the code language; e.g. 'javascript'.
+        code -- a string containing the code to be run.
+        
+        RETURNS
+        a tuple (result.stdout, result.stderr) with any console output from
+        the external processor.
+        """
+        exepath = exepaths[lang]
+        progfile='_##temp_execute.txt'
+
+        with open(progfile,'w', encoding=ENCODING) as f:
+            f.write(code)
+
+        cmd = [exepath]
+        cmd.extend(self.params)
+        cmd.append(progfile)
+
+        # We are not checking the return code here, so:
+        # pylint: disable=W1510 # Using subprocess.run without explicitly setting `check`
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
+        return result.stdout, result.stderr
+    #@-others
     #@+node:TomP.20200112103934.1: *5* process_rst_node
     #@@language python
     def process_rst_node(self, s):
@@ -2556,7 +2776,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
             """Return the language and tag for a line beginning with ".. code::"."""
-            # pylint: disable=global-variable-undefined
             global _in_code_block
             _fields = line.split('.. code::')
             if len(_fields) > 1:
@@ -2565,6 +2784,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _lang = PYTHON # Standard RsT default.
             _tag = CODE if _lang in LANGUAGES else TEXT
             _in_code_block = _tag == CODE
+            if _tag == CODE and not self.controlling_code_lang:
+                self.controlling_code_lang = _lang
 
             return _lang, _tag
 
@@ -2666,9 +2887,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@-<< handle_ats >>
             #@+<< handle at-image >>
             #@+node:TomP.20200416153716.1: *7* << handle at-image >>
-            # Detect @image directive and insert RsT code for it
+            # Handle @image and @param directives.
+            # param format: space separated words, stored in self.params 
+            # as a list of the words.
+
             if not _in_code_block:
                 if line.startswith('@image'):
+                    # insert RsT code for image
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
                         url = fields[1]
@@ -2676,6 +2901,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
+            else:
+                if line.startswith('@param'):
+                    # Will add nothing if no params on the line.
+                    params = line.split()
+                    if len(params) > 1:
+                        params = params[1:]
+                        self.params.extend(params)
+                    continue
             #@-<< handle at-image >>
             #@+<< identify_code_blocks >>
             #@+node:TomP.20200112103729.3: *7* << identify_code_blocks >>
@@ -2721,9 +2954,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
                             break
             elif line.find('@language') == 0 and not _in_quotes:
                 _got_language = True
-                _language = line.split()[1]
+                # Check if there really is a language named after the '@language' directive
+                _language = line.split()[1] if ' ' in (line := line.strip()) else TEXT
                 _in_rst_block = False
                 _in_code_block = _language in LANGUAGES
+                if _in_code_block and not self.controlling_code_lang:
+                    self.controlling_code_lang = _language if _in_code_block  else None
             #@-<< identify_code_blocks >>
             #@+<< fill_chunks >>
             #@+node:TomP.20200112103729.5: *7* << fill_chunks >>
@@ -2829,8 +3065,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 _headline_str = p.h
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
-            _headline_str.replace('\\', '\\\\')
+            _headline_str = _headline_str.replace('\\', r'\\')
             _underline = '-'*len(_headline_str)
+            g.es(_headline_str)
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
@@ -3199,7 +3436,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         modifiers = event.modifiers()
         bare_key = event.text()
 
-        if modifiers and modifiers == QtCore.Qt.ControlModifier:
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        if modifiers and modifiers == KeyboardModifiers.ControlModifier:
             mod = 'cntrl'
 
         if bare_key == '=' and mod == 'cntrl':
@@ -3215,8 +3453,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
-        url_base = QtCore.QUrl('file:///' + path + '/')
-        w.setHtml(s, url_base)
+        if isQt6:
+            url_base = QtCore.QUrl('file:///' + path + '/' + s)
+            w.setHtml(s)
+        else:
+            url_base = QtCore.QUrl('file:///' + path + '/')
+            w.setHtml(s, url_base)
         w.show()
     #@+node:TomP.20200329230503.3: *5* vr3.underline
     def underline(self, s):

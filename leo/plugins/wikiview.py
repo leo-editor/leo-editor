@@ -43,7 +43,7 @@ Settings
 #@+node:tbrown.20141101114322.3: ** << imports >>
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtGui
+from leo.core.leoQt import isQt6, QtGui
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20141101114322.4: ** init
@@ -147,6 +147,7 @@ class WikiView:
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
+        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         w = c.frame.body.widget
         cursor = w.textCursor()
         s = w.toPlainText()
@@ -156,7 +157,7 @@ class WikiView:
                     if group is None:
                         continue
                     cursor.setPosition(m.start(group_n+1))
-                    cursor.setPosition(m.end(group_n+1), cursor.KeepAnchor)
+                    cursor.setPosition(m.end(group_n+1), MoveMode.KeepAnchor)
                     cfmt = cursor.charFormat()
                     cfmt.setFontPointSize(self.pts)
                     cfmt.setFontLetterSpacing(self.pct)

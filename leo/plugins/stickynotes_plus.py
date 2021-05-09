@@ -13,7 +13,7 @@ alt-x stickynote to pop out current node as a note.
 #@+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
 import webbrowser
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QString, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 # Third-party tools.
 try:
     # pylint: disable=import-error
@@ -30,7 +30,7 @@ g.assertUi('qt')
 # Abbreviations...
 Qt = QtCore.Qt
 # Widgets
-QAction = QtWidgets.QAction
+QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 QMenu = QtWidgets.QMenu
 QPlainTextEdit = QtWidgets.QPlainTextEdit
 QTextEdit = QtWidgets.QTextEdit
@@ -343,11 +343,12 @@ class notetextedit(QTextEdit):
     def contextMenuEvent(self, event): # this catches the context menu right click
         self.textEffectMenu()
 
-    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__
+    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes)
     def keyPressEvent__(self, event):
         # needed because text edit is not going to recognize short cuts because will do something with control key
         # not needed if have global shortcuts
-        if event.modifiers() & Qt.ControlModifier:
+        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        if event.modifiers() & KeyboardModifiers.ControlModifier:
             handled = False
             if event.key() == Qt.Key_A:
                 self.create_anchor()
@@ -453,8 +454,9 @@ class notetextedit(QTextEdit):
         action.setData(notetextedit.Save)
 
         self.ensureCursorVisible()
-        menu.exec_(self.viewport().mapToGlobal(self.cursorRect().center()))
-
+        
+        global_point = self.viewport().mapToGlobal(self.cursorRect().center())
+        menu.exec_(global_point)
     #@+node:ekr.20100103100944.5415: *3* setTextEffect
     def setTextEffect(self):
         action = self.sender()
@@ -528,7 +530,7 @@ class notetextedit(QTextEdit):
         else:
             QTextEdit.insertFromMimeData(self, source)
 
-    #@+node:ekr.20100103100944.5419: *3* toMarkdown
+    #@+node:ekr.20100103100944.5419: *3* toMarkdown (stickynotes)
     def toMarkdown(self):
         references = ''
         i = 1
@@ -548,7 +550,6 @@ class notetextedit(QTextEdit):
             else:
                 if block.textList():
                     doc += '  '+block.textList().itemText(block) + ' '
-                # para = QString()
                 para = ''
                 iterator = block.begin()
                 while iterator != block.end():
@@ -576,13 +577,13 @@ class notetextedit(QTextEdit):
                             else:
                                 text = '###{0}'.format(text)
                         elif char_format.fontFixedPitch(): #or format.fontFamily=='courier':
-                            text = QString("`%1`").arg(text)
+                            text = "`%1`".arg(text)
                         elif char_format.fontItalic():
-                            text = QString("*%1*").arg(text)
+                            text = "*%1*".arg(text)
                         elif char_format.fontWeight() > QFont.Normal:
                             #font-weight:600; same as for an H1;
                             #H1 font-size:xx-large; H1 20; H2 15 H3 12
-                            text = QString("**%1**").arg(text)
+                            text = "**%1**".arg(text)
 
                         para += text
                     iterator += 1

@@ -22,7 +22,7 @@ except ImportError:
 #
 # Leo imports...
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Qsci, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, Qsci, QtGui, QtWidgets
 from leo.core.leoColor import leo_color_database
 
 
@@ -1034,6 +1034,7 @@ class BaseJEditColorizer(BaseColorizer):
                 return
         underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
+        UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)
@@ -1045,14 +1046,14 @@ class BaseJEditColorizer(BaseColorizer):
                 format.setBackground(color)
         elif underline:
             format.setForeground(color)
-            format.setUnderlineStyle(format.SingleUnderline)
+            format.setUnderlineStyle(UnderlineStyle.SingleUnderline)
             format.setFontUnderline(True)
         elif dots or tag == 'trailing_whitespace':
             format.setForeground(color)
-            format.setUnderlineStyle(format.DotLine)
+            format.setUnderlineStyle(UnderlineStyle.DotLine)
         else:
             format.setForeground(color)
-            format.setUnderlineStyle(format.NoUnderline)
+            format.setUnderlineStyle(UnderlineStyle.NoUnderline)
         self.tagCount += 1
         if trace:
             # A superb trace.
@@ -3078,11 +3079,6 @@ if pygments:
                         for attr in attrs
                 ])
                 return f"PygmentsBlockUserData({kwds})"
-
-    ###
-    # else:
-        # # For TravisCi.
-        # PygmentsBlockUserData = g.NullObject  # type: ignore
     #@-others
 #@-others
 #@@language python

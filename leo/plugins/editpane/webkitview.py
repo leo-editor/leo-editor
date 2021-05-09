@@ -66,7 +66,7 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
             QtWebKit.QWebSettings.globalSettings().setAttribute(
               QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
         except AttributeError:
-            # seems that leoQt(?) substitutes QtWebEngine for QtWebKit
+            # leoQt substitutes QtWebEngine for QtWebKit
             # if QtWebKit isn't available, causing this to fail
             pass
     #@+node:tbrown.20171028115457.5: *3* new_text
