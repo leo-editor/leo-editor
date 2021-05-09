@@ -14,7 +14,7 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtConst
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets, QtConst
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if QtCore is not None:
@@ -449,7 +449,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 
         button = self.control_menu_button
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
-        global_point = but.mapToGlobal(point)
+        global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
     #@+node:tbrown.20171028115438.28: *3* mode_menu
     def mode_menu(self):
@@ -469,7 +469,7 @@ class LeoEditPane(QtWidgets.QWidget):
         
         button = self.btn_mode
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
-        global_point = but.mapToGlobal(point)
+        global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
 
     #@+node:tbrown.20171028115438.29: *3* new_position

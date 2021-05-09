@@ -298,7 +298,7 @@ class ExternalFilesController:
                     ext = g.os_path_splitext(fn)[1]
                     break
         if not ext:
-            theDict = c.scanAllDirectives()
+            theDict = c.scanAllDirectives(c.p)
             language = theDict.get('language')
             ext = g.app.language_extension_dict.get(language)
         if not ext:
