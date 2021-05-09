@@ -5,7 +5,7 @@
 """
 Leo's internet server.
 
-Based on Félix Malboeuf's leobridgeserver.py. Used by permission.
+Written by Félix Malboeuf and Edward K. Ream.
 """
 #@+<< imports >>
 #@+node:ekr.20210202110128.2: ** << imports >>
@@ -2476,14 +2476,14 @@ def main():  # pragma: no cover (tested in client)
         try:
             opts, args = getopt.getopt(sys.argv[1:], "help:", ["help", "address=", "port="])
         except getopt.GetoptError:
-            print('leobridgeserver.py -a <address> -p <port>')
+            print('leoserver.py -a <address> -p <port>')
             print('defaults to localhost on port 32125')
             if args:
                 print("unused args: " + str(args))
             sys.exit(2)
         for opt, arg in opts:
             if opt in ("-h", "--help"):
-                print('leobridgeserver.py -a <address> -p <port> -u')
+                print('leoserver.py -a <address> -p <port>')
                 print('defaults to localhost on port 32125')
                 sys.exit()
             elif opt in ("-a", "--address"):
