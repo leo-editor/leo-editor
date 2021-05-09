@@ -99,7 +99,7 @@ def convertAllBlanks(self, event=None):
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    d = c.scanAllDirectives()
+    d = c.scanAllDirectives(c.p)
     tabWidth = d.get("tabwidth")
     count = 0
     u.beforeChangeGroup(current, undoType)
@@ -140,7 +140,7 @@ def convertAllTabs(self, event=None):
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    theDict = c.scanAllDirectives()
+    theDict = c.scanAllDirectives(c.p)
     tabWidth = theDict.get("tabwidth")
     count = 0
     u.beforeChangeGroup(current, undoType)
@@ -187,7 +187,7 @@ def convertBlanks(self, event=None):
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     #
     # Use the relative @tabwidth, not the global one.
-    d = c.scanAllDirectives()
+    d = c.scanAllDirectives(p)
     tabWidth = d.get("tabwidth")
     if not tabWidth:
         return False
@@ -227,7 +227,7 @@ def convertTabs(self, event=None):
     w.selectAllText()
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     # Use the relative @tabwidth, not the global one.
-    theDict = c.scanAllDirectives()
+    theDict = c.scanAllDirectives(p)
     tabWidth = theDict.get("tabwidth")
     if not tabWidth:
         return False
@@ -908,7 +908,7 @@ def rp_get_args(c):
     """Compute and return oldSel,oldYview,original,pageWidth,tabWidth."""
     body = c.frame.body
     w = body.wrapper
-    d = c.scanAllDirectives()
+    d = c.scanAllDirectives(c.p)
     if c.editCommands.fillColumn > 0:
         pageWidth = c.editCommands.fillColumn
     else:

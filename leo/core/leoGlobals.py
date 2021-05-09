@@ -3499,9 +3499,6 @@ def scanAllAtWrapDirectives(c, p):
     else:
         ret = None
     return ret
-#@+node:ekr.20080901195858.4: *3* g.scanDirectives  (for compatibility only)
-def scanDirectives(c, p=None):
-    return c.scanAllDirectives(p)
 #@+node:ekr.20040715155607: *3* g.scanForAtIgnore
 def scanForAtIgnore(c, p):
     """Scan position p and its ancestors looking for @ignore directives."""

@@ -1991,7 +1991,7 @@ class Commands:
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
 
-    def scanAllDirectives(self,p=None):
+    def scanAllDirectives(self, p):
         """
         Scan p and ancestors for directives.
 
@@ -1999,6 +1999,9 @@ class Commands:
         """
         c = self
         p = p or c.p
+        # Defaults...
+        default_language = g.getLanguageFromAncestorAtFileNode(p) or c.target_language or 'python'
+        default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
@@ -2018,11 +2021,11 @@ class Commands:
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
         d = {
-            "delims":       lang_dict.get('delims'),
+            "delims":       lang_dict.get('delims') or default_delims,
             "comment":      lang_dict.get('comment'),  # Leo 6.4: New.
             "encoding":     d.get('encoding'),
             # Note: at.scanAllDirectives does not use the defaults for "language".
-            "language":     lang_dict.get('language') or c.target_language and c.target_language.lower(),
+            "language":     lang_dict.get('language') or default_language,
             "lang-dict":    lang_dict,  # Leo 6.4: New.
             "lineending":   d.get('lineending'),
             "pagewidth":    d.get('pagewidth'),
