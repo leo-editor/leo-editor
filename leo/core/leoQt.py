@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
+#@@nopyflakes
 """
 General import wrapper for PyQt4, PyQt5 and PyQt6.
 
