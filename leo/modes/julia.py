@@ -1,3 +1,6 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20210223151922.1: * @file ../modes/julia.py
+#@@language python
 # Leo colorizer control file for julia mode.
 # This file is in the public domain.
 
@@ -967,3 +970,4 @@ rulesDictDict = {
 # Import dict for julia mode.
 importDict = {}
 
+#@-leo
