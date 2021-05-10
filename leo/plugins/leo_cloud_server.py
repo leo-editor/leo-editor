@@ -1,3 +1,7 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170925083853.1: * @file ../plugins/leo_cloud_server.py
+#@+others
+#@+node:ekr.20201012111338.43: ** Declarations (leo_cloud_server.py)
 """
 leo_cloud.py - synchronize Leo subtrees with remote central server
 
@@ -52,3 +56,7 @@ Maybe more granular and regular synchronization.
 # from collections import namedtuple, defaultdict
 
 
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo
