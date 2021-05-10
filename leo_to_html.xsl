@@ -1,3 +1,8 @@
+<!--@+leo-ver=5-thin-->
+<!--@+node:ekr.20150304125314.4: * @file ../../leo_to_html.xsl-->
+<!--@@tabwidth -2-->
+<!--@@killbeautify-->
+<!--@@language xml-->
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -14,6 +19,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
     -->
+    <!--@+<<style>>-->
+    <!--@+node:ekr.20150304130753.5: ** <<style>>-->
     <style>
         /* pre { background:#FFE7C6; } */
         /* Must use h1 for nodes: see below. */
@@ -52,6 +59,10 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             <!-- background: red; -->
         }
     </style>
+    <!--@-<<style>>-->
+    <!--@+<<scripts>>-->
+    <!--@+node:ekr.20150304130753.6: ** <<scripts>>-->
+    <!--@@language javascript-->
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>
@@ -90,7 +101,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
           };
         });
       });
+    <!--@@language html-->
     </script>
+    <!--@-<<scripts>>-->
   </head>
   <body>
     <xsl:apply-templates select='tnodes'/>
@@ -145,3 +158,4 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 </xsl:template>
 
 </xsl:stylesheet>
+<!--@-leo-->

@@ -1,3 +1,5 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20181009072707.1: * @file ../../run_travis_unit_tests.py
 # -*- coding: utf-8 -*-
 import os
 import sys
@@ -58,3 +60,4 @@ try:
 except Exception as e:
     print('Unexpected exception 2', e)
     sys.exit(1)
+#@-leo
