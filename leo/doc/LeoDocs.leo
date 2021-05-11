@@ -1754,8 +1754,10 @@
 <v t="ekr.20210429044504.1"><vh>#1888: No To All doesn't work</vh></v>
 <v t="ekr.20210429042049.1943"><vh>#1900: ~ in paths</vh></v>
 <v t="ekr.20210429061759.1"><vh>#1910: checkDerivedFiles</vh></v>
-<v t="ekr.20210429064509.1"><vh>#1912 ignoring command: already</vh></v>
+<v t="ekr.20210429064509.1"><vh>#1912: ignoring command: already</vh></v>
 <v t="ekr.20210505081910.1"><vh>#1919: width of hard tabs</vh></v>
+<v t="ekr.20210511103242.190"><vh>#1926: fix bugs in @button write-leoPyRef</vh></v>
+<v t="ekr.20210511103020.1"><vh>#1930: crash in refresh-from-disk</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -1773,6 +1775,7 @@
 <v t="ekr.20210429042049.1902"><vh>#1889: @path</vh></v>
 <v t="ekr.20210429042049.1914"><vh>#1895: split qtree.updateIcon</vh></v>
 <v t="ekr.20210429042049.1947"><vh>#1903: Simplify g.os_path*</vh></v>
+<v t="ekr.20210511103242.2"><vh>#1914: Use g.fullPath</vh></v>
 <v t="ekr.20210405100137.887"><vh>PR1759: Further improvements to undo code</vh></v>
 <v t="ekr.20210405100137.1772"><vh>PR1804: Support batch change scripts</vh></v>
 <v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
@@ -32004,6 +32007,9 @@ By default, the servers listens on "localhost" and port 32125.
 You can change these defaults with the --address and --port command-line arguments.
 
 `leoserver -h` prints "leoserver.py -a &lt;address&gt; -p &lt;port&gt;"</t>
+<t tx="ekr.20210511103020.1">https://github.com/leo-editor/leo-editor/issues/1930</t>
+<t tx="ekr.20210511103242.190">https://github.com/leo-editor/leo-editor/issues/1926</t>
+<t tx="ekr.20210511103242.2">https://github.com/leo-editor/leo-editor/issues/1914</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
