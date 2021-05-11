@@ -1,3 +1,6 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20160519123329.1: * @file ../plugins/QNCalendarWidget.py
+#@@language python
 """
 QNCalendarWidget.py - a QCalendarWidget which shows N months at a time.
 
@@ -152,3 +155,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+#@-leo

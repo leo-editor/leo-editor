@@ -1,3 +1,7 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170925083314.1: * @file ../plugins/leo_cloud.py
+#@+others
+#@+node:ekr.20201012111338.2: ** Declarations (leo_cloud.py)
 """
 leo_cloud.py - synchronize Leo subtrees with remote central server
 
@@ -86,12 +90,14 @@ from leo.core.leoQt import QtCore  # see QTimer in LeoCloud.__init__
 # for 'key: value' lines in body text
 KWARG_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*): (.*)")
 
+#@+node:ekr.20201012111338.3: ** init (leo_cloud.py)
 def init ():
     g.registerHandler(('new','open2'), onCreate)
     g.registerHandler(('save1'), onSave)
     g.plugin_signon(__name__)
     return True
 
+#@+node:ekr.20201012111338.4: ** onCreate (leo_cloud.py)
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -100,6 +106,7 @@ def onCreate (tag, keys):
 
     c._leo_cloud = LeoCloud(c)
 
+#@+node:ekr.20201012111338.5: ** onSave (leo_cloud.py)
 def onSave(tag, keys):
 
     c = keys.get('c')
@@ -109,6 +116,7 @@ def onSave(tag, keys):
         c._leo_cloud.save_clouds()
     return None  # explicitly not stopping save1 hook
 
+#@+node:ekr.20201012111338.6: ** lc_read_current (leo_cloud.py)
 @g.command("lc-read-current")
 def lc_read_current(event):
     """write current Leo Cloud subtree to cloud"""
@@ -117,6 +125,7 @@ def lc_read_current(event):
         return
     c._leo_cloud.read_current()
 
+#@+node:ekr.20201012111338.7: ** lc_write_current (leo_cloud.py)
 @g.command("lc-write-current")
 def lc_write_current(event):
     """write current Leo Cloud subtree to cloud"""
@@ -125,12 +134,15 @@ def lc_write_current(event):
         return
     c._leo_cloud.write_current()
 
+#@+node:ekr.20201012111338.8: ** class LeoCloudIOBase
 class LeoCloudIOBase:
     """Leo Cloud IO layer Base Class
 
     LeoCloudIO layer sits between LeoCloud plugin and backends,
     which might be leo_cloud_server.py or Google Drive etc. etc.
     """
+    #@+others
+    #@+node:ekr.20201012111338.9: *3* LeoCloudIOBase.__init__
     def __init__(self, c, p, kwargs):
         """
         Args:
@@ -142,6 +154,7 @@ class LeoCloudIOBase:
         self.c = c
         self.lc_id = kwargs['ID']
 
+    #@+node:ekr.20201012111338.10: *3* LeoCloudIOBase.get_subtree
     def get_subtree(self, lc_id):
         """get_subtree - get a Leo subtree from the cloud
 
@@ -154,6 +167,7 @@ class LeoCloudIOBase:
         # self.get_data
         return self.c._leo_cloud.from_dict(self.get_data(lc_id))
 
+    #@+node:ekr.20201012111338.11: *3* LeoCloudIOBase.put_subtree
     def put_subtree(self, lc_id, v):
         """put - put a subtree into the Leo Cloud
 
@@ -166,11 +180,15 @@ class LeoCloudIOBase:
         self.put_data(lc_id, LeoCloud.to_dict(v))
 
 
+    #@-others
+#@+node:ekr.20201012111338.12: ** class LeoCloudIOFileSystem(LeoCloudIOBase)
 class LeoCloudIOFileSystem(LeoCloudIOBase):
     """Leo Cloud IO layer that just loads / saves local files.
 
     i.e it's just for development / testing
     """
+    #@+others
+    #@+node:ekr.20201012111338.13: *3* LeoCloudIOFileSystem(LeoCloudIOBase).__init__
     def __init__(self, c, p, kwargs):
         """
         Args:
@@ -181,6 +199,7 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
         if not os.path.exists(self.basepath):
             os.makedirs((self.basepath))
 
+    #@+node:ekr.20201012111338.14: *3* LeoCloudIOFileSystem(LeoCloudIOBase).get_data
     def get_data(self, lc_id):
         """get_data - get a Leo Cloud resource
 
@@ -194,6 +213,7 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
         with open(filepath) as data:
             return json.load(data)
 
+    #@+node:ekr.20201012111338.15: *3* LeoCloudIOFileSystem(LeoCloudIOBase).put_data
     def put_data(self, lc_id, data):
         """put - store data in the Leo Cloud
 
@@ -206,11 +226,15 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
             return out.write(LeoCloud.to_json(data))
 
 
+    #@-others
+#@+node:ekr.20201012111338.16: ** class LeoCloudIOGit(LeoCloudIOBase)
 class LeoCloudIOGit(LeoCloudIOBase):
     """Leo Cloud IO layer that just loads / saves local files.
 
     i.e it's just for development / testing
     """
+    #@+others
+    #@+node:ekr.20201012111338.17: *3* LeoCloudIOGit(LeoCloudIOBase).__init__
     def __init__(self, c, p, kwargs):
         """
         Args:
@@ -228,6 +252,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
             self._run_git('git clone "%s" "%s"'% (self.remote, self.local))
         self._run_git('git -C "%s" pull' % self.local)
 
+    #@+node:ekr.20201012111338.18: *3* LeoCloudIOGit(LeoCloudIOBase)._run_git
     def _run_git(self, text):
         """_run_git - run a git command
 
@@ -236,6 +261,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
         """
         subprocess.Popen(shlex.split(text)).wait()
 
+    #@+node:ekr.20201012111338.19: *3* LeoCloudIOGit(LeoCloudIOBase).get_data
     def get_data(self, lc_id):
         """get_data - get a Leo Cloud resource
 
@@ -248,6 +274,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
         with open(filepath) as data:
             return json.load(data)
 
+    #@+node:ekr.20201012111338.20: *3* LeoCloudIOGit(LeoCloudIOBase).put_data
     def put_data(self, lc_id, data):
         """put - store data in the Leo Cloud
 
@@ -263,7 +290,11 @@ class LeoCloudIOGit(LeoCloudIOBase):
         self._run_git('git -C "%s" push' % self.local)
 
 
+    #@-others
+#@+node:ekr.20201012111338.21: ** class LeoCloud
 class LeoCloud:
+    #@+others
+    #@+node:ekr.20201012111338.22: *3* LeoCloud.__init__
     def __init__(self, c):
         """
         Args:
@@ -276,6 +307,7 @@ class LeoCloud:
         # so defer
         QtCore.QTimer.singleShot(0, self.load_clouds)
 
+    #@+node:ekr.20201012111338.23: *3* LeoCloud.bg_check
     def bg_check(self, to_check):
         """
         bg_check - run from load_clouds() to look for changes in
@@ -310,6 +342,7 @@ class LeoCloud:
                     out.write(self.to_json(self.to_dict(subtree)))
 
         self.bg_finished = True
+    #@+node:ekr.20201012111338.24: *3* LeoCloud.bg_post_process
     def bg_post_process(self, timer):
         """
         bg_post_process - check to see if background checking is finished,
@@ -332,6 +365,7 @@ class LeoCloud:
         if from_background:
             self.load_clouds(from_background=from_background)
 
+    #@+node:ekr.20201012111338.25: *3* LeoCloud.find_at_leo_cloud
     def find_at_leo_cloud(self, p):
         """find_at_leo_cloud - find @leo_cloud node
 
@@ -347,6 +381,7 @@ class LeoCloud:
             g.es("No @leo_cloud node found", color='red')
             return None
         return p
+    #@+node:ekr.20201012111338.26: *3* LeoCloud._find_clouds_recursive
     def _find_clouds_recursive(self, v, found):
         """see find_clouds()"""
         if v.h.startswith('@ignore'):
@@ -357,6 +392,7 @@ class LeoCloud:
         for child in v.children:
             self._find_clouds_recursive(child, found)
 
+    #@+node:ekr.20201012111338.27: *3* LeoCloud.find_clouds
     def find_clouds(self):
         """find_clouds - return a list of @leo_cloud nodes
 
@@ -372,6 +408,7 @@ class LeoCloud:
                 g.es('%s - no ID: line' % lc.h, color='red')
         return valid
 
+    #@+node:ekr.20201012111338.28: *3* LeoCloud._from_dict_recursive
     def _from_dict_recursive(self, top, d):
         """see from_dict()"""
         top.h = d['h']
@@ -382,6 +419,7 @@ class LeoCloud:
             top.children.append(self._from_dict_recursive(vnode(self.c), child))
         return top
 
+    #@+node:ekr.20201012111338.29: *3* LeoCloud.from_dict
     def from_dict(self, d):
         """from_dict - make a Leo subtree from a dict
 
@@ -393,6 +431,7 @@ class LeoCloud:
         """
         return self._from_dict_recursive(vnode(self.c), d)
 
+    #@+node:ekr.20201012111338.30: *3* LeoCloud.io_from_node
     def io_from_node(self, p):
         """io_from_node - create LeoCloudIO instance from body text
 
@@ -407,6 +446,7 @@ class LeoCloud:
         lc_io_class = eval("LeoCloudIO%s" % kwargs['type'])
         return lc_io_class(self.c, p, kwargs)
 
+    #@+node:ekr.20201012111338.31: *3* LeoCloud.kw_from_node
     def kw_from_node(self, p):
         """kw_from_node - read keywords from body text
 
@@ -424,6 +464,7 @@ class LeoCloud:
                 kwargs[kwarg.group(1)] = kwarg.group(2)
         return kwargs
 
+    #@+node:ekr.20201012111338.32: *3* LeoCloud.load_clouds
     def load_clouds(self, from_background=None):
         """
         load_clouds - Handle loading from cloud on startup and after
@@ -491,6 +532,7 @@ class LeoCloud:
             thread.start()
             # start watching for results
             g.IdleTime(self.bg_post_process).start()
+    #@+node:ekr.20201012111338.33: *3* LeoCloud.read_current
     def read_current(self, p=None):
         """read_current - read current tree from cloud
         """
@@ -521,6 +563,7 @@ class LeoCloud:
         p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
 
 
+    #@+node:ekr.20201012111338.34: *3* LeoCloud.recursive_hash
     @staticmethod
     def recursive_hash(nd, tree, include_current=True):
         """
@@ -548,6 +591,7 @@ class LeoCloud:
         whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
         tree.append([whole_hash, childs])
         return whole_hash
+    #@+node:ekr.20201012111338.35: *3* LeoCloud.save_clouds
     def save_clouds(self):
         """check for clouds to save when outline is saved"""
         skipped = []
@@ -582,6 +626,7 @@ class LeoCloud:
         if no:
             g.es("Cloud data never saved: %s" % ', '.join(no))
 
+    #@+node:ekr.20201012111338.36: *3* LeoCloud.subtree_changed
     def subtree_changed(self, p):
         """subtree_changed - check if subtree is changed
 
@@ -600,6 +645,7 @@ class LeoCloud:
             return False
         return True
 
+    #@+node:ekr.20201012111338.37: *3* LeoCloud._to_json_serial
     @staticmethod
     def _to_json_serial(obj):
         """JSON serializer for objects not serializable by default json code"""
@@ -609,6 +655,7 @@ class LeoCloud:
             return list(obj)
         raise TypeError ("Type %s not serializable" % type(obj))
 
+    #@+node:ekr.20201012111338.38: *3* LeoCloud.to_json
     @staticmethod
     def to_json(data):
         """to_json - convert dict to appropriate JSON
@@ -626,6 +673,7 @@ class LeoCloud:
             default=LeoCloud._to_json_serial
         )
 
+    #@+node:ekr.20201012111338.39: *3* LeoCloud._to_dict_recursive
     @staticmethod
     def _to_dict_recursive(v, d):
         """_to_dict_recursive - recursively make dictionary representation of v
@@ -645,6 +693,7 @@ class LeoCloud:
             d['children'].append(LeoCloud._to_dict_recursive(child, dict()))
         return d
 
+    #@+node:ekr.20201012111338.40: *3* LeoCloud.to_dict
     @staticmethod
     def to_dict(v):
         """to_dict - make dictionary representation of v
@@ -657,6 +706,7 @@ class LeoCloud:
         """
         return LeoCloud._to_dict_recursive(v, dict())
 
+    #@+node:ekr.20201012111338.41: *3* LeoCloud._ua_clean
     @staticmethod
     def _ua_clean(d):
         """_ua_clean - strip todo icons from dict
@@ -677,6 +727,7 @@ class LeoCloud:
             d['icons'] = [i for i in d['icons'] if not i.get('cleoIcon')]
         return d
 
+    #@+node:ekr.20201012111338.42: *3* LeoCloud.write_current
     def write_current(self, p=None):
         """write_current - write current tree to cloud
         """
@@ -695,3 +746,8 @@ class LeoCloud:
 
 
 
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

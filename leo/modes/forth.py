@@ -1,6 +1,11 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20150326145530.1: * @file ../modes/forth.py
 # Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
+#@@killbeautify
 from leo.core import leoGlobals as g
+#@+<< define mode rules >>
+#@+node:ekr.20150326145530.2: ** << define mode rules >> (forth.py)
 # Rules for forth_main ruleset.
 
 def forth_block_comment_rule(colorer, s, i):
@@ -123,6 +128,9 @@ if 0:
 
     def forth_rule21(colorer, s, i):
         return colorer.match_keywords(s, i)
+#@-<< define mode rules >>
+#@+<< define mode data >>
+#@+node:ekr.20150326145530.3: ** << define mode data >> (forth.py)
 # Properties for forth mode.
 
 properties = {
@@ -163,9 +171,14 @@ rulesDictDict = {
 importDict = {}
 
 
+#@-<< define mode data >>
+#@+<< define extendForth class >>
+#@+node:ekr.20150326145530.4: ** << define extendForth class >> (forth.py)
 class extendForth:
     """A helper class to extend the mode tables from @data forth-x settings."""
 
+    #@+others
+    #@+node:ekr.20150326145530.5: *3* ctor
     def __init__(self):
         self.c = None  # set by pre_init_mode function.
         #
@@ -211,6 +224,7 @@ class extendForth:
         self.stringwords2 = []
         self.verbose = False  # True: tell when extending forth words.
 
+    #@+node:ekr.20150326145530.6: *3* init & helper
     def init(self):
         """Set our ivars from settings."""
         c = self.c
@@ -246,6 +260,7 @@ class extendForth:
         for (ivar, setting) in table2:
             self.splitList(ivar, setting)
 
+    #@+node:ekr.20150326145530.7: *4* splitList
     def splitList(self, ivar, setting):
         """Process lines containing pairs of entries
         in a list whose *name* is ivar.
@@ -266,6 +281,7 @@ class extendForth:
         setattr(self, name1, result1)
         setattr(self, name2, result2)
 
+    #@+node:ekr.20150326145530.8: *3* createBracketRules & helper
     def createBracketRules(self):
         for z in self.brackets1:
             func = self.createBracketRule(z)
@@ -283,6 +299,7 @@ class extendForth:
 
         return forth_bracket_rule
 
+    #@+node:ekr.20150326145530.9: *3* createDefiningWordRules & helper
     def createDefiningWordRules(self):
         for z in self.definingwords:
             func = self.createDefiningWordRule(z)
@@ -302,6 +319,7 @@ class extendForth:
 
         return forth_defining_word_rule
 
+    #@+node:ekr.20150326145530.10: *3* createKeywords
     def createKeywords(self):
         """
         Create the mode keyword table and
@@ -329,6 +347,7 @@ class extendForth:
                 d[z] = kind
                 self.extendRulesDict(ch=z[0], func=func)
 
+    #@+node:ekr.20150326145530.11: *3* createStringRule
     def createStringRule(self, d, pair):
         """Create an entry in d for a string keyword."""
         aList = pair.split(' ')
@@ -345,6 +364,7 @@ class extendForth:
 
         return forth_string_word_rule
 
+    #@+node:ekr.20150326145530.12: *3* extendRulesDict
     def extendRulesDict(self, ch, func):
         global rulesDict
         # Extend the rulesDict entry for the first character of z.
@@ -353,6 +373,8 @@ class extendForth:
             aList.append(func)
             rulesDict[ch] = aList
 
+    #@-others
+#@-<< define extendForth class >>
 e = extendForth()
 
 def pre_init_mode(c):
@@ -362,3 +384,4 @@ def pre_init_mode(c):
     e.createBracketRules()
     e.createDefiningWordRules()
 
+#@-leo

@@ -1,3 +1,6 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20210223152423.1: * @file ../plugins/anki.py
+#@@language python
 ''' Push @anki nodes.
 
 - Download instructions here: https://apps.ankiweb.net/#linux
@@ -159,3 +162,4 @@ def anki_act_on_node(c, p, event):
             'tags' : tag.split(",")
         })
         
+#@-leo

@@ -21,9 +21,11 @@
 <v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
 <v t="ekr.20201018065757.1"><vh>check_file_names</vh></v>
 <v t="ekr.20201018065921.1"><vh>check_nodes</vh></v>
-<v t="ekr.20201018063747.1"><vh>get_content</vh></v>
 <v t="ekr.20201018070822.1"><vh>main</vh></v>
 <v t="ekr.20201018072911.1"><vh>oops</vh></v>
+<v t="ekr.20201018063747.1"><vh>put_content</vh></v>
+<v t="ekr.20210510071427.1"><vh>put_prolog</vh></v>
+<v t="ekr.20210510071812.1"><vh>put_tnodes (new)</vh></v>
 </v>
 <v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
 <v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
@@ -119,10 +121,10 @@
 <v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201012111649.1"><vh>@data:@auto leo_cloud.py</vh>
-<v t="ekr.20210510053106.1"><vh>@gnxs</vh></v>
+<v t="ekr.20210509083811.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201012111649.3"><vh>@data:@auto leo_cloud_server.py</vh>
-<v t="ekr.20210510053106.2"><vh>@gnxs</vh></v>
+<v t="ekr.20210509083811.2"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
@@ -419,15 +421,15 @@
 <v t="peckj.20131130132659.5964"><vh>@file ../plugins/nodewatch.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers &amp; web stuff</vh>
-<v t="ekr.20170925083314.1"><vh>@auto ../plugins/leo_cloud.py</vh></v>
-<v t="ekr.20170925083853.1"><vh>@auto ../plugins/leo_cloud_server.py</vh></v>
+<v t="ekr.20170925083314.1"><vh>@file ../plugins/leo_cloud.py</vh></v>
+<v t="ekr.20170925083853.1"><vh>@file ../plugins/leo_cloud_server.py</vh></v>
 <v t="ville.20110206142055.10640"><vh>@file ../plugins/leofeeds.py</vh></v>
 <v t="ville.20110125222411.10536"><vh>@file ../plugins/leomail.py</vh></v>
 <v t="ville.20091009202416.10040"><vh>@file ../plugins/leoremote.py</vh></v>
 <v t="EKR.20040517080250.1"><vh>@file ../plugins/mod_http.py</vh></v>
 <v t="ekr.20131004162848.11444"><vh>@file ../plugins/rss.py</vh></v>
 <v t="peckj.20140811080604.9496"><vh>@file ../plugins/sftp.py</vh></v>
-<v t="ekr.20210223152423.1"><vh>@edit ../plugins/anki.py</vh></v>
+<v t="ekr.20210223152423.1"><vh>@file ../plugins/anki.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file ../plugins/demo.py</vh></v>
@@ -474,7 +476,7 @@
 <v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
-<v t="ekr.20160519123329.1"><vh>@edit ../plugins/QNCalendarWidget.py</vh></v>
+<v t="ekr.20160519123329.1"><vh>@file ../plugins/QNCalendarWidget.py</vh></v>
 <v t="ekr.20060328125925"><vh>@file ../plugins/chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file ../plugins/dragdropgoodies.py</vh></v>
 <v t="vitalije.20190928154420.1"><vh>@file ../plugins/history_tracer.py</vh></v>
@@ -534,11 +536,8 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
-<v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
-<v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
-</v>
-<v t="ekr.20181009072707.1"><vh>@clean ../../run_travis_unit_tests.py</vh></v>
+<v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
+<v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="ekr.20210202110241.1"><vh>@file ../../leoclient.py</vh></v>
 <v t="ekr.20210202110128.1"><vh>@file ../../leoserver.py</vh></v>
@@ -635,22 +634,8 @@
 </v>
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
-<v t="ekr.20210223151922.1"><vh>@edit ../modes/julia.py</vh></v>
-<v t="ekr.20150326145530.1"><vh>@clean ../modes/forth.py</vh>
-<v t="ekr.20150326145530.2"><vh>&lt;&lt; define mode rules &gt;&gt; (forth.py)</vh></v>
-<v t="ekr.20150326145530.3"><vh>&lt;&lt; define mode data &gt;&gt; (forth.py)</vh></v>
-<v t="ekr.20150326145530.4"><vh>&lt;&lt; define extendForth class &gt;&gt; (forth.py)</vh>
-<v t="ekr.20150326145530.5"><vh>ctor</vh></v>
-<v t="ekr.20150326145530.6"><vh>init &amp; helper</vh>
-<v t="ekr.20150326145530.7"><vh>splitList</vh></v>
-</v>
-<v t="ekr.20150326145530.8"><vh>createBracketRules &amp; helper</vh></v>
-<v t="ekr.20150326145530.9"><vh>createDefiningWordRules &amp; helper</vh></v>
-<v t="ekr.20150326145530.10"><vh>createKeywords</vh></v>
-<v t="ekr.20150326145530.11"><vh>createStringRule</vh></v>
-<v t="ekr.20150326145530.12"><vh>extendRulesDict</vh></v>
-</v>
-</v>
+<v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
+<v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
 </v>
 <v t="ekr.20181013081645.1"><vh>In leo/core/test</vh></v>
@@ -1101,82 +1086,6 @@ Valid values are (case is ignored):
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20140920064112.17946"></t>
-<t tx="ekr.20150304125314.4">@tabwidth -2
-@killbeautify
-@language xml
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
-
-&lt;xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/&gt;
-
-&lt;!-- The default setting. Not needed unless there is a strip-space element. --&gt;
-  &lt;!-- &lt;xsl:preserve-space elements='leo_file nodes t'/&gt; --&gt;
-
-&lt;xsl:template match ='leo_file'&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;!--
-    &lt;link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css"&gt;
-    &lt;script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"&gt;&lt;/script&gt;
-    --&gt;
-    &lt;&lt;style&gt;&gt;
-    &lt;&lt;scripts&gt;&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;xsl:apply-templates select='tnodes'/&gt;
-    &lt;div class="outlinepane"&gt;
-      &lt;!-- &lt;h4&gt;Outline Pane&lt;/h4&gt; --&gt;
-      &lt;xsl:apply-templates select='vnodes'/&gt;
-    &lt;/div&gt;
-    &lt;div class="bodypane"&gt;
-      &lt;!-- &lt;h4&gt;Body Pane&lt;/h4&gt; --&gt;
-      &lt;pre class="body-text"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'tnodes'&gt;
-&lt;div class="tnodes"&gt;
-  &lt;xsl:for-each select = 't'&gt;
-    &lt;div class="tnode"&gt;
-      &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@tx'/&gt;&lt;/xsl:attribute&gt;
-      &lt;xsl:value-of select='.'/&gt;
-    &lt;/div&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'vnodes'&gt;
-  &lt;xsl:for-each select = 'v'&gt;
-    &lt;xsl:apply-templates select ='.'/&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match='v'&gt;
-  &lt;div class="node"&gt;
-    &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
-    &lt;xsl:choose&gt;
-      &lt;xsl:when test ='./v' &gt;
-        &lt;xsl:attribute name="has-children"&gt;1&lt;/xsl:attribute&gt;
-        &lt;h1&gt;+ &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-        &lt;xsl:apply-templates select = 'v'/&gt;
-      &lt;/xsl:when&gt;
-      &lt;xsl:when test ='vh' &gt;
-        &lt;h1&gt;- &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-      &lt;/xsl:when&gt;
-      &lt;!--
-      &lt;xsl:otherwise&gt;
-        &lt;h1&gt;- &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-      &lt;/xsl:otherwise&gt;
-      --&gt;
-    &lt;/xsl:choose&gt;
-  &lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;/xsl:stylesheet&gt;
-</t>
 <t tx="ekr.20150304130753.4">@language xml
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
@@ -1234,468 +1143,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 &lt;/xsl:template&gt;
 
 &lt;/xsl:stylesheet&gt;
-</t>
-<t tx="ekr.20150304130753.5">&lt;style&gt;
-    /* pre { background:#FFE7C6; } */
-    /* Must use h1 for nodes: see below. */
-    h1 {
-      font-size: 12pt;
-      font-style: normal;
-      font-weight: normal;
-    }
-    div.outlinepane {
-      position: absolute;
-      background: #ffffec; /* Leo yellow */
-      top: 10px;
-      height: 300px;
-      width: 700px;
-      overflow: scroll;
-      line-height: 0.8;
-
-    }
-    div.bodypane {
-      position: absolute;
-      top: 310px;
-      height: 300px;
-      width: 700px;
-      overflow: scroll;
-    }
-    div.tnode {
-        visibility: hidden;
-        height: 0;
-    }
-    div.node {
-        position: relative;
-        left: 20px;
-    }
-    div.node[has-children] &gt; h1 {
-        &lt;!-- works --&gt;
-        &lt;!-- background: red; --&gt;
-    }
-&lt;/style&gt;
-</t>
-<t tx="ekr.20150304130753.6">@language javascript
-
-&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-
-  $(document).ready(function(){
-    if (true) {
-        // Toggle all but top-level nodes.
-        // This requires an indication
-        $(".node").toggle()
-        $(".outlinepane").children(".node").toggle()
-    } else {
-        // Toggle all second-level nodes.
-        // Safer, until we can see which nodes have children.
-        $(".outlinepane").children(".node").children(".node").toggle()
-    }
-    $("h1").click(function(){
-      $(this).parent().children("div.node").toggle();
-      // The parent div's id is v.x.
-      // Find the tnode div whose id is t.x.
-      console.clear();
-      parent_id=$(this).parent().attr("id");
-      if (parent_id) {
-        target=$(this).parent().attr("id").substring(2);
-          console.log("clicked:"+$(this).text())
-          // console.log("parent:"+$(this).parent())
-          // console.log("target:"+target)
-        $(".tnode").each(function(){
-          console.log($(this).attr("id"))
-          target2=$(this).attr("id").substring(2);
-          if (target === target2) {
-            console.log("found:"+target2)
-            // $("pre.body-text").text($(this).text());
-            $("code").text($(this).text());
-          };
-        }); // end .each.
-      };
-    });
-  });
-@language html
-&lt;/script&gt;
-</t>
-<t tx="ekr.20150326145530.1"># Hand-written Leo colorizer control file for forth mode.
-# This file is in the public domain.
-@killbeautify
-from leo.core import leoGlobals as g
-&lt;&lt; define mode rules &gt;&gt;
-&lt;&lt; define mode data &gt;&gt;
-&lt;&lt; define extendForth class &gt;&gt;
-e = extendForth()
-
-def pre_init_mode(c):
-    e.c = c
-    e.init()
-    e.createKeywords()
-    e.createBracketRules()
-    e.createDefiningWordRules()
-
-</t>
-<t tx="ekr.20150326145530.10">def createKeywords(self):
-    """
-    Create the mode keyword table and
-    entries in the rulesDict for the forth_keyword_rule.
-    """
-    # global forth_main_keywords_dict
-    # global forth_keyword_rule
-    table = (
-        (self.keywords, 'keyword1'),
-      # (self.definingwords,    'keyword2'), # Done in createDefiningWordRules.
-        (self.boldwords, 'keyword3'),
-        (self.bolditalicwords, 'keyword4'),
-        (self.italicwords, 'keyword5'),
-        (self.stringwords, 'string'),
-    )
-    d = forth_main_keywords_dict
-    for keywordList, kind in table:
-        for z in keywordList:
-            # Create the entry in the keyword table.
-            if kind == 'string':
-                func = self.createStringRule(d, z)
-            else:
-                func = forth_keyword_rule
-            # Always make the entry.
-            d[z] = kind
-            self.extendRulesDict(ch=z[0], func=func)
-
-</t>
-<t tx="ekr.20150326145530.11">def createStringRule(self, d, pair):
-    """Create an entry in d for a string keyword."""
-    aList = pair.split(' ')
-    if len(aList) != 2:
-        g.trace('can not happen: expecting pair of forth strings:', pair)
-        return None
-    begin, end = aList
-
-    def forth_string_word_rule(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
-            at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)  # Don't require ending word.
-
-    return forth_string_word_rule
-
-</t>
-<t tx="ekr.20150326145530.12">def extendRulesDict(self, ch, func):
-    global rulesDict
-    # Extend the rulesDict entry for the first character of z.
-    aList = rulesDict.get(ch, [])
-    if func not in aList:
-        aList.append(func)
-        rulesDict[ch] = aList
-
-</t>
-<t tx="ekr.20150326145530.2"># Rules for forth_main ruleset.
-
-def forth_block_comment_rule(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
-def forth_comment_rule(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word
-        delegate="", exclude_match=False)
-
-def forth_keyword_rule(colorer, s, i):
-    return colorer.match_keywords(s, i)
-
-def forth_string_rule(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-# ==========================
-
-if 0:
-
-    def forth_rule0(colorer, s, i):
-        return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
-
-    def forth_rule1(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule2(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule3(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule4(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
-
-    def forth_rule5(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule6(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="!",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule7(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&gt;=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule8(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&lt;=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule9(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="+",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule10(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="-",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule11(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="/",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule12(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="*",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule13(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&gt;",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule14(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&lt;",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule15(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="%",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule16(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&amp;",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule17(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="|",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule18(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="^",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    def forth_rule19(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="~",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-    # #1821.
-    def forth_rule20(colorer, s, i):
-        return 0
-        # return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-            # at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
-
-    def forth_rule21(colorer, s, i):
-        return colorer.match_keywords(s, i)
-</t>
-<t tx="ekr.20150326145530.3"># Properties for forth mode.
-
-properties = {
-    # "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
-    "lineComment": "\\",
-}
-# Attributes dict for forth_main ruleset.
-forth_main_attributes_dict = {
-    "default": "null",
-    "digit_re": "",
-    # "escape": "\\",
-    "highlight_digits": "false",
-    "ignore_case": "false",
-    "no_word_sep": "",
-}
-# Dictionary of attributes dictionaries for forth mode.
-attributesDictDict = {
-    "forth_main": forth_main_attributes_dict,
-}
-# Keywords dict for forth_main ruleset.
-forth_main_keywords_dict = {}  # Created by extendForth class.
-# Dictionary of keywords dictionaries for forth mode.
-keywordsDictDict = {
-    "forth_main": forth_main_keywords_dict,
-}
-# Rules dict for forth_main ruleset.
-# This is extended by extendForth.
-rulesDict = {
-    '(': [forth_block_comment_rule],
-    '\\': [forth_comment_rule],
-    '"': [forth_string_rule],
-}
-# x.rulesDictDict for forth mode.
-rulesDictDict = {
-    "forth_main": rulesDict,
-}
-# Import dict for forth mode.
-importDict = {}
-
-
-</t>
-<t tx="ekr.20150326145530.4">class extendForth:
-    """A helper class to extend the mode tables from @data forth-x settings."""
-
-    @others
-</t>
-<t tx="ekr.20150326145530.5">def __init__(self):
-    self.c = None  # set by pre_init_mode function.
-    #
-    # Default forth keywords: extended by @data forth-words
-    # Forth words to be rendered in boldface: extended by @data forth-bold-words
-    self.boldwords = []
-    #
-    # Forth bold-italics words: extended by @data forth-bold-italic-words
-    # Note: on some boxen, bold italics may show in plain bold.
-    self.bolditalicwords = []
-    #
-    # Forth words that define brackets: extended by @data forth-delimiter-pairs
-    self.brackets = []  # Helper: a list of tuples.
-    self.brackets1 = []
-    self.brackets2 = []
-    #
-    # Words which define other words: extended by forth-defwords
-    self.definingwords = []
-    #
-    # Forth words to be rendered in italics: extended by forth-italic-words
-    self.italicwords = []
-    #
-    # Default keywords: extended by @data forth-keywords
-    self.keywords = []
-        # "variable", "constant", "code", "end-code",
-        # "dup", "2dup", "swap", "2swap", "drop", "2drop",
-        # "r&gt;", "&gt;r", "2r&gt;", "2&gt;r",
-        # "if", "else", "then",
-        # "begin", "again", "until", "while", "repeat",
-        # "v-for", "v-next", "exit",
-        # "meta", "host", "target", "picasm", "macro",
-        # "needs", "include",
-        # "'", "[']",
-        # # ":", # Now a defining word.
-        # ";",
-        # "@", "!", ",", "1+", "+", "-",
-        # "&lt;", "&lt;=", "=", "&gt;=", "&gt;",
-        # "invert", "and", "or",
-    #
-    # Forth words which start strings: extended by @data forth-string-word-pairs
-    self.stringwords = []
-    self.stringwords1 = []
-    self.stringwords2 = []
-    self.verbose = False  # True: tell when extending forth words.
-
-</t>
-<t tx="ekr.20150326145530.6">def init(self):
-    """Set our ivars from settings."""
-    c = self.c
-    assert(c)
-    table = (
-        (self.definingwords, "forth-defwords"),
-        (self.brackets, "forth-delimiter-pairs"),
-        (self.keywords, "forth-words"),
-        (self.stringwords, "forth-string-word-pairs"),
-        (self.boldwords, "forth-bold-words"),
-        (self.bolditalicwords, "forth-bold-italic-words"),
-        (self.italicwords, "forth-italic-words"),
-    )
-    # Add entries from @data nodes (if they exist) to the corresponding lists.
-    for (ivarList, setting) in table:
-        extras = []
-        aList = c.config.getData(setting)
-        if aList:
-            for s in aList:
-                s = s.strip()
-                if s and s[0] != '\\':
-                    extras.append(s)
-            if extras:
-                if self.verbose:
-                    if not g.app.unitTesting and not g.app.batchMode:
-                        g.pr("Found extra forth: %s" % " ".join(extras))
-                ivarList.extend(extras)
-    # Create brackets1/2 and stringwords1/2 lists.
-    table2 = (
-        ("brackets", "@data forth-delimiter-pairs"),
-        ("stringwords", "@data forth-string-word-pairs"),
-    )
-    for (ivar, setting) in table2:
-        self.splitList(ivar, setting)
-
-</t>
-<t tx="ekr.20150326145530.7">def splitList(self, ivar, setting):
-    """Process lines containing pairs of entries
-    in a list whose *name* is ivar.
-    Put the results in ivars whose names are ivar1 and ivar2."""
-    result1 = []; result2 = []
-    aList = getattr(self, ivar)
-    # Look for pairs.  Comments have already been removed.
-    for s in aList:
-        pair = s.split(' ')
-        if len(pair) == 2 and pair[0].strip() and pair[1].strip():
-            result1.append(pair[0].strip())
-            result2.append(pair[1].strip())
-        else:
-            g.es_print('%s: ignoring line: %s' % (setting, s))
-    # Set the ivars.
-    name1 = '%s1' % ivar
-    name2 = '%s2' % ivar
-    setattr(self, name1, result1)
-    setattr(self, name2, result2)
-
-</t>
-<t tx="ekr.20150326145530.8">def createBracketRules(self):
-    for z in self.brackets1:
-        func = self.createBracketRule(z)
-        self.extendRulesDict(ch=z[0], func=func)
-
-def createBracketRule(self, begin):
-    i = self.brackets1.index(begin)
-    end = self.brackets2[i]
-
-    def forth_bracket_rule(colorer, s, i):
-        return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
-            at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=True)  # Require word.
-
-    return forth_bracket_rule
-
-</t>
-<t tx="ekr.20150326145530.9">def createDefiningWordRules(self):
-    for z in self.definingwords:
-        func = self.createDefiningWordRule(z)
-        self.extendRulesDict(ch=z[0], func=func)
-
-def createDefiningWordRule(self, word):
-
-    def forth_defining_word_rule(colorer, s, i):
-
-        return colorer.match_word_and_regexp(s, i,
-            kind1="keyword2",  # defining word
-            word=word,
-            kind2="keyword3",  # bold
-            pattern=r'(\s)*(\S)+',
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            exclude_match=False)
-
-    return forth_defining_word_rule
-
 </t>
 <t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
 
@@ -2435,67 +1882,6 @@ efc.GitDiffController(c).diff_two_branches(
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
-<t tx="ekr.20181009072707.1"># -*- coding: utf-8 -*-
-import os
-import sys
-import unittest
-from leo.core import leoBridge
-
-load_dir = os.path.abspath(os.path.dirname(__file__))
-test_dir = os.path.join(load_dir, 'leo', 'test')
-path = os.path.join(test_dir, 'unitTest.leo')
-assert os.path.exists(path), repr(path)
-controller = leoBridge.controller(gui='nullGui',
-    loadPlugins=False, readSettings=True,
-    silent=False, verbose=False)
-g = controller.globals()
-c = controller.openLeoFile(path)
-try:
-    # Run all unit tests locally.
-    root = g.findTopLevelNode(c, 'Active Unit Tests', exact=True)
-    assert root, 'Not found: Active Unit Tests'
-    c.selectPosition(root)
-    tm = c.testManager
-    g.unitTesting = g.app.unitTesting = True
-    suite = unittest.makeSuite(unittest.TestCase)
-    aList = tm.findAllUnitTestNodes(all=False, marked=False)
-    setup_script = None
-    found = False
-    for p in aList:
-        if tm.isTestSetupNode(p):
-            setup_script = p.b
-            test = None
-        elif tm.isTestNode(p):
-            test = tm.makeTestCase(p, setup_script)
-        elif tm.isSuiteNode(p):
-            test = tm.makeTestSuite(p, setup_script)
-        elif tm.isTestClassNode(p):
-            test = tm.makeTestClass(p)
-        else:
-            test = None
-        if test:
-            suite.addTest(test)
-            found = True
-    if not found:
-        print('No unit tests')
-        sys.exit(1)
-    runner = unittest.TextTestRunner(failfast=True, verbosity=1)
-    try:
-        result = runner.run(suite)
-        if result.errors or result.failures:
-            print(f"errors: {len(result.errors)}, failures: {len(result.failures)}")
-            sys.exit(1)
-        else:
-            print('Travis unit tests all passed.')
-            sys.exit(0)
-    except Exception:
-        print('Unexpected exception')
-        g.es_exception()
-        sys.exit(1)
-except Exception as e:
-    print('Unexpected exception 2', e)
-    sys.exit(1)
-</t>
 <t tx="ekr.20181013081645.1">@path test</t>
 <t tx="ekr.20181030041436.1"></t>
 <t tx="ekr.20181102040815.1">files = [
@@ -3066,7 +2452,7 @@ import os
 @others
 main(node_list = ['Startup', 'Notes', 'Code'])
 </t>
-<t tx="ekr.20201018063747.1">def get_content(positions_list):
+<t tx="ekr.20201018063747.1">def put_content(positions_list):
     """
     Return the desired contents of leoPyRef.leo.
     
@@ -3076,10 +2462,11 @@ main(node_list = ['Startup', 'Notes', 'Code'])
     fc = c.fileCommands
     fc.currentPosition = c.p
     fc.rootPosition = c.rootPosition()
+    old_vnodesDict = fc.vnodesDict  # Save.
     fc.vnodesDict = {}
     # Put the file
     fc.outputFile = io.StringIO()
-    fc.putProlog()
+    put_prolog()  # Put prolog w/o the stylesheet.
     fc.putHeader()
     fc.putGlobals()
     fc.putPrefs()
@@ -3089,10 +2476,11 @@ main(node_list = ['Startup', 'Notes', 'Code'])
         # An optimization: Write the next top-level node.
         fc.putVnode(p, isIgnore=p.isAtIgnoreNode())
     fc.put("&lt;/vnodes&gt;\n")
-    fc.putTnodes()
+    put_tnodes(positions_list)  # Put only *required* tnodes.
     fc.putPostlog()
     s = fc.outputFile.getvalue()
     fc.outputFile = None
+    fc.vnodesDict = old_vnodesDict  # Restore!
     return s
 </t>
 <t tx="ekr.20201018065757.1">def check_file_names():
@@ -3121,11 +2509,13 @@ main(node_list = ['Startup', 'Notes', 'Code'])
     c.endEditing()
     fileName = check_file_names()
     if not fileName:
-        return
+        return  # Error.
     positions_list = check_nodes(node_list)
     if not positions_list:
-        return
-    content = get_content(positions_list)
+        return  # Error.
+    content = put_content(positions_list)
+    if not content:
+        return  # Error.
     with open(fileName, 'w', encoding="utf-8", newline='\n') as f:
         f.write(content)
     print('')
@@ -3297,7 +2687,7 @@ for module in ('core', 'external', 'plugins'):
             print(f"Missing: {path}")
     print('')
 </t>
-<t tx="ekr.20210510053106.1">gnx: ekr.20201012111338.2
+<t tx="ekr.20210509083811.1">gnx: ekr.20201012111338.2
 unl: Declarations (leo_cloud.py)
 gnx: ekr.20201012111338.3
 unl: init (leo_cloud.py)
@@ -3380,8 +2770,49 @@ unl: class LeoCloud--&gt;LeoCloud._ua_clean
 gnx: ekr.20201012111338.42
 unl: class LeoCloud--&gt;LeoCloud.write_current
 </t>
-<t tx="ekr.20210510053106.2">gnx: ekr.20201012111338.43
+<t tx="ekr.20210509083811.2">gnx: ekr.20201012111338.43
 unl: Declarations (leo_cloud_server.py)
+</t>
+<t tx="ekr.20210510071427.1">def put_prolog():
+    """Same as fc.putProlog, without the stylysheet."""
+    fc = c.fileCommands
+    tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
+    #
+    # Put the xml line.
+    fc.putXMLLine()
+    #
+    # Put the "created by Leo" line.
+    fc.put('&lt;!-- Created by Leo: http://leoeditor.com/leo_toc.html --&gt;\n')
+    #
+    # Do *not* put the stylesheet line.
+        # fc.putStyleSheetLine()
+    #
+    # Put the namespace
+    fc.put(f'&lt;leo_file xmlns:leo="{tag}" &gt;\n')
+</t>
+<t tx="ekr.20210510071812.1">def put_tnodes(positions_list):
+    """
+    Write all tnodes except those for vnodes appearing in @file, @edit or @auto nodes.
+    """
+        
+    def should_suppress(p):
+        return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
+            for z in p.self_and_parents())
+
+    fc = c.fileCommands
+    fc.put("&lt;tnodes&gt;\n")
+    suppress = {}
+    for p in c.all_positions(copy=False):
+        if should_suppress(p):
+            suppress[p.v] = True
+    # Write tnodes in *outline* order.
+    written = {}
+    for root in positions_list:
+        for p in root.self_and_subtree():
+            if p.v not in suppress and p.v not in written:
+                written[p.v] = True
+                fc.putTnode(p.v)
+    fc.put("&lt;/tnodes&gt;\n")
 </t>
 </tnodes>
 </leo_file>
