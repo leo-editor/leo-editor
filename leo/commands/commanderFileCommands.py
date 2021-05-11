@@ -329,7 +329,7 @@ def refreshFromDisk(self, event=None):
         # This includes @auto-*
         if shouldDelete: p.v._deleteAllChildren()
         # Fix #451: refresh-from-disk selects wrong node.
-        p = at.readOneAtAutoNode(fn, p)
+        p = at.readOneAtAutoNode(p)
     elif word in ('@thin', '@file'):
         if shouldDelete: p.v._deleteAllChildren()
         at.read(p)
@@ -339,7 +339,7 @@ def refreshFromDisk(self, event=None):
             at.readOneAtCleanNode(p)
         else:
             # Fix #451: refresh-from-disk selects wrong node.
-            p = at.readOneAtAutoNode(fn, p)
+            p = at.readOneAtAutoNode(p)
     elif word == '@shadow':
         if shouldDelete:
             p.v._deleteAllChildren()

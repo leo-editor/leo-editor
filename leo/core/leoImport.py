@@ -738,8 +738,7 @@ class LeoImportCommands:
                     g.warning('ignoring', p.h)
                     p.moveToThreadNext()
                 else:
-                    fileName = p.atAutoNodeName()
-                    c.atFileCommands.readOneAtAutoNode(fileName, p)
+                    c.atFileCommands.readOneAtAutoNode(p)
                     found = True
                     p.moveToNodeAfterTree()
             else:
