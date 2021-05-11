@@ -4012,7 +4012,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         """
         c = self.c; at = c.atFileCommands
         p.h = f"@auto {fn}"
-        at.readOneAtAutoNode(fn, p)
+        at.readOneAtAutoNode(p)
         # No error recovery should be needed here.
         p.clearDirty()  # Don't automatically rewrite this node.
     #@+node:ekr.20110605121601.18374: *9* LeoQTreeWidget.createAtEditNode
