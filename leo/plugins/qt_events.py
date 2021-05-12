@@ -350,11 +350,10 @@ class LeoQtEventFilter(QtCore.QObject):
             toString = 'Return'
         if toString == 'Esc':
             toString = 'Escape'
-        if toString:
-            try:
-                ch = chr(keynum)
-            except ValueError:
-                pass
+        try:
+            ch = chr(keynum)
+        except ValueError:
+            pass
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
