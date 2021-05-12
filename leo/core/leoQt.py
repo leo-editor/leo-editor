@@ -53,7 +53,7 @@ if not g.in_bridge:
             except Exception:
                 pass
     #
-    # A good trace for testing, but generates warnings about m.
+    # A good trace for testing.
         # #
         # # Define m only when tracing.
         # if isQt6:

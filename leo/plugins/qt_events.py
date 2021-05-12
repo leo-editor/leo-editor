@@ -39,6 +39,35 @@ from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 #@+others
+#@+node:ekr.20210512101604.1: ** class LossageData
+class LossageData:
+    
+    def __init__(self, actual_ch, binding, ch, keynum, mods, mods2, mods3, text, toString):
+    
+        self.actual_ch = actual_ch
+        self.binding = binding
+        self.ch = ch
+        self.keynum = keynum
+        self.mods = mods
+        self.mods2 = mods2
+        self.mods3 = mods3
+        self.stroke = None  # Set later.
+        self.text = text
+        self.toString = toString
+        
+    def __repr__ (self):
+        return (
+            f"keynum: {self.keynum:>7x} "
+            f"binding: {self.binding}"
+        )
+            # f"ch: {self.ch:>7s} "
+            # f"= {self.actual_ch!r}"
+            # f"mods: {self.mods}, {self.mods2}, {self.mods3}\n"
+            # f"stroke: {self.stroke!r}\n"
+            # f"text: {self.text!r}\n"
+            # f"toString: {self.toString!r}\n"
+
+    __str__ = __repr__
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
     #@+others
@@ -87,12 +116,20 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # Generate a g.KeyStroke for k.masterKeyHandler.
         try:
-            binding, ch = self.toBinding(event)
+            binding, ch, lossage = self.toBinding(event)
             if not binding:
                 return False  # Not the correct event type.
             #
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
+            #
+            # #1933: Update the g.app.lossage
+            if len(g.app.lossage) > 99:
+                g.app.lossage.pop()
+            lossage.stroke = key_event.stroke
+            g.app.lossage.insert(0, lossage)
+            #
+            # Call masterKeyHandler!
             k.masterKeyHandler(key_event)
             c.outerUpdate()
         except Exception:
@@ -171,22 +208,26 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # Never allow empty chars, or chars in g.app.gui.ignoreChars
         if toString in g.app.gui.ignoreChars:
-            return None, None
+            return None, None, None
         ch = ch or toString or ''
         if not ch:
-            return None, None
+            return None, None, None
         #
         # Check for AltGr and Alt+Ctrl keys *before* creating a binding.
-        actual_ch, ch, mods = self.doMacTweaks(actual_ch, ch, mods)
-        mods = self.doAltTweaks(actual_ch, keynum, mods, toString)
+        actual_ch, ch, mods2 = self.doMacTweaks(actual_ch, ch, mods)
+        mods3 = self.doAltTweaks(actual_ch, keynum, mods2, toString)
         #
         # Use *ch* in the binding.
         # Clearer w/o f-strings.
-        binding = '%s%s' % (''.join([f"{z}+" for z in mods]), ch)
+        binding = '%s%s' % (''.join([f"{z}+" for z in mods3]), ch)
         #
         # Return the tweaked *actual* char.
         binding, actual_ch = self.doLateTweaks(binding, actual_ch)
-        return binding, actual_ch
+        #
+        # #1933: Create lossage data.
+        lossage = LossageData(
+            actual_ch, binding, ch, keynum, mods, mods2, mods3, text, toString)
+        return binding, actual_ch, lossage
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
     def doAltTweaks(self, actual_ch, keynum, mods, toString):
         """Turn AltGr and some Alt-Ctrl keys into plain keys."""
@@ -284,42 +325,38 @@ class LeoQtEventFilter(QtCore.QObject):
             For all others:   QtGui.QKeySequence(keynum).toString()
         text:   event.text()
         """
-        Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+        text, toString, ch = '', '', ''  # Defaults.
+        ### Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+        #
+        # Leo 6.4: Test keynum's directly.
         keynum = event.key()
+        if keynum in (
+            0x01000020, # Key_Shift	
+            0x01000021, # Key_Control
+            0x01000022, # Key_Meta
+            0x01000023, # Key_Alt
+            0x01001103, # Key_AltGr	
+            0x01000024, #Key_CapsLock
+        ):	
+            # Disallow bare modifiers.
+            return keynum, text, toString, ch
+        #
+        # Compute toString and ch.
         text = event.text()  # This is the unicode character!
-        d = {
-            Key.Key_Alt: 'Key_Alt',
-            Key.Key_AltGr: 'Key_AltGr',
-                # On Windows, when the KeyDown event for this key is sent,
-                # the Ctrl+Alt modifiers are also set.
-            Key.Key_Control: 'Key_Control',  # MacOS: Command key
-            Key.Key_Meta: 'Key_Meta',
-                # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
-            Key.Key_Shift: 'Key_Shift',
-            Key.Key_NumLock: 'Num_Lock',
-                # 868.
-            Key.Key_Super_L: 'Key_Super_L',
-            Key.Key_Super_R: 'Key_Super_R',
-            Key.Key_Hyper_L: 'Key_Hyper_L',
-            Key.Key_Hyper_R: 'Key_Hyper_R',
-        }
-        if d.get(keynum):
-            if 0:  # Allow bare modifier key.
-                toString = d.get(keynum)
-            else:
-                toString = ''
-        else:
-            toString = QtGui.QKeySequence(keynum).toString()
-        # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
+        toString = QtGui.QKeySequence(keynum).toString()  
+        #
+        # #1244461: Numpad 'Enter' key does not work in minibuffer
         if toString == 'Enter':
             toString = 'Return'
         if toString == 'Esc':
             toString = 'Escape'
-        try:
-            ch = chr(keynum)
-        except ValueError:
+        if toString:
+            try:
+                ch = chr(keynum)
+            except ValueError:
+                ch = ''
+        else:
             ch = ''
-        # g.trace(keynum, ch)
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
@@ -335,24 +372,6 @@ class LeoQtEventFilter(QtCore.QObject):
                 # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         mods = [b for a, b in mod_table if (modifiers & a)]
-        #
-        # MacOS: optionally convert Meta (Ctrl key) to Alt.
-        # 945: remove @bool swap-mac-keys and @bool replace-meta-with-alt.
-        # if g.isMac:
-            # c = self.c
-            # if c.k.replace_meta_with_alt:
-                # if 'Meta' in mods:
-                    # mods.remove('Meta')
-                    # mods.append('Alt')
-            # if c.k.swap_mac_keys:
-                # # Swap the Command (clover) and Control keys.
-                # # That is, swap the meaning of the Control and Meta modifiers.
-                # if 'Meta' in mods and 'Control' not in mods:
-                    # mods.remove('Meta')
-                    # mods.append('Control')
-                # elif 'Control' in mods and 'Meta' not in mods:
-                    # mods.remove('Control')
-                    # mods.append('Meta')
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20190922075339.1: *4* filter.traceKeys
