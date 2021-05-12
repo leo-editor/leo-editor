@@ -326,7 +326,6 @@ class LeoQtEventFilter(QtCore.QObject):
         text:   event.text()
         """
         text, toString, ch = '', '', ''  # Defaults.
-        ### Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
         #
         # Leo 6.4: Test keynum's directly.
         keynum = event.key()
@@ -336,7 +335,7 @@ class LeoQtEventFilter(QtCore.QObject):
             0x01000022, # Key_Meta
             0x01000023, # Key_Alt
             0x01001103, # Key_AltGr	
-            0x01000024, #Key_CapsLock
+            0x01000024, # Key_CapsLock
         ):	
             # Disallow bare modifiers.
             return keynum, text, toString, ch

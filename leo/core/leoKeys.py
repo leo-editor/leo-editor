@@ -2366,9 +2366,6 @@ class KeyHandlerClass:
             helpPrompt = 'Help for command: '
             c.check_event(event)
             ch = char = event.char if event else ''
-            ### stroke = event.stroke if event else ''
-            ### if state > 0:
-            ###    k.setLossage(char, stroke)
             if state == 0:
                 k.mb_event = event  # Save the full event for later.
                 k.setState('full-command', 1, handler=k.fullCommand)
@@ -2970,8 +2967,6 @@ class KeyHandlerClass:
         # Order is very important here...
         if k.isSpecialKey(event):
             return
-        # Add *all* characters to the lossage.
-        ### k.setLossage(event.char, event.stroke)
         if k.doKeyboardQuit(event):
             return
         if k.doDemo(event):
