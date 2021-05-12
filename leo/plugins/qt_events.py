@@ -328,6 +328,7 @@ class LeoQtEventFilter(QtCore.QObject):
         text, toString, ch = '', '', ''  # Defaults.
         #
         # Leo 6.4: Test keynum's directly.
+        #          The legacy test never succeeded when using Qt6.
         keynum = event.key()
         if keynum in (
             0x01000020, # Key_Shift	
@@ -353,9 +354,7 @@ class LeoQtEventFilter(QtCore.QObject):
             try:
                 ch = chr(keynum)
             except ValueError:
-                ch = ''
-        else:
-            ch = ''
+                pass
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
