@@ -1443,8 +1443,8 @@ class GetArg:
         c.check_event(event)
         c.minibufferWantsFocusNow()
         char = event.char if event else ''
-        if state > 0:
-            k.setLossage(char, stroke)
+        ### if state > 0:
+        ###    k.setLossage(char, stroke)
         if state == 0:
             self.do_state_zero(completion, event, handler, oneCharacter,
                 returnKind, returnState, tabList, useMinibuffer)
@@ -2366,9 +2366,6 @@ class KeyHandlerClass:
             helpPrompt = 'Help for command: '
             c.check_event(event)
             ch = char = event.char if event else ''
-            stroke = event.stroke if event else ''
-            if state > 0:
-                k.setLossage(char, stroke)
             if state == 0:
                 k.mb_event = event  # Save the full event for later.
                 k.setState('full-command', 1, handler=k.fullCommand)
@@ -2970,8 +2967,6 @@ class KeyHandlerClass:
         # Order is very important here...
         if k.isSpecialKey(event):
             return
-        # Add *all* characters to the lossage.
-        k.setLossage(event.char, event.stroke)
         if k.doKeyboardQuit(event):
             return
         if k.doDemo(event):
@@ -3041,16 +3036,7 @@ class KeyHandlerClass:
             # stroke.s was cleared, but not event.char.
             return True
         return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20110609161752.16459: *5* 2. k.setLossage
-    def setLossage(self, ch, stroke):
-
-        # k = self
-        if ch or stroke:
-            if len(g.app.lossage) > 99:
-                g.app.lossage.pop()
-        # This looks like a memory leak, but isn't.
-        g.app.lossage.insert(0, (ch, stroke),)
-    #@+node:ekr.20180418024449.1: *5* 3. k.doKeyboardQuit
+    #@+node:ekr.20180418024449.1: *5* 2. k.doKeyboardQuit
     def doKeyboardQuit(self, event):
         """
         A helper for k.masterKeyHandler: Handle keyboard-quit logic.
@@ -3065,7 +3051,7 @@ class KeyHandlerClass:
             c.doCommandByName('keyboard-quit', event)
             return True
         return False
-    #@+node:ekr.20180418023827.1: *5* 4. k.doDemo
+    #@+node:ekr.20180418023827.1: *5* 3. k.doDemo
     def doDemo(self, event):
         """
         Support the demo.py plugin.
@@ -3089,7 +3075,7 @@ class KeyHandlerClass:
             demo.prev_command()
             return True
         return False
-    #@+node:ekr.20091230094319.6244: *5* 5. k.doMode & helpers
+    #@+node:ekr.20091230094319.6244: *5* 4. k.doMode & helpers
     def doMode(self, event):
         """
         Handle mode bindings.
@@ -3334,7 +3320,7 @@ class KeyHandlerClass:
         if cmdfunc:
             k.bindKey('all', stroke, cmdfunc, cmdname)
             g.es('bound', stroke, 'to command', cmdname)
-    #@+node:ekr.20180418025241.1: *5* 6. k.doVim
+    #@+node:ekr.20180418025241.1: *5* 5. k.doVim
     def doVim(self, event):
         """
         Handle vim mode.
@@ -3350,7 +3336,7 @@ class KeyHandlerClass:
             if trace: g.trace('do_key returns', ok, repr(event and event.stroke))
             return ok
         return False
-    #@+node:ekr.20180418033838.1: *5* 7. k.doBinding & helpers
+    #@+node:ekr.20180418033838.1: *5* 6. k.doBinding & helpers
     def doBinding(self, event):
         """
         Attempt to find a binding for the event's stroke.

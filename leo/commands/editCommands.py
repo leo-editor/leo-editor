@@ -1192,13 +1192,19 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('view-lossage')
     def viewLossage(self, event):
         """Put the Emacs-lossage in the minibuffer label."""
-        k = self.c.k
         g.es('lossage...')
-        aList = g.app.lossage
-        aList.reverse()
-        for data in aList:
-            ch, stroke = data
-            g.es('', k.prettyPrintKey(stroke))
+        # #1933: Data are LossageData objects.
+        #        Let repr do the work.
+        for i, data in enumerate(reversed(g.app.lossage)):
+            print(f"{i:>2} {data!r}")
+            
+            
+        #k = self.c.k
+        # aList = g.app.lossage
+        # aList.reverse()
+        # for data in aList:
+            # ch, stroke = data
+            # g.es('', k.prettyPrintKey(stroke))
     #@+node:ekr.20150514063305.249: *4* ec.whatLine
     @cmd('what-line')
     def whatLine(self, event):

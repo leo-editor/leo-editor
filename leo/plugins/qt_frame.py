@@ -986,7 +986,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         self.func()
                     return True
                 # Stay in the present widget.
-                binding, ch = self.eventFilter.toBinding(event)
+                binding, ch, lossage = self.eventFilter.toBinding(event)
                 if binding:
                     cmd_name = self.d.get(binding)
                     if cmd_name:
