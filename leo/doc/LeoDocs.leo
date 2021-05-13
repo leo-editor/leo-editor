@@ -1776,6 +1776,23 @@
 <v t="ekr.20210429042049.1914"><vh>#1895: split qtree.updateIcon</vh></v>
 <v t="ekr.20210429042049.1947"><vh>#1903: Simplify g.os_path*</vh></v>
 <v t="ekr.20210511103242.2"><vh>#1914: Use g.fullPath</vh></v>
+<v t="ekr.20210513053406.1"><vh>#1933: view-lossage</vh>
+<v t="ekr.20210513053406.2"><vh>ec.viewLossage</vh></v>
+<v t="ekr.20210513053406.3"><vh>class LossageData</vh></v>
+<v t="ekr.20210513053406.4"><vh>filter.eventFilter &amp; helpers</vh>
+<v t="ekr.20210513053406.5"><vh>filter.createKeyEvent</vh></v>
+<v t="ekr.20210513053406.6"><vh>filter.doNonKeyEvent</vh></v>
+<v t="ekr.20210513053406.7"><vh>filter.shouldIgnoreKeyEvent</vh></v>
+<v t="ekr.20210513053406.8"><vh>filter.toBinding &amp; helpers</vh>
+<v t="ekr.20210513053406.9"><vh>filter.doAltTweaks</vh></v>
+<v t="ekr.20210513053406.10"><vh>filter.doLateTweaks</vh></v>
+<v t="ekr.20210513053406.11"><vh>filter.doMacTweaks</vh></v>
+<v t="ekr.20210513053406.14"><vh>filter.qtKey</vh></v>
+<v t="ekr.20210513053406.13"><vh>filter.qtMods</vh></v>
+</v>
+</v>
+<v t="ekr.20210513053406.14"></v>
+</v>
 <v t="ekr.20210405100137.887"><vh>PR1759: Further improvements to undo code</vh></v>
 <v t="ekr.20210405100137.1772"><vh>PR1804: Support batch change scripts</vh></v>
 <v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
@@ -32010,6 +32027,342 @@ You can change these defaults with the --address and --port command-line argumen
 <t tx="ekr.20210511103020.1">https://github.com/leo-editor/leo-editor/issues/1930</t>
 <t tx="ekr.20210511103242.190">https://github.com/leo-editor/leo-editor/issues/1926</t>
 <t tx="ekr.20210511103242.2">https://github.com/leo-editor/leo-editor/issues/1914</t>
+<t tx="ekr.20210513053406.1">https://github.com/leo-editor/leo-editor/issues/1933
+</t>
+<t tx="ekr.20210513053406.10">def doLateTweaks(self, binding, ch):
+    """Make final tweaks. g.KeyStroke does other tweaks later."""
+    #
+    # These are needed  because ch is separate from binding.
+    if ch == '\r':
+        ch = '\n'
+    if binding == 'Escape':
+        ch = 'Escape'
+    #
+    # Adjust the case of the binding string (for the minibuffer).
+    if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
+        if ch != binding:
+            binding = ch
+    return binding, ch
+</t>
+<t tx="ekr.20210513053406.11">def doMacTweaks(self, actual_ch, ch, mods):
+    """Replace MacOS Alt characters."""
+    if not g.isMac:
+        return actual_ch, ch, mods
+    if ch == 'Backspace':
+        # On the Mac, the reported char can be DEL (7F)
+        return '\b', ch, mods
+    if len(mods) == 1 and mods[0] == 'Alt':
+        # Patch provided by resi147.
+        # See the thread: special characters in MacOSX, like '@'.
+        mac_d = {
+            '/': '\\',
+            '5': '[',
+            '6': ']',
+            '7': '|',
+            '8': '{',
+            '9': '}',
+            'e': '€',
+            'l': '@',
+        }
+        if ch.lower() in mac_d:
+            # Ignore the case.
+            actual_ch = ch = g.checkUnicode(mac_d.get(ch.lower()))
+            mods = []
+    return actual_ch, ch, mods
+</t>
+<t tx="ekr.20210513053406.13">def qtMods(self, event):
+    """Return the text version of the modifiers of the key event."""
+    KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+    modifiers = event.modifiers()
+    mod_table = (
+        (KeyboardModifiers.AltModifier, 'Alt'),
+        (KeyboardModifiers.ControlModifier, 'Control'),
+        (KeyboardModifiers.MetaModifier, 'Meta'),
+        (KeyboardModifiers.ShiftModifier, 'Shift'),
+        (KeyboardModifiers.KeypadModifier, 'KeyPad'),
+            # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
+    )
+    mods = [b for a, b in mod_table if (modifiers &amp; a)]
+    #
+    # MacOS: optionally convert Meta (Ctrl key) to Alt.
+    # 945: remove @bool swap-mac-keys and @bool replace-meta-with-alt.
+    # if g.isMac:
+        # c = self.c
+        # if c.k.replace_meta_with_alt:
+            # if 'Meta' in mods:
+                # mods.remove('Meta')
+                # mods.append('Alt')
+        # if c.k.swap_mac_keys:
+            # # Swap the Command (clover) and Control keys.
+            # # That is, swap the meaning of the Control and Meta modifiers.
+            # if 'Meta' in mods and 'Control' not in mods:
+                # mods.remove('Meta')
+                # mods.append('Control')
+            # elif 'Control' in mods and 'Meta' not in mods:
+                # mods.remove('Control')
+                # mods.append('Meta')
+    return mods
+</t>
+<t tx="ekr.20210513053406.14">def qtKey(self, event):
+    """
+    Return the components of a Qt key event.
+
+    Modifiers are handled separately.
+
+    Return (keynum, text, toString, ch).
+
+    keynum: event.key()
+    ch:     chr(keynum) or '' if there is an exception.
+    toString:
+        For special keys: made-up spelling that become part of the setting.
+        For all others:   QtGui.QKeySequence(keynum).toString()
+    text:   event.text()
+    """
+    Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+    keynum = event.key()
+    text = event.text()  # This is the unicode character!
+    d = {
+        Key.Key_Alt: 'Key_Alt',
+        Key.Key_AltGr: 'Key_AltGr',
+            # On Windows, when the KeyDown event for this key is sent,
+            # the Ctrl+Alt modifiers are also set.
+        Key.Key_Control: 'Key_Control',  # MacOS: Command key
+        Key.Key_Meta: 'Key_Meta',
+            # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
+        Key.Key_Shift: 'Key_Shift',
+        Key.Key_NumLock: 'Num_Lock',
+            # 868.
+        Key.Key_Super_L: 'Key_Super_L',
+        Key.Key_Super_R: 'Key_Super_R',
+        Key.Key_Hyper_L: 'Key_Hyper_L',
+        Key.Key_Hyper_R: 'Key_Hyper_R',
+    }
+    if d.get(keynum):
+        if 0:  # Allow bare modifier key.
+            toString = d.get(keynum)
+        else:
+            toString = ''
+    else:
+        toString = QtGui.QKeySequence(keynum).toString()
+    # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
+    if toString == 'Enter':
+        toString = 'Return'
+    if toString == 'Esc':
+        toString = 'Escape'
+    try:
+        ch = chr(keynum)
+    except ValueError:
+        ch = ''
+    # g.trace(keynum, ch)
+    return keynum, text, toString, ch
+</t>
+<t tx="ekr.20210513053406.2">@cmd('view-lossage')
+def viewLossage(self, event):
+    """Put the Emacs-lossage in the minibuffer label."""
+    k = self.c.k
+    g.es('lossage...')
+    aList = g.app.lossage
+    aList.reverse()
+    for data in aList:
+        ch, stroke = data
+        g.es('', k.prettyPrintKey(stroke))
+</t>
+<t tx="ekr.20210513053406.3">class LossageData:
+    
+    def __init__(self, actual_ch, binding, ch, keynum, mods, mods2, mods3, text, toString):
+    
+        self.actual_ch = actual_ch
+        self.binding = binding
+        self.ch = ch
+        self.keynum = keynum
+        self.mods = mods
+        self.mods2 = mods2
+        self.mods3 = mods3
+        self.stroke = None  # Set later.
+        self.text = text
+        self.toString = toString
+        
+    def __repr__ (self):
+        return (
+            f"keynum: {self.keynum:&gt;7x} "
+            f"binding: {self.binding}"
+        )
+            # f"ch: {self.ch:&gt;7s} "
+            # f"= {self.actual_ch!r}"
+            # f"mods: {self.mods}, {self.mods2}, {self.mods3}\n"
+            # f"stroke: {self.stroke!r}\n"
+            # f"text: {self.text!r}\n"
+            # f"toString: {self.toString!r}\n"
+
+    __str__ = __repr__
+</t>
+<t tx="ekr.20210513053406.4">def eventFilter(self, obj, event):
+    """Return False if Qt should handle the event."""
+    c, k = self.c, self.c.k
+    #
+    # Handle non-key events first.
+    if not self.c.p:
+        return False  # Startup.
+    #
+    # Trace events.
+    if 'events' in g.app.debug:
+        if isinstance(event, QtGui.QKeyEvent):
+            self.traceKeys(obj, event)
+        else:
+            self.traceEvent(obj, event)
+            self.traceWidget(event)
+    #
+    # Let Qt handle the non-key events.
+    if self.doNonKeyEvent(event, obj):
+        return False
+    #
+    # Ignore incomplete key events.
+    if self.shouldIgnoreKeyEvent(event, obj):
+        return False
+    #
+    # Generate a g.KeyStroke for k.masterKeyHandler.
+    try:
+        binding, ch = self.toBinding(event)
+        if not binding:
+            return False  # Not the correct event type.
+        #
+        # Pass the KeyStroke to masterKeyHandler.
+        key_event = self.createKeyEvent(event, c, self.w, ch, binding)
+        k.masterKeyHandler(key_event)
+        c.outerUpdate()
+    except Exception:
+        g.es_exception()
+    return True
+        # Whatever happens, suppress all other Qt key handling.
+</t>
+<t tx="ekr.20210513053406.5">def createKeyEvent(self, event, c, w, ch, binding):
+
+    return leoGui.LeoKeyEvent(
+        c=self.c,
+        char=ch,
+            # char = None doesn't work at present.
+            # But really, the binding should suffice.
+        event=event,
+        binding=binding,
+        w=w,
+        x=getattr(event, 'x', None) or 0,
+        y=getattr(event, 'y', None) or 0,
+        x_root=getattr(event, 'x_root', None) or 0,
+        y_root=getattr(event, 'y_root', None) or 0,
+    )
+</t>
+<t tx="ekr.20210513053406.6">def doNonKeyEvent(self, event, obj):
+    """Handle all non-key event. """
+    c = self.c
+    Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
+    eventType = event.type()
+    if eventType == Type.WindowActivate:
+        g.app.gui.onActivateEvent(event, c, obj, self.tag)
+    elif eventType == Type.WindowDeactivate:
+        g.app.gui.onDeactivateEvent(event, c, obj, self.tag)
+    elif eventType == Type.FocusIn:
+        if self.tag == 'body':
+            c.frame.body.onFocusIn(obj)
+        if c.frame and c.frame.top and obj is c.frame.top.lineEdit:
+            if c.k.getStateKind() == 'getArg':
+                c.frame.top.lineEdit.restore_selection()
+    elif eventType == Type.FocusOut and self.tag == 'body':
+        c.frame.body.onFocusOut(obj)
+    return eventType not in (Type.ShortcutOverride, Type.KeyPress, Type.KeyRelease)
+        # Return True unless we have a key event.
+</t>
+<t tx="ekr.20210513053406.7">def shouldIgnoreKeyEvent(self, event, obj):
+    """
+    Return True if we should ignore the key event.
+    
+    Alas, QLineEdit *only* generates ev.KeyRelease on Windows, Ubuntu,
+    so the following hack is required.
+    """
+    c = self.c
+    Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
+    t = event.type()
+    isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
+    if isEditWidget:
+        return t != Type.KeyRelease
+            # QLineEdit: ignore all key events except keyRelease events.
+    if t == Type.KeyPress:
+        return False  # Never ignore KeyPress events.
+    # This doesn't work. Two shortcut-override events are generated!
+        # if t == ev.ShortcutOverride and event.text():
+            # return False # Don't ignore shortcut overrides with a real value.
+    return True  # Ignore everything else.
+</t>
+<t tx="ekr.20210513053406.8">def toBinding(self, event):
+    """
+    Return (binding, actual_ch):
+
+    binding:    A user binding, to create g.KeyStroke.
+                Spelling no longer fragile.
+    actual_ch:  The insertable key, or ''.
+    """
+    mods = self.qtMods(event)
+    keynum, text, toString, ch = self.qtKey(event)
+    actual_ch = text or toString
+    #
+    # Never allow empty chars, or chars in g.app.gui.ignoreChars
+    if toString in g.app.gui.ignoreChars:
+        return None, None
+    ch = ch or toString or ''
+    if not ch:
+        return None, None
+    #
+    # Check for AltGr and Alt+Ctrl keys *before* creating a binding.
+    actual_ch, ch, mods = self.doMacTweaks(actual_ch, ch, mods)
+    mods = self.doAltTweaks(actual_ch, keynum, mods, toString)
+    #
+    # Use *ch* in the binding.
+    # Clearer w/o f-strings.
+    binding = '%s%s' % (''.join([f"{z}+" for z in mods]), ch)
+    #
+    # Return the tweaked *actual* char.
+    binding, actual_ch = self.doLateTweaks(binding, actual_ch)
+    return binding, actual_ch
+</t>
+<t tx="ekr.20210513053406.9">def doAltTweaks(self, actual_ch, keynum, mods, toString):
+    """Turn AltGr and some Alt-Ctrl keys into plain keys."""
+    Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+
+    def removeAltCtrl(mods):
+        for mod in ('Alt', 'Control'):
+            if mod in mods:
+                mods.remove(mod)
+        return mods
+
+    #
+    # Remove Alt, Ctrl for AltGr keys.
+    # See https://en.wikipedia.org/wiki/AltGr_key
+
+    if keynum == Key.Key_AltGr:
+        return removeAltCtrl(mods)
+    #
+    # Never alter complex characters.
+    if len(actual_ch) != 1:
+        return mods
+    #
+    # #1563: A hack for German and Spanish keyboards:
+    #        Remove *plain* Shift modifier for colon and semicolon.
+    #        https://en.m.wikipedia.org/wiki/German_keyboard_layout
+    kind = self.keyboard_kind.lower()
+    if (kind in ('german', 'spanish')
+        and actual_ch in ":;"
+        and 'Shift' in mods
+        and 'Alt' not in mods and 'Control' not in mods
+    ):
+        mods.remove('Shift')
+    elif kind == 'us-international':
+        pass  ### To do.
+    #
+    # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
+    # Testing: Alt-Ctrl-E is '€'.
+    if ord(actual_ch) &gt; 127 and 'Alt' in mods and 'Control' in mods:
+        return removeAltCtrl(mods)
+    return mods
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
