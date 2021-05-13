@@ -328,7 +328,7 @@ class LeoQtEventFilter(QtCore.QObject):
         text, toString, ch = '', '', ''  # Defaults.
         #
         # Leo 6.4: Test keynum's directly.
-        #          The legacy test never succeeded when using Qt6.
+        #          The values are the same in Qt4, Qt5, Qt6.
         keynum = event.key()
         if keynum in (
             0x01000020, # Key_Shift	
