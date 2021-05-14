@@ -2955,7 +2955,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             elif line.find('@language') == 0 and not _in_quotes:
                 _got_language = True
                 # Check if there really is a language named after the '@language' directive
-                _language = line.split()[1] if ' ' in (line := line.strip()) else TEXT
+                stripped_line = line.strip()  # #1934.
+                _language = line.split()[1] if ' ' in stripped_line else TEXT
                 _in_rst_block = False
                 _in_code_block = _language in LANGUAGES
                 if _in_code_block and not self.controlling_code_lang:
