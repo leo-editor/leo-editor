@@ -48,8 +48,7 @@ class Commands:
         previousSettings=None,
         relativeFileName=None,
     ):
-
-        # tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
+        t1 = time.process_time()
         c = self
         # Official ivars.
         self._currentPosition = None
@@ -74,7 +73,16 @@ class Commands:
         assert c.frame
         assert c.frame.c
         # Complete the init!
-        c.finishCreate()
+        t2 = time.process_time()
+        c.finishCreate()  # Slightly slow.
+        t3 = time.process_time()
+        if 'speed' in g.app.debug:
+            print('c.__init__')
+            print(
+                f"    1: {t2-t1:5.2f}\n"  # 0.00 sec.
+                f"    2: {t3-t2:5.2f}\n"  # 0.53 sec: c.finishCreate.
+                f"total: {t3-t1:5.2f}"
+            )
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
     def computeWindowTitle(self, fileName):
         """Set the window title and fileName."""
@@ -401,7 +409,9 @@ class Commands:
         c, k = self, self.k
         assert c.gui
         assert k
-        c.frame.finishCreate()
+        t1 = time.process_time()
+        c.frame.finishCreate()  # Slightly slow.
+        t2 = time.process_time()
         c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
         # Only c.abbrevCommands needs a finishCreate method.
@@ -424,6 +434,14 @@ class Commands:
         # It must be called after the first real redraw.
         g.check_cmd_instance_dict(c, g)
         c.bodyWantsFocus()
+        t3 = time.process_time()
+        if 'speed' in g.app.debug:
+            print('c.finishCreate')
+            print(
+                f"    1: {t2-t1:5.2f}\n"  # 0.20 sec: qtGui.finishCreate.
+                f"    2: {t3-t2:5.2f}\n"  # 0.16 sec: everything else.
+                f"total: {t3-t1:5.2f}"
+            )
     #@+node:ekr.20140815160132.18835: *5* c.createCommandNames
     def createCommandNames(self):
         """

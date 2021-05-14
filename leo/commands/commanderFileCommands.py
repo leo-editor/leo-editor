@@ -5,6 +5,7 @@
 """File commands that used to be defined in leoCommands.py"""
 import os
 import sys
+import time
 from leo.core import leoGlobals as g
 from leo.core import leoImport
 #@+others
@@ -199,6 +200,7 @@ def import_txt_file(c, fn):
 @g.commander_command('new')
 def new(self, event=None, gui=None):
     """Create a new Leo window."""
+    t1 = time.process_time()
     from leo.core import leoApp
     lm = g.app.loadManager
     old_c = self
@@ -210,6 +212,7 @@ def new(self, event=None, gui=None):
     g.app.setLog(None)
     g.app.lockLog()
     # Retain all previous settings. Very important for theme code.
+    t2 = time.process_time()
     c = g.app.newCommander(
         fileName=None,
         gui=gui,
@@ -217,6 +220,7 @@ def new(self, event=None, gui=None):
             settingsDict=lm.globalSettingsDict,
             shortcutsDict=lm.globalBindingsDict,
         ))
+    t3 = time.process_time()
     frame = c.frame
     g.app.unlockLog()
     if not old_c:
@@ -236,6 +240,15 @@ def new(self, event=None, gui=None):
     c.clearChanged()  # Fix #387: Clear all dirty bits.
     g.app.disable_redraw = False
     c.redraw()
+    t4 = time.process_time()
+    if 'speed' in g.app.debug:
+        g.trace()
+        print(
+            f"    1: {t2-t1:5.2f}\n"  # 0.00 sec.
+            f"    2: {t3-t2:5.2f}\n"  # 0.36 sec: c.__init__
+            f"    3: {t4-t3:5.2f}\n"  # 0.17 sec: Everything else.
+            f"total: {t4-t1:5.2f}"
+        )
     return c  # For unit tests and scripts.
 #@+node:ekr.20031218072017.2821: *3* c_file.open_outline
 @g.commander_command('open-outline')

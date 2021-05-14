@@ -281,6 +281,8 @@ class LeoApp:
             # True: we are initiing the app.
         self.initComplete = False
             # True: late bindings are not allowed.
+        self.initStyleFlag = False
+            # True: setQtStyle called.
         self.killed = False
             # True: we are about to destroy the root window.
         self.openingSettingsFile = False
@@ -2752,9 +2754,9 @@ class LoadManager:
             '--session-save',
             '--use-docks',
         )
-        trace_m = '''abbrev,beauty,cache,coloring,drawing,events,focus,
-          git,gnx,importers,ipython,keys,layouts,plugins,save,
-          select,shutdown,size,startup,themes,undo,verbose,zoom'''
+        trace_m = '''abbrev,beauty,cache,coloring,drawing,events,focus,git
+          gnx,importers,ipython,keys,layouts,plugins,save,select,
+          shutdown,size,speed,startup,themes,undo,verbose,zoom'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
