@@ -1215,7 +1215,13 @@
 </v>
 </v>
 <v t="ekr.20210509173514.1"><vh>Using Leo's server</vh>
-<v t="ekr.20210509173536.1"><vh>@rst3 leoserver.html</vh></v>
+<v t="ekr.20210509173536.1"><vh>@rst3 leoserver.html</vh>
+<v t="ekr.20210513093758.1"><vh>Starting the server</vh></v>
+<v t="ekr.20210513093910.1"><vh>Communication protocol</vh></v>
+<v t="ekr.20210513094057.1"><vh>Technical details</vh></v>
+<v t="ekr.20210513100424.1"><vh>Compatibility and future directions</vh></v>
+<v t="ekr.20210513100433.1"><vh>Acknowledgement</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20101025080245.5799"><vh>Advanced Topics</vh>
@@ -2543,14 +2549,6 @@
 <v t="ekr.20210513055148.78"><vh>serverver._test_round_trip_positions</vh></v>
 </v>
 </v>
-<v t="ekr.20210513055148.79"><vh>function: ws_handler (server)</vh></v>
-<v t="ekr.20210513055148.80"></v>
-<v t="ekr.20210513055148.81"></v>
-<v t="ekr.20210513055148.82"></v>
-<v t="ekr.20210513055148.83"></v>
-<v t="ekr.20210513055148.84"></v>
-<v t="ekr.20210513055148.85"></v>
-<v t="ekr.20210513055148.86"></v>
 </v>
 <v t="ekr.20210509173536.1"></v>
 </vnodes>
@@ -32113,15 +32111,11 @@ https://github.com/leo-editor/leo-editor/issues/1923</t>
 Using leoserver.py
 ###################
 
-leoserver.py is a stand-alone server that provides access to Leo's bridge.
+leoserver.py is a stand-alone web server that provides access to all of Leo's capabilities using Leo's bridge.
 
-To start the server, execute `python leoserver.py &lt;args&gt;` in a separate process.
+leoclient.py is an example client, written in python. Clients can be written in any language. Clients send text reqests to the server, in JSON format, and receive JSON responses from the server.
 
-By default, the servers listens on "localhost" and port 32125.
-
-You can change these defaults with the --address and --port command-line arguments.
-
-`leoserver -h` prints "leoserver.py -a &lt;address&gt; -p &lt;port&gt;"</t>
+This chapter describes how to start the server and the communication protocal, that is, the format of the JSON requests and responses.</t>
 <t tx="ekr.20210511103020.1">https://github.com/leo-editor/leo-editor/issues/1930</t>
 <t tx="ekr.20210511103242.190">https://github.com/leo-editor/leo-editor/issues/1926</t>
 <t tx="ekr.20210511103242.2">https://github.com/leo-editor/leo-editor/issues/1914</t>
@@ -32595,7 +32589,9 @@ def viewLossage(self, event):
         g.printObj(answer, tag=f"{tag}: answer")
     return self._make_response({"answer": answer})
 </t>
-<t tx="ekr.20210513055148.2">class LeoServer:
+<t tx="ekr.20210513055148.2">@language python
+
+class LeoServer:
     """Leo Server Controller"""
     @others
 </t>
@@ -34381,67 +34377,6 @@ def _dump_position(self, p):  # pragma: no cover
             self._dump_outline(c)
             raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
 </t>
-<t tx="ekr.20210513055148.79">async def ws_handler(websocket, path):
-    """
-    The web socket handler: server.ws_server.
-
-    It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
-    """
-    tag = 'server'
-    trace = True
-    verbose = False
-    try:
-        controller._init_connection(websocket)
-        # Start by sending empty as 'ok'.
-        n = 0
-        async_n = 0
-        await websocket.send(controller._make_response())
-        # controller._sign_on()
-        async for json_message in websocket:
-            try:
-                n += 1
-                d = None
-                trace = True  ## controller.trace
-                d = json.loads(json_message)
-                if trace and verbose:
-                    print(f"{tag}: got: {d}")
-                elif trace:
-                    print(f"{tag}: got: {d.get('action')}")
-                answer = controller._do_message(d)
-            except TerminateServer as e:
-                raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
-            except ServerError as e:
-                data = f"{d}" if d else f"json syntax error: {json_message!r}"
-                error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
-                print("")
-                print(error)
-                print("")
-                package = {
-                    "id": controller.current_id,
-                    "action": controller.action,
-                    "request": data,
-                    "ServerError": f"{e}",
-                }  
-                answer = json.dumps(package, separators=(',', ':'))
-            except InternalServerError as e:  # pragma: no cover
-                print(f"{tag}: InternalServerError {e}")
-                break
-            except Exception as e:  # pragma: no cover
-                print(f"{tag}: Unexpected Exception! {e}")
-                g.printObj(package, tag=f"message: {d}")
-                g.print_exception()
-                break
-            await websocket.send(answer)
-            if n in (3, 4, 7, 10):
-                async_n += 1
-                controller._es(f"async message {async_n}")
-    except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
-        print(f"{tag}: closed error: {e}")
-    except websockets.exceptions.ConnectionClosed as e:
-        print(f"{tag}: closed normally: {e}")
-    # Don't call EventLoop.stop(). It terminates abnormally.
-        # asyncio.get_event_loop().stop()
-</t>
 <t tx="ekr.20210513055148.8">def get_buttons(self, package):  # pragma: no cover (no scripting controller)
     """Gets the currently opened file's @buttons list"""
     d = self._check_button_command('get_buttons')
@@ -34688,6 +34623,48 @@ def _dump_position(self, p):  # pragma: no cover
     return self._make_response({
         "buttons": sorted(list(d.get.keys()))
     })
+</t>
+<t tx="ekr.20210513093758.1">To start the server, execute `python leoserver.py &lt;args&gt;` in a separate process, that is, outside of Leo itself. `leoserver -h` prints "leoserver.py -a &lt;address&gt; -p &lt;port&gt;"
+
+By default, the server listens on "localhost" and port 32125. You can change these defaults with the --address and --port command-line arguments.
+
+</t>
+<t tx="ekr.20210513093910.1">**Requests**
+
+The _do_message method expects that incoming requests have the following format::
+
+Each request must be a JSON object that can be converted to a python dict, with
+the following three keys:
+   
+"id": A positive integer.
+   
+"action": A string, which is either:
+- The name of public method of this class, prefixed with a '!'.
+- The name of a leo command, without prefix, to be run by _do_leo_command
+       
+"param": A dict to be passed to the called "action" method.
+
+**Responses**
+
+The _make_response or _make_minimal_response methods return python dicts that are then converted do JSON. All responses contain an 'id' key that matches the corresponding requests.
+
+**Archived positions**
+
+Leo's Position objects can not be converted directly to JSON. Instead, requests and response refer to Positions using a stringized representation called **archived positions**. The server's _ap_to_p and _p_to_ap implicitly define the format of archived positions and show how to convert between real Leo Positions and archived positions.
+    </t>
+<t tx="ekr.20210513094057.1">The ws_handler function is the main server loop. It calls Python's asyncio.get_event_loop() to start listening on the designated socket and port.
+
+ws_handler dispatches incoming requests to the LeoServer._do_request method, which then dispatches the requests to the appropriate handler, wither in the LeoServer class, or (via Leo's bridge) to Leo itself.
+
+**Exception handling**
+
+Request handlers raise ServerError exceptions for badly formatted user requests. The server returns an response describing the error.
+
+The server raises InternalServerError for errors within the server itself. The server prints an error message and stops.
+
+Request handlers raise TerminateServer to terminate the server normally.</t>
+<t tx="ekr.20210513100424.1">The present version of leoserver.py exists to support leoInteg: Leo hosted on vs code.</t>
+<t tx="ekr.20210513100433.1">Félix Malboeuf wrote the original version of leoserver.py including the first draft of the all-important The ws_handler function. Edward K. Ream helped make the code more pythonic, and provided Leo-specific advice.
 </t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
