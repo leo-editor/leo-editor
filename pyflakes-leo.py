@@ -47,7 +47,7 @@ def report_version():
         print(f"flake8 version: {flake8.__version__}")
     except Exception:
         g.trace('can not import flake8')
-#@+node:ekr.20160518000549.15: ** scanOptions
+#@+node:ekr.20160518000549.15: ** scanOptions (pyflakes)
 def scanOptions():
     """Handle all options, remove them from sys.argv."""
     global g_option_fn
