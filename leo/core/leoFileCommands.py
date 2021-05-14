@@ -514,7 +514,6 @@ class FileCommands:
         if backupName and g.os_path_exists(backupName):
             g.es("restoring", fileName, "from", backupName)
             # No need to create directories when restoring.
-            ### g.utils_rename(c, backupName, fileName)
             src, dst = backupName, fileName
             try:
                 shutil.move(src, dst)

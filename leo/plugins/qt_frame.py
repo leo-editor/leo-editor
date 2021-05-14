@@ -9,6 +9,7 @@ from collections import defaultdict
 import os
 import platform
 import sys
+import time
 from typing import Any, Dict
 
 from leo.core import leoGlobals as g
@@ -2116,6 +2117,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def finishCreate(self):
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
+        t1 = time.process_time()
         c = self.c
         assert c
         frameFactory = g.app.gui.frameFactory
@@ -2128,9 +2130,20 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.createFirstTreeNode()  # Call the base-class method.
         self.menu = LeoQtMenu(c, self, label='top-level-menu')
         g.app.windowList.append(self)
-        self.setQtStyle()
+        t2 = time.process_time()
+        self.setQtStyle()  # Slow, but only the first time it is called.
+        t3 = time.process_time()
         self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
+        t4 = time.process_time()
+        if 'speed' in g.app.debug:
+            print('qtFrame.finishCreate')
+            print(
+                f"    1: {t2-t1:5.2f}\n"  # 0.20 sec: before.
+                f"    2: {t3-t2:5.2f}\n"  # 0.19 sec: setQtStyle (only once)
+                f"    3: {t4-t3:5.2f}\n"  # 0.00 sec: after.
+                f"total: {t4-t1:5.2f}"
+            )
     #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
 
@@ -2150,6 +2163,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         Pyzo is distributed under the terms of the (new) BSD License.
         The full license can be found in 'license.txt'.
         """
+        # Fix #1936: very slow new command. Only do this once!
+        if g.app.initStyleFlag:
+            return  
+        g.app.initStyleFlag = True
         c = self.c
         trace = 'themes' in g.app.debug
         #
