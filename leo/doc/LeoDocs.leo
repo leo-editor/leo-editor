@@ -1739,6 +1739,7 @@
 <v t="ekr.20210405104614.1"><vh>6.4: Bugs</vh>
 <v t="ekr.20210405100137.555"><vh>#1591: no todo icons</vh></v>
 <v t="ekr.20210405100137.626"><vh>#1726: crasher in leoflexx.py</vh></v>
+<v t="ekr.20210514065835.1"><vh>#1722: slow new command</vh></v>
 <v t="ekr.20210405100137.627"><vh>#1731: Handle Tab keys properly</vh></v>
 <v t="ekr.20210405100137.690"><vh>#1739: allow tab to be inserted</vh></v>
 <v t="ekr.20210405100137.757"><vh>#1748: replace-all regex</vh></v>
@@ -32087,7 +32088,11 @@ Change commands:
 - reload-settings now changes settings in all open outlines.
 </t>
 <t tx="ekr.20210405104825.1">- Add @bool allow-text-zoom = True
-https://github.com/leo-editor/leo-editor/issues/1923</t>
+https://github.com/leo-editor/leo-editor/issues/1923
+
+- Add support for --trace-speed.
+https://github.com/leo-editor/leo-editor/issues/1936
+</t>
 <t tx="ekr.20210405110053.1"></t>
 <t tx="ekr.20210405110145.1"></t>
 <t tx="ekr.20210429042049.1771">https://github.com/leo-editor/leo-editor/issues/1880</t>
@@ -34666,6 +34671,7 @@ Request handlers raise TerminateServer to terminate the server normally.</t>
 <t tx="ekr.20210513100424.1">The present version of leoserver.py exists to support leoInteg: Leo hosted on vs code.</t>
 <t tx="ekr.20210513100433.1">Félix Malboeuf wrote the original version of leoserver.py including the first draft of the all-important The ws_handler function. Edward K. Ream helped make the code more pythonic, and provided Leo-specific advice.
 </t>
+<t tx="ekr.20210514065835.1">https://github.com/leo-editor/leo-editor/issues/1722</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
