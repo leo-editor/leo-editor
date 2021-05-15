@@ -32120,8 +32120,8 @@ https://github.com/leo-editor/leo-editor/issues/1936
 Using leoserver.py
 ###################
 
-leoserver.py is a stand-alone web server that provides access to Leo's
-capabilities using Leo's bridge.
+leoserver.py is a stand-alone web socket server that provides access to
+Leo's capabilities using Leo's bridge.
 
 leoserver.py exists to support leoInteg: Leo hosted on Visual Studio Code.
 Future versions of leoserver.py may add new request handlers. Once added,
