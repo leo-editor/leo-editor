@@ -1215,11 +1215,13 @@
 </v>
 </v>
 <v t="ekr.20210509173514.1"><vh>Using Leo's server</vh>
-<v t="ekr.20210509173536.1"><vh>@rst3 leoserver.html</vh>
+<v t="ekr.20210509173536.1"><vh>@rst html\leoserver.html</vh>
 <v t="ekr.20210513093758.1"><vh>Starting the server</vh></v>
-<v t="ekr.20210513093910.1"><vh>Communication protocol: requests</vh></v>
-<v t="ekr.20210514075844.1"><vh>Communication protocol: responses</vh></v>
+<v t="ekr.20210515095924.1"><vh>Communication protocol</vh>
+<v t="ekr.20210513093910.1"><vh>Requests</vh></v>
+<v t="ekr.20210514075844.1"><vh>Responses</vh></v>
 <v t="ekr.20210514075903.1"><vh>Archived positions</vh></v>
+</v>
 <v t="ekr.20210513094057.1"><vh>The main server loop</vh></v>
 <v t="ekr.20210513100424.1"><vh>Compatibility and future directions</vh></v>
 <v t="ekr.20210513100433.1"><vh>Acknowledgments</vh></v>
@@ -32118,11 +32120,20 @@ https://github.com/leo-editor/leo-editor/issues/1936
 Using leoserver.py
 ###################
 
-leoserver.py is a stand-alone web server that provides access to all of Leo's capabilities using Leo's bridge.
+leoserver.py is a stand-alone web server that provides access to Leo's
+capabilities using Leo's bridge.
 
-leoclient.py is an example client, written in python. Clients can be written in any language. Clients send text requests to the server, in JSON format, and receive JSON responses from the server.
+leoserver.py exists to support leoInteg: Leo hosted on Visual Studio Code.
+Future versions of leoserver.py may add new request handlers. Once added,
+request handlers will not be removed or changed in incompatible ways.
 
-This chapter describes how to start the server and the communication protocol, that is, the format of the JSON requests and responses.</t>
+leoclient.py is an example client, written in python. Clients can be
+written in any language. Clients send text (JSON) requests to the server
+and receive JSON responses from the server.
+
+.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20210511103020.1">https://github.com/leo-editor/leo-editor/issues/1930</t>
 <t tx="ekr.20210511103242.190">https://github.com/leo-editor/leo-editor/issues/1926</t>
 <t tx="ekr.20210511103242.2">https://github.com/leo-editor/leo-editor/issues/1914</t>
@@ -34634,39 +34645,43 @@ def _dump_position(self, p):  # pragma: no cover
 <t tx="ekr.20210513093758.1">To start the server, execute `python leoserver.py &lt;args&gt;` in a separate process, that is, outside of Leo itself. `leoserver -h` prints "leoserver.py -a &lt;address&gt; -p &lt;port&gt;"
 
 By default, the server listens on "localhost" and port 32125. You can change these defaults with the --address and --port command-line arguments.</t>
-<t tx="ekr.20210513093910.1">The **_do_message** method expects that incoming requests are JSON objects that can be converted to a python dict, with the following three keys:
-   
+<t tx="ekr.20210513093910.1">The server listens for requests (JSON Objects), converts each incoming
+request to a Python dict, and calls the **_do_message** method. The dict
+must have the following string keys:
+
 "id": A positive integer.
    
 "action": A string, which is either:
-- The name of a public method of this class, prefixed with a '!'.
-- The name of a Leo command, without prefix, to be run by _do_leo_command.
+- The name of a public method of the server class, prefixed with a '!'.
+- The name of a Leo command, without prefix.
        
-"param": A dict to be passed to the called "action" method.
+"param": A dict containing data for the request handler.
 
 </t>
-<t tx="ekr.20210513094057.1">The **ws_handler** function contains the main server loop. It calls Python's asyncio.get_event_loop() to start listening on the designated socket and port.
+<t tx="ekr.20210513094057.1">The **ws_handler** function contains the main server loop. It calls
+asyncio.get_event_loop() to start listening on the designated socket and
+port.
 
-ws_handler dispatches incoming requests to the **_do_request** method, which then dispatches the requests to the appropriate handler, either in the LeoServer class, or (via Leo's bridge) to Leo itself.
+ws_handler dispatches incoming requests to the **_do_request** method, which then calls the appropriate handler, either in the LeoServer class, or (via Leo's bridge) to Leo itself.
 
-Request handlers raise ServerError exceptions for badly formatted user requests. The server returns an response describing the error.
+Request handlers raise the following exceptions:
 
-The server raises InternalServerError for errors within the server itself. The server prints an error message and stops.
-
-Request handlers raise TerminateServer to terminate the server normally.</t>
-<t tx="ekr.20210513100424.1">The present version of leoserver.py exists to support leoInteg: Leo hosted on vs code.
-
-In the future, features (request handlers) can be added to leoserver.py, but features probably will never be removed.</t>
-<t tx="ekr.20210513100433.1">Félix Malboeuf wrote the original version of leoserver.py including the first draft of the all-important The ws_handler function. Edward K. Ream helped make the code more pythonic and provided Leo-specific advice.
+- ServerError indicates an invalid user request.
+  The server returns a response describing the error.
+- InternalServerError and error within the server itself.
+  The server prints an error message and stops.
+- TerminateServer causes the server to terminate normally.</t>
+<t tx="ekr.20210513100424.1"></t>
+<t tx="ekr.20210513100433.1">Félix Malboeuf wrote the original version of leoserver.py, including the first draft of the all-important The ws_handler function. Edward K. Ream helped make the code more pythonic and provided Leo-specific advice.
 </t>
 <t tx="ekr.20210514065835.1">https://github.com/leo-editor/leo-editor/issues/1722</t>
-<t tx="ekr.20210514075844.1">The **_make_response** and **_make_minimal_response** methods return python dicts that are then converted do JSON. All responses contain an 'id' key that matches the corresponding requests.
-
+<t tx="ekr.20210514075844.1">The **_make_response** and **_make_minimal_response** methods return python
+dicts. The server's main loop converts those dicts to JSON. All responses contain
+an 'id' key that matches the corresponding requests.
 </t>
-<t tx="ekr.20210514075903.1">Leo's Position objects can not be converted directly to JSON. Instead, requests and responses contain archived positions, strings representing positions.
-
-The server's **_ap_to_p** and **_p_to_ap** methods implicitly define the format of archived positions and show how to convert between Leo Positions and archived positions.
-    </t>
+<t tx="ekr.20210514075903.1">The server's **_ap_to_p** and **_p_to_ap** methods convert Leo positions to
+**archived positions** (strings) that can be converted to JSON.</t>
+<t tx="ekr.20210515095924.1"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
