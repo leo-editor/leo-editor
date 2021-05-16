@@ -2321,7 +2321,7 @@ class AtFile:
             line = lines[j].rstrip()
             if j == i:
                 unl = p.get_UNL(with_proto=True, with_count=True)
-                g.es_print(f"{j+1:5}:* {line}", nodeLink=f"{unl},-{j+1:d}")
+                g.es_print(f"{j+1:5}:* {line}", nodeLink=f"{unl},-{j+1:d}")  # Global line.
                 g.es_print(' ' * (7 + offset) + '^')
             else:
                 g.es_print(f"{j+1:5}: {line}")
