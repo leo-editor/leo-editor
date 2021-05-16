@@ -214,8 +214,7 @@ class BackgroundProcessManager:
         #
         # Put a clickable link.
         unl = link_root.get_UNL(with_proto=True, with_count=True)
-        nodeLink = f"{unl},{-line}"
-        log.put(s + '\n', nodeLink=nodeLink)
+        log.put(s + '\n', nodeLink=f"{unl},{-line}")
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind,
         fn=None,
