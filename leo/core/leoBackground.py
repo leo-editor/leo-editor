@@ -59,7 +59,7 @@ class BackgroundProcessManager:
         self.pid = None
             # The process id of the running process.
         g.app.idleTimeManager.add_callback(self.on_idle)
-    #@+node:ekr.20161028090624.1: *3* class ProcessData
+    #@+node:ekr.20161028090624.1: *3* class BPM.ProcessData
     class ProcessData:
         """A class to hold data about running or queued processes."""
 
@@ -152,7 +152,7 @@ class BackgroundProcessManager:
         Put a string to the originating log.
         This is not what g.es_print does!
         
-        Create clickable links s matches self.data.link_pattern.
+        Create clickable links if s matches self.data.link_pattern.
         See p.get_UNL.
         
         New in Leo 6.4: get the filename from link_pattern if link_root is None.
@@ -218,16 +218,18 @@ class BackgroundProcessManager:
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind,
         fn=None,
-        link_pattern=None,
+        link_pattern=None,  # None, string, or re.pattern.
         link_root=None,
         shell=False,
     ):
-        """Start or queue a process described by command and fn."""
+        """
+        Start or queue a process described by command and fn.
+        
+        Don't set self.data unless we start the process!
+        """
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
-            # 2019/06/05: don't set self.data unless we start the process!
         if self.pid:
             # A process is already active.  Add a new callback.
-            # g.trace('\nQUEUE', link_root.h)
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
@@ -245,7 +247,6 @@ class BackgroundProcessManager:
         else:
             # Start the process immediately.
             self.data = data
-            # g.trace('\nSTART', link_root.h)
             self.kind = kind
             self.put_log(f'{kind}: {g.shortFileName(fn)}\n')
             self.pid = subprocess.Popen(

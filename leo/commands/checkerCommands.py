@@ -379,7 +379,7 @@ class PyflakesCommand:
         self.c = c
         self.seen = []  # List of checked paths.
     #@+others
-    #@+node:ekr.20171228013818.1: *3* class LogStream
+    #@+node:ekr.20171228013818.1: *3* class PyflakesCommand.LogStream
     class LogStream:
 
         """A log stream for pyflakes."""

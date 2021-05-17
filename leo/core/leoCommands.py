@@ -602,7 +602,7 @@ class Commands:
         runPyflakes=True,
     ):
         """
-        Execute a *Leo* script.
+        Execute a *Leo* script, written in python.
         Keyword args:
         args=None               Not None: set script_args in the execution environment.
         p=None                  Get the script from p.b, unless script is given.
