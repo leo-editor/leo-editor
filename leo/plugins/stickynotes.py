@@ -72,19 +72,19 @@ except ImportError:
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
 #
-# Aliases...
-QTimer = QtCore.QTimer
-QFont = QtGui.QFont
-QTextCharFormat = QtGui.QTextCharFormat
-QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
-QInputDialog = QtWidgets.QInputDialog
-QLineEdit = QtWidgets.QLineEdit
-QMainWindow = QtWidgets.QMainWindow
-QMdiArea = QtWidgets.QMdiArea
-QTextEdit = QtWidgets.QTextEdit
-#
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+# Define aliases only we are using the Qt gui.
+# The top-level init function will return False if not.
+if Qt:
+    # Aliases...
+    QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+    QFont = QtGui.QFont
+    QInputDialog = QtWidgets.QInputDialog
+    QLineEdit = QtWidgets.QLineEdit
+    QMainWindow = QtWidgets.QMainWindow
+    QMdiArea = QtWidgets.QMdiArea
+    QTextCharFormat = QtGui.QTextCharFormat
+    QTextEdit = QtWidgets.QTextEdit
+    QTimer = QtCore and QtCore.QTimer
 #@-<< imports >>
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
@@ -364,8 +364,6 @@ class SimpleRichText(QTextEdit):
         self.focusin = focusin
         self.focusout = focusout
         self.createActions()
-
-        #self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
     def focusOutEvent ( self, event ):
         self.focusout()
