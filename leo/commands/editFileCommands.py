@@ -33,7 +33,8 @@ class ConvertAtRoot:
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     section_pat = re.compile(r'\s*<\<.+>\>')
-    units = []  # List of positions containing @unit.
+    units = []  # type: ignore
+        # List of positions containing @unit.
 
     #@+others
     #@+node:ekr.20210308044128.1: *3* atRoot.check_move
