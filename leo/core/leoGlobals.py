@@ -7331,6 +7331,7 @@ def findNodeAnywhere(c, headline, exact=True):
 #@+node:ekr.20210303123525.1: *4* findNodeByPath
 def findNodeByPath(c, path):
     """Return the first @<file> node in Cmdr c whose path is given."""
+    path = g.os_path_finalize(path)
     for p in c.all_positions():
         if p.isAnyAtFileNode() and path == g.fullPath(c, p):
             return p
