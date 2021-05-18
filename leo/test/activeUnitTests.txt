@@ -18196,6 +18196,21 @@ Sec 1.
 #@+node:ekr.20210503054414.282: *7* section 2
 
 Sec 2.
+#@+node:ekr.20210518075227.74: *6* @@auto-rst @test leo_rst
+@language rest
+@tabwidth -4
+#@+node:ekr.20210518075227.75: *7* !Dummy chapter
+  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+#@+node:ekr.20210518075227.76: *7* section 1
+
+Sec 1.
+#@+node:ekr.20210518075227.77: *7* section 2
+
+Sec 2.
 #@+node:ekr.20161204041557.1: *4* All other importer tests
 #@+node:ekr.20140723134017.4464: *5* @test @auto importers
 # This causes problems!
@@ -18854,9 +18869,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20210503054416.3: *5* insertAsFirstChild
-#@+node:ekr.20210503054416.5: *5* insertAsNthChild(1)
-#@+node:ekr.20210503054416.4: *5* insertAsLastChild
+#@+node:ekr.20210518075228.3: *5* insertAsFirstChild
+#@+node:ekr.20210518075228.5: *5* insertAsNthChild(1)
+#@+node:ekr.20210518075228.4: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -19484,9 +19499,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20210503054417.9: *6* A
-#@+node:ekr.20210503054417.11: *6* inserted
-#@+node:ekr.20210503054417.10: *6* B
+#@+node:ekr.20210518075229.11: *6* A
+#@+node:ekr.20210518075229.13: *6* inserted
+#@+node:ekr.20210518075229.12: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -23414,6 +23429,27 @@ line 1
     line 2
       line 3
 line4
+#@+node:ekr.20210518075231.6: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20210518075231.7: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20210518075231.8: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
 #@+node:ekr.20201018151721.1: *5* do and undo
 @tabwidth -4
 
@@ -23740,6 +23776,7 @@ exclude = [
     'baseNativeTree.py',
     'leocursor.py',
     'leo_cloud_server.py',
+    'leo_mypy_plugin.py',
     'qtGui.py',
     'qt_big_text.py',
     'qt_commands.py',

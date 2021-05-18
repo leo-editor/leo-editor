@@ -218,10 +218,9 @@ from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
-
-
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100128073941.5371: ** init (bookmarks.py)
