@@ -5,8 +5,10 @@ A mypy plugin to add annotations for Leo's standard names,
 such as c, p, i, j, k, n, s, w, etc.
 
 """
-from leo.core import leoGlobals as g
+# pylint: disable=no-name-in-module
 from mypy.plugin import Plugin
+# from leo.core import leoGlobals as g
+print(__file__, "Plugin:", Plugin)
 
 #@+others
 #@+node:ekr.20210517153044.1: ** class LeoMypyPlugin
@@ -16,7 +18,7 @@ class LeoMypyPlugin(Plugin):
 #@+node:ekr.20210517152918.1: ** plugin
 def plugin(version: str):
     
-    g.trace('leo_mypy_plugin', version)
+    print('leo_mypy_plugin.plugin: version:', version)
     return LeoMypyPlugin
 #@-others
 #@-leo
