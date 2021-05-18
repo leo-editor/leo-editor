@@ -12,6 +12,9 @@ from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 from leo.core.leoQt import isQt6, QtGui, QtWidgets
 QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< ftp imports >>
 #@+others
 #@+node:ekr.20110110105526.5467: ** init

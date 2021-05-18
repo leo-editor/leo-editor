@@ -50,7 +50,6 @@ with some modifications made for Leo embedding.
 import re
 import sys
 import code
-
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
 
@@ -63,6 +62,9 @@ if use_rlcompleter:
     from rlcompleter import Completer
 else:
     Completer = None
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 
 #@+others

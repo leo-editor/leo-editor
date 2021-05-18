@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170925083314.1: * @file ../plugins/leo_cloud.py
-#@+others
-#@+node:ekr.20201012111338.2: ** Declarations (leo_cloud.py)
+#@+<< docstring >>
+#@+node:ekr.20210518113636.1: ** << docstring >>
 """
 leo_cloud.py - synchronize Leo subtrees with remote central server
 
@@ -70,8 +70,9 @@ machines easily too. Like this:
 "just works", so now your shortcuts etc. can be stored on a central
 server.
 """
-
-# pylint: disable=unused-import
+#@-<< docstring >>
+#@+<< imports >>
+#@+node:ekr.20210518113710.1: ** << imports >>
 import json
 import os
 import re
@@ -82,14 +83,18 @@ import threading
 from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
-
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import vnode
 from leo.core.leoQt import QtCore  # see QTimer in LeoCloud.__init__
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#@-<< imports >>
 
 # for 'key: value' lines in body text
 KWARG_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*): (.*)")
 
+#@+others
 #@+node:ekr.20201012111338.3: ** init (leo_cloud.py)
 def init ():
     g.registerHandler(('new','open2'), onCreate)

@@ -333,6 +333,10 @@ try:
     got_pil = True
 except ImportError:
     got_pil = False
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
 # Alias.
 got_qt = QtGui is not None
 #@-<< imports >>

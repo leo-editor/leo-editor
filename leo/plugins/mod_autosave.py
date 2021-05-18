@@ -16,6 +16,10 @@ This plugin is active only if::
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
 # The global settings dict.
 gDict = {} # Keys are commanders, values are settings dicts.
 

@@ -63,6 +63,10 @@ import time
 from urllib.parse import unquote
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
 # Alias.
 real_webkit = QtWebKit and 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
 #@-<< imports >>

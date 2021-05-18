@@ -20,6 +20,9 @@ except ImportError:
     asttools = None
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:tbrown.20140806084727.30178: ** init

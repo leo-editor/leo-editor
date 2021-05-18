@@ -23801,6 +23801,70 @@ for fn in files:
         ok2 = s.find('def init ():') > -1
         assert ok1 or ok2,'fail: %s' % (fn)
     
+#@+node:ekr.20210518092129.1: *4* @test all qt plugins call g.assertUi('qt')
+'''Ensure all plugins have top-level init method *without* importing them.'''
+
+import glob
+import inspect
+import re
+
+# Get a list of all plugins.
+plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+plugins = g.os_path_abspath(plugins)
+files = glob.glob(plugins)
+files = [g.os_path_abspath(z) for z in files]
+files = [z for z in files if not z.endswith('__init__.py')]
+files.sort()
+
+exclude = [
+    # These are not real plugins...
+    'babel_api.py',
+    'babel_kill.py',
+    'babel_lib.py',
+    'baseNativeTree.py',
+    'leocursor.py',
+    'leo_cloud_server.py',
+    'leo_mypy_plugin.py',
+    'nested_splitter.py',
+    'pyplot_backend.py',
+    'qtGui.py',
+    'qt_big_text.py',
+    'qt_commands.py',
+    'qt_events.py',
+    'qt_frame.py',
+    'qt_gui.py',
+    'qt_idle_time.py',
+    'qt_main.py',
+    'qt_quickheadlines.py',
+    'qt_quicksearch_sub.py',
+    'qt_text.py',
+    'qt_tree.py',
+    'qt_quicksearch.py',
+    'swing_gui.py',
+    #
+    # Special cases, handling Qt imports in unusual ways.
+    #
+    'backlink.py',  # Qt code is optional, disabled with module-level guard.
+    'colorize_headlines.py',  # Does not import any Qt symbols.
+    'cursesGui2.py',  # Does not import any Qt symbols.
+    'free_layout.py',  # Contains guards. This plugin is loaded early.
+    'leoscreen.py',  # Qt imports are optional.
+    'mod_scripting.py',  # Does not import any Qt symbols.
+]
+pattern = re.compile(r'\b(Qt|QtCore|QtGui|QtWidgets)\b')
+fails = []
+for fn in files:
+    if g.shortFileName(fn) in exclude:
+        continue
+    with open(fn, 'r') as f:
+        s = f.read()
+    if not re.search(pattern, s):
+        continue
+    if not re.search(r"g\.assertUi\(['\"]qt['\"]\)", s):
+        fails.append(fn)
+if fails:
+    g.printObj(fails)
+    assert False, f"{len(fails)} failures"
 #@+node:ekr.20140217055617.4230: *4* @test c.theScriptingController.atScriptNodes
 # This must be true even though @bool scriptingatscriptnodes is True in this file.
 if hasattr(c,'theScriptingController'):

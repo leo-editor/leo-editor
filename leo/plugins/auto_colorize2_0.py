@@ -8,10 +8,16 @@ By Adrian Calvin.
 '''
 #@+<< imports auto_colorize2_0.py >>
 #@+node:ekr.20170619151859.3: ** << imports auto_colorize2_0.py >>
-from PyQt5.QtGui import QBrush
-from PyQt5.QtGui import QColor
 import yaml
 from leo.core import leoGlobals as g
+try:
+    from PyQt5.QtGui import QBrush
+    from PyQt5.QtGui import QColor
+except Exception:
+    QBrush = QColor = None
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports auto_colorize2_0.py >>
 #@+others
 #@+node:ekr.20170619151859.4: ** onCreate
