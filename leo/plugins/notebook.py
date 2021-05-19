@@ -8,8 +8,9 @@ Use <Alt-x>nb-<tab> to see the list of commands.
 '''
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtDeclarative, QtGui
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 controllers = {}
     # keys are c.hash(), values are NavControllers

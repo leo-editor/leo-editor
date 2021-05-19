@@ -6,8 +6,12 @@ commands, and an input area in which the user can type other commands.
 '''
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
+# Globals.
 controllers = {}
-    # Keys are 
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions
 #@+node:ekr.20181004143535.4: *3* init (xdb_pane.py)

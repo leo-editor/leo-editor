@@ -100,6 +100,9 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 #@+node:peckj.20131101132841.6447: ** << imports >>
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets, QtCore
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:peckj.20131101132841.6448: ** init

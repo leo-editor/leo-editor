@@ -6,7 +6,7 @@
 import time
 assert time
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, Qsci, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -795,11 +795,11 @@ if QtWidgets:
             KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             if KeyboardModifiers.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
-                if isQt5:
+                try:  # Qt5 or later.
                     point = event.angleDelta()
                     delta = point.y() or point.x()
-                else:
-                    delta = event.delta()
+                except AttributeError:
+                    delta = event.delta()  # Qt4.
                 if delta < 0:
                     zoom_out(d)
                 else:

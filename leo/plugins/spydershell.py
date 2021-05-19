@@ -13,9 +13,9 @@ if it was closed before.
 #@+node:ville.20090815203828.5238: ** << imports >>
 import sys
 from leo.core import leoGlobals as g
-
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:ville.20090815203828.5239: ** init

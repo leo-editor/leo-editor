@@ -9,6 +9,9 @@ interface. Bzr is invoked based on the path of the current node.
 # by TNB
 import subprocess
 from leo.core import leoGlobals as g
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20101101135104.15789: ** init
 def init():

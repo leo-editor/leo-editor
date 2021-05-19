@@ -44,6 +44,9 @@ Settings
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtGui
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20141101114322.4: ** init

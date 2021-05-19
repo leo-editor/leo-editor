@@ -35,6 +35,9 @@ import os
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20130419143128.29676: ** init
 def init():

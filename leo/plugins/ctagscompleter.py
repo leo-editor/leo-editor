@@ -36,6 +36,9 @@ if isQt5 or isQt6:
 else:
     QCompleter = QtGui.QCompleter
     QStringListModel = QtWidgets.QStringListModel
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< ctagscompleter imports >>
 # Global variables
 controllers = {}
