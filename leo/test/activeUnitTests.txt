@@ -23845,13 +23845,10 @@ exclude = [
     # Special cases, handling Qt imports in unusual ways.
     #
     'backlink.py',  # Qt code is optional, disabled with module-level guard.
-    'colorize_headlines.py',  # Does not import any Qt symbols.
-    'cursesGui2.py',  # Does not import any Qt symbols.
-    'free_layout.py',  # Contains guards. This plugin is loaded early.
     'leoscreen.py',  # Qt imports are optional.
-    'mod_scripting.py',  # Does not import any Qt symbols.
+    # 'free_layout.py',
 ]
-pattern = re.compile(r'\b(Qt|QtCore|QtGui|QtWidgets)\b')
+pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b') # Don't search for Qt.
 fails = []
 for fn in files:
     if g.shortFileName(fn) in exclude:
