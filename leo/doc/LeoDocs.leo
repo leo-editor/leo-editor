@@ -1804,6 +1804,7 @@
 </v>
 <v t="ekr.20210513053406.14"></v>
 </v>
+<v t="ekr.20210520081100.1"><vh>#1946: g.assertUi</vh></v>
 <v t="ekr.20210405100137.887"><vh>PR1759: Further improvements to undo code</vh></v>
 <v t="ekr.20210405100137.1772"><vh>PR1804: Support batch change scripts</vh></v>
 <v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
@@ -34682,6 +34683,18 @@ an 'id' key that matches the corresponding requests.
 <t tx="ekr.20210514075903.1">The server's **_ap_to_p** and **_p_to_ap** methods convert Leo positions to
 **archived positions** (strings) that can be converted to JSON.</t>
 <t tx="ekr.20210515095924.1"></t>
+<t tx="ekr.20210520081100.1">https://github.com/leo-editor/leo-editor/issues/1946
+
+Added the following to most Qt plugins:
+
+@language python
+
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
+@language rest
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
