@@ -33,6 +33,8 @@ from leo.core.leoQt import isQt6, QtWidgets, QtCore
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter
         # NestedSplitterChoice
+#
+# Do not call g.assertUi('qt') here. It's too early in the load process.
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init

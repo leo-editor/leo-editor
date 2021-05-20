@@ -103,18 +103,17 @@ except ImportError:
 
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
-
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 
 #@+others
 #@+node:peckj.20140218144401.6039: ** init
 def init ():
-
-    if g.app.gui is None:
-        g.app.createQtGui(__file__)
-
+    # if g.app.gui is None:
+    #    g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt') and paramiko is not None
-
     if ok:
         g.registerHandler(('new','open2'),onCreate)
         g.plugin_signon(__name__)

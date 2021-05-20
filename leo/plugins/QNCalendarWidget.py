@@ -10,11 +10,13 @@ with a QDateEdit (QNDateEdit) in a particular context.
 Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 """
 
-# import os
 import sys
 import datetime
-
+from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 def init():
     return True # For unit tests.

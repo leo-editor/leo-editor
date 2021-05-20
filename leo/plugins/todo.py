@@ -70,11 +70,12 @@ import re
 import datetime
 import time
 from leo.core import leoGlobals as g
+from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 NO_TIME = datetime.date(3000, 1, 1)
-
-if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20090119215428.6: ** init (todo.py)

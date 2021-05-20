@@ -136,11 +136,12 @@ Tags
 from copy import deepcopy
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
-
-if g.app.gui.guiName() == "qt":
-    # for the right click context menu, and child items
-    from leo.core.leoQt import isQt6, QtGui, QtWidgets # QtCore
-    from leo.plugins.attrib_edit import ListDialog
+# for the right click context menu, and child items
+from leo.core.leoQt import isQt6, QtGui, QtWidgets # QtCore
+from leo.plugins.attrib_edit import ListDialog
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
 #@+others

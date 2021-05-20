@@ -47,10 +47,10 @@ import subprocess
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoGui import LeoKeyEvent
-
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
-
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
 # Globals
 inited = False
 

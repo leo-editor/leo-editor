@@ -54,6 +54,7 @@ class AtFile:
         self.fileCommands = c.fileCommands
         self.errors = 0  # Make sure at.error() works even when not inited.
         # **Only** at.writeAll manages these flags.
+        self.unchangedFiles = 0
         # promptForDangerousWrite sets cancelFlag and yesToAll only if canCancelFlag is True.
         self.canCancelFlag = False
         self.cancelFlag = False
@@ -1042,6 +1043,7 @@ class AtFile:
         at, c = self, self.c
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
+        at.unchangedFiles = 0
         at.canCancelFlag = True
         at.cancelFlag = False
         at.yesToAll = False
@@ -1122,10 +1124,12 @@ class AtFile:
     #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
     def reportEndOfWrite(self, files, all, dirty):
 
+        at = self
         if g.unitTesting:
             return
         if files:
-            g.es('finished')
+            n = at.unchangedFiles
+            g.es(f"finished: {n} unchanged file{g.plural(n)}")
         elif all:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
@@ -2708,6 +2712,7 @@ class AtFile:
             old_contents, contents)) or
             ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
+            at.unchangedFiles += 1
             if not g.unitTesting and c.config.getBool(
                 'report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")
