@@ -72,19 +72,19 @@ except ImportError:
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
 #
-# Define aliases only we are using the Qt gui.
-# The top-level init function will return False if not.
-if Qt:
-    # Aliases...
-    QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
-    QFont = QtGui.QFont
-    QInputDialog = QtWidgets.QInputDialog
-    QLineEdit = QtWidgets.QLineEdit
-    QMainWindow = QtWidgets.QMainWindow
-    QMdiArea = QtWidgets.QMdiArea
-    QTextCharFormat = QtGui.QTextCharFormat
-    QTextEdit = QtWidgets.QTextEdit
-    QTimer = QtCore and QtCore.QTimer
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
+# Aliases...
+QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+QFont = QtGui.QFont
+QInputDialog = QtWidgets.QInputDialog
+QLineEdit = QtWidgets.QLineEdit
+QMainWindow = QtWidgets.QMainWindow
+QMdiArea = QtWidgets.QMdiArea
+QTextCharFormat = QtGui.QTextCharFormat
+QTextEdit = QtWidgets.QTextEdit
+QTimer = QtCore.QTimer
 #@-<< imports >>
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** decorate_window

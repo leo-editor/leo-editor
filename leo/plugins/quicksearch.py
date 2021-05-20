@@ -87,8 +87,9 @@ from leo.core.leoQt import isQt6, QtCore, QtConst, QtWidgets
 from leo.core import leoNodes
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190210123045.1: ** top level

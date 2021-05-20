@@ -734,6 +734,22 @@ try:
 except ImportError:
     pygments = None
     print('VR3: *** no pygments')
+
+if isQt5:
+    try:
+        QWebView = QtWebKitWidgets.QWebView
+    except Exception:
+        QWebView = None
+else:
+    try:
+        #QWebView = QtWebKitWidgets.QWebView
+        QWebView = QtWidgets.QTextBrowser
+    except Exception:
+        QWebView = None
+        # The top-level init function gives the error.
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
