@@ -20,8 +20,9 @@ the left side of toolbar.
 #@+node:ville.20090518182905.5422: ** << imports >>
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtGui, QtWidgets
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 controllers = {}
     # keys are c.hash(), values are NavControllers

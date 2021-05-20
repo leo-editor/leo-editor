@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:vitalije.20170727201534.1: * @file ../plugins/line_numbering.py
-#@+others
-#@+node:vitalije.20170727201830.1: ** About line_numbering plugin
 """
 This plugin makes line numbers in gutter (if used), to represent
    real line numbers in generated file. Root of file is either a
@@ -12,15 +10,22 @@ This plugin makes line numbers in gutter (if used), to represent
    Author: vitalije(at)kviziracija.net
 """
 
-#@+node:vitalije.20170727201931.1: ** imports
+#@+<< imports >>
+#@+node:vitalije.20170727201931.1: ** << imports >>
 from contextlib import contextmanager
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#@-<< imports >>
 
 LNT = 'line_number_translation'
 LNR = 'line_numbering_root'
 LNOFF = 'line_numbering_off'
+
+#@+others
 #@+node:vitalije.20170727203452.1: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''

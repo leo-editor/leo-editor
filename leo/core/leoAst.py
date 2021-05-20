@@ -3470,7 +3470,7 @@ class BaseTest(unittest.TestCase):
     # make_data: 'contents', 'tokens', 'tree',
     #            'post-tokens', 'post-tree',
     #            'unit-test'
-    debug = []
+    debug = []  # type: ignore
 
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
@@ -5184,7 +5184,7 @@ class TestTOG(BaseTest):
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
 
-    debug = ['unit-test']
+    debug = ['unit-test']  # type: ignore
 
     #@+others
     #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features

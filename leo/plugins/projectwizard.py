@@ -7,10 +7,10 @@ where the selected file is (the selected file itself doesn't matter.)
 
 '''
 # Written by VMV.
-
 from leo.core import leoGlobals as g
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:ville.20090614224528.8139: ** init

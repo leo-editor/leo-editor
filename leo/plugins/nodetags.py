@@ -100,13 +100,15 @@ import re
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import isQt6, QtWidgets, QtCore
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    if g.app.gui is None:
-        g.app.createQtGui(__file__)
+    # if g.app.gui is None: g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
         #g.registerHandler(('new','open2'),onCreate)

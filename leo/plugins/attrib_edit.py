@@ -104,8 +104,10 @@ plugins. Here are some points of interest:
 # Written by TNB.
 
 from leo.core import leoGlobals as g
-if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
+from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init

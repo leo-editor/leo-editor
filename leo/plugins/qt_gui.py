@@ -1392,7 +1392,7 @@ class LeoQtGui(leoGui.LeoGui):
     elif isQt6:
         # pylint: disable=c-extension-no-member
         import PyQt6.QtTest as QtTest
-        QSignalSpy = QtTest.QSignalSpy
+        QSignalSpy = QtTest.QSignalSpy  # type: ignore
         assert QSignalSpy
     else:
         # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.

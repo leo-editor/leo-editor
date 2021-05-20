@@ -270,6 +270,9 @@ try:
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #pylint: disable=no-member
 trace = False
@@ -333,8 +336,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     global got_docutils
     if g.app.gui.guiName() != 'qt':
-        return False
-            # #1248.
+        return False # #1248.
     # if g.app.gui.guiName()
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
         if (

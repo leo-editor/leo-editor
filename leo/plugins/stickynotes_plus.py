@@ -24,8 +24,9 @@ except ImportError:
 except SyntaxError:
     print('stickynotes_plus.py: syntax error in markdown')
     markdown = None
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #
 # Abbreviations...
 Qt = QtCore.Qt
