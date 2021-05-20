@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2b2
+About Viewrendered3 V3.2b4
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -397,7 +397,8 @@ alternative, VR3 will use an executable processor named ``asciidoc``
 if it is on the system path.
 
 It is also possible to use the Ruby ``asciidoctor.rb`` program as an external 
-processor.  This will render the Asciidoc much faster than
+processor.  This will render the Asciidoc much faster than the Python 
+``asciidoc`` module.
 
 .. note:: The Asciidoc processors are quite slow at rendering
           long documents, as can happen when the "Entire Tree"
@@ -648,6 +649,8 @@ from urllib.request import urlopen
 # Leo imports...
 import leo.core.leoGlobals as g
 from leo.core.leoApp import LoadManager as LM
+#@+<< Qt Imports >>
+#@+node:tom.20210517102737.1: *3* << Qt Imports >>
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
@@ -658,8 +661,25 @@ except ImportError:
     raise ImportError from None
     #QtWidgets = False
 
+QWebView = None
 if isQt5:
-    from leo.core.leoQt import QtWebKitWidgets
+    try:
+        from leo.core.leoQt import QtWebKitWidgets
+        QWebView = QtWebKitWidgets.QWebView
+    except ImportError:
+        g.trace("Can' import QtWebKitWidgets")
+    except Exception as e:
+        g.trace(e)
+else:
+    try:
+        QWebView = QtWidgets.QTextBrowser
+    except Exception as e:
+        g.trace(e)
+        # The top-level init function gives the error.
+#@-<< Qt Imports >>
+
+#1946
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # Optional imports...
 try:
@@ -871,6 +891,7 @@ def find_exe(exename):
 asciidoctor_exec = find_exe('asciidoc') or None
 asciidoc3_exec = find_exe('asciidoc3') or None
 pandoc_exec = find_exe('pandoc') or None
+g.es('==== found asciidoc3 processor:', asciidoc3_exec)
 #@+node:TomP.20210218231600.1: ** Find executables in VR3_CONFIG_FILE
 #@@language python
 # Get paths for executables from the VR3_CONFIG_FILE file
@@ -1596,6 +1617,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.asciidoc_proc = asciidoc3_exec or asciidoctor_exec or None
         else:
             self.asciidoc_proc = asciidoctor_exec or asciidoc3_exec or None
+
+        g.trace('==== prefer external:', self.prefer_external)
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Verify or create css stylesheet for Markdown node.
@@ -1869,6 +1892,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc.show()
 
         self.rst_html = ''
+        g.trace('===', self.prefer_external)
 
         ascdoc = self.process_asciidoc_nodes(node_list)
         h = self.convert_to_asciidoc(ascdoc) or "No return from asciidoc processor"
@@ -1974,6 +1998,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 asciidoc = AsciiDocAPI() # pylint: disable=E0602 # Undefined variable 'AsciiDocAPI
                 infile = io.StringIO(s)
                 outfile = io.StringIO()
+                asciidoc.attributes['stem'] = 'latexmath'
                 asciidoc.execute(infile, outfile, backend='html5')
                 h = outfile.getvalue()
                 self.rst_html = h
@@ -2028,7 +2053,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
     def convert_to_asciidoc_external(self, s):
         """Convert s to html using external asciidoc or asciidoc3 processor."""
-
         pc = self
         c, p = pc.c, pc.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -2059,11 +2083,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Call the external program to write the output file.
         # Assume that the command line may be different between asciidoc and asciidoc3
         if 'asciidoctor' in self.prefer_external:
-            command = f"del {o_path} & {self.prefer_external} -b html5 {i_path}"
+            command = f"del {o_path} & {self.prefer_external} -b html5 -a mathjax {i_path}"
         elif self.asciidoc_proc == asciidoctor_exec:
-            command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
+            command = f"del {o_path} & {self.asciidoc_proc} -b html5 -a mathjax {i_path}"
         else:
-            command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
+            command = f"del {o_path} & {self.asciidoc_proc} -b html5 -a mathjax {i_path}"
 
         ext_proc = self.prefer_external or self.asciidoc_proc
         if ext_proc:
@@ -2386,13 +2410,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #ext = ['fenced_code', 'codehilite', 'def_list']
 
         try:
-            s = Markdown.reset().convert(result)
-            _html = s
+            _html = Markdown.reset().convert(result)
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
                 _html = 'MD error:\n%s\n\n%s' % (msg, s)
-                #return _html
 
         _html = self.md_header + '\n<body>\n' + s + '\n</body>\n</html>'
         return _html
