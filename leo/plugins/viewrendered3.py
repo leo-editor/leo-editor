@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2b4
+About Viewrendered3 V3.2b6
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -734,22 +734,6 @@ try:
 except ImportError:
     pygments = None
     print('VR3: *** no pygments')
-
-if isQt5:
-    try:
-        QWebView = QtWebKitWidgets.QWebView
-    except Exception:
-        QWebView = None
-else:
-    try:
-        #QWebView = QtWebKitWidgets.QWebView
-        QWebView = QtWidgets.QTextBrowser
-    except Exception:
-        QWebView = None
-        # The top-level init function gives the error.
-#
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
@@ -891,7 +875,6 @@ def find_exe(exename):
 asciidoctor_exec = find_exe('asciidoc') or None
 asciidoc3_exec = find_exe('asciidoc3') or None
 pandoc_exec = find_exe('pandoc') or None
-g.es('==== found asciidoc3 processor:', asciidoc3_exec)
 #@+node:TomP.20210218231600.1: ** Find executables in VR3_CONFIG_FILE
 #@@language python
 # Get paths for executables from the VR3_CONFIG_FILE file
@@ -1617,8 +1600,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.asciidoc_proc = asciidoc3_exec or asciidoctor_exec or None
         else:
             self.asciidoc_proc = asciidoctor_exec or asciidoc3_exec or None
-
-        g.trace('==== prefer external:', self.prefer_external)
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Verify or create css stylesheet for Markdown node.
@@ -1779,7 +1760,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     rootcopy = _root.copy()
                     _tree = [rootcopy]
                 except UnboundLocalError as e:
-                    g.es('=======', tag, e)
+                    g.trace('=======', tag, e)
                     return
             if kind in (ASCIIDOC, MD, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
@@ -1876,7 +1857,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if _must_update and self.w:
             # Hide the old widget so it won't keep us from seeing the new one.
             self.w.hide()
-        #g.es('===', _must_update)
+
         return _must_update
 
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
@@ -1892,7 +1873,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc.show()
 
         self.rst_html = ''
-        g.trace('===', self.prefer_external)
 
         ascdoc = self.process_asciidoc_nodes(node_list)
         h = self.convert_to_asciidoc(ascdoc) or "No return from asciidoc processor"
@@ -2409,14 +2389,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
 
+        print(result)
         try:
             _html = Markdown.reset().convert(result)
+
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
                 _html = 'MD error:\n%s\n\n%s' % (msg, s)
 
-        _html = self.md_header + '\n<body>\n' + s + '\n</body>\n</html>'
+        _html = self.md_header + '\n<body>\n' + _html + '\n</body>\n</html>'
         return _html
         #@-others
     #@+node:TomP.20191215195433.67: *4* vr3.update_movie
@@ -3092,15 +3074,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _headline_str = p.h
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
             _headline_str = _headline_str.replace('\\', r'\\')
-            _underline = '-'*len(_headline_str)
-            g.es(_headline_str)
+            _underline = '='*len(_headline_str)
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
         # node headline == body's first line.
         body_lines = p.b.split('\n', 1)
         if _headline_str != body_lines[0].strip():
-            s = f'{_headline_str}\n{_underline}\n\n{s}'
+            s = f'{_underline}\n{_headline_str}\n{_underline}\n\n{s}'
 
         return s
     #@+node:TomP.20191215195433.77: *4* vr3.update_svg
