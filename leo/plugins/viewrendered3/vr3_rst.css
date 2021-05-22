@@ -348,6 +348,8 @@ body, th, td {
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   background-color: white;
   font-size: 90%;
+  padding-left:2em;
+  padding-right:2em;
 }
 
 p {font-size:90%;}

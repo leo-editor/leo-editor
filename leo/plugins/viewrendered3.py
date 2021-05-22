@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2b5
+About Viewrendered3 V3.2b6
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -3074,14 +3074,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _headline_str = p.h
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
             _headline_str = _headline_str.replace('\\', r'\\')
-            _underline = '-'*len(_headline_str)
+            _underline = '='*len(_headline_str)
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
         # node headline == body's first line.
         body_lines = p.b.split('\n', 1)
         if _headline_str != body_lines[0].strip():
-            s = f'{_headline_str}\n{_underline}\n\n{s}'
+            s = f'{_underline}\n{_headline_str}\n{_underline}\n\n{s}'
 
         return s
     #@+node:TomP.20191215195433.77: *4* vr3.update_svg
