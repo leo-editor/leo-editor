@@ -7,6 +7,10 @@ import logging
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
 log = None # log = logging.getLogger("out")
 #@+others
 #@+node:ekr.20140911023403.17845: **  top-level

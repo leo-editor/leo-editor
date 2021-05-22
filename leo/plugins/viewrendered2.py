@@ -254,6 +254,9 @@ except ImportError:
 
 # for now, no commands should work when Qt5 is enabled.
 import_ok = not isQt5
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 # pylint: disable=fixme
 #@+at

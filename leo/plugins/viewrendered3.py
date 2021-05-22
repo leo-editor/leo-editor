@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2b2
+About Viewrendered3 V3.2b5
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -397,7 +397,8 @@ alternative, VR3 will use an executable processor named ``asciidoc``
 if it is on the system path.
 
 It is also possible to use the Ruby ``asciidoctor.rb`` program as an external 
-processor.  This will render the Asciidoc much faster than
+processor.  This will render the Asciidoc much faster than the Python 
+``asciidoc`` module.
 
 .. note:: The Asciidoc processors are quite slow at rendering
           long documents, as can happen when the "Entire Tree"
@@ -648,6 +649,8 @@ from urllib.request import urlopen
 # Leo imports...
 import leo.core.leoGlobals as g
 from leo.core.leoApp import LoadManager as LM
+#@+<< Qt Imports >>
+#@+node:tom.20210517102737.1: *3* << Qt Imports >>
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
@@ -658,8 +661,25 @@ except ImportError:
     raise ImportError from None
     #QtWidgets = False
 
+QWebView = None
 if isQt5:
-    from leo.core.leoQt import QtWebKitWidgets
+    try:
+        from leo.core.leoQt import QtWebKitWidgets
+        QWebView = QtWebKitWidgets.QWebView
+    except ImportError:
+        g.trace("Can' import QtWebKitWidgets")
+    except Exception as e:
+        g.trace(e)
+else:
+    try:
+        QWebView = QtWidgets.QTextBrowser
+    except Exception as e:
+        g.trace(e)
+        # The top-level init function gives the error.
+#@-<< Qt Imports >>
+
+#1946
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # Optional imports...
 try:
@@ -714,19 +734,6 @@ try:
 except ImportError:
     pygments = None
     print('VR3: *** no pygments')
-
-if isQt5:
-    try:
-        QWebView = QtWebKitWidgets.QWebView
-    except Exception:
-        QWebView = None
-else:
-    try:
-        #QWebView = QtWebKitWidgets.QWebView
-        QWebView = QtWidgets.QTextBrowser
-    except Exception:
-        QWebView = None
-        # The top-level init function gives the error.
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
@@ -1753,7 +1760,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     rootcopy = _root.copy()
                     _tree = [rootcopy]
                 except UnboundLocalError as e:
-                    g.es('=======', tag, e)
+                    g.trace('=======', tag, e)
                     return
             if kind in (ASCIIDOC, MD, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
@@ -1850,7 +1857,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if _must_update and self.w:
             # Hide the old widget so it won't keep us from seeing the new one.
             self.w.hide()
-        #g.es('===', _must_update)
+
         return _must_update
 
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
@@ -1971,6 +1978,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 asciidoc = AsciiDocAPI() # pylint: disable=E0602 # Undefined variable 'AsciiDocAPI
                 infile = io.StringIO(s)
                 outfile = io.StringIO()
+                asciidoc.attributes['stem'] = 'latexmath'
                 asciidoc.execute(infile, outfile, backend='html5')
                 h = outfile.getvalue()
                 self.rst_html = h
@@ -2025,7 +2033,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
     def convert_to_asciidoc_external(self, s):
         """Convert s to html using external asciidoc or asciidoc3 processor."""
-
         pc = self
         c, p = pc.c, pc.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -2056,11 +2063,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Call the external program to write the output file.
         # Assume that the command line may be different between asciidoc and asciidoc3
         if 'asciidoctor' in self.prefer_external:
-            command = f"del {o_path} & {self.prefer_external} -b html5 {i_path}"
+            command = f"del {o_path} & {self.prefer_external} -b html5 -a mathjax {i_path}"
         elif self.asciidoc_proc == asciidoctor_exec:
-            command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
+            command = f"del {o_path} & {self.asciidoc_proc} -b html5 -a mathjax {i_path}"
         else:
-            command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
+            command = f"del {o_path} & {self.asciidoc_proc} -b html5 -a mathjax {i_path}"
 
         ext_proc = self.prefer_external or self.asciidoc_proc
         if ext_proc:
@@ -2382,16 +2389,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
 
+        print(result)
         try:
-            s = Markdown.reset().convert(result)
-            _html = s
+            _html = Markdown.reset().convert(result)
+
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
                 _html = 'MD error:\n%s\n\n%s' % (msg, s)
-                #return _html
 
-        _html = self.md_header + '\n<body>\n' + s + '\n</body>\n</html>'
+        _html = self.md_header + '\n<body>\n' + _html + '\n</body>\n</html>'
         return _html
         #@-others
     #@+node:TomP.20191215195433.67: *4* vr3.update_movie
@@ -3068,7 +3075,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
             _headline_str = _headline_str.replace('\\', r'\\')
             _underline = '-'*len(_headline_str)
-            g.es(_headline_str)
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if

@@ -15,10 +15,9 @@ will be available. The buttons use the icon specified in the active Qt style
 #@+<< imports >>
 #@+node:ville.20110115234843.8745: ** << imports >>
 from leo.core import leoGlobals as g
-
-g.assertUi('qt')
-
-# Whatever other imports your plugins uses.
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 
 #@+others

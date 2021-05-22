@@ -46,9 +46,9 @@ except Exception:
         import pygraphviz
     except ImportError:
         pygraphviz = None
-
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@-<< imports >>
 c_db_key = '_graph_canvas_gnx'

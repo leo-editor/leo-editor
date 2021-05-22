@@ -18196,19 +18196,19 @@ Sec 1.
 #@+node:ekr.20210503054414.282: *7* section 2
 
 Sec 2.
-#@+node:ekr.20210518163823.7: *6* @@auto-rst @test leo_rst
+#@+node:ekr.20210518075227.74: *6* @@auto-rst @test leo_rst
 @language rest
 @tabwidth -4
-#@+node:ekr.20210518163823.8: *7* !Dummy chapter
+#@+node:ekr.20210518075227.75: *7* !Dummy chapter
   #########
 Chapter 1
   #########
 
 It was a dark and stormy night.
-#@+node:ekr.20210518163823.9: *7* section 1
+#@+node:ekr.20210518075227.76: *7* section 1
 
 Sec 1.
-#@+node:ekr.20210518163823.10: *7* section 2
+#@+node:ekr.20210518075227.77: *7* section 2
 
 Sec 2.
 #@+node:ekr.20161204041557.1: *4* All other importer tests
@@ -18869,9 +18869,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20210518163824.3: *5* insertAsFirstChild
-#@+node:ekr.20210518163824.5: *5* insertAsNthChild(1)
-#@+node:ekr.20210518163824.4: *5* insertAsLastChild
+#@+node:ekr.20210518075228.3: *5* insertAsFirstChild
+#@+node:ekr.20210518075228.5: *5* insertAsNthChild(1)
+#@+node:ekr.20210518075228.4: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -19499,9 +19499,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20210518163825.9: *6* A
-#@+node:ekr.20210518163825.11: *6* inserted
-#@+node:ekr.20210518163825.10: *6* B
+#@+node:ekr.20210518075229.11: *6* A
+#@+node:ekr.20210518075229.13: *6* inserted
+#@+node:ekr.20210518075229.12: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -23429,21 +23429,21 @@ line 1
     line 2
       line 3
 line4
-#@+node:ekr.20210518163827.3: *5* do and undo
+#@+node:ekr.20210518075231.6: *5* do and undo
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20210518163827.4: *5* do
+#@+node:ekr.20210518075231.7: *5* do
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20210518163827.5: *5* do, undo, redo
+#@+node:ekr.20210518075231.8: *5* do, undo, redo
 @tabwidth -4
 
 line 1
@@ -23801,6 +23801,67 @@ for fn in files:
         ok2 = s.find('def init ():') > -1
         assert ok1 or ok2,'fail: %s' % (fn)
     
+#@+node:ekr.20210518092129.1: *4* @test all qt plugins call g.assertUi('qt')
+'''Ensure all plugins have top-level init method *without* importing them.'''
+
+import glob
+import inspect
+import re
+
+# Get a list of all plugins.
+plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+plugins = g.os_path_abspath(plugins)
+files = glob.glob(plugins)
+files = [g.os_path_abspath(z) for z in files]
+files = [z for z in files if not z.endswith('__init__.py')]
+files.sort()
+
+exclude = [
+    # These are not real plugins...
+    'babel_api.py',
+    'babel_kill.py',
+    'babel_lib.py',
+    'baseNativeTree.py',
+    'leocursor.py',
+    'leo_cloud_server.py',
+    'leo_mypy_plugin.py',
+    'nested_splitter.py',
+    'pyplot_backend.py',
+    'qtGui.py',
+    'qt_big_text.py',
+    'qt_commands.py',
+    'qt_events.py',
+    'qt_frame.py',
+    'qt_gui.py',
+    'qt_idle_time.py',
+    'qt_main.py',
+    'qt_quickheadlines.py',
+    'qt_quicksearch_sub.py',
+    'qt_text.py',
+    'qt_tree.py',
+    'qt_quicksearch.py',
+    'swing_gui.py',
+    #
+    # Special cases, handling Qt imports in unusual ways.
+    #
+    'backlink.py',  # Qt code is optional, disabled with module-level guard.
+    'leoscreen.py',  # Qt imports are optional.
+    # 'free_layout.py',
+]
+pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b') # Don't search for Qt.
+fails = []
+for fn in files:
+    if g.shortFileName(fn) in exclude:
+        continue
+    with open(fn, 'r') as f:
+        s = f.read()
+    if not re.search(pattern, s):
+        continue
+    if not re.search(r"g\.assertUi\(['\"]qt['\"]\)", s):
+        fails.append(fn)
+if fails:
+    g.printObj(fails)
+    assert False, f"{len(fails)} failures"
 #@+node:ekr.20140217055617.4230: *4* @test c.theScriptingController.atScriptNodes
 # This must be true even though @bool scriptingatscriptnodes is True in this file.
 if hasattr(c,'theScriptingController'):

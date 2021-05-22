@@ -50,6 +50,9 @@ try:
     from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 except ImportError:
     whoosh = None
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 index_error_given = False
 #@+others

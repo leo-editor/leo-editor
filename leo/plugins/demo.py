@@ -16,6 +16,9 @@ import random
 from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< demo.py imports >>
 # pylint: disable=no-member,not-callable
 #@@language python
