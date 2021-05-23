@@ -519,31 +519,57 @@ class LeoQtGui(leoGui.LeoGui):
         - `yes_all`: bool - show YesToAll button
         - `no_all`: bool - show NoToAll button
         """
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return None
         b = QtWidgets.QMessageBox
-        buttons = b.Yes | b.No
+        d = b(c.frame.top) ###
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
+        yes = d.addButton('Yes', ButtonRole.YesRole)
+        d.addButton('No', ButtonRole.NoRole)
+        d.addButton('Cancel', ButtonRole.RejectRole)
         if yes_all:
-            buttons |= b.YesToAll
+            d.addButton('Yes To All', ButtonRole.YesRole)
         if no_all:
-            buttons |= b.NoToAll
+            d.addButton('No To All', ButtonRole.NoRole)
+        ###
+            # buttons = b.Yes | b.No
+            # if yes_all:
+                # buttons |= b.YesToAll
+            # if no_all:
+                # buttons |= b.NoToAll
         d = b(c.frame.top)
         d.setStyleSheet(c.active_stylesheet)
-        d.setStandardButtons(buttons)
+        ### d.setStandardButtons(buttons)
         d.setWindowTitle(title)
-        if message: d.setText(message)
-        d.setIcon(b.Information)
-        d.setDefaultButton(b.Yes)
+        if message:
+            d.setText(message)
+        ### d.setIcon(b.Information)
+        d.setIcon(Information.Warning)
+        ### d.setDefaultButton(b.Yes)
+        d.setDefaultButton(yes)
         try:
             c.in_qt_dialog = True
             val = d.exec() if isQt6 else d.exec_()
         finally:
             c.in_qt_dialog = False
-        return {
-            b.Yes: 'yes',
-            b.No: 'no',
-            b.YesToAll: 'yes-all',
-            b.NoToAll: 'no-all'
-        }.get(val, 'no')
+        g.trace(val)
+        if val == 0:
+            val = 'yes'
+        elif val == 1:
+            val = 'no'
+        elif yes_all and val == 2:
+            val = 'yes-to-all'
+        else:
+            val = 'cancel'
+        return val
+        ###
+            # return {
+                # # b.Yes: 'yes',
+                # # b.No: 'no',
+                # # b.YesToAll: 'yes-all',
+                # # b.NoToAll: 'no-all'
+            # }.get(val, 'no')
     #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title, startdir):
         """Create and run an Qt open directory dialog ."""
