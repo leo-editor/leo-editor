@@ -562,7 +562,7 @@ class StringFindTabManager:
             w = getattr(self, widget_ivar)
             val = c.config.getBool(setting_name, default=False)
             setattr(find, setting_name, val)
-            if val:
+            if val != w.isChecked():  # Support leoInteg.
                 w.toggle()
         # Radio buttons
         table = (
