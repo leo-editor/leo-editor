@@ -576,11 +576,13 @@ class StringFindTabManager:
             if ivar is not None:
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
-                w.toggle()
+                if val != w.isChecked():
+                    w.toggle()
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
-            w.toggle()
+            if val != w.isChecked():
+                w.toggle()
     #@+node:ekr.20210312122351.1: *3* sftm.set_body_and_headline_checkbox
     def set_body_and_headline_checkbox(self):
         """Return the search-body and search-headline checkboxes to their defaults."""
