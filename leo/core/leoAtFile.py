@@ -224,6 +224,8 @@ class AtFile:
             if not ok:
                 g.error(f"Error creating directories: {root_dir}")
                 return None
+        #
+        # Return the target file name, regardless of future problems.
         return targetFileName
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
