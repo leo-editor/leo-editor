@@ -1095,6 +1095,14 @@ class LeoApp:
             g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
             print('Failed to import editpane')
+
+        try:
+            from leo.plugins.floating_editor.floating_pane import floating_pane_open
+            g.command('fp_open')(floating_pane_open)
+        except ImportError:
+            print('Failed to import floating_pane_open')
+
+
         #
         # Complete the initialization.
         qt_gui.init()
