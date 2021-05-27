@@ -159,6 +159,9 @@ class AtFile:
         Return the finalized name of the output file.
         """
         at, c = self, self.c
+        if not c and c.config:
+            return None
+        make_dirs = c.config.create_nonexistent_directories
         assert root
         self.initCommonIvars()
         assert at.checkPythonCodeOnWrite is not None
@@ -202,16 +205,25 @@ class AtFile:
         #
         # #1907: Compute the file name and create directories as needed.
         targetFileName = g.os_path_realpath(g.fullPath(c, root))
+        at.targetFileName = targetFileName  # For at.writeError only.
+        #
+        # targetFileName can be empty for unit tests & @command nodes.
+        if not targetFileName:
+            targetFileName = root.h if g.unitTesting else None
+            at.targetFileName = targetFileName  # For at.writeError only.
+            return targetFileName
+        #
+        # Do nothing more if the file already exists.
+        if os.path.exists(targetFileName):
+            return targetFileName
+        #
+        # Create directories if enabled.
         root_dir = g.os_path_dirname(targetFileName)
-        make_dirs = c and c.config and c.config.create_nonexistent_directories
         if make_dirs and root_dir:
             ok = g.makeAllNonExistentDirectories(root_dir)
             if not ok:
                 g.error(f"Did not create directory: {root_dir}")
                 return None
-                
-        at.targetFileName = targetFileName
-            # For at.writeError only.
         return targetFileName
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
