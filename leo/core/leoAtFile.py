@@ -159,6 +159,9 @@ class AtFile:
         Return the finalized name of the output file.
         """
         at, c = self, self.c
+        if not c and c.config:
+            return None
+        make_dirs = c.config.create_nonexistent_directories
         assert root
         self.initCommonIvars()
         assert at.checkPythonCodeOnWrite is not None
@@ -178,9 +181,7 @@ class AtFile:
             # For at.putBody only.
         at.outputList = []
             # For stream output.
-        at.targetFileName = targetFileName = root.anyAtFileNodeName() or ''  # #1914.
-            # For at.writeError only.
-        d = at.scanAllDirectives(root)
+        at.scanAllDirectives(root)
             # Sets the following ivars:
                 # at.encoding
                 # at.explicitLineEnding
@@ -190,7 +191,6 @@ class AtFile:
                 # at.tab_width
         #
         # Overrides of at.scanAllDirectives...
-        defaultDirectory = d.get('path')  # #1914
         if at.language == 'python':
             # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
@@ -203,28 +203,30 @@ class AtFile:
                 delattr(at.root.v, 'tnodeList')
             at.root.v._p_changed = True
         #
-        # Return the finalized file name.
-        # #1341 and #1450.
-        make_dirs = c and c.config and c.config.create_nonexistent_directories
-        if defaultDirectory:
-            defaultDirectory = c.expand_path_expression(defaultDirectory)
-            if make_dirs:
-                ok = g.makeAllNonExistentDirectories(defaultDirectory)
-                if not ok:
-                    g.error(f"Did not create default directory: {defaultDirectory}")
-                    return None
-        # #1341 and #1450.
-        targetFileName = c.expand_path_expression(targetFileName)
-        if targetFileName:
-            theDir = g.os_path_dirname(targetFileName)
-            if theDir and make_dirs:
-                ok = g.makeAllNonExistentDirectories(theDir)
-                if not ok:
-                    g.trace(f"Did not create {theDir} for {targetFileName}")
-                    return None
-        # #1341.
-        return g.os_path_realpath(
-            g.os_path_finalize_join(defaultDirectory, targetFileName))
+        # #1907: Compute the file name and create directories as needed.
+        targetFileName = g.os_path_realpath(g.fullPath(c, root))
+        at.targetFileName = targetFileName  # For at.writeError only.
+        #
+        # targetFileName can be empty for unit tests & @command nodes.
+        if not targetFileName:
+            targetFileName = root.h if g.unitTesting else None
+            at.targetFileName = targetFileName  # For at.writeError only.
+            return targetFileName
+        #
+        # Do nothing more if the file already exists.
+        if os.path.exists(targetFileName):
+            return targetFileName
+        #
+        # Create directories if enabled.
+        root_dir = g.os_path_dirname(targetFileName)
+        if make_dirs and root_dir:
+            ok = g.makeAllNonExistentDirectories(root_dir)
+            if not ok:
+                g.error(f"Error creating directories: {root_dir}")
+                return None
+        #
+        # Return the target file name, regardless of future problems.
+        return targetFileName
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile
