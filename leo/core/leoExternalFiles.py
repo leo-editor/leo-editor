@@ -144,10 +144,8 @@ class ExternalFilesController:
         if self.unchecked_files:
             # Check all external files.
             while self.unchecked_files:
-                n = len(self.unchecked_files)
-                ef = self.unchecked_files[0]
+                ef = self.unchecked_files.pop()  # #1959: ensure progress.
                 self.idle_check_open_with_file(c, ef)
-                assert len(self.unchecked_files) < n
         elif self.unchecked_commanders:
             # Check the next commander for which
             # @bool check_for_changed_external_file is True.
@@ -209,17 +207,14 @@ class ExternalFilesController:
             c.restartLeo()
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, c, ef):
-        """
-        Update the open-with node given by ef.
-        Remove at least ef from self.unchecked_files.
-        """
+        """Update the open-with node given by ef."""
         assert isinstance(ef, ExternalFile), ef
         if not ef.path or not os.path.exists(ef.path):
             return
         time = self.get_mtime(ef.path)
         if not time or time == ef.time:
             return
-        # inhibit endless dialog loop.
+        # Inhibit endless dialog loop.
         ef.time = time
         # #1888: Handle all possible user responses to self.ask.
         val = self.ask(c, ef.path, p=ef.p.copy())
@@ -231,9 +226,8 @@ class ExternalFilesController:
             self.unchecked_files = []
         elif val == 'yes':
             self.update_open_with_node(ef)
-            self.unchecked_files.remove(ef)
         elif val == 'no':
-            self.unchecked_files.remove(ef)
+            pass
     #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node
     def update_open_with_node(self, ef):
         """Update the body text of ef.p to the contents of ef.path."""
