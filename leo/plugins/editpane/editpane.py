@@ -593,6 +593,7 @@ class LeoEditPane(QtWidgets.QWidget):
             update = self.new_position_view
         widget = widget_class(c=self.c, lep=self)
 
+        attr = 'edit_widget'
         setattr(self, attr, widget)
         for i in reversed(range(frame.layout().count())):
             frame.layout().itemAt(i).widget().setParent(None)
