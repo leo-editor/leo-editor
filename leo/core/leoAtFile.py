@@ -158,6 +158,7 @@ class AtFile:
         Compute default values of all write-related ivars.
         Return the finalized name of the output file.
         """
+        NEW = True
         at, c = self, self.c
         assert root
         self.initCommonIvars()
@@ -178,7 +179,10 @@ class AtFile:
             # For at.putBody only.
         at.outputList = []
             # For stream output.
-        at.targetFileName = targetFileName = root.anyAtFileNodeName() or ''  # #1914.
+        if NEW:
+            pass
+        else:
+            at.targetFileName = targetFileName = root.anyAtFileNodeName() or ''  # #1914.
             # For at.writeError only.
         d = at.scanAllDirectives(root)
             # Sets the following ivars:
@@ -202,6 +206,17 @@ class AtFile:
             if hasattr(at.root.v, 'tnodeList'):
                 delattr(at.root.v, 'tnodeList')
             at.root.v._p_changed = True
+        if NEW:
+            at.targetFileName = targetFileName = g.os_path_realpath(g.fullPath(c, root))
+            root_dir = g.os_path_dirname(targetFileName)
+            make_dirs = c and c.config and c.config.create_nonexistent_directories
+            if make_dirs and root_dir:
+                ok = g.makeAllNonExistentDirectories(root_dir)
+                if not ok:
+                    g.error(f"Did not create directory: {root_dir}")
+                    return None
+            return targetFileName
+        ### Legacy
         #
         # Return the finalized file name.
         # #1341 and #1450.
