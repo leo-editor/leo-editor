@@ -222,7 +222,7 @@ class AtFile:
         if make_dirs and root_dir:
             ok = g.makeAllNonExistentDirectories(root_dir)
             if not ok:
-                g.error(f"Did not create directory: {root_dir}")
+                g.error(f"Error creating directories: {root_dir}")
                 return None
         return targetFileName
     #@+node:ekr.20041005105605.17: *3* at.Reading
