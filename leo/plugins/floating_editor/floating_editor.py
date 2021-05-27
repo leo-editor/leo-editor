@@ -12,7 +12,7 @@ Adapted from plugins/editpane.
 # import re
 from leo.core import leoGlobals as g
 assert g
-from leo.core.leoQt import QtWidgets  #  QtConst, QtCore, QtGui
+from leo.core.leoQt import QtWidgets
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
 from leo.plugins import qt_text
 

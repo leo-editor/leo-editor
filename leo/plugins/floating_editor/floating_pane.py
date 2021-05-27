@@ -58,6 +58,7 @@ def floating_pane_open(event):
 
     s = c.free_layout.get_top_splitter()
     s.open_window("__floating_editor")
+
 #@+node:tom.20210526120552.1: ** class FloatingEditPane
 class LeoEditPane(QtWidgets.QWidget):
     """
@@ -66,7 +67,7 @@ class LeoEditPane(QtWidgets.QWidget):
     #@+others
     #@+node:tom.20210526120552.2: *3* __init__
     def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
-        update=True, recurse=False, lep_type=None, *args, **kwargs):
+        update=True, recurse=False, *args, **kwargs):
         """__init__ - bind to outline
 
         :param outline c: outline to bind to
@@ -86,7 +87,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.modules = []  # modules we collect widgets from
         self.widget_classes = []  # collected widgets
-        self.widget_for = defaultdict(lambda: [])  # widget by class.lep_type
+        #self.widget_for = defaultdict(lambda: [])  # widget by class.lep_type
 
         self.c = c
         p = p or self.c.p
@@ -105,14 +106,14 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.track = self.cb_track.isChecked()
         self.update = self.cb_update.isChecked()
-        self.recurse = self.cb_recurse.isChecked()
-        self.goto = self.cb_goto.isChecked()
+        #self.recurse = self.cb_recurse.isChecked()
+        #self.goto = self.cb_goto.isChecked()
 
         #for type_ in lep_type:
             #self.set_widget(lep_type=type_)
         self.set_widget(FloatingTextEdit)
 
-        self.set_mode(self.mode)
+        #self.set_mode(self.mode)
 
         self.handlers = [
             ('select1', self._before_select),
@@ -257,53 +258,55 @@ class LeoEditPane(QtWidgets.QWidget):
         self.line_edit = QtWidgets.QLineEdit(self)
         self.header.layout().addWidget(self.line_edit)
         self.header.layout().addStretch(1)
-        self.btn_close = QtWidgets.QPushButton("X", self)
-        self.btn_close.clicked.connect(lambda checked: self.close())
-        self.header.layout().addWidget(self.btn_close)
+        #self.btn_close = QtWidgets.QPushButton("X", self)
+        #self.btn_close.clicked.connect(lambda checked: self.close())
+        #self.header.layout().addWidget(self.btn_close)
 
         # controls
         self.control = self._add_frame()
         # checkboxes
         txt = ",\ncheck to do this always"
         self.cb_track = self._add_checkbox("Track", self.change_track,
-            "Track the node selected in the tree" + txt)
-        self.cb_goto = self._add_checkbox("Goto", self.change_goto,
-            "Make the tree go to this node" + txt)
+            "Track the node selected in the tree" + txt, False)
+        #self.cb_goto = self._add_checkbox("Goto", self.change_goto,
+        #    "Make the tree go to this node" + txt, False)
         self.cb_update = self._add_checkbox("Update", self.change_update,
             "Update view to match changed node" + txt)
-        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse,
-            "Recursive view" + txt, checked=recurse)
-        # mode menu
-        btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
-        self.control.layout().addWidget(btn)
-        btn.setContextMenuPolicy(QtConst.CustomContextMenu)
-        btn.customContextMenuRequested.connect(  # right click
-            lambda pnt: self.mode_menu())
-        btn.clicked.connect(  # or left click
-            lambda checked: self.mode_menu())
-
-        # misc. menu
-        btn = self.control_menu_button = QtWidgets.QPushButton("More\u25BE", self)
-        self.control.layout().addWidget(btn)
-        btn.setContextMenuPolicy(QtConst.CustomContextMenu)
-        btn.customContextMenuRequested.connect(  # right click
-            lambda pnt: self.misc_menu())
-        btn.clicked.connect(  # or left click
-            lambda checked: self.misc_menu())
-
+        #self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse,
+        #    "Recursive view" + txt, checked=recurse)
+    #@+at
+    #     # mode menu
+    #     btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
+    #     self.control.layout().addWidget(btn)
+    #     btn.setContextMenuPolicy(QtConst.CustomContextMenu)
+    #     btn.customContextMenuRequested.connect(  # right click
+    #         lambda pnt: self.mode_menu())
+    #     btn.clicked.connect(  # or left click
+    #         lambda checked: self.mode_menu())
+    #
+    # +at
+    #     # misc. menu
+    #     btn = self.control_menu_button = QtWidgets.QPushButton("More\u25BE", self)
+    #     self.control.layout().addWidget(btn)
+    #     btn.setContextMenuPolicy(QtConst.CustomContextMenu)
+    #     btn.customContextMenuRequested.connect(  # right click
+    #         lambda pnt: self.misc_menu())
+    #     btn.clicked.connect(  # or left click
+    #         lambda checked: self.misc_menu())
+    #@@c
         # padding
         Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         self.control.layout().addItem(QtWidgets.QSpacerItem(0, 0, hPolicy=Policy.Expanding))
 
         # content
-        self.splitter = ClickySplitter(self)
+
+        #self.splitter = ClickySplitter(self)
+        self.splitter = QtWidgets.QSplitter(self)
         Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         self.splitter.setOrientation(Orientations.Vertical)
         self.layout().addWidget(self.splitter)
         self.edit_frame = self._add_frame()
         self.splitter.addWidget(self.edit_frame)
-        self.view_frame = self._add_frame()
-        self.splitter.addWidget(self.view_frame)
 
         self.control_visible = show_control
         self.header_visible = show_head
@@ -451,7 +454,7 @@ class LeoEditPane(QtWidgets.QWidget):
             act.setCheckable(True)
             act.setChecked(mode == self.mode)
             menu.addAction(act)
-        
+
         button = self.btn_mode
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
@@ -571,13 +574,13 @@ class LeoEditPane(QtWidgets.QWidget):
 
         if self.mode == 'edit':
             self.edit_frame.show()
-            self.view_frame.hide()
+            #self.view_frame.hide()
         elif self.mode == 'view':
             self.edit_frame.hide()
-            self.view_frame.show()
+            #self.view_frame.show()
         else:
            self.edit_frame.show()
-           self.view_frame.show()
+          # self.view_frame.show()
 
         self.update_position(self.c.p)
     #@-others
