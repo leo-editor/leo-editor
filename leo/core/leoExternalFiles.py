@@ -514,6 +514,10 @@ class ExternalFilesController:
             yes_all=is_external_file,
             no_all=is_external_file,
         )
+        #
+        # #1961. Re-init the checksum to suppress concurent dialogs.
+        self.checksum_d[path] = self.checksum(path)
+        #
         # #1888: return one of ('yes', 'no', 'yes-all', 'no-all')
         return result.lower() if result else 'no'
     #@+node:ekr.20150404052819.1: *4* efc.checksum
