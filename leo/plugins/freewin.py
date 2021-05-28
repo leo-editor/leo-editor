@@ -2,8 +2,9 @@
 #@+node:tom.20210527153256.1: * @file ../plugins/freewin.py
 #@@tabwidth -4
 #@@language python
-"""A plugin with a basic free-floating editor pane that tracks with an
-outline node.
+"""A plugin with a basic editor pane that tracks an outline node.
+
+   Version 1.0b1
 """
 
 #@+others
