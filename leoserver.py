@@ -2223,7 +2223,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
         # pylint: disable=import-self
-        import leo.core.leoserver as leoserver
+        import leoserver
         global g, g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)
