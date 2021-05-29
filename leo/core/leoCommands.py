@@ -7,8 +7,10 @@
 import itertools
 import os
 import re
+import subprocess
 import sys
 import tabnanny  # for Check Python command # Does not exist in jython
+import tempfile
 import time
 import tokenize  # for c.checkAllPythonCode
 from typing import List
@@ -2264,6 +2266,91 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
+    #@+node:ekr.20210305133229.1: *4* c.execute_language_script (Leo 6.4)
+    #@@nobeautify
+
+    def execute_language_script(self, command, ext, language, root, regex=None):
+        """
+        Generalized execute-script function.
+
+        c:          The Commander of the outline.
+        command:    The os command to execute the script.
+        ext:        The file extention for the tempory file.
+        language:   The language name.
+        regex:      Optional regular expression describing error messages.
+                    If present, group(1) should evaluate to a line number.
+        root:       The root of the tree containing the script,
+                    The script may contain section references and @others.
+        """
+        c = self
+        #@+others  # Define helper functions
+        #@+node:ekr.20210529142153.1: *5* function: put_line
+        def put_line(s):
+
+            if not regex:
+                g.es_print(s)
+                return
+            m = regex.match(s)
+            if not m:
+                g.es_print(s)
+                return
+            try:
+                n = int(m.group(1))
+            except Exception:
+                g.es_print(f"Bad line number{m.group(1)!r}")
+                g.es_print(s)
+                return
+            s = s.replace(path, root.h)
+            print(s)
+            ### g.es_clickable_link(c, root, line, s)
+            log = c.frame.log
+            p, n2 = find_line(n)
+            unl = p.get_UNL(with_proto=True, with_count=True)
+            if unl:
+                g.trace('---', unl)
+                log.put(s + '\n', nodeLink=f"{unl},{n2}")
+            else:
+                log.put(s + '\n')
+        #@+node:ekr.20210529164957.1: *5* function: find_line
+        def find_line(n):
+            p, offset, found = c.gotoCommands.find_file_line(n, root)
+            if found:
+                return p, offset
+            else:
+                return root, n
+        #@-others
+        #
+        # Compile and check the regex.
+        if regex:
+            if isinstance(regex, str):
+                try:
+                    regex = re.compile(regex)
+                except Exception:
+                    g.trace(f"Bad regex: {regex!s}")
+                    return None
+        # Get the script.
+        script = g.getScript(c, root,
+            useSelectedText=False,
+            forcePythonSentinels=False, # language=='python',
+            useSentinels=True,
+        )
+        # Write the script to a temp file.
+        fd, path = tempfile.mkstemp(suffix=ext, prefix="")
+        try:
+            with os.fdopen(fd, 'w') as f:
+                f.write(script)
+            proc = subprocess.Popen(f"{command} {path}",
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+            for s in g.splitLines(g.toUnicode(out)):
+                print(s.rstrip())
+            print('')
+            for s in g.splitLines(g.toUnicode(err)):
+                put_line(s.rstrip())
+        finally:
+            os.remove(path)
     #@+node:ekr.20200526074132.1: *4* c.executeMinibufferCommand
     def executeMinibufferCommand(self, commandName):
         """Call c.doCommandByName, creating the required event."""
