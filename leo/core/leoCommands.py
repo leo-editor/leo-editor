@@ -2290,6 +2290,7 @@ class Commands:
             if not regex:
                 g.es_print(s)
                 return
+            # Get the line number.
             m = regex.match(s)
             if not m:
                 g.es_print(s)
@@ -2303,8 +2304,9 @@ class Commands:
             s = s.replace(path, root.h)
             # Print to the console.
             print(s)
-            # Print to the log.
+            # Find the node and offset corresponding to line n.
             p, n2 = find_line(n)
+            # Create the link.
             unl = p.get_UNL(with_proto=True, with_count=True)
             if unl:
                 log.put(s + '\n', nodeLink=f"{unl},{n2}")
@@ -2319,7 +2321,6 @@ class Commands:
             else:
                 return root, n
         #@-others
-        #
         # Compile and check the regex.
         if regex:
             if isinstance(regex, str):
