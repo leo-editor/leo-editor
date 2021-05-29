@@ -2282,7 +2282,7 @@ class Commands:
         root:       The root of the tree containing the script,
                     The script may contain section references and @others.
         """
-        c = self
+        c, log = self, self.frame.log
         #@+others  # Define helper functions
         #@+node:ekr.20210529142153.1: *5* function: put_line
         def put_line(s):
@@ -2301,18 +2301,18 @@ class Commands:
                 g.es_print(s)
                 return
             s = s.replace(path, root.h)
+            # Print to the console.
             print(s)
-            ### g.es_clickable_link(c, root, line, s)
-            log = c.frame.log
+            # Print to the log.
             p, n2 = find_line(n)
             unl = p.get_UNL(with_proto=True, with_count=True)
             if unl:
-                g.trace('---', unl)
                 log.put(s + '\n', nodeLink=f"{unl},{n2}")
             else:
                 log.put(s + '\n')
         #@+node:ekr.20210529164957.1: *5* function: find_line
         def find_line(n):
+
             p, offset, found = c.gotoCommands.find_file_line(n, root)
             if found:
                 return p, offset
