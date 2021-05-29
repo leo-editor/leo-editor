@@ -13171,55 +13171,6 @@ def checkConventions(event):
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
 #@+node:ekr.20200209055601.1: ** Test stuff
-#@+node:ekr.20200209055610.1: *3* @@button test
-g.cls()
-import os
-leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-if 0: # Run all tests
-    commands = f"python -m unittest leo.core.leoAst"
-    g.execute_shell_commands(commands, trace=False)
-else:
-    file_ = '.leoAst'
-    class_, test = '', ''
-    class_, test = '.TestOrange', '.test_join_leading_whitespace'
-    # class_, test = '.TestOrange', '.test_leo_sentinels'
-    # class_, test = '.TestOrange', '.test_start_of_line_whitespace'
-    # class_, test = '.TestOrange', '.test_join_lines'
-    #
-    # Older
-    #
-    # file_ = '.leoAst'
-    # class_, test = '.TestTOG', ''
-    # class_, test = '.TestFiles', '.compare_tog_vs_asttokens'
-    # class_, test = '.TestFiles', '.optional_file_tests'
-    # class_, test = '.TestTokens', '.show_asttokens_script'
-    # class_, test = '.TestFstringify', '.test_call_with_comments'
-        # # 'test_call_in_rhs' # '.test_braces'
-    # class_, test = '.TestOrange','.test_join_lines'
-        # # 'test_sync_tokens' # '.test_multi_line_pet_peeves'
-    # class_, test = '.TestTokens', '.show_example_dump'
-        # # 'test_line_links'
-    # class_, test = '.TestTopLevelFunctions', '.test_get_encoding_directive'
-    # class_, test = '.TestReassignTokens', ''
-    # class_, test = '.TestTOT', ''
-    commands = f"python -m unittest leo.core{file_}{class_}{test}"
-    g.execute_shell_commands(commands, trace=False)
-#@+node:ekr.20200209055640.1: *3* @@button pt
-# Run pytest coverage tests.
-g.cls()
-import os
-leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-commands = "pytest --cov-report html --cov-report term-missing --cov leo.core.leoAst leo/core/leoAst.py"
-g.execute_shell_commands(commands, trace=False)
-#@+node:ekr.20200219073857.1: *3* @@suite run all doctests
-tm = c.testManager
-path = g.os_path_join(g.app.loadDir,"..","core")
-exclude = ['leoIPython.py',]
-    # leoIPython.py will give an annoying error if IPython can't be imported.
-modules = tm.importAllModulesInPath(path,exclude=exclude)
-suite   = tm.createUnitTestsFromDoctests(modules)
 #@+node:ekr.20200505050955.1: *3* ----- mvc-prototype branch
 @language rest
 @wrap
@@ -13409,79 +13360,34 @@ def test_select_and_commnads(data):
                 assert b == b1
                 app.redo()
             a1, b1 = a2, b2
-#@+node:ekr.20150521114057.1: *3* test_beautifier (prints stats)
-def test_beautifier(c, h, p, settings):
-    '''Test Leo's beautifier code'''
-    if not p:
-        g.trace('not found: %s' % h)
-        return None
-    s = g.getScript(c, p,
-            useSelectedText=False,
-            forcePythonSentinels=True,
-            useSentinels=False)
-    g.trace(h.strip())
-    t1 = time.time()
-    s1 = g.toEncodedString(s)
-    node1 = ast.parse(s1, filename='before', mode='exec')
-    t2 = time.time()
-    readlines = g.ReadLinesClass(s).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    t3 = time.time()
-    beautifier = PythonTokenBeautifier(c)
-    keep_blank_lines = settings.get('tidy-keep-blank-lines')
-    if keep_blank_lines is not None:
-        beautifier.delete_blank_lines = not keep_blank_lines
-    s2 = beautifier.run(tokens)
-    t4 = time.time()
-    try:
-        s2_e = g.toEncodedString(s2)
-        node2 = ast.parse(s2_e, filename='before', mode='exec')
-        ok = compare_ast(node1, node2)
-    except Exception:
-        g.es_exception()
-        ok = False
-    t5 = time.time()
-    #  Update the stats
-    beautifier.n_input_tokens += len(tokens)
-    beautifier.n_output_tokens += len(beautifier.code_list)
-    beautifier.n_strings += len(s2)
-    beautifier.parse_time += (t2 - t1)
-    beautifier.tokenize_time += (t3 - t2)
-    beautifier.beautify_time += (t4 - t3)
-    beautifier.check_time += (t5 - t4)
-    beautifier.total_time += (t5 - t1)
-    if settings.get('input_string'):
-        print('==================== input_string')
-        for i, z in enumerate(g.splitLines(s)):
-            print('%4s %s' % (i + 1, z.rstrip()))
-    if settings.get('input_lines'):
-        print('==================== input_lines')
-        dump_tokens(tokens, verbose=False)
-    if settings.get('input_tokens'):
-        print('==================== input_tokens')
-        dump_tokens(tokens, verbose=True)
-    if settings.get('output_tokens'):
-        print('==================== code_list')
-        for i, z in enumerate(beautifier.code_list):
-            print('%4s %s' % (i, z))
-    if settings.get('output_string'):
-        print('==================== output_string')
-        for i, z in enumerate(g.splitLines(s2)):
-            if z == '\n':
-                print('%4s' % (i + 1))
-            elif z.rstrip():
-                print('%4s %s' % (i + 1, z.rstrip()))
-            else:
-                print('%4s %r' % (i + 1, str(z)))
-    if settings.get('stats'):
-        beautifier.print_stats()
-    if not ok:
-        print('*************** fail: %s ***************' % (h))
-    return beautifier
-        # For statistics.
+#@+node:ekr.20210429050530.1: *3* @@button test-ConvertAtRoot (obsolete)
+g.cls()
+import importlib
+import leo.commands.editFileCommands as editFileCommands
+
+if c.isChanged():
+    c.save()
+
+importlib.reload(editFileCommands)
+
+path = r'c:\test\atRoot.leo'
+hidden_c = g.createHiddenCommander(path)
+if hidden_c:
+    editFileCommands.ConvertAtRoot().convert_file(hidden_c)
+    print('done')
+else:
+    print('not found', path)
+#@+node:ekr.20200219073857.1: *3* @@suite run all doctests
+tm = c.testManager
+path = g.os_path_join(g.app.loadDir,"..","core")
+exclude = ['leoIPython.py',]
+    # leoIPython.py will give an annoying error if IPython can't be imported.
+modules = tm.importAllModulesInPath(path,exclude=exclude)
+suite   = tm.createUnitTestsFromDoctests(modules)
 #@+node:ekr.20210326183053.1: *3* @@test rst.initAtAutoWrite
+g.cls()
 rst = c.rstCommands
-rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
+rst.initAtAutoWrite(p)
 
 # Ensure we are actually testing the default logic.
 d = p.v.u.get('rst-import',{})
@@ -13491,34 +13397,9 @@ assert d == {},'fail 2: %s' % repr(d)
 # Now test the logic.
 assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
 assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
-assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
-    repr(rst.atAutoWriteUnderlines))
-#@+node:ekr.20210326172530.1: *3* TestManager: no longer used
-if 0:
-    @others
-#@+node:ekr.20051104075904.37: *4* TM.writeNodesToNode
-def writeNodesToNode(self, c, p, output, sentinels=True):
-    result = []
-    for p2 in p.self_and_subtree():
-        s = self.writeNodeToString(c, p2, sentinels)
-        result.append(s)
-    result = ''.join(result)
-    output.scriptSetBodyString(result)
-#@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
-def writeNodeToNode(self, c, p, output, sentinels=True):
-    """Write the p's tree to the body text of the output node."""
-    s = self.writeNodeToString(c, p, sentinels)
-    output.scriptSetBodyString(s)
-#@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
-def writeNodeToString(self, c, p, sentinels):
-    """Return an AtFile.write of p's tree to a string."""
-    at = c.atFileCommands
-    ni = g.app.nodeIndices
-    for p2 in p.self_and_subtree():
-        if not p2.v.fileIndex:
-            p2.v.fileIndex = ni.getNewIndex(p2.v)
-    # Write the file to a string.
-    return at.atFileToString(p, sentinels=sentinels)
+# assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
+#    repr(rst.atAutoWriteUnderlines))
+print('done')
 #@-all
 #@@nosearch
 #@-leo
