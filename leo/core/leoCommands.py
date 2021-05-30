@@ -595,7 +595,114 @@ class Commands:
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
-    #@+node:ekr.20171123135625.4: *3* @cmd c.executeScript & public helpers
+    #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script & helper
+    @cmd ('execute-general-script')
+    def execute_general_script_command(self, event=None):
+        c, p = self, self.p
+        #@+others  # Define helpe functions
+        #@+node:ekr.20210530081758.1: *4* function: get_options
+        def get_options():
+            """
+            Return (language, command, pattern) or (None, None, None)
+            """
+            def make_dict(aList):
+                """Return a dict. Keys are delimited by the first colon."""
+                d = {}
+                for s in aList:
+                    key, val = s.split(':', 1)
+                    d [key.strip()] = val.strip()
+                return d
+
+            def oops(message):
+                print(f"execute-general-script: {message}")
+                return None, None, None
+
+            d = c.scanAllDirectives(p)
+            # Parse the settings into dictionaries.
+            commands = c.config.getData('exec-script-commands') or []
+            patterns = c.config.getData('exec-script-patterns') or []
+            commands_d = make_dict(commands)
+            patterns_d = make_dict(patterns)
+            # Get the language in effect at p.
+            language = d.get('language')
+            if not language:
+                return oops(f"No language in effect at {p.h}")
+            # Get the command and pattern from settings.
+            command = commands_d.get(language)
+            pattern = patterns_d.get(language)
+            if not command:
+                return oops(f"No command for {language} in @data exec-script-commands")
+            if not pattern:
+                return oops(f"No pattern for {language} in @data exec-script-patterns")
+            return language, command, pattern
+        #@-others
+        language, command, pattern = get_options()
+        if not language:
+            return
+        ext = g.app.language_extension_dict.get(language)
+        ### 
+        c.general_script_helper(command, ext, language, root=p, regex=pattern)
+    #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
+    @cmd('execute-pytest')
+    def execute_pytest(self, event=None):
+        c = self
+
+        def it(p):
+            for p1 in p.self_and_parents():
+                if p1.h.startswith('@test '):
+                    yield p1
+                    return
+            for p1 in p.subtree():
+                if p1.h.startswith('@test '):
+                    yield p1
+
+        try:
+            for p in it(c.p):
+                self.execute_single_pytest(p)
+        except ImportError:
+            g.es('pytest needs to be installed')
+            return
+
+    def execute_single_pytest(self, p):
+        c = self
+        from _pytest.config import get_config
+        from _pytest.assertion.rewrite import rewrite_asserts
+        import ast
+        cfg = get_config()
+        script = g.getScript(c, p, useSentinels=False) + (
+            '\n'
+            'ls = dict(locals())\n'
+            'failed = 0\n'
+            'for x in ls:\n'
+            '    if x.startswith("test_") and callable(ls[x]):\n'
+            '        try:\n'
+            '            ls[x]()\n'
+            '        except AssertionError as e:\n'
+            '            failed += 1\n'
+            '            g.es(f"-------{p.h[6:].strip()}/{x} failed---------")\n'
+            '            g.es(str(e))\n'
+            'if failed == 0:\n'
+            '    g.es("all tests passed")\n'
+            'else:\n'
+            '    g.es(f"failed:{failed} tests")\n')
+
+        fname = g.os_path_finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
+        with open(fname, 'wt', encoding='utf8') as out:
+            out.write(script)
+        tree = ast.parse(script, filename=fname)
+        rewrite_asserts(tree, script, config=cfg)
+        co = compile(tree, fname, "exec", dont_inherit=True)
+        sys.path.insert(0, '.')
+        sys.path.insert(0, c.frame.openDirectory)
+        try:
+            exec(co, {'c': c, 'g': g, 'p': p})
+        except KeyboardInterrupt:
+            g.es('interrupted')
+        except Exception:
+            g.handleScriptException(c, p, script, script)
+        finally:
+            del sys.path[:2]
+    #@+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
     @cmd('execute-script')
     def executeScript(self, event=None,
         args=None, p=None, script=None, useSelectedText=True,
@@ -716,67 +823,7 @@ class Commands:
         if c.exists and c.config.redirect_execute_script_output_to_log_pane:
             g.restoreStderr()
             g.restoreStdout()
-    #@+node:vitalije.20190924191405.1: *3* @cmd c.execute_pytest
-    @cmd('execute-pytest')
-    def execute_pytest(self, event=None):
-        c = self
-
-        def it(p):
-            for p1 in p.self_and_parents():
-                if p1.h.startswith('@test '):
-                    yield p1
-                    return
-            for p1 in p.subtree():
-                if p1.h.startswith('@test '):
-                    yield p1
-
-        try:
-            for p in it(c.p):
-                self.execute_single_pytest(p)
-        except ImportError:
-            g.es('pytest needs to be installed')
-            return
-
-    def execute_single_pytest(self, p):
-        c = self
-        from _pytest.config import get_config
-        from _pytest.assertion.rewrite import rewrite_asserts
-        import ast
-        cfg = get_config()
-        script = g.getScript(c, p, useSentinels=False) + (
-            '\n'
-            'ls = dict(locals())\n'
-            'failed = 0\n'
-            'for x in ls:\n'
-            '    if x.startswith("test_") and callable(ls[x]):\n'
-            '        try:\n'
-            '            ls[x]()\n'
-            '        except AssertionError as e:\n'
-            '            failed += 1\n'
-            '            g.es(f"-------{p.h[6:].strip()}/{x} failed---------")\n'
-            '            g.es(str(e))\n'
-            'if failed == 0:\n'
-            '    g.es("all tests passed")\n'
-            'else:\n'
-            '    g.es(f"failed:{failed} tests")\n')
-
-        fname = g.os_path_finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
-        with open(fname, 'wt', encoding='utf8') as out:
-            out.write(script)
-        tree = ast.parse(script, filename=fname)
-        rewrite_asserts(tree, script, config=cfg)
-        co = compile(tree, fname, "exec", dont_inherit=True)
-        sys.path.insert(0, '.')
-        sys.path.insert(0, c.frame.openDirectory)
-        try:
-            exec(co, {'c': c, 'g': g, 'p': p})
-        except KeyboardInterrupt:
-            g.es('interrupted')
-        except Exception:
-            g.handleScriptException(c, p, script, script)
-        finally:
-            del sys.path[:2]
-    #@+node:ekr.20080514131122.12: *3* @cmd c.recolorCommand
+    #@+node:ekr.20080514131122.12: *3* @cmd recolor
     @cmd('recolor')
     def recolorCommand(self, event=None):
         """Force a full recolor."""
@@ -2096,70 +2143,6 @@ class Commands:
         path = g.os_path_finalize_join(*paths)  # #1341.
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
-    #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
-    def expand_path_expression(self, s):
-        """Expand all {{anExpression}} in c's context."""
-        c = self
-        if not s:
-            return ''
-        s = g.toUnicode(s)
-        # find and replace repeated path expressions
-        previ, aList = 0, []
-        while previ < len(s):
-            i = s.find('{{', previ)
-            j = s.find('}}', previ)
-            if -1 < i < j:
-                # Add anything from previous index up to '{{'
-                if previ < i:
-                    aList.append(s[previ:i])
-                # Get expression and find substitute
-                exp = s[i + 2 : j].strip()
-                if exp:
-                    try:
-                        s2 = c.replace_path_expression(exp)
-                        aList.append(s2)
-                    except Exception:
-                        g.es(f"Exception evaluating {{{{{exp}}}}} in {s.strip()}")
-                        g.es_exception(full=True, c=c)
-                # Prepare to search again after the last '}}'
-                previ = j + 2
-            else:
-                # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
-                aList.append(s[previ:])
-                break
-        val = ''.join(aList)
-        if g.isWindows:
-            val = val.replace('\\', '/')
-        return val
-    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression
-    replace_errors: List[str] = []
-
-    def replace_path_expression(self, expr):
-        """ local function to replace a single path expression."""
-        c = self
-        d = {
-            'c': c,
-            'g': g,
-            # 'getString': c.config.getString,
-            'p': c.p,
-            'os': os,
-            'sep': os.sep,
-            'sys': sys,
-        }
-        # #1338: Don't report errors when called by g.getUrlFromNode.
-        try:
-            # pylint: disable=eval-used
-            path = eval(expr, d)
-            return g.toUnicode(path, encoding='utf-8')
-        except Exception as e:
-            message = (
-                f"{c.shortFileName()}: {c.p.h}\n"
-                f"expression: {expr!s}\n"
-                f"     error: {e!s}")
-            if message not in self.replace_errors:
-                self.replace_errors.append(message)
-                g.trace(message)
-            return expr
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event):
@@ -2266,10 +2249,16 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
-    #@+node:ekr.20210305133229.1: *4* c.execute_language_script (Leo 6.4)
+    #@+node:ekr.20200526074132.1: *4* c.executeMinibufferCommand
+    def executeMinibufferCommand(self, commandName):
+        """Call c.doCommandByName, creating the required event."""
+        c = self
+        event = g.app.gui.create_key_event(c)
+        return c.doCommandByName(commandName, event)
+    #@+node:ekr.20210305133229.1: *4* c.general_script_helper
     #@@nobeautify
 
-    def execute_language_script(self, command, ext, language, root, regex=None):
+    def general_script_helper(self, command, ext, language, root, regex=None):
         """
         Generalized execute-script function.
 
@@ -2279,6 +2268,7 @@ class Commands:
         language:   The language name.
         regex:      Optional regular expression describing error messages.
                     If present, group(1) should evaluate to a line number.
+                    May be a compiled regex expression or a string.
         root:       The root of the tree containing the script,
                     The script may contain section references and @others.
         """
@@ -2318,8 +2308,7 @@ class Commands:
             p, offset, found = c.gotoCommands.find_file_line(n, root)
             if found:
                 return p, offset
-            else:
-                return root, n
+            return root, n
         #@-others
         # Compile and check the regex.
         if regex:
@@ -2335,8 +2324,11 @@ class Commands:
             forcePythonSentinels=False, # language=='python',
             useSentinels=True,
         )
-        # Write the script to a temp file.
+        # Create a temp file.
         fd, path = tempfile.mkstemp(suffix=ext, prefix="")
+        # Substitute the path for '<FILE>' in the command
+        command = command.replace('<FILE>', path)
+        g.trace('command:', command)
         try:
             with os.fdopen(fd, 'w') as f:
                 f.write(script)
@@ -2351,13 +2343,7 @@ class Commands:
             for s in g.splitLines(g.toUnicode(err)):
                 put_line(s.rstrip())
         finally:
-            os.remove(path)
-    #@+node:ekr.20200526074132.1: *4* c.executeMinibufferCommand
-    def executeMinibufferCommand(self, commandName):
-        """Call c.doCommandByName, creating the required event."""
-        c = self
-        event = g.app.gui.create_key_event(c)
-        return c.doCommandByName(commandName, event)
+            pass ### os.remove(path)
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """
@@ -2539,6 +2525,70 @@ class Commands:
                 # c.config.getString('script-file-path'))
             path = None
         return path
+    #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
+    def expand_path_expression(self, s):
+        """Expand all {{anExpression}} in c's context."""
+        c = self
+        if not s:
+            return ''
+        s = g.toUnicode(s)
+        # find and replace repeated path expressions
+        previ, aList = 0, []
+        while previ < len(s):
+            i = s.find('{{', previ)
+            j = s.find('}}', previ)
+            if -1 < i < j:
+                # Add anything from previous index up to '{{'
+                if previ < i:
+                    aList.append(s[previ:i])
+                # Get expression and find substitute
+                exp = s[i + 2 : j].strip()
+                if exp:
+                    try:
+                        s2 = c.replace_path_expression(exp)
+                        aList.append(s2)
+                    except Exception:
+                        g.es(f"Exception evaluating {{{{{exp}}}}} in {s.strip()}")
+                        g.es_exception(full=True, c=c)
+                # Prepare to search again after the last '}}'
+                previ = j + 2
+            else:
+                # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
+                aList.append(s[previ:])
+                break
+        val = ''.join(aList)
+        if g.isWindows:
+            val = val.replace('\\', '/')
+        return val
+    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression
+    replace_errors: List[str] = []
+
+    def replace_path_expression(self, expr):
+        """ local function to replace a single path expression."""
+        c = self
+        d = {
+            'c': c,
+            'g': g,
+            # 'getString': c.config.getString,
+            'p': c.p,
+            'os': os,
+            'sep': os.sep,
+            'sys': sys,
+        }
+        # #1338: Don't report errors when called by g.getUrlFromNode.
+        try:
+            # pylint: disable=eval-used
+            path = eval(expr, d)
+            return g.toUnicode(path, encoding='utf-8')
+        except Exception as e:
+            message = (
+                f"{c.shortFileName()}: {c.p.h}\n"
+                f"expression: {expr!s}\n"
+                f"     error: {e!s}")
+            if message not in self.replace_errors:
+                self.replace_errors.append(message)
+                g.trace(message)
+            return expr
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
     def archivedPositionToPosition(self, s):
