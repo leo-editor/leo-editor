@@ -628,7 +628,14 @@ class Commands:
             return
         # Get the optional pattern.
         regex = get_setting_for_language('exec-script-patterns')
-        c.general_script_helper(command, ext, language, root=p, regex=regex)
+        # Set the directory, if possible.
+        if p.isAnyAtFileNode():
+            path = g.fullPath(c, p)
+            directory = os.path.dirname(path)
+        else:
+            directory = None
+        c.general_script_helper(command, ext, language,
+            directory=directory, regex=regex, root=p)
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event=None):
@@ -2245,12 +2252,13 @@ class Commands:
     #@+node:ekr.20210305133229.1: *4* c.general_script_helper
     #@@nobeautify
 
-    def general_script_helper(self, command, ext, language, root, regex=None):
+    def general_script_helper(self, command, ext, language, root, directory=None, regex=None):
         """
-        Generalized execute-script function.
+        The official helper for the execute-general-script command.
 
         c:          The Commander of the outline.
         command:    The os command to execute the script.
+        directory:  Optional: Change to this directory before executing command.
         ext:        The file extention for the tempory file.
         language:   The language name.
         regex:      Optional regular expression describing error messages.
@@ -2328,7 +2336,11 @@ class Commands:
         fd, path = tempfile.mkstemp(suffix=ext, prefix="")
         # Substitute the path for '<FILE>' in the command
         command = command.replace('<FILE>', path)
-        g.trace('command:', command)
+        # Change directory.
+        old_dir = os.path.abspath(os.path.curdir)
+        if not directory:
+            directory = os.path.dirname(path)
+        os.chdir(directory)
         try:
             with os.fdopen(fd, 'w') as f:
                 f.write(script)
@@ -2344,6 +2356,7 @@ class Commands:
                 put_line(s.rstrip())
         finally:
             os.remove(path)
+            os.chdir(old_dir)
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """
