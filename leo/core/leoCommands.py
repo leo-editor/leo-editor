@@ -598,6 +598,18 @@ class Commands:
     #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
     @cmd ('execute-general-script')
     def execute_general_script_command(self, event=None):
+        """
+        Execute c.p and all its descendants as a script.
+        
+        Create a temp file if c.p is not an @<file>node.
+        
+        @data exec-script-commands associates commands with langauges.
+        
+        @data exec-script-patterns provides patterns to create clickable
+        links for error messages.
+        
+        Set the cwd before calling the command.
+        """
         c, p, tag = self, self.p, 'execute-general-script'
         
         def get_setting_for_language(setting):
@@ -2299,7 +2311,7 @@ class Commands:
                 # No line number.
                 g.es_print(s)
                 return
-            s = s.replace(path, root.h)
+            s = s.replace(root_path, root.h)
             # Print to the console.
             print(s)
             # Find the node and offset corresponding to line n.
@@ -2310,10 +2322,18 @@ class Commands:
                 log.put(s + '\n', nodeLink=f"{unl},{n2}")
             else:
                 log.put(s + '\n')
-        #@+node:ekr.20210529164957.1: *5* function: find_line (** extend)
-        def find_line(fn, n):
+        #@+node:ekr.20210529164957.1: *5* function: find_line
+        def find_line(path, n):
 
-            p, offset, found = c.gotoCommands.find_file_line(n, root)
+            found, p = False, None
+            if path == root_path:
+                p, offset, found = c.gotoCommands.find_file_line(n, root)
+            else:
+                # Find an @<file> node with the given path.
+                for p in c.all_positions():
+                    if p.isAnyAtFileNode() and path == g.fullPath(c, p):
+                        p, offset, found = c.gotoCommands.find_file_line(n, p)
+                        break
             if found:
                 return p, offset
             return root, n
@@ -2332,19 +2352,23 @@ class Commands:
             forcePythonSentinels=False, # language=='python',
             useSentinels=True,
         )
-        # Create a temp file.
-        fd, path = tempfile.mkstemp(suffix=ext, prefix="")
+        # Create a temp file if root is not an @<file> node.
+        use_temp = not root.isAnyAtFileNode()
+        if use_temp:
+            fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
+            with os.fdopen(fd, 'w') as f:
+                f.write(script)
+        else:
+            root_path = g.fullPath(c, root)
         # Substitute the path for '<FILE>' in the command
-        command = command.replace('<FILE>', path)
+        command = command.replace('<FILE>', root_path)
         # Change directory.
         old_dir = os.path.abspath(os.path.curdir)
         if not directory:
-            directory = os.path.dirname(path)
+            directory = os.path.dirname(root_path)
         os.chdir(directory)
         try:
-            with os.fdopen(fd, 'w') as f:
-                f.write(script)
-            proc = subprocess.Popen(f"{command} {path}",
+            proc = subprocess.Popen(f"{command} {root_path}",
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
@@ -2355,7 +2379,8 @@ class Commands:
             for s in g.splitLines(g.toUnicode(err)):
                 put_line(s.rstrip())
         finally:
-            os.remove(path)
+            if use_temp:
+                os.remove(root_path)
             os.chdir(old_dir)
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
