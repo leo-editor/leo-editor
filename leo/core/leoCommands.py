@@ -595,7 +595,7 @@ class Commands:
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
-    #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script & helper
+    #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
     @cmd ('execute-general-script')
     def execute_general_script_command(self, event=None):
         c, p, tag = self, self.p, 'execute-general-script'
@@ -605,11 +605,11 @@ class Commands:
             Return the setting from the given @data setting.
             The first colon ends each key.
             """
-            d = {}
             for s in c.config.getData(setting) or []:
                 key, val = s.split(':', 1)
-                d [key.strip()] = val.strip()
-            return d.get(language)
+                if key.strip() == language:
+                    return val.strip()
+            return None
         
         # Get the language and extension.
         d = c.scanAllDirectives(p)
@@ -627,8 +627,8 @@ class Commands:
             print(f"{tag}: No command for {language} in @data exec-script-commands")
             return
         # Get the optional pattern.
-        pattern = get_setting_for_language('exec-script-patterns')
-        c.general_script_helper(command, ext, language, root=p, regex=pattern)
+        regex = get_setting_for_language('exec-script-patterns')
+        c.general_script_helper(command, ext, language, root=p, regex=regex)
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event=None):
