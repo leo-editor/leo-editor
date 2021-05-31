@@ -11633,7 +11633,8 @@ python: python39</t>
 # One group, containing only digits, defines the line number.
 # The other group defines the file name.
 
-python: ^\s*File "(.+)", line ([0-9]+), in .+$</t>
+python: ^\s*File "(.+)", line ([0-9]+), in .+$
+rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

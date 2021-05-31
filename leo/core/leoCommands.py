@@ -2261,7 +2261,7 @@ class Commands:
         c = self
         event = g.app.gui.create_key_event(c)
         return c.doCommandByName(commandName, event)
-    #@+node:ekr.20210305133229.1: *4* c.general_script_helper
+    #@+node:ekr.20210305133229.1: *4* c.general_script_helper & helpers
     #@@nobeautify
 
     def general_script_helper(self, command, ext, language, root, directory=None, regex=None):
@@ -2327,15 +2327,17 @@ class Commands:
             """
             Return the node corresponding to line n of external file given by path.
             """
-            found, p = False, None
             if path == root_path:
                 p, offset, found = c.gotoCommands.find_file_line(n, root)
             else:
                 # Find an @<file> node with the given path.
+                found = False
                 for p in c.all_positions():
-                    if p.isAnyAtFileNode() and path == g.fullPath(c, p):
-                        p, offset, found = c.gotoCommands.find_file_line(n, p)
-                        break
+                    if p.isAnyAtFileNode():
+                        norm_path = os.path.normpath(g.fullPath(c, p))
+                        if path == norm_path:
+                            p, offset, found = c.gotoCommands.find_file_line(n, p)
+                            break
             if found:
                 return p, offset
             return root, n
@@ -2358,6 +2360,7 @@ class Commands:
         use_temp = not root.isAnyAtFileNode()
         if use_temp:
             fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
+            g.trace('Temp file:', root_path)
             with os.fdopen(fd, 'w') as f:
                 f.write(script)
         else:
