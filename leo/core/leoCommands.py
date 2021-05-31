@@ -598,50 +598,36 @@ class Commands:
     #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script & helper
     @cmd ('execute-general-script')
     def execute_general_script_command(self, event=None):
-        c, p = self, self.p
-        #@+others  # Define helper
-        #@+node:ekr.20210530081758.1: *4* function: get_options
-        def get_options():
+        c, p, tag = self, self.p, 'execute-general-script'
+        
+        def get_setting_for_language(setting):
             """
-            Return (language, command, pattern) or (None, None, None)
+            Return the setting from the given @data setting.
+            The first colon ends each key.
             """
-            def make_dict(aList):
-                """Return a dict. Keys are delimited by the first colon."""
-                d = {}
-                for s in aList:
-                    key, val = s.split(':', 1)
-                    d [key.strip()] = val.strip()
-                return d
-
-            def oops(message):
-                print(f"execute-general-script: {message}")
-                return None, None, None, None
-
-            d = c.scanAllDirectives(p)
-            # Parse the settings into dictionaries.
-            commands = c.config.getData('exec-script-commands') or []
-            patterns = c.config.getData('exec-script-patterns') or []
-            commands_d = make_dict(commands)
-            patterns_d = make_dict(patterns)
-            # Get the language in effect at p.
-            language = d.get('language')
-            if not language:
-                return oops(f"No language in effect at {p.h}")
-            ext = g.app.language_extension_dict.get(language)
-            if not ext:
-                return oops(f"No extentions for {language}")
-            # Get the command and pattern from settings.
-            command = commands_d.get(language)
-            pattern = patterns_d.get(language)
-            if not command:
-                return oops(f"No command for {language} in @data exec-script-commands")
-            if not pattern:
-                return oops(f"No pattern for {language} in @data exec-script-patterns")
-            return command, ext, language, pattern
-        #@-others
-        command, ext, language, pattern = get_options()
-        if not language or not ext:
+            d = {}
+            for s in c.config.getData(setting) or []:
+                key, val = s.split(':', 1)
+                d [key.strip()] = val.strip()
+            return d.get(language)
+        
+        # Get the language and extension.
+        d = c.scanAllDirectives(p)
+        language = d.get('language')
+        if not language:
+            print(f"{tag}: No language in effect at {p.h}")
             return
+        ext = g.app.language_extension_dict.get(language)
+        if not ext:
+            print(f"{tag}: No extention for {language}")
+            return
+        # Get the command.
+        command = get_setting_for_language('exec-script-commands')
+        if not command:
+            print(f"{tag}: No command for {language} in @data exec-script-commands")
+            return
+        # Get the optional pattern.
+        pattern = get_setting_for_language('exec-script-patterns')
         c.general_script_helper(command, ext, language, root=p, regex=pattern)
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
