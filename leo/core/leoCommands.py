@@ -599,7 +599,7 @@ class Commands:
     @cmd ('execute-general-script')
     def execute_general_script_command(self, event=None):
         c, p = self, self.p
-        #@+others  # Define helpe functions
+        #@+others  # Define helper
         #@+node:ekr.20210530081758.1: *4* function: get_options
         def get_options():
             """
@@ -615,7 +615,7 @@ class Commands:
 
             def oops(message):
                 print(f"execute-general-script: {message}")
-                return None, None, None
+                return None, None, None, None
 
             d = c.scanAllDirectives(p)
             # Parse the settings into dictionaries.
@@ -627,6 +627,9 @@ class Commands:
             language = d.get('language')
             if not language:
                 return oops(f"No language in effect at {p.h}")
+            ext = g.app.language_extension_dict.get(language)
+            if not ext:
+                return oops(f"No extentions for {language}")
             # Get the command and pattern from settings.
             command = commands_d.get(language)
             pattern = patterns_d.get(language)
@@ -634,13 +637,11 @@ class Commands:
                 return oops(f"No command for {language} in @data exec-script-commands")
             if not pattern:
                 return oops(f"No pattern for {language} in @data exec-script-patterns")
-            return language, command, pattern
+            return command, ext, language, pattern
         #@-others
-        language, command, pattern = get_options()
-        if not language:
+        command, ext, language, pattern = get_options()
+        if not language or not ext:
             return
-        ext = g.app.language_extension_dict.get(language)
-        ### 
         c.general_script_helper(command, ext, language, root=p, regex=pattern)
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
@@ -2276,7 +2277,9 @@ class Commands:
         #@+others  # Define helper functions
         #@+node:ekr.20210529142153.1: *5* function: put_line
         def put_line(s):
-
+            """
+            Put the line, creating a clickable link if the regex matches.
+            """
             if not regex:
                 g.es_print(s)
                 return
@@ -2285,25 +2288,36 @@ class Commands:
             if not m:
                 g.es_print(s)
                 return
+            # If present, the regex should define two groups.
             try:
-                n = int(m.group(1))
-            except Exception:
-                g.es_print(f"Bad line number{m.group(1)!r}")
+                s1 = m.group(1)
+                s2 = m.group(2)
+            except IndexError:
+                g.es_print(f"Regex {regex.pattern()} must define two groups")
+                return
+            if s1.isdigit():
+                n = int(s1)
+                fn = s2
+            elif s2.isdigit():
+                n = int(s2)
+                fn = s1
+            else:
+                # No line number.
                 g.es_print(s)
                 return
             s = s.replace(path, root.h)
             # Print to the console.
             print(s)
             # Find the node and offset corresponding to line n.
-            p, n2 = find_line(n)
+            p, n2 = find_line(fn, n)
             # Create the link.
             unl = p.get_UNL(with_proto=True, with_count=True)
             if unl:
                 log.put(s + '\n', nodeLink=f"{unl},{n2}")
             else:
                 log.put(s + '\n')
-        #@+node:ekr.20210529164957.1: *5* function: find_line
-        def find_line(n):
+        #@+node:ekr.20210529164957.1: *5* function: find_line (** extend)
+        def find_line(fn, n):
 
             p, offset, found = c.gotoCommands.find_file_line(n, root)
             if found:
@@ -2343,7 +2357,7 @@ class Commands:
             for s in g.splitLines(g.toUnicode(err)):
                 put_line(s.rstrip())
         finally:
-            pass ### os.remove(path)
+            os.remove(path)
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """

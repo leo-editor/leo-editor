@@ -11629,9 +11629,11 @@ python: python39</t>
 <t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
 # Format: language-name: regex pattern
 #
-# Group(1) specifies the line number.
+# Patterns must define two groups, in either order:
+# One group, containing only digits, defines the line number.
+# The other group defines the file name.
 
-python: ^\s*File ".+", line ([0-9]+), in .+$</t>
+python: ^\s*File "(.+)", line ([0-9]+), in .+$</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
