@@ -2324,7 +2324,9 @@ class Commands:
                 log.put(s + '\n')
         #@+node:ekr.20210529164957.1: *5* function: find_line
         def find_line(path, n):
-
+            """
+            Return the node corresponding to line n of external file given by path.
+            """
             found, p = False, None
             if path == root_path:
                 p, offset, found = c.gotoCommands.find_file_line(n, root)
