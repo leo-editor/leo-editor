@@ -11624,8 +11624,8 @@ spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
 # Just before executing the command, execute-general-script
 # Replaces &lt;FILE&gt; by the name of the temporary file.
 
-# python: python39 -v &lt;FILE&gt;
-python: python39</t>
+# python: python -v &lt;FILE&gt;
+python: python</t>
 <t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
 # Format: language-name: regex pattern
 #
