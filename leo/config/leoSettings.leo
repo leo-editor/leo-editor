@@ -11625,7 +11625,8 @@ spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
 # Replaces &lt;FILE&gt; by the name of the temporary file.
 
 # python: python -v &lt;FILE&gt;
-python: python</t>
+python: python
+rust: rustc</t>
 <t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
 # Format: language-name: regex pattern
 #
