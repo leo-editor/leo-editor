@@ -11625,6 +11625,8 @@ spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
 # Replaces &lt;FILE&gt; by the name of the temporary file.
 
 # python: python -v &lt;FILE&gt;
+
+go: go run .
 python: python
 rust: rustc</t>
 <t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
@@ -11634,6 +11636,7 @@ rust: rustc</t>
 # One group, containing only digits, defines the line number.
 # The other group defines the file name.
 
+go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 <t tx="jlunz.20150821113251.1">def html_tag():

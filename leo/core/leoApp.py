@@ -435,6 +435,7 @@ class LeoApp:
             "factor":   "factor",
             "forth":    "forth",
             "g":        "antlr",
+            "go":       "go",
             "groovy":   "groovy",
             "h":        "c", # 2012/05/23.
             "handlebars": "html", # McNab.
@@ -631,6 +632,7 @@ class LeoApp:
             "fortran90"          : "!",
             "foxpro"             : "&&",
             "gettext"            : "# ",
+            "go"                 : "//",
             "groovy"             : "// /* */",
             "handlebars"         : "<!-- -->", # McNab: delegate to html.
             "haskell"            : "--_ {-_ _-}",
@@ -814,6 +816,7 @@ class LeoApp:
             "fortran90"     : "f90",
             "foxpro"        : "prg",
             "gettext"       : "po",
+            "go"            : "go",
             "groovy"        : "groovy",
             "haskell"       : "hs",
             "haxe"          : "hx",
