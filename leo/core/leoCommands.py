@@ -601,7 +601,7 @@ class Commands:
         """
         Execute c.p and all its descendants as a script.
         
-        Create a temp file if c.p is not an @<file>node.
+        Create a temp file if c.p is not an @<file> node.
         
         @data exec-script-commands associates commands with langauges.
         
