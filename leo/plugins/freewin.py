@@ -4,7 +4,7 @@
 #@@language python
 """A plugin with a basic editor pane that tracks an outline node.
 
-   Version 1.0b3
+   Version 1.0b4
 """
 
 #@+others
@@ -20,10 +20,16 @@ except Exception:
 
 from leo.core import leoGlobals as g
 
+qt_imports_ok = False
 try:
-    from leo.core.leoQt import Qt, isQt6, QtCore, QtWidgets
+    from leo.core.leoQt import Qt, isQt5, isQt6, QtCore, QtWidgets
+    qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
+
+if not qt_imports_ok:
+    g.trace('Qt imports failed')
+    raise Exception('Qt Imports failed')
 
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
@@ -48,7 +54,31 @@ else:
     print('ZEditorWin: *** no docutils')
 
 #@-<<import docutils>>
+#@+<<set Qt Objects>>
+#@+node:tom.20210601000633.1: *3* <<set Qt Objects>>
+QWidget = QtWidgets.QWidget
+QTextEdit = QtWidgets.QTextEdit
+QVBoxLayout = QtWidgets.QVBoxLayout
+QPushButton = QtWidgets.QPushButton
+QStackedWidget = QtWidgets.QStackedWidget
+QRect = QtCore.QRect
 
+QWebView = None
+if isQt5:
+    try:
+        from leo.core.leoQt import QtWebKitWidgets
+        QWebView = QtWebKitWidgets.QWebView
+    except ImportError:
+        g.trace("Can't import QtWebKitWidgets")
+    except Exception as e:
+        g.trace(e)
+else:
+    try:
+        QWebView = QtWidgets.QTextBrowser
+    except Exception as e:
+        g.trace(e)
+        # The top-level init function gives the error.
+#@-<<set Qt Objects>>
 #@+node:tom.20210527153422.1: ** Declarations
 # pylint: disable=invalid-name
 # Dimensions and placing of editor windows
@@ -58,7 +88,11 @@ X = 1200
 Y = 250
 
 BACK_COLOR = 'aliceblue'
+BROWSER = 1
+EDITOR = 0
 EDITOR_FONT_SIZE = '11pt'
+ENCODING = 'utf-8'
+
 FONT_FAMILY = 'Consolas, Droid Sans Mono, DejaVu Sans Mono'
 RST_NO_WARNINGS = 5
 
@@ -94,50 +128,64 @@ class ZEditorWin(QtWidgets.QMainWindow):
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
         super().__init__()
+        QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
         self.c = c
         self.p = c.p
-
         w = self.c.frame.body.wrapper
         self.host_editor = w.widget
+        self.switching = False
 
-        QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        self.editor = QTextEdit()
+        self.browser = QWebView()
 
-        #self.setObjectName('ZEditorWindow')
+        #@+<<set up editor>>
+        #@+node:tom.20210602172856.1: *4* <<set up editor>>
+        self.doc = self.editor.document()
+        self.editor.setStyleSheet(STYLESHEET)
+        #@-<<set up editor>>
+        #@+<<set up render button>>
+        #@+node:tom.20210602173354.1: *4* <<set up render button>>
+        self.render_button  = QPushButton("Rendered <--> Plain")
+        self.render_button.clicked.connect(self.switch_and_render)
+        #@-<<set up render button>>
 
-        #@+<<create widgets>>
-        #@+node:tom.20210528235126.1: *4* <<create widgets>>
-        widget = self.editor = QtWidgets.QTextEdit(self)
-        self.doc = widget.document()
-        widget.setStyleSheet(STYLESHEET)
+        #@+<<build central widget>>
+        #@+node:tom.20210528235126.1: *4* <<build central widget>>
+        self.stacked_widget = QStackedWidget()
+        self.stacked_widget.insertWidget(EDITOR, self.editor)
+        self.stacked_widget.insertWidget(BROWSER, self.browser)
 
-        self.render_button  = QtWidgets.QPushButton("Rendered/Plain")
-        self.render_button.clicked.connect(self.render)
-
-        central_widget = QtWidgets.QWidget()
-
-        #@-<<create widgets>>
-        #@+<<create layouts>>
-        #@+node:tom.20210528235142.1: *4* <<create layouts>>
-        layout = QtWidgets.QVBoxLayout()
+        layout = QVBoxLayout()
         layout.addWidget(self.render_button)
-        layout.addWidget(widget)
+        layout.addWidget(self.stacked_widget)
         layout.setContentsMargins(0, 0, 0, 0)
-        #@-<<create layouts>>
+
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        #@-<<build central widget>>
         #@+<<set geometry>>
         #@+node:tom.20210528235451.1: *4* <<set geometry>>
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
         self.setGeometry(QtCore.QRect(X, Y, W, H))
         #@-<<set geometry>>
+        #@+<<set window title>>
+        #@+node:tom.20210531235412.1: *4* <<set window title>>
+        parents_ = [p for p in c.p.parents()]
+        ph = parents_[0].h + '-->' if parents_ else ''
+        self.setWindowTitle(f'{ph}{c.p.h}   {c.p.gnx}')
+        #@-<<set window title>>
+
+        self.render_kind = EDITOR
+        self.setCentralWidget(central_widget)
 
         self.handlers = [('idle', self.update)]
         self._register_handlers()
 
-        self.setWindowTitle(f'{c.p.h}   {c.p.gnx}')
         self.current_text = c.p.b
-        widget.setText(self.current_text) 
+        self.editor.setPlainText(self.current_text)
 
-        self.show_rendered = False
+        self.show()
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
@@ -145,25 +193,23 @@ class ZEditorWin(QtWidgets.QMainWindow):
            if the host node's text has changed, update the card's text 
            with the host's changed text.
         """
+        if self.switching: return
+
         if self.doc.isModified():
-            if not self.show_rendered:
-                new_text = self.doc.toRawText()
-                self.p.b = new_text
-                self.current_text = new_text
-                self.doc.setModified(False)
+            self.current_text = self.doc.toRawText()
+            self.p.b = self.current_text
+            self.doc.setModified(False)
+
         # if the current position in the outline is our own node, 
         # then synchronize the text if it's changed in the outline.
         elif self.c.p == self.p:
             doc = self.host_editor.document()
             if doc.isModified():
-                new_text = doc.toRawText()
-                if self.show_rendered:
-                    self.editor.setHtml(new_text)
-                else:
-                    self.doc.setPlainText(new_text)
-                self.doc.setModified(False)
-                doc.setModified(False)
-                self.current_text = new_text
+                self.current_text = doc.toRawText()
+                self.editor.setPlainText(self.current_text)
+                self.set_and_render(False)
+
+        self.doc.setModified(False)
     #@+node:tom.20210527234644.1: *3* _register_handlers (floating_pane.py)
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals
@@ -171,31 +217,48 @@ class ZEditorWin(QtWidgets.QMainWindow):
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
-    #@+node:tom.20210529000221.1: *3* render
-    def render(self):
-        """Render text of the editor widget as HTML and display it."""
-        self.show_rendered = not self.show_rendered
-        text = self.current_text
+    #@+node:tom.20210529000221.1: *3* set_and_render
+    def set_and_render(self, switch=True):
+        """Switch between the editor and RsT viewer, and render text."""
+        self.switching = True
 
-        if not self.show_rendered:
-            self.editor.setTextInteractionFlags(Qt.Qt.TextEditorInteraction)
-            self.editor.setPlainText(text)
-        else:
-            # Call docutils to get the html rendering.
-            _html = ''
-            args = {'report_level':RST_NO_WARNINGS}
-            if text:
-                try:
-                    _html = publish_string(text, writer_name='html',
-                                           settings_overrides=args)
-                    _html = _html.decode(ENCODING)
-                except SystemMessage as sm:
-                    msg = sm.args[0]
-                    if 'SEVERE' in msg or 'FATAL' in msg:
-                        _html = f'RST error:\n{msg}\n\n{text}'
-                self.editor.setTextInteractionFlags(Qt.Qt.NoTextInteraction or Qt.Qt.LinksAccessibleByMouse)
-                self.editor.setHtml(_html)
-                self.doc.setModified(False)
+        if not got_docutils:
+            self.render_kind = EDITOR
+        elif switch:
+            if self.render_kind == BROWSER:
+                self.render_kind = EDITOR
+            else: 
+                self.render_kind = BROWSER
+
+        if self.render_kind == BROWSER:
+            text = self.editor.document().toRawText()
+            html = self.render_rst(text)
+            self.browser.setHtml(html)
+
+        self.stacked_widget.setCurrentIndex(self.render_kind)
+        self.switching = False
+
+    def switch_and_render(self):
+        self.set_and_render(True)
+    #@+node:tom.20210602174838.1: *3* render_rst
+    def render_rst(self, text):
+        """Render text of the editor widget as HTML and display it."""
+        # Call docutils to get the html rendering.
+        _html = ''
+        args = {'embed_stylesheet': True,
+                'report_level': RST_NO_WARNINGS,
+               }
+
+        if text:
+            try:
+                _html = publish_string(text, writer_name='html',
+                                       settings_overrides=args)\
+                        .decode(ENCODING)
+            except SystemMessage as sm:
+                msg = sm.args[0]
+                if 'SEVERE' in msg or 'FATAL' in msg:
+                    _html = f'RST error:\n{msg}\n\n{text}'
+        return _html
     #@-others
 #@-others
 #@-leo
