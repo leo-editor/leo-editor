@@ -2,9 +2,43 @@
 #@+node:tom.20210527153256.1: * @file ../plugins/freewin.py
 #@@tabwidth -4
 #@@language python
-"""A plugin with a basic editor pane that tracks an outline node.
 
-   Version 1.0b4
+"""
+#@+<<docstring>>
+#@+node:tom.20210603022210.1: ** <<docstring>>
+Freewin - a plugin with a basic editor pane that tracks an outline node.
+
+Version: 1.0b5
+
+Provides a free-floating window tied to one node in an outline.
+The window functions as a plain text editor, and can also be
+switched to render the node with Restructured Text.
+
+To open a Freewin window, select a node in your outline and issue
+the Leo minibuffer command ``z-open-win``.  The window that
+opens will display an editor pane that contains the text of the
+node.  The text can be edited in the window.  If the text is
+edited in the outline instead, the changes will show in the
+Freewin pane.
+
+Editing changes made in the Freewin window will be echoed in the
+underlying outline node even if a different node has been selected.
+They will be visible in the outline when the original node is
+selected again.
+
+A given Freewin window will always be synchronized with the node
+that was selected when the Freewin window was opened.
+
+Pressing the ``Rendered <--> Plain`` button will switch between
+text and RsT rendering.  In RsT mode, text cannot be edited but
+changes to the node in the outline will be rendered as they are made.
+
+If RsT text in the focal node links to another node in the same
+subtree, the Freewin window will not be able to navigate to the
+target.  This is because the window only represents a single,
+unchangeable node. However, no RsT error will be shown, and the
+link will be underlined even though it will not be active.
+#@-<<docstring>>
 """
 
 #@+others
@@ -22,7 +56,7 @@ from leo.core import leoGlobals as g
 
 qt_imports_ok = False
 try:
-    from leo.core.leoQt import Qt, isQt5, isQt6, QtCore, QtWidgets
+    from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
@@ -30,6 +64,25 @@ except ImportError as e:
 if not qt_imports_ok:
     g.trace('Qt imports failed')
     raise Exception('Qt Imports failed')
+
+#@+<<create QWebView>>
+#@+node:tom.20210603000519.1: *3* <<create QWebView>>
+QWebView = None
+if isQt5:
+    try:
+        from leo.core.leoQt import QtWebKitWidgets
+        QWebView = QtWebKitWidgets.QWebView
+    except ImportError:
+        g.trace("Can't import QtWebKitWidgets")
+    except Exception as e:
+        g.trace(e)
+elif isQt6:
+    try:
+        QWebView = QtWidgets.QTextBrowser
+    except Exception as e:
+        g.trace(e)
+        # The top-level init function gives the error.
+#@-<<create QWebView>>
 
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
@@ -63,21 +116,6 @@ QPushButton = QtWidgets.QPushButton
 QStackedWidget = QtWidgets.QStackedWidget
 QRect = QtCore.QRect
 
-QWebView = None
-if isQt5:
-    try:
-        from leo.core.leoQt import QtWebKitWidgets
-        QWebView = QtWebKitWidgets.QWebView
-    except ImportError:
-        g.trace("Can't import QtWebKitWidgets")
-    except Exception as e:
-        g.trace(e)
-else:
-    try:
-        QWebView = QtWidgets.QTextBrowser
-    except Exception as e:
-        g.trace(e)
-        # The top-level init function gives the error.
 #@-<<set Qt Objects>>
 #@+node:tom.20210527153422.1: ** Declarations
 # pylint: disable=invalid-name
@@ -171,8 +209,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@-<<set geometry>>
         #@+<<set window title>>
         #@+node:tom.20210531235412.1: *4* <<set window title>>
-        parents_ = [p for p in c.p.parents()]
-        ph = parents_[0].h + '-->' if parents_ else ''
+        ph = ''
+        parents_ = list(c.p.parents())
+        if parents_:
+            ph = parents_[0].h + '-->'
         self.setWindowTitle(f'{ph}{c.p.h}   {c.p.gnx}')
         #@-<<set window title>>
 
