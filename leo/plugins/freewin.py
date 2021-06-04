@@ -8,17 +8,22 @@
 #@+node:tom.20210603022210.1: ** <<docstring>>
 Freewin - a plugin with a basic editor pane that tracks an outline node.
 
-Version: 1.0b5
+Version: 1.0b6
 
 Provides a free-floating window tied to one node in an outline.
 The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
+#@+others
+#@+node:tom.20210604174603.1: *3* Opening a Window
+Opening a Window
+~~~~~~~~~~~~~~~~~
 To open a Freewin window, select a node in your outline and issue
-the Leo minibuffer command ``z-open-win``.  The window that
-opens will display an editor pane that contains the text of the
-node.  The text can be edited in the window.  If the text is
-edited in the outline instead, the changes will show in the
+the minibuffer command ``z-open-freewin``.
+
+The window that opens will display an editor pane that contains the
+text of the node.  The text can be edited in the window.  If the 
+text is edited in the outline instead, the changes will show in the
 Freewin pane.
 
 Editing changes made in the Freewin window will be echoed in the
@@ -26,9 +31,13 @@ underlying outline node even if a different node has been selected.
 They will be visible in the outline when the original node is
 selected again.
 
-A given Freewin window will always be synchronized with the node
-that was selected when the Freewin window was opened.
+A given Freewin window will be synchronized with the node
+that was selected when the Freewin window was opened, and only
+that node.
 
+#@+node:tom.20210604181030.1: *3* Rendering with Restructured Text
+Rendering with Restructured Text
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pressing the ``Rendered <--> Plain`` button will switch between
 text and RsT rendering.  In RsT mode, text cannot be edited but
 changes to the node in the outline will be rendered as they are made.
@@ -38,11 +47,42 @@ subtree, the Freewin window will not be able to navigate to the
 target.  This is because the window only represents a single,
 unchangeable node. However, no RsT error will be shown, and the
 link will be underlined even though it will not be active.
+
+#@+node:tom.20210604181109.1: *3* Styling the RsT View
+Styling the RsT View
+~~~~~~~~~~~~~~~~~~~~~
+The RsT panel can be styled by extending the default css stylesheet
+provided by docutils.  The custom stylesheet must be in the user's
+`.leo/css` directory.  It must be named `freewin_rst.css`.
+
+For information on creating a customized css stylesheet, see
+
+`docutils stylesheets <https://docutils.sourceforge.io/docs/howto/html-stylesheets.html>`_
+
+As a starting point, the RsT stylesheet used by the Viewrendered3 plugin could be used.  It is named `vr3_rst.css`, and is located in the Leo Github repository at leo/plugins/vr3.
+
+#@+node:tom.20210604181134.1: *3* Styling the Editor View
+Styling the Editor View
+~~~~~~~~~~~~~~~~~~~~~~~~
+The editor panel styles can be over-ridden by a css stylesheet file in the 
+same directory as the the RsT stylesheet above: the user's `.leo/css`
+directory. It must be named `freewin_editor.css`. The file should contain the following selectors;  the values shown below are the default values used by Freewin::
+
+    QTextEdit {
+           background: azure;
+           font-family: Consolas, Droid Sans Mono, DejaVu Sans Mono;
+           font-size: 11pt;
+    }
+
+#@-others
+
+
 #@-<<docstring>>
 """
-
 #@+others
 #@+node:tom.20210527153415.1: ** Imports
+from os.path import exists, join as osp_join
+
 try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
@@ -53,17 +93,18 @@ except Exception:
     pass
 
 from leo.core import leoGlobals as g
+from leo.core.leoApp import LoadManager
 
 qt_imports_ok = False
 try:
-    from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets
+    from leo.core.leoQt import Qt, isQt5, isQt6, QtCore, QtWidgets
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
 
 if not qt_imports_ok:
     g.trace('Qt imports failed')
-    raise Exception('Qt Imports failed')
+    raise ImportError('Qt Imports failed')
 
 #@+<<create QWebView>>
 #@+node:tom.20210603000519.1: *3* <<create QWebView>>
@@ -83,7 +124,6 @@ elif isQt6:
         g.trace(e)
         # The top-level init function gives the error.
 #@-<<create QWebView>>
-
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
 try:
@@ -115,7 +155,7 @@ QVBoxLayout = QtWidgets.QVBoxLayout
 QPushButton = QtWidgets.QPushButton
 QStackedWidget = QtWidgets.QStackedWidget
 QRect = QtCore.QRect
-
+QtVertical = Qt.Qt.Vertical
 #@-<<set Qt Objects>>
 #@+node:tom.20210527153422.1: ** Declarations
 # pylint: disable=invalid-name
@@ -123,18 +163,21 @@ QRect = QtCore.QRect
 W = 570
 H = 350
 X = 1200
-Y = 250
+Y = 100
+DELTA_Y = 10
 
-BACK_COLOR = 'aliceblue'
+BACK_COLOR = 'azure'
 BROWSER = 1
 EDITOR = 0
 EDITOR_FONT_SIZE = '11pt'
+EDITOR_STYLESHEET_FILE = 'freewin_editor.css'
 ENCODING = 'utf-8'
 
 FONT_FAMILY = 'Consolas, Droid Sans Mono, DejaVu Sans Mono'
 RST_NO_WARNINGS = 5
+RST_CUSTOM_STYLESHEET_FILE = 'freewin_rst.css'
 
-STYLESHEET = f'''QTextEdit {{
+EDITOR_STYLESHEET = f'''QTextEdit {{
     background: {BACK_COLOR};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
@@ -143,7 +186,7 @@ STYLESHEET = f'''QTextEdit {{
 ENCODING='utf-8'
 instances = {}
 #@+node:tom.20210527153848.1: ** z-commands
-@g.command('z-open-win')
+@g.command('z-open-freewin')
 def open_z_window(event):
     """Open or show editing window for the selected node."""
     if g.app.gui.guiName() != 'qt':
@@ -166,7 +209,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
         super().__init__()
-        QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        QWidget.__init__(self) # per http://enki-editor.org/2014/08/23
+        QWebView.__init__(self)
+        
         self.c = c
         self.p = c.p
         w = self.c.frame.body.wrapper
@@ -176,10 +221,24 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.editor = QTextEdit()
         self.browser = QWebView()
 
+        #@+<<set css paths>>
+        #@+node:tom.20210604170628.1: *4* <<set css paths>>
+        home = LoadManager().computeHomeDir()
+        cssdir = osp_join(home, '.leo', 'css')
+        self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_FILE)
+        self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_FILE)
+        #@-<<set css paths>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
+        ed_css = self.editor_csspath
+        if exists(ed_css):
+            with open(ed_css, encoding=ENCODING) as f:
+                self.editor_stylesheet = f.read()
+        else:
+            self.editor_stylesheet = EDITOR_STYLESHEET
+        g.es(self.editor_stylesheet)
         self.doc = self.editor.document()
-        self.editor.setStyleSheet(STYLESHEET)
+        self.editor.setStyleSheet(self.editor_stylesheet)
         #@-<<set up editor>>
         #@+<<set up render button>>
         #@+node:tom.20210602173354.1: *4* <<set up render button>>
@@ -205,7 +264,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+node:tom.20210528235451.1: *4* <<set geometry>>
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
-        self.setGeometry(QtCore.QRect(X, Y, W, H))
+        Y_ = Y + len(instances) * DELTA_Y
+        self.setGeometry(QtCore.QRect(X, Y_, W, H))
         #@-<<set geometry>>
         #@+<<set window title>>
         #@+node:tom.20210531235412.1: *4* <<set window title>>
@@ -225,13 +285,18 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.current_text = c.p.b
         self.editor.setPlainText(self.current_text)
 
+        # Load docutils without rendering anything real
+        # Avoids initial delay when switching to RsT the first time.
+        dummy = publish_string('dummy', writer_name='html').decode(ENCODING)
+        self.browser.setHtml(dummy)
+
         self.show()
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
         """Update host node if this card's text has changed.  Otherwise
            if the host node's text has changed, update the card's text 
-           with the host's changed text.
+           with the host's changed text. Render as plain text or RsT.
         """
         if self.switching: return
 
@@ -245,15 +310,18 @@ class ZEditorWin(QtWidgets.QMainWindow):
         elif self.c.p == self.p:
             doc = self.host_editor.document()
             if doc.isModified():
+                scrollbar = self.editor.verticalScrollBar()
+                old_scroll = scrollbar.value()
                 self.current_text = doc.toRawText()
                 self.editor.setPlainText(self.current_text)
                 self.set_and_render(False)
+                doc.setModified(False)
+                scrollbar.setValue(old_scroll)
 
-        self.doc.setModified(False)
+            self.doc.setModified(False)
     #@+node:tom.20210527234644.1: *3* _register_handlers (floating_pane.py)
     def _register_handlers(self):
-        """_register_handlers - attach to Leo signals
-        """
+        """_register_handlers - attach to Leo signals"""
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
@@ -261,21 +329,22 @@ class ZEditorWin(QtWidgets.QMainWindow):
     def set_and_render(self, switch=True):
         """Switch between the editor and RsT viewer, and render text."""
         self.switching = True
-
         if not got_docutils:
             self.render_kind = EDITOR
         elif switch:
             if self.render_kind == BROWSER:
                 self.render_kind = EDITOR
-            else: 
+            else:
                 self.render_kind = BROWSER
+
+            self.stacked_widget.setCurrentIndex(self.render_kind)
 
         if self.render_kind == BROWSER:
             text = self.editor.document().toRawText()
+
             html = self.render_rst(text)
             self.browser.setHtml(html)
 
-        self.stacked_widget.setCurrentIndex(self.render_kind)
         self.switching = False
 
     def switch_and_render(self):
@@ -289,15 +358,17 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 'report_level': RST_NO_WARNINGS,
                }
 
-        if text:
-            try:
-                _html = publish_string(text, writer_name='html',
-                                       settings_overrides=args)\
-                        .decode(ENCODING)
-            except SystemMessage as sm:
-                msg = sm.args[0]
-                if 'SEVERE' in msg or 'FATAL' in msg:
-                    _html = f'RST error:\n{msg}\n\n{text}'
+        if exists(self.rst_csspath):
+            args['stylesheet_path'] = self.rst_csspath
+
+        try:
+            _html = publish_string(text, writer_name='html',
+                                   settings_overrides=args)\
+                    .decode(ENCODING)
+        except SystemMessage as sm:
+            msg = sm.args[0]
+            if 'SEVERE' in msg or 'FATAL' in msg:
+                _html = f'RST error:\n{msg}\n\n{text}'
         return _html
     #@-others
 #@-others
