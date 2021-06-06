@@ -22,6 +22,9 @@ import websockets
 # Leo
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
+if 1:
+    # pylint: disable=import-self
+    from leo.core import leoserver
 #@-<< imports >>
 # pylint: disable=raise-missing-from
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
@@ -2223,7 +2226,6 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
         # pylint: disable=import-self
-        import leoserver
         global g, g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)
