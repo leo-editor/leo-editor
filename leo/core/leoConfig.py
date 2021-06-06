@@ -1550,7 +1550,7 @@ class GlobalConfigManager:
     #@+node:ekr.20071214140900.1: *4* gcm.getData & getOutlineData
     def getData(self, setting, strip_comments=True, strip_data=True):
         """Return a list of non-comment strings in the body text of @data setting."""
-        data = self.get(setting, "data")
+        data = self.get(setting, "data") or []
         # New in Leo 4.12.1: add two keyword arguments, with legacy defaults.
         if data and strip_comments:
             data = [z for z in data if not z.strip().startswith('#')]

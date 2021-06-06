@@ -542,6 +542,8 @@
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
+<v t="ekr.20210530064911.1"><vh>@data exec-script-commands</vh></v>
+<v t="ekr.20210530064922.1"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
@@ -2307,6 +2309,8 @@
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20071213060239"></v>
 <v t="ekr.20210412113510.1"></v>
+<v t="ekr.20210530064911.1"></v>
+<v t="ekr.20210530064922.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11612,6 +11616,29 @@ False: Docutils will link to an external stylesheet file.</t>
 german:  Remove *plain* Shift modifier for colon and semicolon.
 spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
 <t tx="ekr.20210506073820.1">True: allow scroll-wheel zooming.</t>
+<t tx="ekr.20210530064911.1"># This node contains the commands needed to execute a program in a particular language.
+# Format: language-name: command
+
+#
+# execute-general-script always creates a temporary file.
+# Just before executing the command, execute-general-script
+# Replaces &lt;FILE&gt; by the name of the temporary file.
+
+# python: python -v &lt;FILE&gt;
+
+go: go run .
+python: python
+rust: rustc</t>
+<t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
+# Format: language-name: regex pattern
+#
+# Patterns must define two groups, in either order:
+# One group, containing only digits, defines the line number.
+# The other group defines the file name.
+
+go: ^\s*(.*):([0-9]+):([0-9]+):.+$
+python: ^\s*File "(.+)", line ([0-9]+), in .+$
+rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -3266,8 +3266,10 @@ class LeoQtLog(leoFrame.LeoLog):
             url = nodeLink
             for scheme in 'file', 'unl':
                 # QUrl requires paths start with '/'
-                if url.startswith(
-                    scheme + '://') and not url.startswith(scheme + ':///'):
+                if (
+                    url.startswith(scheme + '://') and not
+                    url.startswith(scheme + ':///')
+                ):
                     url = url.replace('://', ':///', 1)
             s = f'<a href="{url}" title="{nodeLink}">{s}</a>'
         w.insertHtml(s)
@@ -3961,8 +3963,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 s = g.toUnicode(s)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
-        g.es_print(
-            f"not found: {fn}", nodeLink=p.get_UNL(with_proto=True, with_count=True))
+        nodeLink=p.get_UNL(with_proto=True, with_count=True)
+        g.es_print(f"not found: {fn}", nodeLink=nodeLink)
         return False
     #@+node:ekr.20110605121601.18371: *7* LeoQTreeWidget.doFileUrlHelper & helper
     def doFileUrlHelper(self, fn, p, s):
