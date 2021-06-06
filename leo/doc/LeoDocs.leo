@@ -1789,6 +1789,7 @@
 <v t="ekr.20210405104619.1"><vh>6.4: Code</vh>
 <v t="ekr.20210405100137.468"><vh>#1413: New undo pattern</vh></v>
 <v t="ekr.20210405100137.537"><vh>#1557: Fix mypy complaints</vh></v>
+<v t="ekr.20210606081234.1"><vh>#1715: execute-general-script</vh></v>
 <v t="ekr.20210405100137.563"><vh>#1721: Remove most calls to c.setBody/HeadString</vh></v>
 <v t="ekr.20210405100137.705"><vh>#1742: trim getBodyLines</vh></v>
 <v t="ekr.20210405100137.755"><vh>#1743: honor oldSel in onBodyChanged</vh></v>
@@ -1809,11 +1810,12 @@
 <v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
 </v>
 <v t="ekr.20210405104753.1"><vh>6.4: Commands</vh>
+<v t="ekr.20210606081234.1"></v>
 <v t="ekr.20210405100137.787"><vh>#1754: reformat-paragraph</vh></v>
 <v t="ekr.20210405100137.1340"><vh>#1831: mypy command</vh></v>
 <v t="ekr.20210405100137.1396"><vh>#1841: copy-gnx</vh></v>
 <v t="ekr.20210528082736.11"><vh>#1955: improve extract command</vh></v>
-<v t="ekr.20210405100137.1798"><vh>PR1849: reload-settings now changes all settings</vh></v>
+<v t="ekr.20210405100137.1798"><vh>PR 1849: reload-settings now changes all settings</vh></v>
 </v>
 <v t="ekr.20210405110053.1"><vh>6.4: Major features</vh>
 <v t="ekr.20210405100137.2"><vh>#0442: json: .leojs files</vh></v>
@@ -34559,6 +34561,9 @@ def on_idle(self):
     assert old_time, path
     return True
 </t>
+<t tx="ekr.20210606081234.1">https://github.com/leo-editor/leo-editor/issues/1715
+
+Add c.general_script_helper.</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
