@@ -2716,7 +2716,7 @@ class LoadManager:
     def initApp(self, verbose):
 
         self.createAllImporterData()
-            # Can be done early. Uses only g.app.loadDir
+            # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         assert g.app.loadManager
         from leo.core import leoBackground
         from leo.core import leoConfig
