@@ -4142,7 +4142,7 @@ def findRootsWithPredicate(c, root, predicate=None):
                     if p2.v in clones:
                         return [p.copy()]
     return []
-#@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helper
+#@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helpers
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                        soft_idx=False, hard_idx=False):
     """try and move to unl in the commander c
@@ -4306,14 +4306,15 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     return False, maxdepth, maxp
 #@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
 def recursiveUNLParts(text):
-    """recursiveUNLParts - return index, occurence, line_number, col_number
-    from an UNL fragment.  line_number is allowed to be negative to indicate
-    a "global" line number within the file.
-
-    :param str text: the fragment, foo or foo:2 or foo:2,0,4,10
-    :return: index, occurence, line_number, col_number
-    :rtype: (int, int, int, int) or (None, None, None, None)
+    """Parse the tail, returning whatever follows ':'.
+    
+    Examples: foo or foo:2 or foo:2,0,4,10.
+    
+    return (index, occurence, line_number, col_number) or (None, None, None, None).
+    
+    A negative line_number indicates a global line number within the file.
     """
+    # Match up to 4 comma-separated ints.
     pos = re.findall(g_pos_pattern, text)
     if pos:
         return tuple(int(i) if i else 0 for i in pos[0])
@@ -6204,12 +6205,17 @@ def es(*args, **keys):
 log = es
 #@+node:ekr.20190608090856.1: *3* g.es_clickable_link
 def es_clickable_link(c, p, line_number, message):
-    """Write a clickable message to the given line number of p.b."""
+    """
+    Write a clickable message to the given line number of p.b.
+    
+    Negative line numbers indicate global lines.
+    
+    """
     log = c.frame.log
+    message = message.strip() + '\n'
     unl = p.get_UNL(with_proto=True, with_count=True)
     if unl:
-        nodeLink = f"{unl},{line_number}"
-        log.put(message, nodeLink=nodeLink)
+        log.put(message, nodeLink=f"{unl},{line_number}")
     else:
         log.put(message)
 #@+node:ekr.20141107085700.4: *3* g.es_debug
@@ -7743,7 +7749,11 @@ def traceUrl(c, path, parsed, url):
     g.trace('parsed.scheme', repr(parsed.scheme))
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl, c):
-    """Handle a Leo UNL. This must *never* open a browser."""
+    """
+    Handle a Leo UNL. This must *never* open a browser.
+    
+    Return the commander for the UNL, or None.
+    """
     if not unl:
         return None
     unll = unl.lower()
@@ -7800,13 +7810,13 @@ def handleUnl(unl, c):
     c.redraw()
     if g.unitTesting:
         g.app.unitTestDict['g.recursiveUNLSearch'] = path
-    else:
-        c2 = g.openWithFileName(path, old_c=c)
-        if unl:
-            g.recursiveUNLSearch(unl.split("-->"), c2 or c, soft_idx=True)
-        if c2:
-            c2.bringToFront()
-            return c2
+        return None
+    c2 = g.openWithFileName(path, old_c=c)
+    if unl:
+        g.recursiveUNLSearch(unl.split("-->"), c2 or c, soft_idx=True)
+    if c2:
+        c2.bringToFront()
+        return c2
     return None
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url):

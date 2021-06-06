@@ -2309,24 +2309,24 @@ class AtFile:
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
         message = hasattr(val, 'message') and val.message
-        if message: g.es_print(message)
-        if val is None: return
+        if message:
+            g.es_print(message)
+        if val is None:
+            return
         lines = g.splitLines(body)
         n = val.lineno
         offset = val.offset or 0
-        if n is None: return
+        if n is None:
+            return
         i = val.lineno - 1
         for j in range(max(0, i - 2), min(i + 2, len(lines) - 1)):
+            line = lines[j].rstrip()
             if j == i:
-                mark = '*'
-                node_link = f"{p.get_UNL(with_proto=True, with_count=True)},-{j+1:d}"
-            else:
-                mark = ' '
-                node_link = None
-            text = f"{j+1:5}:{mark} {lines[j].rstrip()}"
-            g.es_print(text, nodeLink=node_link)
-            if j == i:
+                unl = p.get_UNL(with_proto=True, with_count=True)
+                g.es_print(f"{j+1:5}:* {line}", nodeLink=f"{unl},-{j+1:d}")  # Global line.
                 g.es_print(' ' * (7 + offset) + '^')
+            else:
+                g.es_print(f"{j+1:5}: {line}")
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
     def runPyflakes(self, root, pyflakes_errors_only):
         """Run pyflakes on the selected node."""

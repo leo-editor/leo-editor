@@ -130,14 +130,10 @@ def find_missing_docstrings(event):
             if g.match_word(parent.h, 0, '@nopylint'):
                 return False
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-    #@+node:ekr.20190615180900.1: *4* function: clickable_link
-    def clickable_link(p, i):
-        """Return a clickable link to line i of p.b."""
-        link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
-        return f"{link},{i}"
     #@-others
-    count, found, t1 = 0, [], time.process_time()
+    count, files, found, t1 = 0, 0, [], time.process_time()
     for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
+        files += 1
         for p in root.self_and_subtree():
             lines = p.b.split('\n')
             for i, line in enumerate(lines):
@@ -148,12 +144,12 @@ def find_missing_docstrings(event):
                         g.es_print('')
                         g.es_print(root.h)
                     print(line)
-                    g.es(line, nodeLink=clickable_link(p, i + 1))
+                    g.es_clickable_link(c, p, i+1, line)  # *Local* index.
                     break
     g.es_print('')
     g.es_print(
         f"found {count} missing docstring{g.plural(count)} "
-        f"in {len(found)} file{g.plural(len(found))} "
+        f"in {files} file{g.plural(files)} "
         f"in {time.process_time() - t1:5.2f} sec.")
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
@@ -383,7 +379,7 @@ class PyflakesCommand:
         self.c = c
         self.seen = []  # List of checked paths.
     #@+others
-    #@+node:ekr.20171228013818.1: *3* class LogStream
+    #@+node:ekr.20171228013818.1: *3* class PyflakesCommand.LogStream
     class LogStream:
 
         """A log stream for pyflakes."""
