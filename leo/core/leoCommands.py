@@ -2278,6 +2278,15 @@ class Commands:
                     May be a compiled regex expression or a string.
         root:       The root of the tree containing the script,
                     The script may contain section references and @others.
+                    
+        Other features:
+        
+        - Create a temporary external file if `not root.isAnyAtFileNode()`.
+        - Compute the final command as follows.
+          1. If command contains <FILE>, replace <FILE> with the full path.
+          2. If command contains <NO-FILE>, just remove <NO-FILE>.
+             This allows, for example, `go run .` to work as expected.
+          3. Append the full path to the command.
         """
         c, log = self, self.frame.log
         #@+others  # Define helper functions
@@ -2360,20 +2369,25 @@ class Commands:
         use_temp = not root.isAnyAtFileNode()
         if use_temp:
             fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
-            g.trace('Temp file:', root_path)
             with os.fdopen(fd, 'w') as f:
                 f.write(script)
         else:
             root_path = g.fullPath(c, root)
-        # Substitute the path for '<FILE>' in the command
-        command = command.replace('<FILE>', root_path)
+        # Compute the final command.
+        if '<FILE>' in command:
+            final_command = command.replace('<FILE>', root_path)
+        elif '<NO-FILE>' in command:
+            final_command = command.replace('<NO-FILE>', '').replace(root_path, '')
+        else:
+            final_command = f"{command} {root_path}"
         # Change directory.
         old_dir = os.path.abspath(os.path.curdir)
         if not directory:
             directory = os.path.dirname(root_path)
         os.chdir(directory)
+        # Execute the final command.
         try:
-            proc = subprocess.Popen(f"{command} {root_path}",
+            proc = subprocess.Popen(final_command,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
