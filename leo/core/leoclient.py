@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210202110241.1: * @file ../../leoclient.py
+#@+node:ekr.20210202110241.1: * @file leoclient.py
 """
 An example client for leoserver.py, based on work by Félix Malboeuf. Used by permission.
 """
@@ -8,6 +8,7 @@ import json
 import time
 import websockets
 from leo.core import leoGlobals as g
+from leo.core import leoserver
 
 wsHost = "localhost"
 wsPort = 32125
@@ -37,7 +38,6 @@ def _get_action_list():
     """
     import inspect
     import os
-    import leoserver
     server = leoserver.LeoServer()
     # file_name = "xyzzy.leo"
     file_name = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')

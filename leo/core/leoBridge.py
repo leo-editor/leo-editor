@@ -140,14 +140,16 @@ class BridgeController:
         #@-<< initLeo imports >>
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
-        g.app.loadManager.computeStandardDirectories()
+        lm.computeStandardDirectories()
         if not g.app.setLeoID(useDialog=False, verbose=True):
             raise ValueError("unable to set LeoID.")
-        g.app.inBridge = True  # Added 2007/10/21: support for g.getScript.
+        lm.createAllImporterData()  # #1965.
+            # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
+        g.app.inBridge = True  # Support for g.getScript.
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
         if self.useCaches:
-            g.app.setGlobalDb()  # Fix #556.
+            g.app.setGlobalDb()  # #556.
         else:
             g.app.db = g.NullObject()
             g.app.commander_cacher = g.NullObject()
