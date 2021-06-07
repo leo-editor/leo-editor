@@ -1771,18 +1771,8 @@
 <v t="ekr.20210511103242.190"><vh>#1926: fix bugs in @button write-leoPyRef</vh></v>
 <v t="ekr.20210511103020.1"><vh>#1930: crash in refresh-from-disk</vh></v>
 <v t="ekr.20210528082736.2"><vh>#1959: crash in on_idle</vh></v>
-<v t="ekr.20210528125316.1"><vh>#1961: multiple popups</vh>
-<v t="ekr.20210528125316.2"><vh>efc.on_idle &amp; helpers</vh>
-<v t="ekr.20210528125316.8"><vh>efc.idle_check_commander</vh></v>
-<v t="ekr.20210528125316.4"><vh>efc.idle_check_leo_file</vh></v>
-<v t="ekr.20210528125316.5"><vh>efc.idle_check_open_with_file &amp; helper</vh>
-<v t="ekr.20210528125316.6"><vh>efc.update_open_with_node</vh></v>
-</v>
-</v>
-<v t="ekr.20210528125316.7"><vh>efc.ask</vh></v>
-<v t="ekr.20210528125316.8"></v>
-<v t="ekr.20210528125316.9"><vh>efc.has_changed</vh></v>
-</v>
+<v t="ekr.20210528125316.1"><vh>#1961: multiple popups</vh></v>
+<v t="ekr.20210607023121.1"><vh>#1965: LM.createAllImporterData</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -1820,6 +1810,7 @@
 <v t="ekr.20210405110053.1"><vh>6.4: Major features</vh>
 <v t="ekr.20210405100137.2"><vh>#0442: json: .leojs files</vh></v>
 <v t="ekr.20210528083510.1"><vh>#1672: Remove support for Qt docks</vh></v>
+<v t="ekr.20210606081234.1"></v>
 <v t="ekr.20210405100137.912"><vh>#1768: Change cursor in command mode</vh></v>
 <v t="ekr.20210405100137.915"><vh>#1772: diff pr</vh></v>
 <v t="ekr.20210405100137.931"><vh>#1781: Leonine diffs of .leo files</vh></v>
@@ -32068,6 +32059,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Remove support for Qt docks.
 - Simplify and generalize rst3 command.
 - Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
+- Add execute-general-script command and c.general_script_helper.
 - Several significant code-level changes.
 - Leo now uses Pull Requests to record code changes.
 
@@ -34370,200 +34362,10 @@ File "...leoExternalFiles.py", line 150, in on_idle
 Leo's Qt docks caused great confusion. Leo is better off without them.
 </t>
 <t tx="ekr.20210528125316.1">https://github.com/leo-editor/leo-editor/issues/1961</t>
-<t tx="ekr.20210528125316.2">on_idle_count = 0
-
-def on_idle(self):
-    """
-    Check for changed open-with files and all external files in commanders
-    for which @bool check_for_changed_external_file is True.
-    """
-    #
-    # #1240: Note: The "asking" dialog prevents idle time.
-    #
-    if not g.app or g.app.killed or g.app.restarting:  # #1240.
-        return
-    self.on_idle_count += 1
-    # New in Leo 5.7: always handle delayed requests.
-    if g.app.windowList:
-        c = g.app.log and g.app.log.c
-        if c:
-            c.outerUpdate()
-    # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
-    if self.unchecked_files:
-        # Check all external files.
-        while self.unchecked_files:
-            ef = self.unchecked_files.pop()  # #1959: ensure progress.
-            self.idle_check_open_with_file(c, ef)
-    elif self.unchecked_commanders:
-        # Check the next commander for which
-        # @bool check_for_changed_external_file is True.
-        c = self.unchecked_commanders.pop()
-        self.idle_check_commander(c)
-    else:
-        # Add all commanders for which
-        # @bool check_for_changed_external_file is True.
-        self.unchecked_commanders = [
-            z for z in g.app.commanders() if self.is_enabled(z)
-        ]
-        self.unchecked_files = [z for z in self.files if z.exists()]
-</t>
-<t tx="ekr.20210528125316.4">def idle_check_leo_file(self, c):
-    """Check c's .leo file for external changes."""
-    path = c.fileName()
-    if not self.has_changed(path):
-        return
-    # Always update the path &amp; time to prevent future warnings.
-    self.set_time(path)
-    self.checksum_d[path] = self.checksum(path)
-    # #1888:
-    val = self.ask(c, path)
-    if val in ('yes', 'yes-all'):
-        # Do a complete restart of Leo.
-        g.es_print('restarting Leo...')
-        c.restartLeo()
-</t>
-<t tx="ekr.20210528125316.5">def idle_check_open_with_file(self, c, ef):
-    """Update the open-with node given by ef."""
-    assert isinstance(ef, ExternalFile), ef
-    if not ef.path or not os.path.exists(ef.path):
-        return
-    time = self.get_mtime(ef.path)
-    if not time or time == ef.time:
-        return
-    # Inhibit endless dialog loop.
-    ef.time = time
-    # #1888: Handle all possible user responses to self.ask.
-    val = self.ask(c, ef.path, p=ef.p.copy())
-    if val == 'yes-all':
-        for ef in self.unchecked_files:
-            self.update_open_with_node(ef)
-        self.unchecked_files = []
-    elif val == 'no-all':
-        self.unchecked_files = []
-    elif val == 'yes':
-        self.update_open_with_node(ef)
-    elif val == 'no':
-        pass
-</t>
-<t tx="ekr.20210528125316.6">def update_open_with_node(self, ef):
-    """Update the body text of ef.p to the contents of ef.path."""
-    assert isinstance(ef, ExternalFile), ef
-    c, p = ef.c, ef.p.copy()
-    g.blue(f"updated {p.h}")
-    s, e = g.readFileIntoString(ef.path)
-    p.b = s
-    if c.config.getBool('open-with-goto-node-on-update'):
-        c.selectPosition(p)
-    if c.config.getBool('open-with-save-on-update'):
-        c.save()
-    else:
-        p.setDirty()
-        c.setChanged()
-</t>
-<t tx="ekr.20210528125316.7">def ask(self, c, path, p=None):
-    """
-    Ask user whether to overwrite an @&lt;file&gt; tree.
-    Return True if the user agrees.
-    """
-    if g.unitTesting:
-        return False
-    if c not in g.app.commanders():
-        return False
-    is_leo = path.endswith(('.leo', '.db'))
-    is_external_file = not is_leo
-    #
-    # Create the message.
-    message1 = f"{g.splitLongFileName(path)} has changed outside Leo.\n"
-    if is_leo:
-        message2 = 'Restart Leo?'
-    elif p:
-        message2 = f"Reload {p.h}?"
-    else:
-        for ef in self.files:
-            if ef.path == path:
-                message2 = f"Reload {ef.p.h}?"
-                break
-        else:
-            message2 = f"Reload {path}?"
-    #
-    # #1240: Note: This dialog prevents idle time.
-    result = g.app.gui.runAskYesNoDialog(c,
-        'Overwrite the version in Leo?',
-        message1 + message2,
-        yes_all=is_external_file,
-        no_all=is_external_file,
-    )
-    # #1888: return one of ('yes', 'no', 'yes-all', 'no-all')
-    return result.lower() if result else 'no'
-</t>
-<t tx="ekr.20210528125316.8">def idle_check_commander(self, c):
-    """
-    Check all external files corresponding to @&lt;file&gt; nodes in c for
-    changes.
-    """
-    # #1240: Check the .leo file itself.
-    self.idle_check_leo_file(c)
-    #
-    # #1100: always scan the entire file for @&lt;file&gt; nodes.
-    # #1134: Nested @&lt;file&gt; nodes are no longer valid, but this will do no harm.
-    state = 'no'
-    for p in c.all_unique_positions():
-        if not p.isAnyAtFileNode():
-            continue
-        path = g.fullPath(c, p)
-        if not self.has_changed(path):
-            continue
-        # Prevent further checks for path.
-        self.set_time(path)
-        self.checksum_d[path] = self.checksum(path)
-        # Check file.
-        if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-            # #1081: issue a warning.
-            self.warn(c, path, p=p)
-            continue
-        if state in ('yes', 'no'):
-            state = self.ask(c, path, p=p)
-        if state in ('yes', 'yes-all'):
-            c.redraw(p=p)
-            c.refreshFromDisk(p)
-            c.redraw()
-</t>
-<t tx="ekr.20210528125316.9">def has_changed(self, path):
-    """Return True if the file at path has changed outside of Leo."""
-    if not path:
-        return False
-    if not g.os_path_exists(path):
-        return False
-    if g.os_path_isdir(path):
-        return False
-    #
-    # First, check the modification times.
-    old_time = self.get_time(path)
-    new_time = self.get_mtime(path)
-    if not old_time:
-        # Initialize.
-        self.set_time(path, new_time)
-        self.checksum_d[path] = self.checksum(path)
-        return False
-    if old_time == new_time:
-        return False
-    #
-    # Check the checksums *only* if the mod times don't match.
-    old_sum = self.checksum_d.get(path)
-    new_sum = self.checksum(path)
-    if new_sum == old_sum:
-        # The modtime changed, but it's contents didn't.
-        # Update the time, so we don't keep checking the checksums.
-        # Return False so we don't prompt the user for an update.
-        self.set_time(path, new_time)
-        return False
-    # The file has really changed.
-    assert old_time, path
-    return True
-</t>
 <t tx="ekr.20210606081234.1">https://github.com/leo-editor/leo-editor/issues/1715
 
 Add c.general_script_helper.</t>
+<t tx="ekr.20210607023121.1">https://github.com/leo-editor/leo-editor/issues/1965</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
