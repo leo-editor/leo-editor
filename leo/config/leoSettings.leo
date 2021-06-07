@@ -11617,18 +11617,21 @@ german:  Remove *plain* Shift modifier for colon and semicolon.
 spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
 <t tx="ekr.20210506073820.1">True: allow scroll-wheel zooming.</t>
 <t tx="ekr.20210530064911.1"># This node contains the commands needed to execute a program in a particular language.
+
 # Format: language-name: command
 
-#
-# execute-general-script always creates a temporary file.
-# Just before executing the command, execute-general-script
-# Replaces &lt;FILE&gt; by the name of the temporary file.
+# Create a temporary file if c.p is not any kind of @&lt;file&gt; node.
 
-# python: python -v &lt;FILE&gt;
+# Compute the final command as follows:
 
-go: go run .
+# 1. If command contains &lt;FILE&gt;, replace &lt;FILE&gt; with the full path to the external file.
+# 2. If command contains &lt;NO-FILE&gt;, just remove &lt;NO-FILE&gt;.
+# 3. Otherwise, append the full path to the external file to the command.
+
+go: go run . &lt;NO-FILE&gt;
 python: python
-rust: rustc</t>
+rust: rustc
+</t>
 <t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
 # Format: language-name: regex pattern
 #
