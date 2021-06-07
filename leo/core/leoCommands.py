@@ -2380,7 +2380,6 @@ class Commands:
             final_command = command.replace('<NO-FILE>', '').replace(root_path, '')
         else:
             final_command = f"{command} {root_path}"
-        g.trace(final_command)
         # Change directory.
         old_dir = os.path.abspath(os.path.curdir)
         if not directory:
