@@ -71,10 +71,10 @@ class NbController:
         self.mw = ModelWrapper(["h", "b", "gnx", "level", "style"])
         #self.add_all_nodes()
         #self.add_subtree(p)
-        if isQt5 or isQt6:
+        try:
             from PyQt5.QtQuick import QQuickView
             self.view = view = QQuickView()
-        else:
+        except Exception:  #1746.
             self.view = view = QtDeclarative.QDeclarativeView()
         ctx = view.rootContext()
 
