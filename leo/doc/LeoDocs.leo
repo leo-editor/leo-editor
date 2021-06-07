@@ -622,7 +622,6 @@
 <v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
 </v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
-<v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
 <v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
 <v t="ekr.20190731085747.1"><vh>How can I customize settings for a particular external file?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
@@ -698,6 +697,7 @@
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
 <v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
 <v t="ekr.20190307095247.1"><vh>How can I run code in an external process?</vh></v>
+<v t="ekr.20210607135729.1"><vh>How can I run scripts in languages other than python?</vh></v>
 <v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
@@ -2552,6 +2552,7 @@
 </v>
 </v>
 <v t="ekr.20210509173536.1"></v>
+<v t="ekr.20210607135729.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4667,12 +4668,6 @@ in the output file, and not all C compilers allow nested comments, so the last \
 Leo is happy: it recognizes the @comment directive_. The C compiler is happy: the C preprocessor strips out the offending line before the C compiler gets it.
 </t>
 <t tx="ekr.20050830115714.26" str_atime="1376412984.0"></t>
-<t tx="ekr.20050830115714.29">See the instructions are in LeoPy.leo in::
-
-    Notes:How To:How to add support for a new language section.
-
-This section contains clones of all relevant parts of Leo that you will change. Coming in Leo 4.4: Leo will use JEdit's language description files to drive the syntax colorer. To add support for a new language, just add another such description file.
-</t>
 <t tx="ekr.20050830115714.30" str_atime="1376412828.0">You have two options: 
 
 - Get git write access, and add the @file file to the plugins directory.
@@ -29809,9 +29804,9 @@ https://github.com/leo-editor/leo-editor/issues/977
 
 g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
 </t>
-<t tx="ekr.20190307095247.1">This is detailed more fully in a scripting miscellany. g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
-
-This allows you to run programs in *any* language.  Just invoke the compiler/interpreter using g.execute_shell_commands.</t>
+<t tx="ekr.20190307095247.1">g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
+See the scripting miscellany for more details.
+</t>
 <t tx="ekr.20190325062650.1">Leo now optionally supports syntax coloring with pygments.
 See http://pygments.org/docs/
 
@@ -34366,6 +34361,20 @@ Leo's Qt docks caused great confusion. Leo is better off without them.
 
 Add c.general_script_helper.</t>
 <t tx="ekr.20210607023121.1">https://github.com/leo-editor/leo-editor/issues/1965</t>
+<t tx="ekr.20210607135729.1">The execute-general-script command invokes an external language processor on an **script file** as follows:
+
+- If c.p is any kind of @&lt;file&gt; node, the script file is the corresponding external file.
+  Otherwise, the script file is a temp file.
+  
+- The `@data exec-script-commands` setting tells how to invoke the appropriate language processor.
+  See the setting for more details.
+  
+- The `@data exec-script-patterns` settings describes error messages so that Leo can create
+  clickable links to errors.  See the setting for more details.
+
+- This command is a thin wrapper around the c.general_script_helper method.
+  Scripts can call this method directly if desired.
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
