@@ -213,7 +213,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         super().__init__()
         QWidget.__init__(self) # per http://enki-editor.org/2014/08/23
         QWebView.__init__(self)
-        
+
         self.c = c
         self.p = c.p
         w = self.c.frame.body.wrapper
