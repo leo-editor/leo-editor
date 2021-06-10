@@ -183,6 +183,8 @@ class LeoApp:
             # The user's home directory.
         self.homeLeoDir = None
             # The user's home/.leo directory.
+        self.leoEditorDir = None
+            # The leo-editor directory.
         self.loadDir = None
             # The leo/core directory.
         self.machineDir = None
@@ -1745,23 +1747,26 @@ class LoadManager:
         set the corresponding ivars.
         """
         lm = self
+        join = os.path.join
         g.app.loadDir = lm.computeLoadDir()
-        g.app.leoDir = lm.computeLeoDir()
+        g.app.globalConfigDir = lm.computeGlobalConfigDir()
         g.app.homeDir = lm.computeHomeDir()
         g.app.homeLeoDir = lm.computeHomeLeoDir()
-        g.app.globalConfigDir = lm.computeGlobalConfigDir()
-        g.app.extensionsDir = g.os_path_finalize_join(g.app.loadDir, '..', 'extensions')
-        g.app.testDir = g.os_path_finalize_join(g.app.loadDir, '..', 'test')
+        g.app.leoDir = lm.computeLeoDir()
+        # These use g.app.loadDir...
+        g.app.extensionsDir = join(g.app.loadDir, '..', 'extensions')
+        g.app.leoEditorDir = join(g.app.loadDir, '..', '..')
+        g.app.testDir = join(g.app.loadDir, '..', 'test')
     #@+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
     def computeGlobalConfigDir(self):
         leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
         else:
-            theDir = g.os_path_join(g.app.loadDir, "..", "config")
+            theDir = os.path.join(g.app.loadDir, "..", "config")
         if theDir:
-            theDir = g.os_path_finalize(theDir)
-        if (not theDir or not g.os_path_exists(theDir) or not g.os_path_isdir(theDir)):
+            theDir = os.path.abspath(theDir)
+        if not theDir or not g.os_path_exists(theDir) or not g.os_path_isdir(theDir):
             theDir = None
         return theDir
     #@+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
@@ -1952,26 +1957,17 @@ class LoadManager:
         # #1415.
         return fn if os.path.exists(directory) else None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
-    def reportDirectories(self, verbose):
+    def reportDirectories(self):
         """Report directories."""
-        if not verbose: return
-        if 1:  # old
-            for kind, theDir in (
-                ('current', g.os_path_abspath(os.curdir)),
-                ("load", g.app.loadDir),
-                ("global config", g.app.globalConfigDir),
-                ("home", g.app.homeDir),
-            ):
-                # g.blue calls g.es_print, and that's annoying.
-                g.es(f"{kind} dir:", theDir, color='blue')
-        else:
-            aList = (
-                'homeDir', 'homeLeoDir',
-                'leoDir', 'loadDir',
-                'extensionsDir', 'globalConfigDir')
-            for ivar in aList:
-                val = getattr(g.app, ivar)
-                g.trace(f"{ivar:20}", val)
+        # The cwd changes later, so it would be misleading to report it here.
+        for kind, theDir in (
+            ('home', g.app.homeDir),
+            ('leo-editor', g.app.leoEditorDir),
+            ('load', g.app.loadDir),
+            ('config', g.app.globalConfigDir),
+        ):
+            # g.blue calls g.es_print, and that's annoying.
+            g.es(f"{kind:>10}:", os.path.normpath(theDir), color='blue')
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
     def computeBindingLetter(self, c, path):
@@ -2211,7 +2207,7 @@ class LoadManager:
             return None  # Fix #843.
         if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
-            s = f"reading settings in {fn}"
+            s = f"reading settings in {os.path.normpath(fn)}"
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
@@ -2509,7 +2505,8 @@ class LoadManager:
         # Init the app.
         lm.initApp(verbose)
         g.app.setGlobalDb()
-        lm.reportDirectories(verbose)
+        if verbose:
+            lm.reportDirectories()
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
         lm.readGlobalSettingsFiles()

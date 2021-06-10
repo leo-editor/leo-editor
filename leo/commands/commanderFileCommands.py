@@ -374,6 +374,11 @@ def refreshFromDisk(self, event=None):
         # Create the 'Recovered Nodes' tree.
         c.fileCommands.handleNodeConflicts()
         c.redraw()
+#@+node:ekr.20210610083257.1: *3* c_file.pwd
+@g.commander_command('pwd')
+def pwd_command(self, event=None):
+    """Refresh an @<file> node from disk."""
+    g.es_print('cwd:', os.getcwd())
 #@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save')
 @g.commander_command('file-save')
