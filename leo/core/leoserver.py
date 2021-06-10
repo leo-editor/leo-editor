@@ -7,6 +7,7 @@ Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
 """
+# pylint: disable=import-self,raise-missing-from
 #@+<< imports >>
 #@+node:ekr.20210202110128.2: ** << imports >>
 import asyncio
@@ -22,11 +23,8 @@ import websockets
 # Leo
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
-if 1:
-    # pylint: disable=import-self
-    from leo.core import leoserver
+from leo.core import leoserver
 #@-<< imports >>
-# pylint: disable=raise-missing-from
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 # For unit tests.
 g_leoserver = None
