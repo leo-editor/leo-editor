@@ -10,6 +10,7 @@ Written by Félix Malboeuf and Edward K. Ream.
 # pylint: disable=import-self,raise-missing-from
 #@+<< imports >>
 #@+node:ekr.20210202110128.2: ** << imports >>
+# pylint: disable=wrong-import-position
 import asyncio
 import getopt
 import inspect
@@ -20,6 +21,10 @@ import time
 import unittest
 # Third-party.
 import websockets
+# #1970: Adjust sys.path so that the following imports will always work.
+_leo_editor_path = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+if _leo_editor_path not in sys.path:
+    sys.path.append(_leo_editor_path)
 # Leo
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
