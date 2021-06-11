@@ -1,14 +1,24 @@
 #! python3
+#@+leo-ver=5-thin
+#@+node:ekr.20210611084045.1: * @file leoserver.py
+#@@first
 """
 leoserver.py: same as leointeg/leobridgeserver.py except for sys.path manipulations.
 """
+#@@language python
+#@@tabwidth -4
+#@+<< imports >>
+#@+node:ekr.20210611084045.2: ** << imports >>
 # pylint: disable=wrong-import-position
 import asyncio
 import getopt
+# import inspect
 import json
+import os
 import os.path
 import sys
 import time
+import unittest
 import traceback
 # Third-party.
 import websockets
@@ -20,6 +30,9 @@ if _leo_editor_path not in sys.path:
 import leo.core.leoBridge as leoBridge
 import leo.core.leoNodes as leoNodes
 from leo.core.leoGui import StringFindTabManager
+#@-<< imports >>
+#@+<< constants >>
+#@+node:ekr.20210611084045.3: ** << constants >>
 # server defaults
 wsHost = "localhost"
 wsPort = 32125
@@ -31,6 +44,9 @@ commonActions = ["getChildren", "getBody", "getBodyLength"]
 SERVER_STARTED_TOKEN = "LeoBridge started"
 
 
+#@-<< constants >>
+#@+others
+#@+node:ekr.20210611084045.4: ** class IdleTimeManager
 class IdleTimeManager:
     """
     A singleton class to manage idle-time handling. This class handles all
@@ -48,10 +64,13 @@ class IdleTimeManager:
         self.timer = None
         self.on_idle_count = 0
 
+    #@+others
+    #@+node:ekr.20210611084045.5: *3* itm.add_callback
     def add_callback(self, callback):
         """Add a callback to be called at every idle time."""
         self.callback_list.append(callback)
 
+    #@+node:ekr.20210611084045.6: *3* itm.on_idle
     def on_idle(self, timer):
         """IdleTimeManager: Run all idle-time callbacks."""
         if not self.g.app:
@@ -75,6 +94,7 @@ class IdleTimeManager:
         # Handle idle-time hooks.
         self.g.app.pluginsController.on_idle()
 
+    #@+node:ekr.20210611084045.7: *3* itm.start
     def start(self):
         """Start the idle-time timer."""
         self.timer = self.g.IdleTime(
@@ -84,11 +104,15 @@ class IdleTimeManager:
         if self.timer:
             self.timer.start()
 
+    #@-others
 
+#@+node:ekr.20210611084045.8: ** class ExternalFilesController
 class ExternalFilesController:
     '''EFC Modified from Leo's sources'''
     # pylint: disable=no-else-return
 
+    #@+others
+    #@+node:ekr.20210611084045.9: *3* efc.ctor
     def __init__(self, integController):
         '''Ctor for ExternalFiles class.'''
         self.on_idle_count = 0
@@ -123,6 +147,7 @@ class ExternalFilesController:
         self.lastPNode = None  # last p node that was asked for if not set to "AllYes\AllNo"
         self.lastCommander = None
 
+    #@+node:ekr.20210611084045.10: *3* efc.on_idle
     def on_idle(self):
         '''
         Check for changed open-with files and all external files in commanders
@@ -152,6 +177,7 @@ class ExternalFilesController:
                 z for z in self.integController.g.app.commanders() if self.is_enabled(z)
             ]
 
+    #@+node:ekr.20210611084045.11: *3* efc.idle_check_commander
     def idle_check_commander(self, c):
         '''
         Check all external files corresponding to @<file> nodes in c for
@@ -174,6 +200,7 @@ class ExternalFilesController:
             w_package = {"async": "info", "message": self.infoMessage}
             self.integController.sendAsyncOutput(w_package)
 
+    #@+node:ekr.20210611084045.12: *3* efc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
         trace = False
@@ -196,6 +223,7 @@ class ExternalFilesController:
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
 
+    #@+node:ekr.20210611084045.13: *3* efc.integResult
     def integResult(self, p_result):
         '''Received result from client'''
         # Got the result to an asked question/warning from the client
@@ -232,6 +260,8 @@ class ExternalFilesController:
         # unblock: run the loop as if timer had hit
         self.idle_check_commander(self.lastCommander)
 
+    #@+node:ekr.20210611084045.14: *3* efc.utilities
+    #@+node:ekr.20210611084045.15: *4* efc.ask
     def ask(self, c, path, p=None):
         '''
         Ask user whether to overwrite an @<file> tree.
@@ -289,15 +319,18 @@ class ExternalFilesController:
 
         # return bool(result and 'yes' in result.lower())
 
+    #@+node:ekr.20210611084045.16: *4* efc.checksum
     def checksum(self, path):
         '''Return the checksum of the file at the given path.'''
         import hashlib
         return hashlib.md5(open(path, 'rb').read()).hexdigest()
 
+    #@+node:ekr.20210611084045.17: *4* efc.get_mtime
     def get_mtime(self, path):
         '''Return the modification time for the path.'''
         return self.integController.g.os_path_getmtime(self.integController.g.os_path_realpath(path))
 
+    #@+node:ekr.20210611084045.18: *4* efc.get_time
     def get_time(self, path):
         '''
         return timestamp for path
@@ -306,6 +339,7 @@ class ExternalFilesController:
         '''
         return self._time_d.get(self.integController.g.os_path_realpath(path))
 
+    #@+node:ekr.20210611084045.19: *4* efc.has_changed
     def has_changed(self, path):
         '''Return True if p's external file has changed outside of Leo.'''
         if not path:
@@ -344,6 +378,7 @@ class ExternalFilesController:
         # self.checksum_d[path] = new_sum
         return True
 
+    #@+node:ekr.20210611084045.20: *4* efc.is_enabled
     def is_enabled(self, c):
         '''Return the cached @bool check_for_changed_external_file setting.'''
         # check with leoInteg's config first
@@ -363,10 +398,12 @@ class ExternalFilesController:
             d[c] = val
         return val
 
+    #@+node:ekr.20210611084045.21: *4* efc.join
     def join(self, s1, s2):
         '''Return s1 + ' ' + s2'''
         return f"{s1} {s2}"
 
+    #@+node:ekr.20210611084045.22: *4* efc.set_time
     def set_time(self, path, new_time=None):
         '''
         Implements c.setTimeStamp.
@@ -384,6 +421,7 @@ class ExternalFilesController:
         t = new_time or self.get_mtime(path)
         self._time_d[self.integController.g.os_path_realpath(path)] = t
 
+    #@+node:ekr.20210611084045.23: *4* efc.warn
     def warn(self, c, path, p):
         '''
         Warn that an @asis or @nosent node has been changed externally.
@@ -422,30 +460,39 @@ class ExternalFilesController:
         self.integController.sendAsyncOutput(w_package)
         self.waitingForAnswer = True
 
+    #@+node:ekr.20210611084045.24: *3* other called methods
     # Some methods are called in the usual (non-leoBridge without 'efc') save process.
     # Those may be called by the 'save' function, like check_overwrite,
     # or by any other functions from the instance of leo.core.leoBridge that's running.
 
+    #@+node:ekr.20210611084045.25: *4* open_with
     def open_with(self, c, d):
         return
 
+    #@+node:ekr.20210611084045.26: *4* check_overwrite
     def check_overwrite(self, c, fn):
         # print("check_overwrite!! ", flush=True)
         return True
 
+    #@+node:ekr.20210611084045.27: *4* shut_down
     def shut_down(self):
         return
 
+    #@+node:ekr.20210611084045.28: *4* destroy_frame
     def destroy_frame(self, f):
         return
 
+    #@-others
 
+#@+node:ekr.20210611084045.29: ** class IntegTextWrapper
 class IntegTextWrapper:
     """
     A class that represents text as a Python string.
     Modified from Leo's StringTextWrapper class source
     """
 
+    #@+others
+    #@+node:ekr.20210611084045.30: *3* stw.ctor
     def __init__(self, c, name, g):
         """Ctor for the IntegTextWrapper class."""
         self.c = c
@@ -465,6 +512,7 @@ class IntegTextWrapper:
         """IntegTextWrapper."""
         return self.name  # Essential.
 
+    #@+node:ekr.20210611084045.31: *3* stw.Clipboard
     def clipboard_clear(self):
         self.g.app.gui.replaceClipboardWith('')
 
@@ -472,6 +520,7 @@ class IntegTextWrapper:
         s1 = self.g.app.gui.getTextFromClipboard()
         self.g.app.gui.replaceClipboardWith(s1 + s)
 
+    #@+node:ekr.20210611084045.32: *3* stw.Do-nothings
     def flashCharacter(self, i, bg='white', fg='red',
                        flashes=3, delay=75): pass
 
@@ -485,6 +534,8 @@ class IntegTextWrapper:
 
     def tag_configure(self, colorName, **keys): pass
 
+    #@+node:ekr.20210611084045.33: *3* stw.Text
+    #@+node:ekr.20210611084045.34: *4* stw.appendText
     def appendText(self, s):
         """IntegTextWrapper appendText"""
         self.s = self.s + self.g.toUnicode(s)
@@ -492,6 +543,7 @@ class IntegTextWrapper:
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
 
+    #@+node:ekr.20210611084045.35: *4* stw.delete
     def delete(self, i, j=None):
         """IntegTextWrapper delete"""
         i = self.toPythonIndex(i)
@@ -506,11 +558,13 @@ class IntegTextWrapper:
         # Bug fix: 2011/11/13: Significant in external tests.
         self.setSelectionRange(i, i, insert=i)
 
+    #@+node:ekr.20210611084045.36: *4* stw.deleteTextSelection
     def deleteTextSelection(self):
         """IntegTextWrapper."""
         i, j = self.getSelectionRange()
         self.delete(i, j)
 
+    #@+node:ekr.20210611084045.37: *4* stw.get
     def get(self, i, j=None):
         """IntegTextWrapper get"""
         i = self.toPythonIndex(i)
@@ -521,12 +575,14 @@ class IntegTextWrapper:
         # print("WRAPPER GET with self.s[i:j]: " + s)
         return self.g.toUnicode(s)
 
+    #@+node:ekr.20210611084045.38: *4* stw.getAllText
     def getAllText(self):
         """IntegTextWrapper getAllText"""
         s = self.s
         # print("WRAPPER getAllText  " + s)
         return self.g.checkUnicode(s)
 
+    #@+node:ekr.20210611084045.39: *4* stw.getInsertPoint
     def getInsertPoint(self):
         """IntegTextWrapper getInsertPoint"""
         i = self.ins
@@ -538,6 +594,7 @@ class IntegTextWrapper:
         self.virtualInsertPoint = i
         return i
 
+    #@+node:ekr.20210611084045.40: *4* stw.getSelectedText
     def getSelectedText(self):
         """IntegTextWrapper getSelectedText"""
         i, j = self.sel
@@ -545,6 +602,7 @@ class IntegTextWrapper:
         # print("WRAPPER getSelectedText with self.s[i:j]: " + s)
         return self.g.checkUnicode(s)
 
+    #@+node:ekr.20210611084045.41: *4* stw.getSelectionRange
     def getSelectionRange(self, sort=True):
         """Return the selected range of the widget."""
         sel = self.sel
@@ -556,19 +614,23 @@ class IntegTextWrapper:
         i = self.ins
         return i, i
 
+    #@+node:ekr.20210611084045.42: *4* stw.getXScrollPosition
     def getXScrollPosition(self):
         return 0
         # X axis ignored
 
+    #@+node:ekr.20210611084045.43: *4* stw.getYScrollPosition
     def getYScrollPosition(self):
         # print("wrapper get y scroll" + str(self.yScroll))
         return self.yScroll
 
+    #@+node:ekr.20210611084045.44: *4* stw.hasSelection
     def hasSelection(self):
         """IntegTextWrapper hasSelection"""
         i, j = self.getSelectionRange()
         return i != j
 
+    #@+node:ekr.20210611084045.45: *4* stw.insert
     def insert(self, i, s):
         """IntegTextWrapper insert"""
         i = self.toPythonIndex(i)
@@ -578,10 +640,12 @@ class IntegTextWrapper:
         self.ins = i
         self.sel = i, i
 
+    #@+node:ekr.20210611084045.46: *4* stw.selectAllText
     def selectAllText(self, insert=None):
         """IntegTextWrapper selectAllText"""
         self.setSelectionRange(0, 'end', insert=insert)
 
+    #@+node:ekr.20210611084045.47: *4* stw.setAllText
     def setAllText(self, s):
         """IntegTextWrapper setAllText"""
         # print("WRAPPER setAllText: " + s)
@@ -590,30 +654,36 @@ class IntegTextWrapper:
         self.ins = i
         self.sel = i, i
 
+    #@+node:ekr.20210611084045.48: *4* stw.setInsertPoint
     def setInsertPoint(self, pos, s=None):
         """IntegTextWrapper setInsertPoint"""
         self.virtualInsertPoint = i = self.toPythonIndex(pos)
         self.ins = i
         self.sel = i, i
 
+    #@+node:ekr.20210611084045.49: *4* stw.setXScrollPosition
     def setXScrollPosition(self, i):
         pass
         # X axis ignored
 
+    #@+node:ekr.20210611084045.50: *4* stw.setYScrollPosition
     def setYScrollPosition(self, i):
         self.yScroll = i
         # print("wrapper set y scroll" + str(self.yScroll))
 
+    #@+node:ekr.20210611084045.51: *4* stw.setSelectionRange
     def setSelectionRange(self, i, j, insert=None):
         """IntegTextWrapper setSelectionRange"""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
 
+    #@+node:ekr.20210611084045.52: *4* stw.toPythonIndex
     def toPythonIndex(self, index):
         """IntegTextWrapper toPythonIndex"""
         return self.g.toPythonIndex(self.s, index)
 
+    #@+node:ekr.20210611084045.53: *4* stw.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):
         """IntegTextWrapper toPythonIndexRowCol"""
         s = self.getAllText()
@@ -621,11 +691,15 @@ class IntegTextWrapper:
         row, col = self.g.convertPythonIndexToRowCol(s, i)
         return i, row, col
 
+    #@-others
 
+#@+node:ekr.20210611084045.54: ** class LeoBridgeIntegController
 class LeoBridgeIntegController:
     '''Leo Bridge Controller'''
     # pylint: disable=no-else-return
 
+    #@+others
+    #@+node:ekr.20210611084045.55: *3* __init__
     def __init__(self):
         self.gnx_to_vnode = []  # utility array - see leoflexx.py in leoPluginsRef.leo
         self.bridge = leoBridge.controller(
@@ -674,19 +748,23 @@ class LeoBridgeIntegController:
         except Exception:
             print('ERROR with idleTimeManager')
 
+    #@+node:ekr.20210611084045.56: *3* _asyncIdleLoop
     async def _asyncIdleLoop(self, p_seconds, p_fn):
         while True:
             await asyncio.sleep(p_seconds)
             p_fn(self)
 
+    #@+node:ekr.20210611084045.57: *3* _returnNo
     def _returnNo(self, *arguments, **kwargs):
         '''Used to override g.app.gui.ask[XXX] dialogs answers'''
         return "no"
 
+    #@+node:ekr.20210611084045.58: *3* _returnYes
     def _returnYes(self, *arguments, **kwargs):
         '''Used to override g.app.gui.ask[XXX] dialogs answers'''
         return "yes"
 
+    #@+node:ekr.20210611084045.59: *3* _getScript
     def _getScript(self, c, p,
                    useSelectedText=True,
                    forcePythonSentinels=True,
@@ -717,10 +795,12 @@ class LeoBridgeIntegController:
             script = ''
         return script
 
+    #@+node:ekr.20210611084045.60: *3* _idleTime
     def _idleTime(self, fn, delay, tag):
         # TODO : REVISE/REPLACE WITH OWN SYSTEM
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
 
+    #@+node:ekr.20210611084045.61: *3* _getTotalOpened
     def _getTotalOpened(self):
         '''Get total of opened commander (who have closed == false)'''
         w_total = 0
@@ -730,6 +810,7 @@ class LeoBridgeIntegController:
         return w_total
 
         # return sum(1 for z in self.g.app.commanders() if not z.closed)
+    #@+node:ekr.20210611084045.62: *3* _getFirstOpenedCommander
     def _getFirstOpenedCommander(self):
         '''Get first opened commander, or False if there are none.'''
         for w_commander in self.g.app.commanders():
@@ -737,12 +818,14 @@ class LeoBridgeIntegController:
                 return w_commander
         return False
 
+    #@+node:ekr.20210611084045.63: *3* _show_find_success
     def _show_find_success(self, c, in_headline, insert, p):
         '''Handle a successful find match.'''
         if in_headline:
             self.g.app.gui.set_focus(c, self.headlineWidget)
         # no return
 
+    #@+node:ekr.20210611084045.64: *3* sendAsyncOutput
     def sendAsyncOutput(self, p_package):
         if "async" not in p_package:
             print('[sendAsyncOutput] Error async member missing in package parameter')
@@ -755,16 +838,19 @@ class LeoBridgeIntegController:
             print('[sendAsyncOutput] Error loop not ready' +
                   json.dumps(p_package, separators=(',', ':')))
 
+    #@+node:ekr.20210611084045.65: *3* set_ask_result
     def set_ask_result(self, p_result):
         '''Got the result to an asked question/warning from client'''
         self.g.app.externalFilesController.integResult(p_result)
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
+    #@+node:ekr.20210611084045.66: *3* set_config
     def set_config(self, p_config):
         '''Got leoInteg's config from client'''
         self.leoIntegConfig = p_config
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
+    #@+node:ekr.20210611084045.67: *3* logSignon
     def logSignon(self):
         '''Simulate the Initial Leo Log Entry'''
         if self.loop:
@@ -774,9 +860,12 @@ class LeoBridgeIntegController:
         else:
             print('no loop in logSignon', flush=True)
 
+    #@+node:ekr.20210611084045.68: *3* JSON Output Functions
+    #@+node:ekr.20210611084045.69: *4* setActionId
     def setActionId(self, p_id):
         self.currentActionId = p_id
 
+    #@+node:ekr.20210611084045.70: *4* asyncOutput
     async def asyncOutput(self, p_json):
         '''Output json string to the websocket'''
         if self.webSocket:
@@ -784,10 +873,12 @@ class LeoBridgeIntegController:
         else:
             print("websocket not ready yet", flush=True)
 
+    #@+node:ekr.20210611084045.71: *4* sendLeoBridgePackage
     def sendLeoBridgePackage(self, p_package={}):
         p_package["id"] = self.currentActionId
         return(json.dumps(p_package, separators=(',', ':')))  # send as json
 
+    #@+node:ekr.20210611084045.72: *4* _outputError
     def _outputError(self, p_message="Unknown Error"):
         # Output to this server's running console
         print("ERROR: " + p_message, flush=True)
@@ -795,12 +886,15 @@ class LeoBridgeIntegController:
         w_package["error"] = p_message
         return p_message
 
+    #@+node:ekr.20210611084045.73: *4* _outputBodyData
     def _outputBodyData(self, p_bodyText=""):
         return self.sendLeoBridgePackage({"body": p_bodyText})
 
+    #@+node:ekr.20210611084045.74: *4* _outputSelectionData
     def _outputSelectionData(self, p_bodySelection):
         return self.sendLeoBridgePackage({"bodySelection": p_bodySelection})
 
+    #@+node:ekr.20210611084045.75: *4* _outputPNode
     def _outputPNode(self, p_node=False):
         if p_node:
             # Single node, singular
@@ -808,6 +902,7 @@ class LeoBridgeIntegController:
         else:
             return self.sendLeoBridgePackage({"node": None})
 
+    #@+node:ekr.20210611084045.76: *4* _outputPNodes
     def _outputPNodes(self, p_pList):
         w_apList = []
         for p in p_pList:
@@ -815,6 +910,7 @@ class LeoBridgeIntegController:
         # Multiple nodes, plural
         return self.sendLeoBridgePackage({"children": w_apList})
 
+    #@+node:ekr.20210611084045.77: *3* es
     def es(self, * args, **keys):
         '''Output to the Log Pane'''
         d = {
@@ -829,10 +925,12 @@ class LeoBridgeIntegController:
         s = self.g.translateArgs(args, d)
         w_package = {"async": "log", "log": s}
         self.sendAsyncOutput(w_package)
+    #@+node:ekr.20210611084045.78: *3* initConnection
     def initConnection(self, p_webSocket):
         self.webSocket = p_webSocket
         self.loop = asyncio.get_event_loop()
 
+    #@+node:ekr.20210611084045.79: *3* _get_commander_method
     def _get_commander_method(self, p_command):
         """ Return the given method (p_command) in the Commands class or subcommanders."""
         # self.g.trace(p_command)
@@ -880,6 +978,7 @@ class LeoBridgeIntegController:
                 # self.g.trace(f"Not Found: c.{ivar}") # Should never happen.
         return None
 
+    #@+node:ekr.20210611084045.80: *3* leoCommand
     def leoCommand(self, p_command, param):
         '''
         Generic call to a method in Leo's Commands class or any subcommander class.
@@ -921,6 +1020,8 @@ class LeoBridgeIntegController:
 
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.81: *3* Leo Documents
+    #@+node:ekr.20210611084045.82: *4* get_all_open_commanders
     def get_all_open_commanders(self, param):
         '''Return array of opened file path/names to be used as openFile parameters to switch files'''
         w_files = []
@@ -939,6 +1040,7 @@ class LeoBridgeIntegController:
 
         return self.sendLeoBridgePackage({"files": w_files})
 
+    #@+node:ekr.20210611084045.83: *4* get_ui_states
     def get_ui_states(self, param):
         """
         Gets the currently opened file's general states for UI enabled/disabled states
@@ -969,6 +1071,7 @@ class LeoBridgeIntegController:
 
         return self.sendLeoBridgePackage({"states": w_states})
 
+    #@+node:ekr.20210611084045.84: *4* set_opened_file
     def set_opened_file(self, param):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
         w_openedCommanders = []
@@ -993,6 +1096,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError('Error in setOpenedFile')
 
+    #@+node:ekr.20210611084045.85: *4* open_file
     def open_file(self, param):
         """
         Open a leo file via leoBridge controller, or create a new document if empty string.
@@ -1031,6 +1135,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError('Error in openFile')
 
+    #@+node:ekr.20210611084045.86: *4* open_files
     def open_files(self, param):
         """
         Opens an array of leo files
@@ -1071,6 +1176,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError('Error in openFiles')
 
+    #@+node:ekr.20210611084045.87: *4* close_file
     def close_file(self, param):
         """
         Closes a leo file. A file can then be opened with "openFile".
@@ -1105,6 +1211,7 @@ class LeoBridgeIntegController:
 
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.88: *4* save_file
     def save_file(self, param):
         '''Saves the leo file. New or dirty derived files are rewritten'''
         if self.commander:
@@ -1120,6 +1227,7 @@ class LeoBridgeIntegController:
 
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
+    #@+node:ekr.20210611084045.89: *4* import_any_file
     def import_any_file(self, param):
         """
         Import file(s) from array of file names
@@ -1174,6 +1282,8 @@ class LeoBridgeIntegController:
                 )
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
+    #@+node:ekr.20210611084045.90: *3* Search
+    #@+node:ekr.20210611084045.91: *4* get_search_settings
     def get_search_settings(self, param):
         """
         Gets search options
@@ -1181,6 +1291,7 @@ class LeoBridgeIntegController:
         w_result = self.commander.findCommands.ftm.get_settings()
         return self.sendLeoBridgePackage({"searchSettings": w_result.__dict__})
 
+    #@+node:ekr.20210611084045.92: *4* set_search_settings
     def set_search_settings(self, param):
         """
         Sets search options. Init widgets and ivars from param.searchSettings
@@ -1244,6 +1355,7 @@ class LeoBridgeIntegController:
         w_result = ftm.get_settings()
         return self.sendLeoBridgePackage({"searchSettings": w_result.__dict__})
 
+    #@+node:ekr.20210611084045.93: *4* find_all
     def find_all(self, param):
         """Run Leo's find all command and return results."""
         c = self.commander
@@ -1256,6 +1368,7 @@ class LeoBridgeIntegController:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.94: *4* find_next
     def find_next(self, param):
         """Run Leo's find-next command and return results."""
         c = self.commander
@@ -1271,6 +1384,7 @@ class LeoBridgeIntegController:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.95: *4* find_previous
     def find_previous(self, param):
         """Run Leo's find-previous command and return results."""
         c = self.commander
@@ -1287,6 +1401,7 @@ class LeoBridgeIntegController:
         return self.sendLeoBridgePackage(w_result)
 
 
+    #@+node:ekr.20210611084045.96: *4* replace
     def replace(self, param):
         """Run Leo's replace command and return results."""
         c = self.commander
@@ -1299,6 +1414,7 @@ class LeoBridgeIntegController:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.97: *4* replace_then_find
     def replace_then_find(self, param):
         """Run Leo's replace then find next command and return results."""
         c = self.commander
@@ -1311,6 +1427,7 @@ class LeoBridgeIntegController:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.98: *4* replace_all
     def replace_all(self, param):
         """Run Leo's replace all command and return results."""
         c = self.commander
@@ -1323,6 +1440,7 @@ class LeoBridgeIntegController:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.99: *4* clone_find_all
     def clone_find_all(self, param):
         """Run Leo's clone-find-all command and return results."""
         c = self.commander
@@ -1335,6 +1453,7 @@ class LeoBridgeIntegController:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.100: *4* clone_find_all_flattened
     def clone_find_all_flattened(self, param):
         """Run Leo's clone-find-all-flattened command and return results."""
         c = self.commander
@@ -1346,33 +1465,36 @@ class LeoBridgeIntegController:
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
+    #@+node:ekr.20210611084045.101: *4* find_var
 
     def find_var(self, param):
         """Run Leo's find-var command and return results."""
         c = self.commander
-        fc = c.findCommands
-        settings = fc.ftm.get_settings()
+        ### fc = c.findCommands
+        ### settings = fc.ftm.get_settings()
         # todo : find var implementation
         print("todo : find var implementation")
         # result = fc.do_clone_find_all_flattened(settings)
-        w = self.g.app.gui.get_focus()
-        focus = self.g.app.gui.widget_name(w)
+        ### w = self.g.app.gui.get_focus()
+        ### focus = self.g.app.gui.widget_name(w)
         w_result = {"node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.102: *4* find_def
     def find_def(self, param):
         """Run Leo's find-def command and return results."""
         c = self.commander
-        fc = c.findCommands
-        settings = fc.ftm.get_settings()
+        ### fc = c.findCommands
+        ### settings = fc.ftm.get_settings()
         # todo : find def implementation
         print("todo : find def implementation")
         # result = fc.do_clone_find_all_flattened(settings)
-        w = self.g.app.gui.get_focus()
-        focus = self.g.app.gui.widget_name(w)
+        ### w = self.g.app.gui.get_focus()
+        ### focus = self.g.app.gui.widget_name(w)
         w_result = {"node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.103: *4* goto_global_line
     def goto_global_line(self, param):
         """Run Leo's goto-global-line command and return results."""
         c = self.commander
@@ -1381,6 +1503,8 @@ class LeoBridgeIntegController:
         w_result = {"found": found, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:ekr.20210611084045.104: *3* At Buttons
+    #@+node:ekr.20210611084045.105: *4* get_buttons
     def get_buttons(self, param):
         '''Gets the currently opened file's @buttons list'''
         w_buttons = []
@@ -1391,6 +1515,7 @@ class LeoBridgeIntegController:
                 w_buttons.append(w_entry)
         return self.sendLeoBridgePackage({"buttons": w_buttons})
 
+    #@+node:ekr.20210611084045.106: *4* remove_button
     def remove_button(self, param):
         '''Removes an entry from the buttonsDict by index string'''
         w_index = param['index']
@@ -1404,6 +1529,7 @@ class LeoBridgeIntegController:
         # return selected node when done
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.107: *4* click_button
     def click_button(self, param):
         '''Handles buttons clicked in client from the '@button' panel'''
         w_index = param['index']
@@ -1417,6 +1543,8 @@ class LeoBridgeIntegController:
         # return selected node when done
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.108: *3* Minibuffer
+    #@+node:ekr.20210611084045.109: *4* get_all_leo_commands
     def get_all_leo_commands(self, param):
         """Return a list of all Leo commands that make sense in leoInteg."""
         c = self.commander
@@ -1453,6 +1581,7 @@ class LeoBridgeIntegController:
 
         return self.sendLeoBridgePackage({"commands": result})
 
+    #@+node:ekr.20210611084045.110: *4* _bad_commands
     def _bad_commands(self):
         """Return the list of Leo's command names that leoInteg should ignore."""
         c = self.commander
@@ -2058,6 +2187,7 @@ class LeoBridgeIntegController:
         result = list(sorted(bad))
         return result
 
+    #@+node:ekr.20210611084045.111: *4* _good_commands
     def _good_commands(self):
         """Defined commands that definitely should be included in leoInteg."""
         good_list = [
@@ -2489,12 +2619,15 @@ class LeoBridgeIntegController:
         ]
         return good_list
 
+    #@+node:ekr.20210611084045.112: *4* _getDocstringForCommand
     def _getDocstringForCommand(self, command_name):
         """get docstring for the given command."""
         func = self._get_commander_method(command_name)
         docstring = func.__doc__ if func else ''
         return docstring
 
+    #@+node:ekr.20210611084045.113: *3* Overriden Leo Commands
+    #@+node:ekr.20210611084045.114: *4* mark_node
     def mark_node(self, param):
         '''Mark a node, don't select it'''
         w_ap = param["ap"]
@@ -2509,6 +2642,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError("Error in markPNode no param node")
 
+    #@+node:ekr.20210611084045.115: *4* unmark_node
     def unmark_node(self, param):
         '''Unmark a node, don't select it'''
         w_ap = param["ap"]
@@ -2523,6 +2657,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError("Error in unmarkPNode no param node")
 
+    #@+node:ekr.20210611084045.116: *4* clone_node
     def clone_node(self, param):
         '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
         w_ap = param["ap"]
@@ -2543,6 +2678,7 @@ class LeoBridgeIntegController:
         # return selected node either ways
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.117: *4* cut_node
     def cut_node(self, param):
         '''Cut a node, don't select it. Try to keep selection, then return the selected node that remains'''
         w_ap = param["ap"]
@@ -2572,6 +2708,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError("Error in cutPNode no param node")
 
+    #@+node:ekr.20210611084045.118: *4* delete_node
     def delete_node(self, param):
         '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
         w_ap = param["ap"]
@@ -2601,6 +2738,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError("Error in deletePNode no param node")
 
+    #@+node:ekr.20210611084045.119: *4* insert_node
     def insert_node(self, param):
         '''Insert a node at given node, then select it once created, and finally return it'''
         w_ap = param["ap"]
@@ -2621,6 +2759,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError("Error in insertPNode no param node")
 
+    #@+node:ekr.20210611084045.120: *4* insert_named_node
     def insert_named_node(self, param):
         '''Insert a node at given node, set its headline, select it and finally return it'''
         w_newHeadline = param['name']
@@ -2644,6 +2783,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputError("Error in insertNamedPNode no param node")
 
+    #@+node:ekr.20210611084045.121: *4* undo
     def undo(self, param):
         '''Undo last un-doable operation'''
         if self.commander.undoer.canUndo():
@@ -2651,6 +2791,7 @@ class LeoBridgeIntegController:
         # return selected node when done
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.122: *4* redo
     def redo(self, param):
         '''Undo last un-doable operation'''
         if self.commander.undoer.canRedo():
@@ -2658,12 +2799,15 @@ class LeoBridgeIntegController:
         # return selected node when done
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.123: *4* test
     def test(self, param):
         '''Utility test function for debugging'''
         print("Called test")
         return self.sendLeoBridgePackage({'testReturnedKey': 'testReturnedValue'})
         # return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.124: *3* Outline and Body Interaction
+    #@+node:ekr.20210611084045.125: *4* page_up
     def page_up(self, param):
         """Selects a node a couple of steps up in the tree to simulate page up"""
         n = param.get("n", 3)
@@ -2671,6 +2815,7 @@ class LeoBridgeIntegController:
             self.commander.selectVisBack()
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.126: *4* page_down
     def page_down(self, param):
         """Selects a node a couple of steps down in the tree to simulate page down"""
         n = param.get("n", 3)
@@ -2678,6 +2823,7 @@ class LeoBridgeIntegController:
             self.commander.selectVisNext()
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.127: *4* get_body_states
     def get_body_states(self, p_ap):
         """
         Finds the language in effect at top of body for position p,
@@ -2783,6 +2929,7 @@ class LeoBridgeIntegController:
             }
         return self.sendLeoBridgePackage(states)
 
+    #@+node:ekr.20210611084045.128: *4* get_children & helper
     def get_children(self, p_ap):
         '''EMIT OUT list of children of a node'''
         if p_ap:
@@ -2798,6 +2945,7 @@ class LeoBridgeIntegController:
                 # this outputs all Root Children
                 return self._outputPNodes(self._yieldAllRootChildren())
 
+    #@+node:ekr.20210611084045.129: *5* _yieldAllRootChildren
     def _yieldAllRootChildren(self):
         '''Return all root children P nodes'''
         p = self.commander.rootPosition()
@@ -2805,6 +2953,7 @@ class LeoBridgeIntegController:
             yield p
             p.moveToNext()
 
+    #@+node:ekr.20210611084045.130: *4* get_parent
     def get_parent(self, p_ap):
         '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
         if p_ap:
@@ -2813,12 +2962,14 @@ class LeoBridgeIntegController:
                 return self._outputPNode(w_p.getParent())  # if not root
         return self._outputPNode()  # default empty for root as default
 
+    #@+node:ekr.20210611084045.131: *4* get_all_gnx
     def get_all_gnx(self, param):
         '''Get gnx array from all unique nodes'''
         w_all_gnx = [
             p.v.gnx for p in self.commander.all_unique_positions(copy=False)]
         return self.sendLeoBridgePackage({"gnx": w_all_gnx})
 
+    #@+node:ekr.20210611084045.132: *4* get_body
     def get_body(self, p_gnx):
         '''EMIT OUT body of a node'''
         # TODO : if not found, send code to prevent unresolved promise if 'document switch' occurred shortly before
@@ -2832,6 +2983,7 @@ class LeoBridgeIntegController:
         # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
         return self._outputBodyData()
 
+    #@+node:ekr.20210611084045.133: *4* get_body_length
     def get_body_length(self, p_gnx):
         '''EMIT OUT body string length of a node'''
         if p_gnx:
@@ -2842,6 +2994,7 @@ class LeoBridgeIntegController:
         # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
         return self.sendLeoBridgePackage({"len": 0})  # empty as default
 
+    #@+node:ekr.20210611084045.134: *4* set_body
     def set_body(self, param):
         '''Change Body text of a v node'''
         w_gnx = param['gnx']
@@ -2868,6 +3021,7 @@ class LeoBridgeIntegController:
                 w_v.b = w_body
         return self._outputPNode(self.commander.p)  # return selected node
 
+    #@+node:ekr.20210611084045.135: *4* get_focus
     def get_focus(self, param):
         """
         Return a representation of the focused widget,
@@ -2877,6 +3031,7 @@ class LeoBridgeIntegController:
         focus = self.g.app.gui.widget_name(w)
         return self.sendLeoBridgePackage({"focus": focus})
 
+    #@+node:ekr.20210611084045.136: *4* set_selection
     def set_selection(self, param):
         '''
         Set cursor position and scroll position along with selection start and end.
@@ -2963,6 +3118,7 @@ class LeoBridgeIntegController:
         # output selected node as 'ok'
         return self._outputPNode(self.commander.p)
 
+    #@+node:ekr.20210611084045.137: *4* set_headline
     def set_headline(self, param):
         '''Change Headline of a node'''
         w_newHeadline = param['name']
@@ -2978,6 +3134,7 @@ class LeoBridgeIntegController:
                 return self._outputPNode(w_p)
         return self._outputError("Error in setNewHeadline")
 
+    #@+node:ekr.20210611084045.138: *4* set_current_position & helper
     def set_current_position(self, p_ap):
         '''Select a node, or the first one found with its GNX'''
         if p_ap:
@@ -2999,6 +3156,7 @@ class LeoBridgeIntegController:
         else:
             return self._outputPNode()
 
+    #@+node:ekr.20210611084045.139: *5* _findPNodeFromGnx
     def _findPNodeFromGnx(self, p_gnx):
         '''Return first p node with this gnx or false'''
         for p in self.commander.all_unique_positions():
@@ -3006,6 +3164,7 @@ class LeoBridgeIntegController:
                 return p
         return False
 
+    #@+node:ekr.20210611084045.140: *4* expand_node
     def expand_node(self, p_ap):
         '''Expand a node'''
         if p_ap:
@@ -3014,6 +3173,7 @@ class LeoBridgeIntegController:
                 w_p.expand()
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
+    #@+node:ekr.20210611084045.141: *4* contract_node
     def contract_node(self, p_ap):
         '''Collapse a node'''
         if p_ap:
@@ -3022,6 +3182,8 @@ class LeoBridgeIntegController:
                 w_p.contract()
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
+    #@+node:ekr.20210611084045.142: *3* leoFlexx Conversion Functions
+    #@+node:ekr.20210611084045.143: *4* _create_gnx_to_vnode
     def _create_gnx_to_vnode(self):
         '''Make the first gnx_to_vnode array with all unique nodes'''
         t1 = time.process_time()
@@ -3033,6 +3195,7 @@ class LeoBridgeIntegController:
                 (time.process_time()-t1), len(list(self.gnx_to_vnode.keys()))), flush=True)
         self._test_round_trip_positions()
 
+    #@+node:ekr.20210611084045.144: *4* _test_round_trip_positions
     def _test_round_trip_positions(self):
         '''(From Leo plugin leoflexx.py) Test the round tripping of p_to_ap and ap_to_p.'''
         # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
@@ -3051,6 +3214,7 @@ class LeoBridgeIntegController:
         # print('Leo file opened. Its outline contains ' + str(qtyAllPositions) + " nodes positions.", flush=True)
         # print(('Testing app.test_round_trip_positions for all nodes: Total time: %5.3f sec.' % (time.process_time()-t1)), flush=True)
 
+    #@+node:ekr.20210611084045.145: *4* _ap_to_p
     def _ap_to_p(self, ap):
         '''
         (From Leo plugin leoflexx.py) Convert an archived position to a true Leo position.
@@ -3069,6 +3233,7 @@ class LeoBridgeIntegController:
 
         return leoNodes.position(v, childIndex, stack)
 
+    #@+node:ekr.20210611084045.146: *4* _p_to_ap
     def _p_to_ap(self, p):
         '''(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position.'''
         if not p.v:
@@ -3114,6 +3279,196 @@ class LeoBridgeIntegController:
         return w_ap
 
 
+    #@-others
+#@+node:ekr.20210611084754.1: ** class TestLeoServer (unittest.TestCase)
+class TestLeoServer (unittest.TestCase):  # pragma: no cover
+    """Tests of LeoServer class."""
+    request_number = 0
+
+    #@+others
+    #@+node:ekr.20210611084754.2: *3* test: Setup and TearDown
+    @classmethod
+    def setUpClass(cls):
+        # Assume we are running in the leo-editor directory.
+        # pylint: disable=import-self
+        from leo.core import leoserver
+        global g, g_leoserver, g_server
+        g_leoserver = leoserver
+        g_server = leoserver.LeoServer(testing=True)
+        g = g_server.g
+        assert g
+
+    @classmethod
+    def tearDownClass(cls):
+        global g_leoserver, g_server
+        try:
+            g_server.shut_down({})
+            print('===== server did not terminate properly ====')
+        except g_leoserver.TerminateServer:
+            pass
+
+    def setUp(self):
+        global g_server
+        self.server = g_server
+        g.unitTesting = True
+        
+    def tearDown(self):
+        g.unitTesting = False 
+        
+    #@+node:ekr.20210611084754.3: *3* test._request
+    def _request(self, action, package=None):
+        server = self.server
+        self.request_number += 1
+        log_flag = package.get("log")
+        d = {
+            "action": action,
+            "id": self.request_number
+        }
+        if package:
+            d ["package"] = package
+        response = server._do_message(d)
+        # _make_response calls json_dumps. Undo it with json.loads.
+        answer = json.loads(response)
+        if log_flag:
+            g.printObj(answer, tag=f"response to {action!r}")
+        return answer
+    #@+node:ekr.20210611084754.4: *3* test.test_leo_commands
+    def test_leo_commands (self):
+        server = self.server
+        table = [
+            # Toggle mark twice.
+            ("toggle-mark", {}),
+            ("toggle-mark", {}),
+        ]
+        # First open a test file.
+        server.open_file({"filename": "xyzzy.leo"})
+        try:
+            action = "execute-leo-command"
+            for command_name, package in table:
+                package ["leo-command-name"] = command_name
+                self._request(action, package)
+        finally:
+            server.close_file({"filename": "xyzzy.leo"})
+    #@+node:ekr.20210611084754.5: *3* test.test_most_public_server_methods
+    def test_most_public_server_methods(self):
+        server=self.server
+        assert isinstance(server, g_leoserver.LeoServer), self.server
+        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+        methods = server._get_all_server_commands()
+        # Ensure that some methods happen at the end.
+        for z in ('toggle_mark', 'undo', 'redo'):
+            methods.remove(z)
+        for z in ('toggle_mark', 'toggle_mark', 'undo', 'redo'):
+            methods.append(z)
+        # g.printObj(methods, tag=methods)
+        exclude = [
+            # Find methods...
+            'change_all', 'change_then_find',
+            'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
+            'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
+            'tag_children',  
+            # Other methods
+            'delete_node', 'cut_node',  # dangerous.
+            'click_button', 'get_buttons', 'remove_button',  # Require plugins.
+            'save_file',  # way too dangerous!
+            # 'set_selection',  ### Not ready yet.
+            'open_file', 'close_file',  # Done by hand.
+            'shut_down',  # Don't shut down the server.
+        ]
+        expected = ['error']
+        package_d = {
+            # "apply_config": {"config": {"whatever": True}},
+            "get_focus": {"log": False},
+            "set_body": {"body": "new body\n"},
+            "set_headline": {"headline": "new headline"},
+            "get_all_server_commands": {"log": False},
+            "get_all_leo_commands": {"log": False},
+        }
+        # First open a test file & performa all tests.
+        server.open_file({"filename": test_dot_leo})  # A real file.
+        try:
+            id_ = 0
+            for method_name in methods:
+                id_ += 1
+                if method_name not in exclude:
+                    assert getattr(server, method_name), method_name
+                    package = package_d.get(method_name, {})
+                    message = {
+                        "id": id_,
+                        "action": method_name,
+                        "package": package,
+                    }
+                    try:
+                        # Don't call the method directly.
+                        # That would disable trace/verbose logic, checking, etc.
+                        server._do_message(message)
+                    except Exception as e:
+                        if method_name not in expected:
+                            print(f"Exception in test_most_public_server_methods: {method_name!r} {e}")
+        finally:
+            server.close_file({"filename": test_dot_leo})
+    #@+node:ekr.20210611084754.6: *3* test.test_open_and_close
+    def test_open_and_close(self):
+        # server = self.server
+        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+        log = False
+        table = [
+            # Open file.
+            ("open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
+            # Switch to the second file.
+            ("open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
+            # Open again. This should be valid.
+            ("open_file", {"log": False, "filename": test_dot_leo}),
+            # Better test of _ap_to_p.
+            ("set_current_position", {
+                "ap": {
+                    "gnx": "ekr.20180311131424.1",  # Recent
+                    "childIndex": 1,
+                    "stack": [],
+                }
+            }),
+            ("get_ua", {"log": log}),
+            # Close the second file.
+            ("close_file", {"log": log, }),
+            # Close the first file.
+            ("close_file", {"log": log, }),
+        ]
+        for action, package in table:
+            self._request(action, package)
+    #@+node:ekr.20210611084754.7: *3* test.test_find_commands
+    def test_find_commands(self):
+        
+        tag = 'test_find_commands'
+        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+        log = False
+        # Open the file & create the StringFindTabManager.
+        self._request("open_file", {"log": False, "filename": test_dot_leo})
+        #
+        # Batch find commands: The answer is a count of found nodes.
+        for method in ('find_all', 'clone_find_all', 'clone_find_all_flattened'):
+            answer = self._request(method, {"log": log, "find_text": "def"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        #
+        # Find commands that may select text: The answer is (p, pos, newpos).
+        for method in ('find_next', 'find_previous', 'find_def', 'find_var'):
+            answer = self._request(method, {"log": log, "find_text": "def"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        #
+        # Change commands: The answer is a count of changed nodes.
+        for method in ('change_all', 'change_then_find'):
+            answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        #
+        # Tag commands. Why they are in leoFind.py??
+        for method in ('clone_find_tag', 'tag_children'):
+            answer = self._request(method, {"log": log, "tag": "my-tag"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+       
+    #@-others
+#@+node:ekr.20210611084045.147: ** printAction
 def printAction(param):
     '''Debugging tool that prints out called action if not in 'common-action' array'''
     w_action = param["action"]
@@ -3124,6 +3479,7 @@ def printAction(param):
         print(f"*ACTION* {w_action}, id {param['id']}", flush=True)
 
 
+#@+node:ekr.20210611084045.148: ** main (server loop)
 def main():
     '''python script for leo integration via leoBridge'''
     global wsHost, wsPort
@@ -3217,6 +3573,7 @@ def main():
     print("Stopping leobridge server", flush=True)
 
 
+#@-others
 if __name__ == '__main__':
     # Startup
     try:
@@ -3224,3 +3581,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print("\nKeyboard Interupt: Stopping leobridge server", flush=True)
         sys.exit()
+#@-leo
