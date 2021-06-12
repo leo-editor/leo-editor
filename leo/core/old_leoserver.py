@@ -46,7 +46,7 @@ class ServerError(Exception):  # pragma: no cover
 class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
-#@+node:ekr.20210202110128.29: ** class LeoServer
+#@+node:ekr.20210202110128.29: ** OLD class LeoServer
 class LeoServer:
     """Leo Server Controller"""
     #@+others

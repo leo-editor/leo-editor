@@ -8,11 +8,11 @@ leoserver.py: same as leointeg/leobridgeserver.py except for sys.path manipulati
 #@@language python
 #@@tabwidth -4
 #@+<< imports >>
-#@+node:ekr.20210611084045.2: ** << imports >>
+#@+node:ekr.20210611084045.2: **  << imports >>
 # pylint: disable=wrong-import-position
 import asyncio
 import getopt
-# import inspect
+import inspect
 import json
 import os
 import os.path
@@ -27,12 +27,15 @@ _leo_editor_path = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 if _leo_editor_path not in sys.path:
     sys.path.append(_leo_editor_path)
 # Leo
+from leo.core import leoGlobals as g
+import leo.core.leoApp as leoApp  ###
 import leo.core.leoBridge as leoBridge
+import leo.core.leoExternalFiles as leoExternalFiles
 import leo.core.leoNodes as leoNodes
 from leo.core.leoGui import StringFindTabManager
 #@-<< imports >>
 #@+<< constants >>
-#@+node:ekr.20210611084045.3: ** << constants >>
+#@+node:ekr.20210611084045.3: **  << constants >>
 # server defaults
 wsHost = "localhost"
 wsPort = 32125
@@ -40,450 +43,17 @@ wsPort = 32125
 # To help in printout
 commonActions = ["getChildren", "getBody", "getBodyLength"]
 
-# Special string signals server startup success
-SERVER_STARTED_TOKEN = "LeoBridge started"
-
-
+# Globals used by TestLeoServer class
+g_leoserver = None
+g_server = None
 #@-<< constants >>
 #@+others
-#@+node:ekr.20210611084045.4: ** class IdleTimeManager
-class IdleTimeManager:
-    """
-    A singleton class to manage idle-time handling. This class handles all
-    details of running code at idle time, including running 'idle' hooks.
+#@+node:ekr.20210612084227.1: **  exception classes
+class ServerError(Exception):  # pragma: no cover
+    """The server received an erroneous package."""
 
-    Any code can call g.app.idleTimeManager.add_callback(callback) to cause
-    the callback to be called at idle time forever.
-    """
-    # TODO : REVISE/REPLACE WITH OWN SYSTEM
-
-    def __init__(self, g):
-        """Ctor for IdleTimeManager class."""
-        self.g = g
-        self.callback_list = []
-        self.timer = None
-        self.on_idle_count = 0
-
-    #@+others
-    #@+node:ekr.20210611084045.5: *3* itm.add_callback
-    def add_callback(self, callback):
-        """Add a callback to be called at every idle time."""
-        self.callback_list.append(callback)
-
-    #@+node:ekr.20210611084045.6: *3* itm.on_idle
-    def on_idle(self, timer):
-        """IdleTimeManager: Run all idle-time callbacks."""
-        if not self.g.app:
-            return
-        if self.g.app.killed:
-            return
-        if not self.g.app.pluginsController:
-            self.g.trace('No g.app.pluginsController', self.g.callers())
-            timer.stop()
-            return  # For debugger.
-        self.on_idle_count += 1
-        # Handle the registered callbacks.
-        # print("list length : ", len(self.callback_list))
-        for callback in self.callback_list:
-            try:
-                callback()
-            except Exception:
-                self.g.es_exception()
-                self.g.es_print(f"removing callback: {callback}")
-                self.callback_list.remove(callback)
-        # Handle idle-time hooks.
-        self.g.app.pluginsController.on_idle()
-
-    #@+node:ekr.20210611084045.7: *3* itm.start
-    def start(self):
-        """Start the idle-time timer."""
-        self.timer = self.g.IdleTime(
-            self.on_idle,
-            delay=500,  # Milliseconds
-            tag='IdleTimeManager.on_idle')
-        if self.timer:
-            self.timer.start()
-
-    #@-others
-
-#@+node:ekr.20210611084045.8: ** class ExternalFilesController
-class ExternalFilesController:
-    '''EFC Modified from Leo's sources'''
-    # pylint: disable=no-else-return
-
-    #@+others
-    #@+node:ekr.20210611084045.9: *3* efc.ctor
-    def __init__(self, integController):
-        '''Ctor for ExternalFiles class.'''
-        self.on_idle_count = 0
-        self.integController = integController
-        self.checksum_d = {}
-        # Keys are full paths, values are file checksums.
-        self.enabled_d = {}
-        # For efc.on_idle.
-        # Keys are commanders.
-        # Values are cached @bool check-for-changed-external-file settings.
-        self.has_changed_d = {}
-        # Keys are commanders. Values are boolean.
-        # Used only to limit traces.
-        self.unchecked_commanders = []
-        # Copy of g.app.commanders()
-        self.unchecked_files = []
-        # Copy of self file. Only one files is checked at idle time.
-        self._time_d = {}
-        # Keys are full paths, values are modification times.
-        # DO NOT alter directly, use set_time(path) and
-        # get_time(path), see set_time() for notes.
-        self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
-        self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
-
-        # if yesAll/noAll forced, then just show info message after idle_check_commander
-        self.infoMessage = None
-        # False or "detected", "refreshed" or "ignored"
-
-        self.integController.g.app.idleTimeManager.add_callback(self.on_idle)
-
-        self.waitingForAnswer = False
-        self.lastPNode = None  # last p node that was asked for if not set to "AllYes\AllNo"
-        self.lastCommander = None
-
-    #@+node:ekr.20210611084045.10: *3* efc.on_idle
-    def on_idle(self):
-        '''
-        Check for changed open-with files and all external files in commanders
-        for which @bool check_for_changed_external_file is True.
-        '''
-        # Fix for flushing the terminal console to traverse
-        # python through node.js when using start server in leoInteg
-        sys.stdout.flush()
-
-        if not self.integController.g.app or self.integController.g.app.killed:
-            return
-        if self.waitingForAnswer:
-            return
-
-        self.on_idle_count += 1
-
-        if self.unchecked_commanders:
-            # Check the next commander for which
-            # @bool check_for_changed_external_file is True.
-            c = self.unchecked_commanders.pop()
-            self.lastCommander = c
-            self.idle_check_commander(c)
-        else:
-            # Add all commanders for which
-            # @bool check_for_changed_external_file is True.
-            self.unchecked_commanders = [
-                z for z in self.integController.g.app.commanders() if self.is_enabled(z)
-            ]
-
-    #@+node:ekr.20210611084045.11: *3* efc.idle_check_commander
-    def idle_check_commander(self, c):
-        '''
-        Check all external files corresponding to @<file> nodes in c for
-        changes.
-        '''
-        # #1100: always scan the entire file for @<file> nodes.
-        # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
-
-        self.infoMessage = None  # reset infoMessage
-        # False or "detected", "refreshed" or "ignored"
-
-        for p in c.all_unique_positions():
-            if self.waitingForAnswer:
-                break
-            if p.isAnyAtFileNode():
-                self.idle_check_at_file_node(c, p)
-
-        # if yesAll/noAll forced, then just show info message
-        if self.infoMessage:
-            w_package = {"async": "info", "message": self.infoMessage}
-            self.integController.sendAsyncOutput(w_package)
-
-    #@+node:ekr.20210611084045.12: *3* efc.idle_check_at_file_node
-    def idle_check_at_file_node(self, c, p):
-        '''Check the @<file> node at p for external changes.'''
-        trace = False
-        # Matt, set this to True, but only for the file that interests you.\
-        # trace = p.h == '@file unregister-leo.leox'
-        path = self.integController.g.fullPath(c, p)
-        has_changed = self.has_changed(path)
-        if trace:
-            self.integController.g.trace('changed', has_changed, p.h)
-        if has_changed:
-            self.lastPNode = p  # can be set here because its the same process for ask/warn
-            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                # Fix #1081: issue a warning.
-                self.warn(c, path, p=p)
-            elif self.ask(c, path, p=p):
-                self.lastCommander.selectPosition(self.lastPNode)
-                c.refreshFromDisk()
-
-            # Always update the path & time to prevent future warnings.
-            self.set_time(path)
-            self.checksum_d[path] = self.checksum(path)
-
-    #@+node:ekr.20210611084045.13: *3* efc.integResult
-    def integResult(self, p_result):
-        '''Received result from client'''
-        # Got the result to an asked question/warning from the client
-        if not self.waitingForAnswer:
-            print("ERROR: Received Result but no Asked Dialog", flush=True)
-            return
-        # check if p_resultwas from a warn (ok) or an ask ('yes','yes-all','no','no-all')
-        # act accordingly
-
-        path = self.integController.g.fullPath(
-            self.lastCommander, self.lastPNode)
-
-        # 1- if ok, unblock 'warn'
-        # 2- if no, unblock 'ask'
-        # ------------------------------------------ Nothing special to do
-
-        # 3- if noAll, set noAll, and unblock 'ask'
-        if p_result and "-all" in p_result.lower():
-            self.yesno_all_time = time.time()
-            self.yesno_all_answer = p_result.lower()
-        # ------------------------------------------ Also covers setting yesAll in #5
-
-        # 4- if yes, REFRESH self.lastPNode, and unblock 'ask'
-        # 5- if yesAll,REFRESH self.lastPNode, set yesAll, and unblock 'ask'
-        if bool(p_result and 'yes' in p_result.lower()):
-            self.lastCommander.selectPosition(self.lastPNode)
-            self.lastCommander.refreshFromDisk()
-
-        # Always update the path & time to prevent future warnings for this PNode.
-        self.set_time(path)
-        self.checksum_d[path] = self.checksum(path)
-
-        self.waitingForAnswer = False  # unblock
-        # unblock: run the loop as if timer had hit
-        self.idle_check_commander(self.lastCommander)
-
-    #@+node:ekr.20210611084045.14: *3* efc.utilities
-    #@+node:ekr.20210611084045.15: *4* efc.ask
-    def ask(self, c, path, p=None):
-        '''
-        Ask user whether to overwrite an @<file> tree.
-        Return True if the user agrees.
-        '''
-        # check with leoInteg's config first
-        if self.integController.leoIntegConfig:
-            w_check_config = self.integController.leoIntegConfig["defaultReloadIgnore"].lower(
-            )
-            if not bool('none' in w_check_config):
-                if bool('yes' in w_check_config):
-                    self.infoMessage = "refreshed"
-                    return True
-                else:
-                    self.infoMessage = "ignored"
-                    return False
-        # let original function resolve
-
-        if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
-            self.yesno_all_time = time.time()  # Still reloading?  Extend time.
-            # if yesAll/noAll forced, then just show info message
-            w_yesno_all_bool = bool('yes' in self.yesno_all_answer.lower())
-
-            return w_yesno_all_bool
-        if not p:
-            where = 'the outline node'
-        else:
-            where = p.h
-
-        _is_leo = path.endswith(('.leo', '.db'))
-
-        if _is_leo:
-            s = '\n'.join([
-                f'{self.integController.g.splitLongFileName(path)} has changed outside Leo.',
-                'Overwrite it?'
-            ])
-        else:
-            s = '\n'.join([
-                f'{self.integController.g.splitLongFileName(path)} has changed outside Leo.',
-                f"Reload {where} in Leo?",
-            ])
-
-        w_package = {"async": "ask", "ask": 'Overwrite the version in Leo?',
-                     "message": s, "yes_all": not _is_leo, "no_all": not _is_leo}
-
-        self.integController.sendAsyncOutput(w_package)
-        self.waitingForAnswer = True
-        return False
-        # result = self.integController.g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
-        # yes_all=not _is_leo, no_all=not _is_leo)
-
-        # if result and "-all" in result.lower():
-        # self.yesno_all_time = time.time()
-        # self.yesno_all_answer = result.lower()
-
-        # return bool(result and 'yes' in result.lower())
-
-    #@+node:ekr.20210611084045.16: *4* efc.checksum
-    def checksum(self, path):
-        '''Return the checksum of the file at the given path.'''
-        import hashlib
-        return hashlib.md5(open(path, 'rb').read()).hexdigest()
-
-    #@+node:ekr.20210611084045.17: *4* efc.get_mtime
-    def get_mtime(self, path):
-        '''Return the modification time for the path.'''
-        return self.integController.g.os_path_getmtime(self.integController.g.os_path_realpath(path))
-
-    #@+node:ekr.20210611084045.18: *4* efc.get_time
-    def get_time(self, path):
-        '''
-        return timestamp for path
-
-        see set_time() for notes
-        '''
-        return self._time_d.get(self.integController.g.os_path_realpath(path))
-
-    #@+node:ekr.20210611084045.19: *4* efc.has_changed
-    def has_changed(self, path):
-        '''Return True if p's external file has changed outside of Leo.'''
-        if not path:
-            return False
-        if not self.integController.g.os_path_exists(path):
-            return False
-        if self.integController.g.os_path_isdir(path):
-            return False
-        #
-        # First, check the modification times.
-        old_time = self.get_time(path)
-        new_time = self.get_mtime(path)
-        if not old_time:
-            # Initialize.
-            self.set_time(path, new_time)
-            self.checksum_d[path] = self.checksum(path)
-            return False
-        if old_time == new_time:
-            return False
-        #
-        # Check the checksums *only* if the mod times don't match.
-        old_sum = self.checksum_d.get(path)
-        new_sum = self.checksum(path)
-        if new_sum == old_sum:
-            # The modtime changed, but it's contents didn't.
-            # Update the time, so we don't keep checking the checksums.
-            # Return False so we don't prompt the user for an update.
-            self.set_time(path, new_time)
-            return False
-        # The file has really changed.
-        assert old_time, path
-        # #208: external change overwrite protection only works once.
-        # If the Leo version is changed (dirtied) again,
-        # overwrite will occur without warning.
-        # self.set_time(path, new_time)
-        # self.checksum_d[path] = new_sum
-        return True
-
-    #@+node:ekr.20210611084045.20: *4* efc.is_enabled
-    def is_enabled(self, c):
-        '''Return the cached @bool check_for_changed_external_file setting.'''
-        # check with leoInteg's config first
-        if self.integController.leoIntegConfig:
-            w_check_config = self.integController.leoIntegConfig["checkForChangeExternalFiles"].lower(
-            )
-            if bool('check' in w_check_config):
-                return True
-            if bool('ignore' in w_check_config):
-                return False
-        # let original function resolve
-        d = self.enabled_d
-        val = d.get(c)
-        if val is None:
-            val = c.config.getBool(
-                'check-for-changed-external-files', default=False)
-            d[c] = val
-        return val
-
-    #@+node:ekr.20210611084045.21: *4* efc.join
-    def join(self, s1, s2):
-        '''Return s1 + ' ' + s2'''
-        return f"{s1} {s2}"
-
-    #@+node:ekr.20210611084045.22: *4* efc.set_time
-    def set_time(self, path, new_time=None):
-        '''
-        Implements c.setTimeStamp.
-
-        Update the timestamp for path.
-
-        NOTE: file paths with symbolic links occur with and without those links
-        resolved depending on the code call path.  This inconsistency is
-        probably not Leo's fault but an underlying Python issue.
-        Hence the need to call realpath() here.
-        '''
-
-        # print("called set_time for " + str(path), flush=True)
-
-        t = new_time or self.get_mtime(path)
-        self._time_d[self.integController.g.os_path_realpath(path)] = t
-
-    #@+node:ekr.20210611084045.23: *4* efc.warn
-    def warn(self, c, path, p):
-        '''
-        Warn that an @asis or @nosent node has been changed externally.
-
-        There is *no way* to update the tree automatically.
-        '''
-        # check with leoInteg's config first
-        if self.integController.leoIntegConfig:
-            w_check_config = self.integController.leoIntegConfig["defaultReloadIgnore"].lower(
-            )
-
-            if w_check_config != "none":
-                # if not 'none' then do not warn, just infoMessage 'warn' at most
-                if not self.infoMessage:
-                    self.infoMessage = "warn"
-                return
-
-        # let original function resolve
-        if self.integController.g.unitTesting or c not in self.integController.g.app.commanders():
-            return
-        if not p:
-            self.integController.g.trace('NO P')
-            return
-
-        s = '\n'.join([
-            '%s has changed outside Leo.\n' % self.integController.g.splitLongFileName(
-                path),
-            'Leo can not update this file automatically.\n',
-            'This file was created from %s.\n' % p.h,
-            'Warning: refresh-from-disk will destroy all children.'
-        ])
-
-        w_package = {"async": "warn",
-                     "warn": 'External file changed', "message": s}
-
-        self.integController.sendAsyncOutput(w_package)
-        self.waitingForAnswer = True
-
-    #@+node:ekr.20210611084045.24: *3* other called methods
-    # Some methods are called in the usual (non-leoBridge without 'efc') save process.
-    # Those may be called by the 'save' function, like check_overwrite,
-    # or by any other functions from the instance of leo.core.leoBridge that's running.
-
-    #@+node:ekr.20210611084045.25: *4* open_with
-    def open_with(self, c, d):
-        return
-
-    #@+node:ekr.20210611084045.26: *4* check_overwrite
-    def check_overwrite(self, c, fn):
-        # print("check_overwrite!! ", flush=True)
-        return True
-
-    #@+node:ekr.20210611084045.27: *4* shut_down
-    def shut_down(self):
-        return
-
-    #@+node:ekr.20210611084045.28: *4* destroy_frame
-    def destroy_frame(self, f):
-        return
-
-    #@-others
-
+class TerminateServer(Exception):  # pragma: no cover
+    """Ask the server to terminate. Used by unit tests."""
 #@+node:ekr.20210611084045.29: ** class IntegTextWrapper
 class IntegTextWrapper:
     """
@@ -693,14 +263,15 @@ class IntegTextWrapper:
 
     #@-others
 
-#@+node:ekr.20210611084045.54: ** class LeoBridgeIntegController
-class LeoBridgeIntegController:
+#@+node:ekr.20210611084045.54: ** class LeoServer (New)
+class LeoServer:
     '''Leo Bridge Controller'''
     # pylint: disable=no-else-return
 
     #@+others
     #@+node:ekr.20210611084045.55: *3* __init__
     def __init__(self):
+        
         self.gnx_to_vnode = []  # utility array - see leoflexx.py in leoPluginsRef.leo
         self.bridge = leoBridge.controller(
             gui='nullGui',
@@ -710,50 +281,64 @@ class LeoBridgeIntegController:
             # True: prints what would be sent to the log pane.
             verbose=False,
         )
-        self.g = self.bridge.globals()
-
-        # * Trace outputs to pythons stdout, also prints the function call stack
-        # self.g.trace('test trace')
-
-        # * Intercept Log Pane output: Sends to client's log pane
+        self.g = g = self.bridge.globals()
+      
+        # Intercept Log Pane output: Sends to client's log pane
         self.g.es = self.es  # pointer - not a function call
-
-        # print(dir(self.g), flush=True)
         self.currentActionId = 1  # Id of action being processed, STARTS AT 1 = Initial 'ready'
-
-        # * Currently Selected Commander (opened from leo.core.leoBridge or chosen via the g.app.windowList 2 list)
         self.commander = None
-
         self.leoIntegConfig = None
         self.webSocket = None
         self.loop = None
-
-        # * Replacement instances to Leo's codebase : getScript, IdleTime, idleTimeManager and externalFilesController
-        self.g.getScript = self._getScript
-        self.g.IdleTime = self._idleTime
-        self.g.app.idleTimeManager = IdleTimeManager(self.g)
-        # attach instance to g.app for calls to set_time, etc.
-        self.g.app.externalFilesController = ExternalFilesController(self)
-        # TODO : Maybe use those yes/no replacement right before actual usage instead of in init. (to allow re-use/switching)
-        # override for "revert to file" operation
-        self.g.app.gui.runAskYesNoDialog = self._returnYes
-        self.g.app.gui.show_find_success = self._show_find_success
-        self.headlineWidget = self.g.bunch(_name='tree')
-
-        # self.g.app.loadManager.createAllImporterData()  # Fixed in #1965 of leo-editor
-
-        # * setup leoBackground to get messages from leo
-        try:
-            self.g.app.idleTimeManager.start()  # To catch derived file changes
-        except Exception:
-            print('ERROR with idleTimeManager')
-
-    #@+node:ekr.20210611084045.56: *3* _asyncIdleLoop
-    async def _asyncIdleLoop(self, p_seconds, p_fn):
-        while True:
-            await asyncio.sleep(p_seconds)
-            p_fn(self)
-
+        #
+        # Complete the initialization, as in LeoApp.initApp.
+        g.app.idleTimeManager = leoApp.IdleTimeManager()
+        g.app.idleTimeManager.start()
+        g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
+        
+        self.headlineWidget = self.g.bunch(_name='tree') ### Probably not needed.
+        
+        ### leoBridgeServer code.
+            # # Replacement instances to Leo's codebase :
+            # # getScript, IdleTime, idleTimeManager and externalFilesController
+            # self.g.getScript = self._getScript
+            # self.g.IdleTime = self._idleTime
+            # self.g.app.idleTimeManager = IdleTimeManager(self.g)
+            # # attach instance to g.app for calls to set_time, etc.
+            # self.g.app.externalFilesController = ExternalFilesController(self)
+            
+            # # TODO : Maybe use those yes/no replacement right before actual usage instead of in init. (to allow re-use/switching)
+            # # override for "revert to file" operation
+            # self.g.app.gui.runAskYesNoDialog = self._returnYes
+            # self.g.app.gui.show_find_success = self._show_find_success
+        
+    #@+node:ekr.20210612092041.1: *3* server._do_message (New)
+    def _do_message(self, d):
+        """Helper for unit tests."""
+        server = self
+        action = d and d.get('action')
+        if not action:
+            raise ServerError('No action')
+        param = d.get('param')
+        server.setActionId(d['id'])  # Set the server action.
+        if action[0] == "_":
+            return server._outputError('Action starts with underscore')
+        if action[0] == "!":  # Execute a controller method.
+            name = action[1:]
+            func = getattr(server, name, None)
+            if func:
+                return func(param)
+            return self._output_error(f"Unknown server method: {name}")
+        # Attempt to execute the command directly on the commander/subcommander.
+        return server.leoCommand(action, param)
+    #@+node:ekr.20210612101404.1: *3* server._get_all_server_commands (New)
+    def _get_all_server_commands(self):
+        """
+        Private server method:
+        Return the names of all callable public methods of the server.
+        """
+        members = inspect.getmembers(self, inspect.ismethod)
+        return sorted([name for (name, value) in members if not name.startswith('_')])
     #@+node:ekr.20210611084045.57: *3* _returnNo
     def _returnNo(self, *arguments, **kwargs):
         '''Used to override g.app.gui.ask[XXX] dialogs answers'''
@@ -795,11 +380,6 @@ class LeoBridgeIntegController:
             script = ''
         return script
 
-    #@+node:ekr.20210611084045.60: *3* _idleTime
-    def _idleTime(self, fn, delay, tag):
-        # TODO : REVISE/REPLACE WITH OWN SYSTEM
-        asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
-
     #@+node:ekr.20210611084045.61: *3* _getTotalOpened
     def _getTotalOpened(self):
         '''Get total of opened commander (who have closed == false)'''
@@ -824,7 +404,10 @@ class LeoBridgeIntegController:
         if in_headline:
             self.g.app.gui.set_focus(c, self.headlineWidget)
         # no return
-
+    #@+node:ekr.20210612084709.1: *3* _shut_down (New)
+    def _shut_down(self, package):
+        """Shut down the server. Used by unit test."""
+        raise TerminateServer("client requested shut down")
     #@+node:ekr.20210611084045.64: *3* sendAsyncOutput
     def sendAsyncOutput(self, p_package):
         if "async" not in p_package:
@@ -849,7 +432,6 @@ class LeoBridgeIntegController:
         '''Got leoInteg's config from client'''
         self.leoIntegConfig = p_config
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
-
     #@+node:ekr.20210611084045.67: *3* logSignon
     def logSignon(self):
         '''Simulate the Initial Leo Log Entry'''
@@ -874,18 +456,20 @@ class LeoBridgeIntegController:
             print("websocket not ready yet", flush=True)
 
     #@+node:ekr.20210611084045.71: *4* sendLeoBridgePackage
-    def sendLeoBridgePackage(self, p_package={}):
+    def sendLeoBridgePackage(self, p_package=None):
+        if p_package is None:
+            p_package = {}
         p_package["id"] = self.currentActionId
         return(json.dumps(p_package, separators=(',', ':')))  # send as json
 
     #@+node:ekr.20210611084045.72: *4* _outputError
-    def _outputError(self, p_message="Unknown Error"):
-        # Output to this server's running console
-        print("ERROR: " + p_message, flush=True)
-        w_package = {"id": self.currentActionId}
-        w_package["error"] = p_message
-        return p_message
-
+    def _outputError(self, message):
+        """Issue an error message and return an error response."""
+        print(f"Invalid request: {message}", flush=True)
+        return {
+            "id": self.currentActionId,
+            "error": message,
+        }
     #@+node:ekr.20210611084045.73: *4* _outputBodyData
     def _outputBodyData(self, p_bodyText=""):
         return self.sendLeoBridgePackage({"body": p_bodyText})
@@ -3073,7 +2657,8 @@ class LeoBridgeIntegController:
         w_scroll = param['scroll']
 
         # IF sent as number use as is - no conversion needed
-        if type(w_active) == int:
+        ### if type(w_active) == int:
+        if isinstance(w_active, int):
             w_insert = w_active
             w_startSel = w_start
             w_endSel = w_end
@@ -3292,17 +2877,17 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         # Assume we are running in the leo-editor directory.
         # pylint: disable=import-self
         from leo.core import leoserver
-        global g, g_leoserver, g_server
+        global g_leoserver, g_server  ###
         g_leoserver = leoserver
-        g_server = leoserver.LeoServer(testing=True)
-        g = g_server.g
-        assert g
+        g_server = leoserver.LeoServer() ### testing=True)
+        ### g = g_server.g
+        ### assert g
 
     @classmethod
     def tearDownClass(cls):
         global g_leoserver, g_server
         try:
-            g_server.shut_down({})
+            g_server._shut_down({})
             print('===== server did not terminate properly ====')
         except g_leoserver.TerminateServer:
             pass
@@ -3317,6 +2902,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         
     #@+node:ekr.20210611084754.3: *3* test._request
     def _request(self, action, package=None):
+       
         server = self.server
         self.request_number += 1
         log_flag = package.get("log")
@@ -3326,7 +2912,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         }
         if package:
             d ["package"] = package
-        response = server._do_message(d)
+        response = server._do_message(d)  ### _do_messages does not exist yet.
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
         if log_flag:
@@ -3402,7 +2988,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                     try:
                         # Don't call the method directly.
                         # That would disable trace/verbose logic, checking, etc.
-                        server._do_message(message)
+                        server._do_message(message)  ### _do_message does not exist.
                     except Exception as e:
                         if method_name not in expected:
                             print(f"Exception in test_most_public_server_methods: {method_name!r} {e}")
@@ -3468,6 +3054,84 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
        
     #@-others
+#@+node:ekr.20210611084045.148: ** main (server loop)
+def main():
+    '''python script for leo integration via leoBridge'''
+    tag = 'LeoServer'
+    global wsHost, wsPort
+    print(f"Starting {tag}... (Launch with -h for help)")
+    #
+    # Support for unit tests.
+    if '--unittest' in sys.argv:
+        sys.argv.remove('--unittest')
+        unittest.main()
+        return  # Make *sure* we don't start the server.
+    #
+    # Define helper functions.
+    #@+others
+    #@+node:ekr.20210612065327.1: *3* function: get_args
+    def get_args():  # pragma: no cover
+        global wsHost, wsPort
+        args = None
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "help:", ["help", "address=", "port="])
+        except getopt.GetoptError:
+            print('leoserver.py -a <address> -p <port>')
+            print('defaults to localhost on port 32125')
+            if args:
+                print(f"unused args: {args!s}", flush=True)
+            sys.exit(2)
+        for opt, arg in opts:
+            if opt in ("-h", "--help"):
+                print('leoserver.py -a <address> -p <port>')
+                print('defaults to localhost on port 32125')
+                sys.exit()
+            elif opt in ("-a", "--address"):
+                wsHost = arg
+            elif opt in ("-p", "--port"):
+                wsPort = arg
+        # Leave other options for unittest.
+        for opt, junk in opts:  # opts is a 2-tuple.
+            if opt in sys.argv:
+                sys.argv.remove(opt)
+        return wsHost, wsPort
+    #@+node:ekr.20210612061400.1: *3* function: web_socket_handler
+    async def web_socket_handler(websocket, path):
+        tag = 'leoserver.py: web_socket_handler'
+        try:
+            server.initConnection(websocket)
+            # Start by sending empty as 'ok'.
+            await websocket.send(server.sendLeoBridgePackage())
+            server.logSignon()
+            async for json_string_message in websocket:
+                d = json.loads(json_string_message)
+                answer = server._do_message(d)
+                await websocket.send(answer)
+        except TerminateServer as e:  # pragma: no cover
+            print(f"{tag}: Connection terminated: {e}", flush=True)
+        except websockets.exceptions.ConnectionClosedError as e:
+            print(f"{tag}: Connection closed: {e}", flush=True)
+        except Exception as e:  # pragma: no cover.
+            print(f"{tag}: Unexpected exception: {e}", flush=True)
+            typ, val, tb = sys.exc_info()
+            for line in traceback.format_exception(typ, val, tb):
+                print(line.rstrip(), flush=True)
+        finally:
+            asyncio.get_event_loop().stop()
+    #@-others
+    #
+    # Handle arguments.
+    wsHost, wsPort = get_args()
+    #
+    # Start Server
+    server = LeoServer()
+    localLoop = asyncio.get_event_loop()
+    start_server = websockets.serve(web_socket_handler, wsHost, wsPort)
+    localLoop.run_until_complete(start_server)
+    info = f"at: {wsHost} on port: {wsPort}"
+    print(f"Started {tag}: {info}. [ctrl+c] to break", flush=True)
+    localLoop.run_forever()
+    print("Stopped {tag}: {info}", flush=True)
 #@+node:ekr.20210611084045.147: ** printAction
 def printAction(param):
     '''Debugging tool that prints out called action if not in 'common-action' array'''
@@ -3479,106 +3143,19 @@ def printAction(param):
         print(f"*ACTION* {w_action}, id {param['id']}", flush=True)
 
 
-#@+node:ekr.20210611084045.148: ** main (server loop)
-def main():
-    '''python script for leo integration via leoBridge'''
-    global wsHost, wsPort
-    print("Starting Leobridgeserver.py (Launch with -h for help)", flush=True)
-    # replace default host address and port if provided as arguments
-
-    args = None
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "ha:p:", [
-                                   "help", "address=", "port="])
-    except getopt.GetoptError:
-        print('leobridgeserver.py -a <address> -p <port>')
-        print('defaults to localhost on port 32125', flush=True)
-        if args:
-            print("unused args: " + str(args), flush=True)
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print('leobridgeserver.py -a <address> -p <port>')
-            print('defaults to localhost on port 32125', flush=True)
-            sys.exit()
-        elif opt in ("-a", "--address"):
-            wsHost = arg
-        elif opt in ("-p", "--port"):
-            wsPort = arg
-
-    # * start Server
-    integController = LeoBridgeIntegController()
-
-    # * This is a basic example loop
-    # async def asyncInterval(timeout):
-    #     dummyCounter = 0
-    #     strTimeout = str(timeout) + ' sec interval'
-    #     while True:
-    #         await asyncio.sleep(timeout)
-    #         dummyCounter = dummyCounter+1
-    #         await integController.asyncOutput("{\"interval\":" + str(timeout+dummyCounter) + "}")  # as number
-    #         print(strTimeout)
-
-    async def leoBridgeServer(websocket, path):
-        try:
-            integController.initConnection(websocket)
-            # * Start by sending empty as 'ok'.
-            await websocket.send(integController.sendLeoBridgePackage())
-            integController.logSignon()
-            async for json_string_message in websocket:
-                messageObject = json.loads(json_string_message)
-                if messageObject and messageObject['action']:
-                    action = messageObject['action']
-                    param = messageObject['param']
-                    # printAction(w_param)  # Debug output
-                    # * Storing id of action in global var instead of passing as parameter.
-                    integController.setActionId(messageObject['id'])
-                    # ! functions called this way need to accept at least a parameter other than 'self'
-                    # ! See : getSelectedNode and getAllGnx
-                    if action[0] == "!":
-                        w_func = getattr(integController, action[1:], None)
-                        if not w_func:
-                            print(action)
-                        w_answer = w_func(param)
-                    elif action[0] == "_":
-                        integController._outputError(
-                            'Error : Command starting with underscore')
-                    else:
-                        # Attempt to execute the command directly on the commander/subcommander.
-                        w_answer = integController.leoCommand(
-                            action, param)
-                else:
-                    w_answer = "Error in processCommand"
-                    print(w_answer, flush=True)
-                await websocket.send(w_answer)
-        except websockets.exceptions.ConnectionClosedError:
-            print("Websocket connection closed", flush=True)
-        except Exception:
-            print('Exception in leobridgeserver.py!', flush=True)
-            # Like g.es_exception()...
-            typ, val, tb = sys.exc_info()
-            for line in traceback.format_exception(typ, val, tb):
-                print(line.rstrip(), flush=True)
-        finally:
-            asyncio.get_event_loop().stop()
-
-    localLoop = asyncio.get_event_loop()
-    start_server = websockets.serve(leoBridgeServer, wsHost, wsPort)
-    # localLoop.create_task(asyncInterval(5)) # Starts a test loop of async communication.
-    localLoop.run_until_complete(start_server)
-    # This SERVER_STARTED_TOKEN special string signals server startup success.
-    print(SERVER_STARTED_TOKEN + " at " + wsHost + " on port: " +
-          str(wsPort) + " [ctrl+c] to break", flush=True)
-    localLoop.run_forever()
-    print("Stopping leobridge server", flush=True)
-
-
 #@-others
 if __name__ == '__main__':
     # Startup
     try:
         main()
     except KeyboardInterrupt:
-        print("\nKeyboard Interupt: Stopping leobridge server", flush=True)
+        print("\nKeyboard Interupt: Stopping leoserver")
+        sys.exit()
+    except Exception:
+        print("Unexpected exception: Stopping leoserver")
+        # Don't use g here so as to be *sure* to handle unexpected errors.
+        typ, val, tb = sys.exc_info()
+        lines = traceback.format_exception(typ, val, tb)
+        print(''.join(lines), flush=True)
         sys.exit()
 #@-leo
