@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2b6
+About Viewrendered3 V3.2
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -142,8 +142,9 @@ All settings are of type @string unless shown as ``@bool``
    "@bool vr3-math-output", "False", "True, False", "RsT MathJax math rendering"
    "@bool vr3-md-math-output", "False", "True, False", "MD MathJax math rendering"
    "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
-   "vr3-rst-stylesheet", "''", "url string", "URL for RsT Stylesheet"
-   "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
+   "vr3-rst-stylesheet", "''", "url string", "Optional URL for RsT Stylesheet"
+   "vr3-rst-use-dark-theme", "''", "True, False", "Whether to force the use of the default dark stylesheet"
+   "vr3-md-stylesheet", "''", "url string", "Optional URL for MD stylesheet"
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``asciidoc3`` if available, else use ``asciidoc``"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Use Ruby ``asciidoctor`` program"
@@ -164,15 +165,45 @@ All settings are of type @string unless shown as ``@bool``
 
 **Note** The font size setting, *qweb-view-font-size*, will probably not be needed.  Useful values will generally be from 8 - 20.
 
+
+
+
+
+Hot Key
+=======
+
+Binding the plugin's visibility to a hot key is very desirable.  ``Alt-0`` is
+convenient.  The standard Leo way to bind a hot key is by putting the binding
+into the body of a setting node with the headline ``@shortcuts``.  Here is an
+example for the VR3 plugin::
+
+    vr3-toggle = Alt+0
+
+#@+node:tom.20210612193759.1: *4* Stylesheets
 Stylesheets
 ===========
 
-CSS stylesheets are located in Leo's plugin/viewrendered3 directory.  They are
-used if no other location is specified by an ``@setting`` node, or if a
-specified ``file:///`` URL does not exist.  If the default MD stylesheet is removed, the
+ReStructured Text
+------------------
+
+Default CSS stylesheets are located in Leo's plugin/viewrendered3 directory.  For Restructured Text, stylesheet handling is quite flexible.
+
+There are dark-theme and light-theme default stylesheets for RsT.  If no related settings are present, then VR3 chooses the dark one if the Leo theme name contains "dark" or the theme name is "DefaultTheme".
+
+If the setting ``@bool vr3-rst-use-dark-theme = True``, then the dark theme will be used.  If it is set to ``False``, then the light one will be used.
+
+The use of these default stylesheets can be overridden by the setting ``@string vr3-rst-stylesheet``.  This setting must be set to the path of a .css stylesheet file.  If it is a relative path, it is taken to be relative to the user's .leo/vr3 directory.  If it is an absolute path, then the string ``file:///`` may be prepended to the path; it will be removed if present.
+
+These stylesheet settings can be changed and will take effect when the settings are reloaded, and VR3 is refreshed or restarted.  There is no need to close Leo and restart it.
+
+These settings can be placed into the @settings tree of an outline, and then that outline's settings will be used when that outline is active.  It is possible for one outline to use the dark stylesheet, another to use the light stylesheet, and a third to use a custom one.
+
+Markdown
+---------
+If the default MD stylesheet is removed, the
 plugin will re-create it on startup, but the RsT stylesheet will not be
 recreated if removed.
-
+#@+node:tom.20210612193820.1: *4* Mathjax
 MathJax Script Location
 =======================
 
@@ -185,17 +216,6 @@ If the MathJax scripts are installed on the local computer, it is recommended
 that one of the ``.js`` script files in the ``es`` directory be used, as shown
 in the above table.  If the script is loaded from the Internet, the URL must
 include a ``?config`` specifer.  The one shown in the example above works well.
-
-Hot Key
-=======
-
-Binding the plugin's visibility to a hot key is very desirable.  ``Alt-0`` is
-convenient.  The standard Leo way to bind a hot key is by putting the binding
-into the body of a setting node with the headline ``@shortcuts``.  Here is an
-example for the VR3 plugin::
-
-    vr3-toggle = Alt+0
-
 #@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
 VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
 
@@ -633,6 +653,7 @@ from io import StringIO
 import json
 import os
 import os.path
+from pathlib import PurePath
 import shutil
 import string
 import subprocess
@@ -749,17 +770,20 @@ ENCODING = 'utf-8'
 JAVA = 'java'
 JAVASCRIPT = 'javascript'
 JULIA = 'julia'
+
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
+RST_NO_WARNINGS = 5
+
 SQL = 'sql'
 TEXT = 'text'
 VR3_TEMP_FILE = 'leo_rst_html.html'
 XML = 'xml'
-ZOOM_FACTOR = 1.2
+ZOOM_FACTOR = 1.1
 
 MD_STYLESHEET_APPEND = '''pre {
    font-size: 110%;
@@ -779,9 +803,11 @@ TEXT_HTML_HEADER = f'''<html>
     <meta http-equiv="content-type" content="text/html; charset={ENCODING}">
 </head>
 '''
-
+LEO_THEME_NAME = 'DefaultTheme.leo'
 MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
+RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
+RST_USE_DARK = False
 
 # For code rendering
 LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, CSS, XML, SQL)
@@ -801,6 +827,8 @@ _in_code_block = False
 VR3_DIR = 'vr3'
 VR3_CONFIG_FILE = 'vr3_config.ini'
 EXECUTABLES_SECTION = 'executables'
+LEO_PLUGINS_DIR = os.path.dirname(__file__)
+
 
 #@-<< declarations >>
 
@@ -875,6 +903,9 @@ def find_exe(exename):
 asciidoctor_exec = find_exe('asciidoc') or None
 asciidoc3_exec = find_exe('asciidoc3') or None
 pandoc_exec = find_exe('pandoc') or None
+
+os.path.dirname(__file__)
+
 #@+node:TomP.20210218231600.1: ** Find executables in VR3_CONFIG_FILE
 #@@language python
 # Get paths for executables from the VR3_CONFIG_FILE file
@@ -1343,6 +1374,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc3_internal_ok = True
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
+        
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -1570,6 +1602,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
+
         #@-<< vr3: finish toolbar >>
     #@+node:TomP.20200329223820.15: *4* vr3.reloadSettings
     def reloadSettings(self):
@@ -1577,6 +1610,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.registerReloadSettings(self)
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
+        self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
+                                    
         self.set_rst_stylesheet()
 
         self.math_output = c.config.getBool('vr3-math-output', default=False)
@@ -1639,6 +1674,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.md_stylesheet = 'file:///' + style_path
 
     #@+node:TomP.20200329223820.17: *4* vr3.set_rst_stylesheet
+    #@@language python
     def set_rst_stylesheet(self):
         """Set rst stylesheet to default if none specified.
 
@@ -1648,31 +1684,53 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         The default location is in leo/plugins/viewrendered3.
 
-        VARIABLE USED
+        VARIABLES USED
         self.rst_stylesheet -- The URL to the stylesheet.  Need not include
-                               the "file:///", and must be an absolute path
-                               if it is a local file.
+                               the "file:///" if it is a local file.  If
+                               a local file and the path is relative, then
+                               the default stylesheet folder will be used.
                                Set by @string vr3-rst-stylesheet.
+        leodir -- user's .leo directory
         """
-
-        # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
-        # If so, check if it exists.
-        if self.rst_stylesheet:
-            if self.rst_stylesheet.startswith('file:///'):
-                pth = self.rst_stylesheet.split('file:///')[1]
-                if os.path.exists(pth):
-                    # Note that docutils must *not* have a leading 'file:///'
-                    # This method changes '\' to '/' in the path if needed.
-                    self.rst_stylesheet = g.os_path_finalize_join(pth)
-                    return
-                g.es('Specified VR3 stylesheet not found; using default')
-            return
 
         # Default location
         # NOTE - for the stylesheet url we need to use forward slashes no matter
         # what OS is being used.  Apparently, the g.os_path methods do this.
-        vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
-        self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
+        vr_style_dir = g.os_path_join(LEO_PLUGINS_DIR, 'viewrendered3')
+     
+        # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
+        # If so, check if it exists.
+        use_default = not self.rst_stylesheet
+        if not use_default:
+            if self.rst_stylesheet.startswith('file:///'):
+                # Note that docutils must *not* have a leading 'file:///'
+                pth = self.rst_stylesheet.split('file:///')[1]
+            else:
+                pth = self.rst_stylesheet
+            is_abs = PurePath.is_absolute(PurePath(pth))
+
+            if is_abs:
+                # This method changes '\' to '/' in the path if needed.
+                self.rst_stylesheet = g.os_path_finalize_join(pth)
+            else:
+                self.rst_stylesheet = g.os_path_join(leodir, VR3_DIR, self.rst_stylesheet)
+                self.rst_stylesheet = g.os_path_finalize_join(self.rst_stylesheet)
+
+            if not os.path.exists(self.rst_stylesheet):
+                use_default = True
+                g.es(f'Specified VR3 stylesheet not found at {self.rst_stylesheet}')
+                g.es('using default')
+
+        if use_default:
+            leo_theme_path = g.app.loadManager.computeThemeFilePath()
+            leo_theme_name = g.os_path_basename(leo_theme_path)
+            use_dark_theme =  self.use_dark_theme or 'dark' in leo_theme_name \
+                                or leo_theme_name == LEO_THEME_NAME
+            if use_dark_theme:
+                stylesheet = RST_DEFAULT_DARK_STYLESHEET
+            else:
+                stylesheet = RST_DEFAULT_STYLESHEET_NAME
+            self.rst_stylesheet = g.os_path_join(vr_style_dir, stylesheet)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
         # pylint: disable=import-outside-toplevel
@@ -2697,6 +2755,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
             args['stylesheet_path'] = f'{self.rst_stylesheet}'
             args['embed_stylesheet'] = True
+            args['report_level'] = RST_NO_WARNINGS
+
+        # Suppress RsT warnings
+        #args['report_level'] = 5
 
         if self.math_output:
             if self.mathjax_url:
