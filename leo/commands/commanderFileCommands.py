@@ -378,7 +378,7 @@ def refreshFromDisk(self, event=None):
 @g.commander_command('pwd')
 def pwd_command(self, event=None):
     """Refresh an @<file> node from disk."""
-    g.es_print('cwd:', os.getcwd())
+    g.es_print('pwd:', os.getcwd())
 #@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save')
 @g.commander_command('file-save')
