@@ -9,6 +9,7 @@ leoserver.py: same as leointeg/leobridgeserver.py except for sys.path manipulati
 #@@tabwidth -4
 #@+<< imports >>
 #@+node:ekr.20210611084045.2: **  << imports >>
+# Allow executable statements before some imports.
 # pylint: disable=wrong-import-position
 import asyncio
 import getopt
@@ -20,15 +21,18 @@ import sys
 import time
 import unittest
 import traceback
-# Third-party.
+#
+# Third-party imports.
 import websockets
-# #1970: Adjust sys.path so that the following imports will always work.
+#
+# #1970: Adjust sys.path so that we can import leo core files.
 _leo_editor_path = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 if _leo_editor_path not in sys.path:
     sys.path.append(_leo_editor_path)
-# Leo
+#
+# Leo imports.
 from leo.core import leoGlobals as g
-import leo.core.leoApp as leoApp  ###
+import leo.core.leoApp as leoApp
 import leo.core.leoBridge as leoBridge
 import leo.core.leoExternalFiles as leoExternalFiles
 import leo.core.leoNodes as leoNodes
@@ -48,12 +52,6 @@ g_leoserver = None
 g_server = None
 #@-<< constants >>
 #@+others
-#@+node:ekr.20210612084227.1: **  exception classes
-class ServerError(Exception):  # pragma: no cover
-    """The server received an erroneous package."""
-
-class TerminateServer(Exception):  # pragma: no cover
-    """Ask the server to terminate. Used by unit tests."""
 #@+node:ekr.20210611084045.29: ** class IntegTextWrapper
 class IntegTextWrapper:
     """
@@ -263,13 +261,14 @@ class IntegTextWrapper:
 
     #@-others
 
-#@+node:ekr.20210611084045.54: ** class LeoServer (New)
+#@+node:ekr.20210611084045.54: ** class LeoServer
 class LeoServer:
     '''Leo Bridge Controller'''
     # pylint: disable=no-else-return
 
     #@+others
-    #@+node:ekr.20210611084045.55: *3* __init__
+    #@+node:ekr.20210612151258.1: *3* server: birth
+    #@+node:ekr.20210611084045.55: *4* __init__
     def __init__(self):
         
         self.gnx_to_vnode = []  # utility array - see leoflexx.py in leoPluginsRef.leo
@@ -312,209 +311,63 @@ class LeoServer:
             # self.g.app.gui.runAskYesNoDialog = self._returnYes
             # self.g.app.gui.show_find_success = self._show_find_success
         
-    #@+node:ekr.20210612092041.1: *3* server._do_message (New)
-    def _do_message(self, d):
-        """Helper for unit tests."""
-        server = self
-        action = d and d.get('action')
-        if not action:
-            raise ServerError('No action')
-        param = d.get('param')
-        server.setActionId(d['id'])  # Set the server action.
-        if action[0] == "_":
-            return server._outputError('Action starts with underscore')
-        if action[0] == "!":  # Execute a controller method.
-            name = action[1:]
-            func = getattr(server, name, None)
-            if func:
-                return func(param)
-            return self._output_error(f"Unknown server method: {name}")
-        # Attempt to execute the command directly on the commander/subcommander.
-        return server.leoCommand(action, param)
-    #@+node:ekr.20210612101404.1: *3* server._get_all_server_commands (New)
-    def _get_all_server_commands(self):
-        """
-        Private server method:
-        Return the names of all callable public methods of the server.
-        """
-        members = inspect.getmembers(self, inspect.ismethod)
-        return sorted([name for (name, value) in members if not name.startswith('_')])
-    #@+node:ekr.20210611084045.57: *3* _returnNo
+    #@+node:ekr.20210611084045.78: *4* initConnection
+    def initConnection(self, p_webSocket):
+        self.webSocket = p_webSocket
+        self.loop = asyncio.get_event_loop()
+    #@+node:ekr.20210613033705.1: *3* server: private methods
+    # These methods start with underscore.
+    # They are not accessible from requests.
+    #@+node:ekr.20210613033627.1: *4* server: private (dummy) return values
+    #@+node:ekr.20210611084045.57: *5* _returnNo
     def _returnNo(self, *arguments, **kwargs):
         '''Used to override g.app.gui.ask[XXX] dialogs answers'''
         return "no"
 
-    #@+node:ekr.20210611084045.58: *3* _returnYes
+    #@+node:ekr.20210611084045.58: *5* _returnYes
     def _returnYes(self, *arguments, **kwargs):
         '''Used to override g.app.gui.ask[XXX] dialogs answers'''
         return "yes"
 
-    #@+node:ekr.20210611084045.59: *3* _getScript
-    def _getScript(self, c, p,
-                   useSelectedText=True,
-                   forcePythonSentinels=True,
-                   useSentinels=True,
-                   ):
-        """
-        Return the expansion of the selected text of node p.
-        Return the expansion of all of node p's body text if
-        p is not the current node or if there is no text selection.
-        """
-        w = c.frame.body.wrapper
-        if not p:
-            p = c.p
-        try:
-            if w and p == c.p and useSelectedText and w.hasSelection():
-                s = w.getSelectedText()
-            else:
-                s = p.b
-            # Remove extra leading whitespace so the user may execute indented code.
-            s = self.g.removeExtraLws(s, c.tab_width)
-            s = self.g.extractExecutableString(c, p, s)
-            script = self.g.composeScript(c, p, s,
-                                          forcePythonSentinels=forcePythonSentinels,
-                                          useSentinels=useSentinels)
-        except Exception:
-            self.g.es_print("unexpected exception in g.getScript")
-            self.g.es_exception()
-            script = ''
-        return script
-
-    #@+node:ekr.20210611084045.61: *3* _getTotalOpened
-    def _getTotalOpened(self):
-        '''Get total of opened commander (who have closed == false)'''
-        w_total = 0
-        for w_commander in self.g.app.commanders():
-            if not w_commander.closed:
-                w_total = w_total + 1
-        return w_total
-
-        # return sum(1 for z in self.g.app.commanders() if not z.closed)
-    #@+node:ekr.20210611084045.62: *3* _getFirstOpenedCommander
-    def _getFirstOpenedCommander(self):
-        '''Get first opened commander, or False if there are none.'''
-        for w_commander in self.g.app.commanders():
-            if not w_commander.closed:
-                return w_commander
-        return False
-
-    #@+node:ekr.20210611084045.63: *3* _show_find_success
+    #@+node:ekr.20210611084045.63: *5* _show_find_success
     def _show_find_success(self, c, in_headline, insert, p):
         '''Handle a successful find match.'''
         if in_headline:
             self.g.app.gui.set_focus(c, self.headlineWidget)
         # no return
-    #@+node:ekr.20210612084709.1: *3* _shut_down (New)
-    def _shut_down(self, package):
-        """Shut down the server. Used by unit test."""
-        raise TerminateServer("client requested shut down")
-    #@+node:ekr.20210611084045.64: *3* sendAsyncOutput
-    def sendAsyncOutput(self, p_package):
-        if "async" not in p_package:
-            print('[sendAsyncOutput] Error async member missing in package parameter')
-            print(json.dumps(p_package, separators=(',', ':')), flush=True)
-            return
-        if self.loop:
-            self.loop.create_task(self.asyncOutput(
-                json.dumps(p_package, separators=(',', ':'))))
-        else:
-            print('[sendAsyncOutput] Error loop not ready' +
-                  json.dumps(p_package, separators=(',', ':')))
+    #@+node:ekr.20210612150704.1: *4* server: private utils
+    #@+node:ekr.20210611084045.145: *5* _ap_to_p
+    def _ap_to_p(self, ap):
+        '''
+        (From Leo plugin leoflexx.py) Convert an archived position to a true Leo position.
+        Return false if no key
+        '''
+        childIndex = ap['childIndex']
 
-    #@+node:ekr.20210611084045.65: *3* set_ask_result
-    def set_ask_result(self, p_result):
-        '''Got the result to an asked question/warning from client'''
-        self.g.app.externalFilesController.integResult(p_result)
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        try:
+            v = self.gnx_to_vnode[ap['gnx']]  # Trap this
+            stack = [
+                (self.gnx_to_vnode[d['gnx']], d['childIndex'])
+                for d in ap['stack']
+            ]
+        except Exception:
+            return False
 
-    #@+node:ekr.20210611084045.66: *3* set_config
-    def set_config(self, p_config):
-        '''Got leoInteg's config from client'''
-        self.leoIntegConfig = p_config
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
-    #@+node:ekr.20210611084045.67: *3* logSignon
-    def logSignon(self):
-        '''Simulate the Initial Leo Log Entry'''
-        if self.loop:
-            self.g.app.computeSignon()
-            self.g.es(str(self.g.app.signon))
-            self.g.es(str(self.g.app.signon1))
-        else:
-            print('no loop in logSignon', flush=True)
+        return leoNodes.position(v, childIndex, stack)
 
-    #@+node:ekr.20210611084045.68: *3* JSON Output Functions
-    #@+node:ekr.20210611084045.69: *4* setActionId
-    def setActionId(self, p_id):
-        self.currentActionId = p_id
+    #@+node:ekr.20210611084045.143: *5* _create_gnx_to_vnode
+    def _create_gnx_to_vnode(self):
+        '''Make the first gnx_to_vnode array with all unique nodes'''
+        t1 = time.process_time()
+        self.gnx_to_vnode = {
+            v.gnx: v for v in self.commander.all_unique_nodes()}
+        # This is likely the only data that ever will be needed.
+        if 0:
+            print('app.create_all_data: %5.3f sec. %s entries' % (
+                (time.process_time()-t1), len(list(self.gnx_to_vnode.keys()))), flush=True)
+        self._test_round_trip_positions()
 
-    #@+node:ekr.20210611084045.70: *4* asyncOutput
-    async def asyncOutput(self, p_json):
-        '''Output json string to the websocket'''
-        if self.webSocket:
-            await self.webSocket.send(p_json)
-        else:
-            print("websocket not ready yet", flush=True)
-
-    #@+node:ekr.20210611084045.71: *4* sendLeoBridgePackage
-    def sendLeoBridgePackage(self, p_package=None):
-        if p_package is None:
-            p_package = {}
-        p_package["id"] = self.currentActionId
-        return(json.dumps(p_package, separators=(',', ':')))  # send as json
-
-    #@+node:ekr.20210611084045.72: *4* _outputError
-    def _outputError(self, message):
-        """Issue an error message and return an error response."""
-        print(f"Invalid request: {message}", flush=True)
-        return {
-            "id": self.currentActionId,
-            "error": message,
-        }
-    #@+node:ekr.20210611084045.73: *4* _outputBodyData
-    def _outputBodyData(self, p_bodyText=""):
-        return self.sendLeoBridgePackage({"body": p_bodyText})
-
-    #@+node:ekr.20210611084045.74: *4* _outputSelectionData
-    def _outputSelectionData(self, p_bodySelection):
-        return self.sendLeoBridgePackage({"bodySelection": p_bodySelection})
-
-    #@+node:ekr.20210611084045.75: *4* _outputPNode
-    def _outputPNode(self, p_node=False):
-        if p_node:
-            # Single node, singular
-            return self.sendLeoBridgePackage({"node": self._p_to_ap(p_node)})
-        else:
-            return self.sendLeoBridgePackage({"node": None})
-
-    #@+node:ekr.20210611084045.76: *4* _outputPNodes
-    def _outputPNodes(self, p_pList):
-        w_apList = []
-        for p in p_pList:
-            w_apList.append(self._p_to_ap(p))
-        # Multiple nodes, plural
-        return self.sendLeoBridgePackage({"children": w_apList})
-
-    #@+node:ekr.20210611084045.77: *3* es
-    def es(self, * args, **keys):
-        '''Output to the Log Pane'''
-        d = {
-            'color': None,
-            'commas': False,
-            'newline': True,
-            'spaces': True,
-            'tabName': 'Log',
-            'nodeLink': None,
-        }
-        d = self.g.doKeywordArgs(keys, d)
-        s = self.g.translateArgs(args, d)
-        w_package = {"async": "log", "log": s}
-        self.sendAsyncOutput(w_package)
-    #@+node:ekr.20210611084045.78: *3* initConnection
-    def initConnection(self, p_webSocket):
-        self.webSocket = p_webSocket
-        self.loop = asyncio.get_event_loop()
-
-    #@+node:ekr.20210611084045.79: *3* _get_commander_method
+    #@+node:ekr.20210611084045.79: *5* _get_commander_method
     def _get_commander_method(self, p_command):
         """ Return the given method (p_command) in the Commands class or subcommanders."""
         # self.g.trace(p_command)
@@ -562,50 +415,236 @@ class LeoServer:
                 # self.g.trace(f"Not Found: c.{ivar}") # Should never happen.
         return None
 
-    #@+node:ekr.20210611084045.80: *3* leoCommand
-    def leoCommand(self, p_command, param):
-        '''
-        Generic call to a method in Leo's Commands class or any subcommander class.
+    #@+node:ekr.20210611084045.62: *5* _getFirstOpenedCommander
+    def _getFirstOpenedCommander(self):
+        '''Get first opened commander, or False if there are none.'''
+        for w_commander in self.g.app.commanders():
+            if not w_commander.closed:
+                return w_commander
+        return False
 
-        The param["ap"] position is to be selected before having the command run,
-        while the param["keep"] parameter specifies wether the original position
-        should be re-selected afterward.
+    #@+node:ekr.20210611084045.59: *5* _getScript
+    def _getScript(self, c, p,
+                   useSelectedText=True,
+                   forcePythonSentinels=True,
+                   useSentinels=True,
+                   ):
+        """
+        Return the expansion of the selected text of node p.
+        Return the expansion of all of node p's body text if
+        p is not the current node or if there is no text selection.
+        """
+        w = c.frame.body.wrapper
+        if not p:
+            p = c.p
+        try:
+            if w and p == c.p and useSelectedText and w.hasSelection():
+                s = w.getSelectedText()
+            else:
+                s = p.b
+            # Remove extra leading whitespace so the user may execute indented code.
+            s = self.g.removeExtraLws(s, c.tab_width)
+            s = self.g.extractExecutableString(c, p, s)
+            script = self.g.composeScript(c, p, s,
+                                          forcePythonSentinels=forcePythonSentinels,
+                                          useSentinels=useSentinels)
+        except Exception:
+            self.g.es_print("unexpected exception in g.getScript")
+            self.g.es_exception()
+            script = ''
+        return script
 
-        The whole of those operations is to be undoable as one undo step.
+    #@+node:ekr.20210611084045.61: *5* _getTotalOpened
+    def _getTotalOpened(self):
+        '''Get total of opened commander (who have closed == false)'''
+        w_total = 0
+        for w_commander in self.g.app.commanders():
+            if not w_commander.closed:
+                w_total = w_total + 1
+        return w_total
 
-        command: a method name (a string).
-        param["ap"]: an archived position.
-        param["keep"]: preserve the current selection, if possible.
-        '''
-        w_keepSelection = False  # Set default, optional component of param
-        if "keep" in param:
-            w_keepSelection = param["keep"]
+        # return sum(1 for z in self.g.app.commanders() if not z.closed)
+    #@+node:ekr.20210611084045.72: *5* _outputError
+    def _outputError(self, message):
+        """Issue an error message and return an error response."""
+        print(f"Invalid request: {message}", flush=True)
+        return {
+            "id": self.currentActionId,
+            "error": message,
+        }
+    #@+node:ekr.20210611084045.146: *5* _p_to_ap
+    def _p_to_ap(self, p):
+        '''(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position.'''
+        if not p.v:
+            print('app.p_to_ap: no p.v: %r %s' % (p), flush=True)
+            assert False
+        p_gnx = p.v.gnx
+        # * Expand gnx-vnode translation table for any new node encountered
+        if p_gnx not in self.gnx_to_vnode:
+            self.gnx_to_vnode[p_gnx] = p.v
+        # * necessary properties for outline
+        w_ap = {
+            'childIndex': p._childIndex,
+            'gnx': p.v.gnx,
+            'level': p.level(),
+            'headline': p.h,
+            'stack': [{
+                'gnx': stack_v.gnx,
+                'childIndex': stack_childIndex,
+                'headline': stack_v.h,
+            } for (stack_v, stack_childIndex) in p.stack],
+        }
+        # TODO : Convert all those booleans into an 8 bit integer 'status' flag
+        # TODO : Send p.v.u as simple boolean flag and let user inspect ...
+        # TODO ... it with context menu command instead of hover tooltip.
+        if p.v.u:
+            w_ap['u'] = p.v.u
+        if bool(p.b):
+            w_ap['hasBody'] = True
+        if p.hasChildren():
+            w_ap['hasChildren'] = True
+        if p.isCloned():
+            w_ap['cloned'] = True
+        if p.isDirty():
+            w_ap['dirty'] = True
+        if p.isExpanded():
+            w_ap['expanded'] = True
+        if p.isMarked():
+            w_ap['marked'] = True
+        if p.isAnyAtFileNode():
+            w_ap['atFile'] = True
+        if p == self.commander.p:
+            w_ap['selected'] = True
+        return w_ap
 
-        w_ap = param["ap"]  # At least node parameter is present
-        if not w_ap:
-            return self._outputError(f"Error in {p_command}: no param ap")
 
-        w_p = self._ap_to_p(w_ap)
-        if not w_p:
-            return self._outputError(f"Error in {p_command}: no w_p position found")
+    #@+node:ekr.20210611084045.144: *5* _test_round_trip_positions
+    def _test_round_trip_positions(self):
+        '''(From Leo plugin leoflexx.py) Test the round tripping of p_to_ap and ap_to_p.'''
+        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
+        old_d = self.gnx_to_vnode.copy()
+        old_len = len(list(self.gnx_to_vnode.keys()))
+        # t1 = time.process_time()
+        qtyAllPositions = 0
+        for p in self.commander.all_positions():
+            qtyAllPositions += 1
+            ap = self._p_to_ap(p)
+            p2 = self._ap_to_p(ap)
+            assert p == p2, (repr(p), repr(p2), repr(ap))
+        gnx_to_vnode = old_d
+        new_len = len(list(gnx_to_vnode.keys()))
+        assert old_len == new_len, (old_len, new_len)
+        # print('Leo file opened. Its outline contains ' + str(qtyAllPositions) + " nodes positions.", flush=True)
+        # print(('Testing app.test_round_trip_positions for all nodes: Total time: %5.3f sec.' % (time.process_time()-t1)), flush=True)
 
-        w_func = self._get_commander_method(p_command)
-        if not w_func:
-            return self._outputError(f"Error in {p_command}: no method found")
+    #@+node:ekr.20210612092041.1: *5* server._do_message (New)
+    def _do_message(self, d):
+        """
+        A refactoring of web_socket_handler, for unit tests.
+        """
+        server = self
+        action = d and d.get('action')
+        if not action:
+            return self._outputError("No action")
+        param = d.get('param')
+        server.setActionId(d['id'])  # Set the server action.
+        if action[0] == "_":
+            return server._outputError('Action starts with underscore')
+        if action[0] == "!":  # Execute a controller method.
+            name = action[1:]
+            func = getattr(server, name, None)
+            if func:
+                return func(param)
+            return self._outputError(f"Unknown server method: {name}")
+        # Attempt to execute the command directly on the commander/subcommander.
+        return server.leoCommand(action, param)
+    #@+node:ekr.20210612101404.1: *5* server._get_all_server_commands (New)
+    def _get_all_server_commands(self):
+        """
+        Private server method:
+        Return the names of all callable public methods of the server.
+        """
+        members = inspect.getmembers(self, inspect.ismethod)
+        return sorted([name for (name, value) in members if not name.startswith('_')])
+    #@+node:ekr.20210611084045.68: *4* server: JSON Output Functions
+    #@+node:ekr.20210611084045.69: *5* setActionId (to do: make private)
+    def setActionId(self, p_id):
+        self.currentActionId = p_id
 
-        if w_p == self.commander.p:
-            w_func(event=None)
+    #@+node:ekr.20210611084045.71: *5* sendLeoBridgePackage (to do: make private)
+    def sendLeoBridgePackage(self, p_package=None):
+        if p_package is None:
+            p_package = {}
+        p_package["id"] = self.currentActionId
+        return(json.dumps(p_package, separators=(',', ':')))  # send as json
+
+    #@+node:ekr.20210611084045.73: *5* _outputBodyData
+    def _outputBodyData(self, p_bodyText=""):
+        return self.sendLeoBridgePackage({"body": p_bodyText})
+
+    #@+node:ekr.20210611084045.74: *5* _outputSelectionData
+    def _outputSelectionData(self, p_bodySelection):
+        return self.sendLeoBridgePackage({"bodySelection": p_bodySelection})
+
+    #@+node:ekr.20210611084045.75: *5* _outputPNode
+    def _outputPNode(self, p_node=False):
+        if p_node:
+            # Single node, singular
+            return self.sendLeoBridgePackage({"node": self._p_to_ap(p_node)})
         else:
-            w_oldPosition = self.commander.p
-            self.commander.selectPosition(w_p)
-            w_func(event=None)
-            if w_keepSelection and self.commander.positionExists(w_oldPosition):
-                self.commander.selectPosition(w_oldPosition)
+            return self.sendLeoBridgePackage({"node": None})
 
+    #@+node:ekr.20210611084045.76: *5* _outputPNodes
+    def _outputPNodes(self, p_pList):
+        w_apList = []
+        for p in p_pList:
+            w_apList.append(self._p_to_ap(p))
+        # Multiple nodes, plural
+        return self.sendLeoBridgePackage({"children": w_apList})
+
+    #@+node:ekr.20210612150134.1: *3* server: public (leo) commands
+    #@+node:ekr.20210611084045.104: *4* server: button commands
+    #@+node:ekr.20210611084045.105: *5* get_buttons
+    def get_buttons(self, param):
+        '''Gets the currently opened file's @buttons list'''
+        w_buttons = []
+        if self.commander and self.commander.theScriptingController and self.commander.theScriptingController.buttonsDict:
+            w_dict = self.commander.theScriptingController.buttonsDict
+            for w_key in w_dict:
+                w_entry = {"name": w_dict[w_key], "index": str(w_key)}
+                w_buttons.append(w_entry)
+        return self.sendLeoBridgePackage({"buttons": w_buttons})
+
+    #@+node:ekr.20210611084045.106: *5* remove_button
+    def remove_button(self, param):
+        '''Removes an entry from the buttonsDict by index string'''
+        w_index = param['index']
+        w_dict = self.commander.theScriptingController.buttonsDict
+        w_key = None
+        for i_key in w_dict:
+            if(str(i_key) == w_index):
+                w_key = i_key
+        if w_key:
+            del(w_dict[w_key])  # delete object member
+        # return selected node when done
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.81: *3* Leo Documents
-    #@+node:ekr.20210611084045.82: *4* get_all_open_commanders
+    #@+node:ekr.20210611084045.107: *5* click_button
+    def click_button(self, param):
+        '''Handles buttons clicked in client from the '@button' panel'''
+        w_index = param['index']
+        w_dict = self.commander.theScriptingController.buttonsDict
+        w_button = None
+        for i_key in w_dict:
+            if(str(i_key) == w_index):
+                w_button = i_key
+        if w_button:
+            w_button.command()  # run clicked button command
+        # return selected node when done
+        return self._outputPNode(self.commander.p)
+
+    #@+node:ekr.20210611084045.81: *4* server: file commands
+    #@+node:ekr.20210611084045.82: *5* get_all_open_commanders
     def get_all_open_commanders(self, param):
         '''Return array of opened file path/names to be used as openFile parameters to switch files'''
         w_files = []
@@ -624,7 +663,7 @@ class LeoServer:
 
         return self.sendLeoBridgePackage({"files": w_files})
 
-    #@+node:ekr.20210611084045.83: *4* get_ui_states
+    #@+node:ekr.20210611084045.83: *5* get_ui_states
     def get_ui_states(self, param):
         """
         Gets the currently opened file's general states for UI enabled/disabled states
@@ -655,7 +694,7 @@ class LeoServer:
 
         return self.sendLeoBridgePackage({"states": w_states})
 
-    #@+node:ekr.20210611084045.84: *4* set_opened_file
+    #@+node:ekr.20210611084045.84: *5* set_opened_file
     def set_opened_file(self, param):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
         w_openedCommanders = []
@@ -680,7 +719,7 @@ class LeoServer:
         else:
             return self._outputError('Error in setOpenedFile')
 
-    #@+node:ekr.20210611084045.85: *4* open_file
+    #@+node:ekr.20210611084045.85: *5* open_file
     def open_file(self, param):
         """
         Open a leo file via leoBridge controller, or create a new document if empty string.
@@ -719,7 +758,7 @@ class LeoServer:
         else:
             return self._outputError('Error in openFile')
 
-    #@+node:ekr.20210611084045.86: *4* open_files
+    #@+node:ekr.20210611084045.86: *5* open_files
     def open_files(self, param):
         """
         Opens an array of leo files
@@ -760,7 +799,7 @@ class LeoServer:
         else:
             return self._outputError('Error in openFiles')
 
-    #@+node:ekr.20210611084045.87: *4* close_file
+    #@+node:ekr.20210611084045.87: *5* close_file
     def close_file(self, param):
         """
         Closes a leo file. A file can then be opened with "openFile".
@@ -795,7 +834,7 @@ class LeoServer:
 
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.88: *4* save_file
+    #@+node:ekr.20210611084045.88: *5* save_file
     def save_file(self, param):
         '''Saves the leo file. New or dirty derived files are rewritten'''
         if self.commander:
@@ -811,7 +850,7 @@ class LeoServer:
 
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
-    #@+node:ekr.20210611084045.89: *4* import_any_file
+    #@+node:ekr.20210611084045.89: *5* import_any_file
     def import_any_file(self, param):
         """
         Import file(s) from array of file names
@@ -865,9 +904,206 @@ class LeoServer:
                     # Experimental: attempt to use permissive section ref logic.
                 )
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+    #@+node:ekr.20210611084045.113: *4* server: node commands
+    #@+node:ekr.20210611084045.116: *5* clone_node
+    def clone_node(self, param):
+        '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
+        w_ap = param["ap"]
+        if not w_ap:
+            return self._outputError("Error in clonePNode function, no param p_ap")
+        w_p = self._ap_to_p(w_ap)
+        if not w_p:
+            # default empty
+            return self._outputError("Error in clonePNode function, no w_p node found")
+        if w_p == self.commander.p:
+            self.commander.clone()
+        else:
+            oldPosition = self.commander.p
+            self.commander.selectPosition(w_p)
+            self.commander.clone()
+            if self.commander.positionExists(oldPosition):
+                self.commander.selectPosition(oldPosition)
+        # return selected node either ways
+        return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.90: *3* Search
-    #@+node:ekr.20210611084045.91: *4* get_search_settings
+    #@+node:ekr.20210611084045.141: *5* contract_node
+    def contract_node(self, p_ap):
+        '''Collapse a node'''
+        if p_ap:
+            w_p = self._ap_to_p(p_ap)
+            if w_p:
+                w_p.contract()
+        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+
+    #@+node:ekr.20210611084045.117: *5* cut_node
+    def cut_node(self, param):
+        '''Cut a node, don't select it. Try to keep selection, then return the selected node that remains'''
+        w_ap = param["ap"]
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
+            if w_p:
+                if w_p == self.commander.p:
+                    self.commander.cutOutline()  # already on this node, so cut it
+                else:
+                    oldPosition = self.commander.p  # not same node, save position to possibly return to
+                    self.commander.selectPosition(w_p)
+                    self.commander.cutOutline()
+                    if self.commander.positionExists(oldPosition):
+                        # select if old position still valid
+                        self.commander.selectPosition(oldPosition)
+                    else:
+                        oldPosition._childIndex = oldPosition._childIndex-1
+                        # Try again with childIndex decremented
+                        if self.commander.positionExists(oldPosition):
+                            # additional try with lowered childIndex
+                            self.commander.selectPosition(oldPosition)
+                # in both cases, return selected node
+                return self._outputPNode(self.commander.p)
+            else:
+                # default empty
+                return self._outputError("Error in cutPNode no w_p node found")
+        else:
+            return self._outputError("Error in cutPNode no param node")
+
+    #@+node:ekr.20210611084045.118: *5* delete_node
+    def delete_node(self, param):
+        '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
+        w_ap = param["ap"]
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
+            if w_p:
+                if w_p == self.commander.p:
+                    self.commander.deleteOutline()  # already on this node, so delete it
+                else:
+                    oldPosition = self.commander.p  # not same node, save position to possibly return to
+                    self.commander.selectPosition(w_p)
+                    self.commander.deleteOutline()
+                    if self.commander.positionExists(oldPosition):
+                        # select if old position still valid
+                        self.commander.selectPosition(oldPosition)
+                    else:
+                        oldPosition._childIndex = oldPosition._childIndex-1
+                        # Try again with childIndex decremented
+                        if self.commander.positionExists(oldPosition):
+                            # additional try with lowered childIndex
+                            self.commander.selectPosition(oldPosition)
+                # in both cases, return selected node
+                return self._outputPNode(self.commander.p)
+            else:
+                # default empty
+                return self._outputError("Error in deletePNode no w_p node found")
+        else:
+            return self._outputError("Error in deletePNode no param node")
+
+    #@+node:ekr.20210611084045.140: *5* expand_node
+    def expand_node(self, p_ap):
+        '''Expand a node'''
+        if p_ap:
+            w_p = self._ap_to_p(p_ap)
+            if w_p:
+                w_p.expand()
+        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+
+    #@+node:ekr.20210611084045.120: *5* insert_named_node
+    def insert_named_node(self, param):
+        '''Insert a node at given node, set its headline, select it and finally return it'''
+        w_newHeadline = param['name']
+        w_ap = param["ap"]
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
+            if w_p:
+                w_bunch = self.commander.undoer.beforeInsertNode(w_p)
+                w_newNode = w_p.insertAfter()
+                # set this node's new headline
+                w_newNode.h = w_newHeadline
+                w_newNode.setDirty()
+                self.commander.undoer.afterInsertNode(
+                    w_newNode, 'Insert Node', w_bunch)
+                self.commander.selectPosition(w_newNode)
+                # in any case, return selected node
+                return self._outputPNode(self.commander.p)
+            else:
+                # default empty
+                return self._outputError("Error in insertNamedPNode no w_p node found")
+        else:
+            return self._outputError("Error in insertNamedPNode no param node")
+
+    #@+node:ekr.20210611084045.119: *5* insert_node
+    def insert_node(self, param):
+        '''Insert a node at given node, then select it once created, and finally return it'''
+        w_ap = param["ap"]
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
+            if w_p:
+                w_bunch = self.commander.undoer.beforeInsertNode(w_p)
+                w_newNode = w_p.insertAfter()
+                w_newNode.setDirty()
+                self.commander.undoer.afterInsertNode(
+                    w_newNode, 'Insert Node', w_bunch)
+                self.commander.selectPosition(w_newNode)
+                # in both cases, return selected node
+                return self._outputPNode(self.commander.p)
+            else:
+                # default empty
+                return self._outputError("Error in insertPNode no w_p node found")
+        else:
+            return self._outputError("Error in insertPNode no param node")
+
+    #@+node:ekr.20210611084045.114: *5* mark_node
+    def mark_node(self, param):
+        '''Mark a node, don't select it'''
+        w_ap = param["ap"]
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
+            if w_p:
+                w_p.setMarked()
+                # return selected node when done (not w_p)
+                return self._outputPNode(self.commander.p)
+            else:
+                return self._outputError("Error in markPNode no w_p node found")
+        else:
+            return self._outputError("Error in markPNode no param node")
+
+    #@+node:ekr.20210611084045.122: *5* redo
+    def redo(self, param):
+        '''Undo last un-doable operation'''
+        if self.commander.undoer.canRedo():
+            self.commander.undoer.redo()
+        # return selected node when done
+        return self._outputPNode(self.commander.p)
+
+    #@+node:ekr.20210611084045.123: *5* test
+    def test(self, param):
+        '''Utility test function for debugging'''
+        print("Called test")
+        return self.sendLeoBridgePackage({'testReturnedKey': 'testReturnedValue'})
+        # return self._outputPNode(self.commander.p)
+
+    #@+node:ekr.20210611084045.121: *5* undo
+    def undo(self, param):
+        '''Undo last un-doable operation'''
+        if self.commander.undoer.canUndo():
+            self.commander.undoer.undo()
+        # return selected node when done
+        return self._outputPNode(self.commander.p)
+
+    #@+node:ekr.20210611084045.115: *5* unmark_node
+    def unmark_node(self, param):
+        '''Unmark a node, don't select it'''
+        w_ap = param["ap"]
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
+            if w_p:
+                w_p.clearMarked()
+                # return selected node when done (not w_p)
+                return self._outputPNode(self.commander.p)
+            else:
+                return self._outputError("Error in unmarkPNode no w_p node found")
+        else:
+            return self._outputError("Error in unmarkPNode no param node")
+
+    #@+node:ekr.20210611084045.90: *4* server: search commands
+    #@+node:ekr.20210611084045.91: *5* get_search_settings
     def get_search_settings(self, param):
         """
         Gets search options
@@ -875,7 +1111,7 @@ class LeoServer:
         w_result = self.commander.findCommands.ftm.get_settings()
         return self.sendLeoBridgePackage({"searchSettings": w_result.__dict__})
 
-    #@+node:ekr.20210611084045.92: *4* set_search_settings
+    #@+node:ekr.20210611084045.92: *5* set_search_settings
     def set_search_settings(self, param):
         """
         Sets search options. Init widgets and ivars from param.searchSettings
@@ -939,7 +1175,7 @@ class LeoServer:
         w_result = ftm.get_settings()
         return self.sendLeoBridgePackage({"searchSettings": w_result.__dict__})
 
-    #@+node:ekr.20210611084045.93: *4* find_all
+    #@+node:ekr.20210611084045.93: *5* find_all
     def find_all(self, param):
         """Run Leo's find all command and return results."""
         c = self.commander
@@ -952,7 +1188,7 @@ class LeoServer:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.94: *4* find_next
+    #@+node:ekr.20210611084045.94: *5* find_next
     def find_next(self, param):
         """Run Leo's find-next command and return results."""
         c = self.commander
@@ -968,7 +1204,7 @@ class LeoServer:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.95: *4* find_previous
+    #@+node:ekr.20210611084045.95: *5* find_previous
     def find_previous(self, param):
         """Run Leo's find-previous command and return results."""
         c = self.commander
@@ -985,7 +1221,7 @@ class LeoServer:
         return self.sendLeoBridgePackage(w_result)
 
 
-    #@+node:ekr.20210611084045.96: *4* replace
+    #@+node:ekr.20210611084045.96: *5* replace
     def replace(self, param):
         """Run Leo's replace command and return results."""
         c = self.commander
@@ -998,7 +1234,7 @@ class LeoServer:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.97: *4* replace_then_find
+    #@+node:ekr.20210611084045.97: *5* replace_then_find
     def replace_then_find(self, param):
         """Run Leo's replace then find next command and return results."""
         c = self.commander
@@ -1011,7 +1247,7 @@ class LeoServer:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.98: *4* replace_all
+    #@+node:ekr.20210611084045.98: *5* replace_all
     def replace_all(self, param):
         """Run Leo's replace all command and return results."""
         c = self.commander
@@ -1024,7 +1260,7 @@ class LeoServer:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.99: *4* clone_find_all
+    #@+node:ekr.20210611084045.99: *5* clone_find_all
     def clone_find_all(self, param):
         """Run Leo's clone-find-all command and return results."""
         c = self.commander
@@ -1037,7 +1273,7 @@ class LeoServer:
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.100: *4* clone_find_all_flattened
+    #@+node:ekr.20210611084045.100: *5* clone_find_all_flattened
     def clone_find_all_flattened(self, param):
         """Run Leo's clone-find-all-flattened command and return results."""
         c = self.commander
@@ -1049,7 +1285,7 @@ class LeoServer:
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
-    #@+node:ekr.20210611084045.101: *4* find_var
+    #@+node:ekr.20210611084045.101: *5* find_var
 
     def find_var(self, param):
         """Run Leo's find-var command and return results."""
@@ -1064,7 +1300,7 @@ class LeoServer:
         w_result = {"node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.102: *4* find_def
+    #@+node:ekr.20210611084045.102: *5* find_def
     def find_def(self, param):
         """Run Leo's find-def command and return results."""
         c = self.commander
@@ -1078,7 +1314,7 @@ class LeoServer:
         w_result = {"node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.103: *4* goto_global_line
+    #@+node:ekr.20210611084045.103: *5* goto_global_line
     def goto_global_line(self, param):
         """Run Leo's goto-global-line command and return results."""
         c = self.commander
@@ -1087,50 +1323,55 @@ class LeoServer:
         w_result = {"found": found, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
-    #@+node:ekr.20210611084045.104: *3* At Buttons
-    #@+node:ekr.20210611084045.105: *4* get_buttons
-    def get_buttons(self, param):
-        '''Gets the currently opened file's @buttons list'''
-        w_buttons = []
-        if self.commander and self.commander.theScriptingController and self.commander.theScriptingController.buttonsDict:
-            w_dict = self.commander.theScriptingController.buttonsDict
-            for w_key in w_dict:
-                w_entry = {"name": w_dict[w_key], "index": str(w_key)}
-                w_buttons.append(w_entry)
-        return self.sendLeoBridgePackage({"buttons": w_buttons})
-
-    #@+node:ekr.20210611084045.106: *4* remove_button
-    def remove_button(self, param):
-        '''Removes an entry from the buttonsDict by index string'''
-        w_index = param['index']
-        w_dict = self.commander.theScriptingController.buttonsDict
-        w_key = None
-        for i_key in w_dict:
-            if(str(i_key) == w_index):
-                w_key = i_key
-        if w_key:
-            del(w_dict[w_key])  # delete object member
-        # return selected node when done
+    #@+node:ekr.20210613035010.1: *4* server: page up/down commands
+    #@+node:ekr.20210611084045.126: *5* page_down
+    def page_down(self, param):
+        """Selects a node a couple of steps down in the tree to simulate page down"""
+        n = param.get("n", 3)
+        for z in range(n):
+            self.commander.selectVisNext()
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.107: *4* click_button
-    def click_button(self, param):
-        '''Handles buttons clicked in client from the '@button' panel'''
-        w_index = param['index']
-        w_dict = self.commander.theScriptingController.buttonsDict
-        w_button = None
-        for i_key in w_dict:
-            if(str(i_key) == w_index):
-                w_button = i_key
-        if w_button:
-            w_button.command()  # run clicked button command
-        # return selected node when done
+    #@+node:ekr.20210611084045.125: *5* page_up
+    def page_up(self, param):
+        """Selects a node a couple of steps up in the tree to simulate page up"""
+        n = param.get("n", 3)
+        for z in range(n):
+            self.commander.selectVisBack()
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.108: *3* Minibuffer
-    #@+node:ekr.20210611084045.109: *4* get_all_leo_commands
+    #@+node:ekr.20210613033906.1: *3* server: public server methods
+    #@+node:ekr.20210613035228.1: *4* server: public utils
+    #@+node:ekr.20210611084045.77: *5* es & helpers
+    def es(self, * args, **keys):
+        '''Output to the Log Pane'''
+        d = {
+            'color': None,
+            'commas': False,
+            'newline': True,
+            'spaces': True,
+            'tabName': 'Log',
+            'nodeLink': None,
+        }
+        d = self.g.doKeywordArgs(keys, d)
+        s = self.g.translateArgs(args, d)
+        w_package = {"async": "log", "log": s}
+        self.sendAsyncOutput(w_package)
+    #@+node:ekr.20210611084045.70: *6* _asyncOutput
+    async def _asyncOutput(self, p_json):
+        '''Output json string to the websocket'''
+        if self.webSocket:
+            await self.webSocket.send(p_json)
+        else:
+            print("websocket not ready yet", flush=True)
+
+    #@+node:ekr.20210611084045.109: *5* get_all_leo_commands & helpers
     def get_all_leo_commands(self, param):
-        """Return a list of all Leo commands that make sense in leoInteg."""
+        """
+        Return a list of all Leo commands that make sense in leoInteg.
+        
+        Unit tests use this.
+        """
         c = self.commander
         d = c.commandsDict  # keys are command names, values are functions.
         bad_names = self._bad_commands()  # #92.
@@ -1165,7 +1406,7 @@ class LeoServer:
 
         return self.sendLeoBridgePackage({"commands": result})
 
-    #@+node:ekr.20210611084045.110: *4* _bad_commands
+    #@+node:ekr.20210611084045.110: *6* _bad_commands
     def _bad_commands(self):
         """Return the list of Leo's command names that leoInteg should ignore."""
         c = self.commander
@@ -1771,7 +2012,7 @@ class LeoServer:
         result = list(sorted(bad))
         return result
 
-    #@+node:ekr.20210611084045.111: *4* _good_commands
+    #@+node:ekr.20210611084045.111: *6* _good_commands
     def _good_commands(self):
         """Defined commands that definitely should be included in leoInteg."""
         good_list = [
@@ -2203,211 +2444,80 @@ class LeoServer:
         ]
         return good_list
 
-    #@+node:ekr.20210611084045.112: *4* _getDocstringForCommand
+    #@+node:ekr.20210611084045.112: *6* _getDocstringForCommand
     def _getDocstringForCommand(self, command_name):
         """get docstring for the given command."""
         func = self._get_commander_method(command_name)
         docstring = func.__doc__ if func else ''
         return docstring
 
-    #@+node:ekr.20210611084045.113: *3* Overriden Leo Commands
-    #@+node:ekr.20210611084045.114: *4* mark_node
-    def mark_node(self, param):
-        '''Mark a node, don't select it'''
-        w_ap = param["ap"]
-        if w_ap:
-            w_p = self._ap_to_p(w_ap)
-            if w_p:
-                w_p.setMarked()
-                # return selected node when done (not w_p)
-                return self._outputPNode(self.commander.p)
-            else:
-                return self._outputError("Error in markPNode no w_p node found")
+    #@+node:ekr.20210611084045.67: *5* logSignon
+    def logSignon(self):
+        '''Simulate the Initial Leo Log Entry'''
+        if self.loop:
+            self.g.app.computeSignon()
+            self.g.es(str(self.g.app.signon))
+            self.g.es(str(self.g.app.signon1))
         else:
-            return self._outputError("Error in markPNode no param node")
+            print('no loop in logSignon', flush=True)
 
-    #@+node:ekr.20210611084045.115: *4* unmark_node
-    def unmark_node(self, param):
-        '''Unmark a node, don't select it'''
-        w_ap = param["ap"]
-        if w_ap:
-            w_p = self._ap_to_p(w_ap)
-            if w_p:
-                w_p.clearMarked()
-                # return selected node when done (not w_p)
-                return self._outputPNode(self.commander.p)
-            else:
-                return self._outputError("Error in unmarkPNode no w_p node found")
+    #@+node:ekr.20210611084045.66: *5* set_config
+    def set_config(self, p_config):
+        '''Got leoInteg's config from client'''
+        self.leoIntegConfig = p_config
+        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+    #@+node:ekr.20210611084045.65: *5* set_ask_result
+    def set_ask_result(self, p_result):
+        '''Got the result to an asked question/warning from client'''
+        ### self.g.app.externalFilesController.integResult(p_result)  ### Does not exist
+        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+    #@+node:ekr.20210611084045.64: *5* sendAsyncOutput ****
+    def sendAsyncOutput(self, p_package):
+        ###
+        ### In leobridgeserver.py, several methods of the ExternalFilesController class call this method!
+        ###
+        s = json.dumps(p_package, separators=(',', ':'))
+        if "async" not in p_package:
+            print('[sendAsyncOutput] Error async member missing in package parameter')
+            print(s, flush=True)
+        elif self.loop:
+            self.loop.create_task(self._asyncOutput(s))
         else:
-            return self._outputError("Error in unmarkPNode no param node")
+            print(f"[sendAsyncOutput] Error loop not ready: {s}")
+    #@+node:ekr.20210611084045.124: *4* server: public getters
+    #@+node:ekr.20210611084045.131: *5* get_all_gnx
+    def get_all_gnx(self, param):
+        '''Get gnx array from all unique nodes'''
+        w_all_gnx = [
+            p.v.gnx for p in self.commander.all_unique_positions(copy=False)]
+        return self.sendLeoBridgePackage({"gnx": w_all_gnx})
 
-    #@+node:ekr.20210611084045.116: *4* clone_node
-    def clone_node(self, param):
-        '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
-        w_ap = param["ap"]
-        if not w_ap:
-            return self._outputError("Error in clonePNode function, no param p_ap")
-        w_p = self._ap_to_p(w_ap)
-        if not w_p:
-            # default empty
-            return self._outputError("Error in clonePNode function, no w_p node found")
-        if w_p == self.commander.p:
-            self.commander.clone()
-        else:
-            oldPosition = self.commander.p
-            self.commander.selectPosition(w_p)
-            self.commander.clone()
-            if self.commander.positionExists(oldPosition):
-                self.commander.selectPosition(oldPosition)
-        # return selected node either ways
-        return self._outputPNode(self.commander.p)
-
-    #@+node:ekr.20210611084045.117: *4* cut_node
-    def cut_node(self, param):
-        '''Cut a node, don't select it. Try to keep selection, then return the selected node that remains'''
-        w_ap = param["ap"]
-        if w_ap:
-            w_p = self._ap_to_p(w_ap)
-            if w_p:
-                if w_p == self.commander.p:
-                    self.commander.cutOutline()  # already on this node, so cut it
+    #@+node:ekr.20210611084045.132: *5* get_body
+    def get_body(self, p_gnx):
+        '''EMIT OUT body of a node'''
+        # TODO : if not found, send code to prevent unresolved promise if 'document switch' occurred shortly before
+        if p_gnx:
+            w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
+            if w_v:
+                if w_v.b:
+                    return self._outputBodyData(w_v.b)
                 else:
-                    oldPosition = self.commander.p  # not same node, save position to possibly return to
-                    self.commander.selectPosition(w_p)
-                    self.commander.cutOutline()
-                    if self.commander.positionExists(oldPosition):
-                        # select if old position still valid
-                        self.commander.selectPosition(oldPosition)
-                    else:
-                        oldPosition._childIndex = oldPosition._childIndex-1
-                        # Try again with childIndex decremented
-                        if self.commander.positionExists(oldPosition):
-                            # additional try with lowered childIndex
-                            self.commander.selectPosition(oldPosition)
-                # in both cases, return selected node
-                return self._outputPNode(self.commander.p)
-            else:
-                # default empty
-                return self._outputError("Error in cutPNode no w_p node found")
-        else:
-            return self._outputError("Error in cutPNode no param node")
+                    return self._outputBodyData()  # default "" empty string
+        # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
+        return self._outputBodyData()
 
-    #@+node:ekr.20210611084045.118: *4* delete_node
-    def delete_node(self, param):
-        '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
-        w_ap = param["ap"]
-        if w_ap:
-            w_p = self._ap_to_p(w_ap)
-            if w_p:
-                if w_p == self.commander.p:
-                    self.commander.deleteOutline()  # already on this node, so delete it
-                else:
-                    oldPosition = self.commander.p  # not same node, save position to possibly return to
-                    self.commander.selectPosition(w_p)
-                    self.commander.deleteOutline()
-                    if self.commander.positionExists(oldPosition):
-                        # select if old position still valid
-                        self.commander.selectPosition(oldPosition)
-                    else:
-                        oldPosition._childIndex = oldPosition._childIndex-1
-                        # Try again with childIndex decremented
-                        if self.commander.positionExists(oldPosition):
-                            # additional try with lowered childIndex
-                            self.commander.selectPosition(oldPosition)
-                # in both cases, return selected node
-                return self._outputPNode(self.commander.p)
-            else:
-                # default empty
-                return self._outputError("Error in deletePNode no w_p node found")
-        else:
-            return self._outputError("Error in deletePNode no param node")
+    #@+node:ekr.20210611084045.133: *5* get_body_length
+    def get_body_length(self, p_gnx):
+        '''EMIT OUT body string length of a node'''
+        if p_gnx:
+            w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
+            if w_v and w_v.b:
+                # Length in bytes, not just by character count.
+                return self.sendLeoBridgePackage({"len": len(w_v.b.encode('utf-8'))})
+        # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
+        return self.sendLeoBridgePackage({"len": 0})  # empty as default
 
-    #@+node:ekr.20210611084045.119: *4* insert_node
-    def insert_node(self, param):
-        '''Insert a node at given node, then select it once created, and finally return it'''
-        w_ap = param["ap"]
-        if w_ap:
-            w_p = self._ap_to_p(w_ap)
-            if w_p:
-                w_bunch = self.commander.undoer.beforeInsertNode(w_p)
-                w_newNode = w_p.insertAfter()
-                w_newNode.setDirty()
-                self.commander.undoer.afterInsertNode(
-                    w_newNode, 'Insert Node', w_bunch)
-                self.commander.selectPosition(w_newNode)
-                # in both cases, return selected node
-                return self._outputPNode(self.commander.p)
-            else:
-                # default empty
-                return self._outputError("Error in insertPNode no w_p node found")
-        else:
-            return self._outputError("Error in insertPNode no param node")
-
-    #@+node:ekr.20210611084045.120: *4* insert_named_node
-    def insert_named_node(self, param):
-        '''Insert a node at given node, set its headline, select it and finally return it'''
-        w_newHeadline = param['name']
-        w_ap = param["ap"]
-        if w_ap:
-            w_p = self._ap_to_p(w_ap)
-            if w_p:
-                w_bunch = self.commander.undoer.beforeInsertNode(w_p)
-                w_newNode = w_p.insertAfter()
-                # set this node's new headline
-                w_newNode.h = w_newHeadline
-                w_newNode.setDirty()
-                self.commander.undoer.afterInsertNode(
-                    w_newNode, 'Insert Node', w_bunch)
-                self.commander.selectPosition(w_newNode)
-                # in any case, return selected node
-                return self._outputPNode(self.commander.p)
-            else:
-                # default empty
-                return self._outputError("Error in insertNamedPNode no w_p node found")
-        else:
-            return self._outputError("Error in insertNamedPNode no param node")
-
-    #@+node:ekr.20210611084045.121: *4* undo
-    def undo(self, param):
-        '''Undo last un-doable operation'''
-        if self.commander.undoer.canUndo():
-            self.commander.undoer.undo()
-        # return selected node when done
-        return self._outputPNode(self.commander.p)
-
-    #@+node:ekr.20210611084045.122: *4* redo
-    def redo(self, param):
-        '''Undo last un-doable operation'''
-        if self.commander.undoer.canRedo():
-            self.commander.undoer.redo()
-        # return selected node when done
-        return self._outputPNode(self.commander.p)
-
-    #@+node:ekr.20210611084045.123: *4* test
-    def test(self, param):
-        '''Utility test function for debugging'''
-        print("Called test")
-        return self.sendLeoBridgePackage({'testReturnedKey': 'testReturnedValue'})
-        # return self._outputPNode(self.commander.p)
-
-    #@+node:ekr.20210611084045.124: *3* Outline and Body Interaction
-    #@+node:ekr.20210611084045.125: *4* page_up
-    def page_up(self, param):
-        """Selects a node a couple of steps up in the tree to simulate page up"""
-        n = param.get("n", 3)
-        for z in range(n):
-            self.commander.selectVisBack()
-        return self._outputPNode(self.commander.p)
-
-    #@+node:ekr.20210611084045.126: *4* page_down
-    def page_down(self, param):
-        """Selects a node a couple of steps down in the tree to simulate page down"""
-        n = param.get("n", 3)
-        for z in range(n):
-            self.commander.selectVisNext()
-        return self._outputPNode(self.commander.p)
-
-    #@+node:ekr.20210611084045.127: *4* get_body_states
+    #@+node:ekr.20210611084045.127: *5* get_body_states
     def get_body_states(self, p_ap):
         """
         Finds the language in effect at top of body for position p,
@@ -2513,7 +2623,7 @@ class LeoServer:
             }
         return self.sendLeoBridgePackage(states)
 
-    #@+node:ekr.20210611084045.128: *4* get_children & helper
+    #@+node:ekr.20210611084045.128: *5* get_children & helper
     def get_children(self, p_ap):
         '''EMIT OUT list of children of a node'''
         if p_ap:
@@ -2529,7 +2639,7 @@ class LeoServer:
                 # this outputs all Root Children
                 return self._outputPNodes(self._yieldAllRootChildren())
 
-    #@+node:ekr.20210611084045.129: *5* _yieldAllRootChildren
+    #@+node:ekr.20210611084045.129: *6* _yieldAllRootChildren
     def _yieldAllRootChildren(self):
         '''Return all root children P nodes'''
         p = self.commander.rootPosition()
@@ -2537,7 +2647,17 @@ class LeoServer:
             yield p
             p.moveToNext()
 
-    #@+node:ekr.20210611084045.130: *4* get_parent
+    #@+node:ekr.20210611084045.135: *5* get_focus
+    def get_focus(self, param):
+        """
+        Return a representation of the focused widget,
+        one of ("body", "tree", "headline", repr(the_widget)).
+        """
+        w = self.g.app.gui.get_focus()
+        focus = self.g.app.gui.widget_name(w)
+        return self.sendLeoBridgePackage({"focus": focus})
+
+    #@+node:ekr.20210611084045.130: *5* get_parent
     def get_parent(self, p_ap):
         '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
         if p_ap:
@@ -2546,39 +2666,8 @@ class LeoServer:
                 return self._outputPNode(w_p.getParent())  # if not root
         return self._outputPNode()  # default empty for root as default
 
-    #@+node:ekr.20210611084045.131: *4* get_all_gnx
-    def get_all_gnx(self, param):
-        '''Get gnx array from all unique nodes'''
-        w_all_gnx = [
-            p.v.gnx for p in self.commander.all_unique_positions(copy=False)]
-        return self.sendLeoBridgePackage({"gnx": w_all_gnx})
-
-    #@+node:ekr.20210611084045.132: *4* get_body
-    def get_body(self, p_gnx):
-        '''EMIT OUT body of a node'''
-        # TODO : if not found, send code to prevent unresolved promise if 'document switch' occurred shortly before
-        if p_gnx:
-            w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
-            if w_v:
-                if w_v.b:
-                    return self._outputBodyData(w_v.b)
-                else:
-                    return self._outputBodyData()  # default "" empty string
-        # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
-        return self._outputBodyData()
-
-    #@+node:ekr.20210611084045.133: *4* get_body_length
-    def get_body_length(self, p_gnx):
-        '''EMIT OUT body string length of a node'''
-        if p_gnx:
-            w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
-            if w_v and w_v.b:
-                # Length in bytes, not just by character count.
-                return self.sendLeoBridgePackage({"len": len(w_v.b.encode('utf-8'))})
-        # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
-        return self.sendLeoBridgePackage({"len": 0})  # empty as default
-
-    #@+node:ekr.20210611084045.134: *4* set_body
+    #@+node:ekr.20210613034845.1: *4* server: public setters
+    #@+node:ekr.20210611084045.134: *5* set_body
     def set_body(self, param):
         '''Change Body text of a v node'''
         w_gnx = param['gnx']
@@ -2605,17 +2694,53 @@ class LeoServer:
                 w_v.b = w_body
         return self._outputPNode(self.commander.p)  # return selected node
 
-    #@+node:ekr.20210611084045.135: *4* get_focus
-    def get_focus(self, param):
-        """
-        Return a representation of the focused widget,
-        one of ("body", "tree", "headline", repr(the_widget)).
-        """
-        w = self.g.app.gui.get_focus()
-        focus = self.g.app.gui.widget_name(w)
-        return self.sendLeoBridgePackage({"focus": focus})
+    #@+node:ekr.20210611084045.138: *5* set_current_position & helper
+    def set_current_position(self, p_ap):
+        '''Select a node, or the first one found with its GNX'''
+        if p_ap:
+            w_p = self._ap_to_p(p_ap)
+            if w_p:
+                if self.commander.positionExists(w_p):
+                    # set this node as selection
+                    self.commander.selectPosition(w_p)
+                else:
+                    w_foundPNode = self._findPNodeFromGnx(p_ap['gnx'])
+                    if w_foundPNode:
+                        self.commander.selectPosition(w_foundPNode)
+                    else:
+                        print("Set Selection node does not exist! ap was:" +
+                              json.dumps(p_ap), flush=True)
+        # * return the finally selected node
+        if self.commander.p:
+            return self._outputPNode(self.commander.p)
+        else:
+            return self._outputPNode()
 
-    #@+node:ekr.20210611084045.136: *4* set_selection
+    #@+node:ekr.20210611084045.139: *6* _findPNodeFromGnx
+    def _findPNodeFromGnx(self, p_gnx):
+        '''Return first p node with this gnx or false'''
+        for p in self.commander.all_unique_positions():
+            if p.v.gnx == p_gnx:
+                return p
+        return False
+
+    #@+node:ekr.20210611084045.137: *5* set_headline
+    def set_headline(self, param):
+        '''Change Headline of a node'''
+        w_newHeadline = param['name']
+        w_ap = param["ap"]
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
+            if w_p:
+                # set this node's new headline
+                w_bunch = self.commander.undoer.beforeChangeNodeContents(w_p)
+                w_p.h = w_newHeadline
+                self.commander.undoer.afterChangeNodeContents(
+                    w_p, 'Change Headline', w_bunch)
+                return self._outputPNode(w_p)
+        return self._outputError("Error in setNewHeadline")
+
+    #@+node:ekr.20210611084045.136: *5* set_selection
     def set_selection(self, param):
         '''
         Set cursor position and scroll position along with selection start and end.
@@ -2703,167 +2828,47 @@ class LeoServer:
         # output selected node as 'ok'
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.137: *4* set_headline
-    def set_headline(self, param):
-        '''Change Headline of a node'''
-        w_newHeadline = param['name']
-        w_ap = param["ap"]
-        if w_ap:
-            w_p = self._ap_to_p(w_ap)
-            if w_p:
-                # set this node's new headline
-                w_bunch = self.commander.undoer.beforeChangeNodeContents(w_p)
-                w_p.h = w_newHeadline
-                self.commander.undoer.afterChangeNodeContents(
-                    w_p, 'Change Headline', w_bunch)
-                return self._outputPNode(w_p)
-        return self._outputError("Error in setNewHeadline")
+    #@+node:ekr.20210611084045.80: *3* leoCommand (to do: make private)
+    def leoCommand(self, p_command, param):
+        '''
+        Generic call to a method in Leo's Commands class or any subcommander class.
 
-    #@+node:ekr.20210611084045.138: *4* set_current_position & helper
-    def set_current_position(self, p_ap):
-        '''Select a node, or the first one found with its GNX'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
-            if w_p:
-                if self.commander.positionExists(w_p):
-                    # set this node as selection
-                    self.commander.selectPosition(w_p)
-                else:
-                    w_foundPNode = self._findPNodeFromGnx(p_ap['gnx'])
-                    if w_foundPNode:
-                        self.commander.selectPosition(w_foundPNode)
-                    else:
-                        print("Set Selection node does not exist! ap was:" +
-                              json.dumps(p_ap), flush=True)
-        # * return the finally selected node
-        if self.commander.p:
-            return self._outputPNode(self.commander.p)
+        The param["ap"] position is to be selected before having the command run,
+        while the param["keep"] parameter specifies wether the original position
+        should be re-selected afterward.
+
+        The whole of those operations is to be undoable as one undo step.
+
+        command: a method name (a string).
+        param["ap"]: an archived position.
+        param["keep"]: preserve the current selection, if possible.
+        '''
+        w_keepSelection = False  # Set default, optional component of param
+        if "keep" in param:
+            w_keepSelection = param["keep"]
+
+        w_ap = param["ap"]  # At least node parameter is present
+        if not w_ap:
+            return self._outputError(f"Error in {p_command}: no param ap")
+
+        w_p = self._ap_to_p(w_ap)
+        if not w_p:
+            return self._outputError(f"Error in {p_command}: no w_p position found")
+
+        w_func = self._get_commander_method(p_command)
+        if not w_func:
+            return self._outputError(f"Error in {p_command}: no method found")
+
+        if w_p == self.commander.p:
+            w_func(event=None)
         else:
-            return self._outputPNode()
+            w_oldPosition = self.commander.p
+            self.commander.selectPosition(w_p)
+            w_func(event=None)
+            if w_keepSelection and self.commander.positionExists(w_oldPosition):
+                self.commander.selectPosition(w_oldPosition)
 
-    #@+node:ekr.20210611084045.139: *5* _findPNodeFromGnx
-    def _findPNodeFromGnx(self, p_gnx):
-        '''Return first p node with this gnx or false'''
-        for p in self.commander.all_unique_positions():
-            if p.v.gnx == p_gnx:
-                return p
-        return False
-
-    #@+node:ekr.20210611084045.140: *4* expand_node
-    def expand_node(self, p_ap):
-        '''Expand a node'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
-            if w_p:
-                w_p.expand()
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
-
-    #@+node:ekr.20210611084045.141: *4* contract_node
-    def contract_node(self, p_ap):
-        '''Collapse a node'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
-            if w_p:
-                w_p.contract()
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
-
-    #@+node:ekr.20210611084045.142: *3* leoFlexx Conversion Functions
-    #@+node:ekr.20210611084045.143: *4* _create_gnx_to_vnode
-    def _create_gnx_to_vnode(self):
-        '''Make the first gnx_to_vnode array with all unique nodes'''
-        t1 = time.process_time()
-        self.gnx_to_vnode = {
-            v.gnx: v for v in self.commander.all_unique_nodes()}
-        # This is likely the only data that ever will be needed.
-        if 0:
-            print('app.create_all_data: %5.3f sec. %s entries' % (
-                (time.process_time()-t1), len(list(self.gnx_to_vnode.keys()))), flush=True)
-        self._test_round_trip_positions()
-
-    #@+node:ekr.20210611084045.144: *4* _test_round_trip_positions
-    def _test_round_trip_positions(self):
-        '''(From Leo plugin leoflexx.py) Test the round tripping of p_to_ap and ap_to_p.'''
-        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
-        old_d = self.gnx_to_vnode.copy()
-        old_len = len(list(self.gnx_to_vnode.keys()))
-        # t1 = time.process_time()
-        qtyAllPositions = 0
-        for p in self.commander.all_positions():
-            qtyAllPositions += 1
-            ap = self._p_to_ap(p)
-            p2 = self._ap_to_p(ap)
-            assert p == p2, (repr(p), repr(p2), repr(ap))
-        gnx_to_vnode = old_d
-        new_len = len(list(gnx_to_vnode.keys()))
-        assert old_len == new_len, (old_len, new_len)
-        # print('Leo file opened. Its outline contains ' + str(qtyAllPositions) + " nodes positions.", flush=True)
-        # print(('Testing app.test_round_trip_positions for all nodes: Total time: %5.3f sec.' % (time.process_time()-t1)), flush=True)
-
-    #@+node:ekr.20210611084045.145: *4* _ap_to_p
-    def _ap_to_p(self, ap):
-        '''
-        (From Leo plugin leoflexx.py) Convert an archived position to a true Leo position.
-        Return false if no key
-        '''
-        childIndex = ap['childIndex']
-
-        try:
-            v = self.gnx_to_vnode[ap['gnx']]  # Trap this
-            stack = [
-                (self.gnx_to_vnode[d['gnx']], d['childIndex'])
-                for d in ap['stack']
-            ]
-        except Exception:
-            return False
-
-        return leoNodes.position(v, childIndex, stack)
-
-    #@+node:ekr.20210611084045.146: *4* _p_to_ap
-    def _p_to_ap(self, p):
-        '''(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position.'''
-        if not p.v:
-            print('app.p_to_ap: no p.v: %r %s' % (p), flush=True)
-            assert False
-        p_gnx = p.v.gnx
-        # * Expand gnx-vnode translation table for any new node encountered
-        if p_gnx not in self.gnx_to_vnode:
-            self.gnx_to_vnode[p_gnx] = p.v
-        # * necessary properties for outline
-        w_ap = {
-            'childIndex': p._childIndex,
-            'gnx': p.v.gnx,
-            'level': p.level(),
-            'headline': p.h,
-            'stack': [{
-                'gnx': stack_v.gnx,
-                'childIndex': stack_childIndex,
-                'headline': stack_v.h,
-            } for (stack_v, stack_childIndex) in p.stack],
-        }
-        # TODO : Convert all those booleans into an 8 bit integer 'status' flag
-        # TODO : Send p.v.u as simple boolean flag and let user inspect ...
-        # TODO ... it with context menu command instead of hover tooltip.
-        if p.v.u:
-            w_ap['u'] = p.v.u
-        if bool(p.b):
-            w_ap['hasBody'] = True
-        if p.hasChildren():
-            w_ap['hasChildren'] = True
-        if p.isCloned():
-            w_ap['cloned'] = True
-        if p.isDirty():
-            w_ap['dirty'] = True
-        if p.isExpanded():
-            w_ap['expanded'] = True
-        if p.isMarked():
-            w_ap['marked'] = True
-        if p.isAnyAtFileNode():
-            w_ap['atFile'] = True
-        if p == self.commander.p:
-            w_ap['selected'] = True
-        return w_ap
-
-
+        return self._outputPNode(self.commander.p)
     #@-others
 #@+node:ekr.20210611084754.1: ** class TestLeoServer (unittest.TestCase)
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
@@ -2874,23 +2879,17 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     #@+node:ekr.20210611084754.2: *3* test: Setup and TearDown
     @classmethod
     def setUpClass(cls):
-        # Assume we are running in the leo-editor directory.
         # pylint: disable=import-self
         from leo.core import leoserver
-        global g_leoserver, g_server  ###
+        global g, g_leoserver, g_server
         g_leoserver = leoserver
-        g_server = leoserver.LeoServer() ### testing=True)
-        ### g = g_server.g
-        ### assert g
+        g_server = leoserver.LeoServer()
+        g = g_server.g
 
-    @classmethod
-    def tearDownClass(cls):
-        global g_leoserver, g_server
-        try:
-            g_server._shut_down({})
-            print('===== server did not terminate properly ====')
-        except g_leoserver.TerminateServer:
-            pass
+    # Unit tests don't start the server's event loop, so no teardown is needed.
+    # @classmethod
+    # def tearDownClass(cls):
+        # asyncio.get_event_loop().stop()
 
     def setUp(self):
         global g_server
@@ -2899,24 +2898,28 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         
     def tearDown(self):
         g.unitTesting = False 
-        
     #@+node:ekr.20210611084754.3: *3* test._request
     def _request(self, action, package=None):
        
         server = self.server
         self.request_number += 1
-        log_flag = package.get("log")
+        ### log_flag = True ### package.get("log")
         d = {
             "action": action,
-            "id": self.request_number
+            "id": self.request_number,
+            "param": {
+                "ap": None,  ### To do.
+                "keep": True,
+            },
         }
         if package:
             d ["package"] = package
-        response = server._do_message(d)  ### _do_messages does not exist yet.
+        answer = server._do_message(d)
+        ### response = server._do_message(d)
         # _make_response calls json_dumps. Undo it with json.loads.
-        answer = json.loads(response)
-        if log_flag:
-            g.printObj(answer, tag=f"response to {action!r}")
+        ### answer = json.loads(response)
+        # if log_flag:
+            # g.printObj(answer, tag=f"response to {action!r}")
         return answer
     #@+node:ekr.20210611084754.4: *3* test.test_leo_commands
     def test_leo_commands (self):
@@ -2960,7 +2963,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             'save_file',  # way too dangerous!
             # 'set_selection',  ### Not ready yet.
             'open_file', 'close_file',  # Done by hand.
-            'shut_down',  # Don't shut down the server.
+            ### 'shut_down',  # Don't shut down the server.
         ]
         expected = ['error']
         package_d = {
@@ -3029,7 +3032,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         tag = 'test_find_commands'
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
-        log = False
+        log = True
         # Open the file & create the StringFindTabManager.
         self._request("open_file", {"log": False, "filename": test_dot_leo})
         #
@@ -3107,8 +3110,6 @@ def main():
                 d = json.loads(json_string_message)
                 answer = server._do_message(d)
                 await websocket.send(answer)
-        except TerminateServer as e:  # pragma: no cover
-            print(f"{tag}: Connection terminated: {e}", flush=True)
         except websockets.exceptions.ConnectionClosedError as e:
             print(f"{tag}: Connection closed: {e}", flush=True)
         except Exception as e:  # pragma: no cover.
