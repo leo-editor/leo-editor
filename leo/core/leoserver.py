@@ -3092,7 +3092,7 @@ def main():
         try:
             server.initConnection(websocket)
             # Start by sending empty as 'ok'.
-            await websocket.send(server._sendLeoBridgePackage())
+            await websocket.send(server._makePackage())
             server.logSignon()
             async for json_string_message in websocket:
                 d = json.loads(json_string_message)
