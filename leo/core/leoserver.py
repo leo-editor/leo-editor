@@ -318,7 +318,7 @@ class LeoServer:
     #@+node:ekr.20210613033705.1: *3* server: private methods
     # These methods start with underscore.
     # They are not accessible from requests.
-    #@+node:ekr.20210613045120.1: *4* server: private command handling
+    #@+node:ekr.20210613045120.1: *4* server: private command handling methods
     #@+node:ekr.20210612092041.1: *5* server._do_message
     def _do_message(self, d):
         """
@@ -381,9 +381,16 @@ class LeoServer:
                 self.commander.selectPosition(w_oldPosition)
 
         return self._outputPNode(self.commander.p)
+    #@+node:ekr.20210611084045.71: *5* server._makePackage
+    def _makePackage(self, p_package=None):
+        if p_package is None:
+            p_package = {}
+        p_package["id"] = self.currentActionId
+        return(json.dumps(p_package, separators=(',', ':')))  # send as json
+
     #@+node:ekr.20210611084045.73: *5* server._outputBodyData
     def _outputBodyData(self, p_bodyText=""):
-        return self._sendLeoBridgePackage({"body": p_bodyText})
+        return self._makePackage({"body": p_bodyText})
 
     #@+node:ekr.20210611084045.72: *5* server._outputError
     def _outputError(self, message):
@@ -397,9 +404,9 @@ class LeoServer:
     def _outputPNode(self, p_node=False):
         if p_node:
             # Single node, singular
-            return self._sendLeoBridgePackage({"node": self._p_to_ap(p_node)})
+            return self._makePackage({"node": self._p_to_ap(p_node)})
         else:
-            return self._sendLeoBridgePackage({"node": None})
+            return self._makePackage({"node": None})
 
     #@+node:ekr.20210611084045.76: *5* server._outputPNodes
     def _outputPNodes(self, p_pList):
@@ -407,18 +414,11 @@ class LeoServer:
         for p in p_pList:
             w_apList.append(self._p_to_ap(p))
         # Multiple nodes, plural
-        return self._sendLeoBridgePackage({"children": w_apList})
+        return self._makePackage({"children": w_apList})
 
     #@+node:ekr.20210611084045.74: *5* server._outputSelectionData
     def _outputSelectionData(self, p_bodySelection):
-        return self._sendLeoBridgePackage({"bodySelection": p_bodySelection})
-
-    #@+node:ekr.20210611084045.71: *5* server._sendLeoBridgePackage
-    def _sendLeoBridgePackage(self, p_package=None):
-        if p_package is None:
-            p_package = {}
-        p_package["id"] = self.currentActionId
-        return(json.dumps(p_package, separators=(',', ':')))  # send as json
+        return self._makePackage({"bodySelection": p_bodySelection})
 
     #@+node:ekr.20210611084045.69: *5* server._setActionId
     def _setActionId(self, p_id):
@@ -441,7 +441,7 @@ class LeoServer:
         if in_headline:
             self.g.app.gui.set_focus(c, self.headlineWidget)
         # no return
-    #@+node:ekr.20210612150704.1: *4* server: private ap/gnx methods
+    #@+node:ekr.20210612150704.1: *4* server: private position/vnode methods
     #@+node:ekr.20210611084045.145: *5* _ap_to_p
     def _ap_to_p(self, ap):
         '''
@@ -630,7 +630,7 @@ class LeoServer:
     def _getTotalOpened(self):
         '''Get total of opened commander (who have closed == false)'''
         return sum(1 for z in self.g.app.commanders() if not z.closed)
-    #@+node:ekr.20210612101404.1: *5* _get_all_server_commands (New)
+    #@+node:ekr.20210612101404.1: *5* _get_all_server_commands
     def _get_all_server_commands(self):
         """
         Private server method:
@@ -649,7 +649,7 @@ class LeoServer:
             for w_key in w_dict:
                 w_entry = {"name": w_dict[w_key], "index": str(w_key)}
                 w_buttons.append(w_entry)
-        return self._sendLeoBridgePackage({"buttons": w_buttons})
+        return self._makePackage({"buttons": w_buttons})
 
     #@+node:ekr.20210611084045.106: *5* remove_button
     def remove_button(self, param):
@@ -697,7 +697,7 @@ class LeoServer:
                 }
                 w_files.append(w_entry)
 
-        return self._sendLeoBridgePackage({"files": w_files})
+        return self._makePackage({"files": w_files})
 
     #@+node:ekr.20210611084045.83: *5* get_ui_states
     def get_ui_states(self, param):
@@ -728,7 +728,7 @@ class LeoServer:
             w_states["canPromote"] = False
             w_states["canDehoist"] = False
 
-        return self._sendLeoBridgePackage({"states": w_states})
+        return self._makePackage({"states": w_states})
 
     #@+node:ekr.20210611084045.84: *5* set_opened_file
     def set_opened_file(self, param):
@@ -751,7 +751,7 @@ class LeoServer:
                         "node": self._p_to_ap(self.commander.p)}
             # maybe needed for frame wrapper
             self.commander.selectPosition(self.commander.p)
-            return self._sendLeoBridgePackage(w_result)
+            return self._makePackage(w_result)
         else:
             return self._outputError('Error in setOpenedFile')
 
@@ -790,7 +790,7 @@ class LeoServer:
             self._create_gnx_to_vnode()
             w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
                         "node": self._p_to_ap(self.commander.p)}
-            return self._sendLeoBridgePackage(w_result)
+            return self._makePackage(w_result)
         else:
             return self._outputError('Error in openFile')
 
@@ -831,7 +831,7 @@ class LeoServer:
             self._create_gnx_to_vnode()
             w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
                         "node": self._p_to_ap(self.commander.p)}
-            return self._sendLeoBridgePackage(w_result)
+            return self._makePackage(w_result)
         else:
             return self._outputError('Error in openFiles')
 
@@ -852,7 +852,7 @@ class LeoServer:
                 self.commander.close()
             else:
                 # Cannot close, ask to save, ignore or cancel
-                return self._sendLeoBridgePackage()
+                return self._makePackage()
 
         # Switch commanders to first available
         w_total = self._getTotalOpened()
@@ -868,7 +868,7 @@ class LeoServer:
         else:
             w_result = {"total": 0}
 
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.88: *5* save_file
     def save_file(self, param):
@@ -884,7 +884,7 @@ class LeoServer:
                 print("Error while saving", param['name'], flush=True)
                 print(str(e),  param['name'],  flush=True)
 
-        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._makePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210611084045.89: *5* import_any_file
     def import_any_file(self, param):
@@ -939,7 +939,7 @@ class LeoServer:
                     treeType='@auto',  # was '@clean'
                     # Experimental: attempt to use permissive section ref logic.
                 )
-        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._makePackage()  # Just send empty as 'ok'
     #@+node:ekr.20210611084045.113: *4* server: node commands
     #@+node:ekr.20210611084045.116: *5* clone_node
     def clone_node(self, param):
@@ -969,7 +969,7 @@ class LeoServer:
             w_p = self._ap_to_p(p_ap)
             if w_p:
                 w_p.contract()
-        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._makePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210611084045.117: *5* cut_node
     def cut_node(self, param):
@@ -1038,7 +1038,7 @@ class LeoServer:
             w_p = self._ap_to_p(p_ap)
             if w_p:
                 w_p.expand()
-        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._makePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210611084045.120: *5* insert_named_node
     def insert_named_node(self, param):
@@ -1112,7 +1112,7 @@ class LeoServer:
     def test(self, param):
         '''Utility test function for debugging'''
         print("Called test")
-        return self._sendLeoBridgePackage({'testReturnedKey': 'testReturnedValue'})
+        return self._makePackage({'testReturnedKey': 'testReturnedValue'})
         # return self._outputPNode(self.commander.p)
 
     #@+node:ekr.20210611084045.121: *5* undo
@@ -1145,7 +1145,7 @@ class LeoServer:
         Gets search options
         """
         w_result = self.commander.findCommands.ftm.get_settings()
-        return self._sendLeoBridgePackage({"searchSettings": w_result.__dict__})
+        return self._makePackage({"searchSettings": w_result.__dict__})
 
     #@+node:ekr.20210611084045.92: *5* set_search_settings
     def set_search_settings(self, param):
@@ -1209,7 +1209,7 @@ class LeoServer:
 
         # Confirm by sending back the settings to leointeg
         w_result = ftm.get_settings()
-        return self._sendLeoBridgePackage({"searchSettings": w_result.__dict__})
+        return self._makePackage({"searchSettings": w_result.__dict__})
 
     #@+node:ekr.20210611084045.93: *5* find_all
     def find_all(self, param):
@@ -1222,7 +1222,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.94: *5* find_next
     def find_next(self, param):
@@ -1238,7 +1238,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": found, "pos": pos, "newpos": newpos,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.95: *5* find_previous
     def find_previous(self, param):
@@ -1254,7 +1254,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": found, "pos": pos, "newpos": newpos,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
 
     #@+node:ekr.20210611084045.96: *5* replace
@@ -1268,7 +1268,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": True,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.97: *5* replace_then_find
     def replace_then_find(self, param):
@@ -1281,7 +1281,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.98: *5* replace_all
     def replace_all(self, param):
@@ -1294,7 +1294,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.99: *5* clone_find_all
     def clone_find_all(self, param):
@@ -1307,7 +1307,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.100: *5* clone_find_all_flattened
     def clone_find_all_flattened(self, param):
@@ -1320,7 +1320,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
     #@+node:ekr.20210611084045.101: *5* find_var
 
     def find_var(self, param):
@@ -1334,7 +1334,7 @@ class LeoServer:
         ### w = self.g.app.gui.get_focus()
         ### focus = self.g.app.gui.widget_name(w)
         w_result = {"node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.102: *5* find_def
     def find_def(self, param):
@@ -1348,7 +1348,7 @@ class LeoServer:
         ### w = self.g.app.gui.get_focus()
         ### focus = self.g.app.gui.widget_name(w)
         w_result = {"node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210611084045.103: *5* goto_global_line
     def goto_global_line(self, param):
@@ -1357,7 +1357,7 @@ class LeoServer:
         junk_p, junk_offset, found = c.gotoCommands.find_file_line(
             n=int(param['line']))
         w_result = {"found": found, "node": self._p_to_ap(c.p)}
-        return self._sendLeoBridgePackage(w_result)
+        return self._makePackage(w_result)
 
     #@+node:ekr.20210613035010.1: *4* server: page up/down commands
     #@+node:ekr.20210611084045.126: *5* page_down
@@ -1440,7 +1440,7 @@ class LeoServer:
             # print(f"__doc__: {len(doc):4} {command_name:40} {func_name} ", flush=True)
             # print(f"{func_name} ", flush=True)
 
-        return self._sendLeoBridgePackage({"commands": result})
+        return self._makePackage({"commands": result})
 
     #@+node:ekr.20210611084045.110: *6* _bad_commands
     def _bad_commands(self):
@@ -2501,12 +2501,12 @@ class LeoServer:
     def set_config(self, p_config):
         '''Got leoInteg's config from client'''
         self.leoIntegConfig = p_config
-        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._makePackage()  # Just send empty as 'ok'
     #@+node:ekr.20210611084045.65: *5* set_ask_result
     def set_ask_result(self, p_result):
         '''Got the result to an asked question/warning from client'''
         ### self.g.app.externalFilesController.integResult(p_result)  ### Does not exist
-        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._makePackage()  # Just send empty as 'ok'
     #@+node:ekr.20210611084045.64: *5* sendAsyncOutput ****
     def sendAsyncOutput(self, p_package):
         ###
@@ -2526,8 +2526,7 @@ class LeoServer:
         '''Get gnx array from all unique nodes'''
         w_all_gnx = [
             p.v.gnx for p in self.commander.all_unique_positions(copy=False)]
-        return self._sendLeoBridgePackage({"gnx": w_all_gnx})
-
+        return self._makePackage({"gnx": w_all_gnx})
     #@+node:ekr.20210611084045.132: *5* get_body
     def get_body(self, p_gnx):
         '''EMIT OUT body of a node'''
@@ -2541,7 +2540,6 @@ class LeoServer:
                     return self._outputBodyData()  # default "" empty string
         # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
         return self._outputBodyData()
-
     #@+node:ekr.20210611084045.133: *5* get_body_length
     def get_body_length(self, p_gnx):
         '''EMIT OUT body string length of a node'''
@@ -2549,10 +2547,9 @@ class LeoServer:
             w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
             if w_v and w_v.b:
                 # Length in bytes, not just by character count.
-                return self._sendLeoBridgePackage({"len": len(w_v.b.encode('utf-8'))})
-        # TODO : May need to signal inexistent by self._sendLeoBridgePackage()
-        return self._sendLeoBridgePackage({"len": 0})  # empty as default
-
+                return self._makePackage({"len": len(w_v.b.encode('utf-8'))})
+        # TODO : May need to signal inexistent by self._makePackage()
+        return self._makePackage({"len": 0})  # empty as default
     #@+node:ekr.20210611084045.127: *5* get_body_states
     def get_body_states(self, p_ap):
         """
@@ -2657,8 +2654,7 @@ class LeoServer:
                     "end": {"line": w_endRow, "col": w_endCol, "index": w_endI}
                 }
             }
-        return self._sendLeoBridgePackage(states)
-
+        return self._makePackage(states)
     #@+node:ekr.20210611084045.128: *5* get_children & helper
     def get_children(self, p_ap):
         '''EMIT OUT list of children of a node'''
@@ -2674,7 +2670,6 @@ class LeoServer:
             else:
                 # this outputs all Root Children
                 return self._outputPNodes(self._yieldAllRootChildren())
-
     #@+node:ekr.20210611084045.129: *6* _yieldAllRootChildren
     def _yieldAllRootChildren(self):
         '''Return all root children P nodes'''
@@ -2691,8 +2686,7 @@ class LeoServer:
         """
         w = self.g.app.gui.get_focus()
         focus = self.g.app.gui.widget_name(w)
-        return self._sendLeoBridgePackage({"focus": focus})
-
+        return self._makePackage({"focus": focus})
     #@+node:ekr.20210611084045.130: *5* get_parent
     def get_parent(self, p_ap):
         '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
@@ -2701,7 +2695,6 @@ class LeoServer:
             if w_p and w_p.hasParent():
                 return self._outputPNode(w_p.getParent())  # if not root
         return self._outputPNode()  # default empty for root as default
-
     #@+node:ekr.20210613034845.1: *4* server: public setters
     #@+node:ekr.20210611084045.134: *5* set_body
     def set_body(self, param):
