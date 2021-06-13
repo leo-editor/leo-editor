@@ -803,7 +803,7 @@ TEXT_HTML_HEADER = f'''<html>
     <meta http-equiv="content-type" content="text/html; charset={ENCODING}">
 </head>
 '''
-LEO_THEME_NAME = 'DefaultTheme'
+LEO_THEME_NAME = 'DefaultTheme.leo'
 MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
