@@ -629,13 +629,7 @@ class LeoServer:
     #@+node:ekr.20210611084045.61: *5* _getTotalOpened
     def _getTotalOpened(self):
         '''Get total of opened commander (who have closed == false)'''
-        w_total = 0
-        for w_commander in self.g.app.commanders():
-            if not w_commander.closed:
-                w_total = w_total + 1
-        return w_total
-
-        # return sum(1 for z in self.g.app.commanders() if not z.closed)
+        return sum(1 for z in self.g.app.commanders() if not z.closed)
     #@+node:ekr.20210612101404.1: *5* _get_all_server_commands (New)
     def _get_all_server_commands(self):
         """
