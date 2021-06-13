@@ -270,7 +270,7 @@ class LeoServer:
     #@+node:ekr.20210612151258.1: *3* server: birth
     #@+node:ekr.20210611084045.55: *4* __init__
     def __init__(self):
-        
+
         self.gnx_to_vnode = []  # utility array - see leoflexx.py in leoPluginsRef.leo
         self.bridge = leoBridge.controller(
             gui='nullGui',
@@ -281,7 +281,7 @@ class LeoServer:
             verbose=False,
         )
         self.g = g = self.bridge.globals()
-      
+
         # Intercept Log Pane output: Sends to client's log pane
         self.g.es = self.es  # pointer - not a function call
         self.currentActionId = 1  # Id of action being processed, STARTS AT 1 = Initial 'ready'
@@ -294,23 +294,8 @@ class LeoServer:
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.idleTimeManager.start()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
-        
+
         self.headlineWidget = self.g.bunch(_name='tree') ### Probably not needed.
-        
-        ### leoBridgeServer code.
-            # # Replacement instances to Leo's codebase :
-            # # getScript, IdleTime, idleTimeManager and externalFilesController
-            # self.g.getScript = self._getScript
-            # self.g.IdleTime = self._idleTime
-            # self.g.app.idleTimeManager = IdleTimeManager(self.g)
-            # # attach instance to g.app for calls to set_time, etc.
-            # self.g.app.externalFilesController = ExternalFilesController(self)
-            
-            # # TODO : Maybe use those yes/no replacement right before actual usage instead of in init. (to allow re-use/switching)
-            # # override for "revert to file" operation
-            # self.g.app.gui.runAskYesNoDialog = self._returnYes
-            # self.g.app.gui.show_find_success = self._show_find_success
-        
     #@+node:ekr.20210611084045.78: *4* initConnection
     def initConnection(self, p_webSocket):
         self.webSocket = p_webSocket
@@ -542,7 +527,6 @@ class LeoServer:
     #@+node:ekr.20210611084045.79: *5* _get_commander_method
     def _get_commander_method(self, p_command):
         """ Return the given method (p_command) in the Commands class or subcommanders."""
-        # self.g.trace(p_command)
         #
         # First, try the commands class.
         w_func = getattr(self.commander, p_command, None)
@@ -581,12 +565,8 @@ class LeoServer:
             if subcommander:
                 w_func = getattr(subcommander, p_command, None)
                 if w_func:
-                    ### self.g.trace(f"Found c.{ivar}.{p_command}")
                     return w_func
-            # else:
-                # self.g.trace(f"Not Found: c.{ivar}") # Should never happen.
         return None
-
     #@+node:ekr.20210611084045.62: *5* _getFirstOpenedCommander
     def _getFirstOpenedCommander(self):
         '''Get first opened commander, or False if there are none.'''
@@ -1405,7 +1385,7 @@ class LeoServer:
     def get_all_leo_commands(self, param):
         """
         Return a list of all Leo commands that make sense in leoInteg.
-        
+
         Unit tests use this.
         """
         c = self.commander
@@ -2509,9 +2489,9 @@ class LeoServer:
         return self._makePackage()  # Just send empty as 'ok'
     #@+node:ekr.20210611084045.64: *5* sendAsyncOutput ****
     def sendAsyncOutput(self, p_package):
-        ###
+
         ### In leobridgeserver.py, several methods of the ExternalFilesController class call this method!
-        ###
+
         s = json.dumps(p_package, separators=(',', ':'))
         if "async" not in p_package:
             print('[sendAsyncOutput] Error async member missing in package parameter')
@@ -2811,7 +2791,6 @@ class LeoServer:
         w_scroll = param['scroll']
 
         # IF sent as number use as is - no conversion needed
-        ### if type(w_active) == int:
         if isinstance(w_active, int):
             w_insert = w_active
             w_startSel = w_start
