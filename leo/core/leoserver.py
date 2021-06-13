@@ -318,6 +318,112 @@ class LeoServer:
     #@+node:ekr.20210613033705.1: *3* server: private methods
     # These methods start with underscore.
     # They are not accessible from requests.
+    #@+node:ekr.20210613045120.1: *4* server: private command handling
+    #@+node:ekr.20210612092041.1: *5* server._do_message
+    def _do_message(self, d):
+        """
+        A refactoring of web_socket_handler, for unit tests.
+        """
+        server = self
+        action = d and d.get('action')
+        if not action:
+            return self._outputError("No action")
+        param = d.get('param')
+        server._setActionId(d['id'])  # Set the server action.
+        if action[0] == "_":
+            return server._outputError('Action starts with underscore')
+        if action[0] == "!":  # Execute a controller method.
+            name = action[1:]
+            func = getattr(server, name, None)
+            if func:
+                return func(param)
+            return self._outputError(f"Unknown server method: {name}")
+        # Attempt to execute the command directly on the commander/subcommander.
+        return server._leoCommand(action, param)
+    #@+node:ekr.20210611084045.80: *5* server._leoCommand
+    def _leoCommand(self, p_command, param):
+        '''
+        Generic call to a method in Leo's Commands class or any subcommander class.
+
+        The param["ap"] position is to be selected before having the command run,
+        while the param["keep"] parameter specifies wether the original position
+        should be re-selected afterward.
+
+        The whole of those operations is to be undoable as one undo step.
+
+        command: a method name (a string).
+        param["ap"]: an archived position.
+        param["keep"]: preserve the current selection, if possible.
+        '''
+        w_keepSelection = False  # Set default, optional component of param
+        if "keep" in param:
+            w_keepSelection = param["keep"]
+
+        w_ap = param["ap"]  # At least node parameter is present
+        if not w_ap:
+            return self._outputError(f"Error in {p_command}: no param ap")
+
+        w_p = self._ap_to_p(w_ap)
+        if not w_p:
+            return self._outputError(f"Error in {p_command}: no w_p position found")
+
+        w_func = self._get_commander_method(p_command)
+        if not w_func:
+            return self._outputError(f"Error in {p_command}: no method found")
+
+        if w_p == self.commander.p:
+            w_func(event=None)
+        else:
+            w_oldPosition = self.commander.p
+            self.commander.selectPosition(w_p)
+            w_func(event=None)
+            if w_keepSelection and self.commander.positionExists(w_oldPosition):
+                self.commander.selectPosition(w_oldPosition)
+
+        return self._outputPNode(self.commander.p)
+    #@+node:ekr.20210611084045.73: *5* server._outputBodyData
+    def _outputBodyData(self, p_bodyText=""):
+        return self._sendLeoBridgePackage({"body": p_bodyText})
+
+    #@+node:ekr.20210611084045.72: *5* server._outputError
+    def _outputError(self, message):
+        """Issue an error message and return an error response."""
+        print(f"Invalid request: {message}", flush=True)
+        return {
+            "id": self.currentActionId,
+            "error": message,
+        }
+    #@+node:ekr.20210611084045.75: *5* server._outputPNode
+    def _outputPNode(self, p_node=False):
+        if p_node:
+            # Single node, singular
+            return self._sendLeoBridgePackage({"node": self._p_to_ap(p_node)})
+        else:
+            return self._sendLeoBridgePackage({"node": None})
+
+    #@+node:ekr.20210611084045.76: *5* server._outputPNodes
+    def _outputPNodes(self, p_pList):
+        w_apList = []
+        for p in p_pList:
+            w_apList.append(self._p_to_ap(p))
+        # Multiple nodes, plural
+        return self._sendLeoBridgePackage({"children": w_apList})
+
+    #@+node:ekr.20210611084045.74: *5* server._outputSelectionData
+    def _outputSelectionData(self, p_bodySelection):
+        return self._sendLeoBridgePackage({"bodySelection": p_bodySelection})
+
+    #@+node:ekr.20210611084045.71: *5* server._sendLeoBridgePackage
+    def _sendLeoBridgePackage(self, p_package=None):
+        if p_package is None:
+            p_package = {}
+        p_package["id"] = self.currentActionId
+        return(json.dumps(p_package, separators=(',', ':')))  # send as json
+
+    #@+node:ekr.20210611084045.69: *5* server._setActionId
+    def _setActionId(self, p_id):
+        self.currentActionId = p_id
+
     #@+node:ekr.20210613033627.1: *4* server: private (dummy) return values
     #@+node:ekr.20210611084045.57: *5* _returnNo
     def _returnNo(self, *arguments, **kwargs):
@@ -335,7 +441,7 @@ class LeoServer:
         if in_headline:
             self.g.app.gui.set_focus(c, self.headlineWidget)
         # no return
-    #@+node:ekr.20210612150704.1: *4* server: private utils
+    #@+node:ekr.20210612150704.1: *4* server: private ap/gnx methods
     #@+node:ekr.20210611084045.145: *5* _ap_to_p
     def _ap_to_p(self, ap):
         '''
@@ -367,6 +473,72 @@ class LeoServer:
                 (time.process_time()-t1), len(list(self.gnx_to_vnode.keys()))), flush=True)
         self._test_round_trip_positions()
 
+    #@+node:ekr.20210611084045.146: *5* _p_to_ap
+    def _p_to_ap(self, p):
+        '''(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position.'''
+        if not p.v:
+            print('app.p_to_ap: no p.v: %r %s' % (p), flush=True)
+            assert False
+        p_gnx = p.v.gnx
+        # * Expand gnx-vnode translation table for any new node encountered
+        if p_gnx not in self.gnx_to_vnode:
+            self.gnx_to_vnode[p_gnx] = p.v
+        # * necessary properties for outline
+        w_ap = {
+            'childIndex': p._childIndex,
+            'gnx': p.v.gnx,
+            'level': p.level(),
+            'headline': p.h,
+            'stack': [{
+                'gnx': stack_v.gnx,
+                'childIndex': stack_childIndex,
+                'headline': stack_v.h,
+            } for (stack_v, stack_childIndex) in p.stack],
+        }
+        # TODO : Convert all those booleans into an 8 bit integer 'status' flag
+        # TODO : Send p.v.u as simple boolean flag and let user inspect ...
+        # TODO ... it with context menu command instead of hover tooltip.
+        if p.v.u:
+            w_ap['u'] = p.v.u
+        if bool(p.b):
+            w_ap['hasBody'] = True
+        if p.hasChildren():
+            w_ap['hasChildren'] = True
+        if p.isCloned():
+            w_ap['cloned'] = True
+        if p.isDirty():
+            w_ap['dirty'] = True
+        if p.isExpanded():
+            w_ap['expanded'] = True
+        if p.isMarked():
+            w_ap['marked'] = True
+        if p.isAnyAtFileNode():
+            w_ap['atFile'] = True
+        if p == self.commander.p:
+            w_ap['selected'] = True
+        return w_ap
+
+
+    #@+node:ekr.20210611084045.144: *5* _test_round_trip_positions
+    def _test_round_trip_positions(self):
+        '''(From Leo plugin leoflexx.py) Test the round tripping of p_to_ap and ap_to_p.'''
+        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
+        old_d = self.gnx_to_vnode.copy()
+        old_len = len(list(self.gnx_to_vnode.keys()))
+        # t1 = time.process_time()
+        qtyAllPositions = 0
+        for p in self.commander.all_positions():
+            qtyAllPositions += 1
+            ap = self._p_to_ap(p)
+            p2 = self._ap_to_p(ap)
+            assert p == p2, (repr(p), repr(p2), repr(ap))
+        gnx_to_vnode = old_d
+        new_len = len(list(gnx_to_vnode.keys()))
+        assert old_len == new_len, (old_len, new_len)
+        # print('Leo file opened. Its outline contains ' + str(qtyAllPositions) + " nodes positions.", flush=True)
+        # print(('Testing app.test_round_trip_positions for all nodes: Total time: %5.3f sec.' % (time.process_time()-t1)), flush=True)
+
+    #@+node:ekr.20210613044606.1: *4* server: private getters
     #@+node:ekr.20210611084045.79: *5* _get_commander_method
     def _get_commander_method(self, p_command):
         """ Return the given method (p_command) in the Commands class or subcommanders."""
@@ -464,101 +636,7 @@ class LeoServer:
         return w_total
 
         # return sum(1 for z in self.g.app.commanders() if not z.closed)
-    #@+node:ekr.20210611084045.72: *5* _outputError
-    def _outputError(self, message):
-        """Issue an error message and return an error response."""
-        print(f"Invalid request: {message}", flush=True)
-        return {
-            "id": self.currentActionId,
-            "error": message,
-        }
-    #@+node:ekr.20210611084045.146: *5* _p_to_ap
-    def _p_to_ap(self, p):
-        '''(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position.'''
-        if not p.v:
-            print('app.p_to_ap: no p.v: %r %s' % (p), flush=True)
-            assert False
-        p_gnx = p.v.gnx
-        # * Expand gnx-vnode translation table for any new node encountered
-        if p_gnx not in self.gnx_to_vnode:
-            self.gnx_to_vnode[p_gnx] = p.v
-        # * necessary properties for outline
-        w_ap = {
-            'childIndex': p._childIndex,
-            'gnx': p.v.gnx,
-            'level': p.level(),
-            'headline': p.h,
-            'stack': [{
-                'gnx': stack_v.gnx,
-                'childIndex': stack_childIndex,
-                'headline': stack_v.h,
-            } for (stack_v, stack_childIndex) in p.stack],
-        }
-        # TODO : Convert all those booleans into an 8 bit integer 'status' flag
-        # TODO : Send p.v.u as simple boolean flag and let user inspect ...
-        # TODO ... it with context menu command instead of hover tooltip.
-        if p.v.u:
-            w_ap['u'] = p.v.u
-        if bool(p.b):
-            w_ap['hasBody'] = True
-        if p.hasChildren():
-            w_ap['hasChildren'] = True
-        if p.isCloned():
-            w_ap['cloned'] = True
-        if p.isDirty():
-            w_ap['dirty'] = True
-        if p.isExpanded():
-            w_ap['expanded'] = True
-        if p.isMarked():
-            w_ap['marked'] = True
-        if p.isAnyAtFileNode():
-            w_ap['atFile'] = True
-        if p == self.commander.p:
-            w_ap['selected'] = True
-        return w_ap
-
-
-    #@+node:ekr.20210611084045.144: *5* _test_round_trip_positions
-    def _test_round_trip_positions(self):
-        '''(From Leo plugin leoflexx.py) Test the round tripping of p_to_ap and ap_to_p.'''
-        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
-        old_d = self.gnx_to_vnode.copy()
-        old_len = len(list(self.gnx_to_vnode.keys()))
-        # t1 = time.process_time()
-        qtyAllPositions = 0
-        for p in self.commander.all_positions():
-            qtyAllPositions += 1
-            ap = self._p_to_ap(p)
-            p2 = self._ap_to_p(ap)
-            assert p == p2, (repr(p), repr(p2), repr(ap))
-        gnx_to_vnode = old_d
-        new_len = len(list(gnx_to_vnode.keys()))
-        assert old_len == new_len, (old_len, new_len)
-        # print('Leo file opened. Its outline contains ' + str(qtyAllPositions) + " nodes positions.", flush=True)
-        # print(('Testing app.test_round_trip_positions for all nodes: Total time: %5.3f sec.' % (time.process_time()-t1)), flush=True)
-
-    #@+node:ekr.20210612092041.1: *5* server._do_message (New)
-    def _do_message(self, d):
-        """
-        A refactoring of web_socket_handler, for unit tests.
-        """
-        server = self
-        action = d and d.get('action')
-        if not action:
-            return self._outputError("No action")
-        param = d.get('param')
-        server.setActionId(d['id'])  # Set the server action.
-        if action[0] == "_":
-            return server._outputError('Action starts with underscore')
-        if action[0] == "!":  # Execute a controller method.
-            name = action[1:]
-            func = getattr(server, name, None)
-            if func:
-                return func(param)
-            return self._outputError(f"Unknown server method: {name}")
-        # Attempt to execute the command directly on the commander/subcommander.
-        return server.leoCommand(action, param)
-    #@+node:ekr.20210612101404.1: *5* server._get_all_server_commands (New)
+    #@+node:ekr.20210612101404.1: *5* _get_all_server_commands (New)
     def _get_all_server_commands(self):
         """
         Private server method:
@@ -566,42 +644,6 @@ class LeoServer:
         """
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
-    #@+node:ekr.20210611084045.68: *4* server: JSON Output Functions
-    #@+node:ekr.20210611084045.69: *5* setActionId (to do: make private)
-    def setActionId(self, p_id):
-        self.currentActionId = p_id
-
-    #@+node:ekr.20210611084045.71: *5* sendLeoBridgePackage (to do: make private)
-    def sendLeoBridgePackage(self, p_package=None):
-        if p_package is None:
-            p_package = {}
-        p_package["id"] = self.currentActionId
-        return(json.dumps(p_package, separators=(',', ':')))  # send as json
-
-    #@+node:ekr.20210611084045.73: *5* _outputBodyData
-    def _outputBodyData(self, p_bodyText=""):
-        return self.sendLeoBridgePackage({"body": p_bodyText})
-
-    #@+node:ekr.20210611084045.74: *5* _outputSelectionData
-    def _outputSelectionData(self, p_bodySelection):
-        return self.sendLeoBridgePackage({"bodySelection": p_bodySelection})
-
-    #@+node:ekr.20210611084045.75: *5* _outputPNode
-    def _outputPNode(self, p_node=False):
-        if p_node:
-            # Single node, singular
-            return self.sendLeoBridgePackage({"node": self._p_to_ap(p_node)})
-        else:
-            return self.sendLeoBridgePackage({"node": None})
-
-    #@+node:ekr.20210611084045.76: *5* _outputPNodes
-    def _outputPNodes(self, p_pList):
-        w_apList = []
-        for p in p_pList:
-            w_apList.append(self._p_to_ap(p))
-        # Multiple nodes, plural
-        return self.sendLeoBridgePackage({"children": w_apList})
-
     #@+node:ekr.20210612150134.1: *3* server: public (leo) commands
     #@+node:ekr.20210611084045.104: *4* server: button commands
     #@+node:ekr.20210611084045.105: *5* get_buttons
@@ -613,7 +655,7 @@ class LeoServer:
             for w_key in w_dict:
                 w_entry = {"name": w_dict[w_key], "index": str(w_key)}
                 w_buttons.append(w_entry)
-        return self.sendLeoBridgePackage({"buttons": w_buttons})
+        return self._sendLeoBridgePackage({"buttons": w_buttons})
 
     #@+node:ekr.20210611084045.106: *5* remove_button
     def remove_button(self, param):
@@ -661,7 +703,7 @@ class LeoServer:
                 }
                 w_files.append(w_entry)
 
-        return self.sendLeoBridgePackage({"files": w_files})
+        return self._sendLeoBridgePackage({"files": w_files})
 
     #@+node:ekr.20210611084045.83: *5* get_ui_states
     def get_ui_states(self, param):
@@ -692,7 +734,7 @@ class LeoServer:
             w_states["canPromote"] = False
             w_states["canDehoist"] = False
 
-        return self.sendLeoBridgePackage({"states": w_states})
+        return self._sendLeoBridgePackage({"states": w_states})
 
     #@+node:ekr.20210611084045.84: *5* set_opened_file
     def set_opened_file(self, param):
@@ -715,7 +757,7 @@ class LeoServer:
                         "node": self._p_to_ap(self.commander.p)}
             # maybe needed for frame wrapper
             self.commander.selectPosition(self.commander.p)
-            return self.sendLeoBridgePackage(w_result)
+            return self._sendLeoBridgePackage(w_result)
         else:
             return self._outputError('Error in setOpenedFile')
 
@@ -754,7 +796,7 @@ class LeoServer:
             self._create_gnx_to_vnode()
             w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
                         "node": self._p_to_ap(self.commander.p)}
-            return self.sendLeoBridgePackage(w_result)
+            return self._sendLeoBridgePackage(w_result)
         else:
             return self._outputError('Error in openFile')
 
@@ -795,7 +837,7 @@ class LeoServer:
             self._create_gnx_to_vnode()
             w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
                         "node": self._p_to_ap(self.commander.p)}
-            return self.sendLeoBridgePackage(w_result)
+            return self._sendLeoBridgePackage(w_result)
         else:
             return self._outputError('Error in openFiles')
 
@@ -816,7 +858,7 @@ class LeoServer:
                 self.commander.close()
             else:
                 # Cannot close, ask to save, ignore or cancel
-                return self.sendLeoBridgePackage()
+                return self._sendLeoBridgePackage()
 
         # Switch commanders to first available
         w_total = self._getTotalOpened()
@@ -832,7 +874,7 @@ class LeoServer:
         else:
             w_result = {"total": 0}
 
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.88: *5* save_file
     def save_file(self, param):
@@ -848,7 +890,7 @@ class LeoServer:
                 print("Error while saving", param['name'], flush=True)
                 print(str(e),  param['name'],  flush=True)
 
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210611084045.89: *5* import_any_file
     def import_any_file(self, param):
@@ -903,7 +945,7 @@ class LeoServer:
                     treeType='@auto',  # was '@clean'
                     # Experimental: attempt to use permissive section ref logic.
                 )
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
     #@+node:ekr.20210611084045.113: *4* server: node commands
     #@+node:ekr.20210611084045.116: *5* clone_node
     def clone_node(self, param):
@@ -933,7 +975,7 @@ class LeoServer:
             w_p = self._ap_to_p(p_ap)
             if w_p:
                 w_p.contract()
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210611084045.117: *5* cut_node
     def cut_node(self, param):
@@ -1002,7 +1044,7 @@ class LeoServer:
             w_p = self._ap_to_p(p_ap)
             if w_p:
                 w_p.expand()
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210611084045.120: *5* insert_named_node
     def insert_named_node(self, param):
@@ -1076,7 +1118,7 @@ class LeoServer:
     def test(self, param):
         '''Utility test function for debugging'''
         print("Called test")
-        return self.sendLeoBridgePackage({'testReturnedKey': 'testReturnedValue'})
+        return self._sendLeoBridgePackage({'testReturnedKey': 'testReturnedValue'})
         # return self._outputPNode(self.commander.p)
 
     #@+node:ekr.20210611084045.121: *5* undo
@@ -1109,7 +1151,7 @@ class LeoServer:
         Gets search options
         """
         w_result = self.commander.findCommands.ftm.get_settings()
-        return self.sendLeoBridgePackage({"searchSettings": w_result.__dict__})
+        return self._sendLeoBridgePackage({"searchSettings": w_result.__dict__})
 
     #@+node:ekr.20210611084045.92: *5* set_search_settings
     def set_search_settings(self, param):
@@ -1173,7 +1215,7 @@ class LeoServer:
 
         # Confirm by sending back the settings to leointeg
         w_result = ftm.get_settings()
-        return self.sendLeoBridgePackage({"searchSettings": w_result.__dict__})
+        return self._sendLeoBridgePackage({"searchSettings": w_result.__dict__})
 
     #@+node:ekr.20210611084045.93: *5* find_all
     def find_all(self, param):
@@ -1186,7 +1228,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.94: *5* find_next
     def find_next(self, param):
@@ -1202,7 +1244,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": found, "pos": pos, "newpos": newpos,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.95: *5* find_previous
     def find_previous(self, param):
@@ -1218,7 +1260,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": found, "pos": pos, "newpos": newpos,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
 
     #@+node:ekr.20210611084045.96: *5* replace
@@ -1232,7 +1274,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": True,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.97: *5* replace_then_find
     def replace_then_find(self, param):
@@ -1245,7 +1287,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.98: *5* replace_all
     def replace_all(self, param):
@@ -1258,7 +1300,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.99: *5* clone_find_all
     def clone_find_all(self, param):
@@ -1271,7 +1313,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.100: *5* clone_find_all_flattened
     def clone_find_all_flattened(self, param):
@@ -1284,7 +1326,7 @@ class LeoServer:
         focus = self.g.app.gui.widget_name(w)
         w_result = {"found": result,
                     "focus": focus, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
     #@+node:ekr.20210611084045.101: *5* find_var
 
     def find_var(self, param):
@@ -1298,7 +1340,7 @@ class LeoServer:
         ### w = self.g.app.gui.get_focus()
         ### focus = self.g.app.gui.widget_name(w)
         w_result = {"node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.102: *5* find_def
     def find_def(self, param):
@@ -1312,7 +1354,7 @@ class LeoServer:
         ### w = self.g.app.gui.get_focus()
         ### focus = self.g.app.gui.widget_name(w)
         w_result = {"node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210611084045.103: *5* goto_global_line
     def goto_global_line(self, param):
@@ -1321,7 +1363,7 @@ class LeoServer:
         junk_p, junk_offset, found = c.gotoCommands.find_file_line(
             n=int(param['line']))
         w_result = {"found": found, "node": self._p_to_ap(c.p)}
-        return self.sendLeoBridgePackage(w_result)
+        return self._sendLeoBridgePackage(w_result)
 
     #@+node:ekr.20210613035010.1: *4* server: page up/down commands
     #@+node:ekr.20210611084045.126: *5* page_down
@@ -1404,7 +1446,7 @@ class LeoServer:
             # print(f"__doc__: {len(doc):4} {command_name:40} {func_name} ", flush=True)
             # print(f"{func_name} ", flush=True)
 
-        return self.sendLeoBridgePackage({"commands": result})
+        return self._sendLeoBridgePackage({"commands": result})
 
     #@+node:ekr.20210611084045.110: *6* _bad_commands
     def _bad_commands(self):
@@ -2465,12 +2507,12 @@ class LeoServer:
     def set_config(self, p_config):
         '''Got leoInteg's config from client'''
         self.leoIntegConfig = p_config
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
     #@+node:ekr.20210611084045.65: *5* set_ask_result
     def set_ask_result(self, p_result):
         '''Got the result to an asked question/warning from client'''
         ### self.g.app.externalFilesController.integResult(p_result)  ### Does not exist
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self._sendLeoBridgePackage()  # Just send empty as 'ok'
     #@+node:ekr.20210611084045.64: *5* sendAsyncOutput ****
     def sendAsyncOutput(self, p_package):
         ###
@@ -2490,7 +2532,7 @@ class LeoServer:
         '''Get gnx array from all unique nodes'''
         w_all_gnx = [
             p.v.gnx for p in self.commander.all_unique_positions(copy=False)]
-        return self.sendLeoBridgePackage({"gnx": w_all_gnx})
+        return self._sendLeoBridgePackage({"gnx": w_all_gnx})
 
     #@+node:ekr.20210611084045.132: *5* get_body
     def get_body(self, p_gnx):
@@ -2513,9 +2555,9 @@ class LeoServer:
             w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
             if w_v and w_v.b:
                 # Length in bytes, not just by character count.
-                return self.sendLeoBridgePackage({"len": len(w_v.b.encode('utf-8'))})
-        # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
-        return self.sendLeoBridgePackage({"len": 0})  # empty as default
+                return self._sendLeoBridgePackage({"len": len(w_v.b.encode('utf-8'))})
+        # TODO : May need to signal inexistent by self._sendLeoBridgePackage()
+        return self._sendLeoBridgePackage({"len": 0})  # empty as default
 
     #@+node:ekr.20210611084045.127: *5* get_body_states
     def get_body_states(self, p_ap):
@@ -2621,7 +2663,7 @@ class LeoServer:
                     "end": {"line": w_endRow, "col": w_endCol, "index": w_endI}
                 }
             }
-        return self.sendLeoBridgePackage(states)
+        return self._sendLeoBridgePackage(states)
 
     #@+node:ekr.20210611084045.128: *5* get_children & helper
     def get_children(self, p_ap):
@@ -2655,7 +2697,7 @@ class LeoServer:
         """
         w = self.g.app.gui.get_focus()
         focus = self.g.app.gui.widget_name(w)
-        return self.sendLeoBridgePackage({"focus": focus})
+        return self._sendLeoBridgePackage({"focus": focus})
 
     #@+node:ekr.20210611084045.130: *5* get_parent
     def get_parent(self, p_ap):
@@ -2828,47 +2870,6 @@ class LeoServer:
         # output selected node as 'ok'
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.80: *3* leoCommand (to do: make private)
-    def leoCommand(self, p_command, param):
-        '''
-        Generic call to a method in Leo's Commands class or any subcommander class.
-
-        The param["ap"] position is to be selected before having the command run,
-        while the param["keep"] parameter specifies wether the original position
-        should be re-selected afterward.
-
-        The whole of those operations is to be undoable as one undo step.
-
-        command: a method name (a string).
-        param["ap"]: an archived position.
-        param["keep"]: preserve the current selection, if possible.
-        '''
-        w_keepSelection = False  # Set default, optional component of param
-        if "keep" in param:
-            w_keepSelection = param["keep"]
-
-        w_ap = param["ap"]  # At least node parameter is present
-        if not w_ap:
-            return self._outputError(f"Error in {p_command}: no param ap")
-
-        w_p = self._ap_to_p(w_ap)
-        if not w_p:
-            return self._outputError(f"Error in {p_command}: no w_p position found")
-
-        w_func = self._get_commander_method(p_command)
-        if not w_func:
-            return self._outputError(f"Error in {p_command}: no method found")
-
-        if w_p == self.commander.p:
-            w_func(event=None)
-        else:
-            w_oldPosition = self.commander.p
-            self.commander.selectPosition(w_p)
-            w_func(event=None)
-            if w_keepSelection and self.commander.positionExists(w_oldPosition):
-                self.commander.selectPosition(w_oldPosition)
-
-        return self._outputPNode(self.commander.p)
     #@-others
 #@+node:ekr.20210611084754.1: ** class TestLeoServer (unittest.TestCase)
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
@@ -3104,7 +3105,7 @@ def main():
         try:
             server.initConnection(websocket)
             # Start by sending empty as 'ok'.
-            await websocket.send(server.sendLeoBridgePackage())
+            await websocket.send(server._sendLeoBridgePackage())
             server.logSignon()
             async for json_string_message in websocket:
                 d = json.loads(json_string_message)
