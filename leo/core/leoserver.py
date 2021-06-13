@@ -282,8 +282,10 @@ class LeoServer:
         )
         self.g = g = self.bridge.globals()
 
-        # Intercept Log Pane output: Sends to client's log pane
-        self.g.es = self.es  # pointer - not a function call
+        # Monkey patch.
+        self.g.es = self.es
+        # Ivars.
+        self.action = None  # For traces only.
         self.currentActionId = 1  # Id of action being processed, STARTS AT 1 = Initial 'ready'
         self.commander = None
         self.leoIntegConfig = None
@@ -310,7 +312,7 @@ class LeoServer:
         A refactoring of web_socket_handler, for unit tests.
         """
         server = self
-        action = d and d.get('action')
+        action = self.action = d and d.get('action')
         if not action:
             return self._outputError("No action")
         param = d.get('param')
@@ -367,12 +369,16 @@ class LeoServer:
 
         return self._outputPNode(self.commander.p)
     #@+node:ekr.20210611084045.71: *5* server._makePackage
-    def _makePackage(self, p_package=None):
-        if p_package is None:
-            p_package = {}
-        p_package["id"] = self.currentActionId
-        return(json.dumps(p_package, separators=(',', ':')))  # send as json
-
+    def _makePackage(self, package=None):
+        if package is None:
+            package = {}
+        package["id"] = self.currentActionId
+        if 1:
+            print(
+                f"{self.currentActionId:>3} "
+                f"{self.action or 'No Action':>30} "
+                f"{','.join(list(package.keys()))}", flush=True)
+        return(json.dumps(package, separators=(',', ':')))  # send as json
     #@+node:ekr.20210611084045.73: *5* server._outputBodyData
     def _outputBodyData(self, p_bodyText=""):
         return self._makePackage({"body": p_bodyText})
@@ -3029,7 +3035,8 @@ def main():
     '''python script for leo integration via leoBridge'''
     tag = 'LeoServer'
     global wsHost, wsPort
-    print(f"Starting {tag}... (Launch with -h for help)")
+    # Redundant.
+        # print(f"Starting {tag}... (Launch with -h for help)")
     #
     # Support for unit tests.
     if '--unittest' in sys.argv:
@@ -3096,8 +3103,8 @@ def main():
     localLoop = asyncio.get_event_loop()
     start_server = websockets.serve(web_socket_handler, wsHost, wsPort)
     localLoop.run_until_complete(start_server)
-    info = f"at: {wsHost} on port: {wsPort}"
-    print(f"Started {tag}: {info}. [ctrl+c] to break", flush=True)
+    info = f"on {wsHost}, port {wsPort}"
+    print(f"{tag} listening {info}. [ctrl+c] to break", flush=True)
     localLoop.run_forever()
     print("Stopped {tag}: {info}", flush=True)
 #@+node:ekr.20210611084045.147: ** printAction
