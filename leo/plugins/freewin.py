@@ -173,11 +173,13 @@ BROWSER = 1
 EDITOR = 0
 EDITOR_FONT_SIZE = '11pt'
 EDITOR_STYLESHEET_FILE = 'freewin_editor.css'
+EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
 ENCODING = 'utf-8'
 
 FONT_FAMILY = 'Consolas, Droid Sans Mono, DejaVu Sans Mono'
 RST_NO_WARNINGS = 5
 RST_CUSTOM_STYLESHEET_FILE = 'freewin_rst.css'
+RST_CUSTOM_STYLESHEET_DARK_FILE = 'v3_rst_solarized-dark.css'
 
 EDITOR_STYLESHEET = f'''QTextEdit {{
     background: {BACK_COLOR};
@@ -204,6 +206,26 @@ def open_z_window(event):
 
     zwin.show()
     zwin.activateWindow()
+#@+node:tom.20210614120921.1: ** get_at_setting_value()
+def get_at_setting_value(name:str, lines:list)->str:
+    """Retrieve value of a named setting as a string.
+
+       ARGUMENTS
+       name -- the name of the setting, not including the
+               "@type " introducer.
+       lines -- a list of lines from a Leo theme file.
+
+       RETURNS
+       a string.
+    """
+    val = ''
+    for line in lines:
+        if name in line.split():
+            fields = line.split('=')
+            val = fields[-1].strip()
+            val = val.replace('</vh></v>', '')
+            break
+    return val
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
     """An basic editing window that echos the contents of an outline node."""
@@ -227,8 +249,24 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+node:tom.20210604170628.1: *4* <<set css paths>>
         home = LoadManager().computeHomeDir()
         cssdir = osp_join(home, '.leo', 'css')
-        self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_FILE)
-        self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_FILE)
+
+        is_dark = False
+        theme_path = g.app.loadManager.computeThemeFilePath()
+        if theme_path:
+            lines = []
+            with open(theme_path, encoding=ENCODING) as f:
+                lines = [l.strip() for l in f.readlines()]
+            is_dark = get_at_setting_value('color_theme_is_dark', lines) == 'True'
+
+        if is_dark:
+            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
+            self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
+        else:
+            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_FILE)
+            self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_FILE)
+
+
+
         #@-<<set css paths>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
