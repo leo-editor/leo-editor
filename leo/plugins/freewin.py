@@ -14,7 +14,7 @@ switched to render the node with Restructured Text.
 
 By: T. B. Passin
 Date of release: 14 June 2021
-Version: 1.0b9
+Version: 1.0RC1
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -176,7 +176,7 @@ EDITOR_STYLESHEET_FILE = 'freewin_editor.css'
 EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
 ENCODING = 'utf-8'
 
-FONT_FAMILY = 'Consolas, Droid Sans Mono, DejaVu Sans Mono'
+FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 RST_NO_WARNINGS = 5
 RST_CUSTOM_STYLESHEET_FILE = 'freewin_rst.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE = 'v3_rst_solarized-dark.css'
