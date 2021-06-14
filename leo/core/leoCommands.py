@@ -302,8 +302,6 @@ class Commands:
         assert commanderEditCommands
         from leo.commands import commanderFileCommands
         assert commanderFileCommands
-        from leo.commands import commanderFindCommands
-        assert commanderFindCommands
         from leo.commands import commanderHelpCommands
         assert commanderHelpCommands
         from leo.commands import commanderOutlineCommands
@@ -4010,7 +4008,7 @@ class Commands:
                 c.redraw()
                 c.selectPosition(root)
         elif failMsg:
-            g.es_print(failMsg, color='red')
+            g.es(failMsg, color='red')
         return root
     #@+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
     def setCloneFindByPredicateIcon(self, iconPath, p):
