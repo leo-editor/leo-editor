@@ -1256,7 +1256,7 @@ class LeoFind:
         """
         w = self.c.frame.body.wrapper
         if not w:
-            return 0
+            return
         if not preloaded:
             self.preload_find_pattern(w)
         self.start_state_machine(event,
@@ -1313,7 +1313,7 @@ class LeoFind:
         """
         w = self.c.frame.body.wrapper
         if not w:
-            return 0
+            return
         if not preloaded:
             self.preload_find_pattern(w)
         self.start_state_machine(event,
