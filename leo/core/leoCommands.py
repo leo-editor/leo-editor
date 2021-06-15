@@ -1405,11 +1405,11 @@ class Commands:
                 pass  # We have already made a copy.
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
-        else:  # 2011/02/25:
+        else:
+            # Don't kill unit tests for this nkind of problem.
             c._currentPosition = c.rootPosition()
-            g.trace(f"Invalid position: {repr(p and p.h)}")
+            g.trace('Invalid position', repr(p))
             g.trace(g.callers())
-            # Don't kill unit tests for this kind of problem.
 
     # For compatibiility with old scripts.
 

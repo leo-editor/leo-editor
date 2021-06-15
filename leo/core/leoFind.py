@@ -404,25 +404,22 @@ class LeoFind:
         """
         c, u = self.c, self.c.undoer
         p = c.p
-        if not p:
+        if not p:  # pragma: no cover
             return False
-        if not p.isCloned():
+        if not p.isCloned():  # pragma: no cover
             g.es(f"not a clone: {p.h}")
             return False
         p0 = p.copy()
         undoType = 'Find Clone Parents'
         aList = c.vnode2allPositions(p.v)
-        if not aList:
+        if not aList:  # pragma: no cover
             g.trace('can not happen: no parents')
             return False
         # Create the node as the last top-level node.
         # All existing positions remain valid.
-        u.beforeChangeGroup(p0, undoType)
-        top = c.rootPosition()
-        while top.hasNext():
-            top.moveToNext()
-        b = u.beforeInsertNode(p0)
-        found = top.insertAfter()
+        u.beforeChangeGroup(p, undoType)
+        b = u.beforeInsertNode(p)
+        found = c.lastTopLevel().insertAfter()
         found.h = f"Found: parents of {p.h}"
         u.afterInsertNode(found, 'insert', b)
         seen = []
@@ -431,13 +428,14 @@ class LeoFind:
             if parent and parent.v not in seen:
                 seen.append(parent.v)
                 b = u.beforeCloneNode(parent)
-                clone = parent.clone()
-                clone.moveToLastChildOf(found)
+                # Bug fix 2021/06/15: Create the clone directly as a child of found.
+                clone = p.copy()
+                n = found.numberOfChildren()
+                clone._linkCopiedAsNthChild(found, n)
                 u.afterCloneNode(clone, 'clone', b)
         u.afterChangeGroup(p0, undoType)
-        c.selectPosition(found)
         c.setChanged(True)
-        c.redraw()
+        c.redraw(found)
         return True
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
     @cmd('find-def')
@@ -3108,6 +3106,16 @@ class TestFind(unittest.TestCase):
         # Suboutline only.
         settings.suboutline_only = True
         x.do_clone_find_all_flattened(settings)
+    #@+node:ekr.20210615084049.1: *4* TestFind.clone-find-parents
+    def test_clone_find_parents(self):
+        
+        c, x = self.c, self.x
+        root = c.rootPosition()
+        p = root.next().firstChild()
+        p.clone()  # c.p must be a clone.
+        c.selectPosition(p)
+        x.cloneFindParents()
+       
     #@+node:ekr.20210110073117.62: *4* TestFind.clone-find-tag
     def test_clone_find_tag(self):
         c, x = self.c, self.x
@@ -3435,6 +3443,21 @@ class TestFind(unittest.TestCase):
                 # f"     groups: {groups}\n"
                 # f"   expected: {expected}\n"
                 # f"        got: {result}")
+    #@+node:ekr.20210110073117.89: *4* TestFind._switch_style
+    def test_switch_style(self):
+        x = self.x
+        table = (
+            ('', None),
+            ('TestClass', None),
+            ('camelCase', 'camel_case'),
+            ('under_score', 'underScore'),
+        )
+        for s, expected in table:
+            result = x._switch_style(s)
+            assert result == expected, (
+                f"       s: {s}\n"
+                f"expected: {expected!r}\n"
+                f"     got: {result!r}")
     #@+node:ekr.20210110073117.74: *4* TestFind.batch_plain_replace
     def test_batch_plain_replace(self):
         settings, x = self.settings, self.x
@@ -3577,21 +3600,6 @@ class TestFind(unittest.TestCase):
         x.do_clone_find_all(settings)
         x.find_next_match(p=None)
         x.do_change_all(settings)
-    #@+node:ekr.20210110073117.89: *3* TestFind._switch_style
-    def test_switch_style(self):
-        x = self.x
-        table = (
-            ('', None),
-            ('TestClass', None),
-            ('camelCase', 'camel_case'),
-            ('under_score', 'underScore'),
-        )
-        for s, expected in table:
-            result = x._switch_style(s)
-            assert result == expected, (
-                f"       s: {s}\n"
-                f"expected: {expected!r}\n"
-                f"     got: {result!r}")
     #@-others
 #@-others
 if __name__ == '__main__':
