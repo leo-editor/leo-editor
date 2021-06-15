@@ -3,6 +3,7 @@
 #@@tabwidth -4
 #@@language python
 
+# pylint: disable = anomalous-backslash-in-string
 """
 #@+<<docstring>>
 #@+node:tom.20210603022210.1: ** <<docstring>>
@@ -12,9 +13,9 @@ Provides a free-floating window tied to one node in an outline.
 The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
-By: T. B. Passin
-Date of release: 14 June 2021
-Version: 1.0RC1
+:By: T\. B\. Passin
+:Date: 15 June 2021
+:Version: 1.0
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -34,8 +35,8 @@ They will be visible in the outline when the original node is
 selected again.
 
 A given Freewin window will be synchronized with the node
-that was selected when the Freewin window was opened, and only
-that node.
+that was selected when the Freewin window was opened, and 
+will only display that node.
 
 #@+node:tom.20210604181030.1: *3* Rendering with Restructured Text
 Rendering with Restructured Text
@@ -50,32 +51,94 @@ target.  This is because the window only represents a single,
 unchangeable node. However, no RsT error will be shown, and the
 link will be underlined even though it will not be active.
 
-#@+node:tom.20210604181109.1: *3* Styling the RsT View
+#@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
+Stylesheets and Dark-themed Appearance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The appearance of the editing and rendering view is determined
+by stylesheets. Simple default stylesheets are built into the plugin
+for the editing view.
+
+For styling the Restructured Text rendering view and for customized
+editing view stylesheets, the plugin looks in the user's `.leo/css
+directory`.
+
+The plugin attempts to determine whether the Leo theme in use
+is a dark theme or not.  If it is, a dark-themed stylesheet will be
+used if it is found.  The "dark" determination is based on the ``@color_theme_is_dark`` setting in the Leo theme file.
+#@+node:tom.20210604181134.1: *4* Styling the Editor View
+Styling the Editor View
+~~~~~~~~~~~~~~~~~~~~~~~~
+The editor panel styles will be set by a
+css stylesheet file in the same directory as the
+the RsT stylesheet above: the user's `.leo/css`
+directory. There can be two stylesheets, one for light
+and one for dark themes.
+
+Light Stylesheet
+-----------------
+The light-themed stylesheet must be named `freewin_editor_light.css`.
+The default Freewin values are::
+
+    QTextEdit {
+        color: #202020;
+        background: #fdfdfd;
+        font-family: Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono;
+        font-size: 11pt;
+}
+
+Dark Stylesheet
+-----------------
+The dark-themed stylesheet must be named `freewin_editor_dark.css`.
+The default Freewin values are::
+
+    QTextEdit {
+        color: #cbdedc;
+        background: #202020;
+        font-family: Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono;
+        font-size: 11pt;
+    }
+
+
+No Stylesheet
+--------------
+
+If the correctly-named stylesheet is not present in the
+user's ``.leo/css`` directory then the plugin will use the default values given above.
+#@+node:tom.20210604181109.1: *4* Styling the RsT View
 Styling the RsT View
 ~~~~~~~~~~~~~~~~~~~~~
-The RsT panel can be styled by extending the default css stylesheet
-provided by docutils.  The custom stylesheet must be in the user's
-`.leo/css` directory.  It must be named `freewin_rst.css`.
+
+The RsT view can be styled by extending or replacing
+the default css stylesheet provided by docutils.
+Custom stylesheets must be in the user's `.leo/css` directory.
 
 For information on creating a customized css stylesheet, see
 
 `docutils stylesheets <https://docutils.sourceforge.io/docs/howto/html-stylesheets.html>`_
 
-As a starting point, the RsT stylesheet used by the Viewrendered3 plugin could be used.  It is named `vr3_rst.css`, and is located in the Leo Github repository at leo/plugins/vr3.
+As a starting point, the light and dark RsT stylesheets used
+by the Viewrendered3 plugin could be used.  They can be found
+in the Leo install directory in the ``leo\plugins\viewrendered3``
+directory.  There are also a number of docutil stylesheets to be found with an Internet search.
 
-#@+node:tom.20210604181134.1: *3* Styling the Editor View
-Styling the Editor View
-~~~~~~~~~~~~~~~~~~~~~~~~
-The editor panel styles can be over-ridden by a css stylesheet file in the 
-same directory as the the RsT stylesheet above: the user's `.leo/css`
-directory. It must be named `freewin_editor.css`. The file should contain the following selectors;  the values shown below are the default values used by Freewin::
+The VR3 stylesheets must be renamed for the Freewin plugin to
+be able to use them.
 
-    QTextEdit {
-           background: azure;
-           font-family: Consolas, Droid Sans Mono, DejaVu Sans Mono;
-           font-size: 11pt;
-    }
+Light Stylesheet
+-----------------
 
+The light-themed stylesheet must be named ``freewin_rst_light.css``.
+
+Dark Stylesheet
+-----------------
+
+The dark-themed stylesheet must be named ``freewin_rst_dark.css``.
+
+No Stylesheet
+--------------
+
+If no stylesheet exists for the Restructured Text view, the default Docutils stylesheet will be used for either light or dark Leo themes.
 #@-others
 
 
@@ -95,17 +158,16 @@ except Exception:
     pass
 
 from leo.core import leoGlobals as g
-from leo.core.leoApp import LoadManager
 
 qt_imports_ok = False
 try:
-    from leo.core.leoQt import Qt, isQt5, isQt6, QtCore, QtWidgets
+    from leo.core.leoQt import isQt5, QtCore, QtWidgets
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
 
 if not qt_imports_ok:
-    g.trace('Qt imports failed')
+    g.trace('Freewin plugin: Qt imports failed')
     raise ImportError('Qt Imports failed')
 
 #@+<<create QWebView>>
@@ -119,12 +181,11 @@ if isQt5:
         g.trace("Can't import QtWebKitWidgets")
     except Exception as e:
         g.trace(e)
-elif isQt6:
+else:
     try:
         QWebView = QtWidgets.QTextBrowser
     except Exception as e:
         g.trace(e)
-        # The top-level init function gives the error.
 #@-<<create QWebView>>
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
@@ -157,7 +218,6 @@ QVBoxLayout = QtWidgets.QVBoxLayout
 QPushButton = QtWidgets.QPushButton
 QStackedWidget = QtWidgets.QStackedWidget
 QRect = QtCore.QRect
-QtVertical = Qt.Qt.Vertical
 #@-<<set Qt Objects>>
 #@+node:tom.20210527153422.1: ** Declarations
 # pylint: disable=invalid-name
@@ -166,29 +226,54 @@ W = 570
 H = 350
 X = 1200
 Y = 100
-DELTA_Y = 10
+DELTA_Y = 35
 
-BACK_COLOR = 'azure'
+BG_COLOR = '#fdfdfd'
+BG_COLOR_DARK = '#202020'
+FG_COLOR = '#202020'
+FG_COLOR_DARK = '#cbdedc'
+FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
+
 BROWSER = 1
 EDITOR = 0
 EDITOR_FONT_SIZE = '11pt'
-EDITOR_STYLESHEET_FILE = 'freewin_editor.css'
+EDITOR_STYLESHEET_FILE = 'freewin_editor_light.css'
 EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
 ENCODING = 'utf-8'
 
-FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 RST_NO_WARNINGS = 5
-RST_CUSTOM_STYLESHEET_FILE = 'freewin_rst.css'
-RST_CUSTOM_STYLESHEET_DARK_FILE = 'v3_rst_solarized-dark.css'
+RST_CUSTOM_STYLESHEET_FILE = 'freewin_rst_light.css'
+RST_CUSTOM_STYLESHEET_DARK_FILE = 'freewin_rst_dark.css'
+
+ENCODING='utf-8'
+instances = {}
+
+#@+others
+#@+node:tom.20210614172857.1: *3* Stylesheets
 
 EDITOR_STYLESHEET = f'''QTextEdit {{
-    background: {BACK_COLOR};
+    color: {FG_COLOR};
+    background: {BG_COLOR};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
     }}'''
 
-ENCODING='utf-8'
-instances = {}
+EDITOR_STYLESHEET_DARK = f'''QTextEdit {{
+    color: {FG_COLOR_DARK};
+    background: {BG_COLOR_DARK};
+    font-family: {FONT_FAMILY};
+    font-size: 11pt;
+    }}'''
+
+RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR}; 
+    background: {BG_COLOR};
+    font-size: {EDITOR_FONT_SIZE};'''
+
+RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK}; 
+    background: {BG_COLOR_DARK};
+    font-size: {EDITOR_FONT_SIZE};'''
+#@-others
+
 #@+node:tom.20210527153848.1: ** z-commands
 @g.command('z-open-freewin')
 def open_z_window(event):
@@ -209,6 +294,10 @@ def open_z_window(event):
 #@+node:tom.20210614120921.1: ** get_at_setting_value()
 def get_at_setting_value(name:str, lines:list)->str:
     """Retrieve value of a named setting as a string.
+
+       The input lines are assumed to be from a Leo outline.
+       Thus they are in XML.  We are not doing proper 
+       XML parsing here, just brute force string operations.
 
        ARGUMENTS
        name -- the name of the setting, not including the
@@ -245,15 +334,17 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.editor = QTextEdit()
         self.browser = QWebView()
 
-        #@+<<set css paths>>
-        #@+node:tom.20210604170628.1: *4* <<set css paths>>
-        home = LoadManager().computeHomeDir()
+        #@+<<set stylesheet paths>>
+        #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
+        self.editor_csspath = ''
+        self.rst_csspath = ''
+
+        home = g.app.loadManager.computeHomeDir()
         cssdir = osp_join(home, '.leo', 'css')
 
         is_dark = False
         theme_path = g.app.loadManager.computeThemeFilePath()
         if theme_path:
-            lines = []
             with open(theme_path, encoding=ENCODING) as f:
                 lines = [l.strip() for l in f.readlines()]
             is_dark = get_at_setting_value('color_theme_is_dark', lines) == 'True'
@@ -265,25 +356,42 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_FILE)
 
+        if g.isWindows:
+            self.rst_csspath = self.rst_csspath.replace('/', '\\')
+        else:
+            self.rst_csspath = self.rst_csspath.replace('\\', '/')
 
+        #@-<<set stylesheet paths>>
+        #@+<<set stylesheets>>
+        #@+node:tom.20210615101103.1: *4* <<set stylesheets>>
+        # Check if stylesheet files exist
+        if exists(self.editor_csspath):
+            with open(self.editor_csspath, encoding=ENCODING) as f:
+                self.editor_style = f.read()
+        else:
+            self.editor_style = EDITOR_STYLESHEET_DARK if is_dark \
+                                else EDITOR_STYLESHEET
 
-        #@-<<set css paths>>
+        # Path to RsT stylesheet must be given to docutils as a path,
+        # not a string of the contents
+        self.rst_stylesheet = None
+        if exists(self.rst_csspath):
+            with open(self.rst_csspath, encoding=ENCODING) as f:
+                self.rst_stylesheet = f.read()
+        #@-<<set stylesheets>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
-        ed_css = self.editor_csspath
-        if exists(ed_css):
-            with open(ed_css, encoding=ENCODING) as f:
-                self.editor_stylesheet = f.read()
-        else:
-            self.editor_stylesheet = EDITOR_STYLESHEET
-        g.es(self.editor_stylesheet)
         self.doc = self.editor.document()
-        self.editor.setStyleSheet(self.editor_stylesheet)
+        self.editor.setStyleSheet(self.editor_style)
         #@-<<set up editor>>
         #@+<<set up render button>>
         #@+node:tom.20210602173354.1: *4* <<set up render button>>
         self.render_button  = QPushButton("Rendered <--> Plain")
         self.render_button.clicked.connect(self.switch_and_render)
+
+        b_style = RENDER_BTN_STYLESHEET_DARK if is_dark \
+                  else RENDER_BTN_STYLESHEET_LIGHT
+        self.render_button.setStyleSheet(b_style)
         #@-<<set up render button>>
 
         #@+<<build central widget>>
@@ -299,16 +407,16 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         central_widget = QWidget()
         central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
         #@-<<build central widget>>
         #@+<<set geometry>>
         #@+node:tom.20210528235451.1: *4* <<set geometry>>
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
-        Y_ = Y + len(instances) * DELTA_Y
+        Y_ = Y + (len(instances) % 10) * DELTA_Y
         self.setGeometry(QtCore.QRect(X, Y_, W, H))
         #@-<<set geometry>>
         #@+<<set window title>>
         #@+node:tom.20210531235412.1: *4* <<set window title>>
+        # Show parent's title-->our title, our gnx
         ph = ''
         parents_ = list(c.p.parents())
         if parents_:
@@ -317,7 +425,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@-<<set window title>>
 
         self.render_kind = EDITOR
-        self.setCentralWidget(central_widget)
 
         self.handlers = [('idle', self.update)]
         self._register_handlers()
@@ -346,7 +453,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.doc.setModified(False)
 
         # if the current position in the outline is our own node, 
-        # then synchronize the text if it's changed in the outline.
+        # then synchronize the text if it's changed in the host outline.
         elif self.c.p == self.p:
             doc = self.host_editor.document()
             if doc.isModified():
@@ -381,7 +488,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         if self.render_kind == BROWSER:
             text = self.editor.document().toRawText()
-
             html = self.render_rst(text)
             self.browser.setHtml(html)
 
@@ -392,23 +498,34 @@ class ZEditorWin(QtWidgets.QMainWindow):
     #@+node:tom.20210602174838.1: *3* render_rst
     def render_rst(self, text):
         """Render text of the editor widget as HTML and display it."""
+        if not got_docutils:
+            return("<h1>Can't find Docutils to Render This Node</h1>")
+
         # Call docutils to get the html rendering.
         _html = ''
-        args = {'embed_stylesheet': True,
-                'report_level': RST_NO_WARNINGS,
+        args = {'output_encoding': 'unicode', # return a string, not a byte array
+                'report_level' : RST_NO_WARNINGS,
                }
 
-        if exists(self.rst_csspath):
-            args['stylesheet_path'] = self.rst_csspath
+        if self.rst_stylesheet:
+            args['stylesheet_path'] = None # omit stylesheet, we will insert one
 
         try:
             _html = publish_string(text, writer_name='html',
-                                   settings_overrides=args)\
-                    .decode(ENCODING)
+                                   settings_overrides=args)
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
-                _html = f'RST error:\n{msg}\n\n{text}'
+                _html = f'RsT error:\n{msg}\n\n{text}'
+
+
+        if self.rst_stylesheet:
+            style_insert = f'''<style type='text/css'>
+            {self.rst_stylesheet}
+            </style>
+            </head>'''
+            _html = _html.replace('</head>', style_insert)
+
         return _html
     #@-others
 #@-others
