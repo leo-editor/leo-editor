@@ -5,8 +5,8 @@
 
 # pylint: disable = anomalous-backslash-in-string
 """
-#@+<<docstring>>
-#@+node:tom.20210603022210.1: ** <<docstring>>
+#@+<< docstring >>
+#@+node:tom.20210603022210.1: ** << docstring >>
 Freewin - a plugin with a basic editor pane that tracks an outline node.
 
 Provides a free-floating window tied to one node in an outline.
@@ -142,10 +142,10 @@ If no stylesheet exists for the Restructured Text view, the default Docutils sty
 #@-others
 
 
-#@-<<docstring>>
+#@-<< docstring >>
 """
-#@+others
-#@+node:tom.20210527153415.1: ** Imports
+#@+<< imports >>
+#@+node:tom.20210527153415.1: ** << imports >>
 from os.path import exists, join as osp_join
 
 try:
@@ -169,9 +169,9 @@ except ImportError as e:
 if not qt_imports_ok:
     g.trace('Freewin plugin: Qt imports failed')
     raise ImportError('Qt Imports failed')
-
-#@+<<create QWebView>>
-#@+node:tom.20210603000519.1: *3* <<create QWebView>>
+    
+#@+<<import  QWebView>>
+#@+node:tom.20210603000519.1: *3* <<import QWebView>>
 QWebView = None
 if isQt5:
     try:
@@ -186,7 +186,7 @@ else:
         QWebView = QtWidgets.QTextBrowser
     except Exception as e:
         g.trace(e)
-#@-<<create QWebView>>
+#@-<<import  QWebView>>
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
 try:
@@ -210,16 +210,20 @@ else:
     print('ZEditorWin: *** no docutils')
 
 #@-<<import docutils>>
-#@+<<set Qt Objects>>
-#@+node:tom.20210601000633.1: *3* <<set Qt Objects>>
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
+# Aliases.
 QWidget = QtWidgets.QWidget
 QTextEdit = QtWidgets.QTextEdit
 QVBoxLayout = QtWidgets.QVBoxLayout
 QPushButton = QtWidgets.QPushButton
 QStackedWidget = QtWidgets.QStackedWidget
 QRect = QtCore.QRect
-#@-<<set Qt Objects>>
-#@+node:tom.20210527153422.1: ** Declarations
+#@-<< imports >>
+#@+<< declarations >>
+#@+node:tom.20210527153422.1: ** << declarations >>
 # pylint: disable=invalid-name
 # Dimensions and placing of editor windows
 W = 570
@@ -247,9 +251,9 @@ RST_CUSTOM_STYLESHEET_DARK_FILE = 'freewin_rst_dark.css'
 
 ENCODING='utf-8'
 instances = {}
-
-#@+others
-#@+node:tom.20210614172857.1: *3* Stylesheets
+#@-<< declarations >>
+#@+<< Stylesheets >>
+#@+node:tom.20210614172857.1: ** << Stylesheets >>
 
 EDITOR_STYLESHEET = f'''QTextEdit {{
     color: {FG_COLOR};
@@ -272,8 +276,13 @@ RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR};
 RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK}; 
     background: {BG_COLOR_DARK};
     font-size: {EDITOR_FONT_SIZE};'''
-#@-others
+#@-<< Stylesheets >>
 
+#@+others
+#@+node:ekr.20210617074439.1: ** init
+def init ():
+    '''Return True if the plugin has loaded successfully.'''
+    return True
 #@+node:tom.20210527153848.1: ** z-commands
 @g.command('z-open-freewin')
 def open_z_window(event):
