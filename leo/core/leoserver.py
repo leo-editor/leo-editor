@@ -102,57 +102,84 @@ class LeoServer:
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:ekr.20210202183724.4: *5* server.click_button
-    def click_button(self, package):  # pragma: no cover (no scripting controller)
+    def click_button(self, param):  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
-        name = package.get("name")
-        if not name:
-            raise ServerError(f"{tag}: no button name given")
+        index = param.get("index")
+        if not index:
+            raise ServerError(f"{tag}: no button index given")
         d = self._check_button_command(tag)
-        button = d.get(name)
+        button = None
+        for key in d:
+            # Some button keys are objects so we have to convert first
+            if(str(key) == index):
+                button = key
+
         if not button:
-            raise ServerError(f"{tag}: button {name!r} does not exist")
+            raise ServerError(f"{tag}: button {index!r} does not exist")
+
         try:
             button.command()
         except Exception as e:
-            raise ServerError(f"{tag}: exception clicking button {name!r}: {e}")
+            raise ServerError(f"{tag}: exception clicking button {index!r}: {e}")
+        # Tag along a possible return value with info sent back by _make_response
         return self._make_response()
     #@+node:ekr.20210202183724.2: *5* server.get_buttons
-    def get_buttons(self, package):  # pragma: no cover (no scripting controller)
-        """Gets the currently opened file's @buttons list"""
+    def get_buttons(self, param):  # pragma: no cover (no scripting controller)
+        """
+        Gets the currently opened file's @buttons list
+        as an array of dict. 
+        
+        Typescript interface:
+            {
+                name: string;
+                index: string;
+            }[]
+        """
         d = self._check_button_command('get_buttons')
-        return self._make_response({
-            "buttons": sorted(list(d.get.keys()))
+        buttons = []
+        # Some button keys are objects so we have to convert first
+        for key in d:
+            entry = {"name": d[key], "index": str(key)}
+            buttons.append(entry)
+        return self._make_minimal_response({
+            "buttons": buttons
         })
     #@+node:ekr.20210202183724.3: *5* server.remove_button
-    def remove_button(self, package):  # pragma: no cover (no scripting controller)
-        """Remove button by name."""
+    def remove_button(self, param):  # pragma: no cover (no scripting controller)
+        """Remove button by index 'key string'."""
         tag = 'remove_button'
-        name = package.get("name")
-        if not name:
-            raise ServerError(f"{tag}: no button name given")
+        index = param.get("index")
+        if not index:
+            raise ServerError(f"{tag}: no button index given")
         d = self._check_button_command(tag)
-        if name not in d:
-            raise ServerError(f"{tag}: button {name!r} does not exist")
-        try:
-            del d [name]
-        except Exception as e:
-            raise ServerError(f"{tag}: exception removing button {name!r}: {e}")
-        return self._make_response({
-            "buttons": sorted(list(d.get.keys()))
-        })
-    #@+node:ekr.20210202193642.1: *4* server:file commands
-    #@+node:ekr.20210202110128.57: *5* server.open_file
-    def open_file(self, package):
+        
+        # Some button keys are objects so we have to convert first
+        key = None
+        for i_key in d:
+            if(str(i_key) == index):
+                key = i_key
+        if key:
+            try:
+                del d [index]
+            except Exception as e:
+                raise ServerError(f"{tag}: exception removing button {index!r}: {e}")
+        else:
+            raise ServerError(f"{tag}: button {index!r} does not exist")
+
+        return self._make_response()
+    #@+node:felix.20210617011849.1: *4* server:file commands
+    #@+node:felix.20210617011849.2: *5* server.open_file
+    def open_file(self, param):
         """
         Open a leo file with the given filename.
         Create a new document if no name.
         """
         found, tag = False, 'open_file'
-        filename = package.get('filename')  # Optional.
+        filename = param.get('filename')  # Optional.
         if filename:
             for c in g.app.commanders():
-                if c.fileName() == filename:
+                 if c.fileName() == filename:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
@@ -168,25 +195,91 @@ class LeoServer:
         self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
-        return self._make_response()
-    #@+node:ekr.20210202110128.58: *5* server.close_file
-    def close_file(self, package):
-        """Closes an outline opened with open_file."""
+
+        result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
+
+        return self._make_response(result)
+    #@+node:felix.20210617011849.3: *5* server.open_files
+    def open_files(self, param):
+        """
+        Opens an array of leo files.
+        Returns an object with total opened files
+        and name of currently last opened & selected document.
+        """
+        tag = 'open_files'
+        files = param.get('files')  # Optional.
+        if files:
+            for i_file in files:
+                if os.path.isfile(i_file):
+                    self.open_file({"filename": i_file})
+        total = len(g.app.commanders())
+        filename = self.c.fileName() if total else ""
+        result = {"total": total, "filename": filename}
+        return self._make_response(result)
+    #@+node:felix.20210617011849.4: *5* server.set_opened_file
+    def set_opened_file(self, param):
+        '''
+        Choose the new active commander from array of opened files.
+        Returns an object with total opened files
+        and name of currently last opened & selected document.
+        '''
+        tag = 'set_opened_file'
+        index = param.get('index')
+        total = len(g.app.commanders())
+        if total and w_index < total:
+            self.c = g.app.commanders()[w_index]
+            # maybe needed for frame wrapper
+            self.c.selectPosition(self.c.p)
+            self._check_outline(self.c)
+            result = {"total": total, "filename": self.c.fileName()}
+            return self._make_response(result)
+        else:
+            raise ServerError(f"{tag}: commander at index {index} does not exist")
+    #@+node:felix.20210617011849.5: *5* server.close_file
+    def close_file(self, param):
+        """
+        Closes an outline opened with open_file.
+        Use a 'forced' flag to force close.
+        Returns a 'total' member in the package if close is successful.
+        """
+        tag = 'close_file'
         c = self._check_c()
-        # Close the outline, even if it is dirty!
-        c.clearChanged()
-        c.close()
+        if c:
+            # First, revert to prevent asking user.
+            if param["forced"] and c.changed:
+                c.revert()
+            # Then, if still possible, close it.
+            if param["forced"] or not c.changed:
+                # c.closed = True # maybe useless flag from leobridgeserver,py
+                c.close()
+            else:
+                # Cannot close, return empty response without 'total' (ask to save, ignore or cancel) 
+                return self._make_response()
+
         # Select the first open outline, if any.
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
-        # Return a response describing self.c, not the closed outline.
-        return self._make_response()
-    #@+node:ekr.20210202183724.1: *5* server.save_file
-    def save_file(self, package):  # pragma: no cover (too dangerous).
+
+        if self.c:
+            w_result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
+        else:
+            w_result = {"total": 0}
+        return self._make_response(w_result)
+    #@+node:felix.20210617011849.6: *5* server.save_file
+    def save_file(self, param):  # pragma: no cover (too dangerous).
         """Save the leo outline."""
+        tag = 'close_file'
         c = self._check_c()
-        c.save()
-        return self._make_response()
+        if c:
+            try:
+                if "name" in param:
+                    c.save(fileName=param['name'])
+                else:
+                    c.save()
+            except Exception as e:
+                print("Error while saving", param['name'], flush=True)
+
+        return self._make_response()  # Just send empty as 'ok'
     #@+node:ekr.20210212092848.1: *4* server:find commands
     #@+node:ekr.20210212094817.1: *5* server._get_find_settings
     def _get_find_settings(self, c):
@@ -388,9 +481,9 @@ class LeoServer:
         # Unlike find commands, do_tag_children does not use a settings dict.
         fc.do_tag_children(c.p, the_tag)
         return self._make_response({})
-    #@+node:ekr.20210202193505.1: *4* server:getter commands
-    #@+node:ekr.20210202110128.55: *5* server.get_all_open_commanders
-    def get_all_open_commanders(self, package):
+    #@+node:felix.20210617011932.1: *4* server:getter commands
+    #@+node:felix.20210617011932.2: *5* server.get_all_open_commanders
+    def get_all_open_commanders(self, param):
         """Return array describing each commander in g.app.commanders()."""
         files = [
             {
@@ -399,9 +492,9 @@ class LeoServer:
                 "selected": c == self.c,
             } for c in g.app.commanders()
         ]
-        return self._make_response({"open-commanders": files})
-    #@+node:ekr.20210202110128.71: *5* server.get_all_positions
-    def get_all_positions(self, package):
+        return self._make_minimal_response({"files": files})
+    #@+node:felix.20210617011932.3: *5* server.get_all_positions
+    def get_all_positions(self, param):
         """
         Return a list of position data for all positions.
         
@@ -411,32 +504,61 @@ class LeoServer:
         result = [
             self._get_position_d(p) for p in c.all_positions(copy=False)
         ]
-        return self._make_response({"position-data-list": result})
-    #@+node:ekr.20210202110128.72: *5* server.get_body & get_body_length
-    def get_body(self, package):
+        return self._make_minimal_response({"position-data-list": result})
+    #@+node:felix.20210617011932.4: *5* server.get_all_gnx
+    def get_all_gnx(self, param):
+        '''Get gnx array from all unique nodes'''    
+        if self.log_flag:  # pragma: no cover
+            print(f"\nget_all_gnx\n")
+        
+        c = self._check_c()
+        all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
+        return self._make_minimal_response({"gnx": all_gnx}, True)
+    #@+node:felix.20210617011932.5: *5* server.get_body
+    def get_body(self, param):
         """
-        Return p.b, where p is c.p if package["ap"] is missing.
+        Return p.b, where p is c.p if param["ap"] is missing.
         
         Note: There is no need for a separate get_body_length command,
               because _make_response always adds "body-length": len(p.b)
         """
         self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         # _make_response adds all the cheap redraw data, including "body-length"
-        return self._make_response({"body": p.b})
-        
-    #@+node:ekr.20210202110128.66: *5* server.get_body_states
-    def get_body_states(self, package):
+        return self._make_minimal_response({"body": p.b})
+    #@+node:felix.20210617011932.6: *5* server.get_body_length
+    def get_body_length(self, param):
         """
-        Return body data for p, where p is c.p if package["ap"] is missing.
+        Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
+        """
+        self._check_c()
+        p = self._get_p(param)
+        if p and p.b:
+            # Length in bytes, not just by character count.
+            return self._make_minimal_response({"len": len(p.b.encode('utf-8'))}, True)
+        return self._make_minimal_response({"len": 0}, True)  # empty as default
+    #@+node:felix.20210617011932.7: *5* server.get_body_states
+    def get_body_states(self, param):
+        """
+        Return body data for p, where p is c.p if param["ap"] is missing.
+        The cursor positions are given as {"line": line, "col": col, "index": i} 
+        with line and col along with a redundant index for conveniance and flexibility.
         """
         c = self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         wrapper = c.frame.body.wrapper
         
-        def row_col_dict(i):
+        def row_col_wrapper_dict(i):  
+            # BUG: this uses current selection wrapper only, use 
+            # g.convertPythonIndexToRowCol instead !
             junk, line, col = wrapper.toPythonIndexRowCol(i)
-            return {"line": line, "col": col}
+            return {"line": line, "col": col, "index": i}
+            
+        def row_col_pv_dict(i, s):  
+            # BUG: this uses current selection wrapper only, use 
+            # g.convertPythonIndexToRowCol instead !
+            line, col = g.convertPythonIndexToRowCol(s, i)
+            return {"line": line, "col": col, "index": i}
             
         # Get the language.
         aList = g.get_directives_dict_list(p)
@@ -452,53 +574,64 @@ class LeoServer:
             active = wrapper.getInsertPoint()
             start, end = wrapper.getSelectionRange(True)
             scroll = wrapper.getYScrollPosition()
+            states = {
+                'language': language.lower(),
+                'selection': {
+                    "gnx": p.v.gnx,
+                    "scroll": scroll,
+                    "active": row_col_wrapper_dict(active),
+                    "start": row_col_wrapper_dict(start),
+                    "end": row_col_wrapper_dict(end)
+                }
+            }
         else:  # pragma: no cover
             active = p.v.insertSpot
             start = p.v.selectionStart
             end = p.v.selectionStart + p.v.selectionLength
             scroll = p.v.scrollBarSpot
-        states = {
-            'language': language.lower(),
-            'selection': {
-                # "gnx": p.v.gnx,  # EKR: Not needed. The reponse will have p.v.gnx.
-                "scroll": scroll,
-                "active": row_col_dict(active),
-                "start": row_col_dict(start),
-                "end": row_col_dict(end),
+            states = {
+                'language': language.lower(),
+                'selection': {
+                    "gnx": p.v.gnx,
+                    "scroll": scroll,
+                    "active": row_col_pv_dict(active, p.v.b),
+                    "start": row_col_pv_dict(start, p.v.b),
+                    "end": row_col_pv_dict(end, p.v.b)
+                }
             }
-        }
-        return self._make_response({"body-states": states})
-    #@+node:ekr.20210202110128.68: *5* server.get_children
-    def get_children(self, package):
+        return self._make_minimal_response(states)
+    #@+node:felix.20210617011932.8: *5* server.get_children
+    def get_children(self, param):
         """
-        Return the node data for children of p, where p is c.p if package["ap"] is missing."""
+        Return the node data for children of p, where p is c.p if param["ap"] is missing.
+        """
         self._check_c()
-        p = self._get_p(package)
-        return self._make_response({
+        p = self._get_p(param)
+        return self._make_minimal_response({
             # "children": [self._p_to_ap(child) for child in p.children()]
             "children": [self._get_position_d(child) for child in p.children()]
         })
-    #@+node:ekr.20210214154702.1: *5* server.get_focus
-    def get_focus(self, packages):
+    #@+node:felix.20210617011932.9: *5* server.get_focus
+    def get_focus(self, param):
         """
-        Return a representation of the focs widget,
+        Return a representation of the focused widget,
         one of ("body", "tree", "headline", repr(the_widget)).
         """
         w = g.app.gui.get_focus()
         focus = g.app.gui.widget_name(w)
-        return self._make_response({"focus": focus})
-    #@+node:ekr.20210202110128.69: *5* server.get_parent
-    def get_parent(self, package):
-        """Return the node data for the parent of position p, where p is c.p if package["ap"] is missing."""
+        return self._make_minimal_response({"focus": focus})
+    #@+node:felix.20210617011932.10: *5* server.get_parent
+    def get_parent(self, param):
+        """Return the node data for the parent of position p, where p is c.p if param["ap"] is missing."""
         self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         parent = p.parent()
         data = self._get_position_d(parent) if parent else None
-        return self._make_response({"parent": data})
-    #@+node:ekr.20210211053955.1: *5* server.get_position_dict
-    def get_position_data_dict(self, package):
+        return self._make_minimal_response({"node": data})
+    #@+node:felix.20210617011932.11: *5* server.get_position_dict
+    def get_position_data_dict(self, param):
         """
-        Return a dict of postition data for all positions.
+        Return a dict of position data for all positions.
         
         Useful as a sanity check for debugging.
         """
@@ -507,12 +640,12 @@ class LeoServer:
             p.v.gnx: self._get_position_d(p)
                 for p in c.all_unique_positions(copy=False)
         }
-        return self._make_response({"position-data-dict": result})
-    #@+node:ekr.20210211233814.1: *5* server.get_ua
-    def get_ua(self, package):
+        return self._make_minimal_response({"position-data-dict": result})
+    #@+node:felix.20210617011932.12: *5* server.get_ua
+    def get_ua(self, param):
         """Return p.v.u, making sure it can be serialized."""
         self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         try:
             ua = {"ua": p.v.u}
             json.dumps(ua, separators=(',', ':'))
@@ -520,18 +653,18 @@ class LeoServer:
         except Exception:  # pragma: no cover
             response = {"p": p, "bad-ua": repr(p.v.u)} 
         # _make_response adds all the cheap redraw data.
-        return self._make_response(response)
-    #@+node:ekr.20210206062654.1: *5* server.get_sign_on
-    def get_sign_on(self, package):
+        return self._make_minimal_response(response)
+    #@+node:felix.20210617011932.13: *5* server.get_sign_on
+    def get_sign_on(self, param):
         """Synchronous version of _sign_on"""
         g.app.computeSignon()
         signon = []
         for z in (g.app.signon, g.app.signon1):
             for z2 in z.split('\n'):
                 signon.append(z2.strip())
-        return self._make_response({"sign-on": "\n".join(signon)})
-    #@+node:ekr.20210202110128.61: *5* server.get_ui_states
-    def get_ui_states(self, package):
+        return self._make_minimal_response({"sign-on": "\n".join(signon)})
+    #@+node:felix.20210617011932.14: *5* server.get_ui_states
+    def get_ui_states(self, param):
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
         """
@@ -548,7 +681,7 @@ class LeoServer:
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
-        return self._make_response({"states": states})
+        return self._make_minimal_response({"states": states})
     #@+node:ekr.20210202193540.1: *4* server:node commands
     #@+node:ekr.20210202183724.11: *5* server.clone_node
     def clone_node(self, package):
