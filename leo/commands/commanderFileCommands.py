@@ -1111,8 +1111,10 @@ def open_theme_file(self, event):
     os.chdir(leo_dir)
     #
     # #1425: Open the theme file in a separate process.
-    command = f'{g.sys.executable} {g.app.loadDir}/runLeo.py "{fn}"'
-    g.execute_shell_commands(command)  # #1564.
+    # #1564. Use execute_shell_commands.
+    # #1974: allow spaces in path.
+    command = f'"{g.sys.executable}" "{g.app.loadDir}/runLeo.py" "{fn}"'
+    g.execute_shell_commands(command)
     os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
