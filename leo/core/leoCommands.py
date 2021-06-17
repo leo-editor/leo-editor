@@ -302,8 +302,6 @@ class Commands:
         assert commanderEditCommands
         from leo.commands import commanderFileCommands
         assert commanderFileCommands
-        from leo.commands import commanderFindCommands
-        assert commanderFindCommands
         from leo.commands import commanderHelpCommands
         assert commanderHelpCommands
         from leo.commands import commanderOutlineCommands
@@ -1407,11 +1405,11 @@ class Commands:
                 pass  # We have already made a copy.
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
-        else:  # 2011/02/25:
+        else:
+            # Don't kill unit tests for this nkind of problem.
             c._currentPosition = c.rootPosition()
-            g.trace(f"Invalid position: {repr(p and p.h)}")
+            g.trace('Invalid position', repr(p))
             g.trace(g.callers())
-            # Don't kill unit tests for this kind of problem.
 
     # For compatibiility with old scripts.
 
@@ -3999,8 +3997,10 @@ class Commands:
             undoData = u.beforeInsertNode(c.p)
             root = c.createCloneFindPredicateRoot(flatten, undoType)
             for p in clones:
-                clone = p.clone()
-                clone.moveToLastChildOf(root)
+                # Create the clone directly as a child of found.
+                p2 = p.copy()
+                n = root.numberOfChildren()
+                p2._linkCopiedAsNthChild(root, n)
             u.afterInsertNode(root, undoType, undoData)
             if redraw:
                 c.selectPosition(root)
@@ -4010,7 +4010,7 @@ class Commands:
                 c.redraw()
                 c.selectPosition(root)
         elif failMsg:
-            g.es_print(failMsg, color='red')
+            g.es(failMsg, color='red')
         return root
     #@+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
     def setCloneFindByPredicateIcon(self, iconPath, p):
