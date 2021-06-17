@@ -3106,6 +3106,14 @@ class TestFind(unittest.TestCase):
         # Suboutline only.
         settings.suboutline_only = True
         x.do_clone_find_all_flattened(settings)
+    #@+node:ekr.20210617072622.1: *4* TestFind.clone-find-marked
+    def test_clone_find_marked(self):
+        c, x = self.c, self.x
+        root = c.rootPosition()
+        root.setMarked()
+        x.cloneFindAllMarked()
+        x.cloneFindAllFlattenedMarked()
+        root.setMarked()
     #@+node:ekr.20210615084049.1: *4* TestFind.clone-find-parents
     def test_clone_find_parents(self):
         

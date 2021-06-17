@@ -3997,8 +3997,10 @@ class Commands:
             undoData = u.beforeInsertNode(c.p)
             root = c.createCloneFindPredicateRoot(flatten, undoType)
             for p in clones:
-                clone = p.clone()
-                clone.moveToLastChildOf(root)
+                # Create the clone directly as a child of found.
+                p2 = p.copy()
+                n = root.numberOfChildren()
+                p2._linkCopiedAsNthChild(root, n)
             u.afterInsertNode(root, undoType, undoData)
             if redraw:
                 c.selectPosition(root)
