@@ -27,6 +27,7 @@ _leo_editor_path = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 if _leo_editor_path not in sys.path:
     sys.path.append(_leo_editor_path)
 # Leo
+from leo.core import leoGlobals as g
 import leo.core.leoBridge as leoBridge
 import leo.core.leoNodes as leoNodes
 from leo.core.leoGui import StringFindTabManager
@@ -43,6 +44,9 @@ commonActions = ["getChildren", "getBody", "getBodyLength"]
 # Special string signals server startup success
 SERVER_STARTED_TOKEN = "LeoBridge started"
 
+# Globals (to keep pylint happy).
+g_leoserver = None
+g_server = None
 
 #@-<< constants >>
 #@+others
@@ -874,7 +878,9 @@ class LeoBridgeIntegController:
             print("websocket not ready yet", flush=True)
 
     #@+node:ekr.20210611084045.71: *4* sendLeoBridgePackage
-    def sendLeoBridgePackage(self, p_package={}):
+    def sendLeoBridgePackage(self, p_package=None):  # EKR: Don't use {} as a default.
+        if p_package is None:
+            p_package = {}
         p_package["id"] = self.currentActionId
         return(json.dumps(p_package, separators=(',', ':')))  # send as json
 
@@ -3073,7 +3079,7 @@ class LeoBridgeIntegController:
         w_scroll = param['scroll']
 
         # IF sent as number use as is - no conversion needed
-        if type(w_active) == int:
+        if isinstance(w_active, int):
             w_insert = w_active
             w_startSel = w_start
             w_endSel = w_end
