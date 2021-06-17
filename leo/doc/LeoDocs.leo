@@ -1773,6 +1773,7 @@
 <v t="ekr.20210528125316.1"><vh>#1961: multiple popups</vh></v>
 <v t="ekr.20210607023121.1"><vh>#1965: LM.createAllImporterData</vh></v>
 <v t="ekr.20210617091939.1"><vh>#1968: leo-editor path</vh></v>
+<v t="ekr.20210617164840.1"><vh>#1974: spaces in path</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -32126,6 +32127,14 @@ Add c.general_script_helper.</t>
 </t>
 <t tx="ekr.20210617091939.1">https://github.com/leo-editor/leo-editor/issues/1968</t>
 <t tx="ekr.20210617092021.1">https://github.com/leo-editor/leo-editor/issues/1979</t>
+<t tx="ekr.20210617164840.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1974
+
+@language python
+@nosearch
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
