@@ -315,6 +315,128 @@ class LeoFind:
         if errors:  # pragma: no cover
             g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
+    #@+node:ekr.20031218072017.3062: *4* find.change-then-find & helper
+    @cmd('replace-then-find')
+    @cmd('change-then-find')
+    def change_then_find(self, event=None):  # pragma: no cover (cmd)
+        """Handle the replace-then-find command."""
+        # Settings...
+        self.init_in_headline()
+        settings = self.ftm.get_settings()
+        self.do_change_then_find(settings)
+    #@+node:ekr.20210114100105.1: *5* find.do_change_then_find
+    # A stand-alone method for unit testing.
+    def do_change_then_find(self, settings):
+        """
+        Do the change-then-find command from settings.
+        
+        This is a stand-alone method for unit testing.
+        """
+        p = self.c.p
+        self.init_ivars_from_settings(settings)
+        if not self.check_args('change-then-find'):
+            return False
+        if self.change_selection(p):
+            self.do_find_next(settings)
+        return True
+
+    #@+node:ekr.20160224175312.1: *4* find.clone-find_marked & helper
+    @cmd('clone-find-all-marked')
+    @cmd('cfam')
+    def cloneFindAllMarked(self, event=None):
+        """
+        clone-find-all-marked, aka cfam.
+
+        Create an organizer node whose descendants contain clones of all marked
+        nodes. The list is *not* flattened: clones appear only once in the
+        descendants of the organizer node.
+        """
+        self.do_find_marked(flatten=False)
+
+    @cmd('clone-find-all-flattened-marked')
+    @cmd('cffm')
+    def cloneFindAllFlattenedMarked(self, event=None):
+        """
+        clone-find-all-flattened-marked, aka cffm.
+
+        Create an organizer node whose direct children are clones of all marked
+        nodes. The list is flattened: every cloned node appears as a direct
+        child of the organizer node, even if the clone also is a descendant of
+        another cloned node.
+        """
+        self.do_find_marked(flatten=True)
+    #@+node:ekr.20161022121036.1: *5* find.do_find_marked
+    def do_find_marked(self, flatten):
+        """
+        Helper for clone-find-marked commands.
+        
+        This is a stand-alone method for unit testing.
+        """
+        c = self.c
+
+        def isMarked(p):
+            return p.isMarked()
+
+        root = c.cloneFindByPredicate(
+            generator=c.all_unique_positions,
+            predicate=isMarked,
+            failMsg='No marked nodes',
+            flatten=flatten,
+            redraw=True,
+            undoType='clone-find-marked',
+        )
+        if root:
+            # Unmarking all nodes is convenient.
+            for v in c.all_unique_nodes():
+                if v.isMarked():
+                    v.clearMarked()
+            n = root.numberOfChildren()
+            root.b = f"# Found {n} marked node{g.plural(n)}"
+            c.selectPosition(root)
+            c.redraw(root)
+        return bool(root)
+    #@+node:ekr.20140828080010.18532: *4* find.clone-find-parents
+    @cmd('clone-find-parents')
+    def cloneFindParents(self, event=None):
+        """
+        Create an organizer node whose direct children are clones of all
+        parents of the selected node, which must be a clone.
+        """
+        c, u = self.c, self.c.undoer
+        p = c.p
+        if not p:  # pragma: no cover
+            return False
+        if not p.isCloned():  # pragma: no cover
+            g.es(f"not a clone: {p.h}")
+            return False
+        p0 = p.copy()
+        undoType = 'Find Clone Parents'
+        aList = c.vnode2allPositions(p.v)
+        if not aList:  # pragma: no cover
+            g.trace('can not happen: no parents')
+            return False
+        # Create the node as the last top-level node.
+        # All existing positions remain valid.
+        u.beforeChangeGroup(p, undoType)
+        b = u.beforeInsertNode(p)
+        found = c.lastTopLevel().insertAfter()
+        found.h = f"Found: parents of {p.h}"
+        u.afterInsertNode(found, 'insert', b)
+        seen = []
+        for p2 in aList:
+            parent = p2.parent()
+            if parent and parent.v not in seen:
+                seen.append(parent.v)
+                b = u.beforeCloneNode(parent)
+                # Bug fix 2021/06/15: Create the clone directly as a child of found.
+                clone = p.copy()
+                n = found.numberOfChildren()
+                clone._linkCopiedAsNthChild(found, n)
+                u.afterCloneNode(clone, 'clone', b)
+        u.afterChangeGroup(p0, undoType)
+        c.setChanged(True)
+        c.redraw(found)
+        return True
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
     @cmd('find-def')
     def find_def(self, event=None, strict=False):  # pragma: no cover (cmd)
@@ -500,28 +622,6 @@ class LeoFind:
             result.append(ch.lower())
         s = ''.join(result)
         return None if s == word else s
-    #@+node:ekr.20210118003803.1: *4* find.find-var & do_find_var
-    @cmd('find-var')
-    def find_var(self, event=None):  # pragma: no cover (cmd)
-        """Find the var under the cursor."""
-        ftm, p = self.ftm, self.c.p
-        # Check...
-        word = self._compute_find_def_word(event)
-        if not word:
-            return
-        # Settings...
-        self.find_pattern = find_pattern = word + ' ='
-        ftm.set_find_text(find_pattern)
-        self._save_before_find_def(p)  # Save previous settings.
-        self.init_vim_search(find_pattern)
-        self.update_change_list(self.change_text)  # Optional. An edge case.
-        settings = self._compute_find_def_settings(find_pattern)
-        # Do the command!
-        self.do_find_var(settings, word)
-
-    def do_find_var(self, settings, word):
-        """A standalone helper for unit tests."""
-        return self._fd_helper(settings, word, def_flag=False, strict=False)
     #@+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')
     def find_next(self, event=None):  # pragma: no cover (cmd)
@@ -603,14 +703,6 @@ class LeoFind:
             self.restore(data)
         self.show_status(found)
         return p, pos, newpos
-    #@+node:ekr.20141113094129.6: *4* find.focus-to-find
-    @cmd('focus-to-find')
-    def focus_to_find(self, event=None):  # pragma: no cover (cmd)
-        c = self.c
-        if c.config.getBool('use-find-dialog', default=True):
-            g.app.gui.openFindDialog(c)
-        else:
-            c.frame.log.selectTab('Find')
     #@+node:ekr.20131117164142.17015: *4* find.find-tab-hide
     @cmd('find-tab-hide')
     def hide_find_tab(self, event=None):  # pragma: no cover (cmd)
@@ -629,6 +721,36 @@ class LeoFind:
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
+    #@+node:ekr.20210118003803.1: *4* find.find-var & do_find_var
+    @cmd('find-var')
+    def find_var(self, event=None):  # pragma: no cover (cmd)
+        """Find the var under the cursor."""
+        ftm, p = self.ftm, self.c.p
+        # Check...
+        word = self._compute_find_def_word(event)
+        if not word:
+            return
+        # Settings...
+        self.find_pattern = find_pattern = word + ' ='
+        ftm.set_find_text(find_pattern)
+        self._save_before_find_def(p)  # Save previous settings.
+        self.init_vim_search(find_pattern)
+        self.update_change_list(self.change_text)  # Optional. An edge case.
+        settings = self._compute_find_def_settings(find_pattern)
+        # Do the command!
+        self.do_find_var(settings, word)
+
+    def do_find_var(self, settings, word):
+        """A standalone helper for unit tests."""
+        return self._fd_helper(settings, word, def_flag=False, strict=False)
+    #@+node:ekr.20141113094129.6: *4* find.focus-to-find
+    @cmd('focus-to-find')
+    def focus_to_find(self, event=None):  # pragma: no cover (cmd)
+        c = self.c
+        if c.config.getBool('use-find-dialog', default=True):
+            g.app.gui.openFindDialog(c)
+        else:
+            c.frame.log.selectTab('Find')
     #@+node:ekr.20031218072017.3068: *4* find.replace
     @cmd('replace')
     @cmd('change')
@@ -639,31 +761,6 @@ class LeoFind:
             self.change_selection(p)
 
     replace = change
-    #@+node:ekr.20031218072017.3062: *4* find.change-then-find & helper
-    @cmd('replace-then-find')
-    @cmd('change-then-find')
-    def change_then_find(self, event=None):  # pragma: no cover (cmd)
-        """Handle the replace-then-find command."""
-        # Settings...
-        self.init_in_headline()
-        settings = self.ftm.get_settings()
-        self.do_change_then_find(settings)
-    #@+node:ekr.20210114100105.1: *5* find.do_change_then_find
-    # A stand-alone method for unit testing.
-    def do_change_then_find(self, settings):
-        """
-        Do the change-then-find command from settings.
-        
-        This is a stand-alone method for unit testing.
-        """
-        p = self.c.p
-        self.init_ivars_from_settings(settings)
-        if not self.check_args('change-then-find'):
-            return False
-        if self.change_selection(p):
-            self.do_find_next(settings)
-        return True
-
     #@+node:ekr.20131117164142.17019: *4* find.set-find-*
     @cmd('set-find-everywhere')
     def set_find_scope_every_where(self, event=None):  # pragma: no cover (cmd)
@@ -2401,7 +2498,6 @@ class LeoFind:
             g.app.gui.show_find_success(c, self.in_headline, insert, p)
         c.frame.bringToFront()
         return w  # Support for isearch.
-
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20210112192011.1: *4* LeoFind.Isearch commands
     #@+node:ekr.20131117164142.16941: *5* find.isearch_forward
@@ -3010,6 +3106,24 @@ class TestFind(unittest.TestCase):
         # Suboutline only.
         settings.suboutline_only = True
         x.do_clone_find_all_flattened(settings)
+    #@+node:ekr.20210617072622.1: *4* TestFind.clone-find-marked
+    def test_clone_find_marked(self):
+        c, x = self.c, self.x
+        root = c.rootPosition()
+        root.setMarked()
+        x.cloneFindAllMarked()
+        x.cloneFindAllFlattenedMarked()
+        root.setMarked()
+    #@+node:ekr.20210615084049.1: *4* TestFind.clone-find-parents
+    def test_clone_find_parents(self):
+        
+        c, x = self.c, self.x
+        root = c.rootPosition()
+        p = root.next().firstChild()
+        p.clone()  # c.p must be a clone.
+        c.selectPosition(p)
+        x.cloneFindParents()
+       
     #@+node:ekr.20210110073117.62: *4* TestFind.clone-find-tag
     def test_clone_find_tag(self):
         c, x = self.c, self.x
@@ -3337,6 +3451,21 @@ class TestFind(unittest.TestCase):
                 # f"     groups: {groups}\n"
                 # f"   expected: {expected}\n"
                 # f"        got: {result}")
+    #@+node:ekr.20210110073117.89: *4* TestFind._switch_style
+    def test_switch_style(self):
+        x = self.x
+        table = (
+            ('', None),
+            ('TestClass', None),
+            ('camelCase', 'camel_case'),
+            ('under_score', 'underScore'),
+        )
+        for s, expected in table:
+            result = x._switch_style(s)
+            assert result == expected, (
+                f"       s: {s}\n"
+                f"expected: {expected!r}\n"
+                f"     got: {result!r}")
     #@+node:ekr.20210110073117.74: *4* TestFind.batch_plain_replace
     def test_batch_plain_replace(self):
         settings, x = self.settings, self.x
@@ -3479,21 +3608,6 @@ class TestFind(unittest.TestCase):
         x.do_clone_find_all(settings)
         x.find_next_match(p=None)
         x.do_change_all(settings)
-    #@+node:ekr.20210110073117.89: *3* TestFind._switch_style
-    def test_switch_style(self):
-        x = self.x
-        table = (
-            ('', None),
-            ('TestClass', None),
-            ('camelCase', 'camel_case'),
-            ('under_score', 'underScore'),
-        )
-        for s, expected in table:
-            result = x._switch_style(s)
-            assert result == expected, (
-                f"       s: {s}\n"
-                f"expected: {expected!r}\n"
-                f"     got: {result!r}")
     #@-others
 #@-others
 if __name__ == '__main__':
