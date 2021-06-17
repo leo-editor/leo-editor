@@ -206,7 +206,6 @@
 <v t="ekr.20161021090740.1"><vh>@file ../commands/checkerCommands.py</vh></v>
 <v t="ekr.20171123135539.1"><vh>@file ../commands/commanderEditCommands.py</vh></v>
 <v t="ekr.20171123095353.1"><vh>@file ../commands/commanderFileCommands.py</vh></v>
-<v t="ekr.20171124072110.1"><vh>@file ../commands/commanderFindCommands.py</vh></v>
 <v t="ekr.20171124073126.1"><vh>@file ../commands/commanderHelpCommands.py</vh></v>
 <v t="ekr.20171124080430.1"><vh>@file ../commands/commanderOutlineCommands.py</vh></v>
 <v t="ekr.20150514040100.1"><vh>@file ../commands/controlCommands.py</vh></v>
@@ -547,7 +546,6 @@
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
-<v t="ekr.20210202110128.1"><vh>@file leoserver.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
