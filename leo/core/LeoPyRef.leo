@@ -547,6 +547,8 @@
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
+<v t="ekr.20210611081444.1"><vh>@file leoserver.py</vh></v>
+<v t="ekr.20210611084045.1"><vh>@file leobridgeserver.py</vh></v>
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20190607124533.1"><vh>@nopylint</vh>
