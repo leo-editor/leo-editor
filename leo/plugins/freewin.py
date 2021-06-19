@@ -48,7 +48,8 @@ unchangeable node. However, no RsT error will be shown, and the
 link will be underlined even though it will not be active.
 
 The size of the rendered view can be increased or decreased with
-the standard browser keys: CTRL-+ and CTRL--.
+the standard browser keys: CTRL-+ and CTRL--. Currently this feature
+does not work with Qt6.
 #@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -488,7 +489,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
         """
 
-        if self.render_kind != BROWSER:
+        if self.render_kind != BROWSER or not isQt5:
             return
 
         w = self.browser
