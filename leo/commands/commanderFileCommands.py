@@ -374,6 +374,11 @@ def refreshFromDisk(self, event=None):
         # Create the 'Recovered Nodes' tree.
         c.fileCommands.handleNodeConflicts()
         c.redraw()
+#@+node:ekr.20210610083257.1: *3* c_file.pwd
+@g.commander_command('pwd')
+def pwd_command(self, event=None):
+    """Refresh an @<file> node from disk."""
+    g.es_print('pwd:', os.getcwd())
 #@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save')
 @g.commander_command('file-save')
@@ -1106,8 +1111,10 @@ def open_theme_file(self, event):
     os.chdir(leo_dir)
     #
     # #1425: Open the theme file in a separate process.
-    command = f'{g.sys.executable} {g.app.loadDir}/runLeo.py "{fn}"'
-    g.execute_shell_commands(command)  # #1564.
+    # #1564. Use execute_shell_commands.
+    # #1974: allow spaces in path.
+    command = f'"{g.sys.executable}" "{g.app.loadDir}/runLeo.py" "{fn}"'
+    g.execute_shell_commands(command)
     os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll

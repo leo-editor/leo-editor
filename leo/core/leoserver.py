@@ -1,12 +1,13 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210202110128.1: * @file ../../leoserver.py
+#@+node:ekr.20210611081444.1: * @file leoserver.py
 #@@language python
 #@@tabwidth -4
 """
-Leo's internet server.
+Leo's internet server. (The beauty queen). Does not work yet with leoInteg.
 
 Written by Félix Malboeuf and Edward K. Ream.
 """
+# pylint: disable=import-self,raise-missing-from
 #@+<< imports >>
 #@+node:ekr.20210202110128.2: ** << imports >>
 import asyncio
@@ -22,8 +23,8 @@ import websockets
 # Leo
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
+from leo.core import leoserver
 #@-<< imports >>
-# pylint: disable=raise-missing-from
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 # For unit tests.
 g_leoserver = None
@@ -2223,7 +2224,6 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
         # pylint: disable=import-self
-        import leo.core.leoserver as leoserver
         global g, g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)

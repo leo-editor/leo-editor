@@ -467,45 +467,47 @@ class LeoQtGui(leoGui.LeoGui):
         defaultButton="Yes",
         cancelMessage=None,
     ):
-        """Create and run an askYesNo dialog."""
+        """
+        Create and run an askYesNo dialog.
+        
+        Return one of ('yes', 'no', 'cancel', 'yes-to-all').
+        
+        """
         if g.unitTesting:
             return None
         Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
         ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
-        d = b(c.frame.top)
+        dialog = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
-            d.setStyleSheet(stylesheet)
+            dialog.setStyleSheet(stylesheet)
         if message:
-            d.setText(message)
-        d.setIcon(Information.Warning)
-        d.setWindowTitle(title)
-        yes = d.addButton(yesMessage, ButtonRole.YesRole)
-        no = d.addButton(noMessage, ButtonRole.NoRole)
+            dialog.setText(message)
+        dialog.setIcon(Information.Warning)
+        dialog.setWindowTitle(title)
+        # Creation order determines returned value.
+        yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
+        no = dialog.addButton(noMessage, ButtonRole.NoRole)
+        cancel = dialog.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
         if yesToAllMessage:
-            d.addButton(yesToAllMessage, ButtonRole.YesRole)
-        cancel = d.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
+            dialog.addButton(yesToAllMessage, ButtonRole.YesRole)
         if defaultButton == "Yes":
-            d.setDefaultButton(yes)
+            dialog.setDefaultButton(yes)
         elif defaultButton == "No":
-            d.setDefaultButton(no)
+            dialog.setDefaultButton(no)
         else:
-            d.setDefaultButton(cancel)
+            dialog.setDefaultButton(cancel)
         try:
             c.in_qt_dialog = True
-            val = d.exec() if isQt6 else d.exec_()
+            val = dialog.exec() if isQt6 else dialog.exec_()
         finally:
             c.in_qt_dialog = False
-        if val == 0:
-            val = 'yes'
-        elif val == 1:
-            val = 'no'
-        elif yesToAllMessage and val == 2:
-            val = 'yes-to-all'
-        else:
-            val = 'cancel'
-        return val
+        # val is the same as the creation order.
+        # Tested with both Qt6 and Qt5.
+        return {
+            0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-to-all',
+        }.get(val, 'cancel')
     #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
         """
@@ -519,31 +521,37 @@ class LeoQtGui(leoGui.LeoGui):
         - `yes_all`: bool - show YesToAll button
         - `no_all`: bool - show NoToAll button
         """
-        if g.unitTesting: return None
-        b = QtWidgets.QMessageBox
-        buttons = b.Yes | b.No
+        if g.unitTesting:
+            return None
+        box = QtWidgets.QMessageBox
+        dialog = box(c.frame.top) 
+        ButtonRole = box.ButtonRole if isQt6 else box
+        Information = box.Icon.Information if isQt6 else box
+        # Creation order determines returned value.
+        yes = dialog.addButton('Yes', ButtonRole.YesRole)
+        dialog.addButton('No', ButtonRole.NoRole)
+        dialog.addButton('Cancel', ButtonRole.RejectRole)
         if yes_all:
-            buttons |= b.YesToAll
+            dialog.addButton('Yes To All', ButtonRole.YesRole)
         if no_all:
-            buttons |= b.NoToAll
-        d = b(c.frame.top)
-        d.setStyleSheet(c.active_stylesheet)
-        d.setStandardButtons(buttons)
-        d.setWindowTitle(title)
-        if message: d.setText(message)
-        d.setIcon(b.Information)
-        d.setDefaultButton(b.Yes)
+            dialog.addButton('No To All', ButtonRole.NoRole)
+        dialog.setStyleSheet(c.active_stylesheet)
+        dialog.setWindowTitle(title)
+        if message:
+            dialog.setText(message)
+        dialog.setIcon(Information.Warning)
+        dialog.setDefaultButton(yes)
         try:
             c.in_qt_dialog = True
-            val = d.exec() if isQt6 else d.exec_()
+            val = dialog.exec() if isQt6 else dialog.exec_()
         finally:
             c.in_qt_dialog = False
+        # val is the same as the creation order.
+        # Tested with both Qt6 and Qt5.
         return {
-            b.Yes: 'yes',
-            b.No: 'no',
-            b.YesToAll: 'yes-all',
-            b.NoToAll: 'no-all'
-        }.get(val, 'no')
+            # Buglet: This assumes both yes-all and no-all buttons are active.
+            0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-all', 4: 'no-all',
+        }.get(val, 'cancel')
     #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title, startdir):
         """Create and run an Qt open directory dialog ."""

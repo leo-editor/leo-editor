@@ -494,8 +494,7 @@ g.command_alias('extractPythonMethod', extract)
 #@+node:ekr.20171123135625.20: *3* def createLastChildNode
 def createLastChildNode(c, parent, headline, body):
     """A helper function for the three extract commands."""
-    if body:
-        body = body.rstrip()
+    # #1955: don't strip trailing lines.
     if not body:
         body = ""
     p = parent.insertAsLastChild()
