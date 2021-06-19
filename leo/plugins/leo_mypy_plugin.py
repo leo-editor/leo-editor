@@ -25,7 +25,7 @@ assert nodes  # For traces.
 g.cls()
 
 def plugin(version: str):
-    g.trace(f"(leo_mypy_plugin) version: {version}")
+    print(f"{__file__} version: {version}")
     return LeoMypyPlugin
 
 class LeoMypyPlugin(Plugin):
@@ -79,33 +79,34 @@ class LeoMypyPlugin(Plugin):
         # ('args', List[List[Expression]]),  # Actual expressions for each formal argument
         # ('context', Context),              # Relevant location context (e.g. for error messages)
         # ('api', CheckerPluginInterface)])
-
-
-    def dump_function(self, ctx):
-
-        # print(ctx.context)
-        if 1:
-            print('')
-            for ivar in ('arg_types', 'arg_kinds', 'arg_names'):
-                arg = getattr(ctx, ivar, [])
-                if arg:
-                    print(ivar, '...')
-                    for i, arg_list in enumerate(arg):
-                        for j, arg in enumerate(arg_list):
-                            print(i, j, arg)
+        
+    if 0:
+        def dump_function(self, ctx):
+        
+            # print(ctx.context)
+            if 1:
+                print('')
+                for ivar in ('arg_types', 'arg_kinds', 'arg_names'):
+                    arg = getattr(ctx, ivar, [])
+                    if arg:
+                        print(ivar, '...')
+                        for i, arg_list in enumerate(arg):
+                            for j, arg in enumerate(arg_list):
+                                print(i, j, arg)
     #@+node:ekr.20210522062026.1: ** Plugin.dump_sig
-    def dump_sig(self, ctx):
-        sig = ctx.default_signature
-        if not self.pattern.search(repr(sig)):
-            return
-        print('')
-        # g.trace(g.callers(1))
-        print(sig)
-        print(ctx.context)
-        print('args...')
-        for i, arg_list in enumerate(ctx.args):
-            for j, arg in enumerate(arg_list):
-                print(i, j, arg)
+    if 0:
+        def dump_sig(self, ctx):
+            sig = ctx.default_signature
+            if not self.pattern.search(repr(sig)):
+                return
+            print('')
+            # g.trace(g.callers(1))
+            print(sig)
+            print(ctx.context)
+            print('args...')
+            for i, arg_list in enumerate(ctx.args):
+                for j, arg in enumerate(arg_list):
+                    print(i, j, arg)
     #@+node:ekr.20210521165202.2: ** Plugin.get_method_signature_hook
          
     # From plugin.py
@@ -115,21 +116,24 @@ class LeoMypyPlugin(Plugin):
         # ('default_signature', CallableType),  # Original signature of the method
         # ('context', Context),                 # Relevant location context (e.g. for error messages)
         # ('api', CheckerPluginInterface)])
+        
+    if 0:
 
-    def get_method_signature_hook(self, fullname):
-
-        def method_signature_callback(ctx):  # MethodSigContext.
-            self.dump_sig(ctx)
-            return ctx.default_signature  # Must *always* return a signature.
-            
-        return method_signature_callback
+        def get_method_signature_hook(self, fullname):
+        
+            def method_signature_callback(ctx):  # MethodSigContext.
+                self.dump_sig(ctx)
+                return ctx.default_signature  # Must *always* return a signature.
+                
+            return method_signature_callback
     #@+node:ekr.20210522062357.1: ** Plugin.get_function_signature_hook
-    def get_function_signature_hook(self, fullname):
-
-        def function_signature_callback(ctx):  # FunctionSigContext.
-            self.dump_sig(ctx)
-            return ctx.default_signature  # Must *always* return a signature.
-            
-        return function_signature_callback
+    if 0:
+        def get_function_signature_hook(self, fullname):
+        
+            def function_signature_callback(ctx):  # FunctionSigContext.
+                self.dump_sig(ctx)
+                return ctx.default_signature  # Must *always* return a signature.
+                
+            return function_signature_callback
     #@-others
 #@-leo
