@@ -1,9 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tom.20210527153256.1: * @file ../plugins/freewin.py
-#@@tabwidth -4
-#@@language python
-
-# pylint: disable = anomalous-backslash-in-string
+#@+node:tom.20210613135525.1: * @file ../plugins/freewin.py
 """
 #@+<< docstring >>
 #@+node:tom.20210603022210.1: ** << docstring >>
@@ -14,8 +10,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 15 June 2021
-:Version: 1.0
+:Date: 19 June 2021
+:Version: 1.1
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -51,6 +47,8 @@ target.  This is because the window only represents a single,
 unchangeable node. However, no RsT error will be shown, and the
 link will be underlined even though it will not be active.
 
+The size of the rendered view can be increased or decreased with
+the standard browser keys: CTRL-+ and CTRL--.
 #@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,9 +139,9 @@ No Stylesheet
 If no stylesheet exists for the Restructured Text view, the default Docutils stylesheet will be used for either light or dark Leo themes.
 #@-others
 
-
 #@-<< docstring >>
 """
+
 #@+<< imports >>
 #@+node:tom.20210527153415.1: ** << imports >>
 from os.path import exists, join as osp_join
@@ -169,7 +167,7 @@ except ImportError as e:
 if not qt_imports_ok:
     g.trace('Freewin plugin: Qt imports failed')
     raise ImportError('Qt Imports failed')
-    
+
 #@+<<import  QWebView>>
 #@+node:tom.20210603000519.1: *3* <<import QWebView>>
 QWebView = None
@@ -241,21 +239,23 @@ FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 BROWSER = 1
 EDITOR = 0
 EDITOR_FONT_SIZE = '11pt'
-EDITOR_STYLESHEET_FILE = 'freewin_editor_light.css'
+EDITOR_STYLESHEET_LIGHT_FILE = 'freewin_editor_light.css'
 EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
 ENCODING = 'utf-8'
 
 RST_NO_WARNINGS = 5
-RST_CUSTOM_STYLESHEET_FILE = 'freewin_rst_light.css'
+RST_CUSTOM_STYLESHEET_LIGHT_FILE = 'freewin_rst_light.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE = 'freewin_rst_dark.css'
 
 ENCODING='utf-8'
 instances = {}
+
+ZOOM_FACTOR = 1.1
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
 
-EDITOR_STYLESHEET = f'''QTextEdit {{
+EDITOR_STYLESHEET_LIGHT = f'''QTextEdit {{
     color: {FG_COLOR};
     background: {BG_COLOR};
     font-family: {FONT_FAMILY};
@@ -331,8 +331,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
         super().__init__()
-        QWidget.__init__(self) # per http://enki-editor.org/2014/08/23
-        QWebView.__init__(self)
+        QWidget().__init__()
 
         self.c = c
         self.p = c.p
@@ -362,27 +361,29 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
         else:
-            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_FILE)
-            self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_FILE)
+            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_LIGHT_FILE)
+            self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_LIGHT_FILE)
 
         if g.isWindows:
+            self.editor_csspath = self.editor_csspath.replace('/', '\\')
             self.rst_csspath = self.rst_csspath.replace('/', '\\')
         else:
+            self.editor_csspath = self.editor_csspath.replace('\\', '/')
             self.rst_csspath = self.rst_csspath.replace('\\', '/')
 
         #@-<<set stylesheet paths>>
         #@+<<set stylesheets>>
         #@+node:tom.20210615101103.1: *4* <<set stylesheets>>
-        # Check if stylesheet files exist
+        # Check if editor stylesheet file exists.   If so,
+        # we cache its contents.
         if exists(self.editor_csspath):
             with open(self.editor_csspath, encoding=ENCODING) as f:
                 self.editor_style = f.read()
         else:
             self.editor_style = EDITOR_STYLESHEET_DARK if is_dark \
-                                else EDITOR_STYLESHEET
+                                else EDITOR_STYLESHEET_LIGHT
 
-        # Path to RsT stylesheet must be given to docutils as a path,
-        # not a string of the contents
+        # If a stylesheet exists for RsT, we cache its contents.
         self.rst_stylesheet = None
         if exists(self.rst_csspath):
             with open(self.rst_csspath, encoding=ENCODING) as f:
@@ -417,6 +418,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+        central_widget.keyPressEvent = self.keyPressEvent
         #@-<<build central widget>>
         #@+<<set geometry>>
         #@+node:tom.20210528235451.1: *4* <<set geometry>>
@@ -475,6 +478,36 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 scrollbar.setValue(old_scroll)
 
             self.doc.setModified(False)
+    #@+node:tom.20210619000302.1: *3* keyPressEvent
+    def keyPressEvent(self, event):
+        """Take actions on keypresses when the render pane has focus and a
+        key is pressed.
+
+        A method of this name receives keystrokes for most or all
+        QObject-descended objects. Currently, check only for <CNTRL-=> and
+        <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
+        """
+
+        if self.render_kind != BROWSER:
+            return
+
+        w = self.browser
+
+        mod = ''
+        modifiers = event.modifiers()
+        bare_key = event.text()
+
+        KeyboardModifiers = QtCore.Qt if isQt5 else QtCore.Qt.KeyboardModifiers
+        if modifiers and modifiers == KeyboardModifiers.ControlModifier:
+            mod = 'cntrl'
+
+        if bare_key == '=' and mod == 'cntrl':
+            _zf = w.zoomFactor()
+            w.setZoomFactor(_zf * ZOOM_FACTOR)
+        elif bare_key == '-' and mod == 'cntrl':
+            _zf = w.zoomFactor()
+            w.setZoomFactor(_zf / ZOOM_FACTOR)
+
     #@+node:tom.20210527234644.1: *3* _register_handlers (floating_pane.py)
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals"""
@@ -533,7 +566,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             {self.rst_stylesheet}
             </style>
             </head>'''
-            _html = _html.replace('</head>', style_insert)
+            _html = _html.replace('</head>', style_insert, 1)
 
         return _html
     #@-others
