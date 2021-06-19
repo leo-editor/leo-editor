@@ -16,7 +16,7 @@ leo/.vscode/
 /dist/
 
 # mypy stub files
-stubs/
+mypy_stubs/
 
 # Transcrypt folder.
 __target__
