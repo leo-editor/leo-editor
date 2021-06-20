@@ -134,6 +134,7 @@
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20201222095250.1"><vh>script: check for duplicate settings in theme files</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
+<v t="ekr.20210429045101.1"><vh>script: check gnxDict</vh></v>
 <v t="ekr.20210309083845.1"><vh>script: check-files</vh></v>
 <v t="ekr.20210118013157.1"><vh>script: convert-LeoFind</vh>
 <v t="ekr.20210118024739.1"><vh>convert</vh></v>
@@ -477,6 +478,7 @@
 <v t="ville.20110403115003.10348"><vh>@file ../plugins/valuespace.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
+<v t="tom.20210527153256.1"><vh>@file ../plugins/freewin.py</vh></v>
 <v t="ekr.20160519123329.1"><vh>@file ../plugins/QNCalendarWidget.py</vh></v>
 <v t="ekr.20060328125925"><vh>@file ../plugins/chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file ../plugins/dragdropgoodies.py</vh></v>
@@ -1846,6 +1848,19 @@ for v in c.all_nodes():
         if len(aList) &gt; 1:
             print(f"gnx clash: {gnx}")
             g.printObj(aList)
+print('done')</t>
+<t tx="ekr.20210429045101.1">g.cls()
+fc = c.fileCommands
+d = fc.gnxDict
+for key in sorted(d.keys()):
+    v = d.get(key)
+    if v.h.lower() == 'newheadline':
+        print('in dict', key, v)
+        for p in c.all_positions():
+            if p.v == v:
+                print(p)
+        else:
+            print('no position for', v)
 print('done')</t>
 <t tx="ekr.20210309083845.1">"""
 Issue https://github.com/leo-editor/leo-editor/issues/1789
