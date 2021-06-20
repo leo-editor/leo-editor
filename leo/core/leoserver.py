@@ -136,6 +136,7 @@ class LeoServer:
                 index: string;
             }[]
         """
+        tag = 'get_buttons'
         d = self._check_button_command('get_buttons')
         buttons = []
         # Some button keys are objects so we have to convert first
@@ -153,7 +154,6 @@ class LeoServer:
         if not index:
             raise ServerError(f"{tag}: no button index given")
         d = self._check_button_command(tag)
-        
         # Some button keys are objects so we have to convert first
         key = None
         for i_key in d:
@@ -226,8 +226,8 @@ class LeoServer:
         tag = 'set_opened_file'
         index = param.get('index')
         total = len(g.app.commanders())
-        if total and w_index < total:
-            self.c = g.app.commanders()[w_index]
+        if total and index < total:
+            self.c = g.app.commanders()[index]
             # maybe needed for frame wrapper
             self.c.selectPosition(self.c.p)
             self._check_outline(self.c)
@@ -261,10 +261,10 @@ class LeoServer:
         self.c = commanders and commanders[0] or None
 
         if self.c:
-            w_result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
+            result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
         else:
-            w_result = {"total": 0}
-        return self._make_response(w_result)
+            result = {"total": 0}
+        return self._make_response(result)
     #@+node:felix.20210617011849.6: *5* server.save_file
     def save_file(self, param):  # pragma: no cover (too dangerous).
         """Save the leo outline."""
@@ -507,10 +507,9 @@ class LeoServer:
         return self._make_minimal_response({"position-data-list": result})
     #@+node:felix.20210617011932.4: *5* server.get_all_gnx
     def get_all_gnx(self, param):
-        '''Get gnx array from all unique nodes'''    
+        '''Get gnx array from all unique nodes'''
         if self.log_flag:  # pragma: no cover
             print(f"\nget_all_gnx\n")
-        
         c = self._check_c()
         all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
         return self._make_minimal_response({"gnx": all_gnx}, True)
@@ -684,125 +683,142 @@ class LeoServer:
         return self._make_minimal_response({"states": states})
     #@+node:ekr.20210202193540.1: *4* server:node commands
     #@+node:ekr.20210202183724.11: *5* server.clone_node
-    def clone_node(self, package):
-        """
-        Clone the node at position p, where p is c.p if package["ap"] is missing.
-        
-        To clone c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "clone",
-        }
-        """
+    def clone_node(self, param):
+        '''
+        Clone a node.
+        If it was also the current selection, return it,
+        otherwise try not to select it.
+        '''
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
-        c.clone()
+        p = self._get_p(param)
+        if p == c.p:
+            c.clone()
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.clone()
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+        # return selected node either ways
         return self._make_response()
+
     #@+node:ekr.20210202110128.79: *5* server.contract_node
-    def contract_node(self, package):
+    def contract_node(self, ap):
         """
-        Contract the node at position p, where p is c.p if package["ap"] is missing.
-        
-        To contract c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "contract-node",
-        }
+        Contract (Collapse) the node at position p, where p is c.p if p is missing.
+        TODO : Maybe convert to using param package containing ap, instead of direct ap.
         """
         self._check_c()
-        p = self._get_p(package)
+        p = self._check_p(ap)
         p.contract()
         return self._make_response()
     #@+node:ekr.20210202183724.12: *5* server.cut_node
-    def cut_node(self, package):  # pragma: no cover (too dangerous, for now)
-        """
-        Cut the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
-        
-        To cut c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "cut-node",
-        }
-        """
+    def cut_node(self, param):  # pragma: no cover (too dangerous, for now)
+        '''
+        Cut a node, don't select it. 
+        Try to keep selection, then return the selected node that remains.
+        '''
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
-        c.cutOutline()
+        p = self._get_p(param)
+        if p == c.p:
+            c.cutOutline()  # already on this node, so cut it
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.cutOutline()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex-1
+                # Try again with childIndex decremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:ekr.20210202183724.13: *5* server.delete_node
-    def delete_node(self, package):  # pragma: no cover (too dangerous, for now)
+    def delete_node(self, param):  # pragma: no cover (too dangerous, for now)
         """
-        Delete the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
-        
-        To delete c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "delete-node",
-        }
+        Delete a node, don't select it. 
+        Try to keep selection, then return the selected node that remains.
         """
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
-        c.deleteOutline()  # Handles undo.
+        p = self._get_p(param)
+        if p == c.p:
+            c.deleteOutline()  # already on this node, so cut it
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.deleteOutline()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex-1
+                # Try again with childIndex decremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:ekr.20210202110128.78: *5* server.expand_node
-    def expand_node(self, package):
+    def expand_node(self, ap):
         """
-        Expand the node at position p, where p is c.p if package["ap"] is missing.
-        
-        To expand c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "expand-node",
-        }
+        Expand the node at position p, where p is c.p if p is missing.
+        TODO : Maybe convert to using param package containing ap, instead of direct ap.
         """
         self._check_c()
-        p = self._get_p(package)
+        p = self._check_p(ap)
         p.expand()
         return self._make_response()
     #@+node:ekr.20210202183724.15: *5* server.insert_node
-    def insert_node(self, package):
+    def insert_node(self, param):
         """
-        Insert a new node at position p, where p is c.p if package["ap"] is missing.
-
-        This node has 'newHeadline' as its headline.
-        
-        To insert a new node at c.p (with the default headline), use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "insert-node",
-        }
-        
-        Use the 'set_headline' method to undoably set any node's headlines.
+        Insert a node at given node, then select it once created, and finally return it
         """
         c = self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         c.selectPosition(p)
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
+    #@+node:felix.20210619235914.1: *5* insert_named_node
+    def insert_named_node(self, param):
+        '''
+        Insert a node at given node, set its headline, select it and finally return it
+        '''
+        c = self._check_c()
+        p = self._get_p(param)
+        newHeadline = param.get('name')
+        bunch = c.undoer.beforeInsertNode(p)
+        newNode = p.insertAfter()
+        # set this node's new headline
+        newNode.h = newHeadline
+        newNode.setDirty()
+        c.undoer.afterInsertNode(
+            newNode, 'Insert Node', bunch)
+        c.selectPosition(newNode)
+        return self._make_response()
     #@+node:ekr.20210202110128.64: *5* server.page_down
-    def page_down(self, package):
+    def page_down(self, param):
         """
         Selects a node "n" steps down in the tree to simulate page down.
         """
         c = self._check_c()
-        n = package.get("n", 3)
+        n = param.get("n", 3)
         for z in range(n):
             c.selectVisNext()
         return self._make_response()
     #@+node:ekr.20210202110128.63: *5* server.page_up
-    def page_up(self, package):
+    def page_up(self, param):
         """
         Selects a node "N" steps up in the tree to simulate page up.
         """
         c = self._check_c()
-        n = package.get("n", 3)
+        n = param.get("n", 3)
         for z in range(n):
             c.selectVisBack()
         return self._make_response()
     #@+node:ekr.20210202183724.17: *5* server.redo
-    def redo(self, package):
+    def redo(self, param):
         """Undo last un-doable operation"""
         c = self._check_c()
         u = c.undoer
@@ -810,52 +826,69 @@ class LeoServer:
             u.redo()
         return self._make_response()
     #@+node:ekr.20210202110128.74: *5* server.set_body
-    def set_body(self, package):
+    def set_body(self, param):
         """
-        Undoably set p.b, where p is c.p if package["ap"] is missing.
+        Undoably set body text of a v node.
         """
         tag = 'set_body'
         c = self._check_c()
-        p = self._get_p(package)
+        gnx = param.get('gnx')
+        body = param.get('body')
         u, wrapper = c.undoer, c.frame.body.wrapper
-        body = package.get('body')
         if body is None:  # pragma: no cover
             raise ServerError(f"{tag}: no body given")
-        bunch = u.beforeChangeNodeContents(p)
-        p.v.setBodyString(body)
-        u.afterChangeNodeContents(p, "Body Text", bunch)
-        if c.p == p:
-            wrapper.setAllText(body)
-        if not self.c.isChanged():  # pragma: no cover
-            c.setChanged()
-        if not p.v.isDirty():  # pragma: no cover
-            p.setDirty()
+        for p in c.all_positions():
+            if p.v.gnx == gnx:
+                bunch = u.beforeChangeNodeContents(p)
+                p.v.setBodyString(body)
+                u.afterChangeNodeContents(p, "Body Text", bunch)
+                if c.p == p:
+                    wrapper.setAllText(body)
+                if not self.c.isChanged():  # pragma: no cover
+                    c.setChanged()
+                if not p.v.isDirty():  # pragma: no cover
+                    p.setDirty()
+                break
+        # additional forced string setting
+        if gnx:
+            v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+            if v:
+                v.b = body
         return self._make_response()
     #@+node:ekr.20210202110128.77: *5* server.set_current_position
-    def set_current_position(self, package):
+    def set_current_position(self, ap):
         """Select position p, where p is c.p if package["ap"] is missing."""
+        tag = "set_current_position"
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
+        p = self._check_p(ap)
+        if p:
+            if c.positionExists(p):
+                # set this node as selection
+                c.selectPosition(p)
+            else:
+                foundPNode = self._positionFromGnx(ap.get('gnx'))
+                if foundPNode:
+                    c.selectPosition(w_foundPNode)
+                else:
+                    print(f"{tag}: node does not exist! ap was: {json.dumps(ap)}")
+
         return self._make_response()
     #@+node:ekr.20210202110128.76: *5* server.set_headline
-    def set_headline(self, package):
+    def set_headline(self, param):
         """
         Undoably set p.h, where p is c.p if package["ap"] is missing.
         """
         tag = 'set_headline'
         c = self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         u = c.undoer
-        h = package.get('headline')
-        if not h:  # pragma: no cover
-            raise ServerError(f"{tag}: no headline")
+        h = param.get('name', '')
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
     #@+node:ekr.20210202110128.75: *5* server.set_selection
-    def set_selection(self, package):
+    def set_selection(self, param):
         """
         Set the selection range for p.b, where p is c.p if package["ap"] is missing.
         
@@ -868,15 +901,32 @@ class LeoServer:
         - "end":    The end of the selection.
         - "insert": The insert point. Must be either start or end.
         - "scroll": An optional scroll position.
+        
+        Selection points can be sent as {"col":int, "line" int} dict
+        or as numbers directly for convenience.    
         """
         c = self._check_c()
-        p = self._get_p(package)  # Will raise ServerError if p does not exist.
+        p = self._get_p(param)  # Will raise ServerError if p does not exist.
         v = p.v
         wrapper = c.frame.body.wrapper
-        start = package.get('start', 0)
-        end = package.get('end', 0)
-        insert = package.get('insert', 0)
-        scroll = package.get('scroll', 0)
+        convert = self.g.convertRowColToPythonIndex
+        start = param.get('start', 0)
+        end = param.get('end', 0)
+        active = param.get('insert', 0)
+        scroll = param.get('scroll', 0)
+        # If sent as number, use 'as is'
+        if type(active) == int:
+            insert = active
+            startSel = start
+            endSel = end
+        else:
+            insert = convert(
+                v.b, insert['line'], insert['col'])
+            startSel = convert(
+                v.b, start['line'], start['col'])
+            endSel = convert(
+                v.b, end['line'], end['col'])
+        # If it's the currently selected node set the wrapper's states too
         if p == c.p:
             wrapper.setSelectionRange(start, end, insert)
             wrapper.setYScrollPosition(scroll)
@@ -887,22 +937,31 @@ class LeoServer:
         v.selectionLength = abs(start - end)
         return self._make_response()
     #@+node:ekr.20210202183724.10: *5* server.toggle_mark
-    def toggle_mark(self, package):
+    def toggle_mark(self, param):
         """
         Toggle the mark at position p, where p is c.p if package["ap"] is missing.
-        
-        To *toggle* the mark of c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "toggle-mark",
-        }
+        Do not necessarily select the position.
         """
         self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         if p.isMarked():
             p.clearMarked()
         else:
             p.setMarked()
+        return self._make_response()
+    #@+node:felix.20210619235856.1: *5* server.mark_node
+    def mark_node(self, param):
+        '''Mark a node, without selecting it'''
+        self._check_c()
+        p = self._get_p(param)
+        p.setMarked()
+        return self._make_response()
+    #@+node:felix.20210619235901.1: *5* server.unmark_node
+    def unmark_node(self, param):
+        '''Unmark a node, without selecting it'''
+        self._check_c()
+        p = self._get_p(param)
+        p.clearMarked()
         return self._make_response()
     #@+node:ekr.20210202183724.16: *5* server.undo
     def undo(self, package):
@@ -2101,6 +2160,19 @@ class LeoServer:
                 print(message)
                 self._dump_position(p)
                 raise ServerError(message)
+    #@+node:felix.20210619160602.1: *4* server._check_p
+    def _check_p(self, ap):
+        """Return _ap_to_p(ap) or c.p."""
+        tag = '_check_p'
+        if ap:
+            p = self._ap_to_p(ap)
+            if not p:  # pragma: no cover
+                raise ServerError(f"{tag}: no p")
+            if not c.positionExists(p):  # pragma: no cover
+                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+        if not c.p:  # pragma: no cover
+            raise ServerError(f"{tag}: no c.p")
+        return c.p
     #@+node:ekr.20210209062536.1: *4* server._do_leo_command
     def _do_leo_command(self, action, package):
         """
@@ -2221,15 +2293,7 @@ class LeoServer:
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: no c")
         ap = package.get("ap")
-        if ap:
-            p = self._ap_to_p(ap)
-            if not p:  # pragma: no cover
-                raise ServerError(f"{tag}: no p")
-            if not c.positionExists(p):  # pragma: no cover
-                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
-        if not c.p:  # pragma: no cover
-            raise ServerError(f"{tag}: no c.p")
-        return c.p
+        return self._check_p(ap)
     #@+node:ekr.20210211053733.1: *4* server._get_position_d
     def _get_position_d(self, p):
         """
@@ -2335,6 +2399,14 @@ class LeoServer:
             'gnx': p.v.gnx,
             'stack': stack,
         }
+    #@+node:felix.20210619224426.1: *4* server._positionFromGnx
+    def _positionFromGnx(self, gnx):
+        '''Return first p node with this gnx or false'''
+        c = self._check_c()
+        for p in c.all_unique_positions():
+            if p.v.gnx == gnx:
+                return p
+        return False
     #@+node:ekr.20210202110128.84: *4* serverver._test_round_trip_positions
     def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
