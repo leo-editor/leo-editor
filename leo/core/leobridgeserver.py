@@ -1509,6 +1509,29 @@ class LeoBridgeIntegController:
         w_result = {"found": found, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
 
+    #@+node:felix.20210620220343.1: *4* clone_find_tag
+    def clone_find_tag(self, param):
+        """Run Leo's clone-find-tag command and return results."""
+        tag = 'clone_find_tag'
+        c = self.commander
+        fc = c.findCommands
+        the_tag = param.get("tag")
+        if the_tag:
+            settings = fc.ftm.get_settings()
+            n, p = fc.do_clone_find_tag(settings)
+        return self.sendLeoBridgePackage({"n": n})
+
+    #@+node:felix.20210620220347.1: *4* tag_children
+    def tag_children(self, param):
+        """Run Leo's tag-children command"""
+        # This is not a find command!
+        c = self.commander
+        fc = c.findCommands
+        the_tag = param.get("tag")
+        if the_tag:
+            fc.do_tag_children(c.p, the_tag)
+        return self.sendLeoBridgePackage()
+
     #@+node:ekr.20210611084045.104: *3* At Buttons
     #@+node:ekr.20210611084045.105: *4* get_buttons
     def get_buttons(self, param):
