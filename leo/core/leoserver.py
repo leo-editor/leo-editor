@@ -72,8 +72,8 @@ class LeoServer:
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
-            loadPlugins=False,   # True: attempt to load plugins.
-            readSettings=False,  # True: read standard settings files.
+            loadPlugins=True,   # True: attempt to load plugins.
+            readSettings=True,  # True: read standard settings files.
             silent=True,         # True: don't print signon messages.
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
@@ -334,207 +334,6 @@ class LeoServer:
                     # Experimental: attempt to use permissive section ref logic.
                 )
         return self._make_response()  # Just send empty as 'ok'
-    #@+node:ekr.20210212092848.1: *4* server:find commands
-    #@+node:ekr.20210212094817.1: *5* server._get_find_settings
-    def _get_find_settings(self, c):
-        """Return a g.Bunch containing the present find settings settings."""
-        return c.findCommands.ftm.get_settings()
-        ###
-            # # For now, return EKR defaults.
-            # return g.Bunch(
-                # find_text=None, change_text=None,
-                # search_body=True, search_headline=True,
-                # ignore_case=True, pattern_match=False, whole_word=True,
-                # mark_changes=False, mark_finds=False,
-                # node_only=False, suboutline_only=False,
-                # entry_focus=None,
-            # )  
-    #@+node:ekr.20210212092854.1: *5* server.find_all
-    def find_all(self, package):
-        """Run Leo's find-all command and return results."""
-        tag = 'find_all'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_find_all(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042145.1: *5* server.change_all
-    def change_all(self, package):
-        """Run Leo's change-all command and return results."""
-        tag = 'change_all'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        change_text = package.get("change_text")
-        if change_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no change text")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        settings.change_text = change_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_change_all(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042406.1: *5* server.change_then_find
-    def change_then_find(self, package):
-        """Run Leo's change-then-find command and return results."""
-        tag = 'change_then_find'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_change_then_find(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042541.1: *5* server.clone_find_all
-    def clone_find_all(self, package):
-        """Run Leo's clone-find-all command and return results."""
-        tag = 'clone_find_all'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_clone_find_all(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042633.1: *5* server.clone_find_all_flattened
-    def clone_find_all_flattened(self, package):
-        """Run Leo's clone-find-all-flattened command and return results."""
-        tag = 'clone_find_all_flattened'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_clone_find_all_flattened(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042719.1: *5* server.clone_find_tag
-    def clone_find_tag(self, package):
-        """Run Leo's clone-find-tag command and return results."""
-        tag = 'clone_find_tag'
-        c = self._check_c()
-        fc = c.findCommands
-        the_tag = package.get("tag")
-        if not the_tag:  # pragma: no cover
-            raise ServerError(f"{tag}: no tag")
-        settings = self._get_find_settings(c)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        n, p = fc.do_clone_find_tag(settings)
-        if self.log_flag:  # pragma: no cover
-            g.trace("tag: {the_tag} n: {n} p: {p and p.h!r}")
-        return self._make_response({"n": n, "p": p})
-    #@+node:ekr.20210221043043.1: *5* server.find_def
-    def find_def(self, package):
-        """Run Leo's find-def command and return results."""
-        tag = 'find_def'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_def(settings, word=find_text, strict=False)
-        if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221042808.1: *5* server.find_next
-    def find_next(self, package):
-        """Run Leo's find-next command and return results."""
-        tag = 'find_next'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_next(settings)
-        if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221042851.1: *5* server.find_previous
-    def find_previous(self, package):
-        """Run Leo's find-previous command and return results."""
-        tag = 'find_previous'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_prev(settings)
-        if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221043134.1: *5* server.find_var
-    def find_var(self, package):
-        """Run Leo's find-var command and return results."""
-        tag = 'find_var'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_var(settings, word=find_text)
-        if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221043224.1: *5* server.tag_children
-    def tag_children(self, package):
-        """Run Leo's tag-children command and return results."""
-        # This is not a find command!
-        tag = 'tag_children'
-        c = self._check_c()
-        fc = c.findCommands
-        the_tag = package.get("tag")
-        if the_tag is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no tag")
-        # Unlike find commands, do_tag_children does not use a settings dict.
-        fc.do_tag_children(c.p, the_tag)
-        return self._make_response({})
     #@+node:felix.20210620022451.1: *4* server.search commands
     #@+node:felix.20210620022451.2: *5* server.get_search_settings
     def get_search_settings(self, param):
@@ -1301,12 +1100,12 @@ class LeoServer:
     #@+node:felix.20210620023046.1: *5* server.set_ask_result
     def set_ask_result(self, p_result):
         '''Got the result to an asked question/warning from client'''
-        g.app.externalFilesController.integResult(p_result)
+        # g.app.externalFilesController.integResult(p_result)
         return self._make_response()
     #@+node:felix.20210620023053.1: *5* server.set_config
     def set_config(self, p_config):
         '''Got auto-reload's config from client'''
-        self.leoIntegConfig = p_config
+        # self.leoIntegConfig = p_config
         return self._make_response()
     #@+node:ekr.20210205102818.1: *5* server.error
     def error(self, package):
@@ -2784,7 +2583,7 @@ class LeoServer:
         Finally, this method returns the json string corresponding to the
         response.
         """
-        tag = '_make_response'
+        tag = '_make_minimal_response'
         c = self.c  # It is valid for c to be None.
         if package is None:
             package = {}
@@ -3031,7 +2830,7 @@ def main():  # pragma: no cover (tested in client)
         """
         tag = 'server'
         trace = True
-        verbose = False
+        verbose = True
         try:
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
@@ -3118,7 +2917,7 @@ def main():  # pragma: no cover (tested in client)
     # Open leoBridge.
     controller = LeoServer()
     # Start the server.
-    loop = asyncio.get_event_loop()  
+    loop = asyncio.get_event_loop()
     server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
     loop.run_until_complete(server)
     signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}. Ctrl+c to break"
