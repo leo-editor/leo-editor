@@ -13,14 +13,14 @@ import tabnanny  # for Check Python command # Does not exist in jython
 import tempfile
 import time
 import tokenize  # for c.checkAllPythonCode
-from typing import List
+from typing import Callable, List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
     # The leoCommands ctor now does most leo.core.leo* imports,
     # thereby breaking circular dependencies.
 #@-<< imports >>
 
-def cmd(name):
+def cmd(name) -> Callable:
     """Command decorator for the Commands class."""
     return g.new_cmd_decorator(name, ['c',])
 
@@ -3576,7 +3576,7 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20031218072017.2958: *6* c.canContractParent
-    def canContractParent(self):
+    def canContractParent(self) -> bool:
         c = self
         return c.p.parent()
     #@+node:ekr.20031218072017.2959: *6* c.canContractSubheads
@@ -3591,12 +3591,13 @@ class Commands:
         c = self; p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[0]
-            if p == bunch.p: return False
+            if p == bunch.p:
+                return False
         return p.hasParent() or p.hasThreadBack() or p.hasNext()
 
     canCutOutline = canDeleteHeadline
     #@+node:ekr.20031218072017.2961: *6* c.canDemote
-    def canDemote(self):
+    def canDemote(self) -> bool:
         c = self
         return c.p.hasNext()
     #@+node:ekr.20031218072017.2962: *6* c.canExpandAllHeadlines
@@ -3622,7 +3623,7 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20031218072017.2287: *6* c.canExtract, canExtractSection & canExtractSectionNames
-    def canExtract(self):
+    def canExtract(self) -> bool:
         c = self
         w = c.frame.body.wrapper
         return w and w.hasSelection()
@@ -3632,9 +3633,11 @@ class Commands:
     def canExtractSection(self):
         c = self
         w = c.frame.body.wrapper
-        if not w: return False
+        if not w:
+            return False
         s = w.getSelectedText()
-        if not s: return False
+        if not s:
+            return False
         line = g.get_line(s, 0)
         i1 = line.find("<<")
         j1 = line.find(">>")
@@ -3679,12 +3682,12 @@ class Commands:
         # else:
             # return True
     #@+node:ekr.20031218072017.2970: *6* c.canMoveOutlineDown
-    def canMoveOutlineDown(self):
-        c = self; current = c.p
-        return current and current.visNext(c)
+    def canMoveOutlineDown(self) -> bool:
+        c, p = self, self.p
+        return p and p.visNext(c)
     #@+node:ekr.20031218072017.2971: *6* c.canMoveOutlineLeft
-    def canMoveOutlineLeft(self):
-        c = self; p = c.p
+    def canMoveOutlineLeft(self) -> bool:
+        c, p = self, self.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             if p and p.hasParent():
@@ -3693,7 +3696,7 @@ class Commands:
             return False
         return p and p.hasParent()
     #@+node:ekr.20031218072017.2972: *6* c.canMoveOutlineRight
-    def canMoveOutlineRight(self):
+    def canMoveOutlineRight(self) -> bool:
         c = self; p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
@@ -3724,8 +3727,8 @@ class Commands:
         return False
     #@+node:ekr.20031218072017.2975: *6* c.canPromote
     def canPromote(self):
-        c = self; v = c.currentVnode()
-        return v and v.hasChildren()
+        p = self.p
+        return p and p.hasChildren()
     #@+node:ekr.20031218072017.2977: *6* c.canSelect....
     def canSelectThreadBack(self):
         c = self; p = c.p
@@ -3743,26 +3746,26 @@ class Commands:
         c = self; p = c.p
         return p.visNext(c)
     #@+node:ekr.20031218072017.2978: *6* c.canShiftBodyLeft/Right
-    def canShiftBodyLeft(self):
+    def canShiftBodyLeft(self) -> bool:
         c = self
         w = c.frame.body.wrapper
         return w and w.getAllText()
 
     canShiftBodyRight = canShiftBodyLeft
     #@+node:ekr.20031218072017.2979: *6* c.canSortChildren, canSortSiblings
-    def canSortChildren(self):
+    def canSortChildren(self) -> bool:
         c = self; p = c.p
         return p and p.hasChildren()
 
-    def canSortSiblings(self):
+    def canSortSiblings(self) -> bool:
         c = self; p = c.p
         return p and (p.hasNext() or p.hasBack())
     #@+node:ekr.20031218072017.2980: *6* c.canUndo & canRedo
-    def canUndo(self):
+    def canUndo(self) -> bool:
         c = self
         return c.undoer.canUndo()
 
-    def canRedo(self):
+    def canRedo(self) -> bool:
         c = self
         return c.undoer.canRedo()
     #@+node:ekr.20031218072017.2981: *6* c.canUnmarkAll
