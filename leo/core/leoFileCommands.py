@@ -1302,14 +1302,14 @@ class FileCommands:
                 v = self.gnxDict.get(tref)
                 if v:
                     v.unknownAttributes = resultDict[gnx]
-                    v._p_changed = 1
+                    v._p_changed = True
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v, resultDict in self.descendentVnodeUaDictList:
             for key in resultDict:
                 v = self.resolveArchivedPosition(key, root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
-                    v._p_changed = 1
+                    v._p_changed = True
         marks = {}; expanded = {}
         for gnx in self.descendentExpandedList:
             tref = self.canonicalTnodeIndex(gnx)

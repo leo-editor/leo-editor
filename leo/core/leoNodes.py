@@ -23,13 +23,13 @@ class NodeIndices:
     #@+node:ekr.20031218072017.1992: *3* ni.__init__
     def __init__(self, id_: str):
         """Ctor for NodeIndices class."""
-        self.defaultId = id_
-        self.lastIndex = 0
+        self.defaultId: str = id_
+        self.lastIndex: int = 0
         self.stack: List[Cmdr] = []
             # A stack of open commanders.
-        self.timeString = ''
+        self.timeString: str = ''
             # Set by setTimeStamp.
-        self.userId = id_
+        self.userId: str = id_
         # Assign the initial timestamp.
         self.setTimeStamp()
     #@+node:ekr.20150321161305.8: *3* ni.check_gnx
@@ -1896,6 +1896,7 @@ class PosList(list):
                 pass
         return res
     #@-others
+
 Poslist = PosList  # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
@@ -1925,39 +1926,39 @@ class VNode:
     def __init__(self, context: Cmdr, gnx: Optional[str]=None):
         """
         Ctor for the VNode class.
-        To support ZODB, the code must set v._p_changed = 1 whenever
+        To support ZODB, the code must set v._p_changed = True whenever
         v.unknownAttributes or any mutable VNode object changes.
         """
         # The primary data: headline and body text.
         self._headString: str = 'newHeadline'
         self._bodyString: str = ''
         # For zodb.
-        self._p_changed = 0
+        self._p_changed: bool = False
         # Structure data...
         self.children: List["VNode"] = []
             # Ordered list of all children of this node.
         self.parents: List["VNode"] = []
             # Unordered list of all parents of this node.
         # Other essential data...
-        self.fileIndex: Union[str, None] = None
+        self.fileIndex: Optional[str] = None
             # The immutable fileIndex (gnx) for this node. Set below.
-        self.iconVal = 0
+        self.iconVal: int = 0
             # The present value of the node's icon.
-        self.statusBits = 0
+        self.statusBits: int = 0
             # status bits
         # Information that is never written to any file...
-        self.context = context  # The context containing context.hiddenRootNode.
+        self.context: Cmdr = context  # The context containing context.hiddenRootNode.
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
         self.expandedPositions: List[Position] = []
             # Positions that should be expanded.
-        self.insertSpot = None
+        self.insertSpot: Optional[int] = None
             # Location of previous insert point.
-        self.scrollBarSpot = None
+        self.scrollBarSpot: Optional[int] = None
             # Previous value of scrollbar position.
-        self.selectionLength = 0
+        self.selectionLength: int = 0
             # The length of the selected body text.
-        self.selectionStart = 0
+        self.selectionStart: int = 0
             # The start of the selected body text.
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
@@ -2496,8 +2497,8 @@ class VNode:
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)
         # Set zodb changed flags.
-        v._p_changed = 1
-        parent_v._p_changed = 1
+        v._p_changed = True
+        parent_v._p_changed = True
     #@+node:ekr.20090706110836.6135: *4* v._addLink & _addParentLinks
     def _addLink(self, childIndex: int, parent_v: "VNode"):
         """Adjust links after adding a link to v."""
@@ -2509,8 +2510,8 @@ class VNode:
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)
         # Set zodb changed flags.
-        v._p_changed = 1
-        parent_v._p_changed = 1
+        v._p_changed = True
+        parent_v._p_changed = True
         # If v has only one parent, we adjust all
         # the parents links in the descendant tree.
         # This handles clones properly when undoing a delete.
@@ -2540,8 +2541,8 @@ class VNode:
                 g.internalError(f"{parent_v} not in parents of {v}")
                 g.trace('v.parents:')
                 g.printObj(v.parents)
-        v._p_changed = 1
-        parent_v._p_changed = 1
+        v._p_changed = True
+        parent_v._p_changed = True
         # If v has no more parents, we adjust all
         # the parent links in the descendant tree.
         # This handles clones properly when deleting a tree.

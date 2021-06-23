@@ -990,14 +990,14 @@ class EditCommandsClass(BaseEditCommandsClass):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
             # g.es((p.h,uaLoc.unknownAttributes['icons']))
-            uaLoc._p_changed = 1
+            uaLoc._p_changed = True
             if setDirty:
                 p.setDirty()
         else:  # delete the uA.
             if hasattr(uaLoc, 'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
                     del uaLoc.unknownAttributes['icons']
-                    uaLoc._p_changed = 1
+                    uaLoc._p_changed = True
                     if setDirty:
                         p.setDirty()
     #@+node:ekr.20150514063305.236: *4* ec.deleteFirstIcon
@@ -1050,7 +1050,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = p or c.p
         if p.u:
-            p.v._p_changed = 1
+            p.v._p_changed = True
             self.setIconList(p, [])
             p.setDirty()
             c.setChanged()

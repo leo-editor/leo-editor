@@ -311,7 +311,7 @@ class Undoer:
         uA = bunch.get('unknownAttributes')
         if uA is not None:
             v.unknownAttributes = uA
-            v._p_changed = 1
+            v._p_changed = True
     #@+node:ekr.20050415170812.2: *5* u.restoreTnodeUndoInfo
     def restoreTnodeUndoInfo(self, bunch):
         v = bunch.v
@@ -321,7 +321,7 @@ class Undoer:
         uA = bunch.get('unknownAttributes')
         if uA is not None:
             v.unknownAttributes = uA
-            v._p_changed = 1
+            v._p_changed = True
     #@+node:EKR.20040528075307: *4* u.saveTree & helpers
     def saveTree(self, p, treeInfo=None):
         """Return a list of tuples with all info needed to handle a general undo operation."""
