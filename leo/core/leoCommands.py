@@ -13,11 +13,12 @@ import tabnanny  # for Check Python command # Does not exist in jython
 import tempfile
 import time
 import tokenize  # for c.checkAllPythonCode
-from typing import Callable, List
+from typing import Any, Callable, List, Optional
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
     # The leoCommands ctor now does most leo.core.leo* imports,
     # thereby breaking circular dependencies.
+Pos = "leoNodes.Position"
 #@-<< imports >>
 
 def cmd(name) -> Callable:
@@ -53,8 +54,8 @@ class Commands:
         t1 = time.process_time()
         c = self
         # Official ivars.
-        self._currentPosition = None
-        self._topPosition = None
+        self._currentPosition: Optional[Pos] = None
+        self._topPosition: Optional[Pos] = None
         self.frame = None
         self.parentFrame = parentFrame  # New in Leo 6.0.
         self.gui = gui or g.app.gui
@@ -101,31 +102,25 @@ class Commands:
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self):
         """Init ivars used while executing a command."""
-        self.commandsDict = {}
+        self.commandsDict: dict[Callable] = {}
             # Keys are command names, values are functions.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
-        self.hookFunction = None
+        self.hookFunction: Optional[Callable] = None
             # One of three places that g.doHook looks for hook functions.
         self.ignoreChangedPaths = False
             # True: disable path changed message in at.WriteAllHelper.
         self.inCommand = False
             # Interlocks to prevent premature closing of a window.
-        self.outlineToNowebDefaultFileName = "noweb.nw"
+        self.outlineToNowebDefaultFileName: str = "noweb.nw"
             # For Outline To Noweb dialog.
-        # For tangle/untangle
-        self.tangle_errors = 0
-        # Default Tangle options
-        self.use_header_flag = False
-        self.output_doc_flag = False
         # For hoist/dehoist commands.
-        self.hoistStack = []
+        self.hoistStack: List[Any]= []  # Really, a list of g.Bunches, but mypy complains.
             # Stack of nodes to be root of drawn tree.
             # Affects drawing routines and find commands.
         # For outline navigation.
-        self.navPrefix = ''  # Must always be a string.
-        self.navTime = None
-
+        self.navPrefix: str = ''  # Must always be a string.
+        self.navTime: Optional[str] = None
         self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
@@ -142,7 +137,7 @@ class Commands:
             # The last node we expanded or contracted.
         self.nodeConflictList = []
             # List of nodes with conflicting read-time data.
-        self.nodeConflictFileName = None
+        self.nodeConflictFileName: Optional[str] = None
             # The fileName for c.nodeConflictList.
         self.user_dict = {}
             # Non-persistent dictionary for free use by scripts and plugins.
@@ -172,21 +167,21 @@ class Commands:
         """Init file-related ivars of the commander."""
         self.changed = False
             # True: the ouline has changed since the last save.
-        self.ignored_at_file_nodes = []
+        self.ignored_at_file_nodes: List[Pos] = []
             # List of nodes for c.raise_error_dialogs.
-        self.import_error_nodes = []
+        self.import_error_nodes: List[Pos] = []
             # List of nodes for c.raise_error_dialogs.
         self.last_dir = None
             # The last used directory.
-        self.mFileName = fileName or ''
+        self.mFileName: str = fileName or ''
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''
             #
-        self.openDirectory = None
+        self.openDirectory: Optional[str] = None
             #
-        self.orphan_at_file_nodes = []
+        self.orphan_at_file_nodes: List[Pos] = []
             # List of orphaned nodes for c.raise_error_dialogs.
-        self.wrappedFileName = None
+        self.wrappedFileName: Optional[str] = None
             # The name of the wrapped file, for wrapper commanders.
             # Set by LM.initWrapperLeoFile
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
@@ -3697,7 +3692,7 @@ class Commands:
         return p and p.hasParent()
     #@+node:ekr.20031218072017.2972: *6* c.canMoveOutlineRight
     def canMoveOutlineRight(self) -> bool:
-        c = self; p = c.p
+        c, p = self, self.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             return p and p.hasBack() and p != bunch.p
@@ -3726,7 +3721,7 @@ class Commands:
             return True
         return False
     #@+node:ekr.20031218072017.2975: *6* c.canPromote
-    def canPromote(self):
+    def canPromote(self) -> bool:
         p = self.p
         return p and p.hasChildren()
     #@+node:ekr.20031218072017.2977: *6* c.canSelect....
