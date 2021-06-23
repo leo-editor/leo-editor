@@ -10,14 +10,17 @@ __pycache__/
 # Other programs
 leoProfile
 leo/.vscode/
-mypy_stubs/
 
 # PyInstaller folders.
 /build/
 /dist/
 
-# mypy stub files
-mypy_stubs/
+# Do include mypy stub files for Leo only.
+# Exclude stubs for library files.
+mypy_stubs/3.6/
+mypy_stubs/3.7/
+mypy_stubs/3.8/
+mypy_stubs/3.9/
 
 # Transcrypt folder.
 __target__
