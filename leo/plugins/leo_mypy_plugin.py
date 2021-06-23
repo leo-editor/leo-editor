@@ -5,7 +5,7 @@ A mypy plugin to add annotations for Leo's standard names,
 such as c, p, i, j, k, n, s, w, etc.
 
 """
-# pylint: disable=no-name-in-module,useless-return
+# pylint: disable=no-name-in-module,useless-return,wrong-import-order,wrong-import-position
 #@+<< imports >>
 #@+node:ekr.20210521170525.1: **  << imports >>
 import re
@@ -49,7 +49,7 @@ class LeoMypyPlugin(Plugin):
         #@+node:ekr.20210521165202.1: *3* Plugin.get_function_hook
         # Adjusts return type of function.
 
-        def get_function_hook(self, ctx):
+        def get_function_hook(self, ctx):  # pylint: disable=arguments-differ
             
             def function_callback(ctx):
                 self.dump_function(ctx)
