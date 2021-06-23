@@ -18,7 +18,7 @@ try:
     import docutils.core
 except ImportError:
     # print('leoImport.py: can not import docutils')
-    docutils = None  # type: ignore
+    docutils = None  # type: ignore[assignment]
 try:
     import lxml
 except ImportError:

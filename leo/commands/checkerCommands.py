@@ -16,21 +16,21 @@ try:
     import flake8
     from flake8 import engine, main
 except Exception:  # May not be ImportError.
-    flake8 = None  # type: ignore
+    flake8 = None  # type: ignore[assignment]
 try:
     import mypy
 except Exception:
-    mypy = None  # type: ignore
+    mypy = None  # type: ignore[assignment]
 try:
     import pyflakes
     from pyflakes import api, reporter
 except Exception:
-    pyflakes = None  # type: ignore
+    pyflakes = None  # type: ignore[assignment]
 try:
     # pylint: disable=import-error
     from pylint import lint
 except Exception:
-    lint = None  # type: ignore
+    lint = None  # type: ignore[assignment]
 #
 # Leo imports.
 from leo.core import leoGlobals as g

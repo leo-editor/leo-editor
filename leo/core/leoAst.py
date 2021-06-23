@@ -166,7 +166,7 @@ import unittest
 try:
     import pytest
 except Exception:
-    pytest = None  # type: ignore
+    pytest = None  # type: ignore[assignment]
 #@-<< imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -3470,7 +3470,7 @@ class BaseTest(unittest.TestCase):
     # make_data: 'contents', 'tokens', 'tree',
     #            'post-tokens', 'post-tree',
     #            'unit-test'
-    debug = []  # type: ignore
+    debug_list: List[str] = []
 
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
@@ -3505,24 +3505,24 @@ class BaseTest(unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:
             self.fail('make_tree failed')
-        if 'contents' in self.debug:
+        if 'contents' in self.debug_list:
             dump_contents(contents)
-        if 'ast' in self.debug:
+        if 'ast' in self.debug_list:
             if py_version >= (3, 9):
                 # pylint: disable=unexpected-keyword-arg
                 g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
             else:
                 g.printObj(ast.dump(tree), tag='ast.dump')
-        if 'tree' in self.debug:  # Excellent traces for tracking down mysteries.
+        if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
-        if 'tokens' in self.debug:
+        if 'tokens' in self.debug_list:
             dump_tokens(tokens)
         self.balance_tokens(tokens)
         # Pass 1: create the links.
         self.create_links(tokens, tree)
-        if 'post-tree' in self.debug:
+        if 'post-tree' in self.debug_list:
             dump_tree(tokens, tree)
-        if 'post-tokens' in self.debug:
+        if 'post-tokens' in self.debug_list:
             dump_tokens(tokens)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
@@ -3596,7 +3596,7 @@ class BaseTest(unittest.TestCase):
         except Exception as e:
             print('\n')
             g.trace(g.callers(), '\n')
-            if 'full-traceback' in self.debug:
+            if 'full-traceback' in self.debug_list:
                 g.es_exception()
             # Weird: calling self.fail creates ugly failures.
             self.link_error = e
@@ -5184,7 +5184,7 @@ class TestTOG(BaseTest):
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
 
-    debug = ['unit-test']  # type: ignore
+    debug_list = ['unit-test']
 
     #@+others
     #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features

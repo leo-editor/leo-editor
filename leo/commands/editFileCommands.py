@@ -9,6 +9,7 @@ import difflib
 import io
 import os
 import re
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -33,7 +34,7 @@ class ConvertAtRoot:
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     section_pat = re.compile(r'\s*<\<.+>\>')
-    units = []  # type: ignore
+    units: List[Any] = []
         # List of positions containing @unit.
 
     #@+others

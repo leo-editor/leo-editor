@@ -1202,7 +1202,7 @@ class Position:
         else:
             # mypy rightly doesn't like setting p.v to None.
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None  # type: ignore
+            p.v = None  # type: ignore[assignment]
         return p
     #@+node:ekr.20080416161551.207: *4* p.moveToParent
     def moveToParent(self):
@@ -1213,7 +1213,7 @@ class Position:
         else:
             # mypy rightly doesn't like setting p.v to None.
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None  # type: ignore
+            p.v = None  # type: ignore[assignment]
         return p
     #@+node:ekr.20080416161551.208: *4* p.moveToThreadBack
     def moveToThreadBack(self):
