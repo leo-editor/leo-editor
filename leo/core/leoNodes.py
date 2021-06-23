@@ -2464,21 +2464,21 @@ class VNode:
         v.selectionStart = start
         v.selectionLength = length
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
-    def cloneAsNthChild(self, parent_v: "VNode", n: int):
+    def cloneAsNthChild(self, parent_v: "VNode", n: int) -> "VNode":
         # Does not check for illegal clones!
         v = self
         v._linkAsNthChild(parent_v, n)
         return v
 
-    def insertAsFirstChild(self):
+    def insertAsFirstChild(self) -> "VNode":
         v = self
         return v.insertAsNthChild(0)
 
-    def insertAsLastChild(self):
+    def insertAsLastChild(self) -> "VNode":
         v = self
         return v.insertAsNthChild(len(v.children))
 
-    def insertAsNthChild(self, n: int):
+    def insertAsNthChild(self, n: int) -> "VNode":
         v = self
         assert 0 <= n <= len(v.children)
         v2 = VNode(v.context)
@@ -2519,7 +2519,7 @@ class VNode:
             for child in v.children:
                 child._addParentLinks(parent=v)
     #@+node:ekr.20090804184658.6129: *5* v._addParentLinks
-    def _addParentLinks(self, parent):
+    def _addParentLinks(self, parent: "VNode"):
 
         v = self
         v.parents.append(parent)
@@ -2550,7 +2550,7 @@ class VNode:
             for child in v.children:
                 child._cutParentLinks(parent=v)
     #@+node:ekr.20090804190529.6133: *5* v._cutParentLinks
-    def _cutParentLinks(self, parent):
+    def _cutParentLinks(self, parent: "VNode"):
 
         v = self
         v.parents.remove(parent)
@@ -2581,7 +2581,7 @@ class VNode:
         v._addLink(n, parent_v)
     #@+node:ekr.20090130065000.1: *3* v.Properties
     #@+node:ekr.20090130114732.5: *4* v.b Property
-    def __get_b(self):
+    def __get_b(self) -> str:
         v = self
         return v.bodyString()
 
@@ -2593,7 +2593,7 @@ class VNode:
         __get_b, __set_b,
         doc="VNode body string property")
     #@+node:ekr.20090130125002.1: *4* v.h property
-    def __get_h(self):
+    def __get_h(self) -> str:
         v = self
         return v.headString()
 
@@ -2605,13 +2605,13 @@ class VNode:
         __get_h, __set_h,
         doc="VNode headline string property")
     #@+node:ekr.20090130114732.6: *4* v.u Property
-    def __get_u(self):
+    def __get_u(self) -> dict:
         v = self
         # Wrong: return getattr(v, 'unknownAttributes', {})
         # It is does not set v.unknownAttributes, which can cause problems.
         if not hasattr(v, 'unknownAttributes'):
-            v.unknownAttributes = {}
-        return v.unknownAttributes
+            v.unknownAttributes = {}  # type: ignore[attr-defined]
+        return v.unknownAttributes  # type: ignore[attr-defined]
 
     def __set_u(self, val):
         v = self
@@ -2627,7 +2627,7 @@ class VNode:
         __get_u, __set_u,
         doc="VNode u property")
     #@+node:ekr.20090215165030.1: *4* v.gnx Property
-    def __get_gnx(self):
+    def __get_gnx(self) -> Optional[str]:
         v = self
         return v.fileIndex
 
