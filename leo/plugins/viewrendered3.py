@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2
+About Viewrendered3 V3.3
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -35,6 +35,7 @@ the plugin can:
     #. Insert an image using the ``@image`` directive in addition to the image
        syntax for the structured text in use.
     #. Export the rendered node or subtree to the system browser;
+    #. Export the generated markup to a chosen text editor.
     #. Optionally render mathematics symbols and equations using MathJax (not in
        Asciidoc yet);
     #. Correctly handle RsT or MD (not tested for Asciidoc as yet) in a docstring;
@@ -139,8 +140,10 @@ All settings are of type @string unless shown as ``@bool``
    :widths: 18, 5, 5, 30
 
    "vr3-default-kind", "rst", "rst, md, asciidoc", "Default for rendering type"
-   "@bool vr3-math-output", "False", "True, False", "RsT MathJax math rendering"
-   "@bool vr3-md-math-output", "False", "True, False", "MD MathJax math rendering"
+   "vr3-external-editor", "", "Path to external editor", "Specify
+   desired external editor to receive generated markup"
+   "vr3-math-output", "False", "bool (True, False)", "RsT MathJax math rendering"
+   "vr3-md-math-output", "False", "bool (True, False)", "MD MathJax math rendering"
    "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
    "vr3-rst-stylesheet", "''", "url string", "Optional URL for RsT Stylesheet"
    "vr3-rst-use-dark-theme", "''", "True, False", "Whether to force the use of the default dark stylesheet"
@@ -277,8 +280,18 @@ Commands
 ========
 
 viewrendered3-specific commands all start with a "vr3-" prefix.  There is
-rarely a reason to invoke any of them, except for ``vr3-toggle``, which shows
-or hides the VR3 pane. This is best bound to a hot key (see `Hot Key`_).
+rarely a reason to invoke any of them, except two:
+
+    1. ``vr3-toggle``, which shows or hides the VR3 pane. 
+    This is best bound to a hot key (see `Hot Key`_).
+
+    2.``vr3-open-markup-in-editor`` exports the generated markup
+    to temporary file and opens it in a text editor. The editor
+    is one specified by the setting ``@string vr3-external-editor``,
+    the setting ``@string external-editor``, by the environmental
+    variable ``EDITOR`` or ``LEO-EDITOR``, or is the default 
+    editor chosen by Leo.
+
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
 Structured Text
@@ -314,7 +327,7 @@ If a node or the top of a subtree begins with `@rst`, `@md`, or `asciidoc`,
 that language will be the default language of the node or subtree.  If the
 node or subtree is not marked with one of these `@xxx` types, then the
 default language is given by the setting `@string vr3-default-kind = xxx`.
-This can be overidden by the ``Default Kind`` toolbar menu.
+This can be overridden by the ``Default Kind`` toolbar menu.
 
 Within a node, the ``@language`` directive will set the language to be used
 until another ``@language`` directive or the end of the node.
@@ -676,7 +689,7 @@ try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
-    from leo.core.leoQt import phonon, QtMultimedia, QtSvg#, QtWebKitWidgets
+    from leo.core.leoQt import phonon, QtMultimedia, QtSvg
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -697,6 +710,8 @@ else:
     except Exception as e:
         g.trace(e)
         # The top-level init function gives the error.
+
+QSvgWidget = QtSvg.QSvgWidget
 #@-<< Qt Imports >>
 
 #1946
@@ -777,6 +792,25 @@ PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
+
+#@+<< RsT Error styles>>
+#@+node:tom.20210621192144.1: *3* << RsT Error styles>>
+RST_ERROR_BODY_STYLE = ('color:#606060;'
+                        'background: aliceblue;'
+                        'padding-left:1em;'
+                        'padding-right:1em;'
+                        'border:thin solid gray;'
+                        'border-radius:.4em;')
+
+RST_ERROR_MSG_STYLE = ('color:red;'
+                       'background:white;'
+                       'padding-left:1em;'
+                       'padding-right:1em;'
+                       'border:thin solid gray;'
+                       'border-radius:.4em;')
+#@-<< RsT Error styles>>
+#RST_HEADING_CHARS = '''=-:.`'"-~^_*+#'''# Symbol hierarchy - maybe some day
+RST_HEADING_CHARS = '''=============='''  # For now, same symbol for all levels
 RST_NO_WARNINGS = 5
 
 SQL = 'sql'
@@ -1192,7 +1226,7 @@ def update_rendering_pane(event):
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
-    """Execute code in a RsT or MS node or subtree."""
+    """Execute code in a RsT or MD node or subtree."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -1269,6 +1303,21 @@ def zoom_view(event):
 def shrink_view(event):
     vr3 = getVr3(event)
     vr3.shrinkView()
+#@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
+@g.command('vr3-open-markup-in-editor')
+def markup_to_editor(event):
+    vr3 = getVr3(event)
+    if vr3.external_editor:
+        editor = vr3.external_editor
+    else:
+        editor = g.guessExternalEditor()
+
+    with open('vr3_last_markup.txt', 'w', encoding=ENCODING) as f:
+        f.write(vr3.last_markup)
+
+    cmd = [editor, 'vr3_last_markup.txt']
+    subprocess.Popen(cmd)
+
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
@@ -1361,6 +1410,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.lock_to_tree = False
         self.current_tree_root = None
         self.freeze = False
+        self.last_markup = ''
 
         # User settings.
         self.reloadSettings()
@@ -1611,7 +1661,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
-                                    
+
         self.set_rst_stylesheet()
 
         self.math_output = c.config.getBool('vr3-math-output', default=False)
@@ -1635,6 +1685,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.asciidoc_proc = asciidoc3_exec or asciidoctor_exec or None
         else:
             self.asciidoc_proc = asciidoctor_exec or asciidoc3_exec or None
+
+        self.external_editor = c.config.getString('vr3-ext-editor') or ''
+
+        self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Verify or create css stylesheet for Markdown node.
@@ -1745,6 +1799,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 self.asciidoc_path = ''
 
+    #@+node:tom.20210621132824.1: *4* vr3.dbg_print
+    def dbg_print(self, *args):
+        if self.DEBUG:
+            g.es(*args)
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
@@ -1933,6 +1991,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_html = ''
 
         ascdoc = self.process_asciidoc_nodes(node_list)
+        self.last_markup = ascdoc
         h = self.convert_to_asciidoc(ascdoc) or "No return from asciidoc processor"
         h = g.toUnicode(h)  # EKR.
         self.set_html(h, w)
@@ -2447,9 +2506,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
 
-        print(result)
         try:
             _html = Markdown.reset().convert(result)
+            self.last_markup = result
 
         except SystemMessage as sm:
             msg = sm.args[0]
@@ -2534,6 +2593,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             pc.show()
         if pandoc_exec:
             try:
+                self.last_markup = s
                 s2 = self.convert_to_pandoc(s)
                 self.set_html(s2, w)
             except Exception:
@@ -2770,13 +2830,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _html = ''.encode(ENCODING)
         if result.strip():
             try:
+                self.last_markup = result
                 _html = publish_string(result, writer_name='html',
                                        settings_overrides=args)
             except SystemMessage as sm:
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
-                    result = f'RST error:\n{msg}\n\n{result}'
-                    _html = result.encode(ENCODING)
+                    output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
+                    output += f'<pre style="{RST_ERROR_BODY_STYLE}">{result}</pre>'
+                    _html = output.encode(ENCODING)
 
         self.rst_html = _html
         return _html
@@ -3111,39 +3173,63 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         return final_text, codelines
         #@-<< Finalize Node >>
+    #@+node:tom.20210621144739.1: *5* vr3.make_title_from_headline
+    def make_title_from_headline(self, p, h):
+        """From node title, return title with over- and underline- strings.
+        
+           Symbol is chosen based on the indent level of the node.
+           Note that might differe from p.h because of, e.g.,
+           directive removal.
+           
+           ARGUMENTS
+           p -- the node position whose indent level is to be used.
+           h -- the headline string to be processed.
+           
+           RETURNS
+           a string
+        """
+        level = min(p.level(), 4) - 1
+        heading_str = RST_HEADING_CHARS[level] * (len(h) + 1)
+        return f'{heading_str}\n{h}\n{heading_str}'
     #@+node:TomP.20200107232540.1: *5* vr3.make_rst_headline
     #@@language python
     def make_rst_headline(self, p, s):
         """Turn node's title into a headline and add to front of text.
+        
+        If the headline text (without directives and leading whitespace)
+        equals the first line of the body text, don't insert a title.
 
         ARGUMENTS
         p -- the node being processed.
         s -- a string
 
         RETURNS
-        a string s1 where s1 = _headline + s.
+        a string s1 where s1 = (modified headline) + s.
         """
 
-        _underline = ''
         _headline_str = ''
         if p.h:
             if p.h.startswith('@'):
-                _headline = p.h.split()
-                if len(_headline) > 1:
-                    _headline = _headline[1:]
-                _headline_str = ' '.join(_headline)
+                fields = p.h.split()
+                if len(fields) > 1:
+                    _headline = fields[1:]
+                    _headline_str = ' '.join(_headline)
             else:
                 _headline_str = p.h
+
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
-            _headline_str = _headline_str.replace('\\', r'\\')
-            _underline = '='*len(_headline_str)
+            _headline_str = _headline_str.replace('\\', '\\\\')
+
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
         # node headline == body's first line.
         body_lines = p.b.split('\n', 1)
-        if _headline_str != body_lines[0].strip():
-            s = f'{_underline}\n{_headline_str}\n{_underline}\n\n{s}'
+        first_line = body_lines[0].strip()
+
+        if not first_line or _headline_str != first_line:
+            headline_str = self.make_title_from_headline(p, _headline_str)
+            s = f'{headline_str}\n\n{s}'
 
         return s
     #@+node:TomP.20191215195433.77: *4* vr3.update_svg
@@ -3152,8 +3238,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def update_svg(self, s, keywords):
         pc = self
-        if pc.must_change_widget(QtSvg.QSvgWidget):
-            w = QtSvg.QSvgWidget()
+        if pc.must_change_widget(QSvgWidget):
+            w = QSvgWidget()
             pc.embed_widget(w)
             assert w == pc.w
         else:
