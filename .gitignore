@@ -17,11 +17,6 @@ leo/.vscode/
 
 # Exclude *all* stub files.
 mypy_stubs/
-# Exclude stubs for library files.
-#mypy_stubs/3.6/
-#mypy_stubs/3.7/
-#mypy_stubs/3.8/
-#mypy_stubs/3.9/
 
 # Transcrypt folder.
 __target__
