@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080708094444.1: * @file leoShadow.py
 #@@first
+# Suppress all mypy errors (mypy doesn't like g.Bunch).
+# type: ignore
 #@+<< docstring >>
 #@+node:ekr.20080708094444.78: ** << docstring >>
 """
