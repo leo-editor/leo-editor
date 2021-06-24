@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 #@@first
+# Suppress all mypy errors (mypy has trouble with this file).
+# type: ignore
 # This file is part of Leo: https://leoeditor.com
 # Leo's copyright notice is based on the MIT license: http://leoeditor.com/license.html
 #@+<< docstring >>
@@ -185,6 +187,9 @@ class LeoGlobals:  # pragma: no cover
     """
     Simplified version of functions in leoGlobals.py.
     """
+    
+    total_time = 0.0  # For unit testing.
+    
     #@+others
     #@+node:ekr.20191227114503.1: *3* LeoGlobals.adjustTripleString
     def adjustTripleString(self, s):
