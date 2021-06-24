@@ -140,7 +140,6 @@ class LeoServer:
                 index: string;
             }[]
         """
-        tag = 'get_buttons'
         d = self._check_button_command('get_buttons')
         buttons = []
         # Some button keys are objects so we have to convert first
@@ -210,7 +209,6 @@ class LeoServer:
         Returns an object with total opened files
         and name of currently last opened & selected document.
         """
-        tag = 'open_files'
         files = param.get('files')  # Optional.
         if files:
             for i_file in files:
@@ -237,8 +235,7 @@ class LeoServer:
             self._check_outline(self.c)
             result = {"total": total, "filename": self.c.fileName()}
             return self._make_response(result)
-        else:
-            raise ServerError(f"{tag}: commander at index {index} does not exist")
+        raise ServerError(f"{tag}: commander at index {index} does not exist")
     #@+node:felix.20210621233316.16: *5* server.close_file
     def close_file(self, param):
         """
@@ -246,7 +243,6 @@ class LeoServer:
         Use a 'forced' flag to force close.
         Returns a 'total' member in the package if close is successful.
         """
-        tag = 'close_file'
         c = self._check_c()
         if c:
             # First, revert to prevent asking user.
@@ -281,7 +277,8 @@ class LeoServer:
                 else:
                     c.save()
             except Exception as e:
-                print("Error while saving", param['name'], flush=True)
+                print(f"{tag} Error while saving {param['name']}", flush=True)
+                print(e, flush=True)
 
         return self._make_response()  # Just send empty as 'ok'
     #@+node:felix.20210621233316.18: *5* server.import_any_file
@@ -539,12 +536,12 @@ class LeoServer:
     def find_var(self, param):
         """Run Leo's find-var command and return results."""
         tag = 'find_var'
-        c = self._check_c()
-        fc = c.findCommands
+        # c = self._check_c()
+        # fc = c.findCommands
         try:
-            settings = fc.ftm.get_settings()
+            # settings = fc.ftm.get_settings()
             # todo : find var implementation
-            print("todo : find var implementation")
+            print(f"{tag} todo : find var implementation")
             # result = fc.do_clone_find_all_flattened(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
@@ -554,12 +551,12 @@ class LeoServer:
     def find_def(self, param):
         """Run Leo's find-def command and return results."""
         tag = 'find_def'
-        c = self._check_c()
-        fc = c.findCommands
+        # c = self._check_c()
+        # fc = c.findCommands
         try:
-            settings = fc.ftm.get_settings()
+            # settings = fc.ftm.get_settings()
             # todo : find def implementation
-            print("todo : find def implementation")
+            print(f"{tag} todo : find def implementation")
             # result = fc.do_clone_find_all_flattened(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
@@ -587,7 +584,7 @@ class LeoServer:
         the_tag = param.get("tag")
         if not the_tag:  # pragma: no cover
             raise ServerError(f"{tag}: no tag")
-        settings = self._get_find_settings(c)
+        settings = self.get_search_settings(c)  ### EKR: was self._get_find_settings(c)
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
         n, p = fc.do_clone_find_tag(settings)
@@ -635,7 +632,7 @@ class LeoServer:
     def get_all_gnx(self, param):
         '''Get gnx array from all unique nodes'''
         if self.log_flag:  # pragma: no cover
-            print(f"\nget_all_gnx\n")
+            print('\nget_all_gnx\n')
         c = self._check_c()
         all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
         return self._make_minimal_response({"gnx": all_gnx})
@@ -656,10 +653,8 @@ class LeoServer:
 
         w_v = c.fileCommands.gnxDict.get(param)  # vitalije
         if w_v:
-            if w_v.b:
-                return self._make_minimal_response({"body": w_v.b})
-            else:
-                return self._make_minimal_response({"body": ""})
+            return self._make_minimal_response({"body": w_v.b or ""})
+        return None  # To keep pylint happy.
     #@+node:felix.20210621233316.40: *5* server.get_body_length
     def get_body_length(self, param):
         """
@@ -1019,7 +1014,6 @@ class LeoServer:
         """
         Undoably set p.h, where p is c.p if package["ap"] is missing.
         """
-        tag = 'set_headline'
         c = self._check_c()
         p = self._get_p(param)
         u = c.undoer
@@ -1056,7 +1050,7 @@ class LeoServer:
         active = param.get('insert', 0)
         scroll = param.get('scroll', 0)
         # If sent as number, use 'as is'
-        if type(active) == int:
+        if isinstance(active, int):
             insert = active
             startSel = start
             endSel = end
@@ -1139,21 +1133,21 @@ class LeoServer:
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
         if duplicates:  # pragma: no cover
-            print('duplicate command names...')
+            print(f"{tag}: duplicate command names...")
             for z in sorted(duplicates):
                 print(z)
         result = []
         for command_name in sorted(d):
             func = d.get(command_name)
             if not func:  # pragma: no cover
-                print('no func:', command_name)
+                print(f"{tag}: no func: {command_name!r}")
                 continue
             if command_name in bad_names:  # #92.
                 continue
             # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
             func_name = getattr(func, '__func_name__', func.__name__)
             if not func_name:  # pragma: no cover
-                print('no name', command_name)
+                print(f"{tag}: no name {command_name!r}")
                 continue
             doc = func.__doc__ or ''
             result.append({
@@ -2627,8 +2621,6 @@ class LeoServer:
         Finally, this method returns the json string corresponding to the
         response.
         """
-        tag = '_make_minimal_response'
-        c = self.c  # It is valid for c to be None.
         if package is None:
             package = {}
 
@@ -2744,6 +2736,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     #@+node:felix.20210621233316.102: *3* test.test_most_public_server_methods
     def test_most_public_server_methods(self):
         server=self.server
+        tag = 'test_most_public_server_methods'
         assert isinstance(server, g_leoserver.LeoServer), self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
@@ -2797,7 +2790,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
-                            print(f"Exception in test_most_public_server_methods: {method_name!r} {e}")
+                            print(f"Exception in {tag}: {method_name!r} {e}")
         finally:
             server.close_file({"filename": test_dot_leo})
     #@+node:felix.20210621233316.103: *3* test.test_open_and_close
