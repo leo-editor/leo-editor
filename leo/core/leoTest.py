@@ -1281,9 +1281,9 @@ class TestManager:
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
         assert len(sel2) == 2, f"Bad headline index.  Expected index,index.  got: {sel2}"
-        i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
+        i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)  # type: ignore[assignment]
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
-        i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
+        i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)  # type: ignore[assignment]
         assert sel2 == sel3, f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
         c.selectPosition(atTest)
         atTest.contract()
