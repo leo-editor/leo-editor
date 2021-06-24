@@ -2068,8 +2068,7 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    no_menu_dict: Dict[str, Cmdr] = {}
-        # Keys are file names.
+    no_menu_dict: Dict[Cmdr, bool] = {}
 
     def getShortcut(self, commandName):
         """Return rawKey,accel for shortcutName"""

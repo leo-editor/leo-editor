@@ -10,6 +10,7 @@ import json
 import os
 import re
 import time
+from typing import Any, List
 import urllib
 #
 # Third-party imports.
@@ -157,7 +158,7 @@ class JSON_Import_Helper:
                 child.h = d2.get('h') or '<**no h**>'
                 child.b = d2.get('b') or ''
                 if d2.get('gnx'):
-                    child.v.findIndex = gnx = d2.get('gnx')
+                    child.v.fileIndex = gnx = d2.get('gnx')  # 2021/06/23: found by mypy.
                     self.vnodes_dict[gnx] = child.v
                 if d2.get('ua'):
                     child.u = d2.get('ua')
@@ -561,8 +562,8 @@ class LeoImportCommands:
         """Properly remove all sentinle lines in s."""
         delim = (line_delim or start_delim or '') + '@'
         verbatim = delim + 'verbatim'; verbatimFlag = False
-        result = []; lines = g.splitLines(s)
-        for line in lines:
+        result = []
+        for line in g.splitLines(s):
             i = g.skip_ws(line, 0)
             if not verbatimFlag and g.match(line, i, delim):
                 if g.match(line, i, verbatim):
@@ -571,8 +572,7 @@ class LeoImportCommands:
             else:
                 result.append(line)
                 verbatimFlag = False
-        result = ''.join(result)
-        return result
+        return ''.join(result)
     #@+node:ekr.20031218072017.1464: *4* ic.weave
     def weave(self, filename):
         c = self.c; nl = self.output_newline
@@ -1994,7 +1994,6 @@ class TabImporter:
     def __init__(self, c, separate=True):
         """Ctor for the TabImporter class."""
         self.c = c
-        self.stack = []
         self.root = None
         self.separate = separate
         self.stack = []
@@ -2087,7 +2086,7 @@ class TabImporter:
         return self.root
     #@+node:ekr.20161006071801.6: *3* tabbed.scan_helper
     def scan_helper(self, s):
-        """Update the stack as necessary and return (level, parent, stack)."""
+        """Update the stack as necessary and return level."""
         root, separate, stack = self.root, self.separate, self.stack
         if stack:
             level, parent = stack[-1]
@@ -2370,7 +2369,7 @@ class ZimImportController:
     #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
     def parseZimIndex(self):
         """
-        Parse Zim wiki index.rst and return a list of tuples (level, name, path)
+        Parse Zim wiki index.rst and return a list of tuples (level, name, path) or None.
         """
         # c = self.c
         pathToZim = g.os_path_abspath(self.pathToZim)
@@ -2388,8 +2387,9 @@ class ZimImportController:
             level = len(result[0])
             name = result[1].decode('utf-8')
             unquote = urllib.parse.unquote
+            # mypy: error: "str" has no attribute "decode"; maybe "encode"?  [attr-defined]
             path = [g.os_path_abspath(g.os_path_join(
-                pathToZim, unquote(result[2]).decode('utf-8')))]
+                pathToZim, unquote(result[2]).decode('utf-8')))]  # type:ignore[attr-defined]
             results.append((level, name, path))
         return results
     #@+node:ekr.20141210051628.29: *3* zic.rstToLastChild
@@ -2540,8 +2540,8 @@ class LegacyExternalFileImporter:
         # Compute the local ignore list for this file.
         ignore = tuple(delim1 + z for z in self.ignore)
         # Handle each line of the file.
-        nodes = []  # An list of nodes, in file order.
-        stack = []  # A stack of nodes.
+        nodes: List[Any] = []  # An list of Nodes, in file order.
+        stack: List[Any] = []  # A stack of Nodes.
         for line in g.splitLines(s):
             s = line.lstrip()
             lws = line[: len(line) - len(line.lstrip())]
