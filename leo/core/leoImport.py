@@ -19,7 +19,7 @@ try:
     import docutils.core
 except ImportError:
     # print('leoImport.py: can not import docutils')
-    docutils = None  # type: ignore[assignment]
+    docutils = None  # type:ignore
 try:
     import lxml
 except ImportError:
@@ -2389,7 +2389,7 @@ class ZimImportController:
             unquote = urllib.parse.unquote
             # mypy: error: "str" has no attribute "decode"; maybe "encode"?  [attr-defined]
             path = [g.os_path_abspath(g.os_path_join(
-                pathToZim, unquote(result[2]).decode('utf-8')))]  # type:ignore[attr-defined]
+                pathToZim, unquote(result[2]).decode('utf-8')))]  # type:ignore
             results.append((level, name, path))
         return results
     #@+node:ekr.20141210051628.29: *3* zic.rstToLastChild

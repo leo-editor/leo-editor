@@ -1549,7 +1549,7 @@ class LeoApp:
                         g.es_exception()
                         return None
 
-                scanner_for_at_auto_cb.scanner_name = aClass.__name__  # type:ignore[attr-defined]
+                scanner_for_at_auto_cb.scanner_name = aClass.__name__  # type:ignore
                     # For traces in ic.createOutline.
                 return scanner_for_at_auto_cb
         return None
@@ -1569,7 +1569,7 @@ class LeoApp:
                     g.es_exception()
                     return None
 
-            scanner_for_ext_cb.scanner_name = aClass.__name__  # type:ignore[attr-defined]
+            scanner_for_ext_cb.scanner_name = aClass.__name__  # type:ignore
                 # For traces in ic.createOutline.
             return scanner_for_ext_cb
         return None
@@ -3039,9 +3039,9 @@ class LoadManager:
             #@-others
         #@-others
         if not sys.stdout:
-            sys.stdout = sys.__stdout__ = LeoStdOut('stdout')  # type:ignore[assignment]
+            sys.stdout = sys.__stdout__ = LeoStdOut('stdout')  # type:ignore
         if not sys.stderr:
-            sys.stderr = sys.__stderr__ = LeoStdOut('stderr')  # type:ignore[assignment]
+            sys.stderr = sys.__stderr__ = LeoStdOut('stderr')  # type:ignore
     #@+node:ekr.20120219154958.10491: *4* LM.isValidPython
     def isValidPython(self):
         if sys.platform == 'cli':

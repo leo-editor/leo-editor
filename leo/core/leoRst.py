@@ -27,7 +27,7 @@ try:
     from docutils import parsers
     from docutils.parsers import rst
 except Exception:
-    docutils = None  # type: ignore[assignment]
+    docutils = None  # type:ignore
 #
 # Leo imports.
 from leo.core import leoGlobals as g

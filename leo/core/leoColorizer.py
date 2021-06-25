@@ -18,7 +18,7 @@ from typing import Callable, Dict
 try:
     import pygments
 except ImportError:
-    pygments = None  # type: ignore[assignment]
+    pygments = None  # type:ignore
 #
 # Leo imports...
 from leo.core import leoGlobals as g

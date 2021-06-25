@@ -166,7 +166,7 @@ import unittest
 try:
     import pytest
 except Exception:
-    pytest = None  # type: ignore[assignment]
+    pytest = None  # type:ignore
 #@-<< imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -239,7 +239,7 @@ class LeoGlobals:  # pragma: no cover
         if typ == SyntaxError:
             # IndentationError is a subclass of SyntaxError.
             # SyntaxError *does* have 'filename' and 'lineno' attributes.
-            return val.filename, val.lineno  # type:ignore[attr-defined]
+            return val.filename, val.lineno  # type:ignore
         #
         # Data is a list of tuples, one per stack entry.
         # The tuples have the form (filename, lineNumber, functionName, text).
@@ -789,8 +789,8 @@ if 1:  # pragma: no cover
         # Compare the nodes themselves.
         _compare_nodes(node1, node2)
         # Get the list of fields.
-        fields1 = getattr(node1, "_fields", [])  # type:ignore[var-annotated]
-        fields2 = getattr(node2, "_fields", [])  # type:ignore[var-annotated]
+        fields1 = getattr(node1, "_fields", [])  # type:ignore
+        fields2 = getattr(node2, "_fields", [])  # type:ignore
         if fields1 != fields2:
             raise AstNotEqual(
                 f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
@@ -1290,7 +1290,7 @@ class TokenOrderGenerator:
         # Do this first, *before* updating self.node.
         node.parent = self.node
         if self.node:
-            children = getattr(self.node, 'children', [])  # type:ignore[var-annotated]
+            children = getattr(self.node, 'children', [])  # type:ignore
             children.append(node)
             self.node.children = children
         # Inject the node_index field.
@@ -1416,7 +1416,7 @@ class TokenOrderGenerator:
         # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
         if token.kind == 'comment':
             # Append the comment to node.comment_list.
-            comment_list = getattr(node, 'comment_list', [])  # type:ignore[var-annotated]
+            comment_list = getattr(node, 'comment_list', [])  # type:ignore
             node.comment_list = comment_list + [token]
             return
         if token.kind in ('endmarker', 'ws'):
@@ -1535,10 +1535,10 @@ class TokenOrderGenerator:
         #
         # Let block. Some fields may not exist pre Python 3.8.
         n_plain = len(node.args) - len(node.defaults)
-        posonlyargs = getattr(node, 'posonlyargs', [])  # type:ignore[var-annotated]
+        posonlyargs = getattr(node, 'posonlyargs', [])  # type:ignore
         vararg = getattr(node, 'vararg', None)
-        kwonlyargs = getattr(node, 'kwonlyargs', [])  # type:ignore[var-annotated]
-        kw_defaults = getattr(node, 'kw_defaults', [])  # type:ignore[var-annotated]
+        kwonlyargs = getattr(node, 'kwonlyargs', [])  # type:ignore
+        kw_defaults = getattr(node, 'kw_defaults', [])  # type:ignore
         kwarg = getattr(node, 'kwarg', None)
         if 0:
             g.printObj(ast.dump(node.vararg) if node.vararg else 'None', tag='node.vararg')
@@ -2473,11 +2473,11 @@ class TokenOrderGenerator:
         yield from self.gen(expr)
         # No need to put commas.
         for item in items:
-            yield from self.gen(item.context_expr)  # type:ignore[attr-defined]
+            yield from self.gen(item.context_expr)  # type:ignore
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
                 yield from self.gen_name('as')
-                yield from self.gen(item.optional_vars)  # type:ignore[attr-defined]
+                yield from self.gen(item.optional_vars)  # type:ignore
         # End the line.
         yield from self.gen_op(':')
         # Body...
@@ -3378,7 +3378,7 @@ class Orange:
         t = self.code_list[i]
         assert t.kind == 'line-end', repr(t)
         # Not all tokens have a newline_kind ivar.
-        assert t.newline_kind == 'newline'  # type:ignore[attr-defined]
+        assert t.newline_kind == 'newline'  # type:ignore
         i -= 1
         while i >= 0:
             t = self.code_list[i]
@@ -3978,7 +3978,7 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
             if stack:
                 parent = stack[-1]
                 children: List[ast.AST] = getattr(parent, 'children', [])
-                parent.children = children + [node]  # type:ignore[attr-defined]
+                parent.children = children + [node]  # type:ignore
                 node.parent = parent
             else:
                 node.parent = None
@@ -6008,7 +6008,7 @@ class TestTokens(BaseTest):
             if stack:
                 parent = stack[-1]
                 children: List[ast.AST] = getattr(parent, 'children', []) 
-                parent.children = children + [node]  # type: ignore[attr-defined]
+                parent.children = children + [node]  # type:ignore
                 node.parent = parent
             else:
                 node.parent = None
@@ -6782,9 +6782,9 @@ class Token:
         elif self.kind == 'string':
             # Important: don't add a repr for 'string' tokens.
             # repr just adds another layer of confusion.
-            val = g.truncate(self.value, truncate_n)  # type:ignore[assignment]
+            val = g.truncate(self.value, truncate_n)  # type:ignore
         else:
-            val = g.truncate(repr(self.value), truncate_n)  # type:ignore[assignment]
+            val = g.truncate(repr(self.value), truncate_n)  # type:ignore
         return val
     #@-others
 #@+node:ekr.20191110165235.1: *3* class Tokenizer

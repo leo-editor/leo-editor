@@ -1401,7 +1401,7 @@ class LeoQtGui(leoGui.LeoGui):
         # pylint: disable=c-extension-no-member
         import PyQt6.QtTest as QtTest
         # mypy complains about assigning to a type.
-        QSignalSpy = QtTest.QSignalSpy  # type: ignore[assignment,misc]
+        QSignalSpy = QtTest.QSignalSpy  # type:ignore
         assert QSignalSpy
     else:
         # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.

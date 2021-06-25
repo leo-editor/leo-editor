@@ -1208,7 +1208,7 @@ class Position:
         else:
             # mypy rightly doesn't like setting p.v to None.
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None  # type: ignore[assignment]
+            p.v = None  # type:ignore
         return p
     #@+node:ekr.20080416161551.207: *4* p.moveToParent
     def moveToParent(self):
@@ -1219,7 +1219,7 @@ class Position:
         else:
             # mypy rightly doesn't like setting p.v to None.
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None  # type: ignore[assignment]
+            p.v = None  # type:ignore
         return p
     #@+node:ekr.20080416161551.208: *4* p.moveToThreadBack
     def moveToThreadBack(self):
@@ -2619,8 +2619,8 @@ class VNode:
         # Wrong: return getattr(v, 'unknownAttributes', {})
         # It is does not set v.unknownAttributes, which can cause problems.
         if not hasattr(v, 'unknownAttributes'):
-            v.unknownAttributes = {}  # type: ignore[attr-defined]
-        return v.unknownAttributes  # type: ignore[attr-defined]
+            v.unknownAttributes = {}  # type:ignore
+        return v.unknownAttributes  # type:ignore
 
     def __set_u(self, val):
         v = self
