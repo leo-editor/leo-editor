@@ -31,7 +31,7 @@ class CommanderCacher:
             path = join(g.app.homeLeoDir, 'db', 'global_data')
             self.db = SqlitePickleShare(path)
         except Exception:
-            self.db = {}
+            self.db = {}  # type:ignore
     #@+others
     #@+node:ekr.20100209160132.5759: *3* cacher.clear
     def clear(self):
@@ -42,7 +42,7 @@ class CommanderCacher:
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
-            self.db = {}
+            self.db = {}  # type:ignore
     #@+node:ekr.20180627062431.1: *3* cacher.close
     def close(self):
         # Careful: self.db may be a dict.
@@ -76,7 +76,7 @@ class CommanderCacher:
             # a PickleShareDB instance.
         # Make sure g.guessExternalEditor works.
         g.app.db.get("LEO_EDITOR")
-        self.initFileDB('~/testpickleshare')
+        # self.initFileDB('~/testpickleshare')
         db = self.db
         db.clear()
         assert not list(db.items())
@@ -154,7 +154,8 @@ class GlobalCacher:
         except Exception:
             if trace:
                 g.es_exception()
-            self.db = {}  # Use a plain dict as a dummy.
+            # Use a plain dict as a dummy.
+            self.db = {}  # type:ignore
     #@+others
     #@+node:ekr.20180627045750.1: *3* g_cacher.clear
     def clear(self):
@@ -164,13 +165,13 @@ class GlobalCacher:
             g.trace('clear g.app.db')
         try:
             # pylint: disable=unexpected-keyword-arg
-            self.db.clear(verbose=True)
+            self.db.clear(verbose=True)  # type:ignore
         except TypeError:
             self.db.clear()
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
-            self.db = {}
+            self.db = {}  # type:ignore
     #@+node:ekr.20180627042948.1: *3* g_cacher.commit_and_close()
     def commit_and_close(self):
         # Careful: self.db may be a dict.
@@ -635,11 +636,11 @@ class SqlitePickleShare:
         """Return all keys in DB, or all keys matching a glob"""
         if globpat is None:
             sql = 'select key from cachevalues;'
-            args = tuple()
+            args = tuple()  # type:ignore
         else:
             sql = "select key from cachevalues where key glob ?;"
             # pylint: disable=trailing-comma-tuple
-            args = globpat,
+            args = globpat,  # type:ignore
         for key in self.conn.execute(sql, args):
             yield key
     #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
@@ -688,7 +689,7 @@ def dump_cache(db, tag):
         print('db is None!')
         return
     # Create a dict, sorted by file prefixes.
-    d = {}
+    d = {}  # type:ignore
     for key in db.keys():
         key = key[0]
         val = db.get(key)
