@@ -380,7 +380,7 @@ def fstringify_diff_command(files: List[str]):
         else:
             print(f"file not found: {filename}")
 #@+node:ekr.20200702115002.1: *3* command: orange_command
-def orange_command(files):
+def orange_command(files: List[str]):
 
     for filename in files:  # pragma: no cover
         if os.path.exists(filename):
@@ -389,7 +389,7 @@ def orange_command(files):
         else:
             print(f"file not found: {filename}")
 #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-def orange_diff_command(files):
+def orange_diff_command(files: List[str]):
 
     for filename in files:  # pragma: no cover
         if os.path.exists(filename):
@@ -478,14 +478,14 @@ if 1:  # pragma: no cover
             unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
-    def regularize_nls(s):
+    def regularize_nls(s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
     encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
         # This is the pattern in PEP 263.
 
-    def get_encoding_directive(bb):
+    def get_encoding_directive(bb: bytes) -> str:
         """
         Get the encoding from the encoding directive at the start of a file.
         
@@ -498,11 +498,11 @@ if 1:  # pragma: no cover
         for line in bb.split(b'\n', 2)[:2]:
             # Try to make line a string
             try:
-                line = line.decode('ASCII').strip()
+                line2 = line.decode('ASCII').strip()
             except Exception:
                 continue
             # Does the line match the PEP 263 pattern?
-            m = encoding_pattern.match(line)
+            m = encoding_pattern.match(line2)
             if not m:
                 continue
             # Is it a known encoding? Correct the name if it is.
@@ -513,7 +513,7 @@ if 1:  # pragma: no cover
                 pass
         return 'UTF-8'
     #@+node:ekr.20200103113417.1: *4* function: read_file
-    def read_file(filename, encoding='utf-8'):
+    def read_file(filename: str, encoding='utf-8') -> Optional[str]:
         """
         Return the contents of the file with the given name.
         Print an error message and return None on error.
@@ -528,11 +528,11 @@ if 1:  # pragma: no cover
             print(f"{tag}: can not read {filename}")
             return None
     #@+node:ekr.20200106173430.1: *4* function: read_file_with_encoding
-    def read_file_with_encoding(filename):
+    def read_file_with_encoding(filename: str) -> Tuple[str, str]:
         """
         Read the file with the given name,  returning (e, s), where:
 
-        s is the string, converted to unicode, or None if there was an error.
+        s is the string, converted to unicode, or '' if there was an error.
         
         e is the encoding of s, computed in the following order:
 
@@ -559,7 +559,7 @@ if 1:  # pragma: no cover
         s = regularize_nls(s)
         return e, s
     #@+node:ekr.20200106174158.1: *4* function: strip_BOM
-    def strip_BOM(bb):
+    def strip_BOM(bb: bytes) -> Tuple[Optional[str], bytes]:
         """
         bb must be the bytes contents of a file.
         
@@ -585,7 +585,7 @@ if 1:  # pragma: no cover
                 return e, bb[len(bom) :]
         return None, bb
     #@+node:ekr.20200103163100.1: *4* function: write_file
-    def write_file(filename, s, encoding='utf-8'):
+    def write_file(filename, s: str, encoding='utf-8'):
         """
         Write the string s to the file whose name is given.
         
@@ -1258,7 +1258,7 @@ class TokenOrderGenerator:
         self.level = 0
         self.filename = filename
         encoding, contents = read_file_with_encoding(filename)
-        if contents is None:
+        if not contents:
             return None, None, None, None
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
