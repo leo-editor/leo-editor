@@ -2,8 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 #@@first
-# Suppress all mypy errors (mypy has trouble with this file).
-# type: ignore
 # This file is part of Leo: https://leoeditor.com
 # Leo's copyright notice is based on the MIT license: http://leoeditor.com/license.html
 #@+<< docstring >>
@@ -163,7 +161,7 @@ import sys
 import time
 import tokenize
 import traceback
-from typing import Any, Dict, List
+from typing import Dict, List, Optional, Tuple, Union
 import unittest
 try:
     import pytest
@@ -240,7 +238,8 @@ class LeoGlobals:  # pragma: no cover
         typ, val, tb = sys.exc_info()
         if typ == SyntaxError:
             # IndentationError is a subclass of SyntaxError.
-            return val.filename, val.lineno
+            # SyntaxError *does* have 'filename' and 'lineno' attributes.
+            return val.filename, val.lineno  # type:ignore[attr-defined]
         #
         # Data is a list of tuples, one per stack entry.
         # The tuples have the form (filename, lineNumber, functionName, text).
@@ -314,22 +313,26 @@ class LeoGlobals:  # pragma: no cover
             print(f"toEncodedString: Error converting {s!r} to {encoding}")
         return s
     #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s: Any, encoding: str='utf-8') -> str:
+    def toUnicode(self, s: Union[str, bytes], encoding: str='utf-8') -> str:
         """Convert bytes to unicode if necessary."""
+        tag = 'g.toUnicode'
         if isinstance(s, str):
             return s
-        tag = 'g.toUnicode'
+        if not isinstance(s, bytes):
+            print(f"{tag}: bad s: {s!r}")
+            return ''
+        b: bytes = s
         try:
-            s = s.decode(encoding, 'strict')
+            s2 = b.decode(encoding, 'strict')
         except(UnicodeDecodeError, UnicodeError):
-            s = s.decode(encoding, 'replace')
-            print(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
+            s2 = b.decode(encoding, 'replace')
+            print(f"{tag}: unicode error. encoding: {encoding!r}, s2:\n{s2!r}")
             g.trace(g.callers())
         except Exception:
             g.es_exception()
-            print(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
+            print(f"{tag}: unexpected error! encoding: {encoding!r}, s2:\n{s2!r}")
             g.trace(g.callers())
-        return s
+        return s2
     #@+node:ekr.20191226175436.1: *3* LeoGlobals.trace
     def trace(self, *args):
         """Print a tracing message."""
@@ -786,8 +789,8 @@ if 1:  # pragma: no cover
         # Compare the nodes themselves.
         _compare_nodes(node1, node2)
         # Get the list of fields.
-        fields1 = getattr(node1, "_fields", [])
-        fields2 = getattr(node2, "_fields", [])
+        fields1 = getattr(node1, "_fields", [])  # type:ignore[var-annotated]
+        fields2 = getattr(node2, "_fields", [])  # type:ignore[var-annotated]
         if fields1 != fields2:
             raise AstNotEqual(
                 f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
@@ -1287,7 +1290,7 @@ class TokenOrderGenerator:
         # Do this first, *before* updating self.node.
         node.parent = self.node
         if self.node:
-            children = getattr(self.node, 'children', [])
+            children = getattr(self.node, 'children', [])  # type:ignore[var-annotated]
             children.append(node)
             self.node.children = children
         # Inject the node_index field.
@@ -1413,7 +1416,7 @@ class TokenOrderGenerator:
         # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
         if token.kind == 'comment':
             # Append the comment to node.comment_list.
-            comment_list = getattr(node, 'comment_list', [])
+            comment_list = getattr(node, 'comment_list', [])  # type:ignore[var-annotated]
             node.comment_list = comment_list + [token]
             return
         if token.kind in ('endmarker', 'ws'):
@@ -1532,10 +1535,10 @@ class TokenOrderGenerator:
         #
         # Let block. Some fields may not exist pre Python 3.8.
         n_plain = len(node.args) - len(node.defaults)
-        posonlyargs = getattr(node, 'posonlyargs', [])
+        posonlyargs = getattr(node, 'posonlyargs', [])  # type:ignore[var-annotated]
         vararg = getattr(node, 'vararg', None)
-        kwonlyargs = getattr(node, 'kwonlyargs', [])
-        kw_defaults = getattr(node, 'kw_defaults', [])
+        kwonlyargs = getattr(node, 'kwonlyargs', [])  # type:ignore[var-annotated]
+        kw_defaults = getattr(node, 'kw_defaults', [])  # type:ignore[var-annotated]
         kwarg = getattr(node, 'kwarg', None)
         if 0:
             g.printObj(ast.dump(node.vararg) if node.vararg else 'None', tag='node.vararg')
@@ -2464,17 +2467,17 @@ class TokenOrderGenerator:
 
     def do_With(self, node):
 
-        expr = getattr(node, 'context_expression', None)
-        items = getattr(node, 'items', [])
+        expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
+        items: List[ast.AST] = getattr(node, 'items', [])
         yield from self.gen_name('with')
         yield from self.gen(expr)
         # No need to put commas.
         for item in items:
-            yield from self.gen(item.context_expr)
+            yield from self.gen(item.context_expr)  # type:ignore[attr-defined]
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
                 yield from self.gen_name('as')
-                yield from self.gen(item.optional_vars)
+                yield from self.gen(item.optional_vars)  # type:ignore[attr-defined]
         # End the line.
         yield from self.gen_op(':')
         # Body...
@@ -2534,7 +2537,7 @@ class TokenOrderTraverser:
             seen.add(node.node_index)
             self.visit(node)
             # if p.v.children: p.moveToFirstChild()
-            children = getattr(node, 'children', [])
+            children: List[ast.AST] = getattr(node, 'children', [])
             if children:
                 # Move to the first child.
                 stack.append(0)
@@ -2659,7 +2662,7 @@ class Orange:
         self.verbatim = False  # True: don't beautify.
         #
         # Init output list and state...
-        self.code_list = []  # The list of output tokens.
+        self.code_list: List[Token] = []  # The list of output tokens.
         self.code_list_index = 0  # The token's index.
         self.tokens = tokens  # The list of input tokens.
         self.tree = tree
@@ -2818,7 +2821,8 @@ class Orange:
         """
         #
         # Compute the tail.
-        i, tail = len(self.code_list) - 1, []
+        i = len(self.code_list) - 1
+        tail: List[Token] = []
         while i > 0:
             t = self.code_list.pop()
             i -= 1
@@ -3373,7 +3377,8 @@ class Orange:
         i = len(self.code_list) - 1
         t = self.code_list[i]
         assert t.kind == 'line-end', repr(t)
-        assert t.newline_kind == 'newline'
+        # Not all tokens have a newline_kind ivar.
+        assert t.newline_kind == 'newline'  # type:ignore[attr-defined]
         i -= 1
         while i >= 0:
             t = self.code_list[i]
@@ -3476,6 +3481,7 @@ class BaseTest(unittest.TestCase):
     #            'post-tokens', 'post-tree',
     #            'unit-test'
     debug_list: List[str] = []
+    link_error: Exception = None
 
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
@@ -3494,7 +3500,7 @@ class BaseTest(unittest.TestCase):
         contents = contents.lstrip('\\\n')
         if not contents:
             return '', None, None
-        self.link_error = False
+        self.link_error = None
         t1 = get_time()
         self.update_counts('characters', len(contents))
         # Ensure all tests end in exactly one newline.
@@ -3697,7 +3703,7 @@ class AstDumper:  # pragma: no cover
             return
         # Let block.
         indent = ' ' * 2 * level
-        children = getattr(node, 'children', [])
+        children: List[ast.AST] = getattr(node, 'children', [])
         node_s = self.compute_node_string(node, level)
         # Dump...
         if isinstance(node, (list, tuple)):
@@ -3929,10 +3935,11 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
             import asttokens
         except Exception:
             self.skipTest('requires asttokens')
-        # Define Token class and helper functions.
+        # Define TestToken class and helper functions.
+        stack: List[ast.AST] = []
         #@+others
-        #@+node:ekr.20200124024159.2: *5* class Token (internal)
-        class Token:
+        #@+node:ekr.20200124024159.2: *5* class TestToken (internal)
+        class TestToken:
             """A patchable representation of the 5-tuples created by tokenize and used by asttokens."""
 
             def __init__(self, kind, value):
@@ -3970,8 +3977,8 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
                 stack = []
             if stack:
                 parent = stack[-1]
-                children = getattr(parent, 'children', [])
-                parent.children = children + [node]
+                children: List[ast.AST] = getattr(parent, 'children', [])
+                parent.children = children + [node]  # type:ignore[attr-defined]
                 node.parent = parent
             else:
                 node.parent = None
@@ -3997,9 +4004,8 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
         # Part 2: Create asttokens data.
         atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
         t3 = get_time()
-        stack = []
-        # Create a patchable list of Token objects.
-        tokens = [Token(atok_name(z), atok_value(z)) for z in atok.tokens]
+        # Create a patchable list of TestToken objects.
+        tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]
         # Inject parent/child links into nodes.
         asttokens.util.visit_tree(atok.tree, previsit, postvisit)
         # Create token.token_list for each token.
@@ -5959,6 +5965,7 @@ class TestTokens(BaseTest):
         import ast
         import asttokens
         import token as token_module
+        stack: List[ast.AST] = []
         # Define TestToken class and helper functions.
         #@+others
         #@+node:ekr.20200122170101.3: *5* class TestToken
@@ -6000,8 +6007,8 @@ class TestTokens(BaseTest):
                 stack = []
             if stack:
                 parent = stack[-1]
-                children = getattr(parent, 'children', [])
-                parent.children = children + [node]
+                children: List[ast.AST] = getattr(parent, 'children', []) 
+                parent.children = children + [node]  # type: ignore[attr-defined]
                 node.parent = parent
             else:
                 node.parent = None
@@ -6013,7 +6020,6 @@ class TestTokens(BaseTest):
                         # """print('%s in %5.2f sec' % ("done", 2.9))\n""",
             """print(a[1:2:3])\n""",
         )
-        stack = []
         for source in table:
             print(f"Source...\n\n{source}")
             atok = asttokens.ASTTokens(source, parse=True)
@@ -6033,7 +6039,7 @@ class TestTokens(BaseTest):
                 if hasattr(node, 'first_token'):
                     parent = getattr(node, 'parent', None)
                     parent_s = parent.__class__.__name__ if parent else 'None'
-                    children = getattr(node, 'children', [])
+                    children: List[ast.AST] = getattr(node, 'children', [])
                     if children:
                         children_s = ', '.join(z.__class__.__name__ for z in children)
                     else:
@@ -6211,6 +6217,8 @@ class Fstringify(TokenOrderTraverser):
     """A class to fstringify files."""
 
     silent = True  # for pytest. Defined in all entries.
+    line_number = 0
+    line = ''
 
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
@@ -6481,7 +6489,7 @@ class Fstringify(TokenOrderTraverser):
                 f":   conflicting delims:")
         return False
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
-    def munge_spec(self, spec):
+    def munge_spec(self, spec) -> Tuple[str, str]:
         """
         Return (head, tail).
         
@@ -6501,9 +6509,9 @@ class Fstringify(TokenOrderTraverser):
         if spec.endswith('r'):
             head.append('r')
             spec = spec[:-1]
-        tail = ''.join(tail) + spec
-        head = ''.join(head)
-        return head, tail
+        tail_s = ''.join(tail) + spec
+        head_s = ''.join(head)
+        return head_s, tail_s
     #@+node:ekr.20191222102831.9: *5* fs.scan_format_string
     # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
     # fill        ::=  <any character>
@@ -6519,77 +6527,6 @@ class Fstringify(TokenOrderTraverser):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
-    #@+node:ekr.20200726125841.1: *5* fs.scan_for_values (token based, not used)
-    def scan_for_values(self):  # pragma: no cover
-        """
-        **Important**: This method is not used. It shows how to "parse"
-        the RHS of an % operator using tokens instead of a parse tree. 
-        
-        This is a recursive descent parser. It is comprable in complexity
-        to fs.scan_format_string.
-        
-        Return a list of possibly parenthesized values for the format string.
-        
-        This method never actually consumes tokens.
-        
-        If all goes well, we'll skip all tokens in the tokens list.
-        """
-
-        # pylint: disable=no-member # This is example code.
-        # Skip the '%'
-        new_token = self.new_token
-        assert self.look_ahead(0) == ('op', '%')
-        token_i, tokens = self.skip_ahead(0, 'op', '%')
-        # Skip '(' if it's next
-        include_paren = self.look_ahead(token_i) == ('op', '(')
-        if include_paren:
-            token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
-            tokens.extend(skipped_tokens)
-        # Find all tokens up to the first ')' or 'for'
-        values, value_list = [], []
-        while token_i < len(self.tokens):
-            # Don't use look_ahead here: handle each token exactly once.
-            token = self.tokens[token_i]
-            token_i += 1
-            tokens.append(token)
-            kind, val = token.kind, token.value
-            if kind == 'ws':
-                continue
-            if kind in ('newline', 'nl'):
-                if include_paren or val.endswith('\\\n'):
-                    # Continue scanning, ignoring the newline.
-                    continue
-                # The newline ends the scan.
-                values.append(value_list)
-                    # Retain the tokens!
-                if not include_paren:  # Bug fix.
-                    tokens.pop()  # Rescan the ')'
-                break
-            if (kind, val) == ('op', ')'):
-                values.append(value_list)
-                if not include_paren:
-                    tokens.pop()  # Rescan the ')'
-                break
-            if (kind, val) == ('name', 'for'):
-                self.add_trailing_ws = True
-                tokens.pop()  # Rescan the 'for'
-                values.append(value_list)
-                break
-            if (kind, val) == ('op', ','):
-                values.append(value_list)
-                value_list = []
-            elif kind == 'op' and val in '([{':
-                values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
-                value_list.extend(values_list2)
-                tokens.extend(self.tokens[token_i:token_i2])
-                token_i = token_i2
-            elif kind == 'name':
-                # Ensure separation of names.
-                value_list.append(new_token(kind, val))
-                value_list.append(new_token('ws', ' '))
-            else:
-                value_list.append(new_token(kind, val))
-        return values, tokens
     #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
     def scan_rhs(self, node):
         """
@@ -6854,6 +6791,9 @@ class Token:
 class Tokenizer:
 
     """Create a list of Tokens from contents."""
+    
+    results: List[Token] = []
+    
     #@+others
     #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
     token_index = 0
