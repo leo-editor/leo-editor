@@ -581,15 +581,15 @@ class LeoServer:
         tag = 'clone_find_tag'
         c = self._check_c()
         fc = c.findCommands
-        the_tag = param.get("tag")
-        if not the_tag:  # pragma: no cover
+        tag_param = param.get("tag")
+        if not tag_param:  # pragma: no cover
             raise ServerError(f"{tag}: no tag")
-        settings = self.get_search_settings(c)  ### EKR: was self._get_find_settings(c)
+        settings = fc.ftm.get_settings()
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
         n, p = fc.do_clone_find_tag(settings)
         if self.log_flag:  # pragma: no cover
-            g.trace("tag: {the_tag} n: {n} p: {p and p.h!r}")
+            g.trace("tag: {tag_param} n: {n} p: {p and p.h!r}")
         return self._make_response({"n": n})
     #@+node:felix.20210621233316.34: *5* server.tag_children
     def tag_children(self, param):
@@ -598,11 +598,11 @@ class LeoServer:
         tag = 'tag_children'
         c = self._check_c()
         fc = c.findCommands
-        the_tag = param.get("tag")
-        if the_tag is None:  # pragma: no cover
+        tag_param = param.get("tag")
+        if tag_param is None:  # pragma: no cover
             raise ServerError(f"{tag}: no tag")
         # Unlike find commands, do_tag_children does not use a settings dict.
-        fc.do_tag_children(c.p, the_tag)
+        fc.do_tag_children(c.p, tag_param)
         return self._make_response()
     #@+node:felix.20210621233316.35: *4* server:getter commands
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
@@ -645,13 +645,8 @@ class LeoServer:
               because _make_response always adds "body-length": len(p.b)
         """
         c = self._check_c()
-
-        # p = self._get_p(param)
-        # return self._make_minimal_response({"body": p.b})
-
-        # TODO : Use real param instead of direct gnx string!
-
-        w_v = c.fileCommands.gnxDict.get(param)  # vitalije
+        gnx = param.get("gnx")
+        w_v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if w_v:
             return self._make_minimal_response({"body": w_v.b or ""})
         return None  # To keep pylint happy.
@@ -661,13 +656,8 @@ class LeoServer:
         Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
         """
         c = self._check_c()
-        
-        # TODO : Use real param object instead of gnx string
-        
-        # p = self._get_p(param)
-        # if p and p.b:
-            
-        w_v = c.fileCommands.gnxDict.get(param)  # vitalije
+        gnx = param.get("gnx")
+        w_v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if w_v:
             # Length in bytes, not just by character count.
             return self._make_minimal_response({"len": len(w_v.b.encode('utf-8'))})
@@ -684,12 +674,16 @@ class LeoServer:
         wrapper = c.frame.body.wrapper
 
         def row_col_wrapper_dict(i):
+            if not i:
+                i = 0 # prevent none type
             # BUG: this uses current selection wrapper only, use
             # g.convertPythonIndexToRowCol instead !
             junk, line, col = wrapper.toPythonIndexRowCol(i)
             return {"line": line, "col": col, "index": i}
 
         def row_col_pv_dict(i, s):
+            if not i:
+                i = 0 # prevent none type
             # BUG: this uses current selection wrapper only, use
             # g.convertPythonIndexToRowCol instead !
             line, col = g.convertPythonIndexToRowCol(s, i)
@@ -738,14 +732,24 @@ class LeoServer:
     #@+node:felix.20210621233316.42: *5* server.get_children
     def get_children(self, param):
         """
-        Return the node data for children of p, where p is c.p if param["ap"] is missing.
+        Return the node data for children of p,
+        where p is root if param.ap is missing
         """
-        self._check_c()
-        p = self._get_p(param)
-        return self._make_minimal_response({
-            # "children": [self._p_to_ap(child) for child in p.children()]
-            "children": [self._get_position_d(child) for child in p.children()]
-        })
+        c = self._check_c()
+        children = [] # default empty array
+        if param.get("ap"):
+            # Maybe empty param, for tree-root children(s)
+            p = self._get_p(param)
+            if p and p.hasChildren():
+                children = [self._get_position_d(child) for child in p.children()]
+        else:
+            if c.hoistStack:
+                # Always start hoisted tree with single hoisted root node
+                children = [self._get_position_d(c.hoistStack[-1].p)]
+            else:
+                # this outputs all Root Children
+                children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
+        return self._make_minimal_response({"children": children})
     #@+node:felix.20210621233316.43: *5* server.get_focus
     def get_focus(self, param):
         """
@@ -784,20 +788,11 @@ class LeoServer:
         try:
             ua = {"ua": p.v.u}
             json.dumps(ua, separators=(',', ':'))
-            response = {"p": p, "ua": p.v.u}
+            response = {"ua": p.v.u}
         except Exception:  # pragma: no cover
-            response = {"p": p, "bad-ua": repr(p.v.u)}
+            response = {"ua": repr(p.v.u)}
         # _make_response adds all the cheap redraw data.
-        return self._make_minimal_response(response)
-    #@+node:felix.20210621233316.47: *5* server.get_sign_on
-    def get_sign_on(self, param):
-        """Synchronous version of _sign_on"""
-        g.app.computeSignon()
-        signon = []
-        for z in (g.app.signon, g.app.signon1):
-            for z2 in z.split('\n'):
-                signon.append(z2.strip())
-        return self._make_minimal_response({"sign-on": "\n".join(signon)})
+        return self._make_response(response)
     #@+node:felix.20210621233316.48: *5* server.get_ui_states
     def get_ui_states(self, param):
         """
@@ -1100,7 +1095,7 @@ class LeoServer:
         p.clearMarked()
         return self._make_response()
     #@+node:felix.20210621233316.67: *5* server.undo
-    def undo(self, package):
+    def undo(self, param):
         """Undo last un-doable operation"""
         c = self._check_c()
         u = c.undoer
@@ -1110,21 +1105,24 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.68: *4* server:server commands
     #@+node:felix.20210621233316.69: *5* server.set_ask_result
-    def set_ask_result(self, p_result):
+    def set_ask_result(self, param):
         '''Got the result to an asked question/warning from client'''
-        # g.app.externalFilesController.integResult(p_result)
+        # w_result = param.get("result");
+        # if not w_result:
+        #    return self._outputError("Error in set_ask_result, no param result")
+        # self.g.app.externalFilesController.integResult(w_result)
         return self._make_response()
     #@+node:felix.20210621233316.70: *5* server.set_config
-    def set_config(self, p_config):
+    def set_config(self, param):
         '''Got auto-reload's config from client'''
-        # self.leoIntegConfig = p_config
+        #  TODO : self.leoIntegConfig = param # PARAM IS THE CONFIG-DICT
         return self._make_response()
     #@+node:felix.20210621233316.71: *5* server.error
-    def error(self, package):
+    def error(self, param):
         """For unit testing. Raise ServerError"""
         raise ServerError("error called")
     #@+node:felix.20210621233316.72: *5* server.get_all_leo_commands & helper
-    def get_all_leo_commands(self, package):
+    def get_all_leo_commands(self, param):
         """Return a list of all Leo commands that make sense in leoInteg."""
         tag = 'get_all_leo_commands'
         c = self.dummy_c  # Use the dummy commander.
@@ -2196,7 +2194,7 @@ class LeoServer:
         return good_list
 
     #@+node:felix.20210621233316.75: *5* server.get_all_server_commands
-    def get_all_server_commands(self, package):
+    def get_all_server_commands(self, param):
         """
         Public server method:
         Return the names of all callable public methods of the server.
@@ -2222,7 +2220,7 @@ class LeoServer:
         self.loop = asyncio.get_event_loop()
 
     #@+node:felix.20210621233316.77: *5* server.shut_down
-    def shut_down(self, package):
+    def shut_down(self, param):
         """Shut down the server."""
         tag = 'shut_down'
         n = len(g.app.commanders())
@@ -2664,6 +2662,28 @@ class LeoServer:
             if p != p2:
                 self._dump_outline(c)
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
+    #@+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
+    def _yieldAllRootChildren(self):
+        '''Return all root children P nodes'''
+        c = self._check_c()
+        p = c.rootPosition()
+        while p:
+            yield p
+            p.moveToNext()
+
+    #@+node:felix.20210624160812.1: *4* server.emit_signon
+    def emit_signon(self):
+        '''Simulate the Initial Leo Log Entry'''
+        tag = 'emit_signon'
+        if self.loop:
+            g.app.computeSignon()
+            signon = []
+            for z in (g.app.signon, g.app.signon1):
+                for z2 in z.split('\n'):
+                    signon.append(z2.strip())
+            g.es("\n".join(signon))
+        else:
+            raise ServerError(f"{tag}: no loop ready for emit_signon")
     #@-others
 #@+node:felix.20210621233316.98: ** class TestLeoServer (unittest.TestCase)
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
@@ -2876,7 +2896,7 @@ def main():  # pragma: no cover (tested in client)
             n = 0
             async_n = 0
             await websocket.send(controller._make_response())
-            # controller._sign_on()
+            controller.emit_signon()
             async for json_message in websocket:
                 try:
                     n += 1
@@ -2912,9 +2932,6 @@ def main():  # pragma: no cover (tested in client)
                     g.print_exception()
                     break
                 await websocket.send(answer)
-                if n in (3, 4, 7, 10):
-                    async_n += 1
-                    controller._es(f"async message {async_n}")
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
