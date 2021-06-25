@@ -1858,7 +1858,7 @@ position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
 class PosList(list):
     
-    __slots__ = []
+    __slots__: List[str] = []
 
     #@+others
     #@+node:bob.20101215134608.5897: *3* children
@@ -1983,7 +1983,7 @@ class VNode:
             # The start of the selected body text.
         #
         # For at.read logic.
-        self.at_read = {}
+        self.at_read: Dict[str, set] = {}
         #
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
@@ -2460,7 +2460,7 @@ class VNode:
             v._headString = s.replace('\n', '')
             return
         s = g.toUnicode(s, reportErrors=True)
-        v._headString = s.replace('\n', '')
+        v._headString = s.replace('\n', '')  # type:ignore
         self.contentModified()  # #1413.
 
     initBodyString = setBodyString
@@ -2628,7 +2628,7 @@ class VNode:
             if hasattr(v, 'unknownAttributes'):
                 delattr(v, 'unknownAttributes')
         elif isinstance(val, dict):
-            v.unknownAttributes = val
+            v.unknownAttributes = val  # type:ignore
         else:
             raise ValueError
 
