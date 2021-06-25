@@ -11,6 +11,7 @@ import os
 import re
 import sys
 import time
+from typing import List
 import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
@@ -890,7 +891,7 @@ class AtFile:
         """
         at = self
         new_df, isThinDerivedFile = False, False
-        firstLines = []  # The lines before @+leo.
+        firstLines: List[str] = []  # The lines before @+leo.
         s = self.scanFirstLines(firstLines)
         valid = len(s) > 0
         if valid:
@@ -1184,7 +1185,7 @@ class AtFile:
         )
         for pred, func in table:
             if pred():
-                func(p)
+                func(p)  # type:ignore
                 break
         else:
             g.trace(f"Can not happen: {p.h}")
@@ -1345,7 +1346,7 @@ class AtFile:
         )
         for pred, func in table:
             if pred():
-                func(p)
+                func(p)  # type:ignore
                 return
         g.trace(f"Can not happen unknown @<file> kind: {p.h}")
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
@@ -2349,25 +2350,25 @@ class AtFile:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
         except parser.ParserError:
-            junk, msg, junk = sys.exc_info()
+            junk1, msg, junk = sys.exc_info()
             if suppress:
                 raise
             g.error("ParserError in", p.h)
             g.es('', str(msg))
         except IndentationError:
-            junk, msg, junk = sys.exc_info()
+            junk2, msg, junk = sys.exc_info()
             if suppress:
                 raise
             g.error("IndentationError in", p.h)
             g.es('', str(msg))
         except tokenize.TokenError:
-            junk, msg, junk = sys.exc_info()
+            junk3, msg, junk = sys.exc_info()
             if suppress:
                 raise
             g.error("TokenError in", p.h)
             g.es('', str(msg))
         except tabnanny.NannyNag:
-            junk, nag, junk = sys.exc_info()
+            junk4, nag, junk = sys.exc_info()
             if suppress:
                 raise
             badline = nag.get_lineno()
@@ -3169,7 +3170,7 @@ class FastAtRead:
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
         '''
-        first_lines = []
+        first_lines: List[str] = []
         i = 0  # To keep some versions of pylint happy.
         for i, line in enumerate(lines):
             m = self.header_pattern.match(line)
