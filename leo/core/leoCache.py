@@ -8,6 +8,7 @@ import os
 import pickle
 import sqlite3
 import stat
+from typing import Any, Dict, Sequence
 import zlib
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -164,8 +165,7 @@ class GlobalCacher:
         if 'cache' in g.app.debug:
             g.trace('clear g.app.db')
         try:
-            # pylint: disable=unexpected-keyword-arg
-            self.db.clear(verbose=True)  # type:ignore
+            self.db.clear()
         except TypeError:
             self.db.clear()
         except Exception:
@@ -636,11 +636,11 @@ class SqlitePickleShare:
         """Return all keys in DB, or all keys matching a glob"""
         if globpat is None:
             sql = 'select key from cachevalues;'
-            args = tuple()  # type:ignore
+            args: Sequence[Any] = tuple()
         else:
             sql = "select key from cachevalues where key glob ?;"
             # pylint: disable=trailing-comma-tuple
-            args = globpat,  # type:ignore
+            args = globpat,
         for key in self.conn.execute(sql, args):
             yield key
     #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
@@ -689,7 +689,7 @@ def dump_cache(db, tag):
         print('db is None!')
         return
     # Create a dict, sorted by file prefixes.
-    d = {}  # type:ignore
+    d: Dict[str, Any]= {}
     for key in db.keys():
         key = key[0]
         val = db.get(key)
