@@ -161,7 +161,7 @@ import sys
 import time
 import tokenize
 import traceback
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 import unittest
 try:
     import pytest
@@ -190,7 +190,7 @@ class LeoGlobals:  # pragma: no cover
     
     #@+others
     #@+node:ekr.20191227114503.1: *3* LeoGlobals.adjustTripleString
-    def adjustTripleString(self, s):
+    def adjustTripleString(self, s: str) -> str:
         """Remove leading indentation from a triple-quoted string."""
         lines = g.splitLines(s)
         for line in lines:
@@ -203,7 +203,7 @@ class LeoGlobals:  # pragma: no cover
         return ''.join(
             (z[n:] if z.startswith(lws) else z) for z in lines)
     #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
-    def callerName(self, n):
+    def callerName(self, n: int) -> str:
         """Get the function name from the call stack."""
         try:
             f1 = sys._getframe(n)
@@ -212,7 +212,7 @@ class LeoGlobals:  # pragma: no cover
         except Exception:
             return ''
     #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
-    def callers(self, n=4):
+    def callers(self, n=4) -> str:
         """
         Return a string containing a comma-separated list of the callers
         of the function that called g.callerList.
@@ -227,7 +227,7 @@ class LeoGlobals:  # pragma: no cover
             i += 1
         return ','.join(reversed(result))
     #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
-    def es_exception(self, full=True):
+    def es_exception(self, full=True) -> Tuple[str, int]:
         typ, val, tb = sys.exc_info()
         for line in traceback.format_exception(typ, val, tb):
             print(line)
@@ -248,7 +248,7 @@ class LeoGlobals:  # pragma: no cover
         filename, n, functionName, text = item
         return filename, n
     #@+node:ekr.20200220065737.1: *3* LeoGlobals.objToString
-    def objToString(self, obj, tag=None):
+    def objToString(self, obj: Any, tag=None) -> str:
         """Simplified version of g.printObj."""
         result = []
         if tag:
@@ -281,7 +281,7 @@ class LeoGlobals:  # pragma: no cover
             return
         pdb.set_trace()
     #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
-    def plural(self, obj):
+    def plural(self, obj: Any) -> str:
         """Return "s" or "" depending on n."""
         if isinstance(obj, (list, tuple, str)):
             n = len(obj)
@@ -289,11 +289,11 @@ class LeoGlobals:  # pragma: no cover
             n = obj
         return '' if n == 1 else 's'
     #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
-    def printObj(self, obj, tag=None):
+    def printObj(self, obj: Any, tag=None):
         """Simplified version of g.printObj."""
         print(self.objToString(obj, tag))
     #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
-    def splitLines(self, s):
+    def splitLines(self, s: str) -> List[str]:
         """Split s into lines, preserving the number of lines and
         the endings of all lines, including the last line."""
         # g.stat()
@@ -302,7 +302,7 @@ class LeoGlobals:  # pragma: no cover
                 # This is a Python string function!
         return []
     #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
-    def toEncodedString(self, s, encoding='utf-8'):
+    def toEncodedString(self, s: Any, encoding='utf-8') -> bytes:
         """Convert unicode string to an encoded string."""
         if not isinstance(s, str):
             return s
@@ -313,7 +313,7 @@ class LeoGlobals:  # pragma: no cover
             print(f"toEncodedString: Error converting {s!r} to {encoding}")
         return s
     #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s: Union[str, bytes], encoding: str='utf-8') -> str:
+    def toUnicode(self, s: Any, encoding: str='utf-8') -> str:
         """Convert bytes to unicode if necessary."""
         tag = 'g.toUnicode'
         if isinstance(s, str):
@@ -345,7 +345,7 @@ class LeoGlobals:  # pragma: no cover
             name = ''
         print(f"{name}: {' '.join(str(z) for z in args)}")
     #@+node:ekr.20191226190241.1: *3* LeoGlobals.truncate
-    def truncate(self, s, n):
+    def truncate(self, s: str, n: int) -> str:
         """Return s truncated to n characters."""
         if len(s) <= n:
             return s
@@ -354,7 +354,7 @@ class LeoGlobals:  # pragma: no cover
     #@-others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
 #@+node:ekr.20200702114557.1: *3* command: fstringify_command
-def fstringify_command(files):
+def fstringify_command(files: List[str]):
     """
     Entry point for --fstringify.
     
@@ -367,7 +367,7 @@ def fstringify_command(files):
         else:
             print(f"file not found: {filename}")
 #@+node:ekr.20200702121222.1: *3* command: fstringify_diff_command
-def fstringify_diff_command(files):
+def fstringify_diff_command(files: List[str]):
     """
     Entry point for --fstringify-diff.
     
@@ -6775,16 +6775,16 @@ class Token:
             f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
             f"{node_s}")
     #@+node:ekr.20191113095507.1: *4* token.show_val
-    def show_val(self, truncate_n):  # pragma: no cover
+    def show_val(self, truncate_n: int) -> Union[str, int]:  # pragma: no cover
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
             val = len(self.value)
         elif self.kind == 'string':
             # Important: don't add a repr for 'string' tokens.
             # repr just adds another layer of confusion.
-            val = g.truncate(self.value, truncate_n)
+            val = g.truncate(self.value, truncate_n)  # type:ignore[assignment]
         else:
-            val = g.truncate(repr(self.value), truncate_n)
+            val = g.truncate(repr(self.value), truncate_n)  # type:ignore[assignment]
         return val
     #@-others
 #@+node:ekr.20191110165235.1: *3* class Tokenizer
