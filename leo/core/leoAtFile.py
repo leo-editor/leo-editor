@@ -579,7 +579,7 @@ class AtFile:
                 head = f"@language {language}\n"
             else:
                 head = '@nocolor\n'
-        p.b = head + g.toUnicode(s, encoding=encoding, reportErrors='True')
+        p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
     def readOneAtAsisNode(self, fn, p):
@@ -598,7 +598,7 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         old_body = p.b
-        p.b = g.toUnicode(s, encoding=encoding, reportErrors='True')
+        p.b = g.toUnicode(s, encoding=encoding, reportErrors=True)
         if not c.isChanged() and p.b != old_body:
             c.setChanged()
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
