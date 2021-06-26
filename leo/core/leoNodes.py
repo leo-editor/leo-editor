@@ -30,7 +30,7 @@ class NodeIndices:
         self.lastIndex = 0
         self.stack: List[Cmdr] = []
             # A stack of open commanders.
-        self.timeString: str = ''
+        self.timeString = ''
             # Set by setTimeStamp.
         self.userId = id_
         # Assign the initial timestamp.
