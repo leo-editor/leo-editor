@@ -1064,7 +1064,7 @@ class MatchBrackets:
     """
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
-    def __init__(self, c:"leoCommands.Cmdr", p:"leoNodes.Position", language:str):
+    def __init__(self, c:"leoCommands.Commands", p:"leoNodes.Position", language:str):
         """Ctor for MatchBrackets class."""
         self.c = c
         self.p = p.copy()
