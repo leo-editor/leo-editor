@@ -103,7 +103,7 @@ class NodeIndices:
         fc.gnxDict[gnx] = v
         return gnx
     #@+node:ekr.20150322134954.1: *3* ni.new_vnode_helper
-    def new_vnode_helper(self, c: Cmdr, gnx: Union[str, None], v: "VNode"):
+    def new_vnode_helper(self, c: Cmdr, gnx: Optional[str], v: "VNode"):
         """Handle all gnx-related tasks for VNode.__init__."""
         ni = self
         if gnx:
@@ -162,7 +162,7 @@ class NodeIndices:
             self.timeString = t_s
         return t_s
     #@+node:ekr.20141023110422.4: *3* ni.updateLastIndex
-    def updateLastIndex(self, gnx):
+    def updateLastIndex(self, gnx: str):
         """Update ni.lastIndex if the gnx affects it."""
         id_, t, n = self.scanGnx(gnx)
         # pylint: disable=literal-comparison
@@ -204,7 +204,7 @@ class Position:
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
-    def __eq__(self, p2: object):
+    def __eq__(self, p2: "Position"):
         """Return True if two positions are equivalent."""
         p1 = self
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
@@ -216,7 +216,7 @@ class Position:
             p1._childIndex == p2._childIndex and
             p1.stack == p2.stack)
 
-    def __ne__(self, p2):
+    def __ne__(self, p2: "Position"):
         """Return True if two postions are not equivalent."""
         return not self.__eq__(p2)
     #@+node:ekr.20080416161551.190: *4*  p.__init__
@@ -235,13 +235,13 @@ class Position:
             self.stack = []
         g.app.positions += 1
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
-    def __ge__(self, other):
+    def __ge__(self, other: "Position"):
         return self.__eq__(other) or self.__gt__(other)
 
-    def __le__(self, other):
+    def __le__(self, other: "Position"):
         return self.__eq__(other) or self.__lt__(other)
 
-    def __lt__(self, other):
+    def __lt__(self, other: "Position"):
         return not self.__eq__(other) and not self.__gt__(other)
     #@+node:ekr.20091210082012.6233: *4* p.__gt__
     def __gt__(self, other: "Position"):
@@ -310,10 +310,10 @@ class Position:
         aList.reverse()
         return aList
     #@+node:ekr.20040310153624: *4* p.dump
-    def dumpLink(self, link):
+    def dumpLink(self, link: str):
         return link if link else "<none>"
 
-    def dump(self, label=""):
+    def dump(self, label: str=""):
         p = self
         if p.v:
             p.v.dump()  # Don't print a label
@@ -430,7 +430,7 @@ class Position:
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         """
-        def default_predicate(p):
+        def default_predicate(p: "Position"):
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
@@ -465,7 +465,7 @@ class Position:
         subtree.
         """
 
-        def default_predicate(p):
+        def default_predicate(p: "Position"):
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
@@ -655,7 +655,7 @@ class Position:
     isAtAsisFileNode = isAtSilentFileNode
     # Utilities.
 
-    def matchHeadline(self, pattern): return self.v.matchHeadline(pattern)
+    def matchHeadline(self, pattern: str): return self.v.matchHeadline(pattern)
     #@+node:ekr.20040306220230: *5* p.Headline & body strings
     def bodyString(self):
         return self.v.bodyString()
@@ -713,7 +713,7 @@ class Position:
 
     def getNodeAfterTree(self): return self.copy().moveToNodeAfterTree()
 
-    def getNthChild(self, n): return self.copy().moveToNthChild(n)
+    def getNthChild(self, n: int): return self.copy().moveToNthChild(n)
 
     def getParent(self): return self.copy().moveToParent()
 
@@ -745,10 +745,10 @@ class Position:
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
     def get_UNL(
         self,
-        with_file=True,
-        with_proto=False,
-        with_index=True,
-        with_count=False,
+        with_file: bool=True,
+        with_proto: bool=False,
+        with_index: bool=True,
+        with_count: bool=False,
     ):
         """
         Return a UNL representing a clickable link.
@@ -859,7 +859,7 @@ class Position:
         """Return True if p is visible in c's outline."""
         p = self
 
-        def visible(p, root=None):
+        def visible(p: "Position", root: "Position"=None):
             for parent in p.parents(copy=False):
                 if parent and parent == root:
                     # #12.
@@ -1097,7 +1097,7 @@ class Position:
         else:
             self.badUnlink(parent_v, n, child)
     #@+node:ekr.20090706171333.6226: *5* p.badUnlink
-    def badUnlink(self, parent_v, n, child):
+    def badUnlink(self, parent_v: "VNode", n: int, child: "VNode"):
 
         if 0 <= n < len(parent_v.children):
             g.trace(f"**can not happen: children[{n}] != p.v")
@@ -1272,7 +1272,7 @@ class Position:
                     return p
         return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
-    def checkVisBackLimit(self, limit, limitIsVisible, p: "Position"):
+    def checkVisBackLimit(self, limit: "Position", limitIsVisible: bool, p: "Position"):
         """Return done, p or None"""
         c = p.v.context
         if limit == p:
@@ -1304,7 +1304,7 @@ class Position:
                     return p
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
-    def checkVisNextLimit(self, limit, p):
+    def checkVisNextLimit(self, limit: "Position", p: "Position") -> bool:
         """Return True is p is outside limit of visible nodes."""
         return limit != p and not limit.isAncestorOf(p)
     #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
@@ -1524,7 +1524,7 @@ class Position:
         p = self  # Do NOT copy the position!
         return p.moveToNthChildOf(parent, 0)  # Major bug fix: 2011/12/04
 
-    def moveToLastChildOf(self, parent):
+    def moveToLastChildOf(self, parent: "Position"):
         """Move a position to the last child of parent."""
         p = self  # Do NOT copy the position!
         n = parent.numberOfChildren()
@@ -1739,7 +1739,7 @@ class Position:
 
     def initMarkedBit(self): return self.v.initMarkedBit()
 
-    def initStatus(self, status): return self.v.initStatus(status)
+    def initStatus(self, status: int): return self.v.initStatus(status)
 
     def setMarked(self): return self.v.setMarked()
 
@@ -1872,7 +1872,7 @@ class PosList(list):
                 res.append(child_p.copy())
         return res
     #@+node:ville.20090311190405.69: *3* filter_h
-    def filter_h(self, regex, flags=re.IGNORECASE):
+    def filter_h(self, regex: str, flags: Any=re.IGNORECASE):
         """ Find all the nodes in PosList self where zero or more characters at
         the beginning of the headline match regex
 
@@ -1887,7 +1887,7 @@ class PosList(list):
                 res.append(pc)
         return res
     #@+node:ville.20090311195550.1: *3* filter_b
-    def filter_b(self, regex, flags=re.IGNORECASE):
+    def filter_b(self, regex: str, flags: Any=re.IGNORECASE):
         """ Find all the nodes in PosList self where body matches regex
         one or more times.
 
@@ -1999,10 +1999,10 @@ class VNode:
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
-    def dumpLink(self, link):
+    def dumpLink(self, link: str) -> str:
         return link if link else "<none>"
 
-    def dump(self, label=""):
+    def dump(self, label: str="") -> None:
         v = self
         s = '-' * 10
         print(f"{s} {label} {v}")
@@ -2036,14 +2036,14 @@ class VNode:
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
-    def atAutoNodeName(self, h=None) -> str:
+    def atAutoNodeName(self, h: str=None) -> str:
         return self.findAtFileName(g.app.atAutoNames, h=h)
 
     # Retain this special case as part of the "escape hatch".
     # That is, we fall back on code in leoRst.py if no
     # importer or writer for reStructuredText exists.
 
-    def atAutoRstNodeName(self, h=None) -> str:
+    def atAutoRstNodeName(self, h: str=None) -> str:
         names = ("@auto-rst",)
         return self.findAtFileName(names, h=h)
 
@@ -2431,7 +2431,7 @@ class VNode:
         v = self
         hiddenRootVnode = v.context.hiddenRootNode
 
-        def v_and_parents(v):
+        def v_and_parents(v: "VNode"):
             if v != hiddenRootVnode:
                 yield v
                 for parent_v in v.parents:
@@ -2606,7 +2606,7 @@ class VNode:
         v = self
         return v.headString()
 
-    def __set_h(self, val):
+    def __set_h(self, val: str):
         v = self
         v.setHeadString(val)
 
@@ -2622,7 +2622,7 @@ class VNode:
             v.unknownAttributes = {}  # type:ignore
         return v.unknownAttributes  # type:ignore
 
-    def __set_u(self, val):
+    def __set_u(self, val: Any):
         v = self
         if val is None:
             if hasattr(v, 'unknownAttributes'):
