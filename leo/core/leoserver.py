@@ -86,10 +86,10 @@ class LeoServer:
 
         # * Replacement instances to Leo's codebase : getScript, IdleTime, idleTimeManager and externalFilesController
         g.getScript = self._getScript
-        ###g.IdleTime = self._idleTime
-        ###g.app.idleTimeManager = IdleTimeManager(self.g)
+        #g.IdleTime = self._idleTime
+        #g.app.idleTimeManager = IdleTimeManager(self.g)
         # attach instance to g.app for calls to set_time, etc.
-        ###g.app.externalFilesController = ExternalFilesController(self)
+        #g.app.externalFilesController = ExternalFilesController(self)
         # override for "revert to file" operation
         g.app.gui.runAskYesNoDialog = self._returnYes  # pointer - not a function call
         g.app.gui.show_find_success = self._show_find_success  # pointer - not a function call
@@ -305,22 +305,21 @@ class LeoServer:
         Returns a 'total' member in the package if close is successful.
         """
         c = self._check_c()
+        forced = param.get("forced")
         if c:
             # First, revert to prevent asking user.
-            if param["forced"] and c.changed:
+            if forced and c.changed:
                 c.revert()
             # Then, if still possible, close it.
-            if param["forced"] or not c.changed:
-                # c.closed = True # maybe useless flag from leobridgeserver,py
+            if forced or not c.changed:
+                # c.closed = True # maybe useless flag from leobridgeserver.py technique
                 c.close()
             else:
                 # Cannot close, return empty response without 'total' (ask to save, ignore or cancel)
                 return self._make_response()
-
-        # Select the first open outline, if any.
+        # New 'c': Select the first open outline, if any.
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
-
         if self.c:
             result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
         else:
@@ -761,7 +760,7 @@ class LeoServer:
         )
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
-            active = wrapper.getInsertPoint()
+            insert = wrapper.getInsertPoint()
             start, end = wrapper.getSelectionRange(True)
             scroll = wrapper.getYScrollPosition()
             states = {
@@ -769,13 +768,13 @@ class LeoServer:
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
-                    "active": row_col_wrapper_dict(active),
+                    "insert": row_col_wrapper_dict(insert),
                     "start": row_col_wrapper_dict(start),
                     "end": row_col_wrapper_dict(end)
                 }
             }
         else:  # pragma: no cover
-            active = p.v.insertSpot
+            insert = p.v.insertSpot
             start = p.v.selectionStart
             end = p.v.selectionStart + p.v.selectionLength
             scroll = p.v.scrollBarSpot
@@ -784,7 +783,7 @@ class LeoServer:
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
-                    "active": row_col_pv_dict(active, p.v.b),
+                    "insert": row_col_pv_dict(insert, p.v.b),
                     "start": row_col_pv_dict(start, p.v.b),
                     "end": row_col_pv_dict(end, p.v.b)
                 }
@@ -895,13 +894,11 @@ class LeoServer:
         return self._make_response()
 
     #@+node:felix.20210621233316.51: *5* server.contract_node
-    def contract_node(self, ap):
+    def contract_node(self, param):
         """
         Contract (Collapse) the node at position p, where p is c.p if p is missing.
-        TODO : Maybe convert to using param package containing ap, instead of direct ap.
         """
-        self._check_c()
-        p = self._check_p(ap)
+        p = self._get_p(param)
         p.contract()
         return self._make_response()
     #@+node:felix.20210621233316.52: *5* server.cut_node
@@ -953,13 +950,11 @@ class LeoServer:
                     c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20210621233316.54: *5* server.expand_node
-    def expand_node(self, ap):
+    def expand_node(self, param):
         """
         Expand the node at position p, where p is c.p if p is missing.
-        TODO : Maybe convert to using param package containing ap, instead of direct ap.
         """
-        self._check_c()
-        p = self._check_p(ap)
+        p = self._get_p(param)
         p.expand()
         return self._make_response()
     #@+node:felix.20210621233316.55: *5* server.insert_node
@@ -972,7 +967,7 @@ class LeoServer:
         c.selectPosition(p)
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
-    #@+node:felix.20210621233316.56: *5* insert_named_node
+    #@+node:felix.20210621233316.56: *5* server.insert_named_node
     def insert_named_node(self, param):
         '''
         Insert a node at given node, set its headline, select it and finally return it
@@ -1048,11 +1043,11 @@ class LeoServer:
                 v.b = body
         return self._make_response()
     #@+node:felix.20210621233316.61: *5* server.set_current_position
-    def set_current_position(self, ap):
+    def set_current_position(self, param):
         """Select position p, where p is c.p if package["ap"] is missing."""
         tag = "set_current_position"
         c = self._check_c()
-        p = self._check_p(ap)
+        p = self._get_p(param)
         if p:
             if c.positionExists(p):
                 # set this node as selection
@@ -1090,7 +1085,7 @@ class LeoServer:
         - "ap":     An archived position for position p.
         - "start":  The start of the selection.
         - "end":    The end of the selection.
-        - "insert": The insert point. Must be either start or end.
+        - "active": The insert point. Must be either start or end.
         - "scroll": An optional scroll position.
 
         Selection points can be sent as {"col":int, "line" int} dict
@@ -1103,7 +1098,7 @@ class LeoServer:
         convert = g.convertRowColToPythonIndex
         start = param.get('start', 0)
         end = param.get('end', 0)
-        active = param.get('insert', 0)
+        active = param.get('insert', 0) # temp var to check if int.
         scroll = param.get('scroll', 0)
         # If sent as number, use 'as is'
         if isinstance(active, int):
@@ -2402,20 +2397,6 @@ class LeoServer:
                 print(message)
                 self._dump_position(p)
                 raise ServerError(message)
-    #@+node:felix.20210621233316.83: *4* server._check_p
-    def _check_p(self, ap):
-        """Return _ap_to_p(ap) or c.p."""
-        tag = '_check_p'
-        c = self._check_c()
-        if ap:
-            p = self._ap_to_p(ap)
-            if not p:  # pragma: no cover
-                raise ServerError(f"{tag}: no p")
-            if not c.positionExists(p):  # pragma: no cover
-                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
-        if not c.p:  # pragma: no cover
-            raise ServerError(f"{tag}: no c.p")
-        return c.p
     #@+node:felix.20210621233316.84: *4* server._do_leo_command
     def _do_leo_command(self, command, param):
         """
