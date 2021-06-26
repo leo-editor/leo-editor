@@ -10,7 +10,7 @@ import copy
 import itertools
 import time
 import re
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Sequence, Tuple, Union
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 from leo.core.leoCommands import Commands as Cmdr
@@ -394,7 +394,7 @@ class Position:
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.generators
     #@+node:ekr.20091001141621.6055: *4* p.children
-    def children(self, copy: bool=True):  ### Generator
+    def children(self, copy: bool=True) -> Generator["Position", None, None]:
         """Yield all child positions of p."""
         p = self
         p = p.firstChild()
@@ -406,7 +406,7 @@ class Position:
 
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
-    def following_siblings(self, copy: bool=True):  ### Generator
+    def following_siblings(self, copy: bool=True) -> Generator["Position", None, None]:
         """Yield all siblings positions that follow p, not including p."""
         p = self
         p = p.next()  # pylint: disable=not-callable
@@ -418,7 +418,9 @@ class Position:
 
     following_siblings_iter = following_siblings
     #@+node:ekr.20161120105707.1: *4* p.nearest_roots
-    def nearest_roots(self, copy: bool=True, predicate: Optional[Callable]=None):  ### Generator
+    def nearest_roots(self,
+        copy: bool=True, predicate: Optional[Callable]=None,
+    ) -> Generator["Position", None, None]:
         """
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -430,7 +432,7 @@ class Position:
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         """
-        def default_predicate(p: "Position"):
+        def default_predicate(p: "Position") -> bool:
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
@@ -451,7 +453,9 @@ class Position:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, copy: bool=True, predicate: Optional[Callable]=None):  ### Generator.
+    def nearest_unique_roots(
+        self, copy: bool=True, predicate: Optional[Callable]=None,
+    ) -> Generator["Position", None, None]:
         """
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -465,7 +469,7 @@ class Position:
         subtree.
         """
 
-        def default_predicate(p: "Position"):
+        def default_predicate(p: "Position") -> bool:
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
@@ -491,7 +495,7 @@ class Position:
 
     nearest = nearest_unique_roots
     #@+node:ekr.20091002083910.6104: *4* p.nodes
-    def nodes(self):  ### Generator
+    def nodes(self) -> Generator["VNode", None, None]:
         """Yield p.v and all vnodes in p's subtree."""
         p = self
         p = p.copy()
@@ -505,7 +509,7 @@ class Position:
     tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
-    def parents(self, copy: bool=True):  ### Generator
+    def parents(self, copy: bool=True) -> Generator["Position", None, None]:
         """Yield all parent positions of p."""
         p = self
         p = p.parent()
@@ -517,7 +521,7 @@ class Position:
 
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
-    def self_and_parents(self, copy: bool=True):  ### Generator
+    def self_and_parents(self, copy: bool=True) -> Generator["Position", None, None]:
         """Yield p and all parent positions of p."""
         p = self
         p = p.copy()
@@ -529,7 +533,7 @@ class Position:
 
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
-    def self_and_siblings(self, copy: bool=True):  ### Generator
+    def self_and_siblings(self, copy: bool=True) -> Generator["Position", None, None]:
         """Yield all sibling positions of p including p."""
         p = self
         p = p.copy()
@@ -543,7 +547,7 @@ class Position:
 
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
-    def self_and_subtree(self, copy: bool=True):  ### Generator
+    def self_and_subtree(self, copy: bool=True) -> Generator["Position", None, None]:
         """Yield p and all positions in p's subtree."""
         p = self
         p = p.copy()
@@ -556,7 +560,7 @@ class Position:
 
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
-    def subtree(self, copy: bool=True):  ### Generator
+    def subtree(self, copy: bool=True) -> Generator["Position", None, None]:
         """Yield all positions in p's subtree, but not p."""
         p = self
         p = p.copy()
@@ -570,7 +574,7 @@ class Position:
 
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
-    def unique_nodes(self):  ### Generator
+    def unique_nodes(self) -> Generator["VNode", None, None]:
         """Yield p.v and all unique vnodes in p's subtree."""
         p = self
         seen = set()
@@ -584,7 +588,7 @@ class Position:
     unique_tnodes_iter = unique_nodes
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
-    def unique_subtree(self):  ### Generator
+    def unique_subtree(self) -> Generator["Position", None, None]:
         """Yield p and all other unique positions in p's subtree."""
         p = self
         seen = set()
@@ -794,7 +798,7 @@ class Position:
         with_proto: bool=False,
         with_index: bool=True,
         with_count: bool=False,
-    ):
+    ) -> str:
         """
         Return a UNL representing a clickable link.
 
@@ -904,7 +908,7 @@ class Position:
         """Return True if p is visible in c's outline."""
         p = self
 
-        def visible(p: "Position", root: "Position"=None):
+        def visible(p: "Position", root: "Position"=None) -> bool:
             for parent in p.parents(copy=False):
                 if parent and parent == root:
                     # #12.
@@ -2489,7 +2493,7 @@ class VNode:
         v = self
         hiddenRootVnode = v.context.hiddenRootNode
 
-        def v_and_parents(v: "VNode"):
+        def v_and_parents(v: "VNode") -> Generator["VNode", None, None]:
             if v != hiddenRootVnode:
                 yield v
                 for parent_v in v.parents:
