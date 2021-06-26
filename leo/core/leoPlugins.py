@@ -19,7 +19,7 @@ def init():
 def registerHandler(tags, fn):
     """A wrapper so plugins can still call leoPlugins.registerHandler."""
     return g.app.pluginsController.registerHandler(tags, fn)
-#@+node:ville.20090222141717.2: ** TryNext (exception)
+#@+node:ville.20090222141717.2: ** TryNext (Exception)
 class TryNext(Exception):
     """Try next hook exception.
 
