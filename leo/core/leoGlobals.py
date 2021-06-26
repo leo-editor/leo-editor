@@ -5219,8 +5219,8 @@ def dummy_act_on_node(c, p, event):
 
 act_on_node = dummy_act_on_node
 #@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
-childrenModifiedSet: Set[bool] = set()
-contentModifiedSet: Set[bool] = set()
+childrenModifiedSet: Set[Any] = set()
+contentModifiedSet: Set[Any] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
 def doHook(tag, *args, **keywords):
     """
