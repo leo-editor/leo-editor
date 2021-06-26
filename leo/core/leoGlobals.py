@@ -9,6 +9,9 @@ Important: This module imports no other Leo module.
 """
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
+#
+# 
+
 # Don't import leoTest here: it messes up Leo's startup code.
     # from leo.core import leoTest
 import binascii
@@ -35,11 +38,18 @@ import tempfile
 import time
 import traceback
 import types
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
 import webbrowser
+#
+# Do the following imports *only* when running mypy.
+if TYPE_CHECKING:  # Always False at runtime.
+    import leo.core.leoCommands as leoCommands
+    import leo.core.leoNodes as leoNodes
+    assert leoCommands
+    assert leoNodes
 #
 # Abbreviations...
 StringIO = io.StringIO
@@ -234,7 +244,7 @@ class CommanderCommand:
             method(event=event)
 
         # Inject ivars for plugins_menu.py.
-        commander_command_wrapper.__func_name__ = func.__name__  # For leoInteg.
+        commander_command_wrapper.__func_name__ = func.__name__  # type:ignore  # For leoInteg.
         commander_command_wrapper.__name__ = self.name
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
@@ -292,7 +302,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
-        new_cmd_wrapper.__func_name__ = func.__name__  # For leoInteg.
+        new_cmd_wrapper.__func_name__ = func.__name__  # type:ignore # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
@@ -316,6 +326,7 @@ g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 #@-<< define regex's >>
+
 tree_popup_handlers: List[Callable] = []  # Set later.
 user_dict: Dict[Any, Any] = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -502,7 +513,7 @@ class EmergencyDialog:
             "default": True,
         }]
         self.createButtons(buttons)
-        self.top.bind("<Key>", self.onKey)
+        self.top.bind("<Key>", self.onKey)  # type:ignore
     #@+node:ekr.20120219154958.10494: *4* emergencyDialog.createButtons
     def createButtons(self, buttons):
         """Create a row of buttons.
@@ -1053,7 +1064,7 @@ class MatchBrackets:
     """
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
-    def __init__(self, c, p, language):
+    def __init__(self, c:"leoCommands.Cmdr", p:"leoNodes.Position", language:str):
         """Ctor for MatchBrackets class."""
         self.c = c
         self.p = p.copy()
@@ -1154,7 +1165,7 @@ class MatchBrackets:
         Note that only one of new_left and new_right will necessarily be a
         bracket, but index_of_bracket_char will definitely be a bracket.
         """
-        expanded = False
+        expanded: Any = False
         orig_left = left
         orig_right = right
         while (
@@ -1488,7 +1499,7 @@ class PosList(list):
     #@-<< docstring for PosList >>
     #@+others
     #@+node:ekr.20140531104908.17611: *4* PosList.ctor
-    def __init__(self, c, aList=None):
+    def __init__(self, c:"leoNodes.Commands", aList:List[Any]=None):
         self.c = c
         super().__init__()
         if aList is None:
@@ -1571,15 +1582,15 @@ class RedirectClass:
         else:
             g.pr(s)
     #@+node:ekr.20041012082437.3: *5* redirect
-    def redirect(self, stdout=1):
+    def redirect(self, stdout=True):
         if g.app.batchMode:
             # Redirection is futile in batch mode.
             return
         if not self.old:
             if stdout:
-                self.old, sys.stdout = sys.stdout, self
+                self.old, sys.stdout = sys.stdout, self  # type:ignore
             else:
-                self.old, sys.stderr = sys.stderr, self
+                self.old, sys.stderr = sys.stderr, self  # type:ignore
     #@+node:ekr.20041012082437.4: *5* undirect
     def undirect(self, stdout=1):
         if self.old:
@@ -2347,7 +2358,7 @@ def null_object_print_attr(id_, attr):
     if suppress:
         #@+<< define suppression lists >>
         #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
-        suppress_callers = (
+        suppress_callers = [
             'drawNode', 'drawTopTree', 'drawTree',
             'contractItem', 'getCurrentItem',
             'declutter_node',
@@ -2356,8 +2367,8 @@ def null_object_print_attr(id_, attr):
             'show_tips',
             'writeWaitingLog',
             # 'set_focus', 'show_tips',
-        )
-        suppress_attrs = (
+        ]
+        suppress_attrs = [
             # Leo...
             'c.frame.body.wrapper',
             'c.frame.getIconBar.add',
@@ -2373,7 +2384,7 @@ def null_object_print_attr(id_, attr):
             'pyzo.keyMapper.connect',
             'pyzo.keyMapper.keyMappingChanged',
             'pyzo.keyMapper.setShortcut',
-        )
+        ]
         #@-<< define suppression lists >>
     else:
         # Print everything.
@@ -2381,8 +2392,8 @@ def null_object_print_attr(id_, attr):
         suppress_attrs = []
 
     tag = tracing_tags.get(id_, "<NO TAG>")
-    callers = g.callers(3).split(',')
-    callers = ','.join(callers[:-1])
+    callers_list = g.callers(3).split(',')
+    callers = ','.join(callers_list[:-1])
     in_callers = any(z in callers for z in suppress_callers)
     s = f"{tag}.{attr}"
     if suppress:
@@ -2398,15 +2409,15 @@ def null_object_print_attr(id_, attr):
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
 def null_object_print(id_, kind, *args):
     tag = tracing_tags.get(id_, "<NO TAG>")
-    callers = g.callers(3).split(',')
-    callers = ','.join(callers[:-1])
+    callers_list = g.callers(3).split(',')
+    callers = ','.join(callers_list[:-1])
     s = f"{kind}.{tag}"
     signature = f"{s}:{callers}"
     if 1:
         # Always print:
         if args:
-            args = ', '.join([repr(z) for z in args])
-            g.pr(f"{s:40} {callers}\n\t\t\targs: {args}")
+            args_s = ', '.join([repr(z) for z in args])
+            g.pr(f"{s:40} {callers}\n\t\t\targs: {args_s}")
         else:
             g.pr(f"{s:40} {callers}")
     elif signature not in tracing_signatures:
@@ -2584,7 +2595,7 @@ def isTextWrapper(w):
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)
-def alert(message, c=None):
+def alert(message, c:"leoCommands.Commands"=None):
     """Raise an alert.
 
     This method is deprecated: use c.alert instead.
@@ -2755,8 +2766,8 @@ getLineAfter = get_line_after
 #@+node:ekr.20080729142651.1: *4* g.getIvarsDict and checkUnchangedIvars
 def getIvarsDict(obj):
     """Return a dictionary of ivars:values for non-methods of obj."""
-    d = dict(
-        [[key, getattr(obj, key)] for key in dir(obj)
+    d: Dict[Any, Any] = dict( 
+        [[key, getattr(obj, key)] for key in dir(obj)  # type:ignore
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
@@ -2976,7 +2987,7 @@ def printGc():
 #@+node:ekr.20060127164729.1: *4* g.printGcObjects
 lastObjectCount = 0
 
-def printGcObjects():
+def printGcObjects() -> int:
     """Print a summary of GC statistics."""
     global lastObjectCount
     n = len(gc.garbage)
@@ -2986,7 +2997,8 @@ def printGcObjects():
     print(f"garbage: {n}")
     print(f"{delta:6d} = {n2:7d} totals")
     # print number of each type of object.
-    count, d = 0, {}
+    count = 0
+    d: Dict[str, int] = {}
     for obj in gc.get_objects():
         key = str(type(obj))
         n = d.get(key, 0)
@@ -2994,9 +3006,9 @@ def printGcObjects():
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
-    d2 = {v: k for k, v in d.items()}
-    for key in reversed(sorted(d2.keys())):
-        val = d2.get(key)
+    d2: Dict[int, str] = {v: k for k, v in d.items()}
+    for key in reversed(sorted(d2.keys())):  # type:ignore
+        val = d2.get(key)  # type:ignore
         print(f"{key:7} {val}")
     lastObjectCount = count
     return delta
@@ -3123,7 +3135,7 @@ def findAllValidLanguageDirectives(p):
             languages.add(language)
     return list(sorted(languages))
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-def findTabWidthDirectives(c, p):
+def findTabWidthDirectives(c:"leoCommands.Commands", p:"leoNodes.Position"):
     """Return the language in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
@@ -3152,7 +3164,7 @@ def findFirstValidAtLanguageDirective(p):
             return language
     return None
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-def findLanguageDirectives(c, p):
+def findLanguageDirectives(c:"leoCommands.Commands", p:"leoNodes.Position"):
     """Return the language in effect at position p."""
     if c is None or p is None:
         return None  # c may be None for testing.
@@ -3314,7 +3326,7 @@ def getLanguageFromAncestorAtFileNode(p):
                 parents.append(grand_parent_v)
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
-def getLanguageAtPosition(c, p):
+def getLanguageAtPosition(c:"leoCommands.Commands", p:"leoNodes.Position"):
     """
     Return the language in effect at position p.
     This is always a lowercase language name, never None.
@@ -3329,7 +3341,7 @@ def getLanguageAtPosition(c, p):
     )
     return language.lower()
 #@+node:ekr.20031218072017.1386: *3* g.getOutputNewline
-def getOutputNewline(c=None, name=None):
+def getOutputNewline(c:Optional["leoCommands.Commands"]=None, name:Optional[str]=None):
     """Convert the name of a line ending to the line ending itself.
 
     Priority:
@@ -3352,7 +3364,7 @@ def getOutputNewline(c=None, name=None):
     assert isinstance(s, str), repr(s)
     return s
 #@+node:ekr.20200521075143.1: *3* g.inAtNosearch
-def inAtNosearch(p):
+def inAtNosearch(p:"leoNodes.Position"):
     """Return True if p or p's ancestors contain an @nosearch directive."""
     for p in p.self_and_parents():
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
@@ -3369,7 +3381,7 @@ def isDirective(s):
         return bool(m.group(1) in g.globalDirectiveList)
     return False
 #@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
-def isValidLanguage(language):
+def isValidLanguage(language: str):
     """True if language exists in leo/modes."""
     # 2020/08/12: A hack for c++
     if language in ('c++', 'cpp'):
@@ -3437,11 +3449,11 @@ def scanAtPagewidthDirectives(aList, issue_error_flag=False):
                 g.error("ignoring @pagewidth", s)
     return None
 #@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives scanAllAtPathDirectives
-def scanAtPathDirectives(c, aList):
+def scanAtPathDirectives(c:"leoCommands.Commands", aList):
     path = c.scanAtPathDirectives(aList)
     return path
 
-def scanAllAtPathDirectives(c, p):
+def scanAllAtPathDirectives(c:"leoCommands.Commands", p:"leoNodes.Position"):
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
@@ -3458,7 +3470,7 @@ def scanAtTabwidthDirectives(aList, issue_error_flag=False):
                 g.error("ignoring @tabwidth", s)
     return None
 
-def scanAllAtTabWidthDirectives(c, p):
+def scanAllAtTabWidthDirectives(c:"leoCommands.Commands", p:"leoNodes.Position"):
     """Scan p and all ancestors looking for @tabwidth directives."""
     if c and p:
         aList = g.get_directives_dict_list(p)
@@ -3477,7 +3489,7 @@ def scanAtWrapDirectives(aList, issue_error_flag=False):
             return False
     return None
 
-def scanAllAtWrapDirectives(c, p):
+def scanAllAtWrapDirectives(c:"leoCommands.Commands", p:"leoNodes.Position"):
     """Scan p and all ancestors looking for @wrap/@nowrap directives."""
     if c and p:
         default = c and c.config.getBool("body-pane-wraps")
@@ -3488,7 +3500,7 @@ def scanAllAtWrapDirectives(c, p):
         ret = None
     return ret
 #@+node:ekr.20040715155607: *3* g.scanForAtIgnore
-def scanForAtIgnore(c, p):
+def scanForAtIgnore(c:"leoCommands.Commands", p:"leoNodes.Position"):
     """Scan position p and its ancestors looking for @ignore directives."""
     if g.app.unitTesting:
         return False  # For unit tests.
@@ -3498,7 +3510,7 @@ def scanForAtIgnore(c, p):
             return True
     return False
 #@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
-def scanForAtLanguage(c, p):
+def scanForAtLanguage(c:"leoCommands.Commands", p:"leoNodes.Position"):
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
     Returns the language found, or c.target_language."""
@@ -3512,7 +3524,7 @@ def scanForAtLanguage(c, p):
                 return language
     return c.target_language
 #@+node:ekr.20041123094807: *3* g.scanForAtSettings
-def scanForAtSettings(p):
+def scanForAtSettings(p:"leoNodes.Position"):
     """Scan position p and its ancestors looking for @settings nodes."""
     for p in p.self_and_parents(copy=False):
         h = p.h
@@ -3521,7 +3533,7 @@ def scanForAtSettings(p):
             return True
     return False
 #@+node:ekr.20031218072017.1382: *3* g.set_delims_from_language
-def set_delims_from_language(language):
+def set_delims_from_language(language: str):
     """Return a tuple (single,start,end) of comment delims."""
     val = g.app.language_delims_dict.get(language)
     if val:
@@ -3533,7 +3545,7 @@ def set_delims_from_language(language):
     return '', '', ''
         # Indicate that no change should be made
 #@+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s):
+def set_delims_from_string(s: str):
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3569,8 +3581,8 @@ def set_delims_from_string(s):
                     g.warning(f"'{delims[i]}' delimiter is invalid")
                     return None, None, None
                 try:
-                    delims[i] = binascii.unhexlify(delims[i][3:])
-                    delims[i] = g.toUnicode(delims[i])
+                    b = binascii.unhexlify(delims[i][3:])
+                    delims[i] = g.toUnicode(b)
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
                     return None, None, None
@@ -3580,7 +3592,7 @@ def set_delims_from_string(s):
                 delims[i] = delims[i].replace("__", '\n').replace('_', ' ')
     return delims[0], delims[1], delims[2]
 #@+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(s, i, issue_errors_flag=False):
+def set_language(s: str, i: int, issue_errors_flag=False):
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3604,7 +3616,7 @@ def set_language(s, i, issue_errors_flag=False):
         g.es("ignoring:", g.get_line(s, i))
     return None, None, None, None
 #@+node:ekr.20071109165315: *3* g.stripPathCruft
-def stripPathCruft(path):
+def stripPathCruft(path: str):
     """Strip cruft from a path name."""
     if not path:
         return path  # Retain empty paths for warnings.
@@ -3736,12 +3748,13 @@ def fullPath(c, p, simulate=False):
             return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
-def get_files_in_directory(directory, kinds=None, recursive=True):
+def get_files_in_directory(directory: str, kinds=None, recursive=True) -> List[str]:
     """
     Return a list of all files of the given file extensions in the directory.
     Default kinds: ['*.py'].
     """
-    files, sep = [], os.path.sep
+    files: List[str] = []
+    sep = os.path.sep
     if not g.os.path.exists(directory):
         g.es_print('does not exist', directory)
         return files
@@ -3857,8 +3870,7 @@ def is_binary_string(s):
     # http://stackoverflow.com/questions/898669
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
-    aList = bytes(aList)
-    return bool(s.translate(None, aList))
+    return bool(s.translate(None, bytes(aList)))
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel(line, delims):
     """Return True if line starts with a sentinel comment."""
@@ -4219,7 +4231,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         nds = list(p.children())
     heads = [i.h for i in nds]
     # work out order in which to try nodes
-    order = []
+    order: List[int] = []
     nth_sib = nth_same = nth_line_no = nth_col_no = None
     try:
         target = unlList[depth]
@@ -4253,7 +4265,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     elif hard_idx:
         pass  # hard_idx mode with no idx in unl, go with empty order list
     else:
-        order = range(len(nds))
+        order = list(range(len(nds)))  # mypy.
         target = target.replace('--%3E', '-->')
         use_idx_mode = False  # not ok to use hard/soft_idx
         # note, the above also fixes calling with soft_idx=True and an old UNL
@@ -4330,12 +4342,11 @@ def scanError(s):
 #@+node:ekr.20031218072017.3157: *3* g.scanf
 # A quick and dirty sscanf.  Understands only %s and %d.
 
-def scanf(s, pat):
+def scanf(s: str, pat: str) -> List[str]:
     count = pat.count("%s") + pat.count("%d")
-    pat = pat.replace("%s", r"(\S+)")
-    pat = pat.replace("%d", r"(\d+)")
+    pat = pat.replace("%s", r"(\S+)").replace("%d", r"(\d+)")
     parts = re.split(pat, s)
-    result = []
+    result: List[str] = []
     for part in parts:
         if part and len(result) < count:
             result.append(part)
@@ -4681,13 +4692,13 @@ def is_c_id(ch):
 def is_nl(s, i):
     return i < len(s) and (s[i] == '\n' or s[i] == '\r')
 #@+node:ekr.20031218072017.3179: *4* g.is_special
-def is_special(s, directive):
+def is_special(s: str, directive: str) -> Tuple[bool, int]:
     """Return True if the body text contains the @ directive."""
     assert(directive and directive[0] == '@')
     lws = directive in ("@others", "@all")
         # Most directives must start the line.
-    pattern = r'^\s*(%s\b)' if lws else r'^(%s\b)'
-    pattern = re.compile(pattern % directive, re.MULTILINE)
+    pattern_s = r'^\s*(%s\b)' if lws else r'^(%s\b)'
+    pattern = re.compile(pattern_s % directive, re.MULTILINE)
     m = re.search(pattern, s)
     if m:
         return True, m.start(1)
@@ -4863,14 +4874,14 @@ def skip_ws_and_nl(s, i):
     return i
 #@+node:ekr.20170414034616.1: ** g.Git
 #@+node:ekr.20180325025502.1: *3* g.backupGitIssues
-def backupGitIssues(c, base_url=None):
+def backupGitIssues(c: "leoCommands.Commander", base_url:Optional[str]=None):
     """Get a list of issues from Leo's GitHub site."""
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
 
     root = c.lastTopLevel().insertAfter()
     root.h = f'Backup of issues: {time.strftime("%Y/%m/%d")}'
-    label_list = []
+    label_list: List[str] = []
     GitIssueController().backup_issues(base_url, c, label_list, root)
     root.expand()
     c.selectPosition(root)
@@ -5377,7 +5388,7 @@ def cantImport(moduleName, pluginName=None, verbose=True):
     else:
         g.warning('', s)
 #@+node:ekr.20191220044128.1: *3* g.import_module
-def import_module(name, package=None):
+def import_module(name: str, package=None):
     """
     A thin wrapper over importlib.import_module.
     """
@@ -5390,7 +5401,7 @@ def import_module(name, package=None):
         if trace:
             t, v, tb = sys.exc_info()
             del tb  # don't need the traceback
-            v = v or str(t)
+            v = v or str(t)  # type:ignore
                 # # in case v is empty, we'll at least have the execption type
             if v not in exceptions:
                 exceptions.append(v)
@@ -5620,19 +5631,22 @@ def stripBrackets(s):
         s = s[:-1]
     return s
 #@+node:ekr.20170317101100.1: *4* g.unCamel
-def unCamel(s):
+def unCamel(s: str) -> List[str]:
     """Return a list of sub-words in camelCased string s."""
-    result, word = [], []
+    result: List[str] = []
+    word: List[str] = []
     for ch in s:
         if ch.isalpha() and ch.isupper():
-            if word: result.append(''.join(word))
+            if word:
+                result.append(''.join(word))
             word = [ch]
         elif ch.isalpha():
             word.append(ch)
         elif word:
             result.append(''.join(word))
             word = []
-    if word: result.append(''.join(word))
+    if word:
+        result.append(''.join(word))
     return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
 #@+node:ekr.20190505052756.1: *4* g.checkUnicode
@@ -5873,7 +5887,7 @@ def computeWidth(s, tab_width):
             w += 1
     return w
 #@+node:ekr.20051014175117: *4* g.adjustTripleString
-def adjustTripleString(s, tab_width):
+def adjustTripleString(s: str, tab_width: int) -> str:
     """Remove leading indentation from a triple-quoted string.
 
     This works around the fact that Leo nodes can't represent underindented strings.
@@ -5895,10 +5909,9 @@ def adjustTripleString(s, tab_width):
         return s
     # Remove the leading whitespace.
     result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    result = ''.join(result)
-    return result
+    return ''.join(result)
 #@+node:ekr.20050211120242.2: *4* g.removeExtraLws
-def removeExtraLws(s, tab_width):
+def removeExtraLws(s: str, tab_width: int) -> str:
     """
     Remove extra indentation from one or more lines.
 
@@ -5911,11 +5924,11 @@ def removeExtraLws(s, tab_width):
             lws = g.get_leading_ws(line)
             w = g.computeWidth(lws, tab_width)
             break
-    else: return s
+    else:
+        return s
     # Remove the leading whitespace.
     result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    result = ''.join(result)
-    return result
+    return ''.join(result)
 #@+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
 #@@language rest
 #@+at
@@ -6332,7 +6345,7 @@ def getLastTracebackFileAndLineNumber():
     typ, val, tb = sys.exc_info()
     if typ == SyntaxError:
         # IndentationError is a subclass of SyntaxError.
-        return val.filename, val.lineno
+        return val.filename, val.lineno  # type:ignore
     #
     # Data is a list of tuples, one per stack entry.
     # Tupls have the form (filename,lineNumber,functionName,text).
@@ -6433,9 +6446,11 @@ def prettyPrintType(obj):
     if t in [types.MethodType, types.BuiltinMethodType]:
         return 'method'
     # Fall back to a hack.
-    t = str(type(obj))
-    if t.startswith("<type '"): t = t[7:]
-    if t.endswith("'>"): t = t[:-2]
+    t = str(type(obj))  # type:ignore
+    if t.startswith("<type '"):
+        t = t[7:]
+    if t.endswith("'>"):
+        t = t[:-2]
     return t
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name, window):
@@ -6486,15 +6501,17 @@ def trace(*args, **keys):
     d = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
     d = doKeywordArgs(keys, d)
     newline = d.get('newline')
-    align = d.get('align', 0)
-    caller_level = d.get('caller_level', 1)
+    align = d.get('align', 0)  # This *is* an int, but mypy doesn't know that.
+    caller_level = d.get('caller_level', 1) # This *is* an int, but mypy doesn't know that.
     noname = d.get('noname')
     # Compute the caller name.
     if noname:
         name = ''
     else:
-        try:  # get the function name from the call stack.
-            f1 = sys._getframe(caller_level)  # The stack frame, one level up.
+        try:
+            # get the function name from the call stack.
+            # f1: The stack frame, one level up.
+            f1 = sys._getframe(caller_level)  # type:ignore  
             code1 = f1.f_code  # The code object
             name = code1.co_name  # The code name
         except Exception:
@@ -6504,21 +6521,23 @@ def trace(*args, **keys):
         if name.endswith('.pyc'):
             name = name[:-1]
     # Pad the caller name.
-    if align != 0 and len(name) < abs(align):
-        pad = ' ' * (abs(align) - len(name))
-        if align > 0: name = name + pad
-        else: name = pad + name
+    if align != 0 and len(name) < abs(align):  # type:ignore
+        pad = ' ' * (abs(align) - len(name))  # type:ignore
+        if align > 0:  # type:ignore
+            name = name + pad
+        else:
+            name = pad + name
     # Munge *args into s.
     result = [name] if name else []
     #
     # Put leading newlines into the prefix.
     if isinstance(args, tuple):
-        args = list(args)
+        args = list(args)  # type:ignore
     if args and isString(args[0]):
         prefix = ''
         while args[0].startswith('\n'):
             prefix += '\n'
-            args[0] = args[0][1:]
+            args[0] = args[0][1:]  # type:ignore
     else:
         prefix = ''
     for arg in args:
@@ -6532,7 +6551,7 @@ def trace(*args, **keys):
             result.append(" " + arg)
         else:
             result.append(arg)
-    s = d.get('before') + ''.join(result)
+    s = d.get('before') + ''.join(result)  # type:ignore
     if prefix:
         prefix = prefix[1:]  # One less newline.
         pr(prefix)
@@ -6549,7 +6568,9 @@ def translateArgs(args, d):
         e = sys.getdefaultencoding()
         console_encoding = e if isValidEncoding(e) else 'utf-8'
         # print 'translateArgs',console_encoding
-    result = []; n = 0; spaces = d.get('spaces')
+    result: List[str] = []
+    n = 0
+    spaces = d.get('spaces')
     for arg in args:
         n += 1
         # First, convert to unicode.
@@ -7168,7 +7189,8 @@ def python_tokenize(s, line_numbers=True):
 
     where kind is in ('comment,'id','nl','other','string','ws').
     """
-    result, i, line_number = [], 0, 0
+    result: List[Any] = []
+    i, line_number = 0, 0
     while i < len(s):
         progress = j = i
         ch = s[i]
@@ -7917,6 +7939,8 @@ def openUrlHelper(event, url=None):
 #@-others
 # set g when the import is about to complete.
 g: Any = sys.modules.get('leo.core.leoGlobals')
+
+
 assert g, sorted(sys.modules.keys())
 if __name__ == '__main__':
     unittest.main()
