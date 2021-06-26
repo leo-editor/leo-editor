@@ -26,13 +26,13 @@ class NodeIndices:
     #@+node:ekr.20031218072017.1992: *3* ni.__init__
     def __init__(self, id_: str):
         """Ctor for NodeIndices class."""
-        self.defaultId: str = id_
-        self.lastIndex: int = 0
+        self.defaultId = id_
+        self.lastIndex = 0
         self.stack: List[Cmdr] = []
             # A stack of open commanders.
         self.timeString: str = ''
             # Set by setTimeStamp.
-        self.userId: str = id_
+        self.userId = id_
         # Assign the initial timestamp.
         self.setTimeStamp()
     #@+node:ekr.20150321161305.8: *3* ni.check_gnx
@@ -226,8 +226,8 @@ class Position:
         stack: List[Tuple["VNode", int]]=None
     ):
         """Create a new position with the given childIndex and parent stack."""
-        self._childIndex: int = childIndex
-        self.v: "VNode" = v
+        self._childIndex = childIndex
+        self.v = v
         # Stack entries are tuples (v, childIndex).
         if stack:
             self.stack = stack[:]  # Creating a copy here is safest and best.
@@ -1951,10 +1951,10 @@ class VNode:
         v.unknownAttributes or any mutable VNode object changes.
         """
         # The primary data: headline and body text.
-        self._headString: str = 'newHeadline'
-        self._bodyString: str = ''
+        self._headString = 'newHeadline'
+        self._bodyString = ''
         # For zodb.
-        self._p_changed: bool = False
+        self._p_changed = False
         # Structure data...
         self.children: List["VNode"] = []
             # Ordered list of all children of this node.
@@ -1963,9 +1963,9 @@ class VNode:
         # Other essential data...
         self.fileIndex: Optional[str] = None
             # The immutable fileIndex (gnx) for this node. Set below.
-        self.iconVal: int = 0
+        self.iconVal = 0
             # The present value of the node's icon.
-        self.statusBits: int = 0
+        self.statusBits = 0
             # status bits
         # Information that is never written to any file...
         self.context: Cmdr = context  # The context containing context.hiddenRootNode.
@@ -1977,9 +1977,9 @@ class VNode:
             # Location of previous insert point.
         self.scrollBarSpot: Optional[int] = None
             # Previous value of scrollbar position.
-        self.selectionLength: int = 0
+        self.selectionLength = 0
             # The length of the selected body text.
-        self.selectionStart: int = 0
+        self.selectionStart = 0
             # The start of the selected body text.
         #
         # For at.read logic.
