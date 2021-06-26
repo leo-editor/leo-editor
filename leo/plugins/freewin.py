@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tom.20210613135525.1: * @file ../plugins/freewin.py
-"""
+r"""
 #@+<< docstring >>
 #@+node:tom.20210603022210.1: ** << docstring >>
 Freewin - a plugin with a basic editor pane that tracks an
@@ -291,8 +291,8 @@ instances = {}
 ZOOM_FACTOR = 1.1
 
 F9_KEY = 0x01000038 # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
-GNXre = '^(.+\.\d+\.\d+)' # For gnx at start of line
-GNX1re = '.*\s(\w+\.\d+\.\d+)' # For gnx not at start of line
+GNXre = r'^(.+\.\d+\.\d+)' # For gnx at start of line
+GNX1re = r'.*\s(\w+\.\d+\.\d+)' # For gnx not at start of line
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
@@ -532,20 +532,13 @@ def gotoHostGnx(c, target):
     RETURNS
     True if target was found, else False
     """
-    found_gnx = False
-    target_is_self = False
     if c.p.gnx == target:
-        found_gnx = target_is_self = True
-    else:
-        for p in c.all_unique_positions():
-            if p.v.gnx == target:
-                found_gnx = True
-                break
-    if found_gnx:
-        if not target_is_self:
+        return True
+    for p in c.all_unique_positions():
+        if p.v.gnx == target:
             c.selectPosition(p)
-
-    return found_gnx
+            return True
+    return False
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
     """An basic editing window that echos the contents of an outline node."""
