@@ -13,12 +13,13 @@ import tabnanny  # for Check Python command # Does not exist in jython
 import tempfile
 import time
 import tokenize  # for c.checkAllPythonCode
-from typing import Any, Callable, List, Optional
+from typing import Any, Dict, Callable, List, Optional
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
     # The leoCommands ctor now does most leo.core.leo* imports,
     # thereby breaking circular dependencies.
 Pos = "leoNodes.Position"
+VNode = "leoNodes.Vnode"
 #@-<< imports >>
 
 def cmd(name) -> Callable:
@@ -102,7 +103,7 @@ class Commands:
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self):
         """Init ivars used while executing a command."""
-        self.commandsDict: dict[Callable] = {}
+        self.commandsDict: dict[str, Callable] = {}
             # Keys are command names, values are functions.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
@@ -4167,7 +4168,8 @@ class Commands:
                 aList.sort()
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
     def checkBatchOperationsList(self, aList):
-        ok = True; d = {}
+        ok = True
+        d: Dict[VNode, List[Any]] = {}
         for z in aList:
             try:
                 op, p, n = z
