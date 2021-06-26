@@ -51,7 +51,7 @@ class TerminateServer(Exception):  # pragma: no cover
 class LeoServer:
     """Leo Server Controller"""
     #@+others
-    #@+node:felix.20210621233316.5: *3* server.__init__ (load bridge)
+    #@+node:felix.20210621233316.5: *3* server.__init__ & helpers
     def __init__(self, testing=False):
 
         import leo.core.leoApp as leoApp
@@ -83,6 +83,19 @@ class LeoServer:
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
         self.bad_commands_list = self._bad_commands(self.dummy_c)
+
+        # * Replacement instances to Leo's codebase : getScript, IdleTime, idleTimeManager and externalFilesController
+        g.getScript = self._getScript
+        ###g.IdleTime = self._idleTime
+        ###g.app.idleTimeManager = IdleTimeManager(self.g)
+        # attach instance to g.app for calls to set_time, etc.
+        ###g.app.externalFilesController = ExternalFilesController(self)
+        # override for "revert to file" operation
+        g.app.gui.runAskYesNoDialog = self._returnYes  # pointer - not a function call
+        g.app.gui.show_find_success = self._show_find_success  # pointer - not a function call
+        self.headlineWidget = self.g.bunch(_name='tree')
+
+
         #
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
@@ -90,6 +103,54 @@ class LeoServer:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.")
+    #@+node:felix.20210626002856.1: *4* _getScript
+    def _getScript(self, c, p,
+                   useSelectedText=True,
+                   forcePythonSentinels=True,
+                   useSentinels=True,
+                   ):
+        """
+        Return the expansion of the selected text of node p.
+        Return the expansion of all of node p's body text if
+        p is not the current node or if there is no text selection.
+        """
+        w = c.frame.body.wrapper
+        if not p:
+            p = c.p
+        try:
+            if w and p == c.p and useSelectedText and w.hasSelection():
+                s = w.getSelectedText()
+            else:
+                s = p.b
+            # Remove extra leading whitespace so the user may execute indented code.
+            s = self.g.removeExtraLws(s, c.tab_width)
+            s = self.g.extractExecutableString(c, p, s)
+            script = self.g.composeScript(c, p, s,
+                                          forcePythonSentinels=forcePythonSentinels,
+                                          useSentinels=useSentinels)
+        except Exception:
+            self.g.es_print("unexpected exception in g.getScript")
+            self.g.es_exception()
+            script = ''
+        return script
+
+    #@+node:felix.20210626002934.1: *4* _returnNo
+    def _returnNo(self, *arguments, **kwargs):
+        '''Used to override g.app.gui.ask[XXX] dialogs answers'''
+        return "no"
+
+    #@+node:felix.20210626002940.1: *4* _returnYes
+    def _returnYes(self, *arguments, **kwargs):
+        '''Used to override g.app.gui.ask[XXX] dialogs answers'''
+        return "yes"
+
+    #@+node:felix.20210626003327.1: *4* _show_find_success
+    def _show_find_success(self, c, in_headline, insert, p):
+        '''Handle a successful find match.'''
+        if in_headline:
+            self.g.app.gui.set_focus(c, self.headlineWidget)
+        # no return
+
     #@+node:felix.20210621233316.6: *3* server:public commands
     #@+node:felix.20210621233316.7: *4* server:button commands
     # These will fail unless the open_file inits c.theScriptingController.
@@ -1149,14 +1210,14 @@ class LeoServer:
                 continue
             doc = func.__doc__ or ''
             result.append({
-                "command-name": command_name,
+                "label": command_name,
                 "func":  func_name,
                 "detail": doc,
             })
         if self.log_flag:  # pragma: no cover
             print(f"\n{tag}: {len(result)} leo commands\n")
-            g.printObj([z.get("command-name") for z in result], tag=tag)
-        return self._make_response({"commands": result})
+            g.printObj([z.get("label") for z in result], tag=tag)
+        return self._make_minimal_response({"commands": result})
     #@+node:felix.20210621233316.73: *6* server._bad_commands
     def _bad_commands(self, c):
         """Return the list of Leo's command names that leoInteg should ignore."""
@@ -2381,7 +2442,8 @@ class LeoServer:
         if "keep" in param:
             keepSelection = param["keep"]
 
-        func = c.commandsDict.get(command)
+        func = self._get_commander_method(command) # GET FUNC
+        # func = c.commandsDict.get(command) # Does not work, e.g.: 'executeScript'
 
         if not func:  # pragma: no cover
             raise ServerError(f"{tag}: Leo command not found: {command!r}")
@@ -2397,10 +2459,50 @@ class LeoServer:
             if keepSelection and c.positionExists(old_p):
                 c.selectPosition(old_p)
 
-        value = func(event={"c":c})
-
         # Tag along a possible return value with info sent back by _make_response
         return self._make_response({"return-value": value})
+    #@+node:felix.20210625230236.1: *4* server._get_commander_method
+    def _get_commander_method(self, command):
+        """ Return the given method (p_command) in the Commands class or subcommanders."""
+        # First, try the commands class.
+        c = self._check_c()
+        func = getattr(c, command, None)
+        if func:
+            return func
+        # Otherwise, search all subcommanders for the method.
+        table = (  # This table comes from c.initObjectIvars.
+            'abbrevCommands',
+            'bufferCommands',
+            'chapterCommands',
+            'controlCommands',
+            'convertCommands',
+            'debugCommands',
+            'editCommands',
+            'editFileCommands',
+            'evalController',
+            'gotoCommands',
+            'helpCommands',
+            'keyHandler',
+            'keyHandlerCommands',
+            'killBufferCommands',
+            'leoCommands',
+            'leoTestManager',
+            'macroCommands',
+            'miniBufferWidget',
+            'printingController',
+            'queryReplaceCommands',
+            'rectangleCommands',
+            'searchCommands',
+            'spellCommands',
+            'vimCommands',  # Not likely to be useful.
+        )
+        for ivar in table:
+            subcommander = getattr(c, ivar, None)
+            if subcommander:
+                func = getattr(subcommander, command, None)
+                if func:
+                    return func
+        return None
     #@+node:felix.20210621233316.85: *4* server._do_message
     def _do_message(self, d):
         """
@@ -2434,7 +2536,7 @@ class LeoServer:
         param = d.get('param', {}) # Can be none or a string
         # Set log flag.
         if param:
-            # self.log_flag = param.get("log")
+            self.log_flag = param.get("log")
             pass
         else:
             param = {}
