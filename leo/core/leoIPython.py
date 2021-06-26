@@ -159,7 +159,7 @@ class InternalIPKernel:
         """Fall into pdb."""
         import pdb
             # Required: we have just defined pdb as a function!
-        pdb = pdb.Pdb(stdout=sys.__stdout__)
+        pdb = pdb.Pdb(stdout=sys.__stdout__)  # type:ignore # mypy is confused.
         if message:
             self.put_stdout(message)
         pdb.set_trace()
@@ -316,7 +316,7 @@ class LeoNameSpace:
     #@+node:ekr.20130930062914.16009: *3* LeoNS.find_c
     def find_c(self, path):
         """Return the commander associated with path, or None."""
-        g = self.g
+        g = self.g  # type:ignore # mypy seems confused. g is a local var.
         self.update()
         path = g.os_path_normcase(path)
         short_path = g.shortFileName(path)
