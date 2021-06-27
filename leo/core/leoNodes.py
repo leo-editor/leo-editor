@@ -19,6 +19,9 @@ from leo.core.leoCommands import Commands as Cmdr
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
 class NodeIndices:
     """A class managing global node indices (gnx's)."""
+    
+    __slots__ = ['defaultId', 'lastIndex', 'stack', 'timeString', 'userId']
+
     #@+others
     #@+node:ekr.20031218072017.1992: *3* ni.__init__
     def __init__(self, id_: str):
@@ -195,6 +198,9 @@ class NodeIndices:
 
 
 class Position:
+    
+    __slots__ = ['_childIndex', 'stack', 'v']
+
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
@@ -1847,9 +1853,13 @@ class Position:
                 return True
         return False
     #@-others
+
 position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
 class PosList(list):
+    
+    __slots__ = []
+
     #@+others
     #@+node:bob.20101215134608.5897: *3* children
     def children(self):
@@ -1896,11 +1906,23 @@ class PosList(list):
                 pass
         return res
     #@-others
+    
 Poslist = PosList  # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
 
 class VNode:
+
+    __slots__ = [
+        '_bodyString', '_headString', '_p_changed',
+        'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
+        'unknownAttributes',
+        # Were injected.
+        '_import_lines', 'at_read', 'tempAttributes',
+        # Not written to any file.
+        'context', 'expandedPositions', 'insertSpot',
+        'scrollBarSpot', 'selectionLength', 'selectionStart',
+    ]
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
@@ -1939,7 +1961,7 @@ class VNode:
         self.parents: List["VNode"] = []
             # Unordered list of all parents of this node.
         # Other essential data...
-        self.fileIndex: Union[str, None] = None
+        self.fileIndex: Optional[str] = None
             # The immutable fileIndex (gnx) for this node. Set below.
         self.iconVal = 0
             # The present value of the node's icon.
@@ -1959,6 +1981,10 @@ class VNode:
             # The length of the selected body text.
         self.selectionStart = 0
             # The start of the selected body text.
+        #
+        # For at.read logic.
+        self.at_read = {}
+        #
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
         #
@@ -2161,15 +2187,11 @@ class VNode:
         return v2
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
-    body_unicode_warning = False
-
     def bodyString(self) -> str:
         # This message should never be printed and we want to avoid crashing here!
         if isinstance(self._bodyString, str):
             return self._bodyString
-        if not self.body_unicode_warning:
-            self.body_unicode_warning = True
-            g.internalError('not unicode:', repr(self._bodyString), self._headString)
+        g.internalError(f"body not unicode: {self._bodyString!r}")
         return g.toUnicode(self._bodyString)
 
     getBody = bodyString
@@ -2214,16 +2236,12 @@ class VNode:
         s = self._bodyString
         return bool(s) and len(s) > 0
     #@+node:ekr.20031218072017.1581: *4* v.headString
-    head_unicode_warning = False
-
     def headString(self) -> str:
         """Return the headline string."""
         # This message should never be printed and we want to avoid crashing here!
         if isinstance(self._headString, str):
             return self._headString
-        if not self.head_unicode_warning:
-            self.head_unicode_warning = True
-            g.internalError('not a string', repr(self._headString))
+        g.internalError(f"headline not unicode: {self._headString!r}")
         return g.toUnicode(self._headString)
     #@+node:ekr.20131223064351.16351: *4* v.isNthChildOf
     def isNthChildOf(self, n: int, parent_v: "VNode") -> bool:
@@ -2425,28 +2443,20 @@ class VNode:
             if v2.isAnyAtFileNode():
                 v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
-    unicode_warning_given = False
-
-    def setBodyString(self, s: Any):
+    def setBodyString(self, s: Union[str, bytes]):
         v = self
         if isinstance(s, str):
             v._bodyString = s
             return
-        try:
-            v._bodyString = g.toUnicode(s, reportErrors=True)
-        except Exception:
-            if not self.unicode_warning_given:
-                self.unicode_warning_given = True
-                g.internalError(s)
-                g.es_exception()
+        v._bodyString = g.toUnicode(s, reportErrors=True)
         self.contentModified()  # #1413.
         signal_manager.emit(self.context, 'body_changed', self)
 
-    def setHeadString(self, s: Any):
+    def setHeadString(self, s: Union[str, bytes]):
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
         # API allows headlines to contain newlines.
         v = self
-        if g.isUnicode(s):
+        if isinstance(s, str):
             v._headString = s.replace('\n', '')
             return
         s = g.toUnicode(s, reportErrors=True)
