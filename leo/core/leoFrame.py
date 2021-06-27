@@ -871,7 +871,7 @@ class LeoFrame:
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
     def createStatusLine(self):
         if not self.statusLine:
-            self.statusLine = self.statusLineClass(self.c, self.outerFrame)
+            self.statusLine = self.statusLineClass(self.c, self.outerFrame)  # type:ignore
         return self.statusLine
 
     def clearStatusLine(self):
