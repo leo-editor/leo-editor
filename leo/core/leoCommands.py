@@ -1270,7 +1270,7 @@ class Commands:
             # a VNode not in the tree
             return None
         v, n = stack.pop()
-        p = leoNodes.Position(v, n, stack)
+        p = leoNodes.Position(v, n, stack)  # type:ignore
         return p
     #@+node:ekr.20090130135126.1: *4* c.Properties
     def __get_p(self):
@@ -2038,7 +2038,7 @@ class Commands:
             self.deprecated_messages.append(callers)
             g.es_print(
                 f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers}")
-        return g.os_path_finalize(path, **keys)
+        return g.os_path_finalize(path)  # mypy.
 
     def os_path_finalize_join(self, *args, **keys):
         """
@@ -2079,7 +2079,7 @@ class Commands:
         aList = g.get_directives_dict_list(p)
         d = {}
         for key, default, func in table:
-            val = func(aList)
+            val = func(aList)  # type:ignore
             d[key] = default if val is None else val
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
@@ -2945,7 +2945,7 @@ class Commands:
             c.init_error_dialogs()
             return
         if c.import_error_nodes:
-            files = '\n'.join(sorted(set(c.import_error_nodes)))
+            files = '\n'.join(sorted(set(c.import_error_nodes)))  # type:ignore
             if use_dialogs:
                 message = (
                     'The following were not imported properly. '
@@ -2955,7 +2955,7 @@ class Commands:
                 g.es('import errors...', color='red')
                 g.es('\n'.join(sorted(files)), color='blue')
         if c.ignored_at_file_nodes:
-            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
+            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
             kind = 'read' if kind.startswith('read') else 'written'
             if use_dialogs:
                 message = (
@@ -2972,7 +2972,7 @@ class Commands:
         if c.orphan_at_file_nodes:
             message = '\n'.join([
                 'The following were not written because of errors:\n',
-                '\n'.join(sorted(set(c.orphan_at_file_nodes))),
+                '\n'.join(sorted(set(c.orphan_at_file_nodes))),  # type:ignore
                 '',
                 'Warning: changes to these files will be lost\n'
                 'unless you can save the files successfully.'
