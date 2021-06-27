@@ -729,8 +729,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                 sheets.append(str(s))
             w = w.parent()
         sheets.reverse()
-        sheets = '\n'.join(sheets)
-        ns.setStyleSheet(sheets)
+        ns.setStyleSheet('\n'.join(sheets))
         window.show()
     #@+node:tbrown.20110627201141.11744: *3* ns.register_provider
     def register_provider(self, provider):
