@@ -2070,10 +2070,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         # Official ivars...
         self.iconBar = None
-        self.iconBarClass = self.QtIconBarClass
+        self.iconBarClass = self.QtIconBarClass  # type:ignore
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
-        self.statusLineClass = self.QtStatusLineClass
+        self.statusLineClass = self.QtStatusLineClass  # type:ignore
         self.title = title
         self.setIvars()
         self.reloadSettings()
@@ -3525,7 +3525,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             label = label[:n] + '&' + label[n:]
         if accel:
             label = f"{label}\t{accel}"
-        action = menu.addAction(label)
+        action = menu.addAction(label)  # type:ignore
         # 2012/01/20: Inject the command name into the action
         # so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName
@@ -3958,8 +3958,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             except IOError:
                 f = None
             if f:
-                s = f.read()
-                s = g.toUnicode(s)
+                b = f.read()
+                s = g.toUnicode(b)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
         nodeLink=p.get_UNL(with_proto=True, with_count=True)
