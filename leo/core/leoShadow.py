@@ -2,8 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080708094444.1: * @file leoShadow.py
 #@@first
-# Suppress all mypy errors (mypy doesn't like g.Bunch).
-# type: ignore
 #@+<< docstring >>
 #@+node:ekr.20080708094444.78: ** << docstring >>
 """
@@ -34,6 +32,7 @@ Settings:
 import difflib
 import os
 import pprint
+from typing import List
 import unittest
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -260,7 +259,7 @@ class ShadowController:
         """
         x = self
         lines = x.old_sent_lines
-        sentinels = []
+        sentinels: List[str] = []
             # The sentinels preceding each non-sentinel line,
             # not including @verbatim sentinels.
         new_lines = []
