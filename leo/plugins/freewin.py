@@ -281,7 +281,7 @@ X = 1200
 Y = 100
 DELTA_Y = 35
 
-BG_COLOR = '#fdfdfd'
+BG_COLOR_LIGHT = '#fdfdfd'
 BG_COLOR_DARK = '#202020'
 FG_COLOR_LIGHT = '#202020'
 FG_COLOR_DARK = '#cbdedc'
@@ -320,7 +320,7 @@ GNX1 = re.compile(GNX1re)
 
 EDITOR_STYLESHEET_LIGHT = f'''QTextEdit {{
     color: {FG_COLOR_LIGHT};
-    background: {BG_COLOR};
+    background: {BG_COLOR_LIGHT};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
     }}'''
@@ -333,7 +333,7 @@ EDITOR_STYLESHEET_DARK = f'''QTextEdit {{
     }}'''
 
 RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR_LIGHT}; 
-    background: {BG_COLOR};
+    background: {BG_COLOR_LIGHT};
     font-size: {EDITOR_FONT_SIZE};'''
 
 RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK}; 
