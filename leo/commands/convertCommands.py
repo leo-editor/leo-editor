@@ -5,11 +5,10 @@
 """Leo's file-conversion commands."""
 #@+<< imports >>
 #@+node:ekr.20161023150723.1: ** << imports >>
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
-# import re
-# import sys
 #@-<< imports >>
 
 def cmd(name):
@@ -487,7 +486,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.ivars_dict = {}
         #@+node:ekr.20150514063305.163: *6* parse_ivars_data
         def parse_ivars_data(self, aList):
-            d, key = {}, None
+            d: Dict[str, List[str]] = {}
+            key = None
             aList = [z.strip() for z in aList if z.strip()]
             for s in aList:
                 if s.endswith(':'):
@@ -729,7 +729,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return result
         #@+node:ekr.20150514063305.170: *7* massageFunctionHead (sets .class_name)
         def massageFunctionHead(self, head):
-            result = []
+            result: List[Any] = []
             prevWord = []
             self.class_name = ''
             i = 0
@@ -841,7 +841,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         # replace word by self.word
                         # print "replacing", word, " by self.", word
                         word = "self." + word
-                        word = list(word)
+                        word = list(word)  # type:ignore
                         body[i:j] = word
                         delta = len(word) - (j - i)
                         i = j + delta
@@ -1281,7 +1281,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Scan to the next newline:
                 i3 = self.skip_line(aList, i)
                 # Optional: move the word to a trailing comment.
-                comment = list(f" # {word}") if False else []
+                comment: List[str] = list(f" # {word}") if False else []
                 # Change the list in place.
                 aList[i1:i3] = aList[i2:i3] + comment
                 i = i1 + (i3 - i2) + len(comment)
@@ -1482,7 +1482,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return result
             #@+node:ekr.20150514063305.187: *7* massageFunctionHead (sets .class_name)
             def massageFunctionHead(self, head):
-                result = []
+                result: List[Any] = []
                 prevWord = []
                 self.class_name = ''
                 i = 0
