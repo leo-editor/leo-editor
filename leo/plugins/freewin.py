@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 25 June 2021
-:Version: 1.2
+:Date: 26 June 2021
+:Version: 1.3
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -76,6 +76,17 @@ View 1 is the default view, except when using PyQt6, which does not currently su
 
     @string fw-render-pane = nav-view
 
+#@+node:tom.20210626134532.1: *3* Hotkeys
+Freewin uses two hotkeys:
+
+<CNTL-F7> --  copy the gnx of this Freewin window to the clipboard.
+<CNTL-F9> -- Select host node that has gnx under the selection point.
+
+<CNTL-F7> requires Pyperclip to be installed.  If it is not, an error
+message is emitted and nothing is copied.
+
+<CNTL-F9> is available in the editor view, and in the rendered view
+as discussed above.
 #@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,12 +191,18 @@ from os.path import exists, join as osp_join
 import re
 
 try:
+    import pyperclip
+except:
+    # We will check if it's here when we use it
+    pyperclip = None
+
+try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
     assert GL  # To keep pyflakes happy.
 except Exception:
-    # but not need to stop if it doesn't work
+    # but no need to stop if it doesn't work
     pass
 
 from leo.core import leoGlobals as g
@@ -213,6 +230,8 @@ if isQt5:
     except Exception as e:
         g.trace(e)
 else:
+    # May need to change this after PyQt6 settles down.
+    # At time of this release, this fails.
     try:
         QWebView = QtWebKitWidgets.QWebView
     except Exception as e:
@@ -221,23 +240,20 @@ else:
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
 try:
-    import docutils
-    import docutils.core
+    from docutils.core import publish_string
+    from docutils.utils import SystemMessage
+    got_docutils = True
 except ImportError:
-    docutils = None
-if docutils:
-    try:
-        from docutils.core import publish_string
-        from docutils.utils import SystemMessage
-        got_docutils = True
-    except ImportError:
-        got_docutils = False
-        g.es_exception()
-    except SyntaxError:
-        got_docutils = False
-        g.es_exception()
-else:
     got_docutils = False
+    g.es_exception()
+except SyntaxError:
+    got_docutils = False
+    g.es_exception()
+except Exception:
+    got_docutils = False
+    g.es_exception()
+
+if not got_docutils:
     print('ZEditorWin: *** no docutils')
 
 #@-<<import docutils>>
@@ -267,17 +283,17 @@ DELTA_Y = 35
 
 BG_COLOR = '#fdfdfd'
 BG_COLOR_DARK = '#202020'
-FG_COLOR = '#202020'
+FG_COLOR_LIGHT = '#202020'
 FG_COLOR_DARK = '#cbdedc'
 FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
-BROWSER = 1
-EDITOR = 0
 EDITOR_FONT_SIZE = '11pt'
 EDITOR_STYLESHEET_LIGHT_FILE = 'freewin_editor_light.css'
 EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
 ENCODING = 'utf-8'
 
+BROWSER = 1
+EDITOR = 0
 BROWSER_VIEW = 'browser_view'
 NAV_VIEW = 'nav-view'
 
@@ -290,15 +306,20 @@ instances = {}
 
 ZOOM_FACTOR = 1.1
 
-F9_KEY = 0x01000038 # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
+F7_KEY = 0x01000036 # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
+F9_KEY = 0x01000038
+
 GNXre = r'^(.+\.\d+\.\d+)' # For gnx at start of line
 GNX1re = r'.*\s(\w+\.\d+\.\d+)' # For gnx not at start of line
+
+GNX = re.compile(GNXre)
+GNX1 = re.compile(GNX1re)
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
 
 EDITOR_STYLESHEET_LIGHT = f'''QTextEdit {{
-    color: {FG_COLOR};
+    color: {FG_COLOR_LIGHT};
     background: {BG_COLOR};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
@@ -311,7 +332,7 @@ EDITOR_STYLESHEET_DARK = f'''QTextEdit {{
     font-size: 11pt;
     }}'''
 
-RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR}; 
+RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR_LIGHT}; 
     background: {BG_COLOR};
     font-size: {EDITOR_FONT_SIZE};'''
 
@@ -468,6 +489,9 @@ def get_at_setting_value(name:str, lines:list)->str:
        The input lines are assumed to be from a Leo outline.
        Thus they are in XML.  We are not doing proper 
        XML parsing here, just brute force string operations.
+       
+       This function is intended for retrieving the
+       dark/light character of a Leo theme file.
 
        ARGUMENTS
        name -- the name of the setting, not including the
@@ -489,10 +513,7 @@ def get_at_setting_value(name:str, lines:list)->str:
 def getGnx(line):
     """Find and return a gnx in a line of text, or None."""
 
-    matched = re.match(fr'{GNX1re}', line)
-    # If at first we don't succeed, ...
-    if not matched:
-        matched = re.match(fr'{GNXre}', line)
+    matched = GNX1.match(line) or GNX.match(line)
     target = matched[1] if matched else None
     return target
 #@+node:tom.20210625145905.1: ** getLine
@@ -541,7 +562,7 @@ def gotoHostGnx(c, target):
     return False
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
-    """An basic editing window that echos the contents of an outline node."""
+    """An editing window that echos the contents of an outline node."""
     #@+others
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
@@ -550,7 +571,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         self.c = c
         self.p = c.p
-        w = self.c.frame.body.wrapper
+        w = c.frame.body.wrapper
         self.host_editor = w.widget
         self.switching = False
 
@@ -689,7 +710,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.render_pane_type = c.config.getString('fw-render-pane') or ''
 
     #@+node:tom.20210528090313.1: *3* update
@@ -722,13 +742,15 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.doc.setModified(False)
     #@+node:tom.20210619000302.1: *3* keyPressEvent
     def keyPressEvent(self, event):
-        """Take actions on keypresses when the render pane has focus and a
-        key is pressed.
+        """Take action on keypresses.
 
         A method of this name receives keystrokes for most or all
-        QObject-descended objects. Currently, checks only for <CONTROL-F9>,
-        <CONTROL-EQUALS> and <CONTROL-MINUS> events for zooming or unzooming 
-        the VR3 browser pane.
+        QObject-descended objects. Currently, checks only for 
+        <CONTROL-F7>, <CONTROL-F9>, <CONTROL-EQUALS> and
+        <CONTROL-MINUS> events for zooming or unzooming the rendering 
+        pane.
+        
+        Ignores <CONTROL-F7> if pyperclip is not installed.
         """
         w = self.browser if self.render_kind == BROWSER else self.editor
 
@@ -737,9 +759,16 @@ class ZEditorWin(QtWidgets.QMainWindow):
         keyval = event.key()
 
         if modifiers == KeyboardModifiers.ControlModifier:
-            if  self.render_pane_type == NAV_VIEW \
+            if keyval == F7_KEY:
+                # Copy our gnx to clipboard
+                if pyperclip:
+                    pyperclip.copy(self.p.v.gnx)
+                else:
+                    g.es('Pyperclip is needed to copy the gnx:')
+                    g.es('pip install pyperclip')
+            elif  self.render_pane_type == NAV_VIEW \
                    or self.render_kind == EDITOR:
-                # change host selected node to new target
+                # change host's selected node to new target
                 if keyval == F9_KEY:
                     gnx = getGnx(getLine(w))
                     found_gnx = gotoHostGnx(self.c, gnx)
