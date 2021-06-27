@@ -654,7 +654,45 @@ class ZEditorWin(QtWidgets.QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-        central_widget.keyPressEvent = self.keyPressEvent
+        #
+        # Enabling this line causes the following crash.
+
+        # central_widget.keyPressEvent = self.keyPressEvent
+
+        # Exception on node <FunctionDef.keyPressEvent l.724 at 0x1b16d088518>
+        # in file 'c:\leo.repo\leo-editor\leo\plugins\freewin.py'
+        # Traceback (most recent call last):
+          # File "<string>", line 1, in <module>
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\lint\run.py", line 381, in __init__
+            # linter.check(args)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\lint\pylinter.py", line 874, in check
+            # self.get_ast, self._iterate_file_descrs(files_or_modules)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\lint\pylinter.py", line 907, in _check_files
+            # self._check_file(get_ast, check_astroid_module, name, filepath, modname)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\lint\pylinter.py", line 933, in _check_file
+            # check_astroid_module(ast_node)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\lint\pylinter.py", line 1068, in check_astroid_module
+            # ast_node, walker, rawcheckers, tokencheckers
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\lint\pylinter.py", line 1112, in _check_astroid_module
+            # walker.walk(ast_node)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\utils\ast_walker.py", line 77, in walk
+            # self.walk(child)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\utils\ast_walker.py", line 77, in walk
+            # self.walk(child)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\utils\ast_walker.py", line 74, in walk
+            # callback(astroid)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\pylint\checkers\classes.py", line 1002, in visit_functiondef
+            # for obj in ancestor.lookup(node.name)[1]:
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\astroid\node_classes.py", line 1082, in lookup
+            # return self.scope().scope_lookup(self, name)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\astroid\scoped_nodes.py", line 2274, in scope_lookup
+            # return frame._scope_lookup(node, name, offset)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\astroid\scoped_nodes.py", line 235, in _scope_lookup
+            # stmts = node._filter_stmts(self.locals[name], self, offset)
+          # File "C:\Users\edreamleo\Python\Python36\lib\site-packages\astroid\node_classes.py", line 1179, in _filter_stmts
+            # node.scope().locals,
+        # AssertionError: (<EmptyNode.keyPressEvent l.0 at 0x1b16f664160>, ...
+
         #@-<<build central widget>>
         #@+<<set geometry>>
         #@+node:tom.20210528235451.1: *4* <<set geometry>>
