@@ -1499,7 +1499,7 @@ class PosList(list):
     #@-<< docstring for PosList >>
     #@+others
     #@+node:ekr.20140531104908.17611: *4* PosList.ctor
-    def __init__(self, c:"leoNodes.Commands", aList:List[Any]=None):
+    def __init__(self, c:"leoCommands.Commands", aList:List[Any]=None):
         self.c = c
         super().__init__()
         if aList is None:
@@ -3710,7 +3710,7 @@ def createHiddenCommander(fn):
     c = Commands(fn, gui=g.app.nullGui)
     theFile = g.app.loadManager.openAnyLeoFile(fn)
     if theFile:
-        c.fileCommands.openLeoFile(
+        c.fileCommands.openLeoFile(   # type:ignore
             theFile, fn, readAtFileNodesFlag=True, silent=True)
         return c
     return None
@@ -4874,7 +4874,7 @@ def skip_ws_and_nl(s, i):
     return i
 #@+node:ekr.20170414034616.1: ** g.Git
 #@+node:ekr.20180325025502.1: *3* g.backupGitIssues
-def backupGitIssues(c: "leoCommands.Commander", base_url:Optional[str]=None):
+def backupGitIssues(c: "leoCommands.Commands", base_url:Optional[str]=None):
     """Get a list of issues from Leo's GitHub site."""
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
