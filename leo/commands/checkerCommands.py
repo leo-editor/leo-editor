@@ -580,7 +580,7 @@ class PylintCommand:
         command = (
             f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
-            command = shlex.split(command)
+            command = shlex.split(command)  # type:ignore
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
