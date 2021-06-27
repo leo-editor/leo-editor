@@ -2842,7 +2842,7 @@ class QScintillaColorizer(BaseColorizer):
             self.nullLexer = NullScintillaLexer(c)
         else:
             self.lexersDict = {}
-            self.nullLexer = g.NullObject()
+            self.nullLexer = g.NullObject()  # type:ignore
 
     def reloadSettings(self):
         c = self.c

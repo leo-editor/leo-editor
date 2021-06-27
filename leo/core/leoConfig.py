@@ -889,13 +889,17 @@ class ParserBaseClass:
             if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
-        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
-            unl=(p and p.get_UNL(with_proto=True)))
+        d[key] = g.GeneralSetting(kind,  # type:ignore
+            path=c.mFileName,
+            tag='setting',
+            unl=(p and p.get_UNL(with_proto=True)),
+            val=val,
+        )
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
     def traverse(self):
         """Traverse the entire settings tree."""
         c = self.c
-        self.settingsDict = g.TypedDict(
+        self.settingsDict = g.TypedDict(  # type:ignore
             name=f"settingsDict for {c.shortFileName()}",
             keyType=type('settingName'),
             valType=g.GeneralSetting)
