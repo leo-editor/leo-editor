@@ -7,7 +7,7 @@
 import os
 import sys
 import re
-from typing import Dict, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
@@ -388,7 +388,7 @@ class ParserBaseClass:
         """Handle @menuat setting."""
         if g.app.config.menusList:
             # get the patch fragment
-            patch = []
+            patch: List[Any] = []
             if p.hasChildren():
                 # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
                 self.doItems(p.copy(), patch)
@@ -478,7 +478,7 @@ class ParserBaseClass:
 
         c = self.c
         p = p.copy()
-        aList = []
+        aList: List[Any] = []   ### This entire logic is mysterious, and likely buggy.
         after = p.nodeAfterTree()
         while p and p != after:
             self.debug_count += 1
@@ -491,7 +491,7 @@ class ParserBaseClass:
                         if name2 == name:
                             self.error(f"Replacing previous @menu {name}")
                             break
-                    aList2 = []
+                    aList2: List[Any] = []   ### Huh?
                     kind = f"{'@menu'} {name}"
                     self.doItems(p, aList2)
                     aList.append((kind, aList2, None),)
@@ -525,9 +525,9 @@ class ParserBaseClass:
                             # Only the first body line is significant.
                             # This allows following comment lines.
                         if tag == '@menu':
-                            aList2 = []
+                            aList2: List[Any] = []  ### Huh?
                             kind = f"{tag} {itemName}"
-                            self.doItems(p, aList2)
+                            self.doItems(p, aList2)  ### Huh?
                             aList.append((kind, aList2, body),)
                                 # #848: Body was None.
                             p.moveToNodeAfterTree()
@@ -594,7 +594,7 @@ class ParserBaseClass:
         """
         popupName = name
         # popupType = val
-        aList = []
+        aList: List[Any] = []
         p = p.copy()
         self.doPopupItems(p, aList)
         if not hasattr(g.app.config, 'context_menus'):
@@ -602,7 +602,8 @@ class ParserBaseClass:
         g.app.config.context_menus[popupName] = aList
     #@+node:bobjack.20080324141020.5: *5* pbc.doPopupItems
     def doPopupItems(self, p, aList):
-        p = p.copy(); after = p.nodeAfterTree()
+        p = p.copy()
+        after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
             h = p.h
@@ -611,10 +612,10 @@ class ParserBaseClass:
                     itemName = h[len(tag) :].strip()
                     if itemName:
                         if tag == '@menu':
-                            aList2 = []
+                            aList2: List[Any] = [] 
                             kind = f"{itemName}"
                             body = p.b
-                            self.doPopupItems(p, aList2)
+                            self.doPopupItems(p, aList2)  ### Huh?
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
                             break
@@ -696,7 +697,7 @@ class ParserBaseClass:
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
     def parseFont(self, p):
-        d = {
+        d: Dict[str, Any] = {
             'comments': [],
             'family': None,
             'size': None,
@@ -2267,7 +2268,7 @@ class SettingsTreeParser(ParserBaseClass):
             f = self.dispatchDict.get(kind)
             if f:
                 try:
-                    return f(p, kind, name, val)
+                    return f(p, kind, name, val)  # type:ignore
                 except Exception:
                     g.es_exception()
             else:
