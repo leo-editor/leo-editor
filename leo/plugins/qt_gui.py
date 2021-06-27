@@ -7,7 +7,7 @@ import datetime
 import functools
 import re
 import sys
-from typing import List
+from typing import Dict, List
 
 from leo.core import leoColor
 from leo.core import leoGlobals as g
@@ -1412,7 +1412,7 @@ class LeoQtGui(leoGui.LeoGui):
         def _wrapConnect(self, callableObject):
             """Returns a wrapped call to the old version of QtCore.QObject.connect"""
 
-            @staticmethod
+            @staticmethod  # type:ignore
             def call(*args):
                 callableObject(*args)
                 self._oldConnect(*args)
@@ -1422,7 +1422,7 @@ class LeoQtGui(leoGui.LeoGui):
         def _wrapDisconnect(self, callableObject):
             """Returns a wrapped call to the old version of QtCore.QObject.disconnect"""
 
-            @staticmethod
+            @staticmethod  # type:ignore
             def call(*args):
                 callableObject(*args)
                 self._oldDisconnect(*args)
@@ -1969,12 +1969,12 @@ class StyleSheetManager:
         - `text`: text to search
         """
         pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
-        ans = {}
+        ans: Dict[str, str] = {}
         text = text.replace('\\\n', '')  # merge lines ending in \
         for line in text.split('\n'):
             test = pattern.match(line)
             if test:
-                ans.update([test.groups()])
+                ans.update([test.groups()])  # type:ignore  # Mysterious
         # constants may refer to other constants, de-reference here
         change = True
         level = 0
