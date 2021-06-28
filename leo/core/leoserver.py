@@ -1091,9 +1091,11 @@ class LeoServer:
         c = self._check_c()
         gnx = param.get("gnx")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+        body = ""
         if v:
-            return self._make_minimal_response({"body": v.b or ""})
-        return None  # To keep pylint happy.
+            body = v.b or ""
+        # Support asking for unknown gnx when client switches rapidly
+        return self._make_minimal_response({"body": body})
     #@+node:felix.20210621233316.40: *5* server.get_body_length
     def get_body_length(self, param):
         """
@@ -1428,7 +1430,7 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.61: *5* server.set_current_position
     def set_current_position(self, param):
-        """Select position p, where p is c.p if package["ap"] is missing."""
+        """Select position p. Or try to get p with gnx if not found."""
         tag = "set_current_position"
         c = self._check_c()
         p = self._get_p(param)
@@ -1437,7 +1439,8 @@ class LeoServer:
                 # set this node as selection
                 c.selectPosition(p)
             else:
-                foundPNode = self._positionFromGnx(ap.get('gnx'))
+                ap = param.get('ap')
+                foundPNode = self._positionFromGnx(ap.get('gnx', ""))
                 if foundPNode:
                     c.selectPosition(foundPNode)
                 else:
@@ -2672,52 +2675,61 @@ class LeoServer:
     def _ap_to_p(self, ap):
         """
         Convert ap (archived position, a dict) to a valid Leo position.
-        Raise ServerError on any kind of error.
+        
+        Return False on any kind of error to support calls to invalid positions
+        after a document has been closed of switched and interface interaction 
+        in the client generated incoming calls to 'getters' already sent. (for the 
+        now inaccessible leo document conmmander.)
         """
         tag = '_ap_to_p'
         c = self._check_c()
         gnx_d = c.fileCommands.gnxDict
-        outer_stack = ap.get('stack')
-        if outer_stack is None:  # pragma: no cover.
-            raise ServerError(f"{tag}: no stack in ap: {ap!r}")
-        if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
-            raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
+        
+        try:    
+            outer_stack = ap.get('stack')
+            if outer_stack is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no stack in ap: {ap!r}")
+            if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
+                raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
+        
+            def d_to_childIndex_v (d):
+                """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
+                childIndex = d.get('childIndex')
+                if childIndex is None:  # pragma: no cover.
+                    raise ServerError(f"{tag}: no childIndex in {d}")
+                try:
+                    childIndex = int(childIndex)
+                except Exception:  # pragma: no cover.
+                    raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
+                gnx = d.get('gnx')
+                if gnx is None:  # pragma: no cover.
+                    raise ServerError(f"{tag}: no gnx in {d}.")
+                v = gnx_d.get(gnx)
+                if v is None:  # pragma: no cover.
+                    raise ServerError(f"{tag}: gnx not found: {gnx!r}")
+                return childIndex, v
+            #
+            # Compute p.childIndex and p.v.
+            childIndex, v = d_to_childIndex_v(ap)
+            #
+            # Create p.stack.
+            stack = []
+            for stack_d in outer_stack:
+                stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
+                stack.append((stack_v, stack_childIndex))
+            #
+            # Make p and check p.
+            p = Position(v, childIndex, stack)
+            if not c.positionExists(p):  # pragma: no cover.
+                print(
+                    f"{tag}: Bad ap: {ap!r}\n"
+                    # f"{tag}: position: {p!r}\n"
+                    f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
+                    f"{tag}: stack: {stack!r}")
+                raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
+        except Exception:
+            return False
 
-        def d_to_childIndex_v (d):
-            """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
-            childIndex = d.get('childIndex')
-            if childIndex is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no childIndex in {d}")
-            try:
-                childIndex = int(childIndex)
-            except Exception:  # pragma: no cover.
-                raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
-            gnx = d.get('gnx')
-            if gnx is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no gnx in {d}.")
-            v = gnx_d.get(gnx)
-            if v is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: gnx not found: {gnx!r}")
-            return childIndex, v
-        #
-        # Compute p.childIndex and p.v.
-        childIndex, v = d_to_childIndex_v(ap)
-        #
-        # Create p.stack.
-        stack = []
-        for stack_d in outer_stack:
-            stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
-            stack.append((stack_v, stack_childIndex))
-        #
-        # Make p and check p.
-        p = Position(v, childIndex, stack)
-        if not c.positionExists(p):  # pragma: no cover.
-            print(
-                f"{tag}: Bad ap: {ap!r}\n"
-                # f"{tag}: position: {p!r}\n"
-                f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
-                f"{tag}: stack: {stack!r}")
-            raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
         return p
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
     def _send_async_output(self, package):
@@ -3339,7 +3351,7 @@ def main():  # pragma: no cover (tested in client)
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
         tag = 'server'
-        trace = False
+        trace = True
         verbose = False
         try:
             controller._init_connection(websocket)
