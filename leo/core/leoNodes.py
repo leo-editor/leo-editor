@@ -1923,8 +1923,8 @@ class PosList(list):
     __slots__: List[str] = []
 
     #@+others
-    #@+node:bob.20101215134608.5897: *3* children
-    def children(self) -> List["Position"]:
+    #@+node:bob.20101215134608.5897: *3* PosList.children
+    def children(self):
         """ Return a PosList instance containing pointers to
         all the immediate children of nodes in PosList self.
         """
@@ -1933,23 +1933,23 @@ class PosList(list):
             for child_p in p.children():
                 res.append(child_p.copy())
         return res
-    #@+node:ville.20090311190405.69: *3* filter_h
-    def filter_h(self, regex: str, flags: Any=re.IGNORECASE) -> List["Position"]:
-        """ Find all the nodes in PosList self where zero or more characters at
-        the beginning of the headline match regex
-
+    #@+node:ville.20090311190405.69: *3* PosList.filter_h
+    def filter_h(self, regex, flags=re.IGNORECASE):
+        """
+        Find all the nodes in PosList self where zero or more characters at
+        the beginning of the headline match regex.
         """
         pat = re.compile(regex, flags)
         res = PosList()
         for p in self:
             mo = re.match(pat, p.h)
             if mo:
+                # #2012: Don't inject pc.mo.
                 pc = p.copy()
-                pc.mo = mo
                 res.append(pc)
         return res
-    #@+node:ville.20090311195550.1: *3* filter_b
-    def filter_b(self, regex: str, flags: Any=re.IGNORECASE) -> List["Position"]:
+    #@+node:ville.20090311195550.1: *3* PosList.filter_b
+    def filter_b(self, regex, flags=re.IGNORECASE):
         """ Find all the nodes in PosList self where body matches regex
         one or more times.
 
