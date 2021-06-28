@@ -6710,10 +6710,10 @@ class ReassignTokens(TokenOrderTraverser):
         i = tokens[-1].index
         j = find_paren_token(i + 1, self.tokens)
         if j is None:
-            return
+            return  # pragma: no cover
         k = find_paren_token(j + 1, self.tokens)
         if k is None:
-            return
+            return  # pragma: no cover
         self.tokens[j].node = nca  # type:ignore
         self.tokens[k].node = nca  # type:ignore
         add_token_to_token_list(self.tokens[j], nca)
