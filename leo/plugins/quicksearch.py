@@ -660,8 +660,8 @@ class QuickSearchController:
         for p in nodes:
             m = re.match(pat, p.h)
             if m:
+                # #2012: Don't inject pc.mo.
                 pc = p.copy()
-                pc.mo = m
                 res.append(pc)
         return res
     #@+node:jlunz.20150826091424.1: *3* find_b
