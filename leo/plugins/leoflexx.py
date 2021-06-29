@@ -962,7 +962,9 @@ class LeoBrowserApp(flx.PyComponent):
         # Update v's ivars
         v.setBodyString(d_s)
         v.insertSpot = ins
-        v.sel = sel
+        # #2020: The old code updated a non-existent attribute.
+        v.selectionStart = ins
+        v.selectionLength = abs(sel1 - sel2)
         #
         # Update the body wrapper's ivars (for minibuffer commands).
         if 0:
