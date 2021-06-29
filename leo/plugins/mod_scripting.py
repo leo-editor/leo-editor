@@ -725,12 +725,13 @@ class ScriptingController:
         c = self.c
         buttons = c.config.getButtons() or []
         for z in buttons:
-            p, script = z
+            # #2011
+            p, script, rclicks = z
             gnx = p.v.gnx
             if gnx not in self.seen:
                 self.seen.add(gnx)
                 script = self.getScript(p)
-                self.createCommonButton(p, script, rclicks=p.rclicks)
+                self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
     def createCommonButton(self, p, script, rclicks=None):
         '''

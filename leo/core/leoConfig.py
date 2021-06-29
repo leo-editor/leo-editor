@@ -167,10 +167,10 @@ class ParserBaseClass:
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
+                    # #2011: put rclicks in aList. Do not inject into command_p.
                     command_p = p.copy()
-                    aList.append((command_p, script))
                     rclicks = build_rclick_tree(command_p, top_level=True)
-                    command_p.rclicks = rclicks
+                    aList.append((command_p, script, rclicks))
                 p.moveToThreadNext()
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
