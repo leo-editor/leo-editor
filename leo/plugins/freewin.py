@@ -82,11 +82,8 @@ Freewin uses two hotkeys:
 <CNTL-F7> --  copy the gnx of this Freewin window to the clipboard.
 <CNTL-F9> -- Select host node that has gnx under the selection point.
 
-<CNTL-F7> requires Pyperclip to be installed.  If it is not, an error
-message is emitted and nothing is copied.
-
 <CNTL-F9> is available in the editor view, and in the rendered view
-as discussed above.
+with limitations discussed above discussed above.
 #@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,12 +188,6 @@ from os.path import exists, join as osp_join
 import re
 
 try:
-    import pyperclip
-except:
-    # We will check if it's here when we use it
-    pyperclip = None
-
-try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
@@ -263,6 +254,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # Aliases.
 KeyboardModifiers = QtCore.Qt if isQt5 else QtCore.Qt.KeyboardModifiers
+QApplication = QtWidgets.QApplication
 QPushButton = QtWidgets.QPushButton
 QRect = QtCore.QRect
 QStackedWidget = QtWidgets.QStackedWidget
@@ -560,6 +552,10 @@ def gotoHostGnx(c, target):
             c.selectPosition(p)
             return True
     return False
+#@+node:tom.20210628002321.1: ** copy2clip
+def copy2clip(text):
+    cb = QApplication.clipboard()
+    cb.setText(text)
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
     """An editing window that echos the contents of an outline node."""
@@ -740,6 +736,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 scrollbar.setValue(old_scroll)
 
             self.doc.setModified(False)
+
     #@+node:tom.20210619000302.1: *3* keyPressEvent
     def keyPressEvent(self, event):
         """Take action on keypresses.
@@ -748,9 +745,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         QObject-descended objects. Currently, checks only for 
         <CONTROL-F7>, <CONTROL-F9>, <CONTROL-EQUALS> and
         <CONTROL-MINUS> events for zooming or unzooming the rendering 
-        pane.
-        
-        Ignores <CONTROL-F7> if pyperclip is not installed.
+        pane.    
         """
         w = self.browser if self.render_kind == BROWSER else self.editor
 
@@ -760,12 +755,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         if modifiers == KeyboardModifiers.ControlModifier:
             if keyval == F7_KEY:
-                # Copy our gnx to clipboard
-                if pyperclip:
-                    pyperclip.copy(self.p.v.gnx)
-                else:
-                    g.es('Pyperclip is needed to copy the gnx:')
-                    g.es('pip install pyperclip')
+                # Copy our gnx to clipboard.
+                copy2clip(self.p.v.gnx)
             elif  self.render_pane_type == NAV_VIEW \
                    or self.render_kind == EDITOR:
                 # change host's selected node to new target
