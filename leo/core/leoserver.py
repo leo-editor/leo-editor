@@ -107,6 +107,7 @@ class ServerExternalFilesController:
             # @bool check_for_changed_external_file is True.
             c = self.unchecked_commanders.pop()
             self.lastCommander = c
+            self.lastPNode = None  # when none, a client result means its for the leo file.
             self.idle_check_commander(c)
         else:
             # Add all commanders for which
@@ -120,14 +121,17 @@ class ServerExternalFilesController:
         Check all external files corresponding to @<file> nodes in c for
         changes.
         '''
+        self.infoMessage = None  # reset infoMessage
+        # False or "detected", "refreshed" or "ignored"    
+        
+        
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
         #
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
 
-        self.infoMessage = None  # reset infoMessage
-        # False or "detected", "refreshed" or "ignored"
+
 
         for p in c.all_unique_positions():
             if self.waitingForAnswer:
@@ -185,6 +189,11 @@ class ServerExternalFilesController:
         if not self.waitingForAnswer:
             print("ERROR: Received Result but no Asked Dialog", flush=True)
             return
+
+        if p_result and "reload" in p_result.lower():
+            print("TODO : Reload leo file commander:"+self.lastCommander.mFileName)
+            self.waitingForAnswer = False  # unblock
+
         # check if p_resultwas from a warn (ok) or an ask ('yes','yes-all','no','no-all')
         # act accordingly
 
@@ -194,14 +203,14 @@ class ServerExternalFilesController:
         # 2- if no, unblock 'ask'
         # ------------------------------------------ Nothing special to do
 
-        # 3- if noAll, set noAll, and unblock 'ask'
+        # 3- if noAll: set noAll, and unblock 'ask'
         if p_result and "-all" in p_result.lower():
             self.yesno_all_time = time.time()
             self.yesno_all_answer = p_result.lower()
         # ------------------------------------------ Also covers setting yesAll in #5
 
-        # 4- if yes, REFRESH self.lastPNode, and unblock 'ask'
-        # 5- if yesAll,REFRESH self.lastPNode, set yesAll, and unblock 'ask'
+        # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
+        # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
         if bool(p_result and 'yes' in p_result.lower()):
             self.lastCommander.selectPosition(self.lastPNode)
             self.lastCommander.refreshFromDisk()
@@ -244,14 +253,16 @@ class ServerExternalFilesController:
         else:
             where = p.h
 
-        _is_leo = path.endswith(('.leo', '.db'))
+        _is_leo = path.endswith(('.leo', '.db')) # todo :check if this is even used (.leo)
 
         if _is_leo:
+            # todo :check if this is even used (.leo)
             s = '\n'.join([
                 f'{g.splitLongFileName(path)} has changed outside Leo.',
                 'Overwrite it?'
             ])
         else:
+            # todo :check if this is always used (not .leo file)
             s = '\n'.join([
                 f'{g.splitLongFileName(path)} has changed outside Leo.',
                 f"Reload {where} in Leo?",
@@ -888,12 +899,36 @@ class LeoServer:
         """Run Leo's find-next command and return results."""
         tag = 'find_next'
         c = self._check_c()
+        p = c.p
         fc = c.findCommands
+        fromOutline = param.get("fromOutline")
+        fromBody = not fromOutline
+        #
+        focus = self._get_focus()
+        inOutline = ("tree" in focus) or ("head" in focus)
+        inBody = not inOutline
+        #
+        if fromOutline and inBody:
+            fc.in_headline = True
+        elif fromBody and inOutline:
+            fc.in_headline = False
+            # w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            c.bodyWantsFocusNow()    
+        #
+        if fc.in_headline:
+            ins = len(p.h)
+            gui_w = c.edit_widget(p)
+            gui_w.setSelectionRange(ins, ins, insert=ins)
+        #
         try:
+            # Let cursor as-is
             settings = fc.ftm.get_settings()
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
+        #
+        # get focus again after the operation
         focus = self._get_focus()
         result = {"found": bool(p), "pos": pos,
                     "newpos": newpos, "focus": focus}
@@ -903,12 +938,35 @@ class LeoServer:
         """Run Leo's find-previous command and return results."""
         tag = 'find_previous'
         c = self._check_c()
+        p = c.p
         fc = c.findCommands
+        fromOutline = param.get("fromOutline")
+        fromBody = not fromOutline
+        #
+        focus = self._get_focus()
+        inOutline = ("tree" in focus) or ("head" in focus)
+        inBody = not inOutline
+        #
+        if fromOutline and inBody:
+            fc.in_headline = True
+        elif fromBody and inOutline:
+            fc.in_headline = False
+            # w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            c.bodyWantsFocusNow()
+        #
+        if fc.in_headline:
+            gui_w = c.edit_widget(p)
+            gui_w.setSelectionRange(0, 0, insert=0)
+        #
         try:
+            # set widget cursor pos to 0 if in headline
             settings = fc.ftm.get_settings()
-            p, pos, newpos = fc.do_find_next(settings)
+            p, pos, newpos = fc.do_find_prev(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
+        #
+        # get focus again after the operation
         focus = self._get_focus()
         result = {"found": bool(p), "pos": pos,
                     "newpos": newpos, "focus": focus}
@@ -1202,9 +1260,7 @@ class LeoServer:
         Return a representation of the focused widget,
         one of ("body", "tree", "headline", repr(the_widget)).
         """
-        w = g.app.gui.get_focus()
-        focus = g.app.gui.widget_name(w)
-        return self._make_minimal_response({"focus": focus})
+        return self._make_minimal_response({"focus": self._get_focus()})
     #@+node:felix.20210621233316.44: *5* server.get_parent
     def get_parent(self, param):
         """Return the node data for the parent of position p, where p is c.p if param["ap"] is missing."""
@@ -1402,6 +1458,7 @@ class LeoServer:
     def set_body(self, param):
         """
         Undoably set body text of a v node.
+        (Only if new string is different from actual existing body string)
         """
         tag = 'set_body'
         c = self._check_c()
@@ -1412,6 +1469,9 @@ class LeoServer:
             raise ServerError(f"{tag}: no body given")
         for p in c.all_positions():
             if p.v.gnx == gnx:
+                if body==p.v.b:
+                    return self._make_response()
+                    # Just exited if no need to change at all.
                 bunch = u.beforeChangeNodeContents(p)
                 p.v.setBodyString(body)
                 u.afterChangeNodeContents(p, "Body Text", bunch)
@@ -3351,7 +3411,7 @@ def main():  # pragma: no cover (tested in client)
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
         tag = 'server'
-        trace = True
+        trace = False
         verbose = False
         try:
             controller._init_connection(websocket)
