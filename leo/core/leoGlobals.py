@@ -4369,14 +4369,14 @@ def joinLines(aList):
     return ''.join(aList)
 
 joinlines = joinLines
-#@+node:ekr.20031218072017.3158: *3* Scanners: calling scanError
+#@+node:ekr.20031218072017.3158: *3* g.Scanners: calling scanError
 #@+at These scanners all call g.scanError() directly or indirectly, so they
 # will call g.es if they find an error. g.scanError() also bumps
 # c.tangleCommands.errors, which is harmless if we aren't tangling, and
 # useful if we are.
 #
 # These routines are called by the Import routines and the Tangle routines.
-#@+node:ekr.20031218072017.3159: *4* skip_block_comment
+#@+node:ekr.20031218072017.3159: *4* g.skip_block_comment
 # Scans past a block comment (an old_style C comment).
 
 def skip_block_comment(s, i):
@@ -4387,7 +4387,7 @@ def skip_block_comment(s, i):
         g.scanError("Run on block comment: " + s[j:i])
         return n
     return k + 2
-#@+node:ekr.20031218072017.3160: *4* skip_braces
+#@+node:ekr.20031218072017.3160: *4* g.skip_braces
 #@+at This code is called only from the import logic, so we are allowed to
 # try some tricks. In particular, we assume all braces are matched in
 # if blocks.
@@ -4423,7 +4423,7 @@ def skip_braces(s, i):
             level += delta
         else: i += 1
     return i
-#@+node:ekr.20031218072017.3162: *4* skip_parens
+#@+node:ekr.20031218072017.3162: *4* g.skip_parens
 def skip_parens(s, i):
     """
     Skips from the opening ( to the matching ).
@@ -4445,7 +4445,7 @@ def skip_parens(s, i):
         elif g.match(s, i, "/*"): i = g.skip_block_comment(s, i)
         else: i += 1
     return i
-#@+node:ekr.20031218072017.3163: *4* skip_pascal_begin_end
+#@+node:ekr.20031218072017.3163: *4* g.skip_pascal_begin_end
 def skip_pascal_begin_end(s, i):
     """
     Skips from begin to matching end.
@@ -4476,7 +4476,7 @@ def skip_pascal_begin_end(s, i):
         else:
             i += 1
     return i
-#@+node:ekr.20031218072017.3164: *4* skip_pascal_block_comment
+#@+node:ekr.20031218072017.3164: *4* g.skip_pascal_block_comment
 # Scans past a pascal comment delimited by (* and *).
 
 def skip_pascal_block_comment(s, i):
@@ -4487,7 +4487,7 @@ def skip_pascal_block_comment(s, i):
         return i + 2
     g.scanError("Run on comment" + s[j:i])
     return len(s)
-#@+node:ekr.20031218072017.3165: *4* skip_pascal_string : called by tangle
+#@+node:ekr.20031218072017.3165: *4* g.skip_pascal_string : called by tangle
 def skip_pascal_string(s, i):
     j = i; delim = s[i]; i += 1
     assert(delim == '"' or delim == '\'')
@@ -4497,7 +4497,7 @@ def skip_pascal_string(s, i):
         i += 1
     g.scanError("Run on string: " + s[j:i])
     return i
-#@+node:ekr.20031218072017.3166: *4* skip_heredoc_string : called by php import (Dave Hein)
+#@+node:ekr.20031218072017.3166: *4* g.skip_heredoc_string : called by php import (Dave Hein)
 #@+at 08-SEP-2002 DTHEIN:  added function skip_heredoc_string
 # A heredoc string in PHP looks like:
 #
@@ -4529,7 +4529,7 @@ def skip_heredoc_string(s, i):
     elif g.match(s, i, delim):
         i += len(delim)
     return i
-#@+node:ekr.20031218072017.3167: *4* skip_pp_directive
+#@+node:ekr.20031218072017.3167: *4* g.skip_pp_directive
 # Now handles continuation lines and block comments.
 
 def skip_pp_directive(s, i):
@@ -4541,7 +4541,7 @@ def skip_pp_directive(s, i):
         elif g.match(s, i, "/*"): i = g.skip_block_comment(s, i)
         else: i += 1
     return i
-#@+node:ekr.20031218072017.3168: *4* skip_pp_if
+#@+node:ekr.20031218072017.3168: *4* g.skip_pp_if
 # Skips an entire if or if def statement, including any nested statements.
 
 def skip_pp_if(s, i):
@@ -4565,7 +4565,7 @@ def skip_pp_if(s, i):
     else:
         g.es("no matching #endif:", start_line)
     return i, delta1
-#@+node:ekr.20031218072017.3169: *4* skip_pp_part
+#@+node:ekr.20031218072017.3169: *4* g.skip_pp_part
 # Skip to an #else or #endif.  The caller has eaten the #if, #ifdef, #ifndef or #else
 
 def skip_pp_part(s, i):
@@ -4591,7 +4591,7 @@ def skip_pp_part(s, i):
         elif g.match(s, i, "/*"): i = g.skip_block_comment(s, i)
         else: i += 1
     return i, delta
-#@+node:ekr.20031218072017.3170: *4* skip_python_string
+#@+node:ekr.20031218072017.3170: *4* g.skip_python_string
 def skip_python_string(s, i, verbose=True):
     if g.match(s, i, "'''") or g.match(s, i, '"""'):
         j = i; delim = s[i] * 3; i += 3
@@ -4602,7 +4602,7 @@ def skip_python_string(s, i, verbose=True):
         return len(s)
     # 2013/09/08: honor the verbose argument.
     return g.skip_string(s, i, verbose=verbose)
-#@+node:ekr.20031218072017.2369: *4* skip_string (leoGlobals)
+#@+node:ekr.20031218072017.2369: *4* g.skip_string (leoGlobals)
 def skip_string(s, i, verbose=True):
     """
     Scan forward to the end of a string.
@@ -4620,7 +4620,7 @@ def skip_string(s, i, verbose=True):
     elif s[i] == delim:
         i += 1
     return i
-#@+node:ekr.20031218072017.3171: *4* skip_to_semicolon
+#@+node:ekr.20031218072017.3171: *4* g.skip_to_semicolon
 # Skips to the next semicolon that is not in a comment or a string.
 
 def skip_to_semicolon(s, i):
@@ -4638,7 +4638,7 @@ def skip_to_semicolon(s, i):
         else:
             i += 1
     return i
-#@+node:ekr.20031218072017.3172: *4* skip_typedef
+#@+node:ekr.20031218072017.3172: *4* g.skip_typedef
 def skip_typedef(s, i):
     n = len(s)
     while i < n and g.is_c_id(s[i]):
