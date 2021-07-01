@@ -3,7 +3,7 @@
 #@@language python
 #@@tabwidth -4
 """
-Leo's internet server. (The beauty queen). Does not work yet with leoInteg.
+Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
 """
@@ -30,6 +30,7 @@ g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 g_leoserver = None
 g_server = None
 # Server defaults...
+SERVER_STARTED_TOKEN = "LeoBridge started"
 wsHost = "localhost"
 wsPort = 32125
 
@@ -46,11 +47,374 @@ class ServerError(Exception):  # pragma: no cover
 class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
+#@+node:felix.20210626222905.1: ** class ServerExternalFilesController
+class ServerExternalFilesController:
+    '''EFC Modified from Leo's sources'''
+    # pylint: disable=no-else-return
+
+    #@+others
+    #@+node:felix.20210626222905.2: *3* sefc.ctor
+    def __init__(self):
+        '''Ctor for ExternalFiles class.'''
+        self.on_idle_count = 0
+        self.checksum_d = {}
+        # Keys are full paths, values are file checksums.
+        self.enabled_d = {}
+        # For efc.on_idle.
+        # Keys are commanders.
+        # Values are cached @bool check-for-changed-external-file settings.
+        self.has_changed_d = {}
+        # Keys are commanders. Values are boolean.
+        # Used only to limit traces.
+        self.unchecked_commanders = []
+        # Copy of g.app.commanders()
+        self.unchecked_files = []
+        # Copy of self file. Only one files is checked at idle time.
+        self._time_d = {}
+        # Keys are full paths, values are modification times.
+        # DO NOT alter directly, use set_time(path) and
+        # get_time(path), see set_time() for notes.
+        self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
+        self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
+
+        # if yesAll/noAll forced, then just show info message after idle_check_commander
+        self.infoMessage = None
+        # False or "detected", "refreshed" or "ignored"
+
+        g.app.idleTimeManager.add_callback(self.on_idle)
+
+        self.waitingForAnswer = False
+        self.lastPNode = None  # last p node that was asked for if not set to "AllYes\AllNo"
+        self.lastCommander = None
+    #@+node:felix.20210626222905.3: *3* sefc.on_idle
+    def on_idle(self):
+        '''
+        Check for changed open-with files and all external files in commanders
+        for which @bool check_for_changed_external_file is True.
+        '''
+        # Fix for flushing the terminal console to pass through
+        sys.stdout.flush()
+
+        if not g.app or g.app.killed:
+            return
+        if self.waitingForAnswer:
+            return
+
+        self.on_idle_count += 1
+
+        if self.unchecked_commanders:
+            # Check the next commander for which
+            # @bool check_for_changed_external_file is True.
+            c = self.unchecked_commanders.pop()
+            self.lastCommander = c
+            self.idle_check_commander(c)
+        else:
+            # Add all commanders for which
+            # @bool check_for_changed_external_file is True.
+            self.unchecked_commanders = [
+                z for z in g.app.commanders() if self.is_enabled(z)
+            ]
+    #@+node:felix.20210626222905.4: *3* sefc.idle_check_commander
+    def idle_check_commander(self, c):
+        '''
+        Check all external files corresponding to @<file> nodes in c for
+        changes.
+        '''
+        # #1240: Check the .leo file itself.
+        self.idle_check_leo_file(c)
+        #
+        # #1100: always scan the entire file for @<file> nodes.
+        # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
+
+        self.infoMessage = None  # reset infoMessage
+        # False or "detected", "refreshed" or "ignored"
+
+        for p in c.all_unique_positions():
+            if self.waitingForAnswer:
+                break
+            if p.isAnyAtFileNode():
+                self.idle_check_at_file_node(c, p)
+
+        # if yesAll/noAll forced, then just show info message
+        if self.infoMessage:
+            package = {"async": "info", "message": self.infoMessage}
+            g.leoServer._send_async_output(package)
+
+    #@+node:felix.20210627013530.1: *3* sefc.idle_check_leo_file
+    def idle_check_leo_file(self, c):
+        """Check c's .leo file for external changes."""
+        # TODO !!
+        path = c.fileName()
+        if not self.has_changed(path):
+            return
+        # Always update the path & time to prevent future warnings.
+        self.set_time(path)
+        self.checksum_d[path] = self.checksum(path)
+        print("******* DETECTED LEO FILE CHANGE *******")
+        # #1888:
+        val = self.ask(c, path)
+        if val in ('yes', 'yes-all'):
+            # Do a complete restart of Leo.
+            g.es_print('restarting Leo...')
+            print("******* TODO RESTARTING *******")
+            ###c.restartLeo()
+    #@+node:felix.20210626222905.5: *3* sefc.idle_check_at_file_node
+    def idle_check_at_file_node(self, c, p):
+        '''Check the @<file> node at p for external changes.'''
+        trace = False
+        path = g.fullPath(c, p)
+        has_changed = self.has_changed(path)
+        if trace:
+            g.trace('changed', has_changed, p.h)
+        if has_changed:
+            self.lastPNode = p  # can be set here because its the same process for ask/warn
+            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+                # Fix #1081: issue a warning.
+                self.warn(c, path, p=p)
+            elif self.ask(c, path, p=p):
+                self.lastCommander.selectPosition(self.lastPNode)
+                c.refreshFromDisk()
+
+            # Always update the path & time to prevent future warnings.
+            self.set_time(path)
+            self.checksum_d[path] = self.checksum(path)
+    #@+node:felix.20210626222905.6: *3* sefc.clientResult
+    def clientResult(self, p_result):
+        '''Received result from client'''
+        # Got the result to an asked question/warning from the client
+        if not self.waitingForAnswer:
+            print("ERROR: Received Result but no Asked Dialog", flush=True)
+            return
+        # check if p_resultwas from a warn (ok) or an ask ('yes','yes-all','no','no-all')
+        # act accordingly
+
+        path = g.fullPath(self.lastCommander, self.lastPNode)
+
+        # 1- if ok, unblock 'warn'
+        # 2- if no, unblock 'ask'
+        # ------------------------------------------ Nothing special to do
+
+        # 3- if noAll, set noAll, and unblock 'ask'
+        if p_result and "-all" in p_result.lower():
+            self.yesno_all_time = time.time()
+            self.yesno_all_answer = p_result.lower()
+        # ------------------------------------------ Also covers setting yesAll in #5
+
+        # 4- if yes, REFRESH self.lastPNode, and unblock 'ask'
+        # 5- if yesAll,REFRESH self.lastPNode, set yesAll, and unblock 'ask'
+        if bool(p_result and 'yes' in p_result.lower()):
+            self.lastCommander.selectPosition(self.lastPNode)
+            self.lastCommander.refreshFromDisk()
+
+        # Always update the path & time to prevent future warnings for this PNode.
+        self.set_time(path)
+        self.checksum_d[path] = self.checksum(path)
+
+        self.waitingForAnswer = False  # unblock
+        # unblock: run the loop as if timer had hit
+        self.idle_check_commander(self.lastCommander)
+    #@+node:felix.20210626222905.7: *3* sefc.utilities
+    #@+node:felix.20210626222905.8: *4* efc.ask
+    def ask(self, c, path, p=None):
+        '''
+        Ask user whether to overwrite an @<file> tree.
+        Return True if the user agrees.
+        '''
+        # check with leoServer's config first
+        if g.leoServer.leoServerConfig:
+            check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower(
+            )
+            if not bool('none' in check_config):
+                if bool('yes' in check_config):
+                    self.infoMessage = "refreshed"
+                    return True
+                else:
+                    self.infoMessage = "ignored"
+                    return False
+        # let original function resolve
+
+        if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
+            self.yesno_all_time = time.time()  # Still reloading?  Extend time.
+            # if yesAll/noAll forced, then just show info message
+            yesno_all_bool = bool('yes' in self.yesno_all_answer.lower())
+
+            return yesno_all_bool
+        if not p:
+            where = 'the outline node'
+        else:
+            where = p.h
+
+        _is_leo = path.endswith(('.leo', '.db'))
+
+        if _is_leo:
+            s = '\n'.join([
+                f'{g.splitLongFileName(path)} has changed outside Leo.',
+                'Overwrite it?'
+            ])
+        else:
+            s = '\n'.join([
+                f'{g.splitLongFileName(path)} has changed outside Leo.',
+                f"Reload {where} in Leo?",
+            ])
+
+        package = {"async": "ask", "ask": 'Overwrite the version in Leo?',
+                     "message": s, "yes_all": not _is_leo, "no_all": not _is_leo}
+
+        g.leoServer._send_async_output(package)
+        self.waitingForAnswer = True
+        return False
+    #@+node:felix.20210626222905.9: *4* efc.checksum
+    def checksum(self, path):
+        '''Return the checksum of the file at the given path.'''
+        import hashlib
+        return hashlib.md5(open(path, 'rb').read()).hexdigest()
+    #@+node:felix.20210626222905.10: *4* efc.get_mtime
+    def get_mtime(self, path):
+        '''Return the modification time for the path.'''
+        return g.os_path_getmtime(g.os_path_realpath(path))
+
+    #@+node:felix.20210626222905.11: *4* efc.get_time
+    def get_time(self, path):
+        '''
+        return timestamp for path
+
+        see set_time() for notes
+        '''
+        return self._time_d.get(g.os_path_realpath(path))
+    #@+node:felix.20210626222905.12: *4* efc.has_changed
+    def has_changed(self, path):
+        '''Return True if p's external file has changed outside of Leo.'''
+        if not path:
+            return False
+        if not g.os_path_exists(path):
+            return False
+        if g.os_path_isdir(path):
+            return False
+        #
+        # First, check the modification times.
+        old_time = self.get_time(path)
+        new_time = self.get_mtime(path)
+        if not old_time:
+            # Initialize.
+            self.set_time(path, new_time)
+            self.checksum_d[path] = self.checksum(path)
+            return False
+        if old_time == new_time:
+            return False
+        #
+        # Check the checksums *only* if the mod times don't match.
+        old_sum = self.checksum_d.get(path)
+        new_sum = self.checksum(path)
+        if new_sum == old_sum:
+            # The modtime changed, but it's contents didn't.
+            # Update the time, so we don't keep checking the checksums.
+            # Return False so we don't prompt the user for an update.
+            self.set_time(path, new_time)
+            return False
+        # The file has really changed.
+        assert old_time, path
+        return True
+    #@+node:felix.20210626222905.13: *4* efc.is_enabled
+    def is_enabled(self, c):
+        '''Return the cached @bool check_for_changed_external_file setting.'''
+        # check with the leoServer config first
+        if g.leoServer.leoServerConfig:
+            check_config = g.leoServer.leoServerConfig["checkForChangeExternalFiles"].lower(
+            )
+            if bool('check' in check_config):
+                return True
+            if bool('ignore' in check_config):
+                return False
+        # let original function resolve
+        d = self.enabled_d
+        val = d.get(c)
+        if val is None:
+            val = c.config.getBool(
+                'check-for-changed-external-files', default=False)
+            d[c] = val
+        return val
+    #@+node:felix.20210626222905.14: *4* efc.join
+    def join(self, s1, s2):
+        '''Return s1 + ' ' + s2'''
+        return f"{s1} {s2}"
+    #@+node:felix.20210626222905.15: *4* efc.set_time
+    def set_time(self, path, new_time=None):
+        '''
+        Implements c.setTimeStamp.
+
+        Update the timestamp for path.
+
+        NOTE: file paths with symbolic links occur with and without those links
+        resolved depending on the code call path.  This inconsistency is
+        probably not Leo's fault but an underlying Python issue.
+        Hence the need to call realpath() here.
+        '''
+        t = new_time or self.get_mtime(path)
+        self._time_d[g.os_path_realpath(path)] = t
+    #@+node:felix.20210626222905.16: *4* efc.warn
+    def warn(self, c, path, p):
+        '''
+        Warn that an @asis or @nosent node has been changed externally.
+
+        There is *no way* to update the tree automatically.
+        '''
+        # check with leoServer's config first
+        if g.leoServer.leoServerConfig:
+            check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()
+
+            if check_config != "none":
+                # if not 'none' then do not warn, just infoMessage 'warn' at most
+                if not self.infoMessage:
+                    self.infoMessage = "warn"
+                return
+
+        # let original function resolve
+        if g.unitTesting or c not in g.app.commanders():
+            return
+        if not p:
+            g.trace('NO P')
+            return
+
+        s = '\n'.join([
+            '%s has changed outside Leo.\n' % g.splitLongFileName(
+                path),
+            'Leo can not update this file automatically.\n',
+            'This file was created from %s.\n' % p.h,
+            'Warning: refresh-from-disk will destroy all children.'
+        ])
+
+        package = {"async": "warn",
+                     "warn": 'External file changed', "message": s}
+
+        g.leoServer._send_async_output(package)
+        self.waitingForAnswer = True
+    #@+node:felix.20210626222905.17: *3* other called methods
+    # Some methods are called in the usual (non-leoBridge without 'efc') save process.
+    # Those may be called by the 'save' function, like check_overwrite,
+    # or by any other functions from the instance of leo.core.leoBridge that's running.
+    #@+node:felix.20210626222905.18: *4* open_with
+    def open_with(self, c, d):
+        return
+
+    #@+node:felix.20210626222905.19: *4* check_overwrite
+    def check_overwrite(self, c, fn):
+        # print("check_overwrite!! ", flush=True)
+        return True
+
+    #@+node:felix.20210626222905.20: *4* shut_down
+    def shut_down(self):
+        return
+
+    #@+node:felix.20210626222905.21: *4* destroy_frame
+    def destroy_frame(self, f):
+        return
+
+    #@-others
 #@+node:ekr.20210202110128.29: ** class LeoServer
 class LeoServer:
     """Leo Server Controller"""
     #@+others
-    #@+node:ekr.20210202110128.30: *3* server.__init__ (load bridge)
+    #@+node:felix.20210621233316.5: *3* server.__init__
     def __init__(self, testing=False):
 
         import leo.core.leoApp as leoApp
@@ -64,28 +428,116 @@ class LeoServer:
         self.dummy_c = None  # Set below, after we set g.
         self.action = None
         self.bad_commands_list = []  # Set below.
-        self.config = None
+        #
+        # Debug utilities
         self.current_id = 0  # Id of action being processed.
         self.log_flag = False  # set by "log" key
         #
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
-            loadPlugins=False,   # True: attempt to load plugins.
-            readSettings=False,  # True: read standard settings files.
+            loadPlugins=True,   # True: attempt to load plugins.
+            readSettings=True,  # True: read standard settings files.
             silent=True,         # True: don't print signon messages.
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
-        self.g = g = self.bridge.globals()
-        self.dummy_c = g.app.newCommander(fileName=None)  # To inspect commands
+        self.g = g = self.bridge.globals()  # Also sets global 'g' object
+        g.leoServer = self  # Set server singleton global reference
+        self.leoServerConfig = None
+        # * Intercept Log Pane output: Sends to client's log pane
+        g.es = self._es  # pointer - not a function call
+        #
+        # Set in _init_connection
+        self.web_socket = None
+        self.loop = None
+        #
+        # To inspect commands
+        self.dummy_c = g.app.newCommander(fileName=None)
         self.bad_commands_list = self._bad_commands(self.dummy_c)
+        #
+        # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
+        g.getScript = self._getScript
+        g.IdleTime = self._idleTime
+        #
+        # override for "revert to file" operation
+        g.app.gui.runAskYesNoDialog = self._returnYes  # pointer - not a function call
+        g.app.gui.show_find_success = self._show_find_success  # pointer - not a function call
+        self.headlineWidget = self.g.bunch(_name='tree')
         #
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
+        g.app.externalFilesController = ServerExternalFilesController()  # Replace
         g.app.idleTimeManager.start()
-        g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.")
+    #@+node:felix.20210622235127.1: *3* server:leo overriden methods
+    #@+node:felix.20210622235209.1: *4* _es
+    def _es(self, * args, **keys):  # pragma: no cover (tested in client).
+        '''Output to the Log Pane'''
+        d = {
+            'color': None,
+            'commas': False,
+            'newline': True,
+            'spaces': True,
+            'tabName': 'Log',
+            'nodeLink': None,
+        }
+        d = g.doKeywordArgs(keys, d)
+        s = g.translateArgs(args, d)
+        package = {"async": "log", "log": s}
+        self._send_async_output(package)
+    #@+node:felix.20210626002856.1: *4* _getScript
+    def _getScript(self, c, p,
+                   useSelectedText=True,
+                   forcePythonSentinels=True,
+                   useSentinels=True,
+                   ):
+        """
+        Return the expansion of the selected text of node p.
+        Return the expansion of all of node p's body text if
+        p is not the current node or if there is no text selection.
+        """
+        w = c.frame.body.wrapper
+        if not p:
+            p = c.p
+        try:
+            if w and p == c.p and useSelectedText and w.hasSelection():
+                s = w.getSelectedText()
+            else:
+                s = p.b
+            # Remove extra leading whitespace so the user may execute indented code.
+            s = g.removeExtraLws(s, c.tab_width)
+            s = g.extractExecutableString(c, p, s)
+            script = g.composeScript(c, p, s,
+                                      forcePythonSentinels=forcePythonSentinels,
+                                      useSentinels=useSentinels)
+        except Exception:
+            g.es_print("unexpected exception in g.getScript")
+            g.es_exception()
+            script = ''
+        return script
+    #@+node:felix.20210626002934.1: *4* _returnNo
+    def _returnNo(self, *arguments, **kwargs):
+        '''Used to override g.app.gui.ask[XXX] dialogs answers'''
+        return "no"
+    #@+node:felix.20210626002940.1: *4* _returnYes
+    def _returnYes(self, *arguments, **kwargs):
+        '''Used to override g.app.gui.ask[XXX] dialogs answers'''
+        return "yes"
+    #@+node:felix.20210627004238.1: *4* _asyncIdleLoop
+    async def _asyncIdleLoop(self, seconds, func):
+        while True:
+            await asyncio.sleep(seconds)
+            func(self)
+    #@+node:felix.20210627004039.1: *4* _idleTime
+    def _idleTime(self, fn, delay, tag):
+        asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
+    #@+node:felix.20210626003327.1: *4* _show_find_success
+    def _show_find_success(self, c, in_headline, insert, p):
+        '''Handle a successful find match.'''
+        if in_headline:
+            g.app.gui.set_focus(c, self.headlineWidget)
+        # no return
     #@+node:ekr.20210211084004.1: *3* server:public commands
     #@+node:ekr.20210202193709.1: *4* server:button commands
     # These will fail unless the open_file inits c.theScriptingController.
@@ -102,57 +554,83 @@ class LeoServer:
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:ekr.20210202183724.4: *5* server.click_button
-    def click_button(self, package):  # pragma: no cover (no scripting controller)
+    def click_button(self, param):  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
-        name = package.get("name")
-        if not name:
-            raise ServerError(f"{tag}: no button name given")
+        index = param.get("index")
+        if not index:
+            raise ServerError(f"{tag}: no button index given")
         d = self._check_button_command(tag)
-        button = d.get(name)
+        button = None
+        for key in d:
+            # Some button keys are objects so we have to convert first
+            if(str(key) == index):
+                button = key
+
         if not button:
-            raise ServerError(f"{tag}: button {name!r} does not exist")
+            raise ServerError(f"{tag}: button {index!r} does not exist")
+
         try:
             button.command()
         except Exception as e:
-            raise ServerError(f"{tag}: exception clicking button {name!r}: {e}")
+            raise ServerError(f"{tag}: exception clicking button {index!r}: {e}")
+        # Tag along a possible return value with info sent back by _make_response
         return self._make_response()
     #@+node:ekr.20210202183724.2: *5* server.get_buttons
-    def get_buttons(self, package):  # pragma: no cover (no scripting controller)
-        """Gets the currently opened file's @buttons list"""
+    def get_buttons(self, param):  # pragma: no cover (no scripting controller)
+        """
+        Gets the currently opened file's @buttons list
+        as an array of dict.
+
+        Typescript interface:
+            {
+                name: string;
+                index: string;
+            }[]
+        """
         d = self._check_button_command('get_buttons')
-        return self._make_response({
-            "buttons": sorted(list(d.get.keys()))
+        buttons = []
+        # Some button keys are objects so we have to convert first
+        for key in d:
+            entry = {"name": d[key], "index": str(key)}
+            buttons.append(entry)
+        return self._make_minimal_response({
+            "buttons": buttons
         })
     #@+node:ekr.20210202183724.3: *5* server.remove_button
-    def remove_button(self, package):  # pragma: no cover (no scripting controller)
-        """Remove button by name."""
+    def remove_button(self, param):  # pragma: no cover (no scripting controller)
+        """Remove button by index 'key string'."""
         tag = 'remove_button'
-        name = package.get("name")
-        if not name:
-            raise ServerError(f"{tag}: no button name given")
+        index = param.get("index")
+        if not index:
+            raise ServerError(f"{tag}: no button index given")
         d = self._check_button_command(tag)
-        if name not in d:
-            raise ServerError(f"{tag}: button {name!r} does not exist")
-        try:
-            del d [name]
-        except Exception as e:
-            raise ServerError(f"{tag}: exception removing button {name!r}: {e}")
-        return self._make_response({
-            "buttons": sorted(list(d.get.keys()))
-        })
+        # Some button keys are objects so we have to convert first
+        key = None
+        for i_key in d:
+            if(str(i_key) == index):
+                key = i_key
+        if key:
+            try:
+                del d [index]
+            except Exception as e:
+                raise ServerError(f"{tag}: exception removing button {index!r}: {e}")
+        else:
+            raise ServerError(f"{tag}: button {index!r} does not exist")
+
+        return self._make_response()
     #@+node:ekr.20210202193642.1: *4* server:file commands
     #@+node:ekr.20210202110128.57: *5* server.open_file
-    def open_file(self, package):
+    def open_file(self, param):
         """
         Open a leo file with the given filename.
         Create a new document if no name.
         """
         found, tag = False, 'open_file'
-        filename = package.get('filename')  # Optional.
+        filename = param.get('filename')  # Optional.
         if filename:
             for c in g.app.commanders():
-                if c.fileName() == filename:
+                 if c.fileName() == filename:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
@@ -168,229 +646,414 @@ class LeoServer:
         self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
-        return self._make_response()
+
+        result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
+
+        return self._make_response(result)
+    #@+node:felix.20210621233316.14: *5* server.open_files
+    def open_files(self, param):
+        """
+        Opens an array of leo files.
+        Returns an object with total opened files
+        and name of currently last opened & selected document.
+        """
+        files = param.get('files')  # Optional.
+        if files:
+            for i_file in files:
+                if os.path.isfile(i_file):
+                    self.open_file({"filename": i_file})
+        total = len(g.app.commanders())
+        filename = self.c.fileName() if total else ""
+        result = {"total": total, "filename": filename}
+        return self._make_response(result)
+    #@+node:felix.20210621233316.15: *5* server.set_opened_file
+    def set_opened_file(self, param):
+        '''
+        Choose the new active commander from array of opened files.
+        Returns an object with total opened files
+        and name of currently last opened & selected document.
+        '''
+        tag = 'set_opened_file'
+        index = param.get('index')
+        total = len(g.app.commanders())
+        if total and index < total:
+            self.c = g.app.commanders()[index]
+            # maybe needed for frame wrapper
+            self.c.selectPosition(self.c.p)
+            self._check_outline(self.c)
+            result = {"total": total, "filename": self.c.fileName()}
+            return self._make_response(result)
+        raise ServerError(f"{tag}: commander at index {index} does not exist")
     #@+node:ekr.20210202110128.58: *5* server.close_file
-    def close_file(self, package):
-        """Closes an outline opened with open_file."""
+    def close_file(self, param):
+        """
+        Closes an outline opened with open_file.
+        Use a 'forced' flag to force close.
+        Returns a 'total' member in the package if close is successful.
+        """
         c = self._check_c()
-        # Close the outline, even if it is dirty!
-        c.clearChanged()
-        c.close()
-        # Select the first open outline, if any.
+        forced = param.get("forced")
+        if c:
+            # First, revert to prevent asking user.
+            if forced and c.changed:
+                c.revert()
+            # Then, if still possible, close it.
+            if forced or not c.changed:
+                # c.closed = True # maybe useless flag from leobridgeserver.py technique
+                c.close()
+            else:
+                # Cannot close, return empty response without 'total' (ask to save, ignore or cancel)
+                return self._make_response()
+        # New 'c': Select the first open outline, if any.
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
-        # Return a response describing self.c, not the closed outline.
-        return self._make_response()
+        if self.c:
+            result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
+        else:
+            result = {"total": 0}
+        return self._make_response(result)
     #@+node:ekr.20210202183724.1: *5* server.save_file
-    def save_file(self, package):  # pragma: no cover (too dangerous).
+    def save_file(self, param):  # pragma: no cover (too dangerous).
         """Save the leo outline."""
+        tag = 'save_file'
         c = self._check_c()
-        c.save()
-        return self._make_response()
-    #@+node:ekr.20210212092848.1: *4* server:find commands
+        if c:
+            try:
+                if "name" in param:
+                    c.save(fileName=param['name'])
+                else:
+                    c.save()
+            except Exception as e:
+                print(f"{tag} Error while saving {param['name']}", flush=True)
+                print(e, flush=True)
+
+        return self._make_response()  # Just send empty as 'ok'
+    #@+node:felix.20210621233316.18: *5* server.import_any_file
+    def import_any_file(self, param):
+        """
+        Import file(s) from array of file names
+        """
+        tag = 'import_any_file'
+        c = self._check_c()
+        ic = c.importCommands
+        names = param.get('filenames')
+        if names:
+            g.chdir(names[0])
+        if not names:
+            raise ServerError(f"{tag}: No file names provided")
+        # New in Leo 4.9: choose the type of import based on the extension.
+        derived = [z for z in names if c.looksLikeDerivedFile(z)]
+        others = [z for z in names if z not in derived]
+        if derived:
+            ic.importDerivedFiles(parent=c.p, paths=derived)
+        for fn in others:
+            junk, ext = g.os_path_splitext(fn)
+            ext = ext.lower()  # #1522
+            if ext.startswith('.'):
+                ext = ext[1:]
+            if ext == 'csv':
+                ic.importMindMap([fn])
+            elif ext in ('cw', 'cweb'):
+                ic.importWebCommand([fn], "cweb")
+            # Not useful. Use @auto x.json instead.
+            # elif ext == 'json':
+                # ic.importJSON([fn])
+            elif fn.endswith('mm.html'):
+                ic.importFreeMind([fn])
+            elif ext in ('nw', 'noweb'):
+                ic.importWebCommand([fn], "noweb")
+            elif ext == 'more':
+                # (Félix) leoImport Should be on c?
+                c.leoImport.MORE_Importer(c).import_file(fn)  # #1522.
+            elif ext == 'txt':
+                # (Félix) import_txt_file Should be on c?
+                # #1522: Create an @edit node.
+                c.import_txt_file(c, fn)
+            else:
+                # Make *sure* that parent.b is empty.
+                last = c.lastTopLevel()
+                parent = last.insertAfter()
+                parent.v.h = 'Imported Files'
+                ic.importFilesCommand(
+                    files=[fn],
+                    parent=parent,
+                    treeType='@auto',  # was '@clean'
+                    # Experimental: attempt to use permissive section ref logic.
+                )
+        return self._make_response()  # Just send empty as 'ok'
+    #@+node:felix.20210621233316.19: *4* server.search commands
     #@+node:ekr.20210212094817.1: *5* server._get_find_settings
-    def _get_find_settings(self, c):
-        """Return a g.Bunch containing the present find settings settings."""
-        return c.findCommands.ftm.get_settings()
-        ###
-            # # For now, return EKR defaults.
-            # return g.Bunch(
-                # find_text=None, change_text=None,
-                # search_body=True, search_headline=True,
-                # ignore_case=True, pattern_match=False, whole_word=True,
-                # mark_changes=False, mark_finds=False,
-                # node_only=False, suboutline_only=False,
-                # entry_focus=None,
-            # )  
+    def get_search_settings(self, param):
+        """
+        Gets search options
+        """
+        tag = 'get_search_settings'
+        c = self._check_c()
+        try:
+            settings = c.findCommands.ftm.get_settings()
+            # Use the "__dict__" of the settings, to be serializable as a json string.
+            result = {"searchSettings": settings.__dict__}
+        except Exception as e:
+            raise ServerError(f"{tag}: exception getting search settings: {e}")
+        return self._make_response(result)
+    #@+node:felix.20210621233316.21: *5* server.set_search_settings
+    def set_search_settings(self, param):
+        """
+        Sets search options. Init widgets and ivars from param.searchSettings
+        """
+        tag = 'set_search_settings'
+        c = self._check_c()
+        find = c.findCommands
+        ftm = c.findCommands.ftm
+        searchSettings = param.get('searchSettings')
+        if not searchSettings:
+            raise ServerError(f"{tag}: searchSettings object is missing")
+        # Try to set the search settings
+        try:
+            # Find/change text boxes.
+            table = (
+                ('find_findbox', 'find_text', ''),
+                ('find_replacebox', 'change_text', ''),
+            )
+            for widget_ivar, setting_name, default in table:
+                w = getattr(ftm, widget_ivar)
+                s = searchSettings.get(setting_name) or default
+                w.clear()
+                w.insert(s)
+            # Check boxes.
+            table = (
+                ('ignore_case', 'check_box_ignore_case'),
+                ('mark_changes', 'check_box_mark_changes'),
+                ('mark_finds', 'check_box_mark_finds'),
+                ('pattern_match', 'check_box_regexp'),
+                ('search_body', 'check_box_search_body'),
+                ('search_headline', 'check_box_search_headline'),
+                ('whole_word', 'check_box_whole_word'),
+            )
+            for setting_name, widget_ivar in table:
+                w = getattr(ftm, widget_ivar)
+                val = searchSettings.get(setting_name)
+                setattr(find, setting_name, val)
+                if val != w.isChecked():
+                    w.toggle()
+            # Radio buttons
+            table = (
+                ('node_only', 'node_only', 'radio_button_node_only'),
+                ('entire_outline', None, 'radio_button_entire_outline'),
+                ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
+            )
+            for setting_name, ivar, widget_ivar in table:
+                w = getattr(ftm, widget_ivar)
+                val = searchSettings.get(setting_name, False)
+                if ivar is not None:
+                    assert hasattr(find, setting_name), setting_name
+                    setattr(find, setting_name, val)
+                    if val != w.isChecked():
+                        w.toggle()
+            # Ensure one radio button is set.
+            w = ftm.radio_button_entire_outline
+            if not searchSettings.get('node_only', False) and not searchSettings.get('suboutline_only', False):
+                setattr(find, 'entire_outline', True)
+                if not w.isChecked():
+                    w.toggle()
+            else:
+                setattr(find, 'entire_outline', False)
+                if w.isChecked():
+                    w.toggle()
+        except Exception as e:
+            raise ServerError(f"{tag}: exception setting search settings: {e}")
+        # Confirm by sending back the settings to the client
+        try:
+            settings = ftm.get_settings()
+            # Use the "__dict__" of the settings, to be serializable as a json string.
+            result = {"searchSettings": settings.__dict__}
+        except Exception as e:
+            raise ServerError(f"{tag}: exception getting search settings: {e}")
+        return self._make_response(result)
     #@+node:ekr.20210212092854.1: *5* server.find_all
-    def find_all(self, package):
-        """Run Leo's find-all command and return results."""
+    def find_all(self, param):
+        """Run Leo's find all command and return results."""
         tag = 'find_all'
         c = self._check_c()
         fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_find_all(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042145.1: *5* server.change_all
-    def change_all(self, package):
-        """Run Leo's change-all command and return results."""
-        tag = 'change_all'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        change_text = package.get("change_text")
-        if change_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no change text")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        settings.change_text = change_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_change_all(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042406.1: *5* server.change_then_find
-    def change_then_find(self, package):
-        """Run Leo's change-then-find command and return results."""
-        tag = 'change_then_find'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_change_then_find(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042541.1: *5* server.clone_find_all
-    def clone_find_all(self, package):
-        """Run Leo's clone-find-all command and return results."""
-        tag = 'clone_find_all'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_clone_find_all(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042633.1: *5* server.clone_find_all_flattened
-    def clone_find_all_flattened(self, package):
-        """Run Leo's clone-find-all-flattened command and return results."""
-        tag = 'clone_find_all_flattened'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_clone_find_all_flattened(settings)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042719.1: *5* server.clone_find_tag
-    def clone_find_tag(self, package):
-        """Run Leo's clone-find-tag command and return results."""
-        tag = 'clone_find_tag'
-        c = self._check_c()
-        fc = c.findCommands
-        the_tag = package.get("tag")
-        if not the_tag:  # pragma: no cover
-            raise ServerError(f"{tag}: no tag")
-        settings = self._get_find_settings(c)
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        n, p = fc.do_clone_find_tag(settings)
-        if self.log_flag:  # pragma: no cover
-            g.trace("tag: {the_tag} n: {n} p: {p and p.h!r}")
-        return self._make_response({"n": n, "p": p})
-    #@+node:ekr.20210221043043.1: *5* server.find_def
-    def find_def(self, package):
-        """Run Leo's find-def command and return results."""
-        tag = 'find_def'
-        c = self._check_c()
-        fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_def(settings, word=find_text, strict=False)
-        if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221042808.1: *5* server.find_next
-    def find_next(self, package):
+        try:
+            settings = fc.ftm.get_settings()
+            result = fc.do_find_all(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception running 'find all': {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": result, "focus": focus})
+    #@+node:felix.20210621233316.23: *5* server.find_next
+    def find_next(self, param):
         """Run Leo's find-next command and return results."""
         tag = 'find_next'
         c = self._check_c()
         fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_next(settings)
-        if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221042851.1: *5* server.find_previous
-    def find_previous(self, package):
+        try:
+            settings = fc.ftm.get_settings()
+            p, pos, newpos = fc.do_find_next(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running find operation gave exception: {e}")
+        focus = self._get_focus()
+        result = {"found": bool(p), "pos": pos,
+                    "newpos": newpos, "focus": focus}
+        return self._make_response(result)
+    #@+node:felix.20210621233316.24: *5* server.find_previous
+    def find_previous(self, param):
         """Run Leo's find-previous command and return results."""
         tag = 'find_previous'
         c = self._check_c()
         fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
-        if self.log_flag:  # pragma: no cover
-            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_prev(settings)
-        if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221043134.1: *5* server.find_var
-    def find_var(self, package):
-        """Run Leo's find-var command and return results."""
-        tag = 'find_var'
+        try:
+            settings = fc.ftm.get_settings()
+            p, pos, newpos = fc.do_find_next(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running find operation gave exception: {e}")
+        focus = self._get_focus()
+        result = {"found": bool(p), "pos": pos,
+                    "newpos": newpos, "focus": focus}
+        return self._make_response(result)
+    #@+node:felix.20210621233316.25: *5* server.replace
+    def replace(self, param):
+        """Run Leo's replace command and return results."""
+        tag = 'replace'
         c = self._check_c()
         fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
-        settings = self._get_find_settings(c)
-        settings.find_text = find_text
+        try:
+            settings = fc.ftm.get_settings()
+            fc.change(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running change operation gave exception: {e}")
+        focus = self._get_focus()
+        result = {"found": True, "focus": focus}
+        return self._make_response(result)
+    #@+node:ekr.20210221042406.1: *5* server.change_then_find
+    def replace_then_find(self, param):
+        """Run Leo's replace then find next command and return results."""
+        tag = 'replace_then_find'
+        c = self._check_c()
+        fc = c.findCommands
+        try:
+            settings = fc.ftm.get_settings()
+            result = fc.do_change_then_find(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running change operation gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": result, "focus": focus})
+    #@+node:felix.20210621233316.27: *5* server.replace_all
+    def replace_all(self, param):
+        """Run Leo's replace all command and return results."""
+        tag = 'replace_all'
+        c = self._check_c()
+        fc = c.findCommands
+        try:
+            settings = fc.ftm.get_settings()
+            result = fc.do_change_all(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running change operation gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": result, "focus": focus})
+    #@+node:ekr.20210221042541.1: *5* server.clone_find_all
+    def clone_find_all(self, param):
+        """Run Leo's clone-find-all command and return results."""
+        tag = 'clone_find_all'
+        c = self._check_c()
+        fc = c.findCommands
+        try:
+            settings = fc.ftm.get_settings()
+            result = fc.do_clone_find_all(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running clone find operation gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": result, "focus": focus})
+    #@+node:ekr.20210221042633.1: *5* server.clone_find_all_flattened
+    def clone_find_all_flattened(self, param):
+        """Run Leo's clone-find-all-flattened command and return results."""
+        tag = 'clone_find_all_flattened'
+        c = self._check_c()
+        fc = c.findCommands
+        try:
+            settings = fc.ftm.get_settings()
+            result = fc.do_clone_find_all_flattened(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running clone find operation gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": result, "focus": focus})
+    #@+node:ekr.20210221042719.1: *5* server.clone_find_tag
+    def find_var(self, param):
+        """Run Leo's find-var command and return results."""
+        tag = 'find_var'
+        # c = self._check_c()
+        # fc = c.findCommands
+        try:
+            # settings = fc.ftm.get_settings()
+            # todo : find var implementation
+            print(f"{tag} todo : find var implementation")
+            # result = fc.do_clone_find_all_flattened(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": True, "focus": focus})
+    #@+node:ekr.20210221043043.1: *5* server.find_def
+    def find_def(self, param):
+        """Run Leo's find-def command and return results."""
+        tag = 'find_def'
+        # c = self._check_c()
+        # fc = c.findCommands
+        try:
+            # settings = fc.ftm.get_settings()
+            # todo : find def implementation
+            print(f"{tag} todo : find def implementation")
+            # result = fc.do_clone_find_all_flattened(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": True, "focus": focus})
+    #@+node:felix.20210621233316.32: *5* server.goto_global_line
+    def goto_global_line(self, param):
+        """Run Leo's goto-global-line command and return results."""
+        tag = 'goto_global_line'
+        c = self._check_c()
+        gc = c.gotoCommands
+        line = param.get('line', 1)
+        try:
+            junk_p, junk_offset, found = gc.find_file_line(n=int(line))
+        except Exception as e:
+            raise ServerError(f"{tag}: Running clone find operation gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": found, "focus": focus})
+    #@+node:ekr.20210221043134.1: *5* server.find_var
+    def clone_find_tag(self, param):
+        """Run Leo's clone-find-tag command and return results."""
+        tag = 'clone_find_tag'
+        c = self._check_c()
+        fc = c.findCommands
+        tag_param = param.get("tag")
+        if not tag_param:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
+        settings = fc.ftm.get_settings()
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        p, pos, newpos = fc.do_find_var(settings, word=find_text)
+        n, p = fc.do_clone_find_tag(settings)
         if self.log_flag:  # pragma: no cover
-            g.trace(f"p: {p and p.h!r} pos: {pos!r} newpos {newpos!r}")
-        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+            g.trace("tag: {tag_param} n: {n} p: {p and p.h!r}")
+        return self._make_response({"n": n})
     #@+node:ekr.20210221043224.1: *5* server.tag_children
-    def tag_children(self, package):
-        """Run Leo's tag-children command and return results."""
+    def tag_children(self, param):
+        """Run Leo's tag-children command"""
         # This is not a find command!
         tag = 'tag_children'
         c = self._check_c()
         fc = c.findCommands
-        the_tag = package.get("tag")
-        if the_tag is None:  # pragma: no cover
+        tag_param = param.get("tag")
+        if tag_param is None:  # pragma: no cover
             raise ServerError(f"{tag}: no tag")
         # Unlike find commands, do_tag_children does not use a settings dict.
-        fc.do_tag_children(c.p, the_tag)
-        return self._make_response({})
+        fc.do_tag_children(c.p, tag_param)
+        return self._make_response()
     #@+node:ekr.20210202193505.1: *4* server:getter commands
     #@+node:ekr.20210202110128.55: *5* server.get_all_open_commanders
-    def get_all_open_commanders(self, package):
+    def get_all_open_commanders(self, param):
         """Return array describing each commander in g.app.commanders()."""
         files = [
             {
@@ -399,45 +1062,79 @@ class LeoServer:
                 "selected": c == self.c,
             } for c in g.app.commanders()
         ]
-        return self._make_response({"open-commanders": files})
+        return self._make_minimal_response({"files": files})
     #@+node:ekr.20210202110128.71: *5* server.get_all_positions
-    def get_all_positions(self, package):
+    def get_all_positions(self, param):
         """
         Return a list of position data for all positions.
-        
+
         Useful as a sanity check for debugging.
         """
         c = self._check_c()
         result = [
             self._get_position_d(p) for p in c.all_positions(copy=False)
         ]
-        return self._make_response({"position-data-list": result})
-    #@+node:ekr.20210202110128.72: *5* server.get_body & get_body_length
-    def get_body(self, package):
+        return self._make_minimal_response({"position-data-list": result})
+    #@+node:felix.20210621233316.38: *5* server.get_all_gnx
+    def get_all_gnx(self, param):
+        '''Get gnx array from all unique nodes'''
+        if self.log_flag:  # pragma: no cover
+            print('\nget_all_gnx\n')
+        c = self._check_c()
+        all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
+        return self._make_minimal_response({"gnx": all_gnx})
+    #@+node:felix.20210621233316.39: *5* server.get_body
+    def get_body(self, param):
         """
-        Return p.b, where p is c.p if package["ap"] is missing.
-        
-        Note: There is no need for a separate get_body_length command,
-              because _make_response always adds "body-length": len(p.b)
-        """
-        self._check_c()
-        p = self._get_p(package)
-        # _make_response adds all the cheap redraw data, including "body-length"
-        return self._make_response({"body": p.b})
-        
-    #@+node:ekr.20210202110128.66: *5* server.get_body_states
-    def get_body_states(self, package):
-        """
-        Return body data for p, where p is c.p if package["ap"] is missing.
+        Return the body content body specified via GNX.
         """
         c = self._check_c()
-        p = self._get_p(package)
+        gnx = param.get("gnx")
+        v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+        body = ""
+        if v:
+            body = v.b or ""
+        # Support asking for unknown gnx when client switches rapidly
+        return self._make_minimal_response({"body": body})
+    #@+node:ekr.20210202110128.72: *5* server.get_body & get_body_length
+    def get_body_length(self, param):
+        """
+        Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
+        """
+        c = self._check_c()
+        gnx = param.get("gnx")
+        w_v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+        if w_v:
+            # Length in bytes, not just by character count.
+            return self._make_minimal_response({"len": len(w_v.b.encode('utf-8'))})
+        return self._make_minimal_response({"len": 0})  # empty as default
+    #@+node:ekr.20210202110128.66: *5* server.get_body_states
+    def get_body_states(self, param):
+        """
+        Return body data for p, where p is c.p if param["ap"] is missing.
+        The cursor positions are given as {"line": line, "col": col, "index": i}
+        with line and col along with a redundant index for convenience and flexibility.
+        """
+        c = self._check_c()
+        p = self._get_p(param)
         wrapper = c.frame.body.wrapper
-        
-        def row_col_dict(i):
+
+        def row_col_wrapper_dict(i):
+            if not i:
+                i = 0 # prevent none type
+            # BUG: this uses current selection wrapper only, use
+            # g.convertPythonIndexToRowCol instead !
             junk, line, col = wrapper.toPythonIndexRowCol(i)
-            return {"line": line, "col": col}
-            
+            return {"line": line, "col": col, "index": i}
+
+        def row_col_pv_dict(i, s):
+            if not i:
+                i = 0 # prevent none type
+            # BUG: this uses current selection wrapper only, use
+            # g.convertPythonIndexToRowCol instead !
+            line, col = g.convertPythonIndexToRowCol(s, i)
+            return {"line": line, "col": col, "index": i}
+
         # Get the language.
         aList = g.get_directives_dict_list(p)
         d = g.scanAtCommentAndAtLanguageDirectives(aList)
@@ -449,57 +1146,78 @@ class LeoServer:
         )
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
-            active = wrapper.getInsertPoint()
+            insert = wrapper.getInsertPoint()
             start, end = wrapper.getSelectionRange(True)
             scroll = wrapper.getYScrollPosition()
+            states = {
+                'language': language.lower(),
+                'selection': {
+                    "gnx": p.v.gnx,
+                    "scroll": scroll,
+                    "insert": row_col_wrapper_dict(insert),
+                    "start": row_col_wrapper_dict(start),
+                    "end": row_col_wrapper_dict(end)
+                }
+            }
         else:  # pragma: no cover
-            active = p.v.insertSpot
+            insert = p.v.insertSpot
             start = p.v.selectionStart
             end = p.v.selectionStart + p.v.selectionLength
             scroll = p.v.scrollBarSpot
-        states = {
-            'language': language.lower(),
-            'selection': {
-                # "gnx": p.v.gnx,  # EKR: Not needed. The reponse will have p.v.gnx.
-                "scroll": scroll,
-                "active": row_col_dict(active),
-                "start": row_col_dict(start),
-                "end": row_col_dict(end),
+            states = {
+                'language': language.lower(),
+                'selection': {
+                    "gnx": p.v.gnx,
+                    "scroll": scroll,
+                    "insert": row_col_pv_dict(insert, p.v.b),
+                    "start": row_col_pv_dict(start, p.v.b),
+                    "end": row_col_pv_dict(end, p.v.b)
+                }
             }
-        }
-        return self._make_response({"body-states": states})
+        return self._make_minimal_response(states)
     #@+node:ekr.20210202110128.68: *5* server.get_children
-    def get_children(self, package):
+    def get_children(self, param):
         """
-        Return the node data for children of p, where p is c.p if package["ap"] is missing."""
-        self._check_c()
-        p = self._get_p(package)
-        return self._make_response({
-            # "children": [self._p_to_ap(child) for child in p.children()]
-            "children": [self._get_position_d(child) for child in p.children()]
-        })
+        Return the node data for children of p,
+        where p is root if param.ap is missing
+        """
+        c = self._check_c()
+        children = [] # default empty array
+        if param.get("ap"):
+            # Maybe empty param, for tree-root children(s)
+            p = self._get_p(param)
+            if p and p.hasChildren():
+                children = [self._get_position_d(child) for child in p.children()]
+        else:
+            if c.hoistStack:
+                # Always start hoisted tree with single hoisted root node
+                children = [self._get_position_d(c.hoistStack[-1].p)]
+            else:
+                # this outputs all Root Children
+                children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
+        return self._make_minimal_response({"children": children})
     #@+node:ekr.20210214154702.1: *5* server.get_focus
-    def get_focus(self, packages):
+    def get_focus(self, param):
         """
-        Return a representation of the focs widget,
+        Return a representation of the focused widget,
         one of ("body", "tree", "headline", repr(the_widget)).
         """
         w = g.app.gui.get_focus()
         focus = g.app.gui.widget_name(w)
-        return self._make_response({"focus": focus})
+        return self._make_minimal_response({"focus": focus})
     #@+node:ekr.20210202110128.69: *5* server.get_parent
-    def get_parent(self, package):
-        """Return the node data for the parent of position p, where p is c.p if package["ap"] is missing."""
+    def get_parent(self, param):
+        """Return the node data for the parent of position p, where p is c.p if param["ap"] is missing."""
         self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         parent = p.parent()
         data = self._get_position_d(parent) if parent else None
-        return self._make_response({"parent": data})
+        return self._make_minimal_response({"node": data})
     #@+node:ekr.20210211053955.1: *5* server.get_position_dict
-    def get_position_data_dict(self, package):
+    def get_position_data(self, param):
         """
-        Return a dict of postition data for all positions.
-        
+        Return a dict of position data for all positions.
+
         Useful as a sanity check for debugging.
         """
         c = self._check_c()
@@ -507,31 +1225,22 @@ class LeoServer:
             p.v.gnx: self._get_position_d(p)
                 for p in c.all_unique_positions(copy=False)
         }
-        return self._make_response({"position-data-dict": result})
+        return self._make_minimal_response({"position-data-dict": result})
     #@+node:ekr.20210211233814.1: *5* server.get_ua
-    def get_ua(self, package):
+    def get_ua(self, param):
         """Return p.v.u, making sure it can be serialized."""
         self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         try:
             ua = {"ua": p.v.u}
             json.dumps(ua, separators=(',', ':'))
-            response = {"p": p, "ua": p.v.u} 
+            response = {"ua": p.v.u}
         except Exception:  # pragma: no cover
-            response = {"p": p, "bad-ua": repr(p.v.u)} 
+            response = {"ua": repr(p.v.u)}
         # _make_response adds all the cheap redraw data.
         return self._make_response(response)
-    #@+node:ekr.20210206062654.1: *5* server.get_sign_on
-    def get_sign_on(self, package):
-        """Synchronous version of _sign_on"""
-        g.app.computeSignon()
-        signon = []
-        for z in (g.app.signon, g.app.signon1):
-            for z2 in z.split('\n'):
-                signon.append(z2.strip())
-        return self._make_response({"sign-on": "\n".join(signon)})
     #@+node:ekr.20210202110128.61: *5* server.get_ui_states
-    def get_ui_states(self, package):
+    def get_ui_states(self, param):
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
         """
@@ -548,128 +1257,141 @@ class LeoServer:
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
-        return self._make_response({"states": states})
+        return self._make_minimal_response({"states": states})
     #@+node:ekr.20210202193540.1: *4* server:node commands
     #@+node:ekr.20210202183724.11: *5* server.clone_node
-    def clone_node(self, package):
-        """
-        Clone the node at position p, where p is c.p if package["ap"] is missing.
-        
-        To clone c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "clone",
-        }
-        """
+    def clone_node(self, param):
+        '''
+        Clone a node.
+        If it was also the current selection, return it,
+        otherwise try not to select it.
+        '''
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
-        c.clone()
+        p = self._get_p(param)
+        if p == c.p:
+            c.clone()
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.clone()
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+        # return selected node either ways
         return self._make_response()
+
     #@+node:ekr.20210202110128.79: *5* server.contract_node
-    def contract_node(self, package):
+    def contract_node(self, param):
         """
-        Contract the node at position p, where p is c.p if package["ap"] is missing.
-        
-        To contract c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "contract-node",
-        }
+        Contract (Collapse) the node at position p, where p is c.p if p is missing.
         """
-        self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         p.contract()
         return self._make_response()
     #@+node:ekr.20210202183724.12: *5* server.cut_node
-    def cut_node(self, package):  # pragma: no cover (too dangerous, for now)
-        """
-        Cut the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
-        
-        To cut c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "cut-node",
-        }
-        """
+    def cut_node(self, param):  # pragma: no cover (too dangerous, for now)
+        '''
+        Cut a node, don't select it.
+        Try to keep selection, then return the selected node that remains.
+        '''
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
-        c.cutOutline()
+        p = self._get_p(param)
+        if p == c.p:
+            c.cutOutline()  # already on this node, so cut it
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.cutOutline()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex-1
+                # Try again with childIndex decremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:ekr.20210202183724.13: *5* server.delete_node
-    def delete_node(self, package):  # pragma: no cover (too dangerous, for now)
+    def delete_node(self, param):  # pragma: no cover (too dangerous, for now)
         """
-        Delete the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
-        
-        To delete c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "delete-node",
-        }
+        Delete a node, don't select it.
+        Try to keep selection, then return the selected node that remains.
         """
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
-        c.deleteOutline()  # Handles undo.
+        p = self._get_p(param)
+        if p == c.p:
+            c.deleteOutline()  # already on this node, so cut it
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.deleteOutline()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex-1
+                # Try again with childIndex decremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:ekr.20210202110128.78: *5* server.expand_node
-    def expand_node(self, package):
+    def expand_node(self, param):
         """
-        Expand the node at position p, where p is c.p if package["ap"] is missing.
-        
-        To expand c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "expand-node",
-        }
+        Expand the node at position p, where p is c.p if p is missing.
         """
-        self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         p.expand()
         return self._make_response()
     #@+node:ekr.20210202183724.15: *5* server.insert_node
-    def insert_node(self, package):
+    def insert_node(self, param):
         """
-        Insert a new node at position p, where p is c.p if package["ap"] is missing.
-
-        This node has 'newHeadline' as its headline.
-        
-        To insert a new node at c.p (with the default headline), use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "insert-node",
-        }
-        
-        Use the 'set_headline' method to undoably set any node's headlines.
+        Insert a node at given node, then select it once created, and finally return it
         """
         c = self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         c.selectPosition(p)
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
+    #@+node:felix.20210621233316.56: *5* server.insert_named_node
+    def insert_named_node(self, param):
+        '''
+        Insert a node at given node, set its headline, select it and finally return it
+        '''
+        c = self._check_c()
+        p = self._get_p(param)
+        newHeadline = param.get('name')
+        bunch = c.undoer.beforeInsertNode(p)
+        newNode = p.insertAfter()
+        # set this node's new headline
+        newNode.h = newHeadline
+        newNode.setDirty()
+        c.undoer.afterInsertNode(
+            newNode, 'Insert Node', bunch)
+        c.selectPosition(newNode)
+        return self._make_response()
     #@+node:ekr.20210202110128.64: *5* server.page_down
-    def page_down(self, package):
+    def page_down(self, param):
         """
         Selects a node "n" steps down in the tree to simulate page down.
         """
         c = self._check_c()
-        n = package.get("n", 3)
+        n = param.get("n", 3)
         for z in range(n):
             c.selectVisNext()
         return self._make_response()
     #@+node:ekr.20210202110128.63: *5* server.page_up
-    def page_up(self, package):
+    def page_up(self, param):
         """
         Selects a node "N" steps up in the tree to simulate page up.
         """
         c = self._check_c()
-        n = package.get("n", 3)
+        n = param.get("n", 3)
         for z in range(n):
             c.selectVisBack()
         return self._make_response()
     #@+node:ekr.20210202183724.17: *5* server.redo
-    def redo(self, package):
+    def redo(self, param):
         """Undo last un-doable operation"""
         c = self._check_c()
         u = c.undoer
@@ -677,102 +1399,146 @@ class LeoServer:
             u.redo()
         return self._make_response()
     #@+node:ekr.20210202110128.74: *5* server.set_body
-    def set_body(self, package):
+    def set_body(self, param):
         """
-        Undoably set p.b, where p is c.p if package["ap"] is missing.
+        Undoably set body text of a v node.
         """
         tag = 'set_body'
         c = self._check_c()
-        p = self._get_p(package)
+        gnx = param.get('gnx')
+        body = param.get('body')
         u, wrapper = c.undoer, c.frame.body.wrapper
-        body = package.get('body')
         if body is None:  # pragma: no cover
             raise ServerError(f"{tag}: no body given")
-        bunch = u.beforeChangeNodeContents(p)
-        p.v.setBodyString(body)
-        u.afterChangeNodeContents(p, "Body Text", bunch)
-        if c.p == p:
-            wrapper.setAllText(body)
-        if not self.c.isChanged():  # pragma: no cover
-            c.setChanged()
-        if not p.v.isDirty():  # pragma: no cover
-            p.setDirty()
+        for p in c.all_positions():
+            if p.v.gnx == gnx:
+                bunch = u.beforeChangeNodeContents(p)
+                p.v.setBodyString(body)
+                u.afterChangeNodeContents(p, "Body Text", bunch)
+                if c.p == p:
+                    wrapper.setAllText(body)
+                if not self.c.isChanged():  # pragma: no cover
+                    c.setChanged()
+                if not p.v.isDirty():  # pragma: no cover
+                    p.setDirty()
+                break
+        # additional forced string setting
+        if gnx:
+            v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+            if v:
+                v.b = body
         return self._make_response()
     #@+node:ekr.20210202110128.77: *5* server.set_current_position
-    def set_current_position(self, package):
-        """Select position p, where p is c.p if package["ap"] is missing."""
+    def set_current_position(self, param):
+        """Select position p. Or try to get p with gnx if not found."""
+        tag = "set_current_position"
         c = self._check_c()
-        p = self._get_p(package)
-        c.selectPosition(p)
+        p = self._get_p(param)
+        if p:
+            if c.positionExists(p):
+                # set this node as selection
+                c.selectPosition(p)
+            else:
+                ap = param.get('ap')
+                foundPNode = self._positionFromGnx(ap.get('gnx', ""))
+                if foundPNode:
+                    c.selectPosition(foundPNode)
+                else:
+                    print(f"{tag}: node does not exist! ap was: {json.dumps(ap)}")
+
         return self._make_response()
     #@+node:ekr.20210202110128.76: *5* server.set_headline
-    def set_headline(self, package):
+    def set_headline(self, param):
         """
         Undoably set p.h, where p is c.p if package["ap"] is missing.
         """
-        tag = 'set_headline'
         c = self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         u = c.undoer
-        h = package.get('headline')
-        if not h:  # pragma: no cover
-            raise ServerError(f"{tag}: no headline")
+        h = param.get('name', '')
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
     #@+node:ekr.20210202110128.75: *5* server.set_selection
-    def set_selection(self, package):
+    def set_selection(self, param):
         """
         Set the selection range for p.b, where p is c.p if package["ap"] is missing.
-        
+
         Set the selection in the wrapper if p == c.p
-        
+
         Package has these keys:
-            
+
         - "ap":     An archived position for position p.
         - "start":  The start of the selection.
         - "end":    The end of the selection.
-        - "insert": The insert point. Must be either start or end.
+        - "active": The insert point. Must be either start or end.
         - "scroll": An optional scroll position.
+
+        Selection points can be sent as {"col":int, "line" int} dict
+        or as numbers directly for convenience.
         """
         c = self._check_c()
-        p = self._get_p(package)  # Will raise ServerError if p does not exist.
+        p = self._get_p(param)  # Will raise ServerError if p does not exist.
         v = p.v
         wrapper = c.frame.body.wrapper
-        start = package.get('start', 0)
-        end = package.get('end', 0)
-        insert = package.get('insert', 0)
-        scroll = package.get('scroll', 0)
+        convert = g.convertRowColToPythonIndex
+        start = param.get('start', 0)
+        end = param.get('end', 0)
+        active = param.get('insert', 0) # temp var to check if int.
+        scroll = param.get('scroll', 0)
+        # If sent as number, use 'as is'
+        if isinstance(active, int):
+            insert = active
+            startSel = start
+            endSel = end
+        else:
+            # otherwise convert from line+col data.
+            insert = convert(
+                v.b, active['line'], active['col'])
+            startSel = convert(
+                v.b, start['line'], start['col'])
+            endSel = convert(
+                v.b, end['line'], end['col'])
+        # If it's the currently selected node set the wrapper's states too
         if p == c.p:
-            wrapper.setSelectionRange(start, end, insert)
+            wrapper.setSelectionRange(startSel, endSel, insert)
             wrapper.setYScrollPosition(scroll)
         # Always set vnode attrs.
         v.scrollBarSpot = scroll
         v.insertSpot = insert
-        v.selectionStart = start
-        v.selectionLength = abs(start - end)
+        v.selectionStart = startSel
+        v.selectionLength = abs(startSel - endSel)
         return self._make_response()
     #@+node:ekr.20210202183724.10: *5* server.toggle_mark
-    def toggle_mark(self, package):
+    def toggle_mark(self, param):
         """
         Toggle the mark at position p, where p is c.p if package["ap"] is missing.
-        
-        To *toggle* the mark of c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "toggle-mark",
-        }
+        Do not necessarily select the position.
         """
         self._check_c()
-        p = self._get_p(package)
+        p = self._get_p(param)
         if p.isMarked():
             p.clearMarked()
         else:
             p.setMarked()
         return self._make_response()
+    #@+node:felix.20210621233316.65: *5* server.mark_node
+    def mark_node(self, param):
+        '''Mark a node, without selecting it'''
+        self._check_c()
+        p = self._get_p(param)
+        p.setMarked()
+        return self._make_response()
+    #@+node:felix.20210621233316.66: *5* server.unmark_node
+    def unmark_node(self, param):
+        '''Unmark a node, without selecting it'''
+        self._check_c()
+        p = self._get_p(param)
+        p.clearMarked()
+        return self._make_response()
     #@+node:ekr.20210202183724.16: *5* server.undo
-    def undo(self, package):
+    def undo(self, param):
         """Undo last un-doable operation"""
         c = self._check_c()
         u = c.undoer
@@ -781,13 +1547,27 @@ class LeoServer:
         # Félix: Caller can get focus using other calls.
         return self._make_response()
     #@+node:ekr.20210205102806.1: *4* server:server commands
+    #@+node:felix.20210621233316.69: *5* server.set_ask_result
+    def set_ask_result(self, param):
+        '''Got the result to an asked question/warning from client'''
+        tag = "set_ask_result"
+        result = param.get("result");
+        if not result:
+            raise ServerError(f"{tag}: no param result")
+        g.app.externalFilesController.clientResult(result)
+        return self._make_response()
+    #@+node:felix.20210621233316.70: *5* server.set_config
+    def set_config(self, param):
+        '''Got auto-reload's config from client'''
+        self.leoServerConfig = param # PARAM IS THE CONFIG-DICT
+        return self._make_response()
     #@+node:ekr.20210205102818.1: *5* server.error
-    def error(self, package):
+    def error(self, param):
         """For unit testing. Raise ServerError"""
         raise ServerError("error called")
     #@+node:ekr.20210202183724.5: *5* server.get_all_leo_commands & helper
-    def get_all_leo_commands(self, package):
-        """Return a list of all Leo commands that make sense in leoInteg."""
+    def get_all_leo_commands(self, param):
+        """Return a list of all commands that make sense for connected clients."""
         tag = 'get_all_leo_commands'
         c = self.dummy_c  # Use the dummy commander.
         d = c.commandsDict  # keys are command names, values are functions.
@@ -795,35 +1575,35 @@ class LeoServer:
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
         if duplicates:  # pragma: no cover
-            print('duplicate command names...')
+            print(f"{tag}: duplicate command names...")
             for z in sorted(duplicates):
                 print(z)
         result = []
         for command_name in sorted(d):
             func = d.get(command_name)
             if not func:  # pragma: no cover
-                print('no func:', command_name)
+                print(f"{tag}: no func: {command_name!r}")
                 continue
             if command_name in bad_names:  # #92.
                 continue
             # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
             func_name = getattr(func, '__func_name__', func.__name__)
             if not func_name:  # pragma: no cover
-                print('no name', command_name)
+                print(f"{tag}: no name {command_name!r}")
                 continue
             doc = func.__doc__ or ''
             result.append({
-                "command-name": command_name,
+                "label": command_name,
                 "func":  func_name,
                 "detail": doc,
             })
         if self.log_flag:  # pragma: no cover
             print(f"\n{tag}: {len(result)} leo commands\n")
-            g.printObj([z.get("command-name") for z in result], tag=tag)
-        return self._make_response({"commands": result})
+            g.printObj([z.get("label") for z in result], tag=tag)
+        return self._make_minimal_response({"commands": result})
     #@+node:ekr.20210202183724.6: *6* server._bad_commands
     def _bad_commands(self, c):
-        """Return the list of Leo's command names that leoInteg should ignore."""
+        """Return the list of command names that connected clients should ignore."""
         d = c.commandsDict  # keys are command names, values are functions.
         bad = []
         #
@@ -1428,7 +2208,7 @@ class LeoServer:
 
     #@+node:ekr.20210202183724.7: *6* server._good_commands
     def _good_commands(self):
-        """Defined commands that definitely should be included in leoInteg."""
+        """Defined commands that should be available in a connected client"""
         good_list = [
 
             'contract-all',
@@ -1858,7 +2638,7 @@ class LeoServer:
         return good_list
 
     #@+node:ekr.20210209055518.1: *5* server.get_all_server_commands
-    def get_all_server_commands(self, package):
+    def get_all_server_commands(self, param):
         """
         Public server method:
         Return the names of all callable public methods of the server.
@@ -1882,9 +2662,8 @@ class LeoServer:
         """Begin the connection."""
         self.web_socket = web_socket
         self.loop = asyncio.get_event_loop()
-
     #@+node:ekr.20210205103759.1: *5* server.shut_down
-    def shut_down(self, package):
+    def shut_down(self, param):
         """Shut down the server."""
         tag = 'shut_down'
         n = len(g.app.commanders())
@@ -1896,53 +2675,83 @@ class LeoServer:
     def _ap_to_p(self, ap):
         """
         Convert ap (archived position, a dict) to a valid Leo position.
-        Raise ServerError on any kind of error.
+        
+        Return False on any kind of error to support calls to invalid positions
+        after a document has been closed of switched and interface interaction 
+        in the client generated incoming calls to 'getters' already sent. (for the 
+        now inaccessible leo document conmmander.)
         """
         tag = '_ap_to_p'
         c = self._check_c()
         gnx_d = c.fileCommands.gnxDict
-        outer_stack = ap.get('stack')
-        if outer_stack is None:  # pragma: no cover.
-            raise ServerError(f"{tag}: no stack in ap: {ap!r}")
-        if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
-            raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
         
-        def d_to_childIndex_v (d):
-            """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
-            childIndex = d.get('childIndex')
-            if childIndex is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no childIndex in {d}")
-            try:
-                childIndex = int(childIndex)
-            except Exception:  # pragma: no cover.
-                raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
-            gnx = d.get('gnx')
-            if gnx is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no gnx in {d}.")
-            v = gnx_d.get(gnx)
-            if v is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: gnx not found: {gnx!r}")
-            return childIndex, v
-        #
-        # Compute p.childIndex and p.v.
-        childIndex, v = d_to_childIndex_v(ap)
-        #
-        # Create p.stack.
-        stack = []
-        for stack_d in outer_stack:
-            stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
-            stack.append((stack_v, stack_childIndex))
-        #
-        # Make p and check p.
-        p = Position(v, childIndex, stack)
-        if not c.positionExists(p):  # pragma: no cover.
-            print(
-                f"{tag}: Bad ap: {ap!r}\n"
-                # f"{tag}: position: {p!r}\n"
-                f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
-                f"{tag}: stack: {stack!r}")
-            raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
+        try:    
+            outer_stack = ap.get('stack')
+            if outer_stack is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no stack in ap: {ap!r}")
+            if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
+                raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
+        
+            def d_to_childIndex_v (d):
+                """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
+                childIndex = d.get('childIndex')
+                if childIndex is None:  # pragma: no cover.
+                    raise ServerError(f"{tag}: no childIndex in {d}")
+                try:
+                    childIndex = int(childIndex)
+                except Exception:  # pragma: no cover.
+                    raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
+                gnx = d.get('gnx')
+                if gnx is None:  # pragma: no cover.
+                    raise ServerError(f"{tag}: no gnx in {d}.")
+                v = gnx_d.get(gnx)
+                if v is None:  # pragma: no cover.
+                    raise ServerError(f"{tag}: gnx not found: {gnx!r}")
+                return childIndex, v
+            #
+            # Compute p.childIndex and p.v.
+            childIndex, v = d_to_childIndex_v(ap)
+            #
+            # Create p.stack.
+            stack = []
+            for stack_d in outer_stack:
+                stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
+                stack.append((stack_v, stack_childIndex))
+            #
+            # Make p and check p.
+            p = Position(v, childIndex, stack)
+            if not c.positionExists(p):  # pragma: no cover.
+                print(
+                    f"{tag}: Bad ap: {ap!r}\n"
+                    # f"{tag}: position: {p!r}\n"
+                    f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
+                    f"{tag}: stack: {stack!r}")
+                raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
+        except Exception:
+            return False
+
         return p
+    #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
+    def _send_async_output(self, package):
+        """
+        Send data asynchronousy to the client
+        """
+        tag = "send async output"
+        jsonPackage = json.dumps(package, separators=(',', ':'))
+        if "async" not in package:
+            InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
+        if self.loop:
+            self.loop.create_task(self._async_output(jsonPackage))
+        else:
+            InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
+    #@+node:felix.20210621233316.89: *5* server._async_output
+    async def _async_output(self, json):  # pragma: no cover (tested in server)
+        """Output json string to the web_socket"""
+        tag = '_async_output'
+        if self.web_socket:
+            await self.web_socket.send(bytes(json, 'utf-8'))
+        else:
+            g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:ekr.20210207054237.1: *4* server._check_c
     def _check_c(self):
         """Return self.c or raise ServerError if self.c is None."""
@@ -1969,71 +2778,147 @@ class LeoServer:
                 self._dump_position(p)
                 raise ServerError(message)
     #@+node:ekr.20210209062536.1: *4* server._do_leo_command
-    def _do_leo_command(self, action, package):
+    def _do_leo_command(self, command, param):
         """
-        Execute the leo command given by package ["leo-command-name"].
-        
-        The client must open an outline before calling this method.
+        Generic call to a method in Leo's Commands class or any subcommander class.
+
+        The param["ap"] position is to be selected before having the command run,
+        while the param["keep"] parameter specifies wether the original position
+        should be re-selected afterward.
+
+        TODO: The whole of those operations is to be undoable as one undo step.
+
+        command: a method name (a string).
+        param["ap"]: an archived position.
+        param["keep"]: preserve the current selection, if possible.
+
         """
-        # We *can* require self.c to exist, because:
-        # 1. all commands imply c.
-        # 2. The client must call open_file to set self.c.
-        tag = '_execute_leo_command'
+        tag = '_do_leo_command'
         c = self._check_c()
-        command_name = package.get("leo-command-name")
-        if not command_name:  # pragma: no cover
-            raise ServerError(f"{tag}: no 'leo-command-name' key in package")
-        if command_name in self.bad_commands_list:  # pragma: no cover
-            raise ServerError(f"{tag}: disallowed command: {command_name!r}")
-        func = c.commandsDict.get(command_name)
+
+        if command in self.bad_commands_list:  # pragma: no cover
+            raise ServerError(f"{tag}: disallowed command: {command!r}")
+
+        keepSelection = False  # Set default, optional component of param
+        if "keep" in param:
+            keepSelection = param["keep"]
+
+        func = self._get_commander_method(command) # GET FUNC
+        # func = c.commandsDict.get(command) # Does not work, e.g.: 'executeScript'
+
         if not func:  # pragma: no cover
-            raise ServerError(f"{tag}: Leo command not found: {command_name!r}")
-        value = func(event={"c":c})
+            raise ServerError(f"{tag}: Leo command not found: {command!r}")
+
+        p = self._get_p(param)
+
+        if p == c.p:
+            value = func(event={"c":c})  # no need for re-selection
+        else:
+            old_p = c.p
+            c.selectPosition(p)
+            value = func(event={"c":c})
+            if keepSelection and c.positionExists(old_p):
+                c.selectPosition(old_p)
+
+        # Tag along a possible return value with info sent back by _make_response
         return self._make_response({"return-value": value})
+    #@+node:felix.20210625230236.1: *4* server._get_commander_method
+    def _get_commander_method(self, command):
+        """ Return the given method (p_command) in the Commands class or subcommanders."""
+        # First, try the commands class.
+        c = self._check_c()
+        func = getattr(c, command, None)
+        if func:
+            return func
+        # Otherwise, search all subcommanders for the method.
+        table = (  # This table comes from c.initObjectIvars.
+            'abbrevCommands',
+            'bufferCommands',
+            'chapterCommands',
+            'controlCommands',
+            'convertCommands',
+            'debugCommands',
+            'editCommands',
+            'editFileCommands',
+            'evalController',
+            'gotoCommands',
+            'helpCommands',
+            'keyHandler',
+            'keyHandlerCommands',
+            'killBufferCommands',
+            'leoCommands',
+            'leoTestManager',
+            'macroCommands',
+            'miniBufferWidget',
+            'printingController',
+            'queryReplaceCommands',
+            'rectangleCommands',
+            'searchCommands',
+            'spellCommands',
+            'vimCommands',  # Not likely to be useful.
+        )
+        for ivar in table:
+            subcommander = getattr(c, ivar, None)
+            if subcommander:
+                func = getattr(subcommander, command, None)
+                if func:
+                    return func
+        return None
     #@+node:ekr.20210202110128.54: *4* server._do_message
     def _do_message(self, d):
         """
         Handle d, a python dict representing the incoming request.
-        d must have at least the following keys:
-        
-        - "id": A positive integer.
-        - "action": A string, which is either:
-            - The name of public method of this class.
-            - "execute-leo-command".
-              d["package"]["leo-command-name"] should be the name of a Leo command.
-        
-        Return a dict, created by _make_response, containing least these keys:
+        The d dict must have the three (3) following keys:
 
-        - "id":         Same as the incoming id.
-        - "action":     Same as the incoming action.
-        - "commander":  A dict describing self.c.
-        - "node":       None, or an archived position describing self.c.p.
+        "id": A positive integer.
+
+        "action": A string, which is either:
+            - The name of public method of this class, prefixed with a '!'.
+            - The name of a leo command, without prefix, to be run by _do_leo_command
+
+        "param": A dict to be passed to the called "action" method.
+            (Passed to the public method, or the _do_leo_command. Often contains ap, text & keep)
+
+        Return a dict, created by _make_response or _make_minimal_response
+        that contains at least an 'id' key.
+
         """
         tag = '_do_message'
-        # Require "id" and "action" keys. The "package" key is optional.
+
+        # Require "id" and "action" keys
         id_ = d.get("id")
         if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
         action = d.get("action")
         if action is None:  # pragma: no cover
-            raise ServerError("f{tag}: no action")
-        package = d.get('package', {})
+            raise ServerError(f"{tag}: no action")
+
+        # TODO : make/force always an object from the client connected.
+        param = d.get('param', {}) # Can be none or a string
         # Set log flag.
-        self.log_flag = package.get("log")
+        if param:
+            self.log_flag = param.get("log")
+            pass
+        else:
+            param = {}
+
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
         self.action = action
+
         # Execute the requested action.
-        if action == "execute-leo-command":
-            func = self._do_leo_command
+        if action[0] == "!":
+            action = action[1:] # Remove exclamation point "!"
+            func = self._do_server_command  # Server has this method.
         else:
-            func = self._do_server_command
-        result = func(action, package)
+            func = self._do_leo_command  # No prefix, so it's a Leo command.
+
+        result = func(action, param)
         if result is None:  # pragma: no cover
             raise ServerError(f"{tag}: no response: {action!r}")
         return result
     #@+node:ekr.20210209085438.1: *4* server._do_server_command
-    def _do_server_command(self, action, package):
+    def _do_server_command(self, action, param):
         tag = '_do_server_command'
         # Disallow hidden methods.
         if action.startswith('_'):  # pragma: no cover
@@ -2044,7 +2929,7 @@ class LeoServer:
             raise ServerError(f"{tag}: action not found: {action!r}")  # pragma: no cover
         if not callable(func):
             raise ServerError(f"{tag}: not callable: {func!r}")  # pragma: no cover
-        return func(package)
+        return func(param)
     #@+node:ekr.20210211131707.1: *4* server._dump_*
     def _dump_outline(self, c):  # pragma: no cover
         """Dump the outline."""
@@ -2057,91 +2942,87 @@ class LeoServer:
     def _dump_position(self, p):  # pragma: no cover
         level_s = ' ' * 2 * p.level()
         print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
-    #@+node:ekr.20210202110128.51: *4* server._es & helper
-    def _es(self, s):  # pragma: no cover (tested in client).
-        """
-        Send a response that does not correspond to a request.
-        
-        The response *must* have an "async" key, but *not* an "id" key.
-        """
-        tag = '_es'
-        message = g.toUnicode(s)
-        package = {"async": "", "s": message}
-        response = json.dumps(package, separators=(',', ':'))
-        if self.loop:
-            self.loop.create_task(self._async_output(response))
-        else:
-            print(f"{tag}: Error loop not ready {message}")
-    #@+node:ekr.20210204145818.1: *5* server._async_output
-    async def _async_output(self, json):  # pragma: no cover (tested in server)
-        """Output json string to the web_socket"""
-        tag = '_async_output'
-        if self.web_socket:
-            await self.web_socket.send(bytes(json, 'utf-8'))
-        else:
-            g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:ekr.20210210081236.1: *4* server._get_p
-    def _get_p(self, package):
-        """Return _ap_to_p(package["ap"]) or c.p."""
+    def _get_p(self, param):
+        """Return _ap_to_p(param["ap"]) or c.p."""
+
         tag = '_get_ap'
         c = self.c
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: no c")
-        ap = package.get("ap")
+
+        ap = param.get("ap")
         if ap:
-            p = self._ap_to_p(ap)
-            if not p:  # pragma: no cover
-                raise ServerError(f"{tag}: no p")
-            if not c.positionExists(p):  # pragma: no cover
-                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+            p = self._ap_to_p(ap)  # Convertion
+            if p:
+                if not c.positionExists(p):  # pragma: no cover
+                    raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+                return p  # Return the position
+
+        # Fallback to c.p
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
+
         return c.p
+    #@+node:felix.20210621233316.91: *4* server._get_focus
+    def _get_focus(self):
+        """Server helper method to get the focused panel name string"""
+        tag = '_get_focus'
+        try:
+            w = g.app.gui.get_focus()
+            focus = g.app.gui.widget_name(w)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
+        return focus
     #@+node:ekr.20210211053733.1: *4* server._get_position_d
     def _get_position_d(self, p):
         """
-        Return a python dict containing:
-        - "node": self._p_to_ap(p).
-        - All *cheap* redraw data..
-        
-        Use get_ua to get p.ua *plus* all this redraw data.
-        
-        Note: v.computeIcon sets iconVal as follows:
-            v, val = self, 0
-            if v.hasBody(): val += 1
-            if v.isMarked(): val += 2
-            if v.isCloned(): val += 4
-            if v.isDirty(): val += 8
+        Return a python dict that is adding
+        graphical representation data and flags
+        to the base 'ap' dict from _p_to_ap.
+        (To be used by the connected client GUI.)
         """
-        return {
-            "node": self._p_to_ap(p), # Contains p.gnx, p.childIndex and p.stack.
-            # The cheap redraw data...
-            "body-length": len(p.b),  # *Not* p.b.
-            "has-children": p.hasChildren(),  # *Not* p.children().
-            "has-ua": bool(p.v.u),  # *Not* p.v.u.
-            "headline": p.h,
-            "icon-val": p.v.iconVal,  # An int between 0 and 15.
-            "is-at-file": p.isAnyAtFileNode(),
-            "level": p.level(),  # Useful for debugging.
-        }
+        d = self._p_to_ap(p)
+        d['headline'] = p.h
+        d['level'] = p.level()
+        # TODO : Send p.v.u as simple boolean flag and let user inspect.
+        if p.v.u:
+            d['u'] = p.v.u
+        # TODO : Maybe Send body length, icon#, non-optional names, and/or other...
+        if bool(p.b):
+            d['hasBody'] = True
+        if p.hasChildren():
+            d['hasChildren'] = True
+        if p.isCloned():
+            d['cloned'] = True
+        if p.isDirty():
+            d['dirty'] = True
+        if p.isExpanded():
+            d['expanded'] = True
+        if p.isMarked():
+            d['marked'] = True
+        if p.isAnyAtFileNode():
+            d['atFile'] = True
+        if p == self.c.p:
+            d['selected'] = True
+        return d
     #@+node:ekr.20210206182638.1: *4* server._make_response
     def _make_response(self, package=None):
         """
         Return a json string representing a response dict.
-        
+
         The 'package' kwarg, if present, must be a python dict describing a
         response. package may be an empty dict or None.
-        
+
         The 'p' kwarg, if present, must be a position.
-        
+
         First, this method creates a response (a python dict) containing all
         the keys in the 'package' dict, with the following added keys:
-            
+
         - "id":         The incoming id.
-        - "action":     The incoming action.
         - "commander":  A dict describing self.c.
         - "node":       None, or an archived position describing self.c.p.
-        
+
         Finally, this method returns the json string corresponding to the
         response.
         """
@@ -2163,34 +3044,58 @@ class LeoServer:
             raise InternalServerError(f"{tag}: p does not exist: {p!r}")
         if c and not c.p:  # pragma: no cover
             raise InternalServerError(f"{tag}: empty c.p")
-        #
-        # Always add these keys.
+
+        # Always add id
         package ["id"] = self.current_id
-        package ["action"] = self.action
+
         # The following keys are relevant only if there is an open commander.
         if c:
             # Allow commands, especially _get_redraw_d, to specify p!
             p = p or c.p
             package ["commander"] = {
                 "changed": c.isChanged(),
-                "file_name": c.fileName(), # Can be None for new files.
+                "fileName": c.fileName(), # Can be None for new files.
             }
             # Add all the node data, including:
             # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
             # - All the *cheap* redraw data for p.
             redraw_d = self._get_position_d(p)
-            for key, value in redraw_d.items():
-                if key in package:  # pragma: no cover
-                    raise InternalServerError(f"{tag}: key {key!r} in package: {package!r}")
-                package [key] = value
+            package ["node"] = redraw_d
         if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
-        return json.dumps(package, separators=(',', ':')) 
+        return json.dumps(package, separators=(',', ':'))
+    #@+node:felix.20210621233316.94: *4* server._make_minimal_response
+    def _make_minimal_response(self, package=None):
+        """
+        Return a json string representing a response dict.
+
+        The 'package' kwarg, if present, must be a python dict describing a
+        response. package may be an empty dict or None.
+
+        The 'p' kwarg, if present, must be a position.
+
+        First, this method creates a response (a python dict) containing all
+        the keys in the 'package' dict.
+
+        Then it adds 'id' to the package.
+
+        Finally, this method returns the json string corresponding to the
+        response.
+        """
+        if package is None:
+            package = {}
+
+        # Always add id.
+        package ["id"] = self.current_id
+
+        return json.dumps(package, separators=(',', ':'))
     #@+node:ekr.20210202110128.86: *4* server._p_to_ap
     def _p_to_ap(self, p):
         """
+        * From Leo plugin leoflexx.py *
+
         Convert Leo position p to a serializable archived position.
-        
+
         This returns only position-related data.
         get_position_data returns all data needed to redraw the screen.
         """
@@ -2202,6 +3107,14 @@ class LeoServer:
             'gnx': p.v.gnx,
             'stack': stack,
         }
+    #@+node:felix.20210621233316.96: *4* server._positionFromGnx
+    def _positionFromGnx(self, gnx):
+        '''Return first p node with this gnx or false'''
+        c = self._check_c()
+        for p in c.all_unique_positions():
+            if p.v.gnx == gnx:
+                return p
+        return False
     #@+node:ekr.20210202110128.84: *4* serverver._test_round_trip_positions
     def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
@@ -2212,6 +3125,28 @@ class LeoServer:
             if p != p2:
                 self._dump_outline(c)
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
+    #@+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
+    def _yieldAllRootChildren(self):
+        '''Return all root children P nodes'''
+        c = self._check_c()
+        p = c.rootPosition()
+        while p:
+            yield p
+            p.moveToNext()
+
+    #@+node:felix.20210624160812.1: *4* server.emit_signon
+    def emit_signon(self):
+        '''Simulate the Initial Leo Log Entry'''
+        tag = 'emit_signon'
+        if self.loop:
+            g.app.computeSignon()
+            signon = []
+            for z in (g.app.signon, g.app.signon1):
+                for z2 in z.split('\n'):
+                    signon.append(z2.strip())
+            g.es("\n".join(signon))
+        else:
+            raise ServerError(f"{tag}: no loop ready for emit_signon")
     #@-others
 #@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
@@ -2243,10 +3178,10 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         global g_server
         self.server = g_server
         g.unitTesting = True
-        
+
     def tearDown(self):
-        g.unitTesting = False 
-        
+        g.unitTesting = False
+
     #@+node:ekr.20210208171819.1: *3* test._request
     def _request(self, action, package=None):
         server = self.server
@@ -2284,6 +3219,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     #@+node:ekr.20210210102638.1: *3* test.test_most_public_server_methods
     def test_most_public_server_methods(self):
         server=self.server
+        tag = 'test_most_public_server_methods'
         assert isinstance(server, g_leoserver.LeoServer), self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
@@ -2299,7 +3235,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             'change_all', 'change_then_find',
             'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
             'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
-            'tag_children',  
+            'tag_children',
             # Other methods
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
@@ -2337,7 +3273,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
-                            print(f"Exception in test_most_public_server_methods: {method_name!r} {e}")
+                            print(f"Exception in {tag}: {method_name!r} {e}")
         finally:
             server.close_file({"filename": test_dot_leo})
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
@@ -2371,7 +3307,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             self._request(action, package)
     #@+node:ekr.20210212093613.1: *3* test.test_find_commands
     def test_find_commands(self):
-        
+
         tag = 'test_find_commands'
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
@@ -2398,12 +3334,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         for method in ('clone_find_tag', 'tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-       
+
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
-    # from leo.core import leoGlobals as g
     global wsHost, wsPort
     print("Starting LeoBridge... (Launch with -h for help)")
     # replace default host address and port if provided as arguments
@@ -2424,17 +3359,17 @@ def main():  # pragma: no cover (tested in client)
             n = 0
             async_n = 0
             await websocket.send(controller._make_response())
-            # controller._sign_on()
+            controller.emit_signon()
             async for json_message in websocket:
                 try:
                     n += 1
                     d = None
-                    trace = True  ## controller.trace
                     d = json.loads(json_message)
                     if trace and verbose:
                         print(f"{tag}: got: {d}")
                     elif trace:
-                        print(f"{tag}: got: {d.get('action')}")
+                        # print(f"{tag}: got: {d.get('action')}")
+                        print(f"{tag}: got: {d}")
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
@@ -2449,20 +3384,16 @@ def main():  # pragma: no cover (tested in client)
                         "action": controller.action,
                         "request": data,
                         "ServerError": f"{e}",
-                    }  
+                    }
                     answer = json.dumps(package, separators=(',', ':'))
                 except InternalServerError as e:  # pragma: no cover
                     print(f"{tag}: InternalServerError {e}")
                     break
                 except Exception as e:  # pragma: no cover
                     print(f"{tag}: Unexpected Exception! {e}")
-                    g.printObj(package, tag=f"message: {d}")
                     g.print_exception()
                     break
                 await websocket.send(answer)
-                if n in (3, 4, 7, 10):
-                    async_n += 1
-                    controller._es(f"async message {async_n}")
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
@@ -2501,15 +3432,17 @@ def main():  # pragma: no cover (tested in client)
         unittest.main()
         return  # Make *sure* we don't start the server.
     wsHost, wsPort = get_args()
-    signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
-    print(signon)
     # Open leoBridge.
     controller = LeoServer()
     # Start the server.
-    loop = asyncio.get_event_loop()  
-    server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
+    loop = asyncio.get_event_loop()
+    server = websockets.serve(ws_handler, wsHost, wsPort)
     loop.run_until_complete(server)
+    signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}. Ctrl+c to break"
+    print(signon)
     loop.run_forever()
+    # Execution continues here after server is interupted (e.g. with ctrl+c)
+    print("Stopping leobridge server", flush=True)
 #@-others
 if __name__ == '__main__':
     # pytest will *not* execute this code.
