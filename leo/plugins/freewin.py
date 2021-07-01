@@ -302,7 +302,7 @@ F7_KEY = 0x01000036 # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
 F9_KEY = 0x01000038
 
 GNXre = r'^(.+\.\d+\.\d+)' # For gnx at start of line
-GNX1re = r'.*\s(\w+\.\d+\.\d+)' # For gnx not at start of line
+GNX1re = r'.*[([\s](\w+\.\d+\.\d+)' # For gnx not at start of line
 
 GNX = re.compile(GNXre)
 GNX1 = re.compile(GNX1re)
@@ -339,6 +339,7 @@ RST_STYLESHEET_DARK = '''body {
   color: #ededed;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
+  line-height:120%;
   margin: 8px 0;
   margin-left: 7px;
   margin-right: 7px;  
@@ -395,6 +396,7 @@ RST_STYLESHEET_LIGHT = '''body {
   color: #202020;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
+  line-height: 120%;
   margin: 8px 0;
   margin-left: 7px;
   margin-right: 7px;  
@@ -500,6 +502,8 @@ def get_at_setting_value(name:str, lines:list)->str:
             val = fields[-1].strip()
             val = val.replace('</vh></v>', '')
             break
+    g.es('====', line)
+    g.es('---', val)
     return val
 #@+node:tom.20210625145842.1: ** getGnx
 def getGnx(line):
@@ -596,11 +600,12 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         is_dark = False
         theme_path = g.app.loadManager.computeThemeFilePath()
+        g.es('...', theme_path)
         if theme_path:
             with open(theme_path, encoding=ENCODING) as f:
                 lines = [l.strip() for l in f.readlines()]
             is_dark = get_at_setting_value('color_theme_is_dark', lines) == 'True'
-
+        g.es('=== dark theme?', is_dark)
         if is_dark:
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
@@ -645,6 +650,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             browser_doc = browser.document()
             browser_doc.setDefaultStyleSheet(stylesheet)
 
+        print(self.editor_style)
         #@-<<set up editor>>
         #@+<<set up render button>>
         #@+node:tom.20210602173354.1: *4* <<set up render button>>
