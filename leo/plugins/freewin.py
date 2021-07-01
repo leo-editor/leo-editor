@@ -11,7 +11,7 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 26 June 2021
+:Date: 1 July 2021
 :Version: 1.3
 
 #@+others
@@ -273,7 +273,7 @@ X = 1200
 Y = 100
 DELTA_Y = 35
 
-BG_COLOR_LIGHT = '#fdfdfd'
+BG_COLOR_LIGHT = '#ededed' # '#fdfdfd'
 BG_COLOR_DARK = '#202020'
 FG_COLOR_LIGHT = '#202020'
 FG_COLOR_DARK = '#cbdedc'
@@ -336,7 +336,7 @@ RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK};
 #@+node:tom.20210625145324.1: *3* RsT Stylesheet Dark
 RST_STYLESHEET_DARK = '''body {
   background: #202020;
-  color: #ededed;
+  color: #cbdedc; /*#ededed;*/
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
   line-height:120%;
@@ -359,6 +359,7 @@ RST_STYLESHEET_DARK = '''body {
     padding-right: 6px; padding-left: 2px;
     padding: 2px;
   }
+  
   
   td {
     padding-left: 10px;
@@ -399,7 +400,9 @@ RST_STYLESHEET_LIGHT = '''body {
   line-height: 120%;
   margin: 8px 0;
   margin-left: 7px;
-  margin-right: 7px;  
+  margin-right: 7px; 
+  color: #657b83;
+  /*background = #fdf6e3*/
   }
   
   h1 {text-align: center; margin-top: 7px; margin-bottom: 12px;}
@@ -411,8 +414,7 @@ RST_STYLESHEET_LIGHT = '''body {
   
 
   th {
-    background: #7099aa;
-    /*color: #073642;*/
+    background: #b0ddee;
     color: #093947;
     vertical-align: top;
     border-bottom: thin solid #839496;
@@ -430,7 +432,6 @@ RST_STYLESHEET_LIGHT = '''body {
     border: 2px solid;
     padding-right: 1em;
     padding-left: 1em;
-    /*background-color: #073642;*/
     background-color: #093947;
     color: #202020;
   }
@@ -476,38 +477,12 @@ def open_z_window(event):
 
     zwin.show()
     zwin.activateWindow()
-#@+node:tom.20210614120921.1: ** get_at_setting_value()
-def get_at_setting_value(name:str, lines:list)->str:
-    """Retrieve value of a named setting as a string.
-
-       The input lines are assumed to be from a Leo outline.
-       Thus they are in XML.  We are not doing proper 
-       XML parsing here, just brute force string operations.
-       
-       This function is intended for retrieving the
-       dark/light character of a Leo theme file.
-
-       ARGUMENTS
-       name -- the name of the setting, not including the
-               "@type " introducer.
-       lines -- a list of lines from a Leo theme file.
-
-       RETURNS
-       a string.
-    """
-    val = ''
-    for line in lines:
-        if name in line.split():
-            fields = line.split('=')
-            val = fields[-1].strip()
-            val = val.replace('</vh></v>', '')
-            break
-    g.es('====', line)
-    g.es('---', val)
-    return val
 #@+node:tom.20210625145842.1: ** getGnx
 def getGnx(line):
-    """Find and return a gnx in a line of text, or None."""
+    """Find and return a gnx in a line of text, or None.
+    
+    The gnx may be enclosed in parens or brackets.
+    """
 
     matched = GNX1.match(line) or GNX.match(line)
     target = matched[1] if matched else None
@@ -597,15 +572,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         home = g.app.loadManager.computeHomeDir()
         cssdir = osp_join(home, '.leo', 'css')
+        dict_ = g.app.loadManager.globalSettingsDict
 
-        is_dark = False
-        theme_path = g.app.loadManager.computeThemeFilePath()
-        g.es('...', theme_path)
-        if theme_path:
-            with open(theme_path, encoding=ENCODING) as f:
-                lines = [l.strip() for l in f.readlines()]
-            is_dark = get_at_setting_value('color_theme_is_dark', lines) == 'True'
-        g.es('=== dark theme?', is_dark)
+        is_dark = dict_.get_setting('color-theme-is-dark')
         if is_dark:
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
@@ -623,7 +592,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@-<<set stylesheet paths>>
         #@+<<set stylesheets>>
         #@+node:tom.20210615101103.1: *4* <<set stylesheets>>
-        # Check if editor stylesheet file exists.   If so,
+        # Check if editor stylesheet file exists. If so,
         # we cache its contents.
         if exists(self.editor_csspath):
             with open(self.editor_csspath, encoding=ENCODING) as f:
@@ -637,6 +606,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         if exists(self.rst_csspath):
             with open(self.rst_csspath, encoding=ENCODING) as f:
                 self.rst_stylesheet = f.read()
+        else:
+            self.rst_stylesheet = RST_STYLESHEET_DARK if is_dark \
+                                  else RST_STYLESHEET_LIGHT
         #@-<<set stylesheets>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
@@ -649,8 +621,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
             browser.setReadOnly(True)
             browser_doc = browser.document()
             browser_doc.setDefaultStyleSheet(stylesheet)
-
-        print(self.editor_style)
         #@-<<set up editor>>
         #@+<<set up render button>>
         #@+node:tom.20210602173354.1: *4* <<set up render button>>
