@@ -484,7 +484,8 @@ class ExternalFilesController:
     def ask(self, c, path, p=None):
         """
         Ask user whether to overwrite an @<file> tree.
-        Return True if the user agrees.
+        
+        Return one of ('yes', 'no', 'yes-all', 'no-all')
         """
         if g.unitTesting:
             return False
