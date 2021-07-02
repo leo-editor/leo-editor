@@ -20,7 +20,7 @@ from leo.core.leoCommands import Commands as Cmdr
 class NodeIndices:
     """A class managing global node indices (gnx's)."""
     
-    __slots__ = ['defaultId', 'lastIndex', 'stack', 'timeString', 'userId']
+    # __slots__ = ['defaultId', 'lastIndex', 'stack', 'timeString', 'userId']
 
     #@+others
     #@+node:ekr.20031218072017.1992: *3* ni.__init__
@@ -199,7 +199,7 @@ class NodeIndices:
 
 class Position:
     
-    __slots__ = ['_childIndex', 'stack', 'v']
+    # __slots__ = ['_childIndex', 'stack', 'v']
 
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
@@ -1858,7 +1858,7 @@ position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
 class PosList(list):
     
-    __slots__ = []
+    # __slots__ = []
 
     #@+others
     #@+node:bob.20101215134608.5897: *3* PosList.children
@@ -1913,16 +1913,16 @@ Poslist = PosList  # compatibility.
 
 class VNode:
 
-    __slots__ = [
-        '_bodyString', '_headString', '_p_changed',
-        'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
-        'unknownAttributes',
-        # Were injected.
-        '_import_lines', 'at_read', 'tempAttributes',
-        # Not written to any file.
-        'context', 'expandedPositions', 'insertSpot',
-        'scrollBarSpot', 'selectionLength', 'selectionStart',
-    ]
+    # __slots__ = [
+        # '_bodyString', '_headString', '_p_changed',
+        # 'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
+        # 'unknownAttributes',
+        # # Were injected.
+        # '_import_lines', 'at_read', 'tempAttributes',
+        # # Not written to any file.
+        # 'context', 'expandedPositions', 'insertSpot',
+        # 'scrollBarSpot', 'selectionLength', 'selectionStart',
+    # ]
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
