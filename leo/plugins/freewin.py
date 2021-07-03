@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 1 July 2021
-:Version: 1.3
+:Date: 2 July 2021
+:Version: 1.4a1
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -273,9 +273,9 @@ X = 1200
 Y = 100
 DELTA_Y = 35
 
-BG_COLOR_LIGHT = '#ededed' # '#fdfdfd'
+BG_COLOR_LIGHT = '#202020'
 BG_COLOR_DARK = '#202020'
-FG_COLOR_LIGHT = '#202020'
+FG_COLOR_LIGHT = '#ededed'
 FG_COLOR_DARK = '#cbdedc'
 FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
@@ -321,7 +321,7 @@ EDITOR_STYLESHEET_DARK = f'''QTextEdit {{
     color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
     font-family: {FONT_FAMILY};
-    font-size: 11pt;
+    font-size: {EDITOR_FONT_SIZE};
     }}'''
 
 RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR_LIGHT}; 
@@ -380,27 +380,16 @@ RST_STYLESHEET_DARK = '''body {
     font-weight: bold;
 }
 
-p.last {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    margin-top: 0px;
-    background: #073642;
-}
-
 '''
 #@+node:tom.20210625155534.1: *3* RsT Stylesheet Light
 RST_STYLESHEET_LIGHT = '''body {
   background: #ededed;
-  color: #202020;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
   line-height: 120%;
   margin: 8px 0;
   margin-left: 7px;
-  margin-right: 7px; 
+  margin-right: 7px;
   color: #657b83;
   /*background = #fdf6e3*/
   }
@@ -427,30 +416,31 @@ RST_STYLESHEET_LIGHT = '''body {
     padding-left: 10px;
   }
   
-  div.admonition, div.note {
+  div.admonition, div.system-message,
+        div.warning, div.note {
     margin: 2em;
     border: 2px solid;
     padding-right: 1em;
     padding-left: 1em;
-    background-color: #093947;
-    color: #202020;
+    background: #cbdcdc;
+    color: #586e75;
+    border-color: #657b83;
   }
   
-  div.note p.admonition-title {
+  p.admonition-title {
     color: #2aa198;
     font-weight: bold;
-}
+  }
 
-p.last {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    margin-top: 0px;
-    background: #073642;
-}
+  div.caution p.admonition-title,
+      div.attention p.admonition-title,
+      div.warning p.admonition-title {
+    color: #cb4b16;
+  }
 
+  div.note {
+    border-radius: .5em;
+  }
 '''
 #@-others
 #@-<< Stylesheets >>
@@ -775,7 +765,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
             text = self.editor.document().toRawText()
             html = self.render_rst(text)
             self.browser.setHtml(html)
-
         self.switching = False
 
     def switch_and_render(self):
@@ -807,10 +796,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # Insert stylesheet if our rendering view is a web browser widget
         if self.render_pane_type == BROWSER_VIEW:
             if self.rst_stylesheet:
-                style_insert = f'''<style type='text/css'>
-                {self.rst_stylesheet}
-                </style>
-                </head>'''
+                style_insert = ("<style type='text/css'>\n"
+                        f'{self.rst_stylesheet}\n</style>\n</head>\n')
                 _html = _html.replace('</head>', style_insert, 1)
 
         return _html
