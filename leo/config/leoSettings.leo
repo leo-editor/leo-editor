@@ -1014,6 +1014,7 @@
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
 <v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
+<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
 <v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-two-leo-files</vh></v>
@@ -1097,10 +1098,6 @@
 <v t="ekr.20150420122804.10"><vh>@item preview-tree-nodes</vh></v>
 <v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
 <v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
-</v>
-<v t="ekr.20180403153650.1"><vh>@menu &amp;Revert/Refresh Files</vh>
-<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
-<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 </v>
 <v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
@@ -1355,6 +1352,7 @@
 <v t="ekr.20131213135427.22014"><vh>@item demote</vh></v>
 <v t="ekr.20131213135427.22013"><vh>@item promote</vh></v>
 <v t="ekr.20180405112755.1"><vh>@item -</vh></v>
+<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
 <v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
 <v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
 <v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
@@ -2311,6 +2309,7 @@
 <v t="ekr.20210412113510.1"></v>
 <v t="ekr.20210530064911.1"></v>
 <v t="ekr.20210530064922.1"></v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11043,7 +11042,6 @@ Use different names instead.</t>
 <t tx="ekr.20180403122225.1"></t>
 <t tx="ekr.20180403123734.1"></t>
 <t tx="ekr.20180403124541.1"></t>
-<t tx="ekr.20180403153650.1"></t>
 <t tx="ekr.20180403153949.1"></t>
 <t tx="ekr.20180403154314.1"></t>
 <t tx="ekr.20180403154327.1"></t>
