@@ -4408,11 +4408,15 @@ def skip_braces(s, i):
             level += 1; i += 1
         elif c == '}':
             level -= 1
-            if level <= 0: return i
+            if level <= 0:
+                return i
             i += 1
-        elif c == '\'' or c == '"': i = g.skip_string(s, i)
-        elif g.match(s, i, '//'): i = g.skip_to_end_of_line(s, i)
-        elif g.match(s, i, '/*'): i = g.skip_block_comment(s, i)
+        elif c == '\'' or c == '"':
+            i = g.skip_string(s, i)
+        elif g.match(s, i, '//'):
+            i = g.skip_to_end_of_line(s, i)
+        elif g.match(s, i, '/*'):
+            i = g.skip_block_comment(s, i)
         # 7/29/02: be more careful handling conditional code.
         elif (
             g.match_word(s, i, "#if") or
@@ -4477,9 +4481,8 @@ def skip_pascal_begin_end(s, i):
             i += 1
     return i
 #@+node:ekr.20031218072017.3164: *4* g.skip_pascal_block_comment
-# Scans past a pascal comment delimited by (* and *).
-
 def skip_pascal_block_comment(s, i):
+    """Scan past a pascal comment delimited by (* and *)."""
     j = i
     assert(g.match(s, i, "(*"))
     i = s.find("*)", i)
@@ -4487,7 +4490,7 @@ def skip_pascal_block_comment(s, i):
         return i + 2
     g.scanError("Run on comment" + s[j:i])
     return len(s)
-#@+node:ekr.20031218072017.3165: *4* g.skip_pascal_string : called by tangle
+#@+node:ekr.20031218072017.3165: *4* g.skip_pascal_string
 def skip_pascal_string(s, i):
     j = i; delim = s[i]; i += 1
     assert(delim == '"' or delim == '\'')
@@ -4497,21 +4500,21 @@ def skip_pascal_string(s, i):
         i += 1
     g.scanError("Run on string: " + s[j:i])
     return i
-#@+node:ekr.20031218072017.3166: *4* g.skip_heredoc_string : called by php import (Dave Hein)
-#@+at 08-SEP-2002 DTHEIN:  added function skip_heredoc_string
-# A heredoc string in PHP looks like:
-#
-#   <<<EOS
-#   This is my string.
-#   It is mine. I own it.
-#   No one else has it.
-#   EOS
-#
-# It begins with <<< plus a token (naming same as PHP variable names).
-# It ends with the token on a line by itself (must start in first position.
-#@@c
-
+#@+node:ekr.20031218072017.3166: *4* g.skip_heredoc_string
 def skip_heredoc_string(s, i):
+    """
+    08-SEP-2002 DTHEIN.
+    A heredoc string in PHP looks like:
+    
+      <<<EOS
+      This is my string.
+      It is mine. I own it.
+      No one else has it.
+      EOS
+    
+    It begins with <<< plus a token (naming same as PHP variable names).
+    It ends with the token on a line by itself (must start in first position.
+    """
     j = i
     assert(g.match(s, i, "<<<"))
     m = re.match(r"\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
@@ -4530,16 +4533,20 @@ def skip_heredoc_string(s, i):
         i += len(delim)
     return i
 #@+node:ekr.20031218072017.3167: *4* g.skip_pp_directive
-# Now handles continuation lines and block comments.
-
 def skip_pp_directive(s, i):
+    """Now handles continuation lines and block comments."""
     while i < len(s):
         if g.is_nl(s, i):
-            if g.escaped(s, i): i = g.skip_nl(s, i)
-            else: break
-        elif g.match(s, i, "//"): i = g.skip_to_end_of_line(s, i)
-        elif g.match(s, i, "/*"): i = g.skip_block_comment(s, i)
-        else: i += 1
+            if g.escaped(s, i):
+                i = g.skip_nl(s, i)
+            else:
+                break
+        elif g.match(s, i, "//"):
+            i = g.skip_to_end_of_line(s, i)
+        elif g.match(s, i, "/*"):
+            i = g.skip_block_comment(s, i)
+        else:
+            i += 1
     return i
 #@+node:ekr.20031218072017.3168: *4* g.skip_pp_if
 # Skips an entire if or if def statement, including any nested statements.
@@ -4591,35 +4598,6 @@ def skip_pp_part(s, i):
         elif g.match(s, i, "/*"): i = g.skip_block_comment(s, i)
         else: i += 1
     return i, delta
-#@+node:ekr.20031218072017.3170: *4* g.skip_python_string
-def skip_python_string(s, i, verbose=True):
-    if g.match(s, i, "'''") or g.match(s, i, '"""'):
-        j = i; delim = s[i] * 3; i += 3
-        k = s.find(delim, i)
-        if k > -1: return k + 3
-        if verbose:
-            g.scanError("Run on triple quoted string: " + s[j:i])
-        return len(s)
-    # 2013/09/08: honor the verbose argument.
-    return g.skip_string(s, i, verbose=verbose)
-#@+node:ekr.20031218072017.2369: *4* g.skip_string (leoGlobals)
-def skip_string(s, i, verbose=True):
-    """
-    Scan forward to the end of a string.
-    New in Leo 4.4.2 final: give error only if verbose is True.
-    """
-    j = i; delim = s[i]; i += 1
-    assert(delim == '"' or delim == '\'')
-    n = len(s)
-    while i < n and s[i] != delim:
-        if s[i] == '\\': i += 2
-        else: i += 1
-    if i >= n:
-        if verbose:
-            g.scanError("Run on string: " + s[j:i])
-    elif s[i] == delim:
-        i += 1
-    return i
 #@+node:ekr.20031218072017.3171: *4* g.skip_to_semicolon
 # Skips to the next semicolon that is not in a comment or a string.
 
@@ -4649,7 +4627,7 @@ def skip_typedef(s, i):
         i = g.skip_to_semicolon(s, i)
     return i
 #@+node:ekr.20031218072017.3173: *3* Scanners: no error messages
-#@+node:ekr.20031218072017.3174: *4* escaped
+#@+node:ekr.20031218072017.3174: *4* g.escaped
 # Returns True if s[i] is preceded by an odd number of backslashes.
 
 def escaped(s, i):
@@ -4658,7 +4636,7 @@ def escaped(s, i):
         count += 1
         i -= 1
     return (count % 2) == 1
-#@+node:ekr.20031218072017.3175: *4* find_line_start
+#@+node:ekr.20031218072017.3175: *4* g.find_line_start
 def find_line_start(s, i):
     """Return the index in s of the start of the line containing s[i]."""
     if i < 0:
@@ -4668,19 +4646,13 @@ def find_line_start(s, i):
     return 0 if i == -1 else i + 1
     # if i == -1: return 0
     # else: return i + 1
-#@+node:ekr.20031218072017.3176: *4* find_on_line
+#@+node:ekr.20031218072017.3176: *4* g.find_on_line
 def find_on_line(s, i, pattern):
     j = s.find('\n', i)
     if j == -1: j = len(s)
     k = s.find(pattern, i, j)
     return k
-#@+node:ekr.20031218072017.3177: *4* is_c_id
-def is_c_id(ch):
-    return g.isWordChar(ch)
-#@+node:ekr.20031218072017.3178: *4* is_nl
-def is_nl(s, i):
-    return i < len(s) and (s[i] == '\n' or s[i] == '\r')
-#@+node:ekr.20031218072017.3179: *4* g.is_special
+#@+node:ekr.20031218072017.3179: *4* g.g.is_special
 def is_special(s, directive):
     """Return True if the body text contains the @ directive."""
     assert(directive and directive[0] == '@')
@@ -4692,18 +4664,24 @@ def is_special(s, directive):
     if m:
         return True, m.start(1)
     return False, -1
-#@+node:ekr.20031218072017.3180: *4* is_ws & is_ws_or_nl
+#@+node:ekr.20031218072017.3177: *4* g.is_c_id
+def is_c_id(ch):
+    return g.isWordChar(ch)
+#@+node:ekr.20031218072017.3178: *4* g.is_nl
+def is_nl(s, i):
+    return i < len(s) and (s[i] == '\n' or s[i] == '\r')
+#@+node:ekr.20031218072017.3180: *4* g.is_ws & is_ws_or_nl
 def is_ws(c):
     return c == '\t' or c == ' '
 
 def is_ws_or_nl(s, i):
     return g.is_nl(s, i) or (i < len(s) and g.is_ws(s[i]))
-#@+node:ekr.20031218072017.3181: *4* match
+#@+node:ekr.20031218072017.3181: *4* g.match
 # Warning: this code makes no assumptions about what follows pattern.
 
 def match(s, i, pattern):
     return s and pattern and s.find(pattern, i, i + len(pattern)) == i
-#@+node:ekr.20031218072017.3182: *4* match_c_word
+#@+node:ekr.20031218072017.3182: *4* g.match_c_word
 def match_c_word(s, i, name):
     n = len(name)
     return (
@@ -4711,7 +4689,7 @@ def match_c_word(s, i, name):
         name == s[i : i + n] and
         (i + n == len(s) or not g.is_c_id(s[i + n]))
     )
-#@+node:ekr.20031218072017.3183: *4* match_ignoring_case
+#@+node:ekr.20031218072017.3183: *4* g.match_ignoring_case
 def match_ignoring_case(s1, s2):
     return s1 and s2 and s1.lower() == s2.lower()
 #@+node:ekr.20031218072017.3184: *4* g.match_word & g.match_words
@@ -4734,7 +4712,7 @@ def match_word(s, i, pattern):
 
 def match_words(s, i, patterns):
     return any(g.match_word(s, i, pattern) for pattern in patterns)
-#@+node:ekr.20031218072017.3185: *4* skip_blank_lines
+#@+node:ekr.20031218072017.3185: *4* g.skip_blank_lines
 # This routine differs from skip_ws_and_nl in that
 # it does not advance over whitespace at the start
 # of a non-empty or non-nl terminated line
@@ -4750,20 +4728,20 @@ def skip_blank_lines(s, i):
             else: break
         else: break
     return i
-#@+node:ekr.20031218072017.3186: *4* skip_c_id
+#@+node:ekr.20031218072017.3186: *4* g.skip_c_id
 def skip_c_id(s, i):
     n = len(s)
     while i < n and g.isWordChar(s[i]):
         i += 1
     return i
-#@+node:ekr.20040705195048: *4* skip_id
+#@+node:ekr.20040705195048: *4* g.skip_id
 def skip_id(s, i, chars=None):
     chars = g.toUnicode(chars) if chars else ''
     n = len(s)
     while i < n and (g.isWordChar(s[i]) or s[i] in chars):
         i += 1
     return i
-#@+node:ekr.20031218072017.3187: *4* skip_line, skip_to_start/end_of_line
+#@+node:ekr.20031218072017.3187: *4* g.skip_line, skip_to_start/end_of_line
 #@+at These methods skip to the next newline, regardless of whether the
 # newline may be preceeded by a backslash. Consequently, they should be
 # used only when we know that we are not in a preprocessor directive or
@@ -4798,7 +4776,7 @@ def skip_to_start_of_line(s, i):
     if i == -1:
         return 0
     return i + 1
-#@+node:ekr.20031218072017.3188: *4* skip_long
+#@+node:ekr.20031218072017.3188: *4* g.skip_long
 def skip_long(s, i):
     """
     Scan s[i:] for a valid int.
@@ -4819,7 +4797,7 @@ def skip_long(s, i):
         return i, val
     except Exception:
         return i, None
-#@+node:ekr.20031218072017.3190: *4* skip_nl
+#@+node:ekr.20031218072017.3190: *4* g.skip_nl
 # We need this function because different systems have different end-of-line conventions.
 
 def skip_nl(s, i):
@@ -4829,13 +4807,13 @@ def skip_nl(s, i):
     if g.match(s, i, '\n') or g.match(s, i, '\r'):
         return i + 1
     return i
-#@+node:ekr.20031218072017.3191: *4* skip_non_ws
+#@+node:ekr.20031218072017.3191: *4* g.skip_non_ws
 def skip_non_ws(s, i):
     n = len(s)
     while i < n and not g.is_ws(s[i]):
         i += 1
     return i
-#@+node:ekr.20031218072017.3192: *4* skip_pascal_braces
+#@+node:ekr.20031218072017.3192: *4* g.skip_pascal_braces
 # Skips from the opening { to the matching }.
 
 def skip_pascal_braces(s, i):
@@ -4843,13 +4821,40 @@ def skip_pascal_braces(s, i):
     if i == -1:
         return len(s)
     return s.find('}', i)
-#@+node:ekr.20031218072017.3193: *4* skip_to_char
+#@+node:ekr.20031218072017.3170: *4* g.skip_python_string
+def skip_python_string(s, i):
+    if g.match(s, i, "'''") or g.match(s, i, '"""'):
+        delim = s[i] * 3
+        i += 3
+        k = s.find(delim, i)
+        if k > -1:
+            return k + 3
+        return len(s)
+    return g.skip_string(s, i)
+#@+node:ekr.20031218072017.2369: *4* g.skip_string
+def skip_string(s, i):
+    """Scan forward to the end of a string."""
+    delim = s[i]
+    i += 1
+    assert(delim == '"' or delim == '\'')
+    n = len(s)
+    while i < n and s[i] != delim:
+        if s[i] == '\\':
+            i += 2
+        else:
+            i += 1
+    if i >= n:
+        pass
+    elif s[i] == delim:
+        i += 1
+    return i
+#@+node:ekr.20031218072017.3193: *4* g.skip_to_char
 def skip_to_char(s, i, ch):
     j = s.find(ch, i)
     if j == -1:
         return len(s), s[i:]
     return j, s[i:j]
-#@+node:ekr.20031218072017.3194: *4* skip_ws, skip_ws_and_nl
+#@+node:ekr.20031218072017.3194: *4* g.skip_ws, skip_ws_and_nl
 def skip_ws(s, i):
     n = len(s)
     while i < n and g.is_ws(s[i]):
@@ -7181,7 +7186,7 @@ def python_tokenize(s, line_numbers=True):
         elif ch == '#':
             kind, i = 'comment', g.skip_to_end_of_line(s, i)
         elif ch in '"\'':
-            kind, i = 'string', g.skip_python_string(s, i, verbose=False)
+            kind, i = 'string', g.skip_python_string(s, i)
         elif ch == '_' or ch.isalpha():
             kind, i = 'id', g.skip_id(s, i)
         else:
