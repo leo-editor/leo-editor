@@ -94,29 +94,18 @@ cannot search for tags of zero-length, and it automatically removes surrounding
 whitespace (calling .strip()).
 '''
 #@-<< docstring >>
-#@+<< imports >>
-#@+node:peckj.20140804103733.9241: ** << imports >>
 import re
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import isQt6, QtWidgets, QtCore
-#
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< imports >>
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
 def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    # if g.app.gui is None: g.app.createQtGui(__file__)
-    ok = g.app.gui.guiName().startswith('qt')
-    if ok:
-        #g.registerHandler(('new','open2'),onCreate)
-        g.registerHandler('after-create-leo-frame',onCreate)
-        g.plugin_signon(__name__)
-    elif g.app.gui.guiName() != 'curses':
-        g.es('Plugin %s not loaded.' % __name__, color='red')
-    return ok
+    """Return True if the plugin has loaded successfully."""
+    # 2031: Allow this plugin to run without Qt.
+    g.registerHandler('after-create-leo-frame',onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:peckj.20140804103733.9245: ** onCreate (nodetags.py)
 def onCreate (tag, keys):
 
@@ -148,9 +137,11 @@ class TagController:
         self.taglist = []
         self.initialize_taglist()
         c.theTagController = self
-        self.ui = LeoTagWidget(c)
-        c.frame.log.createTab('Tags', widget=self.ui)
-        self.ui.update_all()
+        # #2031: Init the widgets only if we are using Qt.
+        if g.app.gui.guiName().startswith('qt'):
+            self.ui = LeoTagWidget(c)
+            c.frame.log.createTab('Tags', widget=self.ui)
+            self.ui.update_all()
     #@+node:peckj.20140804103733.9263: *3* tag_c.initialize_taglist
     def initialize_taglist(self):
         taglist = []
