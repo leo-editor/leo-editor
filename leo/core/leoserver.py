@@ -122,17 +122,14 @@ class ServerExternalFilesController:
         changes.
         '''
         self.infoMessage = None  # reset infoMessage
-        # False or "detected", "refreshed" or "ignored"    
-        
-        
+        # False or "detected", "refreshed" or "ignored"
+
+
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
         #
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
-
-
-
         for p in c.all_unique_positions():
             if self.waitingForAnswer:
                 break
@@ -147,21 +144,18 @@ class ServerExternalFilesController:
     #@+node:felix.20210627013530.1: *3* sefc.idle_check_leo_file
     def idle_check_leo_file(self, c):
         """Check c's .leo file for external changes."""
-        # TODO !!
         path = c.fileName()
         if not self.has_changed(path):
             return
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
-        print("******* DETECTED LEO FILE CHANGE *******")
-        # #1888:
-        val = self.ask(c, path)
-        if val in ('yes', 'yes-all'):
-            # Do a complete restart of Leo.
-            g.es_print('restarting Leo...')
-            print("******* TODO RESTARTING *******")
-            ###c.restartLeo()
+        # For now, ignore the #1888 fix method
+        if self.ask(c, path):
+            #reload Commander
+            self.lastCommander.close()
+            g.leoServer.open_file({"filename":path }) # ignore returned value
+
     #@+node:felix.20210626222905.5: *3* sefc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
@@ -190,14 +184,8 @@ class ServerExternalFilesController:
             print("ERROR: Received Result but no Asked Dialog", flush=True)
             return
 
-        if p_result and "reload" in p_result.lower():
-            print("TODO : Reload leo file commander:"+self.lastCommander.mFileName)
-            self.waitingForAnswer = False  # unblock
-
         # check if p_resultwas from a warn (ok) or an ask ('yes','yes-all','no','no-all')
         # act accordingly
-
-        path = g.fullPath(self.lastCommander, self.lastPNode)
 
         # 1- if ok, unblock 'warn'
         # 2- if no, unblock 'ask'
@@ -209,19 +197,30 @@ class ServerExternalFilesController:
             self.yesno_all_answer = p_result.lower()
         # ------------------------------------------ Also covers setting yesAll in #5
 
-        # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
-        # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
-        if bool(p_result and 'yes' in p_result.lower()):
-            self.lastCommander.selectPosition(self.lastPNode)
-            self.lastCommander.refreshFromDisk()
+        path = ""
+        if self.lastPNode:
+            path = g.fullPath(self.lastCommander, self.lastPNode)
+            # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
+            # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
+            if bool(p_result and 'yes' in p_result.lower()):
+                self.lastCommander.selectPosition(self.lastPNode)
+                self.lastCommander.refreshFromDisk()
+        elif self.lastCommander:
+            path = self.lastCommander.fileName()
+            # Same but for Leo file commander (close and reopen)
+            if bool(p_result and 'yes' in p_result.lower()):
+                self.lastCommander.close()
+                g.leoServer.open_file({"filename":path }) # ignore returned value
 
-        # Always update the path & time to prevent future warnings for this PNode.
-        self.set_time(path)
-        self.checksum_d[path] = self.checksum(path)
+        # Always update the path & time to prevent future warnings for this path.
+        if path:
+            self.set_time(path)
+            self.checksum_d[path] = self.checksum(path)
 
         self.waitingForAnswer = False  # unblock
         # unblock: run the loop as if timer had hit
-        self.idle_check_commander(self.lastCommander)
+        if self.lastCommander:
+            self.idle_check_commander(self.lastCommander)
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* efc.ask
     def ask(self, c, path, p=None):
@@ -256,13 +255,11 @@ class ServerExternalFilesController:
         _is_leo = path.endswith(('.leo', '.db')) # todo :check if this is even used (.leo)
 
         if _is_leo:
-            # todo :check if this is even used (.leo)
             s = '\n'.join([
                 f'{g.splitLongFileName(path)} has changed outside Leo.',
-                'Overwrite it?'
+                'Reload it?'
             ])
         else:
-            # todo :check if this is always used (not .leo file)
             s = '\n'.join([
                 f'{g.splitLongFileName(path)} has changed outside Leo.',
                 f"Reload {where} in Leo?",
@@ -710,7 +707,6 @@ class LeoServer:
                 c.revert()
             # Then, if still possible, close it.
             if forced or not c.changed:
-                # c.closed = True # maybe useless flag from leobridgeserver.py technique
                 c.close()
             else:
                 # Cannot close, return empty response without 'total' (ask to save, ignore or cancel)
@@ -914,7 +910,7 @@ class LeoServer:
             fc.in_headline = False
             # w = c.frame.body.wrapper
             c.bodyWantsFocus()
-            c.bodyWantsFocusNow()    
+            c.bodyWantsFocusNow()
         #
         if fc.in_headline:
             ins = len(p.h)
@@ -1409,6 +1405,16 @@ class LeoServer:
         c.selectPosition(p)
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
+    #@+node:felix.20210703021435.1: *5* server.insert_child_node
+    def insert_child_node(self, param):
+        """
+        Insert a child node at given node, then select it once created, and finally return it
+        """
+        c = self._check_c()
+        p = self._get_p(param)
+        c.selectPosition(p)
+        c.insertHeadline(op_name='Insert Child', as_child=True)
+        return self._make_response()
     #@+node:felix.20210621233316.56: *5* server.insert_named_node
     def insert_named_node(self, param):
         '''
@@ -1419,6 +1425,26 @@ class LeoServer:
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
         newNode = p.insertAfter()
+        # set this node's new headline
+        newNode.h = newHeadline
+        newNode.setDirty()
+        c.undoer.afterInsertNode(
+            newNode, 'Insert Node', bunch)
+        c.selectPosition(newNode)
+        return self._make_response()
+    #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
+    def insert_child_named_node(self, param):
+        '''
+        Insert a child node at given node, set its headline, select it and finally return it
+        '''
+        c = self._check_c()
+        p = self._get_p(param)
+        newHeadline = param.get('name')
+        bunch = c.undoer.beforeInsertNode(p)
+        if c.config.getBool('insert-new-nodes-at-end'):
+            newNode = p.insertAsLastChild()
+        else:
+            newNode = p.insertAsNthChild(0)
         # set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
@@ -2735,23 +2761,23 @@ class LeoServer:
     def _ap_to_p(self, ap):
         """
         Convert ap (archived position, a dict) to a valid Leo position.
-        
+
         Return False on any kind of error to support calls to invalid positions
-        after a document has been closed of switched and interface interaction 
-        in the client generated incoming calls to 'getters' already sent. (for the 
+        after a document has been closed of switched and interface interaction
+        in the client generated incoming calls to 'getters' already sent. (for the
         now inaccessible leo document conmmander.)
         """
         tag = '_ap_to_p'
         c = self._check_c()
         gnx_d = c.fileCommands.gnxDict
-        
-        try:    
+
+        try:
             outer_stack = ap.get('stack')
             if outer_stack is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no stack in ap: {ap!r}")
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
-        
+
             def d_to_childIndex_v (d):
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex = d.get('childIndex')
