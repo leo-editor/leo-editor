@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 2 July 2021
-:Version: 1.4a1
+:Date: 4 July 2021
+:Version: 1.4
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
