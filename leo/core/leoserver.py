@@ -122,9 +122,9 @@ class ServerExternalFilesController:
         changes.
         '''
         self.infoMessage = None  # reset infoMessage
-        # False or "detected", "refreshed" or "ignored"
-
-
+        # False or "detected", "refreshed" or "ignored"    
+        
+        
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
         #
@@ -150,7 +150,7 @@ class ServerExternalFilesController:
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
-        # For now, ignore the #1888 fix method
+        # For now, ignore the #1888 fix method 
         if self.ask(c, path):
             #reload Commander
             self.lastCommander.close()
@@ -210,7 +210,7 @@ class ServerExternalFilesController:
             # Same but for Leo file commander (close and reopen)
             if bool(p_result and 'yes' in p_result.lower()):
                 self.lastCommander.close()
-                g.leoServer.open_file({"filename":path }) # ignore returned value
+                g.leoServer.open_file({"filename":path }) # ignore returned value        
 
         # Always update the path & time to prevent future warnings for this path.
         if path:
@@ -418,6 +418,214 @@ class ServerExternalFilesController:
         return
 
     #@-others
+#@+node:felix.20210703235550.1: ** class ServerTextWrapper
+class ServerTextWrapper:
+    """
+    A class that represents text as a Python string.
+    Modified from Leo's StringTextWrapper class source
+    """
+
+    #@+others
+    #@+node:felix.20210703235550.2: *3* stw.ctor
+    def __init__(self, c, name):
+        """Ctor for the IntegTextWrapper class."""
+        self.c = c
+        self.name = name
+        self.ins = 0
+        self.sel = 0, 0
+        self.s = ''
+        self.yScroll = 0
+        self.supportsHighLevelInterface = True
+        self.widget = None  # This ivar must exist, and be None.
+
+    def __repr__(self):
+        return f"<ServerTextWrapper: {id(self)} {self.name}>"
+
+    def getName(self):
+        """ServerTextWrapper."""
+        return self.name  # Essential.
+
+    #@+node:felix.20210703235550.3: *3* stw.Clipboard
+    def clipboard_clear(self):
+        g.app.gui.replaceClipboardWith('')
+
+    def clipboard_append(self, s):
+        s1 = g.app.gui.getTextFromClipboard()
+        g.app.gui.replaceClipboardWith(s1 + s)
+
+    #@+node:felix.20210703235550.4: *3* stw.Do-nothings
+    def flashCharacter(self, i, bg='white', fg='red',
+                       flashes=3, delay=75): pass
+
+    def see(self, i): pass
+
+    def seeInsertPoint(self): pass
+
+    def setFocus(self): pass
+
+    def setStyleClass(self, name): pass
+
+    def tag_configure(self, colorName, **keys): pass
+
+    #@+node:felix.20210703235550.5: *3* stw.Text
+    #@+node:felix.20210703235550.6: *4* stw.appendText
+    def appendText(self, s):
+        """IntegTextWrapper appendText"""
+        self.s = self.s + g.toUnicode(s)
+        # defensive
+        self.ins = len(self.s)
+        self.sel = self.ins, self.ins
+
+    #@+node:felix.20210703235550.7: *4* stw.delete
+    def delete(self, i, j=None):
+        """IntegTextWrapper delete"""
+        i = self.toPythonIndex(i)
+        if j is None:
+            j = i + 1
+        j = self.toPythonIndex(j)
+        # This allows subclasses to use this base class method.
+        if i > j:
+            i, j = j, i
+        s = self.getAllText()
+        self.setAllText(s[:i] + s[j:])
+        # Bug fix: 2011/11/13: Significant in external tests.
+        self.setSelectionRange(i, i, insert=i)
+
+    #@+node:felix.20210703235550.8: *4* stw.deleteTextSelection
+    def deleteTextSelection(self):
+        """IntegTextWrapper."""
+        i, j = self.getSelectionRange()
+        self.delete(i, j)
+
+    #@+node:felix.20210703235550.9: *4* stw.get
+    def get(self, i, j=None):
+        """IntegTextWrapper get"""
+        i = self.toPythonIndex(i)
+        if j is None:
+            j = i + 1
+        j = self.toPythonIndex(j)
+        s = self.s[i:j]
+        # print("WRAPPER GET with self.s[i:j]: " + s)
+        return g.toUnicode(s)
+
+    #@+node:felix.20210703235550.10: *4* stw.getAllText
+    def getAllText(self):
+        """IntegTextWrapper getAllText"""
+        s = self.s
+        # print("WRAPPER getAllText  " + s)
+        return g.checkUnicode(s)
+
+    #@+node:felix.20210703235550.11: *4* stw.getInsertPoint
+    def getInsertPoint(self):
+        """IntegTextWrapper getInsertPoint"""
+        i = self.ins
+        if i is None:
+            if self.virtualInsertPoint is None:
+                i = 0
+            else:
+                i = self.virtualInsertPoint
+        self.virtualInsertPoint = i
+        return i
+
+    #@+node:felix.20210703235550.12: *4* stw.getSelectedText
+    def getSelectedText(self):
+        """IntegTextWrapper getSelectedText"""
+        i, j = self.sel
+        s = self.s[i:j]
+        # print("WRAPPER getSelectedText with self.s[i:j]: " + s)
+        return g.checkUnicode(s)
+
+    #@+node:felix.20210703235550.13: *4* stw.getSelectionRange
+    def getSelectionRange(self, sort=True):
+        """Return the selected range of the widget."""
+        sel = self.sel
+        if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
+            i, j = sel
+            if sort and i > j:
+                sel = j, i  # Bug fix: 10/5/07
+            return sel
+        i = self.ins
+        return i, i
+
+    #@+node:felix.20210703235550.14: *4* stw.getXScrollPosition
+    def getXScrollPosition(self):
+        return 0
+        # X axis ignored
+
+    #@+node:felix.20210703235550.15: *4* stw.getYScrollPosition
+    def getYScrollPosition(self):
+        # print("wrapper get y scroll" + str(self.yScroll))
+        return self.yScroll
+
+    #@+node:felix.20210703235550.16: *4* stw.hasSelection
+    def hasSelection(self):
+        """IntegTextWrapper hasSelection"""
+        i, j = self.getSelectionRange()
+        return i != j
+
+    #@+node:felix.20210703235550.17: *4* stw.insert
+    def insert(self, i, s):
+        """IntegTextWrapper insert"""
+        i = self.toPythonIndex(i)
+        s1 = s
+        self.s = self.s[:i] + s1 + self.s[i:]
+        i += len(s1)
+        self.ins = i
+        self.sel = i, i
+
+    #@+node:felix.20210703235550.18: *4* stw.selectAllText
+    def selectAllText(self, insert=None):
+        """IntegTextWrapper selectAllText"""
+        self.setSelectionRange(0, 'end', insert=insert)
+
+    #@+node:felix.20210703235550.19: *4* stw.setAllText
+    def setAllText(self, s):
+        """IntegTextWrapper setAllText"""
+        # print("WRAPPER setAllText: " + s)
+        self.s = s
+        i = len(self.s)
+        self.ins = i
+        self.sel = i, i
+
+    #@+node:felix.20210703235550.20: *4* stw.setInsertPoint
+    def setInsertPoint(self, pos, s=None):
+        """IntegTextWrapper setInsertPoint"""
+        self.virtualInsertPoint = i = self.toPythonIndex(pos)
+        self.ins = i
+        self.sel = i, i
+
+    #@+node:felix.20210703235550.21: *4* stw.setXScrollPosition
+    def setXScrollPosition(self, i):
+        pass
+        # X axis ignored
+
+    #@+node:felix.20210703235550.22: *4* stw.setYScrollPosition
+    def setYScrollPosition(self, i):
+        self.yScroll = i
+        # print("wrapper set y scroll" + str(self.yScroll))
+
+    #@+node:felix.20210703235550.23: *4* stw.setSelectionRange
+    def setSelectionRange(self, i, j, insert=None):
+        """IntegTextWrapper setSelectionRange"""
+        i, j = self.toPythonIndex(i), self.toPythonIndex(j)
+        self.sel = i, j
+        self.ins = j if insert is None else self.toPythonIndex(insert)
+
+    #@+node:felix.20210703235550.24: *4* stw.toPythonIndex
+    def toPythonIndex(self, index):
+        """IntegTextWrapper toPythonIndex"""
+        return g.toPythonIndex(self.s, index)
+
+    #@+node:felix.20210703235550.25: *4* stw.toPythonIndexRowCol
+    def toPythonIndexRowCol(self, index):
+        """IntegTextWrapper toPythonIndexRowCol"""
+        s = self.getAllText()
+        i = self.toPythonIndex(index)
+        row, col = g.convertPythonIndexToRowCol(s, i)
+        return i, row, col
+
+    #@-others
+
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
     """Leo Server Controller"""
@@ -470,7 +678,7 @@ class LeoServer:
         # override for "revert to file" operation
         g.app.gui.runAskYesNoDialog = self._returnYes  # pointer - not a function call
         g.app.gui.show_find_success = self._show_find_success  # pointer - not a function call
-        self.headlineWidget = self.g.bunch(_name='tree')
+        self.headlineWidget = g.bunch(_name='tree')
         #
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
@@ -643,6 +851,7 @@ class LeoServer:
         if not found:
             c = self.bridge.openLeoFile(filename)
             c.findCommands.ftm = StringFindTabManager(c)
+            c.frame.body.wrapper = ServerTextWrapper(c, "clientBody")
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -910,7 +1119,7 @@ class LeoServer:
             fc.in_headline = False
             # w = c.frame.body.wrapper
             c.bodyWantsFocus()
-            c.bodyWantsFocusNow()
+            c.bodyWantsFocusNow()    
         #
         if fc.in_headline:
             ins = len(p.h)
@@ -1744,7 +1953,7 @@ class LeoServer:
             'shell-command',
             'shell-command-on-region',
             'cheat-sheet',
-            'dehoist',  # Duplicates of de-hoist.
+            # 'dehoist',  # Duplicates of de-hoist.
             'find-clone-all',
             'find-clone-all-flattened',
             'find-clone-tag',
@@ -2761,23 +2970,23 @@ class LeoServer:
     def _ap_to_p(self, ap):
         """
         Convert ap (archived position, a dict) to a valid Leo position.
-
+        
         Return False on any kind of error to support calls to invalid positions
-        after a document has been closed of switched and interface interaction
-        in the client generated incoming calls to 'getters' already sent. (for the
+        after a document has been closed of switched and interface interaction 
+        in the client generated incoming calls to 'getters' already sent. (for the 
         now inaccessible leo document conmmander.)
         """
         tag = '_ap_to_p'
         c = self._check_c()
         gnx_d = c.fileCommands.gnxDict
-
-        try:
+        
+        try:    
             outer_stack = ap.get('stack')
             if outer_stack is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no stack in ap: {ap!r}")
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
-
+        
             def d_to_childIndex_v (d):
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex = d.get('childIndex')
@@ -2907,7 +3116,8 @@ class LeoServer:
                 c.selectPosition(old_p)
 
         # Tag along a possible return value with info sent back by _make_response
-        return self._make_response({"return-value": value})
+        # {"return-value": value} TODO : MAKE SERIALIZABLE IF POSITIONS, ETC.
+        return self._make_response()
     #@+node:felix.20210625230236.1: *4* server._get_commander_method
     def _get_commander_method(self, command):
         """ Return the given method (p_command) in the Commands class or subcommanders."""
