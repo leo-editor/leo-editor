@@ -199,7 +199,15 @@ class NodeIndices:
 
 class Position:
     
-    __slots__ = ['_childIndex', 'stack', 'v']
+    __slots__ = [
+        '_childIndex', 'stack', 'v',
+        #
+        # EKR: The following fields are deprecated,
+        #      as are the PosList class, c.find_h and c.find_b.
+        #
+        'matchiter', # for c.find_b and quicksearch.py.
+        'mo', # for c.find_h
+    ]
 
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
