@@ -273,9 +273,9 @@ X = 1200
 Y = 100
 DELTA_Y = 35
 
-BG_COLOR_LIGHT = '#202020'
+FG_COLOR_LIGHT = '#6B5B53'
+BG_COLOR_LIGHT = '#ededed'
 BG_COLOR_DARK = '#202020'
-FG_COLOR_LIGHT = '#ededed'
 FG_COLOR_DARK = '#cbdedc'
 FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
@@ -283,7 +283,6 @@ EDITOR_FONT_SIZE = '11pt'
 EDITOR_STYLESHEET_LIGHT_FILE = 'freewin_editor_light.css'
 EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
 ENCODING = 'utf-8'
-
 BROWSER = 1
 EDITOR = 0
 BROWSER_VIEW = 'browser_view'
@@ -335,8 +334,8 @@ RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK};
 #@+others
 #@+node:tom.20210625145324.1: *3* RsT Stylesheet Dark
 RST_STYLESHEET_DARK = '''body {
-  background: #202020;
   color: #cbdedc; /*#ededed;*/
+  background: #202020;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
   line-height:120%;
@@ -355,11 +354,14 @@ RST_STYLESHEET_DARK = '''body {
     background: #073642;
     vertical-align: top;
     border-bottom: thin solid #839496;
-    text-align: left;
+    text-align: center;
     padding-right: 6px; padding-left: 2px;
     padding: 2px;
   }
   
+  th.docinfo-name {
+    text-align: right;
+  }
   
   td {
     padding-left: 10px;
@@ -383,6 +385,7 @@ RST_STYLESHEET_DARK = '''body {
 '''
 #@+node:tom.20210625155534.1: *3* RsT Stylesheet Light
 RST_STYLESHEET_LIGHT = '''body {
+  color: #6B5B53;
   background: #ededed;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
@@ -390,8 +393,6 @@ RST_STYLESHEET_LIGHT = '''body {
   margin: 8px 0;
   margin-left: 7px;
   margin-right: 7px;
-  color: #657b83;
-  /*background = #fdf6e3*/
   }
   
   h1 {text-align: center; margin-top: 7px; margin-bottom: 12px;}
@@ -401,13 +402,12 @@ RST_STYLESHEET_LIGHT = '''body {
     margin-top: 10px;
   }
   
-
   th {
-    background: #b0ddee;
     color: #093947;
+    background: #b0ddee;
     vertical-align: top;
     border-bottom: thin solid #839496;
-    text-align: left;
+    text-align: center;
     padding-right: 6px; padding-left: 2px;
     padding: 2px;
   }
@@ -416,6 +416,10 @@ RST_STYLESHEET_LIGHT = '''body {
     padding-left: 10px;
   }
   
+  th.docinfo-name {
+    text-align: right;
+  }
+
   div.admonition, div.system-message,
         div.warning, div.note {
     margin: 2em;
@@ -536,9 +540,11 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         self.c = c
         self.p = c.p
+        self.host_id = c.p.gnx
         w = c.frame.body.wrapper
         self.host_editor = w.widget
         self.switching = False
+        self.closing = False
 
         self.reloadSettings()
 
@@ -633,11 +639,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
         layout.addWidget(self.stacked_widget)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        central_widget = QWidget()
+        self.central_widget = central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-        central_widget.keyPressEvent = self.keyPressEvent
         #@-<<build central widget>>
         #@+<<set geometry>>
         #@+node:tom.20210528235451.1: *4* <<set geometry>>
@@ -666,6 +671,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # Avoids initial delay when switching to RsT the first time.
         dummy = publish_string('dummy', writer_name='html').decode(ENCODING)
         self.browser.setHtml(dummy)
+        central_widget.keyPressEvent = self.keyPressEvent
 
         self.show()
     #@+node:tom.20210625205847.1: *3* reload settings
@@ -677,10 +683,22 @@ class ZEditorWin(QtWidgets.QMainWindow):
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
-        """Update host node if this card's text has changed.  Otherwise
-           if the host node's text has changed, update the card's text 
-           with the host's changed text. Render as plain text or RsT.
+        """Update host node if this card's text has changed.
+        
+           Otherwise if the host node's text has changed, update
+           the card's text with the host's changed text.
+           Render as plain text or RsT.
+           
+           If the host node does not exist any more, delete ourself.
         """
+        if self.closing:
+            return
+
+        # Make sure our host node still exists
+        if not self.c.positionExists(self.p):
+            self.teardown(tag)
+            return
+
         if self.switching: return
 
         if self.doc.isModified():
@@ -703,6 +721,23 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
             self.doc.setModified(False)
 
+    #@+node:tom.20210703173219.1: *3* teardown
+    def teardown(self, tag=''):
+        # Close window and delete it when host node is deleted.
+        if self.closing:
+            return
+
+        self.closing = True
+        g.unregisterHandler(tag, self.update)
+        self.central_widget.keyPressEvent = None
+        id_ = self.host_id
+        self.editor.deleteLater()
+        self.browser.deleteLater()
+        self.stacked_widget.deleteLater()
+        self.central_widget.deleteLater()
+        instances[id_] = None # Not sure if we need this
+        del instances[id_]
+        self.deleteLater()
     #@+node:tom.20210619000302.1: *3* keyPressEvent
     def keyPressEvent(self, event):
         """Take action on keypresses.
@@ -765,6 +800,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             text = self.editor.document().toRawText()
             html = self.render_rst(text)
             self.browser.setHtml(html)
+
         self.switching = False
 
     def switch_and_render(self):
@@ -799,7 +835,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 style_insert = ("<style type='text/css'>\n"
                         f'{self.rst_stylesheet}\n</style>\n</head>\n')
                 _html = _html.replace('</head>', style_insert, 1)
-
         return _html
     #@-others
 #@-others
