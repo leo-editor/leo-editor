@@ -122,9 +122,9 @@ class ServerExternalFilesController:
         changes.
         '''
         self.infoMessage = None  # reset infoMessage
-        # False or "detected", "refreshed" or "ignored"    
-        
-        
+        # False or "detected", "refreshed" or "ignored"
+
+
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
         #
@@ -150,7 +150,7 @@ class ServerExternalFilesController:
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
-        # For now, ignore the #1888 fix method 
+        # For now, ignore the #1888 fix method
         if self.ask(c, path):
             #reload Commander
             self.lastCommander.close()
@@ -210,7 +210,7 @@ class ServerExternalFilesController:
             # Same but for Leo file commander (close and reopen)
             if bool(p_result and 'yes' in p_result.lower()):
                 self.lastCommander.close()
-                g.leoServer.open_file({"filename":path }) # ignore returned value        
+                g.leoServer.open_file({"filename":path }) # ignore returned value
 
         # Always update the path & time to prevent future warnings for this path.
         if path:
@@ -643,7 +643,6 @@ class LeoServer:
         if not found:
             c = self.bridge.openLeoFile(filename)
             c.findCommands.ftm = StringFindTabManager(c)
-            c.frame.body.wrapper = ServerTextWrapper(c, "clientBody")
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -911,7 +910,7 @@ class LeoServer:
             fc.in_headline = False
             # w = c.frame.body.wrapper
             c.bodyWantsFocus()
-            c.bodyWantsFocusNow()    
+            c.bodyWantsFocusNow()
         #
         if fc.in_headline:
             ins = len(p.h)
@@ -2762,23 +2761,23 @@ class LeoServer:
     def _ap_to_p(self, ap):
         """
         Convert ap (archived position, a dict) to a valid Leo position.
-        
+
         Return False on any kind of error to support calls to invalid positions
-        after a document has been closed of switched and interface interaction 
-        in the client generated incoming calls to 'getters' already sent. (for the 
+        after a document has been closed of switched and interface interaction
+        in the client generated incoming calls to 'getters' already sent. (for the
         now inaccessible leo document conmmander.)
         """
         tag = '_ap_to_p'
         c = self._check_c()
         gnx_d = c.fileCommands.gnxDict
-        
-        try:    
+
+        try:
             outer_stack = ap.get('stack')
             if outer_stack is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no stack in ap: {ap!r}")
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
-        
+
             def d_to_childIndex_v (d):
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex = d.get('childIndex')
