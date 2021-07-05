@@ -12,6 +12,7 @@ Provides the *PyQt5* spellings of Qt modules, classes and constants:
 
 Note: In Python 3 QString does not exist.
 """
+# pylint: disable=import-error
 import leo.core.leoGlobals as g
 #
 # Set defaults.
