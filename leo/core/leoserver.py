@@ -2770,14 +2770,13 @@ class LeoServer:
         tag = '_ap_to_p'
         c = self._check_c()
         gnx_d = c.fileCommands.gnxDict
-
         try:
             outer_stack = ap.get('stack')
             if outer_stack is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no stack in ap: {ap!r}")
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
-
+            #
             def d_to_childIndex_v (d):
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex = d.get('childIndex')
@@ -2815,7 +2814,6 @@ class LeoServer:
                 raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
         except Exception:
             return False
-
         return p
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
     def _send_async_output(self, package):
@@ -2897,17 +2895,22 @@ class LeoServer:
 
         p = self._get_p(param)
 
-        if p == c.p:
-            value = func(event={"c":c})  # no need for re-selection
-        else:
-            old_p = c.p
-            c.selectPosition(p)
-            value = func(event={"c":c})
-            if keepSelection and c.positionExists(old_p):
-                c.selectPosition(old_p)
-
+        try:
+            if p == c.p:
+                value = func(event={"c":c})  # no need for re-selection
+            else:
+                old_p = c.p
+                c.selectPosition(p)
+                value = func(event={"c":c})
+                if keepSelection and c.positionExists(old_p):
+                    c.selectPosition(old_p)
+        except Exception as e:
+            print("_do_leo_command Recovered from Error "+ str(e))
+            return self._make_response() # Return empty on error
+        #
         # Tag along a possible return value with info sent back by _make_response
-        # {"return-value": value} TODO : MAKE SERIALIZABLE IF POSITIONS, ETC.
+        if self._is_jsonable(value):
+            return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:felix.20210625230236.1: *4* server._get_commander_method
     def _get_commander_method(self, command):
@@ -3093,6 +3096,13 @@ class LeoServer:
         if p == self.c.p:
             d['selected'] = True
         return d
+    #@+node:felix.20210705211625.1: *4* server._is_jsonable
+    def _is_jsonable(self, x):
+        try:
+            json.dumps(x)
+            return True
+        except (TypeError, OverflowError):
+            return False
     #@+node:felix.20210621233316.93: *4* server._make_response
     def _make_response(self, package=None):
         """
