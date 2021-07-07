@@ -427,7 +427,7 @@ class LeoServer:
 
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
-        import leo.core.leoExternalFiles as leoExternalFiles
+        # import leo.core.leoExternalFiles as leoExternalFiles
         global g
         t1 = time.process_time()
         #
@@ -3454,7 +3454,6 @@ def main():  # pragma: no cover (tested in client)
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
             n = 0
-            async_n = 0
             await websocket.send(controller._make_response())
             controller.emit_signon()
             async for json_message in websocket:
@@ -3536,7 +3535,7 @@ def main():  # pragma: no cover (tested in client)
     server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
     loop.run_until_complete(server)
     signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}. Ctrl+c to break"
-    print(signon)
+    print(signon, flush=True)
     loop.run_forever()
     # Execution continues here after server is interupted (e.g. with ctrl+c)
     print("Stopping leobridge server", flush=True)
