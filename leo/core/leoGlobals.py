@@ -1185,7 +1185,7 @@ class MatchBrackets:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
-        for n in range(len(self.brackets)):
+        for n in range(len(self.brackets)):  # pylint: disable=consider-using-enumerate
             if ch1 == self.brackets[n]:
                 target = self.matching_brackets[n]
                 break
