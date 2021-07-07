@@ -3766,7 +3766,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513122253.1: *5* LeoMLTree._init_update
     def _init_update(self):
         '''Put self.cursor_line and self.start_display_at in range.'''
-        # pylint: disable=access-member-before-definition
+        # pylint: disable=access-member-before-definition,consider-using-max-builtin
         display_length = len(self._my_widgets)
         self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
         if self.slow_scroll:

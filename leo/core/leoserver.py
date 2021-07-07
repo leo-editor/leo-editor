@@ -3423,8 +3423,8 @@ def main():  # pragma: no cover (tested in client)
     # Open leoBridge.
     controller = LeoServer()
     # Start the server.
-    loop = asyncio.get_event_loop()
-    server = websockets.serve(ws_handler, wsHost, wsPort)
+    loop = asyncio.get_event_loop()  
+    server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)  # pylint: disable=no-member
     loop.run_until_complete(server)
     signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}. Ctrl+c to break"
     print(signon)

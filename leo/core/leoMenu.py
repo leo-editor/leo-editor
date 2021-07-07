@@ -179,6 +179,7 @@ class LeoMenu:
         parentMenu = self.getMenu(parentName)
         if not parentMenu:
             g.trace('NO PARENT', parentName, g.callers())
+            return  # #2030
         table: List[Any] = []
         for z in aList:
             kind, val, val2 = z

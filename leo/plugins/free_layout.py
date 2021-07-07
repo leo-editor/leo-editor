@@ -254,7 +254,7 @@ class FreeLayoutController:
         if d:
             for name in sorted(d.keys()):
 
-                def func(event): ###, c=c, d=d, name=name):
+                def func(event):
                     layout = d.get(name)
                     if layout:
                         c.free_layout.get_top_splitter().load_layout(c, layout)
