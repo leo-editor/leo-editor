@@ -463,6 +463,7 @@ class LinterTable():
             'modes': [self.modes],
             'plugins': [self.plugins],
         }
+        suppress_list = ['freewin.py',]
         functions = d.get(scope)
         paths = []
         if functions:
@@ -471,6 +472,9 @@ class LinterTable():
                     # Bug fix: 2016/10/15
                 for fn in files:
                     fn = g.os_path_abspath(fn)
+                    if g.shortFileName(fn) in suppress_list:
+                        print(f"\npylint-leo: skip {fn}")
+                        continue
                     if g.os_path_exists(fn):
                         if g.os_path_isfile(fn):
                             paths.append(fn)
