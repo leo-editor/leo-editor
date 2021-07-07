@@ -2507,7 +2507,7 @@ def main():  # pragma: no cover (tested in client)
     controller = LeoServer()
     # Start the server.
     loop = asyncio.get_event_loop()  
-    server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
+    server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)  # pylint: disable=no-member
     loop.run_until_complete(server)
     loop.run_forever()
 #@-others

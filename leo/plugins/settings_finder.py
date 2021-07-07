@@ -7,16 +7,19 @@ Let the user pick settings from a menu, find the relevant @settings nodes and op
 from copy import deepcopy
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import VNode
+#
+# #2030: Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
-#@+node:ekr.20170313021118.1: ** init
+#@+node:ekr.20170313021118.1: ** init (settings_finder.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True
 
-#@+node:ekr.20170313021152.1: ** onCreate
+#@+node:ekr.20170313021152.1: ** onCreate (settings_finder.py)
 def onCreate (tag, key):
 
     c = key.get('c')

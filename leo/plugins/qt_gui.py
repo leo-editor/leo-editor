@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140907085654.18699: * @file ../plugins/qt_gui.py
 """This file contains the gui wrapper for Qt: g.app.gui."""
+# pylint: disable=import-error
 #@+<< imports >>
 #@+node:ekr.20140918102920.17891: ** << imports >> (qt_gui.py)
 import datetime
