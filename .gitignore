@@ -17,6 +17,8 @@ leo/.vscode/
 
 # The wax_off script makes including the mypy_stub folder valuable.
 # mypy_stubs/
+# Don't add the helper directories.
+mypy_stubs/3.*/
 
 # Transcrypt folder.
 __target__
