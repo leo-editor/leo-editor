@@ -82,94 +82,6 @@ class WaxOff:
         i = self.skip_ws(s, j)
         return f"{name}={initializer}", i
         
-    #@+node:ekr.20210709065306.1: ** wax_off.wax_off
-    def wax_off(self):
-        """The main line of wax_off.py."""
-        # Handle command-line options.
-        self.scan_options()
-        # Define directories
-        output_directory = r'c:\leo.repo\leo-editor\mypy_stubs'
-        assert os.path.exists(output_directory), output_directory
-        source_directory = r'c:\leo.repo\leo-editor\leo\core'
-        assert os.path.exists(source_directory), source_directory
-        stub_directory = r'c:\leo.repo\leo-editor\mypy_stubs'
-        assert os.path.exists(stub_directory), stub_directory
-        # Define files
-        input_fn = os.path.join(source_directory, 'leoNodes.py')
-        assert os.path.exists(input_fn), input_fn
-        stub_fn = os.path.join(stub_directory, 'leoNodes.pyi')
-        new_fn = os.path.join(output_directory, 'new_leoNodes.py')
-        # Read the input file.
-        with open(input_fn, 'r') as f:
-            contents = f.read()
-        # Find all the class defs.
-        n = 0
-        file_stubs, replacements = [], []
-        for m in class_pat.finditer(contents):
-            class_stub = m.group(0).rstrip() + '\n'
-            file_stubs.append((m.start(), class_stub))
-        # Find all the defs.
-        for m in def_pat.finditer(contents):
-            n += 1
-            stub = f"{m.group(0)} ...\n"
-            lws = m.group(1)
-            name = m.group(2)
-            args = self.stripped_args(m.group(3))
-            # ret = m.group(4)
-            stripped = f"{lws}def {name}({args}):"
-            assert not stripped.startswith('\n'), stripped
-            if 0:
-                print(f"{n:>3} original: {m.group(0).rstrip()}")
-                print(f"{n:>3}     stub: {stub.rstrip()}")
-                print(f"{n:>3} stripped: {stripped}")
-                print('')
-            # Append the results.
-            replacements.append((m.start(), m.group(0), stripped))
-            file_stubs.append((m.start(), stub))
-        # Dump the replacements:
-        if 0:
-            for i, data in enumerate(replacements):
-                start, old, new = data
-                print(i, start)
-                print(f"{old!r}")
-                print(f"{new!r}")
-        # Sort the stubs.
-        file_stubs.sort()
-        # Dump the sorted stubs.
-        if 0:
-            for data in file_stubs:
-                start, s = data
-                print(s.rstrip())
-        # Write the stub file.
-        if 1:
-            with open(stub_fn, 'w') as f:
-                f.write(''.join(z[1] for z in file_stubs))
-            print('wrote', stub_fn)
-        # Compute the new contents.
-        new_contents = contents
-        for data in reversed(replacements):
-            start, old, new = data
-            assert new_contents[start:].startswith(old), (start, old, new_contents[start:start+50])
-            new_contents = new_contents[:start] + new + new_contents[start+len(old):]
-        # Dump the new contents.
-        if 0:
-            print('\nnew contents...\n')
-            print(new_contents)
-        # Diff the old and new contents.
-        if 0:
-            lines = list(difflib.unified_diff(
-                contents.splitlines(True),
-                new_contents.splitlines(True),
-                fromfile=input_fn,
-                tofile=new_fn,
-                n=0))
-            for line in lines:
-                print(repr(line))
-        # Write the new file.
-        if 0:
-            with open(new_fn, 'w') as f:
-                f.write(new_contents)
-        print(f"{len(replacements)} replacements")
     #@+node:ekr.20210709055018.1: ** wax_off.scan_options
     def scan_options(self):
         """Run commands specified by sys.argv."""
@@ -307,6 +219,94 @@ class WaxOff:
             args.append(arg)
             assert progress < i, (i, repr(s[i:]))
         return ', '.join(args)
+    #@+node:ekr.20210709065306.1: ** wax_off.wax_off
+    def wax_off(self):
+        """The main line of wax_off.py."""
+        # Handle command-line options.
+        self.scan_options()
+        # Define directories
+        output_directory = r'c:\leo.repo\leo-editor\mypy_stubs'
+        assert os.path.exists(output_directory), output_directory
+        source_directory = r'c:\leo.repo\leo-editor\leo\core'
+        assert os.path.exists(source_directory), source_directory
+        stub_directory = r'c:\leo.repo\leo-editor\mypy_stubs'
+        assert os.path.exists(stub_directory), stub_directory
+        # Define files
+        input_fn = os.path.join(source_directory, 'leoNodes.py')
+        assert os.path.exists(input_fn), input_fn
+        stub_fn = os.path.join(stub_directory, 'leoNodes.pyi')
+        new_fn = os.path.join(output_directory, 'new_leoNodes.py')
+        # Read the input file.
+        with open(input_fn, 'r') as f:
+            contents = f.read()
+        # Find all the class defs.
+        n = 0
+        file_stubs, replacements = [], []
+        for m in class_pat.finditer(contents):
+            class_stub = m.group(0).rstrip() + '\n'
+            file_stubs.append((m.start(), class_stub))
+        # Find all the defs.
+        for m in def_pat.finditer(contents):
+            n += 1
+            stub = f"{m.group(0)} ...\n"
+            lws = m.group(1)
+            name = m.group(2)
+            args = self.stripped_args(m.group(3))
+            # ret = m.group(4)
+            stripped = f"{lws}def {name}({args}):"
+            assert not stripped.startswith('\n'), stripped
+            if 0:
+                print(f"{n:>3} original: {m.group(0).rstrip()}")
+                print(f"{n:>3}     stub: {stub.rstrip()}")
+                print(f"{n:>3} stripped: {stripped}")
+                print('')
+            # Append the results.
+            replacements.append((m.start(), m.group(0), stripped))
+            file_stubs.append((m.start(), stub))
+        # Dump the replacements:
+        if 0:
+            for i, data in enumerate(replacements):
+                start, old, new = data
+                print(i, start)
+                print(f"{old!r}")
+                print(f"{new!r}")
+        # Sort the stubs.
+        file_stubs.sort()
+        # Dump the sorted stubs.
+        if 0:
+            for data in file_stubs:
+                start, s = data
+                print(s.rstrip())
+        # Write the stub file.
+        if 1:
+            with open(stub_fn, 'w') as f:
+                f.write(''.join(z[1] for z in file_stubs))
+            print('wrote', stub_fn)
+        # Compute the new contents.
+        new_contents = contents
+        for data in reversed(replacements):
+            start, old, new = data
+            assert new_contents[start:].startswith(old), (start, old, new_contents[start:start+50])
+            new_contents = new_contents[:start] + new + new_contents[start+len(old):]
+        # Dump the new contents.
+        if 0:
+            print('\nnew contents...\n')
+            print(new_contents)
+        # Diff the old and new contents.
+        if 0:
+            lines = list(difflib.unified_diff(
+                contents.splitlines(True),
+                new_contents.splitlines(True),
+                fromfile=input_fn,
+                tofile=new_fn,
+                n=0))
+            for line in lines:
+                print(repr(line))
+        # Write the new file.
+        if 0:
+            with open(new_fn, 'w') as f:
+                f.write(new_contents)
+        print(f"{len(replacements)} replacements")
     #@-others
     
 WaxOff().wax_off()
