@@ -13,24 +13,19 @@ EKR: imo, this little utility is far more useful than make_stub_files. Advantage
 1. It is far easier to create mypy annotations directly in the actual sources.
 2. There is no need to describe expected types to mypy!
 """
-#@+<< imports >>
-#@+node:ekr.20210709060417.1: ** << imports >>
 import argparse
 import difflib
 import glob
 import os
-import pdb ; assert pdb  ###
 import re
 import sys
-#@-<< imports >>
-#@+<< define regexs >>
-#@+node:ekr.20210709060433.1: ** << define regexs >>
+
 # Match class definitions.
 class_pat = re.compile(r'^[ ]*class\s+[\w_]+.*?:', re.MULTILINE)
 
 # Match function/method definitions.
 def_pat = re.compile(r'^([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + re.DOTALL)
-#@-<< define regexs >>
+
 __version__ = 'wax_off.py version 1.0'
 
 class WaxOff:
