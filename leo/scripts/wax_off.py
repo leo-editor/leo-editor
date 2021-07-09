@@ -119,39 +119,28 @@ class WaxOff:
         - arg: The next argument.
         - i:   The index of the character after arg.
         """
-        # trace = False
         assert i < len(s), (i, len(s))
-        #if trace: print('')
         m = self.name_pat.match(s[i:])
         if not m:
-            # if trace: g.trace('no match', i, repr(s[i:]))
             return (None, len(s))
         name = m.group(0).strip()
         i += len(m.group(0))
-        # if s[i:].strip():
-        #    if trace: g.trace(i, 'Name', name, 'Rest:', repr(s[i:]))
         if i >= len(s):
-            # if trace: g.trace(i, 'nothing after name')
             return (name, i)
         if s[i] == ':':
             # Skip the annotation.
             i += 1
             j = self.skip_to_outer_delim(s, i, delims="=,")
-            ### annotation = s[i:j].strip()
-            i =self.skip_ws(s, j)
-            # if trace: g.trace(i, 'annotation', repr(annotation))
+            i = self.skip_ws(s, j)
         if i >= len(s):
-            # if trace: g.trace(i, 'nothing after annotation')
             return name, i
         if s[i] == ',':
-            # if trace: g.trace(i, 'comma', repr(s[i:]))
             return name, i + 1
         # Skip the initializer.
         assert s[i] == '=', (i, s[i:])
         i += 1
         j = self.skip_to_outer_delim(s, i, delims=",")
         initializer = s[i:j].strip()
-        # if trace: g.trace(i, 'initializer', initializer)
         if j < len(s) and s[j] == ',':
             j += 1
         i = self.skip_ws(s, j)
@@ -161,7 +150,7 @@ class WaxOff:
     def main(self):
         """The main line of the wax_off script."""
         # Handle command-line options.
-        self.scan_options()
+        self.scan_options()  # Set ivars.
         for fn in self.files:
             path = os.path.join(self.input_directory, fn)
             self.do_file(path)
@@ -181,7 +170,6 @@ class WaxOff:
         add('FILES', nargs='*', help='list of files or directories')
         add('-d', '--diff', dest='d', action='store_true', help='Show diff without writing files')
         add('-i', '--input-directory', dest='i_dir', metavar="DIR", type=dir_path, help='Input directory')
-        # add('-n', '--no-overwrite', dest='n', action='store_true', help='Don\'t change existing files')
         add('-o', '--output-directory', dest='o_dir', metavar="DIR", type=dir_path, help='Output directory')
         add('-t', '--trace', dest='t', action='store_true', help='Show debug traces')
         add('-v', '--version', dest='v', action='store_true', help='show version and exit')
@@ -190,13 +178,10 @@ class WaxOff:
         if args.v:
             print(__version__)
             sys.exit(0)
-        # if args.n:
-            # self.overwrite = False
-        if args.d:
-            self.diff = True
-        if args.t:
-            self.trace = True
-        # Compute directories
+        # Set flags.
+        self.diff = bool(args.d)
+        self.trace = bool(args.t)
+        # Compute directories. They are known to exist.
         self.input_directory = args.i_dir or os.getcwd()
         self.output_directory = args.o_dir or os.getcwd()
         # Get files.
@@ -204,7 +189,7 @@ class WaxOff:
         for fn in args.FILES:
             path = os.path.join(self.input_directory, fn)
             files.extend(glob.glob(path))
-        # Make sure they exist.
+        # Warn if files do not exist.
         self.files = []
         for path in files:
             if not path.endswith('.py'):
@@ -215,7 +200,6 @@ class WaxOff:
                 print(f"File not found: {path}")
         if self.trace:
             print('')
-            print(f"Overwrite allowed: {self.overwrite}")
             print(f"  Input directory: {self.input_directory}")
             print(f" Output directory: {self.output_directory}")
             print('')
@@ -225,7 +209,7 @@ class WaxOff:
             print('')
         # Check the arguments.
         if not self.files:
-            print('No output files')
+            print('No input files')
             sys.exit(1)
                 
     #@+node:ekr.20210709052929.4: ** wax_off.skip_to_outer_delim & helpers
@@ -237,8 +221,6 @@ class WaxOff:
         
         Return i, the character after the delim, or len(s) if the delim has not been seen.
         """
-        # trace = False
-        # i1 = 0  # For tracing.
         assert i < len(s), i
         # Type annotations only use [], but initializers can use anything.
         c_level, p_level, s_level = 0, 0, 0  # Levels for {}, (), []
@@ -248,7 +230,6 @@ class WaxOff:
             i += 1
             if ch in delims:
                 if (c_level, p_level, s_level) == (0, 0, 0):
-                    # if trace: g.trace(i, 'Val1:', s[i1:i], 'Rest:', repr(s[i:]))
                     return i - 1  # Let caller handle ending delim.
             elif ch == '{':
                 c_level += 1
@@ -270,7 +251,6 @@ class WaxOff:
                 pass
             assert progress < i, (i, repr(s[i:]))
         assert (c_level, p_level, s_level) == (0, 0, 0), (c_level, p_level, s_level)
-        # if trace: g.trace(i, 'Val2:', s[i1:i], 'Rest:', repr(s[i:]))
         return len(s)
     #@+node:ekr.20210709052929.5: *3* wax_off.skip_comment
     def skip_comment(self, s, i):
