@@ -19,6 +19,7 @@ leo/.vscode/
 # mypy_stubs/
 # Don't add the helper directories.
 mypy_stubs/3.*/
+mypy_stubs/*.txt
 
 # Transcrypt folder.
 __target__
