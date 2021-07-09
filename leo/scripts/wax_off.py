@@ -13,15 +13,13 @@ EKR: imo, this little utility is far more useful than make_stub_files. Advantage
 1. It is far easier to create mypy annotations directly in the actual sources.
 2. There is no need to describe expected types to mypy!
 """
-
-### To do: use args.
-
 #@+<< imports >>
 #@+node:ekr.20210709060417.1: ** << imports >>
 import argparse
 import difflib
 import glob
 import os
+import pdb ; assert pdb  ###
 import re
 import sys
 #@-<< imports >>
@@ -36,9 +34,80 @@ def_pat = re.compile(r'^([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + 
 __version__ = 'wax_off.py version 1.0'
 
 class WaxOff:
-    overwrite = True
+    diff = False
     trace = False
     #@+others
+    #@+node:ekr.20210709065306.1: ** wax_off.do_file
+    def do_file(self, input_fn):
+        """Handle one file"""
+        # Define output files.
+        short_input_fn = os.path.basename(input_fn)
+        stub_fn = os.path.join(self.output_directory, short_input_fn + 'i')
+        new_fn = os.path.join(self.output_directory, short_input_fn)
+        # Read the input file.
+        with open(input_fn, 'r') as f:
+            contents = f.read()
+        # Find all the class defs.
+        n = 0
+        file_stubs, replacements = [], []
+        for m in class_pat.finditer(contents):
+            class_stub = m.group(0).rstrip() + '\n'
+            file_stubs.append((m.start(), class_stub))
+        # Find all the defs.
+        for m in def_pat.finditer(contents):
+            n += 1
+            stub = f"{m.group(0)} ...\n"
+            lws = m.group(1)
+            name = m.group(2)
+            args = self.stripped_args(m.group(3))
+            # ret = m.group(4)
+            stripped = f"{lws}def {name}({args}):"
+            assert not stripped.startswith('\n'), stripped
+            if 0:
+                print(f"{n:>3} original: {m.group(0).rstrip()}")
+                print(f"{n:>3}     stub: {stub.rstrip()}")
+                print(f"{n:>3} stripped: {stripped}")
+                print('')
+            # Append the results.
+            replacements.append((m.start(), m.group(0), stripped))
+            file_stubs.append((m.start(), stub))
+        # Dump the replacements:
+        if 0:
+            for i, data in enumerate(replacements):
+                start, old, new = data
+                print(i, start)
+                print(f"{old!r}")
+                print(f"{new!r}")
+        # Sort the stubs.
+        file_stubs.sort()
+        # Dump the sorted stubs.
+        if 0:
+            for data in file_stubs:
+                start, s = data
+                print(s.rstrip())
+        # Write the stub file.
+        print(f"\nWriting {stub_fn}")
+        with open(stub_fn, 'w') as f:
+            f.write(''.join(z[1] for z in file_stubs))
+        # Compute the new contents.
+        new_contents = contents
+        for data in reversed(replacements):
+            start, old, new = data
+            assert new_contents[start:].startswith(old), (start, old, new_contents[start:start+50])
+            new_contents = new_contents[:start] + new + new_contents[start+len(old):]
+        # Diff or write the file.
+        if self.diff:  # Diff the old and new contents.
+            lines = list(difflib.unified_diff(
+                contents.splitlines(True), new_contents.splitlines(True),
+                fromfile=input_fn, tofile=new_fn, n=0))
+            print(f"Diff: {new_fn}")
+            for line in lines:
+                print(repr(line))
+        else:  # Write the new file.
+            print(f"Writing: {new_fn}")
+            with open(new_fn, 'w') as f:
+                f.write(new_contents)
+        print(f"{len(replacements)} replacements")
     #@+node:ekr.20210709052929.3: ** wax_off.get_next_arg
     name_pat = re.compile(r'\s*([\w_]+)\s*')
 
@@ -88,6 +157,14 @@ class WaxOff:
         i = self.skip_ws(s, j)
         return f"{name}={initializer}", i
         
+    #@+node:ekr.20210709102722.1: ** wax_off.main
+    def main(self):
+        """The main line of the wax_off script."""
+        # Handle command-line options.
+        self.scan_options()
+        for fn in self.files:
+            path = os.path.join(self.input_directory, fn)
+            self.do_file(path)
     #@+node:ekr.20210709055018.1: ** wax_off.scan_options
     def scan_options(self):
         """Run commands specified by sys.argv."""
@@ -95,7 +172,7 @@ class WaxOff:
         def dir_path(s):
             if os.path.isdir(s):
                 return s
-            print(f"Not a directory: {s!r}")
+            print(f"\nNot a directory: {s!r}")
             sys.exit(1)
 
         parser = argparse.ArgumentParser(
@@ -103,8 +180,9 @@ class WaxOff:
         add = parser.add_argument
         add('FILES', nargs='*', help='list of files or directories')
         add('-d', '--diff', dest='d', action='store_true', help='Show diff without writing files')
-        add('-n', '--no-overwrite', dest='n', action='store_true', help='Don\'t change existing files')
-        add('-o', '--output-directory', dest='o_dir', metavar="DIR", type=dir_path, help='Output directory (default: .)')
+        add('-i', '--input-directory', dest='i_dir', metavar="DIR", type=dir_path, help='Input directory')
+        # add('-n', '--no-overwrite', dest='n', action='store_true', help='Don\'t change existing files')
+        add('-o', '--output-directory', dest='o_dir', metavar="DIR", type=dir_path, help='Output directory')
         add('-t', '--trace', dest='t', action='store_true', help='Show debug traces')
         add('-v', '--version', dest='v', action='store_true', help='show version and exit')
         args = parser.parse_args()
@@ -112,32 +190,44 @@ class WaxOff:
         if args.v:
             print(__version__)
             sys.exit(0)
-        if args.n:
-            self.overwrite = False
+        # if args.n:
+            # self.overwrite = False
+        if args.d:
+            self.diff = True
         if args.t:
             self.trace = True
-        # Compute output_directory.
-        if args.o_dir:
-            self.output_directory = args.o_dir
-        else:
-            self.output_directory = os.getcwd()
+        # Compute directories
+        self.input_directory = args.i_dir or os.getcwd()
+        self.output_directory = args.o_dir or os.getcwd()
         # Get files.
-        self.files = []
+        files = []
         for fn in args.FILES:
-            self.files.extend(glob.glob(fn))
+            path = os.path.join(self.input_directory, fn)
+            files.extend(glob.glob(path))
+        # Make sure they exist.
+        self.files = []
+        for path in files:
+            if not path.endswith('.py'):
+                print(f"Not a .py file: {path}")
+            elif os.path.exists(path):
+                self.files.append(path)
+            else:
+                print(f"File not found: {path}")
+        if self.trace:
+            print('')
+            print(f"Overwrite allowed: {self.overwrite}")
+            print(f"  Input directory: {self.input_directory}")
+            print(f" Output directory: {self.output_directory}")
+            print('')
+            print('Files...')
+            for fn in self.files:
+                print(f"  {fn}")
+            print('')
+        # Check the arguments.
         if not self.files:
             print('No output files')
             sys.exit(1)
-        if not self.trace:
-            return
-        print('')
-        print(f"Overwrite allowed: {self.overwrite}")
-        print(f" Output directory: {args.o_dir}")
-        print('')
-        print('Files ...')
-        for fn in self.files:
-            print(f"  {fn}")
-            
+                
     #@+node:ekr.20210709052929.4: ** wax_off.skip_to_outer_delim & helpers
     def skip_to_outer_delim(self, s, i, delims):
         """
@@ -226,96 +316,8 @@ class WaxOff:
             args.append(arg)
             assert progress < i, (i, repr(s[i:]))
         return ', '.join(args)
-    #@+node:ekr.20210709065306.1: ** wax_off.wax_off
-    def wax_off(self):
-        """The main line of wax_off.py."""
-        # Handle command-line options.
-        self.scan_options()
-        # Define directories
-        output_directory = r'c:\leo.repo\leo-editor\mypy_stubs'
-        assert os.path.exists(output_directory), output_directory
-        source_directory = r'c:\leo.repo\leo-editor\leo\core'
-        assert os.path.exists(source_directory), source_directory
-        stub_directory = r'c:\leo.repo\leo-editor\mypy_stubs'
-        assert os.path.exists(stub_directory), stub_directory
-        # Define files
-        input_fn = os.path.join(source_directory, 'leoNodes.py')
-        assert os.path.exists(input_fn), input_fn
-        stub_fn = os.path.join(stub_directory, 'leoNodes.pyi')
-        new_fn = os.path.join(output_directory, 'new_leoNodes.py')
-        # Read the input file.
-        with open(input_fn, 'r') as f:
-            contents = f.read()
-        # Find all the class defs.
-        n = 0
-        file_stubs, replacements = [], []
-        for m in class_pat.finditer(contents):
-            class_stub = m.group(0).rstrip() + '\n'
-            file_stubs.append((m.start(), class_stub))
-        # Find all the defs.
-        for m in def_pat.finditer(contents):
-            n += 1
-            stub = f"{m.group(0)} ...\n"
-            lws = m.group(1)
-            name = m.group(2)
-            args = self.stripped_args(m.group(3))
-            # ret = m.group(4)
-            stripped = f"{lws}def {name}({args}):"
-            assert not stripped.startswith('\n'), stripped
-            if 0:
-                print(f"{n:>3} original: {m.group(0).rstrip()}")
-                print(f"{n:>3}     stub: {stub.rstrip()}")
-                print(f"{n:>3} stripped: {stripped}")
-                print('')
-            # Append the results.
-            replacements.append((m.start(), m.group(0), stripped))
-            file_stubs.append((m.start(), stub))
-        # Dump the replacements:
-        if 0:
-            for i, data in enumerate(replacements):
-                start, old, new = data
-                print(i, start)
-                print(f"{old!r}")
-                print(f"{new!r}")
-        # Sort the stubs.
-        file_stubs.sort()
-        # Dump the sorted stubs.
-        if 0:
-            for data in file_stubs:
-                start, s = data
-                print(s.rstrip())
-        # Write the stub file.
-        if 1:
-            with open(stub_fn, 'w') as f:
-                f.write(''.join(z[1] for z in file_stubs))
-            print('wrote', stub_fn)
-        # Compute the new contents.
-        new_contents = contents
-        for data in reversed(replacements):
-            start, old, new = data
-            assert new_contents[start:].startswith(old), (start, old, new_contents[start:start+50])
-            new_contents = new_contents[:start] + new + new_contents[start+len(old):]
-        # Dump the new contents.
-        if 0:
-            print('\nnew contents...\n')
-            print(new_contents)
-        # Diff the old and new contents.
-        if 0:
-            lines = list(difflib.unified_diff(
-                contents.splitlines(True),
-                new_contents.splitlines(True),
-                fromfile=input_fn,
-                tofile=new_fn,
-                n=0))
-            for line in lines:
-                print(repr(line))
-        # Write the new file.
-        if 0:
-            with open(new_fn, 'w') as f:
-                f.write(new_contents)
-        print(f"{len(replacements)} replacements")
     #@-others
     
 if __name__ == '__main__':
-    WaxOff().wax_off()
+    WaxOff().main()
 #@-leo
