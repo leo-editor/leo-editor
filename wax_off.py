@@ -172,12 +172,12 @@ def skip_ws(s, i):
 def scan_options():
     """Run commands specified by sys.argv."""
     parser = argparse.ArgumentParser(
-        description="create stub files, then remove function annotations")
+        description="wax_off.py: create stub files, then remove function annotations")
     add = parser.add_argument
-    add('PATHS', nargs='*', help='directory or list of files')
-    add('-v', '--version', dest='v', action='store_true', help='show version and exit')
+    add('PATHS', nargs='*', help='list of files or directories')
     add('-d', '--diff', dest='d', action='store_true', help='Show diff without writing files')
     add('-n', '--no-overwrite', dest='n', action='store_true', help='Don\'t change existing files')
+    add('-v', '--version', dest='v', action='store_true', help='show version and exit')
     args = parser.parse_args()
     if args.v:
         # Print version and return.
