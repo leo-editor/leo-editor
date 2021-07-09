@@ -437,13 +437,13 @@
 <v t="ekr.20210118070851.4"><vh>new_name</vh></v>
 <v t="ekr.20210118070851.5"><vh>exists</vh></v>
 </v>
-<v t="ekr.20210708164839.1"><vh>script: wax-off</vh>
-<v t="ekr.20210708164839.2"><vh>function: stripped_args (entry)</vh></v>
-<v t="ekr.20210708164839.3"><vh>function: get_next_arg (test)</vh></v>
-<v t="ekr.20210708164839.4"><vh>function: skip_to_outer_delim &amp; helpers</vh>
-<v t="ekr.20210708164839.5"><vh>function: skip_comment</vh></v>
-<v t="ekr.20210708164839.6"><vh>function: skip_string</vh></v>
 </v>
+<v t="ekr.20210709045833.1"><vh>script: wax-off</vh>
+<v t="ekr.20210709045833.2"><vh>function: stripped_args (entry)</vh></v>
+<v t="ekr.20210709045833.3"><vh>function: get_next_arg (test)</vh></v>
+<v t="ekr.20210709045833.4"><vh>function: skip_to_outer_delim &amp; helpers</vh>
+<v t="ekr.20210709045833.5"><vh>function: skip_comment</vh></v>
+<v t="ekr.20210709045833.6"><vh>function: skip_string</vh></v>
 </v>
 </v>
 </vnodes>
@@ -5522,7 +5522,7 @@ else:
         if s in p.b:
             return True
     return False</t>
-<t tx="ekr.20210708164839.1">"""
+<t tx="ekr.20210709045833.1">"""
 Create a stub file and remove all function annotations.
 """
 # To do: re-write the file with stripped stubs.
@@ -5530,8 +5530,12 @@ g.cls()
 import difflib
 import os
 import re
-class_pat = re.compile(r'\n[ ]*class\s+[\w_]+.*?:')
-def_pat = re.compile(r'\n([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + re.DOTALL)
+if 1:
+    class_pat = re.compile(r'^[ ]*class\s+[\w_]+.*?:', re.MULTILINE)
+    def_pat = re.compile(r'^([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + re.DOTALL)
+else:
+    class_pat = re.compile(r'\n[ ]*class\s+[\w_]+.*?:')
+    def_pat = re.compile(r'\n([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + re.DOTALL)
 #
 # Define helper functions.
 @others
@@ -5561,12 +5565,20 @@ for m in def_pat.finditer(contents):
     stripped = f"{lws}def {name}({args}):"
     assert not stripped.startswith('\n'), stripped
     if 0:
+        print(f"{n:&gt;3} original: {m.group(0).rstrip()}")
+        print(f"{n:&gt;3}     stub: {stub.rstrip()}")
+        print(f"{n:&gt;3} stripped: {stripped}")
+        print('')
+    elif 0:
         print(f"{n:&gt;3} original: {m.group(0)[1:].rstrip()}")
         print(f"{n:&gt;3}     stub: {stub[1:].rstrip()}")
         print(f"{n:&gt;3} stripped: {stripped}")
         print('')
-    # Careful: skip the leading newline.
-    replacements.append((m.start()+1, m.group(0)[1:], stripped))
+    if 1:
+        replacements.append((m.start(), m.group(0), stripped))
+    else:
+        # Careful: skip the leading newline.
+        replacements.append((m.start()+1, m.group(0)[1:], stripped))
     file_stubs.append((m.start(), stub))
 # Dump the replacements:
 if 0:
@@ -5580,14 +5592,21 @@ file_stubs.sort()
 if 0:
     for data in file_stubs:
         start, s = data
-        print(f"{start:&gt;6} {s[1:-1]!r}")
+        if 1:
+            # print(f"{start:&gt;6} {s!r}")
+            print(s.rstrip())
+        else:
+            print(f"{start:&gt;6} {s[1:-1]!r}")
 # Write the stub file.
-if 0:
+if 1:
     stub_folder = g.os_path_finalize_join(leo_editor_dir, 'mypy_stubs')
     assert os.path.exists(stub_folder), stub_folder
     stub_fn = g.os_path_finalize_join(stub_folder, 'leoNodes.pyi')
     with open(stub_fn, 'w') as f:
-        f.write(''.join(z[1][1:] for z in file_stubs))
+        if 1:
+            f.write(''.join(z[1] for z in file_stubs))
+        else:
+            f.write(''.join(z[1][1:] for z in file_stubs))
     print('wrote', stub_fn)
 # Compute the new contents.
 new_contents = contents
@@ -5611,7 +5630,7 @@ if 1:
         f.write(new_contents)
 print(f"{len(replacements)} replacements")
 </t>
-<t tx="ekr.20210708164839.2">def stripped_args(s):
+<t tx="ekr.20210709045833.2">def stripped_args(s):
     """
     s is the argument list, without parens, possibly containing annotations.
 
@@ -5627,7 +5646,7 @@ print(f"{len(replacements)} replacements")
         args.append(arg)
         assert progress &lt; i, (i, repr(s[i:]))
     return ', '.join(args)</t>
-<t tx="ekr.20210708164839.3">name_pat = re.compile(r'\s*([\w_]+)\s*')
+<t tx="ekr.20210709045833.3">name_pat = re.compile(r'\s*([\w_]+)\s*')
 
 def get_next_arg(s, i):
     """
@@ -5676,7 +5695,7 @@ def get_next_arg(s, i):
     i = g.skip_ws(s, j)
     return f"{name}={initializer}", i
     </t>
-<t tx="ekr.20210708164839.4">def skip_to_outer_delim(s, i, delims):
+<t tx="ekr.20210709045833.4">def skip_to_outer_delim(s, i, delims):
     """
     Skip to next *outer*, ignoring inner delimis contained in strings, etc.
     
@@ -5719,7 +5738,7 @@ def get_next_arg(s, i):
     assert (c_level, p_level, s_level) == (0, 0, 0), (c_level, p_level, s_level)
     if trace: g.trace(i, 'Val2:', s[i1:i], 'Rest:', repr(s[i:]))
     return len(s)</t>
-<t tx="ekr.20210708164839.5">def skip_comment(s, i):
+<t tx="ekr.20210709045833.5">def skip_comment(s, i):
     """Scan forward to the end of a comment."""
     # Like g.skip_to_end_of_line with asserts.
     assert s[i] == '#'
@@ -5727,7 +5746,7 @@ def get_next_arg(s, i):
         i += 1
     return i
 </t>
-<t tx="ekr.20210708164839.6">def skip_string(s, i):
+<t tx="ekr.20210709045833.6">def skip_string(s, i):
     """Scan forward to the end of a string."""
     # Like g.skip_string with asserts.
     delim = s[i]
