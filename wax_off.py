@@ -4,13 +4,30 @@
 The "wax-off" utility.
 
 Create stub files from existing annotation, then remove all function annotations.
+
+So called because having created annotations in the python sources (wax-on)
+we now want to remove them again (wax-off).
+
+EKR: imo, this little utility is far more useful than make_stub_files. Advantages:
+    
+1. It is far easier to create mypy annotations directly in the actual sources.
+2. There is no need to describe expected types to mypy!
 """
+#@+<< imports >>
+#@+node:ekr.20210709060417.1: ** << imports >>
+import argparse
 import difflib
+import glob
 import os
 import re
+import sys
+#@-<< imports >>
+#@+<< define regexs >>
+#@+node:ekr.20210709060433.1: ** << define regexs >>
 # Define regex's to discover classes and defs.
 class_pat = re.compile(r'^[ ]*class\s+[\w_]+.*?:', re.MULTILINE)
 def_pat = re.compile(r'^([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + re.DOTALL)
+#@-<< define regexs >>
 # Define helper functions.
 #@+others
 #@+node:ekr.20210709052929.2: ** function: stripped_args
@@ -151,7 +168,58 @@ def skip_ws(s, i):
     while i < len(s) and s[i] in ' \t':
         i += 1
     return i
+#@+node:ekr.20210709055018.1: ** function: scan_options
+def scan_options():
+    """Run commands specified by sys.argv."""
+    parser = argparse.ArgumentParser(
+        description="create stub files, then remove function annotations")
+    add = parser.add_argument
+    add('PATHS', nargs='*', help='directory or list of files')
+    add('-v', '--version', dest='v', action='store_true', help='show version and exit')
+    add('-d', '--diff', dest='d', action='store_true', help='Show diff without writing files')
+    add('-n', '--no-overwrite', dest='n', action='store_true', help='Don\'t change existing files')
+    args = parser.parse_args()
+    if args.v:
+        # Print version and return.
+        print('wax_on version 0.1')
+        sys.exit(0)
+    ### To do.
+    files = args.PATHS
+    assert glob ###
+    print('Files...')
+    for fn in files:
+        print(fn)
+    # if len(files) == 1 and os.path.isdir(files[0]):
+        # files = glob.glob(f"{files[0]}{os.sep}*.py")
+        # for fn in files:
+            # print(fn)
+    
+    
+    
+    
+    
+    
+    
+    # parser = argparse.ArgumentParser(description=None, usage=usage)
+    # parser.add_argument('PATHS', nargs='*', help='directory or list of files')
+    # group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
+    # add = group.add_argument
+    # add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
+    # add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
+    # add('--orange', dest='o', action='store_true', help='leonine Black')
+    # add('--orange-diff', dest='od', action='store_true', help='show orange diff')
+    # add('--py-cov', dest='pycov', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest --cov')
+    # add('--pytest', dest='pytest', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest')
+    # add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
+    # args = parser.parse_args()
+   
+    # files = args.PATHS
+    # if len(files) == 1 and os.path.isdir(files[0]):
+        # files = glob.glob(f"{files[0]}{os.sep}*.py")
+    
 #@-others
+# Handle command-line options.
+scan_options()
 # Define directories
 output_directory = r'c:\leo.repo\leo-editor\mypy_stubs'
 assert os.path.exists(output_directory), output_directory
@@ -200,6 +268,7 @@ if 0:
         print(f"{new!r}")
 # Sort the stubs.
 file_stubs.sort()
+# Dump the sorted stubs.
 if 0:
     for data in file_stubs:
         start, s = data
@@ -215,6 +284,7 @@ for data in reversed(replacements):
     start, old, new = data
     assert new_contents[start:].startswith(old), (start, old, new_contents[start:start+50])
     new_contents = new_contents[:start] + new + new_contents[start+len(old):]
+# Dump the new contents.
 if 0:
     print('\nnew contents...\n')
     print(new_contents)
@@ -223,13 +293,13 @@ if 0:
     lines = list(difflib.unified_diff(
         contents.splitlines(True),
         new_contents.splitlines(True),
-        fromfile="Old",
-        tofile="New",
+        fromfile=input_fn,
+        tofile=new_fn,
         n=0))
     for line in lines:
         print(repr(line))
 # Write the new file.
-if 1:
+if 0:
     with open(new_fn, 'w') as f:
         f.write(new_contents)
 print(f"{len(replacements)} replacements")
