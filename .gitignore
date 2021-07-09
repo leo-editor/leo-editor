@@ -15,8 +15,8 @@ leo/.vscode/
 /build/
 /dist/
 
-# Exclude *all* stub files.
-mypy_stubs/
+# The wax_off script makes including the mypy_stub folder valuable.
+# mypy_stubs/
 
 # Transcrypt folder.
 __target__
