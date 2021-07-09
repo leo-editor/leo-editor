@@ -144,8 +144,9 @@ class WaxOff:
     #@+node:ekr.20210709102722.1: ** wax_off.main
     def main(self):
         """The main line of the wax_off script."""
-        # Handle command-line options.
-        self.scan_options()  # Set ivars.
+        # Handle command-line options & set ivars.
+        self.scan_options()
+        # Handle each file.
         for fn in self.files:
             path = os.path.join(self.input_directory, fn)
             self.do_file(path)
@@ -193,6 +194,7 @@ class WaxOff:
                 self.files.append(path)
             else:
                 print(f"File not found: {path}")
+        # Trace, if requested.
         if self.trace:
             print('')
             print(f"  Input directory: {self.input_directory}")
