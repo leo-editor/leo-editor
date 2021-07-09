@@ -13,6 +13,9 @@ EKR: imo, this little utility is far more useful than make_stub_files. Advantage
 1. It is far easier to create mypy annotations directly in the actual sources.
 2. There is no need to describe expected types to mypy!
 """
+
+### To do: use args.
+
 #@+<< imports >>
 #@+node:ekr.20210709060417.1: ** << imports >>
 import argparse
@@ -33,6 +36,7 @@ def_pat = re.compile(r'^([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + 
 __version__ = 'wax_off.py version 1.0'
 
 class WaxOff:
+    overwrite = True
     trace = False
     #@+others
     #@+node:ekr.20210709052929.3: ** wax_off.get_next_arg
@@ -104,11 +108,12 @@ class WaxOff:
         add('-t', '--trace', dest='t', action='store_true', help='Show debug traces')
         add('-v', '--version', dest='v', action='store_true', help='show version and exit')
         args = parser.parse_args()
-        #
-        ### print(os.getcwd())
-        if args.v:  # Print version and return.
+        # Handle all args.
+        if args.v:
             print(__version__)
             sys.exit(0)
+        if args.n:
+            self.overwrite = False
         if args.t:
             self.trace = True
         # Compute output_directory.
@@ -116,16 +121,23 @@ class WaxOff:
             self.output_directory = args.o_dir
         else:
             self.output_directory = os.getcwd()
-        if self.trace:
-            print('output_directory', args.o_dir)
         # Get files.
         self.files = []
         for fn in args.FILES:
             self.files.extend(glob.glob(fn))
-        if self.trace:
-            print('Files...')
-            for fn in self.files:
-                print(f"  {fn}")
+        if not self.files:
+            print('No output files')
+            sys.exit(1)
+        if not self.trace:
+            return
+        print('')
+        print(f"Overwrite allowed: {self.overwrite}")
+        print(f" Output directory: {args.o_dir}")
+        print('')
+        print('Files ...')
+        for fn in self.files:
+            print(f"  {fn}")
+            
     #@+node:ekr.20210709052929.4: ** wax_off.skip_to_outer_delim & helpers
     def skip_to_outer_delim(self, s, i, delims):
         """
@@ -304,5 +316,6 @@ class WaxOff:
         print(f"{len(replacements)} replacements")
     #@-others
     
-WaxOff().wax_off()
+if __name__ == '__main__':
+    WaxOff().wax_off()
 #@-leo
