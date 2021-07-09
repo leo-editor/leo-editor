@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210709045755.1: * @file ../../wax_off.py
+#@+node:ekr.20210709045755.1: * @file ../scripts/wax_off.py
 """
 The "wax-off" utility.
 
@@ -24,14 +24,16 @@ import sys
 #@-<< imports >>
 #@+<< define regexs >>
 #@+node:ekr.20210709060433.1: ** << define regexs >>
-# Define regex's to discover classes and defs.
+# Match class definitions.
 class_pat = re.compile(r'^[ ]*class\s+[\w_]+.*?:', re.MULTILINE)
+
+# Match function/method definitions.
 def_pat = re.compile(r'^([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + re.DOTALL)
 #@-<< define regexs >>
 __version__ = 'wax_off.py version 1.0'
 
-
 class WaxOff:
+    trace = False
     #@+others
     #@+node:ekr.20210709052929.3: ** wax_off.get_next_arg
     name_pat = re.compile(r'\s*([\w_]+)\s*')
@@ -85,52 +87,45 @@ class WaxOff:
     #@+node:ekr.20210709055018.1: ** wax_off.scan_options
     def scan_options(self):
         """Run commands specified by sys.argv."""
+        
+        def dir_path(s):
+            if os.path.isdir(s):
+                return s
+            print(f"Not a directory: {s!r}")
+            sys.exit(1)
+
         parser = argparse.ArgumentParser(
             description="wax_off.py: create stub files, then remove function annotations")
         add = parser.add_argument
-        add('PATHS', nargs='*', help='list of files or directories')
+        add('FILES', nargs='*', help='list of files or directories')
         add('-d', '--diff', dest='d', action='store_true', help='Show diff without writing files')
         add('-n', '--no-overwrite', dest='n', action='store_true', help='Don\'t change existing files')
+        add('-o', '--output-directory', dest='o_dir', metavar="DIR", type=dir_path, help='Output directory (default: .)')
+        add('-t', '--trace', dest='t', action='store_true', help='Show debug traces')
         add('-v', '--version', dest='v', action='store_true', help='show version and exit')
         args = parser.parse_args()
-        if args.v:
-            # Print version and return.
+        #
+        ### print(os.getcwd())
+        if args.v:  # Print version and return.
             print(__version__)
             sys.exit(0)
-        ### To do.
-        files = args.PATHS
-        assert glob ###
-        print('Files...')
-        for fn in files:
-            print(fn)
-        # if len(files) == 1 and os.path.isdir(files[0]):
-            # files = glob.glob(f"{files[0]}{os.sep}*.py")
-            # for fn in files:
-                # print(fn)
-        
-        
-        
-        
-        
-        
-        
-        # parser = argparse.ArgumentParser(description=None, usage=usage)
-        # parser.add_argument('PATHS', nargs='*', help='directory or list of files')
-        # group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
-        # add = group.add_argument
-        # add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
-        # add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
-        # add('--orange', dest='o', action='store_true', help='leonine Black')
-        # add('--orange-diff', dest='od', action='store_true', help='show orange diff')
-        # add('--py-cov', dest='pycov', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest --cov')
-        # add('--pytest', dest='pytest', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest')
-        # add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
-        # args = parser.parse_args()
-       
-        # files = args.PATHS
-        # if len(files) == 1 and os.path.isdir(files[0]):
-            # files = glob.glob(f"{files[0]}{os.sep}*.py")
-        
+        if args.t:
+            self.trace = True
+        # Compute output_directory.
+        if args.o_dir:
+            self.output_directory = args.o_dir
+        else:
+            self.output_directory = os.getcwd()
+        if self.trace:
+            print('output_directory', args.o_dir)
+        # Get files.
+        self.files = []
+        for fn in args.FILES:
+            self.files.extend(glob.glob(fn))
+        if self.trace:
+            print('Files...')
+            for fn in self.files:
+                print(f"  {fn}")
     #@+node:ekr.20210709052929.4: ** wax_off.skip_to_outer_delim & helpers
     def skip_to_outer_delim(self, s, i, delims):
         """
