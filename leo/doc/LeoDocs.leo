@@ -1779,6 +1779,12 @@
 <v t="ekr.20210710040014.57"><vh>#2022: quicksearch crash</vh></v>
 <v t="ekr.20210710040014.73"><vh>#2030: NO PARENT message</vh></v>
 <v t="ekr.20210710040014.133"><vh>#2036: move-right</vh></v>
+<v t="ekr.20210710163244.4"><vh>#2041: Alt-x in find panel</vh>
+<v t="ekr.20210710163244.5"><vh>--- changed</vh>
+<v t="ekr.20210710163244.6"><vh>k.defineSingleLineCommands</vh></v>
+<v t="ekr.20210710163244.7"><vh>k.updateLabel</vh></v>
+</v>
+</v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -1836,6 +1842,7 @@
 <v t="ekr.20210405100137.955"><vh>#1798: Better error reports</vh></v>
 <v t="ekr.20210405100137.1061"><vh>#1808: Pylint checks last file by default</vh></v>
 <v t="ekr.20210405100137.1384"><vh>#1840: one-shot headline-only</vh></v>
+<v t="ekr.20210710163244.2"><vh>#2023: make find-all links clickable</vh></v>
 </v>
 <v t="ekr.20210405104825.1"><vh>6.4: Settings &amp; command-line options</vh></v>
 </v>
@@ -32155,6 +32162,132 @@ This allows you to add annotations directly in your .py files, and then
 move most of the clutter to stub files.
 
 Imo, the wax_off script makes my make_stub_files project obsolete.</t>
+<t tx="ekr.20210710163244.2">https://github.com/leo-editor/leo-editor/issues/2023</t>
+<t tx="ekr.20210710163244.4">https://github.com/leo-editor/leo-editor/issues/2041
+
+PR: https://github.com/leo-editor/leo-editor/pull/2044</t>
+<t tx="ekr.20210710163244.5"></t>
+<t tx="ekr.20210710163244.6">def defineSingleLineCommands(self):
+    k = self
+    # These commands can be executed in the minibuffer.
+    k.singleLineCommandList = [
+        # EditCommandsClass
+        'back-to-indentation',
+        'back-to-home',  # 2010/02/01
+        'back-char',
+        'back-char-extend-selection',
+        'back-word',
+        'back-word-extend-selection',
+        'backward-delete-char',
+        'backward-find-character',
+        'backward-find-character-extend-selection',
+        'beginning-of-line',
+        'beginning-of-line-extend-selection',
+        'capitalize-word',
+        'delete-char',
+        'delete-indentation',
+        'delete-spaces',
+        'downcase-word',
+        'end-of-line',
+        'end-of-line-extend-selection',
+        'escape',
+        'exchange-point-mark',
+        'extend-to-line',
+        'extend-to-word',
+        'find-character',
+        'find-character-extend-selection',
+        'find-word',
+        'find-word-in-line',
+        'forward-char',
+        'forward-char-extend-selection',
+        'forward-end-word',
+        'forward-end-word-extend-selection',
+        'forward-word',
+        'forward-word-extend-selection',
+        'insert-newline',
+        'insert-parentheses',
+        'move-past-close',
+        'move-past-close-extend-selection',
+        'newline-and-indent',
+        'select-all',
+        'transpose-chars',
+        'transpose-words',
+        'upcase-word',
+        # LeoFind class.
+        'start-search',  # #2041.
+        # KeyHandlerCommandsClass
+        'full-command',  # #2041.
+        # 'auto-complete',
+            # 'negative-argument',
+            # 'number-command',
+            # 'number-command-0',
+            # 'number-command-1',
+            # 'number-command-2',
+            # 'number-command-3',
+            # 'number-command-4',
+            # 'number-command-5',
+            # 'number-command-6',
+            # 'number-command-7',
+            # 'number-command-8',
+            # 'universal-argument',
+        # KillBufferCommandsClass
+        'backward-kill-word',
+        'kill-line',
+        'kill-word',
+        'kill-ws',
+        'yank',
+        'yank-pop',
+        'zap-to-character',
+        # leoCommands
+        'cut-text',
+        'copy-text',
+        'paste-text',
+        # MacroCommandsClass
+        'call-last-kbd-macro',
+        # search commands
+        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
+        'set-find-everywhere',  # 2011/06/07
+        'set-find-node-only',  # 2011/06/07
+        'set-find-suboutline-only',  # 2011/06/07
+        'toggle-find-collapses_nodes',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+    ]
+</t>
+<t tx="ekr.20210710163244.7">def updateLabel(self, event):
+    """
+    Mimic what would happen with the keyboard and a Text editor
+    instead of plain accumulation.
+    """
+    c, k, w = self.c, self, self.w
+    if not event:
+        return
+    ch, stroke = event.char, event.stroke
+    if ch in "\n\r":
+        return
+    if stroke and not k.isPlainKey(stroke):
+        return  # #2041.
+    c.widgetWantsFocusNow(w)
+    i, j = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    if i != j:
+        w.delete(i, j)
+    if ch == '\b':
+        s = w.getAllText()
+        if len(s) &gt; len(k.mb_prefix):
+            w.delete(i - 1)
+            i -= 1
+    else:
+        w.insert(ins, ch)
+        i = ins + 1
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
