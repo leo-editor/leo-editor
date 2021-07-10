@@ -540,16 +540,16 @@ class StringFindTabManager:
         """
         c, find = self.c, self.c.findCommands
         # Find/change text boxes.
-        table = (
+        table1 = (
             ('find_findbox', 'find_text', '<find pattern here>'),
             ('find_replacebox', 'change_text', ''),
         )
-        for widget_ivar, setting_name, default in table:
+        for widget_ivar, setting_name, default in table1:
             w = getattr(self, widget_ivar)
             s = c.config.getString(setting_name) or default
             w.insert(s)
         # Check boxes.
-        table = (
+        table2 = (
             ('ignore_case', 'check_box_ignore_case'),
             ('mark_changes', 'check_box_mark_changes'),
             ('mark_finds', 'check_box_mark_finds'),
@@ -558,19 +558,19 @@ class StringFindTabManager:
             ('search_headline', 'check_box_search_headline'),
             ('whole_word', 'check_box_whole_word'),
         )
-        for setting_name, widget_ivar in table:
+        for setting_name, widget_ivar in table2:
             w = getattr(self, widget_ivar)
             val = c.config.getBool(setting_name, default=False)
             setattr(find, setting_name, val)
             if val != w.isChecked():  # Support leoInteg.
                 w.toggle()
         # Radio buttons
-        table = (
+        table3 = (
             ('node_only', 'node_only', 'radio_button_node_only'),
             ('entire_outline', None, 'radio_button_entire_outline'),
             ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
         )
-        for setting_name, ivar, widget_ivar in table:
+        for setting_name, ivar, widget_ivar in table3:
             w = getattr(self, widget_ivar)
             val = c.config.getBool(setting_name, default=False)
             if ivar is not None:

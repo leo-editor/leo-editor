@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170419092835.1: * @file ../plugins/cursesGui2.py
 #@@first
+# Disable all mypy checks.
+# type:ignore
 #@+<< cursesGui2 docstring >>
 #@+node:ekr.20170608073034.1: ** << cursesGui2 docstring >>
 """
@@ -41,7 +43,7 @@ except ImportError:
     raise
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
-from leo.external.npyscreen.wgwidget import (  # type: ignore
+from leo.external.npyscreen.wgwidget import (  # type:ignore
     EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)
 try:
     from tkinter import Tk

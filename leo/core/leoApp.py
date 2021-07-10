@@ -14,6 +14,7 @@ import string
 import sys
 import time
 import traceback
+from typing import Any, Dict
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -956,7 +957,7 @@ class LeoApp:
         app = self
         guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
-        n1, n2, n3, junk, junk = sys.version_info
+        n1, n2, n3, junk1, junk2 = sys.version_info
         if sys.platform.startswith('win'):
             sysVersion = 'Windows '
             try:
@@ -1548,7 +1549,7 @@ class LeoApp:
                         g.es_exception()
                         return None
 
-                scanner_for_at_auto_cb.scanner_name = aClass.__name__
+                scanner_for_at_auto_cb.scanner_name = aClass.__name__  # type:ignore
                     # For traces in ic.createOutline.
                 return scanner_for_at_auto_cb
         return None
@@ -1568,7 +1569,7 @@ class LeoApp:
                     g.es_exception()
                     return None
 
-            scanner_for_ext_cb.scanner_name = aClass.__name__
+            scanner_for_ext_cb.scanner_name = aClass.__name__  # type:ignore
                 # For traces in ic.createOutline.
             return scanner_for_ext_cb
         return None
@@ -1678,8 +1679,15 @@ class LoadManager:
             # "file already open, open again", this must be False for
             # a complete exit to be appropriate (finish_quit=True param for
             # closeLeoWindow())
+        #
+        # Themes.
+        self.leo_settings_c = None
+        self.leo_settings_path = None
+        self.my_settings_c = None
+        self.my_settings_path = None
         self.theme_c = None
             # #1374.
+        self.theme_path = None
     #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
     def completeFileName(self, fileName):
@@ -2681,7 +2689,7 @@ class LoadManager:
             if windowFlag:
                 g.app.createDefaultGui()
                 g.app.gui.setScript(script=script)
-                sys.args = []
+                sys.argv = []  # 2021/06/24: corrected by mypy.
             else:
                 g.app.createNullGuiWithScript(script=script)
         else:
@@ -3031,9 +3039,9 @@ class LoadManager:
             #@-others
         #@-others
         if not sys.stdout:
-            sys.stdout = sys.__stdout__ = LeoStdOut('stdout')
+            sys.stdout = sys.__stdout__ = LeoStdOut('stdout')  # type:ignore
         if not sys.stderr:
-            sys.stderr = sys.__stderr__ = LeoStdOut('stderr')
+            sys.stderr = sys.__stderr__ = LeoStdOut('stderr')  # type:ignore
     #@+node:ekr.20120219154958.10491: *4* LM.isValidPython
     def isValidPython(self):
         if sys.platform == 'cli':
@@ -3285,8 +3293,8 @@ class LoadManager:
             name = aList and len(aList) == 1 and aList[0]
             if not name: return None
             s = theFile.read(name)
-            s = g.toUnicode(s, 'utf-8')
-            return StringIO(s)
+            s2 = g.toUnicode(s, 'utf-8')
+            return StringIO(s2)
         except IOError:
             # Do not use string + here: it will fail for non-ascii strings!
             if not g.unitTesting:
@@ -3445,7 +3453,7 @@ class RecentFilesManager:
         rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
         if groupedEntries:  # if so, make dict of groups
-            dirCount = {}
+            dirCount: Dict[str, Any] = {}
             for fileName in rf.getRecentFiles()[:n]:
                 dirName, baseName = g.os_path_split(fileName)
                 if baseName not in dirCount:

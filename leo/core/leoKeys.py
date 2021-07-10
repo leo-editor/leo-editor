@@ -13,7 +13,7 @@ import re
 import string
 import sys
 import time
-assert time
+from typing import Dict, List, Tuple
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
 from leo.external import codewise
@@ -620,7 +620,7 @@ class AutoCompleterClass:
         aList.sort()
         return aList
     #@+node:ekr.20110510120621.14542: *6* ac.guess_class
-    def guess_class(self, c, varname):
+    def guess_class(self, c, varname) -> Tuple[str, List[str]]:
         """Return kind, class_list"""
         # if varname == 'g':
             # return 'module',['leoGlobals']
@@ -635,12 +635,9 @@ class AutoCompleterClass:
                 m = re.search(r'class\s+(\w+)', h)
                 if m:
                     return 'class', [m.group(1)]
-        if 1:
-            aList = []
-        else:
-            # This is not needed now that we add the completions for 'self'.
-            aList = ContextSniffer().get_classes(c.p.b, varname)
-        return 'class', aList
+        # This is not needed now that we add the completions for 'self'.
+            # aList = ContextSniffer().get_classes(c.p.b, varname)
+        return 'class', []
     #@+node:ekr.20110510120621.14543: *6* ac.lookup_functions/methods/modules
     def lookup_functions(self, prefix):
         aList = codewise.cmd_functions([prefix])
@@ -969,7 +966,7 @@ class AutoCompleterClass:
         """Show the possible starting letters,
         but only if there are more than one.
         """
-        d = {}
+        d: Dict[str, int] = {}
         for z in tabList:
             tail = z[len(header) :] if z else ''
             if tail.startswith('.'): tail = tail[1:]
@@ -2274,7 +2271,7 @@ class KeyHandlerClass:
                 or None)
             wrapper = f.body and hasattr(f.body, 'wrapper') and f.body.wrapper or None
             canvas = f.tree and hasattr(f.tree, 'canvas') and f.tree.canvas or None
-            widgets = (c.miniBufferWidget, wrapper, canvas, bindingWidget)
+            widgets = [c.miniBufferWidget, wrapper, canvas, bindingWidget]
         for w in widgets:
             if not w: continue
             # Make the binding only if no binding for the stroke exists in the widget.

@@ -96,6 +96,7 @@ import sys
 import sqlite3
 from sqlite3 import ProgrammingError
 import traceback
+from typing import List
 
 #@-<< imports >>
 consoleEncoding = None
@@ -177,7 +178,7 @@ def cmd_members(args):
         mems = cw.get_members([args[0]])
         lines = list(set(el + "\t" + pat for el, pat in mems))
     else:
-        lines = cw.classcache.keys()
+        lines = cw.classcache.keys()  # type:ignore
     lines.sort()
     return lines  # EKR
 #@+node:ekr.20110310091639.14283: *4* cmd_parse
@@ -290,7 +291,7 @@ def getLastTracebackFileAndLineNumber():
     if typ == SyntaxError:
         # IndentationError is a subclass of SyntaxError.
         # Much easier in Python 2.6 and 3.x.
-        return val.filename, val.lineno
+        return val.filename, val.lineno  # type:ignore
     #
     # Data is a list of tuples, one per stack entry.
     # Tupls have the form (filename,lineNumber,functionName,text).
@@ -391,7 +392,9 @@ def translateArgs(args, d):
     if not consoleEncoding:
         e = sys.getdefaultencoding()
         consoleEncoding = e if isValidEncoding(e) else 'utf-8'
-    result = []; n = 0; spaces = d.get('spaces')
+    result: List[str] = []
+    n = 0
+    spaces = d.get('spaces')
     for arg in args:
         n += 1
         # print('translateArgs: arg',arg,type(arg),isString(arg),'will trans',(n%2)==1)

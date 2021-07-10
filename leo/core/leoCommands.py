@@ -13,14 +13,14 @@ import tabnanny  # for Check Python command # Does not exist in jython
 import tempfile
 import time
 import tokenize  # for c.checkAllPythonCode
-from typing import List
+from typing import Any, Dict, Callable, List, Optional, Set, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
     # The leoCommands ctor now does most leo.core.leo* imports,
     # thereby breaking circular dependencies.
 #@-<< imports >>
 
-def cmd(name):
+def cmd(name) -> Callable:
     """Command decorator for the Commands class."""
     return g.new_cmd_decorator(name, ['c',])
 
@@ -53,8 +53,8 @@ class Commands:
         t1 = time.process_time()
         c = self
         # Official ivars.
-        self._currentPosition = None
-        self._topPosition = None
+        self._currentPosition: Optional["leoNodes.Position"] = None
+        self._topPosition: Optional["leoNodes.Position"] = None
         self.frame = None
         self.parentFrame = parentFrame  # New in Leo 6.0.
         self.gui = gui or g.app.gui
@@ -101,31 +101,25 @@ class Commands:
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self):
         """Init ivars used while executing a command."""
-        self.commandsDict = {}
+        self.commandsDict: dict[str, Callable] = {}
             # Keys are command names, values are functions.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
-        self.hookFunction = None
+        self.hookFunction: Optional[Callable] = None
             # One of three places that g.doHook looks for hook functions.
         self.ignoreChangedPaths = False
             # True: disable path changed message in at.WriteAllHelper.
         self.inCommand = False
             # Interlocks to prevent premature closing of a window.
-        self.outlineToNowebDefaultFileName = "noweb.nw"
+        self.outlineToNowebDefaultFileName: str = "noweb.nw"
             # For Outline To Noweb dialog.
-        # For tangle/untangle
-        self.tangle_errors = 0
-        # Default Tangle options
-        self.use_header_flag = False
-        self.output_doc_flag = False
         # For hoist/dehoist commands.
-        self.hoistStack = []
+        self.hoistStack: List[Any]= []  # Really, a list of g.Bunches, but mypy complains.
             # Stack of nodes to be root of drawn tree.
             # Affects drawing routines and find commands.
         # For outline navigation.
-        self.navPrefix = ''  # Must always be a string.
-        self.navTime = None
-
+        self.navPrefix: str = ''  # Must always be a string.
+        self.navTime: Optional[float] = None
         self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
@@ -142,7 +136,7 @@ class Commands:
             # The last node we expanded or contracted.
         self.nodeConflictList = []
             # List of nodes with conflicting read-time data.
-        self.nodeConflictFileName = None
+        self.nodeConflictFileName: Optional[str] = None
             # The fileName for c.nodeConflictList.
         self.user_dict = {}
             # Non-persistent dictionary for free use by scripts and plugins.
@@ -172,21 +166,21 @@ class Commands:
         """Init file-related ivars of the commander."""
         self.changed = False
             # True: the ouline has changed since the last save.
-        self.ignored_at_file_nodes = []
+        self.ignored_at_file_nodes: List["leoNodes.Position"] = []
             # List of nodes for c.raise_error_dialogs.
-        self.import_error_nodes = []
+        self.import_error_nodes: List["leoNodes.Position"] = []
             # List of nodes for c.raise_error_dialogs.
         self.last_dir = None
             # The last used directory.
-        self.mFileName = fileName or ''
+        self.mFileName: str = fileName or ''
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''
             #
-        self.openDirectory = None
+        self.openDirectory: Optional[str] = None
             #
-        self.orphan_at_file_nodes = []
+        self.orphan_at_file_nodes: List["leoNodes.Position"] = []
             # List of orphaned nodes for c.raise_error_dialogs.
-        self.wrappedFileName = None
+        self.wrappedFileName: Optional[str] = None
             # The name of the wrapped file, for wrapper commanders.
             # Set by LM.initWrapperLeoFile
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
@@ -246,16 +240,16 @@ class Commands:
 
         c = self
         gnx = 'hidden-root-vnode-gnx'
-        assert not hasattr(c, 'fileCommands'), c.fileCommands
+        assert not hasattr(c, 'fileCommands'), c.fileCommands  # type:ignore
 
         class DummyFileCommands:
             def __init__(self):
                 self.gnxDict = {}
 
-        c.fileCommands = DummyFileCommands()
+        c.fileCommands = DummyFileCommands()  # type:ignore
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
         self.hiddenRootNode.h = '<hidden root vnode>'
-        c.fileCommands = None
+        c.fileCommands = None  # type:ignore
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:
@@ -587,7 +581,7 @@ class Commands:
             try:
                 aList = [z.strip() for z in c.fixedWindowPositionData if z.strip()]
                 w, h, l, t = aList
-                c.fixedWindowPosition = int(w), int(h), int(l), int(t)
+                c.fixedWindowPosition = int(w), int(h), int(l), int(t)  # type:ignore
             except Exception:
                 g.error('bad @data fixedWindowPosition',
                     repr(self.fixedWindowPosition))
@@ -610,7 +604,7 @@ class Commands:
         """
         c, p, tag = self, self.p, 'execute-general-script'
         
-        def get_setting_for_language(setting):
+        def get_setting_for_language(setting: str):
             """
             Return the setting from the given @data setting.
             The first colon ends each key.
@@ -623,7 +617,7 @@ class Commands:
         
         # Get the language and extension.
         d = c.scanAllDirectives(p)
-        language = d.get('language')
+        language: str = d.get('language')
         if not language:
             print(f"{tag}: No language in effect at {p.h}")
             return
@@ -874,8 +868,6 @@ class Commands:
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    # from leo.core.leoNodes import Position
-
     def all_positions_for_v(self, v, stack=None):
         """
         Generates all positions p in this outline where p.v is v.
@@ -1264,7 +1256,7 @@ class Commands:
         c = self
         context = v.context  # v's commander.
         assert(c == context)
-        stack = []
+        stack: List[Tuple[int, Tuple["leoNodes.VNode", int]]] = []
         while v.parents:
             parent = v.parents[0]
             if v in parent.children:
@@ -1278,7 +1270,7 @@ class Commands:
             # a VNode not in the tree
             return None
         v, n = stack.pop()
-        p = leoNodes.Position(v, n, stack)
+        p = leoNodes.Position(v, n, stack)  # type:ignore
         return p
     #@+node:ekr.20090130135126.1: *4* c.Properties
     def __get_p(self):
@@ -1481,7 +1473,7 @@ class Commands:
         Return the number of structure_errors found.
         """
         c = self
-        d = {}  # Keys are gnx's; values are lists of vnodes with that gnx.
+        d: Dict[str, Set["leoNodes.VNode"]] = {}  # Keys are gnx's; values are sets of vnodes with that gnx.
         ni = g.app.nodeIndices
         t1 = time.time()
 
@@ -1497,8 +1489,8 @@ class Commands:
                 delattr(v, "tnodeList")
                 v._p_changed = True
             gnx = v.fileIndex
-            if gnx:
-                aSet = d.get(gnx, set())
+            if gnx:  # gnx must be a string.
+                aSet: Set["leoNodes.VNode"] = d.get(gnx, set())
                 aSet.add(v)
                 d[gnx] = aSet
             else:
@@ -1806,19 +1798,19 @@ class Commands:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
         except IndentationError:
-            junk, msg, junk = sys.exc_info()
+            junk1, msg, junk2 = sys.exc_info()
             if not suppressErrors:
                 g.warning("IndentationError in", headline)
                 g.es('', msg)
             if unittestFlag: raise
         except tokenize.TokenError:
-            junk, msg, junk = sys.exc_info()
+            junk1, msg, junk2 = sys.exc_info()
             if not suppressErrors:
                 g.warning("TokenError in", headline)
                 g.es('', msg)
             if unittestFlag: raise
         except tabnanny.NannyNag:
-            junk, nag, junk = sys.exc_info()
+            junk1, nag, junk2 = sys.exc_info()
             if not suppressErrors:
                 badline = nag.get_lineno()
                 line = nag.get_line()
@@ -2046,7 +2038,7 @@ class Commands:
             self.deprecated_messages.append(callers)
             g.es_print(
                 f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers}")
-        return g.os_path_finalize(path, **keys)
+        return g.os_path_finalize(path)  # mypy.
 
     def os_path_finalize_join(self, *args, **keys):
         """
@@ -2074,7 +2066,7 @@ class Commands:
         default_language = g.getLanguageFromAncestorAtFileNode(p) or c.target_language or 'python'
         default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
-        table = (
+        table = (  # type:ignore
             ('encoding',    None,           g.scanAtEncodingDirectives),
             ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
@@ -2086,8 +2078,8 @@ class Commands:
         # Set d by scanning all directives.
         aList = g.get_directives_dict_list(p)
         d = {}
-        for key,default,func in table:
-            val = func(aList)
+        for key, default, func in table:
+            val = func(aList)  # type:ignore
             d[key] = default if val is None else val
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
@@ -2785,8 +2777,8 @@ class Commands:
         # c = self
         try:
             with open(fn, 'rb') as f:  # 2020/11/14: Allow unicode characters!
-                s = f.read()
-                s = g.toUnicode(s)
+                b = f.read()
+                s = g.toUnicode(b)
             return s.find('@+leo-ver=') > -1
         except Exception:
             g.es_exception()
@@ -2953,7 +2945,7 @@ class Commands:
             c.init_error_dialogs()
             return
         if c.import_error_nodes:
-            files = '\n'.join(sorted(set(c.import_error_nodes)))
+            files = '\n'.join(sorted(set(c.import_error_nodes)))  # type:ignore
             if use_dialogs:
                 message = (
                     'The following were not imported properly. '
@@ -2963,7 +2955,7 @@ class Commands:
                 g.es('import errors...', color='red')
                 g.es('\n'.join(sorted(files)), color='blue')
         if c.ignored_at_file_nodes:
-            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
+            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
             kind = 'read' if kind.startswith('read') else 'written'
             if use_dialogs:
                 message = (
@@ -2980,7 +2972,7 @@ class Commands:
         if c.orphan_at_file_nodes:
             message = '\n'.join([
                 'The following were not written because of errors:\n',
-                '\n'.join(sorted(set(c.orphan_at_file_nodes))),
+                '\n'.join(sorted(set(c.orphan_at_file_nodes))),  # type:ignore
                 '',
                 'Warning: changes to these files will be lost\n'
                 'unless you can save the files successfully.'
@@ -3336,7 +3328,7 @@ class Commands:
             c.navPrefix = ''
         c.treeWantsFocus()
     #@+node:ekr.20061002095711.1: *6* c.navQuickKey
-    def navQuickKey(self):
+    def navQuickKey(self) -> bool:
         """
         Return true if there are two quick outline navigation keys
         in quick succession.
@@ -3347,8 +3339,9 @@ class Commands:
         deltaTime = c.config.getFloat('outline-nav-extend-delay')
         if deltaTime in (None, 0.0):
             return False
-        nearTime = c.navTime and time.time() - c.navTime < deltaTime
-        return nearTime
+        if c.navTime is None:
+            return False  # mypy.
+        return time.time() - c.navTime < deltaTime
     #@+node:ekr.20061002095711: *6* c.navHelper
     def navHelper(self, p, ch, extend):
         c = self; h = p.h.lower()
@@ -3576,7 +3569,7 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20031218072017.2958: *6* c.canContractParent
-    def canContractParent(self):
+    def canContractParent(self) -> bool:
         c = self
         return c.p.parent()
     #@+node:ekr.20031218072017.2959: *6* c.canContractSubheads
@@ -3591,12 +3584,13 @@ class Commands:
         c = self; p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[0]
-            if p == bunch.p: return False
+            if p == bunch.p:
+                return False
         return p.hasParent() or p.hasThreadBack() or p.hasNext()
 
     canCutOutline = canDeleteHeadline
     #@+node:ekr.20031218072017.2961: *6* c.canDemote
-    def canDemote(self):
+    def canDemote(self) -> bool:
         c = self
         return c.p.hasNext()
     #@+node:ekr.20031218072017.2962: *6* c.canExpandAllHeadlines
@@ -3622,7 +3616,7 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20031218072017.2287: *6* c.canExtract, canExtractSection & canExtractSectionNames
-    def canExtract(self):
+    def canExtract(self) -> bool:
         c = self
         w = c.frame.body.wrapper
         return w and w.hasSelection()
@@ -3632,9 +3626,11 @@ class Commands:
     def canExtractSection(self):
         c = self
         w = c.frame.body.wrapper
-        if not w: return False
+        if not w:
+            return False
         s = w.getSelectedText()
-        if not s: return False
+        if not s:
+            return False
         line = g.get_line(s, 0)
         i1 = line.find("<<")
         j1 = line.find(">>")
@@ -3679,12 +3675,12 @@ class Commands:
         # else:
             # return True
     #@+node:ekr.20031218072017.2970: *6* c.canMoveOutlineDown
-    def canMoveOutlineDown(self):
-        c = self; current = c.p
-        return current and current.visNext(c)
+    def canMoveOutlineDown(self) -> bool:
+        c, p = self, self.p
+        return p and p.visNext(c)
     #@+node:ekr.20031218072017.2971: *6* c.canMoveOutlineLeft
-    def canMoveOutlineLeft(self):
-        c = self; p = c.p
+    def canMoveOutlineLeft(self) -> bool:
+        c, p = self, self.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             if p and p.hasParent():
@@ -3693,8 +3689,8 @@ class Commands:
             return False
         return p and p.hasParent()
     #@+node:ekr.20031218072017.2972: *6* c.canMoveOutlineRight
-    def canMoveOutlineRight(self):
-        c = self; p = c.p
+    def canMoveOutlineRight(self) -> bool:
+        c, p = self, self.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             return p and p.hasBack() and p != bunch.p
@@ -3723,9 +3719,9 @@ class Commands:
             return True
         return False
     #@+node:ekr.20031218072017.2975: *6* c.canPromote
-    def canPromote(self):
-        c = self; v = c.currentVnode()
-        return v and v.hasChildren()
+    def canPromote(self) -> bool:
+        p = self.p
+        return p and p.hasChildren()
     #@+node:ekr.20031218072017.2977: *6* c.canSelect....
     def canSelectThreadBack(self):
         c = self; p = c.p
@@ -3743,26 +3739,26 @@ class Commands:
         c = self; p = c.p
         return p.visNext(c)
     #@+node:ekr.20031218072017.2978: *6* c.canShiftBodyLeft/Right
-    def canShiftBodyLeft(self):
+    def canShiftBodyLeft(self) -> bool:
         c = self
         w = c.frame.body.wrapper
         return w and w.getAllText()
 
     canShiftBodyRight = canShiftBodyLeft
     #@+node:ekr.20031218072017.2979: *6* c.canSortChildren, canSortSiblings
-    def canSortChildren(self):
+    def canSortChildren(self) -> bool:
         c = self; p = c.p
         return p and p.hasChildren()
 
-    def canSortSiblings(self):
+    def canSortSiblings(self) -> bool:
         c = self; p = c.p
         return p and (p.hasNext() or p.hasBack())
     #@+node:ekr.20031218072017.2980: *6* c.canUndo & canRedo
-    def canUndo(self):
+    def canUndo(self) -> bool:
         c = self
         return c.undoer.canUndo()
 
-    def canRedo(self):
+    def canRedo(self) -> bool:
         c = self
         return c.undoer.canRedo()
     #@+node:ekr.20031218072017.2981: *6* c.canUnmarkAll
@@ -4169,7 +4165,8 @@ class Commands:
                 aList.sort()
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
     def checkBatchOperationsList(self, aList):
-        ok = True; d = {}
+        ok = True
+        d: Dict["leoNodes.VNode", List[Any]] = {}
         for z in aList:
             try:
                 op, p, n = z
@@ -4184,6 +4181,7 @@ class Commands:
                 ok = False
             if not ok: break
         return ok, d
+    #@+node:ekr.20210626151932.1: *5* newHeadline
     #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
     #@+<< PosList doc >>
     #@+node:bob.20101215134608.5898: *5* << PosList doc >>

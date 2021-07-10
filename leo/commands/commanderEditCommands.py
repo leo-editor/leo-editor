@@ -4,6 +4,7 @@
 #@@first
 """Edit commands that used to be defined in leoCommands.py"""
 import re
+from typing import List
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments
@@ -122,8 +123,7 @@ def convertAllBlanks(self, event=None):
             if changed:
                 count += 1
                 p.setDirty()
-                result = '\n'.join(result)
-                p.setBodyString(result)
+                p.setBodyString('\n'.join(result))
                 u.afterChangeNodeContents(p, undoType, innerUndoData)
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
@@ -151,7 +151,8 @@ def convertAllTabs(self, event=None):
             if changed:
                 count += 1
         else:
-            result = []; changed = False
+            result = []
+            changed = False
             text = p.v.b
             lines = text.split('\n')
             for line in lines:
@@ -163,8 +164,7 @@ def convertAllTabs(self, event=None):
             if changed:
                 count += 1
                 p.setDirty()
-                result = '\n'.join(result)
-                p.setBodyString(result)
+                p.setBodyString('\n'.join(result))
                 u.afterChangeNodeContents(p, undoType, undoData)
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
@@ -1215,7 +1215,8 @@ def make_toc(c, kind, root):
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
         return ''.join(aList).rstrip('-').strip()
 
-    result, stack = [], []
+    result: List[str] = []
+    stack: List[int] = []
     for p in root.subtree():
         if cell_type(p) == 'markdown':
             level = p.level() - root.level()

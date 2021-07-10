@@ -7,7 +7,7 @@ import time
 try:
     import black
 except Exception:
-    black = None  # type: ignore
+    black = None  # type:ignore
 # Leo imports.
 from leo.core import leoGlobals as g
 from leo.core import leoAst

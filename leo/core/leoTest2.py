@@ -62,11 +62,11 @@ def convert_leoEditCommands_tests(c, root, target):
             These nodes can then be copied to be children of a test class.
     """
     if not root or not target:
-        print('Error: root and target nodes must be top-level nodes.', color='red')
+        print('Error: root and target nodes must be top-level nodes.')
         return
     # Be safe.
     if target.hasChildren():
-        print('Please delete children of ', target.h, color='red')
+        print('Please delete children of ', target.h)
         return
     converter = ConvertEditCommandsTests()
     count = 0
@@ -75,7 +75,7 @@ def convert_leoEditCommands_tests(c, root, target):
             converter.convert(p, target)
             count += 1
     c.redraw()
-    print(f"converted {count} @test nodes", color='blue')
+    print(f"converted {count} @test nodes")
 #@+node:ekr.20201130195111.1: *3* function: create_app
 def create_app():
     """
