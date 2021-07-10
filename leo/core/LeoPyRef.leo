@@ -149,6 +149,11 @@
 <v t="ekr.20200222083959.1"><vh>script: start loggin</vh></v>
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
 <v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
+<v t="ekr.20210630103405.1"><vh>script: restore gnxs in leoserver.py (simple version)</vh></v>
+<v t="ekr.20210630070717.1"><vh>script: restore gnxs in leoserver.py (full version)</vh>
+<v t="ekr.20210701044426.1"><vh>&lt;&lt; setup &gt;&gt;</vh></v>
+<v t="ekr.20210701044513.1"><vh>&lt;&lt; read into a1_s, b1_s &gt;&gt;</vh></v>
+</v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -444,7 +449,6 @@
 <v t="ekr.20050130120433"><vh>@@file ../plugins/test/failed_import.py</vh></v>
 <v t="ekr.20071113085315"><vh>@file ../plugins/test/failed_to_load_plugin.py</vh></v>
 <v t="ekr.20051016160700"><vh>@file ../plugins/testRegisterCommand.py</vh></v>
-<v t="ekr.20210517152714.1"><vh>@file ../plugins/leo_mypy_plugin.py</vh></v>
 </v>
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
 <v t="timo.20050213160555"><vh>@file ../plugins/bibtex.py</vh></v>
@@ -465,6 +469,7 @@
 <v t="tbrown.20091029123555.5319"><vh>@file ../plugins/attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file ../plugins/colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file ../plugins/contextmenu.py</vh></v>
+<v t="tom.20210613135525.1"><vh>@file ../plugins/freewin.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file ../plugins/graphcanvas.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file ../plugins/nav_qt.py</vh></v>
 <v t="ville.20120604212857.4215"><vh>@file ../plugins/notebook.py</vh></v>
@@ -478,7 +483,6 @@
 <v t="ville.20110403115003.10348"><vh>@file ../plugins/valuespace.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
-<v t="tom.20210527153256.1"><vh>@file ../plugins/freewin.py</vh></v>
 <v t="ekr.20160519123329.1"><vh>@file ../plugins/QNCalendarWidget.py</vh></v>
 <v t="ekr.20060328125925"><vh>@file ../plugins/chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file ../plugins/dragdropgoodies.py</vh></v>
@@ -549,7 +553,7 @@
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
-<v t="ekr.20210611081444.1"><vh>@file leoserver.py</vh></v>
+<v t="felix.20210621233316.1"><vh>@file leoserver.py</vh></v>
 <v t="ekr.20210611084045.1"><vh>@file leobridgeserver.py</vh></v>
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
@@ -641,6 +645,9 @@
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
+</v>
+<v t="ekr.20210710031237.1"><vh>In leo/scripts</vh>
+<v t="ekr.20210709045755.1"><vh>@file ../scripts/wax_off.py</vh></v>
 </v>
 <v t="ekr.20181013081645.1"><vh>In leo/core/test</vh></v>
 </v>
@@ -1972,16 +1979,18 @@ else:
         if s in p.b:
             return True
     return False</t>
-<t tx="ekr.20180816105258.1">import os
+<t tx="ekr.20180816105258.1">g.cls()
+import os
 import leo.commands.editFileCommands as efc
-
-path = os.path.join(g.app.loadDir, '..', '..')
+path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+print('path:', path)
 os.chdir(path)
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='master', # '6bd282f', # 'bc24e607a5', # old branch/rev
-    branch2='devel', # new branch/rev
-    fn='leo/core/leoTangle.py',
+    branch1='devel', # '6bd282f', # 'bc24e607a5', # old branch/rev
+    branch2='felix-server2', # new branch/rev
+    fn='leo/core/leoserver.py',  # Don't use back slashes.
+    ## fn=r'c:\leo.repo\leo-editor\leo\plugins\free_layout.py',
     directory=None,
 )
 </t>
@@ -2044,6 +2053,145 @@ while True:
     if i == 10:
         break
 </t>
+<t tx="ekr.20210630103405.1">g.cls()
+import difflib, os, re
+ekr_server = r'c:\diffs\devel-leoserver.py'
+felix_server = r'c:\diffs\felix-server2-leoserver.py'
+with open(ekr_server) as f:
+    a1_s = f.read()
+with open(felix_server) as f:
+    b1_s = f.read()
+# a and b are lists of @+node sentinel lines.
+a_list = [z.lstrip() for z in g.splitLines(a1_s) if z.strip().startswith('#@+node:')]
+b_list = [z.lstrip() for z in g.splitLines(b1_s) if z.strip().startswith('#@+node:')]
+# Show the diffs.
+diff = difflib.ndiff(a_list, b_list)
+for i, s in enumerate(diff):
+    print(f"{i:&lt;3}: {s.rstrip()}")
+</t>
+<t tx="ekr.20210630070717.1">"""
+See #2025: https://github.com/leo-editor/leo-editor/issues/2025
+
+Note: I have chosen *not* to update the gnx's. Félix deserves the credit for the changes.
+
+A script to restore gnx's in sentinels in leoserver.py from the devel branch to the felix-server2 branch.
+
+devel-leoserver.py: the version of leoserver.py from devel
+felix_server.py:    The version of leoserver.py from felix-server-2
+new_server.py:      leoserver.py, with updated gnx's.
+
+After running this script, `kdiff3 devel-leoserver.py new-leoserver.py` shows *only*
+the expected changes to sentinel lines.
+"""
+
+g.cls()
+import difflib
+import os
+verbose = True
+ekr_server = r'c:\diffs\devel-leoserver.py'
+felix_server = r'c:\diffs\felix-server2-leoserver.py'
+new_server = r'c:\diffs\new-leoserver.py'
+assert os.path.exists(ekr_server), ekr_server
+assert os.path.exists(felix_server), felix_server
+#
+# The target (new!) version should be the ekr_server code.
+# With this convention:
+#   all '-' opcodes will refer to felix gnx's!
+#   These lines refer to lines that Félix *inserted* or *changed*
+with open(felix_server) as f:
+    a1_s = f.read()
+with open(ekr_server) as f:
+    b1_s = f.read()
+print('len ekr', len(b1_s), 'len felix', len(a1_s))
+# ndiff compares *lists* of strings.
+# a and b are lists of @+node sentinels.
+a_list = [z for z in g.splitLines(a1_s) if z.strip().startswith('#@+node:')]
+b_list = [z for z in g.splitLines(b1_s) if z.strip().startswith('#@+node:')]
+changed, deleted, inserted = [], [], []
+diff = list(difflib.ndiff(a_list, b_list))
+i = 0
+while i &lt; len(diff):
+    progress = i
+    s = diff[i]
+    code = s[0]
+    line1 = s[2:]
+    if code == '-':  # Félix inserted or changed the node.
+        line2_s = diff[i+1] if i+1 &lt; len(diff) else ''
+        line3_s = diff[i+2] if i+2 &lt; len(diff) else ''
+        line2_code = line2_s[0] if line2_s else ''
+        line3 = line3_s[2:]
+        assert 'felix' in line1, s
+        if line2_code == '?':  # The line changed. Remember the first and third lines.
+            assert line2_s
+            assert line3_s
+            changed.append((line1, line3))
+            i += 4
+        else: # Félix inserted the node.
+            inserted.append(line1)
+            i += 1
+    elif code == '+':  # Félix deleted the node.
+        assert 'ekr' in line1, s
+        deleted.append(line1)
+        i += 1
+    else:
+        print(f"{i:&gt;3}: UNKNOWN CODE")
+        print(f"{i:&gt;3}: {s!r}")
+        print('')
+        for j, s in enumerate(diff[:i+1]):
+            print(f"{j:&gt;3}: {s!r}")
+        break
+    assert i &gt; progress
+#
+# Print the results.
+print('')
+print(f"Inserted {len(inserted)} nodes")
+if verbose:
+    print('')
+    for i, z in enumerate(inserted):
+        print(f"{i:&gt;3}: {z!r}")
+    print('')
+print(f" Deleted {len(deleted)} nodes")
+if verbose:
+    print('')
+    for i, z in enumerate(deleted):
+        print(f"{i:&gt;3}: {z!r}")
+    print('')
+print(f" Changed {len(changed)} nodes")
+if verbose:
+    print('')
+    for i, z in enumerate(changed):
+        a, b = z
+        print(f"{i:&gt;3}: felix: {a!r}")
+        print(f"{i:&gt;3}:   ekr: {b!r}")
+        print('')
+#
+# Change the leoserver.py, *not* the ekr file.
+result = a1_s
+for z in changed:
+    a, b = z
+    assert '#@+node:felix' not in b, repr(b)
+    result = result.replace(a, b)
+if 0:
+    g.printObj(g.splitLines(result), tag=result)
+if 0:
+    i, n = 0, 0
+    tag = '#@+node:felix'
+    while True:
+        i = result.find(tag, i)
+        if i == -1:
+            break
+        print(n, repr(result[i: i+50]))
+        i += len(tag)
+        n += 1
+if 1:
+    # Write the file.
+    with open(new_server, 'w') as f:
+        f.write(result)
+    print(f"wrote {new_server}")
+    
+</t>
+<t tx="ekr.20210701044426.1"></t>
+<t tx="ekr.20210701044513.1"></t>
 <t tx="EKR.20040430162943">@nosearch
 </t>
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
@@ -2855,6 +3003,7 @@ from .eveventhandler import Event
 
 </t>
 <t tx="ekr.20180225010850.1"></t>
+<t tx="ekr.20210710031237.1"></t>
 <t tx="ekr.20181013081645.1">@path test</t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20201202144529.1"></t>
