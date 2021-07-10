@@ -5319,7 +5319,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20200111171738.1: *5* test_FunctionDef_with_annotations
     def test_FunctionDef_with_annotations(self):
         contents = r"""\
-    def foo(a, b, c):
+    def foo(a: 'x', b: 5 + 6, c: list) -> max(2, 9):
         pass
     """
         self.make_data(contents)
@@ -5680,7 +5680,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20200112070228.1: *5* test_ellipsis_2
     def test_ellipsis_2(self):
         contents = """
-    def partial(func):
+    def partial(func: Callable[..., str], *args):
         pass
     """
         self.make_data(contents)

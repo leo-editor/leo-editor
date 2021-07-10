@@ -17,7 +17,7 @@ leo/.vscode/
 
 # The wax_off script uses the mypy_stub folder, but
 # eventually all stub (.pyi) files move to the same folder as their corresponding .py files
-mypy_stubs/
+/mypy_stubs/
 # Don't add the helper directories.
 # mypy_stubs/3.*/
 # mypy_stubs/*.txt
