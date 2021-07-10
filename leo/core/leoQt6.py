@@ -6,7 +6,7 @@ Import wrapper for pyQt6.
 For Qt6, plugins are responsible for loading all optional modules.
 
 """
-# pylint: disable=unused-import,no-name-in-module,c-extension-no-member
+# pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
 #
 # Required imports
 from PyQt6 import QtCore
