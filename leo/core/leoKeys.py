@@ -2957,7 +2957,7 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     def masterKeyHandler(self, event):
         """The master key handler for almost all key bindings."""
-        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
+        trace = 'keys' in g.app.debug
         c, k = self.c, self
         # Setup...
         if trace:
@@ -3085,7 +3085,7 @@ class KeyHandlerClass:
         #
         # #1757: Leo's default vim bindings make heavy use of modes.
         #        Retain these traces!
-        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
+        trace = 'keys' in g.app.debug
         k = self
         state = k.state.kind
         stroke = event.stroke
@@ -3414,7 +3414,6 @@ class KeyHandlerClass:
     def getBindingHelper(self, key, name, stroke, w):
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
-        # trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
         #
         # Return if the pane's name doesn't match the event's widget.
         state = k.unboundKeyAction
