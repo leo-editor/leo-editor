@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.3
+About Viewrendered3 V3.31
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -129,7 +129,7 @@ Settings and Configuration
 Settings
 ========
 
-Settings are put into nodes with the headlines ``@setting ....``.  
+Settings are put into nodes with the headlines ``@setting ...``.  
 They must be placed into an ``@settings`` tree, preferably 
 in the myLeoSettings file.
 
@@ -695,6 +695,13 @@ except ImportError:
     raise ImportError from None
     #QtWidgets = False
 
+if not QtSvg and not isQt5:
+    try:
+        from PyQt6 import QtSvg
+    except ImportError:
+        g.es('Viewrendered3: cannot import QTSvg module')
+        raise ImportError from None
+
 QWebView = None
 if isQt5:
     try:
@@ -711,7 +718,11 @@ else:
         g.trace(e)
         # The top-level init function gives the error.
 
-QSvgWidget = QtSvg.QSvgWidget
+if QtSvg:
+    if hasattr(QtSvg, 'QSvgWidget'):
+        QSvgWidget = QtSvg.QSvgWidget
+    else:
+        QtSvg = None
 #@-<< Qt Imports >>
 
 #1946
@@ -862,7 +873,7 @@ VR3_DIR = 'vr3'
 VR3_CONFIG_FILE = 'vr3_config.ini'
 EXECUTABLES_SECTION = 'executables'
 LEO_PLUGINS_DIR = os.path.dirname(__file__)
-
+NO_SVG_WIDGET_MSG = 'QSvgWidget not available'
 
 #@-<< declarations >>
 
@@ -901,7 +912,7 @@ controllers = {}
     # Keys are c.hash(): values are PluginControllers (QWidget's).
 layouts = {}
     # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
-##
+
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
 def find_exe(exename):
@@ -1785,6 +1796,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 stylesheet = RST_DEFAULT_STYLESHEET_NAME
             self.rst_stylesheet = g.os_path_join(vr_style_dir, stylesheet)
+        g.es('VR3: stylesheet:', self.rst_stylesheet)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
         # pylint: disable=import-outside-toplevel
@@ -2406,6 +2418,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = keywords.get('s', '')
             s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
+            if s.startswith('<svg'):
+                g.es(NO_SVG_WIDGET_MSG, color = 'red')
+                return
             self.rst_html = ''
             if s and isHtml:
                 h = s
@@ -2711,6 +2726,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node_list[0].b
                 s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
+            if s.startswith('<svg'):
+                g.es(NO_SVG_WIDGET_MSG, color = 'red')
+                return
+                
             self.rst_html = ''
             if s and isHtml:
                 _code = [n.b for n in node_list]
@@ -3237,13 +3256,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
     def update_svg(self, s, keywords):
+        if not QtSvg:
+            g.es('QSvgWidget not available', color = 'red')
+            return
         pc = self
         if pc.must_change_widget(QSvgWidget):
             w = QSvgWidget()
             pc.embed_widget(w)
             assert w == pc.w
         else:
-            w = pc.w
+            w = pc.w722
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
             s = g.adjustTripleString(s, pc.c.tab_width).strip()
