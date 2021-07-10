@@ -291,7 +291,7 @@ class DefaultWrapper(BaseSpellWrapper):
             g.es_print('\nSpell checking has been disabled.')
             g.es_print('To enable, put a main dictionary at:')
             g.es_print('~/.leo/main_spelling_dict.txt')
-            table = (
+            table = (  # type:ignore
                 ('user', self.user_fn),
             )
         for kind, fn in table:
@@ -576,8 +576,8 @@ class SpellCommandsClass(BaseEditCommandsClass):
         if not self.suggestions:
             g.es('[no suggestions]')
             return
-        word = self.suggestions[self.suggestion_idx]
-        self.suggestion_idx = (self.suggestion_idx + 1) % len(self.suggestions)
+        word = self.suggestions[self.suggestion_idx]  # type:ignore
+        self.suggestion_idx = (self.suggestion_idx + 1) % len(self.suggestions)  # type:ignore
         self.as_you_type_replace(word)
     #@+node:ekr.20150514063305.496: *4* as_you_type_undo
     @cmd('spell-as-you-type-undo')
@@ -696,7 +696,7 @@ class SpellTabHandler:
             self.loaded = True
             return
         # Create the spellController for the show-spell-info command.
-        self.spellController = DefaultWrapper(c)
+        self.spellController = DefaultWrapper(c)  # type:ignore
         self.loaded = bool(self.spellController.main_fn)
         if self.loaded:
             # Create the spell tab only if the main dict exists.

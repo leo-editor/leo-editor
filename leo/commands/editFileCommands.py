@@ -9,6 +9,7 @@ import difflib
 import io
 import os
 import re
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -33,7 +34,7 @@ class ConvertAtRoot:
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     section_pat = re.compile(r'\s*<\<.+>\>')
-    units = []  # type: ignore
+    units: List[Any] = []
         # List of positions containing @unit.
 
     #@+others
@@ -954,16 +955,15 @@ class GitDiffController:
             # Use the file name, not the path.
             command = f"git show {rev}:{fn}"
             lines = g.execGitCommand(command, self.repo_dir)
-            s = ''.join(lines)
-        else:
-            try:
-                with open(path, 'rb') as f:  # Was 'r'
-                    s = f.read()
-            except Exception:
-                g.es_print('Can not read', path)
-                g.es_exception()
-                s = ''
-        return g.toUnicode(s).replace('\r', '')
+            return g.toUnicode(''.join(lines)).replace('\r', '')
+        try:
+            with open(path, 'rb') as f:  # Was 'r'
+                b = f.read()
+            return g.toUnicode(b).replace('\r', '')
+        except Exception:
+            g.es_print('Can not read', path)
+            g.es_exception()
+            return ''
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self, rev1, rev2):
         """Return a list of changed files."""

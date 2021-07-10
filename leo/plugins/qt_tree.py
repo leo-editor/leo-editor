@@ -7,7 +7,7 @@
 #@+node:ekr.20140907131341.18709: ** << imports >> (qt_tree.py)
 import re
 import time
-assert time
+from typing import Any, List
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
@@ -148,7 +148,7 @@ class LeoQtTree(leoFrame.LeoTree):
         """
         t1 = time.process_time()
         c = self.c
-        parents = []
+        parents: List[Any] = []
         # Clear the widget.
         w = self.treeWidget
         w.clear()
@@ -426,7 +426,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.declutter_patterns is not None:
             return self.declutter_patterns
         c = self.c
-        patterns = []
+        patterns: List[Any] = []
         warned = False
         lines = c.config.getData("tree-declutter-patterns")
         for line in lines:

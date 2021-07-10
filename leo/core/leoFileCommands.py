@@ -16,6 +16,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
+from typing import Dict
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -278,7 +279,8 @@ class FastRead:
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
     def scanTnodes(self, t_elements):
 
-        gnx2body, gnx2ua = {}, defaultdict(dict)
+        gnx2body: Dict[str, str] = {}
+        gnx2ua: Dict[str, dict] = defaultdict(dict)
         for e in t_elements:
             # First, find the gnx.
             gnx = e.attrib['tx']
@@ -929,12 +931,13 @@ class FileCommands:
         try:
             d = dict(
                 conn.execute(
-                '''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?, ?)''',
-                keys,
-            ).fetchall(),
+                    '''select * from extra_infos 
+                    where name in (?, ?, ?, ?, ?, ?, ?)''',
+                    keys,
+                ).fetchall(),
             )
-            geom = (d.get(*x) for x in zip(keys, geom))
+            # mypy complained that geom must be a tuple, not a generator.
+            geom = tuple(d.get(*x) for x in zip(keys, geom))  # type:ignore
         except sqlite3.OperationalError:
             pass
         return geom
@@ -1302,14 +1305,14 @@ class FileCommands:
                 v = self.gnxDict.get(tref)
                 if v:
                     v.unknownAttributes = resultDict[gnx]
-                    v._p_changed = 1
+                    v._p_changed = True
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v, resultDict in self.descendentVnodeUaDictList:
             for key in resultDict:
                 v = self.resolveArchivedPosition(key, root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
-                    v._p_changed = 1
+                    v._p_changed = True
         marks = {}; expanded = {}
         for gnx in self.descendentExpandedList:
             tref = self.canonicalTnodeIndex(gnx)
@@ -1482,11 +1485,11 @@ class FileCommands:
             c.sqlite_connection = sqlite3.connect(fileName, isolation_level='DEFERRED')
         conn = c.sqlite_connection
 
-        def dump_u(v):
+        def dump_u(v) -> bytes:
             try:
                 s = pickle.dumps(v.u, protocol=1)
             except pickle.PicklingError:
-                s = ''
+                s = b''  # 2021/06/25: fixed via mypy complaint.
                 g.trace('unpickleable value', repr(v.u))
             return s
 
@@ -1715,7 +1718,7 @@ class FileCommands:
         c = self.c
         width, height, left, top = c.frame.get_window_info()
         if 1:  # Write to the cache, not the file.
-            d = {}
+            d: Dict[str, str] = {}
             c.db['body_outline_ratio'] = str(c.frame.ratio)
             c.db['body_secondary_ratio'] = str(c.frame.secondary_ratio)
             c.db['window_position'] = str(top), str(left), str(height), str(width)
