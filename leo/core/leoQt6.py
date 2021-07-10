@@ -22,6 +22,10 @@ assert QUrl and Signal and uic  # For pyflakes.
 # Standard abbreviations.
 QtConst = Qt
 qt_version = QtCore.QT_VERSION_STR
+try:
+    import PyQt6.QtSvg as QtSvg  # #2006
+except ImportError:
+    QtSvg = None
 #
 # Optional(?) modules.
 try:
