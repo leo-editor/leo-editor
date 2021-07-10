@@ -17,6 +17,10 @@ from typing import Dict, List, Tuple
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
 from leo.external import codewise
+try:
+    import jedi
+except ImportError:
+    jedi = None
 #@-<< imports >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
@@ -701,8 +705,7 @@ class AutoCompleterClass:
                 print(f"can not happen: not found: {line!r}")
         #
         # Get the jedi completions.
-        if jedi_line is not None:
-            import jedi
+        if jedi and jedi_line is not None:
             try:
                 # https://jedi.readthedocs.io/en/latest/docs/api.html#script
                 script = jedi.Script(source, path=g.shortFileName(fileName))
@@ -1440,8 +1443,6 @@ class GetArg:
         c.check_event(event)
         c.minibufferWantsFocusNow()
         char = event.char if event else ''
-        ### if state > 0:
-        ###    k.setLossage(char, stroke)
         if state == 0:
             self.do_state_zero(completion, event, handler, oneCharacter,
                 returnKind, returnState, tabList, useMinibuffer)
@@ -1857,7 +1858,10 @@ class KeyHandlerClass:
             'transpose-chars',
             'transpose-words',
             'upcase-word',
+            # LeoFind class.
+            'start-search',  # #2041.
             # KeyHandlerCommandsClass
+            'full-command',  # #2041.
             # 'auto-complete',
                 # 'negative-argument',
                 # 'number-command',
@@ -2358,7 +2362,7 @@ class KeyHandlerClass:
     ):
         """Handle 'full-command' (alt-x) mode."""
         try:
-            k = self; c = k.c
+            c, k = self.c, self
             state = k.getState('full-command')
             helpPrompt = 'Help for command: '
             c.check_event(event)
@@ -3609,22 +3613,27 @@ class KeyHandlerClass:
         Mimic what would happen with the keyboard and a Text editor
         instead of plain accumulation.
         """
-        k = self; c = k.c; w = self.w
-        ch = event.char if event else ''
-        if ch and ch not in ('\n', '\r'):
-            c.widgetWantsFocusNow(w)
-            i, j = w.getSelectionRange()
-            ins = w.getInsertPoint()
-            if i != j:
-                w.delete(i, j)
-            if ch == '\b':
-                s = w.getAllText()
-                if len(s) > len(k.mb_prefix):
-                    w.delete(i - 1)
-                    i -= 1
-            else:
-                w.insert(ins, ch)
-                i = ins + 1
+        c, k, w = self.c, self, self.w
+        if not event:
+            return
+        ch, stroke = event.char, event.stroke
+        if ch in "\n\r":
+            return
+        if stroke and not k.isPlainKey(stroke):
+            return  # #2041.
+        c.widgetWantsFocusNow(w)
+        i, j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        if i != j:
+            w.delete(i, j)
+        if ch == '\b':
+            s = w.getAllText()
+            if len(s) > len(k.mb_prefix):
+                w.delete(i - 1)
+                i -= 1
+        else:
+            w.insert(ins, ch)
+            i = ins + 1
     #@+node:ekr.20120208064440.10190: *3* k.Modes
     #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands(self):
