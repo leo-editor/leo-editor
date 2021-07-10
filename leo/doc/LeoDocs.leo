@@ -1774,6 +1774,11 @@
 <v t="ekr.20210607023121.1"><vh>#1965: LM.createAllImporterData</vh></v>
 <v t="ekr.20210617091939.1"><vh>#1968: leo-editor path</vh></v>
 <v t="ekr.20210617164840.1"><vh>#1974: spaces in path</vh></v>
+<v t="ekr.20210710040014.54"><vh>#2011: buttons </vh></v>
+<v t="ekr.20210710040014.55"><vh>#2020: leoflexx crash</vh></v>
+<v t="ekr.20210710040014.57"><vh>#2022: quicksearch crash</vh></v>
+<v t="ekr.20210710040014.73"><vh>#2030: NO PARENT message</vh></v>
+<v t="ekr.20210710040014.133"><vh>#2036: move-right</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -1790,13 +1795,15 @@
 <v t="ekr.20210405100137.1058"><vh>#1806: Rewrite leoFind.py, with unit tests</vh></v>
 <v t="ekr.20210405100137.1336"><vh>#1821: remove match_mark_previous</vh></v>
 <v t="ekr.20210429042049.1902"><vh>#1889: @path</vh></v>
-<v t="ekr.20210617092021.1"><vh>#1979: cffm and cfam</vh></v>
 <v t="ekr.20210429042049.1914"><vh>#1895: split qtree.updateIcon</vh></v>
 <v t="ekr.20210429042049.1947"><vh>#1903: Simplify g.os_path*</vh></v>
 <v t="ekr.20210511103242.2"><vh>#1914: Use g.fullPath</vh></v>
 <v t="ekr.20210513053406.1"><vh>#1933: view-lossage</vh></v>
+<v t="ekr.20210710040014.2"><vh>#1944: Annotations &amp; stub files</vh></v>
 <v t="ekr.20210520081100.1"><vh>#1946: g.assertUi</vh></v>
 <v t="ekr.20210528082736.20"><vh>#1953: Fix Qt6 dialogs</vh></v>
+<v t="ekr.20210617092021.1"><vh>#1979: cffm and cfam</vh></v>
+<v t="ekr.20210710040014.128"><vh>#2031: nodetags: work w/o qt</vh></v>
 <v t="ekr.20210405100137.887"><vh>PR1759: Further improvements to undo code</vh></v>
 <v t="ekr.20210405100137.1772"><vh>PR1804: Support batch change scripts</vh></v>
 <v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
@@ -1820,6 +1827,7 @@
 <v t="ekr.20210405100137.1345"><vh>#1832: Retire @root and convert-at-root command</vh></v>
 <v t="ekr.20210528083337.1"><vh>#1846: pyQt6 compatibility</vh></v>
 <v t="ekr.20210405100137.1743"><vh>#1867: simplify rst3</vh></v>
+<v t="ekr.20210710040931.1"><vh>Add leo/scripts/wax_off.py</vh></v>
 </v>
 <v t="ekr.20210405110145.1"><vh>6.4: Other features</vh>
 <v t="ekr.20210405100137.456"><vh>#1240: Alert for changed .leo file</vh></v>
@@ -31957,10 +31965,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.4**
 
-- Add support for Leo for vs-code.
+- Add support for "Leo in vs-code".
 - Add leoserver.py, stand-alone server for Leo.
 - Add support for .leojs, a json outline format.
 - Add support for Qt6.
+- Add a script (scripts/wax_off.py) to convert function annotations to stub (.pyi) files.
 - Remove support for @root. Create a conversion script.
 - Remove support for Qt docks.
 - Simplify and generalize rst3 command.
@@ -32127,14 +32136,25 @@ Add c.general_script_helper.</t>
 </t>
 <t tx="ekr.20210617091939.1">https://github.com/leo-editor/leo-editor/issues/1968</t>
 <t tx="ekr.20210617092021.1">https://github.com/leo-editor/leo-editor/issues/1979</t>
-<t tx="ekr.20210617164840.1">@language rest
-@wrap
+<t tx="ekr.20210617164840.1">https://github.com/leo-editor/leo-editor/issues/1974</t>
+<t tx="ekr.20210710040014.128">https://github.com/leo-editor/leo-editor/issues/2031
 
-https://github.com/leo-editor/leo-editor/issues/1974
+Part of support for "Leo in vs-code"</t>
+<t tx="ekr.20210710040014.133">https://github.com/leo-editor/leo-editor/issues/2036</t>
+<t tx="ekr.20210710040014.2">https://github.com/leo-editor/leo-editor/issues/1944
 
-@language python
-@nosearch
-</t>
+PR: https://github.com/leo-editor/leo-editor/pull/1948</t>
+<t tx="ekr.20210710040014.54">https://github.com/leo-editor/leo-editor/issues/2011</t>
+<t tx="ekr.20210710040014.55">https://github.com/leo-editor/leo-editor/issues/2020</t>
+<t tx="ekr.20210710040014.57">https://github.com/leo-editor/leo-editor/issues/2022</t>
+<t tx="ekr.20210710040014.73">https://github.com/leo-editor/leo-editor/issues/2030</t>
+<t tx="ekr.20210710040931.1">This script creates stub (.pyi) files from def lines containing annotations,
+then removes the annotations.
+
+This allows you to add annotations directly in your .py files, and then
+move most of the clutter to stub files.
+
+Imo, the wax_off script makes my make_stub_files project obsolete.</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
