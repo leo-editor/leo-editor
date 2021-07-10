@@ -228,6 +228,7 @@ def orange_settings(c):
     n_max_split = c.config.getInt('beautify-max-split-line-length')
     max_split_line_length = 88 if n_max_split is None else n_max_split
     # Join <= Split.
+    # pylint: disable=consider-using-min-builtin
     if max_join_line_length > max_split_line_length:
         max_join_line_length = max_split_line_length
     return {

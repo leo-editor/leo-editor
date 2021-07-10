@@ -134,7 +134,7 @@ async def client_main_loop(timeout):
     verbose = False
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
-    async with websockets.connect(uri) as websocket:
+    async with websockets.connect(uri) as websocket:  # pylint: disable=no-member
         if trace and verbose:
             print(f"{tag}: asyncInterval.timeout: {timeout}")
         # Await the startup package.
