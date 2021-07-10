@@ -10,7 +10,7 @@ import copy
 import itertools
 import time
 import re
-from typing import Any, Callable, Dict, Generator, List, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Tuple # Any, Callable, Generator, Sequence, Union
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 from leo.core.leoCommands import Commands as Cmdr
