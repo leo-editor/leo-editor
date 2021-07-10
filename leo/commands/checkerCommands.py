@@ -16,21 +16,21 @@ try:
     import flake8
     from flake8 import engine, main
 except Exception:  # May not be ImportError.
-    flake8 = None  # type: ignore
+    flake8 = None  # type:ignore
 try:
     import mypy
 except Exception:
-    mypy = None  # type: ignore
+    mypy = None  # type:ignore
 try:
     import pyflakes
     from pyflakes import api, reporter
 except Exception:
-    pyflakes = None  # type: ignore
+    pyflakes = None  # type:ignore
 try:
     # pylint: disable=import-error
     from pylint import lint
 except Exception:
-    lint = None  # type: ignore
+    lint = None  # type:ignore
 #
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -580,7 +580,7 @@ class PylintCommand:
         command = (
             f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
-            command = shlex.split(command)
+            command = shlex.split(command)  # type:ignore
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager

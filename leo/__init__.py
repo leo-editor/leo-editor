@@ -6,7 +6,7 @@
 #     leo.run()
 
 def run(*args,**keys):
-    import pdb ; pdb = pdb.set_trace
+    import pdb ; pdb = pdb.set_trace  # type: ignore[assignment]
     import leo.core.runLeo as runLeo
     runLeo.run(*args,**keys)
 

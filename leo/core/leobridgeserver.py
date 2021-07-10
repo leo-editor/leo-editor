@@ -842,10 +842,13 @@ class LeoBridgeIntegController:
             print('[sendAsyncOutput] Error loop not ready' +
                   json.dumps(p_package, separators=(',', ':')))
 
-    #@+node:ekr.20210611084045.65: *3* set_ask_result
-    def set_ask_result(self, p_result):
+    #@+node:felix.20210625011822.1: *3* set_ask_result
+    def set_ask_result(self, param):
         '''Got the result to an asked question/warning from client'''
-        self.g.app.externalFilesController.integResult(p_result)
+        w_result = param.get("result");
+        if not w_result:
+            return self._outputError("Error in set_ask_result, no param result")
+        self.g.app.externalFilesController.integResult(w_result)
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210611084045.66: *3* set_config
@@ -1508,6 +1511,29 @@ class LeoBridgeIntegController:
             n=int(param['line']))
         w_result = {"found": found, "node": self._p_to_ap(c.p)}
         return self.sendLeoBridgePackage(w_result)
+
+    #@+node:felix.20210620220343.1: *4* clone_find_tag
+    def clone_find_tag(self, param):
+        """Run Leo's clone-find-tag command and return results."""
+        tag = 'clone_find_tag'
+        c = self.commander
+        fc = c.findCommands
+        the_tag = param.get("tag")
+        if the_tag:
+            settings = fc.ftm.get_settings()
+            n, p = fc.do_clone_find_tag(settings)
+        return self.sendLeoBridgePackage({"n": n})
+
+    #@+node:felix.20210620220347.1: *4* tag_children
+    def tag_children(self, param):
+        """Run Leo's tag-children command"""
+        # This is not a find command!
+        c = self.commander
+        fc = c.findCommands
+        the_tag = param.get("tag")
+        if the_tag:
+            fc.do_tag_children(c.p, the_tag)
+        return self.sendLeoBridgePackage()
 
     #@+node:ekr.20210611084045.104: *3* At Buttons
     #@+node:ekr.20210611084045.105: *4* get_buttons
@@ -2812,8 +2838,8 @@ class LeoBridgeIntegController:
         return self.sendLeoBridgePackage({'testReturnedKey': 'testReturnedValue'})
         # return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.124: *3* Outline and Body Interaction
-    #@+node:ekr.20210611084045.125: *4* page_up
+    #@+node:felix.20210625011809.1: *3* Outline and Body Interaction
+    #@+node:felix.20210625011809.2: *4* page_up
     def page_up(self, param):
         """Selects a node a couple of steps up in the tree to simulate page up"""
         n = param.get("n", 3)
@@ -2821,7 +2847,7 @@ class LeoBridgeIntegController:
             self.commander.selectVisBack()
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.126: *4* page_down
+    #@+node:felix.20210625011809.3: *4* page_down
     def page_down(self, param):
         """Selects a node a couple of steps down in the tree to simulate page down"""
         n = param.get("n", 3)
@@ -2829,8 +2855,8 @@ class LeoBridgeIntegController:
             self.commander.selectVisNext()
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.127: *4* get_body_states
-    def get_body_states(self, p_ap):
+    #@+node:felix.20210625011809.4: *4* get_body_states
+    def get_body_states(self, param):
         """
         Finds the language in effect at top of body for position p,
         return type is lowercase 'language' non-empty string.
@@ -2839,13 +2865,14 @@ class LeoBridgeIntegController:
         The cursor positions are given as {"line": line, "col": col, "index": i}
         with line and col along with a redundant index for convenience and flexibility.
         """
-        if not p_ap:
-            return self._outputError("Error in getLanguage, no param p_ap")
+        w_ap = param.get("ap")  # At least node parameter is present
+        if not w_ap:
+            return self._outputError("Error in getLanguage, no param ap")
 
-        w_p = self._ap_to_p(p_ap)
+        w_p = self._ap_to_p(w_ap)
         if not w_p:
             print(
-                "in GBS -> P NOT FOUND gnx:" + p_ap['gnx'] + " using self.commander.p gnx: " + self.commander.p.v.gnx)
+                "in GBS -> P NOT FOUND gnx:" + w_ap['gnx'] + " using self.commander.p gnx: " + self.commander.p.v.gnx)
             w_p = self.commander.p
 
         w_wrapper = self.commander.frame.body.wrapper
@@ -2935,11 +2962,12 @@ class LeoBridgeIntegController:
             }
         return self.sendLeoBridgePackage(states)
 
-    #@+node:ekr.20210611084045.128: *4* get_children & helper
-    def get_children(self, p_ap):
+    #@+node:felix.20210625011809.5: *4* get_children & helper
+    def get_children(self, param):
         '''EMIT OUT list of children of a node'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
+        w_ap = param.get("ap")  # At least node parameter is present
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
             if w_p and w_p.hasChildren():
                 return self._outputPNodes(w_p.children())
             else:
@@ -2951,7 +2979,7 @@ class LeoBridgeIntegController:
                 # this outputs all Root Children
                 return self._outputPNodes(self._yieldAllRootChildren())
 
-    #@+node:ekr.20210611084045.129: *5* _yieldAllRootChildren
+    #@+node:felix.20210625011809.6: *5* _yieldAllRootChildren
     def _yieldAllRootChildren(self):
         '''Return all root children P nodes'''
         p = self.commander.rootPosition()
@@ -2959,28 +2987,30 @@ class LeoBridgeIntegController:
             yield p
             p.moveToNext()
 
-    #@+node:ekr.20210611084045.130: *4* get_parent
-    def get_parent(self, p_ap):
+    #@+node:felix.20210625011809.7: *4* get_parent
+    def get_parent(self, param):
         '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
+        w_ap = param.get("ap")  # At least node parameter is present
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
             if w_p and w_p.hasParent():
                 return self._outputPNode(w_p.getParent())  # if not root
         return self._outputPNode()  # default empty for root as default
 
-    #@+node:ekr.20210611084045.131: *4* get_all_gnx
+    #@+node:felix.20210625011809.8: *4* get_all_gnx
     def get_all_gnx(self, param):
         '''Get gnx array from all unique nodes'''
         w_all_gnx = [
             p.v.gnx for p in self.commander.all_unique_positions(copy=False)]
         return self.sendLeoBridgePackage({"gnx": w_all_gnx})
 
-    #@+node:ekr.20210611084045.132: *4* get_body
-    def get_body(self, p_gnx):
+    #@+node:felix.20210625011809.9: *4* get_body
+    def get_body(self, param):
         '''EMIT OUT body of a node'''
         # TODO : if not found, send code to prevent unresolved promise if 'document switch' occurred shortly before
-        if p_gnx:
-            w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
+        w_gnx = param.get("gnx")  # At least node parameter is present
+        if w_gnx:
+            w_v = self.commander.fileCommands.gnxDict.get(w_gnx)  # vitalije
             if w_v:
                 if w_v.b:
                     return self._outputBodyData(w_v.b)
@@ -2989,18 +3019,19 @@ class LeoBridgeIntegController:
         # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
         return self._outputBodyData()
 
-    #@+node:ekr.20210611084045.133: *4* get_body_length
-    def get_body_length(self, p_gnx):
+    #@+node:felix.20210625011809.10: *4* get_body_length
+    def get_body_length(self, param):
         '''EMIT OUT body string length of a node'''
-        if p_gnx:
-            w_v = self.commander.fileCommands.gnxDict.get(p_gnx)  # vitalije
+        w_gnx = param.get("gnx")  # At least node parameter is present
+        if w_gnx:
+            w_v = self.commander.fileCommands.gnxDict.get(w_gnx)  # vitalije
             if w_v and w_v.b:
                 # Length in bytes, not just by character count.
                 return self.sendLeoBridgePackage({"len": len(w_v.b.encode('utf-8'))})
         # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
         return self.sendLeoBridgePackage({"len": 0})  # empty as default
 
-    #@+node:ekr.20210611084045.134: *4* set_body
+    #@+node:felix.20210625011809.11: *4* set_body
     def set_body(self, param):
         '''Change Body text of a v node'''
         w_gnx = param['gnx']
@@ -3027,7 +3058,7 @@ class LeoBridgeIntegController:
                 w_v.b = w_body
         return self._outputPNode(self.commander.p)  # return selected node
 
-    #@+node:ekr.20210611084045.135: *4* get_focus
+    #@+node:felix.20210625011809.12: *4* get_focus
     def get_focus(self, param):
         """
         Return a representation of the focused widget,
@@ -3037,7 +3068,7 @@ class LeoBridgeIntegController:
         focus = self.g.app.gui.widget_name(w)
         return self.sendLeoBridgePackage({"focus": focus})
 
-    #@+node:ekr.20210611084045.136: *4* set_selection
+    #@+node:felix.20210625011809.13: *4* set_selection
     def set_selection(self, param):
         '''
         Set cursor position and scroll position along with selection start and end.
@@ -3124,7 +3155,7 @@ class LeoBridgeIntegController:
         # output selected node as 'ok'
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210611084045.137: *4* set_headline
+    #@+node:felix.20210625011809.14: *4* set_headline
     def set_headline(self, param):
         '''Change Headline of a node'''
         w_newHeadline = param['name']
@@ -3140,29 +3171,30 @@ class LeoBridgeIntegController:
                 return self._outputPNode(w_p)
         return self._outputError("Error in setNewHeadline")
 
-    #@+node:ekr.20210611084045.138: *4* set_current_position & helper
-    def set_current_position(self, p_ap):
+    #@+node:felix.20210625011809.15: *4* set_current_position & helper
+    def set_current_position(self, param):
         '''Select a node, or the first one found with its GNX'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
+        w_ap = param.get("ap")  # At least node parameter is present
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
             if w_p:
                 if self.commander.positionExists(w_p):
                     # set this node as selection
                     self.commander.selectPosition(w_p)
                 else:
-                    w_foundPNode = self._findPNodeFromGnx(p_ap['gnx'])
+                    w_foundPNode = self._findPNodeFromGnx(w_ap['gnx'])
                     if w_foundPNode:
                         self.commander.selectPosition(w_foundPNode)
                     else:
                         print("Set Selection node does not exist! ap was:" +
-                              json.dumps(p_ap), flush=True)
+                              json.dumps(w_ap), flush=True)
         # * return the finally selected node
         if self.commander.p:
             return self._outputPNode(self.commander.p)
         else:
             return self._outputPNode()
 
-    #@+node:ekr.20210611084045.139: *5* _findPNodeFromGnx
+    #@+node:felix.20210625011809.16: *5* _findPNodeFromGnx
     def _findPNodeFromGnx(self, p_gnx):
         '''Return first p node with this gnx or false'''
         for p in self.commander.all_unique_positions():
@@ -3170,20 +3202,22 @@ class LeoBridgeIntegController:
                 return p
         return False
 
-    #@+node:ekr.20210611084045.140: *4* expand_node
-    def expand_node(self, p_ap):
+    #@+node:felix.20210625011809.17: *4* expand_node
+    def expand_node(self, param):
         '''Expand a node'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
+        w_ap = param.get("ap")  # At least node parameter is present
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
             if w_p:
                 w_p.expand()
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
-    #@+node:ekr.20210611084045.141: *4* contract_node
-    def contract_node(self, p_ap):
+    #@+node:felix.20210625011809.18: *4* contract_node
+    def contract_node(self, param):
         '''Collapse a node'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
+        w_ap = param.get("ap")  # At least node parameter is present
+        if w_ap:
+            w_p = self._ap_to_p(w_ap)
             if w_p:
                 w_p.contract()
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
@@ -3317,10 +3351,10 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         global g_server
         self.server = g_server
         g.unitTesting = True
-        
+
     def tearDown(self):
-        g.unitTesting = False 
-        
+        g.unitTesting = False
+
     #@+node:ekr.20210611084754.3: *3* test._request
     def _request(self, action, package=None):
         server = self.server
@@ -3373,7 +3407,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             'change_all', 'change_then_find',
             'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
             'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
-            'tag_children',  
+            'tag_children',
             # Other methods
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
@@ -3445,7 +3479,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             self._request(action, package)
     #@+node:ekr.20210611084754.7: *3* test.test_find_commands
     def test_find_commands(self):
-        
+
         tag = 'test_find_commands'
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
@@ -3472,7 +3506,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         for method in ('clone_find_tag', 'tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-       
+
     #@-others
 #@+node:ekr.20210611084045.147: ** printAction
 def printAction(param):

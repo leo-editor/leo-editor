@@ -28,6 +28,7 @@ free-layout-zoom
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
 import json
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtWidgets, QtCore
 if QtWidgets:
@@ -270,7 +271,7 @@ class FreeLayoutController:
                 splitter.load_layout(c, layout)
     #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
     def ns_context(self):
-        ans = [
+        ans: List[Any] = [
             ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
         ]

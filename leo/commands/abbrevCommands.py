@@ -8,6 +8,7 @@
 import functools
 import re
 import string
+from typing import Dict
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -115,14 +116,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         at = c.atFileCommands
         if c.abbrev_place_start and self.enabled:
             aList = self.subst_env
-            script = []
+            script_list = []
             for z in aList:
                 # Compatibility with original design.
                 if z.startswith('\\:'):
-                    script.append(z[2:])
+                    script_list.append(z[2:])
                 else:
-                    script.append(z)
-            script = ''.join(script)
+                    script_list.append(z)
+            script = ''.join(script_list)
             # Allow Leo directives in @data abbreviations-subst-env trees.
             # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
             root = c.rootPosition()
@@ -140,7 +141,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 sentinels=False)
             script = script.replace("\r\n", "\n")
             try:
-                exec(script, c.abbrev_subst_env, c.abbrev_subst_env)
+                exec(script, c.abbrev_subst_env, c.abbrev_subst_env)  # type:ignore
             except Exception:
                 g.es('Error exec\'ing @data abbreviations-subst-env')
                 g.es_exception()
@@ -187,7 +188,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         data = c.config.getOutlineData('tree-abbreviations')
         if data is None:
             return
-        d = {}
+        d: Dict[str, str] = {}
         # #904: data may be a string or a list of two strings.
         aList = [data] if isinstance(data, str) else data
         for tree_s in aList:

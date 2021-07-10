@@ -2,6 +2,7 @@
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
 """Classes relating to Leo's plugin architecture."""
 import sys
+from typing import List
 from leo.core import leoGlobals as g
 # Define modules that may be enabled by default
 # but that mignt not load because imports may fail.
@@ -18,7 +19,7 @@ def init():
 def registerHandler(tags, fn):
     """A wrapper so plugins can still call leoPlugins.registerHandler."""
     return g.app.pluginsController.registerHandler(tags, fn)
-#@+node:ville.20090222141717.2: ** TryNext (exception)
+#@+node:ville.20090222141717.2: ** TryNext (Exception)
 class TryNext(Exception):
     """Try next hook exception.
 
@@ -29,7 +30,7 @@ class TryNext(Exception):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.args = args
         self.kwargs = kwargs
 #@+node:ekr.20100908125007.6033: ** class CommandChainDispatcher
@@ -368,7 +369,7 @@ class LeoPluginsController:
             s = 'all plugin handlers...\n'
         g.es(s + '\n', tabName=tabName)
         data = []
-        modules = {}
+        modules: dict[str, List[str]] = {}
         for tag in self.handlers:
             bunches = self.handlers.get(tag)
             for bunch in bunches:

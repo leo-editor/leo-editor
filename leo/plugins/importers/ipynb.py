@@ -2,11 +2,14 @@
 #@+node:ekr.20160412101008.1: * @file ../plugins/importers/ipynb.py
 '''The @auto importer for Jupyter (.ipynb) files.'''
 import re
+from typing import List
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position as Pos
 try:
     import nbformat
 except ImportError:
     nbformat = None
+
 #@+others
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
 class Import_IPYNB:
@@ -96,7 +99,7 @@ class Import_IPYNB:
 
         # Careful: links change during this loop.
         p = self.root.firstChild()
-        stack = []
+        stack: List[Pos] = []
         after = self.root.nodeAfterTree()
         root_level = self.root.level()
         n = 1

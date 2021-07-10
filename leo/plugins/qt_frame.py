@@ -10,8 +10,7 @@ import os
 import platform
 import sys
 import time
-from typing import Any, Dict
-
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -1161,11 +1160,11 @@ class FindTabManager:
         c = self.c
         find = c.findCommands
         # Find/change text boxes.
-        table = (
+        table1 = (
             ('find_findbox', 'find_text', '<find pattern here>'),
             ('find_replacebox', 'change_text', ''),
         )
-        for ivar, setting_name, default in table:
+        for ivar, setting_name, default in table1:
             s = c.config.getString(setting_name) or default
             w = getattr(self, ivar)
             w.insert(s)
@@ -1174,7 +1173,7 @@ class FindTabManager:
             else:
                 w.setSelection(0, len(s))
         # Check boxes.
-        table = (
+        table2 = (
             ('ignore_case', self.check_box_ignore_case),
             ('mark_changes', self.check_box_mark_changes),
             ('mark_finds', self.check_box_mark_finds),
@@ -1184,7 +1183,7 @@ class FindTabManager:
             ('whole_word', self.check_box_whole_word),
             # ('wrap', self.check_box_wrap_around),
         )
-        for setting_name, w in table:
+        for setting_name, w in table2:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             assert hasattr(find, setting_name), setting_name
@@ -1205,12 +1204,12 @@ class FindTabManager:
 
             w.stateChanged.connect(check_box_callback)
         # Radio buttons
-        table = (
+        table3 = (
             ('node_only', 'node_only', self.radio_button_node_only),
             ('entire_outline', None, self.radio_button_entire_outline),
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
         )
-        for setting_name, ivar, w in table:
+        for setting_name, ivar, w in table3:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             if ivar is not None:
@@ -1337,7 +1336,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         if self.factory:
             del kwargs['factory']
         super().__init__(*args, **kwargs)
-        self.detached = []
+        self.detached: List[Any] = []
         self.setMovable(True)
 
         def tabContextMenu(point):
@@ -2071,10 +2070,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         # Official ivars...
         self.iconBar = None
-        self.iconBarClass = self.QtIconBarClass
+        self.iconBarClass = self.QtIconBarClass  # type:ignore
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
-        self.statusLineClass = self.QtStatusLineClass
+        self.statusLineClass = self.QtStatusLineClass  # type:ignore
         self.title = title
         self.setIvars()
         self.reloadSettings()
@@ -3057,7 +3056,7 @@ class LeoQtLog(leoFrame.LeoLog):
         """Ctor for LeoQtLog class."""
         super().__init__(frame, parentFrame)
             # Calls createControl.
-        assert self.logCtrl is None, self.logCtrl  # Set in finishCreate.
+        assert self.logCtrl is None, self.logCtrl  # type:ignore # Set in finishCreate.
             # Important: depeding on the log *tab*,
             # logCtrl may be either a wrapper or a widget.
         self.c = c = frame.c
@@ -3133,7 +3132,7 @@ class LeoQtLog(leoFrame.LeoLog):
     @log_cmd('clear-log')
     def clearLog(self, event=None):
         """Clear the log pane."""
-        w = self.logCtrl.widget  # w is a QTextBrowser
+        w = self.logCtrl.widget  # type:ignore # w is a QTextBrowser
         if w:
             w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
@@ -3147,36 +3146,36 @@ class LeoQtLog(leoFrame.LeoLog):
         font, ok = QtWidgets.QFontDialog.getFont()
         if not (font and ok): return
         style = font.style()
-        table = (
+        table1 = (
             (QFont.StyleNormal, 'normal'),
             (QFont.StyleItalic, 'italic'),
             (QFont.StyleOblique, 'oblique'))
-        for val, name in table:
+        for val, name in table1:
             if style == val:
                 style = name
                 break
         else:
             style = ''
         weight = font.weight()
-        table = (
+        table2 = (
             (QFont.Light, 'light'),
             (QFont.Normal, 'normal'),
             (QFont.DemiBold, 'demibold'),
             (QFont.Bold, 'bold'),
             (QFont.Black, 'black'))
-        for val, name in table:
+        for val, name in table2:
             if weight == val:
                 weight = name
                 break
         else:
             weight = ''
-        table = (
+        table3 = (
             ('family', str(font.family())),
             ('size  ', font.pointSize()),
             ('style ', style),
             ('weight', weight),
         )
-        for key, val in table:
+        for key, val in table3:
             if val: g.es(key, val, tabName='Fonts')
     #@+node:ekr.20110605121601.18339: *4* LeoQtLog.hideFontTab
     def hideFontTab(self, event=None):
@@ -3526,7 +3525,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             label = label[:n] + '&' + label[n:]
         if accel:
             label = f"{label}\t{accel}"
-        action = menu.addAction(label)
+        action = menu.addAction(label)  # type:ignore
         # 2012/01/20: Inject the command name into the action
         # so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName
@@ -3959,8 +3958,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             except IOError:
                 f = None
             if f:
-                s = f.read()
-                s = g.toUnicode(s)
+                b = f.read()
+                s = g.toUnicode(b)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
         nodeLink=p.get_UNL(with_proto=True, with_count=True)

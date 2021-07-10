@@ -871,7 +871,7 @@ class LeoFrame:
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
     def createStatusLine(self):
         if not self.statusLine:
-            self.statusLine = self.statusLineClass(self.c, self.outerFrame)
+            self.statusLine = self.statusLineClass(self.c, self.outerFrame)  # type:ignore
         return self.statusLine
 
     def clearStatusLine(self):
@@ -1435,7 +1435,7 @@ class LeoTree:
                     c.outerUpdate()  # Bring the tree up to date.
                     if hasattr(self, 'setItemForCurrentPosition'):
                         # pylint: disable=no-member
-                        self.setItemForCurrentPosition()
+                        self.setItemForCurrentPosition()  # type:ignore
             else:
                 c.requestLaterRedraw = True
     #@+node:ekr.20070423101911: *4* LeoTree.selectHelper & helpers
@@ -1488,7 +1488,7 @@ class LeoTree:
             # #1168: Ctrl-minus selects multiple nodes.
             if hasattr(self, 'unselectItem'):
                 # pylint: disable=no-member
-                self.unselectItem(old_p)
+                self.unselectItem(old_p)  # type:ignore
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
@@ -2036,6 +2036,7 @@ class StringTextWrapper:
         self.sel = 0, 0
         self.s = ''
         self.supportsHighLevelInterface = True
+        self.virtualInsertPoint = 0
         self.widget = None  # This ivar must exist, and be None.
 
     def __repr__(self):

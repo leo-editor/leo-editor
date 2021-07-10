@@ -35,6 +35,7 @@
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 #@-<< about internal bindings >>
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
@@ -403,7 +404,7 @@ class LeoQtEventFilter(QtCore.QObject):
         c, e = self.c, QtCore.QEvent
         eventType = event.type()
         # http://doc.qt.io/qt-5/qevent.html
-        show = []
+        show: List[Any] = []
         ignore = [
             e.MetaCall,  # 43
             e.Timer,  # 1

@@ -225,6 +225,7 @@ import pprint
 import re
 import sys
 import textwrap
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
@@ -1013,7 +1014,7 @@ class ScriptingController:
     #@+node:ekr.20080813064908.4: *4* sc.getArgs
     def getArgs(self, p):
         '''Return the list of @args field of p.h.'''
-        args = []
+        args: List[str] = []
         if not p:
             return args
         h, tag = p.h, '@args'
@@ -1173,9 +1174,9 @@ class EvalController:
         '''Ctor for EvalController class.'''
         self.answers = []
         self.c = c
-        self.d = {}
-        self.globals_d = {'c':c, 'g':g, 'p':c.p}
-        self.locals_d = {}
+        self.d: Dict[str, Any] = {}
+        self.globals_d: Dict[str, Any] = {'c':c, 'g':g, 'p':c.p}
+        self.locals_d: Dict[str, Any] = {}
         self.legacy = c.config.getBool('legacy-eval', default=True)
         if g.app.ipk:
             # Use the IPython namespace.
@@ -1493,7 +1494,7 @@ class EvalController:
         pos = c.frame.body.wrapper.getInsertPoint()
         chrs = 0
         lines = c.p.b.split('\n')
-        block = {'source': [], 'output': []}
+        block: Dict[str, List] = {'source': [], 'output': []}
         reading = 'source'
         seeking_current = True
         # if the last non-blank line isn't the end of a possibly empty
