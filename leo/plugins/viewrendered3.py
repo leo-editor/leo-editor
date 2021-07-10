@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.3
+About Viewrendered3 V3.31
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -129,7 +129,7 @@ Settings and Configuration
 Settings
 ========
 
-Settings are put into nodes with the headlines ``@setting ....``.  
+Settings are put into nodes with the headlines ``@setting ...``.  
 They must be placed into an ``@settings`` tree, preferably 
 in the myLeoSettings file.
 
@@ -695,6 +695,13 @@ except ImportError:
     raise ImportError from None
     #QtWidgets = False
 
+if not QtSvg and not isQt5:
+    try:
+        from PyQt6 import QtSvg
+    except ImportError:
+        g.es('Viewrendered3: cannot import QTSvg module')
+        raise ImportError from None
+
 QWebView = None
 if isQt5:
     try:
@@ -711,7 +718,8 @@ else:
         g.trace(e)
         # The top-level init function gives the error.
 
-QSvgWidget = QtSvg.QSvgWidget
+if QtSvg:
+    QSvgWidget = QtSvg.QSvgWidget
 #@-<< Qt Imports >>
 
 #1946
@@ -1785,6 +1793,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 stylesheet = RST_DEFAULT_STYLESHEET_NAME
             self.rst_stylesheet = g.os_path_join(vr_style_dir, stylesheet)
+        g.es('VR3: stylesheet:', self.rst_stylesheet)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
         # pylint: disable=import-outside-toplevel

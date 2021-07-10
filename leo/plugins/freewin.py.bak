@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 9 July 2021
-:Version: 1.5a1
+:Date: 2 July 2021
+:Version: 1.4a1
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -200,7 +200,7 @@ from leo.core import leoGlobals as g
 
 qt_imports_ok = False
 try:
-    from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
+    from leo.core.leoQt import isQt5, QtCore, QtWidgets
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
@@ -255,11 +255,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # Aliases.
 KeyboardModifiers = QtCore.Qt if isQt5 else QtCore.Qt.KeyboardModifiers
 QApplication = QtWidgets.QApplication
-QFont = QtGui.QFont
-QFontInfo = QtGui.QFontInfo
-QFontMetrics = QtGui.QFontMetrics
 QPushButton = QtWidgets.QPushButton
-
 QRect = QtCore.QRect
 QStackedWidget = QtWidgets.QStackedWidget
 QTextEdit = QtWidgets.QTextEdit
@@ -277,11 +273,9 @@ X = 1200
 Y = 100
 DELTA_Y = 35
 
-clipboard = QApplication.clipboard()
-
-FG_COLOR_LIGHT = '#6B5B53'
-BG_COLOR_LIGHT = '#ededed'
+BG_COLOR_LIGHT = '#202020'
 BG_COLOR_DARK = '#202020'
+FG_COLOR_LIGHT = '#ededed'
 FG_COLOR_DARK = '#cbdedc'
 FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
@@ -289,6 +283,7 @@ EDITOR_FONT_SIZE = '11pt'
 EDITOR_STYLESHEET_LIGHT_FILE = 'freewin_editor_light.css'
 EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
 ENCODING = 'utf-8'
+
 BROWSER = 1
 EDITOR = 0
 BROWSER_VIEW = 'browser_view'
@@ -298,11 +293,8 @@ RST_NO_WARNINGS = 5
 RST_CUSTOM_STYLESHEET_LIGHT_FILE = 'freewin_rst_light.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE = 'freewin_rst_dark.css'
 
-instances = {}
-
-#@+others
-#@+node:tom.20210709130401.1: *3* Fonts and Text
 ENCODING='utf-8'
+instances = {}
 
 ZOOM_FACTOR = 1.1
 
@@ -314,16 +306,6 @@ GNX1re = r'.*[([\s](\w+\.\d+\.\d+)' # For gnx not at start of line
 
 GNX = re.compile(GNXre)
 GNX1 = re.compile(GNX1re)
-
-fs = EDITOR_FONT_SIZE.split('pt')[0]
-qf = QFont(FONT_FAMILY[0], int(fs))
-qfont = QFontInfo(qf) # Uses actual font if different
-FM = QFontMetrics(qf)
-
-TABWIDTH = 36 # Best guess but may not alays be right.
-TAB2SPACES = 4 # Tab replacement when writing back to host node
-#@-others
-
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
@@ -353,8 +335,8 @@ RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK};
 #@+others
 #@+node:tom.20210625145324.1: *3* RsT Stylesheet Dark
 RST_STYLESHEET_DARK = '''body {
-  color: #cbdedc; /*#ededed;*/
   background: #202020;
+  color: #cbdedc; /*#ededed;*/
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
   line-height:120%;
@@ -378,14 +360,15 @@ RST_STYLESHEET_DARK = '''body {
     padding: 2px;
   }
   
-  th.docinfo-name {
-    text-align: right;
-  }
   
   td {
     padding-left: 10px;
   }
   
+  th.docinfo-name {
+    text-align: right;
+  }
+
   div.admonition, div.note {
     margin: 2em;
     border: 2px solid;
@@ -404,7 +387,6 @@ RST_STYLESHEET_DARK = '''body {
 '''
 #@+node:tom.20210625155534.1: *3* RsT Stylesheet Light
 RST_STYLESHEET_LIGHT = '''body {
-  color: #6B5B53;
   background: #ededed;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   font-size: 10pt;
@@ -412,6 +394,8 @@ RST_STYLESHEET_LIGHT = '''body {
   margin: 8px 0;
   margin-left: 7px;
   margin-right: 7px;
+  color: #657b83;
+  /*background = #fdf6e3*/
   }
   
   h1 {text-align: center; margin-top: 7px; margin-bottom: 12px;}
@@ -421,9 +405,10 @@ RST_STYLESHEET_LIGHT = '''body {
     margin-top: 10px;
   }
   
+
   th {
-    color: #093947;
     background: #b0ddee;
+    color: #093947;
     vertical-align: top;
     border-bottom: thin solid #839496;
     text-align: center;
@@ -438,14 +423,14 @@ RST_STYLESHEET_LIGHT = '''body {
   th.docinfo-name {
     text-align: right;
   }
-
+  
   div.admonition, div.system-message,
         div.warning, div.note {
     margin: 2em;
     border: 2px solid;
     padding-right: 1em;
     padding-left: 1em;
-    background: #e0e0e0;
+    background: #cbdcdc;
     color: #586e75;
     border-color: #657b83;
   }
@@ -546,27 +531,23 @@ def gotoHostGnx(c, target):
     return False
 #@+node:tom.20210628002321.1: ** copy2clip
 def copy2clip(text):
-    #cb = QApplication.clipboard()
-    clipboard.setText(text)
+    cb = QApplication.clipboard()
+    cb.setText(text)
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
     """An editing window that echos the contents of an outline node."""
     #@+others
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
-        global TAB2SPACES
         super().__init__()
         QWidget().__init__()
 
         self.c = c
         self.p = c.p
-        self.host_id = c.p.gnx
         w = c.frame.body.wrapper
         self.host_editor = w.widget
         self.switching = False
-        self.closing = False
 
-        self.reloadSettings()
 
         # The rendering pane can be either a QWebView or a QTextEdit
         # depending on the features desired
@@ -579,8 +560,70 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.render_pane_type = BROWSER_VIEW
 
         self.editor = QTextEdit()
-        browser = self.browser = self.render_widget()
+        self.browser = self.render_widget()
+        self.doc = self.editor.document()
 
+        self.reloadSettings()
+        self.configure_styles()
+
+        #@+<<set up render button>>
+        #@+node:tom.20210602173354.1: *4* <<set up render button>>
+        self.render_button  = QPushButton("Rendered <--> Plain")
+        self.render_button.clicked.connect(self.switch_and_render)
+
+        b_style = RENDER_BTN_STYLESHEET_DARK if self.is_dark \
+                  else RENDER_BTN_STYLESHEET_LIGHT
+        self.render_button.setStyleSheet(b_style)
+        #@-<<set up render button>>
+
+        #@+<<build central widget>>
+        #@+node:tom.20210528235126.1: *4* <<build central widget>>
+        self.stacked_widget = QStackedWidget()
+        self.stacked_widget.insertWidget(EDITOR, self.editor)
+        self.stacked_widget.insertWidget(BROWSER, self.browser)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.render_button)
+        layout.addWidget(self.stacked_widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+        central_widget.keyPressEvent = self.keyPressEvent
+        #@-<<build central widget>>
+        #@+<<set geometry>>
+        #@+node:tom.20210528235451.1: *4* <<set geometry>>
+        Y_ = Y + (len(instances) % 10) * DELTA_Y
+        self.setGeometry(QtCore.QRect(X, Y_, W, H))
+        #@-<<set geometry>>
+        #@+<<set window title>>
+        #@+node:tom.20210531235412.1: *4* <<set window title>>
+        # Show parent's title-->our title, our gnx
+        ph = ''
+        parents_ = list(c.p.parents())
+        if parents_:
+            ph = parents_[0].h + '-->'
+        self.setWindowTitle(f'{ph}{c.p.h}   {c.p.gnx}')
+        #@-<<set window title>>
+
+        self.render_kind = EDITOR
+
+        self.handlers = [('idle', self.update)]
+        self._register_handlers()
+
+        self.current_text = c.p.b
+        self.editor.setPlainText(self.current_text)
+
+        # Load docutils without rendering anything real
+        # Avoids initial delay when switching to RsT the first time.
+        dummy = publish_string('dummy', writer_name='html').decode(ENCODING)
+        self.browser.setHtml(dummy)
+
+        self.show()
+    #@+node:tom.20210703141614.1: *3* configure_styles
+    def configure_styles(self):
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
         self.editor_csspath = ''
@@ -590,7 +633,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         cssdir = osp_join(home, '.leo', 'css')
         dict_ = g.app.loadManager.globalSettingsDict
 
-        is_dark = dict_.get_setting('color-theme-is-dark')
+        is_dark = self.is_dark = dict_.get_setting('color-theme-is-dark')
         if is_dark:
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
@@ -625,119 +668,34 @@ class ZEditorWin(QtWidgets.QMainWindow):
         else:
             self.rst_stylesheet = RST_STYLESHEET_DARK if is_dark \
                                   else RST_STYLESHEET_LIGHT
-        #@-<<set stylesheets>>
-        #@+<<set up editor>>
-        #@+node:tom.20210602172856.1: *4* <<set up editor>>
-        self.doc = self.editor.document()
+
         self.editor.setStyleSheet(self.editor_style)
-
-        # Try to get tab width from the host's body
-        # Used when writing edits back to host
-        # "tabwidth" directive ought to be in first six lines
-        lines = self.p.v.b.split('\n', 6)
-        for line in lines:
-            if line.startswith('@tabwidth') and line.find(' ') > 0:
-                tabfield = line.split()[1]
-                TAB2SPACES = abs(int(tabfield))
-                break
-
-        # Make tabs line up with 4 spaces (at least approximately)
-        self.editor.setTabStopDistance(TABWIDTH)
 
         if self.render_pane_type == NAV_VIEW:
             # Different stylesheet mechanism if we are a QTextEdit
             stylesheet = RST_STYLESHEET_DARK if is_dark else RST_STYLESHEET_LIGHT
-            browser.setReadOnly(True)
-            browser_doc = browser.document()
+            self.browser.setReadOnly(True)
+            browser_doc = self.browser.document()
             browser_doc.setDefaultStyleSheet(stylesheet)
-        #@-<<set up editor>>
-        #@+<<set up render button>>
-        #@+node:tom.20210602173354.1: *4* <<set up render button>>
-        self.render_button  = QPushButton("Rendered <--> Plain")
-        self.render_button.clicked.connect(self.switch_and_render)
-
-        b_style = RENDER_BTN_STYLESHEET_DARK if is_dark \
-                  else RENDER_BTN_STYLESHEET_LIGHT
-        self.render_button.setStyleSheet(b_style)
-        #@-<<set up render button>>
-
-        #@+<<build central widget>>
-        #@+node:tom.20210528235126.1: *4* <<build central widget>>
-        self.stacked_widget = QStackedWidget()
-        self.stacked_widget.insertWidget(EDITOR, self.editor)
-        self.stacked_widget.insertWidget(BROWSER, self.browser)
-
-        layout = QVBoxLayout()
-        layout.addWidget(self.render_button)
-        layout.addWidget(self.stacked_widget)
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        self.central_widget = central_widget = QWidget()
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
-
-        #@-<<build central widget>>
-        #@+<<set geometry>>
-        #@+node:tom.20210528235451.1: *4* <<set geometry>>
-        Y_ = Y + (len(instances) % 10) * DELTA_Y
-        self.setGeometry(QtCore.QRect(X, Y_, W, H))
-        #@-<<set geometry>>
-        #@+<<set window title>>
-        #@+node:tom.20210531235412.1: *4* <<set window title>>
-        # Show parent's title-->our title, our gnx
-        ph = ''
-        parents_ = list(c.p.parents())
-        if parents_:
-            ph = parents_[0].h + '-->'
-        self.setWindowTitle(f'{ph}{c.p.h}   {c.p.gnx}')
-        #@-<<set window title>>
-
-        self.render_kind = EDITOR
-
-        self.handlers = [('idle', self.update)]
-        self._register_handlers()
-
-        self.current_text = c.p.b
-        self.editor.setPlainText(self.current_text)
-
-        # Load docutils without rendering anything real
-        # Avoids initial delay when switching to RsT the first time.
-        dummy = publish_string('dummy', writer_name='html').decode(ENCODING)
-        self.browser.setHtml(dummy)
-        central_widget.keyPressEvent = self.keyPressEvent
-
-        self.show()
+        #@-<<set stylesheets>>
     #@+node:tom.20210625205847.1: *3* reload settings
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
         self.render_pane_type = c.config.getString('fw-render-pane') or ''
-        self.copy_html = c.config.getBool('fw-copy-html', default=False)
 
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
-        """Update host node if this card's text has changed.
-        
-           Otherwise if the host node's text has changed, update
-           the card's text with the host's changed text.
-           Render as plain text or RsT.
-           
-           If the host node does not exist any more, delete ourself.
+        """Update host node if this card's text has changed.  Otherwise
+           if the host node's text has changed, update the card's text 
+           with the host's changed text. Render as plain text or RsT.
         """
-        if self.closing:
-            return
-
-        # Make sure our host node still exists
-        if not self.c.positionExists(self.p):
-            self.teardown(tag)
-            return
-
         if self.switching: return
 
         if self.doc.isModified():
             self.current_text = self.doc.toRawText()
-            self.p.b = self.current_text.replace('\t', ' ' * TAB2SPACES)
+            self.p.b = self.current_text
             self.doc.setModified(False)
 
         # if the current position in the outline is our own node, 
@@ -755,23 +713,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
             self.doc.setModified(False)
 
-    #@+node:tom.20210703173219.1: *3* teardown
-    def teardown(self, tag=''):
-        # Close window and delete it when host node is deleted.
-        if self.closing:
-            return
-
-        self.closing = True
-        g.unregisterHandler(tag, self.update)
-        self.central_widget.keyPressEvent = None
-        id_ = self.host_id
-        self.editor.deleteLater()
-        self.browser.deleteLater()
-        self.stacked_widget.deleteLater()
-        self.central_widget.deleteLater()
-        instances[id_] = None # Not sure if we need this
-        del instances[id_]
-        self.deleteLater()
     #@+node:tom.20210619000302.1: *3* keyPressEvent
     def keyPressEvent(self, event):
         """Take action on keypresses.
@@ -810,7 +751,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
                     _zf = w.zoomFactor()
                     w.setZoomFactor(_zf / ZOOM_FACTOR)
 
-    #@+node:tom.20210527234644.1: *3* _register_handlers
+    #@+node:tom.20210527234644.1: *3* _register_handlers (floating_pane.py)
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals"""
         for hook, handler in self.handlers:
@@ -834,9 +775,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
             text = self.editor.document().toRawText()
             html = self.render_rst(text)
             self.browser.setHtml(html)
-            if self.copy_html:
-                copy2clip(html)
-
         self.switching = False
 
     def switch_and_render(self):
@@ -871,6 +809,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 style_insert = ("<style type='text/css'>\n"
                         f'{self.rst_stylesheet}\n</style>\n</head>\n')
                 _html = _html.replace('</head>', style_insert, 1)
+
         return _html
     #@-others
 #@-others
