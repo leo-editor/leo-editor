@@ -15,11 +15,12 @@ leo/.vscode/
 /build/
 /dist/
 
-# The wax_off script makes including the mypy_stub folder valuable.
-# mypy_stubs/
+# The wax_off script uses the mypy_stub folder, but
+# eventually all stub (.pyi) files move to the same folder as their corresponding .py files
+mypy_stubs/
 # Don't add the helper directories.
-mypy_stubs/3.*/
-mypy_stubs/*.txt
+# mypy_stubs/3.*/
+# mypy_stubs/*.txt
 
 # Transcrypt folder.
 __target__
