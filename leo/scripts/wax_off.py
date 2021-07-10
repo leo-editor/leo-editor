@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210709045755.1: * @file ../scripts/wax_off.py
+#@+<< docstring >>
+#@+node:ekr.20210710050822.1: ** << docstring >>
 """
 The "wax-off" utility.
 
@@ -8,11 +10,46 @@ Create stub files from existing annotation, then remove all function annotations
 So called because having created annotations in the python sources (wax-on)
 we now want to remove them again (wax-off).
 
-EKR: imo, this little utility is far more useful than make_stub_files. Advantages:
-    
-1. It is far easier to create mypy annotations directly in the actual sources.
-2. There is no need to describe expected types to mypy!
+This script turns the mypy development process on its head. Instead of
+creating stub files with stubgen or make_stub_files, you can now add mypy
+annotations directly in your source files (in a separate branch).
+
+Working only with the original sources is much more convenient than
+tweaking stub files. When you are done, you can use wax_off.py to "move"
+the clutter from def lines to stub files.
+
+So you can get the benefits of mypy with minimal clutter. In most cases,
+the remaining "clutter" (annotations of var types) turns out to be
+excellent documentation.
+
+As a result, both the stubgen or make_stub_files projects are practically
+obsolete.
+
+**Tweaking the stub files**
+
+The wax_off script knows very little about python. wax_off is just a
+pattern matcher. wax_off moves def lines (and class lines) to the stub file
+with the *existing* indentation. So mypy may complain about syntax errors
+in the stub file:
+
+1. If a class (like an exception class) has no methods, the class line
+   should be followed by '...'. You must do that yourself.
+
+2. If a function/method contains an inner def, mypy will also complain. You
+   can just comment out those inner defs. They aren't needed anyway: mypy
+   handles local attributes very well.
+
+**Summary**
+
+The wax_off script allows you to add full annotations for functions and
+methods directly in the source files. When mypy is happy, just run wax_off
+to move the def lines into stub files. wax_off then "declutters" the def
+lines.
+
+The result is the best of all approaches. It's easy to add annotations, and
+it's easy to remove them.
 """
+#@-<< docstring >>
 import argparse
 import difflib
 import glob
