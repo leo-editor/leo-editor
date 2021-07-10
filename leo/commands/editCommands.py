@@ -1814,6 +1814,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def flashMatchingBracketsHelper(self, c, ch, i, p, w):
         """Flash matching brackets at char ch at position i at widget w."""
         d = {}
+        # pylint: disable=consider-using-enumerate
         if ch in self.openBracketsList:
             for z in range(len(self.openBracketsList)):
                 d[self.openBracketsList[z]] = self.closeBracketsList[z]
