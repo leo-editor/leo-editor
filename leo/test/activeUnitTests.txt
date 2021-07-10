@@ -356,21 +356,13 @@ assert(f.c==c)
 assert(c.frame==f)
 
 ivars = (
+    '_currentPosition',
+    'hoistStack',
+    'mFileName', 
     # Subcommanders...
     'atFileCommands','fileCommands','importCommands','undoer',
-    # Positions...
-    '_currentPosition', # '_topPosition',
-    # '_rootPosition'
-    # Data structures...
-    'hoistStack',
-        # 'recentFiles',
     # Args...
-    'output_doc_flag','page_width','tab_width',
-    # 'tangle_directory',
-    'tangle_errors','tangle_batch_flag','target_language',
-    'untangle_batch_flag','use_header_flag',
-    # Others...
-    'mFileName',
+    'page_width','tab_width', 'target_language',
 )
 
 for ivar in ivars:

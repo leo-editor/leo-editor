@@ -2,6 +2,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130302121602.10208: * @file leoDebugger.py
 #@@first
+
+# Disable all mypy errors.
+# type:ignore
+
 #@+<< leoDebugger.py docstring >>
 #@+node:ekr.20181006100710.1: ** << leoDebugger.py docstring >>
 """

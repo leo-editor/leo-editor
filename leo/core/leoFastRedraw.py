@@ -11,6 +11,7 @@ https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
 import difflib
 import re
 import time
+from typing import List
 from leo.core import leoGlobals as g
 
 class FastRedraw:
@@ -56,7 +57,7 @@ class FastRedraw:
         """Return a flat list of strings "level:gnx" for all *visible* positions."""
         trace = False and not g.unitTesting
         t1 = time.process_time()
-        aList = []
+        aList: List[str] = []
         for p in c.rootPosition().self_and_siblings():
             self.extend_flattened_outline(aList, p)
         if trace:
