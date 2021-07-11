@@ -213,17 +213,12 @@ class BackgroundProcessManager:
                 log.put(s + '\n')
                 return
             # Look for the @<file> node.
-            # g.findNodeByPath expects a *full* path.
-            path = g.os_path_normpath(path)  # #2049.
             link_root = g.findNodeByPath(c, path)
             if not link_root:
                 if path not in self.unknown_path_names:
                     self.unknown_path_names.append(path)
                     print('')
-                    print(f"{tag}: no @<file> node found")
-                    print('    path:', path)
-                    print('finalize:', g.os_path_finalize(path))
-                    # print('fullPath:', g.fullPath(c, c.p))
+                    print(f"{tag}: no @<file> node found: {path}")
                     print('')
                 log.put(s + '\n')
                 return
