@@ -6979,7 +6979,7 @@ def os_path_normpath(path):
     path = os.path.normpath(path)
     # os.path.normpath does the *reverse* of what we want.
     if g.isWindows:
-        path = path.replace('\\', '/')
+        path = path.replace('\\', '/').lower()  # #2049: ignore case!
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path):
@@ -7342,11 +7342,15 @@ def findNodeAnywhere(c, headline, exact=True):
 #@+node:ekr.20210303123525.1: *4* findNodeByPath
 def findNodeByPath(c, path):
     """Return the first @<file> node in Cmdr c whose path is given."""
-    path = g.os_path_finalize(path)
+    if not os.path.isabs(path):  # #2049. Only absolute paths could possibly work.
+        g.trace(f"path not absolute: {path}")
+        return None
+    path = g.os_path_normpath(path)  # #2049. Do *not* use os.path.normpath.
     for p in c.all_positions():
-        if p.isAnyAtFileNode() and path == g.fullPath(c, p):
-            return p
-    return False
+        if p.isAnyAtFileNode():
+            if path == g.os_path_normpath(g.fullPath(c, p)):  # #2049. Do *not* use os.path.normpath.
+                return p
+    return None
 #@+node:ekr.20210303123423.1: *4* findNodeInChildren
 def findNodeInChildren(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""

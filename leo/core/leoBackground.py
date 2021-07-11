@@ -148,6 +148,8 @@ class BackgroundProcessManager:
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
+    unknown_path_names = []
+
     def put_log(self, s):
         """
         Put a string to the originating log.
@@ -187,6 +189,7 @@ class BackgroundProcessManager:
         except Exception:
             m = None
         if not m:
+            # print(f"{tag}: NO LINK_PATTERN MATCH")
             log.put(s + '\n')
             return
         #
@@ -196,7 +199,7 @@ class BackgroundProcessManager:
             try:
                 line = int(m.group(1))
             except Exception:
-                # g.es_exception()
+                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
                 log.put(s + '\n')
                 return
         else:
@@ -206,13 +209,22 @@ class BackgroundProcessManager:
             try:
                 line = int(m.group(2))
             except Exception:
-                # g.es_exception()
+                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
                 log.put(s + '\n')
                 return
             # Look for the @<file> node.
+            # g.findNodeByPath expects a *full* path.
+            path = g.os_path_normpath(path)  # #2049.
             link_root = g.findNodeByPath(c, path)
             if not link_root:
-                g.trace(f"no @<file> node found for : {path}")
+                if path not in self.unknown_path_names:
+                    self.unknown_path_names.append(path)
+                    print('')
+                    print(f"{tag}: no @<file> node found")
+                    print('    path:', path)
+                    print('finalize:', g.os_path_finalize(path))
+                    # print('fullPath:', g.fullPath(c, c.p))
+                    print('')
                 log.put(s + '\n')
                 return
         #

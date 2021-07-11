@@ -260,6 +260,7 @@ class MypyCommand:
         """Run pyflakes on all files in paths."""
         c = self.c
         bpm = g.app.backgroundProcessManager
+        bpm.unknown_path_names = []
         for root in roots:
             fn = self.finalize(root)
             bpm.start_process(c,
