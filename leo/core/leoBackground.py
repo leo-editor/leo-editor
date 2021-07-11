@@ -95,6 +95,7 @@ class BackgroundProcessManager:
     def check_process(self):
         """Check the running process, and switch if necessary."""
         if self.pid:
+            print('check_process', self.pid)
             if self.pid.poll() is None:
                 pass
             else:
@@ -157,6 +158,7 @@ class BackgroundProcessManager:
         
         New in Leo 6.4: get the filename from link_pattern if link_root is None.
         """
+        tag = 'BPM.put_log'
         #
         # Warning: don't use g.es or g.es_print here!
         s = s and s.rstrip()
@@ -164,9 +166,11 @@ class BackgroundProcessManager:
             return
         data = self.data
         if not data:
+            print(f"{tag} NO DATA")
             return
         c = data.c
         if not c or not c.exists:
+            print(f"{tag} NO C")
             return
         log = c.frame.log
         link_pattern, link_root = data.link_pattern, data.link_root
