@@ -8,14 +8,10 @@ import pickle
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
-@g.command('at-file-to-at-auto')
-def at_file_to_at_auto_command(event):
-    c = event.get('c')
-    if c and c.persistenceController:
-        c.persistenceController.convert_at_file_to_at_auto(c.p)
 
 @g.command('clean-persistence')
 def view_pack_command(event):
+    """Remove all @data nodes that do not correspond to an existing foreign file."""
     c = event.get('c')
     if c and c.persistenceController:
         c.persistenceController.clean()
