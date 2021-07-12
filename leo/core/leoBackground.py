@@ -96,7 +96,6 @@ class BackgroundProcessManager:
     def check_process(self):
         """Check the running process, and switch if necessary."""
         if self.pid:
-            print('check_process', self.pid)
             if self.pid.poll() is None:
                 pass
             else:
