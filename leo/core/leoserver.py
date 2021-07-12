@@ -468,8 +468,10 @@ class LeoServer:
         g.IdleTime = self._idleTime
         #
         # override for "revert to file" operation
-        g.app.gui.runAskYesNoDialog = self._returnYes  # pointer - not a function call
-        g.app.gui.show_find_success = self._show_find_success  # pointer - not a function call
+        g.app.gui.runAskOkDialog = self._runAskOkDialog
+        g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
+        g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
+        g.app.gui.show_find_success = self._show_find_success
         self.headlineWidget = g.bunch(_name='tree')
         #
         # Complete the initialization, as in LeoApp.initApp.
@@ -478,7 +480,52 @@ class LeoServer:
         g.app.idleTimeManager.start()
         t2 = time.process_time()
         print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:felix.20210622235127.1: *3* server:leo overriden methods
+    #@+node:felix.20210622235127.1: *3* server:leo overridden methods
+    #@+node:felix.20210711194729.1: *4* _runAskOkDialog
+    def _runAskOkDialog(self, c, title, message=None, text="Ok"):
+        """Create and run an askOK dialog ."""
+        # Called by many commands in Leo
+        if message:
+            s = title + " " + message
+        else:
+            s = title
+        package = {"async": "info", "message": s}
+        g.leoServer._send_async_output(package)
+    #@+node:felix.20210711194736.1: *4* _runAskYesNoDialog
+    def _runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
+        """Create and run an askYesNo dialog."""
+        # used in ask with title: 'Overwrite the version in Leo?'
+        # used in revert with title: 'Revert'
+        # used in create ly leo settings with title: 'Create myLeoSettings.leo?'
+        # used in move nodes with title: 'Move Marked Nodes?'
+        s = "runAskYesNoDialog called"
+        if title.startswith('Overwrite'):
+            s = "@<file> tree was overwritten"
+        elif title.startswith('Revert'):
+            s= "Leo outline reverted to last saved contents"
+        elif title.startswith('Create'):
+            s= "myLeoSettings.leo created"
+        elif title.startswith('Move'):
+            s= "Marked nodes were moved"
+        package = {"async": "info", "message": s}
+        g.leoServer._send_async_output(package)
+        return "yes"
+    #@+node:felix.20210711194745.1: *4* _runAskYesNoCancelDialog
+    def _runAskYesNoCancelDialog(self, c, title,
+        message=None, yesMessage="Yes", noMessage="No",
+        yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
+    ):
+        """Create and run an askYesNoCancel dialog ."""
+        # used in dangerous write with title: 'Overwrite existing file?'
+        # used in prompt for save with title: 'Confirm'
+        s = "runAskYesNoCancelDialog called"
+        if title.startswith('Overwrite'):
+            s= "File Overwritten"
+        elif title.startswith('Confirm'):
+            s= "File Saved"
+        package = {"async": "info", "message": s}
+        g.leoServer._send_async_output(package)
+        return "yes"
     #@+node:felix.20210622235209.1: *4* _es
     def _es(self, * args, **keys):  # pragma: no cover (tested in client).
         '''Output to the Log Pane'''
@@ -524,14 +571,6 @@ class LeoServer:
             g.es_exception()
             script = ''
         return script
-    #@+node:felix.20210626002934.1: *4* _returnNo
-    def _returnNo(self, *arguments, **kwargs):
-        '''Used to override g.app.gui.ask[XXX] dialogs answers'''
-        return "no"
-    #@+node:felix.20210626002940.1: *4* _returnYes
-    def _returnYes(self, *arguments, **kwargs):
-        '''Used to override g.app.gui.ask[XXX] dialogs answers'''
-        return "yes"
     #@+node:felix.20210627004238.1: *4* _asyncIdleLoop
     async def _asyncIdleLoop(self, seconds, func):
         while True:
@@ -1687,7 +1726,6 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             print(f"\n{tag}: {len(result)} leo commands\n")
             g.printObj([z.get("label") for z in result], tag=tag)
-        print("total: " + str(len(result)) )
         return self._make_minimal_response({"commands": result})
     #@+node:felix.20210621233316.73: *6* server._bad_commands
     def _bad_commands(self, c):
@@ -1705,7 +1743,7 @@ class LeoServer:
         bad_list = [
 
             # Originally in good list
-            'demangle-recent-files', 
+            'demangle-recent-files',
             'clean-main-spell-dict',
             'clean-persistence',
             'clean-recent-files',
@@ -1720,7 +1758,7 @@ class LeoServer:
             'export-headlines', # export TODO
             'export-jupyter-notebook', # export TODO
             'outline-to-cweb', # export TODO
-            'outline-to-noweb', # export TODO 
+            'outline-to-noweb', # export TODO
             'remove-sentinels', # import TODO
 
             'save-all',
@@ -1787,7 +1825,7 @@ class LeoServer:
             'buffers-list',
             'buffers-list-alphabetically',
 
-            # Open specific files... (MAYBE MAKE AVALABLE?)
+            # Open specific files... (MAYBE MAKE AVAILABLE?)
             # 'ekr-projects',
             'leo-cheat-sheet',  # These duplicates are useful.
             'leo-dist-leo',
@@ -1796,27 +1834,40 @@ class LeoServer:
             'leo-py-leo',
             'leo-quickstart-leo',
             'leo-scripts-leo',
-            'leo-settings',
             'leo-unittest-leo',
-            'my-leo-settings',
 
             # 'scripts',
             'settings',
 
             'open-cheat-sheet-leo',
+            'cheat-sheet-leo',
+            'cheat-sheet',
             'open-desktop-integration-leo',
+            'desktop-integration-leo',
             'open-leo-dist-leo',
+            'leo-dist-leo',
             'open-leo-docs-leo',
+            'leo-docs-leo',
             'open-leo-plugins-leo',
+            'leo-plugins-leo',
             'open-leo-py-leo',
+            'leo-py-leo',
+            'open-leo-py-ref-leo',
+            'leo-py-ref-leo',
+            'open-leo-py',
             'open-leo-settings',
             'open-leo-settings-leo',
             'open-local-settings',
+            'my-leo-settings',
             'open-my-leo-settings',
             'open-my-leo-settings-leo',
+            'leo-settings'
             'open-quickstart-leo',
+            'leo-quickstart-leo'
             'open-scripts-leo',
+            'leo-scripts-leo'
             'open-unittest-leo',
+            'leo-unittest-leo',
 
             # Open other places...
             'desktop-integration-leo',
@@ -1831,6 +1882,10 @@ class LeoServer:
             'open-url',
             'open-url-under-cursor',
             'open-users-guide',
+
+            # Diffs - needs open file dialog
+            'diff-and-open-leo-files',
+            'diff-leo-files',
 
             # --- ORIGINAL BAD COMMANDS START HERE ---
             # Abbreviations...
@@ -1988,7 +2043,7 @@ class LeoServer:
             'free-layout-zoom',
 
             'zoom-in',
-            'zoom-out'
+            'zoom-out',
 
             # Log
             'clear-log',
@@ -2007,7 +2062,7 @@ class LeoServer:
             # Modes...
             'clear-extend-mode',
 
-            # Outline... (Commented off by Félix, Should work) 
+            # Outline... (Commented off by Félix, Should work)
             #'contract-or-go-left',
             #'contract-node',
             #'contract-parent',
@@ -2438,7 +2493,7 @@ class LeoServer:
             'de-hoist',
             'delete-marked-nodes',
             'delete-node',
-            # 'demangle-recent-files', 
+            # 'demangle-recent-files',
             'demote',
 
             'expand-and-go-right',
@@ -2551,7 +2606,7 @@ class LeoServer:
             #'outline-to-cweb', # export
             #'outline-to-noweb', # export
             #'remove-sentinels', # import
-            'typescript-to-py', 
+            'typescript-to-py',
 
             # Import files... # done through import all
             'import-MORE-files',
@@ -2643,16 +2698,16 @@ class LeoServer:
             'undo',
 
             #'xdb',
-            
+
             # Beautify, blacken, fstringify...
             'beautify-files',
             'beautify-files-diff',
             'blacken-files',
             'blacken-files-diff',
-            'diff-and-open-leo-files',
+            #'diff-and-open-leo-files',
             'diff-beautify-files',
             'diff-fstringify-files',
-            'diff-leo-files',
+            #'diff-leo-files',
             'diff-marked-nodes',
             'fstringify-files',
             'fstringify-files-diff',
@@ -2855,7 +2910,7 @@ class LeoServer:
         Return False on any kind of error to support calls to invalid positions
         after a document has been closed of switched and interface interaction
         in the client generated incoming calls to 'getters' already sent. (for the
-        now inaccessible leo document conmmander.)
+        now inaccessible leo document commander.)
         """
         tag = '_ap_to_p'
         c = self._check_c()
@@ -2908,7 +2963,7 @@ class LeoServer:
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
     def _send_async_output(self, package):
         """
-        Send data asynchronousy to the client
+        Send data asynchronously to the client
         """
         tag = "send async output"
         jsonPackage = json.dumps(package, separators=(',', ':'))
