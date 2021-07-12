@@ -1860,6 +1860,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.updateAutoIndent(p, w)
         w.seeInsertPoint()
     #@+node:ekr.20150514063305.275: *5* ec.updateAutoIndent
+    trailing_colon_pat = re.compile(r'^.*:\s#.*$')
+
     def updateAutoIndent(self, p, w):
         """Handle auto indentation."""
         c = self.c
@@ -1872,7 +1874,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = s[i : j - 1]
         # Add the leading whitespace to the present line.
         junk, width = g.skip_leading_ws_with_indent(s, 0, tab_width)
-        if s and s[-1] == ':':
+        if s.rstrip() and (s.rstrip()[-1] == ':' or self.trailing_colon_pat.match(s)):  #2040.
             # For Python: increase auto-indent after colons.
             if g.findLanguageDirectives(c, p) == 'python':
                 width += abs(tab_width)
@@ -1922,7 +1924,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if i != j: w.delete(i, j)
                 w.insert(i, ch)
                 w.setInsertPoint(i + 1)
-    #@+node:ekr.20150514063305.277: *5* ec.updateTab
+    #@+node:ekr.20150514063305.277: *5* ec.updateTab & helper
     def updateTab(self, event, p, w, smartTab=True):
         """
         A helper for selfInsertCommand.
