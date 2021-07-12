@@ -34,6 +34,7 @@ def cmd(name):
 #@+node:ekr.20180708114847.1: *3* dump-clone-parents
 @g.command('dump-clone-parents')
 def dump_clone_parents(event):
+    """Print the parent vnodes of all cloned vnodes."""
     c = event.get('c')
     if not c:
         return
@@ -47,6 +48,7 @@ def dump_clone_parents(event):
 #@+node:ekr.20210309114903.1: *3* dump-gnx-dict
 @g.command('dump-gnx-dict')
 def dump_gnx_dict(event):
+    """Dump c.fileCommands.gnxDict."""
     c = event.get('c')
     if not c:
         return

@@ -10176,6 +10176,12 @@ def insertTree(self, p):
         self.write(f"\n\n::\n\n{''.join(tree)}\n\n")
     else:
         g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210712134630.1: ** From leoPersistence.py
+@g.command('at-file-to-at-auto')
+def at_file_to_at_auto_command(event):
+    c = event.get('c')
+    if c and c.persistenceController:
+        c.persistenceController.convert_at_file_to_at_auto(c.p)
 #@+node:ekr.20210312150753.1: ** leoTangle.py
 '''
 Support for @root and Leo's tangle and untangle commands.

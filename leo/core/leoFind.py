@@ -755,6 +755,7 @@ class LeoFind:
     @cmd('replace')
     @cmd('change')
     def change(self, event=None):  # pragma: no cover (cmd)
+        """Replace the selected text with the replacement text."""
         p = self.c.p
         if self.check_args('replace'):
             self.init_in_headline()
