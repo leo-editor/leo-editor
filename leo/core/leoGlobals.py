@@ -2983,10 +2983,10 @@ def printGcObjects():
     print(f"garbage: {n}")
     print(f"{delta:6d} = {n2:7d} totals")
     # print number of each type of object.
-    d: Dict[str, int] = []  # type:ignore
+    d: Dict[str, int] = {}
     count = 0
     for obj in gc.get_objects():
-        key = str(type(obj))  # type:ignore
+        key = str(type(obj))
         n = d.get(key, 0)
         d[key] = n + 1
         count += 1
