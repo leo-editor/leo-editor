@@ -12,7 +12,7 @@ switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
 :Date: 9 July 2021
-:Version: 1.5a1
+:Version: 1.5a2
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -34,9 +34,9 @@ selected again.
 
 A given Freewin window will be synchronized with the node
 that was selected when the Freewin window was opened, and 
-will only display that node.
+will only display that node.  It will remain synchronized even if the node has been moved to a new position in its outline.
 
-.. Note:: A Freewin window will close if the underlying node is moved or removed.  This will not change the body of the underlying node.
+.. Note:: A Freewin window will close if the underlying node is removed.  This will not change the body of the underlying node.
 
 #@+node:tom.20210625220923.1: *3* Navigating
 Navigating
@@ -588,6 +588,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         self.c = c
         self.p = c.p
+        self.v = c.p.v
         self.host_id = c.p.gnx
         w = c.frame.body.wrapper
         self.host_editor = w.widget
@@ -757,9 +758,17 @@ class ZEditorWin(QtWidgets.QMainWindow):
             return
 
         # Make sure our host node still exists
-        if not self.c.positionExists(self.p):
-            self.teardown(tag)
-            return
+        if not self.c.p.v == self.v:
+            # Find our node
+            found_us = False
+            for p1 in self.c.all_unique_positions():
+                if p1.v == self.v:
+                    self.p = p1
+                    found_us = True
+                    break
+            if not found_us:
+                self.teardown(tag)
+                return
 
         if self.switching: return
 
@@ -768,9 +777,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.p.b = self.current_text.replace('\t', ' ' * TAB2SPACES)
             self.doc.setModified(False)
 
-        # if the current position in the outline is our own node, 
-        # then synchronize the text if it's changed in the host outline.
-        elif self.c.p == self.p:
+        # If the current position in the outline is our own node, 
+        # then synchronize the text if it's changed in 
+        # the host outline.
+        elif self.c.p.v == self.v:
             doc = self.host_editor.document()
             if doc.isModified():
                 scrollbar = self.editor.verticalScrollBar()
