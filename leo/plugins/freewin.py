@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 9 July 2021
-:Version: 1.5
+:Date: 12 July 2021
+:Version: 1.51
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -774,8 +774,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         if self.switching: return
 
         if self.doc.isModified():
-            self.current_text = self.doc.toRawText()
-            self.p.b = self.current_text.replace('\t', ' ' * TAB2SPACES)
+            self.current_text = self.doc.toPlainText()
+            self.current_text = self.current_text.replace('\t', ' ' * TAB2SPACES)
+            self.p.b = self.current_text
             self.doc.setModified(False)
 
         # If the current position in the outline is our own node, 
@@ -786,7 +787,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             if doc.isModified():
                 scrollbar = self.editor.verticalScrollBar()
                 old_scroll = scrollbar.value()
-                self.current_text = doc.toRawText()
+                self.current_text = doc.toPlainText()
                 self.editor.setPlainText(self.current_text)
                 self.set_and_render(False)
                 doc.setModified(False)
