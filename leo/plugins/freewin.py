@@ -18,6 +18,7 @@ switched to render the node with Restructured Text.
 #@+node:tom.20210604174603.1: *3* Opening a Window
 Opening a Window
 ~~~~~~~~~~~~~~~~~
+
 To open a Freewin window, select a node in your outline and issue
 the minibuffer command ``z-open-freewin``.
 
@@ -35,7 +36,12 @@ A given Freewin window will be synchronized with the node
 that was selected when the Freewin window was opened, and 
 will only display that node.
 
+.. Note:: A Freewin window will close if the underlying node is moved or removed.  This will not change the body of the underlying node.
+
 #@+node:tom.20210625220923.1: *3* Navigating
+Navigating
+~~~~~~~~~~~
+
 #@@nocolor
 A Freewin window only ever displays the content of the node it ws opened on.  However, the selected node in the outline in the host can be changed, which will cause the host to navigate to the new selection.  This navigation can be done when a line in the visible text contains a `gnx` - a node identifier.  If the cursor is placed on a line with a gnx, or if that line is selected, and then <CONTROL-F9> is pressed, the host outline will navigate to the node having that gnx.
 
@@ -55,6 +61,7 @@ is set in the @settings tree. The setting can be in the @settings tree of an out
 #@+node:tom.20210604181030.1: *3* Rendering with Restructured Text
 Rendering with Restructured Text
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Pressing the ``Rendered <--> Plain`` button will switch between
 text and RsT rendering.  In RsT mode, text cannot be edited but
 changes to the node in the outline will be rendered as they are
@@ -77,6 +84,9 @@ View 1 is the default view, except when using PyQt6, which does not currently su
     @string fw-render-pane = nav-view
 
 #@+node:tom.20210626134532.1: *3* Hotkeys
+Hotkeys
+~~~~~~~
+
 Freewin uses two hotkeys:
 
 <CNTL-F7> --  copy the gnx of this Freewin window to the clipboard.
@@ -84,6 +94,24 @@ Freewin uses two hotkeys:
 
 <CNTL-F9> is available in the editor view, and in the rendered view
 with limitations discussed above discussed above.
+#@+node:tom.20210712005103.1: *3* Commands
+Commands
+~~~~~~~~~
+
+Freewin has one minibuffer command: ``z-open-freewin``.  This opens a Freewin window linked to the currently selected node.
+#@+node:tom.20210712005441.1: *3* Settings
+Settings
+~~~~~~~~~
+
+Freewin has two settings:
+
+1. ``@string fw-render-pane = nav-view``
+
+If present with this value, the rendered view will allow the <CNTL>-F7/F9 keys to work as they do in the Editor view.  The rendered view will not be able to display all the features that a full rendered view can. 
+
+2. ``@bool fw-copy-html = False``
+
+   Change to `True` to copy the rendered RsT to the clipboard. 
 #@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
