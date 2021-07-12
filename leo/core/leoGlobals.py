@@ -35,7 +35,7 @@ import tempfile
 import time
 import traceback
 import types
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -1154,7 +1154,7 @@ class MatchBrackets:
         Note that only one of new_left and new_right will necessarily be a
         bracket, but index_of_bracket_char will definitely be a bracket.
         """
-        expanded = False
+        expanded: Union[bool, str] = False
         orig_left = left
         orig_right = right
         while (
@@ -1577,9 +1577,9 @@ class RedirectClass:
             return
         if not self.old:
             if stdout:
-                self.old, sys.stdout = sys.stdout, self
+                self.old, sys.stdout = sys.stdout, self  # type:ignore
             else:
-                self.old, sys.stderr = sys.stderr, self
+                self.old, sys.stderr = sys.stderr, self  # type:ignore
     #@+node:ekr.20041012082437.4: *5* undirect
     def undirect(self, stdout=1):
         if self.old:
@@ -2344,10 +2344,12 @@ class TracingNullObject:
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
 def null_object_print_attr(id_, attr):
     suppress = True
+    suppress_callers: List[str] = []
+    suppress_attrs: List[str] = []
     if suppress:
         #@+<< define suppression lists >>
         #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
-        suppress_callers = (
+        suppress_callers = [
             'drawNode', 'drawTopTree', 'drawTree',
             'contractItem', 'getCurrentItem',
             'declutter_node',
@@ -2356,8 +2358,8 @@ def null_object_print_attr(id_, attr):
             'show_tips',
             'writeWaitingLog',
             # 'set_focus', 'show_tips',
-        )
-        suppress_attrs = (
+        ]
+        suppress_attrs = [
             # Leo...
             'c.frame.body.wrapper',
             'c.frame.getIconBar.add',
@@ -2373,13 +2375,8 @@ def null_object_print_attr(id_, attr):
             'pyzo.keyMapper.connect',
             'pyzo.keyMapper.keyMappingChanged',
             'pyzo.keyMapper.setShortcut',
-        )
+        ]
         #@-<< define suppression lists >>
-    else:
-        # Print everything.
-        suppress_callers = []
-        suppress_attrs = []
-
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers = ','.join(callers[:-1])
@@ -2405,8 +2402,8 @@ def null_object_print(id_, kind, *args):
     if 1:
         # Always print:
         if args:
-            args = ', '.join([repr(z) for z in args])
-            g.pr(f"{s:40} {callers}\n\t\t\targs: {args}")
+            args_s = ', '.join([repr(z) for z in args])
+            g.pr(f"{s:40} {callers}\n\t\t\targs: {args_s}")
         else:
             g.pr(f"{s:40} {callers}")
     elif signature not in tracing_signatures:
@@ -2755,8 +2752,8 @@ getLineAfter = get_line_after
 #@+node:ekr.20080729142651.1: *4* g.getIvarsDict and checkUnchangedIvars
 def getIvarsDict(obj):
     """Return a dictionary of ivars:values for non-methods of obj."""
-    d = dict(
-        [[key, getattr(obj, key)] for key in dir(obj)
+    d: Dict[str, Any] = dict(
+        [[key, getattr(obj, key)] for key in dir(obj)  # type:ignore
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
@@ -2986,17 +2983,18 @@ def printGcObjects():
     print(f"garbage: {n}")
     print(f"{delta:6d} = {n2:7d} totals")
     # print number of each type of object.
-    count, d = 0, {}
+    d: Dict[str, int] = []  # type:ignore
+    count = 0
     for obj in gc.get_objects():
-        key = str(type(obj))
+        key = str(type(obj))  # type:ignore
         n = d.get(key, 0)
         d[key] = n + 1
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
-    d2 = {v: k for k, v in d.items()}
-    for key in reversed(sorted(d2.keys())):
-        val = d2.get(key)
+    d2: Dict[int, str] = {v: k for k, v in d.items()}
+    for key in reversed(sorted(d2.keys())):  # type:ignore
+        val = d2.get(key)  # type:ignore
         print(f"{key:7} {val}")
     lastObjectCount = count
     return delta
@@ -3569,7 +3567,7 @@ def set_delims_from_string(s):
                     g.warning(f"'{delims[i]}' delimiter is invalid")
                     return None, None, None
                 try:
-                    delims[i] = binascii.unhexlify(delims[i][3:])
+                    delims[i] = binascii.unhexlify(delims[i][3:]) # type:ignore
                     delims[i] = g.toUnicode(delims[i])
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
@@ -3698,7 +3696,7 @@ def createHiddenCommander(fn):
     c = Commands(fn, gui=g.app.nullGui)
     theFile = g.app.loadManager.openAnyLeoFile(fn)
     if theFile:
-        c.fileCommands.openLeoFile(
+        c.fileCommands.openLeoFile(  # type:ignore
             theFile, fn, readAtFileNodesFlag=True, silent=True)
         return c
     return None
@@ -3741,7 +3739,8 @@ def get_files_in_directory(directory, kinds=None, recursive=True):
     Return a list of all files of the given file extensions in the directory.
     Default kinds: ['*.py'].
     """
-    files, sep = [], os.path.sep
+    files: List[str] = []
+    sep = os.path.sep
     if not g.os.path.exists(directory):
         g.es_print('does not exist', directory)
         return files
@@ -3857,8 +3856,7 @@ def is_binary_string(s):
     # http://stackoverflow.com/questions/898669
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
-    aList = bytes(aList)
-    return bool(s.translate(None, aList))
+    return bool(s.translate(None, bytes(aList)))
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel(line, delims):
     """Return True if line starts with a sentinel comment."""
@@ -4219,7 +4217,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         nds = list(p.children())
     heads = [i.h for i in nds]
     # work out order in which to try nodes
-    order = []
+    order: Any = []
     nth_sib = nth_same = nth_line_no = nth_col_no = None
     try:
         target = unlList[depth]
@@ -4335,7 +4333,7 @@ def scanf(s, pat):
     pat = pat.replace("%s", r"(\S+)")
     pat = pat.replace("%d", r"(\d+)")
     parts = re.split(pat, s)
-    result = []
+    result: List[str] = []
     for part in parts:
         if part and len(result) < count:
             result.append(part)
@@ -4658,8 +4656,8 @@ def is_special(s, directive):
     assert(directive and directive[0] == '@')
     lws = directive in ("@others", "@all")
         # Most directives must start the line.
-    pattern = r'^\s*(%s\b)' if lws else r'^(%s\b)'
-    pattern = re.compile(pattern % directive, re.MULTILINE)
+    pattern_s = r'^\s*(%s\b)' if lws else r'^(%s\b)'
+    pattern = re.compile(pattern_s % directive, re.MULTILINE)
     m = re.search(pattern, s)
     if m:
         return True, m.start(1)
@@ -4875,7 +4873,7 @@ def backupGitIssues(c, base_url=None):
 
     root = c.lastTopLevel().insertAfter()
     root.h = f'Backup of issues: {time.strftime("%Y/%m/%d")}'
-    label_list = []
+    label_list: List[str] = []
     GitIssueController().backup_issues(base_url, c, label_list, root)
     root.expand()
     c.selectPosition(root)
@@ -5395,7 +5393,7 @@ def import_module(name, package=None):
         if trace:
             t, v, tb = sys.exc_info()
             del tb  # don't need the traceback
-            v = v or str(t)
+            v = v or str(t)  # type:ignore
                 # # in case v is empty, we'll at least have the execption type
             if v not in exceptions:
                 exceptions.append(v)
@@ -5627,7 +5625,8 @@ def stripBrackets(s):
 #@+node:ekr.20170317101100.1: *4* g.unCamel
 def unCamel(s):
     """Return a list of sub-words in camelCased string s."""
-    result, word = [], []
+    result: List[str] = []
+    word: List[str] = []
     for ch in s:
         if ch.isalpha() and ch.isupper():
             if word: result.append(''.join(word))
@@ -5637,7 +5636,8 @@ def unCamel(s):
         elif word:
             result.append(''.join(word))
             word = []
-    if word: result.append(''.join(word))
+    if word:
+        result.append(''.join(word))
     return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
 #@+node:ekr.20190505052756.1: *4* g.checkUnicode
@@ -5900,8 +5900,7 @@ def adjustTripleString(s, tab_width):
         return s
     # Remove the leading whitespace.
     result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    result = ''.join(result)
-    return result
+    return ''.join(result)
 #@+node:ekr.20050211120242.2: *4* g.removeExtraLws
 def removeExtraLws(s, tab_width):
     """
@@ -5919,8 +5918,7 @@ def removeExtraLws(s, tab_width):
     else: return s
     # Remove the leading whitespace.
     result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    result = ''.join(result)
-    return result
+    return ''.join(result)
 #@+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
 #@@language rest
 #@+at
@@ -6438,7 +6436,7 @@ def prettyPrintType(obj):
     if t in [types.MethodType, types.BuiltinMethodType]:
         return 'method'
     # Fall back to a hack.
-    t = str(type(obj))
+    t = str(type(obj))  # type:ignore
     if t.startswith("<type '"): t = t[7:]
     if t.endswith("'>"): t = t[:-2]
     return t
@@ -6488,7 +6486,7 @@ def trace(*args, **keys):
     """Print a tracing message."""
     # Don't use g here: in standalone mode g is a NullObject!
     # Compute the effective args.
-    d = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
+    d: Dict[str, Any] = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
     d = doKeywordArgs(keys, d)
     newline = d.get('newline')
     align = d.get('align', 0)
@@ -6518,12 +6516,12 @@ def trace(*args, **keys):
     #
     # Put leading newlines into the prefix.
     if isinstance(args, tuple):
-        args = list(args)
+        args = list(args)  # type:ignore
     if args and isString(args[0]):
         prefix = ''
         while args[0].startswith('\n'):
             prefix += '\n'
-            args[0] = args[0][1:]
+            args[0] = args[0][1:]  # type:ignore
     else:
         prefix = ''
     for arg in args:
@@ -6554,7 +6552,8 @@ def translateArgs(args, d):
         e = sys.getdefaultencoding()
         console_encoding = e if isValidEncoding(e) else 'utf-8'
         # print 'translateArgs',console_encoding
-    result = []; n = 0; spaces = d.get('spaces')
+    result: List[str] = []
+    n, spaces = 0, d.get('spaces')
     for arg in args:
         n += 1
         # First, convert to unicode.
@@ -7166,14 +7165,15 @@ def getDocStringForFunction(func):
     if not s and hasattr(func, 'docstring'):
         s = func.docstring
     return s
-#@+node:ekr.20111115155710.9814: *3* g.python_tokenize
-def python_tokenize(s, line_numbers=True):
+#@+node:ekr.20111115155710.9814: *3* g.python_tokenize (not used)
+def python_tokenize(s):
     """
-    Tokenize string s and return a list of tokens (kind,value,line_number)
+    Tokenize string s and return a list of tokens (kind, value, line_number)
 
     where kind is in ('comment,'id','nl','other','string','ws').
     """
-    result, i, line_number = [], 0, 0
+    result: List[Tuple[str, str, int]] = []
+    i, line_number = 0, 0
     while i < len(s):
         progress = j = i
         ch = s[i]
@@ -7194,11 +7194,8 @@ def python_tokenize(s, line_numbers=True):
         assert progress < i and j == progress
         val = s[j:i]
         assert val
-        if line_numbers:
-            line_number += val.count('\n')  # A comment.
-            result.append((kind, val, line_number),)
-        else:
-            result.append((kind, val),)
+        line_number += val.count('\n')  # A comment.
+        result.append((kind, val, line_number),)
     return result
 #@+node:ekr.20040327103735.2: ** g.Scripting
 #@+node:ekr.20161223090721.1: *3* g.exec_file
