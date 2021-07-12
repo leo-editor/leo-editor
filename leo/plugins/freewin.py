@@ -582,6 +582,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
     #@+others
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
+        # pylint: disable=too-many-locals
         global TAB2SPACES
         super().__init__()
         QWidget().__init__()
