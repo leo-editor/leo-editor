@@ -12,7 +12,7 @@ switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
 :Date: 9 July 2021
-:Version: 1.5a2
+:Version: 1.5
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
