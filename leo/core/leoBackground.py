@@ -5,6 +5,7 @@
 """Handling background processes"""
 import re
 import subprocess
+from typing import List
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
@@ -148,7 +149,7 @@ class BackgroundProcessManager:
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
-    unknown_path_names = []
+    unknown_path_names: List[str] = []
 
     def put_log(self, s):
         """
