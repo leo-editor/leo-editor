@@ -167,6 +167,12 @@ def flake8_command(event):
         Flake8Command(c).run()
     else:
         g.es_print('can not import flake8')
+#@+node:ekr.20210711070421.1: *3* kill-mypy
+@g.command('kill-mypy')
+@g.command('mypy-kill')
+def kill_mypy(event):
+    """Kill any running mypy processes and clear the queue."""
+    g.app.backgroundProcessManager.kill('mypy')
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
@@ -254,10 +260,11 @@ class MypyCommand:
         """Run pyflakes on all files in paths."""
         c = self.c
         bpm = g.app.backgroundProcessManager
+        bpm.unknown_path_names = []
         for root in roots:
             fn = self.finalize(root)
             bpm.start_process(c,
-                command=f"mypy {fn}",
+                command='mypy',
                 fn=fn,
                 kind='mypy',
                 link_pattern=self.link_pattern,
