@@ -68,7 +68,7 @@ except ImportError:
 Alignment = QtCore.Qt
 ButtonRole = QtWidgets.QMessageBox
 ContextMenuPolicy = QtCore.Qt
-ControlTypes = QtWidgets.QSizePolicy
+ControlType = QtWidgets.QSizePolicy
 DialogCode = QtWidgets.QDialog
 DropActions = QtCore.Qt
 EndEditHint = QtWidgets.QAbstractItemDelegate

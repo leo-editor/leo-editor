@@ -33,13 +33,42 @@ try:
 except Exception:
     pass
 #
-# Qt6 enum values
-Alignment = QtCore.Qt.Alignment
+# Enumerations, with (sheesh) variable spellings.
+try:
+    # New spellings (6.2+): mostly singular.
+    Alignment = QtCore.Qt.AlignmentFlag
+    ControlType = QtWidgets.QSizePolicy.ControlType
+    DropActions = QtCore.Qt.DropAction
+    ItemFlags = QtCore.Qt.ItemFlag
+    KeyboardModifiers = QtCore.Qt.KeyboardModifier
+    Modifiers = QtCore.Qt.Modifier
+    MouseButtons = QtCore.Qt.MouseButton
+    Orientations = QtCore.Qt.Orientation
+    StandardButtons = QtWidgets.QDialogButtonBox.StandardButton
+    TextInteractionFlags = QtCore.Qt.TextInteractionFlag
+    ToolBarAreas = QtCore.Qt.ToolBarArea
+    WindowFlags = QtCore.Qt.WindowType
+    WindowStates = QtCore.Qt.WindowState
+except AttributeError:
+    # Old spellings (6.0 and 6.1): mostly plural.
+    Alignment = QtCore.Qt.Alignment
+    ControlType = QtWidgets.QSizePolicy.ControlTypes
+    DropActions = QtCore.Qt.DropActions
+    ItemFlags = QtCore.Qt.ItemFlags
+    KeyboardModifiers = QtCore.Qt.KeyboardModifiers
+    Modifiers = QtCore.Qt.Modifiers
+    MouseButtons = QtCore.Qt.MouseButtons
+    Orientations = QtCore.Qt.Orientations
+    StandardButtons = QtWidgets.QDialog.StandardButtons
+    TextInteractionFlags = QtCore.Qt.TextInteractionFlags
+    ToolBarAreas = QtCore.Qt.ToolBarAreas
+    WindowFlags = QtCore.Qt.WindowFlags
+    WindowStates = QtCore.Qt.WindowStates
+#
+# Other enums.
 ButtonRole = QtWidgets.QMessageBox.ButtonRole
 ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy
-ControlTypes = QtWidgets.QSizePolicy.ControlTypes
 DialogCode = QtWidgets.QDialog.DialogCode
-DropActions = QtCore.Qt.DropActions
 EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint
 FocusPolicy = QtCore.Qt.FocusPolicy
 FocusReason = QtCore.Qt.FocusReason
@@ -47,14 +76,9 @@ Format = QtGui.QImage.Format
 GlobalColor = QtCore.Qt.GlobalColor
 Icon = QtWidgets.QMessageBox.Icon
 Information = QtWidgets.QMessageBox.Icon.Information
-ItemFlags = QtCore.Qt.ItemFlags
 Key = QtCore.Qt.Key
-KeyboardModifiers = QtCore.Qt.KeyboardModifiers
-Modifiers = QtCore.Qt.KeyboardModifiers
-MouseButtons = QtCore.Qt.MouseButtons
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
-Orientations = QtCore.Qt.Orientations
 Policy = QtWidgets.QSizePolicy.Policy
 QAction = QtGui.QAction
 QStyle = QtWidgets.QStyle.StandardPixmap
@@ -65,14 +89,9 @@ Shadow = QtWidgets.QFrame.Shadow
 Shape = QtWidgets.QFrame.Shape
 SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
 SliderAction = QtWidgets.QAbstractSlider.SliderAction
-StandardButtons = QtWidgets.QDialog.ButtonBox.StandardButtons
 StandardPixmap = QtWidgets.QStyle.StandardPixmap
-TextInteractionFlags = QtCore.Qt.TextInteractionFlags
-ToolBarAreas = QtCore.Qt.ToolBarAreas
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
 Weight = QtGui.QFont.Weight
-WindowFlags = QtCore.Qt.WindowFlags
-WindowStates = QtCore.Qt.WindowStates
 WrapMode = QtGui.QTextOption.WrapMode
 #@-leo

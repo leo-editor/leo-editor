@@ -218,7 +218,7 @@ from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
-from leo.core.leoQt import ControlTypes, KeyboardModifiers, MouseButtons, Orientations, Policy, QAction
+from leo.core.leoQt import ControlType, KeyboardModifiers, MouseButtons, Orientations, Policy, QAction
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -571,9 +571,9 @@ class FlowLayout(QtWidgets.QLayout):
         for item in self.itemList:
             wid = item.widget()
             spaceX = self.spacing() + wid.style().layoutSpacing(
-                ControlTypes.PushButton, ControlTypes.PushButton, Orientations.Horizontal)
+                ControlType.PushButton, ControlType.PushButton, Orientations.Horizontal)
             spaceY = self.spacing() + wid.style().layoutSpacing(
-                ControlTypes.PushButton, ControlTypes.PushButton, Orientations.Vertical)
+                ControlType.PushButton, ControlType.PushButton, Orientations.Vertical)
             nextX = x + item.sizeHint().width() + spaceX
             if nextX - spaceX > rect.right() and lineHeight > 0:
                 x = rect.x()

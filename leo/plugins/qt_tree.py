@@ -369,10 +369,9 @@ class LeoQtTree(leoFrame.LeoTree):
             param - the saved argument of that operation.
             Return (None, param) if 'cmd' is not a style option.
             """
+            # pylint: disable=function-redefined
             param = c.styleSheetManager.expand_css_constants(arg).split()[0]
-
             modifier = None
-
             if cmd == 'ICON':
                 def modifier(item, param):
                     # Does not fit well this function. And we cannot
@@ -409,11 +408,9 @@ class LeoQtTree(leoFrame.LeoTree):
                     font = item.font(0)
                     font.setPointSize(int(param))
                     item.setFont(0, font)
-
             # Apply the style update
             if modifier:
                 modifier(item, param)
-
             return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
         def apply_declutter_rules(cmds):
@@ -1138,7 +1135,6 @@ class LeoQtTree(leoFrame.LeoTree):
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
-            ItemFlags = QtCore.Qt.ItemFlags
             item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
             ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
             item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
