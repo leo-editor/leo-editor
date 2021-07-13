@@ -14,6 +14,7 @@ from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import isQt5, isQt6, Qsci, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import ButtonRole, Icon, WindowFlags
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
 from leo.plugins import qt_events
@@ -695,9 +696,9 @@ class LeoQtGui(leoGui.LeoGui):
         #@+node:ekr.20110605121601.18507: *5* << emergency fallback >>
         b = QtWidgets.QMessageBox
         d = b(None)  # c.frame.top)
-        Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
-        ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
-        WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
+        ### Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
+        ### ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
+        ### WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
         d.setWindowFlags(WindowFlags.Dialog)
             # That is, not a fixed size dialog.
         d.setWindowTitle(title)

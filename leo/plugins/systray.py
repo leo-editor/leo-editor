@@ -3,7 +3,8 @@
 """systray"""
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtGui, QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets  ### isQt6
+from leo.core.leoQt import QAction, StandardPixmap
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -60,11 +61,11 @@ class pluginController:
         ib_w = self.c.frame.iconBar.w
         if not ib_w:
             return # EKR: can be None when unit testing.
-        StandardPixmap = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
+        ### StandardPixmap = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
         icon_l = ib_w.style().standardIcon(StandardPixmap.SP_ArrowLeft)
         icon_r = ib_w.style().standardIcon(StandardPixmap.SP_ArrowRight)
         # Create the actions.
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         act_l = QAction(icon_l, 'prev', ib_w)
         act_r = QAction(icon_r, 'next', ib_w)
         # Use the new commands.

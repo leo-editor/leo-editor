@@ -3,6 +3,7 @@
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, Qt, QtCore, QtConst, QtGui, QtWidgets
+from leo.core.leoQt import ContextMenuPolicy, Orientations, QAction
 # pylint: disable=cell-var-from-loop
 #@+others
 #@+node:ekr.20110605121601.17956: ** init
@@ -95,7 +96,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         super().__init__(owner.orientation(), owner)
         # Confusing!
             # self.setStyleSheet("background-color: green;")
-        ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+        ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
         self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.splitter_menu)
     #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
@@ -106,7 +107,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
     #@+node:ekr.20110605121601.17964: *3* nsh.add_item
     def add_item(self, func, menu, name, tooltip=None):
         """helper for splitter_menu menu building"""
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         act = QAction(name, self)
         act.setObjectName(name.lower().replace(' ', '-'))
         act.triggered.connect(lambda checked: func())
@@ -134,7 +135,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
     #@+node:ekr.20110605121601.17965: *3* nsh.splitter_menu
     def splitter_menu(self, pos):
         """build the context menu for NestedSplitter"""
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         splitter = self.splitter()
         if not splitter.enabled:
             g.trace('splitter not enabled')
@@ -145,7 +146,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         lr = 'Left', 'Right'
         ab = 'Above', 'Below'
         split_dir = 'Vertically'
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         if self.orientation() == Orientations.Vertical:
             lr, ab = ab, lr
             split_dir = 'Horizontally'
@@ -360,7 +361,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         # allow special behavior to be turned of at import stage
         # useful if other code must run to set up callbacks, that
         # other code can re-enable
-    Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+    ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
     other_orientation = {
         Orientations.Vertical: Orientations.Horizontal,
         Orientations.Horizontal: Orientations.Vertical,
@@ -378,7 +379,7 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:ekr.20110605121601.17967: *3* ns.__init__
     def __init__(self, parent=None, orientation=None, root=None):
         """Ctor for NestedSplitter class."""
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         if orientation is None:
             orientation = Orientations.Horizontal
         super().__init__(orientation, parent)
@@ -492,7 +493,7 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
     def add_adjacent(self, what, widget_id, side='right-of'):
         """add a widget relative to another already present widget"""
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         horizontal, vertical = Orientations.Horizontal, Orientations.Vertical
         layout = self.top().get_layout()
 
@@ -549,7 +550,7 @@ class NestedSplitter(QtWidgets.QSplitter):
     def choice_menu(self, button, pos):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         index = self.indexOf(button)
         if (self.root.marked and
             not self.invalid_swap(button, self.root.marked[3]) and
@@ -840,7 +841,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         the same orientation - avoiding that would mean doing rotation by
         inserting out widgets into our ancestors, etc.
         """
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         for i in self.top().self_and_descendants():
             if i.orientation() == Orientations.Vertical:
                 i.setOrientation(Orientations.Horizontal)
@@ -976,7 +977,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         The content entry for non-NestedSplitter items is the provider ID
         string for the item, or 'UNKNOWN', and the splitter entry is omitted.
         """
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         ans = {
             'content': [],
             'orientation': 1 if self.orientation() == Orientations.Horizontal else 2,
@@ -1011,7 +1012,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             tag = f"layout: {c.shortFileName()}"
             g.printObj(layout, tag=tag)
         if isQt6:
-            Orientations = QtCore.Qt.Orientations
+            ### Orientations = QtCore.Qt.Orientations
             if layout['orientation'] == 1: 
                 self.setOrientation(Orientations.Horizontal)
             else:

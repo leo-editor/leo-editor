@@ -8,7 +8,8 @@
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 from leo.core import leoGlobals as g
 from leo.plugins import viewrendered as vr
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtWidgets  ### QtCore
+from leo.core.leoQt import FocusPolicy
 try:
     if isQt5 or isQt6:
         import matplotlib.backends.backend_qt5agg as backend_qt5agg
@@ -97,7 +98,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         self.window = DummyWindow(c)
 
         # See comments in the base class ctor, in backend_qt5.py.
-        FocusPolicy = QtCore.Qt.FocusPolicy if isQt6 else QtCore.Qt
+        ### FocusPolicy = QtCore.Qt.FocusPolicy if isQt6 else QtCore.Qt
         self.canvas.setFocusPolicy(FocusPolicy.StrongFocus)
         self.canvas.setFocus()
         self.canvas._destroying = False

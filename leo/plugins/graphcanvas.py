@@ -32,6 +32,7 @@ import urllib.request as urllib
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import KeyboardModifiers
 # Third-party imports
 try:
     # pylint: disable=import-error
@@ -993,7 +994,7 @@ class graphcanvasController:
         blc = getattr(self.c, 'backlinkController')
         if not blc:
             return
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         if not (event.modifiers() & KeyboardModifiers.ControlModifier):
             return
         if linkItem in self.link:

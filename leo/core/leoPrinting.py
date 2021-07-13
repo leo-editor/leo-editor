@@ -5,7 +5,8 @@ Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.
 """
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, printsupport, QtGui, QtWidgets
+from leo.core.leoQt import printsupport, QtGui  ### isQt6, QtWidgets
+from leo.core.leoQt import DialogCode
 #@+others
 #@+node:ekr.20150509035503.1: ** cmd (decorator)
 def cmd(name):
@@ -270,7 +271,7 @@ class PrintingController:
             return
         dialog = printsupport.QPrintDialog()
         result = dialog.exec_()
-        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        ### DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if result == DialogCode.Accepted:
             doc.print_(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc

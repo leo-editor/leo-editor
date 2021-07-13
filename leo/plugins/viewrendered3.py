@@ -690,6 +690,7 @@ try:
     import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
+    from leo.core.leoQt import Orientations
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -1097,7 +1098,7 @@ def viewrendered(event):
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
     vr3._ns_id = VR3_NS_ID # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
-    Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+    ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
 
     if splitter:
         vr3.store_layout('closed')

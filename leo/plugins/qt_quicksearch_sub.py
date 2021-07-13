@@ -4,6 +4,7 @@
 # WARNING! All changes made in this file will be lost!
 #from PyQt4 import QtCore, QtGui
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets  # QtGui,
+from leo.core.leoQt import Policy
 QtGui = QtWidgets
 
 
@@ -25,7 +26,7 @@ class Ui_LeoQuickSearchWidget:
         self.lineEdit.setObjectName("lineEditNav")
         self.verticalLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
         self.listWidget = QtGui.QListWidget(LeoQuickSearchWidget)
-        Policy = QtGui.QSizePolicy.Policy if isQt6 else QtGui.QSizePolicy
+        ### Policy = QtGui.QSizePolicy.Policy if isQt6 else QtGui.QSizePolicy
         sizePolicy = QtGui.QSizePolicy(Policy.Expanding, Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

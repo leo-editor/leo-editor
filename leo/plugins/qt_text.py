@@ -7,6 +7,7 @@ import time
 assert time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
+from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifiers, Modifiers, MouseButtons, WindowFlags
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -414,7 +415,6 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
-        # Sunken = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
         Raised = QtWidgets.QFrame.Shadow.Raised if isQt6 else self.StyledPanel
         NoFrame = QtWidgets.QFrame.Shape.NoFrame if isQt6 else self.NoFrame
         self.setFrameStyle(Raised)
@@ -463,7 +463,7 @@ if QtWidgets:
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
                 self.textChanged.connect(self.onTextChanged)
-            ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+            ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
             self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
@@ -486,7 +486,7 @@ if QtWidgets:
             def __init__(self, c):
                 """ctor for LeoQListWidget class"""
                 super().__init__()
-                WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
+                ### WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
                 self.setWindowFlags(WindowFlags.Popup | self.windowFlags())
                 # Inject the ivars
                 self.leo_w = c.frame.body.wrapper.widget
@@ -521,8 +521,8 @@ if QtWidgets:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
-                Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
-                Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+                ### Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
+                ### Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
                 key = event.key()
                 if event.modifiers() != Modifiers.NoModifier and not event.text():
                     # A modifier key on it's own.
@@ -702,7 +702,7 @@ if QtWidgets:
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
         def leo_dumpButton(self, event, tag):
 
-            MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+            ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
             button = event.button()
             table = (
                 (MouseButtons.NoButton, 'no button'),
@@ -792,7 +792,7 @@ if QtWidgets:
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
-            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+            ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             if KeyboardModifiers.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
                 try:  # Qt5 or later.
@@ -1329,7 +1329,7 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+                ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
                 if KeyboardModifiers.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:

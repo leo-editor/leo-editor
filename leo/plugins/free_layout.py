@@ -30,7 +30,8 @@ free-layout-zoom
 import json
 from typing import Any, List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtWidgets, QtCore
+from leo.core.leoQt import QtWidgets  ### sQt6, QtCore
+from leo.core.leoQt import MouseButtons
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter
         # NestedSplitterChoice
@@ -398,7 +399,7 @@ class FreeLayoutController:
         :param bool release: was it a Press or Release event
         :param bool double: was it a double click event
         """
-        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
         if not release or event.button() != MouseButtons.MiddleButton:
             return
         if splitter.root.zoomed:  # unzoom if *any* handle clicked

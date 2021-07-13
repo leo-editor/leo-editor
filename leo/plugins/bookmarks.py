@@ -217,7 +217,8 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtWidgets  ### QtGui
+from leo.core.leoQt import ControlTypes, KeyboardModifiers, MouseButtons, Orientations, Policy, QAction
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -534,7 +535,7 @@ class FlowLayout(QtWidgets.QLayout):
         whereas Qt::Vertical | Qt::Horizontal means that it wants to grow in both dimensions.
         """
         
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         return Orientations.Horizontal  # Best guess.
 
     #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
@@ -567,8 +568,8 @@ class FlowLayout(QtWidgets.QLayout):
     #@+node:ekr.20140917180536.17910: *3* doLayout
     def doLayout(self, rect, testOnly):
 
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
-        ControlTypes = QtWidgets.QSizePolicy.ControlTypes if isQt6 else QtWidgets.QSizePolicy
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### ControlTypes = QtWidgets.QSizePolicy.ControlTypes if isQt6 else QtWidgets.QSizePolicy
         x = rect.x()
         y = rect.y()
         lineHeight = 0
@@ -610,7 +611,7 @@ class FlowLayout(QtWidgets.QLayout):
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
-    KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+    ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
     
     ModMap = {
@@ -702,8 +703,8 @@ class BookMarkDisplay:
         - `bookmarks`: bookmarks in this pane
         """
 
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
         if event.button() == MouseButtons.RightButton:
             self.context_menu(event, container=row_parent)
             return
@@ -725,7 +726,7 @@ class BookMarkDisplay:
         - `but`: button widget
         """
 
-        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
+        ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
         if event.button() == MouseButtons.RightButton:
             self.button_menu(event, bm, but, up=up)
             return
@@ -781,7 +782,7 @@ class BookMarkDisplay:
         """
 
         menu = QtWidgets.QMenu()
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 
         actions = [
             ("Link to this node", self.update_bookmark),
@@ -818,7 +819,7 @@ class BookMarkDisplay:
         """
 
         menu = QtWidgets.QMenu()
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         bm = self.c._bookmarks
 
         actions = [
@@ -971,7 +972,7 @@ class BookMarkDisplay:
         current_url = None
         showing_chain = []
         row_parent = self.v
-        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         while todo:
             links = todo.pop(0) if todo else []
             top = QtWidgets.QWidget()

@@ -137,7 +137,8 @@ from copy import deepcopy
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
-from leo.core.leoQt import isQt6, QtGui, QtWidgets # QtCore
+from leo.core.leoQt import isQt6, QtWidgets # QtCore, QtGui
+from leo.core.leoQt import QAction
 from leo.plugins.attrib_edit import ListDialog
 #
 # Fail fast, right after all imports.
@@ -348,7 +349,7 @@ class quickMove:
         p = c.p
         if v is None:
             v = p.v
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         sc = scriptingController(c)
         mb = quickMoveButton(self,v,which,type_=type_)
         txt=self.txts[type_]
@@ -469,7 +470,7 @@ class quickMove:
         """make popup menu entry for tree context menu"""
         # pylint: disable=function-redefined
         # several callbacks have the same name.
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         if c != self.c:
             return  # wrong commander
         for cb, name in reversed(self.recent_moves):

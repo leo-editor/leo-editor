@@ -83,7 +83,8 @@ import fnmatch
 import itertools
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtConst, QtWidgets
+from leo.core.leoQt import QtCore, QtConst, QtWidgets  ### isQt6
+from leo.core.leoQt import KeyboardModifiers
 from leo.core import leoNodes
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
@@ -706,7 +707,7 @@ class QuickSearchController:
             return
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = QtWidgets.QApplication.keyboardModifiers()
         if modifiers == KeyboardModifiers.ControlModifier:
             row = self.lw.row(it)

@@ -14,7 +14,8 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets, QtConst
+from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst  ### QtGui
+from leo.core.leoQt import QAction, Orientations, Policy
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if QtCore is not None:
@@ -171,7 +172,7 @@ class LeoEditPane(QtWidgets.QWidget):
         i.e. a container we can hide / show easily"""
         w = QtWidgets.QWidget(self)
         self.layout().addWidget(w)
-        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         w.setSizePolicy(Policy.Expanding, Policy.Maximum)
         w.setLayout(QtWidgets.QHBoxLayout())
         w.layout().setContentsMargins(0, 0, 0, 0)
@@ -305,12 +306,12 @@ class LeoEditPane(QtWidgets.QWidget):
             lambda checked: self.misc_menu())
 
         # padding
-        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         self.control.layout().addItem(QtWidgets.QSpacerItem(0, 0, hPolicy=Policy.Expanding))
 
         # content
         self.splitter = ClickySplitter(self)
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         self.splitter.setOrientation(Orientations.Vertical)
         self.layout().addWidget(self.splitter)
         self.edit_frame = self._add_frame()
@@ -426,7 +427,7 @@ class LeoEditPane(QtWidgets.QWidget):
     def misc_menu(self):
         """build menu on Action button"""
 
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         # info needed to separate edit and view widgets in self.widget_classes
         name_test_current = [
             ("Editor", lambda x: x.lep_type == 'EDITOR', self.edit_widget.__class__),
@@ -455,7 +456,7 @@ class LeoEditPane(QtWidgets.QWidget):
     def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         for mode in 'edit', 'view', 'split':
             act = QAction(mode.title(), self)
 

@@ -105,6 +105,7 @@ plugins. Here are some points of interest:
 
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
+from leo.core.leoQt import DialogCode, Orientations
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -540,7 +541,7 @@ class attrib_edit_Controller:
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
         if self.guiMode == 'body':
-            Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+            ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
             self.holder = QtWidgets.QSplitter(Orientations.Vertical)
             self.holder.setMinimumWidth(300)
             parent = c.frame.top.leo_body_frame.parent()
@@ -717,7 +718,7 @@ class attrib_edit_Controller:
         res = ListDialog(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)", dat)
         res.exec_()
-        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        ### DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if res.result() == DialogCode.Rejected:
             return
 
@@ -752,7 +753,7 @@ class attrib_edit_Controller:
 
         res.exec_()
 
-        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        ### DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if res.result() == DialogCode.Rejected:
             return
 

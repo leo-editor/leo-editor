@@ -22,7 +22,8 @@ except ImportError:
 #
 # Leo imports...
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, Qsci, QtGui, QtWidgets
+from leo.core.leoQt import Qsci, QtGui, QtWidgets  ### isQt6
+from leo.core.leoQt import UnderlineStyle
 from leo.core.leoColor import leo_color_database
 #@-<< imports >>
 #@+others
@@ -1032,7 +1033,7 @@ class BaseJEditColorizer(BaseColorizer):
                 return
         underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
-        UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
+        ### UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)

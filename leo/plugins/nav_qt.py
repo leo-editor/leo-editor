@@ -19,7 +19,8 @@ the left side of toolbar.
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtGui, QtWidgets
+### from leo.core.leoQt import isQt6, QtGui, QtWidgets
+from leo.core.leoQt import QAction, QStyle
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -76,11 +77,11 @@ class NavController:
         w = c.frame.iconBar.w
         if not w:
             return [] # EKR: can be an empty list when unit testing.
-        QStyle = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
+        ### QStyle = QtWidgets.QStyle.StandardPixmap if isQt6 else QtWidgets.QStyle
         icon_l = w.style().standardIcon(QStyle.SP_ArrowLeft)
         icon_r = w.style().standardIcon(QStyle.SP_ArrowRight)
         # Create the actions.
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         act_l = QAction(icon_l,'prev',w)
         act_r = QAction(icon_r,'next',w)
         # Use the new commands.

@@ -32,4 +32,46 @@ try:
     printsupport = Qt.printsupport
 except Exception:
     pass
+#
+# Qt6 enum values
+Alignment = QtCore.Qt.Alignment
+ButtonRole = QtWidgets.QMessageBox.ButtonRole
+ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy
+DialogCode = QtWidgets.QDialog.DialogCode
+DropActions = QtCore.Qt.DropActions
+EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint
+FocusPolicy = QtCore.Qt.FocusPolicy
+FocusReason = QtCore.Qt.FocusReason
+Format = QtGui.QImage.Format
+GlobalColor = QtCore.Qt.GlobalColor
+Icon = QtWidgets.QMessageBox.Icon
+Information = QtWidgets.QMessageBox.Icon.Information
+ItemFlags = QtCore.Qt.ItemFlags
+Key = QtCore.Qt.Key
+KeyboardModifiers = QtCore.Qt.KeyboardModifiers
+Modifiers = QtCore.Qt.KeyboardModifiers
+MouseButtons = QtCore.Qt.MouseButtons
+MoveMode = QtGui.QTextCursor.MoveMode
+MoveOperation = QtGui.QTextCursor.MoveOperation
+Orientations = QtCore.Qt.Orientations
+Policy = QtWidgets.QSizePolicy.Policy
+QAction = QtGui.QAction
+QStyle = QtWidgets.QStyle.StandardPixmap
+ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
+SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
+SelectionMode = QtWidgets.QAbstractItemView.SelectionMode
+Shadow = QtWidgets.QFrame.Shadow
+Shape = QtWidgets.QFrame.Shape
+SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
+SliderAction = QtWidgets.QAbstractSlider.SliderAction
+StandardButtons = QtWidgets.QDialog.ButtonBox.StandardButtons
+StandardPixmap = QtWidgets.QStyle.StandardPixmap
+TextInteractionFlags = QtCore.Qt.TextInteractionFlags
+ToolBarAreas = QtCore.Qt.ToolBarAreas
+Type = QtCore.QEvent.Type
+UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+Weight = QtGui.QFont.Weight
+WindowFlags = QtCore.Qt.WindowFlags
+WindowStates = QtCore.Qt.WindowStates
+WrapMode = QtGui.QTextOption.WrapMode
 #@-leo
