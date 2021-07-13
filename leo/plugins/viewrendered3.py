@@ -654,7 +654,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 """
 
 #@+<< imports >>
-#@+node:TomP.20191215195433.4: ** << imports >>
+#@+node:TomP.20191215195433.4: ** << imports >> (vr3)
 #
 # Stdlib...
 from configparser import ConfigParser
@@ -684,7 +684,7 @@ from urllib.request import urlopen
 import leo.core.leoGlobals as g
 from leo.core.leoApp import LoadManager as LM
 #@+<< Qt Imports >>
-#@+node:tom.20210517102737.1: *3* << Qt Imports >>
+#@+node:tom.20210517102737.1: *3* << Qt Imports >> (vr3)
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
@@ -776,11 +776,15 @@ except ImportError:
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
-    from nbconvert import HTMLExporter
-    # from traitlets.config import Config
 except ImportError:
     nbformat = None
     print('VR3: *** No nbformat')
+try:
+    from nbconvert import HTMLExporter
+    # from traitlets.config import Config
+except ImportError:
+    HTMLExporter = None
+    print('VR3: *** No nbconvert')
 try:
     from pygments import cmdline
 except ImportError:
