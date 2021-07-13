@@ -13,11 +13,11 @@ alt-x stickynote to pop out current node as a note.
 #@+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
 import webbrowser
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Qt ### isQt6, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import QAction, QFont, QMenu, QPlainTextEdit
-from leo.core.leoQt import QTextBlockFormat, QTextCharFormat, QTextCursor, QTextEdit, QTextListFormat
-from leo.core.leoQt import QSize, QTimer, QVariant
-from leo.core.leoQt import KeyboardModifiers
+from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets ### isQt6, 
+from leo.core.leoQt import QAction, KeyboardModifiers
+### QFont, QMenu, QPlainTextEdit
+### from leo.core.leoQt import QTextBlockFormat, QTextCharFormat, QTextCursor, QTextEdit, QTextListFormat
+###from leo.core.leoQt import QSize, QTimer, QVariant
 # Third-party tools.
 try:
     # pylint: disable=import-error
@@ -31,25 +31,21 @@ except SyntaxError:
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-###
-    # #
-    # # Abbreviations...
-    # Qt = QtCore.Qt
-    # # Widgets
+# Abbreviations...
     # QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
-    # QMenu = QtWidgets.QMenu
-    # QPlainTextEdit = QtWidgets.QPlainTextEdit
-    # QTextEdit = QtWidgets.QTextEdit
-    # # Other gui elements.
-    # QFont = QtGui.QFont
-    # QIcon = QtGui.QIcon
-    # QSize = QtCore.QSize
-    # QTextBlockFormat = QtGui.QTextBlockFormat
-    # QTextCharFormat = QtGui.QTextCharFormat
-    # QTextCursor = QtGui.QTextCursor
-    # QTextListFormat = QtGui.QTextListFormat
-    # QTimer = QtCore.QTimer
-    # QVariant = QtCore.QVariant
+QMenu = QtWidgets.QMenu
+QPlainTextEdit = QtWidgets.QPlainTextEdit
+QTextEdit = QtWidgets.QTextEdit
+# Other gui elements.
+QFont = QtGui.QFont
+QIcon = QtGui.QIcon
+QSize = QtCore.QSize
+QTextBlockFormat = QtGui.QTextBlockFormat
+QTextCharFormat = QtGui.QTextCharFormat
+QTextCursor = QtGui.QTextCursor
+QTextListFormat = QtGui.QTextListFormat
+QTimer = QtCore.QTimer
+QVariant = QtCore.QVariant
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100103100944.5392: ** styling

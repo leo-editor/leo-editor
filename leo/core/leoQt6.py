@@ -37,6 +37,7 @@ except Exception:
 Alignment = QtCore.Qt.Alignment
 ButtonRole = QtWidgets.QMessageBox.ButtonRole
 ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy
+ControlTypes = QtWidgets.QSizePolicy.ControlTypes
 DialogCode = QtWidgets.QDialog.DialogCode
 DropActions = QtCore.Qt.DropActions
 EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint

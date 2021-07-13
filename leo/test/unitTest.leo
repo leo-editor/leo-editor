@@ -179,9 +179,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20100131171342.5508"><vh>leoBridge</vh>
-<v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -839,36 +836,6 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
-</t>
-<t tx="ekr.20100131171342.5508"></t>
-<t tx="ekr.20100131171342.5509">import leo.core.leoBridge as leoBridge
-if g.app.isExternalUnitTest:
-    print('running @test leoBridge init logic')
-    # This can not be run locally!
-    b = leoBridge.controller(gui='nullGui',
-        loadPlugins=True,
-        readSettings=True,
-        silent=False,
-        tracePlugins=True,
-        verbose=True)
-    g = b.globals()
-    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
-    assert g.os_path_exists(path)
-    c = b.openLeoFile(path)
-    assert c
-    assert c.rootPosition()
-else:
-    import subprocess
-    path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
-    assert g.os_path_exists(path), path
-    command = 'python %s' % path
-    pid = subprocess.Popen(
-        command,
-        shell=True,
-        stdout=subprocess.PIPE, # Eliminate output.
-        universal_newlines=True,
-    )
-    pid.communicate()
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.

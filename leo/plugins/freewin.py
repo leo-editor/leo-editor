@@ -229,6 +229,7 @@ from leo.core import leoGlobals as g
 qt_imports_ok = False
 try:
     from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
+    from leo.core.leoQt import KeyboardModifiers
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
@@ -281,7 +282,7 @@ if not got_docutils:
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # Aliases.
-KeyboardModifiers = QtCore.Qt if isQt5 else QtCore.Qt.KeyboardModifiers
+### KeyboardModifiers = QtCore.Qt if isQt5 else QtCore.Qt.KeyboardModifiers
 QApplication = QtWidgets.QApplication
 QFont = QtGui.QFont
 QFontInfo = QtGui.QFontInfo

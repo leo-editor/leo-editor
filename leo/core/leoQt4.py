@@ -19,6 +19,7 @@ qt_version = QtCore.QT_VERSION_STR
 Alignment = QtCore.Qt
 ButtonRole = QtWidgets.QMessageBox
 ContextMenuPolicy = QtCore.Qt
+ControlTypes = QtWidgets.QSizePolicy
 DialogCode = QtWidgets.QDialog
 DropActions = QtCore.Qt
 EndEditHint = QtWidgets.QAbstractItemDelegate

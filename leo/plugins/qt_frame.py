@@ -21,7 +21,7 @@ from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropActions, FocusReason, Modifiers, MoveOperation, Orientations
 from leo.core.leoQt import MouseButtons, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, Shadow, Shape
-from leo.core.leoQt import TextInteractionFlags, ToolBarAreas, WrapMode
+from leo.core.leoQt import TextInteractionFlags, ToolBarAreas, WrapMode  ### UnderlineStyle
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree

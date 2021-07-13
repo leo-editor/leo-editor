@@ -30,8 +30,14 @@ free-layout-zoom
 import json
 from typing import Any, List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets  ### sQt6, QtCore
-from leo.core.leoQt import MouseButtons
+#
+# Qt imports. May fail from the bridge.
+try:  # #1973
+    from leo.core.leoQt import QtWidgets  ### sQt6, QtCore
+    from leo.core.leoQt import MouseButtons
+except Exception:
+    QtWidgets = None
+    MouseButtons = None
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter
         # NestedSplitterChoice

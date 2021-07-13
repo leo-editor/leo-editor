@@ -22,9 +22,16 @@ except ImportError:
 #
 # Leo imports...
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Qsci, QtGui, QtWidgets  ### isQt6
-from leo.core.leoQt import UnderlineStyle
+
 from leo.core.leoColor import leo_color_database
+#
+# Qt imports. May fail from the bridge.
+try:  # #1973
+    from leo.core.leoQt import Qsci, QtGui, QtWidgets  ### isQt6
+    from leo.core.leoQt import UnderlineStyle
+except Exception:
+    Qsci = QtGui = QtWidgets = None
+    UnderlineStyle = None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
