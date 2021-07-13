@@ -688,9 +688,9 @@ from leo.core.leoApp import LoadManager as LM
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
-    from leo.core.leoQt import KeyboardModifier, Orientation, QAction, QActionGroup
+    from leo.core.leoQt import KeyboardModifier, Orientation, QAction, QActionGroup, WrapMode
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -1932,12 +1932,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-
-            if isQt6:
-                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
-            else:
-                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere
-            w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
+            # if isQt6:
+                # WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
+            # else:
+                # WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
+            # w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
+            w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""

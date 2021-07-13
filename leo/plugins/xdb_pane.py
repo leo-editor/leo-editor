@@ -6,7 +6,7 @@ commands, and an input area in which the user can type other commands.
 '''
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtGui, QtWidgets
-from leo.core.leoQt import ScrollBarPolicy
+from leo.core.leoQt import ScrollBarPolicy, WrapMode
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -109,7 +109,7 @@ if g.app.gui.guiName() == "qt":
             self.output_area = w = QtWidgets.QTextEdit()
             w.setStyleSheet('background: white; color: black;')
             w.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAsNeeded)
-            w.setWordWrapMode(QtGui.QTextOption.NoWrap)
+            w.setWordWrapMode(WrapMode.NoWrap)
             # Add the widgets to a new layout.
             vlayout = QtWidgets.QVBoxLayout()
             vlayout.addWidget(label)

@@ -220,8 +220,9 @@ from leo.core import leoGlobals as g
 try:
     from leo.plugins import qt_text
     from leo.plugins import free_layout
-    from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+    from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 except Exception:
     QtWidgets = False
 #
@@ -426,13 +427,13 @@ def viewrendered(event):
     vr._ns_id = '_leo_viewrendered' # for free_layout load/save
     vr.splitter = splitter = c.free_layout.get_top_splitter()
     if splitter:
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         vr.store_layout('closed')
         sizes = split_last_sizes(splitter.sizes())
         ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr)
-        elif splitter.orientation() == Orientations.Horizontal:
+        elif splitter.orientation() == Orientation.Horizontal:
             splitter.setSizes(sizes)
         vr.adjust_layout('open')
     c.bodyWantsFocusNow()
@@ -956,7 +957,7 @@ if QtWidgets: # NOQA
             w.show()
             # Special inits for text widgets...
             if w.__class__ == QtWidgets.QTextBrowser:
-                WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
+                ### WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
                 text_name = 'body-text-renderer'
                 w.setObjectName(text_name)
                 # Do not do this! It interferes with themes.
@@ -1622,7 +1623,7 @@ if QtWidgets: # NOQA
                 # Allow non-ctrl clicks to open url's.
                 w = QtWidgets.QTextBrowser()
                 # #1286.
-                ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+                ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
                 w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
                 w.customContextMenuRequested.connect(self.onContextMenuCallback)
 

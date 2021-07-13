@@ -219,7 +219,7 @@ from leo.plugins import qt_text
 from leo.plugins import free_layout
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets, QUrl
-from leo.core.leoQt import Alignment, KeyboardModifier, Orientation, Policy, QAction
+from leo.core.leoQt import Alignment, KeyboardModifier, Orientation, Policy, QAction, WrapMode
 
 # pylint: disable=import-error
 # Third-party tools.
@@ -1554,9 +1554,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            # pylint: disable=no-member
-            QTextOption = QtGui.QTextOption if isQt5 or isQt6 else QtWidgets.QTextOption
-            w.setWordWrapMode(QTextOption.WrapAtWordBoundaryOrAnywhere)
+            w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
     #@+node:ekr.20140226074510.4222: *5* vr2.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         pc = self

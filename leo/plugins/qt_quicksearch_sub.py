@@ -3,7 +3,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 #from PyQt4 import QtCore, QtGui
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets  # QtGui,
+from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets
 from leo.core.leoQt import Policy
 QtGui = QtWidgets
 

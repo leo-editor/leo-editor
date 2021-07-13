@@ -14,7 +14,7 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst  ### QtGui
+from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst
 from leo.core.leoQt import QAction, Orientation, Policy
 from leo.core import leoGlobals as g
 from leo.core import signal_manager

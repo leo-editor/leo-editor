@@ -38,7 +38,7 @@
 from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import QtCore, QtGui, QtWidgets  ### isQt6
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import Key, KeyboardModifier, Type
 #@+others
 #@+node:ekr.20210512101604.1: ** class LossageData
