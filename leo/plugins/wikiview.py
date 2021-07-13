@@ -43,7 +43,7 @@ Settings
 #@+node:tbrown.20141101114322.3: ** << imports >>
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtGui  ### isQt6
+from leo.core.leoQt import QtGui
 from leo.core.leoQt import MoveMode
 #
 # Fail fast, right after all imports.

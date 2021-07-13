@@ -217,7 +217,7 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtWidgets  ### QtGui
+from leo.core.leoQt import isQt6, QtCore, QtWidgets
 from leo.core.leoQt import ControlTypes, KeyboardModifiers, MouseButtons, Orientations, Policy, QAction
 #
 # Fail fast, right after all imports.

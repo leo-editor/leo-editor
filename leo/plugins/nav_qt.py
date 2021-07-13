@@ -19,7 +19,6 @@ the left side of toolbar.
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>
 from leo.core import leoGlobals as g
-### from leo.core.leoQt import isQt6, QtGui, QtWidgets
 from leo.core.leoQt import QAction, QStyle
 #
 # Fail fast, right after all imports.

@@ -51,7 +51,7 @@ import re
 import sys
 import code
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets  ### isQt6, QtCore
+from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import Key
 
 use_rlcompleter = False

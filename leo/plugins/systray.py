@@ -3,7 +3,7 @@
 """systray"""
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtGui, QtWidgets  ### isQt6
+from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import QAction, StandardPixmap
 #
 # Fail fast, right after all imports.

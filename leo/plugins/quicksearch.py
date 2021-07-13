@@ -83,7 +83,7 @@ import fnmatch
 import itertools
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtConst, QtWidgets  ### isQt6
+from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifiers
 from leo.core import leoNodes
 from leo.plugins import threadutil
