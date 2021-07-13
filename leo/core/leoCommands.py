@@ -643,6 +643,7 @@ class Commands:
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event=None):
+        """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
         def it(p):
@@ -1009,6 +1010,7 @@ class Commands:
     #@+node:ekr.20190506060937.1: *5* c.dumpExpanded
     @cmd('dump-expanded')
     def dump_expanded(self, event):
+        """Print all non-empty v.expandedPositions lists."""
         c = event.get('c')
         if not c:
             return

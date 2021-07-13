@@ -5,6 +5,7 @@
 """Handling background processes"""
 import re
 import subprocess
+from typing import List
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
@@ -147,6 +148,8 @@ class BackgroundProcessManager:
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
+    unknown_path_names: List[str] = []
+
     def put_log(self, s):
         """
         Put a string to the originating log.
@@ -157,6 +160,7 @@ class BackgroundProcessManager:
         
         New in Leo 6.4: get the filename from link_pattern if link_root is None.
         """
+        tag = 'BPM.put_log'
         #
         # Warning: don't use g.es or g.es_print here!
         s = s and s.rstrip()
@@ -164,9 +168,11 @@ class BackgroundProcessManager:
             return
         data = self.data
         if not data:
+            print(f"{tag} NO DATA")
             return
         c = data.c
         if not c or not c.exists:
+            print(f"{tag} NO C")
             return
         log = c.frame.log
         link_pattern, link_root = data.link_pattern, data.link_root
@@ -183,6 +189,7 @@ class BackgroundProcessManager:
         except Exception:
             m = None
         if not m:
+            # print(f"{tag}: NO LINK_PATTERN MATCH")
             log.put(s + '\n')
             return
         #
@@ -192,7 +199,7 @@ class BackgroundProcessManager:
             try:
                 line = int(m.group(1))
             except Exception:
-                # g.es_exception()
+                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
                 log.put(s + '\n')
                 return
         else:
@@ -202,13 +209,17 @@ class BackgroundProcessManager:
             try:
                 line = int(m.group(2))
             except Exception:
-                # g.es_exception()
+                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
                 log.put(s + '\n')
                 return
             # Look for the @<file> node.
             link_root = g.findNodeByPath(c, path)
             if not link_root:
-                g.trace(f"no @<file> node found for : {path}")
+                if path not in self.unknown_path_names:
+                    self.unknown_path_names.append(path)
+                    print('')
+                    print(f"{tag}: no @<file> node found: {path}")
+                    print('')
                 log.put(s + '\n')
                 return
         #

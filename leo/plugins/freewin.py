@@ -11,13 +11,14 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 4 July 2021
-:Version: 1.4
+:Date: 12 July 2021
+:Version: 1.51
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
 Opening a Window
 ~~~~~~~~~~~~~~~~~
+
 To open a Freewin window, select a node in your outline and issue
 the minibuffer command ``z-open-freewin``.
 
@@ -33,9 +34,14 @@ selected again.
 
 A given Freewin window will be synchronized with the node
 that was selected when the Freewin window was opened, and 
-will only display that node.
+will only display that node.  It will remain synchronized even if the node has been moved to a new position in its outline.
+
+.. Note:: A Freewin window will close if the underlying node is removed. This will not change the body of the underlying node.
 
 #@+node:tom.20210625220923.1: *3* Navigating
+Navigating
+~~~~~~~~~~~
+
 #@@nocolor
 A Freewin window only ever displays the content of the node it ws opened on.  However, the selected node in the outline in the host can be changed, which will cause the host to navigate to the new selection.  This navigation can be done when a line in the visible text contains a `gnx` - a node identifier.  If the cursor is placed on a line with a gnx, or if that line is selected, and then <CONTROL-F9> is pressed, the host outline will navigate to the node having that gnx.
 
@@ -55,6 +61,7 @@ is set in the @settings tree. The setting can be in the @settings tree of an out
 #@+node:tom.20210604181030.1: *3* Rendering with Restructured Text
 Rendering with Restructured Text
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Pressing the ``Rendered <--> Plain`` button will switch between
 text and RsT rendering.  In RsT mode, text cannot be edited but
 changes to the node in the outline will be rendered as they are
@@ -77,6 +84,9 @@ View 1 is the default view, except when using PyQt6, which does not currently su
     @string fw-render-pane = nav-view
 
 #@+node:tom.20210626134532.1: *3* Hotkeys
+Hotkeys
+~~~~~~~
+
 Freewin uses two hotkeys:
 
 <CNTL-F7> --  copy the gnx of this Freewin window to the clipboard.
@@ -84,6 +94,24 @@ Freewin uses two hotkeys:
 
 <CNTL-F9> is available in the editor view, and in the rendered view
 with limitations discussed above discussed above.
+#@+node:tom.20210712005103.1: *3* Commands
+Commands
+~~~~~~~~~
+
+Freewin has one minibuffer command: ``z-open-freewin``.  This opens a Freewin window linked to the currently selected node.
+#@+node:tom.20210712005441.1: *3* Settings
+Settings
+~~~~~~~~~
+
+Freewin has two settings:
+
+1. ``@string fw-render-pane = nav-view``
+
+If present with this value, the rendered view will allow the <CNTL>-F7/F9 keys to work as they do in the Editor view.  The rendered view will not be able to display all the features that a full rendered view can. 
+
+2. ``@bool fw-copy-html = False``
+
+   Change to `True` to copy the rendered RsT to the clipboard. 
 #@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -200,7 +228,7 @@ from leo.core import leoGlobals as g
 
 qt_imports_ok = False
 try:
-    from leo.core.leoQt import isQt5, QtCore, QtWidgets
+    from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
@@ -255,7 +283,11 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # Aliases.
 KeyboardModifiers = QtCore.Qt if isQt5 else QtCore.Qt.KeyboardModifiers
 QApplication = QtWidgets.QApplication
+QFont = QtGui.QFont
+QFontInfo = QtGui.QFontInfo
+QFontMetrics = QtGui.QFontMetrics
 QPushButton = QtWidgets.QPushButton
+
 QRect = QtCore.QRect
 QStackedWidget = QtWidgets.QStackedWidget
 QTextEdit = QtWidgets.QTextEdit
@@ -272,6 +304,8 @@ H = 350
 X = 1200
 Y = 100
 DELTA_Y = 35
+
+clipboard = QApplication.clipboard()
 
 FG_COLOR_LIGHT = '#6B5B53'
 BG_COLOR_LIGHT = '#ededed'
@@ -292,8 +326,11 @@ RST_NO_WARNINGS = 5
 RST_CUSTOM_STYLESHEET_LIGHT_FILE = 'freewin_rst_light.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE = 'freewin_rst_dark.css'
 
-ENCODING='utf-8'
 instances = {}
+
+#@+others
+#@+node:tom.20210709130401.1: *3* Fonts and Text
+ENCODING='utf-8'
 
 ZOOM_FACTOR = 1.1
 
@@ -305,6 +342,16 @@ GNX1re = r'.*[([\s](\w+\.\d+\.\d+)' # For gnx not at start of line
 
 GNX = re.compile(GNXre)
 GNX1 = re.compile(GNX1re)
+
+fs = EDITOR_FONT_SIZE.split('pt')[0]
+qf = QFont(FONT_FAMILY[0], int(fs))
+qfont = QFontInfo(qf) # Uses actual font if different
+FM = QFontMetrics(qf)
+
+TABWIDTH = 36 # Best guess but may not alays be right.
+TAB2SPACES = 4 # Tab replacement when writing back to host node
+#@-others
+
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
@@ -426,7 +473,7 @@ RST_STYLESHEET_LIGHT = '''body {
     border: 2px solid;
     padding-right: 1em;
     padding-left: 1em;
-    background: #cbdcdc;
+    background: #e0e0e0;
     color: #586e75;
     border-color: #657b83;
   }
@@ -527,19 +574,22 @@ def gotoHostGnx(c, target):
     return False
 #@+node:tom.20210628002321.1: ** copy2clip
 def copy2clip(text):
-    cb = QApplication.clipboard()
-    cb.setText(text)
+    #cb = QApplication.clipboard()
+    clipboard.setText(text)
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
     """An editing window that echos the contents of an outline node."""
     #@+others
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
+        # pylint: disable=too-many-locals
+        global TAB2SPACES
         super().__init__()
         QWidget().__init__()
 
         self.c = c
         self.p = c.p
+        self.v = c.p.v
         self.host_id = c.p.gnx
         w = c.frame.body.wrapper
         self.host_editor = w.widget
@@ -611,6 +661,19 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.doc = self.editor.document()
         self.editor.setStyleSheet(self.editor_style)
 
+        # Try to get tab width from the host's body
+        # Used when writing edits back to host
+        # "tabwidth" directive ought to be in first six lines
+        lines = self.p.v.b.split('\n', 6)
+        for line in lines:
+            if line.startswith('@tabwidth') and line.find(' ') > 0:
+                tabfield = line.split()[1]
+                TAB2SPACES = abs(int(tabfield))
+                break
+
+        # Make tabs line up with 4 spaces (at least approximately)
+        self.editor.setTabStopDistance(TABWIDTH)
+
         if self.render_pane_type == NAV_VIEW:
             # Different stylesheet mechanism if we are a QTextEdit
             stylesheet = RST_STYLESHEET_DARK if is_dark else RST_STYLESHEET_LIGHT
@@ -679,6 +742,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         c = self.c
         c.registerReloadSettings(self)
         self.render_pane_type = c.config.getString('fw-render-pane') or ''
+        self.copy_html = c.config.getBool('fw-copy-html', default=False)
 
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
@@ -695,25 +759,35 @@ class ZEditorWin(QtWidgets.QMainWindow):
             return
 
         # Make sure our host node still exists
-        if not self.c.positionExists(self.p):
-            self.teardown(tag)
-            return
+        if not self.c.p.v == self.v:
+            # Find our node
+            found_us = False
+            for p1 in self.c.all_unique_positions():
+                if p1.v == self.v:
+                    self.p = p1
+                    found_us = True
+                    break
+            if not found_us:
+                self.teardown(tag)
+                return
 
         if self.switching: return
 
         if self.doc.isModified():
-            self.current_text = self.doc.toRawText()
+            self.current_text = self.doc.toPlainText()
+            self.current_text = self.current_text.replace('\t', ' ' * TAB2SPACES)
             self.p.b = self.current_text
             self.doc.setModified(False)
 
-        # if the current position in the outline is our own node, 
-        # then synchronize the text if it's changed in the host outline.
-        elif self.c.p == self.p:
+        # If the current position in the outline is our own node, 
+        # then synchronize the text if it's changed in 
+        # the host outline.
+        elif self.c.p.v == self.v:
             doc = self.host_editor.document()
             if doc.isModified():
                 scrollbar = self.editor.verticalScrollBar()
                 old_scroll = scrollbar.value()
-                self.current_text = doc.toRawText()
+                self.current_text = doc.toPlainText()
                 self.editor.setPlainText(self.current_text)
                 self.set_and_render(False)
                 doc.setModified(False)
@@ -776,7 +850,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
                     _zf = w.zoomFactor()
                     w.setZoomFactor(_zf / ZOOM_FACTOR)
 
-    #@+node:tom.20210527234644.1: *3* _register_handlers (floating_pane.py)
+    #@+node:tom.20210527234644.1: *3* _register_handlers
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals"""
         for hook, handler in self.handlers:
@@ -800,6 +874,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
             text = self.editor.document().toRawText()
             html = self.render_rst(text)
             self.browser.setHtml(html)
+            if self.copy_html:
+                copy2clip(html)
 
         self.switching = False
 
