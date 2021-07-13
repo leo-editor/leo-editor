@@ -7,8 +7,8 @@ import time
 assert time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
-from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifiers, Modifiers
-from leo.core.leoQt import MouseButtons, MoveMode, MoveOperation
+from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
+from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import SliderAction, WindowFlags, WrapMode
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
@@ -522,7 +522,7 @@ if QtWidgets:
                 c = self.leo_c
                 w = c.frame.body.wrapper
                 key = event.key()
-                if event.modifiers() != Modifiers.NoModifier and not event.text():
+                if event.modifiers() != Modifier.NoModifier and not event.text():
                     # A modifier key on it's own.
                     pass
                 elif key in (Key.Key_Up, Key.Key_Down):
@@ -701,10 +701,10 @@ if QtWidgets:
         def leo_dumpButton(self, event, tag):
             button = event.button()
             table = (
-                (MouseButtons.NoButton, 'no button'),
-                (MouseButtons.LeftButton, 'left-button'),
-                (MouseButtons.RightButton, 'right-button'),
-                (MouseButtons.MiddleButton, 'middle-button'),
+                (MouseButton.NoButton, 'no button'),
+                (MouseButton.LeftButton, 'left-button'),
+                (MouseButton.RightButton, 'right-button'),
+                (MouseButton.MiddleButton, 'middle-button'),
             )
             for val, s in table:
                 if button == val:
@@ -788,7 +788,7 @@ if QtWidgets:
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
-            if KeyboardModifiers.ControlModifier & event.modifiers():
+            if KeyboardModifier.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
                 try:  # Qt5 or later.
                     point = event.angleDelta()
@@ -1323,7 +1323,7 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                if KeyboardModifiers.ControlModifier & event.modifiers():
+                if KeyboardModifier.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:
                     if name == 'body':

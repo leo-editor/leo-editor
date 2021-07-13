@@ -15,7 +15,7 @@ except Exception:
     # but not need to stop if it doesn't work
     pass
 from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst  ### QtGui
-from leo.core.leoQt import QAction, Orientations, Policy
+from leo.core.leoQt import QAction, Orientation, Policy
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if QtCore is not None:
@@ -309,7 +309,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         # content
         self.splitter = ClickySplitter(self)
-        self.splitter.setOrientation(Orientations.Vertical)
+        self.splitter.setOrientation(Orientation.Vertical)
         self.layout().addWidget(self.splitter)
         self.edit_frame = self._add_frame()
         self.splitter.addWidget(self.edit_frame)

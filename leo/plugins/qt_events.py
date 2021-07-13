@@ -39,7 +39,7 @@ from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets  ### isQt6
-from leo.core.leoQt import Key, KeyboardModifiers, Type
+from leo.core.leoQt import Key, KeyboardModifier, Type
 #@+others
 #@+node:ekr.20210512101604.1: ** class LossageData
 class LossageData:
@@ -359,11 +359,11 @@ class LeoQtEventFilter(QtCore.QObject):
         """Return the text version of the modifiers of the key event."""
         modifiers = event.modifiers()
         mod_table = (
-            (KeyboardModifiers.AltModifier, 'Alt'),
-            (KeyboardModifiers.ControlModifier, 'Control'),
-            (KeyboardModifiers.MetaModifier, 'Meta'),
-            (KeyboardModifiers.ShiftModifier, 'Shift'),
-            (KeyboardModifiers.KeypadModifier, 'KeyPad'),
+            (KeyboardModifier.AltModifier, 'Alt'),
+            (KeyboardModifier.ControlModifier, 'Control'),
+            (KeyboardModifier.MetaModifier, 'Meta'),
+            (KeyboardModifier.ShiftModifier, 'Shift'),
+            (KeyboardModifier.KeypadModifier, 'KeyPad'),
                 # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         mods = [b for a, b in mod_table if (modifiers & a)]

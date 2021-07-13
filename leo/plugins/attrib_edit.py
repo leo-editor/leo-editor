@@ -105,7 +105,7 @@ plugins. Here are some points of interest:
 
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
-from leo.core.leoQt import DialogCode, Orientations
+from leo.core.leoQt import DialogCode, Orientation
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -541,7 +541,7 @@ class attrib_edit_Controller:
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
         if self.guiMode == 'body':
-            self.holder = QtWidgets.QSplitter(Orientations.Vertical)
+            self.holder = QtWidgets.QSplitter(Orientation.Vertical)
             self.holder.setMinimumWidth(300)
             parent = c.frame.top.leo_body_frame.parent()
             self.holder.addWidget(c.frame.top.leo_body_frame)

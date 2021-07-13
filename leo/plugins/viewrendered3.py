@@ -690,7 +690,7 @@ try:
     import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
-    from leo.core.leoQt import KeyboardModifiers, Orientations, QAction, QActionGroup
+    from leo.core.leoQt import KeyboardModifier, Orientation, QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -1105,7 +1105,7 @@ def viewrendered(event):
         ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr3)
-        elif splitter.orientation() == Orientations.Horizontal:
+        elif splitter.orientation() == Orientation.Horizontal:
             splitter.setSizes(sizes)
         vr3.adjust_layout('open')
 
@@ -3608,7 +3608,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         mod = ''
         modifiers = event.modifiers()
         bare_key = event.text()
-        if modifiers and modifiers == KeyboardModifiers.ControlModifier:
+        if modifiers and modifiers == KeyboardModifier.ControlModifier:
             mod = 'cntrl'
         if bare_key == '=' and mod == 'cntrl':
             self.zoomView()

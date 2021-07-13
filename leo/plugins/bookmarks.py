@@ -218,7 +218,7 @@ from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
-from leo.core.leoQt import ControlType, KeyboardModifiers, MouseButtons, Orientations, Policy, QAction
+from leo.core.leoQt import ControlType, KeyboardModifier, MouseButton, Orientation, Policy, QAction
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -534,7 +534,7 @@ class FlowLayout(QtWidgets.QLayout):
         A value of Qt::Vertical or Qt::Horizontal means that it wants to grow in only one dimension,
         whereas Qt::Vertical | Qt::Horizontal means that it wants to grow in both dimensions.
         """
-        return Orientations.Horizontal  # Best guess.
+        return Orientation.Horizontal  # Best guess.
 
     #@+node:ekr.20140917180536.17905: *3* hasHeightForWidth
     def hasHeightForWidth(self):
@@ -571,9 +571,9 @@ class FlowLayout(QtWidgets.QLayout):
         for item in self.itemList:
             wid = item.widget()
             spaceX = self.spacing() + wid.style().layoutSpacing(
-                ControlType.PushButton, ControlType.PushButton, Orientations.Horizontal)
+                ControlType.PushButton, ControlType.PushButton, Orientation.Horizontal)
             spaceY = self.spacing() + wid.style().layoutSpacing(
-                ControlType.PushButton, ControlType.PushButton, Orientations.Vertical)
+                ControlType.PushButton, ControlType.PushButton, Orientation.Vertical)
             nextX = x + item.sizeHint().width() + spaceX
             if nextX - spaceX > rect.right() and lineHeight > 0:
                 x = rect.x()
@@ -609,30 +609,17 @@ class BookMarkDisplay:
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
     
     ModMap = {
-        KeyboardModifiers.NoModifier: 'None',
-        KeyboardModifiers.AltModifier: 'Alt',
-        KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier: 'AltControl',
-        (KeyboardModifiers.AltModifier
-        | KeyboardModifiers.ControlModifier
-        | KeyboardModifiers.ShiftModifier): 'AltControlShift',
-        KeyboardModifiers.AltModifier | KeyboardModifiers.ShiftModifier: 'AltShift',
-        KeyboardModifiers.ControlModifier: 'Control',
-        KeyboardModifiers.ControlModifier | KeyboardModifiers.ShiftModifier: 'ControlShift',
-        KeyboardModifiers.ShiftModifier: 'Shift'
+        KeyboardModifier.NoModifier: 'None',
+        KeyboardModifier.AltModifier: 'Alt',
+        KeyboardModifier.AltModifier | KeyboardModifier.ControlModifier: 'AltControl',
+        (KeyboardModifier.AltModifier
+        | KeyboardModifier.ControlModifier
+        | KeyboardModifier.ShiftModifier): 'AltControlShift',
+        KeyboardModifier.AltModifier | KeyboardModifier.ShiftModifier: 'AltShift',
+        KeyboardModifier.ControlModifier: 'Control',
+        KeyboardModifier.ControlModifier | KeyboardModifier.ShiftModifier: 'ControlShift',
+        KeyboardModifier.ShiftModifier: 'Shift'
     }
-
-    # modifier to string mapping
-    # ModMap = {
-        # int(KeyboardModifiers.NoModifier): 'None',
-        # int(KeyboardModifiers.AltModifier): 'Alt',
-        # int(KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier): 'AltControl',
-        # int(KeyboardModifiers.AltModifier | KeyboardModifiers.ControlModifier | \
-            # KeyboardModifiers.ShiftModifier): 'AltControlShift',
-        # int(KeyboardModifiers.AltModifier | KeyboardModifiers.ShiftModifier): 'AltShift',
-        # int(KeyboardModifiers.ControlModifier): 'Control',
-        # int(KeyboardModifiers.ControlModifier | KeyboardModifiers.ShiftModifier): 'ControlShift',
-        # int(KeyboardModifiers.ShiftModifier): 'Shift'
-    # }
 
     #@+others
     #@+node:tbrown.20110712100955.18926: *3* __init__ & reloadSettings (BookMarkDisplay)
@@ -696,13 +683,13 @@ class BookMarkDisplay:
         - `event`: click event
         - `bookmarks`: bookmarks in this pane
         """
-        if event.button() == MouseButtons.RightButton:
+        if event.button() == MouseButton.RightButton:
             self.context_menu(event, container=row_parent)
             return
 
         # Alt => edit bookmarks in the outline
         mods = event.modifiers()
-        if mods == KeyboardModifiers.AltModifier:
+        if mods == KeyboardModifier.AltModifier:
             self.edit_bookmark(None, v=row_parent)
             return
         cmd_bookmark(event={'c': row_parent.context}, container=row_parent)
@@ -716,7 +703,7 @@ class BookMarkDisplay:
         - `bm`: Bookmark associated with button
         - `but`: button widget
         """
-        if event.button() == MouseButtons.RightButton:
+        if event.button() == MouseButton.RightButton:
             self.button_menu(event, bm, but, up=up)
             return
 

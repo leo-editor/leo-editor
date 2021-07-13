@@ -84,7 +84,7 @@ import itertools
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
-from leo.core.leoQt import KeyboardModifiers
+from leo.core.leoQt import KeyboardModifier
 from leo.core import leoNodes
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
@@ -708,7 +708,7 @@ class QuickSearchController:
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
         modifiers = QtWidgets.QApplication.keyboardModifiers()
-        if modifiers == KeyboardModifiers.ControlModifier:
+        if modifiers == KeyboardModifier.ControlModifier:
             row = self.lw.row(it)
             init_indent = len(it.text()) - len(str(it.text()).lstrip())
             self.lw.blockSignals(True)

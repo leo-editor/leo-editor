@@ -43,6 +43,9 @@ if not g.in_bridge:
         # pylint: disable=c-extension-no-member
         g.funcToMethod(exec_, QtWidgets.QWidget)
         isQt6 = True
+        print('')
+        print('===== Qt6 =====')
+        print('')
     except Exception:
         try:
             from leo.core.leoQt5 import *

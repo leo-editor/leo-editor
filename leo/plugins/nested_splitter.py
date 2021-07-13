@@ -3,7 +3,7 @@
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, Qt, QtCore, QtConst, QtGui, QtWidgets
-from leo.core.leoQt import ContextMenuPolicy, Orientations, QAction
+from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
 # pylint: disable=cell-var-from-loop
 #@+others
 #@+node:ekr.20110605121601.17956: ** init
@@ -143,7 +143,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         lr = 'Left', 'Right'
         ab = 'Above', 'Below'
         split_dir = 'Vertically'
-        if self.orientation() == Orientations.Vertical:
+        if self.orientation() == Orientation.Vertical:
             lr, ab = ab, lr
             split_dir = 'Horizontally'
         # blue/orange - color-blind friendly
@@ -358,8 +358,8 @@ class NestedSplitter(QtWidgets.QSplitter):
         # useful if other code must run to set up callbacks, that
         # other code can re-enable
     other_orientation = {
-        Orientations.Vertical: Orientations.Horizontal,
-        Orientations.Horizontal: Orientations.Vertical,
+        Orientation.Vertical: Orientation.Horizontal,
+        Orientation.Horizontal: Orientation.Vertical,
     }
     # a regular signal, but you can't use its .connect() directly,
     # use splitterClicked_connect()
@@ -375,7 +375,7 @@ class NestedSplitter(QtWidgets.QSplitter):
     def __init__(self, parent=None, orientation=None, root=None):
         """Ctor for NestedSplitter class."""
         if orientation is None:
-            orientation = Orientations.Horizontal
+            orientation = Orientation.Horizontal
         super().__init__(orientation, parent)
             # This creates a NestedSplitterHandle.
         if root is None:
@@ -487,7 +487,7 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
     def add_adjacent(self, what, widget_id, side='right-of'):
         """add a widget relative to another already present widget"""
-        horizontal, vertical = Orientations.Horizontal, Orientations.Vertical
+        horizontal, vertical = Orientation.Horizontal, Orientation.Vertical
         layout = self.top().get_layout()
 
         def hunter(layout, id_):
@@ -834,10 +834,10 @@ class NestedSplitter(QtWidgets.QSplitter):
         inserting out widgets into our ancestors, etc.
         """
         for i in self.top().self_and_descendants():
-            if i.orientation() == Orientations.Vertical:
-                i.setOrientation(Orientations.Horizontal)
+            if i.orientation() == Orientation.Vertical:
+                i.setOrientation(Orientation.Horizontal)
             else:
-                i.setOrientation(Orientations.Vertical)
+                i.setOrientation(Orientation.Vertical)
     #@+node:vitalije.20170713085342.1: *3* ns.rotateOne
     def rotateOne(self, index):
         """Change orientation - only of splithandle at index."""
@@ -970,7 +970,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         """
         ans = {
             'content': [],
-            'orientation': 1 if self.orientation() == Orientations.Horizontal else 2,
+            'orientation': 1 if self.orientation() == Orientation.Horizontal else 2,
             'sizes': self.sizes(),
         }
         for i in range(self.count()):
@@ -1003,9 +1003,9 @@ class NestedSplitter(QtWidgets.QSplitter):
             g.printObj(layout, tag=tag)
         if isQt6:
             if layout['orientation'] == 1: 
-                self.setOrientation(Orientations.Horizontal)
+                self.setOrientation(Orientation.Horizontal)
             else:
-                self.setOrientation(Orientations.Vertical)
+                self.setOrientation(Orientation.Vertical)
         else:
             self.setOrientation(layout['orientation'])
         found = 0

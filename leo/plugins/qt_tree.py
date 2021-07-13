@@ -9,7 +9,7 @@ import re
 import time
 from typing import Any, List
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import EndEditHint, Format, ItemFlags, KeyboardModifiers
+from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoNodes
@@ -167,7 +167,7 @@ class LeoQtTree(leoFrame.LeoTree):
             level = p.level()
             parent_item = w if level == 0 else parents[level - 1]
             item = QtWidgets.QTreeWidgetItem(parent_item)
-            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
+            item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             item.setChildIndicatorPolicy(
                 item.ShowIndicator if p.hasChildren()
                 else item.DontShowIndicator)
@@ -752,7 +752,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & KeyboardModifiers.ControlModifier)
+                    isCtrl = bool(mods & KeyboardModifier.ControlModifier)
                     # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
                     # & QtConst.MetaModifier.
                     if isCtrl:
@@ -1135,7 +1135,7 @@ class LeoQtTree(leoFrame.LeoTree):
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
-            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
+            item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
             item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
         else:

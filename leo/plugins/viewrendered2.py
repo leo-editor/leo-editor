@@ -219,7 +219,7 @@ from leo.plugins import qt_text
 from leo.plugins import free_layout
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets, QUrl
-from leo.core.leoQt import Alignment, KeyboardModifiers, Orientations, Policy, QAction
+from leo.core.leoQt import Alignment, KeyboardModifier, Orientation, Policy, QAction
 
 # pylint: disable=import-error
 # Third-party tools.
@@ -888,7 +888,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if os.path.isdir(path):
             os.chdir(path)
         # Need to save position of last node before rendering
-        ps = mf.scrollBarValue(Orientations.Vertical)
+        ps = mf.scrollBarValue(Orientation.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
         if self.lock_mode:
@@ -1790,7 +1790,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             w = pc.text_class()
 
             def mouseReleaseHelper(w, event):
-                if KeyboardModifiers.ControlModifier & event.modifiers():
+                if KeyboardModifier.ControlModifier & event.modifiers():
                     event2 = {'c': self.c, 'w': w.leo_wrapper}
                     g.openUrlOnClick(event2)
                 else:

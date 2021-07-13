@@ -35,30 +35,30 @@ except Exception:
 #
 # Enumerations, with (sheesh) variable spellings.
 try:
-    # New spellings (6.2+): mostly singular.
+    # New spellings (6.1+): mostly singular.
     Alignment = QtCore.Qt.AlignmentFlag
     ControlType = QtWidgets.QSizePolicy.ControlType
-    DropActions = QtCore.Qt.DropAction
-    ItemFlags = QtCore.Qt.ItemFlag
-    KeyboardModifiers = QtCore.Qt.KeyboardModifier
-    Modifiers = QtCore.Qt.Modifier
-    MouseButtons = QtCore.Qt.MouseButton
-    Orientations = QtCore.Qt.Orientation
+    DropAction = QtCore.Qt.DropAction
+    ItemFlag = QtCore.Qt.ItemFlag
+    KeyboardModifier = QtCore.Qt.KeyboardModifier
+    Modifier = QtCore.Qt.Modifier
+    MouseButton = QtCore.Qt.MouseButton
+    Orientation = QtCore.Qt.Orientation
     StandardButtons = QtWidgets.QDialogButtonBox.StandardButton
     TextInteractionFlags = QtCore.Qt.TextInteractionFlag
     ToolBarAreas = QtCore.Qt.ToolBarArea
     WindowFlags = QtCore.Qt.WindowType
     WindowStates = QtCore.Qt.WindowState
 except AttributeError:
-    # Old spellings (6.0 and 6.1): mostly plural.
+    # Old spellings (6.0): mostly plural.
     Alignment = QtCore.Qt.Alignment
     ControlType = QtWidgets.QSizePolicy.ControlTypes
-    DropActions = QtCore.Qt.DropActions
-    ItemFlags = QtCore.Qt.ItemFlags
-    KeyboardModifiers = QtCore.Qt.KeyboardModifiers
-    Modifiers = QtCore.Qt.Modifiers
-    MouseButtons = QtCore.Qt.MouseButtons
-    Orientations = QtCore.Qt.Orientations
+    DropAction = QtCore.Qt.DropActions
+    ItemFlag = QtCore.Qt.ItemFlags
+    KeyboardModifier = QtCore.Qt.KeyboardModifiers
+    Modifier = QtCore.Qt.Modifiers
+    MouseButton = QtCore.Qt.MouseButtons
+    Orientation = QtCore.Qt.Orientations
     StandardButtons = QtWidgets.QDialog.StandardButtons
     TextInteractionFlags = QtCore.Qt.TextInteractionFlags
     ToolBarAreas = QtCore.Qt.ToolBarAreas

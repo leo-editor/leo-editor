@@ -19,8 +19,8 @@ from leo.core import leoMenu
 from leo.commands import gotoCommands
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
-from leo.core.leoQt import Alignment, ContextMenuPolicy, DropActions, FocusReason, Modifiers, MoveOperation, Orientations
-from leo.core.leoQt import MouseButtons, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
+from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, Modifier, MoveOperation, Orientation
+from leo.core.leoQt import MouseButton, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
 from leo.core.leoQt import Shadow, Shape, TextInteractionFlags, ToolBarAreas, Type, WindowStates, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
@@ -400,10 +400,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         main_splitter = NestedSplitter(parent)
         main_splitter.setObjectName('main_splitter')
-        main_splitter.setOrientation(Orientations.Vertical)
+        main_splitter.setOrientation(Orientation.Vertical)
         secondary_splitter = NestedSplitter(main_splitter)
         secondary_splitter.setObjectName('secondary_splitter')
-        secondary_splitter.setOrientation(Orientations.Horizontal)
+        secondary_splitter.setOrientation(Orientation.Horizontal)
         # Official ivar:
         self.verticalLayout = vLayout
         self.setSizePolicy(secondary_splitter)
@@ -1045,7 +1045,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """Set the orientations of the splitters in the Leo main window."""
         # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')
-        h, v = Orientations.Horizontal, Orientations.Vertical
+        h, v = Orientation.Horizontal, Orientation.Vertical
         orientation1 = v if vert else h
         orientation2 = h if vert else v
         main_splitter.setOrientation(orientation1)
@@ -3726,12 +3726,12 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             return
         if isQt6:
             mods = ev.modifiers()  # The documentation is wrong.
-            self.was_alt_drag = bool(mods & Modifiers.AltModifier)
-            self.was_control_drag = bool(mods & Modifiers.ControlModifier)
+            self.was_alt_drag = bool(mods & Modifier.AltModifier)
+            self.was_control_drag = bool(mods & Modifier.ControlModifier)
         else:
             mods = int(ev.keyboardModifiers())
-            self.was_alt_drag = (mods & Modifiers.AltModifier) != 0
-            self.was_control_drag = (mods & Modifiers.ControlModifier) != 0
+            self.was_alt_drag = (mods & Modifier.AltModifier) != 0
+            self.was_control_drag = (mods & Modifier.ControlModifier) != 0
         c, tree = self.c, self.c.frame.tree
         p = None
         point = ev.position().toPoint() if isQt6 else ev.pos()
@@ -3745,7 +3745,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             while p.hasNext():
                 p.moveToNext()
         formats = set(str(f) for f in md.formats())
-        ev.setDropAction(DropActions.IgnoreAction)
+        ev.setDropAction(DropAction.IgnoreAction)
         ev.accept()
         hookres = g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats)
         if hookres:
@@ -4379,7 +4379,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
     def mouseReleaseEvent(self, event):
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
-        if event.button() == MouseButtons.MiddleButton:
+        if event.button() == MouseButton.MiddleButton:
             self.tabCloseRequested.emit(self.tabAt(event.pos()))
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)
     #@-others

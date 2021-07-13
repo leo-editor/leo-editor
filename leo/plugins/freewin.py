@@ -229,7 +229,7 @@ from leo.core import leoGlobals as g
 qt_imports_ok = False
 try:
     from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
-    from leo.core.leoQt import KeyboardModifiers
+    from leo.core.leoQt import KeyboardModifier
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
@@ -828,7 +828,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         bare_key = event.text()
         keyval = event.key()
 
-        if modifiers == KeyboardModifiers.ControlModifier:
+        if modifiers == KeyboardModifier.ControlModifier:
             if keyval == F7_KEY:
                 # Copy our gnx to clipboard.
                 copy2clip(self.p.v.gnx)
