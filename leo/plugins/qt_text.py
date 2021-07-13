@@ -9,7 +9,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
-from leo.core.leoQt import SliderAction, WindowFlags, WrapMode
+from leo.core.leoQt import SliderAction, WindowType, WrapMode
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -487,7 +487,7 @@ if QtWidgets:
             def __init__(self, c):
                 """ctor for LeoQListWidget class"""
                 super().__init__()
-                self.setWindowFlags(WindowFlags.Popup | self.windowFlags())
+                self.setWindowFlags(WindowType.Popup | self.windowFlags())
                 # Inject the ivars
                 self.leo_w = c.frame.body.wrapper.widget
                     # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.

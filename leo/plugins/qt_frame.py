@@ -21,7 +21,7 @@ from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, Modifier, MoveOperation, Orientation
 from leo.core.leoQt import MouseButton, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
-from leo.core.leoQt import Shadow, Shape, TextInteractionFlags, ToolBarAreas, Type, WindowStates, WrapMode
+from leo.core.leoQt import Shadow, Shape, TextInteractionFlag, ToolBarArea, Type, WindowState, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
@@ -223,10 +223,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def set_icon_bar_orientation(self, c):
         """Set the orientation of the icon bar based on settings."""
         d = {
-            'bottom': ToolBarAreas.BottomToolBarArea,
-            'left': ToolBarAreas.LeftToolBarArea,
-            'right': ToolBarAreas.RightToolBarArea,
-            'top': ToolBarAreas.TopToolBarArea,
+            'bottom': ToolBarArea.BottomToolBarArea,
+            'left': ToolBarArea.LeftToolBarArea,
+            'right': ToolBarArea.RightToolBarArea,
+            'top': ToolBarArea.TopToolBarArea,
         }
         where = self.toolbar_orientation
         if not where:
@@ -2857,7 +2857,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                w.setWindowState(WindowStates.WindowMinimized)
+                w.setWindowState(WindowState.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
     def toggleSplitDirection(self, event=None):
@@ -2878,7 +2878,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                w.setWindowState(WindowStates.WindowMaximized)
+                w.setWindowState(WindowState.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
     #@+node:ekr.20110605121601.18310: *5* qtFrame.leoHelp
     @frame_cmd('open-offline-tutorial')
@@ -3072,9 +3072,9 @@ class LeoQtLog(leoFrame.LeoLog):
         #
         # set up links in log handling
         logWidget.setTextInteractionFlags(
-            TextInteractionFlags.LinksAccessibleByMouse
-            | TextInteractionFlags.TextEditable
-            | TextInteractionFlags.TextSelectableByMouse
+            TextInteractionFlag.LinksAccessibleByMouse
+            | TextInteractionFlag.TextEditable
+            | TextInteractionFlag.TextSelectableByMouse
         )
         logWidget.setOpenLinks(False)
         logWidget.setOpenExternalLinks(False)

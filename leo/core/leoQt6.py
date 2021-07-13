@@ -44,11 +44,11 @@ try:
     Modifier = QtCore.Qt.Modifier
     MouseButton = QtCore.Qt.MouseButton
     Orientation = QtCore.Qt.Orientation
-    StandardButtons = QtWidgets.QDialogButtonBox.StandardButton
-    TextInteractionFlags = QtCore.Qt.TextInteractionFlag
-    ToolBarAreas = QtCore.Qt.ToolBarArea
-    WindowFlags = QtCore.Qt.WindowType
-    WindowStates = QtCore.Qt.WindowState
+    StandardButton = QtWidgets.QDialogButtonBox.StandardButton
+    TextInteractionFlag = QtCore.Qt.TextInteractionFlag
+    ToolBarArea = QtCore.Qt.ToolBarArea
+    WindowType = QtCore.Qt.WindowType
+    WindowState = QtCore.Qt.WindowState
 except AttributeError:
     # Old spellings (6.0): mostly plural.
     Alignment = QtCore.Qt.Alignment
@@ -59,11 +59,11 @@ except AttributeError:
     Modifier = QtCore.Qt.Modifiers
     MouseButton = QtCore.Qt.MouseButtons
     Orientation = QtCore.Qt.Orientations
-    StandardButtons = QtWidgets.QDialog.StandardButtons
-    TextInteractionFlags = QtCore.Qt.TextInteractionFlags
-    ToolBarAreas = QtCore.Qt.ToolBarAreas
-    WindowFlags = QtCore.Qt.WindowFlags
-    WindowStates = QtCore.Qt.WindowStates
+    StandardButton = QtWidgets.QDialog.StandardButtons
+    TextInteractionFlag = QtCore.Qt.TextInteractionFlags
+    ToolBarArea = QtCore.Qt.ToolBarAreas
+    WindowType = QtCore.Qt.WindowFlags
+    WindowState = QtCore.Qt.WindowStates
 #
 # Other enums.
 ButtonRole = QtWidgets.QMessageBox.ButtonRole

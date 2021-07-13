@@ -15,7 +15,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import isQt5, isQt6, Qsci, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
-from leo.core.leoQt import Shadow, Shape, StandardButtons, Weight, WindowFlags
+from leo.core.leoQt import Shadow, Shape, StandardButton, Weight, WindowType
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
 from leo.plugins import qt_events
@@ -349,7 +349,7 @@ class LeoQtGui(leoGui.LeoGui):
                 self.dt = DateTimeEditStepped(init=init, step_min=step_min)
                 self.dt.setCalendarPopup(True)
                 layout.addWidget(self.dt)
-                buttonBox = QtWidgets.QDialogButtonBox(StandardButtons.Ok | StandardButtons.Cancel)
+                buttonBox = QtWidgets.QDialogButtonBox(StandardButton.Ok | StandardButton.Cancel)
                 layout.addWidget(buttonBox)
                 buttonBox.accepted.connect(self.accept)
                 buttonBox.rejected.connect(self.reject)
@@ -682,7 +682,7 @@ class LeoQtGui(leoGui.LeoGui):
         #@+node:ekr.20110605121601.18507: *5* << emergency fallback >>
         b = QtWidgets.QMessageBox
         d = b(None)  # c.frame.top)
-        d.setWindowFlags(WindowFlags.Dialog)
+        d.setWindowFlags(WindowType.Dialog)
             # That is, not a fixed size dialog.
         d.setWindowTitle(title)
         if msg:
@@ -1328,7 +1328,7 @@ class LeoQtGui(leoGui.LeoGui):
             if g.os_path_exists(fn):
                 pm = QtGui.QPixmap(fn)
                 if not pm.isNull():
-                    splash = QtWidgets.QSplashScreen(pm, WindowFlags.WindowStaysOnTopHint)
+                    splash = QtWidgets.QSplashScreen(pm, WindowType.WindowStaysOnTopHint)
                     splash.show()
                     # This sleep is required to do the repaint.
                     QtCore.QThread.msleep(10)
