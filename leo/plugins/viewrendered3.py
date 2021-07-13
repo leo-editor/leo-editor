@@ -690,7 +690,7 @@ try:
     import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
-    from leo.core.leoQt import Orientations
+    from leo.core.leoQt import KeyboardModifiers, Orientations, QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -1541,8 +1541,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
         c = self.c
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
-        QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
         
         _toolbar = QtWidgets.QToolBar('Menus')
         _options_button = QtWidgets.QPushButton("View Options")
@@ -3613,7 +3613,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         modifiers = event.modifiers()
         bare_key = event.text()
 
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         if modifiers and modifiers == KeyboardModifiers.ControlModifier:
             mod = 'cntrl'
 

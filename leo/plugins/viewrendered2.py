@@ -219,6 +219,7 @@ from leo.plugins import qt_text
 from leo.plugins import free_layout
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets, QUrl
+from leo.core.leoQt import Alignment, KeyboardModifiers, Orientations, Policy, QAction
 
 # pylint: disable=import-error
 # Third-party tools.
@@ -494,7 +495,7 @@ class WebViewPlus(QtWidgets.QWidget):
         '''Init the vr pane.'''
             # QWebView parts, including progress bar
         view = QtWebKitWidgets.QWebView()
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         try:
             # PyQt4
             mf = view.page().mainFrame()
@@ -594,9 +595,9 @@ class WebViewPlus(QtWidgets.QWidget):
         #   spacer.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         #   self.toolbar.addWidget(spacer)
         self.title = QtWidgets.QLabel()
-        Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         self.title.setSizePolicy(Policy.Expanding, Policy.Expanding)
-        Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+        ### Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
         self.title.setAlignment(Alignment.AlignRight | Alignment.AlignVCenter)
         self.title.setTextFormat(1) # Set to rich text interpretation
         # None of this font stuff works! - instead I've gone for rich text above
@@ -745,7 +746,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.plock = self.pc.c.p.copy() # make a copy of node position
             self.plockmode = self.get_mode() # make a copy of the current node
             if self.pr:
-                Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+                ### Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
                 main_frame = self.view.page().mainFrame()
                 self.pc.scrollbar_pos_dict[self.pr.v] = main_frame.scrollBarValue(Alignment.Vertical)
         else:
@@ -813,7 +814,7 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:ekr.20140226075611.16802: *4* vr2.restore_scroll_position
     def restore_scroll_position(self):
         # Restore scroll bar position for (possibly) new node
-        Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+        ### Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
         d = self.pc.scrollbar_pos_dict
         mf = self.view.page().mainFrame()
         # Set the scrollbar.
@@ -892,7 +893,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if os.path.isdir(path):
             os.chdir(path)
         # Need to save position of last node before rendering
-        Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
+        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         ps = mf.scrollBarValue(Orientations.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
@@ -1151,7 +1152,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if os.path.isdir(path):
             os.chdir(path)
         # Need to save position of last node before rendering
-        Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
+        ### Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
         ps = mf.scrollBarValue(Alignment.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
@@ -1792,7 +1793,7 @@ class ViewRenderedController(QtWidgets.QWidget):
     def ensure_text_widget(self):
         '''Swap a text widget into the rendering pane if necessary.'''
         pc = self
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
+        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         if pc.must_change_widget(pc.text_class):
             w = pc.text_class()
 

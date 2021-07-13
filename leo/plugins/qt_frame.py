@@ -21,7 +21,7 @@ from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropActions, FocusReason, Modifiers, MoveOperation, Orientations
 from leo.core.leoQt import MouseButtons, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
-from leo.core.leoQt import Shadow, Shape, TextInteractionFlags, ToolBarAreas, WindowStates, WrapMode
+from leo.core.leoQt import Shadow, Shape, TextInteractionFlags, ToolBarAreas, Type, WindowStates, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
@@ -948,7 +948,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@+node:ekr.20131118172620.16893: *8* wrapper
             def wrapper(self, event):
 
-                Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
+                ### Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
                 type_ = event.type()
                 # Must intercept KeyPress for events that generate FocusOut!
                 if type_ == Type.KeyPress:

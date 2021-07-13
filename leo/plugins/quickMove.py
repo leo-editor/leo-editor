@@ -137,9 +137,9 @@ from copy import deepcopy
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
-from leo.core.leoQt import isQt6, QtWidgets # QtCore, QtGui
+from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import QAction
-from leo.plugins.attrib_edit import ListDialog
+from leo.plugins.attrib_edit import DialogCode, ListDialog
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -622,7 +622,7 @@ class quickMove:
 
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
         ld.exec_()
-        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
+        ### DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if ld.result() == DialogCode.Rejected:
             return
 

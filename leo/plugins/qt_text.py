@@ -8,7 +8,8 @@ assert time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifiers, Modifiers
-from leo.core.leoQt import MouseButtons, MoveMode, MoveOperation, SliderAction, WindowFlags, WrapMode
+from leo.core.leoQt import MouseButtons, MoveMode, MoveOperation
+from leo.core.leoQt import SliderAction, WindowFlags, WrapMode
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")

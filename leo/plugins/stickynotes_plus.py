@@ -29,7 +29,6 @@ except SyntaxError:
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # Abbreviations...
-    # QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 QMenu = QtWidgets.QMenu
 QPlainTextEdit = QtWidgets.QPlainTextEdit
 QTextEdit = QtWidgets.QTextEdit

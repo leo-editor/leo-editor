@@ -5,10 +5,8 @@
 import re
 from leo.core import leoGlobals as g
 assert g
-from leo.core.leoQt import isQt6, QtGui, QtWidgets  ### QtCore
-from leo.core.leoQt import GlobalColor
-
-# import time  # temporary for debugging
+from leo.core.leoQt import QtGui, QtWidgets
+from leo.core.leoQt import GlobalColor, Weight
 #@-<< plaintextedit.py imports >>
 #@+others
 #@+node:tbrown.20171028115504.2: ** DBG
@@ -79,7 +77,7 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
     #@+node:tbrown.20171028115504.11: *3* class BHighlighter
     class BHighlighter(QtGui.QSyntaxHighlighter):
         fmt = QtGui.QTextCharFormat()
-        Weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
+        ### Weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
         fmt.setFontWeight(Weight.Bold)
         fmt.setForeground(GlobalColor.darkMagenta)
         pattern = "\\bMy[A-Za-z]*\\b"
