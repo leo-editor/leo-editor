@@ -185,7 +185,8 @@ class TagController:
         nodelist = self.get_tagged_nodes(tag)
         if not nodelist:
             self.taglist.remove(tag)
-        self.ui.update_all()
+        if hasattr(self, 'ui'):
+            self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* tag_c.get_tagged_nodes
     def get_tagged_nodes(self, tag):
         ''' return a list of *positions* of nodes containing the tag, with * as a wildcard '''
