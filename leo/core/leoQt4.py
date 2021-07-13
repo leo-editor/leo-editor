@@ -39,6 +39,7 @@ MoveOperation = QtGui.QTextCursor
 Orientation = QtCore.Qt
 Policy = QtWidgets.QSizePolicy
 QAction = QtWidgets.QAction
+QActionGroup = QtWidgets.QActionGroup
 QStyle = QtWidgets.QStyle
 ScrollBarPolicy = QtCore.Qt
 SelectionBehavior = QtWidgets.QAbstractItemView

@@ -43,17 +43,18 @@ if not g.in_bridge:
         # pylint: disable=c-extension-no-member
         g.funcToMethod(exec_, QtWidgets.QWidget)
         isQt6 = True
-        print('')
-        print('===== Qt6 =====')
-        print('')
+        print('\n===== Qt6 =====')
     except Exception:
+        # g.es_exception()
         try:
             from leo.core.leoQt5 import *
             isQt5 = True
+            print('\n===== Qt5 =====')
         except Exception:
             try:
                 from leo.core.leoQt4 import *
                 isQt4 = True
+                print('===== Qt4 =====')
             except Exception:
                 pass
     #
