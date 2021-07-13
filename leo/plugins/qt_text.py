@@ -7,7 +7,8 @@ import time
 assert time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
-from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifiers, Modifiers, MouseButtons, WindowFlags
+from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifiers, Modifiers
+from leo.core.leoQt import MouseButtons, MoveMode, MoveOperation, SliderAction, WindowFlags, WrapMode
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -1296,7 +1297,7 @@ class QTextEditWrapper(QTextMixin):
     def set_config(self):
         """Set configuration options for QTextEdit."""
         w = self.widget
-        WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
+        ### WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
         w.setWordWrapMode(WrapMode.NoWrap)
         # tab stop in pixels - no config for this (yet)
         if isQt6:
@@ -1351,8 +1352,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i, j=None):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
+        ### MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        ### MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
@@ -1381,8 +1382,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18080: *4* qtew.flashCharacter
     def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
+        ### MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        ### MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         # numbered color names don't work in Ubuntu 8.10, so...
         if bg[-1].isdigit() and bg[0] != '#':
             bg = bg[:-1]
@@ -1479,8 +1480,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18077: *4* qtew.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind, extend=False, linesPerPage=15):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
+        ### MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        ### MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         d = {
             'begin-line': MoveOperation.StartOfLine,  # Was start-line
@@ -1534,8 +1535,8 @@ class QTextEditWrapper(QTextMixin):
         straight port of the C++ code found in the pageUpDown method of
         gui/widgets/qtextedit.cpp.
         """
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
-        SliderAction = QtWidgets.QAbstractSlider.SliderAction if isQt6 else QtWidgets.QAbstractSlider
+        ### MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
+        ### SliderAction = QtWidgets.QAbstractSlider.SliderAction if isQt6 else QtWidgets.QAbstractSlider
         control = self.widget
         cursor = control.textCursor()
         moved = False
@@ -1630,7 +1631,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         """Set the selection range and the insert point."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
+        ### MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         #
         # Part 1
         w = self.widget

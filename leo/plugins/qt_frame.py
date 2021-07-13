@@ -18,10 +18,10 @@ from leo.core import leoFrame
 from leo.core import leoMenu
 from leo.commands import gotoCommands
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import Qsci
+from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropActions, FocusReason, Modifiers, MoveOperation, Orientations
-from leo.core.leoQt import MouseButtons, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, Shadow, Shape
-from leo.core.leoQt import TextInteractionFlags, ToolBarAreas, WrapMode  ### UnderlineStyle
+from leo.core.leoQt import MouseButtons, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
+from leo.core.leoQt import Shadow, Shape, TextInteractionFlags, ToolBarAreas, WindowStates, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
@@ -1367,7 +1367,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             global_point = self.mapToGlobal(point)
             menu.exec_(global_point)
             
-        ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+        ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
         self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
     #@+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline
@@ -2269,7 +2269,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.statusBar.addWidget(splitter, True)
             sizes = c.config.getString('status-line-split-sizes') or '1 2'
             sizes = [int(i) for i in sizes.replace(',', ' ').split()]
-            Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
+            ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
             # pylint: disable=consider-using-ternary
             for n, i in enumerate(sizes):
                 w = [w1, w2][n]
@@ -2450,7 +2450,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             if not self.w:
                 return None
-            QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+            ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             command = keys.get('command')
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)
@@ -2490,7 +2490,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             button_name = button_name + '-button'
             b.setObjectName(button_name)
             
-            ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+            ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
             b.setContextMenuPolicy(ContextMenuPolicy.ActionsContextMenu)
 
             def delete_callback(checked, action=action,):
@@ -2585,7 +2585,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             def goto_callback(checked, controller=controller, gnx=gnx):
                 self.goto_command(controller, gnx)
 
-            QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+            ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             b.goto_script = gts = QAction('Goto Script', b)
             b.addAction(gts)
             gts.triggered.connect(goto_callback)
@@ -2598,7 +2598,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             script=None
         ):
             c = controller.c
-            QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+            ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             top_offset = -2  # insert before the remove button and goto script items
             if top_level:
                 button = action_container
@@ -2888,7 +2888,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
+                ### WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
                 w.setWindowState(WindowStates.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
@@ -2910,7 +2910,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
+                ### WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
                 w.setWindowState(WindowStates.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
     #@+node:ekr.20110605121601.18310: *5* qtFrame.leoHelp
@@ -4331,7 +4331,7 @@ class LeoQtTreeTab:
                 self.leo_tt = tt
                 super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.
-                SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy if isQt6 else QtWidgets.QComboBox
+                ### SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy if isQt6 else QtWidgets.QComboBox
                 self.setSizeAdjustPolicy(SizeAdjustPolicy.AdjustToContents)
 
             def focusInEvent(self, event):
