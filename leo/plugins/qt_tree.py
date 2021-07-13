@@ -336,61 +336,99 @@ class LeoQtTree(leoFrame.LeoTree):
         #@+node:ekr.20171122064635.1: *7* declutter_replace
         def declutter_replace(arg, cmd):
             """
-            Execute cmd and return True if cmd is any replace command.
+            Executes cmd if cmd is any replace command and returns
+            pair (commander, s), where 'commander' corresponds
+            to the executed replacement operation, 's' is the substituted string.
+            If cmd is not a replacement command return (None, None)
             """
             # pylint: disable=undefined-loop-variable
+
+            replacement, s = None, None
+
             if cmd == 'REPLACE':
                 s = pattern.sub(arg, text)
-                item.setText(0, s)
-                return True
-            if cmd == 'REPLACE-HEAD':
-                s = text[: m.start()]
-                item.setText(0, s.rstrip())
-                return True
-            if cmd == 'REPLACE-TAIL':
-                s = text[m.end() :]
-                item.setText(0, s.lstrip())
-                return True
-            if cmd == 'REPLACE-REST':
-                s = text[:m.start] + text[m.end() :]
-                item.setText(0, s.strip())
-                return True
-            return False
+            elif cmd == 'REPLACE-HEAD':
+                s = text[: m.start()].rstrip()
+            elif cmd == 'REPLACE-TAIL':
+                s = text[m.end() :].lstrip()
+            elif cmd == 'REPLACE-REST':
+                s = (text[:m.start] + text[m.end() :]).strip()
+
+            if s:
+                # Save the operation
+                replacement = lambda item, s: item.setText(0, s)
+                # ... and apply it
+                replacement(item, s)
+
+            return replacement, s
         #@+node:ekr.20171122055719.1: *7* declutter_style
         def declutter_style(arg, cmd):
-            """Handle style options."""
-            arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
+            """
+            Handles style options and returns pair '(commander, param)',
+            where 'commander' is the applied style-modifying operation,
+            param - the saved argument of that operation.
+            Return (None, param) if 'cmd' is not a style option.
+            """
+            param = c.styleSheetManager.expand_css_constants(arg).split()[0]
+
+            modifier = None
+
             if cmd == 'ICON':
-                new_icons.append(arg)
+                def modifier(item, param):
+                    # Does not fit well this function. And we cannot
+                    # wrap list 'new_icons' in a saved argument as 
+                    # the list is recreated before each call.
+                    new_icons.append(param)
             elif cmd == 'BG':
-                item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
+                def modifier(item, param):
+                    item.setBackground(0, QtGui.QBrush(QtGui.QColor(param)))
             elif cmd == 'FG':
-                item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
+                def modifier(item, param):
+                    item.setForeground(0, QtGui.QBrush(QtGui.QColor(param)))
             elif cmd == 'FONT':
-                item.setFont(0, QtGui.QFont(arg))
+                def modifier(item, param):
+                    item.setFont(0, QtGui.QFont(param))
             elif cmd == 'ITALIC':
-                font = item.font(0)
-                font.setItalic(bool(int(arg)))
-                item.setFont(0, font)
+                def modifier(item, param):
+                    font = item.font(0)
+                    font.setItalic(bool(int(param)))
+                    item.setFont(0, font)
             elif cmd == 'WEIGHT':
-                arg = getattr(QtGui.QFont, arg, 75)
-                font = item.font(0)
-                font.setWeight(arg)
-                item.setFont(0, font)
+                def modifier(item, param):
+                    arg = getattr(QtGui.QFont, param, 75)
+                    font = item.font(0)
+                    font.setWeight(arg)
+                    item.setFont(0, font)
             elif cmd == 'PX':
-                font = item.font(0)
-                font.setPixelSize(int(arg))
-                item.setFont(0, font)
+                def modifier(item, param):
+                    font = item.font(0)
+                    font.setPixelSize(int(param))
+                    item.setFont(0, font)
             elif cmd == 'PT':
-                font = item.font(0)
-                font.setPointSize(int(arg))
-                item.setFont(0, font)
+                def modifier(item, param):
+                    font = item.font(0)
+                    font.setPointSize(int(param))
+                    item.setFont(0, font)
+
+            # Apply the style update
+            if modifier:
+                modifier(item, param)
+
+            return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
         def apply_declutter_rules(cmds):
-            """Applies all commands for the matched rule."""
+            """
+            Applies all commands for the matched rule. Returns the list
+            of the applied operations paired with their single parameter.
+            """
+            modifiers = []
             for cmd, arg in cmds:
-                if not declutter_replace(arg, cmd):
-                    declutter_style(arg, cmd)
+                modifier, param = declutter_replace(arg, cmd)
+                if not modifier:
+                    modifier, param = declutter_style(arg, cmd)
+                if modifier:
+                    modifiers.append((modifier, param))
+            return modifiers
         #@+node:vitalije.20200329162015.1: *7* preload_images
         def preload_images():
             for f in new_icons:
@@ -398,17 +436,25 @@ class LeoQtTree(leoFrame.LeoTree):
                     loaded_images[f] = g.app.gui.getImageImage(f)
         #@-others
         if (p.h, iconVal) in dd:
-            text, new_icons = dd[(p.h, iconVal)]
-            item.setText(0, text)
+            # Apply saved adjustments to the text and to the _style_
+            # of the node
+            new_icons, modifiers_and_args = dd[(p.h, iconVal)]
+            for modifier, arg in modifiers_and_args:
+                modifier(item, arg)
+
             new_icons = sorted_icons(p) + new_icons
         else:
             text = p.h
             new_icons = []
+            modifiers_and_args = []
             for pattern, cmds in self.get_declutter_patterns():
                 m = pattern.match(text) or pattern.search(text)
                 if m:
-                    apply_declutter_rules(cmds)
-            dd[(p.h, iconVal)] = item.text(0), new_icons
+                    modifiers_and_args.extend(apply_declutter_rules(cmds))
+
+            # Save the lists of the icons and the adjusting operations
+            # for future reuse.
+            dd[(p.h, iconVal)] = new_icons, modifiers_and_args
             new_icons = sorted_icons(p) + new_icons
             preload_images()
         self.nodeIconsDict[p.gnx] = new_icons
