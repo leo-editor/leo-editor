@@ -199,8 +199,6 @@ class GraphicsView(QtWidgets.QGraphicsView):
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent (graphcanvas.py)
     def wheelEvent(self, event):
         
-        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-
         if int(event.modifiers() & KeyboardModifiers.ControlModifier):
 
             scale = 1.+0.1*(event.delta() / 120)

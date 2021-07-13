@@ -282,7 +282,6 @@ if not got_docutils:
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # Aliases.
-### KeyboardModifiers = QtCore.Qt if isQt5 else QtCore.Qt.KeyboardModifiers
 QApplication = QtWidgets.QApplication
 QFont = QtGui.QFont
 QFontInfo = QtGui.QFontInfo

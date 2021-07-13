@@ -622,7 +622,6 @@ class quickMove:
 
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
         ld.exec_()
-        ### DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if ld.result() == DialogCode.Rejected:
             return
 

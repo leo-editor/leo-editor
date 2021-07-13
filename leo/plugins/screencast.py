@@ -334,7 +334,6 @@ class ScreenCastController:
         w2 = m.pane_widget(pane)
         geom = w2.geometry()
         w.resize(geom.width(), min(150, geom.height() / 2))
-        ### ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
         w.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
         w.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
         w.show()

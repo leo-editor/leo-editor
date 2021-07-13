@@ -373,7 +373,6 @@ if QtWidgets:
                 tc = c.theTagController
                 ui = tc.ui
                 # Right click on a tag to remove it from the node
-                ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
                 if event.button() == MouseButtons.RightButton:
                     tc.remove_tag(p,tag)
                 # Other clicks make the jumplist open that tag for browsing

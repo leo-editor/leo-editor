@@ -1541,9 +1541,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
         c = self.c
-        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
-        ### QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
-        
         _toolbar = QtWidgets.QToolBar('Menus')
         _options_button = QtWidgets.QPushButton("View Options")
         _options_button.setDefault(True)
@@ -3608,15 +3605,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         QObject-descended objects. Currently, check only for <CNTRL-=> and
         <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
         """
-
         mod = ''
         modifiers = event.modifiers()
         bare_key = event.text()
-
-        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         if modifiers and modifiers == KeyboardModifiers.ControlModifier:
             mod = 'cntrl'
-
         if bare_key == '=' and mod == 'cntrl':
             self.zoomView()
         elif bare_key == '-' and mod == 'cntrl':

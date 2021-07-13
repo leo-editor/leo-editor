@@ -77,7 +77,6 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
     #@+node:tbrown.20171028115504.11: *3* class BHighlighter
     class BHighlighter(QtGui.QSyntaxHighlighter):
         fmt = QtGui.QTextCharFormat()
-        ### Weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
         fmt.setFontWeight(Weight.Bold)
         fmt.setForeground(GlobalColor.darkMagenta)
         pattern = "\\bMy[A-Za-z]*\\b"

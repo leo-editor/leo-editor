@@ -8,7 +8,7 @@ from leo.core import leoGlobals as g
 #
 # Qt imports. May fail from the bridge.
 try:  # #1973
-    from leo.core.leoQt import printsupport, QtGui  ### isQt6, QtWidgets
+    from leo.core.leoQt import printsupport, QtGui
     from leo.core.leoQt import DialogCode
 except Exception:
     printsupport = QtGui = None

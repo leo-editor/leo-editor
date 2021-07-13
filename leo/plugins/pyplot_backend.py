@@ -8,7 +8,7 @@
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 from leo.core import leoGlobals as g
 from leo.plugins import viewrendered as vr
-from leo.core.leoQt import isQt5, isQt6, QtWidgets  ### QtCore
+from leo.core.leoQt import isQt5, isQt6, QtWidgets
 from leo.core.leoQt import FocusPolicy
 try:
     if isQt5 or isQt6:
