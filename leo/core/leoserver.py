@@ -35,6 +35,12 @@ wsHost = "localhost"
 wsPort = 32125
 
 #@+others
+#@+node:felix.20210712224107.1: ** setup JSON encoder
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 #@+node:felix.20210621233316.3: ** Exception classes
 class InternalServerError(Exception):  # pragma: no cover
     """The server violated its own coding conventions."""
@@ -1128,7 +1134,7 @@ class LeoServer:
         settings = fc.ftm.get_settings()
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        n, p = fc.do_clone_find_tag(settings)
+        n, p = fc.do_clone_find_tag(tag_param)
         if self.log_flag:  # pragma: no cover
             g.trace("tag: {tag_param} n: {n} p: {p and p.h!r}")
         return self._make_response({"n": n})
@@ -1325,7 +1331,7 @@ class LeoServer:
         p = self._get_p(param)
         try:
             ua = {"ua": p.v.u}
-            json.dumps(ua, separators=(',', ':'))
+            json.dumps(ua, separators=(',', ':'), cls=SetEncoder)
             response = {"ua": p.v.u}
         except Exception:  # pragma: no cover
             response = {"ua": repr(p.v.u)}
@@ -1570,7 +1576,7 @@ class LeoServer:
                 if foundPNode:
                     c.selectPosition(foundPNode)
                 else:
-                    print(f"{tag}: node does not exist! ap was: {json.dumps(ap)}")
+                    print(f"{tag}: node does not exist! ap was: {json.dumps(ap, cls=SetEncoder)}")
 
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
@@ -2966,7 +2972,7 @@ class LeoServer:
         Send data asynchronously to the client
         """
         tag = "send async output"
-        jsonPackage = json.dumps(package, separators=(',', ':'))
+        jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
         if "async" not in package:
             InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
         if self.loop:
@@ -3044,10 +3050,11 @@ class LeoServer:
             if p == c.p:
                 value = func(event={"c":c})  # no need for re-selection
             else:
-                old_p = c.p
-                c.selectPosition(p)
+                old_p = c.p  # preserve old position
+                c.selectPosition(p)  # set position upon which to perform the command
                 value = func(event={"c":c})
                 if keepSelection and c.positionExists(old_p):
+                    # Only if 'keep' old position was set, and old_p still exists
                     c.selectPosition(old_p)
         except Exception as e:
             print("_do_leo_command Recovered from Error "+ str(e))
@@ -3244,7 +3251,7 @@ class LeoServer:
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
     def _is_jsonable(self, x):
         try:
-            json.dumps(x)
+            json.dumps(x, cls=SetEncoder)
             return True
         except (TypeError, OverflowError):
             return False
@@ -3305,7 +3312,7 @@ class LeoServer:
             package ["node"] = redraw_d
         if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
-        return json.dumps(package, separators=(',', ':'))
+        return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.94: *4* server._make_minimal_response
     def _make_minimal_response(self, package=None):
         """
@@ -3330,7 +3337,7 @@ class LeoServer:
         # Always add id.
         package ["id"] = self.current_id
 
-        return json.dumps(package, separators=(',', ':'))
+        return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.95: *4* server._p_to_ap
     def _p_to_ap(self, p):
         """
@@ -3626,7 +3633,7 @@ def main():  # pragma: no cover (tested in client)
                         "request": data,
                         "ServerError": f"{e}",
                     }
-                    answer = json.dumps(package, separators=(',', ':'))
+                    answer = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
                 except InternalServerError as e:  # pragma: no cover
                     print(f"{tag}: InternalServerError {e}")
                     break
