@@ -1083,13 +1083,10 @@ class LeoServer:
     def find_var(self, param):
         """Run Leo's find-var command and return results."""
         tag = 'find_var'
-        # c = self._check_c()
-        # fc = c.findCommands
+        c = self._check_c()
+        fc = c.findCommands
         try:
-            # settings = fc.ftm.get_settings()
-            # todo : find var implementation
-            print(f"{tag} todo : find var implementation")
-            # result = fc.do_clone_find_all_flattened(settings)
+            result = fc.find_var()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
@@ -1098,13 +1095,10 @@ class LeoServer:
     def find_def(self, param):
         """Run Leo's find-def command and return results."""
         tag = 'find_def'
-        # c = self._check_c()
-        # fc = c.findCommands
+        c = self._check_c()
+        fc = c.findCommands
         try:
-            # settings = fc.ftm.get_settings()
-            # todo : find def implementation
-            print(f"{tag} todo : find def implementation")
-            # result = fc.do_clone_find_all_flattened(settings)
+            result = fc.find_def()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
