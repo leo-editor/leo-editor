@@ -349,7 +349,6 @@ class quickMove:
         p = c.p
         if v is None:
             v = p.v
-        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         sc = scriptingController(c)
         mb = quickMoveButton(self,v,which,type_=type_)
         txt=self.txts[type_]
@@ -470,7 +469,6 @@ class quickMove:
         """make popup menu entry for tree context menu"""
         # pylint: disable=function-redefined
         # several callbacks have the same name.
-        ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         if c != self.c:
             return  # wrong commander
         for cb, name in reversed(self.recent_moves):

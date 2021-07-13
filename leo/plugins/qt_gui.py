@@ -192,8 +192,6 @@ class LeoQtGui(leoGui.LeoGui):
     def alert(self, c, message):
         if g.unitTesting:
             return
-        ### ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
-        ### Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         d = b(None)
         d.setWindowTitle('Alert')
@@ -280,8 +278,6 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run a qt About Leo dialog."""
         if g.unitTesting:
             return
-        ### ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
-        ### Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         d.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
@@ -314,11 +310,6 @@ class LeoQtGui(leoGui.LeoGui):
               step_min={QtWidgets.QDateTimeEdit.MinuteSection: 5})
 
         """
-        ### QDialog = QtWidgets.QDialog
-        ### QDialogButtonBox = QtWidgets.QDialogButtonBox
-        #
-        ### DialogCode = QDialog.DialogCode if isQt6 else QDialog
-        ### StandardButtons = QDialogButtonBox.StandardButtons if isQt6 else QDialogButtonBox
 
 
         class DateTimeEditStepped(QtWidgets.QDateTimeEdit):
@@ -445,8 +436,6 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return
         b = QtWidgets.QMessageBox
-        ### Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
-        ### ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
@@ -478,8 +467,6 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting:
             return None
-        ### Information = QtWidgets.QMessageBox.Icon.Information if isQt6 else QtWidgets.QMessageBox
-        ### ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
         b = QtWidgets.QMessageBox
         dialog = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
@@ -527,9 +514,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         box = QtWidgets.QMessageBox
-        dialog = box(c.frame.top) 
-        ### ButtonRole = box.ButtonRole if isQt6 else box
-        ### Information = box.Icon.Information if isQt6 else box
+        dialog = box(c.frame.top)
         # Creation order determines returned value.
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
         dialog.addButton('No', ButtonRole.NoRole)
@@ -697,9 +682,6 @@ class LeoQtGui(leoGui.LeoGui):
         #@+node:ekr.20110605121601.18507: *5* << emergency fallback >>
         b = QtWidgets.QMessageBox
         d = b(None)  # c.frame.top)
-        ### Icon = QtWidgets.QMessageBox.Icon if isQt6 else QtWidgets.QMessageBox
-        ### ButtonRole = QtWidgets.QMessageBox.ButtonRole if isQt6 else QtWidgets.QMessageBox
-        ### WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
         d.setWindowFlags(WindowFlags.Dialog)
             # That is, not a fixed size dialog.
         d.setWindowTitle(title)
@@ -892,7 +874,6 @@ class LeoQtGui(leoGui.LeoGui):
         except Exception:
             size = 0
         if size < 1: size = defaultSize
-        ### Weight = QtGui.QFont.Weight if isQt6 else QtGui.QFont
         d = {
             'black': Weight.Black,
             'bold': Weight.Bold,
@@ -1347,7 +1328,6 @@ class LeoQtGui(leoGui.LeoGui):
             if g.os_path_exists(fn):
                 pm = QtGui.QPixmap(fn)
                 if not pm.isNull():
-                    ### WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
                     splash = QtWidgets.QSplashScreen(pm, WindowFlags.WindowStaysOnTopHint)
                     splash.show()
                     # This sleep is required to do the repaint.
@@ -1472,8 +1452,6 @@ class LeoQtGui(leoGui.LeoGui):
         shape=None,
     ):
         """Create a Qt Frame."""
-        ### Shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
-        ### Shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
         if shadow is None:
             shadow = Shadow.Plain
         if shape is None:
@@ -1521,7 +1499,6 @@ class LeoQtGui(leoGui.LeoGui):
         return w
     #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
     def setSizePolicy(self, widget, kind1=None, kind2=None):
-        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:

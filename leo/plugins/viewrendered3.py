@@ -1098,7 +1098,6 @@ def viewrendered(event):
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
     vr3._ns_id = VR3_NS_ID # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
-    ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
 
     if splitter:
         vr3.store_layout('closed')

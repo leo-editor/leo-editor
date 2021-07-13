@@ -222,7 +222,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         """Set the orientation of the icon bar based on settings."""
-        ### ToolBarAreas = QtCore.Qt.ToolBarAreas if isQt6 else QtCore.Qt
         d = {
             'bottom': ToolBarAreas.BottomToolBarArea,
             'left': ToolBarAreas.LeftToolBarArea,
@@ -306,7 +305,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
              hPolicy=Policy.Expanding, vPolicy=Policy.Expanding)
         page2 = QtWidgets.QWidget()
@@ -349,7 +347,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createLogPane(self, parent):
         """Create all parts of Leo's log pane."""
         c = self.leo_c
-        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         #
         # Create the log frame.
         logFrame = self.createFrame(parent, 'logFrame', vPolicy=Policy.Minimum)
@@ -400,7 +397,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createMainLayout(self, parent):
         """Create the layout for Leo's main window."""
         # c = self.leo_c
-        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         main_splitter = NestedSplitter(parent)
         main_splitter.setObjectName('main_splitter')
@@ -427,7 +423,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
     def createMiniBuffer(self, parent):
         """Create the widgets for Leo's minibuffer area."""
-        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         # Create widgets.
         frame = self.createFrame(parent, 'minibufferFrame',
             hPolicy=Policy.MinimumExpanding, vPolicy=Policy.Fixed)
@@ -491,7 +486,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
     def createOutlinePane(self, parent):
         """Create the widgets and ivars for Leo's outline."""
-        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         # Create widgets.
         treeFrame = self.createFrame(parent, 'outlineFrame', vPolicy=Policy.Expanding)
         innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame', hPolicy=Policy.Preferred)
@@ -563,8 +557,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         shape=None,
     ):
         """Create a Qt Frame."""
-        ### Shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
-        ### Shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
         if shadow is None:
             shadow = Shadow.Plain
         if shape is None:
@@ -649,8 +641,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w = Qsci.QsciScintilla(parent)
             self.scintilla_widget = w
         else:
-            ### Shadow = QtWidgets.QFrame.Shadow if isQt6 else QtWidgets.QFrame
-            ### Shape = QtWidgets.QFrame.Shape if isQt6 else QtWidgets.QFrame
             if shadow is None:
                 shadow = Shadow.Plain
             if shape is None:
@@ -667,9 +657,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = self.leo_c
         w = LeoQTreeWidget(c, parent)
         self.setSizePolicy(w)
-        ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
-        ### SelectionMode = QtWidgets.QAbstractItemView.SelectionMode if isQt6 else QtWidgets.QAbstractItemView
-        ### SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior if isQt6 else QtWidgets.QAbstractItemView
         # 12/01/07: add new config setting.
         multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
         if multiple_selection:
@@ -686,7 +673,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
     def createSpellTab(self, parent):
         # dw = self
-        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
         spellFrame = self.createFrame(parent, 'spellFrame')
         vLayout2 = self.createVLayout(spellFrame, 'spellVLayout')
@@ -768,7 +754,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def create_find_header(self, grid, parent, row):
         if False:
             dw = self
-            ### Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
             lab1 = dw.createLabel(parent, 'findHeading', 'Find/Change Settings...')
             grid.addWidget(lab1, row, 0, 1, 2, Alignment.AlignLeft)
                 # AlignHCenter
@@ -980,7 +965,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # Move focus to next widget.
                     if s == '\t':
                         if self.next_w:
-                            ### FocusReason = QtCore.Qt.FocusReason if isQt6 else QtCore.Qt
                             self.next_w.setFocus(FocusReason.TabFocusReason)
                         else:
                             # Do the normal processing.
@@ -1017,7 +1001,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             widget.setObjectName(name)
     #@+node:ekr.20110605121601.18170: *5* dw.setSizePolicy
     def setSizePolicy(self, widget, kind1=None, kind2=None):
-        ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
@@ -1062,7 +1045,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def setSplitDirection(self, main_splitter, secondary_splitter, orientation):
         """Set the orientations of the splitters in the Leo main window."""
         # c = self.leo_c
-        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         vert = orientation and orientation.lower().startswith('v')
         h, v = Orientations.Horizontal, Orientations.Vertical
         orientation1 = v if vert else h
@@ -1366,8 +1348,6 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 
             global_point = self.mapToGlobal(point)
             menu.exec_(global_point)
-            
-        ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
         self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
     #@+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline
@@ -1546,8 +1526,6 @@ class LeoQtBody(leoFrame.LeoBody):
             return
         c = self.c
         w = c.frame.body.wrapper.widget
-        ### WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
-        ### ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
         if force:
             wrap = WrapMode.WrapAtWordBoundaryOrAnywhere
         else:
@@ -2021,7 +1999,6 @@ class LeoQtBody(leoFrame.LeoBody):
         lab.setObjectName(f"{name} Label")
         lab.setText(name)
         # Pack the label and the widget.
-        ### Alignment = QtCore.Qt.Alignment if isQt6 else QtCore.Qt
         layout.addWidget(lab, 0, max(0, n - 1), Alignment.AlignVCenter)
         layout.addWidget(w, 1, max(0, n - 1))
         layout.setRowStretch(0, 0)
@@ -2269,7 +2246,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.statusBar.addWidget(splitter, True)
             sizes = c.config.getString('status-line-split-sizes') or '1 2'
             sizes = [int(i) for i in sizes.replace(',', ' ').split()]
-            ### Policy = QtWidgets.QSizePolicy.Policy if isQt6 else QtWidgets.QSizePolicy
             # pylint: disable=consider-using-ternary
             for n, i in enumerate(sizes):
                 w = [w1, w2][n]
@@ -2450,7 +2426,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             if not self.w:
                 return None
-            ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             command = keys.get('command')
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)
@@ -2489,8 +2464,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 button_name = 'unnamed'
             button_name = button_name + '-button'
             b.setObjectName(button_name)
-            
-            ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
             b.setContextMenuPolicy(ContextMenuPolicy.ActionsContextMenu)
 
             def delete_callback(checked, action=action,):
@@ -2584,8 +2557,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
             def goto_callback(checked, controller=controller, gnx=gnx):
                 self.goto_command(controller, gnx)
-
-            ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             b.goto_script = gts = QAction('Goto Script', b)
             b.addAction(gts)
             gts.triggered.connect(goto_callback)
@@ -2598,7 +2569,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             script=None
         ):
             c = controller.c
-            ### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
             top_offset = -2  # insert before the remove button and goto script items
             if top_level:
                 button = action_container
@@ -2888,7 +2858,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                ### WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
                 w.setWindowState(WindowStates.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
@@ -2910,7 +2879,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
-                ### WindowStates = QtCore.Qt.WindowStates if isQt6 else QtCore.Qt
                 w.setWindowState(WindowStates.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
     #@+node:ekr.20110605121601.18310: *5* qtFrame.leoHelp
@@ -3099,13 +3067,11 @@ class LeoQtLog(leoFrame.LeoLog):
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
         self.logWidget = logWidget = self.contentsDict.get('Log')
-        ### WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
         logWidget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
         w.insertTab(0, logWidget, 'Log')
             # Required.
         #
         # set up links in log handling
-        ### TextInteractionFlags = QtCore.Qt.TextInteractionFlags if isQt6 else QtCore.Qt
         logWidget.setTextInteractionFlags(
             TextInteractionFlags.LinksAccessibleByMouse
             | TextInteractionFlags.TextEditable
@@ -3275,7 +3241,6 @@ class LeoQtLog(leoFrame.LeoLog):
                     url = url.replace('://', ':///', 1)
             s = f'<a href="{url}" title="{nodeLink}">{s}</a>'
         w.insertHtml(s)
-        ### MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(0)  # Force the slider to the initial position.
         w.repaint()  # Slow, but essential.
@@ -3301,7 +3266,6 @@ class LeoQtLog(leoFrame.LeoLog):
         # Not needed!
             # contents = w.toHtml()
             # w.setHtml(contents + '\n')
-        ### MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(pos)
         w.repaint()  # Slow, but essential.
@@ -3317,7 +3281,6 @@ class LeoQtLog(leoFrame.LeoLog):
             return
         sb = w.horizontalScrollBar()
         pos = sb.sliderPosition()
-        ### MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(pos)
         w.repaint()  # Slow, but essential.
@@ -3343,7 +3306,6 @@ class LeoQtLog(leoFrame.LeoLog):
                 # contents a wrapper.
             widget.leo_log_wrapper = contents
                 # Inject an ivar into the QTextBrowser that points to the wrapper.
-            ### WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
             widget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
             widget.setReadOnly(False)  # Allow edits.
             self.logDict[tabName] = widget
@@ -3759,8 +3721,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         """Handle a drop event in the QTreeWidget."""
         if not ev:
             return
-        ### DropActions = QtCore.Qt.DropActions if isQt6 else QtCore.Qt
-        ### Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         md = ev.mimeData()
         if not md:
             g.trace('no mimeData!')
@@ -4331,7 +4291,6 @@ class LeoQtTreeTab:
                 self.leo_tt = tt
                 super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.
-                ### SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy if isQt6 else QtWidgets.QComboBox
                 self.setSizeAdjustPolicy(SizeAdjustPolicy.AdjustToContents)
 
             def focusInEvent(self, event):
@@ -4421,7 +4380,6 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
     def mouseReleaseEvent(self, event):
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
-        ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
         if event.button() == MouseButtons.MiddleButton:
             self.tabCloseRequested.emit(self.tabAt(event.pos()))
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)

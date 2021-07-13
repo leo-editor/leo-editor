@@ -994,7 +994,6 @@ class graphcanvasController:
         blc = getattr(self.c, 'backlinkController')
         if not blc:
             return
-        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         if not (event.modifiers() & KeyboardModifiers.ControlModifier):
             return
         if linkItem in self.link:

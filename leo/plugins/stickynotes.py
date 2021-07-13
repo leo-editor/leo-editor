@@ -70,7 +70,7 @@ except ImportError:
 #
 # Leo imports.
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets  ### isQt6, Qt, 
+from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction
 #
 # Fail fast, right after all imports.

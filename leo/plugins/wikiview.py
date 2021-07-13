@@ -151,7 +151,6 @@ class WikiView:
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
-        ### MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         w = c.frame.body.widget
         cursor = w.textCursor()
         s = w.toPlainText()

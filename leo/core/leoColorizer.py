@@ -1040,7 +1040,6 @@ class BaseJEditColorizer(BaseColorizer):
                 return
         underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
-        ### UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)

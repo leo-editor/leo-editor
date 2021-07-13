@@ -10,9 +10,7 @@ import os
 from ftplib import FTP
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-### from leo.core.leoQt import isQt6, QtGui, QtWidgets
 from leo.core.leoQt import QAction
-### QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.

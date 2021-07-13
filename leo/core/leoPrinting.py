@@ -277,7 +277,6 @@ class PrintingController:
             return
         dialog = printsupport.QPrintDialog()
         result = dialog.exec_()
-        ### DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if result == DialogCode.Accepted:
             doc.print_(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc

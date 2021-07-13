@@ -108,7 +108,6 @@ if g.app.gui.guiName() == "qt":
             # Create the output area.
             self.output_area = w = QtWidgets.QTextEdit()
             w.setStyleSheet('background: white; color: black;')
-            ### ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
             w.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAsNeeded)
             w.setWordWrapMode(QtGui.QTextOption.NoWrap)
             # Add the widgets to a new layout.

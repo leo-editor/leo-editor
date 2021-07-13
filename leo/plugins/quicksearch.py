@@ -707,7 +707,6 @@ class QuickSearchController:
             return
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
-        ### KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = QtWidgets.QApplication.keyboardModifiers()
         if modifiers == KeyboardModifiers.ControlModifier:
             row = self.lw.row(it)

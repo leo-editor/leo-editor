@@ -8,7 +8,7 @@ content by clicking on the splitter handle
 Terry Brown, TerryNBrown@gmail.com, Sun Oct 29 21:02:25 2017
 """
 
-from leo.core.leoQt import QtWidgets  ### isQt6, QtCore
+from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import MouseButtons, Orientations
 
 
@@ -21,7 +21,6 @@ class ClickySplitterHandle(QtWidgets.QSplitterHandle):
         Args:
             event (QMouseEvent): mouse event
         """
-        ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
         if event.button() == MouseButtons.LeftButton:
             return  # might have been resizing panes
         self.splitter().flip_spin()
@@ -45,7 +44,6 @@ class ClickySplitter(QtWidgets.QSplitter):
             self.insertWidget(0, self.widget(1))
             self._click_state = 'spin'
         else:
-            ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
             vertical, horizontal = Orientations.Vertical, Orientations.Horizontal
             self.setOrientation(vertical if self.orientation() == horizontal else vertical)
             self._click_state = 'flip'

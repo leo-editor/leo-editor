@@ -405,7 +405,6 @@ class FreeLayoutController:
         :param bool release: was it a Press or Release event
         :param bool double: was it a double click event
         """
-        ### MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
         if not release or event.button() != MouseButtons.MiddleButton:
             return
         if splitter.root.zoomed:  # unzoom if *any* handle clicked
