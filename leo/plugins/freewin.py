@@ -12,7 +12,7 @@ switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
 :Date: 12 July 2021
-:Version: 1.51
+:Version: 1.6
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -336,6 +336,7 @@ ZOOM_FACTOR = 1.1
 
 F7_KEY = 0x01000036 # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
 F9_KEY = 0x01000038
+KEY_S = 0x53
 
 GNXre = r'^(.+\.\d+\.\d+)' # For gnx at start of line
 GNX1re = r'.*[([\s](\w+\.\d+\.\d+)' # For gnx not at start of line
@@ -829,7 +830,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         keyval = event.key()
 
         if modifiers == KeyboardModifiers.ControlModifier:
-            if keyval == F7_KEY:
+            if keyval == KEY_S:
+                self.c.executeMinibufferCommand('save')
+            elif keyval == F7_KEY:
                 # Copy our gnx to clipboard.
                 copy2clip(self.p.v.gnx)
             elif  self.render_pane_type == NAV_VIEW \
