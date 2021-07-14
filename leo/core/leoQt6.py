@@ -9,31 +9,57 @@ For Qt6, plugins are responsible for loading all optional modules.
 # pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
 #
 # Required imports
-from PyQt6 import QtCore
-from PyQt6 import QtGui
-from PyQt6 import QtWidgets
-from PyQt6.QtCore import Qt
-assert QtGui and QtWidgets  # For pyflakes.
-from PyQt6.QtCore import QUrl
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtGui import QAction, QActionGroup
 from PyQt6.QtCore import pyqtSignal as Signal
-from PyQt6.QtGui import QActionGroup
-from PyQt6.QtGui import QAction
-from PyQt6 import uic
-assert QActionGroup and QAction and QUrl and Signal and uic  # For pyflakes.
+#
+# For pyflakes.
+assert QtCore and QtGui and QtWidgets
+assert QAction and QActionGroup
+assert Qt and QUrl and Signal
 #
 # Standard abbreviations.
 QtConst = Qt
 qt_version = QtCore.QT_VERSION_STR
+#
+# Optional imports: #2005
 try:
-    import PyQt6.QtSvg as QtSvg  # #2005
+    from PyQt6 import QtPrintSupport as printsupport
+except Exception:
+    printsupport = None
+
+try:
+    from PyQt6 import Qsci
+except ImportError:
+    Qsci = None
+try:
+    import PyQt6.QtSvg as QtSvg
 except ImportError:
     QtSvg = None
-#
-# Optional(?) modules.
 try:
-    printsupport = Qt.printsupport
-except Exception:
-    pass
+    from PyQt6 import uic
+except ImportError:
+    uic = None
+#
+# #2005: Do not import these by default. All of these *do* work.
+if 0:
+    try:
+        from PyQt6 import QtDesigner
+    except Exception:
+        QtDesigner = None
+    try:
+        from PyQt6 import QtOpenGL
+    except Exception:
+        QtOpenGL = None
+    try:
+        from PyQt6 import QtMultimedia
+    except ImportError:
+        QtMultimedia = None
+    try:
+        from PyQt6 import QtNetwork
+    except Exception:
+        QtNetwork = None
 #
 # Enumerations, with (sheesh) variable spellings.
 try:
@@ -82,7 +108,6 @@ Key = QtCore.Qt.Key
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
 Policy = QtWidgets.QSizePolicy.Policy
-QAction = QtGui.QAction
 QStyle = QtWidgets.QStyle.StandardPixmap
 ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
 SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
