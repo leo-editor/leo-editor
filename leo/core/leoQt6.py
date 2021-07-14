@@ -16,7 +16,7 @@ from PyQt6.QtCore import Qt
 assert QtGui and QtWidgets  # For pyflakes.
 from PyQt6.QtCore import QUrl
 from PyQt6.QtCore import pyqtSignal as Signal
-from PyQt6.QtGui import QActionGroup as QActionGroup
+from PyQt6.QtGui import QActionGroup
 from PyQt6 import uic
 assert QActionGroup and QUrl and Signal and uic  # For pyflakes.
 #
