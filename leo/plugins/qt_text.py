@@ -9,7 +9,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
-from leo.core.leoQt import SliderAction, WindowType, WrapMode
+from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -417,8 +417,8 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
-        Raised = QtWidgets.QFrame.Shadow.Raised if isQt6 else self.StyledPanel
-        NoFrame = QtWidgets.QFrame.Shape.NoFrame if isQt6 else self.NoFrame
+        Raised = Shadow.Raised if isQt6 else self.StyledPanel
+        NoFrame = Shape.NoFrame if isQt6 else self.NoFrame
         self.setFrameStyle(Raised)
         self.edit = e  # A QTextEdit
         e.setFrameStyle(NoFrame)
