@@ -33,7 +33,7 @@ if not g.in_bridge:
     #
     # Set the isQt* constants only if all required imports succeed.
     try:
-        ### raise AttributeError  ### Testing: Force Qt5.
+        raise AttributeError  ### Testing: Force Qt5.
         from leo.core.leoQt6 import *
         #
         # Restore the exec_method!
