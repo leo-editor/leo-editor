@@ -655,6 +655,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >> (vr3)
+# pylint: disable=ungrouped-imports
 #
 # Stdlib...
 from configparser import ConfigParser

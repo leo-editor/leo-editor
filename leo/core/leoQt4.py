@@ -1,6 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210407010904.1: * @file leoQt4.py
 """Import wrapper for pyQt4"""
+#
+# Note: This file is no longer used.
+#       Recent changes have not been tested.
+#
 # pylint: disable=import-error, unused-import
 from PyQt4 import Qt
 from PyQt4 import QtCore
@@ -15,7 +19,7 @@ QtWidgets = QtGui
 printsupport = QtWidgets
 qt_version = QtCore.QT_VERSION_STR
 #
-# Default enum values. These apply to both Qt4 and Qt5
+# Default enum values. These have *NOT* been tested.
 Alignment = QtCore.Qt
 ButtonRole = QtWidgets.QMessageBox
 ContextMenuPolicy = QtCore.Qt
