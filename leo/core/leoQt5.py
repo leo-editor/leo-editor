@@ -63,4 +63,48 @@ except ImportError:
         QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
     except ImportError:
         QtWebKitWidgets = None
+#
+# Default enum values. These apply to both Qt4 and Qt5
+Alignment = QtCore.Qt
+ButtonRole = QtWidgets.QMessageBox
+ContextMenuPolicy = QtCore.Qt
+ControlType = QtWidgets.QSizePolicy
+DialogCode = QtWidgets.QDialog
+DropAction = QtCore.Qt
+EndEditHint = QtWidgets.QAbstractItemDelegate
+FocusPolicy = QtCore.Qt
+FocusReason = QtCore.Qt
+Format = QtGui.QImage
+GlobalColor = QtCore.Qt
+Icon = QtWidgets.QMessageBox
+Information = QtWidgets.QMessageBox
+ItemFlag = QtCore.Qt
+Key = QtCore.Qt
+KeyboardModifier = QtCore.Qt
+Modifier = QtCore.Qt
+MouseButton = QtCore.Qt
+MoveMode = QtGui.QTextCursor
+MoveOperation = QtGui.QTextCursor
+Orientation = QtCore.Qt
+Policy = QtWidgets.QSizePolicy
+QAction = QtWidgets.QAction
+QActionGroup = QtWidgets.QActionGroup
+QStyle = QtWidgets.QStyle
+ScrollBarPolicy = QtCore.Qt
+SelectionBehavior = QtWidgets.QAbstractItemView
+SelectionMode = QtWidgets.QAbstractItemView
+Shadow = QtWidgets.QFrame
+Shape = QtWidgets.QFrame 
+SizeAdjustPolicy = QtWidgets.QComboBox
+SliderAction = QtWidgets.QAbstractSlider
+StandardButton = QtWidgets.QDialogButtonBox
+StandardPixmap = QtWidgets.QStyle
+TextInteractionFlag = QtCore.Qt
+ToolBarArea = QtCore.Qt
+Type = QtCore.QEvent
+UnderlineStyle = QtGui.QTextCharFormat
+Weight = QtGui.QFont
+WindowType = QtCore.Qt
+WindowState = QtCore.Qt
+WrapMode = QtGui.QTextOption
 #@-leo

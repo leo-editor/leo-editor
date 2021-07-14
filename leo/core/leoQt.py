@@ -2,21 +2,19 @@
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
 #@@nopyflakes
 """
-General import wrapper for PyQt4, PyQt5 and PyQt6.
+General import wrapper for PyQt5 and PyQt6.
 
-Provides the *PyQt5* spellings of Qt modules, classes and constants:
+Provides the *PyQt6* spellings of Qt modules, classes, enums and constants:
 
 - QtWidgets, not QtGui, for all widget classes.
 - QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - QtWebKitWidgets, not QtWebKit.
-
-Note: In Python 3 QString does not exist.
+- KeyboardModifier, not KeyboardModifiers.
 """
-# pylint: disable=import-error
 import leo.core.leoGlobals as g
 #
 # Set defaults.
-isQt6 = isQt5 = isQt4 = False
+isQt6 = isQt5 = isQt4 = False  # Retain isQt4 for legacy programs.
 Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
 QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
 phonon = uic = None
@@ -33,7 +31,8 @@ if not g.in_bridge:
     #
     # Set the isQt* constants only if all required imports succeed.
     try:
-        raise AttributeError  ### Testing: Force Qt5.
+        if 0: # Testing: Force Qt5.
+            raise AttributeError  
         from leo.core.leoQt6 import *
         #
         # Restore the exec_method!
@@ -43,34 +42,19 @@ if not g.in_bridge:
         # pylint: disable=c-extension-no-member
         g.funcToMethod(exec_, QtWidgets.QWidget)
         isQt6 = True
+        print('\n===== Qt6 =====')
     except Exception:
+        # g.es_exception()
         try:
             from leo.core.leoQt5 import *
             isQt5 = True
+            print('\n===== Qt5 =====')
         except Exception:
-            try:
-                from leo.core.leoQt4 import *
-                isQt4 = True
-            except Exception:
-                pass
-    #
-    # A good trace for testing.
-        # #
-        # # Define m only when tracing.
-        # if isQt6:
-            # import leo.core.leoQt6 as m
-        # if isQt5:
-            # import leo.core.leoQt5 as m
-        # if isQt4:
-            # import leo.core.leoQt4 as m
-        # for z in sorted(dir()):
-            # if z.startswith('_'):
-                # continue
-            # val = getattr(m, z, None) 
-            # if val is None:
-                # continue
-            # if repr(val).startswith('<module'):
-                # val = val.__class__.__name__
-            # print(f"{z:>20}: {val}")
-
+            print('\nCan not load pyQt5 or pyQt6')
+            # try:
+                # from leo.core.leoQt4 import *
+                # isQt4 = True
+                # print('===== Qt4 =====')
+            # except Exception:
+                # pass
 #@-leo

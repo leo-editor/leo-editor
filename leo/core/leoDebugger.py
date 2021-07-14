@@ -108,7 +108,7 @@ class Xdb(pdb.Pdb, threading.Thread):
    - @bool use_xdb_pane_output_area: when True, all debugger output is sent
     to an output area in the Debug pane.
     
-    @bool bool use_gutter: when True, line numbers appear to the left of
+    @bool use_gutter: when True, line numbers appear to the left of
     the body pane. Clicking to the left of the gutter toggles breakpoints
     when xdb is active.
     """

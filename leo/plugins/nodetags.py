@@ -97,7 +97,8 @@ whitespace (calling .strip()).
 import re
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-from leo.core.leoQt import isQt6, QtWidgets, QtCore
+from leo.core.leoQt import QtCore, QtWidgets
+from leo.core.leoQt import MouseButton
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
 def init ():
@@ -372,8 +373,7 @@ if QtWidgets:
                 tc = c.theTagController
                 ui = tc.ui
                 # Right click on a tag to remove it from the node
-                MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
-                if event.button() == MouseButtons.RightButton:
+                if event.button() == MouseButton.RightButton:
                     tc.remove_tag(p,tag)
                 # Other clicks make the jumplist open that tag for browsing
                 else:

@@ -31,7 +31,8 @@ import urllib.request as urllib
 
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import KeyboardModifier
 # Third-party imports
 try:
     # pylint: disable=import-error
@@ -198,9 +199,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent (graphcanvas.py)
     def wheelEvent(self, event):
         
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-
-        if int(event.modifiers() & KeyboardModifiers.ControlModifier):
+        if int(event.modifiers() & KeyboardModifier.ControlModifier):
 
             scale = 1.+0.1*(event.delta() / 120)
 
@@ -993,8 +992,7 @@ class graphcanvasController:
         blc = getattr(self.c, 'backlinkController')
         if not blc:
             return
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-        if not (event.modifiers() & KeyboardModifiers.ControlModifier):
+        if not (event.modifiers() & KeyboardModifier.ControlModifier):
             return
         if linkItem in self.link:
             link = self.link[linkItem]

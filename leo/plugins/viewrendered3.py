@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.31
+About Viewrendered3 V3.4
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -70,8 +70,8 @@ Alt-0 for VR3 and Alt-F10 for VR.
 Limitations and Quirks
 ======================
 
-    #. The plugin requires QT5 and Python 3.6+. All Leo versions since 6.0 also
-       use them, so this requirement should always be met.
+    #. The plugin requires pyqt5 or pyqt6. All Leo versions since 6.0 can
+       use at least pyqt5 so this requirement should always be met.
 
     #. The RsT processor (``docutils``) is fussy about having blank lines after
        blocks.  A node may render correctly on its own, but will show errors
@@ -654,7 +654,8 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 """
 
 #@+<< imports >>
-#@+node:TomP.20191215195433.4: ** << imports >>
+#@+node:TomP.20191215195433.4: ** << imports >> (vr3)
+# pylint: disable=ungrouped-imports
 #
 # Stdlib...
 from configparser import ConfigParser
@@ -684,16 +685,17 @@ from urllib.request import urlopen
 import leo.core.leoGlobals as g
 from leo.core.leoApp import LoadManager as LM
 #@+<< Qt Imports >>
-#@+node:tom.20210517102737.1: *3* << Qt Imports >>
+#@+node:tom.20210517102737.1: *3* << Qt Imports >> (vr3)
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
+    from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
+    from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
-    #QtWidgets = False
 
 if not QtSvg and not isQt5:
     try:
@@ -701,6 +703,7 @@ if not QtSvg and not isQt5:
     except ImportError:
         g.es('Viewrendered3: cannot import QTSvg module')
         raise ImportError from None
+
 
 QWebView = None
 if isQt5:
@@ -771,11 +774,15 @@ except ImportError:
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
-    from nbconvert import HTMLExporter
-    # from traitlets.config import Config
 except ImportError:
     nbformat = None
     print('VR3: *** No nbformat')
+try:
+    from nbconvert import HTMLExporter
+    # from traitlets.config import Config
+except ImportError:
+    HTMLExporter = None
+    print('VR3: *** No nbconvert')
 try:
     from pygments import cmdline
 except ImportError:
@@ -1097,7 +1104,6 @@ def viewrendered(event):
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
     vr3._ns_id = VR3_NS_ID # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
-    Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
 
     if splitter:
         vr3.store_layout('closed')
@@ -1105,7 +1111,7 @@ def viewrendered(event):
         ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr3)
-        elif splitter.orientation() == Orientations.Horizontal:
+        elif splitter.orientation() == Orientation.Horizontal:
             splitter.setSizes(sizes)
         vr3.adjust_layout('open')
 
@@ -1541,9 +1547,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
         c = self.c
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
-        QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
-        
         _toolbar = QtWidgets.QToolBar('Menus')
         _options_button = QtWidgets.QPushButton("View Options")
         _options_button.setDefault(True)
@@ -1935,12 +1938,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-
-            if isQt6:
-                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
-            else:
-                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere
-            w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
+            # if isQt6:
+                # WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
+            # else:
+                # WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
+            # w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
+            w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""
@@ -3608,15 +3611,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         QObject-descended objects. Currently, check only for <CNTRL-=> and
         <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
         """
-
         mod = ''
         modifiers = event.modifiers()
         bare_key = event.text()
-
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-        if modifiers and modifiers == KeyboardModifiers.ControlModifier:
+        if modifiers and modifiers == KeyboardModifier.ControlModifier:
             mod = 'cntrl'
-
         if bare_key == '=' and mod == 'cntrl':
             self.zoomView()
         elif bare_key == '-' and mod == 'cntrl':
