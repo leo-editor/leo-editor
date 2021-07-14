@@ -755,6 +755,7 @@ class LeoFind:
     @cmd('replace')
     @cmd('change')
     def change(self, event=None):  # pragma: no cover (cmd)
+        """Replace the selected text with the replacement text."""
         p = self.c.p
         if self.check_args('replace'):
             self.init_in_headline()
@@ -1534,29 +1535,46 @@ class LeoFind:
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper
     def _find_all_helper(self, after, data, p, undoType):
         """Handle the find-all command from p to after."""
-        c, u = self.c, self.c.undoer
+        c, log, u = self.c, self.c.frame.log, self.c.undoer
+        
+        def put_link(line, line_number, p): # #2023
+            """Put a link to the given line at the given line_number in p.h."""
+            if g.unitTesting:
+                return
+            unl = p.get_UNL(with_proto=True, with_count=True)
+            if self.in_headline:
+                line_number = 1
+            log.put(line.strip()+'\n', nodeLink=f"{unl},{line_number}")
+            
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
             p, pos, newpos = self.find_next_match(p)
-            if pos is None: break
+            if pos is None:
+                break
             count += 1
             s = self.work_s
             i, j = g.getLine(s, pos)
             line = s[i:j]
+            row, col = g.convertPythonIndexToRowCol(s, i)
+            line_number = row + 1
             if self.findAllUniqueFlag:
                 m = self.match_obj
                 if m:
                     self.unique_matches.add(m.group(0).strip())
+                    put_link(line, line_number, p)  # #2023
             elif both:
                 result.append('%s%s\n%s%s\n' % (
                     '-' * 20, p.h,
                     "head: " if self.in_headline else "body: ",
                     line.rstrip() + '\n'))
+                put_link(line, line_number, p)  # #2023
             elif p.isVisited():
                 result.append(line.rstrip() + '\n')
+                put_link(line, line_number, p)  # #2023
             else:
                 result.append('%s%s\n%s' % ('-' * 20, p.h, line.rstrip() + '\n'))
+                put_link(line, line_number, p)  # #2023
                 p.setVisited()
         if result or self.unique_matches:
             undoData = u.beforeInsertNode(c.p)

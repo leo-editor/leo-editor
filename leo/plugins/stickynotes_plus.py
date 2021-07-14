@@ -13,7 +13,8 @@ alt-x stickynote to pop out current node as a note.
 #@+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
 import webbrowser
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QAction, KeyboardModifier
 # Third-party tools.
 try:
     # pylint: disable=import-error
@@ -27,11 +28,7 @@ except SyntaxError:
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
 # Abbreviations...
-Qt = QtCore.Qt
-# Widgets
-QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 QMenu = QtWidgets.QMenu
 QPlainTextEdit = QtWidgets.QPlainTextEdit
 QTextEdit = QtWidgets.QTextEdit
@@ -348,8 +345,7 @@ class notetextedit(QTextEdit):
     def keyPressEvent__(self, event):
         # needed because text edit is not going to recognize short cuts because will do something with control key
         # not needed if have global shortcuts
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-        if event.modifiers() & KeyboardModifiers.ControlModifier:
+        if event.modifiers() & KeyboardModifier.ControlModifier:
             handled = False
             if event.key() == Qt.Key_A:
                 self.create_anchor()

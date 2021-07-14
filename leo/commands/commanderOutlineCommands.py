@@ -1503,6 +1503,7 @@ def moveOutlineRight(self, event=None):
     n = back.numberOfChildren()
     p.moveToNthChildOf(back, n)
     p.setDirty()
+    c.setChanged()  # #2036.
     u.afterMoveNode(p, 'Move Right', undoData)
     c.redraw(p)
     c.recolor()
@@ -1511,7 +1512,8 @@ def moveOutlineRight(self, event=None):
 def moveOutlineUp(self, event=None):
     """Move the selected node up if possible."""
     c = self; u = c.undoer; p = c.p
-    if not p: return
+    if not p:
+        return
     if not c.canMoveOutlineUp():  # Support for hoist.
         if c.hoistStack: cantMoveMessage(c)
         c.treeFocusHelper()

@@ -7751,6 +7751,77 @@ def uncomment_special_lines(self, comment, i, lines, p, result, s):
         # A directive line or a comment line.
         result.append(s)
     return i
+#@+node:ekr.20200726125841.1: *3* fs.scan_for_values (token based, not used)
+def scan_for_values(self):  # pragma: no cover
+    """
+    **Important**: This method is not used. It shows how to "parse"
+    the RHS of an % operator using tokens instead of a parse tree. 
+    
+    This is a recursive descent parser. It is comprable in complexity
+    to fs.scan_format_string.
+    
+    Return a list of possibly parenthesized values for the format string.
+    
+    This method never actually consumes tokens.
+    
+    If all goes well, we'll skip all tokens in the tokens list.
+    """
+
+    # pylint: disable=no-member # This is example code.
+    # Skip the '%'
+    new_token = self.new_token
+    assert self.look_ahead(0) == ('op', '%')
+    token_i, tokens = self.skip_ahead(0, 'op', '%')
+    # Skip '(' if it's next
+    include_paren = self.look_ahead(token_i) == ('op', '(')
+    if include_paren:
+        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
+        tokens.extend(skipped_tokens)
+    # Find all tokens up to the first ')' or 'for'
+    values, value_list = [], []
+    while token_i < len(self.tokens):
+        # Don't use look_ahead here: handle each token exactly once.
+        token = self.tokens[token_i]
+        token_i += 1
+        tokens.append(token)
+        kind, val = token.kind, token.value
+        if kind == 'ws':
+            continue
+        if kind in ('newline', 'nl'):
+            if include_paren or val.endswith('\\\n'):
+                # Continue scanning, ignoring the newline.
+                continue
+            # The newline ends the scan.
+            values.append(value_list)
+                # Retain the tokens!
+            if not include_paren:  # Bug fix.
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('op', ')'):
+            values.append(value_list)
+            if not include_paren:
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('name', 'for'):
+            self.add_trailing_ws = True
+            tokens.pop()  # Rescan the 'for'
+            values.append(value_list)
+            break
+        if (kind, val) == ('op', ','):
+            values.append(value_list)
+            value_list = []
+        elif kind == 'op' and val in '([{':
+            values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
+            value_list.extend(values_list2)
+            tokens.extend(self.tokens[token_i:token_i2])
+            token_i = token_i2
+        elif kind == 'name':
+            # Ensure separation of names.
+            value_list.append(new_token(kind, val))
+            value_list.append(new_token('ws', ' '))
+        else:
+            value_list.append(new_token(kind, val))
+    return values, tokens
 #@+node:ekr.20150605175037.1: ** From leoCheck.py & checkerCommands.py
 @first # -*- coding: utf-8 -*-
 """Experimental code checking for Leo."""
@@ -10105,6 +10176,12 @@ def insertTree(self, p):
         self.write(f"\n\n::\n\n{''.join(tree)}\n\n")
     else:
         g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210712134630.1: ** From leoPersistence.py
+@g.command('at-file-to-at-auto')
+def at_file_to_at_auto_command(event):
+    c = event.get('c')
+    if c and c.persistenceController:
+        c.persistenceController.convert_at_file_to_at_auto(c.p)
 #@+node:ekr.20210312150753.1: ** leoTangle.py
 '''
 Support for @root and Leo's tangle and untangle commands.

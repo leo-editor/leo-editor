@@ -7,7 +7,7 @@
 import os
 import sys
 import re
-from typing import Dict, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
@@ -167,10 +167,10 @@ class ParserBaseClass:
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
+                    # #2011: put rclicks in aList. Do not inject into command_p.
                     command_p = p.copy()
-                    aList.append((command_p, script))
                     rclicks = build_rclick_tree(command_p, top_level=True)
-                    command_p.rclicks = rclicks
+                    aList.append((command_p, script, rclicks))
                 p.moveToThreadNext()
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
@@ -388,7 +388,7 @@ class ParserBaseClass:
         """Handle @menuat setting."""
         if g.app.config.menusList:
             # get the patch fragment
-            patch = []
+            patch: List[Any] = []
             if p.hasChildren():
                 # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
                 self.doItems(p.copy(), patch)
@@ -478,7 +478,7 @@ class ParserBaseClass:
 
         c = self.c
         p = p.copy()
-        aList = []
+        aList: List[Any] = []   ### This entire logic is mysterious, and likely buggy.
         after = p.nodeAfterTree()
         while p and p != after:
             self.debug_count += 1
@@ -491,7 +491,7 @@ class ParserBaseClass:
                         if name2 == name:
                             self.error(f"Replacing previous @menu {name}")
                             break
-                    aList2 = []
+                    aList2: List[Any] = []   ### Huh?
                     kind = f"{'@menu'} {name}"
                     self.doItems(p, aList2)
                     aList.append((kind, aList2, None),)
@@ -525,9 +525,9 @@ class ParserBaseClass:
                             # Only the first body line is significant.
                             # This allows following comment lines.
                         if tag == '@menu':
-                            aList2 = []
+                            aList2: List[Any] = []  ### Huh?
                             kind = f"{tag} {itemName}"
-                            self.doItems(p, aList2)
+                            self.doItems(p, aList2)  ### Huh?
                             aList.append((kind, aList2, body),)
                                 # #848: Body was None.
                             p.moveToNodeAfterTree()
@@ -594,7 +594,7 @@ class ParserBaseClass:
         """
         popupName = name
         # popupType = val
-        aList = []
+        aList: List[Any] = []
         p = p.copy()
         self.doPopupItems(p, aList)
         if not hasattr(g.app.config, 'context_menus'):
@@ -602,7 +602,8 @@ class ParserBaseClass:
         g.app.config.context_menus[popupName] = aList
     #@+node:bobjack.20080324141020.5: *5* pbc.doPopupItems
     def doPopupItems(self, p, aList):
-        p = p.copy(); after = p.nodeAfterTree()
+        p = p.copy()
+        after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
             h = p.h
@@ -611,10 +612,10 @@ class ParserBaseClass:
                     itemName = h[len(tag) :].strip()
                     if itemName:
                         if tag == '@menu':
-                            aList2 = []
+                            aList2: List[Any] = [] 
                             kind = f"{itemName}"
                             body = p.b
-                            self.doPopupItems(p, aList2)
+                            self.doPopupItems(p, aList2)  ### Huh?
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
                             break
@@ -696,7 +697,7 @@ class ParserBaseClass:
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
     def parseFont(self, p):
-        d = {
+        d: Dict[str, Any] = {
             'comments': [],
             'family': None,
             'size': None,
@@ -888,13 +889,17 @@ class ParserBaseClass:
             if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
-        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
-            unl=(p and p.get_UNL(with_proto=True)))
+        d[key] = g.GeneralSetting(kind,  # type:ignore
+            path=c.mFileName,
+            tag='setting',
+            unl=(p and p.get_UNL(with_proto=True)),
+            val=val,
+        )
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
     def traverse(self):
         """Traverse the entire settings tree."""
         c = self.c
-        self.settingsDict = g.TypedDict(
+        self.settingsDict = g.TypedDict(  # type:ignore
             name=f"settingsDict for {c.shortFileName()}",
             keyType=type('settingName'),
             valType=g.GeneralSetting)
@@ -2068,8 +2073,7 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    no_menu_dict: Dict[str, Cmdr] = {}
-        # Keys are file names.
+    no_menu_dict: Dict[Cmdr, bool] = {}
 
     def getShortcut(self, commandName):
         """Return rawKey,accel for shortcutName"""
@@ -2268,7 +2272,7 @@ class SettingsTreeParser(ParserBaseClass):
             f = self.dispatchDict.get(kind)
             if f:
                 try:
-                    return f(p, kind, name, val)
+                    return f(p, kind, name, val)  # type:ignore
                 except Exception:
                     g.es_exception()
             else:

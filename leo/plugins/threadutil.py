@@ -4,7 +4,9 @@
 #@@tabwidth -4
 from collections import deque
 import logging
+import sys
 import time
+import traceback
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
 #
@@ -21,10 +23,10 @@ def async_syscmd(cmd, onfinished):
     def cmd_handler(exitstatus):
         out = proc.readAllStandardOutput()
         err = proc.readAllStandardError()
-        #print "got",out, "e", err, "r", exitstatus
         onfinished(exitstatus, out, err)
 
-    proc.finished[int].connect(cmd_handler)
+    # proc.finished[int].connect(cmd_handler)
+    proc.finished.connect(cmd_handler)
 
     proc.start(cmd)
     #garbage.append(proc)
@@ -110,12 +112,22 @@ class NowOrLater:
         # if last called one sec ago, call now
 
         def callit():
-
-            self.lasttime = time.time()
-            work = self.l
-            self.l = []
-            self.w(work)
-            self.scheduled = False
+            try:
+                self.lasttime = time.time()
+                work = self.l
+                self.l = []
+                self.w(work)
+            except Exception:
+                typ, val, tb = sys.exc_info()
+                print('')
+                print('threadutil.py: unexpected exception in NowOrLater.callit')
+                print('')
+                # Like g.es_exception()
+                lines = traceback.format_exception(typ, val, tb)
+                for line in lines:
+                    print(line.rstrip())
+            finally:
+                self.scheduled = False
 
         if (now - self.lasttime) > self.granularity:
             #print "now"
@@ -151,6 +163,16 @@ class Repeater(QtCore.QThread):
                 res = self.f()
             except StopIteration:
                 return
+            except Exception:
+                typ, val, tb = sys.exc_info()
+                print('')
+                print('threadutil.py: unexpected exception in Repeater.run')
+                print('')
+                # Like g.es_exception()
+                lines = traceback.format_exception(typ, val, tb)
+                for line in lines:
+                    print(line.rstrip())
+                return
             self.fragment.emit(res)
 
     #@-others
@@ -165,8 +187,18 @@ class RRunner(QtCore.QThread):
 
     #@+node:ekr.20121126095734.12426: *3* run
     def run(self):
-        self.res = self.f()
-
+        
+        try:
+            self.res = self.f()
+        except Exception:
+            typ, val, tb = sys.exc_info()
+            print('')
+            print('threadutil.py: unexpected exception in RRunner.run')
+            print('')
+            # Like g.es_exception()
+            lines = traceback.format_exception(typ, val, tb)
+            for line in lines:
+                print(line.rstrip())
     #@-others
 #@+node:ekr.20140910173844.17824: ** class SysProcessRunner
 class SysProcessRunner:
@@ -263,7 +295,18 @@ class UnitWorker(QtCore.QThread):
     #@+node:ekr.20121126095734.12441: *3* do_work
     def do_work(self, inp):
         #print("Doing work", self.worker, self.input)
-        self.output = self.worker(inp)
+        try:
+            self.output = self.worker(inp)
+        except Exception:
+            typ, val, tb = sys.exc_info()
+            print('')
+            print('threadutil.py: unexpected exception in UnitWorker.do_work.')
+            print('')
+            # Like g.es_exception()
+            lines = traceback.format_exception(typ, val, tb)
+            for line in lines:
+                print(line.rstrip())
+            self.output = ''
         #self.output_f(output)
 
         self.resultReady.emit()

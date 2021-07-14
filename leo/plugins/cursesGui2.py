@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170419092835.1: * @file ../plugins/cursesGui2.py
 #@@first
+# Disable all mypy checks.
+# type:ignore
 #@+<< cursesGui2 docstring >>
 #@+node:ekr.20170608073034.1: ** << cursesGui2 docstring >>
 """
@@ -41,7 +43,7 @@ except ImportError:
     raise
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
-from leo.external.npyscreen.wgwidget import (  # type: ignore
+from leo.external.npyscreen.wgwidget import (  # type:ignore
     EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)
 try:
     from tkinter import Tk
@@ -560,7 +562,6 @@ class LeoTreeLine(npyscreen.TreeLine):
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         # This draws the actual line.
-        ### super(npyscreen.TreeLine, self)._print()
         super()._print()
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
     def display_value(self, vl):
@@ -3764,7 +3765,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513122253.1: *5* LeoMLTree._init_update
     def _init_update(self):
         '''Put self.cursor_line and self.start_display_at in range.'''
-        # pylint: disable=access-member-before-definition
+        # pylint: disable=access-member-before-definition,consider-using-max-builtin
         display_length = len(self._my_widgets)
         self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
         if self.slow_scroll:

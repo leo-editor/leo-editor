@@ -12,20 +12,26 @@
 import re
 import string
 import time
-from typing import Callable, Dict
+from typing import Any, Callable, Dict, List, Tuple
 #
 # Third-part tools.
 try:
     import pygments
 except ImportError:
-    pygments = None  # type: ignore
+    pygments = None  # type:ignore
 #
 # Leo imports...
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, Qsci, QtGui, QtWidgets
+
 from leo.core.leoColor import leo_color_database
-
-
+#
+# Qt imports. May fail from the bridge.
+try:  # #1973
+    from leo.core.leoQt import Qsci, QtGui, QtWidgets
+    from leo.core.leoQt import UnderlineStyle
+except Exception:
+    Qsci = QtGui = QtWidgets = None
+    UnderlineStyle = None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
@@ -707,14 +713,14 @@ class BaseJEditColorizer(BaseColorizer):
         #
         # #1334: Careful: getattr(mode, ivar, {}) might be None!
         #
-        d = getattr(mode, 'keywordsDictDict', {}) or {}
+        d: Dict[Any, Any] = getattr(mode, 'keywordsDictDict', {}) or {}
         self.keywordsDict = d.get(rulesetName, {})
         self.setKeywords()
         d = getattr(mode, 'attributesDictDict', {}) or {}
-        self.attributesDict = d.get(rulesetName, {})
+        self.attributesDict: Dict[str, Any] = d.get(rulesetName, {})
         self.setModeAttributes()
         d = getattr(mode, 'rulesDictDict', {}) or {}
-        self.rulesDict = d.get(rulesetName, {})
+        self.rulesDict: Dict[str, Any] = d.get(rulesetName, {})
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
         self.mode = mode
@@ -791,7 +797,7 @@ class BaseJEditColorizer(BaseColorizer):
                 # g.es_print('removing %s from word_chars' % (repr(ch)))
                 chars.remove(ch)
         # Convert chars to a dict for faster access.
-        self.word_chars = {}
+        self.word_chars: Dict[str, str] = {}
         for z in chars:
             self.word_chars[z] = z
     #@+node:ekr.20110605121601.18584: *4* bjc.setModeAttributes
@@ -1034,7 +1040,6 @@ class BaseJEditColorizer(BaseColorizer):
                 return
         underline = wrapper.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
-        UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle if isQt6 else QtGui.QTextCharFormat
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)
@@ -2751,7 +2756,7 @@ class PygmentsColorizer(BaseJEditColorizer):
         from pygments.lexer import inherit
 
 
-        class PatchedLexer(lexer.__class__):
+        class PatchedLexer(lexer.__class__):  # type:ignore
 
             leo_sec_ref_pat = r'(?-m:\<\<(.*?)\>\>)'
             tokens = {
@@ -2844,7 +2849,7 @@ class QScintillaColorizer(BaseColorizer):
             self.nullLexer = NullScintillaLexer(c)
         else:
             self.lexersDict = {}
-            self.nullLexer = g.NullObject()
+            self.nullLexer = g.NullObject()  # type:ignore
 
     def reloadSettings(self):
         c = self.c
@@ -2893,11 +2898,10 @@ class QScintillaColorizer(BaseColorizer):
         lexer.setEolFill(False, -1)
         if hasattr(lexer, 'setStringsOverNewlineAllowed'):
             lexer.setStringsOverNewlineAllowed(False)
-        table = None
+        table: List[Tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
         if aList:
             aList = [s.split(',') for s in aList]
-            table = []
             for z in aList:
                 if len(z) == 2:
                     color, style = z
@@ -2909,7 +2913,7 @@ class QScintillaColorizer(BaseColorizer):
             leo_green = '#00aa00'
             # See http://pyqt.sourceforge.net/Docs/QScintilla2/classQsciLexerPython.html
             # for list of selector names.
-            table = (
+            table = [
                 # EKR's personal settings are reasonable defaults.
                 (black, 'ClassName'),
                 (firebrick3, 'Comment'),
@@ -2924,7 +2928,7 @@ class QScintillaColorizer(BaseColorizer):
                 (leo_green, 'UnclosedString'),
                 # End of line where string is not closed
                 # style.python.13=fore:#000000,$(font.monospace),back:#E0C0E0,eolfilled
-            )
+            ]
         for color, style in table:
             if hasattr(lexer, style):
                 style_number = getattr(lexer, style)

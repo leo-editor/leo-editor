@@ -13,10 +13,14 @@ import re
 import string
 import sys
 import time
-assert time
+from typing import Dict, List, Tuple
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
 from leo.external import codewise
+try:
+    import jedi
+except ImportError:
+    jedi = None
 #@-<< imports >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
@@ -620,7 +624,7 @@ class AutoCompleterClass:
         aList.sort()
         return aList
     #@+node:ekr.20110510120621.14542: *6* ac.guess_class
-    def guess_class(self, c, varname):
+    def guess_class(self, c, varname) -> Tuple[str, List[str]]:
         """Return kind, class_list"""
         # if varname == 'g':
             # return 'module',['leoGlobals']
@@ -635,12 +639,9 @@ class AutoCompleterClass:
                 m = re.search(r'class\s+(\w+)', h)
                 if m:
                     return 'class', [m.group(1)]
-        if 1:
-            aList = []
-        else:
-            # This is not needed now that we add the completions for 'self'.
-            aList = ContextSniffer().get_classes(c.p.b, varname)
-        return 'class', aList
+        # This is not needed now that we add the completions for 'self'.
+            # aList = ContextSniffer().get_classes(c.p.b, varname)
+        return 'class', []
     #@+node:ekr.20110510120621.14543: *6* ac.lookup_functions/methods/modules
     def lookup_functions(self, prefix):
         aList = codewise.cmd_functions([prefix])
@@ -704,8 +705,7 @@ class AutoCompleterClass:
                 print(f"can not happen: not found: {line!r}")
         #
         # Get the jedi completions.
-        if jedi_line is not None:
-            import jedi
+        if jedi and jedi_line is not None:
             try:
                 # https://jedi.readthedocs.io/en/latest/docs/api.html#script
                 script = jedi.Script(source, path=g.shortFileName(fileName))
@@ -969,7 +969,7 @@ class AutoCompleterClass:
         """Show the possible starting letters,
         but only if there are more than one.
         """
-        d = {}
+        d: Dict[str, int] = {}
         for z in tabList:
             tail = z[len(header) :] if z else ''
             if tail.startswith('.'): tail = tail[1:]
@@ -1443,8 +1443,6 @@ class GetArg:
         c.check_event(event)
         c.minibufferWantsFocusNow()
         char = event.char if event else ''
-        ### if state > 0:
-        ###    k.setLossage(char, stroke)
         if state == 0:
             self.do_state_zero(completion, event, handler, oneCharacter,
                 returnKind, returnState, tabList, useMinibuffer)
@@ -1860,7 +1858,10 @@ class KeyHandlerClass:
             'transpose-chars',
             'transpose-words',
             'upcase-word',
+            # LeoFind class.
+            'start-search',  # #2041.
             # KeyHandlerCommandsClass
+            'full-command',  # #2041.
             # 'auto-complete',
                 # 'negative-argument',
                 # 'number-command',
@@ -2274,7 +2275,7 @@ class KeyHandlerClass:
                 or None)
             wrapper = f.body and hasattr(f.body, 'wrapper') and f.body.wrapper or None
             canvas = f.tree and hasattr(f.tree, 'canvas') and f.tree.canvas or None
-            widgets = (c.miniBufferWidget, wrapper, canvas, bindingWidget)
+            widgets = [c.miniBufferWidget, wrapper, canvas, bindingWidget]
         for w in widgets:
             if not w: continue
             # Make the binding only if no binding for the stroke exists in the widget.
@@ -2361,7 +2362,7 @@ class KeyHandlerClass:
     ):
         """Handle 'full-command' (alt-x) mode."""
         try:
-            k = self; c = k.c
+            c, k = self.c, self
             state = k.getState('full-command')
             helpPrompt = 'Help for command: '
             c.check_event(event)
@@ -2956,7 +2957,7 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     def masterKeyHandler(self, event):
         """The master key handler for almost all key bindings."""
-        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
+        trace = 'keys' in g.app.debug
         c, k = self.c, self
         # Setup...
         if trace:
@@ -3084,7 +3085,7 @@ class KeyHandlerClass:
         #
         # #1757: Leo's default vim bindings make heavy use of modes.
         #        Retain these traces!
-        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
+        trace = 'keys' in g.app.debug
         k = self
         state = k.state.kind
         stroke = event.stroke
@@ -3413,7 +3414,6 @@ class KeyHandlerClass:
     def getBindingHelper(self, key, name, stroke, w):
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
-        # trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
         #
         # Return if the pane's name doesn't match the event's widget.
         state = k.unboundKeyAction
@@ -3612,22 +3612,27 @@ class KeyHandlerClass:
         Mimic what would happen with the keyboard and a Text editor
         instead of plain accumulation.
         """
-        k = self; c = k.c; w = self.w
-        ch = event.char if event else ''
-        if ch and ch not in ('\n', '\r'):
-            c.widgetWantsFocusNow(w)
-            i, j = w.getSelectionRange()
-            ins = w.getInsertPoint()
-            if i != j:
-                w.delete(i, j)
-            if ch == '\b':
-                s = w.getAllText()
-                if len(s) > len(k.mb_prefix):
-                    w.delete(i - 1)
-                    i -= 1
-            else:
-                w.insert(ins, ch)
-                i = ins + 1
+        c, k, w = self.c, self, self.w
+        if not event:
+            return
+        ch, stroke = event.char, event.stroke
+        if ch in "\n\r":
+            return
+        if stroke and not k.isPlainKey(stroke):
+            return  # #2041.
+        c.widgetWantsFocusNow(w)
+        i, j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        if i != j:
+            w.delete(i, j)
+        if ch == '\b':
+            s = w.getAllText()
+            if len(s) > len(k.mb_prefix):
+                w.delete(i - 1)
+                i -= 1
+        else:
+            w.insert(ins, ch)
+            i = ins + 1
     #@+node:ekr.20120208064440.10190: *3* k.Modes
     #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands(self):

@@ -32,6 +32,7 @@ Settings:
 import difflib
 import os
 import pprint
+from typing import List
 import unittest
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -258,7 +259,7 @@ class ShadowController:
         """
         x = self
         lines = x.old_sent_lines
-        sentinels = []
+        sentinels: List[str] = []
             # The sentinels preceding each non-sentinel line,
             # not including @verbatim sentinels.
         new_lines = []

@@ -47,6 +47,7 @@ disable=
         assignment-from-none, # Causes problems when base class return None.
         attribute-defined-outside-init,
         broad-except, # except Exception is justified if followed by g.es_exception.
+        c-extension-no-member,  # many errors re pyQt6 now that pyQt4 is no longer supported.
         condition-evals-to-constant,
         consider-using-in,
         consider-using-dict-comprehension,

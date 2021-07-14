@@ -384,7 +384,7 @@ class backlinkController:
         )
         if url is None or not url.strip():
             return
-        if '://' not in url:
+        if '://' not in url:  # pylint: disable=unsupported-membership-test
             url = 'unl://' + url
             g.es("Assuming unl:// url, use file:// explicitly for files")
         self.initBacklink(c.p.v)

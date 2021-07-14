@@ -210,7 +210,7 @@ class LiveCodeDisplay:
             else:
                 self.codeblocks.append(self.CodeBlock(block[n], node_result))
                 result.append(node_result)
-        self.text.setText('\n'.join(result)) ###was '\n\n.join
+        self.text.setText('\n'.join(result))
         if run_count:
             self.status.setText("ACTIVE: %d blocks" % run_count)
     #@-others

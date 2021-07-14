@@ -7,6 +7,7 @@
 #@+node:ekr.20150514050149.1: **  << imports >> (editCommands.py)
 import os
 import re
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
@@ -106,7 +107,7 @@ def delete_trace_statements(event=None):
 def mark_first_parents(event):
     """Mark the node and all its parents."""
     c = event.get('c')
-    changed = []
+    changed: List[Any] = []
     if not c:
         return changed
     for parent in c.p.self_and_parents():
@@ -230,7 +231,7 @@ def show_clones(event=None):
 def unmark_first_parents(event=None):
     """Mark the node and all its parents."""
     c = event.get('c')
-    changed = []
+    changed: List[Any] = []
     if not c:
         return changed
     for parent in c.p.self_and_parents():
@@ -655,7 +656,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         self.beginCommand(w, undoType='center-line')
         n = (fillColumn - len(line)) / 2
-        ws = ' ' * n
+        ws = ' ' * int(n)  # mypy.
         k = g.skip_ws(s, i)
         if k > i: w.delete(i, k - i)
         w.insert(i, ws)
@@ -990,14 +991,14 @@ class EditCommandsClass(BaseEditCommandsClass):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
             # g.es((p.h,uaLoc.unknownAttributes['icons']))
-            uaLoc._p_changed = 1
+            uaLoc._p_changed = True
             if setDirty:
                 p.setDirty()
         else:  # delete the uA.
             if hasattr(uaLoc, 'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
                     del uaLoc.unknownAttributes['icons']
-                    uaLoc._p_changed = 1
+                    uaLoc._p_changed = True
                     if setDirty:
                         p.setDirty()
     #@+node:ekr.20150514063305.236: *4* ec.deleteFirstIcon
@@ -1050,7 +1051,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = p or c.p
         if p.u:
-            p.v._p_changed = 1
+            p.v._p_changed = True
             self.setIconList(p, [])
             p.setDirty()
             c.setChanged()
@@ -1071,8 +1072,9 @@ class EditCommandsClass(BaseEditCommandsClass):
                 ('Icon', '*.ico'),
             ],
             defaultextension=None, multiple=True)
-        if not paths: return
-        aList = []
+        if not paths:
+            return
+        aList: List[Any] = []
         xoffset = 2
         for path in paths:
             xoffset = self.appendImageDictToList(aList, path, xoffset)
@@ -1085,7 +1087,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertIconFromFile(self, path, p=None, pos=None, **kargs):
         c = self.c
         if not p: p = c.p
-        aList = []
+        aList: List[Any] = []
         xoffset = 2
         xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
         aList2 = self.getIconList(p)
@@ -1245,8 +1247,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w:
             return
-        if w.hasSelection(): s = w.getSelectedText()
-        else: s = w.getAllText()
+        if w.hasSelection():
+            s = w.getSelectedText()
+        else:
+            s = w.getAllText()
         if not s:
             return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
@@ -1256,10 +1260,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.beginCommand(w, undoType=undoType)
         lines = g.splitLines(s)
         if add:
-            result = [ch + line for line in lines]
+            result_list = [ch + line for line in lines]
         else:
-            result = [line[len(ch) :] if line.startswith(ch) else line for line in lines]
-        result = ''.join(result)
+            result_list = [line[len(ch) :] if line.startswith(ch) else line for line in lines]
+        result = ''.join(result_list)
         if w.hasSelection():
             i, j = w.getSelectionRange()
             w.delete(i, j)
@@ -1622,17 +1626,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = g.splitLines(w.getAllText())
         #
         # Calculate the result.
-        changed, result = False, []
+        result_list = []
+        changed = False
         for line in lines:
             if line.strip():
-                result.append(line)
+                result_list.append(line)
             else:
                 changed = True
         if not changed:
             return  # pragma: no cover (defensive)
         #
         # Set p.b and w's text first.
-        result = ''.join(result)
+        result = ''.join(result_list)
         p.b = result
         w.setAllText(result)
         i, j = 0, max(0, len(result) - 1)
@@ -1809,6 +1814,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def flashMatchingBracketsHelper(self, c, ch, i, p, w):
         """Flash matching brackets at char ch at position i at widget w."""
         d = {}
+        # pylint: disable=consider-using-enumerate
         if ch in self.openBracketsList:
             for z in range(len(self.openBracketsList)):
                 d[self.openBracketsList[z]] = self.closeBracketsList[z]
@@ -1854,6 +1860,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.updateAutoIndent(p, w)
         w.seeInsertPoint()
     #@+node:ekr.20150514063305.275: *5* ec.updateAutoIndent
+    trailing_colon_pat = re.compile(r'^.*:\s#.*$')
+
     def updateAutoIndent(self, p, w):
         """Handle auto indentation."""
         c = self.c
@@ -1866,7 +1874,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = s[i : j - 1]
         # Add the leading whitespace to the present line.
         junk, width = g.skip_leading_ws_with_indent(s, 0, tab_width)
-        if s and s[-1] == ':':
+        if s.rstrip() and (s.rstrip()[-1] == ':' or self.trailing_colon_pat.match(s)):  #2040.
             # For Python: increase auto-indent after colons.
             if g.findLanguageDirectives(c, p) == 'python':
                 width += abs(tab_width)
@@ -1916,7 +1924,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if i != j: w.delete(i, j)
                 w.insert(i, ch)
                 w.setInsertPoint(i + 1)
-    #@+node:ekr.20150514063305.277: *5* ec.updateTab
+    #@+node:ekr.20150514063305.277: *5* ec.updateTab & helper
     def updateTab(self, event, p, w, smartTab=True):
         """
         A helper for selfInsertCommand.

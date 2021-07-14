@@ -16,21 +16,21 @@ try:
     import flake8
     from flake8 import engine, main
 except Exception:  # May not be ImportError.
-    flake8 = None  # type: ignore
+    flake8 = None  # type:ignore
 try:
     import mypy
 except Exception:
-    mypy = None  # type: ignore
+    mypy = None  # type:ignore
 try:
     import pyflakes
     from pyflakes import api, reporter
 except Exception:
-    pyflakes = None  # type: ignore
+    pyflakes = None  # type:ignore
 try:
     # pylint: disable=import-error
     from pylint import lint
 except Exception:
-    lint = None  # type: ignore
+    lint = None  # type:ignore
 #
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -167,6 +167,12 @@ def flake8_command(event):
         Flake8Command(c).run()
     else:
         g.es_print('can not import flake8')
+#@+node:ekr.20210711070421.1: *3* kill-mypy
+@g.command('kill-mypy')
+@g.command('mypy-kill')
+def kill_mypy(event):
+    """Kill any running mypy processes and clear the queue."""
+    g.app.backgroundProcessManager.kill('mypy')
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
@@ -254,10 +260,11 @@ class MypyCommand:
         """Run pyflakes on all files in paths."""
         c = self.c
         bpm = g.app.backgroundProcessManager
+        bpm.unknown_path_names = []
         for root in roots:
             fn = self.finalize(root)
             bpm.start_process(c,
-                command=f"mypy {fn}",
+                command='mypy',
                 fn=fn,
                 kind='mypy',
                 link_pattern=self.link_pattern,
@@ -580,7 +587,7 @@ class PylintCommand:
         command = (
             f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
-            command = shlex.split(command)
+            command = shlex.split(command)  # type:ignore
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager

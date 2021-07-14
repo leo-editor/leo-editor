@@ -7,8 +7,9 @@
 #@+node:ekr.20140907131341.18709: ** << imports >> (qt_tree.py)
 import re
 import time
-assert time
+from typing import Any, List
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoNodes
@@ -148,7 +149,7 @@ class LeoQtTree(leoFrame.LeoTree):
         """
         t1 = time.process_time()
         c = self.c
-        parents = []
+        parents: List[Any] = []
         # Clear the widget.
         w = self.treeWidget
         w.clear()
@@ -160,14 +161,13 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             first_p = c.rootPosition()
             target_p = None
-        ItemFlags = QtCore.Qt.ItemFlags if isQt6 else QtCore.Qt
         n = 0
         for p in self.yieldVisible(first_p, target_p):
             n += 1
             level = p.level()
             parent_item = w if level == 0 else parents[level - 1]
             item = QtWidgets.QTreeWidgetItem(parent_item)
-            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
+            item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             item.setChildIndicatorPolicy(
                 item.ShowIndicator if p.hasChildren()
                 else item.DontShowIndicator)
@@ -336,61 +336,98 @@ class LeoQtTree(leoFrame.LeoTree):
         #@+node:ekr.20171122064635.1: *7* declutter_replace
         def declutter_replace(arg, cmd):
             """
-            Execute cmd and return True if cmd is any replace command.
+            Executes cmd if cmd is any replace command and returns
+            pair (commander, s), where 'commander' corresponds
+            to the executed replacement operation, 's' is the substituted string.
+            If cmd is not a replacement command returns (None, None)
             """
             # pylint: disable=undefined-loop-variable
+
+            replacement, s = None, None
+
             if cmd == 'REPLACE':
                 s = pattern.sub(arg, text)
-                item.setText(0, s)
-                return True
-            if cmd == 'REPLACE-HEAD':
-                s = text[: m.start()]
-                item.setText(0, s.rstrip())
-                return True
-            if cmd == 'REPLACE-TAIL':
-                s = text[m.end() :]
-                item.setText(0, s.lstrip())
-                return True
-            if cmd == 'REPLACE-REST':
-                s = text[:m.start] + text[m.end() :]
-                item.setText(0, s.strip())
-                return True
-            return False
+            elif cmd == 'REPLACE-HEAD':
+                s = text[: m.start()].rstrip()
+            elif cmd == 'REPLACE-TAIL':
+                s = text[m.end() :].lstrip()
+            elif cmd == 'REPLACE-REST':
+                s = (text[:m.start] + text[m.end() :]).strip()
+
+            # 's' is string when 'cmd' is recognised
+            # and is None otherwise
+            if isinstance(s,str):
+                # Save the operation
+                replacement = lambda item, s: item.setText(0, s)
+                # ... and apply it
+                replacement(item, s)
+
+            return replacement, s
         #@+node:ekr.20171122055719.1: *7* declutter_style
         def declutter_style(arg, cmd):
-            """Handle style options."""
-            arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
+            """
+            Handles style options and returns pair '(commander, param)',
+            where 'commander' is the applied style-modifying operation,
+            param - the saved argument of that operation.
+            Returns (None, param) if 'cmd' is not a style option.
+            """
+            # pylint: disable=function-redefined
+            param = c.styleSheetManager.expand_css_constants(arg).split()[0]
+            modifier = None
             if cmd == 'ICON':
-                new_icons.append(arg)
+                def modifier(item, param):
+                    # Does not fit well this function. And we cannot
+                    # wrap list 'new_icons' in a saved argument as 
+                    # the list is recreated before each call.
+                    new_icons.append(param)
             elif cmd == 'BG':
-                item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
+                def modifier(item, param):
+                    item.setBackground(0, QtGui.QBrush(QtGui.QColor(param)))
             elif cmd == 'FG':
-                item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
+                def modifier(item, param):
+                    item.setForeground(0, QtGui.QBrush(QtGui.QColor(param)))
             elif cmd == 'FONT':
-                item.setFont(0, QtGui.QFont(arg))
+                def modifier(item, param):
+                    item.setFont(0, QtGui.QFont(param))
             elif cmd == 'ITALIC':
-                font = item.font(0)
-                font.setItalic(bool(int(arg)))
-                item.setFont(0, font)
+                def modifier(item, param):
+                    font = item.font(0)
+                    font.setItalic(bool(int(param)))
+                    item.setFont(0, font)
             elif cmd == 'WEIGHT':
-                arg = getattr(QtGui.QFont, arg, 75)
-                font = item.font(0)
-                font.setWeight(arg)
-                item.setFont(0, font)
+                def modifier(item, param):
+                    arg = getattr(QtGui.QFont, param, 75)
+                    font = item.font(0)
+                    font.setWeight(arg)
+                    item.setFont(0, font)
             elif cmd == 'PX':
-                font = item.font(0)
-                font.setPixelSize(int(arg))
-                item.setFont(0, font)
+                def modifier(item, param):
+                    font = item.font(0)
+                    font.setPixelSize(int(param))
+                    item.setFont(0, font)
             elif cmd == 'PT':
-                font = item.font(0)
-                font.setPointSize(int(arg))
-                item.setFont(0, font)
+                def modifier(item, param):
+                    font = item.font(0)
+                    font.setPointSize(int(param))
+                    item.setFont(0, font)
+            # Apply the style update
+            if modifier:
+                modifier(item, param)
+            return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
         def apply_declutter_rules(cmds):
-            """Applies all commands for the matched rule."""
+            """
+            Applies all commands for the matched rule. Returns the list
+            of the applied operations paired with their single parameter.
+            """
+            modifiers = []
             for cmd, arg in cmds:
-                if not declutter_replace(arg, cmd):
-                    declutter_style(arg, cmd)
+                modifier, param = declutter_replace(arg, cmd)
+                if not modifier:
+                    modifier, param = declutter_style(arg, cmd)
+                if modifier:
+                    modifiers.append((modifier, param))
+            return modifiers
         #@+node:vitalije.20200329162015.1: *7* preload_images
         def preload_images():
             for f in new_icons:
@@ -398,17 +435,25 @@ class LeoQtTree(leoFrame.LeoTree):
                     loaded_images[f] = g.app.gui.getImageImage(f)
         #@-others
         if (p.h, iconVal) in dd:
-            text, new_icons = dd[(p.h, iconVal)]
-            item.setText(0, text)
+            # Apply saved adjustments to the text and to the _style_
+            # of the node
+            new_icons, modifiers_and_args = dd[(p.h, iconVal)]
+            for modifier, arg in modifiers_and_args:
+                modifier(item, arg)
+
             new_icons = sorted_icons(p) + new_icons
         else:
             text = p.h
             new_icons = []
+            modifiers_and_args = []
             for pattern, cmds in self.get_declutter_patterns():
                 m = pattern.match(text) or pattern.search(text)
                 if m:
-                    apply_declutter_rules(cmds)
-            dd[(p.h, iconVal)] = item.text(0), new_icons
+                    modifiers_and_args.extend(apply_declutter_rules(cmds))
+
+            # Save the lists of the icons and the adjusting operations
+            # for future reuse.
+            dd[(p.h, iconVal)] = new_icons, modifiers_and_args
             new_icons = sorted_icons(p) + new_icons
             preload_images()
         self.nodeIconsDict[p.gnx] = new_icons
@@ -426,7 +471,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.declutter_patterns is not None:
             return self.declutter_patterns
         c = self.c
-        patterns = []
+        patterns: List[Any] = []
         warned = False
         lines = c.config.getData("tree-declutter-patterns")
         for line in lines:
@@ -699,7 +744,6 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
-            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             p = self.item2position(item)
             if p:
                 auto_edit = self.prev_v == p.v
@@ -710,7 +754,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & KeyboardModifiers.ControlModifier)
+                    isCtrl = bool(mods & KeyboardModifier.ControlModifier)
                     # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
                     # & QtConst.MetaModifier.
                     if isCtrl:
@@ -914,7 +958,6 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
-        Format = QtGui.QImage.Format if isQt6 else QtGui.QImage
         pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
         # .rgba() call required for Qt4.7, later versions work with straight color
@@ -1094,10 +1137,9 @@ class LeoQtTree(leoFrame.LeoTree):
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
-            ItemFlags = QtCore.Qt.ItemFlags
-            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
+            item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-            item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
+            item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
         try:
@@ -1335,7 +1377,6 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint if isQt6 else QtWidgets.QAbstractItemDelegate
         w.closeEditor(e, EndEditHint.NoHint)
         w.setCurrentItem(item)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions

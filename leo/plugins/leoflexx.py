@@ -2,6 +2,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181103094900.1: * @file ../plugins/leoflexx.py
 #@@first
+
+# Disable mypy checking.
+# type:ignore
+
 #@@language python
 #@@tabwidth -4
 #@+<< leoflexx: docstring >>
@@ -70,7 +74,7 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
-# pylint: disable=logging-not-lazy
+# pylint: disable=logging-not-lazy,unused-private-member
 
 # flexx can't handle generators, so we *must* use comprehensions instead.
 # pylint: disable=use-a-generator
@@ -962,7 +966,9 @@ class LeoBrowserApp(flx.PyComponent):
         # Update v's ivars
         v.setBodyString(d_s)
         v.insertSpot = ins
-        v.sel = sel
+        # #2020: The old code updated a non-existent attribute.
+        v.selectionStart = ins
+        v.selectionLength = abs(sel1 - sel2)
         #
         # Update the body wrapper's ivars (for minibuffer commands).
         if 0:

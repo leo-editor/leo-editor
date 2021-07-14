@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
+from typing import Any, List
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
@@ -178,7 +179,8 @@ class LeoMenu:
         parentMenu = self.getMenu(parentName)
         if not parentMenu:
             g.trace('NO PARENT', parentName, g.callers())
-        table = []
+            return  # #2030
+        table: List[Any] = []
         for z in aList:
             kind, val, val2 = z
             if kind.startswith('@menu'):

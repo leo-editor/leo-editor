@@ -19,6 +19,7 @@ import tabnanny
 import time
 import timeit
 import tokenize
+from typing import Dict
 import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoGui  # For UnitTestGui.
@@ -54,7 +55,8 @@ def printGc():
     print(f"garbage: {n}")
     print(f"{delta:6d} = {n2:7d} totals")
     # print number of each type of object.
-    count, d = 0, {}
+    count = 0
+    d: Dict[str, int] = {}
     for obj in gc.get_objects():
         key = str(type(obj))
         n = d.get(key, 0)
@@ -62,10 +64,10 @@ def printGc():
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
-    d2 = {v: k for k, v in d.items()}
-    for key in reversed(sorted(d2.keys())):
-        val = d2.get(key)
-        print(f"{key:7} {val}")
+    d2: Dict[int, str] = {v: k for k, v in d.items()}
+    for key2 in reversed(sorted(d2.keys())):
+        val = d2.get(key2)
+        print(f"{key2:7} {val}")
     lastObjectCount = count
     return delta
 #@+node:ekr.20051104075904.23: *4* printGcRefs
@@ -463,6 +465,7 @@ class LinterTable():
             'modes': [self.modes],
             'plugins': [self.plugins],
         }
+        suppress_list = ['freewin.py',]
         functions = d.get(scope)
         paths = []
         if functions:
@@ -471,6 +474,9 @@ class LinterTable():
                     # Bug fix: 2016/10/15
                 for fn in files:
                     fn = g.os_path_abspath(fn)
+                    if g.shortFileName(fn) in suppress_list:
+                        print(f"\npylint-leo: skip {fn}")
+                        continue
                     if g.os_path_exists(fn):
                         if g.os_path_isfile(fn):
                             paths.append(fn)
@@ -742,7 +748,8 @@ class TestManager:
         # 4. Support for the quicksearch plugin.
         if gui_name not in ('browser', 'curses'):
             key = 'unittest/cur/fail'
-            archive = [(t.p.gnx, trace2) for (t, trace2) in result.errors]
+            # GeneralTestCase does have a p attribute.
+            archive = [(t.p.gnx, trace2) for (t, trace2) in result.errors]  # type:ignore
             c.db[key] = archive
     #@+node:ekr.20120912094259.10549: *5* tm.get_suite_script
     def get_suite_script(self):
@@ -1272,19 +1279,16 @@ class TestManager:
         assert status == 'done', repr(status)
         vc.exec_(command, n1, n2, motion)
         # Check the result.
-        s1 = work.b; s2 = after.b
-        assert s1 == s2, (
+        assert work.b == after.b, (
             f"mismatch in body\n"
-            f"expected: {s2!r}\n"
-            f"     got: {s1!r}")
-        sel3 = w.getSelectionRange()
-        # Convert both selection ranges to gui indices.
-        sel2_orig = sel2
-        assert len(sel2) == 2, f"Bad headline index.  Expected index,index.  got: {sel2}"
-        i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
-        i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
+            f"expected: {after.b!r}\n"
+            f"     got: {work.b!r}")
+        # Convert selection ranges to gui indices.
+        s_i, s_j = sel2
+        sel2_converted = w.toPythonIndex(s_i), w.toPythonIndex(s_j)
+        i, j = w.getSelectionRange()
+        sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
+        assert sel2_converted == sel3, f"mismatch in sel\nexpected: {sel2} = {sel2_converted}, got: {sel3}"
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
