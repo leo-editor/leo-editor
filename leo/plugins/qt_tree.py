@@ -1138,7 +1138,7 @@ class LeoQtTree(leoFrame.LeoTree):
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
             item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
-            ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
+            ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy  # pylint: disable=no-member
             item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
