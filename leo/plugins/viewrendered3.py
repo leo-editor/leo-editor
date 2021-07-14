@@ -691,11 +691,10 @@ try:
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
-    from leo.core.leoQt import QtGui
+    from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
-    #QtWidgets = False
 
 if not QtSvg and not isQt5:
     try:
@@ -704,8 +703,6 @@ if not QtSvg and not isQt5:
         g.es('Viewrendered3: cannot import QTSvg module')
         raise ImportError from None
 
-QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
-QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
 
 QWebView = None
 if isQt5:
