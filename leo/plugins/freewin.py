@@ -256,9 +256,9 @@ try:
     from docutils.core import publish_string
     from docutils.utils import SystemMessage
     got_docutils = True
-except ImportError as e:
-    print('Freewin:', e)
 except ModuleNotFoundError as e:
+    print('Freewin:', e)
+except ImportError as e:
     print('Freewin:', e)
 except SyntaxError as e:
     print('Freewin:', e)
