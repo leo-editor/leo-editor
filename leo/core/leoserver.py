@@ -1086,7 +1086,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            result = fc.find_var()
+            fc.find_var()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
@@ -1098,7 +1098,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            result = fc.find_def()
+            fc.find_def()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
