@@ -11,7 +11,6 @@ Provides the *PyQt6* spellings of Qt modules, classes, enums and constants:
 - QtWebKitWidgets, not QtWebKit.
 - KeyboardModifier, not KeyboardModifiers.
 """
-# py--lint: disable=import-error
 import leo.core.leoGlobals as g
 #
 # Set defaults.
