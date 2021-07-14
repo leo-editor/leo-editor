@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.31
+About Viewrendered3 V3.4
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -70,8 +70,8 @@ Alt-0 for VR3 and Alt-F10 for VR.
 Limitations and Quirks
 ======================
 
-    #. The plugin requires QT5 and Python 3.6+. All Leo versions since 6.0 also
-       use them, so this requirement should always be met.
+    #. The plugin requires pyqt5 or pyqt6. All Leo versions since 6.0 can
+       use at least pyqt5 so this requirement should always be met.
 
     #. The RsT processor (``docutils``) is fussy about having blank lines after
        blocks.  A node may render correctly on its own, but will show errors
@@ -690,11 +690,11 @@ try:
     import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
-    from leo.core.leoQt import KeyboardModifier, Orientation, QAction, QActionGroup, WrapMode
+    from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
+    from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
-    #QtWidgets = False
 
 if not QtSvg and not isQt5:
     try:
@@ -702,6 +702,7 @@ if not QtSvg and not isQt5:
     except ImportError:
         g.es('Viewrendered3: cannot import QTSvg module')
         raise ImportError from None
+
 
 QWebView = None
 if isQt5:
