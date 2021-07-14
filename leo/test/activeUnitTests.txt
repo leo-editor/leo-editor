@@ -1600,7 +1600,6 @@ static exit_values_ty indent_main_loop(void)
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
-
 if g.app.isExternalUnitTest:
     print('running @test leoBridge init logic')
     # This can not be run locally!

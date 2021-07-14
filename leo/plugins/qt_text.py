@@ -7,6 +7,9 @@ import time
 assert time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
+from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
+from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
+from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -414,9 +417,8 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
-        # Sunken = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
-        Raised = QtWidgets.QFrame.Shadow.Raised if isQt6 else self.StyledPanel
-        NoFrame = QtWidgets.QFrame.Shape.NoFrame if isQt6 else self.NoFrame
+        Raised = Shadow.Raised if isQt6 else self.StyledPanel
+        NoFrame = Shape.NoFrame if isQt6 else self.NoFrame
         self.setFrameStyle(Raised)
         self.edit = e  # A QTextEdit
         e.setFrameStyle(NoFrame)
@@ -463,7 +465,6 @@ if QtWidgets:
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
                 self.textChanged.connect(self.onTextChanged)
-            ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
             self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
@@ -486,8 +487,7 @@ if QtWidgets:
             def __init__(self, c):
                 """ctor for LeoQListWidget class"""
                 super().__init__()
-                WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
-                self.setWindowFlags(WindowFlags.Popup | self.windowFlags())
+                self.setWindowFlags(WindowType.Popup | self.windowFlags())
                 # Inject the ivars
                 self.leo_w = c.frame.body.wrapper.widget
                     # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
@@ -521,10 +521,8 @@ if QtWidgets:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
-                Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
-                Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
                 key = event.key()
-                if event.modifiers() != Modifiers.NoModifier and not event.text():
+                if event.modifiers() != Modifier.NoModifier and not event.text():
                     # A modifier key on it's own.
                     pass
                 elif key in (Key.Key_Up, Key.Key_Down):
@@ -701,14 +699,12 @@ if QtWidgets:
             sb.setSliderPosition(pos)
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
         def leo_dumpButton(self, event, tag):
-
-            MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
             button = event.button()
             table = (
-                (MouseButtons.NoButton, 'no button'),
-                (MouseButtons.LeftButton, 'left-button'),
-                (MouseButtons.RightButton, 'right-button'),
-                (MouseButtons.MiddleButton, 'middle-button'),
+                (MouseButton.NoButton, 'no button'),
+                (MouseButton.LeftButton, 'left-button'),
+                (MouseButton.RightButton, 'right-button'),
+                (MouseButton.MiddleButton, 'middle-button'),
             )
             for val, s in table:
                 if button == val:
@@ -792,8 +788,7 @@ if QtWidgets:
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
-            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-            if KeyboardModifiers.ControlModifier & event.modifiers():
+            if KeyboardModifier.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
                 try:  # Qt5 or later.
                     point = event.angleDelta()
@@ -1296,7 +1291,6 @@ class QTextEditWrapper(QTextMixin):
     def set_config(self):
         """Set configuration options for QTextEdit."""
         w = self.widget
-        WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
         w.setWordWrapMode(WrapMode.NoWrap)
         # tab stop in pixels - no config for this (yet)
         if isQt6:
@@ -1329,8 +1323,7 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-                if KeyboardModifiers.ControlModifier & event.modifiers():
+                if KeyboardModifier.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:
                     if name == 'body':
@@ -1351,8 +1344,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i, j=None):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
@@ -1381,8 +1372,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18080: *4* qtew.flashCharacter
     def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         # numbered color names don't work in Ubuntu 8.10, so...
         if bg[-1].isdigit() and bg[0] != '#':
             bg = bg[:-1]
@@ -1479,8 +1468,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18077: *4* qtew.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind, extend=False, linesPerPage=15):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         d = {
             'begin-line': MoveOperation.StartOfLine,  # Was start-line
@@ -1534,8 +1521,6 @@ class QTextEditWrapper(QTextMixin):
         straight port of the C++ code found in the pageUpDown method of
         gui/widgets/qtextedit.cpp.
         """
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
-        SliderAction = QtWidgets.QAbstractSlider.SliderAction if isQt6 else QtWidgets.QAbstractSlider
         control = self.widget
         cursor = control.textCursor()
         moved = False
@@ -1630,7 +1615,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         """Set the selection range and the insert point."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         #
         # Part 1
         w = self.widget

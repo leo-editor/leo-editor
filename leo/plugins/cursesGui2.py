@@ -562,7 +562,6 @@ class LeoTreeLine(npyscreen.TreeLine):
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         # This draws the actual line.
-        ### super(npyscreen.TreeLine, self)._print()
         super()._print()
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
     def display_value(self, vl):

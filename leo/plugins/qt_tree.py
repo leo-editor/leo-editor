@@ -9,6 +9,7 @@ import re
 import time
 from typing import Any, List
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoNodes
@@ -160,14 +161,13 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             first_p = c.rootPosition()
             target_p = None
-        ItemFlags = QtCore.Qt.ItemFlags if isQt6 else QtCore.Qt
         n = 0
         for p in self.yieldVisible(first_p, target_p):
             n += 1
             level = p.level()
             parent_item = w if level == 0 else parents[level - 1]
             item = QtWidgets.QTreeWidgetItem(parent_item)
-            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
+            item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             item.setChildIndicatorPolicy(
                 item.ShowIndicator if p.hasChildren()
                 else item.DontShowIndicator)
@@ -371,10 +371,9 @@ class LeoQtTree(leoFrame.LeoTree):
             param - the saved argument of that operation.
             Returns (None, param) if 'cmd' is not a style option.
             """
+            # pylint: disable=function-redefined
             param = c.styleSheetManager.expand_css_constants(arg).split()[0]
-
             modifier = None
-
             if cmd == 'ICON':
                 def modifier(item, param):
                     # Does not fit well this function. And we cannot
@@ -411,11 +410,9 @@ class LeoQtTree(leoFrame.LeoTree):
                     font = item.font(0)
                     font.setPointSize(int(param))
                     item.setFont(0, font)
-
             # Apply the style update
             if modifier:
                 modifier(item, param)
-
             return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
         def apply_declutter_rules(cmds):
@@ -747,7 +744,6 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
-            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
             p = self.item2position(item)
             if p:
                 auto_edit = self.prev_v == p.v
@@ -758,7 +754,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & KeyboardModifiers.ControlModifier)
+                    isCtrl = bool(mods & KeyboardModifier.ControlModifier)
                     # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
                     # & QtConst.MetaModifier.
                     if isCtrl:
@@ -962,7 +958,6 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
-        Format = QtGui.QImage.Format if isQt6 else QtGui.QImage
         pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
         # .rgba() call required for Qt4.7, later versions work with straight color
@@ -1142,9 +1137,8 @@ class LeoQtTree(leoFrame.LeoTree):
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         if isQt6:
-            ItemFlags = QtCore.Qt.ItemFlags
-            item.setFlags(item.flags() | ItemFlags.ItemIsEditable)
-            ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
+            item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
+            ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy  # pylint: disable=no-member
             item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
@@ -1383,7 +1377,6 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint if isQt6 else QtWidgets.QAbstractItemDelegate
         w.closeEditor(e, EndEditHint.NoHint)
         w.setCurrentItem(item)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions

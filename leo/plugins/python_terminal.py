@@ -51,7 +51,8 @@ import re
 import sys
 import code
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import Key
 
 use_rlcompleter = False
     # A workaround for #1212: segfaults at startup when importing this file.
@@ -239,8 +240,6 @@ if QtWidgets:
             return False
         #@+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
         def keyPressEvent(self, event):
-
-            Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
             try:
                 # #1212: Disable this by default.
                 if use_rlcompleter and event.key() == Key.Key_Tab:

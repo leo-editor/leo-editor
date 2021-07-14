@@ -38,7 +38,8 @@
 from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Key, KeyboardModifier, Type
 #@+others
 #@+node:ekr.20210512101604.1: ** class LossageData
 class LossageData:
@@ -157,7 +158,6 @@ class LeoQtEventFilter(QtCore.QObject):
     def doNonKeyEvent(self, event, obj):
         """Handle all non-key event. """
         c = self.c
-        Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         eventType = event.type()
         if eventType == Type.WindowActivate:
             g.app.gui.onActivateEvent(event, c, obj, self.tag)
@@ -182,7 +182,6 @@ class LeoQtEventFilter(QtCore.QObject):
         so the following hack is required.
         """
         c = self.c
-        Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
@@ -232,7 +231,6 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
     def doAltTweaks(self, actual_ch, keynum, mods, toString):
         """Turn AltGr and some Alt-Ctrl keys into plain keys."""
-        Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
 
         def removeAltCtrl(mods):
             for mod in ('Alt', 'Control'):
@@ -359,14 +357,13 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         """Return the text version of the modifiers of the key event."""
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = event.modifiers()
         mod_table = (
-            (KeyboardModifiers.AltModifier, 'Alt'),
-            (KeyboardModifiers.ControlModifier, 'Control'),
-            (KeyboardModifiers.MetaModifier, 'Meta'),
-            (KeyboardModifiers.ShiftModifier, 'Shift'),
-            (KeyboardModifiers.KeypadModifier, 'KeyPad'),
+            (KeyboardModifier.AltModifier, 'Alt'),
+            (KeyboardModifier.ControlModifier, 'Control'),
+            (KeyboardModifier.MetaModifier, 'Meta'),
+            (KeyboardModifier.ShiftModifier, 'Shift'),
+            (KeyboardModifier.KeypadModifier, 'KeyPad'),
                 # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         mods = [b for a, b in mod_table if (modifiers & a)]

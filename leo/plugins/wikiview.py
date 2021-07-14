@@ -43,7 +43,8 @@ Settings
 #@+node:tbrown.20141101114322.3: ** << imports >>
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtGui
+from leo.core.leoQt import QtGui
+from leo.core.leoQt import MoveMode
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -150,7 +151,6 @@ class WikiView:
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         w = c.frame.body.widget
         cursor = w.textCursor()
         s = w.toPlainText()
