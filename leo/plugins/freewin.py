@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 12 July 2021
-:Version: 1.51
+:Date: 14 July 2021
+:Version: 1.6
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -228,53 +228,45 @@ from leo.core import leoGlobals as g
 
 qt_imports_ok = False
 try:
-    from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
+    from leo.core.leoQt import QtCore, QtWidgets, QtGui
     from leo.core.leoQt import KeyboardModifier
     qt_imports_ok = True
 except ImportError as e:
     g.trace(e)
 
 if not qt_imports_ok:
-    g.trace('Freewin plugin: Qt imports failed')
+    print('Freewin plugin: Qt imports failed')
     raise ImportError('Qt Imports failed')
 
 #@+<<import  QWebView>>
 #@+node:tom.20210603000519.1: *3* <<import QWebView>>
 QWebView = None
-if isQt5:
-    try:
-        from leo.core.leoQt import QtWebKitWidgets
-        QWebView = QtWebKitWidgets.QWebView
-    except ImportError:
-        g.trace("Can't import QtWebKitWidgets")
-    except Exception as e:
-        g.trace(e)
-else:
-    # May need to change this after PyQt6 settles down.
-    # At time of this release, this fails.
-    try:
-        QWebView = QtWebKitWidgets.QWebView
-    except Exception as e:
-        g.trace(e)
+try:
+    from leo.core.leoQt import QtWebKitWidgets
+    QWebView = QtWebKitWidgets.QWebView
+except ImportError:
+    print("Freewin: Can't import QtWebKitWidgets")
+except AttributeError:
+    print("Freewin: limited RsT rendering in effect")
 #@-<<import  QWebView>>
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
+got_docutils = False
 try:
     from docutils.core import publish_string
     from docutils.utils import SystemMessage
     got_docutils = True
-except ImportError:
-    got_docutils = False
-    g.es_exception()
-except SyntaxError:
-    got_docutils = False
-    g.es_exception()
-except Exception:
-    got_docutils = False
-    g.es_exception()
+except ModuleNotFoundError as e:
+    print('Freewin:', e)
+except ImportError as e:
+    print('Freewin:', e)
+except SyntaxError as e:
+    print('Freewin:', e)
+except Exception as e:
+    print('Freewin:', e)
 
 if not got_docutils:
-    print('ZEditorWin: *** no docutils')
+    print('Freewin: no docutils - rendered view is not available')
 
 #@-<<import docutils>>
 #
@@ -336,6 +328,7 @@ ZOOM_FACTOR = 1.1
 
 F7_KEY = 0x01000036 # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
 F9_KEY = 0x01000038
+KEY_S = 0x53
 
 GNXre = r'^(.+\.\d+\.\d+)' # For gnx at start of line
 GNX1re = r'.*[([\s](\w+\.\d+\.\d+)' # For gnx not at start of line
@@ -732,9 +725,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         # Load docutils without rendering anything real
         # Avoids initial delay when switching to RsT the first time.
-        dummy = publish_string('dummy', writer_name='html').decode(ENCODING)
-        self.browser.setHtml(dummy)
-        central_widget.keyPressEvent = self.keyPressEvent
+        if got_docutils:
+            dummy = publish_string('dummy', writer_name='html').decode(ENCODING)
+            self.browser.setHtml(dummy)
+            central_widget.keyPressEvent = self.keyPressEvent
 
         self.show()
     #@+node:tom.20210625205847.1: *3* reload settings
@@ -829,7 +823,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         keyval = event.key()
 
         if modifiers == KeyboardModifier.ControlModifier:
-            if keyval == F7_KEY:
+            if keyval == KEY_S:
+                self.c.executeMinibufferCommand('save')
+            elif keyval == F7_KEY:
                 # Copy our gnx to clipboard.
                 copy2clip(self.p.v.gnx)
             elif  self.render_pane_type == NAV_VIEW \
