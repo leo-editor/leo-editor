@@ -108,7 +108,6 @@ Key = QtCore.Qt.Key
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
 Policy = QtWidgets.QSizePolicy.Policy
-# QAction = QtGui.QAction
 QStyle = QtWidgets.QStyle.StandardPixmap
 ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
 SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
