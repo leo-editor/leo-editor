@@ -1538,7 +1538,9 @@ class LeoFind:
         c, log, u = self.c, self.c.frame.log, self.c.undoer
         
         def put_link(line, line_number, p): # #2023
-            # Put a link to the given line at the given line_number in p.h.
+            """Put a link to the given line at the given line_number in p.h."""
+            if g.unitTesting:
+                return
             unl = p.get_UNL(with_proto=True, with_count=True)
             if self.in_headline:
                 line_number = 1
