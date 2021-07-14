@@ -339,7 +339,7 @@ class LeoQtTree(leoFrame.LeoTree):
             Executes cmd if cmd is any replace command and returns
             pair (commander, s), where 'commander' corresponds
             to the executed replacement operation, 's' is the substituted string.
-            If cmd is not a replacement command return (None, None)
+            If cmd is not a replacement command returns (None, None)
             """
             # pylint: disable=undefined-loop-variable
 
@@ -354,7 +354,9 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'REPLACE-REST':
                 s = (text[:m.start] + text[m.end() :]).strip()
 
-            if s:
+            # 's' is string when 'cmd' is recognised
+            # and is None otherwise
+            if isinstance(s,str):
                 # Save the operation
                 replacement = lambda item, s: item.setText(0, s)
                 # ... and apply it
@@ -367,7 +369,7 @@ class LeoQtTree(leoFrame.LeoTree):
             Handles style options and returns pair '(commander, param)',
             where 'commander' is the applied style-modifying operation,
             param - the saved argument of that operation.
-            Return (None, param) if 'cmd' is not a style option.
+            Returns (None, param) if 'cmd' is not a style option.
             """
             param = c.styleSheetManager.expand_css_constants(arg).split()[0]
 
