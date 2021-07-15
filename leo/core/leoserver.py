@@ -2788,6 +2788,7 @@ class LeoServer:
         """
         Private server method:
         Return the names of all callable public methods of the server.
+        (Methods that do not start with an underscore '_')
         """
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
@@ -3280,8 +3281,8 @@ class LeoServer:
             yield p
             p.moveToNext()
 
-    #@+node:felix.20210624160812.1: *4* server.emit_signon
-    def emit_signon(self):
+    #@+node:felix.20210624160812.1: *4* server._emit_signon
+    def _emit_signon(self):
         '''Simulate the Initial Leo Log Entry'''
         tag = 'emit_signon'
         if self.loop:
@@ -3329,39 +3330,24 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         g.unitTesting = False
 
     #@+node:felix.20210621233316.100: *3* test._request
-    def _request(self, action, package=None):
+    def _request(self, action, param=None):
         server = self.server
         self.request_number += 1
-        log_flag = package.get("log")
+        log_flag = param.get("log")
+        # Direct server commands require an exclamation mark '!' prefix
+        # to distinguish them from Leo's commander's own methods.
         d = {
-            "action": action,
+            "action": action, 
             "id": self.request_number
         }
-        if package:
-            d ["package"] = package
+        if param:
+            d ["param"] = param
         response = server._do_message(d)
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
         if log_flag:
             g.printObj(answer, tag=f"response to {action!r}")
         return answer
-    #@+node:felix.20210621233316.101: *3* test.test_leo_commands
-    def test_leo_commands (self):
-        server = self.server
-        table = [
-            # Toggle mark twice.
-            ("toggle-mark", {}),
-            ("toggle-mark", {}),
-        ]
-        # First open a test file.
-        server.open_file({"filename": "xyzzy.leo"})
-        try:
-            action = "execute-leo-command"
-            for command_name, package in table:
-                package ["leo-command-name"] = command_name
-                self._request(action, package)
-        finally:
-            server.close_file({"filename": "xyzzy.leo"})
     #@+node:felix.20210621233316.102: *3* test.test_most_public_server_methods
     def test_most_public_server_methods(self):
         server=self.server
@@ -3388,14 +3374,20 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             'save_file',  # way too dangerous!
             # 'set_selection',  ### Not ready yet.
             'open_file', 'close_file',  # Done by hand.
+            'import_any_file',
+            'insert_child_named_node',
+            'insert_named_node',
+            'set_ask_result',
+            'set_opened_file',
+            'set_search_settings',
             'shut_down',  # Don't shut down the server.
         ]
         expected = ['error']
-        package_d = {
+        param_d = {
             # "apply_config": {"config": {"whatever": True}},
             "get_focus": {"log": False},
-            "set_body": {"body": "new body\n"},
-            "set_headline": {"headline": "new headline"},
+            "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
+            "set_headline": {"name": "new headline"},
             "get_all_server_commands": {"log": False},
             "get_all_leo_commands": {"log": False},
         }
@@ -3407,11 +3399,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                 id_ += 1
                 if method_name not in exclude:
                     assert getattr(server, method_name), method_name
-                    package = package_d.get(method_name, {})
+                    param = param_d.get(method_name, {})
                     message = {
                         "id": id_,
-                        "action": method_name,
-                        "package": package,
+                        "action": "!"+method_name,
+                        "param": param,
                     }
                     try:
                         # Don't call the method directly.
@@ -3421,7 +3413,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         if method_name not in expected:
                             print(f"Exception in {tag}: {method_name!r} {e}")
         finally:
-            server.close_file({"filename": test_dot_leo})
+            server.close_file({"forced": True})
     #@+node:felix.20210621233316.103: *3* test.test_open_and_close
     def test_open_and_close(self):
         # server = self.server
@@ -3430,24 +3422,24 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         log = False
         table = [
             # Open file.
-            ("open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
+            ("!open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
             # Switch to the second file.
-            ("open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
+            ("!open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
             # Open again. This should be valid.
-            ("open_file", {"log": False, "filename": test_dot_leo}),
+            ("!open_file", {"log": False, "filename": test_dot_leo}),
             # Better test of _ap_to_p.
-            ("set_current_position", {
+            ("!set_current_position", {
                 "ap": {
                     "gnx": "ekr.20180311131424.1",  # Recent
                     "childIndex": 1,
                     "stack": [],
                 }
             }),
-            ("get_ua", {"log": log}),
+            ("!get_ua", {"log": log}),
             # Close the second file.
-            ("close_file", {"log": log, }),
+            ("!close_file", {"log": log, "forced": True }),
             # Close the first file.
-            ("close_file", {"log": log, }),
+            ("!close_file", {"log": log, "forced": True}),
         ]
         for action, package in table:
             self._request(action, package)
@@ -3459,25 +3451,25 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
         # Open the file & create the StringFindTabManager.
-        self._request("open_file", {"log": False, "filename": test_dot_leo})
+        self._request("!open_file", {"log": False, "filename": test_dot_leo})
         #
         # Batch find commands: The answer is a count of found nodes.
-        for method in ('find_all', 'clone_find_all', 'clone_find_all_flattened'):
+        for method in ('!find_all', '!clone_find_all', '!clone_find_all_flattened'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Find commands that may select text: The answer is (p, pos, newpos).
-        for method in ('find_next', 'find_previous', 'find_def', 'find_var'):
+        for method in ('!find_next', '!find_previous', '!find_def', '!find_var'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Change commands: The answer is a count of changed nodes.
-        for method in ('change_all', 'change_then_find'):
+        for method in ('!replace_all', '!replace_then_find'):
             answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Tag commands. Why they are in leoFind.py??
-        for method in ('clone_find_tag', 'tag_children'):
+        for method in ('!clone_find_tag', '!tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
 
@@ -3504,7 +3496,7 @@ def main():  # pragma: no cover (tested in client)
             # Start by sending empty as 'ok'.
             n = 0
             await websocket.send(controller._make_response())
-            controller.emit_signon()
+            controller._emit_signon()
             async for json_message in websocket:
                 try:
                     n += 1
