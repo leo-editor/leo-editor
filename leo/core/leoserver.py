@@ -23,6 +23,7 @@ import websockets
 # Leo
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
+from leo.core.leoExternalFiles import ExternalFilesController
 from leo.core import leoserver
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
@@ -54,7 +55,7 @@ class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
 #@+node:felix.20210626222905.1: ** class ServerExternalFilesController
-class ServerExternalFilesController:
+class ServerExternalFilesController(ExternalFilesController):
     '''EFC Modified from Leo's sources'''
     # pylint: disable=no-else-return
 
@@ -62,21 +63,9 @@ class ServerExternalFilesController:
     #@+node:felix.20210626222905.2: *3* sefc.ctor
     def __init__(self):
         '''Ctor for ExternalFiles class.'''
+        super().__init__()
+
         self.on_idle_count = 0
-        self.checksum_d = {}
-        # Keys are full paths, values are file checksums.
-        self.enabled_d = {}
-        # For efc.on_idle.
-        # Keys are commanders.
-        # Values are cached @bool check-for-changed-external-file settings.
-        self.has_changed_d = {}
-        # Keys are commanders. Values are boolean.
-        # Used only to limit traces.
-        self.unchecked_commanders = []
-        # Copy of g.app.commanders()
-        self.unchecked_files = []
-        # Copy of self file. Only one files is checked at idle time.
-        self._time_d = {}
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
@@ -92,7 +81,61 @@ class ServerExternalFilesController:
         self.waitingForAnswer = False
         self.lastPNode = None  # last p node that was asked for if not set to "AllYes\AllNo"
         self.lastCommander = None
-    #@+node:felix.20210626222905.3: *3* sefc.on_idle
+    #@+node:felix.20210626222905.6: *3* sefc.clientResult
+    def clientResult(self, p_result):
+        '''Received result from connected client that was 'asked' yes/no/... '''
+        # Got the result to an asked question/warning from the client
+        if not self.waitingForAnswer:
+            print("ERROR: Received Result but no Asked Dialog", flush=True)
+            return
+
+        # check if p_result was from a warn (ok) or an ask ('yes','yes-all','no','no-all')
+        # act accordingly
+
+        # 1- if ok, unblock 'warn'
+        # 2- if no, unblock 'ask'
+        # ------------------------------------------ Nothing special to do
+
+        # 3- if noAll: set noAll, and unblock 'ask'
+        if p_result and "-all" in p_result.lower():
+            self.yesno_all_time = time.time()
+            self.yesno_all_answer = p_result.lower()
+        # ------------------------------------------ Also covers setting yesAll in #5
+
+        path = ""
+        if self.lastPNode:
+            path = g.fullPath(self.lastCommander, self.lastPNode)
+            # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
+            # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
+            if bool(p_result and 'yes' in p_result.lower()):
+                self.lastCommander.selectPosition(self.lastPNode)
+                self.lastCommander.refreshFromDisk()
+        elif self.lastCommander:
+            path = self.lastCommander.fileName()
+            # 6- Same but for Leo file commander (close and reopen .leo file)
+            if bool(p_result and 'yes' in p_result.lower()):
+                self.lastCommander.close()
+                g.leoServer.open_file({"filename":path }) # ignore returned value
+
+        # Always update the path & time to prevent future warnings for this path.
+        if path:
+            self.set_time(path)
+            self.checksum_d[path] = self.checksum(path)
+
+        self.waitingForAnswer = False  # unblock
+        # unblock: run the loop as if timer had hit
+        if self.lastCommander:
+            self.idle_check_commander(self.lastCommander)
+    #@+node:felix.20210714205425.1: *3* sefc.entries
+    #@+node:felix.20210626222905.19: *4* sefc.check_overwrite
+    def check_overwrite(self, c, path):
+        # print("check_overwrite!! ", flush=True)
+        if self.has_changed(path):
+            package = {"async": "info", "message": "Overwritten "+ path}
+            g.leoServer._send_async_output(package)
+        return True
+
+    #@+node:felix.20210714205604.1: *4* sefc.on_idle & helpers
     def on_idle(self):
         '''
         Check for changed open-with files and all external files in commanders
@@ -121,7 +164,7 @@ class ServerExternalFilesController:
             self.unchecked_commanders = [
                 z for z in g.app.commanders() if self.is_enabled(z)
             ]
-    #@+node:felix.20210626222905.4: *3* sefc.idle_check_commander
+    #@+node:felix.20210626222905.4: *5* sefc.idle_check_commander
     def idle_check_commander(self, c):
         '''
         Check all external files corresponding to @<file> nodes in c for
@@ -129,7 +172,6 @@ class ServerExternalFilesController:
         '''
         self.infoMessage = None  # reset infoMessage
         # False or "detected", "refreshed" or "ignored"
-
 
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
@@ -146,8 +188,7 @@ class ServerExternalFilesController:
         if self.infoMessage:
             package = {"async": "info", "message": self.infoMessage}
             g.leoServer._send_async_output(package)
-
-    #@+node:felix.20210627013530.1: *3* sefc.idle_check_leo_file
+    #@+node:felix.20210627013530.1: *5* sefc.idle_check_leo_file
     def idle_check_leo_file(self, c):
         """Check c's .leo file for external changes."""
         path = c.fileName()
@@ -161,8 +202,7 @@ class ServerExternalFilesController:
             #reload Commander
             self.lastCommander.close()
             g.leoServer.open_file({"filename":path }) # ignore returned value
-
-    #@+node:felix.20210626222905.5: *3* sefc.idle_check_at_file_node
+    #@+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
         trace = False
@@ -182,57 +222,18 @@ class ServerExternalFilesController:
             # Always update the path & time to prevent future warnings.
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
-    #@+node:felix.20210626222905.6: *3* sefc.clientResult
-    def clientResult(self, p_result):
-        '''Received result from client'''
-        # Got the result to an asked question/warning from the client
-        if not self.waitingForAnswer:
-            print("ERROR: Received Result but no Asked Dialog", flush=True)
-            return
+    #@+node:felix.20210626222905.18: *4* sefc.open_with
+    def open_with(self, c, d):
+        '''open-with is bypassed in leoserver (for now)'''
+        return
 
-        # check if p_resultwas from a warn (ok) or an ask ('yes','yes-all','no','no-all')
-        # act accordingly
-
-        # 1- if ok, unblock 'warn'
-        # 2- if no, unblock 'ask'
-        # ------------------------------------------ Nothing special to do
-
-        # 3- if noAll: set noAll, and unblock 'ask'
-        if p_result and "-all" in p_result.lower():
-            self.yesno_all_time = time.time()
-            self.yesno_all_answer = p_result.lower()
-        # ------------------------------------------ Also covers setting yesAll in #5
-
-        path = ""
-        if self.lastPNode:
-            path = g.fullPath(self.lastCommander, self.lastPNode)
-            # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
-            # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
-            if bool(p_result and 'yes' in p_result.lower()):
-                self.lastCommander.selectPosition(self.lastPNode)
-                self.lastCommander.refreshFromDisk()
-        elif self.lastCommander:
-            path = self.lastCommander.fileName()
-            # Same but for Leo file commander (close and reopen)
-            if bool(p_result and 'yes' in p_result.lower()):
-                self.lastCommander.close()
-                g.leoServer.open_file({"filename":path }) # ignore returned value
-
-        # Always update the path & time to prevent future warnings for this path.
-        if path:
-            self.set_time(path)
-            self.checksum_d[path] = self.checksum(path)
-
-        self.waitingForAnswer = False  # unblock
-        # unblock: run the loop as if timer had hit
-        if self.lastCommander:
-            self.idle_check_commander(self.lastCommander)
     #@+node:felix.20210626222905.7: *3* sefc.utilities
-    #@+node:felix.20210626222905.8: *4* efc.ask
+    #@+node:felix.20210626222905.8: *4* sefc.ask
     def ask(self, c, path, p=None):
         '''
         Ask user whether to overwrite an @<file> tree.
-        Return True if the user agrees.
+        Return True if the user agrees by default, or skips and asks
+        client, blocking further checks until result received.
         '''
         # check with leoServer's config first
         if g.leoServer.leoServerConfig:
@@ -248,17 +249,16 @@ class ServerExternalFilesController:
         # let original function resolve
 
         if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
-            self.yesno_all_time = time.time()  # Still reloading?  Extend time.
+            self.yesno_all_time = time.time()  # Still reloading?  Extend time
             # if yesAll/noAll forced, then just show info message
             yesno_all_bool = bool('yes' in self.yesno_all_answer.lower())
-
-            return yesno_all_bool
+            return yesno_all_bool # We already have our answer here, so return it
         if not p:
             where = 'the outline node'
         else:
             where = p.h
 
-        _is_leo = path.endswith(('.leo', '.db')) # todo :check if this is even used (.leo)
+        _is_leo = path.endswith(('.leo', '.db'))
 
         if _is_leo:
             s = '\n'.join([
@@ -274,61 +274,10 @@ class ServerExternalFilesController:
         package = {"async": "ask", "ask": 'Overwrite the version in Leo?',
                      "message": s, "yes_all": not _is_leo, "no_all": not _is_leo}
 
-        g.leoServer._send_async_output(package)
-        self.waitingForAnswer = True
-        return False
-    #@+node:felix.20210626222905.9: *4* efc.checksum
-    def checksum(self, path):
-        '''Return the checksum of the file at the given path.'''
-        import hashlib
-        return hashlib.md5(open(path, 'rb').read()).hexdigest()
-    #@+node:felix.20210626222905.10: *4* efc.get_mtime
-    def get_mtime(self, path):
-        '''Return the modification time for the path.'''
-        return g.os_path_getmtime(g.os_path_realpath(path))
-
-    #@+node:felix.20210626222905.11: *4* efc.get_time
-    def get_time(self, path):
-        '''
-        return timestamp for path
-
-        see set_time() for notes
-        '''
-        return self._time_d.get(g.os_path_realpath(path))
-    #@+node:felix.20210626222905.12: *4* efc.has_changed
-    def has_changed(self, path):
-        '''Return True if p's external file has changed outside of Leo.'''
-        if not path:
-            return False
-        if not g.os_path_exists(path):
-            return False
-        if g.os_path_isdir(path):
-            return False
-        #
-        # First, check the modification times.
-        old_time = self.get_time(path)
-        new_time = self.get_mtime(path)
-        if not old_time:
-            # Initialize.
-            self.set_time(path, new_time)
-            self.checksum_d[path] = self.checksum(path)
-            return False
-        if old_time == new_time:
-            return False
-        #
-        # Check the checksums *only* if the mod times don't match.
-        old_sum = self.checksum_d.get(path)
-        new_sum = self.checksum(path)
-        if new_sum == old_sum:
-            # The modtime changed, but it's contents didn't.
-            # Update the time, so we don't keep checking the checksums.
-            # Return False so we don't prompt the user for an update.
-            self.set_time(path, new_time)
-            return False
-        # The file has really changed.
-        assert old_time, path
-        return True
-    #@+node:felix.20210626222905.13: *4* efc.is_enabled
+        g.leoServer._send_async_output(package) # Ask the connected client
+        self.waitingForAnswer = True # Block the loop and further checks until 'clientResult'
+        return False # return false so as not to refresh until 'clientResult' says so
+    #@+node:felix.20210626222905.13: *4* sefc.is_enabled
     def is_enabled(self, c):
         '''Return the cached @bool check_for_changed_external_file setting.'''
         # check with the leoServer config first
@@ -340,32 +289,8 @@ class ServerExternalFilesController:
             if bool('ignore' in check_config):
                 return False
         # let original function resolve
-        d = self.enabled_d
-        val = d.get(c)
-        if val is None:
-            val = c.config.getBool(
-                'check-for-changed-external-files', default=False)
-            d[c] = val
-        return val
-    #@+node:felix.20210626222905.14: *4* efc.join
-    def join(self, s1, s2):
-        '''Return s1 + ' ' + s2'''
-        return f"{s1} {s2}"
-    #@+node:felix.20210626222905.15: *4* efc.set_time
-    def set_time(self, path, new_time=None):
-        '''
-        Implements c.setTimeStamp.
-
-        Update the timestamp for path.
-
-        NOTE: file paths with symbolic links occur with and without those links
-        resolved depending on the code call path.  This inconsistency is
-        probably not Leo's fault but an underlying Python issue.
-        Hence the need to call realpath() here.
-        '''
-        t = new_time or self.get_mtime(path)
-        self._time_d[g.os_path_realpath(path)] = t
-    #@+node:felix.20210626222905.16: *4* efc.warn
+        return super().is_enabled(c)
+    #@+node:felix.20210626222905.16: *4* sefc.warn
     def warn(self, c, path, p):
         '''
         Warn that an @asis or @nosent node has been changed externally.
@@ -382,7 +307,6 @@ class ServerExternalFilesController:
                     self.infoMessage = "warn"
                 return
 
-        # let original function resolve
         if g.unitTesting or c not in g.app.commanders():
             return
         if not p:
@@ -402,27 +326,6 @@ class ServerExternalFilesController:
 
         g.leoServer._send_async_output(package)
         self.waitingForAnswer = True
-    #@+node:felix.20210626222905.17: *3* other called methods
-    # Some methods are called in the usual (non-leoBridge without 'efc') save process.
-    # Those may be called by the 'save' function, like check_overwrite,
-    # or by any other functions from the instance of leo.core.leoBridge that's running.
-    #@+node:felix.20210626222905.18: *4* open_with
-    def open_with(self, c, d):
-        return
-
-    #@+node:felix.20210626222905.19: *4* check_overwrite
-    def check_overwrite(self, c, fn):
-        # print("check_overwrite!! ", flush=True)
-        return True
-
-    #@+node:felix.20210626222905.20: *4* shut_down
-    def shut_down(self):
-        return
-
-    #@+node:felix.20210626222905.21: *4* destroy_frame
-    def destroy_frame(self, f):
-        return
-
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
@@ -1086,7 +989,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            fc.find_var()
+            result = fc.find_var()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
@@ -1098,7 +1001,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            fc.find_def()
+            result = fc.find_def()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
@@ -2885,6 +2788,7 @@ class LeoServer:
         """
         Private server method:
         Return the names of all callable public methods of the server.
+        (Methods that do not start with an underscore '_')
         """
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
@@ -3377,8 +3281,8 @@ class LeoServer:
             yield p
             p.moveToNext()
 
-    #@+node:felix.20210624160812.1: *4* server.emit_signon
-    def emit_signon(self):
+    #@+node:felix.20210624160812.1: *4* server._emit_signon
+    def _emit_signon(self):
         '''Simulate the Initial Leo Log Entry'''
         tag = 'emit_signon'
         if self.loop:
@@ -3426,39 +3330,24 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         g.unitTesting = False
 
     #@+node:felix.20210621233316.100: *3* test._request
-    def _request(self, action, package=None):
+    def _request(self, action, param=None):
         server = self.server
         self.request_number += 1
-        log_flag = package.get("log")
+        log_flag = param.get("log")
+        # Direct server commands require an exclamation mark '!' prefix
+        # to distinguish them from Leo's commander's own methods.
         d = {
-            "action": action,
+            "action": action, 
             "id": self.request_number
         }
-        if package:
-            d ["package"] = package
+        if param:
+            d ["param"] = param
         response = server._do_message(d)
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
         if log_flag:
             g.printObj(answer, tag=f"response to {action!r}")
         return answer
-    #@+node:felix.20210621233316.101: *3* test.test_leo_commands
-    def test_leo_commands (self):
-        server = self.server
-        table = [
-            # Toggle mark twice.
-            ("toggle-mark", {}),
-            ("toggle-mark", {}),
-        ]
-        # First open a test file.
-        server.open_file({"filename": "xyzzy.leo"})
-        try:
-            action = "execute-leo-command"
-            for command_name, package in table:
-                package ["leo-command-name"] = command_name
-                self._request(action, package)
-        finally:
-            server.close_file({"filename": "xyzzy.leo"})
     #@+node:felix.20210621233316.102: *3* test.test_most_public_server_methods
     def test_most_public_server_methods(self):
         server=self.server
@@ -3485,14 +3374,20 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             'save_file',  # way too dangerous!
             # 'set_selection',  ### Not ready yet.
             'open_file', 'close_file',  # Done by hand.
+            'import_any_file',
+            'insert_child_named_node',
+            'insert_named_node',
+            'set_ask_result',
+            'set_opened_file',
+            'set_search_settings',
             'shut_down',  # Don't shut down the server.
         ]
         expected = ['error']
-        package_d = {
+        param_d = {
             # "apply_config": {"config": {"whatever": True}},
             "get_focus": {"log": False},
-            "set_body": {"body": "new body\n"},
-            "set_headline": {"headline": "new headline"},
+            "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
+            "set_headline": {"name": "new headline"},
             "get_all_server_commands": {"log": False},
             "get_all_leo_commands": {"log": False},
         }
@@ -3504,11 +3399,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                 id_ += 1
                 if method_name not in exclude:
                     assert getattr(server, method_name), method_name
-                    package = package_d.get(method_name, {})
+                    param = param_d.get(method_name, {})
                     message = {
                         "id": id_,
-                        "action": method_name,
-                        "package": package,
+                        "action": "!"+method_name,
+                        "param": param,
                     }
                     try:
                         # Don't call the method directly.
@@ -3518,7 +3413,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         if method_name not in expected:
                             print(f"Exception in {tag}: {method_name!r} {e}")
         finally:
-            server.close_file({"filename": test_dot_leo})
+            server.close_file({"forced": True})
     #@+node:felix.20210621233316.103: *3* test.test_open_and_close
     def test_open_and_close(self):
         # server = self.server
@@ -3527,24 +3422,24 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         log = False
         table = [
             # Open file.
-            ("open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
+            ("!open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
             # Switch to the second file.
-            ("open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
+            ("!open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
             # Open again. This should be valid.
-            ("open_file", {"log": False, "filename": test_dot_leo}),
+            ("!open_file", {"log": False, "filename": test_dot_leo}),
             # Better test of _ap_to_p.
-            ("set_current_position", {
+            ("!set_current_position", {
                 "ap": {
                     "gnx": "ekr.20180311131424.1",  # Recent
                     "childIndex": 1,
                     "stack": [],
                 }
             }),
-            ("get_ua", {"log": log}),
+            ("!get_ua", {"log": log}),
             # Close the second file.
-            ("close_file", {"log": log, }),
+            ("!close_file", {"log": log, "forced": True }),
             # Close the first file.
-            ("close_file", {"log": log, }),
+            ("!close_file", {"log": log, "forced": True}),
         ]
         for action, package in table:
             self._request(action, package)
@@ -3556,25 +3451,25 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
         # Open the file & create the StringFindTabManager.
-        self._request("open_file", {"log": False, "filename": test_dot_leo})
+        self._request("!open_file", {"log": False, "filename": test_dot_leo})
         #
         # Batch find commands: The answer is a count of found nodes.
-        for method in ('find_all', 'clone_find_all', 'clone_find_all_flattened'):
+        for method in ('!find_all', '!clone_find_all', '!clone_find_all_flattened'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Find commands that may select text: The answer is (p, pos, newpos).
-        for method in ('find_next', 'find_previous', 'find_def', 'find_var'):
+        for method in ('!find_next', '!find_previous', '!find_def', '!find_var'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Change commands: The answer is a count of changed nodes.
-        for method in ('change_all', 'change_then_find'):
+        for method in ('!replace_all', '!replace_then_find'):
             answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Tag commands. Why they are in leoFind.py??
-        for method in ('clone_find_tag', 'tag_children'):
+        for method in ('!clone_find_tag', '!tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
 
@@ -3601,7 +3496,7 @@ def main():  # pragma: no cover (tested in client)
             # Start by sending empty as 'ok'.
             n = 0
             await websocket.send(controller._make_response())
-            controller.emit_signon()
+            controller._emit_signon()
             async for json_message in websocket:
                 try:
                     n += 1
