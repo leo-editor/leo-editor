@@ -9,12 +9,14 @@ Provides the *PyQt6* spellings of Qt modules, classes, enums and constants:
 - QtWidgets, not QtGui, for all widget classes.
 - QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - QtWebKitWidgets, not QtWebKit.
-- KeyboardModifier, not KeyboardModifiers.
+- Enums: KeyboardModifier, not KeyboardModifiers, etc.
 """
 import leo.core.leoGlobals as g
 #
 # Set defaults.
 isQt6 = isQt5 = isQt4 = False  # Retain isQt4 for legacy programs.
+#
+# Make *sure* this module always imports the following symbols.
 Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
 QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
 phonon = uic = None
@@ -22,7 +24,7 @@ QtMultimedia = None  # Replacement for phonon.
 qt_version = '<no qt version>'
 printsupport = Signal = None
 #
-# Skip all imports in the bridge.
+# Skip all other imports in the bridge.
 if not g.in_bridge:
     #
     # Pyflakes will complaint about * imports.
@@ -51,10 +53,4 @@ if not g.in_bridge:
             print('\n===== Qt5 =====')
         except Exception:
             print('\nCan not load pyQt5 or pyQt6')
-            # try:
-                # from leo.core.leoQt4 import *
-                # isQt4 = True
-                # print('===== Qt4 =====')
-            # except Exception:
-                # pass
 #@-leo
