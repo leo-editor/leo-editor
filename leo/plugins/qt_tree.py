@@ -678,71 +678,91 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17887: *4*  qtree.Click Box
     #@+node:ekr.20110605121601.17888: *5* qtree.onClickBoxClick
     def onClickBoxClick(self, event, p=None):
-        if self.busy:
-            return
-        c = self.c
-        g.doHook("boxclick1", c=c, p=p, event=event)
-        g.doHook("boxclick2", c=c, p=p, event=event)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:
+                return
+            c = self.c
+            g.doHook("boxclick1", c=c, p=p, event=event)
+            g.doHook("boxclick2", c=c, p=p, event=event)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17889: *5* qtree.onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
-        if self.busy:
-            return
-        c = self.c
-        g.doHook("boxrclick1", c=c, p=p, event=event)
-        g.doHook("boxrclick2", c=c, p=p, event=event)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:
+                return
+            c = self.c
+            g.doHook("boxrclick1", c=c, p=p, event=event)
+            g.doHook("boxrclick2", c=c, p=p, event=event)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17890: *5* qtree.onPlusBoxRightClick
     def onPlusBoxRightClick(self, event, p=None):
-        if self.busy:
-            return
-        c = self.c
-        g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='plusbox')
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:
+                return
+            c = self.c
+            g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='plusbox')
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17891: *4*  qtree.Icon Box
     # For Qt, there seems to be no way to trigger these events.
     #@+node:ekr.20110605121601.17892: *5* qtree.onIconBoxClick
     def onIconBoxClick(self, event, p=None):
-        if self.busy:
-            return
-        c = self.c
-        g.doHook("iconclick1", c=c, p=p, event=event)
-        g.doHook("iconclick2", c=c, p=p, event=event)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:
+                return
+            c = self.c
+            g.doHook("iconclick1", c=c, p=p, event=event)
+            g.doHook("iconclick2", c=c, p=p, event=event)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17893: *5* qtree.onIconBoxRightClick
     def onIconBoxRightClick(self, event, p=None):
         """Handle a right click in any outline widget."""
-        if self.busy:
-            return
-        c = self.c
-        g.doHook("iconrclick1", c=c, p=p, event=event)
-        g.doHook("iconrclick2", c=c, p=p, event=event)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:
+                return
+            c = self.c
+            g.doHook("iconrclick1", c=c, p=p, event=event)
+            g.doHook("iconrclick2", c=c, p=p, event=event)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17894: *5* qtree.onIconBoxDoubleClick
     def onIconBoxDoubleClick(self, event, p=None):
-        if self.busy:
-            return
-        c = self.c
-        if not p: p = c.p
-        if not g.doHook("icondclick1", c=c, p=p, event=event):
-            self.endEditLabel()
-            self.OnIconDoubleClick(p)  # Call the method in the base class.
-        g.doHook("icondclick2", c=c, p=p, event=event)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:
+                return
+            c = self.c
+            if not p: p = c.p
+            if not g.doHook("icondclick1", c=c, p=p, event=event):
+                self.endEditLabel()
+                self.OnIconDoubleClick(p)  # Call the method in the base class.
+            g.doHook("icondclick2", c=c, p=p, event=event)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.18437: *4* qtree.onContextMenu
     def onContextMenu(self, point):
         """LeoQtTree: Callback for customContextMenuRequested events."""
-        # #1286.
-        c, w = self.c, self.treeWidget
-        g.app.gui.onContextMenu(c, w, point)
+        try:  # #2069
+            c, w = self.c, self.treeWidget  # #1286.
+            g.app.gui.onContextMenu(c, w, point)
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
     def onItemClicked(self, item, col):
         """Handle a click in a BaseNativeTree widget item."""
         # This is called after an item is selected.
-        if self.busy:
-            return
-        c = self.c
         try:
+            if self.busy:
+                return
+            c = self.c
             self.busy = True
             p = self.item2position(item)
             if p:
@@ -777,126 +797,95 @@ class LeoQtTree(leoFrame.LeoTree):
             # enters editing state.
             if auto_edit and self.auto_edit:
                 e, wrapper = self.createTreeEditorForItem(item)
+        except Exception:  # #2069
+            g.es_exception()
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed
     def onItemCollapsed(self, item):
 
-        if self.busy:
-            return
-        c = self.c
-        p = self.item2position(item)
-        if not p:
-            self.error('no p')
-            return
-        # Do **not** set lockouts here.
-        # Only methods that actually generate events should set lockouts.
-        if p.isExpanded():
-            p.contract()
-            c.redraw_after_contract(p)
-        self.select(p)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:
+                return
+            c = self.c
+            p = self.item2position(item)
+            if not p:
+                self.error('no p')
+                return
+            # Do **not** set lockouts here.
+            # Only methods that actually generate events should set lockouts.
+            if p.isExpanded():
+                p.contract()
+                c.redraw_after_contract(p)
+            self.select(p)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
     def onItemDoubleClicked(self, item, col):
         """Handle a double click in a BaseNativeTree widget item."""
-        if self.busy:  # Required.
-            return
-        c = self.c
-        try:
-            self.busy = True
-            e, wrapper = self.createTreeEditorForItem(item)
-            if not e:
-                g.trace('*** no e')
-            p = self.item2position(item)
-        # 2011/07/28: End the lockout here, not at the end.
-        finally:
-            self.busy = False
-        if not p:
-            self.error('no p')
-            return
-        # 2014/02/21: generate headddlick1/2 instead of icondclick1/2.
-        if g.doHook("headdclick1", c=c, p=p, event=None) is None:
-            c.frame.tree.OnIconDoubleClick(p)  # Call the base class method.
-        g.doHook("headclick2", c=c, p=p, event=None)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:  # Required.
+                return
+            c = self.c
+            try:
+                self.busy = True
+                e, wrapper = self.createTreeEditorForItem(item)
+                if not e:
+                    g.trace('*** no e')
+                p = self.item2position(item)
+            # 2011/07/28: End the lockout here, not at the end.
+            finally:
+                self.busy = False
+            if not p:
+                self.error('no p')
+                return
+            # 2014/02/21: generate headddlick1/2 instead of icondclick1/2.
+            if g.doHook("headdclick1", c=c, p=p, event=None) is None:
+                c.frame.tree.OnIconDoubleClick(p)  # Call the base class method.
+            g.doHook("headclick2", c=c, p=p, event=None)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17898: *4* qtree.onItemExpanded
     def onItemExpanded(self, item):
         """Handle and tree-expansion event."""
-        if self.busy:  # Required
-            return
-        c = self.c
-        p = self.item2position(item)
-        if not p:
-            self.error('no p')
-            return
-        # Do **not** set lockouts here.
-        # Only methods that actually generate events should set lockouts.
-        if not p.isExpanded():
-            p.expand()
-            c.redraw_after_expand(p)
-        self.select(p)
-        c.outerUpdate()
+        try:  # #2069
+            if self.busy:  # Required
+                return
+            c = self.c
+            p = self.item2position(item)
+            if not p:
+                self.error('no p')
+                return
+            # Do **not** set lockouts here.
+            # Only methods that actually generate events should set lockouts.
+            if not p.isExpanded():
+                p.expand()
+                c.redraw_after_expand(p)
+            self.select(p)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17899: *4* qtree.onTreeSelect
     def onTreeSelect(self):
         """Select the proper position when a tree node is selected."""
-        if self.busy:  # Required
-            return
-        c = self.c
-        item = self.getCurrentItem()
-        p = self.item2position(item)
-        if not p:
-            self.error(f"no p for item: {item}")
-            return
-        # Do **not** set lockouts here.
-        # Only methods that actually generate events should set lockouts.
-        self.select(p)
-            # This is a call to LeoTree.select(!!)
-        c.outerUpdate()
-    #@+node:ekr.20110605121601.17900: *4* qtree.OnPopup & allies
-    def OnPopup(self, p, event):
-        """Handle right-clicks in the outline.
-
-        This is *not* an event handler: it is called from other event handlers."""
-        # Note: "headrclick" hooks handled by VNode callback routine.
-        if event:
+        try:  # #2069
+            if self.busy:  # Required
+                return
             c = self.c
-            c.setLog()
-            if not g.doHook("create-popup-menu", c=c, p=p, event=event):
-                self.createPopupMenu(event)
-            if not g.doHook("enable-popup-menu-items", c=c, p=p, event=event):
-                self.enablePopupMenuItems(p, event)
-            if not g.doHook("show-popup-menu", c=c, p=p, event=event):
-                self.showPopupMenu(event)
-        return "break"
-    #@+node:ekr.20110605121601.17901: *5* qtree.OnPopupFocusLost
-    #@@language rest
-    #@+at
-    # On Linux we must do something special to make the popup menu "unpost" if the
-    # mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
-    # explicitly unpost. In order to process the <FocusOut> event, we need to be able
-    # to find the reference to the popup window again, so this needs to be an
-    # attribute of the tree object; hence, "self.popupMenu".
-    #
-    # Aside: though Qt tries to be muli-platform, the interaction with different
-    # window managers does cause small differences that will need to be compensated by
-    # system specific application code. :-(
-    #@@c
-    #@@language python
-
-    # 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
-
-    def OnPopupFocusLost(self, event=None):
-        # self.popupMenu.unpost()
-        pass
-    #@+node:ekr.20110605121601.17902: *5* qtree.createPopupMenu
-    def createPopupMenu(self, event):
-        """This might be a placeholder for plugins.  Or not :-)"""
-    #@+node:ekr.20110605121601.17903: *5* qtree.enablePopupMenuItems
-    def enablePopupMenuItems(self, p, event):
-        """Enable and disable items in the popup menu."""
-    #@+node:ekr.20110605121601.17904: *5* qtree.showPopupMenu
-    def showPopupMenu(self, event):
-        """Show a popup menu."""
+            item = self.getCurrentItem()
+            p = self.item2position(item)
+            if not p:
+                self.error(f"no p for item: {item}")
+                return
+            # Do **not** set lockouts here.
+            # Only methods that actually generate events should set lockouts.
+            self.select(p)
+                # This is a call to LeoTree.select(!!)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.17944: *3* qtree.Focus
     def getFocus(self):
         return g.app.gui.get_focus(self.c)  # Bug fix: 2009/6/30

@@ -104,15 +104,17 @@ class QTextMixin:
     # These are independent of the kind of Qt widget.
     #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
-
-        c = self.c
-        name = c.widget_name(self)
-        # Apparently, this does not cause problems
-        # because it generates no events in the body pane.
-        if not name.startswith('body'):
-            return
-        if hasattr(c.frame, 'statusLine'):
-            c.frame.statusLine.update()
+        try:  # #2069
+            c = self.c
+            name = c.widget_name(self)
+            # Apparently, this does not cause problems
+            # because it generates no events in the body pane.
+            if not name.startswith('body'):
+                return
+            if hasattr(c.frame, 'statusLine'):
+                c.frame.statusLine.update()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20140901062324.18714: *4* qtm.onTextChanged
     def onTextChanged(self):
         """
@@ -122,29 +124,32 @@ class QTextMixin:
         """
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
-        w = self
-        c = self.c; p = c.p
-        tree = c.frame.tree
-        if w.changingText:
-            return
-        if tree.tree_select_lockout:
-            g.trace('*** LOCKOUT', g.callers())
-            return
-        if not p:
-            return
-        newInsert = w.getInsertPoint()
-        newSel = w.getSelectionRange()
-        newText = w.getAllText()  # Converts to unicode.
-        # Get the previous values from the VNode.
-        oldText = p.b
-        if oldText == newText:
-            # This can happen as the result of undo.
-            # g.error('*** unexpected non-change')
-            return
-        i, j = p.v.selectionStart, p.v.selectionLength
-        oldSel = (i, i + j)
-        c.undoer.doTyping(p, 'Typing', oldText, newText,
-            oldSel=oldSel, oldYview=None, newInsert=newInsert, newSel=newSel)
+        try:  # #2069
+            w = self
+            c = self.c; p = c.p
+            tree = c.frame.tree
+            if w.changingText:
+                return
+            if tree.tree_select_lockout:
+                g.trace('*** LOCKOUT', g.callers())
+                return
+            if not p:
+                return
+            newInsert = w.getInsertPoint()
+            newSel = w.getSelectionRange()
+            newText = w.getAllText()  # Converts to unicode.
+            # Get the previous values from the VNode.
+            oldText = p.b
+            if oldText == newText:
+                # This can happen as the result of undo.
+                # g.error('*** unexpected non-change')
+                return
+            i, j = p.v.selectionStart, p.v.selectionLength
+            oldSel = (i, i + j)
+            c.undoer.doTyping(p, 'Typing', oldText, newText,
+                oldSel=oldSel, oldYview=None, newInsert=newInsert, newSel=newSel)
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.
     #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable

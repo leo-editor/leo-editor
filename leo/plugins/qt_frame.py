@@ -1879,42 +1879,45 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
     def onFocusIn(self, obj):
         """Handle a focus-in event in the body pane."""
-        trace = 'select' in g.app.debug and not g.unitTesting
-        tag = 'qt_body.onFocusIn'
-        if obj.objectName() == 'richTextEdit':
-            wrapper = getattr(obj, 'leo_wrapper', None)
-            if trace:
-                print(f"{tag:>30}: {wrapper}")
-            if wrapper and wrapper != self.wrapper:
-                self.selectEditor(wrapper)
-            self.onFocusColorHelper('focus-in', obj)
-            if hasattr(obj, 'leo_copy_button') and obj.leo_copy_button:
-                obj.setReadOnly(True)
-            else:
-                obj.setReadOnly(False)
-            obj.setFocus()  # Weird, but apparently necessary.
+        try:  # #2069
+            trace = 'select' in g.app.debug and not g.unitTesting
+            tag = 'qt_body.onFocusIn'
+            if obj.objectName() == 'richTextEdit':
+                wrapper = getattr(obj, 'leo_wrapper', None)
+                if trace:
+                    print(f"{tag:>30}: {wrapper}")
+                if wrapper and wrapper != self.wrapper:
+                    self.selectEditor(wrapper)
+                self.onFocusColorHelper('focus-in', obj)
+                if hasattr(obj, 'leo_copy_button') and obj.leo_copy_button:
+                    obj.setReadOnly(True)
+                else:
+                    obj.setReadOnly(False)
+                obj.setFocus()  # Weird, but apparently necessary.
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110930174206.15473: *4* LeoQtBody.onFocusOut
     def onFocusOut(self, obj):
         """Handle a focus-out event in the body pane."""
-        # Apparently benign.
-        if obj.objectName() == 'richTextEdit':
-            self.onFocusColorHelper('focus-out', obj)
-            if hasattr(obj, 'setReadOnly'):
-                obj.setReadOnly(True)
-    #@+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper (revised)
-    # badFocusColors = []
-
+        try:  # #2069
+            # Apparently benign.
+            if obj.objectName() == 'richTextEdit':
+                self.onFocusColorHelper('focus-out', obj)
+                if hasattr(obj, 'setReadOnly'):
+                    obj.setReadOnly(True)
+        except Exception:
+            g.es_exception()
+    #@+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper
     def onFocusColorHelper(self, kind, obj):
         """Handle changes of style when focus changes."""
-        c, vc = self.c, self.c.vimCommands
-        if vc and c.vim_mode:
-            try:
+        try:  # #2069
+            c, vc = self.c, self.c.vimCommands
+            if vc and c.vim_mode:
                 assert kind in ('focus-in', 'focus-out')
                 w = c.frame.body.wrapper.widget
                 vc.set_border(w=w, activeFlag=kind == 'focus-in')
-            except Exception:
-                # g.es_exception()
-                pass
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.18217: *3* LeoQtBody.Renderer panes
     #@+node:ekr.20110605121601.18218: *4* LeoQtBody.hideCanvasRenderer
     def hideCanvasRenderer(self, event=None):
@@ -3689,26 +3692,29 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper
     def dragEnterEvent(self, ev):
         """Export c.p's tree as a Leo mime-data."""
-        c = self.c
-        if not ev:
-            g.trace('no event!')
-            return
-        md = ev.mimeData()
-        if not md:
-            g.trace('No mimeData!')
-            return
-        c.endEditing()
-        # Fix bug 135: cross-file drag and drop is broken.
-        # This handler may be called several times for the same drag.
-        # Only the first should should set g.app.drag_source.
-        if g.app.dragging:
-            pass
-        else:
-            g.app.dragging = True
-            g.app.drag_source = c, c.p
-            self.setText(md)
-        # Always accept the drag, even if we are already dragging.
-        ev.accept()
+        try:  # #2069
+            c = self.c
+            if not ev:
+                g.trace('no event!')
+                return
+            md = ev.mimeData()
+            if not md:
+                g.trace('No mimeData!')
+                return
+            c.endEditing()
+            # #135: cross-file drag and drop is broken.
+            # This handler may be called several times for the same drag.
+            # Only the first should should set g.app.drag_source.
+            if g.app.dragging:
+                pass
+            else:
+                g.app.dragging = True
+                g.app.drag_source = c, c.p
+                self.setText(md)
+            # Always accept the drag, even if we are already dragging.
+            ev.accept()
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20110605121601.18384: *5* LeoQTreeWidget.setText
     def setText(self, md):
         c = self.c
@@ -3718,51 +3724,55 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
     def dropEvent(self, ev):
         """Handle a drop event in the QTreeWidget."""
-        if not ev:
-            return
-        md = ev.mimeData()
-        if not md:
-            g.trace('no mimeData!')
-            return
-        try:
-            ### These probably can be unified.
-            if isQt6:
-                mods = ev.modifiers()
-                self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
-                self.was_control_drag = bool(mods & KeyboardModifier.AltModifier)
+        try:  # #2069
+            if not ev:
+                return
+            md = ev.mimeData()
+            if not md:
+                g.trace('no mimeData!')
+                return
+            try:
+                ### These probably can be unified.
+                if isQt6:
+                    mods = ev.modifiers()
+                    self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
+                    self.was_control_drag = bool(mods & KeyboardModifier.AltModifier)
+                else:
+                    mods = int(ev.keyboardModifiers())
+                    self.was_alt_drag = (mods & Modifier.AltModifier) != 0
+                    self.was_control_drag = (mods & Modifier.AltModifier) != 0
+            except Exception:  # Defensive.
+                g.es_exception()
+                g.app.dragging = False
+                return
+            c, tree = self.c, self.c.frame.tree
+            p = None
+            point = ev.position().toPoint() if isQt6 else ev.pos()
+            item = self.itemAt(point)
+            if item:
+                itemHash = tree.itemHash(item)
+                p = tree.item2positionDict.get(itemHash)
+            if not p:
+                # #59: Drop at last node.
+                p = c.rootPosition()
+                while p.hasNext():
+                    p.moveToNext()
+            formats = set(str(f) for f in md.formats())
+            ev.setDropAction(DropAction.IgnoreAction)
+            ev.accept()
+            hookres = g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats)
+            if hookres:
+                # A plugin handled the drop.
+                pass
             else:
-                mods = int(ev.keyboardModifiers())
-                self.was_alt_drag = (mods & Modifier.AltModifier) != 0
-                self.was_control_drag = (mods & Modifier.AltModifier) != 0
-        except Exception:  # Defensive.
+                if md.hasUrls():
+                    self.urlDrop(md, p)
+                else:
+                    self.nodeDrop(md, p)
+            g.app.dragging = False
+        except Exception:
             g.es_exception()
             g.app.dragging = False
-            return
-        c, tree = self.c, self.c.frame.tree
-        p = None
-        point = ev.position().toPoint() if isQt6 else ev.pos()
-        item = self.itemAt(point)
-        if item:
-            itemHash = tree.itemHash(item)
-            p = tree.item2positionDict.get(itemHash)
-        if not p:
-            # #59: Drop at last node.
-            p = c.rootPosition()
-            while p.hasNext():
-                p.moveToNext()
-        formats = set(str(f) for f in md.formats())
-        ev.setDropAction(DropAction.IgnoreAction)
-        ev.accept()
-        hookres = g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats)
-        if hookres:
-            # A plugin handled the drop.
-            pass
-        else:
-            if md.hasUrls():
-                self.urlDrop(md, p)
-            else:
-                self.nodeDrop(md, p)
-        g.app.dragging = False
     #@+node:ekr.20110605121601.18366: *5* LeoQTreeWidget.nodeDrop & helpers
     def nodeDrop(self, md, p):
         """
@@ -4167,7 +4177,7 @@ class LeoQtSpellTab:
             self.fillbox([])
         else:
             self.handler.loaded = False
-    #@+node:ekr.20110605121601.18389: *3* Event handlers
+    #@+node:ekr.20110605121601.18389: *3* LeoQtSpellTab.Event handlers
     #@+node:ekr.20110605121601.18390: *4* onAddButton
     def onAddButton(self):
         """Handle a click in the Add button in the Check Spelling dialog."""

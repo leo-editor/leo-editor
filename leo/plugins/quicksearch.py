@@ -697,7 +697,7 @@ class QuickSearchController:
             if p.isMarked():
                 pl.append(p.copy())
         self.addHeadlineMatches(pl)
-    #@+node:ekr.20111015194452.15700: *3* Event handlers
+    #@+node:ekr.20111015194452.15700: *3* Event handlers (quicksearch.py)
     #@+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it, it_prev=None):
 
