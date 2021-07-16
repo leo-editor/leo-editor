@@ -127,7 +127,8 @@ def configuredcommands_rclick(c, p, menu):
 
         def create_callback(command_name):
             w = g.app.gui.get_focus(c)
-            wrapper = getattr(w, 'wrapper', None)
+            # #2000: The log pane is a confusing special case.
+            wrapper = getattr(w, 'wrapper', None) or getattr(w, 'leo_log_wrapper', None)  # #2000.
             key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
             return lambda: c.k.simulateCommand(command_name, event=key_event)
     
