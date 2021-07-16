@@ -868,7 +868,7 @@
 <v t="ekr.20080411111008.1"><vh>\@ignore and \@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
 <v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh>
-<v t="ekr.20090116094356.5"><vh>\@button</vh></v>
+<v t="ekr.20090116094356.5"><vh>\@buttons</vh></v>
 <v t="ekr.20090116094356.6"><vh>\@commands</vh></v>
 <v t="ekr.20160428111506.1"><vh>\@command-history</vh></v>
 <v t="ekr.20090116094356.7"><vh>\@data</vh></v>
@@ -13964,13 +13964,13 @@ def isZippedFile(self, fn):
         # ("-",None,None),
     )
 </t>
-<t tx="ekr.20120229094652.15099">Put @command nodes as children of an @commands node in myLeoSettings.leo. This makes the the @command nodes available to all opened .leo files.
+<t tx="ekr.20120229094652.15099">Put @command nodes as children of an @commands node in myLeoSettings.leo. This makes the @command nodes available to all opened .leo files.
 
 Using @command rather than @button means that there is never any need to disable scripts. There is no need for @button. To see the list of your @command nodes, type::
 
     &lt;alt-x&gt;@c&lt;tab&gt;
     
-Similarly to see the list of your @command nodes, type::
+Similarly to see the list of your @button nodes, type::
 
     &lt;alt-x&gt;@b&lt;tab&gt;
 </t>
@@ -23008,7 +23008,7 @@ For more information, see Leo's `scripting tutorial`_.</t>
     '''
     # p.self_and_subtree() is a python generator yielding p and
     # all positions in p's subtree, in outline order.
-    for p in p.self.and_subtree():
+    for p in p.self_and_subtree():
         print('%3s %s %s' % (
             len(p.b),       # p.b is position p's body text.
             ' '*p.level(),  # p.level() is p's indentation level.
@@ -23660,7 +23660,7 @@ There are two kinds of markup: **section references** (&lt;&lt; this is my secti
     @language python
     @tabwidth -4
     
-A child node must define the &lt;&lt; import &gt;&gt; node. Other children will typically define classes, methods, functions, and data.
+A child node must define the &lt;&lt; imports &gt;&gt; node. Other children will typically define classes, methods, functions, and data.
 
 When writing this file, Leo writes the first two lines::
 
@@ -31474,6 +31474,7 @@ There are two kinds of markup: **section references** (&lt;&lt; this is my secti
     '''whatever.py'''
     &lt;&lt; imports &gt;&gt;
     @others
+    # That's all, folks
     @language python
     @tabwidth -4
     
@@ -31484,7 +31485,7 @@ When writing this file, Leo writes the first two lines::
     @first # -*- coding: utf-8 -*-
     '''whatever.py'''
     
-followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
+followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment *# That's all, folks*.
 
 Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
 
