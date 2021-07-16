@@ -401,7 +401,7 @@ setting</string>
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
+         <normaloff>../Icons/cleo/edit-clear.png</normaloff>../Icons/cleo/edit-clear.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -419,16 +419,6 @@ interface</string>
        </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../Icons/cleo/edit-clear.png</normaloff>../Icons/cleo/edit-clear.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
        </property>
       </widget>
      </item>
