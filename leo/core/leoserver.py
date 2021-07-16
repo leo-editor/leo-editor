@@ -989,7 +989,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            result = fc.find_var()
+            fc.find_var()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
@@ -1001,7 +1001,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            result = fc.find_def()
+            fc.find_def()
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
@@ -1181,8 +1181,10 @@ class LeoServer:
         c = self._check_c()
         children = [] # default empty array
         if param.get("ap"):
-            # Maybe empty param, for tree-root children(s)
-            p = self._get_p(param)
+            # Maybe empty param, for tree-root children(s).
+            # _get_p called with the strict=True parameter because
+            # we dont want c.p. after switch to another document while refreshing.
+            p = self._get_p(param, True)
             if p and p.hasChildren():
                 children = [self._get_position_d(child) for child in p.children()]
         else:
@@ -2855,14 +2857,15 @@ class LeoServer:
             # Make p and check p.
             p = Position(v, childIndex, stack)
             if not c.positionExists(p):  # pragma: no cover.
+                raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
+        except Exception:
+            if self.log_flag:
                 print(
                     f"{tag}: Bad ap: {ap!r}\n"
                     # f"{tag}: position: {p!r}\n"
                     f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
                     f"{tag}: stack: {stack!r}")
-                raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
-        except Exception:
-            return False
+            return False # fallback to c.p
         return p
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
     def _send_async_output(self, package):
@@ -3083,9 +3086,11 @@ class LeoServer:
         level_s = ' ' * 2 * p.level()
         print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
     #@+node:felix.20210621233316.90: *4* server._get_p
-    def _get_p(self, param):
-        """Return _ap_to_p(param["ap"]) or c.p."""
-
+    def _get_p(self, param, strict = False):
+        """
+        Return _ap_to_p(param["ap"]) or c.p.,
+        or False if the strict flag is set
+        """
         tag = '_get_ap'
         c = self.c
         if not c:  # pragma: no cover
@@ -3098,7 +3103,8 @@ class LeoServer:
                 if not c.positionExists(p):  # pragma: no cover
                     raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
                 return p  # Return the position
-
+        if strict:
+            return False
         # Fallback to c.p
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
@@ -3337,7 +3343,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         # Direct server commands require an exclamation mark '!' prefix
         # to distinguish them from Leo's commander's own methods.
         d = {
-            "action": action, 
+            "action": action,
             "id": self.request_number
         }
         if param:
