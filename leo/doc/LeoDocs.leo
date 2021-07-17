@@ -1774,17 +1774,22 @@
 <v t="ekr.20210607023121.1"><vh>#1965: LM.createAllImporterData</vh></v>
 <v t="ekr.20210617091939.1"><vh>#1968: leo-editor path</vh></v>
 <v t="ekr.20210617164840.1"><vh>#1974: spaces in path</vh></v>
+<v t="ekr.20210717092635.1363"><vh>#1995: menu styles</vh></v>
+<v t="ekr.20210717092635.785"><vh>#2000: copy from log pane (from context menu)</vh></v>
 <v t="ekr.20210710040014.54"><vh>#2011: buttons </vh></v>
 <v t="ekr.20210710040014.55"><vh>#2020: leoflexx crash</vh></v>
 <v t="ekr.20210710040014.57"><vh>#2022: quicksearch crash</vh></v>
+<v t="ekr.20210717092635.919"><vh>#2024: Button background</vh></v>
 <v t="ekr.20210710040014.73"><vh>#2030: NO PARENT message</vh></v>
 <v t="ekr.20210710040014.133"><vh>#2036: move-right</vh></v>
+<v t="ekr.20210717092635.921"><vh>#2040: auto-indent</vh></v>
 <v t="ekr.20210710163244.4"><vh>#2041: Alt-x in find panel</vh>
 <v t="ekr.20210710163244.5"><vh>--- changed</vh>
 <v t="ekr.20210710163244.6"><vh>k.defineSingleLineCommands</vh></v>
 <v t="ekr.20210710163244.7"><vh>k.updateLabel</vh></v>
 </v>
 </v>
+<v t="ekr.20210717092635.1337"><vh>#2076: find-all</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -1808,8 +1813,12 @@
 <v t="ekr.20210710040014.2"><vh>#1944: Annotations &amp; stub files</vh></v>
 <v t="ekr.20210520081100.1"><vh>#1946: g.assertUi</vh></v>
 <v t="ekr.20210528082736.20"><vh>#1953: Fix Qt6 dialogs</vh></v>
+<v t="ekr.20210717092635.2"><vh>#1973: Qt enums</vh></v>
 <v t="ekr.20210617092021.1"><vh>#1979: cffm and cfam</vh></v>
+<v t="ekr.20210717092635.918"><vh>#2005: Add more qt imports</vh></v>
 <v t="ekr.20210710040014.128"><vh>#2031: nodetags: work w/o qt</vh></v>
+<v t="ekr.20210717092635.1339"><vh>#2068: Review Modifiers, KeyboardModifiers</vh></v>
+<v t="ekr.20210717092635.938"><vh>#2069: Protect more event handlers</vh></v>
 <v t="ekr.20210405100137.887"><vh>PR1759: Further improvements to undo code</vh></v>
 <v t="ekr.20210405100137.1772"><vh>PR1804: Support batch change scripts</vh></v>
 <v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
@@ -32289,6 +32298,15 @@ PR: https://github.com/leo-editor/leo-editor/pull/2044</t>
         w.insert(ins, ch)
         i = ins + 1
 </t>
+<t tx="ekr.20210717092635.1337">https://github.com/leo-editor/leo-editor/issues/2076</t>
+<t tx="ekr.20210717092635.1339">https://github.com/leo-editor/leo-editor/issues/2068</t>
+<t tx="ekr.20210717092635.1363">https://github.com/leo-editor/leo-editor/issues/1995</t>
+<t tx="ekr.20210717092635.2">https://github.com/leo-editor/leo-editor/issues/1973</t>
+<t tx="ekr.20210717092635.785">https://github.com/leo-editor/leo-editor/issues/2000</t>
+<t tx="ekr.20210717092635.918">https://github.com/leo-editor/leo-editor/issues/2005</t>
+<t tx="ekr.20210717092635.919">https://github.com/leo-editor/leo-editor/issues/2024</t>
+<t tx="ekr.20210717092635.921">https://github.com/leo-editor/leo-editor/issues/2040</t>
+<t tx="ekr.20210717092635.938">https://github.com/leo-editor/leo-editor/issues/2069</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
