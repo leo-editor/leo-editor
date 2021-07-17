@@ -7,6 +7,18 @@
 #@+node:ekr.20080921091311.1: ** << imports and inits >> (runLeo.py)
 import os
 import sys
+import traceback
+#
+# Override sys.excepthook
+def leo_excepthook(typ, val, tb):
+    # Like g.es_exception.
+    lines = traceback.format_exception(typ, val, tb)
+    print('\nUncaught exception in Leo...\n', flush=True)
+    for line in lines:
+        print(line.rstrip(), flush=True)
+        
+sys.excepthook = leo_excepthook
+#  
 # Partial fix for #541.
 # See https://stackoverflow.com/questions/24835155/
 if sys.executable.endswith("pythonw.exe"):

@@ -1616,7 +1616,6 @@ if QtWidgets: # NOQA
                 # Allow non-ctrl clicks to open url's.
                 w = QtWidgets.QTextBrowser()
                 
-                @g.callback  # #2069
                 def contextMenuCallback(point):
                     """LeoQtTree: Callback for customContextMenuRequested events."""
                     # #1286.
@@ -1627,7 +1626,6 @@ if QtWidgets: # NOQA
                 w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
                 w.customContextMenuRequested.connect(contextMenuCallback)
 
-                @g.callback  # #2069
                 def handleClick(url, w=w):
                     from leo.plugins import qt_text
                     wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
