@@ -1199,7 +1199,7 @@ class LeoQtGui(leoGui.LeoGui):
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
     #@+node:ekr.20200304125716.1: *3* qt_gui.onContextMenu
-    @g.callback
+    ### @g.callback
     def onContextMenu(self, c, w, point):
         """LeoQtGui: Common context menu handling."""
         # #1286.

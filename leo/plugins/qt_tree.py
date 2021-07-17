@@ -677,7 +677,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17885: *3* qtree.Event handlers
     #@+node:ekr.20110605121601.17887: *4*  qtree.Click Box
     #@+node:ekr.20110605121601.17888: *5* qtree.onClickBoxClick
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onClickBoxClick(self, event, p=None):
         if self.busy:
             return
@@ -686,7 +686,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("boxclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17889: *5* qtree.onClickBoxRightClick
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onClickBoxRightClick(self, event, p=None):
         if self.busy:
             return
@@ -695,7 +695,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("boxrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17890: *5* qtree.onPlusBoxRightClick
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onPlusBoxRightClick(self, event, p=None):
         if self.busy:
             return
@@ -705,7 +705,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17891: *4*  qtree.Icon Box
     # For Qt, there seems to be no way to trigger these events.
     #@+node:ekr.20110605121601.17892: *5* qtree.onIconBoxClick
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onIconBoxClick(self, event, p=None):
         if self.busy:
             return
@@ -714,7 +714,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("iconclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17893: *5* qtree.onIconBoxRightClick
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onIconBoxRightClick(self, event, p=None):
         """Handle a right click in any outline widget."""
         if self.busy:
@@ -724,7 +724,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("iconrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17894: *5* qtree.onIconBoxDoubleClick
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onIconBoxDoubleClick(self, event, p=None):
         if self.busy:
             return
@@ -736,14 +736,14 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("icondclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.18437: *4* qtree.onContextMenu
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onContextMenu(self, point):
         """LeoQtTree: Callback for customContextMenuRequested events."""
         # #1286.
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onItemClicked(self, item, col):
         """Handle a click in a BaseNativeTree widget item."""
         # This is called after an item is selected.
@@ -788,7 +788,7 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onItemCollapsed(self, item):
 
         if self.busy:
@@ -806,7 +806,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.select(p)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onItemDoubleClicked(self, item, col):
         """Handle a double click in a BaseNativeTree widget item."""
         if self.busy:  # Required.
@@ -830,7 +830,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("headclick2", c=c, p=p, event=None)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17898: *4* qtree.onItemExpanded
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onItemExpanded(self, item):
         """Handle and tree-expansion event."""
         if self.busy:  # Required
@@ -848,7 +848,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.select(p)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17899: *4* qtree.onTreeSelect
-    @g.callback  # #2069
+    ### @g.callback  # #2069
     def onTreeSelect(self):
         """Select the proper position when a tree node is selected."""
         if self.busy:  # Required
