@@ -1450,7 +1450,6 @@ class LeoFind:
         # Settings.
         find_pattern = k.arg
         self.ftm.set_find_text(find_pattern)
-        ##self.init_in_headline()
         settings = self.ftm.get_settings()
         self.find_text = find_pattern
         self.change_text = self.ftm.get_change_text()
