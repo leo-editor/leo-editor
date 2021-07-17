@@ -1199,11 +1199,12 @@ class LeoQtGui(leoGui.LeoGui):
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
     #@+node:ekr.20200304125716.1: *3* qt_gui.onContextMenu
+    @g.callback
     def onContextMenu(self, c, w, point):
         """LeoQtGui: Common context menu handling."""
         # #1286.
         handlers = g.tree_popup_handlers
-        menu = QtWidgets.QMenu()
+        menu = QtWidgets.QMenu(c.frame.top)  # #1995.
         menuPos = w.mapToGlobal(point)
         if not handlers:
             menu.addAction("No popup handlers")
