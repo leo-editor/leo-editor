@@ -19,8 +19,9 @@ from leo.core import leoMenu
 from leo.commands import gotoCommands
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
-from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier, Modifier, MoveOperation, Orientation
-from leo.core.leoQt import MouseButton, Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
+from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
+from leo.core.leoQt import MoveOperation, Orientation, MouseButton
+from leo.core.leoQt import Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
 from leo.core.leoQt import Shadow, Shape, TextInteractionFlag, ToolBarArea, Type, WindowState, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
@@ -3728,15 +3729,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             g.trace('no mimeData!')
             return
         try:
-            ### These probably can be unified.
-            if isQt6:
-                mods = ev.modifiers()
-                self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
-                self.was_control_drag = bool(mods & KeyboardModifier.AltModifier)
-            else:
-                mods = int(ev.keyboardModifiers())
-                self.was_alt_drag = (mods & Modifier.AltModifier) != 0
-                self.was_control_drag = (mods & Modifier.AltModifier) != 0
+            mods = ev.modifiers() if isQt6 else int(ev.keyboardModifiers())
+            self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
+            self.was_control_drag = bool(mods & KeyboardModifier.ControlModifier)
         except Exception:  # Defensive.
             g.es_exception()
             g.app.dragging = False
