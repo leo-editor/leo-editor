@@ -103,6 +103,7 @@ class QTextMixin:
     #@+node:ekr.20140901122110.18733: *3* qtm.Event handlers
     # These are independent of the kind of Qt widget.
     #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
+    @g.callback  # #2069
     def onCursorPositionChanged(self, event=None):
 
         c = self.c
@@ -114,6 +115,7 @@ class QTextMixin:
         if hasattr(c.frame, 'statusLine'):
             c.frame.statusLine.update()
     #@+node:ekr.20140901062324.18714: *4* qtm.onTextChanged
+    @g.callback  # #2069
     def onTextChanged(self):
         """
         Update Leo after the body has been changed.
