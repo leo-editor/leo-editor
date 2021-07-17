@@ -590,7 +590,6 @@ class NestedSplitter(QtWidgets.QSplitter):
             act = QAction("Nothing marked, and no options", self)
             menu.addAction(act)
 
-        ### point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         point = button.pos()
         global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
