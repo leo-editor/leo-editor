@@ -864,51 +864,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.select(p)
             # This is a call to LeoTree.select(!!)
         c.outerUpdate()
-    #@+node:ekr.20110605121601.17900: *4* qtree.OnPopup & allies
-    def OnPopup(self, p, event):
-        """Handle right-clicks in the outline.
-
-        This is *not* an event handler: it is called from other event handlers."""
-        # Note: "headrclick" hooks handled by VNode callback routine.
-        if event:
-            c = self.c
-            c.setLog()
-            if not g.doHook("create-popup-menu", c=c, p=p, event=event):
-                self.createPopupMenu(event)
-            if not g.doHook("enable-popup-menu-items", c=c, p=p, event=event):
-                self.enablePopupMenuItems(p, event)
-            if not g.doHook("show-popup-menu", c=c, p=p, event=event):
-                self.showPopupMenu(event)
-        return "break"
-    #@+node:ekr.20110605121601.17901: *5* qtree.OnPopupFocusLost
-    #@@language rest
-    #@+at
-    # On Linux we must do something special to make the popup menu "unpost" if the
-    # mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
-    # explicitly unpost. In order to process the <FocusOut> event, we need to be able
-    # to find the reference to the popup window again, so this needs to be an
-    # attribute of the tree object; hence, "self.popupMenu".
-    #
-    # Aside: though Qt tries to be muli-platform, the interaction with different
-    # window managers does cause small differences that will need to be compensated by
-    # system specific application code. :-(
-    #@@c
-    #@@language python
-
-    # 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
-
-    def OnPopupFocusLost(self, event=None):
-        # self.popupMenu.unpost()
-        pass
-    #@+node:ekr.20110605121601.17902: *5* qtree.createPopupMenu
-    def createPopupMenu(self, event):
-        """This might be a placeholder for plugins.  Or not :-)"""
-    #@+node:ekr.20110605121601.17903: *5* qtree.enablePopupMenuItems
-    def enablePopupMenuItems(self, p, event):
-        """Enable and disable items in the popup menu."""
-    #@+node:ekr.20110605121601.17904: *5* qtree.showPopupMenu
-    def showPopupMenu(self, event):
-        """Show a popup menu."""
     #@+node:ekr.20110605121601.17944: *3* qtree.Focus
     def getFocus(self):
         return g.app.gui.get_focus(self.c)  # Bug fix: 2009/6/30
