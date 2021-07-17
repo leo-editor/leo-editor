@@ -646,7 +646,7 @@
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
-<v t="ekr.20181018113730.1"><vh>@string external-editor</vh></v>
+<v t="ekr.20181018113730.1"><vh>@string external-editor = None</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
@@ -2306,6 +2306,7 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ville.20091008201813.3911"></v>
+<v t="ekr.20181018113730.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11243,7 +11244,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
 <t tx="ekr.20181018113502.1"></t>
 <t tx="ekr.20181018113612.1"></t>
 <t tx="ekr.20181018113656.1"></t>
-<t tx="ekr.20181018113730.1"></t>
+<t tx="ekr.20181018113730.1"># Name of external editor.</t>
 <t tx="ekr.20181018113812.1">
 </t>
 <t tx="ekr.20181018113813.1"></t>
