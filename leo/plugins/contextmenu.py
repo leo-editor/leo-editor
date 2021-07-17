@@ -65,7 +65,7 @@ def cm_external_editor(event):
     Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
     """
     c = event['c']
-    editor = g.guessExternalEditor()
+    editor = g.guessExternalEditor(c)
     d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
     c.openWith(d=d)
 #@+node:tbrown.20121123075838.19937: *3* 'context_menu_open'
@@ -193,7 +193,7 @@ def deletenodes_rclick(c,p,menu):
 def editnode_rclick(c,p,menu):
     """ Provide "edit in EDITOR" context menu item """
 
-    editor = g.guessExternalEditor()
+    editor = g.guessExternalEditor(c)
     if editor:
 
         def editnode_rclick_cb():
@@ -246,8 +246,8 @@ def openurl_rclick(c,p,menu):
 
         action = menu.addAction("Open URL")
         action.triggered.connect(openurl_rclick_cb)
-#@+node:ville.20090630210947.5465: *3* openwith_rclick
-def openwith_rclick(c,p,menu):
+#@+node:ville.20090630210947.5465: *3* openwith_rclick & callbacks
+def openwith_rclick(c, p, menu):
     """
     Show "Edit with" in context menu for external file root nodes (@thin, @auto...)
 
@@ -256,14 +256,14 @@ def openwith_rclick(c,p,menu):
     """
     # define callbacks
     #@+others
-    #@+node:ekr.20140613141207.17666: *4* openwith_rclick_cb
+    #@+node:ekr.20140613141207.17666: *4* function: openwith_rclick_cb
     def openwith_rclick_cb():
 
         if editor:
             cmd = '%s "%s"' % (editor, absp)
             g.es('Edit: %s' % cmd)
             subprocess.Popen(cmd, shell=True)
-    #@+node:ekr.20140613141207.17667: *4* openfolder_rclick_cb
+    #@+node:ekr.20140613141207.17667: *4* function: openfolder_rclick_cb
     def openfolder_rclick_cb():
         
         if g.os_path_exists(path):
@@ -271,12 +271,12 @@ def openwith_rclick(c,p,menu):
         else:
             # #1257:
             g.es_print('file not found:', repr(path))
-    #@+node:ekr.20140613141207.17668: *4* create_rclick_cb
+    #@+node:ekr.20140613141207.17668: *4* function: create_rclick_cb
     def create_rclick_cb():
 
         os.makedirs(absp)
         g.es("Created " + absp)
-    #@+node:ekr.20140613141207.17669: *4* importfiles_rclick_cb
+    #@+node:ekr.20140613141207.17669: *4* function: importfiles_rclick_cb
     def importfiles_rclick_cb():
 
         def shorten(pth, prefix):
@@ -310,8 +310,9 @@ def openwith_rclick(c,p,menu):
     fname = p.anyAtFileNodeName()
     if not fname and head != "@path":
         return
-    path = g.scanAllAtPathDirectives(c,p)
-    editor = g.guessExternalEditor()
+    path = g.scanAllAtPathDirectives(c, p)
+    editor = g.guessExternalEditor(c)
+    g.trace('editor', editor)
     absp = g.os_path_finalize_join(path, fname)
     exists = os.path.exists(absp)
     if not exists and head == "@path":
