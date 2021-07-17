@@ -1878,7 +1878,6 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_p = p.copy()
     #@+node:ekr.20110605121601.18223: *3* LeoQtBody.Event handlers
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
-    @g.callback  # #2069
     def onFocusIn(self, obj):
         """Handle a focus-in event in the body pane."""
         trace = 'select' in g.app.debug and not g.unitTesting
@@ -1896,7 +1895,6 @@ class LeoQtBody(leoFrame.LeoBody):
                 obj.setReadOnly(False)
             obj.setFocus()  # Weird, but apparently necessary.
     #@+node:ekr.20110930174206.15473: *4* LeoQtBody.onFocusOut
-    @g.callback  # #2069
     def onFocusOut(self, obj):
         """Handle a focus-out event in the body pane."""
         # Apparently benign.
@@ -1905,7 +1903,6 @@ class LeoQtBody(leoFrame.LeoBody):
             if hasattr(obj, 'setReadOnly'):
                 obj.setReadOnly(True)
     #@+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper (revised)
-    @g.callback  # #2069
     def onFocusColorHelper(self, kind, obj):
         """Handle changes of style when focus changes."""
         c, vc = self.c, self.c.vimCommands
@@ -3689,7 +3686,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     #@+others
     #@+node:ekr.20111022222228.16980: *3* LeoQTreeWidget: Event handlers
     #@+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper
-    @g.callback  # #2069
     def dragEnterEvent(self, ev):
         """Export c.p's tree as a Leo mime-data."""
         c = self.c
@@ -3719,7 +3715,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         s = c.fileCommands.outline_to_clipboard_string()
         md.setText(f"{fn},{s}")
     #@+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
-    @g.callback  # #2069
     def dropEvent(self, ev):
         """Handle a drop event in the QTreeWidget."""
         if not ev:
@@ -4307,7 +4302,6 @@ class LeoQtTreeTab:
         tt.setNames()
         tt.iconBar.addWidget(w)
 
-        @g.callback  # #2069
         def onIndexChanged(s, tt=tt):
             if isinstance(s, int):
                 s = '' if s == -1 else tt.w.currentText()
