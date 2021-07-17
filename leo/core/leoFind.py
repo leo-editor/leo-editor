@@ -1546,12 +1546,16 @@ class LeoFind:
                 line_number = 1
             log.put(line.strip()+'\n', nodeLink=f"{unl},{line_number}")
             
+        seen = [] # List of (vnode, pos).
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
             p, pos, newpos = self.find_next_match(p)
             if pos is None:
                 break
+            if (p.v, pos) in seen:  # 2076
+                continue
+            seen.append((p.v, pos))
             count += 1
             s = self.work_s
             i, j = g.getLine(s, pos)
