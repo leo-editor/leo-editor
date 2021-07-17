@@ -2305,11 +2305,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20071213060239"></v>
-<v t="ekr.20210412113510.1"></v>
-<v t="ekr.20210530064911.1"></v>
-<v t="ekr.20210530064922.1"></v>
-<v t="ekr.20070925144552"></v>
+<v t="ville.20091008201813.3911"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -12287,11 +12283,14 @@ a single @data contextmenu_commands node. </t>
 
 undo Undo
 redo Redo
--
-copy-text Copy Text
-cut-text Cut Text
-paste-text Paste Text
-select-all Select All Text
+
+# EKR: I highly recommend *not* adding the following text-related items.
+#      These popup commands do not work in all of Leo's text panes!
+    # -
+    # copy-text Copy Text
+    # cut-text Cut Text
+    # paste-text Paste Text
+    # select-all Select All Text
 -
 copy-node Copy Node
 cut-node Cut Node
