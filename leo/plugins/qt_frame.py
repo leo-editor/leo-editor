@@ -4312,6 +4312,7 @@ class LeoQtTreeTab:
         tt.setNames()
         tt.iconBar.addWidget(w)
 
+        @g.callback  # #2069
         def onIndexChanged(s, tt=tt):
             if isinstance(s, int):
                 s = '' if s == -1 else tt.w.currentText()
@@ -4321,7 +4322,6 @@ class LeoQtTreeTab:
                 tt.selectTab(s)
 
         # A change: the argument could now be an int instead of a string.
-
         w.currentIndexChanged.connect(onIndexChanged)
     #@+node:ekr.20110605121601.18443: *3* tt.createTab
     def createTab(self, tabName, select=True):
