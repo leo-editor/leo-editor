@@ -43,7 +43,6 @@ And call this in your plugin *once*::
 # Original version by Ville M. Vainio.
 
 import os
-import subprocess
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoGui import LeoKeyEvent
@@ -65,7 +64,13 @@ def cm_external_editor(event):
     Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
     """
     c = event['c']
-    editor = g.guessExternalEditor()
+    editor,_ = getEditor(c)
+
+    if not editor.startswith('"'):
+        editor = '"' + editor
+    if not editor.endswith('"'):
+        editor = editor + '"'
+
     d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
     c.openWith(d=d)
 #@+node:tbrown.20121123075838.19937: *3* 'context_menu_open'
@@ -103,6 +108,22 @@ def install_handlers():
         pylint_rclick,
     ]
     g.tree_popup_handlers.extend(handlers)
+#@+node:tom.20210717164029.1: ** getEditor
+def getEditor(c):
+    """Return system's best guess editor quoted.
+    
+    RETURNS
+    A tuple (editor_path, editor_name_minus_extension)
+    """
+    editor = g.guessExternalEditor(c)
+    if editor:
+        basename = os.path.basename(editor).split('.')[0]
+        if not editor.startswith('"'):
+            editor = '"' + editor
+        if not editor.endswith('"'):
+            editor = editor + '"'
+        return editor, basename
+    return "", ""
 #@+node:ekr.20140724211116.19255: ** Handlers
 #@+node:ville.20091008192104.7691: *3* configuredcommands_rclick
 def configuredcommands_rclick(c, p, menu):
@@ -131,7 +152,7 @@ def configuredcommands_rclick(c, p, menu):
             wrapper = getattr(w, 'wrapper', None) or getattr(w, 'leo_log_wrapper', None)  # #2000.
             key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
             return lambda: c.k.simulateCommand(command_name, event=key_event)
-    
+
         configcmd_rclick_cb = create_callback(command_name)
         action.triggered.connect(configcmd_rclick_cb)
 
@@ -191,17 +212,18 @@ def deletenodes_rclick(c,p,menu):
     action.triggered.connect(deletenodes_rclick_cb)
 #@+node:ville.20090701110830.10215: *3* editnode_rclick
 def editnode_rclick(c,p,menu):
-    """ Provide "edit in EDITOR" context menu item """
+    """Provide "edit in EDITOR" context menu item.
+    
+    Opens file or node in external editor."""
 
-    editor = g.guessExternalEditor()
-    if editor:
+    editor, basename = getEditor(c)
 
-        def editnode_rclick_cb():
-            d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
-            c.openWith(d=d)
+    def editnode_rclick_cb():
+        d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
+        c.openWith(d=d)
 
-        action = menu.addAction("Edit in " + editor)
-        action.triggered.connect(editnode_rclick_cb)
+    action = menu.addAction("Edit with " + basename)
+    action.triggered.connect(editnode_rclick_cb)
 #@+node:ville.20090719202132.5248: *3* marknodes_rclick
 def marknodes_rclick(c,p,menu):
     """ Mark selected nodes """
@@ -256,13 +278,6 @@ def openwith_rclick(c,p,menu):
     """
     # define callbacks
     #@+others
-    #@+node:ekr.20140613141207.17666: *4* openwith_rclick_cb
-    def openwith_rclick_cb():
-
-        if editor:
-            cmd = '%s "%s"' % (editor, absp)
-            g.es('Edit: %s' % cmd)
-            subprocess.Popen(cmd, shell=True)
     #@+node:ekr.20140613141207.17667: *4* openfolder_rclick_cb
     def openfolder_rclick_cb():
         
@@ -311,7 +326,7 @@ def openwith_rclick(c,p,menu):
     if not fname and head != "@path":
         return
     path = g.scanAllAtPathDirectives(c,p)
-    editor = g.guessExternalEditor()
+    #editor = g.guessExternalEditor(c)
     absp = g.os_path_finalize_join(path, fname)
     exists = os.path.exists(absp)
     if not exists and head == "@path":
@@ -320,9 +335,6 @@ def openwith_rclick(c,p,menu):
     if exists and head == "@path":
         action = menu.addAction("Import files")
         action.triggered.connect(importfiles_rclick_cb)
-    if editor and exists and head != "@path":
-        action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
-        action.triggered.connect(openwith_rclick_cb)
     action = menu.addAction("Open " + path)
     action.triggered.connect(openfolder_rclick_cb)
 #@+node:ville.20090630221949.5462: *3* refresh_rclick
@@ -339,10 +351,10 @@ def refresh_rclick(c,p,menu):
 def pylint_rclick(c,p,menu):
     '''Run pylint on the selected node.'''
     action = menu.addAction("Run Pylint")
-    
+
     def pylint_rclick_cb(aBool):
         c.k.simulateCommand('pylint')
-    
+
     action.triggered.connect(pylint_rclick_cb)
 #@+node:ekr.20140724211116.19256: ** Helpers
 #@+node:ville.20110428163751.7685: *3* guess_file_type
