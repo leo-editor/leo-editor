@@ -132,9 +132,7 @@ def callback(func):
     """
     A global decorator that protects Leo against crashes in callbacks.
     
-    This decorator is deprecated, and will soon be removed.
-    
-    This decrator is NOT NEEDED because runLeo.py overrides sys.excepthook.
+    This decorator is NOT NEEDED because runLeo.py overrides sys.excepthook.
 
     The OLD, DEPRECATED, way.
 
