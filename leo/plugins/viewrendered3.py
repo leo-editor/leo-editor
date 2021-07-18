@@ -780,7 +780,7 @@ except ImportError:
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
-    from nbconvert import HTMLExporter
+    from nbconvert.exporters import HTMLExporter
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
@@ -1467,6 +1467,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'html': pc.update_html,
             'graphics-script': pc.update_graphics_script,
             'image': pc.update_image,
+            'jupyter': pc.update_jupyter,
             'md': pc.update_md,
             'movie': pc.update_movie,
             'networkx': pc.update_networkx,
@@ -1848,6 +1849,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _kind = pc.get_kind(p) or self.default_kind
             if _kind in ('edit', 'file', 'clean', 'auto'):
                 _kind = RST
+            if _kind == RST and p.h.startswith('@jupyter'):
+                _kind = 'jupyter'
             f = pc.dispatch_dict.get(_kind)
         # if f in (pc.update_rst, pc.update_md, pc.update_text):
             # self.show_toolbar()
@@ -2330,8 +2333,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             w = pc.w
         s = self.get_jupyter_source(c)
-        if isQt5 or isQt6:
-            w.hide() # This forces a proper update.
+        w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -2346,7 +2348,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Leo 5.7.1: Allow raw JSON.
             s = body
         else:
-            url = g.getUrlFromNode(c.p)
+            url = c.p.h.split()[1]
             if not url:
                 return ''
             if not nbformat:
