@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.4
+About Viewrendered3 V3.42
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -127,7 +127,7 @@ Settings and Configuration
 ==========================
 
 Settings
-========
+---------
 
 Settings are put into nodes with the headlines ``@setting ...``.  
 They must be placed into an ``@settings`` tree, preferably 
@@ -220,6 +220,9 @@ that one of the ``.js`` script files in the ``es`` directory be used, as shown
 in the above table.  If the script is loaded from the Internet, the URL must
 include a ``?config`` specifer.  The one shown in the example above works well.
 #@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
+External Processors For Other Languages
+========================================
+
 VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
 
     <processor> [optional parameters] filename
@@ -242,6 +245,9 @@ A language that is specified here will not automatically be executed: only langu
 
 VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
 #@+node:TomP.20210423000029.1: *5* @param Optional Parameters
+Optional Parameters
+====================
+
 \@param - Specify parameter(s) to be passed to a non-Python language processor.
 -------------------------------------------------------------------------------
 The `@param` directive specifies command-line parameters to be passed
@@ -272,6 +278,9 @@ outside a code block::
     # ...
 
 #@+node:TomP.20210423002026.1: *5* Limitations
+Limitations
+============
+
 1. The ability to launch an external processor currently works only for ReStructuredText markup language nodes or trees.
 
 2. The supported command line format is fairly simple, so a language that needs separate compile and run stages will be difficult to use.
@@ -295,7 +304,7 @@ rarely a reason to invoke any of them, except two:
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
 Structured Text
----------------
+===============
 
 VR3 renders three kinds of structured text: reStructured Text (RsT), Markdown (MD),
 and Asciidoc.  Normally the currently selected node is rendered, but a toolbar menu item
@@ -512,6 +521,9 @@ Currently the languages that can be colorized are python, javascript,
 java, julia, css, xml, and sql.
 
 #@+node:TomP.20210225000326.1: *3* Code Execution
+Code Execution
+===============
+
 Code that occurs inside one or more code blocks can be executed.
 Execution is initiated when the "Execute" button on the
 VR3 toolbar is pressed.  Output from the processor to stdout and 
@@ -654,8 +666,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 """
 
 #@+<< imports >>
-#@+node:TomP.20191215195433.4: ** << imports >> (vr3)
-# pylint: disable=ungrouped-imports
+#@+node:TomP.20191215195433.4: ** << imports >>
 #
 # Stdlib...
 from configparser import ConfigParser
@@ -685,7 +696,7 @@ from urllib.request import urlopen
 import leo.core.leoGlobals as g
 from leo.core.leoApp import LoadManager as LM
 #@+<< Qt Imports >>
-#@+node:tom.20210517102737.1: *3* << Qt Imports >> (vr3)
+#@+node:tom.20210517102737.1: *3* << Qt Imports >>
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
@@ -697,26 +708,21 @@ except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
 
-if not QtSvg and not isQt5:
-    try:
-        from PyQt6 import QtSvg
-    except ImportError:
-        g.es('Viewrendered3: cannot import QTSvg module')
-        raise ImportError from None
-
-
 QWebView = None
-if isQt5:
-    try:
-        from leo.core.leoQt import QtWebKitWidgets
-        QWebView = QtWebKitWidgets.QWebView
-    except ImportError:
-        g.trace("Can' import QtWebKitWidgets")
-    except Exception as e:
-        g.trace(e)
-else:
+try:
+    from leo.core.leoQt import QtWebKitWidgets
+    QWebView = QtWebKitWidgets.QWebView
+except ImportError:
+    g.trace("Can't import QtWebKitWidgets")
+except AttributeError:
+    g.trace('No QWebView')
+except Exception as e:
+    g.trace(e)
+
+if not QWebView:
     try:
         QWebView = QtWidgets.QTextBrowser
+        print("VR3: *** limited RsT rendering in effect")
     except Exception as e:
         g.trace(e)
         # The top-level init function gives the error.
@@ -774,15 +780,11 @@ except ImportError:
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
+    from nbconvert.exporters import HTMLExporter
+    # from traitlets.config import Config
 except ImportError:
     nbformat = None
     print('VR3: *** No nbformat')
-try:
-    from nbconvert import HTMLExporter
-    # from traitlets.config import Config
-except ImportError:
-    HTMLExporter = None
-    print('VR3: *** No nbconvert')
 try:
     from pygments import cmdline
 except ImportError:
@@ -1465,6 +1467,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'html': pc.update_html,
             'graphics-script': pc.update_graphics_script,
             'image': pc.update_image,
+            'jupyter': pc.update_jupyter,
             'md': pc.update_md,
             'movie': pc.update_movie,
             'networkx': pc.update_networkx,
@@ -1799,7 +1802,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 stylesheet = RST_DEFAULT_STYLESHEET_NAME
             self.rst_stylesheet = g.os_path_join(vr_style_dir, stylesheet)
-        g.es('VR3: stylesheet:', self.rst_stylesheet)
+        g.es('VR3 stylesheet:', self.rst_stylesheet)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
         # pylint: disable=import-outside-toplevel
@@ -1846,6 +1849,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _kind = pc.get_kind(p) or self.default_kind
             if _kind in ('edit', 'file', 'clean', 'auto'):
                 _kind = RST
+            if _kind == RST and p.h.startswith('@jupyter'):
+                _kind = 'jupyter'
             f = pc.dispatch_dict.get(_kind)
         # if f in (pc.update_rst, pc.update_md, pc.update_text):
             # self.show_toolbar()
@@ -1964,6 +1969,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _must_update = False
         pc = self
         c, p = pc.c, pc.c.p
+
         if g.unitTesting:
             _must_update = False
         elif keywords.get('force'):
@@ -2327,8 +2333,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             w = pc.w
         s = self.get_jupyter_source(c)
-        if isQt5 or isQt6:
-            w.hide() # This forces a proper update.
+        self.rst_html = s
+        w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -2343,7 +2349,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Leo 5.7.1: Allow raw JSON.
             s = body
         else:
-            url = g.getUrlFromNode(c.p)
+            url = c.p.h.split()[1]
             if not url:
                 return ''
             if not nbformat:
@@ -2729,10 +2735,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node_list[0].b
                 s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
-            if s.startswith('<svg'):
-                g.es(NO_SVG_WIDGET_MSG, color = 'red')
-                return
-                
+    #@+at
+    #         if s.startswith('<svg'):
+    #             if QtSvg is None:
+    #                 g.es(NO_SVG_WIDGET_MSG, color = 'red')
+    #                 return
+    #             else:
+    #                 self.update_svg(s, keywords)
+    #@@c
             self.rst_html = ''
             if s and isHtml:
                 _code = [n.b for n in node_list]
@@ -2741,6 +2751,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 h = self.convert_to_html(node_list, s)
             if h:
                 self.set_html(h, w)
+                self.rst_html = h
         else:
             _text_list = [n.b for n in node_list]
             s = '<pre>' + '\n'.join(_text_list)  + r'\</pre>'
@@ -3260,22 +3271,23 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def update_svg(self, s, keywords):
         if not QtSvg:
-            g.es('QSvgWidget not available', color = 'red')
+            g.es(NO_SVG_WIDGET_MSG, color = 'red')
             return
         pc = self
+
         if pc.must_change_widget(QSvgWidget):
             w = QSvgWidget()
             pc.embed_widget(w)
             assert w == pc.w
         else:
-            w = pc.w722
+            w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
             s = g.adjustTripleString(s, pc.c.tab_width).strip()
                 # Sensitive to leading blank lines.
-            s = g.toEncodedString(s)
+            bytes = g.toEncodedString(s)
             pc.show()
-            w.load(QtCore.QByteArray(s))
+            w.load(QtCore.QByteArray(bytes))
             w.show()
         else:
             # Get a filename from the headline or body text.
