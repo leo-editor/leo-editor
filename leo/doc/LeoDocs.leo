@@ -3684,7 +3684,7 @@ They contain restructured text markup for the sphinx tool. See::
     http://docutils.sourceforge.net/rst.html
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
-    
+
 To generate these docs:
 
 1. Select this node, then run the rst3 command.
@@ -23574,17 +23574,13 @@ Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output 
 <t tx="ekr.20170313111502.1">**p.b** is the body text associated with position p. Similarly, **p.h** is p's headline.
 p.b and p.h are python properties, so you can assign to p.b and p.h.
 
-This script creates an outline node as the last top-level node:
-
-.. code-block::python
+This script creates an outline node as the last top-level node::
 
     p = c.lastTopLevel().insertAfter()
     p.h = 'my new node'
     c.redraw(p) # Selects the new node.
     
-This script creates multiple nodes, with different headlines:
-
-.. code-block::python
+This script creates multiple nodes, with different headlines::
 
     parent = c.lastTopLevel().insertAfter()
     parent.h = 'New nodes'
@@ -23600,9 +23596,7 @@ This script creates multiple nodes, with different headlines:
     c.selectPosition(parent) # Another way to select nodes.
     c.redraw()
 
-This script creates a node containing today's date in the body text:
-
-.. code-block::python
+This script creates a node containing today's date in the body text::
 
     import time
     p = c.lastTopLevel().insertAfter()
