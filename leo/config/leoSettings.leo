@@ -1028,7 +1028,7 @@
 <v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
 </v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
-<v t="ekr.20131213135427.21842"><vh>@item check-derived-file</vh></v>
+<v t="ekr.20131213135427.21842"><vh>@@@item check-derived-file</vh></v>
 <v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
@@ -2305,8 +2305,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ville.20091008201813.3911"></v>
-<v t="ekr.20181018113730.1"></v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5080,7 +5079,7 @@ Controller(c).run()
         elif ch == '#':
             i = g.skip_to_end_of_line(s, i)
         elif ch in ('"', "'"):
-            i = g.skip_python_string(s, i, verbose=False)
+            i = g.skip_python_string(s, i)
         elif ch == '_' or ch.isalpha():
             j = g.skip_id(s, i)
             kind = s[i: j]

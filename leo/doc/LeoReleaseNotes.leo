@@ -3341,6 +3341,122 @@
 <v t="ekr.20200313080216.6"><vh>6.2: Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20201019144336.1"><vh>Leo 6.3: leoAst.py, removed Qt docks</vh></v>
+<v t="ekr.20210718090209.1"><vh>Leo 6.4: leoInteg, qt6, remove @root</vh>
+<v t="ekr.20210718090209.2"><vh>6.4: Bugs</vh>
+<v t="ekr.20210718090209.3"><vh>#1591: no todo icons</vh></v>
+<v t="ekr.20210718090209.4"><vh>#1722: slow new command</vh></v>
+<v t="ekr.20210718090209.5"><vh>#1726: crasher in leoflexx.py</vh></v>
+<v t="ekr.20210718090209.6"><vh>#1731: Handle Tab keys properly</vh></v>
+<v t="ekr.20210718090209.7"><vh>#1739: allow tab to be inserted</vh></v>
+<v t="ekr.20210718090209.8"><vh>#1748: replace-all regex</vh></v>
+<v t="ekr.20210718090209.9"><vh>#1749: external files not marked dirty</vh></v>
+<v t="ekr.20210718090209.10"><vh>#1751: crash in quicksearch</vh></v>
+<v t="ekr.20210718090209.11"><vh>#1757: vim emulation</vh></v>
+<v t="ekr.20210718090209.12"><vh>#1763: delete in headline</vh></v>
+<v t="ekr.20210718090209.13"><vh>#1777: git-diff-pr</vh></v>
+<v t="ekr.20210718090209.14"><vh>#1790: Undo crash, word granularity</vh></v>
+<v t="ekr.20210718090209.15"><vh>#1801: crash when editing headlines</vh></v>
+<v t="ekr.20210718090209.16"><vh>#1815: createDirectoryForFile</vh></v>
+<v t="ekr.20210718090209.17"><vh>#1817: gnxDict</vh></v>
+<v t="ekr.20210718090209.18"><vh>#1824: curses gui</vh></v>
+<v t="ekr.20210718090209.19"><vh>#1839: crash in leoflexx.py</vh></v>
+<v t="ekr.20210718090209.20"><vh>#1851: leoAst bugs</vh></v>
+<v t="ekr.20210718090209.21"><vh>#1858: bugs in leoAst.py</vh></v>
+<v t="ekr.20210718090209.22"><vh>#1880: plugins outside of leo/plugins</vh></v>
+<v t="ekr.20210718090209.23"><vh>#1884: rst buglet</vh></v>
+<v t="ekr.20210718090209.24"><vh>#1888: No To All doesn't work</vh></v>
+<v t="ekr.20210718090209.25"><vh>#1900: ~ in paths</vh></v>
+<v t="ekr.20210718090209.26"><vh>#1907: backslash not handled properly in @path</vh></v>
+<v t="ekr.20210718090209.27"><vh>#1910: checkDerivedFiles</vh></v>
+<v t="ekr.20210718090209.28"><vh>#1912: ignoring command: already</vh></v>
+<v t="ekr.20210718090209.29"><vh>#1919: width of hard tabs</vh></v>
+<v t="ekr.20210718090209.30"><vh>#1926: fix bugs in @button write-leoPyRef</vh></v>
+<v t="ekr.20210718090209.31"><vh>#1930: crash in refresh-from-disk</vh></v>
+<v t="ekr.20210718090209.32"><vh>#1959: crash in on_idle</vh></v>
+<v t="ekr.20210718090209.33"><vh>#1961: multiple popups</vh></v>
+<v t="ekr.20210718090209.34"><vh>#1965: LM.createAllImporterData</vh></v>
+<v t="ekr.20210718090209.35"><vh>#1968: leo-editor path</vh></v>
+<v t="ekr.20210718090209.36"><vh>#1972: show-bindings does not show F-Keys</vh></v>
+<v t="ekr.20210718090209.37"><vh>#1974: spaces in path</vh></v>
+<v t="ekr.20210718090209.38"><vh>#1995: menu styles</vh></v>
+<v t="ekr.20210718090209.39"><vh>#2000: copy from log pane (from context menu)</vh></v>
+<v t="ekr.20210718090209.40"><vh>#2011: buttons </vh></v>
+<v t="ekr.20210718090209.41"><vh>#2020: leoflexx crash</vh></v>
+<v t="ekr.20210718090209.42"><vh>#2022: quicksearch crash</vh></v>
+<v t="ekr.20210718090209.43"><vh>#2024: Button background</vh></v>
+<v t="ekr.20210718090209.44"><vh>#2030: NO PARENT message</vh></v>
+<v t="ekr.20210718090209.45"><vh>#2036: move-right</vh></v>
+<v t="ekr.20210718090209.46"><vh>#2040: auto-indent</vh></v>
+<v t="ekr.20210718090209.47"><vh>#2041: Alt-x in find panel</vh></v>
+<v t="ekr.20210718090209.48"><vh>#2076: find-all</vh></v>
+<v t="ekr.20210718090209.49"><vh>#2080: Context Menu</vh></v>
+<v t="ekr.20210718090209.50"><vh>PR1822: fix recursive import for @edit</vh></v>
+<v t="ekr.20210718090209.51"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
+</v>
+<v t="ekr.20210718090209.52"><vh>6.4: Code</vh>
+<v t="ekr.20210718090209.53"><vh>#1413: New undo pattern</vh></v>
+<v t="ekr.20210718090209.54"><vh>#1557: Fix mypy complaints</vh></v>
+<v t="ekr.20210718090209.93"><vh>#1715: execute-general-script</vh></v>
+<v t="ekr.20210718090209.56"><vh>#1721: Remove most calls to c.setBody/HeadString</vh></v>
+<v t="ekr.20210718090209.57"><vh>#1742: trim getBodyLines</vh></v>
+<v t="ekr.20210718090209.58"><vh>#1743: honor oldSel in onBodyChanged</vh></v>
+<v t="ekr.20210718090209.59"><vh>#1775: git-diff-pr: remove branch name arg</vh></v>
+<v t="ekr.20210718090209.60"><vh>#1788: ekr-imports</vh></v>
+<v t="ekr.20210718090209.61"><vh>#1789: Test that LeoPyRef contains all needed files</vh></v>
+<v t="ekr.20210718090209.62"><vh>#1806: Rewrite leoFind.py, with unit tests</vh></v>
+<v t="ekr.20210718090209.63"><vh>#1821: remove match_mark_previous</vh></v>
+<v t="ekr.20210718090209.64"><vh>#1889: @path</vh></v>
+<v t="ekr.20210718090209.65"><vh>#1895: split qtree.updateIcon</vh></v>
+<v t="ekr.20210718090209.66"><vh>#1903: Simplify g.os_path*</vh></v>
+<v t="ekr.20210718090209.67"><vh>#1914: Use g.fullPath</vh></v>
+<v t="ekr.20210718090209.68"><vh>#1933: view-lossage</vh></v>
+<v t="ekr.20210718090209.69"><vh>#1944: Annotations &amp; stub files</vh></v>
+<v t="ekr.20210718090209.70"><vh>#1946: g.assertUi</vh></v>
+<v t="ekr.20210718090209.71"><vh>#1953: Fix Qt6 dialogs</vh></v>
+<v t="ekr.20210718090209.72"><vh>#1973: Qt enums</vh></v>
+<v t="ekr.20210718090209.73"><vh>#1979: cffm and cfam</vh></v>
+<v t="ekr.20210718090209.74"><vh>#1995: popup do not use themes</vh></v>
+<v t="ekr.20210718090209.75"><vh>#2005: Add more qt imports</vh></v>
+<v t="ekr.20210718090209.76"><vh>#2031: nodetags: work w/o qt</vh></v>
+<v t="ekr.20210718090209.77"><vh>#2068: Review Modifiers, KeyboardModifiers</vh></v>
+<v t="ekr.20210718090209.78"><vh>#2069: Protect more event handlers</vh></v>
+<v t="ekr.20210718090209.79"><vh>#2081: Use sys.excepthook, not @g.callback</vh></v>
+<v t="ekr.20210718090209.80"><vh>PR1759: Further improvements to undo code</vh></v>
+<v t="ekr.20210718090209.81"><vh>PR1804: Support batch change scripts</vh></v>
+<v t="ekr.20210718090209.82"><vh>PR1818: remove c.trimTrailingLines</vh></v>
+</v>
+<v t="ekr.20210718090209.83"><vh>6.4: Commands</vh>
+<v t="ekr.20210718090209.93"></v>
+<v t="ekr.20210718090209.85"><vh>#1754: reformat-paragraph</vh></v>
+<v t="ekr.20210718090209.86"><vh>#1831: mypy command</vh></v>
+<v t="ekr.20210718090209.87"><vh>#1841: copy-gnx</vh></v>
+<v t="ekr.20210718090209.88"><vh>#1955: improve extract command</vh></v>
+<v t="ekr.20210718090209.89"><vh>PR 1849: reload-settings now changes all settings</vh></v>
+</v>
+<v t="ekr.20210718090209.90"><vh>6.4: Major features</vh>
+<v t="ekr.20210718090209.91"><vh>#0442: json: .leojs files</vh></v>
+<v t="ekr.20210718090209.92"><vh>#1672: Remove support for Qt docks</vh></v>
+<v t="ekr.20210718090209.93"></v>
+<v t="ekr.20210718090209.94"><vh>#1768: Change cursor in command mode</vh></v>
+<v t="ekr.20210718090209.95"><vh>#1772: diff pr</vh></v>
+<v t="ekr.20210718090209.96"><vh>#1781: Leonine diffs of .leo files</vh></v>
+<v t="ekr.20210718090209.97"><vh>#1813: client/server</vh></v>
+<v t="ekr.20210718090209.98"><vh>#1832: Retire @root and convert-at-root command</vh></v>
+<v t="ekr.20210718090209.99"><vh>#1846: pyQt6 compatibility</vh></v>
+<v t="ekr.20210718090209.100"><vh>#1867: simplify rst3</vh></v>
+<v t="ekr.20210718090209.101"><vh>Add leo/scripts/wax_off.py</vh></v>
+</v>
+<v t="ekr.20210718090209.102"><vh>6.4: Other features</vh>
+<v t="ekr.20210718090209.103"><vh>#1240: Alert for changed .leo file</vh></v>
+<v t="ekr.20210718090209.104"><vh>#1780: Improve support for backup scripts</vh></v>
+<v t="ekr.20210718090209.105"><vh>#1792: Improve themes for newbies</vh></v>
+<v t="ekr.20210718090209.106"><vh>#1798: Better error reports</vh></v>
+<v t="ekr.20210718090209.107"><vh>#1808: Pylint checks last file by default</vh></v>
+<v t="ekr.20210718090209.108"><vh>#1840: one-shot headline-only</vh></v>
+<v t="ekr.20210718090209.109"><vh>#2023: make find-all links clickable</vh></v>
+</v>
+<v t="ekr.20210718090209.110"><vh>6.4: Settings &amp; command-line options</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -26229,6 +26345,247 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20210718090209.1">Leo http://leoeditor.com 6.4 b1 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.4**
+
+- Add support for leoInteg: "Leo in vs-code".
+- Add leoserver.py, stand-alone server for Leo.
+- Add support for .leojs, a json outline format.
+- Add support for Qt6.
+- The wax_off.py script converts function annotations to stub (.pyi) files.
+- Remove support for @root. Create a conversion script.
+- Simplify and generalize rst3 command.
+- Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
+- Add execute-general-script command and c.general_script_helper.
+- Several significant code-level changes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20210718090209.10">https://github.com/leo-editor/leo-editor/issues/1751</t>
+<t tx="ekr.20210718090209.100">https://github.com/leo-editor/leo-editor/issues/1867</t>
+<t tx="ekr.20210718090209.101">This script creates stub (.pyi) files from def lines containing annotations,
+then removes the annotations.
+
+This allows you to add annotations directly in your .py files, and then
+move most of the clutter to stub files.
+
+Imo, the wax_off script makes my make_stub_files project obsolete.</t>
+<t tx="ekr.20210718090209.102"></t>
+<t tx="ekr.20210718090209.103">https://github.com/leo-editor/leo-editor/issues/1240</t>
+<t tx="ekr.20210718090209.104">https://github.com/leo-editor/leo-editor/issues/1780</t>
+<t tx="ekr.20210718090209.105">https://github.com/leo-editor/leo-editor/issues/1792</t>
+<t tx="ekr.20210718090209.106">https://github.com/leo-editor/leo-editor/issues/1798
+
+Note: Leo can not recognize @path directives in the body text of @file nodes!</t>
+<t tx="ekr.20210718090209.107">https://github.com/leo-editor/leo-editor/issues/1808</t>
+<t tx="ekr.20210718090209.108">https://github.com/leo-editor/leo-editor/issues/1840</t>
+<t tx="ekr.20210718090209.109">https://github.com/leo-editor/leo-editor/issues/2023</t>
+<t tx="ekr.20210718090209.11">https://github.com/leo-editor/leo-editor/issues/1757</t>
+<t tx="ekr.20210718090209.110">- Add @bool allow-text-zoom = True
+https://github.com/leo-editor/leo-editor/issues/1923
+
+- Add support for --trace-speed.
+https://github.com/leo-editor/leo-editor/issues/1936
+</t>
+<t tx="ekr.20210718090209.12">https://github.com/leo-editor/leo-editor/issues/1763</t>
+<t tx="ekr.20210718090209.13">https://github.com/leo-editor/leo-editor/issues/1777</t>
+<t tx="ekr.20210718090209.14">https://github.com/leo-editor/leo-editor/issues/1790
+
+</t>
+<t tx="ekr.20210718090209.15">https://github.com/leo-editor/leo-editor/issues/1801</t>
+<t tx="ekr.20210718090209.16">https://github.com/leo-editor/leo-editor/issues/1815</t>
+<t tx="ekr.20210718090209.17">https://github.com/leo-editor/leo-editor/issues/1817</t>
+<t tx="ekr.20210718090209.18">https://github.com/leo-editor/leo-editor/issues/1824</t>
+<t tx="ekr.20210718090209.19">https://github.com/leo-editor/leo-editor/issues/1839
+</t>
+<t tx="ekr.20210718090209.2">For a list of all bugs fixed in Leo 6.4 see:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.4+label%3Abug</t>
+<t tx="ekr.20210718090209.20">https://github.com/leo-editor/leo-editor/issues/1851
+
+PR: https://github.com/leo-editor/leo-editor/pull/1852
+</t>
+<t tx="ekr.20210718090209.21">https://github.com/leo-editor/leo-editor/issues/1857
+
+PR #1859.
+
+python -m unittest leo.core.leoAst.TestTOG
+python39 -m unittest leo.core.leoAst.TestTOG
+python39 -m unittest leo.core.leoAst.TestTOG.test_bug_1851
+
+Python 3.8
+- Pep 572: Walrus Operator.
+- Pep 570: Positional-only parameters. 
+- f"{x=}"
+- AST nodes now have end_lineno and end_col_offset attributes
+  (This only applies to nodes that have lineno and col_offset attributes.)
+</t>
+<t tx="ekr.20210718090209.22">https://github.com/leo-editor/leo-editor/issues/1880</t>
+<t tx="ekr.20210718090209.23">https://github.com/leo-editor/leo-editor/issues/1884
+</t>
+<t tx="ekr.20210718090209.24">https://github.com/leo-editor/leo-editor/issues/1888</t>
+<t tx="ekr.20210718090209.25">https://github.com/leo-editor/leo-editor/issues/1900</t>
+<t tx="ekr.20210718090209.26">https://github.com/leo-editor/leo-editor/issues/1907</t>
+<t tx="ekr.20210718090209.27">https://github.com/leo-editor/leo-editor/issues/1910</t>
+<t tx="ekr.20210718090209.28">https://github.com/leo-editor/leo-editor/issues/1912</t>
+<t tx="ekr.20210718090209.29">https://github.com/leo-editor/leo-editor/issues/1919
+</t>
+<t tx="ekr.20210718090209.3">https://github.com/leo-editor/leo-editor/issues/1591</t>
+<t tx="ekr.20210718090209.30">https://github.com/leo-editor/leo-editor/issues/1926</t>
+<t tx="ekr.20210718090209.31">https://github.com/leo-editor/leo-editor/issues/1930</t>
+<t tx="ekr.20210718090209.32">https://github.com/leo-editor/leo-editor/issues/1959
+
+File "...leoExternalFiles.py", line 150, in on_idle
+    assert len(self.unchecked_files) &lt; n</t>
+<t tx="ekr.20210718090209.33">https://github.com/leo-editor/leo-editor/issues/1961</t>
+<t tx="ekr.20210718090209.34">https://github.com/leo-editor/leo-editor/issues/1965</t>
+<t tx="ekr.20210718090209.35">https://github.com/leo-editor/leo-editor/issues/1968</t>
+<t tx="ekr.20210718090209.36">show-settings does not show F-keys
+https://github.com/leo-editor/leo-editor/issues/1972</t>
+<t tx="ekr.20210718090209.37">https://github.com/leo-editor/leo-editor/issues/1974</t>
+<t tx="ekr.20210718090209.38">https://github.com/leo-editor/leo-editor/issues/1995</t>
+<t tx="ekr.20210718090209.39">https://github.com/leo-editor/leo-editor/issues/2000</t>
+<t tx="ekr.20210718090209.4">https://github.com/leo-editor/leo-editor/issues/1722</t>
+<t tx="ekr.20210718090209.40">https://github.com/leo-editor/leo-editor/issues/2011</t>
+<t tx="ekr.20210718090209.41">https://github.com/leo-editor/leo-editor/issues/2020</t>
+<t tx="ekr.20210718090209.42">https://github.com/leo-editor/leo-editor/issues/2022</t>
+<t tx="ekr.20210718090209.43">https://github.com/leo-editor/leo-editor/issues/2024</t>
+<t tx="ekr.20210718090209.44">https://github.com/leo-editor/leo-editor/issues/2030</t>
+<t tx="ekr.20210718090209.45">https://github.com/leo-editor/leo-editor/issues/2036</t>
+<t tx="ekr.20210718090209.46">https://github.com/leo-editor/leo-editor/issues/2040</t>
+<t tx="ekr.20210718090209.47">https://github.com/leo-editor/leo-editor/issues/2041
+
+PR: https://github.com/leo-editor/leo-editor/pull/2044</t>
+<t tx="ekr.20210718090209.48">https://github.com/leo-editor/leo-editor/issues/2076</t>
+<t tx="ekr.20210718090209.49">Context Menu Does Not Use External Editor Setting
+https://github.com/leo-editor/leo-editor/issues/2080
+
+See Also PR #2083 (Tom Passin)
+https://github.com/leo-editor/leo-editor/pull/2083</t>
+<t tx="ekr.20210718090209.5">https://github.com/leo-editor/leo-editor/issues/1726</t>
+<t tx="ekr.20210718090209.50">https://github.com/leo-editor/leo-editor/pull/1822
+</t>
+<t tx="ekr.20210718090209.51">https://github.com/leo-editor/leo-editor/issues/1865</t>
+<t tx="ekr.20210718090209.52"></t>
+<t tx="ekr.20210718090209.53">https://github.com/leo-editor/leo-editor/issues/1413
+
+PR: https://github.com/leo-editor/leo-editor/issues/1759</t>
+<t tx="ekr.20210718090209.54">https://github.com/leo-editor/leo-editor/issues/1557
+
+PR: https://github.com/leo-editor/leo-editor/pull/1830
+
+Config file: http://mypy.readthedocs.io/en/latest/config_file.html</t>
+<t tx="ekr.20210718090209.56">https://github.com/leo-editor/leo-editor/issues/1721</t>
+<t tx="ekr.20210718090209.57">https://github.com/leo-editor/leo-editor/issues/1742
+</t>
+<t tx="ekr.20210718090209.58">https://github.com/leo-editor/leo-editor/issues/1743</t>
+<t tx="ekr.20210718090209.59">https://github.com/leo-editor/leo-editor/issues/1775</t>
+<t tx="ekr.20210718090209.6">Issue: https://github.com/leo-editor/leo-editor/issues/1731
+
+PR: https://github.com/leo-editor/leo-editor/pull/1732
+
+Summary of tab binding in EKR bindings:
+
+indent-region       !text = Tab
+newline-and-indent  = Ctrl-j
+focus-to-body       !tree = Tab
+unindent-region     = ctrl-less # Ctrl-Shift-&lt;
+unindent-region     = Shift-tab
+</t>
+<t tx="ekr.20210718090209.60">https://github.com/leo-editor/leo-editor/issues/1788</t>
+<t tx="ekr.20210718090209.61">https://github.com/leo-editor/leo-editor/issues/1789</t>
+<t tx="ekr.20210718090209.62">https://github.com/leo-editor/leo-editor/issues/1806</t>
+<t tx="ekr.20210718090209.63">https://github.com/leo-editor/leo-editor/issues/1821
+</t>
+<t tx="ekr.20210718090209.64">https://github.com/leo-editor/leo-editor/issues/1889
+
+- atFile.read calls g.fullPath instead of at.initFileName.
+- Delete at.initFileName.
+- c.scanAtPathDirectives expands ~ in all paths.</t>
+<t tx="ekr.20210718090209.65">https://github.com/leo-editor/leo-editor/issues/1895</t>
+<t tx="ekr.20210718090209.66">https://github.com/leo-editor/leo-editor/issues/1903</t>
+<t tx="ekr.20210718090209.67">https://github.com/leo-editor/leo-editor/issues/1914</t>
+<t tx="ekr.20210718090209.68">https://github.com/leo-editor/leo-editor/issues/1933
+</t>
+<t tx="ekr.20210718090209.69">https://github.com/leo-editor/leo-editor/issues/1944
+
+PR: https://github.com/leo-editor/leo-editor/pull/1948</t>
+<t tx="ekr.20210718090209.7">https://github.com/leo-editor/leo-editor/issues/1739
+
+PR: https://github.com/leo-editor/leo-editor/issues/1740
+</t>
+<t tx="ekr.20210718090209.70">https://github.com/leo-editor/leo-editor/issues/1946</t>
+<t tx="ekr.20210718090209.71">https://github.com/leo-editor/leo-editor/issues/1953</t>
+<t tx="ekr.20210718090209.72">https://github.com/leo-editor/leo-editor/issues/1973</t>
+<t tx="ekr.20210718090209.73">https://github.com/leo-editor/leo-editor/issues/1979</t>
+<t tx="ekr.20210718090209.74">https://github.com/leo-editor/leo-editor/issues/1995</t>
+<t tx="ekr.20210718090209.75">https://github.com/leo-editor/leo-editor/issues/2005</t>
+<t tx="ekr.20210718090209.76">https://github.com/leo-editor/leo-editor/issues/2031
+
+Part of support for "Leo in vs-code"</t>
+<t tx="ekr.20210718090209.77">https://github.com/leo-editor/leo-editor/issues/2068</t>
+<t tx="ekr.20210718090209.78">https://github.com/leo-editor/leo-editor/issues/2069</t>
+<t tx="ekr.20210718090209.79">https://github.com/leo-editor/leo-editor/issues/2081</t>
+<t tx="ekr.20210718090209.8">https://github.com/leo-editor/leo-editor/issues/1748</t>
+<t tx="ekr.20210718090209.80">https://github.com/leo-editor/leo-editor/issues/1759
+</t>
+<t tx="ekr.20210718090209.81">https://github.com/leo-editor/leo-editor/issues/1804</t>
+<t tx="ekr.20210718090209.82">https://github.com/leo-editor/leo-editor/pull/1818
+</t>
+<t tx="ekr.20210718090209.83">Add commands:
+- convert-at-root: #1832.
+- copy-gnx: #1841.
+- mypy: #1831.
+- reformat-selection: #1754.
+- show-all-tags.
+
+Change commands:
+- reload-settings now changes settings in all open outlines.
+</t>
+<t tx="ekr.20210718090209.85">https://github.com/leo-editor/leo-editor/issues/1754
+
+w.see works for the first time ever!</t>
+<t tx="ekr.20210718090209.86">https://github.com/leo-editor/leo-editor/issues/1831</t>
+<t tx="ekr.20210718090209.87">https://github.com/leo-editor/leo-editor/issues/1841</t>
+<t tx="ekr.20210718090209.88">https://github.com/leo-editor/leo-editor/issues/1955</t>
+<t tx="ekr.20210718090209.89">https://github.com/leo-editor/leo-editor/issues/1849
+</t>
+<t tx="ekr.20210718090209.9">https://github.com/leo-editor/leo-editor/issues/1749
+</t>
+<t tx="ekr.20210718090209.90"></t>
+<t tx="ekr.20210718090209.91">https://github.com/leo-editor/leo-editor/issues/442</t>
+<t tx="ekr.20210718090209.92">https://github.com/leo-editor/leo-editor/issues/1672
+
+Leo's Qt docks caused great confusion. Leo is better off without them.
+</t>
+<t tx="ekr.20210718090209.93">https://github.com/leo-editor/leo-editor/issues/1715
+
+Add c.general_script_helper.</t>
+<t tx="ekr.20210718090209.94">https://github.com/leo-editor/leo-editor/issues/1768</t>
+<t tx="ekr.20210718090209.95">https://github.com/leo-editor/leo-editor/issues/1772
+
+Added gdc.diff_pull_request.</t>
+<t tx="ekr.20210718090209.96">https://github.com/leo-editor/leo-editor/issues/1781</t>
+<t tx="ekr.20210718090209.97">https://github.com/leo-editor/leo-editor/issues/1813
+</t>
+<t tx="ekr.20210718090209.98">https://github.com/leo-editor/leo-editor/issues/1832</t>
+<t tx="ekr.20210718090209.99">https://github.com/leo-editor/leo-editor/issues/1846
 </t>
 </tnodes>
 </leo_file>

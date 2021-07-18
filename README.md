@@ -1,17 +1,20 @@
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fleo-editor%2Fleo-editor&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=PAGE+VIEWS&edge_flat=false)](https://hits.seeyoufarm.com)
-
-Leo 6.3, http://leoeditor.com, is now available on
+Leo http://leoeditor.com 6.4 b1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.3**
+**The highlights of Leo 6.4**
 
-- leoAst.py: The unification of Python's token and ast worlds.
-- Retired all Qt Dock code.
-- Improved viewrendered and viewrendered3 plugins.
-- Improved several importer plugins.
-- Refactored Leo's key handling code.
+- Add support for leoInteg: "Leo in vs-code".
+- Add leoserver.py, stand-alone server for Leo.
+- Add support for .leojs, a json outline format.
+- Add support for Qt6.
+- The wax_off.py script converts function annotations to stub (.pyi) files.
+- Remove support for @root. Create a conversion script.
+- Simplify and generalize rst3 command.
+- Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
+- Add execute-general-script command and c.general_script_helper.
+- Several significant code-level changes.
 
 **Links**
 
