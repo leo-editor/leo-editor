@@ -31,6 +31,8 @@ g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 g_leoserver = None
 g_server = None
 # Server defaults...
+connectionsTotal = 0
+connectionsLimit = 1
 SERVER_STARTED_TOKEN = "LeoBridge started"
 wsHost = "localhost"
 wsPort = 32125
@@ -1183,7 +1185,7 @@ class LeoServer:
         if param.get("ap"):
             # Maybe empty param, for tree-root children(s).
             # _get_p called with the strict=True parameter because
-            # we dont want c.p. after switch to another document while refreshing.
+            # we don't want c.p. after switch to another document while refreshing.
             p = self._get_p(param, True)
             if p and p.hasChildren():
                 children = [self._get_position_d(child) for child in p.children()]
@@ -3494,10 +3496,15 @@ def main():  # pragma: no cover (tested in client)
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
+        global connectionsTotal, connectionsLimit
         tag = 'server'
         trace = False
         verbose = False
         try:
+            if connectionsTotal >= connectionsLimit:
+                websocket.close(1001)
+                return
+            connectionsTotal += 1
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
             n = 0

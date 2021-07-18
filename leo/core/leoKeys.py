@@ -2505,6 +2505,7 @@ class KeyHandlerClass:
             'Ctrl+Meta+Shift', 'Ctrl+Meta', 'Ctrl+Shift', 'Ctrl',  # Ctrl+Key: done by Ctrl.
             'Meta+Key', 'Meta+Shift', 'Meta',
             'Shift',
+            'F', # #1972
             # Careful: longer prefixes must come before shorter prefixes.
         ):
             data2 = []
@@ -2512,14 +2513,14 @@ class KeyHandlerClass:
                 s1, s2, s3, s4 = item
                 if s2.startswith(prefix):
                     data2.append(item)
-            result.append(f"***** {prefix}...\n")
+            result.append(f"{prefix} keys...\n")
             self.printBindingsHelper(result, data2, prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        result.append('***** Plain Keys...\n')
+        result.append('Plain keys...\n')
         self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
             g.es_print('', ''.join(result), tabName=tabName)
