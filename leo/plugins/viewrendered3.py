@@ -1329,7 +1329,7 @@ def markup_to_editor(event):
     if vr3.external_editor:
         editor = vr3.external_editor
     else:
-        editor = g.guessExternalEditor()
+        editor = g.guessExternalEditor(event.get('c'))
 
     with open('vr3_last_markup.txt', 'w', encoding=ENCODING) as f:
         f.write(vr3.last_markup)
