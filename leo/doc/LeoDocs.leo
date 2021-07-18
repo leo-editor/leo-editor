@@ -1548,7 +1548,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
+<v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4 (To do)</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
 <v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
@@ -11399,8 +11399,8 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | name = Leo: Leonine Editor with Outlines
 | logo = LEO-Leonine Editor Outliner-icon.png
 | developer = Edward K. Ream, et al.
-| latest_release_version = 6.3
-| latest_release_date = {{Start date and age|2019|10|19}}
+| latest_release_version = 6.4
+| latest_release_date = {{Start date and age|2021|7|19}}
 | size = ~9 MB
 | programming_language = [[Python (programming language)|Python]]
 | operating_system = [[Cross-platform]]
