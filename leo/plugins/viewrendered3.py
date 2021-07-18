@@ -2333,6 +2333,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             w = pc.w
         s = self.get_jupyter_source(c)
+        self.rst_html = s
         w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()
