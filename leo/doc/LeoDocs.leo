@@ -1548,7 +1548,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4 (To do)</vh></v>
+<v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
 <v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
@@ -1745,6 +1745,7 @@
 <v t="ekr.20210528125316.1"><vh>#1961: multiple popups</vh></v>
 <v t="ekr.20210607023121.1"><vh>#1965: LM.createAllImporterData</vh></v>
 <v t="ekr.20210617091939.1"><vh>#1968: leo-editor path</vh></v>
+<v t="ekr.20210718082823.41"><vh>#1972: show-bindings does not show F-Keys</vh></v>
 <v t="ekr.20210617164840.1"><vh>#1974: spaces in path</vh></v>
 <v t="ekr.20210717092635.1363"><vh>#1995: menu styles</vh></v>
 <v t="ekr.20210717092635.785"><vh>#2000: copy from log pane (from context menu)</vh></v>
@@ -1755,13 +1756,9 @@
 <v t="ekr.20210710040014.73"><vh>#2030: NO PARENT message</vh></v>
 <v t="ekr.20210710040014.133"><vh>#2036: move-right</vh></v>
 <v t="ekr.20210717092635.921"><vh>#2040: auto-indent</vh></v>
-<v t="ekr.20210710163244.4"><vh>#2041: Alt-x in find panel</vh>
-<v t="ekr.20210710163244.5"><vh>--- changed</vh>
-<v t="ekr.20210710163244.6"><vh>k.defineSingleLineCommands</vh></v>
-<v t="ekr.20210710163244.7"><vh>k.updateLabel</vh></v>
-</v>
-</v>
+<v t="ekr.20210710163244.4"><vh>#2041: Alt-x in find panel</vh></v>
 <v t="ekr.20210717092635.1337"><vh>#2076: find-all</vh></v>
+<v t="ekr.20210718082823.28"><vh>#2080: Context Menu</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -1787,10 +1784,12 @@
 <v t="ekr.20210528082736.20"><vh>#1953: Fix Qt6 dialogs</vh></v>
 <v t="ekr.20210717092635.2"><vh>#1973: Qt enums</vh></v>
 <v t="ekr.20210617092021.1"><vh>#1979: cffm and cfam</vh></v>
+<v t="ekr.20210718082823.40"><vh>#1995: popup do not use themes</vh></v>
 <v t="ekr.20210717092635.918"><vh>#2005: Add more qt imports</vh></v>
 <v t="ekr.20210710040014.128"><vh>#2031: nodetags: work w/o qt</vh></v>
 <v t="ekr.20210717092635.1339"><vh>#2068: Review Modifiers, KeyboardModifiers</vh></v>
 <v t="ekr.20210717092635.938"><vh>#2069: Protect more event handlers</vh></v>
+<v t="ekr.20210718082823.2"><vh>#2081: Use sys.excepthook, not @g.callback</vh></v>
 <v t="ekr.20210405100137.887"><vh>PR1759: Further improvements to undo code</vh></v>
 <v t="ekr.20210405100137.1772"><vh>PR1804: Support batch change scripts</vh></v>
 <v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
@@ -4163,7 +4162,7 @@ I had used Leo for a long time as a PIM to track my work, but moved to emacs org
 I am a manager, physicist and perhaps an electrical engineer. I use several different editors all the time, for different reasons, like vim and scite sometime  emacs. I use Leo on complex projects, involving many files. I have small python and Lua scripts, Lua tables, plain text files, many LaTeX files, CSV files, Markdown files, lots of PDF's for reference, spreadsheets, todo lists. I write documentation, write simple tools to help with business and scientific calculations. I do this all in a company with 20 people, working in small teams.
 
 I use Leo as a project manager. It glues together all kind of stuff, allows me to do some jobs with a little script, and interfaces well with others. Some other tools may be better for some other things and I use other tools too, but I keep coming back to Leo for much of my work. Leo manages to be generic enough to co-exist well with other tools and bring all these different files together.--Josef Dalcomo.</t>
-<t tx="ekr.20050830074815.8">"I've written documentation in WordPerfert, Ventura, Word, PageMaker, and FrameMaker and even though they create wonderfully looking and useful documents, they've never been able to do what I've been looking for. HTML, compiled help files, and later PDF came closer, but still not there...I think I've found it in Leo, a way to make a "living" document. A document built out of discrete parts that can be re-organized on the fly to meet the needs of a varying audience...I've already started converting the IT Procedures manual from Open Office to Leo because I know it's going to be much more useful to me and anyone else...just the possibility of keeping system maintenance scripts in the IT manual is mind boggling."---David Nichols
+<t tx="ekr.20050830074815.8">"I've written documentation in WordPerfect, Ventura, Word, PageMaker, and FrameMaker and even though they create wonderfully looking and useful documents, they've never been able to do what I've been looking for. HTML, compiled help files, and later PDF came closer, but still not there...I think I've found it in Leo, a way to make a "living" document. A document built out of discrete parts that can be re-organized on the fly to meet the needs of a varying audience...I've already started converting the IT Procedures manual from Open Office to Leo because I know it's going to be much more useful to me and anyone else...just the possibility of keeping system maintenance scripts in the IT manual is mind boggling."---David Nichols
 
 "With the help of the rst2 plugin, [Leo is] the best outliner I have yet encountered for writing the early stages of academic papers."
 
@@ -5411,7 +5410,7 @@ If successful, match_eol_span highlights from i to the end of the line with the 
         exclude_match = False):
         
 At present match_mark_previous does nothing (always returns 0).
-Its use is deprectated.
+Its use is deprecated.
 
 ..  match_mark_previous succeeds if s[i:].startswith(pattern),and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
@@ -10063,7 +10062,7 @@ Tags
   To see the tags on a node, you need to be looking at the `Links` tab in the
   `Log pane`.  To see all the nodes with a particular tag, click on the `Tags`
   button to jump to the tag list, and select the node which names the tag of
-  interest.  The nodes with that tag will be listed in th `Links` tab in the
+  interest.  The nodes with that tag will be listed in the `Links` tab in the
   `Log pane`.
 
 </t>
@@ -29960,7 +29959,7 @@ https://github.com/leo-editor/leo-editor/issues/1266
 #1272: Added support for black (https://pypi.org/project/black/)
 https://github.com/leo-editor/leo-editor/issues/1272
 
-#1325: black keeps overindent comments:
+#1325: black keeps overindented comments:
 https://github.com/leo-editor/leo-editor/issues/1325
 </t>
 <t tx="ekr.20191003060551.1">https://github.com/leo-editor/leo-editor/issues/1093
@@ -31480,32 +31479,34 @@ Added gdc.diff_pull_request.</t>
 
 Note: Leo can not recognize @path directives in the body text of @file nodes!</t>
 <t tx="ekr.20210405100137.982">https://github.com/leo-editor/leo-editor/issues/1801</t>
-<t tx="ekr.20210405104357.1">Major features:
-
-
-Features:
-
-
-Fixed all known bugs.</t>
-<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 b1is now available on
+<t tx="ekr.20210405104357.1">- Add support for leoInteg: "Leo in vs-code".
+- Add leoserver.py, stand-alone server for Leo.
+- Add support for .leojs, a json outline format.
+- Add support for Qt6.
+- The wax_off.py script converts function annotations to stub (.pyi) files.
+- Remove support for @root. Create a conversion script.
+- Simplify and generalize rst3 command.
+- Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
+- Add execute-general-script command and c.general_script_helper.
+- Fix all known bugs.
+</t>
+<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 b1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.4**
 
-- Add support for "Leo in vs-code".
+- Add support for leoInteg: "Leo in vs-code".
 - Add leoserver.py, stand-alone server for Leo.
 - Add support for .leojs, a json outline format.
 - Add support for Qt6.
-- Add a script (scripts/wax_off.py) to convert function annotations to stub (.pyi) files.
+- The wax_off.py script converts function annotations to stub (.pyi) files.
 - Remove support for @root. Create a conversion script.
-- Remove support for Qt docks.
 - Simplify and generalize rst3 command.
 - Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
 - Add execute-general-script command and c.general_script_helper.
 - Several significant code-level changes.
-- Leo now uses Pull Requests to record code changes.
 
 **Links**
 
@@ -31688,128 +31689,6 @@ Imo, the wax_off script makes my make_stub_files project obsolete.</t>
 <t tx="ekr.20210710163244.4">https://github.com/leo-editor/leo-editor/issues/2041
 
 PR: https://github.com/leo-editor/leo-editor/pull/2044</t>
-<t tx="ekr.20210710163244.5"></t>
-<t tx="ekr.20210710163244.6">def defineSingleLineCommands(self):
-    k = self
-    # These commands can be executed in the minibuffer.
-    k.singleLineCommandList = [
-        # EditCommandsClass
-        'back-to-indentation',
-        'back-to-home',  # 2010/02/01
-        'back-char',
-        'back-char-extend-selection',
-        'back-word',
-        'back-word-extend-selection',
-        'backward-delete-char',
-        'backward-find-character',
-        'backward-find-character-extend-selection',
-        'beginning-of-line',
-        'beginning-of-line-extend-selection',
-        'capitalize-word',
-        'delete-char',
-        'delete-indentation',
-        'delete-spaces',
-        'downcase-word',
-        'end-of-line',
-        'end-of-line-extend-selection',
-        'escape',
-        'exchange-point-mark',
-        'extend-to-line',
-        'extend-to-word',
-        'find-character',
-        'find-character-extend-selection',
-        'find-word',
-        'find-word-in-line',
-        'forward-char',
-        'forward-char-extend-selection',
-        'forward-end-word',
-        'forward-end-word-extend-selection',
-        'forward-word',
-        'forward-word-extend-selection',
-        'insert-newline',
-        'insert-parentheses',
-        'move-past-close',
-        'move-past-close-extend-selection',
-        'newline-and-indent',
-        'select-all',
-        'transpose-chars',
-        'transpose-words',
-        'upcase-word',
-        # LeoFind class.
-        'start-search',  # #2041.
-        # KeyHandlerCommandsClass
-        'full-command',  # #2041.
-        # 'auto-complete',
-            # 'negative-argument',
-            # 'number-command',
-            # 'number-command-0',
-            # 'number-command-1',
-            # 'number-command-2',
-            # 'number-command-3',
-            # 'number-command-4',
-            # 'number-command-5',
-            # 'number-command-6',
-            # 'number-command-7',
-            # 'number-command-8',
-            # 'universal-argument',
-        # KillBufferCommandsClass
-        'backward-kill-word',
-        'kill-line',
-        'kill-word',
-        'kill-ws',
-        'yank',
-        'yank-pop',
-        'zap-to-character',
-        # leoCommands
-        'cut-text',
-        'copy-text',
-        'paste-text',
-        # MacroCommandsClass
-        'call-last-kbd-macro',
-        # search commands
-        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
-        'set-find-everywhere',  # 2011/06/07
-        'set-find-node-only',  # 2011/06/07
-        'set-find-suboutline-only',  # 2011/06/07
-        'toggle-find-collapses_nodes',
-        'toggle-find-ignore-case-option',
-        'toggle-find-in-body-option',
-        'toggle-find-in-headline-option',
-        'toggle-find-mark-changes-option',
-        'toggle-find-mark-finds-option',
-        'toggle-find-regex-option',
-        'toggle-find-reverse-option',
-        'toggle-find-word-option',
-        'toggle-find-wrap-around-option',
-    ]
-</t>
-<t tx="ekr.20210710163244.7">def updateLabel(self, event):
-    """
-    Mimic what would happen with the keyboard and a Text editor
-    instead of plain accumulation.
-    """
-    c, k, w = self.c, self, self.w
-    if not event:
-        return
-    ch, stroke = event.char, event.stroke
-    if ch in "\n\r":
-        return
-    if stroke and not k.isPlainKey(stroke):
-        return  # #2041.
-    c.widgetWantsFocusNow(w)
-    i, j = w.getSelectionRange()
-    ins = w.getInsertPoint()
-    if i != j:
-        w.delete(i, j)
-    if ch == '\b':
-        s = w.getAllText()
-        if len(s) &gt; len(k.mb_prefix):
-            w.delete(i - 1)
-            i -= 1
-    else:
-        w.insert(ins, ch)
-        i = ins + 1
-</t>
 <t tx="ekr.20210717092635.1337">https://github.com/leo-editor/leo-editor/issues/2076</t>
 <t tx="ekr.20210717092635.1339">https://github.com/leo-editor/leo-editor/issues/2068</t>
 <t tx="ekr.20210717092635.1363">https://github.com/leo-editor/leo-editor/issues/1995</t>
@@ -31819,13 +31698,22 @@ PR: https://github.com/leo-editor/leo-editor/pull/2044</t>
 <t tx="ekr.20210717092635.919">https://github.com/leo-editor/leo-editor/issues/2024</t>
 <t tx="ekr.20210717092635.921">https://github.com/leo-editor/leo-editor/issues/2040</t>
 <t tx="ekr.20210717092635.938">https://github.com/leo-editor/leo-editor/issues/2069</t>
+<t tx="ekr.20210718082823.2">https://github.com/leo-editor/leo-editor/issues/2081</t>
+<t tx="ekr.20210718082823.28">Context Menu Does Not Use External Editor Setting
+https://github.com/leo-editor/leo-editor/issues/2080
+
+See Also PR #2083 (Tom Passin)
+https://github.com/leo-editor/leo-editor/pull/2083</t>
+<t tx="ekr.20210718082823.40">https://github.com/leo-editor/leo-editor/issues/1995</t>
+<t tx="ekr.20210718082823.41">show-settings does not show F-keys
+https://github.com/leo-editor/leo-editor/issues/1972</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
 
  1. Navigate to **Actions**
  2. Select `Build standalone leo.exe`_ from workflow list in the left table of contents
- 3. Look for a recent event with a checkmark and click on it
+ 3. Look for a recent event with a check mark and click on it
  4. Look for **Artifacts** heading and under it: **leo-windows-exe** in blue.
 
 .. image:: https://user-images.githubusercontent.com/486200/83912441-bb38a600-a722-11ea-9abf-43ce833723c2.png
