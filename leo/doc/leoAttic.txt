@@ -10228,6 +10228,104 @@ def enablePopupMenuItems(self, p, event):
 #@+node:ekr.20110605121601.17904: *4* qtree.showPopupMenu
 def showPopupMenu(self, event):
     """Show a popup menu."""
+#@+node:ekr.20210718034819.1: ** From LeoDocs.leo: rstplugin3.html: Advanced topics
+The section covers complex options arising from two equivalent problems:
+
+- How to generate documentation from computer source code in a Leo outline.
+- How to embed documentation in computer source code in a Leo outline.
+
+*Please stop reading now if these problems don't interest you!*
+#@+node:ekr.20210718034819.2: *3* Modes
+The rst3 command supports three different modes.
+
+``rst mode``
+    The default mode, as discussed in the Tutorial. The rst3 command treats body text as rST (or Sphinx) markup.
+    
+``code mode``
+    The rst3 command treats body text as computer source code, generating the appropriate rST or Sphinx markup. Code mode is inherently complex. It supports *many* options.
+    
+``doc-only mode``
+    The rst3 command outputs only regular doc parts and @ @rst-markup doc parts. Headlines create section in doc_only mode only if:
+
+1. The node contains a doc part or
+
+2. The show_organizer_nodes option is in effect.
+
+The code_mode and doc_only_mode options determine the mode as follows:
+
+``code_mode=False; doc_only_mode=False (the default)``
+    Enters rst mode.
+    
+``code_mode=False; doc_only_mode=True``
+    Enters doc_only mode.
+
+``code_mode=True; (doc_only_mode ignored)``
+    Enters code mode.
+#@+node:ekr.20210718034819.3: *3* Code mode options
+The following options have effect only in code mode.
+
+.. glossary::
+    :sorted:
+
+``number_code_lines (default: True)``
+    Controls whether to number code lines in code mode. *This option has no effect in rst mode*.
+
+``show_leo_directives (default: True)``
+    True: include Leo directives False: ignore Leo directives.
+
+``show_markup_doc_parts (default: False)``
+    True: include markup doc parts. False: ignore markup doc parts.
+
+``show_options_doc_parts (default: False)``
+    True: include options doc parts. False: ignore options doc parts.
+
+``show_doc_parts_as_paragraphs (default: False)``
+    True: Move doc parts outside of the code-block directive. False: Show doc parts in the code-block directive.
+    
+    **Cool**: Any rST markup in doc parts included as the result of this option will be rendered properly.
+
+``show_options_nodes (default: False)``
+    True: show @rst-options nodes. False: Ignore @
+#@+node:ekr.20210718034819.4: *3* Rst mode options
+The following option has effect only in rst mode.
+
+.. glossary::
+
+``show_doc_parts_in_rst_mode [True,False or class names] (default: True)``
+    This option is most useful for rst documents which are not computer code. It allows you to use doc parts to make comments on the draft document which are either excluded from the output or formatted in a way that highlights their nature as comments rather than content. For example, you're writing a book, and you want to use a doc part at the top of a section to remind yourself "need to explain how Ted got to Sally's". Note: you may need to add CSS to have them formatted differently.
+
+    The option can be `True`, `False`, or one or more class names.
+    
+    **True**: Treat the entire doc part from the opening '@' to the closing '@c
+    as normal markup.
+    
+    **False**: Remove the doc part.
+
+    **class names**: Process the contents of the doc part as it if were in an rst `container` directive. For example::
+
+         @ @rst-options
+         show_doc_parts_in_rst_mode = notes literal
+         @c
+
+This would wrap the doc part contents in the output in a div with classes "container notes literal". Furthermore, if one of the class names is ``literal``, then the doc part content will be output as a literal block wrapped in a container as described above. This allows you to use text which is not valid rst as rough notes for annotating a draft document.
+#@+node:ekr.20210718034819.5: *3* The code-block directive
+The rst3 command defines a code-block rST directive. The primary purpose of this directive is to show formatted source code.
+
+In rst mode you can insert the code-block directive like any other rST markup. The rst3 command generates code-block directives automatically in code mode. This directive takes one argument, a language name.  Like this::
+
+    .. code-block:: Python
+
+        import leo.core.leoPlugins as leoPlugins
+        import leo.core.leoGlobals as g
+
+The output looks like this::
+
+    import leo.core.leoPlugins as leoPlugins
+    import leo.core.leoGlobals as g
+
+.. _`Scripting Tutorial`:   tutorial-scripting.html
+
+See the `Scripting Tutorial`_ for many examples of how to use code-blocks.
 #@+node:ekr.20210312150753.1: ** leoTangle.py
 '''
 Support for @root and Leo's tangle and untangle commands.
