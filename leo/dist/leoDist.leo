@@ -194,7 +194,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2020 by Edward K. Ream.
+Copyright (c) 1997-2021 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -238,7 +238,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.3
+Version: 6.4
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -324,7 +324,7 @@ have not yet tried Leo, you are wrong...I rate Leo as a "must have"
 for Python programmers. The code makes for a good read.
 -- John Tobler  http://weblogs.asp.net/Jtobler/
 </t>
-<t tx="EKR.20040519091259.4">I've written documentation in WordPerfert, Ventura, Word, PageMaker, and
+<t tx="EKR.20040519091259.4">I've written documentation in WordPerfect, Ventura, Word, PageMaker, and
 FrameMaker and even though they create wonderfully looking and useful
 documents, they've never been able to do what I've been looking for. HTML,
 compiled help files, and later PDF came closer, but still not there. I think
@@ -333,7 +333,7 @@ of discrete parts that can be re-organized on the fly to meet the needs of a
 varying audience...Being a convert for less than a day I've still got a lot to
 learn, but just the possibility of keeping system maintenance scripts in the IT
 manual is mind boggling.  -- David Nichols dnichols@amci.com</t>
-<t tx="ekr.20040630210818">HTML Editing in Leo is soooo much easier then with NoNodeEditors. Ive
+<t tx="ekr.20040630210818">HTML Editing in Leo is soooo much easier then with NoNodeEditors. I've
 had a blast working on a web page. Usually I had to look at a bunch of
 gunk all at once. Now I can look at little pieces of gunk! :) 
 
@@ -602,7 +602,7 @@ leo/test/unittest/.leo_shadow/  export-ignore
 
 2. Search for copyright
 
-    Latest copyright date: 2020.
+    Latest copyright date: 2021.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="ekr.20150416081546.1"></t>
@@ -2421,7 +2421,7 @@ Follow up as needed.
  
  [0]: https://conda-forge.org/docs/maintainer/adding_pkgs.html
  </t>
-<t tx="maphew.20200426185115.1"># Prelimnary build recipe
+<t tx="maphew.20200426185115.1"># Preliminary build recipe
 
     pushd code\leo-editor
     python setup.py sdist
