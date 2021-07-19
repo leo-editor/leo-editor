@@ -20,7 +20,14 @@ import time
 import unittest
 # Third-party.
 import websockets
+# Make sure leo-editor folder is on sys.path.
+core_dir = os.path.dirname(__file__)
+leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
+assert os.path.exists(leo_path), repr(leo_path)
+if leo_path not in sys.path:
+    sys.path.append(leo_path)
 # Leo
+# pylint: disable=wrong-import-position
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
