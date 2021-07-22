@@ -1003,6 +1003,30 @@ class LeoServer:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
+    #@+node:felix.20210722010004.1: *5* server.clone_find_all_flattened_marked
+    def clone_find_all_flattened_marked(self, param):
+        """Run Leo's clone-find-all-flattened-marked command."""
+        tag = 'clone_find_all_flattened_marked'
+        c = self._check_c()
+        fc = c.findCommands
+        try:
+            fc.do_find_marked(flatten=True)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": True, "focus": focus})
+    #@+node:felix.20210722010005.1: *5* server.clone_find_all_marked
+    def clone_find_all_marked(self, param):
+        """Run Leo's clone-find-all-marked command """
+        tag = 'clone_find_all_marked'
+        c = self._check_c()
+        fc = c.findCommands
+        try:
+            fc.do_find_marked(flatten=False)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
+        focus = self._get_focus()
+        return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210621233316.31: *5* server.find_def
     def find_def(self, param):
         """Run Leo's find-def command and return results."""
