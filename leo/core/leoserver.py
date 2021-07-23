@@ -3033,8 +3033,9 @@ class LeoServer:
         "id": A positive integer.
 
         "action": A string, which is either:
-            - The name of public method of this class, prefixed with a '!'.
-            - The name of a leo command, without prefix, to be run by _do_leo_command
+            - The name of public method of this class, prefixed with '!'.
+            - The name of a Leo command, prefixed with '-'
+            - The name of a method of a Leo class, without prefix.
 
         "param": A dict to be passed to the called "action" method.
             (Passed to the public method, or the _do_leo_command. Often contains ap, text & keep)
