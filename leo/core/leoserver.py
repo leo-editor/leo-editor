@@ -3055,6 +3055,8 @@ class LeoServer:
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
         self.action = action
+        
+        g.trace('=====: action:', action)
 
         # Execute the requested action.
         if action[0] == "!":
