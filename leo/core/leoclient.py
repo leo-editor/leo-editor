@@ -33,77 +33,109 @@ def _dump_outline(c):  # pragma: no cover
 #@+node:ekr.20210206075253.1: ** function: _get_action_list
 def _get_action_list():
     """
-    Return all callable public methods of the server.
-    In effect, these are unit tests.
+    Return a list of command entries: (name, params)
+    
+    - Names starting with "!" are names of server *methods*.
+    - All other names are names of Leo *commands*.
     """
-    import inspect
     import os
     server = leoserver.LeoServer()
-    # file_name = "xyzzy.leo"
+    assert server ###
+    log = True
     file_name = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
     assert os.path.exists(file_name), repr(file_name)
-    log = False
-    exclude_names = [
-        # Find methods...
-        'replace_all', 'replace_then_find',
-        'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
-        'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
-        'tag_children',
-        # Other methods
-        'set_body',
-        'error',
-        'replace',
-        'delete_node', 'cut_node',  # dangerous.
-        'click_button', 'get_buttons', 'remove_button',  # Require plugins.
-        'save_file',  # way too dangerous!
-        # 'set_selection',  ### Not ready yet.
-        'open_file', 'close_file',  # Done by hand.
-        'import_any_file',
-        'insert_child_named_node',
-        'insert_named_node',
-        'set_ask_result',
-        'set_opened_file',
-        'set_search_settings',
-        'set_selection',
-        'shut_down',  # Don't shut down the server.
-    ]
-    head = [
-        # ("apply_config", {"config": {"whatever": True}}),
+    return [
+        # HEAD
         ("!error", {}),
         # ("bad_server_command", {}),
         ("!open_file", {"filename": file_name, "log": log}),
-    ]
-    head_names = [name for (name, package) in head]
-    tail = [
-        # ("get_body_length", {}),  # All responses now contain len(p.b).
+        # MIDDLE
         ("!find_all", {"find_text": "def"}),
         ("!get_ua", {"log": log}),
         ("!get_parent",  {"log": log}),
-        ("!get_children",  {"log": log}),
-        ("!set_body", {"body": "new body"}),
-        ("!set_headline", {"name": "new headline", 'gnx': "ekr.20061008140603"}),
-        ("contractAllHeadlines", {}), # normal leo command
-        ("!insert_node", {}),
-        ("!contract_node", {}),
+        # Tail
+        ("contract-all", {}), # normal leo command
+        # ("!insert_node", {}),
+        # ("!contract_node", {}),
         ("!close_file", {"forced": True}), # forced flag set to true because it was modified
         ("!get_all_leo_commands", {}),
         ("!get_all_server_commands", {}),
         ("!shut_down", {}),
     ]
-    tail_names = [name for (name, package) in tail]
-    
-    # Add all remaining methods to the middle.
-    tests = inspect.getmembers(server, inspect.ismethod)
-    test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
-    middle = [("!"+z, {}) for z in test_names
-        if z not in head_names + tail_names + exclude_names]
-    middle_names = [name for (name, package) in middle]
-    all_tests = head + middle + tail
-    if 0:
-        g.printObj(middle_names, tag='middle_names')
-        all_names = sorted([name for (name, package) in all_tests])
-        g.printObj(all_names, tag='all_names')
-    return all_tests
+    ###
+        # """
+        # Return all callable public methods of the server.
+        # In effect, these are unit tests.
+        # """
+        # import inspect
+        # import os
+        # server = leoserver.LeoServer()
+        # # file_name = "xyzzy.leo"
+        # file_name = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        # assert os.path.exists(file_name), repr(file_name)
+        # log = False
+        # exclude_names = [
+            # # Find methods...
+            # 'replace_all', 'replace_then_find',
+            # 'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
+            # 'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
+            # 'tag_children',
+            # # Other methods
+            # 'set_body',
+            # 'error',
+            # 'replace',
+            # 'delete_node', 'cut_node',  # dangerous.
+            # 'click_button', 'get_buttons', 'remove_button',  # Require plugins.
+            # 'save_file',  # way too dangerous!
+            # # 'set_selection',  ### Not ready yet.
+            # 'open_file', 'close_file',  # Done by hand.
+            # 'import_any_file',
+            # 'insert_child_named_node',
+            # 'insert_named_node',
+            # 'set_ask_result',
+            # 'set_opened_file',
+            # 'set_search_settings',
+            # 'set_selection',
+            # 'shut_down',  # Don't shut down the server.
+        # ]
+        # head = [
+            # # ("apply_config", {"config": {"whatever": True}}),
+            # ("!error", {}),
+            # # ("bad_server_command", {}),
+            # ("!open_file", {"filename": file_name, "log": log}),
+        # ]
+        # head_names = [name for (name, package) in head]
+        # tail = [
+            # # ("get_body_length", {}),  # All responses now contain len(p.b).
+            # ("!find_all", {"find_text": "def"}),
+            # ("!get_ua", {"log": log}),
+            # ("!get_parent",  {"log": log}),
+            # ("!get_children",  {"log": log}),
+            # ("!set_body", {"body": "new body"}),
+            # ("!set_headline", {"name": "new headline", 'gnx': "ekr.20061008140603"}),
+            # ("contractAllHeadlines", {}), # normal leo command
+            # ("!insert_node", {}),
+            # ("!contract_node", {}),
+            # ("!close_file", {"forced": True}), # forced flag set to true because it was modified
+            # ("!get_all_leo_commands", {}),
+            # ("!get_all_server_commands", {}),
+            # ("!shut_down", {}),
+        # ]
+        # tail_names = [name for (name, package) in tail]
+        
+        # # Add all remaining methods to the middle.
+        # tests = inspect.getmembers(server, inspect.ismethod)
+        # test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
+        # middle = [("!"+z, {}) for z in test_names
+            # if z not in head_names + tail_names + exclude_names]
+        # middle_names = [name for (name, package) in middle]
+        # ### all_tests = head + middle + tail
+        # all_tests = head + tail
+        # if 0:
+            # g.printObj(middle_names, tag='middle_names')
+            # all_names = sorted([name for (name, package) in all_tests])
+            # g.printObj(all_names, tag='all_names')
+        # return all_tests
     
 #@+node:ekr.20210206093130.1: ** function: _show_response
 def _show_response(n, d, trace, verbose):
