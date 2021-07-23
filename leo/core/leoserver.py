@@ -1651,15 +1651,9 @@ class LeoServer:
                 continue
             if command_name in bad_names:  # #92.
                 continue
-            # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
-                # func_name = getattr(func, '__func_name__', func.__name__)
-                # if not func_name:  # pragma: no cover
-                    # print(f"{tag}: no name {command_name!r}")
-                    # continue
             doc = func.__doc__ or ''
             result.append({
-                "label": command_name,
-                ### "func":  func_name,
+                "label": command_name,  # Kebab-cased Command name to be called
                 "detail": doc,
             })
         if self.log_flag:  # pragma: no cover
@@ -2927,7 +2921,7 @@ class LeoServer:
     #@+node:felix.20210621233316.84: *4* server._do_leo_command_by_name
     def _do_leo_command_by_name(self, command_name, param):
         """
-        Generic call to a method in Leo's Commands class or any subcommander class.
+        Generic call to a command in Leo's Commands class or any subcommander class.
 
         The param["ap"] position is to be selected before having the command run,
         while the param["keep"] parameter specifies wether the original position
@@ -2935,12 +2929,12 @@ class LeoServer:
 
         TODO: The whole of those operations is to be undoable as one undo step.
 
-        command_name: the name of a Leo command (a string).
+        command_name: the name of a Leo command (a kebab-cased string).
         param["ap"]: an archived position.
         param["keep"]: preserve the current selection, if possible.
 
         """
-        tag = '_do_leo_command'
+        tag = '_do_leo_command_by_name'
         c = self._check_c()
 
         if command_name in self.bad_commands_list:  # pragma: no cover
@@ -2950,8 +2944,7 @@ class LeoServer:
         if "keep" in param:
             keepSelection = param["keep"]
 
-        ### func = self._get_commander_method(command) # GET FUNC
-        func = c.commandsDict.get(command_name) # Does not work, e.g.: 'executeScript'
+        func = c.commandsDict.get(command_name) # Getting from kebab-cased 'Command Name'
         if not func:  # pragma: no cover
             raise ServerError(f"{tag}: Leo command not found: {command_name!r}")
 
@@ -2975,7 +2968,7 @@ class LeoServer:
             return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:ekr.20210722184932.1: *4* server._do_leo_function_by_name
-    def _do_leo_function_by_name(self, command, param):
+    def _do_leo_function_by_name(self, function_name, param):
         """
         Generic call to a method in Leo's Commands class or any subcommander class.
 
@@ -2985,25 +2978,21 @@ class LeoServer:
 
         TODO: The whole of those operations is to be undoable as one undo step.
 
-        command_name: the name of a Leo command (a string).
+        command: the name of a method
         param["ap"]: an archived position.
         param["keep"]: preserve the current selection, if possible.
 
         """
-        tag = '_do_leo_command'
+        tag = '_do_leo_function_by_name'
         c = self._check_c()
-
-        ### #173
-            # if command in self.bad_commands_list:  # pragma: no cover
-                # raise ServerError(f"{tag}: disallowed command: {command!r}")
 
         keepSelection = False  # Set default, optional component of param
         if "keep" in param:
             keepSelection = param["keep"]
 
-        func = self._get_commander_method(command) # GET FUNC
+        func = self._get_commander_method(function_name) # GET FUNC
         if not func:  # pragma: no cover
-            raise ServerError(f"{tag}: Leo command not found: {command!r}")
+            raise ServerError(f"{tag}: Leo command not found: {function_name!r}")
 
         p = self._get_p(param)
         try:
@@ -3071,7 +3060,8 @@ class LeoServer:
         if action[0] == "!":
             action = action[1:] # Remove exclamation point "!"
             func = self._do_server_command  # Server has this method.
-        elif action[0] == '-':  
+        elif action[0] == '-':
+            action = action[1:] # Remove dash "-"
             func = self._do_leo_command_by_name  # It's a command name.
         else:
             func = self._do_leo_function_by_name  # It's the name of a method in some commander.
