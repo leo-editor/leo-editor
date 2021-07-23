@@ -1633,8 +1633,9 @@ class LeoServer:
     def get_all_leo_commands(self, param):
         """Return a list of all commands that make sense for connected clients."""
         tag = 'get_all_leo_commands'
-        c = self.dummy_c  # Use the dummy commander.
-        d = c.commandsDict  # keys are command names, values are functions.
+        # #173: Use the present commander to get commands created by @button and @command.
+        c = self.c
+        d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad_names = self._bad_commands(c)  # #92.
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
@@ -1650,15 +1651,9 @@ class LeoServer:
                 continue
             if command_name in bad_names:  # #92.
                 continue
-            # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
-            func_name = getattr(func, '__func_name__', func.__name__)
-            if not func_name:  # pragma: no cover
-                print(f"{tag}: no name {command_name!r}")
-                continue
             doc = func.__doc__ or ''
             result.append({
-                "label": command_name,
-                "func":  func_name,
+                "label": command_name,  # Kebab-cased Command name to be called
                 "detail": doc,
             })
         if self.log_flag:  # pragma: no cover
@@ -1668,19 +1663,17 @@ class LeoServer:
     #@+node:felix.20210621233316.73: *6* server._bad_commands
     def _bad_commands(self, c):
         """Return the list of command names that connected clients should ignore."""
-        d = c.commandsDict  # keys are command names, values are functions.
+        d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad = []
         #
-        # First, remove @button, @command and vim commands.
+        # leoInteg #173: Remove only vim commands.
         for command_name in sorted(d):
-            if command_name.startswith((':', '@')):
-                # print('ignore', command_name)
+            if command_name.startswith(':'):
                 bad.append(command_name)
-        # Second, remove other commands.
+        #
+        # Remove other commands.
         # This is a hand-curated list.
         bad_list = [
-
-            # Originally in good list
             'demangle-recent-files',
             'clean-main-spell-dict',
             'clean-persistence',
@@ -2900,27 +2893,6 @@ class LeoServer:
                     f"{tag}: stack: {stack!r}")
             return False # fallback to c.p
         return p
-    #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package):
-        """
-        Send data asynchronously to the client
-        """
-        tag = "send async output"
-        jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
-        if "async" not in package:
-            InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
-        if self.loop:
-            self.loop.create_task(self._async_output(jsonPackage))
-        else:
-            InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
-    #@+node:felix.20210621233316.89: *5* server._async_output
-    async def _async_output(self, json):  # pragma: no cover (tested in server)
-        """Output json string to the web_socket"""
-        tag = '_async_output'
-        if self.web_socket:
-            await self.web_socket.send(bytes(json, 'utf-8'))
-        else:
-            g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:felix.20210621233316.80: *4* server._check_c
     def _check_c(self):
         """Return self.c or raise ServerError if self.c is None."""
@@ -2946,10 +2918,10 @@ class LeoServer:
                 print(message)
                 self._dump_position(p)
                 raise ServerError(message)
-    #@+node:felix.20210621233316.84: *4* server._do_leo_command
-    def _do_leo_command(self, command, param):
+    #@+node:felix.20210621233316.84: *4* server._do_leo_command_by_name
+    def _do_leo_command_by_name(self, command_name, param):
         """
-        Generic call to a method in Leo's Commands class or any subcommander class.
+        Generic call to a command in Leo's Commands class or any subcommander class.
 
         The param["ap"] position is to be selected before having the command run,
         while the param["keep"] parameter specifies wether the original position
@@ -2957,29 +2929,26 @@ class LeoServer:
 
         TODO: The whole of those operations is to be undoable as one undo step.
 
-        command: a method name (a string).
+        command_name: the name of a Leo command (a kebab-cased string).
         param["ap"]: an archived position.
         param["keep"]: preserve the current selection, if possible.
 
         """
-        tag = '_do_leo_command'
+        tag = '_do_leo_command_by_name'
         c = self._check_c()
 
-        if command in self.bad_commands_list:  # pragma: no cover
-            raise ServerError(f"{tag}: disallowed command: {command!r}")
+        if command_name in self.bad_commands_list:  # pragma: no cover
+            raise ServerError(f"{tag}: disallowed command: {command_name!r}")
 
         keepSelection = False  # Set default, optional component of param
         if "keep" in param:
             keepSelection = param["keep"]
 
-        func = self._get_commander_method(command) # GET FUNC
-        # func = c.commandsDict.get(command) # Does not work, e.g.: 'executeScript'
-
+        func = c.commandsDict.get(command_name) # Getting from kebab-cased 'Command Name'
         if not func:  # pragma: no cover
-            raise ServerError(f"{tag}: Leo command not found: {command!r}")
+            raise ServerError(f"{tag}: Leo command not found: {command_name!r}")
 
         p = self._get_p(param)
-
         try:
             if p == c.p:
                 value = func(event={"c":c})  # no need for re-selection
@@ -2998,6 +2967,146 @@ class LeoServer:
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
         return self._make_response()
+    #@+node:ekr.20210722184932.1: *4* server._do_leo_function_by_name
+    def _do_leo_function_by_name(self, function_name, param):
+        """
+        Generic call to a method in Leo's Commands class or any subcommander class.
+
+        The param["ap"] position is to be selected before having the command run,
+        while the param["keep"] parameter specifies wether the original position
+        should be re-selected afterward.
+
+        TODO: The whole of those operations is to be undoable as one undo step.
+
+        command: the name of a method
+        param["ap"]: an archived position.
+        param["keep"]: preserve the current selection, if possible.
+
+        """
+        tag = '_do_leo_function_by_name'
+        c = self._check_c()
+
+        keepSelection = False  # Set default, optional component of param
+        if "keep" in param:
+            keepSelection = param["keep"]
+
+        func = self._get_commander_method(function_name) # GET FUNC
+        if not func:  # pragma: no cover
+            raise ServerError(f"{tag}: Leo command not found: {function_name!r}")
+
+        p = self._get_p(param)
+        try:
+            if p == c.p:
+                value = func(event={"c":c})  # no need for re-selection
+            else:
+                old_p = c.p  # preserve old position
+                c.selectPosition(p)  # set position upon which to perform the command
+                value = func(event={"c":c})
+                if keepSelection and c.positionExists(old_p):
+                    # Only if 'keep' old position was set, and old_p still exists
+                    c.selectPosition(old_p)
+        except Exception as e:
+            print("_do_leo_command Recovered from Error "+ str(e))
+            return self._make_response() # Return empty on error
+        #
+        # Tag along a possible return value with info sent back by _make_response
+        if self._is_jsonable(value):
+            return self._make_response({"return-value": value})
+        return self._make_response()
+    #@+node:felix.20210621233316.85: *4* server._do_message
+    def _do_message(self, d):
+        """
+        Handle d, a python dict representing the incoming request.
+        The d dict must have the three (3) following keys:
+
+        "id": A positive integer.
+
+        "action": A string, which is either:
+            - The name of public method of this class, prefixed with '!'.
+            - The name of a Leo command, prefixed with '-'
+            - The name of a method of a Leo class, without prefix.
+
+        "param": A dict to be passed to the called "action" method.
+            (Passed to the public method, or the _do_leo_command. Often contains ap, text & keep)
+
+        Return a dict, created by _make_response or _make_minimal_response
+        that contains at least an 'id' key.
+
+        """
+        tag = '_do_message'
+
+        # Require "id" and "action" keys
+        id_ = d.get("id")
+        if id_ is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no id")
+        action = d.get("action")
+        if action is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no action")
+
+        # TODO : make/force always an object from the client connected.
+        param = d.get('param', {}) # Can be none or a string
+        # Set log flag.
+        if param:
+            self.log_flag = param.get("log")
+            pass
+        else:
+            param = {}
+
+        # Set the current_id and action ivars for _make_response.
+        self.current_id = id_
+        self.action = action
+
+        # Execute the requested action.
+        if action[0] == "!":
+            action = action[1:] # Remove exclamation point "!"
+            func = self._do_server_command  # Server has this method.
+        elif action[0] == '-':
+            action = action[1:] # Remove dash "-"
+            func = self._do_leo_command_by_name  # It's a command name.
+        else:
+            func = self._do_leo_function_by_name  # It's the name of a method in some commander.
+        result = func(action, param)
+        if result is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no response: {action!r}")
+        return result
+    #@+node:felix.20210621233316.86: *4* server._do_server_command
+    def _do_server_command(self, action, param):
+        tag = '_do_server_command'
+        # Disallow hidden methods.
+        if action.startswith('_'):  # pragma: no cover
+            raise ServerError(f"{tag}: action starts with '_': {action!r}")
+        # Find and execute the server method.
+        func = getattr(self, action, None)
+        if not func:
+            raise ServerError(f"{tag}: action not found: {action!r}")  # pragma: no cover
+        if not callable(func):
+            raise ServerError(f"{tag}: not callable: {func!r}")  # pragma: no cover
+        return func(param)
+    #@+node:felix.20210621233316.87: *4* server._dump_*
+    def _dump_outline(self, c):  # pragma: no cover
+        """Dump the outline."""
+        tag = '_dump_outline'
+        print(f"{tag}: {c.shortFileName()}...\n")
+        for p in c.all_positions():
+            self._dump_position(p)
+        print('')
+
+    def _dump_position(self, p):  # pragma: no cover
+        level_s = ' ' * 2 * p.level()
+        print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
+    #@+node:felix.20210624160812.1: *4* server._emit_signon
+    def _emit_signon(self):
+        '''Simulate the Initial Leo Log Entry'''
+        tag = 'emit_signon'
+        if self.loop:
+            g.app.computeSignon()
+            signon = []
+            for z in (g.app.signon, g.app.signon1):
+                for z2 in z.split('\n'):
+                    signon.append(z2.strip())
+            g.es("\n".join(signon))
+        else:
+            raise ServerError(f"{tag}: no loop ready for emit_signon")
     #@+node:felix.20210625230236.1: *4* server._get_commander_method
     def _get_commander_method(self, command):
         """ Return the given method (p_command) in the Commands class or subcommanders."""
@@ -3040,84 +3149,16 @@ class LeoServer:
                 if func:
                     return func
         return None
-    #@+node:felix.20210621233316.85: *4* server._do_message
-    def _do_message(self, d):
-        """
-        Handle d, a python dict representing the incoming request.
-        The d dict must have the three (3) following keys:
-
-        "id": A positive integer.
-
-        "action": A string, which is either:
-            - The name of public method of this class, prefixed with a '!'.
-            - The name of a leo command, without prefix, to be run by _do_leo_command
-
-        "param": A dict to be passed to the called "action" method.
-            (Passed to the public method, or the _do_leo_command. Often contains ap, text & keep)
-
-        Return a dict, created by _make_response or _make_minimal_response
-        that contains at least an 'id' key.
-
-        """
-        tag = '_do_message'
-
-        # Require "id" and "action" keys
-        id_ = d.get("id")
-        if id_ is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no id")
-        action = d.get("action")
-        if action is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no action")
-
-        # TODO : make/force always an object from the client connected.
-        param = d.get('param', {}) # Can be none or a string
-        # Set log flag.
-        if param:
-            self.log_flag = param.get("log")
-            pass
-        else:
-            param = {}
-
-        # Set the current_id and action ivars for _make_response.
-        self.current_id = id_
-        self.action = action
-
-        # Execute the requested action.
-        if action[0] == "!":
-            action = action[1:] # Remove exclamation point "!"
-            func = self._do_server_command  # Server has this method.
-        else:
-            func = self._do_leo_command  # No prefix, so it's a Leo command.
-
-        result = func(action, param)
-        if result is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no response: {action!r}")
-        return result
-    #@+node:felix.20210621233316.86: *4* server._do_server_command
-    def _do_server_command(self, action, param):
-        tag = '_do_server_command'
-        # Disallow hidden methods.
-        if action.startswith('_'):  # pragma: no cover
-            raise ServerError(f"{tag}: action starts with '_': {action!r}")
-        # Find and execute the server method.
-        func = getattr(self, action, None)
-        if not func:
-            raise ServerError(f"{tag}: action not found: {action!r}")  # pragma: no cover
-        if not callable(func):
-            raise ServerError(f"{tag}: not callable: {func!r}")  # pragma: no cover
-        return func(param)
-    #@+node:felix.20210621233316.87: *4* server._dump_*
-    def _dump_outline(self, c):  # pragma: no cover
-        """Dump the outline."""
-        tag = '_dump_outline'
-        print(f"{tag}: {c.shortFileName()}...\n")
-        for p in c.all_positions():
-            self._dump_position(p)
-        print('')
-
-    def _dump_position(self, p):  # pragma: no cover
-        level_s = ' ' * 2 * p.level()
-        print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
+    #@+node:felix.20210621233316.91: *4* server._get_focus
+    def _get_focus(self):
+        """Server helper method to get the focused panel name string"""
+        tag = '_get_focus'
+        try:
+            w = g.app.gui.get_focus()
+            focus = g.app.gui.widget_name(w)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
+        return focus
     #@+node:felix.20210621233316.90: *4* server._get_p
     def _get_p(self, param, strict = False):
         """
@@ -3143,16 +3184,6 @@ class LeoServer:
             raise ServerError(f"{tag}: no c.p")
 
         return c.p
-    #@+node:felix.20210621233316.91: *4* server._get_focus
-    def _get_focus(self):
-        """Server helper method to get the focused panel name string"""
-        tag = '_get_focus'
-        try:
-            w = g.app.gui.get_focus()
-            focus = g.app.gui.widget_name(w)
-        except Exception as e:
-            raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
-        return focus
     #@+node:felix.20210621233316.92: *4* server._get_position_d
     def _get_position_d(self, p):
         """
@@ -3192,6 +3223,31 @@ class LeoServer:
             return True
         except (TypeError, OverflowError):
             return False
+    #@+node:felix.20210621233316.94: *4* server._make_minimal_response
+    def _make_minimal_response(self, package=None):
+        """
+        Return a json string representing a response dict.
+
+        The 'package' kwarg, if present, must be a python dict describing a
+        response. package may be an empty dict or None.
+
+        The 'p' kwarg, if present, must be a position.
+
+        First, this method creates a response (a python dict) containing all
+        the keys in the 'package' dict.
+
+        Then it adds 'id' to the package.
+
+        Finally, this method returns the json string corresponding to the
+        response.
+        """
+        if package is None:
+            package = {}
+
+        # Always add id.
+        package ["id"] = self.current_id
+
+        return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.93: *4* server._make_response
     def _make_response(self, package=None):
         """
@@ -3250,31 +3306,6 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
-    #@+node:felix.20210621233316.94: *4* server._make_minimal_response
-    def _make_minimal_response(self, package=None):
-        """
-        Return a json string representing a response dict.
-
-        The 'package' kwarg, if present, must be a python dict describing a
-        response. package may be an empty dict or None.
-
-        The 'p' kwarg, if present, must be a position.
-
-        First, this method creates a response (a python dict) containing all
-        the keys in the 'package' dict.
-
-        Then it adds 'id' to the package.
-
-        Finally, this method returns the json string corresponding to the
-        response.
-        """
-        if package is None:
-            package = {}
-
-        # Always add id.
-        package ["id"] = self.current_id
-
-        return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.95: *4* server._p_to_ap
     def _p_to_ap(self, p):
         """
@@ -3301,6 +3332,27 @@ class LeoServer:
             if p.v.gnx == gnx:
                 return p
         return False
+    #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
+    def _send_async_output(self, package):
+        """
+        Send data asynchronously to the client
+        """
+        tag = "send async output"
+        jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
+        if "async" not in package:
+            InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
+        if self.loop:
+            self.loop.create_task(self._async_output(jsonPackage))
+        else:
+            InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
+    #@+node:felix.20210621233316.89: *5* server._async_output
+    async def _async_output(self, json):  # pragma: no cover (tested in server)
+        """Output json string to the web_socket"""
+        tag = '_async_output'
+        if self.web_socket:
+            await self.web_socket.send(bytes(json, 'utf-8'))
+        else:
+            g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:felix.20210621233316.97: *4* server._test_round_trip_positions
     def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
@@ -3320,19 +3372,6 @@ class LeoServer:
             yield p
             p.moveToNext()
 
-    #@+node:felix.20210624160812.1: *4* server._emit_signon
-    def _emit_signon(self):
-        '''Simulate the Initial Leo Log Entry'''
-        tag = 'emit_signon'
-        if self.loop:
-            g.app.computeSignon()
-            signon = []
-            for z in (g.app.signon, g.app.signon1):
-                for z2 in z.split('\n'):
-                    signon.append(z2.strip())
-            g.es("\n".join(signon))
-        else:
-            raise ServerError(f"{tag}: no loop ready for emit_signon")
     #@-others
 #@+node:felix.20210621233316.98: ** class TestLeoServer (unittest.TestCase)
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
