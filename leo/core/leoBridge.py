@@ -76,7 +76,7 @@ class BridgeController:
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
     def __init__(self,
-        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose):
+        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose, vs_code_flag):
         """Ctor for the BridgeController class."""
         self.g = None
         self.gui = None
@@ -115,6 +115,7 @@ class BridgeController:
             g.in_bridge = True
                 # Tell leoApp.createDefaultGui not to create a gui.
                 # This module will create the gui later.
+            g.in_vs_code = True  # 2098.
             from leo.core import leoApp
             g.app = leoApp.LeoApp()
         except ImportError:
