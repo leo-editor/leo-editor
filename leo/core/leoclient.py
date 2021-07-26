@@ -14,6 +14,10 @@ wsHost = "localhost"
 wsPort = 32125
 
 tag = 'client'
+
+# Tracing.
+trace = True
+verbose = False
 timeout = 0.1
 times_d = {}  # Keys are n, values are time sent.
 tot_response_time = 0.0
@@ -106,11 +110,13 @@ def _get_action_list():
     return all_tests
     
 #@+node:ekr.20210206093130.1: ** function: _show_response
-def _show_response(n, d, trace, verbose):
+def _show_response(n, d):
     global n_known_response_times
     global n_unknown_response_times
     global times_d
-    global tot_response_time 
+    global tot_response_time
+    global trace
+    global verbose
     # Calculate response time.
     t1 = times_d.get(n)
     t2 = time.perf_counter()
@@ -126,10 +132,7 @@ def _show_response(n, d, trace, verbose):
         return
     action = d.get('action')
     if not verbose:
-        if "async" in d:
-            print(f"{tag}: async: {d.get('s')}")
-        else:
-            print(f"{tag}:   got: {n} {action}")
+        print(f"id: {d.get('id', '---'):3} d: {sorted(d)}")
         return
     if action == 'open_file':
         g.printObj(d,
@@ -146,8 +149,6 @@ n_unknown_response_times = 0
 
 async def client_main_loop(timeout):
     global n_async_responses
-    trace = False
-    verbose = False
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
     async with websockets.connect(uri) as websocket:  # pylint: disable=no-member
@@ -193,7 +194,7 @@ async def client_main_loop(timeout):
                             g.trace('json_s', json_s)
                             g.print_exception()
                         break
-                    _show_response(n, d, trace, verbose)
+                    _show_response(n, d)
                     # This loop invariant guarantees we receive messages in order. 
                     is_async = "async" in d
                     n2 = d.get("id")
