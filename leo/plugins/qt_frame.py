@@ -915,7 +915,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.oldEvent = w.event
                 w.event = self.wrapper
             #@+others
-            #@+node:ekr.20131120054058.16281: *8* create_d
+            #@+node:ekr.20131120054058.16281: *8* EventWrapper.create_d
             def create_d(self):
                 """Create self.d dictionary."""
                 c = self.c
@@ -940,13 +940,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     'set-find-everywhere',
                     'set-find-node-only',
                     'set-find-suboutline-only',
+                    # #2041 & # 2094 (Leo 6.4): Support Alt-x.
+                    'full-command',
                 )
                 for cmd_name in table:
                     stroke = c.k.getStrokeForCommandName(cmd_name)
+                    if cmd_name == 'full-command':
+                        g.trace(cmd_name, stroke)
                     if stroke:
                         d[stroke.s] = cmd_name
                 return d
-            #@+node:ekr.20131118172620.16893: *8* wrapper
+            #@+node:ekr.20131118172620.16893: *8* EventWrapper.wrapper
             def wrapper(self, event):
 
                 type_ = event.type()
@@ -956,7 +960,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if type_ == Type.KeyRelease:
                     return self.keyRelease(event)
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper)
+            #@+node:ekr.20131118172620.16894: *8* EventWrapper.keyPress
             def keyPress(self, event):
 
                 s = event.text()
@@ -974,14 +978,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     return True
                 # Stay in the present widget.
                 binding, ch, lossage = self.eventFilter.toBinding(event)
+                g.trace(repr(ch), repr(binding))
                 if binding:
                     cmd_name = self.d.get(binding)
+                    g.trace(repr(cmd_name))
                     if cmd_name:
                         self.c.k.simulateCommand(cmd_name)
                         return True
                 # Do the normal processing.
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16895: *8* keyRelease
+            #@+node:ekr.20131118172620.16895: *8* EventWrapper.keyRelease
             def keyRelease(self, event):
                 return self.oldEvent(event)
             #@-others
