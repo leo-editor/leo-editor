@@ -368,6 +368,7 @@ class LeoServer:
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
         self.g = g = self.bridge.globals()  # Also sets global 'g' object
+        g.in_vs_code = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
         self.leoServerConfig = None
         # * Intercept Log Pane output: Sends to client's log pane

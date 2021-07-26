@@ -76,7 +76,9 @@ class BridgeController:
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
     def __init__(self,
-        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose, vs_code_flag):
+        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose, 
+        vs_code_flag=False,  # #2098.
+    ):
         """Ctor for the BridgeController class."""
         self.g = None
         self.gui = None
@@ -87,6 +89,7 @@ class BridgeController:
         self.tracePlugins = tracePlugins
         self.useCaches = useCaches
         self.verbose = verbose
+        self.vs_code_flag = vs_code_flag  # #2098
         self.mainLoop = False  # True only if a non-null-gui mainloop is active.
         self.initLeo()
     #@+node:ekr.20070227092442.4: *3* bridge.globals
@@ -112,7 +115,7 @@ class BridgeController:
         #
         # Create the application object.
         try:
-            g.in_bridge = True
+            g.in_bridge = self.vs_code_flag  # #2098.
                 # Tell leoApp.createDefaultGui not to create a gui.
                 # This module will create the gui later.
             g.in_vs_code = True  # 2098.
