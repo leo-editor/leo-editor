@@ -3872,7 +3872,7 @@ class KeyHandlerClass:
                         shortcutList.append(data)
                 d[bi.commandName] = shortcutList
         return d
-    #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommand/Name
+    #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommandName
     def getStrokeForCommandName(self, commandName):
         k = self; c = k.c
         command = c.commandsDict.get(commandName)
