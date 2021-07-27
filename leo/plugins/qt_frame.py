@@ -943,6 +943,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     'set-find-suboutline-only',
                     # #2041 & # 2094 (Leo 6.4): Support Alt-x.
                     'full-command',
+                    'keyboard-quit', # Might as well :-)
                 )
                 for cmd_name in table:
                     stroke = c.k.getStrokeForCommandName(cmd_name)
