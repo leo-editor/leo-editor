@@ -15,6 +15,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
 from leo.core import leoFrame
+from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
@@ -945,8 +946,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 )
                 for cmd_name in table:
                     stroke = c.k.getStrokeForCommandName(cmd_name)
-                    if cmd_name == 'full-command':
-                        g.trace(cmd_name, stroke)
                     if stroke:
                         d[stroke.s] = cmd_name
                 return d
@@ -976,12 +975,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     elif self.func:
                         self.func()
                     return True
-                # Stay in the present widget.
                 binding, ch, lossage = self.eventFilter.toBinding(event)
-                g.trace(repr(ch), repr(binding))
-                if binding:
-                    cmd_name = self.d.get(binding)
-                    g.trace(repr(cmd_name))
+                # #2094: Use code similar to the end of LeoQtEventFilter.eventFilter.
+                #        The ctor converts <Alt-X> to <Atl-x> !!
+                #        That is, we must use the stroke, not the binding.
+                key_event = leoGui.LeoKeyEvent(
+                    c=self.c, char=ch, event=event, binding=binding, w=self.w)
+                if key_event.stroke:
+                    cmd_name = self.d.get(key_event.stroke)
                     if cmd_name:
                         self.c.k.simulateCommand(cmd_name)
                         return True
