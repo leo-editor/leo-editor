@@ -1703,8 +1703,6 @@ class KeyHandlerClass:
         self.autoCompleteForceKey = None
         self.demoNextKey = None  # New support for the demo.py plugin.
         self.demoPrevKey = None  # New support for the demo.py plugin.
-        self.fullCommandKey = None
-        self.universalArgKey = None
         # Used by k.masterKeyHandler...
         self.stroke = None
         self.mb_event = None
@@ -2199,9 +2197,7 @@ class KeyHandlerClass:
         c, k = self.c, self
         warn = c.config.getBool('warn-about-missing-settings')
         for ivar, commandName in (
-            ('fullCommandKey', 'full-command'),
             ('abortAllModesKey', 'keyboard-quit'),
-            ('universalArgKey', 'universal-argument'),
             ('autoCompleteForceKey', 'auto-complete-force'),
             ('demoNextKey', 'demo-next'),
             ('demoPrevKey', 'demo-prev'),
