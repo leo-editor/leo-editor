@@ -2149,7 +2149,7 @@ class Tracer:
     #@+others
     #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
     def __init__(self, limit=0, trace=False, verbose=False) -> None:
-        self.callDict: Dict[str, int] = {}
+        self.callDict: Dict[str, Any] = {}
             # Keys are function names.
             # Values are the number of times the function was called by the caller.
         self.calledDict: Dict[str, int] = {}
@@ -2240,11 +2240,11 @@ class Tracer:
             return None
         return self.tracer
     #@+node:ekr.20080531075119.7: *4* updateStats
-    def updateStats(self, name):
+    def updateStats(self, name) -> None:
         if not self.stack:
             return
         caller = self.stack[-1]
-        d = self.callDict.get(caller, {})
+        d: Dict[str, int] = self.callDict.get(caller, {})
             # d is a dict reprenting the called functions.
             # Keys are called functions, values are counts.
         d[name] = 1 + d.get(name, 0)
@@ -2356,7 +2356,7 @@ class TracingNullObject:
         # pylint doesn't like trailing return None.
         # return None
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
-def null_object_print_attr(id_, attr):
+def null_object_print_attr(id_, attr) -> None:
     suppress = True
     suppress_callers: List[str] = []
     suppress_attrs: List[str] = []
@@ -2407,7 +2407,7 @@ def null_object_print_attr(id_, attr):
             tracing_signatures[signature] = True
             g.pr(f"{s:40} {callers}")
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
-def null_object_print(id_, kind, *args):
+def null_object_print(id_, kind, *args) -> None:
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers = ','.join(callers[:-1])
@@ -2453,7 +2453,7 @@ class TypedDict:
         self.valType = valType
     #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
-    def __str__(self):
+    def __str__(self) -> str:
         """Concise: used by repr."""
         return (
             f"<TypedDict name:{self._name} "
@@ -2462,11 +2462,11 @@ class TypedDict:
             f"len(keys): {len(list(self.keys()))}>"
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Suitable for g.printObj"""
         return f"{g.dictToString(self.d)}\n{str(self)}\n"
     #@+node:ekr.20120205022040.17774: *4* td.__setitem__
-    def __setitem__(self, key, val):
+    def __setitem__(self, key, val) -> None:
         """Allow d[key] = val"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2480,7 +2480,7 @@ class TypedDict:
             self._checkValType(val)  # val is not iterable.
         self.d[key] = val
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
-    def add_to_list(self, key, val):
+    def add_to_list(self, key, val) -> None:
         """Update the *list*, self.d [key]"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2492,55 +2492,55 @@ class TypedDict:
             aList.append(val)
             self.d[key] = aList
     #@+node:ekr.20120206134955.10150: *4* td.checking
-    def _checkKeyType(self, key):
+    def _checkKeyType(self, key) -> None:
         if key and key.__class__ != self.keyType:
             self._reportTypeError(key, self.keyType)
 
-    def _checkValType(self, val):
+    def _checkValType(self, val) -> None:
         if val.__class__ != self.valType:
             self._reportTypeError(val, self.valType)
 
-    def _reportTypeError(self, obj: Any, objType):
+    def _reportTypeError(self, obj: Any, objType) -> str:
         # print(f"Type mismatch: obj: {obj.__class__}, objType: {objType}")
         return (
             f"{self._name}\n"
             f"expected: {obj.__class__.__name__}\n"
             f"     got: {objType.__name__}")
     #@+node:ekr.20120223062418.10422: *4* td.copy
-    def copy(self, name=None):
+    def copy(self, name=None) -> Any:
         """Return a new dict with the same contents."""
         import copy
         return copy.deepcopy(self)
     #@+node:ekr.20120205022040.17771: *4* td.get & keys & values
-    def get(self, key, default=None):
+    def get(self, key, default=None) -> Any:
         return self.d.get(key, default)
 
-    def items(self):
+    def items(self) -> Any:
         return self.d.items()
 
-    def keys(self):
+    def keys(self) -> str:
         return self.d.keys()
 
-    def values(self):
+    def values(self) -> Any:
         return self.d.values()
     #@+node:ekr.20190903181030.1: *4* td.get_getting & get_string_setting
-    def get_setting(self, key):
+    def get_setting(self, key) -> Any:
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
         val = gs and gs.val
         return val
 
-    def get_string_setting(self, key):
+    def get_string_setting(self, key) -> Optional[str]:
         val = self.get_setting(key)
         return val if val and isinstance(val, str) else None
     #@+node:ekr.20190904103552.1: *4* td.name & setName
-    def name(self):
+    def name(self) -> str:
         return self._name
 
-    def setName(self, name):
+    def setName(self, name) -> None:
         self._name = name
     #@+node:ekr.20120205022040.17807: *4* td.update
-    def update(self, d):
+    def update(self, d) -> None:
         """Update self.d from a the appropriate dict."""
         if isinstance(d, TypedDict):
             self.d.update(d.d)
@@ -2551,7 +2551,7 @@ class TypedDict:
 class UiTypeException(Exception):
     pass
 
-def assertUi(uitype):
+def assertUi(uitype) -> None:
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
 #@+node:ekr.20200219071828.1: *3* class TestLeoGlobals (leoGlobals.py)
@@ -2559,8 +2559,7 @@ class TestLeoGlobals(unittest.TestCase):
     """Tests for leoGlobals.py."""
     #@+others
     #@+node:ekr.20200219071958.1: *4* test_comment_delims_from_extension
-    def test_comment_delims_from_extension(self):
-
+    def test_comment_delims_from_extension(self) -> None:
         # pylint: disable=import-self
         from leo.core import leoGlobals as leo_g
         from leo.core import leoApp
@@ -2569,8 +2568,7 @@ class TestLeoGlobals(unittest.TestCase):
         assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
         assert leo_g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
     #@+node:ekr.20200219072957.1: *4* test_is_sentinel
-    def test_is_sentinel(self):
-
+    def test_is_sentinel(self) -> None:
         # pylint: disable=import-self
         from leo.core import leoGlobals as leo_g
         # Python.
@@ -2587,15 +2585,15 @@ class TestLeoGlobals(unittest.TestCase):
         assert not leo_g.is_sentinel("<!--comment-->", html_delims)
     #@-others
 #@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
-def isTextWidget(w):
+def isTextWidget(w) -> bool:
     return g.app.gui.isTextWidget(w)
 
-def isTextWrapper(w):
+def isTextWrapper(w) -> bool:
     return g.app.gui.isTextWrapper(w)
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)
-def alert(message, c: Cmdr=None):
+def alert(message: str, c: Cmdr=None) -> None:
     """Raise an alert.
 
     This method is deprecated: use c.alert instead.
@@ -2605,8 +2603,7 @@ def alert(message, c: Cmdr=None):
         g.es(message)
         g.app.gui.alert(c, message)
 #@+node:ekr.20180415144534.1: *4* g.assert_is
-def assert_is(obj: Any, list_or_class, warn=True):
-
+def assert_is(obj: Any, list_or_class, warn=True) -> bool:
     if warn:
         ok = isinstance(obj, list_or_class)
         if not ok:
@@ -2620,7 +2617,7 @@ def assert_is(obj: Any, list_or_class, warn=True):
     assert ok, (obj, obj.__class__.__name__, g.callers())
     return ok
 #@+node:ekr.20180420081530.1: *4* g._assert
-def _assert(condition, show_callers=True):
+def _assert(condition, show_callers=True) -> bool:
     """A safer alternative to a bare assert."""
     if g.unitTesting:
         assert condition
@@ -2633,7 +2630,7 @@ def _assert(condition, show_callers=True):
         g.es_print(g.callers())
     return False
 #@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
-def callers(n=4, count=0, excludeCaller=True, verbose=False):
+def callers(n=4, count=0, excludeCaller=True, verbose=False) -> str:
     """
     Return a string containing a comma-separated list of the callers
     of the function that called g.callerList.
@@ -2660,7 +2657,7 @@ def callers(n=4, count=0, excludeCaller=True, verbose=False):
         return ''.join([f"\n  {z}" for z in result])
     return ','.join(result)
 #@+node:ekr.20031218072017.3107: *5* g._callerName
-def _callerName(n, verbose=False):
+def _callerName(n, verbose=False) -> str:
     try:
         # get the function name from the call stack.
         f1 = sys._getframe(n)  # The stack frame, n levels up.
@@ -2682,17 +2679,17 @@ def _callerName(n, verbose=False):
         es_exception()
         return ''  # "<no caller name>"
 #@+node:ekr.20180328170441.1: *5* g.caller
-def caller(i: int=1):
+def caller(i: int=1) -> str:
     """Return the caller name i levels up the stack."""
     return g.callers(i + 1).split(',')[0]
 #@+node:ekr.20031218072017.3109: *4* g.dump
-def dump(s: str):
+def dump(s: str) -> str:
     out = ""
     for i in s:
         out += str(ord(i)) + ","
     return out
 
-def oldDump(s: str):
+def oldDump(s: str) -> str:
     out = ""
     for i in s:
         if i == '\n':
@@ -2704,7 +2701,7 @@ def oldDump(s: str):
         else: out += i
     return out
 #@+node:ekr.20150227102835.8: *4* g.dump_encoded_string
-def dump_encoded_string(encoding, s: str):
+def dump_encoded_string(encoding, s: str) -> None:
     """Dump s, assumed to be an encoded string."""
     # Can't use g.trace here: it calls this function!
     print(f"dump_encoded_string: {g.callers()}")
@@ -2719,17 +2716,17 @@ def dump_encoded_string(encoding, s: str):
         elif ch == '\n':
             in_comment = False
 #@+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod, format=None):
+def module_date(mod, format=None) -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
-def plugin_date(plugin_mod, format=None):
+def plugin_date(plugin_mod, format=None) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
-def file_date(theFile, format=None):
+def file_date(theFile, format=None) -> str:
     if theFile and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
@@ -2742,7 +2739,7 @@ def file_date(theFile, format=None):
 #@+node:ekr.20031218072017.3127: *4* g.get_line & get_line__after
 # Very useful for tracing.
 
-def get_line(s: str, i: int):
+def get_line(s: str, i: int) -> str:
     nl = ""
     if g.is_nl(s, i):
         i = g.skip_nl(s, i)
@@ -2754,7 +2751,7 @@ def get_line(s: str, i: int):
 # Important: getLine is a completely different function.
 # getLine = get_line
 
-def get_line_after(s: str, i: int):
+def get_line_after(s: str, i: int) -> str:
     nl = ""
     if g.is_nl(s, i):
         i = g.skip_nl(s, i)
@@ -2764,14 +2761,14 @@ def get_line_after(s: str, i: int):
 
 getLineAfter = get_line_after
 #@+node:ekr.20080729142651.1: *4* g.getIvarsDict and checkUnchangedIvars
-def getIvarsDict(obj: Any):
+def getIvarsDict(obj: Any) -> Dict[str, Any]:
     """Return a dictionary of ivars:values for non-methods of obj."""
     d: Dict[str, Any] = dict(
         [[key, getattr(obj, key)] for key in dir(obj)  # type:ignore
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
-def checkUnchangedIvars(obj: Any, d, exceptions=None):
+def checkUnchangedIvars(obj: Any, d, exceptions=None) -> bool:
     if not exceptions: exceptions = []
     ok = True
     for key in d:
@@ -2784,13 +2781,13 @@ def checkUnchangedIvars(obj: Any, d, exceptions=None):
                 ok = False
     return ok
 #@+node:ekr.20031218072017.3128: *4* g.pause
-def pause(s: str):
+def pause(s: str) -> None:
     g.pr(s)
     i = 0
     while i < 1000 * 1000:
         i += 1
 #@+node:ekr.20041105091148: *4* g.pdb
-def pdb(message=''):
+def pdb(message='') -> None:
     """Fall into pdb."""
     import pdb  # Required: we have just defined pdb as a function!
     if app and not app.useIpython:
@@ -2803,7 +2800,7 @@ def pdb(message=''):
         print(message)
     pdb.set_trace()
 #@+node:ekr.20041224080039: *4* g.dictToString
-def dictToString(d, indent='', tag=None):
+def dictToString(d, indent='', tag=None) -> str:
     """Pretty print a Python dict to a string."""
     # pylint: disable=unnecessary-lambda
     if not d:
@@ -2822,7 +2819,7 @@ def dictToString(d, indent='', tag=None):
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20041126060136: *4* g.listToString
-def listToString(obj: Any, indent='', tag=None):
+def listToString(obj: Any, indent='', tag=None) -> str:
     """Pretty print a Python list to a string."""
     if not obj:
         return '[]'
@@ -2840,7 +2837,7 @@ def listToString(obj: Any, indent='', tag=None):
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, indent: str='', printCaller=False, tag=None):
+def objToString(obj: Any, indent: str='', printCaller=False, tag=None) -> str:
     """Pretty print any Python object to a string."""
     # pylint: disable=undefined-loop-variable
         # Looks like a a pylint bug.
@@ -2929,12 +2926,12 @@ def run_pylint(fn, rc,
             # When not waiting, printing from severl process can be interspersed.
             pass
 #@+node:ekr.20120912153732.10597: *4* g.wait
-def sleep(n):
+def sleep(n: float) -> None:
     """Wait about n milliseconds."""
-    from time import sleep
-    sleep(n)  #sleeps for 5 seconds
+    from time import sleep  # type:ignore
+    sleep(n)
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, indent='', printCaller=False, tag=None):
+def printObj(obj: Any, indent='', printCaller=False, tag=None) -> None:
     """Pretty print any Python object using g.pr."""
     g.pr(objToString(obj, indent=indent, printCaller=printCaller, tag=tag))
 
@@ -2942,7 +2939,7 @@ printDict = printObj
 printList = printObj
 printTuple = printObj
 #@+node:ekr.20171023110057.1: *4* g.tupleToString
-def tupleToString(obj: Any, indent='', tag=None):
+def tupleToString(obj: Any, indent='', tag=None) -> str:
     """Pretty print a Python tuple to a string."""
     if not obj:
         return '(),'
@@ -2961,13 +2958,12 @@ def tupleToString(obj: Any, indent='', tag=None):
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
 #@+node:ekr.20031218072017.1589: *4* g.clearAllIvars
-def clearAllIvars(o):
+def clearAllIvars(o) -> None:
     """Clear all ivars of o, a member of some class."""
     if o:
         o.__dict__.clear()
 #@+node:ekr.20060127162818: *4* g.enable_gc_debug
-def enable_gc_debug():
-
+def enable_gc_debug() -> None:
     gc.set_debug(
         gc.DEBUG_STATS |  # prints statistics.
         gc.DEBUG_LEAK |  # Same as all below.
@@ -2979,7 +2975,7 @@ def enable_gc_debug():
 #@+node:ekr.20031218072017.1592: *4* g.printGc
 # Formerly called from unit tests.
 
-def printGc():
+def printGc() -> None:
     """Called from trace_gc_plugin."""
     g.printGcSummary()
     g.printGcObjects()
@@ -2987,7 +2983,7 @@ def printGc():
 #@+node:ekr.20060127164729.1: *4* g.printGcObjects
 lastObjectCount = 0
 
-def printGcObjects():
+def printGcObjects() -> int:
     """Print a summary of GC statistics."""
     global lastObjectCount
     n = len(gc.garbage)
@@ -3013,12 +3009,11 @@ def printGcObjects():
     lastObjectCount = count
     return delta
 #@+node:ekr.20031218072017.1593: *4* g.printGcRefs
-def printGcRefs():
-
+def printGcRefs() -> None:
     refs = gc.get_referrers(app.windowList[0])
     print(f"{len(refs):d} referers")
 #@+node:ekr.20060205043324.1: *4* g.printGcSummary
-def printGcSummary():
+def printGcSummary() -> None:
 
     g.enable_gc_debug()
     try:
@@ -3029,7 +3024,7 @@ def printGcSummary():
     except Exception:
         traceback.print_exc()
 #@+node:ekr.20180528151850.1: *3* g.printTimes
-def printTimes(times):
+def printTimes(times) -> None:
     """
     Print the differences in the times array.
     
@@ -3041,12 +3036,12 @@ def printTimes(times):
             g.trace(f"*** {n} {t:5.4f} sec.")
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
 #@+node:ekr.20031218072017.3134: *4* g.clearStats
-def clearStats():
+def clearStats() -> None:
 
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
 @command('show-stats')
-def printStats(event=None, name=None):
+def printStats(event=None, name=None) -> None:
     """
     Print all gathered statistics.
     
@@ -3073,7 +3068,7 @@ def printStats(event=None, name=None):
     for key in reversed(sorted(d2.keys())):
         print(f"{key:7} {d2.get(key)}")
 #@+node:ekr.20031218072017.3136: *4* g.stat
-def stat(name=None):
+def stat(name=None) -> None:
     """Increments the statistic for name in g.app.statsDict
     The caller's name is used by default.
     """
@@ -3085,27 +3080,27 @@ def stat(name=None):
         name = g._callerName(n=2)  # Get caller name 2 levels back.
     d[name] = 1 + d.get(name, 0)
 #@+node:ekr.20031218072017.3137: *3* g.Timing
-def getTime():
+def getTime() -> float:
     return time.time()
 
-def esDiffTime(message, start):
+def esDiffTime(message, start) -> float:
     delta = time.time() - start
     g.es('', f"{message} {delta:5.2f} sec.")
     return time.time()
 
-def printDiffTime(message, start):
+def printDiffTime(message, start) -> float:
     delta = time.time() - start
     g.pr(f"{message} {delta:5.2f} sec.")
     return time.time()
 
-def timeSince(start):
+def timeSince(start) -> str:
     return f"{time.time()-start:5.2f} sec."
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # Weird pylint bug, activated by TestLeoGlobals class.
 # Disabling this will be safe, because pyflakes will still warn about true redefinitions
 # pylint: disable=function-redefined
 #@+node:EKR.20040504150046.4: *3* g.comment_delims_from_extension
-def comment_delims_from_extension(filename):
+def comment_delims_from_extension(filename: str) -> Tuple[str, str, str]:
     """
     Return the comment delims corresponding to the filename's extension.
     """
@@ -3114,7 +3109,7 @@ def comment_delims_from_extension(filename):
     else:
         root, ext = os.path.splitext(filename)
     if ext == '.tmp':
-        root, ext = os.path.splitext(root)
+        root, ext = os.path.splitext(root)  # type:ignore
     language = g.app.extension_dict.get(ext[1:])
     if ext:
         return g.set_delims_from_language(language)
@@ -3124,7 +3119,7 @@ def comment_delims_from_extension(filename):
         f"root: {root!r}")
     return '', '', ''
 #@+node:ekr.20170201150505.1: *3* g.findAllValidLanguageDirectives
-def findAllValidLanguageDirectives(p: Pos):
+def findAllValidLanguageDirectives(p: Pos) -> List[str]:
     """Return list of all valid @language directives in p.b"""
     if not p:
         return []
@@ -3135,7 +3130,7 @@ def findAllValidLanguageDirectives(p: Pos):
             languages.add(language)
     return list(sorted(languages))
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-def findTabWidthDirectives(c: Cmdr, p: Pos):
+def findTabWidthDirectives(c: Cmdr, p: Pos) -> Optional[str]:
     """Return the language in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
@@ -3154,7 +3149,7 @@ def findTabWidthDirectives(c: Cmdr, p: Pos):
                 if w == 0: w = None
     return w
 #@+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
-def findFirstValidAtLanguageDirective(p: Pos):
+def findFirstValidAtLanguageDirective(p: Pos) -> Optional[str]:
     """Return the first *valid* @language directive in p.b."""
     if not p:
         return None
@@ -3164,7 +3159,7 @@ def findFirstValidAtLanguageDirective(p: Pos):
             return language
     return None
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-def findLanguageDirectives(c: Cmdr, p: Pos):
+def findLanguageDirectives(c: Cmdr, p: Pos) -> Optional[str]:
     """Return the language in effect at position p."""
     if c is None or p is None:
         return None  # c may be None for testing.
@@ -3204,7 +3199,7 @@ def findLanguageDirectives(c: Cmdr, p: Pos):
 # Called from the syntax coloring method that colorizes section references.
 # Also called from write at.putRefAt.
 
-def findReference(name, root):
+def findReference(name, root) -> Optional[Pos]:
     """Find the section definition for name.
 
     If a search of the descendants fails,
@@ -3227,7 +3222,7 @@ def findReference(name, root):
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
 
-def get_directives_dict(p: Pos, root=None):
+def get_directives_dict(p: Pos, root=None) -> Dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
 
@@ -3266,7 +3261,7 @@ def get_directives_dict(p: Pos, root=None):
             break
     return d
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
-def get_directives_dict_list(p: Pos):
+def get_directives_dict_list(p: Pos) -> List[Dict[Any, Any]]:
     """Scans p and all its ancestors for directives.
 
     Returns a list of dicts containing pointers to
@@ -3279,7 +3274,7 @@ def get_directives_dict_list(p: Pos):
         result.append(g.get_directives_dict(p, root=root))
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
-def getLanguageFromAncestorAtFileNode(p: Pos):
+def getLanguageFromAncestorAtFileNode(p: Pos) -> Optional[str]:
     """
     Return the language in effect from the nearest enclosing @<file> node:
     1. An unambiguous @language directive of the @<file> node.
@@ -3326,7 +3321,7 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
                 parents.append(grand_parent_v)
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
-def getLanguageAtPosition(c: Cmdr, p: Pos):
+def getLanguageAtPosition(c: Cmdr, p: Pos) -> str:
     """
     Return the language in effect at position p.
     This is always a lowercase language name, never None.
@@ -3341,7 +3336,7 @@ def getLanguageAtPosition(c: Cmdr, p: Pos):
     )
     return language.lower()
 #@+node:ekr.20031218072017.1386: *3* g.getOutputNewline
-def getOutputNewline(c: Cmdr=None, name=None):
+def getOutputNewline(c: Cmdr=None, name: str=None) -> str:
     """Convert the name of a line ending to the line ending itself.
 
     Priority:
@@ -3364,14 +3359,14 @@ def getOutputNewline(c: Cmdr=None, name=None):
     assert isinstance(s, str), repr(s)
     return s
 #@+node:ekr.20200521075143.1: *3* g.inAtNosearch
-def inAtNosearch(p: Pos):
+def inAtNosearch(p: Pos) -> bool:
     """Return True if p or p's ancestors contain an @nosearch directive."""
     for p in p.self_and_parents():
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
             return True
     return False
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
-def isDirective(s: str):
+def isDirective(s: str) -> bool:
     """Return True if s starts with a directive."""
     m = g_is_directive_pattern.match(s)
     if m:
@@ -3380,8 +3375,8 @@ def isDirective(s: str):
             return False
         return bool(m.group(1) in g.globalDirectiveList)
     return False
-#@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
-def isValidLanguage(language):
+#@+node:ekr.20200810074755.1: *3* g.isValidLanguage
+def isValidLanguage(language) -> bool:
     """True if language exists in leo/modes."""
     # 2020/08/12: A hack for c++
     if language in ('c++', 'cpp'):
@@ -3389,7 +3384,7 @@ def isValidLanguage(language):
     fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
     return g.os_path_exists(fn)
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
-def scanAtCommentAndAtLanguageDirectives(aList):
+def scanAtCommentAndAtLanguageDirectives(aList) -> Optional[Dict[str, Any]]:
     """
     Scan aList for @comment and @language directives.
 
@@ -3410,7 +3405,7 @@ def scanAtCommentAndAtLanguageDirectives(aList):
             return d
     return None
 #@+node:ekr.20080827175609.32: *3* g.scanAtEncodingDirectives
-def scanAtEncodingDirectives(aList):
+def scanAtEncodingDirectives(aList: List[Any]) -> Optional[str]:
     """Scan aList for @encoding directives."""
     for d in aList:
         encoding = d.get('encoding')
@@ -3420,13 +3415,13 @@ def scanAtEncodingDirectives(aList):
             g.error("invalid @encoding:", encoding)
     return None
 #@+node:ekr.20080827175609.53: *3* g.scanAtHeaderDirectives
-def scanAtHeaderDirectives(aList):
+def scanAtHeaderDirectives(aList) -> None:
     """scan aList for @header and @noheader directives."""
     for d in aList:
         if d.get('header') and d.get('noheader'):
             g.error("conflicting @header and @noheader directives")
 #@+node:ekr.20080827175609.33: *3* g.scanAtLineendingDirectives
-def scanAtLineendingDirectives(aList):
+def scanAtLineendingDirectives(aList) -> Optional[str]:
     """Scan aList for @lineending directives."""
     for d in aList:
         e = d.get('lineending')
@@ -3437,7 +3432,7 @@ def scanAtLineendingDirectives(aList):
             # g.error("invalid @lineending directive:",e)
     return None
 #@+node:ekr.20080827175609.34: *3* g.scanAtPagewidthDirectives
-def scanAtPagewidthDirectives(aList, issue_error_flag=False):
+def scanAtPagewidthDirectives(aList, issue_error_flag=False) -> Optional[int]:
     """Scan aList for @pagewidth directives."""
     for d in aList:
         s = d.get('pagewidth')
@@ -3449,16 +3444,16 @@ def scanAtPagewidthDirectives(aList, issue_error_flag=False):
                 g.error("ignoring @pagewidth", s)
     return None
 #@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives scanAllAtPathDirectives
-def scanAtPathDirectives(c: Cmdr, aList):
+def scanAtPathDirectives(c: Cmdr, aList) -> str:
     path = c.scanAtPathDirectives(aList)
     return path
 
-def scanAllAtPathDirectives(c: Cmdr, p: Pos):
+def scanAllAtPathDirectives(c: Cmdr, p: Pos) -> str:
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
 #@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
-def scanAtTabwidthDirectives(aList, issue_error_flag=False):
+def scanAtTabwidthDirectives(aList, issue_error_flag=False) -> Optional[int]:
     """Scan aList for @tabwidth directives."""
     for d in aList:
         s = d.get('tabwidth')
@@ -3470,7 +3465,7 @@ def scanAtTabwidthDirectives(aList, issue_error_flag=False):
                 g.error("ignoring @tabwidth", s)
     return None
 
-def scanAllAtTabWidthDirectives(c: Cmdr, p: Pos):
+def scanAllAtTabWidthDirectives(c: Cmdr, p: Pos) -> Optional[int]:
     """Scan p and all ancestors looking for @tabwidth directives."""
     if c and p:
         aList = g.get_directives_dict_list(p)
@@ -3480,7 +3475,7 @@ def scanAllAtTabWidthDirectives(c: Cmdr, p: Pos):
         ret = None
     return ret
 #@+node:ekr.20080831084419.4: *3* g.scanAtWrapDirectives & scanAllAtWrapDirectives
-def scanAtWrapDirectives(aList, issue_error_flag=False):
+def scanAtWrapDirectives(aList, issue_error_flag=False) -> Optional[bool]:
     """Scan aList for @wrap and @nowrap directives."""
     for d in aList:
         if d.get('wrap') is not None:
@@ -3489,7 +3484,7 @@ def scanAtWrapDirectives(aList, issue_error_flag=False):
             return False
     return None
 
-def scanAllAtWrapDirectives(c: Cmdr, p: Pos):
+def scanAllAtWrapDirectives(c: Cmdr, p: Pos) -> Optional[Any]:
     """Scan p and all ancestors looking for @wrap/@nowrap directives."""
     if c and p:
         default = c and c.config.getBool("body-pane-wraps")
@@ -3500,7 +3495,7 @@ def scanAllAtWrapDirectives(c: Cmdr, p: Pos):
         ret = None
     return ret
 #@+node:ekr.20040715155607: *3* g.scanForAtIgnore
-def scanForAtIgnore(c: Cmdr, p: Pos):
+def scanForAtIgnore(c: Cmdr, p: Pos) -> bool:
     """Scan position p and its ancestors looking for @ignore directives."""
     if g.app.unitTesting:
         return False  # For unit tests.
@@ -3510,7 +3505,7 @@ def scanForAtIgnore(c: Cmdr, p: Pos):
             return True
     return False
 #@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
-def scanForAtLanguage(c: Cmdr, p: Pos):
+def scanForAtLanguage(c: Cmdr, p: Pos) -> str:
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
     Returns the language found, or c.target_language."""
@@ -3524,7 +3519,7 @@ def scanForAtLanguage(c: Cmdr, p: Pos):
                 return language
     return c.target_language
 #@+node:ekr.20041123094807: *3* g.scanForAtSettings
-def scanForAtSettings(p: Pos):
+def scanForAtSettings(p: Pos) -> bool:
     """Scan position p and its ancestors looking for @settings nodes."""
     for p in p.self_and_parents(copy=False):
         h = p.h
@@ -3533,7 +3528,7 @@ def scanForAtSettings(p: Pos):
             return True
     return False
 #@+node:ekr.20031218072017.1382: *3* g.set_delims_from_language
-def set_delims_from_language(language):
+def set_delims_from_language(language) -> Tuple[Any, Any, Any]:
     """Return a tuple (single,start,end) of comment delims."""
     val = g.app.language_delims_dict.get(language)
     if val:
@@ -3545,7 +3540,7 @@ def set_delims_from_language(language):
     return '', '', ''
         # Indicate that no change should be made
 #@+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s: str):
+def set_delims_from_string(s: str) -> Tuple[Optional[str], Optional[str], Optional[str]]:
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3592,7 +3587,7 @@ def set_delims_from_string(s: str):
                 delims[i] = delims[i].replace("__", '\n').replace('_', ' ')
     return delims[0], delims[1], delims[2]
 #@+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(s: str, i: int, issue_errors_flag=False):
+def set_language(s: str, i: int, issue_errors_flag=False) -> Tuple[Optional[str],Optional[str],Optional[str],Optional[str]]:
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3616,7 +3611,7 @@ def set_language(s: str, i: int, issue_errors_flag=False):
         g.es("ignoring:", g.get_line(s, i))
     return None, None, None, None
 #@+node:ekr.20071109165315: *3* g.stripPathCruft
-def stripPathCruft(path):
+def stripPathCruft(path) -> str:
     """Strip cruft from a path name."""
     if not path:
         return path  # Retain empty paths for warnings.
@@ -3629,7 +3624,7 @@ def stripPathCruft(path):
     # We want a *relative* path, not an absolute path.
     return path
 #@+node:ekr.20090214075058.10: *3* g.update_directives_pat (new)
-def update_directives_pat():
+def update_directives_pat() -> None:
     """Init/update g.directives_pat"""
     global globalDirectiveList, directives_pat
     # Use a pattern that guarantees word matches.
@@ -3643,7 +3638,7 @@ def update_directives_pat():
 update_directives_pat()
 #@+node:ekr.20031218072017.3116: ** g.Files & Directories
 #@+node:ekr.20080606074139.2: *3* g.chdir
-def chdir(path: str):
+def chdir(path: str) -> None:
     if not g.os_path_isdir(path):
         path = g.os_path_dirname(path)
     if g.os_path_isdir(path) and g.os_path_exists(path):
@@ -3651,25 +3646,25 @@ def chdir(path: str):
 #@+node:ekr.20120222084734.10287: *3* g.compute...Dir
 # For compatibility with old code.
 
-def computeGlobalConfigDir():
+def computeGlobalConfigDir() -> str:
     return g.app.loadManager.computeGlobalConfigDir()
 
-def computeHomeDir():
+def computeHomeDir() -> str:
     return g.app.loadManager.computeHomeDir()
 
-def computeLeoDir():
+def computeLeoDir() -> str:
     return g.app.loadManager.computeLeoDir()
 
-def computeLoadDir():
+def computeLoadDir() -> str:
     return g.app.loadManager.computeLoadDir()
 
-def computeMachineName():
+def computeMachineName() -> str:
     return g.app.loadManager.computeMachineName()
 
-def computeStandardDirectories():
+def computeStandardDirectories() -> str:
     return g.app.loadManager.computeStandardDirectories()
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
-def computeWindowTitle(fileName):
+def computeWindowTitle(fileName) -> str:
 
     branch, commit = g.gitInfoForFile(fileName)  # #1616
     if not fileName:
@@ -3686,7 +3681,7 @@ def computeWindowTitle(fileName):
         title = branch + ": " + title
     return title
 #@+node:ekr.20031218072017.3117: *3* g.create_temp_file
-def create_temp_file(textMode=False):
+def create_temp_file(textMode=False) -> Tuple[Any, str]:
     """
     Return a tuple (theFile,theFileName)
 
@@ -3701,10 +3696,10 @@ def create_temp_file(textMode=False):
     except Exception:
         g.error('unexpected exception in g.create_temp_file')
         g.es_exception()
-        theFile, theFileName = None, ''
+        theFile, theFileName = None, ''  # type:ignore
     return theFile, theFileName
 #@+node:ekr.20210307060731.1: *3* g.createHiddenCommander
-def createHiddenCommander(fn):
+def createHiddenCommander(fn) -> Optional[Cmdr]:
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
@@ -3715,11 +3710,11 @@ def createHiddenCommander(fn):
         return c
     return None
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
-def defaultLeoFileExtension(c: Cmdr=None):
+def defaultLeoFileExtension(c: Cmdr=None) -> str:
     conf = c.config if c else g.app.config
     return conf.getString('default-leo-extension') or '.leo'
 #@+node:ekr.20031218072017.3118: *3* g.ensure_extension
-def ensure_extension(name, ext):
+def ensure_extension(name, ext) -> str:
 
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
@@ -3730,7 +3725,7 @@ def ensure_extension(name, ext):
         return name
     return name + ext
 #@+node:ekr.20150403150655.1: *3* g.fullPath
-def fullPath(c: Cmdr, p: Pos, simulate=False):
+def fullPath(c: Cmdr, p: Pos, simulate=False) -> str:
     """
     Return the full path (including fileName) in effect at p. Neither the
     path nor the fileName will be created if it does not exist.
@@ -3748,7 +3743,7 @@ def fullPath(c: Cmdr, p: Pos, simulate=False):
             return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
-def get_files_in_directory(directory, kinds=None, recursive=True):
+def get_files_in_directory(directory, kinds=None, recursive=True) -> List[Any]:
     """
     Return a list of all files of the given file extensions in the directory.
     Default kinds: ['*.py'].
@@ -3779,7 +3774,7 @@ def get_files_in_directory(directory, kinds=None, recursive=True):
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
 # Handles the conventions applying to the "relative_path_base_directory" configuration option.
 
-def getBaseDirectory(c: Cmdr):
+def getBaseDirectory(c: Cmdr) -> str:
     """Convert '!' or '.' to proper directory references."""
     base = app.config.relative_path_base_directory
     if base and base == "!":
@@ -3796,7 +3791,7 @@ def getBaseDirectory(c: Cmdr):
         return base  # base need not exist yet.
     return ""  # No relative base given.
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
-def getEncodingAt(p: Pos, s: str=None):
+def getEncodingAt(p: Pos, s: str=None) -> str:
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -3814,7 +3809,7 @@ def getEncodingAt(p: Pos, s: str=None):
         e = 'utf-8'
     return e
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
-def guessExternalEditor(c: Cmdr=None):
+def guessExternalEditor(c: Cmdr=None) -> Optional[str]:
     """ Return a 'sensible' external editor """
     editor = (
         os.environ.get("LEO_EDITOR") or
@@ -3835,7 +3830,7 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''',
     )
     return None
 #@+node:ekr.20160330204014.1: *3* g.init_dialog_folder
-def init_dialog_folder(c: Cmdr, p: Pos, use_at_path=True):
+def init_dialog_folder(c: Cmdr, p: Pos, use_at_path=True) -> str:
     """Return the most convenient folder to open or save a file."""
     if c and p and use_at_path:
         path = g.fullPath(c, p)
@@ -3852,10 +3847,10 @@ def init_dialog_folder(c: Cmdr, p: Pos, use_at_path=True):
             return dir_
     return ''
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file/external_file/string
-def is_binary_file(f):
+def is_binary_file(f) -> bool:
     return f and isinstance(f, io.BufferedIOBase)
 
-def is_binary_external_file(fileName):
+def is_binary_external_file(fileName) -> bool:
     try:
         with open(fileName, 'rb') as f:
             s = f.read(1024)  # bytes, in Python 3.
@@ -3866,13 +3861,13 @@ def is_binary_external_file(fileName):
         g.es_exception()
         return False
 
-def is_binary_string(s: str):
+def is_binary_string(s: str) -> bool:
     # http://stackoverflow.com/questions/898669
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
     return bool(s.translate(None, bytes(aList)))  # type:ignore
 #@+node:EKR.20040504154039: *3* g.is_sentinel
-def is_sentinel(line, delims):
+def is_sentinel(line, delims) -> bool:
     """Return True if line starts with a sentinel comment."""
     delim1, delim2, delim3 = delims
     line = line.lstrip()
@@ -3885,7 +3880,7 @@ def is_sentinel(line, delims):
     g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
     return False
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
-def makeAllNonExistentDirectories(theDir):
+def makeAllNonExistentDirectories(theDir) -> Optional[str]:
     """
     A wrapper from os.makedirs.
     Attempt to make all non-existent directories.
