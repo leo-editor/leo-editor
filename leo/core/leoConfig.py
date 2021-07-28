@@ -2299,9 +2299,9 @@ def parseFont(b):
         elif name.endswith('_size'):
             size = line[i + 1 :].strip()
             try:
-                size = float(size)
+                size = float(size)  # type:ignore
             except ValueError:
-                size = 12
+                size = 12  # type:ignore
         elif name.endswith('_slant'):
             slant = line[i + 1 :].strip()
         if settings_name is None and name.endswith(

@@ -37,7 +37,7 @@ import time
 import traceback
 import types
 from typing import TYPE_CHECKING
-from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Set, Tuple, Union
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -391,7 +391,7 @@ class BindingInfo:
         func: Any=None,
         nextMode: Any=None,
         pane: Any=None,
-        stroke: str=None,
+        stroke: Any=None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
@@ -1067,7 +1067,7 @@ class MatchBrackets:
     """
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
-    def __init__(self, c: Cmdr, p: Pos, language) -> None:
+    def __init__(self, c: Cmdr, p: Pos, language: str) -> None:
         """Ctor for MatchBrackets class."""
         self.c = c
         self.p = p.copy()
@@ -1151,7 +1151,13 @@ class MatchBrackets:
             # self.oops('unmatched string')
         return i + offset
     #@+node:tbrown.20180226113621.1: *4* mb.expand_range
-    def expand_range(self, s: str, left, right, max_right, expand=False) -> Tuple[Any, Any, Any, Any]:
+    def expand_range(self,
+        s: str,
+        left: int,
+        right: int,
+        max_right: int,
+        expand: bool=False,
+    ) -> Tuple[Any, Any, Any, Any]:
         """
         Find the bracket nearest the cursor searching outwards left and right.
 
@@ -1195,7 +1201,7 @@ class MatchBrackets:
             return left, right, s[right], right
         return None, None, None, None
     #@+node:ekr.20061113221414: *4* mb.find_matching_bracket
-    def find_matching_bracket(self, ch1, s: str, i: int) -> Any:
+    def find_matching_bracket(self, ch1: str, s: str, i: int) -> Any:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
@@ -1208,7 +1214,7 @@ class MatchBrackets:
         f = self.scan if self.forward else self.scan_back
         return f(ch1, target, s, i)
     #@+node:ekr.20160121164556.1: *4* mb.scan & helpers
-    def scan(self, ch1, target, s: str, i: int) -> Optional[int]:
+    def scan(self, ch1: str, target: str, s: str, i: int) -> Optional[int]:
         """Scan forward for target."""
         level = 0
         while 0 <= i < len(s):
@@ -1298,7 +1304,7 @@ class MatchBrackets:
             g.match(s, i, self.end_comment)
         )
     #@+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
-    def scan_back(self, ch1, target, s: str, i: int) -> Optional[int]:
+    def scan_back(self, ch1: str, target: str, s: str, i: int) -> Optional[int]:
         """Scan backwards for delim."""
         level = 0
         while i >= 0:
@@ -1502,7 +1508,7 @@ class PosList(list):
     #@-<< docstring for PosList >>
     #@+others
     #@+node:ekr.20140531104908.17611: *4* PosList.ctor
-    def __init__(self, c: Cmdr, aList=None) -> None:
+    def __init__(self, c: Cmdr, aList: List[Cmdr]=None) -> None:
         self.c = c
         super().__init__()
         if aList is None:
@@ -1512,12 +1518,12 @@ class PosList(list):
             for p in aList:
                 self.append(p.copy())
     #@+node:ekr.20140531104908.17612: *4* PosList.dump
-    def dump(self, sort=False, verbose=False) -> str:
+    def dump(self, sort: bool=False, verbose: bool=False) -> str:
         if verbose:
             return g.listToString(self, sort=sort)
         return g.listToString([p.h for p in self], sort=sort)
     #@+node:ekr.20140531104908.17613: *4* PosList.select
-    def select(self, pat, regex=False, removeClones=True) -> "PosList":
+    def select(self, pat: str, regex: bool=False, removeClones: bool=True) -> "PosList":
         """
         Return a new PosList containing all positions
         in self that match the given pattern.
@@ -1535,7 +1541,7 @@ class PosList(list):
             aList = self.removeClones(aList)
         return PosList(c, aList)
     #@+node:ekr.20140531104908.17614: *4* PosList.removeClones
-    def removeClones(self, aList) -> List[Pos]:
+    def removeClones(self, aList: List[Pos]) -> List[Pos]:
         seen = {}
         aList2: List[Pos] = []
         for p in aList:
@@ -1548,7 +1554,7 @@ class PosList(list):
 class ReadLinesClass:
     """A class whose next method provides a readline method for Python's tokenize module."""
 
-    def __init__(self, s):
+    def __init__(self, s: str):
         self.lines = g.splitLines(s)
         self.i = 0
 
@@ -1577,7 +1583,7 @@ class RedirectClass:
     #@+node:ekr.20041012082437.2: *5* flush
     # For LeoN: just for compatibility.
 
-    def flush(self, *args) -> None:
+    def flush(self, *args: Any) -> None:
         return
     #@+node:ekr.20041012091252: *5* rawPrint
     def rawPrint(self, s: str) -> None:
@@ -1586,7 +1592,7 @@ class RedirectClass:
         else:
             g.pr(s)
     #@+node:ekr.20041012082437.3: *5* redirect
-    def redirect(self, stdout=1) -> None:
+    def redirect(self, stdout: bool=True) -> None:
         if g.app.batchMode:
             # Redirection is futile in batch mode.
             return
@@ -1596,7 +1602,7 @@ class RedirectClass:
             else:
                 self.old, sys.stderr = sys.stderr, self  # type:ignore
     #@+node:ekr.20041012082437.4: *5* undirect
-    def undirect(self, stdout=1) -> None:
+    def undirect(self, stdout: bool=True) -> None:
         if self.old:
             if stdout:
                 sys.stdout, self.old = self.old, None
@@ -1699,20 +1705,20 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12602: *4* __init__
     def __init__(
         self,
-        patterns,
-        dots=True,
-        show_args=True,
-        show_return=True,
-        verbose=True,
+        patterns: List[Any],
+        dots: bool=True,
+        show_args: bool=True,
+        show_return: bool=True,
+        verbose: bool=True,
     ):
         """SherlockTracer ctor."""
-        self.bad_patterns = []  # List of bad patterns.
+        self.bad_patterns: List[str] = []  # List of bad patterns.
         self.dots = dots  # True: print level dots.
-        self.contents_d = {}  # Keys are file names, values are file lines.
+        self.contents_d: Dict[str, Any] = {}  # Keys are file names, values are file lines.
         self.n = 0  # The frame level on entry to run.
-        self.stats = {}  # Keys are full file names, values are dicts.
-        self.patterns = None  # A list of regex patterns to match.
-        self.pattern_stack = []
+        self.stats: Dict[str, Any] = {}  # Keys are full file names, values are dicts.
+        self.patterns: List[str] = []  # A list of regex patterns to match.
+        self.pattern_stack: List[str] = []
         self.show_args = show_args  # True: show args for each function call.
         self.show_return = show_return  # True: show returns from each function.
         self.trace_lines = True  # True: trace lines in enabled functions.
@@ -1723,7 +1729,7 @@ class SherlockTracer:
             # pylint: disable=no-member
             QtCore.pyqtRemoveInputHook()
     #@+node:ekr.20140326100337.16844: *4* __call__
-    def __call__(self, frame, event, arg) -> Any:
+    def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
         """Exists so that self.dispatch can return self."""
         return self.dispatch(frame, event, arg)
     #@+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
@@ -1746,7 +1752,7 @@ class SherlockTracer:
             self.bad_pattern(pattern)
             return False
     #@+node:ekr.20121128031949.12609: *4* sherlock.dispatch
-    def dispatch(self, frame, event, arg) -> Any:
+    def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
         """The dispatch method."""
         if event == 'call':
             self.do_call(frame, arg)
@@ -1757,7 +1763,7 @@ class SherlockTracer:
         # Queue the SherlockTracer instance again.
         return self
     #@+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
-    def do_call(self, frame, unused_arg) -> None:
+    def do_call(self, frame: Any, unused_arg: Any) -> None:
         """Trace through a function call."""
         frame1 = frame
         code = frame.f_code
@@ -1785,7 +1791,7 @@ class SherlockTracer:
         d[full_name] = 1 + d.get(full_name, 0)
         self.stats[file_name] = d
     #@+node:ekr.20130111185820.10194: *5* sherlock.get_args
-    def get_args(self, frame) -> str:
+    def get_args(self, frame: Any) -> str:
         """Return name=val for each arg in the function call."""
         code = frame.f_code
         locals_ = frame.f_locals
@@ -1811,7 +1817,7 @@ class SherlockTracer:
     #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
     bad_fns: List[str] = []
 
-    def do_line(self, frame, arg) -> None:
+    def do_line(self, frame: Any, arg: Any) -> None:
         """print each line of enabled functions."""
         if 1:
             return
@@ -1843,7 +1849,7 @@ class SherlockTracer:
         else:
             print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
     #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
-    def do_return(self, frame, arg):  # Arg *is* used below.
+    def do_return(self, frame: Any, arg: Any):  # Arg *is* used below.
         """Trace a return statement."""
         code = frame.f_code
         fn = code.co_filename
@@ -1890,7 +1896,7 @@ class SherlockTracer:
             ret = f" ->\n    {s}" if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
     #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
-    def fn_is_enabled(self, func, patterns) -> bool:
+    def fn_is_enabled(self, func: Any, patterns: List[str]) -> bool:
         """Return True if tracing for the given function is enabled."""
         if func in self.ignored_functions:
             return False
@@ -1937,7 +1943,7 @@ class SherlockTracer:
             self.bad_pattern(pattern)
             return False
     #@+node:ekr.20130112093655.10195: *4* get_full_name
-    def get_full_name(self, locals_, name) -> str:
+    def get_full_name(self, locals_: Any, name: str) -> str:
         """Return class_name::name if possible."""
         full_name = name
         try:
@@ -1951,7 +1957,11 @@ class SherlockTracer:
     ignored_files: List[str] = []  # List of files.
     ignored_functions: List[str] = []  # List of files.
 
-    def is_enabled(self, file_name, function_name, patterns=None) -> bool:
+    def is_enabled(self,
+        file_name: str,
+        function_name: str,
+        patterns: List[str]=None,
+    ) -> bool:
         """Return True if tracing for function_name in the given file is enabled."""
         #
         # New in Leo 6.3. Never trace through some files.
@@ -2022,16 +2032,16 @@ class SherlockTracer:
                 self.bad_pattern(pattern)
         return enabled
     #@+node:ekr.20121128111829.12182: *4* print_stats
-    def print_stats(self, patterns=None) -> None:
+    def print_stats(self, patterns: List[str]=None) -> None:
         """Print all accumulated statisitics."""
         print('\nSherlock statistics...')
         if not patterns: patterns = ['+.*', '+:.*',]
         for fn in sorted(self.stats.keys()):
             d = self.stats.get(fn)
             if self.fn_is_enabled(fn, patterns):
-                result = sorted(d.keys())
+                result = sorted(d.keys())  # type:ignore
             else:
-                result = [key for key in sorted(d.keys())
+                result = [key for key in sorted(d.keys())  # type:ignore
                     if self.is_enabled(fn, key, patterns)]
             if result:
                 print('')
@@ -2039,11 +2049,11 @@ class SherlockTracer:
                 parts = fn.split('/')
                 print('/'.join(parts[-2:]))
                 for key in result:
-                    print(f"{d.get(key):4} {key}")
+                    print(f"{d.get(key):4} {key}")  # type:ignore
     #@+node:ekr.20121128031949.12614: *4* run
     # Modified from pdb.Pdb.set_trace.
 
-    def run(self, frame=None) -> None:
+    def run(self, frame: Any=None) -> None:
         """Trace from the given frame or the caller's frame."""
         print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
@@ -2056,25 +2066,25 @@ class SherlockTracer:
         # Pass self to sys.settrace to give easy access to all methods.
         sys.settrace(self)
     #@+node:ekr.20140322090829.16834: *4* push & pop
-    def push(self, patterns) -> None:
+    def push(self, patterns: List[str]) -> None:
         """Push the old patterns and set the new."""
-        self.pattern_stack.append(self.patterns)
+        self.pattern_stack.append(self.patterns)  # type:ignore
         self.set_patterns(patterns)
         print(f"SherlockTracer.push: {self.patterns}")
 
     def pop(self) -> None:
         """Restore the pushed patterns."""
         if self.pattern_stack:
-            self.patterns = self.pattern_stack.pop()
+            self.patterns = self.pattern_stack.pop()  # type:ignore
             print(f"SherlockTracer.pop: {self.patterns}")
         else:
             print('SherlockTracer.pop: pattern stack underflow')
     #@+node:ekr.20140326100337.16845: *4* set_patterns
-    def set_patterns(self, patterns) -> None:
+    def set_patterns(self, patterns: List[str]) -> None:
         """Set the patterns in effect."""
         self.patterns = [z for z in patterns if self.check_pattern(z)]
     #@+node:ekr.20140322090829.16831: *4* show
-    def show(self, item) -> str:
+    def show(self, item: Any) -> str:
         """return the best representation of item."""
         if not item:
             return repr(item)
@@ -2111,7 +2121,7 @@ class TkIDDialog(EmergencyDialog):
 
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
-    def onKey(self, event) -> None:
+    def onKey(self, event: Any) -> None:
         """Handle Key events in askOk dialogs."""
         if event.char in '\n\r':
             self.okButton()
@@ -2148,7 +2158,7 @@ class Tracer:
     """
     #@+others
     #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
-    def __init__(self, limit=0, trace=False, verbose=False) -> None:
+    def __init__(self, limit: int=0, trace=False, verbose=False) -> None:
         self.callDict: Dict[str, Any] = {}
             # Keys are function names.
             # Values are the number of times the function was called by the caller.
@@ -2253,7 +2263,7 @@ class Tracer:
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
     #@-others
 
-def startTracer(limit=0, trace=False, verbose=False) -> Callable:
+def startTracer(limit: int=0, trace: bool=False, verbose: bool=False) -> Callable:
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
@@ -2518,7 +2528,7 @@ class TypedDict:
     def items(self) -> Any:
         return self.d.items()
 
-    def keys(self) -> str:
+    def keys(self) -> Any:
         return self.d.keys()
 
     def values(self) -> Any:
@@ -2603,7 +2613,7 @@ def alert(message: str, c: Cmdr=None) -> None:
         g.es(message)
         g.app.gui.alert(c, message)
 #@+node:ekr.20180415144534.1: *4* g.assert_is
-def assert_is(obj: Any, list_or_class, warn=True) -> bool:
+def assert_is(obj: Any, list_or_class: Any, warn: bool=True) -> bool:
     if warn:
         ok = isinstance(obj, list_or_class)
         if not ok:
@@ -2617,7 +2627,7 @@ def assert_is(obj: Any, list_or_class, warn=True) -> bool:
     assert ok, (obj, obj.__class__.__name__, g.callers())
     return ok
 #@+node:ekr.20180420081530.1: *4* g._assert
-def _assert(condition, show_callers=True) -> bool:
+def _assert(condition, show_callers: bool=True) -> bool:
     """A safer alternative to a bare assert."""
     if g.unitTesting:
         assert condition
@@ -2630,7 +2640,7 @@ def _assert(condition, show_callers=True) -> bool:
         g.es_print(g.callers())
     return False
 #@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
-def callers(n=4, count=0, excludeCaller=True, verbose=False) -> str:
+def callers(n: int=4, count: int=0, excludeCaller: bool=True, verbose: bool=False) -> str:
     """
     Return a string containing a comma-separated list of the callers
     of the function that called g.callerList.
@@ -2657,7 +2667,7 @@ def callers(n=4, count=0, excludeCaller=True, verbose=False) -> str:
         return ''.join([f"\n  {z}" for z in result])
     return ','.join(result)
 #@+node:ekr.20031218072017.3107: *5* g._callerName
-def _callerName(n, verbose=False) -> str:
+def _callerName(n, verbose: bool=False) -> str:
     try:
         # get the function name from the call stack.
         f1 = sys._getframe(n)  # The stack frame, n levels up.
@@ -2701,7 +2711,7 @@ def oldDump(s: str) -> str:
         else: out += i
     return out
 #@+node:ekr.20150227102835.8: *4* g.dump_encoded_string
-def dump_encoded_string(encoding, s: str) -> None:
+def dump_encoded_string(encoding: str, s: str) -> None:
     """Dump s, assumed to be an encoded string."""
     # Can't use g.trace here: it calls this function!
     print(f"dump_encoded_string: {g.callers()}")
@@ -2716,17 +2726,17 @@ def dump_encoded_string(encoding, s: str) -> None:
         elif ch == '\n':
             in_comment = False
 #@+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod, format=None) -> str:
+def module_date(mod, format: str=None) -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
-def plugin_date(plugin_mod, format=None) -> str:
+def plugin_date(plugin_mod, format: str=None) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
-def file_date(theFile, format=None) -> str:
+def file_date(theFile, format: str=None) -> str:
     if theFile and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
@@ -2768,7 +2778,11 @@ def getIvarsDict(obj: Any) -> Dict[str, Any]:
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
-def checkUnchangedIvars(obj: Any, d, exceptions=None) -> bool:
+def checkUnchangedIvars(
+    obj: Any,
+    d: Dict[str, Any],
+    exceptions: Sequence[str]=None,
+) -> bool:
     if not exceptions: exceptions = []
     ok = True
     for key in d:
@@ -2787,7 +2801,7 @@ def pause(s: str) -> None:
     while i < 1000 * 1000:
         i += 1
 #@+node:ekr.20041105091148: *4* g.pdb
-def pdb(message='') -> None:
+def pdb(message: str='') -> None:
     """Fall into pdb."""
     import pdb  # Required: we have just defined pdb as a function!
     if app and not app.useIpython:
@@ -4051,7 +4065,7 @@ def shortFileName(fileName, n=None) -> str:
 
 shortFilename = shortFileName
 #@+node:ekr.20150610125813.1: *3* g.splitLongFileName
-def splitLongFileName(fn, limit=40) -> str:
+def splitLongFileName(fn, limit: int=40) -> str:
     """Return fn, split into lines at slash characters."""
     aList = fn.replace('\\', '/').split('/')
     n, result = 0, []
@@ -4968,7 +4982,7 @@ class GitIssueController:
         else:
             g.es_print('state must be in (None, "open", "closed")')
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
-    def get_all_issues(self, label_list, root, state, limit=100) -> None:
+    def get_all_issues(self, label_list, root, state, limit: int=100) -> None:
         """Get all issues for the base url."""
         try:
             import requests
@@ -5007,7 +5021,7 @@ class GitIssueController:
         for label in label_list:
             self.get_one_issue(label, state)
     #@+node:ekr.20180126043719.3: *5* git.get_one_issue
-    def get_one_issue(self, label, state, limit=20) -> None:
+    def get_one_issue(self, label, state, limit: int=20) -> None:
         """Create a list of issues with the given label."""
         try:
             import requests
@@ -5797,10 +5811,10 @@ def stripBOM(s: str) -> Tuple[Optional[str], str]:
                 return e, s[len(bom) :]
     return None, s
 #@+node:ekr.20050208093800: *4* g.toEncodedString
-def toEncodedString(s: str, encoding='utf-8', reportErrors=False) -> str:
+def toEncodedString(s: str, encoding='utf-8', reportErrors=False) -> bytes:
     """Convert unicode string to an encoded string."""
     if not g.isUnicode(s):
-        return s
+        return s  # type:ignore
     if not encoding:
         encoding = 'utf-8'
     # These are the only significant calls to s.encode in Leo.
@@ -5813,7 +5827,7 @@ def toEncodedString(s: str, encoding='utf-8', reportErrors=False) -> str:
     # Tracing these calls directly yields thousands of calls.
     # Never call g.trace here!
         # g.dump_encoded_string(encoding,s)
-    return s
+    return s  # type:ignore
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 unicode_warnings: Dict[str, bool] = {}  # Keys are g.callers.
 
@@ -6378,7 +6392,7 @@ def goto_last_exception(c: Cmdr) -> None:
         else:
             for p in c.all_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
-                    c.goToLineNumber(line_number, p)
+                    c.goToLineNumber(line_number)  # 2021/07/28: fixed by mypy.
                     return
     else:
         g.trace('No previous exception')
@@ -6696,7 +6710,7 @@ def createScratchCommander(fileName: str=None) -> None:
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
-def funcToMethod(f, theClass: str, name: str=None) -> None:
+def funcToMethod(f, theClass: Any, name: str=None) -> None:
     """
     From the Python Cookbook...
 
@@ -7459,7 +7473,7 @@ def composeScript(
             # s = g.insertCodingLine(encoding,s)
     if not s.strip():
         return ''
-    at = c.atFileCommands
+    at = c.atFileCommands  # type:ignore
     old_in_script = g.app.inScript
     try:
         # #1297: set inScript flags.

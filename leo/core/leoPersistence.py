@@ -258,7 +258,7 @@ class PersistenceDataController:
         p = g.findNodeInTree(self.c, data, h)
         if not p:
             p = data.insertAsLastChild()
-            p.h = h
+            p.h = h  # type:ignore
         return p
     #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
     def find_at_persistence_node(self):
@@ -275,7 +275,7 @@ class PersistenceDataController:
             while last.hasNext():
                 last.moveToNext()
             p = last.insertAfter()
-            p.h = h
+            p.h = h  # type:ignore
             g.es_print(f"created {h} node", color='red')
         return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
@@ -291,7 +291,7 @@ class PersistenceDataController:
         p = g.findNodeInTree(self.c, auto_view, h)
         if not p:
             p = auto_view.insertAsLastChild()
-            p.h = h
+            p.h = h  # type:ignore
         return p
     #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl & helpers
     def find_position_for_relative_unl(self, root, unl):

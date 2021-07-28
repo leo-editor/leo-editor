@@ -254,7 +254,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Ctor for EditCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
-        self.ccolumn = '0'  # For comment column functions.
+        self.ccolumn = 0  # For comment column functions.
         self.cursorStack = []
             # Values are tuples, (i, j, ins)
         self.extendMode = False  # True: all cursor move commands extend the selection.
@@ -610,7 +610,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
         line = s[i:j]
-        c1 = int(self.ccolumn)
+        c1 = self.ccolumn  # 2021/07/28: already an int.
         line2 = ' ' * c1 + line.lstrip()
         if line2 != line:
             w.delete(i, j)
@@ -3141,8 +3141,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         junk, j = g.getLine(s, j1)
         lines = g.splitlines(s[i:j])
         n = len(lines)
-        lines = g.joinLines(['\t' + line for line in lines])
-        s = s[:i] + lines + s[j:]
+        lines_s = g.joinLines(['\t' + line for line in lines])
+        s = s[:i] + lines_s + s[j:]
         w.setAllText(s)
         # Retain original row/col selection.
         w.setSelectionRange(i1, j1 + n, insert=j1 + n)

@@ -281,7 +281,7 @@ class MypyCommand:
         result = mypy.api.run(self.args + [fn])
         # Print result, making clickable links.
         print('Exit status:', result[2])
-        lines = g.splitLines(result[0] or [])
+        lines = g.splitLines(result[0] or [])  # type:ignore
         s_head = directory.lower() + os.path.sep
         for i, s in enumerate(lines):
             # Print the shortened form of s *without* changing s.
