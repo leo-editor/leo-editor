@@ -288,7 +288,8 @@ class MypyCommand:
                 print(f"{i:<3}", s.rstrip())
             # Create links only up to the link limit.
             if 0 < self.link_limit <= i:
-                break  ###
+                print(lines[-1].rstrip())
+                break
             m = link_pattern.match(s)
             if not m:
                 g.es(s.strip())

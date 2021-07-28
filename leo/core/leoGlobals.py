@@ -138,7 +138,7 @@ cmd_instance_dict = {
 #@+node:ekr.20150508165324.1: ** << define g.Decorators >>
 #@+others
 #@+node:ekr.20170219173203.1: *3* g.callback (deprecated, decorator)
-def callback(func: Callable):
+def callback(func: Callable) -> Any:
     """
     A global decorator that protects Leo against crashes in callbacks.
     
@@ -152,7 +152,7 @@ def callback(func: Callable):
             ...
     """
 
-    def callback_wrapper(*args, **keys):
+    def callback_wrapper(*args, **keys):  # type:ignore
         """Callback for the @g.callback decorator."""
         try:
             return func(*args, **keys)
@@ -192,7 +192,7 @@ class Command:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name, **kwargs) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
@@ -210,7 +210,7 @@ class Command:
 
 command = Command
 #@+node:ekr.20171124070654.1: *3* g.command_alias
-def command_alias(alias, func):
+def command_alias(alias, func) -> None:
     """Create an alias for the *already defined* method in the Commands class."""
     from leo.core import leoCommands
     assert hasattr(leoCommands.Commands, func.__name__)
@@ -233,11 +233,11 @@ class CommanderCommand:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name: str, **kwargs) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
-    def __call__(self, func):
+    def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
 
         def commander_command_wrapper(event):
@@ -342,7 +342,7 @@ def standard_timestamp() -> str:
     """Return a reasonable timestamp."""
     return time.strftime("%Y%m%d-%H%M%S")
 #@+node:ekr.20201211183100.1: *3* g.get_backup_directory
-def get_backup_path(sub_directory):
+def get_backup_path(sub_directory) -> Optional[str]:
     """
     Return the full path to the subdirectory of the main backup directory.
     
@@ -392,7 +392,7 @@ class BindingInfo:
         nextMode=None,
         pane=None,
         stroke=None,
-    ):
+    ) -> None:
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
         self.kind = kind
@@ -448,19 +448,19 @@ class Bunch:
                 point.isok = True
     """
 
-    def __init__(self, **keywords):
+    def __init__(self, **keywords) -> None:
         self.__dict__.update(keywords)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.toString()
 
-    def ivars(self):
+    def ivars(self) -> Any:
         return sorted(self.__dict__)
 
-    def keys(self):
+    def keys(self) -> Any:
         return sorted(self.__dict__)
 
-    def toString(self):
+    def toString(self) -> str:
         tag = self.__dict__.get('tag')
         entries = [
             f"{key}: {str(self.__dict__.get(key)) or repr(self.__dict__.get(key))}"
@@ -473,19 +473,19 @@ class Bunch:
 
     # Used by new undo code.
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any) -> Any:
         """Support aBunch[key] = val"""
         return operator.setitem(self.__dict__, key, value)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> Any:
         """Support aBunch[key]"""
         # g.pr('g.Bunch.__getitem__', key)
         return operator.getitem(self.__dict__, key)
 
-    def get(self, key, theDefault=None):
+    def get(self, key: str, theDefault: Any=None) -> Any:
         return self.__dict__.get(key, theDefault)
 
-    def __contains__(self, key):  # New.
+    def __contains__(self, key: str) -> bool:  # New.
         # g.pr('g.Bunch.__contains__', key in self.__dict__, key)
         return key in self.__dict__
 
@@ -495,7 +495,7 @@ class EmergencyDialog:
     """A class that creates an tkinter dialog with a single OK button."""
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
-    def __init__(self, title, message):
+    def __init__(self, title: str, message: str):
         """Constructor for the leoTkinterDialog class."""
         self.answer = None  # Value returned from run()
         self.title = title
@@ -516,7 +516,7 @@ class EmergencyDialog:
         self.createButtons(buttons)
         self.top.bind("<Key>", self.onKey)
     #@+node:ekr.20120219154958.10494: *4* emergencyDialog.createButtons
-    def createButtons(self, buttons):
+    def createButtons(self, buttons: List[Dict[str, Any]]) -> List[Any]:
         """Create a row of buttons.
 
         buttons is a list of dictionaries containing
@@ -543,28 +543,28 @@ class EmergencyDialog:
                 self.defaultButtonCommand = command
         return buttonList
     #@+node:ekr.20120219154958.10495: *4* emergencyDialog.createTopFrame
-    def createTopFrame(self):
+    def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
         import tkinter as Tk
-        self.root = Tk.Tk()
-        self.top = Tk.Toplevel(self.root)
+        self.root = Tk.Tk()  # type:ignore
+        self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
         self.root.withdraw()
-        self.frame = Tk.Frame(self.top)
+        self.frame = Tk.Frame(self.top)  # type:ignore
         self.frame.pack(side="top", expand=1, fill="both")
         label = Tk.Label(self.frame, text=self.message, bg='white')
         label.pack(pady=10)
     #@+node:ekr.20120219154958.10496: *4* emergencyDialog.okButton
-    def okButton(self):
+    def okButton(self) -> None:
         """Do default click action in ok button."""
         self.top.destroy()
         self.top = None
     #@+node:ekr.20120219154958.10497: *4* emergencyDialog.onKey
-    def onKey(self, event):
+    def onKey(self, event: Any) -> None:
         """Handle Key events in askOk dialogs."""
         self.okButton()
     #@+node:ekr.20120219154958.10498: *4* emergencyDialog.run
-    def run(self):
+    def run(self) -> None:
         """Run the modal emergency dialog."""
         # Suppress f-stringify.
         self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
@@ -583,7 +583,7 @@ class FileLikeObject:
     """
     #@+others
     #@+node:ekr.20050404151753: *4*  ctor (g.FileLikeObject)
-    def __init__(self, encoding='utf-8', fromString=None):
+    def __init__(self, encoding='utf-8', fromString=None) -> None:
 
         # New in 4.2.1: allow the file to be inited from string s.
         self.encoding = encoding or 'utf-8'
@@ -594,17 +594,17 @@ class FileLikeObject:
         self.ptr = 0
     # In CStringIO the buffer is read-only if the initial value (fromString) is non-empty.
     #@+node:ekr.20050404151753.1: *4* clear (g.FileLikeObject)
-    def clear(self):
+    def clear(self) -> None:
         self.list = []
     #@+node:ekr.20050404151753.2: *4* close (g.FileLikeObject)
-    def close(self):
+    def close(self) -> None:
         pass
         # The StringIo version free's the memory buffer.
     #@+node:ekr.20050404151753.3: *4* flush (g.FileLikeObject)
-    def flush(self):
+    def flush(self) -> None:
         pass
     #@+node:ekr.20050404151753.4: *4* get & getvalue & read (g.FileLikeObject)
-    def get(self):
+    def get(self) -> str:
         return ''.join(self.list)
 
     getvalue = get  # for compatibility with StringIo
@@ -643,7 +643,7 @@ class GeneralSetting:
         path=None,
         tag='setting',
         unl=None,
-    ):
+    ) -> None:
         self.encoding = encoding
         self.ivar = ivar
         self.kind = kind
@@ -653,7 +653,7 @@ class GeneralSetting:
         self.val = val
         self.tag = tag
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         # Better for g.printObj.
         val = str(self.val).replace('\n', ' ')
         return (
@@ -671,7 +671,7 @@ class KeyStroke:
     """
     #@+others
     #@+node:ekr.20180414195401.2: *4*  ks.__init__
-    def __init__(self, binding):
+    def __init__(self, binding: str) -> None:
 
         if binding:
             self.s = self.finalize_binding(binding)
@@ -683,27 +683,31 @@ class KeyStroke:
     # where the keys of d are KeyStroke objects.
     #@@c
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s == other.s
         return self.s == other
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s < other.s
         return self.s < other
 
-    def __le__(self, other): return self.__lt__(other) or self.__eq__(other)
+    def __le__(self, other) -> bool:
+        return self.__lt__(other) or self.__eq__(other)
 
-    def __ne__(self, other): return not self.__eq__(other)
+    def __ne__(self, other) -> bool:
+        return not self.__eq__(other)
 
-    def __gt__(self, other): return not self.__lt__(other) and not self.__eq__(other)
+    def __gt__(self, other) -> bool:
+        return not self.__lt__(other) and not self.__eq__(other)
 
-    def __ge__(self, other): return not self.__lt__(other)
+    def __ge__(self, other) -> bool:
+        return not self.__lt__(other)
     #@+node:ekr.20120203053243.10118: *4* ks.__hash__
     # Allow KeyStroke objects to be keys in dictionaries.
 
