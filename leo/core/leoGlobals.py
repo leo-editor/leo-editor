@@ -162,7 +162,7 @@ def callback(func: Callable) -> Any:
 
     return callback_wrapper
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
-def check_cmd_instance_dict(c: Cmdr, g) -> None:
+def check_cmd_instance_dict(c: Cmdr, g: Any) -> None:
     """
     Check g.check_cmd_instance_dict.
     This is a permanent unit test, called from c.finishCreate.
@@ -170,7 +170,7 @@ def check_cmd_instance_dict(c: Cmdr, g) -> None:
     d = cmd_instance_dict
     for key in d:
         ivars = d.get(key)
-        obj = ivars2instance(c, g, ivars)
+        obj = ivars2instance(c, g, ivars)  # type:ignore
             # Produces warnings.
         if obj:
             name = obj.__class__.__name__
@@ -192,11 +192,11 @@ class Command:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs: Any) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
-    def __call__(self, func):
+    def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
         global_commands_dict[self.name] = func
         if app:
@@ -210,7 +210,7 @@ class Command:
 
 command = Command
 #@+node:ekr.20171124070654.1: *3* g.command_alias
-def command_alias(alias, func) -> None:
+def command_alias(alias: str, func: Callable) -> None:
     """Create an alias for the *already defined* method in the Commands class."""
     from leo.core import leoCommands
     assert hasattr(leoCommands.Commands, func.__name__)
@@ -233,14 +233,14 @@ class CommanderCommand:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs: Any) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
     def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
 
-        def commander_command_wrapper(event):
+        def commander_command_wrapper(event: Any) -> None:
             c = event.get('c')
             method = getattr(c, func.__name__, None)
             method(event=event)
@@ -262,7 +262,7 @@ class CommanderCommand:
 
 commander_command = CommanderCommand
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g, ivars) -> Any:
+def ivars2instance(c: Cmdr, g: Any, ivars: List[str]) -> Any:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -283,7 +283,7 @@ def ivars2instance(c: Cmdr, g, ivars) -> Any:
             break
     return obj
 #@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator (decorator)
-def new_cmd_decorator(name, ivars):
+def new_cmd_decorator(name: str, ivars: List[str]) -> Callable:
     """
     Return a new decorator for a command with the given name.
     Compute the class *instance* using the ivar string or list.
@@ -292,9 +292,9 @@ def new_cmd_decorator(name, ivars):
     See https://github.com/leo-editor/leo-editor/issues/325
     """
 
-    def _decorator(func):
+    def _decorator(func: Callable) -> Callable:
 
-        def new_cmd_wrapper(event):
+        def new_cmd_wrapper(event: Any) -> None:
             c = event.c
             self = g.ivars2instance(c, g, ivars)
             try:
@@ -342,7 +342,7 @@ def standard_timestamp() -> str:
     """Return a reasonable timestamp."""
     return time.strftime("%Y%m%d-%H%M%S")
 #@+node:ekr.20201211183100.1: *3* g.get_backup_directory
-def get_backup_path(sub_directory) -> Optional[str]:
+def get_backup_path(sub_directory: str) -> Optional[str]:
     """
     Return the full path to the subdirectory of the main backup directory.
     
@@ -386,12 +386,12 @@ class BindingInfo:
     #@+node:ekr.20120129040823.10254: *4* bi.__init__
     def __init__(
         self,
-        kind,
-        commandName='',
-        func=None,
-        nextMode=None,
-        pane=None,
-        stroke=None,
+        kind: str,
+        commandName: str='',
+        func: Any=None,
+        nextMode: Any=None,
+        pane: Any=None,
+        stroke: str=None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
@@ -448,7 +448,7 @@ class Bunch:
                 point.isok = True
     """
 
-    def __init__(self, **keywords) -> None:
+    def __init__(self, **keywords: Any) -> None:
         self.__dict__.update(keywords)
 
     def __repr__(self) -> str:
@@ -583,7 +583,7 @@ class FileLikeObject:
     """
     #@+others
     #@+node:ekr.20050404151753: *4*  ctor (g.FileLikeObject)
-    def __init__(self, encoding='utf-8', fromString=None) -> None:
+    def __init__(self, encoding: str='utf-8', fromString: str=None) -> None:
 
         # New in 4.2.1: allow the file to be inited from string s.
         self.encoding = encoding or 'utf-8'
@@ -610,7 +610,7 @@ class FileLikeObject:
     getvalue = get  # for compatibility with StringIo
     read = get  # for use by sax.
     #@+node:ekr.20050404151753.5: *4* readline (g.FileLikeObject)
-    def readline(self):
+    def readline(self) -> str:
         """Read the next line using at.list and at.ptr."""
         if self.ptr < len(self.list):
             line = self.list[self.ptr]
@@ -618,7 +618,7 @@ class FileLikeObject:
             return line
         return ''
     #@+node:ekr.20050404151753.6: *4* write (g.FileLikeObject)
-    def write(self, s):
+    def write(self, s: str) -> None:
         if s:
             if isinstance(s, bytes):
                 s = g.toUnicode(s, self.encoding)
@@ -635,14 +635,14 @@ fileLikeObject = FileLikeObject
 class GeneralSetting:
     """A class representing any kind of setting except shortcuts."""
 
-    def __init__(self, kind,
-        encoding=None,
-        ivar=None,
-        setting=None,
-        val=None,
-        path=None,
-        tag='setting',
-        unl=None,
+    def __init__(self, kind: str,
+        encoding: str=None,
+        ivar: str=None,
+        setting: str=None,
+        val: Any=None,
+        path: str=None,
+        tag: str='setting',
+        unl: str=None,
     ) -> None:
         self.encoding = encoding
         self.ivar = ivar
@@ -676,51 +676,51 @@ class KeyStroke:
         if binding:
             self.s = self.finalize_binding(binding)
         else:
-            self.s = None
+            self.s = None  # type:ignore
     #@+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
     #@+at All these must be defined in order to say, for example:
     #     for key in sorted(d)
     # where the keys of d are KeyStroke objects.
     #@@c
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s == other.s
         return self.s == other
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: Any) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s < other.s
         return self.s < other
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: Any) -> bool:
         return self.__lt__(other) or self.__eq__(other)
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: Any) -> bool:
         return not self.__lt__(other) and not self.__eq__(other)
 
-    def __ge__(self, other) -> bool:
+    def __ge__(self, other: Any) -> bool:
         return not self.__lt__(other)
     #@+node:ekr.20120203053243.10118: *4* ks.__hash__
     # Allow KeyStroke objects to be keys in dictionaries.
 
-    def __hash__(self):
+    def __hash__(self) -> Any:
         return self.s.__hash__() if self.s else 0
     #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<KeyStroke: {repr(self.s)}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return repr(self.s)
     #@+node:ekr.20180417160703.1: *4* ks.dump
-    def dump(self):
+    def dump(self) -> None:
         """Show results of printable chars."""
         for i in range(128):
             s = chr(i)
@@ -731,7 +731,7 @@ class KeyStroke:
             stroke = g.KeyStroke(ch)
             print(f'{"":2} {ch!r:10} {stroke.s!r}')
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
-    def finalize_binding(self, binding):
+    def finalize_binding(self, binding: str) -> str:
 
         trace = False and 'keys' in g.app.debug
             # This trace is good for devs only.
@@ -744,7 +744,7 @@ class KeyStroke:
             g.trace(f"{binding:20}:{self.mods:>20} ==> {mods+s}")
         return mods + s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
-    def finalize_char(self, s):
+    def finalize_char(self, s: str) -> str:
         """Perform very-last-minute translations on bindings."""
         #
         # Retain "bigger" spelling for gang-of-four bindings with modifiers.
@@ -758,7 +758,7 @@ class KeyStroke:
             'tab': 'Tab',
         }
         if self.mods and s.lower() in shift_d:
-            return shift_d.get(s.lower())
+            return shift_d.get(s.lower())  # type:ignore
                 # Returning '' breaks existing code.
         #
         # Make all other translations...
@@ -844,7 +844,7 @@ class KeyStroke:
         if s in (None, 'none', 'None'):
             return 'None'
         if s.lower() in translate_d:
-            s = translate_d.get(s.lower())
+            s = translate_d.get(s.lower())  # type:ignore
             return self.strip_shift(s)
         if len(s) > 1 and s.find(' ') > -1:
             # #917: not a pure, but should be ignored.
@@ -872,7 +872,7 @@ class KeyStroke:
         # Translate shifted keys to their appropriate alternatives.
         return self.strip_shift(s)
     #@+node:ekr.20180502104829.1: *5* ks.strip_shift
-    def strip_shift(self, s):
+    def strip_shift(self, s: str) -> str:
         """
         Handle supposedly shifted keys.
         
@@ -913,21 +913,21 @@ class KeyStroke:
         }
         if 'shift' in self.mods and s in shift_d:
             self.mods.remove('shift')
-            s = shift_d.get(s)
+            s = shift_d.get(s)  # type:ignore
         return s
     #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
     # These may go away later, but for now they make conversion of string strokes easier.
 
-    def find(self, pattern):
+    def find(self, pattern: str) -> int:
         return self.s.find(pattern)
 
-    def lower(self):
+    def lower(self) -> str:
         return self.s.lower()
 
-    def startswith(self, s: str):
+    def startswith(self, s: str) -> bool:
         return self.s.startswith(s)
     #@+node:ekr.20180415081209.2: *4* ks.find_mods
-    def find_mods(self, s: str):
+    def find_mods(self, s: str) -> List[str]:
         """Return the list of all modifiers seen in s."""
         s = s.lower()
         table = (
@@ -950,15 +950,15 @@ class KeyStroke:
                         break
         return result
     #@+node:ekr.20180417101435.1: *4* ks.isAltCtl
-    def isAltCtrl(self):
+    def isAltCtrl(self) -> bool:
         """Return True if this is an Alt-Ctrl character."""
         mods = self.find_mods(self.s)
         return 'alt' in mods and 'ctrl' in mods
     #@+node:ekr.20120203053243.10121: *4* ks.isFKey
-    def isFKey(self):
+    def isFKey(self) -> bool:
         return self.s in g.app.gui.FKeys
     #@+node:ekr.20180417102341.1: *4* ks.isPlainKey (does not handle alt-ctrl chars)
-    def isPlainKey(self):
+    def isPlainKey(self) -> bool:
         """
         Return True if self.s represents a plain key.
         
@@ -982,21 +982,19 @@ class KeyStroke:
             return False
         return True
     #@+node:ekr.20180511092713.1: *4* ks.isNumPadKey, ks.isPlainNumPad & ks.removeNumPadModifier
-    def isNumPadKey(self):
+    def isNumPadKey(self) -> bool:
         return self.s.find('Keypad+') > -1
 
-    def isPlainNumPad(self):
+    def isPlainNumPad(self) -> bool:
         return (
             self.isNumPadKey() and
             len(self.s.replace('Keypad+', '')) == 1
         )
 
-    def removeNumPadModifier(self):
-
+    def removeNumPadModifier(self) -> None:
         self.s = self.s.replace('Keypad+', '')
     #@+node:ekr.20180419170934.1: *4* ks.prettyPrint
-    def prettyPrint(self):
-
+    def prettyPrint(self) -> str:
         s = self.s
         if not s:
             return '<None>'
@@ -1004,7 +1002,7 @@ class KeyStroke:
         ch = s[-1]
         return s[:-1] + d.get(ch, ch)
     #@+node:ekr.20180415124853.1: *4* ks.strip_mods
-    def strip_mods(self, s: str):
+    def strip_mods(self, s: str) -> str:
         """Remove all modifiers from s, without changing the case of s."""
         table = (
             'alt',
