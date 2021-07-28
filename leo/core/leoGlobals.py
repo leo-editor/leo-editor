@@ -1065,7 +1065,7 @@ class MatchBrackets:
     """
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
-    def __init__(self, c: Cmdr, p, language):
+    def __init__(self, c: Cmdr, p: Pos, language):
         """Ctor for MatchBrackets class."""
         self.c = c
         self.p = p.copy()
@@ -3123,7 +3123,7 @@ def comment_delims_from_extension(filename):
         f"root: {root!r}")
     return '', '', ''
 #@+node:ekr.20170201150505.1: *3* g.findAllValidLanguageDirectives
-def findAllValidLanguageDirectives(p):
+def findAllValidLanguageDirectives(p: Pos):
     """Return list of all valid @language directives in p.b"""
     if not p:
         return []
@@ -3134,7 +3134,7 @@ def findAllValidLanguageDirectives(p):
             languages.add(language)
     return list(sorted(languages))
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-def findTabWidthDirectives(c: Cmdr, p):
+def findTabWidthDirectives(c: Cmdr, p: Pos):
     """Return the language in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
@@ -3153,7 +3153,7 @@ def findTabWidthDirectives(c: Cmdr, p):
                 if w == 0: w = None
     return w
 #@+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
-def findFirstValidAtLanguageDirective(p):
+def findFirstValidAtLanguageDirective(p: Pos):
     """Return the first *valid* @language directive in p.b."""
     if not p:
         return None
@@ -3163,7 +3163,7 @@ def findFirstValidAtLanguageDirective(p):
             return language
     return None
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-def findLanguageDirectives(c: Cmdr, p):
+def findLanguageDirectives(c: Cmdr, p: Pos):
     """Return the language in effect at position p."""
     if c is None or p is None:
         return None  # c may be None for testing.
@@ -3226,7 +3226,7 @@ def findReference(name, root):
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
 
-def get_directives_dict(p, root=None):
+def get_directives_dict(p: Pos, root=None):
     """
     Scan p for Leo directives found in globalDirectiveList.
 
@@ -3265,7 +3265,7 @@ def get_directives_dict(p, root=None):
             break
     return d
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
-def get_directives_dict_list(p):
+def get_directives_dict_list(p: Pos):
     """Scans p and all its ancestors for directives.
 
     Returns a list of dicts containing pointers to
@@ -3278,7 +3278,7 @@ def get_directives_dict_list(p):
         result.append(g.get_directives_dict(p, root=root))
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
-def getLanguageFromAncestorAtFileNode(p):
+def getLanguageFromAncestorAtFileNode(p: Pos):
     """
     Return the language in effect from the nearest enclosing @<file> node:
     1. An unambiguous @language directive of the @<file> node.
@@ -3325,7 +3325,7 @@ def getLanguageFromAncestorAtFileNode(p):
                 parents.append(grand_parent_v)
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
-def getLanguageAtPosition(c: Cmdr, p):
+def getLanguageAtPosition(c: Cmdr, p: Pos):
     """
     Return the language in effect at position p.
     This is always a lowercase language name, never None.
@@ -3363,7 +3363,7 @@ def getOutputNewline(c: Cmdr=None, name=None):
     assert isinstance(s, str), repr(s)
     return s
 #@+node:ekr.20200521075143.1: *3* g.inAtNosearch
-def inAtNosearch(p):
+def inAtNosearch(p: Pos):
     """Return True if p or p's ancestors contain an @nosearch directive."""
     for p in p.self_and_parents():
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
@@ -3452,7 +3452,7 @@ def scanAtPathDirectives(c: Cmdr, aList):
     path = c.scanAtPathDirectives(aList)
     return path
 
-def scanAllAtPathDirectives(c: Cmdr, p):
+def scanAllAtPathDirectives(c: Cmdr, p: Pos):
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
@@ -3469,7 +3469,7 @@ def scanAtTabwidthDirectives(aList, issue_error_flag=False):
                 g.error("ignoring @tabwidth", s)
     return None
 
-def scanAllAtTabWidthDirectives(c: Cmdr, p):
+def scanAllAtTabWidthDirectives(c: Cmdr, p: Pos):
     """Scan p and all ancestors looking for @tabwidth directives."""
     if c and p:
         aList = g.get_directives_dict_list(p)
@@ -3488,7 +3488,7 @@ def scanAtWrapDirectives(aList, issue_error_flag=False):
             return False
     return None
 
-def scanAllAtWrapDirectives(c: Cmdr, p):
+def scanAllAtWrapDirectives(c: Cmdr, p: Pos):
     """Scan p and all ancestors looking for @wrap/@nowrap directives."""
     if c and p:
         default = c and c.config.getBool("body-pane-wraps")
@@ -3499,7 +3499,7 @@ def scanAllAtWrapDirectives(c: Cmdr, p):
         ret = None
     return ret
 #@+node:ekr.20040715155607: *3* g.scanForAtIgnore
-def scanForAtIgnore(c: Cmdr, p):
+def scanForAtIgnore(c: Cmdr, p: Pos):
     """Scan position p and its ancestors looking for @ignore directives."""
     if g.app.unitTesting:
         return False  # For unit tests.
@@ -3509,7 +3509,7 @@ def scanForAtIgnore(c: Cmdr, p):
             return True
     return False
 #@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
-def scanForAtLanguage(c: Cmdr, p):
+def scanForAtLanguage(c: Cmdr, p: Pos):
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
     Returns the language found, or c.target_language."""
@@ -3523,7 +3523,7 @@ def scanForAtLanguage(c: Cmdr, p):
                 return language
     return c.target_language
 #@+node:ekr.20041123094807: *3* g.scanForAtSettings
-def scanForAtSettings(p):
+def scanForAtSettings(p: Pos):
     """Scan position p and its ancestors looking for @settings nodes."""
     for p in p.self_and_parents(copy=False):
         h = p.h
@@ -3729,7 +3729,7 @@ def ensure_extension(name, ext):
         return name
     return name + ext
 #@+node:ekr.20150403150655.1: *3* g.fullPath
-def fullPath(c: Cmdr, p, simulate=False):
+def fullPath(c: Cmdr, p: Pos, simulate=False):
     """
     Return the full path (including fileName) in effect at p. Neither the
     path nor the fileName will be created if it does not exist.
@@ -3795,7 +3795,7 @@ def getBaseDirectory(c: Cmdr):
         return base  # base need not exist yet.
     return ""  # No relative base given.
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
-def getEncodingAt(p, s: str=None):
+def getEncodingAt(p: Pos, s: str=None):
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -3834,7 +3834,7 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''',
     )
     return None
 #@+node:ekr.20160330204014.1: *3* g.init_dialog_folder
-def init_dialog_folder(c: Cmdr, p, use_at_path=True):
+def init_dialog_folder(c: Cmdr, p: Pos, use_at_path=True):
     """Return the most convenient folder to open or save a file."""
     if c and p and use_at_path:
         path = g.fullPath(c, p)
@@ -4154,7 +4154,7 @@ def findRootsWithPredicate(c: Cmdr, root, predicate=None):
                         return [p.copy()]
     return []
 #@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helpers
-def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p=None, maxdepth=0, maxp=None,
+def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=None,
                        soft_idx=False, hard_idx=False):
     """try and move to unl in the commander c
 
@@ -4196,7 +4196,7 @@ def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p=None, maxdepth=0, maxp=None,
         moveToP(c, maxp, unlList)
     return found, maxdepth, maxp
 #@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
-def recursiveUNLFind(unlList, c: Cmdr, depth=0, p=None, maxdepth=0, maxp=None,
+def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=None,
                      soft_idx=False, hard_idx=False):
     """
     Internal part of recursiveUNLSearch which doesn't change the
@@ -5227,7 +5227,7 @@ def gitInfo(path: str=None):
     return branch, commit
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
-def dummy_act_on_node(c: Cmdr, p, event):
+def dummy_act_on_node(c: Cmdr, p: Pos, event):
     pass
 
 # This dummy definition keeps pylint happy.
@@ -6220,7 +6220,7 @@ def es(*args, **keys):
 
 log = es
 #@+node:ekr.20190608090856.1: *3* g.es_clickable_link
-def es_clickable_link(c: Cmdr, p, line_number, message):
+def es_clickable_link(c: Cmdr, p: Pos, line_number, message):
     """
     Write a clickable message to the given line number of p.b.
     
@@ -7362,7 +7362,7 @@ def findNodeByPath(c: Cmdr, path: str):
                 return p
     return None
 #@+node:ekr.20210303123423.1: *4* findNodeInChildren
-def findNodeInChildren(c: Cmdr, p, headline, exact=True):
+def findNodeInChildren(c: Cmdr, p: Pos, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
     p1 = p.copy()
     h = headline.strip()
@@ -7375,7 +7375,7 @@ def findNodeInChildren(c: Cmdr, p, headline, exact=True):
                 return p.copy()
     return None
 #@+node:ekr.20210303123423.2: *4* findNodeInTree
-def findNodeInTree(c: Cmdr, p, headline, exact=True):
+def findNodeInTree(c: Cmdr, p: Pos, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
     h = headline.strip()
     p1 = p.copy()
@@ -7400,7 +7400,7 @@ def findTopLevelNode(c: Cmdr, headline, exact=True):
     return None
 #@-others
 #@+node:EKR.20040614071102.1: *3* g.getScript & helpers
-def getScript(c: Cmdr, p,
+def getScript(c: Cmdr, p: Pos,
     useSelectedText=True,
     forcePythonSentinels=True,
     useSentinels=True,
@@ -7431,7 +7431,7 @@ def getScript(c: Cmdr, p,
         script = ''
     return script
 #@+node:ekr.20170228082641.1: *4* g.composeScript
-def composeScript(c: Cmdr, p, s: str, forcePythonSentinels=True, useSentinels=True):
+def composeScript(c: Cmdr, p: Pos, s: str, forcePythonSentinels=True, useSentinels=True):
     """Compose a script from p.b."""
     # This causes too many special cases.
         # if not g.unitTesting and forceEncoding:
@@ -7457,7 +7457,7 @@ def composeScript(c: Cmdr, p, s: str, forcePythonSentinels=True, useSentinels=Tr
         g.app.inScript = g.inScript = old_in_script
     return script
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
-def extractExecutableString(c: Cmdr, p, s: str):
+def extractExecutableString(c: Cmdr, p: Pos, s: str):
     """
     Return all lines for the given @language directive.
 
@@ -7490,7 +7490,7 @@ def extractExecutableString(c: Cmdr, p, s: str):
             result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
-def handleScriptException(c: Cmdr, p, script, script1):
+def handleScriptException(c: Cmdr, p: Pos, script, script1):
     g.warning("exception executing script")
     full = c.config.getBool('show-full-tracebacks-in-scripts')
     fileName, n = g.es_exception(full=full)
@@ -7628,7 +7628,7 @@ def unquoteUrl(url):
     """Replace special characters (especially %20, by their equivalent)."""
     return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
-def computeFileUrl(fn, c: Cmdr=None, p=None):
+def computeFileUrl(fn, c: Cmdr=None, p: Pos=None):
     """
     Compute finalized url for filename fn.
     """
@@ -7664,7 +7664,7 @@ def computeFileUrl(fn, c: Cmdr=None, p=None):
         url = f"{tag}{path}"
     return url
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
-def getUrlFromNode(p):
+def getUrlFromNode(p: Pos):
     """
     Get an url from node p:
     1. Use the headline if it contains a valid url.
@@ -7697,7 +7697,7 @@ def getUrlFromNode(p):
             return s
     return None
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url, c: Cmdr=None, p=None):
+def handleUrl(url, c: Cmdr=None, p: Pos=None):
     """Open a url or a unl."""
     if c and not p:
         p = c.p
@@ -7717,7 +7717,7 @@ def handleUrl(url, c: Cmdr=None, p=None):
         g.es_exception()
         return None
 #@+node:ekr.20170226054459.1: *4* g.handleUrlHelper
-def handleUrlHelper(url, c: Cmdr, p):
+def handleUrlHelper(url, c: Cmdr, p: Pos):
     """Open a url.  Most browsers should handle:
         ftp://ftp.uu.net/public/whatever
         http://localhost/MySiteUnderDevelopment/index.html
@@ -7857,7 +7857,7 @@ def isValidUrl(url):
             return True
     return False
 #@+node:ekr.20120315062642.9744: *3* g.openUrl
-def openUrl(p):
+def openUrl(p: Pos):
     """
     Open the url of node p.
     Use the headline if it contains a valid url.
