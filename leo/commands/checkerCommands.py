@@ -246,6 +246,7 @@ class MypyCommand:
         """ctor for PyflakesCommand class."""
         self.c = c
         self.args = c.config.getData('mypy-arguments') or []
+        self.link_limit = c.config.getInt('mypy-link-limit') or 0
         self.unknown_path_names = []
 
     #@+others
@@ -278,12 +279,15 @@ class MypyCommand:
         print('Exit status:', result[2])
         lines = g.splitLines(result[0] or [])
         s_head = directory.lower() + os.path.sep
-        for s in lines[:20]:  ### To do: extend the limit.
+        for i, s in enumerate(lines):
             # Print the shortened form of s *without* changing s.
             if s.lower().startswith(s_head):
-                print(s[len(s_head):].rstrip())
+                print(f"{i:<3}", s[len(s_head):].rstrip())
             else:
-                print(s.rstrip())
+                print(f"{i:<3}", s.rstrip())
+            # Create links only up to the link limit.
+            if 0 < self.link_limit <= i:
+                continue
             m = link_pattern.match(s)
             if not m:
                 g.es(s.strip())
