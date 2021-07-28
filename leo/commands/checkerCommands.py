@@ -246,7 +246,6 @@ class MypyCommand:
         """ctor for PyflakesCommand class."""
         self.c = c
         self.args = c.config.getData('mypy-arguments') or []
-        g.trace('mypy-arguments', self.args)
         self.unknown_path_names = []
 
     #@+others
@@ -273,19 +272,13 @@ class MypyCommand:
         directory = os.path.dirname(fn)
         os.chdir(directory)
         # Run mypy.
-        ### To do: allow user arguments.
-        command = self.args.extend(fn)
-            # '--disable-error-code=attr-defined',
-            # '--disallow-untyped-defs',
-            # '--follow-imports=skip',
-            # fn,
-        # ]
-        result = mypy.api.run(command)
+        print(f"mypy {' '.join(self.args)} {g.shortFileName(fn)}")
+        result = mypy.api.run(self.args + [fn])
         # Print result, making clickable links.
         print('Exit status:', result[2])
         lines = g.splitLines(result[0] or [])
         s_head = directory.lower() + os.path.sep
-        for s in lines[:3]:
+        for s in lines[:20]:  ### To do: extend the limit.
             # Print the shortened form of s *without* changing s.
             if s.lower().startswith(s_head):
                 print(s[len(s_head):].rstrip())
@@ -296,7 +289,7 @@ class MypyCommand:
                 g.es(s.strip())
                 continue
             # m.group(1) should be an absolute path.
-            path = m.group(1)
+            path = g.os_path_finalize_join(directory, m.group(1))
             # m.group(2) should be the line number.
             try:
                 line_number = int(m.group(2))
