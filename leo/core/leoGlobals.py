@@ -138,7 +138,7 @@ cmd_instance_dict = {
 #@+node:ekr.20150508165324.1: ** << define g.Decorators >>
 #@+others
 #@+node:ekr.20170219173203.1: *3* g.callback (deprecated, decorator)
-def callback(func):
+def callback(func: Callable):
     """
     A global decorator that protects Leo against crashes in callbacks.
     
@@ -162,7 +162,7 @@ def callback(func):
 
     return callback_wrapper
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
-def check_cmd_instance_dict(c: Cmdr, g):
+def check_cmd_instance_dict(c: Cmdr, g) -> None:
     """
     Check g.check_cmd_instance_dict.
     This is a permanent unit test, called from c.finishCreate.
@@ -262,7 +262,7 @@ class CommanderCommand:
 
 commander_command = CommanderCommand
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g, ivars):
+def ivars2instance(c: Cmdr, g, ivars) -> Any:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -338,7 +338,7 @@ unitTesting = False  # A synonym for app.unitTesting.
 #@+others
 #@+node:ekr.20201211182722.1: ** g.Backup
 #@+node:ekr.20201211182659.1: *3* g.standard_timestamp
-def standard_timestamp():
+def standard_timestamp() -> str:
     """Return a reasonable timestamp."""
     return time.strftime("%Y%m%d-%H%M%S")
 #@+node:ekr.20201211183100.1: *3* g.get_backup_directory
@@ -403,15 +403,15 @@ class BindingInfo:
         self.stroke = stroke
             # The *caller* must canonicalize the shortcut.
     #@+node:ekr.20120203153754.10031: *4* bi.__hash__
-    def __hash__(self):
+    def __hash__(self) -> Any:
         return self.stroke.__hash__() if self.stroke else 0
     #@+node:ekr.20120125045244.10188: *4* bi.__repr__ & ___str_& dump
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.dump()
 
     __str__ = __repr__
 
-    def dump(self):
+    def dump(self) -> str:
         result = [f"BindingInfo {self.kind:17}"]
         # Print all existing ivars.
         table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
@@ -427,10 +427,10 @@ class BindingInfo:
         # Clearer w/o f-string.
         return "[%s]" % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
-    def isModeBinding(self):
+    def isModeBinding(self) -> bool:
         return self.kind.startswith('*mode')
     #@-others
-def isBindingInfo(obj: Any):
+def isBindingInfo(obj: Any) -> bool:
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
 class Bunch:
@@ -1095,13 +1095,13 @@ class MatchBrackets:
             return False
         return False
     #@+node:ekr.20160121112536.1: *5* mb.scan_regex
-    def scan_regex(self, s: str, i: int):
+    def scan_regex(self, s: str, i: int) -> int:
         """Scan a regex (or regex substitution for perl)."""
         assert s[i] == '/'
         offset = 1 if self.forward else -1
         i1 = i
         i += offset
-        found = False
+        found: Union[int, bool] = False
         while 0 <= i < len(s) and s[i] != '\n':
             ch = s[i]
             i2 = i - 1  # in case we have to look behind.
@@ -2285,14 +2285,14 @@ class NullObject:
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
     # Container methods..
-    def __bool__(self): return False
-    def __contains__(self, item): return False
+    def __bool__(self) -> bool: return False
+    def __contains__(self, item) -> bool: return False
     def __getitem__(self, key): raise KeyError
-    def __setitem__(self, key, val): pass
+    def __setitem__(self, key, val) -> None: pass
     def __iter__(self): return self
-    def __len__(self): return 0
+    def __len__(self) -> int: return 0
     # Iteration methods:
-    def __next__(self): raise StopIteration
+    def __next__(self) -> None: raise StopIteration
     
 
 class TracingNullObject:
@@ -2308,9 +2308,9 @@ class TracingNullObject:
                 print('='*10, 'NullObject.__init__:', id(self), tag)
     def __call__(self, *args, **kwargs):
         return self
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
-    def __str__(self):
+    def __str__(self) -> str:
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
     #
     # Attribute access...
@@ -2327,7 +2327,7 @@ class TracingNullObject:
             object.__setattr__(self, attr, val)
     #
     # All other methods...
-    def __bool__(self):
+    def __bool__(self) -> bool:
         if 0: # To do: print only once.
             suppress = ('getShortcut','on_idle', 'setItemText')
             callers = g.callers(2)
@@ -2839,7 +2839,7 @@ def listToString(obj: Any, indent='', tag=None):
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, indent='', printCaller=False, tag=None):
+def objToString(obj: Any, indent: str='', printCaller=False, tag=None):
     """Pretty print any Python object to a string."""
     # pylint: disable=undefined-loop-variable
         # Looks like a a pylint bug.
@@ -2868,7 +2868,7 @@ def objToString(obj: Any, indent='', printCaller=False, tag=None):
     elif printCaller or tag:
         prefix = g.caller() if printCaller else tag
     else:
-        prefix = None
+        prefix = ''
     if prefix:
         sep = '\n' if '\n' in s else ' '
         return f"{prefix}:{sep}{s}"
@@ -2892,7 +2892,7 @@ def run_pylint(fn, rc,
     run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
     """
     try:
-        from pylint import lint
+        from pylint import lint  #type:ignore
     except ImportError:
         g.trace('can not import pylint')
         return
@@ -3869,7 +3869,7 @@ def is_binary_string(s: str):
     # http://stackoverflow.com/questions/898669
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
-    return bool(s.translate(None, bytes(aList)))
+    return bool(s.translate(None, bytes(aList)))  # type:ignore
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel(line, delims):
     """Return True if line starts with a sentinel comment."""
@@ -4227,7 +4227,7 @@ def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=No
         unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
         # drop empty parts so "-->node name" works
     else:
-        nds = list(p.children())
+        nds = list(p.children())  # type:ignore
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order: Any = []
@@ -4247,7 +4247,7 @@ def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=No
         use_idx_mode = True  # ok to use hard/soft_idx
         target = re.sub(g_pos_pattern, "", target).replace('--%3E', '-->')
         if hard_idx:
-            if nth_sib < len(heads):
+            if nth_sib < len(heads):  # type:ignore
                 order.append(nth_sib)
         else:
             # First we try the nth node with same header
@@ -4259,7 +4259,7 @@ def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=No
             order += [n for n, s in enumerate(heads)
                         if n not in order and s == target]
             # Then position based, if requested
-            if soft_idx and nth_sib < len(heads):
+            if soft_idx and nth_sib < len(heads):  # type:ignore
                 order.append(nth_sib)
     elif hard_idx:
         pass  # hard_idx mode with no idx in unl, go with empty order list
@@ -4291,8 +4291,8 @@ def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=No
     if soft_idx and depth + 2 < len(unlList):
         aList = []
         for p in c.all_unique_positions():
-            if any(p.h.replace('--%3E', '-->') in unl for unl in unlList):
-                aList.append((p.copy(), p.get_UNL(False, False, True)))
+            if any(p.h.replace('--%3E', '-->') in unl for unl in unlList):  # type:ignore
+                aList.append((p.copy(), p.get_UNL(False, False, True)))  # type:ignore
         maxcount = 0
         singleMatch = True
         for iter_unl in aList:
@@ -4313,7 +4313,7 @@ def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=No
                 singleMatch = False
         if maxcount and singleMatch:
             maxp = p
-            maxdepth = p.level()
+            maxdepth = p.level()  # type:ignore
     return False, maxdepth, maxp
 #@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
 def recursiveUNLParts(text):
@@ -4866,13 +4866,13 @@ def skip_to_char(s: str, i: int, ch):
         return len(s), s[i:]
     return j, s[i:j]
 #@+node:ekr.20031218072017.3194: *4* g.skip_ws, skip_ws_and_nl
-def skip_ws(s: str, i: int):
+def skip_ws(s: str, i: int) -> int:
     n = len(s)
     while i < n and g.is_ws(s[i]):
         i += 1
     return i
 
-def skip_ws_and_nl(s: str, i: int):
+def skip_ws_and_nl(s: str, i: int) -> int:
     n = len(s)
     while i < n and (g.is_ws(s[i]) or g.is_nl(s, i)):
         i += 1
@@ -5161,11 +5161,11 @@ def gitDescribe(path: str=None):
     commit = commit.rstrip()
     return tag, distance, commit
 #@+node:ekr.20170414034616.6: *3* g.gitHeadPath
-def gitHeadPath(path: str):
+def gitHeadPath(path_s: str):
     """
     Compute the path to .git/HEAD given the path.
     """
-    path = Path(path)
+    path = Path(path_s)
     # #1780: Look up the directory tree, looking the .git directory.
     while os.path.exists(path):
         head = os.path.join(path, '.git', 'HEAD')
@@ -5210,14 +5210,14 @@ def gitInfo(path: str=None):
     git_dir = g.os_path_finalize_join(path, '..')
     try:
         path = g.os_path_finalize_join(git_dir, pointer)
-        with open(path) as f:
+        with open(path) as f:  # type:ignore
             s = f.read()
         commit = s.strip()[0:12]
         # shorten the hash to a unique shortname
     except IOError:
         try:
             path = g.os_path_finalize_join(git_dir, 'packed-refs')
-            with open(path) as f:
+            with open(path) as f:  # type:ignore
                 for line in f:
                     if line.strip().endswith(' ' + pointer):
                         commit = line.split()[0][0:12]
@@ -5507,15 +5507,16 @@ def flatten_list(obj: Any):
         leading = obj.get('leading') or ''
         sep = obj.get('sep') or ''
         trailing = obj.get('trailing') or ''
-        aList = obj.get('aList')
-        for i, item in enumerate(aList):
+        aList = obj.get('aList') or []
+        for i, item in enumerate(aList):  
             if leading: yield leading
             for s in flatten_list(item):
                 if indent and s.startswith('\n'):
                     yield '\n' + indent + s[1:]
                 else:
                     yield s
-            if sep and i < len(aList) - 1: yield sep
+            if sep and i < len(aList) - 1:  # type:ignore
+                yield sep
             if trailing: yield trailing
     elif isinstance(obj, (list, tuple)):
         for obj2 in obj:
@@ -5654,7 +5655,7 @@ def unCamel(s: str):
     return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
 #@+node:ekr.20190505052756.1: *4* g.checkUnicode
-checkUnicode_dict = {}
+checkUnicode_dict: Dict[str, bool] = {}
 
 def checkUnicode(s: str, encoding=None):
     """
@@ -5801,9 +5802,9 @@ def toEncodedString(s: str, encoding='utf-8', reportErrors=False):
         encoding = 'utf-8'
     # These are the only significant calls to s.encode in Leo.
     try:
-        s = s.encode(encoding, "strict")
+        s = s.encode(encoding, "strict")  # type:ignore
     except UnicodeError:
-        s = s.encode(encoding, "replace")
+        s = s.encode(encoding, "replace")  # type:ignore
         if reportErrors:
             g.error(f"Error converting {s} from unicode to {encoding} encoding")
     # Tracing these calls directly yields thousands of calls.
@@ -6305,7 +6306,7 @@ def es_exception(full=True, c: Cmdr=None, color="red"):
 def es_exception_type(c: Cmdr=None, color="red"):
     # exctype is a Exception class object; value is the error message.
     exctype, value = sys.exc_info()[:2]
-    g.es_print('', f"{exctype.__name__}, {value}", color=color)
+    g.es_print('', f"{exctype.__name__}, {value}", color=color)  # type:ignore
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -6719,7 +6720,7 @@ def init_zodb(pathToZodbStorage, verbose=True):
     if failed:
         return None
     try:
-        import ZODB
+        import ZODB  # type:ignore
     except ImportError:
         if verbose:
             g.es('g.init_zodb: can not import ZODB')
@@ -7596,11 +7597,11 @@ def toEncodedStringWithErrorCode(s: Union[bytes, str], encoding, reportErrors=Fa
     ok = True
     if g.isUnicode(s):
         try:
-            s = s.encode(encoding, "strict")
+            s = s.encode(encoding, "strict")  # type:ignore
         except UnicodeError:
-            s = s.encode(encoding, "replace")
+            s = s.encode(encoding, "replace")  # type:ignore
             if reportErrors:
-                g.error(f"Error converting {s} from unicode to {encoding} encoding")
+                g.error(f"Error converting {s} from unicode to {encoding} encoding")  # type:ignore
             ok = False
     return s, ok
 #@+node:ekr.20080919065433.1: *3* g.toUnicodeWithErrorCode (for unit testing)
@@ -7614,7 +7615,7 @@ def toUnicodeWithErrorCode(s: Union[bytes, str], encoding, reportErrors=False):
         s = str(s, encoding, 'strict')
         return s, True
     except UnicodeError:
-        s = str(s, encoding, 'replace')
+        s = str(s, encoding, 'replace')  # type:ignore
         if reportErrors:
             g.error(f"Error converting {s} from {encoding} encoding to unicode")
         return s, False
@@ -7838,7 +7839,7 @@ def handleUnl(unl, c: Cmdr):
         return c2
     return None
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
-def isValidUrl(url):
+def isValidUrl(url) -> bool:
     """Return true if url *looks* like a valid url."""
     table = (
         'file', 'ftp', 'gopher', 'hdl', 'http', 'https', 'imap',
@@ -7857,7 +7858,7 @@ def isValidUrl(url):
             return True
     return False
 #@+node:ekr.20120315062642.9744: *3* g.openUrl
-def openUrl(p: Pos):
+def openUrl(p: Pos) -> None:
     """
     Open the url of node p.
     Use the headline if it contains a valid url.
@@ -7871,7 +7872,7 @@ def openUrl(p: Pos):
                 g.handleUrl(url, c=c, p=p)
             g.doHook("@url2", c=c, p=p, url=url)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event, url=None):
+def openUrlOnClick(event: Any, url: str=None) -> Optional[str]:
     """Open the URL under the cursor.  Return it for unit testing."""
     # This can be called outside Leo's command logic, so catch all exceptions.
     try:
@@ -7880,7 +7881,7 @@ def openUrlOnClick(event, url=None):
         g.es_exception()
         return None
 #@+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(event, url=None):
+def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
     """Open the UNL or URL under the cursor.  Return it for unit testing."""
     c = getattr(event, 'c', None)
     if not c:

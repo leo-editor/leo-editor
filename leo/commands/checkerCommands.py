@@ -267,6 +267,7 @@ class MypyCommand:
         """Run mypy on one file."""
         c = self.c
         # Init.
+        g.cls()
         c.frame.log.clearLog()
         link_pattern=re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
         # Change working directory.
@@ -287,7 +288,7 @@ class MypyCommand:
                 print(f"{i:<3}", s.rstrip())
             # Create links only up to the link limit.
             if 0 < self.link_limit <= i:
-                continue
+                break  ###
             m = link_pattern.match(s)
             if not m:
                 g.es(s.strip())
