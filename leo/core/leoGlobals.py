@@ -495,7 +495,7 @@ class EmergencyDialog:
     """A class that creates an tkinter dialog with a single OK button."""
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
-    def __init__(self, title: str, message: str):
+    def __init__(self, title: str, message: str) -> None:
         """Constructor for the leoTkinterDialog class."""
         self.answer = None  # Value returned from run()
         self.title = title
@@ -1021,7 +1021,7 @@ class KeyStroke:
                     break
         return s
     #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
-    def toGuiChar(self):
+    def toGuiChar(self) -> str:
         """Replace special chars by the actual gui char."""
         # pylint: disable=undefined-loop-variable
         # looks like a pylint bug
@@ -1032,7 +1032,7 @@ class KeyStroke:
         elif s in ('.', 'period'): s = '.'
         return s
     #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar
-    def toInsertableChar(self):
+    def toInsertableChar(self) -> str:
         """Convert self to an (insertable) char."""
         # pylint: disable=len-as-condition
         s = self.s
@@ -1047,14 +1047,14 @@ class KeyStroke:
             'Tab': '\t',
         }
         if s in d:
-            return d.get(s)
+            return d.get(s)  # type:ignore
         return s if len(s) == 1 else ''
     #@-others
 
-def isStroke(obj: Any):
+def isStroke(obj: Any) -> bool:
     return isinstance(obj, KeyStroke)
 
-def isStrokeOrNone(obj: Any):
+def isStrokeOrNone(obj: Any) -> bool:
     return obj is None or isinstance(obj, KeyStroke)
 #@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
 class MatchBrackets:
@@ -1067,7 +1067,7 @@ class MatchBrackets:
     """
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
-    def __init__(self, c: Cmdr, p: Pos, language):
+    def __init__(self, c: Cmdr, p: Pos, language) -> None:
         """Ctor for MatchBrackets class."""
         self.c = c
         self.p = p.copy()
@@ -1084,7 +1084,7 @@ class MatchBrackets:
         c.user_dict.setdefault('_match_brackets', {'count': 0, 'range': (0, 0)})
     #@+node:ekr.20160121164723.1: *4* mb.bi-directional helpers
     #@+node:ekr.20160121112812.1: *5* mb.is_regex
-    def is_regex(self, s: str, i: int):
+    def is_regex(self, s: str, i: int) -> bool:
         """Return true if there is another slash on the line."""
         if self.language in ('javascript', 'perl',):
             assert s[i] == '/'
@@ -1125,7 +1125,7 @@ class MatchBrackets:
             return i1 + offset
         return found
     #@+node:ekr.20160121112303.1: *5* mb.scan_string
-    def scan_string(self, s: str, i: int):
+    def scan_string(self, s: str, i: int) -> int:
         """
         Scan the string starting at s[i] (forward or backward).
         Return the index of the next character.
@@ -1151,7 +1151,7 @@ class MatchBrackets:
             # self.oops('unmatched string')
         return i + offset
     #@+node:tbrown.20180226113621.1: *4* mb.expand_range
-    def expand_range(self, s: str, left, right, max_right, expand=False):
+    def expand_range(self, s: str, left, right, max_right, expand=False) -> Tuple[Any, Any, Any, Any]:
         """
         Find the bracket nearest the cursor searching outwards left and right.
 
@@ -1195,7 +1195,7 @@ class MatchBrackets:
             return left, right, s[right], right
         return None, None, None, None
     #@+node:ekr.20061113221414: *4* mb.find_matching_bracket
-    def find_matching_bracket(self, ch1, s: str, i: int):
+    def find_matching_bracket(self, ch1, s: str, i: int) -> Any:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
@@ -1208,7 +1208,7 @@ class MatchBrackets:
         f = self.scan if self.forward else self.scan_back
         return f(ch1, target, s, i)
     #@+node:ekr.20160121164556.1: *4* mb.scan & helpers
-    def scan(self, ch1, target, s: str, i: int):
+    def scan(self, ch1, target, s: str, i: int) -> Optional[int]:
         """Scan forward for target."""
         level = 0
         while 0 <= i < len(s):
@@ -1218,7 +1218,7 @@ class MatchBrackets:
                 # Scan to the end/beginning of the string.
                 i = self.scan_string(s, i)
             elif self.starts_comment(s, i):
-                i = self.scan_comment(s, i)
+                i = self.scan_comment(s, i)  # type:ignore
             elif ch == '/' and self.is_regex(s, i):
                 i = self.scan_regex(s, i)
             elif ch == ch1:
@@ -1235,7 +1235,7 @@ class MatchBrackets:
         # Not found
         return None
     #@+node:ekr.20160119090634.1: *5* mb.scan_comment
-    def scan_comment(self, s: str, i: int):
+    def scan_comment(self, s: str, i: int) -> Optional[int]:
         """Return the index of the character after a comment."""
         i1 = i
         start = self.start_comment if self.forward else self.end_comment
@@ -1274,7 +1274,7 @@ class MatchBrackets:
             return found
         return i
     #@+node:ekr.20160119101851.1: *5* mb.starts_comment
-    def starts_comment(self, s: str, i: int):
+    def starts_comment(self, s: str, i: int) -> bool:
         """Return True if s[i] starts a comment."""
         assert 0 <= i < len(s)
         if self.forward:
@@ -1298,7 +1298,7 @@ class MatchBrackets:
             g.match(s, i, self.end_comment)
         )
     #@+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
-    def scan_back(self, ch1, target, s: str, i: int):
+    def scan_back(self, ch1, target, s: str, i: int) -> Optional[int]:
         """Scan backwards for delim."""
         level = 0
         while i >= 0:
@@ -1325,7 +1325,7 @@ class MatchBrackets:
         # Not found
         return None
     #@+node:ekr.20160119230141.2: *5* mb.back_scan_comment
-    def back_scan_comment(self, s: str, i: int):
+    def back_scan_comment(self, s: str, i: int) -> int:
         """Return the index of the character after a comment."""
         i1 = i
         if g.match(s, i, self.end_comment):
@@ -1350,7 +1350,7 @@ class MatchBrackets:
             found = 0
         return found
     #@+node:ekr.20160119230141.4: *5* mb.ends_comment
-    def ends_comment(self, s: str, i: int):
+    def ends_comment(self, s: str, i: int) -> bool:
         """
         Return True if s[i] ends a comment. This is called while scanning
         backward, so this is a bit of a guess.
@@ -1395,13 +1395,13 @@ class MatchBrackets:
             self.end_comment and
             g.match(s, i, self.end_comment))
     #@+node:ekr.20160119104148.1: *4* mb.oops
-    def oops(self, s: str):
+    def oops(self, s: str) -> None:
         """Report an error in the match-brackets command."""
         g.es(s, color='red')
     #@+node:ekr.20160119094053.1: *4* mb.run
     #@@nobeautify
 
-    def run(self):
+    def run(self) -> None:
         """The driver for the MatchBrackets class.
 
         With no selected range: find the nearest bracket and select from
@@ -1502,7 +1502,7 @@ class PosList(list):
     #@-<< docstring for PosList >>
     #@+others
     #@+node:ekr.20140531104908.17611: *4* PosList.ctor
-    def __init__(self, c: Cmdr, aList=None):
+    def __init__(self, c: Cmdr, aList=None) -> None:
         self.c = c
         super().__init__()
         if aList is None:
@@ -1512,12 +1512,12 @@ class PosList(list):
             for p in aList:
                 self.append(p.copy())
     #@+node:ekr.20140531104908.17612: *4* PosList.dump
-    def dump(self, sort=False, verbose=False):
+    def dump(self, sort=False, verbose=False) -> str:
         if verbose:
             return g.listToString(self, sort=sort)
         return g.listToString([p.h for p in self], sort=sort)
     #@+node:ekr.20140531104908.17613: *4* PosList.select
-    def select(self, pat, regex=False, removeClones=True):
+    def select(self, pat, regex=False, removeClones=True) -> "PosList":
         """
         Return a new PosList containing all positions
         in self that match the given pattern.
@@ -1535,7 +1535,7 @@ class PosList(list):
             aList = self.removeClones(aList)
         return PosList(c, aList)
     #@+node:ekr.20140531104908.17614: *4* PosList.removeClones
-    def removeClones(self, aList):
+    def removeClones(self, aList) -> List[Pos]:
         seen = {}
         aList2: List[Pos] = []
         for p in aList:
@@ -1568,25 +1568,25 @@ class RedirectClass:
     #@+node:ekr.20031218072017.1656: *4* << RedirectClass methods >>
     #@+others
     #@+node:ekr.20041012082437: *5* RedirectClass.__init__
-    def __init__(self):
+    def __init__(self) -> None:
         self.old = None
         self.encoding = 'utf-8'  # 2019/03/29 For pdb.
     #@+node:ekr.20041012082437.1: *5* isRedirected
-    def isRedirected(self):
+    def isRedirected(self) -> bool:
         return self.old is not None
     #@+node:ekr.20041012082437.2: *5* flush
     # For LeoN: just for compatibility.
 
-    def flush(self, *args):
+    def flush(self, *args) -> None:
         return
     #@+node:ekr.20041012091252: *5* rawPrint
-    def rawPrint(self, s: str):
+    def rawPrint(self, s: str) -> None:
         if self.old:
             self.old.write(s + '\n')
         else:
             g.pr(s)
     #@+node:ekr.20041012082437.3: *5* redirect
-    def redirect(self, stdout=1):
+    def redirect(self, stdout=1) -> None:
         if g.app.batchMode:
             # Redirection is futile in batch mode.
             return
@@ -1596,15 +1596,14 @@ class RedirectClass:
             else:
                 self.old, sys.stderr = sys.stderr, self  # type:ignore
     #@+node:ekr.20041012082437.4: *5* undirect
-    def undirect(self, stdout=1):
+    def undirect(self, stdout=1) -> None:
         if self.old:
             if stdout:
                 sys.stdout, self.old = self.old, None
             else:
                 sys.stderr, self.old = self.old, None
     #@+node:ekr.20041012082437.5: *5* write
-    def write(self, s: str):
-
+    def write(self, s: str) -> None:
         if self.old:
             if app.log:
                 app.log.put(s, from_redirect=True)
@@ -1626,35 +1625,35 @@ redirectStdOutObj = RedirectClass()
 #@+node:ekr.20041012090942: *5* redirectStderr & redirectStdout
 # Redirect streams to the current log window.
 
-def redirectStderr():
+def redirectStderr() -> None:
     global redirectStdErrObj
     redirectStdErrObj.redirect(stdout=False)
 
-def redirectStdout():
+def redirectStdout() -> None:
     global redirectStdOutObj
     redirectStdOutObj.redirect()
 #@+node:ekr.20041012090942.1: *5* restoreStderr & restoreStdout
 # Restore standard streams.
 
-def restoreStderr():
+def restoreStderr() -> None:
     global redirectStdErrObj
     redirectStdErrObj.undirect(stdout=False)
 
-def restoreStdout():
+def restoreStdout() -> None:
     global redirectStdOutObj
     redirectStdOutObj.undirect()
 #@+node:ekr.20041012090942.2: *5* stdErrIsRedirected & stdOutIsRedirected
-def stdErrIsRedirected():
+def stdErrIsRedirected() -> bool:
     global redirectStdErrObj
     return redirectStdErrObj.isRedirected()
 
-def stdOutIsRedirected():
+def stdOutIsRedirected() -> bool:
     global redirectStdOutObj
     return redirectStdOutObj.isRedirected()
 #@+node:ekr.20041012090942.3: *5* rawPrint
 # Send output to original stdout.
 
-def rawPrint(s: str):
+def rawPrint(s: str) -> None:
     global redirectStdOutObj
     redirectStdOutObj.rawPrint(s)
 #@-others
@@ -1724,17 +1723,17 @@ class SherlockTracer:
             # pylint: disable=no-member
             QtCore.pyqtRemoveInputHook()
     #@+node:ekr.20140326100337.16844: *4* __call__
-    def __call__(self, frame, event, arg):
+    def __call__(self, frame, event, arg) -> Any:
         """Exists so that self.dispatch can return self."""
         return self.dispatch(frame, event, arg)
     #@+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
-    def bad_pattern(self, pattern):
+    def bad_pattern(self, pattern: Any) -> None:
         """Report a bad Sherlock pattern."""
         if pattern not in self.bad_patterns:
             self.bad_patterns.append(pattern)
             print(f"\nignoring bad pattern: {pattern}\n")
     #@+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
-    def check_pattern(self, pattern):
+    def check_pattern(self, pattern: str) -> bool:
         """Give an error and return False for an invalid pattern."""
         try:
             for prefix in ('+:', '-:', '+', '-'):
@@ -1747,7 +1746,7 @@ class SherlockTracer:
             self.bad_pattern(pattern)
             return False
     #@+node:ekr.20121128031949.12609: *4* sherlock.dispatch
-    def dispatch(self, frame, event, arg):
+    def dispatch(self, frame, event, arg) -> Any:
         """The dispatch method."""
         if event == 'call':
             self.do_call(frame, arg)
@@ -1758,7 +1757,7 @@ class SherlockTracer:
         # Queue the SherlockTracer instance again.
         return self
     #@+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
-    def do_call(self, frame, unused_arg):
+    def do_call(self, frame, unused_arg) -> None:
         """Trace through a function call."""
         frame1 = frame
         code = frame.f_code
@@ -1786,7 +1785,7 @@ class SherlockTracer:
         d[full_name] = 1 + d.get(full_name, 0)
         self.stats[file_name] = d
     #@+node:ekr.20130111185820.10194: *5* sherlock.get_args
-    def get_args(self, frame):
+    def get_args(self, frame) -> str:
         """Return name=val for each arg in the function call."""
         code = frame.f_code
         locals_ = frame.f_locals
@@ -1812,7 +1811,7 @@ class SherlockTracer:
     #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
     bad_fns: List[str] = []
 
-    def do_line(self, frame, arg):
+    def do_line(self, frame, arg) -> None:
         """print each line of enabled functions."""
         if 1:
             return
@@ -1868,7 +1867,7 @@ class SherlockTracer:
                 ret = self.format_ret(arg)
             print(f"{path}{dots}-{full_name}{ret}")
     #@+node:ekr.20130111120935.10192: *5* sherlock.format_ret
-    def format_ret(self, arg):
+    def format_ret(self, arg: Any) -> str:
         """Format arg, the value returned by a "return" statement."""
         try:
             if isinstance(arg, types.GeneratorType):
@@ -1887,11 +1886,11 @@ class SherlockTracer:
                 ret = '' if arg is None else repr(arg)
         except Exception:
             exctype, value = sys.exc_info()[:2]
-            s = f"<**exception: {exctype.__name__}, {value} arg: {arg !r}**>"
+            s = f"<**exception: {exctype.__name__}, {value} arg: {arg !r}**>"  # type:ignore
             ret = f" ->\n    {s}" if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
     #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
-    def fn_is_enabled(self, func, patterns):
+    def fn_is_enabled(self, func, patterns) -> bool:
         """Return True if tracing for the given function is enabled."""
         if func in self.ignored_functions:
             return False
@@ -1938,7 +1937,7 @@ class SherlockTracer:
             self.bad_pattern(pattern)
             return False
     #@+node:ekr.20130112093655.10195: *4* get_full_name
-    def get_full_name(self, locals_, name):
+    def get_full_name(self, locals_, name) -> str:
         """Return class_name::name if possible."""
         full_name = name
         try:
@@ -1952,7 +1951,7 @@ class SherlockTracer:
     ignored_files: List[str] = []  # List of files.
     ignored_functions: List[str] = []  # List of files.
 
-    def is_enabled(self, file_name, function_name, patterns=None):
+    def is_enabled(self, file_name, function_name, patterns=None) -> bool:
         """Return True if tracing for function_name in the given file is enabled."""
         #
         # New in Leo 6.3. Never trace through some files.
@@ -2023,7 +2022,7 @@ class SherlockTracer:
                 self.bad_pattern(pattern)
         return enabled
     #@+node:ekr.20121128111829.12182: *4* print_stats
-    def print_stats(self, patterns=None):
+    def print_stats(self, patterns=None) -> None:
         """Print all accumulated statisitics."""
         print('\nSherlock statistics...')
         if not patterns: patterns = ['+.*', '+:.*',]
@@ -2044,7 +2043,7 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12614: *4* run
     # Modified from pdb.Pdb.set_trace.
 
-    def run(self, frame=None):
+    def run(self, frame=None) -> None:
         """Trace from the given frame or the caller's frame."""
         print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
@@ -2057,13 +2056,13 @@ class SherlockTracer:
         # Pass self to sys.settrace to give easy access to all methods.
         sys.settrace(self)
     #@+node:ekr.20140322090829.16834: *4* push & pop
-    def push(self, patterns):
+    def push(self, patterns) -> None:
         """Push the old patterns and set the new."""
         self.pattern_stack.append(self.patterns)
         self.set_patterns(patterns)
         print(f"SherlockTracer.push: {self.patterns}")
 
-    def pop(self):
+    def pop(self) -> None:
         """Restore the pushed patterns."""
         if self.pattern_stack:
             self.patterns = self.pattern_stack.pop()
@@ -2071,11 +2070,11 @@ class SherlockTracer:
         else:
             print('SherlockTracer.pop: pattern stack underflow')
     #@+node:ekr.20140326100337.16845: *4* set_patterns
-    def set_patterns(self, patterns):
+    def set_patterns(self, patterns) -> None:
         """Set the patterns in effect."""
         self.patterns = [z for z in patterns if self.check_pattern(z)]
     #@+node:ekr.20140322090829.16831: *4* show
-    def show(self, item):
+    def show(self, item) -> str:
         """return the best representation of item."""
         if not item:
             return repr(item)
@@ -2088,7 +2087,7 @@ class SherlockTracer:
             return s[:17] + '...'
         return repr(item)
     #@+node:ekr.20121128093229.12616: *4* stop
-    def stop(self):
+    def stop(self) -> None:
         """Stop all tracing."""
         sys.settrace(None)
     #@-others
@@ -2112,19 +2111,19 @@ class TkIDDialog(EmergencyDialog):
 
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
-    def onKey(self, event):
+    def onKey(self, event) -> None:
         """Handle Key events in askOk dialogs."""
         if event.char in '\n\r':
             self.okButton()
     #@+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
-    def createTopFrame(self):
+    def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
         import tkinter as Tk
-        self.root = Tk.Tk()
-        self.top = Tk.Toplevel(self.root)
+        self.root = Tk.Tk()  # type:ignore
+        self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
         self.root.withdraw()
-        self.frame = Tk.Frame(self.top)
+        self.frame = Tk.Frame(self.top)  # type:ignore
         self.frame.pack(side="top", expand=1, fill="both")
         label = Tk.Label(self.frame, text=self.message, bg='white')
         label.pack(pady=10)
@@ -2132,7 +2131,7 @@ class TkIDDialog(EmergencyDialog):
         self.entry.pack()
         self.entry.focus_set()
     #@+node:ekr.20191013150158.1: *4* leo_id_dialog.okButton
-    def okButton(self):
+    def okButton(self) -> None:
         """Do default click action in ok button."""
         self.val = self.entry.get()
             # Return is not possible.
@@ -2149,21 +2148,21 @@ class Tracer:
     """
     #@+others
     #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
-    def __init__(self, limit=0, trace=False, verbose=False):
-        self.callDict = {}
+    def __init__(self, limit=0, trace=False, verbose=False) -> None:
+        self.callDict: Dict[str, int] = {}
             # Keys are function names.
             # Values are the number of times the function was called by the caller.
-        self.calledDict = {}
+        self.calledDict: Dict[str, int] = {}
             # Keys are function names.
             # Values are the total number of times the function was called.
         self.count = 0
         self.inited = False
         self.limit = limit  # 0: no limit, otherwise, limit trace to n entries deep.
-        self.stack = []
+        self.stack: List[str] = []
         self.trace = trace
         self.verbose = verbose  # True: print returns as well as calls.
     #@+node:ekr.20080531075119.3: *4* computeName
-    def computeName(self, frame):
+    def computeName(self, frame) -> str:
         if not frame: return ''
         code = frame.f_code; result = []
         module = inspect.getmodule(code)
@@ -2185,7 +2184,7 @@ class Tracer:
         result.append(code.co_name)
         return '.'.join(result)
     #@+node:ekr.20080531075119.4: *4* report
-    def report(self):
+    def report(self) -> None:
         if 0:
             g.pr('\nstack')
             for z in self.stack:
@@ -2196,14 +2195,14 @@ class Tracer:
             g.pr(f"{self.calledDict.get(key,0):d}", key)
             # Print the called functions.
             d = self.callDict.get(key)
-            for key2 in sorted(d):
-                g.pr(f"{d.get(key2):8d}", key2)
+            for key2 in sorted(d):  # type:ignore
+                g.pr(f"{d.get(key2):8d}", key2)  # type:ignore
     #@+node:ekr.20080531075119.5: *4* stop
-    def stop(self):
+    def stop(self) -> None:
         sys.settrace(None)
         self.report()
     #@+node:ekr.20080531075119.6: *4* tracer
-    def tracer(self, frame, event, arg):
+    def tracer(self, frame, event, arg) -> Optional[Callable]:
         """A function to be passed to sys.settrace."""
         n = len(self.stack)
         if event == 'return':
@@ -2254,7 +2253,7 @@ class Tracer:
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
     #@-others
 
-def startTracer(limit=0, trace=False, verbose=False):
+def startTracer(limit=0, trace=False, verbose=False) -> Callable:
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
