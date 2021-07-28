@@ -31681,8 +31681,8 @@ PR: https://github.com/leo-editor/leo-editor/pull/1948</t>
 <t tx="ekr.20210710040931.1">This script creates stub (.pyi) files from def lines containing annotations,
 then removes the annotations.
 
-This allows you to add annotations directly in your .py files, and then
-move most of the clutter to stub files.
+The wax_off script allows you to add annotations directly in your .py
+files, and then move most of the clutter to stub files.
 
 Imo, the wax_off script makes my make_stub_files project obsolete.</t>
 <t tx="ekr.20210710163244.2">https://github.com/leo-editor/leo-editor/issues/2023</t>
