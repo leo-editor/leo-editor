@@ -245,8 +245,8 @@ class MypyCommand:
     def __init__(self, c):
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.args = c.config.getData('mypy-arguments') or []
-        self.link_limit = c.config.getInt('mypy-link-limit') or 0
+        self.args = None  # Set in check_file.
+        self.link_limit  = None  # Set in check_file.
         self.unknown_path_names = []
 
     #@+others
@@ -266,6 +266,9 @@ class MypyCommand:
     def check_file(self, fn):
         """Run mypy on one file."""
         c = self.c
+        # Always reload settings.
+        self.args = c.config.getData('mypy-arguments') or []
+        self.link_limit = c.config.getInt('mypy-link-limit') or 0
         # Init.
         g.cls()
         c.frame.log.clearLog()
