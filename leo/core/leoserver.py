@@ -578,7 +578,7 @@ class LeoServer:
                 key = i_key
         if key:
             try:
-                del d [index]
+                del d [key]
             except Exception as e:
                 raise ServerError(f"{tag}: exception removing button {index!r}: {e}")
         else:
