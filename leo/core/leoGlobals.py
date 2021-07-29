@@ -2279,7 +2279,7 @@ tracing_signatures = {}
 
 class NullObject:
     """An object that does nothing, and does it very well."""
-    def __init__(self, ivars: List[str]=None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, ivars: Union[str,List[str]]=None, *args: Any, **kwargs: Any) -> None:
         if isinstance(ivars, str):
             ivars = [ivars]
         tracing_vars [id(self)] = ivars or []
@@ -2319,7 +2319,7 @@ class NullObject:
 
 class TracingNullObject:
     """Tracing NullObject."""
-    def __init__(self, tag: str, ivars: List[Any]=None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, tag: str, ivars: Union[str,List[str]]=None, *args: Any, **kwargs: Any) -> None:
         tracing_tags [id(self)] = tag
         if isinstance(ivars, str):
             ivars = [ivars]
@@ -3892,7 +3892,7 @@ def is_binary_string(s: str) -> bool:
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
     return bool(s.translate(None, bytes(aList)))  # type:ignore
 #@+node:EKR.20040504154039: *3* g.is_sentinel
-def is_sentinel(line: str, delims: Tuple[Any, Any, Any]) -> bool:
+def is_sentinel(line: str, delims: Sequence) -> bool:
     """Return True if line starts with a sentinel comment."""
     delim1, delim2, delim3 = delims
     line = line.lstrip()
@@ -4747,7 +4747,7 @@ def match_word(s: str, i: int, pattern: str) -> bool:
     ch = s[i + j]
     return not g.isWordChar(ch)
 
-def match_words(s: str, i: int, patterns: List[Any]) -> bool:
+def match_words(s: str, i: int, patterns: Sequence[str]) -> bool:
     return any(g.match_word(s, i, pattern) for pattern in patterns)
 #@+node:ekr.20031218072017.3185: *4* g.skip_blank_lines
 # This routine differs from skip_ws_and_nl in that
@@ -5320,11 +5320,11 @@ def loadOnePlugin(pluginName: str, verbose: bool=False) -> bool:
     pc = g.app.pluginsController
     return pc.loadOnePlugin(pluginName, verbose=verbose)
 
-def registerExclusiveHandler(tags: List[Any], fn: str) -> bool:
+def registerExclusiveHandler(tags: Union[str, Sequence[str]], fn: Callable) -> bool:
     pc = g.app.pluginsController
     return pc.registerExclusiveHandler(tags, fn)
 
-def registerHandler(tags: List[Any], fn: str) -> bool:
+def registerHandler(tags: Union[str, Sequence[str]], fn: Callable) -> bool:
     pc = g.app.pluginsController
     return pc.registerHandler(tags, fn)
 
@@ -5336,7 +5336,7 @@ def unloadOnePlugin(moduleOrFileName: str, verbose: bool=False) -> bool:
     pc = g.app.pluginsController
     return pc.unloadOnePlugin(moduleOrFileName, verbose)
 
-def unregisterHandler(tags: List[Any], fn: str) -> bool:
+def unregisterHandler(tags: Union[str, Sequence[str]], fn: Callable) -> bool:
     pc = g.app.pluginsController
     return pc.unregisterHandler(tags, fn)
 #@+node:ekr.20100910075900.5952: *4* g.Information
@@ -6640,7 +6640,7 @@ def translateString(s: str) -> str:
 tr = translateString
 #@+node:EKR.20040612114220: ** g.Miscellaneous
 #@+node:ekr.20120928142052.10116: *3* g.actualColor
-def actualColor(color: str) -> str:
+def actualColor(color: Any) -> str:
     """Return the actual color corresponding to the requested color."""
     c = g.app.log and g.app.log.c
     # Careful: c.config may not yet exist.
@@ -7260,7 +7260,7 @@ def exec_file(path: str, d: Dict[str, Any], script: str=None) -> None:
             script = f.read()
     exec(compile(script, path, 'exec'), d)
 #@+node:ekr.20131016032805.16721: *3* g.execute_shell_commands
-def execute_shell_commands(commands: List[str], trace: bool=False) -> None:
+def execute_shell_commands(commands: Union[str,List[str]], trace: bool=False) -> None:
     """
     Execute each shell command in a separate process.
     Wait for each command to complete, except those starting with '&'

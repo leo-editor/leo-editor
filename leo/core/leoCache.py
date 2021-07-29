@@ -553,8 +553,8 @@ class SqlitePickleShare:
             self.conn.execute(
                 '''replace into cachevalues(key, data) values(?,?);''',
                 (key, data))
-        except sqlite3.OperationalError as e:
-            g.es_exception(e)
+        except sqlite3.OperationalError:
+            g.es_exception()
     #@+node:vitalije.20170716201700.10: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
 
