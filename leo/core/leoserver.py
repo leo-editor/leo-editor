@@ -368,7 +368,7 @@ class LeoServer:
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
         self.g = g = self.bridge.globals()  # Also sets global 'g' object
-        g.in_vs_code = True  # #2098.
+        g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
         self.leoServerConfig = None
         # * Intercept Log Pane output: Sends to client's log pane
@@ -578,7 +578,7 @@ class LeoServer:
                 key = i_key
         if key:
             try:
-                del d [index]
+                del d [key]
             except Exception as e:
                 raise ServerError(f"{tag}: exception removing button {index!r}: {e}")
         else:
@@ -2216,7 +2216,7 @@ class LeoServer:
             'vs-dump',
             'vs-reset',
             'vs-update',
-            # vs code's text editing commands should cover all of these...
+            # Connected client's text editing commands should cover all of these...
             'add-comments',
             'add-space-to-lines',
             'add-tab-to-lines',
