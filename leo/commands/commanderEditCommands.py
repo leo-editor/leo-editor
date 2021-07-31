@@ -996,17 +996,18 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
                 indents[1] = i
                 leading_ws[1] = ' ' * i
     # Wrap the lines, decreasing the page width by indent.
-    result = g.wrap_lines(lines,
+    result_list = g.wrap_lines(lines,
         pageWidth - indents[1],
         pageWidth - indents[0])
     # prefix with the leading whitespace, if any
     paddedResult = []
-    paddedResult.append(leading_ws[0] + result[0])
-    for line in result[1:]:
+    paddedResult.append(leading_ws[0] + result_list[0])
+    for line in result_list[1:]:
         paddedResult.append(leading_ws[1] + line)
     # Convert the result to a string.
     result = '\n'.join(paddedResult)
-    if trailingNL: result = result + '\n'
+    if trailingNL:
+        result = result + '\n'
     return result
 #@+node:ekr.20171123135625.44: *3* function: startsParagraph
 def startsParagraph(s):

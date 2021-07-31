@@ -1074,8 +1074,6 @@ class TestManager:
         c.selectPosition(work)
         work.b = before.b
         w.setSelectionRange(sel1[0], sel1[1], insert=sel1[1])
-        ### g.trace(commandName, sel1[0], sel1[1])
-        ### g.printObj(g.splitLines(w.getSelectedText()))
         c.k.simulateCommand(commandName)
         s1 = work.b; s2 = after.b
         assert s1 == s2, (
@@ -1086,9 +1084,11 @@ class TestManager:
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
         assert len(sel2) == 2, f"Bad headline index.  Expected index,index.  got: {sel2}"
-        i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
+        i, j = sel2  # type:ignore
+        sel2 = w.toPythonIndex(i), w.toPythonIndex(j)  # type:ignore
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
-        i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
+        i, j = sel3  # type:ignore
+        sel3 = w.toPythonIndex(i), w.toPythonIndex(j)  # type:ignore
         if 0:  # Be more permissive.
             if sel2 != sel3:
                 print(f"\n{p.h}\nexpected: {sel2_orig} = {sel2}, got: {sel3}")

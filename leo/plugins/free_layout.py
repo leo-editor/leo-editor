@@ -165,7 +165,7 @@ class FreeLayoutController:
             settings = g.findNodeAnywhere(c, "@settings")
             if not settings:
                 settings = c.rootPosition().insertAfter()
-                settings.h = "@settings"
+                settings.h = "@settings"  # type:ignore
             nd = settings.insertAsNthChild(0)
         nd.h = "@data free-layout-layout"
         nd.b = json.dumps(layout, indent=4)

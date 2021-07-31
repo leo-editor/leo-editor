@@ -359,7 +359,7 @@ class RstCommands:
             return True
         if c and c.config and c.config.create_nonexistent_directories:
             theDir = c.expand_path_expression(theDir)
-            ok = g.makeAllNonExistentDirectories(theDir)
+            ok = g.makeAllNonExistentDirectories(theDir)  # type:ignore
             if not ok:
                 g.error('did not create:', theDir)
         return ok
@@ -735,8 +735,8 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         source_p = g.findNodeInTree(c, p, 'source')
         # source_s1 = source_p.firstChild().b
         expected_p = g.findNodeInTree(c, p, 'expected')
-        expected_source = expected_p.firstChild().b
-        root = source_p.firstChild()
+        expected_source = expected_p.firstChild().b  # type:ignore
+        root = source_p.firstChild()  # type:ignore
         rc.http_server_support = True  # Override setting for testing.
         #
         # Compute the result.

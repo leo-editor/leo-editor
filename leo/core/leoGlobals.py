@@ -2122,11 +2122,11 @@ class TkIDDialog(EmergencyDialog):
     def createTopFrame(self):
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
         import tkinter as Tk
-        self.root = Tk.Tk()
-        self.top = Tk.Toplevel(self.root)
+        self.root = Tk.Tk()  # type:ignore
+        self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
         self.root.withdraw()
-        self.frame = Tk.Frame(self.top)
+        self.frame = Tk.Frame(self.top)  # type:ignore
         self.frame.pack(side="top", expand=1, fill="both")
         label = Tk.Label(self.frame, text=self.message, bg='white')
         label.pack(pady=10)
@@ -6378,7 +6378,7 @@ def goto_last_exception(c: Cmdr):
         else:
             for p in c.all_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
-                    c.goToLineNumber(line_number, p)
+                    c.goToLineNumber(line_number)  # 2021/07/28: fixed by mypy.
                     return
     else:
         g.trace('No previous exception')
@@ -7445,7 +7445,7 @@ def composeScript(c: Cmdr, p: Pos, s: str, forcePythonSentinels=True, useSentine
             # s = g.insertCodingLine(encoding,s)
     if not s.strip():
         return ''
-    at = c.atFileCommands
+    at = c.atFileCommands  # type:ignore
     old_in_script = g.app.inScript
     try:
         # #1297: set inScript flags.
