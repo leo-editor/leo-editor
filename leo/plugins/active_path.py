@@ -363,10 +363,9 @@ def openFile(c,parent,d, autoload=False):
     oversize = os.stat(path).st_size > c.__active_path['max_size']
 
     if not autoload:
-        ### Probable bug.
-        binary_open = g.os_path_splitext(path)[-1].lower() in (
-            c.config.getData('active_path_bin_open') or '')
-
+        junk, ext = g.os_path_splitext(path)
+        extensions = c.config.getData('active_path_bin_open') or []  # #2103
+        binary_open = ext in extensions
         if not binary_open:
             try:
                 start = open(path).read(100)
