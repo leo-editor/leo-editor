@@ -240,10 +240,13 @@ class PersistenceDataController:
         if not self.at_persistence:
             return None
         p = self.has_at_data_node(root)
-        if not p:
-            p = self.at_persistence.insertAsLastChild()
-            p.h = '@data:' + root.h
-            p.b = self.at_data_body(root)
+        if p:
+            return p
+        p = self.at_persistence.insertAsLastChild()
+        if not p: # #2103
+            return None
+        p.h = '@data:' + root.h
+        p.b = self.at_data_body(root)
         return p
     #@+node:ekr.20140711111623.17857: *5* pd.find_at_gnxs_node
     def find_at_gnxs_node(self, root):
@@ -256,9 +259,11 @@ class PersistenceDataController:
             return None
         data = self.find_at_data_node(root)
         p = g.findNodeInTree(self.c, data, h)
-        if not p:
-            p = data.insertAsLastChild()
-            p.h = h  # type:ignore
+        if p:
+            return p
+        p = data.insertAsLastChild()
+        if p:  # #2103
+            p.h = h
         return p
     #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
     def find_at_persistence_node(self):
@@ -267,16 +272,18 @@ class PersistenceDataController:
         If it does not exist, create it as the *last* top-level node,
         so that no existing positions become invalid.
         """
-        # New in Leo 5.1: Leo never creates the @persistence node automatically.
         c, h = self.c, '@persistence'
         p = g.findNodeAnywhere(c, h)
-        if not p and c.config.getBool('create-at-persistence-nodes-automatically'):
+        if p:
+            return p
+        if c.config.getBool('create-at-persistence-nodes-automatically'):
             last = c.rootPosition()
             while last.hasNext():
                 last.moveToNext()
             p = last.insertAfter()
-            p.h = h  # type:ignore
-            g.es_print(f"created {h} node", color='red')
+            if p:  # #2103
+                p.h = h
+                g.es_print(f"created {h} node", color='red')
         return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
     def find_at_uas_node(self, root):
@@ -289,9 +296,11 @@ class PersistenceDataController:
             return None
         auto_view = self.find_at_data_node(root)
         p = g.findNodeInTree(self.c, auto_view, h)
-        if not p:
-            p = auto_view.insertAsLastChild()
-            p.h = h  # type:ignore
+        if p:
+            return p
+        p = auto_view.insertAsLastChild()
+        if p:  # #2103
+            p.h = h
         return p
     #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl & helpers
     def find_position_for_relative_unl(self, root, unl):
