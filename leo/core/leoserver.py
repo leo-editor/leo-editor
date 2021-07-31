@@ -17,9 +17,14 @@ import json
 import os
 import sys
 import time
+from typing import Any, Dict, List
 import unittest
 # Third-party.
 import websockets
+try:
+    import tkinter as Tk
+except Exception:
+    Tk = None
 # Make sure leo-editor folder is on sys.path.
 core_dir = os.path.dirname(__file__)
 leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
@@ -32,6 +37,11 @@ from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 from leo.core import leoserver
+# Support for server_dialog.
+from leo.core.leoQt import Qt  # Qt is None if Qt is not installed.
+### from leo.core.leoQt import isQt6, QtWidgets
+### from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
+### from leo.core.leoQt import Shadow, Shape, StandardButton, Weight, WindowType
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 # For unit tests.
@@ -2919,6 +2929,108 @@ class LeoServer:
                 print(message)
                 self._dump_position(p)
                 raise ServerError(message)
+    #@+node:ekr.20210731141550.1: *4* server._dialog & inner helper classes
+    def dialog(self, files, message, title):
+        """
+        Raise a dialog with the given message and title.
+        
+        Prefer a Qt dialog to a Tk dialog.
+        """
+        ### c = self.c
+        ### directory = g.init_dialog_folder(c, c.p, use_at_path=True) if c else None
+        dialog = self.QtDialog() if Qt else self.TkDialog()
+        for filename in files:
+            result = dialog.run(message, title)
+            if result:
+                pass
+    #@+node:ekr.20210731144449.1: *5* class QtDialog
+    class QtDialog:
+        """To do"""
+        
+        def run(self, message, title):
+            pass  ###
+    #@+node:ekr.20210731144047.1: *5* class TkDialog
+    class TkDialog:
+        """A class that creates an tkinter dialog for leoserver.py."""
+        #@+others
+        #@+node:ekr.20210731144047.2: *6* TkDialog.__init__
+        def __init__(self, title: str, message: str):
+            """Constructor for the leoTkinterDialog class."""
+            self.answer = None  # Value returned from run()
+            self.title = title
+            self.message = message
+            self.buttonsFrame = None  # Frame to hold typical dialog buttons.
+            self.defaultButtonCommand = None
+                # Command to call when user closes the window
+                # by clicking the close box.
+            self.frame = None  # The outermost frame.
+            self.root = None  # Created in createTopFrame.
+            self.top = None  # The toplevel Tk widget.
+            self.createTopFrame()
+            buttons = [{
+                "text": "OK",
+                "command": self.okButton,
+                "default": True,
+            }]
+            self.createButtons(buttons)
+            self.top.bind("<Key>", self.onKey)
+        #@+node:ekr.20210731144047.3: *6* TkDialog.createButtons
+        def createButtons(self, buttons: List[Dict[str, Any]]) -> List[Any]:
+            """Create a row of buttons.
+
+            buttons is a list of dictionaries containing
+            the properties of each button.
+            """
+            import tkinter as Tk
+            assert(self.frame)
+            self.buttonsFrame = f = Tk.Frame(self.top)
+            f.pack(side="top", padx=30)
+            # Buttons is a list of dictionaries, with an empty dictionary
+            # at the end if there is only one entry.
+            buttonList = []
+            for d in buttons:
+                text = d.get("text", "<missing button name>")
+                isDefault = d.get("default", False)
+                underline = d.get("underline", 0)
+                command = d.get("command", None)
+                bd = 4 if isDefault else 2
+                b = Tk.Button(f, width=6, text=text, bd=bd,
+                    underline=underline, command=command)
+                b.pack(side="left", padx=5, pady=10)
+                buttonList.append(b)
+                if isDefault and command:
+                    self.defaultButtonCommand = command
+            return buttonList
+        #@+node:ekr.20210731144047.4: *6* TkDialog.createTopFrame
+        def createTopFrame(self) -> None:
+            """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+            import tkinter as Tk
+            self.root = Tk.Tk()  # type:ignore
+            self.top = Tk.Toplevel(self.root)  # type:ignore
+            self.top.title(self.title)
+            self.root.withdraw()
+            self.frame = Tk.Frame(self.top)  # type:ignore
+            self.frame.pack(side="top", expand=1, fill="both")
+            label = Tk.Label(self.frame, text=self.message, bg='white')
+            label.pack(pady=10)
+        #@+node:ekr.20210731144047.5: *6* TkDialog.okButton
+        def okButton(self) -> None:
+            """Do default click action in ok button."""
+            self.top.destroy()
+            self.top = None
+        #@+node:ekr.20210731144047.6: *6* TkDialog.onKey
+        def onKey(self, event: Any) -> None:
+            """Handle Key events in askOk dialogs."""
+            self.okButton()
+        #@+node:ekr.20210731144047.7: *6* TkDialog.run
+        def run(self, message, title):
+            """Run the modal dialog."""
+            # Suppress f-stringify.
+            self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+            self.top.lift()
+            self.top.grab_set()  # Make the dialog a modal dialog.
+            self.root.wait_window(self.top)
+        #@-others
     #@+node:felix.20210621233316.84: *4* server._do_leo_command_by_name
     def _do_leo_command_by_name(self, command_name, param):
         """
