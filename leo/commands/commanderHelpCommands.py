@@ -210,7 +210,7 @@ def createMyLeoSettings(c):
     leosettings = g.openWithFileName(fileName, old_c=c)
     enabledplugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
     if not enabledplugins:
-        return
+        return None
     enabledplugins = enabledplugins.b
     leosettings.close()
     # now create "~/.leo/myLeoSettings.leo"
