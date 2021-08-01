@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 14 July 2021
-:Version: 1.6
+:Date: 1 Aug 2021
+:Version: 1.7
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -867,8 +867,12 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.stacked_widget.setCurrentIndex(self.render_kind)
 
         if self.render_kind == BROWSER:
-            text = self.editor.document().toRawText()
-            html = self.render_rst(text)
+            #text = self.editor.document().toRawText()
+            text = self.editor.document().toPlainText()
+            if text[0] == '<':
+                html = text
+            else:
+                html = self.render_rst(text)
             self.browser.setHtml(html)
             if self.copy_html:
                 copy2clip(html)
