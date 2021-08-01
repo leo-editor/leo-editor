@@ -584,6 +584,10 @@
 <v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
 </v>
+<v t="ekr.20210728045642.1"><vh>mypy settings</vh>
+<v t="ekr.20210728045723.1"><vh>@data mypy-arguments</vh></v>
+<v t="ekr.20210728045750.1"><vh>@int mypy-link-limit = 0</vh></v>
+</v>
 <v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
@@ -646,7 +650,7 @@
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
-<v t="ekr.20181018113730.1"><vh>@string external-editor</vh></v>
+<v t="ekr.20181018113730.1"><vh>@string external-editor = None</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
@@ -1028,7 +1032,7 @@
 <v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
 </v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
-<v t="ekr.20131213135427.21842"><vh>@item check-derived-file</vh></v>
+<v t="ekr.20131213135427.21842"><vh>@@@item check-derived-file</vh></v>
 <v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
@@ -2305,11 +2309,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20071213060239"></v>
-<v t="ekr.20210412113510.1"></v>
-<v t="ekr.20210530064911.1"></v>
-<v t="ekr.20210530064922.1"></v>
-<v t="ekr.20070925144552"></v>
+<v t="ekr.20210728045642.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5083,7 +5083,7 @@ Controller(c).run()
         elif ch == '#':
             i = g.skip_to_end_of_line(s, i)
         elif ch in ('"', "'"):
-            i = g.skip_python_string(s, i, verbose=False)
+            i = g.skip_python_string(s, i)
         elif ch == '_' or ch.isalpha():
             j = g.skip_id(s, i)
             kind = s[i: j]
@@ -9719,7 +9719,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 Node = Any
 </t>
-<t tx="ekr.20160127043440.1">For use by make-stub-files command.</t>
+<t tx="ekr.20160127043440.1"></t>
 <t tx="ekr.20160127043520.1">AstFormatter.*: str
 Pattern.all_matches: Sequence
 Pattern.full_balanced_match: Optional[int]
@@ -11247,7 +11247,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
 <t tx="ekr.20181018113502.1"></t>
 <t tx="ekr.20181018113612.1"></t>
 <t tx="ekr.20181018113656.1"></t>
-<t tx="ekr.20181018113730.1"></t>
+<t tx="ekr.20181018113730.1"># Name of external editor.</t>
 <t tx="ekr.20181018113812.1">
 </t>
 <t tx="ekr.20181018113813.1"></t>
@@ -11640,6 +11640,13 @@ rust: rustc
 go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
+<t tx="ekr.20210728045642.1"></t>
+<t tx="ekr.20210728045723.1"># Arguments to mypy.api, excluding the file name.
+
+# --disable-error-code=attr-defined
+# --disallow-untyped-defs
+# --follow-imports=skip</t>
+<t tx="ekr.20210728045750.1"># 0 means no limit.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12287,11 +12294,14 @@ a single @data contextmenu_commands node. </t>
 
 undo Undo
 redo Redo
--
-copy-text Copy Text
-cut-text Cut Text
-paste-text Paste Text
-select-all Select All Text
+
+# EKR: I highly recommend *not* adding the following text-related items.
+#      These popup commands do not work in all of Leo's text panes!
+    # -
+    # copy-text Copy Text
+    # cut-text Cut Text
+    # paste-text Paste Text
+    # select-all Select All Text
 -
 copy-node Copy Node
 cut-node Cut Node

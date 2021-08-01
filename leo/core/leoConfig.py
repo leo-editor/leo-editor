@@ -2089,7 +2089,7 @@ class LocalConfigManager:
             key = c.frame.menu.canonicalizeMenuName(commandName)
             key = key.replace('&', '')  # Allow '&' in names.
             aList = d.get(commandName, [])
-            if aList:  # A list of g.BindingIndo objects.
+            if aList:  # A list of g.BindingInfo objects.
                 # It's important to filter empty strokes here.
                 aList = [z for z in aList
                     if z.stroke and z.stroke.lower() != 'none']
@@ -2299,9 +2299,9 @@ def parseFont(b):
         elif name.endswith('_size'):
             size = line[i + 1 :].strip()
             try:
-                size = float(size)
+                size = float(size)  # type:ignore
             except ValueError:
-                size = 12
+                size = 12  # type:ignore
         elif name.endswith('_slant'):
             slant = line[i + 1 :].strip()
         if settings_name is None and name.endswith(

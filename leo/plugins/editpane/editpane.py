@@ -15,7 +15,7 @@ except Exception:
     # but not need to stop if it doesn't work
     pass
 from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst
-from leo.core.leoQt import QAction, Orientation, Policy
+from leo.core.leoQt import QAction, ContextMenuPolicy, Orientation, Policy
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if QtCore is not None:
@@ -289,7 +289,7 @@ class LeoEditPane(QtWidgets.QWidget):
         # mode menu
         btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
         self.control.layout().addWidget(btn)
-        btn.setContextMenuPolicy(QtConst.CustomContextMenu)
+        btn.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         btn.customContextMenuRequested.connect(  # right click
             lambda pnt: self.mode_menu())
         btn.clicked.connect(  # or left click
@@ -298,7 +298,7 @@ class LeoEditPane(QtWidgets.QWidget):
         # misc. menu
         btn = self.control_menu_button = QtWidgets.QPushButton("More\u25BE", self)
         self.control.layout().addWidget(btn)
-        btn.setContextMenuPolicy(QtConst.CustomContextMenu)
+        btn.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         btn.customContextMenuRequested.connect(  # right click
             lambda pnt: self.misc_menu())
         btn.clicked.connect(  # or left click

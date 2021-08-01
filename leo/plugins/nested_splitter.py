@@ -2,7 +2,7 @@
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, Qt, QtCore, QtConst, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
 # pylint: disable=cell-var-from-loop
 #@+others
@@ -79,7 +79,7 @@ class NestedSplitterChoice(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         button = QtWidgets.QPushButton("Action", self)  # EKR: 2011/03/15
         self.layout().addWidget(button)
-        button.setContextMenuPolicy(QtConst.CustomContextMenu)
+        button.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         button.customContextMenuRequested.connect(
             lambda pnt: self.parent().choice_menu(self,
                 button.mapToParent(pnt)))
@@ -129,7 +129,14 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         x = pos.x()
         y = pos.y()
         rect = QtCore.QRect(x - 5, y - 5, x + 5, y + 5)
-        QtWidgets.QToolTip.showText(pos, tip, action.parentWidget(), rect)
+        if hasattr(action, 'parentWidget'): # 2021/07/17.
+            parent = action.parentWidget()
+        else:
+            return
+        if not parent:
+            g.trace('===== no parent =====')
+            return
+        QtWidgets.QToolTip.showText(pos, tip, parent, rect)
     #@+node:ekr.20110605121601.17965: *3* nsh.splitter_menu
     def splitter_menu(self, pos):
         """build the context menu for NestedSplitter"""
@@ -308,7 +315,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                         load_items(menu.addMenu(k), i[k])
                 else:
                     title, id_ = i
-
+                    
                     def cb(checked, id_=id_):
                         splitter.context_cb(id_, index)
 
@@ -320,7 +327,8 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
             if hasattr(provider, 'ns_context'):
                 load_items(menu, provider.ns_context())
                 
-        point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
+        # point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
+        point = pos  ###
         global_point = self.mapToGlobal(point)
         menu.exec_(global_point)
         
@@ -542,7 +550,7 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:ekr.20110605121601.17972: *3* ns.choice_menu
     def choice_menu(self, button, pos):
         """build menu on Action button"""
-        menu = QtWidgets.QMenu()
+        menu = QtWidgets.QMenu(self.top())  # #1995
         index = self.indexOf(button)
         if (self.root.marked and
             not self.invalid_swap(button, self.root.marked[3]) and
@@ -566,11 +574,9 @@ class NestedSplitter(QtWidgets.QSplitter):
             act = QAction("Nothing marked, and no options", self)
             menu.addAction(act)
 
-        point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
+        point = button.pos()
         global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
-
-
     #@+node:tbrown.20120418121002.25712: *3* ns.closing
     def closing(self, window):
         """forget a top-level additional layout which was closed"""

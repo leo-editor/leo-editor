@@ -1203,7 +1203,7 @@ class LeoQtGui(leoGui.LeoGui):
         """LeoQtGui: Common context menu handling."""
         # #1286.
         handlers = g.tree_popup_handlers
-        menu = QtWidgets.QMenu()
+        menu = QtWidgets.QMenu(c.frame.top)  # #1995.
         menuPos = w.mapToGlobal(point)
         if not handlers:
             menu.addAction("No popup handlers")

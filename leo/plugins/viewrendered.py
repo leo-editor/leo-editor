@@ -818,13 +818,6 @@ if QtWidgets: # NOQA
             '''Unlock the vr pane.'''
             g.note('rendering pane unlocked')
             self.locked = False
-        #@+node:ekr.20200304133109.1: *3* vr.onContextMenuCallback
-        def onContextMenuCallback(self, point):
-            """LeoQtTree: Callback for customContextMenuRequested events."""
-            # #1286.
-            c = self.c
-            w = self
-            g.app.gui.onContextMenu(c, w, point)
         #@+node:ekr.20160921071239.1: *3* vr.set_html
         def set_html(self, s, w):
             '''Set text in w to s, preserving scroll position.'''
@@ -1622,22 +1615,22 @@ if QtWidgets: # NOQA
                 # Instantiate a new QTextBrowser.
                 # Allow non-ctrl clicks to open url's.
                 w = QtWidgets.QTextBrowser()
+                
+                def contextMenuCallback(point):
+                    """LeoQtTree: Callback for customContextMenuRequested events."""
+                    # #1286.
+                    w = self  # Required.
+                    g.app.gui.onContextMenu(c, w, point)
+
                 # #1286.
-                ### ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
                 w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
-                w.customContextMenuRequested.connect(self.onContextMenuCallback)
+                w.customContextMenuRequested.connect(contextMenuCallback)
 
                 def handleClick(url, w=w):
                     from leo.plugins import qt_text
                     wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                     event = g.Bunch(c=c, w=wrapper)
                     g.openUrlOnClick(event, url=url)
-
-                # if self.w and hasattr(self.w, 'anchorClicked'):
-                    # try:
-                        # self.w.anchorClicked.disconnect()
-                    # except Exception:
-                        # g.es_exception()
 
                 w.anchorClicked.connect(handleClick)
                 w.setOpenLinks(False)

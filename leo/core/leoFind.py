@@ -1450,7 +1450,6 @@ class LeoFind:
         # Settings.
         find_pattern = k.arg
         self.ftm.set_find_text(find_pattern)
-        ##self.init_in_headline()
         settings = self.ftm.get_settings()
         self.find_text = find_pattern
         self.change_text = self.ftm.get_change_text()
@@ -1546,12 +1545,16 @@ class LeoFind:
                 line_number = 1
             log.put(line.strip()+'\n', nodeLink=f"{unl},{line_number}")
             
+        seen = [] # List of (vnode, pos).
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
             p, pos, newpos = self.find_next_match(p)
             if pos is None:
                 break
+            if (p.v, pos) in seen:  # 2076
+                continue
+            seen.append((p.v, pos))
             count += 1
             s = self.work_s
             i, j = g.getLine(s, pos)

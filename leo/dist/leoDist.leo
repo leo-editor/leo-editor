@@ -194,7 +194,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2020 by Edward K. Ream.
+Copyright (c) 1997-2021 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -238,7 +238,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.3
+Version: 6.4
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -257,20 +257,23 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fleo-editor%2Fleo-editor&amp;count_bg=%2379C83D&amp;title_bg=%23555555&amp;icon=&amp;icon_color=%23E7E7E7&amp;title=PAGE+VIEWS&amp;edge_flat=false)](https://hits.seeyoufarm.com)
-
-Leo 6.3, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 b1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.3**
+**The highlights of Leo 6.4**
 
-- leoAst.py: The unification of Python's token and ast worlds.
-- Retired all Qt Dock code.
-- Improved viewrendered and viewrendered3 plugins.
-- Improved several importer plugins.
-- Refactored Leo's key handling code.
+- Add support for leoInteg: "Leo in vs-code".
+- Add leoserver.py, stand-alone server for Leo.
+- Add support for .leojs, a json outline format.
+- Add support for Qt6.
+- The wax_off.py script converts function annotations to stub (.pyi) files.
+- Remove support for @root. Create a conversion script.
+- Simplify and generalize rst3 command.
+- Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
+- Add execute-general-script command and c.general_script_helper.
+- Several significant code-level changes.
 
 **Links**
 
@@ -321,7 +324,7 @@ have not yet tried Leo, you are wrong...I rate Leo as a "must have"
 for Python programmers. The code makes for a good read.
 -- John Tobler  http://weblogs.asp.net/Jtobler/
 </t>
-<t tx="EKR.20040519091259.4">I've written documentation in WordPerfert, Ventura, Word, PageMaker, and
+<t tx="EKR.20040519091259.4">I've written documentation in WordPerfect, Ventura, Word, PageMaker, and
 FrameMaker and even though they create wonderfully looking and useful
 documents, they've never been able to do what I've been looking for. HTML,
 compiled help files, and later PDF came closer, but still not there. I think
@@ -330,7 +333,7 @@ of discrete parts that can be re-organized on the fly to meet the needs of a
 varying audience...Being a convert for less than a day I've still got a lot to
 learn, but just the possibility of keeping system maintenance scripts in the IT
 manual is mind boggling.  -- David Nichols dnichols@amci.com</t>
-<t tx="ekr.20040630210818">HTML Editing in Leo is soooo much easier then with NoNodeEditors. Ive
+<t tx="ekr.20040630210818">HTML Editing in Leo is soooo much easier then with NoNodeEditors. I've
 had a blast working on a web page. Usually I had to look at a bunch of
 gunk all at once. Now I can look at little pieces of gunk! :) 
 
@@ -599,7 +602,7 @@ leo/test/unittest/.leo_shadow/  export-ignore
 
 2. Search for copyright
 
-    Latest copyright date: 2020.
+    Latest copyright date: 2021.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="ekr.20150416081546.1"></t>
@@ -2418,7 +2421,7 @@ Follow up as needed.
  
  [0]: https://conda-forge.org/docs/maintainer/adding_pkgs.html
  </t>
-<t tx="maphew.20200426185115.1"># Prelimnary build recipe
+<t tx="maphew.20200426185115.1"># Preliminary build recipe
 
     pushd code\leo-editor
     python setup.py sdist

@@ -756,8 +756,10 @@ class ScriptingController:
             statusLine = '%s = %s' % (statusLine.rstrip(), shortcut)
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
+        bg = self.getColor(p.h)  # #2024
         b = self.createIconButton(
             args=args,
+            bg=bg,  # #2024
             text=p.h,
             command=None,
             statusLine=statusLine,
