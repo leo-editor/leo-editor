@@ -1756,11 +1756,12 @@
 <v t="ekr.20210710040014.73"><vh>#2030: NO PARENT message</vh></v>
 <v t="ekr.20210710040014.133"><vh>#2036: move-right</vh></v>
 <v t="ekr.20210717092635.921"><vh>#2040: auto-indent</vh></v>
+<v t="ekr.20210802163908.2"><vh>#2041 &amp; #2094: Alt-x in find panel</vh></v>
 <v t="ekr.20210710163244.4"><vh>#2041: Alt-x in find panel</vh></v>
 <v t="ekr.20210717092635.1337"><vh>#2076: find-all</vh></v>
 <v t="ekr.20210718082823.28"><vh>#2080: Context Menu</vh></v>
-<v t="ekr.20210405100137.1784"><vh>PR1822: fix recursive import for @edit</vh></v>
-<v t="ekr.20210405100137.1801"><vh>PR1865: Ctrl-click must not search @nosearch trees</vh></v>
+<v t="ekr.20210405100137.1784"><vh>PR #1822: fix recursive import for @edit</vh></v>
+<v t="ekr.20210405100137.1801"><vh>PR #1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
 <v t="ekr.20210405104619.1"><vh>6.4: Code</vh>
 <v t="ekr.20210405100137.468"><vh>#1413: New undo pattern</vh></v>
@@ -1790,17 +1791,22 @@
 <v t="ekr.20210717092635.1339"><vh>#2068: Review Modifiers, KeyboardModifiers</vh></v>
 <v t="ekr.20210717092635.938"><vh>#2069: Protect more event handlers</vh></v>
 <v t="ekr.20210718082823.2"><vh>#2081: Use sys.excepthook, not @g.callback</vh></v>
-<v t="ekr.20210405100137.887"><vh>PR1759: Further improvements to undo code</vh></v>
-<v t="ekr.20210405100137.1772"><vh>PR1804: Support batch change scripts</vh></v>
-<v t="ekr.20210405100137.1773"><vh>PR1818: remove c.trimTrailingLines</vh></v>
+<v t="ekr.20210802163908.24"><vh>#2098: g.in_leo_server</vh></v>
+<v t="ekr.20210802163908.29"><vh>#2102: 100% coverage for leoAst.py</vh></v>
+<v t="ekr.20210802163908.31"><vh>#2103: stubs for leoGlobals.py</vh></v>
+<v t="ekr.20210802163908.50"><vh>#2112: shebang lines</vh></v>
+<v t="ekr.20210710040931.1"><vh>Add leo/scripts/wax_off.py</vh></v>
+<v t="ekr.20210405100137.887"><vh>PR #1759: Further improvements to undo code</vh></v>
+<v t="ekr.20210405100137.1772"><vh>PR #1804: Support batch change scripts</vh></v>
+<v t="ekr.20210405100137.1773"><vh>PR #1818: remove c.trimTrailingLines</vh></v>
 </v>
 <v t="ekr.20210405104753.1"><vh>6.4: Commands</vh>
 <v t="ekr.20210606081234.1"></v>
 <v t="ekr.20210405100137.787"><vh>#1754: reformat-paragraph</vh></v>
-<v t="ekr.20210405100137.1340"><vh>#1831: mypy command</vh></v>
+<v t="ekr.20210405100137.1340"><vh>#1831 &amp; #2049: mypy command</vh></v>
 <v t="ekr.20210405100137.1396"><vh>#1841: copy-gnx</vh></v>
 <v t="ekr.20210528082736.11"><vh>#1955: improve extract command</vh></v>
-<v t="ekr.20210405100137.1798"><vh>PR 1849: reload-settings now changes all settings</vh></v>
+<v t="ekr.20210405100137.1798"><vh>PR #1849: reload-settings now changes all settings</vh></v>
 </v>
 <v t="ekr.20210405110053.1"><vh>6.4: Major features</vh>
 <v t="ekr.20210405100137.2"><vh>#0442: json: .leojs files</vh></v>
@@ -1813,7 +1819,6 @@
 <v t="ekr.20210405100137.1345"><vh>#1832: Retire @root and convert-at-root command</vh></v>
 <v t="ekr.20210528083337.1"><vh>#1846: pyQt6 compatibility</vh></v>
 <v t="ekr.20210405100137.1743"><vh>#1867: simplify rst3</vh></v>
-<v t="ekr.20210710040931.1"><vh>Add leo/scripts/wax_off.py</vh></v>
 </v>
 <v t="ekr.20210405110145.1"><vh>6.4: Other features</vh>
 <v t="ekr.20210405100137.456"><vh>#1240: Alert for changed .leo file</vh></v>
@@ -31384,7 +31389,10 @@ The example filters shown above simulate the often-requested "half clone" featur
 <t tx="ekr.20210405100137.1336">https://github.com/leo-editor/leo-editor/issues/1821
 </t>
 <t tx="ekr.20210405100137.1338">https://github.com/leo-editor/leo-editor/issues/1824</t>
-<t tx="ekr.20210405100137.1340">https://github.com/leo-editor/leo-editor/issues/1831</t>
+<t tx="ekr.20210405100137.1340">https://github.com/leo-editor/leo-editor/issues/1831
+
+https://github.com/leo-editor/leo-editor/issues/2049
+</t>
 <t tx="ekr.20210405100137.1345">https://github.com/leo-editor/leo-editor/issues/1832</t>
 <t tx="ekr.20210405100137.1358">https://github.com/leo-editor/leo-editor/issues/1839
 </t>
@@ -31535,12 +31543,18 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.4+lab
 Change commands:
 - reload-settings now changes settings in all open outlines.
 </t>
-<t tx="ekr.20210405104825.1">- Add @bool allow-text-zoom = True
+<t tx="ekr.20210405104825.1">Add @bool allow-text-zoom = True
 https://github.com/leo-editor/leo-editor/issues/1923
 
-- Add support for --trace-speed.
+Add support for --trace-speed.
 https://github.com/leo-editor/leo-editor/issues/1936
-</t>
+
+Add settings for Leo's mypy command:
+https://github.com/leo-editor/leo-editor/issues/1831
+https://github.com/leo-editor/leo-editor/issues/2049
+@data mypy-arguments
+@int mypy-link-limit
+@string mypy-config-file</t>
 <t tx="ekr.20210405110053.1"></t>
 <t tx="ekr.20210405110145.1"></t>
 <t tx="ekr.20210429042049.1771">https://github.com/leo-editor/leo-editor/issues/1880</t>
@@ -31707,6 +31721,17 @@ https://github.com/leo-editor/leo-editor/pull/2083</t>
 <t tx="ekr.20210718082823.40">https://github.com/leo-editor/leo-editor/issues/1995</t>
 <t tx="ekr.20210718082823.41">show-settings does not show F-keys
 https://github.com/leo-editor/leo-editor/issues/1972</t>
+<t tx="ekr.20210802163908.2">https://github.com/leo-editor/leo-editor/issues/2041
+PR: https://github.com/leo-editor/leo-editor/pull/2044
+
+https://github.com/leo-editor/leo-editor/issues/2094</t>
+<t tx="ekr.20210802163908.24">https://github.com/leo-editor/leo-editor/issues/2098</t>
+<t tx="ekr.20210802163908.29">https://github.com/leo-editor/leo-editor/issues/2102
+
+Cover keyword-only arguments.
+pep 570: https://www.python.org/dev/peps/pep-0570/#keyword-only-arguments</t>
+<t tx="ekr.20210802163908.31">https://github.com/leo-editor/leo-editor/issues/2103</t>
+<t tx="ekr.20210802163908.50">https://github.com/leo-editor/leo-editor/issues/2112</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
