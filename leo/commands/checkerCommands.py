@@ -186,14 +186,22 @@ def mypy_command(event):
     @<file> node in an ancestor. Running mypy on a single file usually
     suffices.
     
-    For example, you can run mypy on most of Leo's files by selecting
+    For example, in LeoPyRef.leo, you can run mypy on most of Leo's files
+    by running this command with the following node selected:
     
       `@edit ../../launchLeo.py`
-      
-    in leoPy.leo, then running Leo's mypy command.
     
     Unlike running mypy outside of Leo, Leo's mypy command creates
     clickable links in Leo's log pane for each error.
+    
+    Settings
+    --------
+    
+    @data mypy-arguments
+    @int mypy-link-limit = 0
+    @string mypy-config-file=''
+    
+    See leoSettings.leo for details.
     """
     c = event.get('c')
     if not c:
