@@ -5325,6 +5325,19 @@ class TestTOG(BaseTest):
         self.make_data(contents)
         # contents, tokens, tree = self.make_data(contents)
         # dump_ast(tree)
+    #@+node:ekr.20210802162650.1: *5* test_FunctionDef_with_posonly_args
+    def test_FunctionDef_with_posonly_args(self):
+        
+    # From PEP 570
+        contents = r"""\
+    def pos_only_arg(arg, /):
+        pass
+    def kwd_only_arg(*, arg):
+        pass
+    def combined_example(pos_only, /, standard, *, kwd_only):
+        pass
+    """
+        self.make_data(contents)
     #@+node:ekr.20191227052446.14: *4* TestTOG.Expressions & operators...
     #@+node:ekr.20191227052446.15: *5* test_attribute
     def test_attribute(self):
