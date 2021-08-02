@@ -5328,7 +5328,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210802162650.1: *5* test_FunctionDef_with_posonly_args
     def test_FunctionDef_with_posonly_args(self):
         
-    # From PEP 570
+        # From PEP 570
         contents = r"""\
     def pos_only_arg(arg, /):
         pass
