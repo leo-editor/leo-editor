@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #@+leo-ver=5-thin
 #@+node:ekr.20120309073748.9872: * @file ../plugins/bigdash.py
 #@@first
