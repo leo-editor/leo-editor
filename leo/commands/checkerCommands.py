@@ -186,14 +186,22 @@ def mypy_command(event):
     @<file> node in an ancestor. Running mypy on a single file usually
     suffices.
     
-    For example, you can run mypy on most of Leo's files by selecting
+    For example, in LeoPyRef.leo, you can run mypy on most of Leo's files
+    by running this command with the following node selected:
     
       `@edit ../../launchLeo.py`
-      
-    in leoPy.leo, then running Leo's mypy command.
     
     Unlike running mypy outside of Leo, Leo's mypy command creates
     clickable links in Leo's log pane for each error.
+    
+    Settings
+    --------
+    
+    @data mypy-arguments
+    @int mypy-link-limit = 0
+    @string mypy-config-file=''
+    
+    See leoSettings.leo for details.
     """
     c = event.get('c')
     if not c:
@@ -245,18 +253,18 @@ class MypyCommand:
     def __init__(self, c):
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.args = None  # Set in check_file.
         self.link_limit  = None  # Set in check_file.
         self.unknown_path_names = []
+        # Settings.
+        self.args = c.config.getData('mypy-arguments') or []
+        self.config_file = c.config.getString('mypy-config-file') or None
+        self.link_limit = c.config.getInt('mypy-link-limit') or 0
 
     #@+others
     #@+node:ekr.20210302111935.3: *3* mypy.check_all
     def check_all(self, roots):
         """Run mypy on all files in paths."""
         c = self.c
-        ###
-            # bpm = g.app.backgroundProcessManager
-            # bpm.unknown_path_names = []
         self.unknown_path_names = []
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
@@ -266,19 +274,24 @@ class MypyCommand:
     def check_file(self, fn):
         """Run mypy on one file."""
         c = self.c
-        # Always reload settings.
-        self.args = c.config.getData('mypy-arguments') or []
-        self.link_limit = c.config.getInt('mypy-link-limit') or 0
         # Init.
-        g.cls()
         c.frame.log.clearLog()
         link_pattern=re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
         # Change working directory.
         directory = os.path.dirname(fn)
         os.chdir(directory)
+        # Check the config file.
+        if self.config_file:
+            config_file = g.os_path_finalize_join(directory, self.config_file)
+            if not os.path.exists(config_file):
+                print(f"config file not found: {config_file!r}")
+                return
+            args = [f"--config-file={config_file}"] + self.args
+        args_s = ' '.join(args + [g.shortFileName(fn)])
+        args = self.args + [fn]
         # Run mypy.
-        print(f"mypy {' '.join(self.args)} {g.shortFileName(fn)}")
-        result = mypy.api.run(self.args + [fn])
+        g.es_print(f"mypy {args_s}")
+        result = mypy.api.run(args)
         # Print result, making clickable links.
         print('Exit status:', result[2])
         lines = g.splitLines(result[0] or [])  # type:ignore
