@@ -8,6 +8,7 @@ Leo's internet server.
 Written by Félix Malboeuf and Edward K. Ream.
 """
 # pylint: disable=import-self,raise-missing-from
+
 #@+<< imports >>
 #@+node:felix.20210621233316.2: ** << imports >>
 import asyncio
@@ -33,14 +34,22 @@ from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 from leo.core import leoserver
 #@-<< imports >>
+
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
+use_Tk = True
+
 # For unit tests.
 g_leoserver = None
 g_server = None
-# Server defaults...
-connectionsTotal = 0
-connectionsLimit = 1
-SERVER_STARTED_TOKEN = "LeoBridge started"
+
+# Server defaults
+SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
+connectionsPool = set() # Websocket connections (to be sent 'notify' messages)
+connectionsTotal = 0 # Current connected client total
+# Customizable server options
+wsLimit = 1
+wsPersist = False
+wsSkipDirty = False
 wsHost = "localhost"
 wsPort = 32125
 
@@ -375,7 +384,7 @@ class LeoServer:
         g.es = self._es  # pointer - not a function call
         #
         # Set in _init_connection
-        self.web_socket = None
+        self.web_socket = None # Main Control Client
         self.loop = None
         #
         # To inspect commands
@@ -1476,7 +1485,7 @@ class LeoServer:
             if p.v.gnx == gnx:
                 if body==p.v.b:
                     return self._make_response()
-                    # Just exited if no need to change at all.
+                    # Just exit if there is no need to change at all.
                 bunch = u.beforeChangeNodeContents(p)
                 p.v.setBodyString(body)
                 u.afterChangeNodeContents(p, "Body Text", bunch)
@@ -2824,8 +2833,14 @@ class LeoServer:
     #@+node:felix.20210621233316.76: *5* server.init_connection
     def _init_connection(self, web_socket):  # pragma: no cover (tested in client).
         """Begin the connection."""
-        self.web_socket = web_socket
-        self.loop = asyncio.get_event_loop()
+        global connectionsTotal
+        if connectionsTotal == 1:
+            # First connection, so "Master client" setup
+            self.web_socket = web_socket
+            self.loop = asyncio.get_event_loop()
+        else:
+            # already exist, so "spectator-clients" setup
+            pass # nothing for now
     #@+node:felix.20210621233316.77: *5* server.shut_down
     def shut_down(self, param):
         """Shut down the server."""
@@ -3556,9 +3571,9 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
 #@+node:felix.20210621233316.105: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
-    global wsHost, wsPort
+    global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
     print("Starting LeoBridge... (Launch with -h for help)")
-    # replace default host address and port if provided as arguments
+
     #@+others
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
     async def ws_handler(websocket, path):
@@ -3567,18 +3582,20 @@ def main():  # pragma: no cover (tested in client)
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
-        global connectionsTotal, connectionsLimit
+        global connectionsTotal, wsLimit
         tag = 'server'
         trace = False
         verbose = False
         try:
-            if connectionsTotal >= connectionsLimit:
-                print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {connectionsLimit}")
+            if connectionsTotal >= wsLimit:
+                print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}")
                 await websocket.close(1001)
                 return
             connectionsTotal += 1
-            print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {connectionsLimit}")
+            print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {wsLimit}")
+            # If first connection set it as the main client connection
             controller._init_connection(websocket)
+            await register_client(websocket)
             # Start by sending empty as 'ok'.
             n = 0
             await websocket.send(controller._make_response())
@@ -3617,51 +3634,236 @@ def main():  # pragma: no cover (tested in client)
                     g.print_exception()
                     break
                 await websocket.send(answer)
+                # If not a 'getter' send refresh signal to other clients
+
+                if controller.action[0:5] != "!get_":
+                    await notify_clients(controller.action, websocket)
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
-            connectionsTotal =-1
             print(f"{tag}: connection closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
-            connectionsTotal =-1
             print(f"{tag}: connection closed: {e}")
         finally:
-            connectionsTotal =-1
-            print(f"{tag}: finished normally Total: {connectionsTotal}, Limit: {connectionsLimit}")
+            connectionsTotal -= 1
+            await  unregister_client(websocket)
+            print(f"{tag} finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
+    #@+node:felix.20210803174312.1: *3* function:notify_clients
+    async def notify_clients(action, excludedConn = None):
+        if connectionsPool:  # asyncio.wait doesn't accept an empty list
+            m =  json.dumps({"async": "refresh", "action": action}, separators=(',', ':'), cls=SetEncoder)
+            clientSetCopy = connectionsPool.copy()
+            if excludedConn:
+                clientSetCopy.discard(excludedConn)
+            if clientSetCopy:
+                # if still at least one to notify
+                await asyncio.wait([client.send(m) for client in clientSetCopy])
+    #@+node:felix.20210803174312.2: *3* function:register_client
+    async def register_client(websocket):
+        connectionsPool.add(websocket)
+        await notify_clients("unregister", websocket)
+    #@+node:felix.20210803174312.3: *3* function:unregister_client
+    async def unregister_client(websocket):
+        global wsPersist, connectionsTotal
+        connectionsPool.remove(websocket)
+        await notify_clients("unregister")
+        # Check for persistence flag if all connections are closed
+        if connectionsTotal == 0 and not wsPersist:
+            close_Server()
+    #@+node:ekr.20210801103636.1: *3* function: monkey_patch
+    def monkey_patch():
+        """monkey patch NullGui.runAskYesNoCancelDialog."""
+        global g, qt_app, use_Tk
+        from leo.core.leoGui import NullGui
+        if use_Tk:
+            # g.funcToMethod(tk_runAskYesNoCancelDialog, NullGui, name='runAskYesNoCancelDialog')
+            g.app.gui.runAskYesNoCancelDialog = tk_runAskYesNoCancelDialog
+        else:
+            # Create a minimal qt application.
+            from leo.plugins.qt_gui import LeoQtGui
+            g.app.use_splash_screen = False  # Suppress the splash screen.
+            qt_app = LeoQtGui()
+            # g.funcToMethod(qt_runAskYesNoCancelDialog, NullGui, name='runAskYesNoCancelDialog')
+            g.app.gui.runAskYesNoCancelDialog = qt_runAskYesNoCancelDialog
+    #@+node:ekr.20210801103854.1: *3* function: qt_runAskYesNoCancelDialog
+    def qt_runAskYesNoCancelDialog(
+        # self,
+        c,
+        title,  # Not used.
+        message=None,  # Must exist.
+        yesMessage="&Yes",
+        noMessage="&No",
+        yesToAllMessage=None,  # Not used.
+        defaultButton="Yes",
+        cancelMessage=None,  # Not used.
+    ):
+        """
+        Simpler version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
+        """
+        from leo.core.leoQt import isQt6, QtWidgets
+        from leo.core.leoQt import ButtonRole, Information
+        if g.unitTesting:
+            return None
+        # Create the dialog.
+        dialog = QtWidgets.QMessageBox(None)
+        # c.active_stylesheet doesn't exist in the NullGui.
+            # stylesheet = getattr(c, 'active_stylesheet', None)
+            # dialog.setStyleSheet(stylesheet)
+        dialog.setText(message)
+        dialog.setIcon(Information.Warning)
+        dialog.setWindowTitle("Saved changed outline?")
+        yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
+        no = dialog.addButton(noMessage, ButtonRole.NoRole)
+        dialog.setDefaultButton(yes if defaultButton == "Yes" else no)
+        # Button creation order determines returned value.
+        val = dialog.exec() if isQt6 else dialog.exec_()
+        if val == 0:
+            print(f"Saving: {c.fileName()}")
+        else:
+            print(f"Not saved: {c.fileName()}")
+        return "yes" if val == 0 else "no"
+    #@+node:ekr.20210801175921.1: *3* function: tk_runAskYesNoCancelDialog & helpers
+    def tk_runAskYesNoCancelDialog(
+        # self,
+        c,
+        title,  # Not used.
+        message=None,  # Must exist.
+        yesMessage="&Yes",  # Not used.
+        noMessage="&No",  # Not used.
+        yesToAllMessage=None,  # Not used.
+        defaultButton="Yes",  # Not used
+        cancelMessage=None,  # Not used.
+    ):
+        """
+        Tk version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
+        """
+        import tkinter as Tk
+        if g.unitTesting:
+            return None
+        root = top = val = None  # Non-locals
+        #@+others  # define helper functions
+        #@+node:ekr.20210801180311.4: *4* create_frame
+        def create_frame(message):
+            """Create the dialog's frame."""
+            frame = Tk.Frame(top)
+            frame.pack(side="top", expand=1, fill="both")
+            label = Tk.Label(frame, text=message, bg='white')
+            label.pack(pady=10)
+            # Create buttons.
+            f = Tk.Frame(top)
+            f.pack(side="top", padx=30)
+            b = Tk.Button(f, width=6, text="Yes", bd=4, underline=0, command=yesButton)
+            b.pack(side="left", padx=5, pady=10)
+            b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
+            b.pack(side="left", padx=5, pady=10)
+            return top
+        #@+node:ekr.20210801180311.5: *4* callbacks
+        def noButton(event=None):
+            """Do default click action in ok button."""
+            nonlocal val
+            print(f"Not saved: {c.fileName()}")
+            val = "no"
+            top.destroy()
+
+        def yesButton(event=None):
+            """Do default click action in ok button."""
+            nonlocal val
+            print(f"Saved: {c.fileName()}")
+            val = "yes"
+            top.destroy()
+        #@-others
+        root = Tk.Tk()
+        root.eval('tk::PlaceWindow . center')
+        root.withdraw()
+        top = Tk.Toplevel(root)
+        top.withdraw() # hide
+        top.title("Saved changed outline?")
+        top = create_frame(message)
+        top.bind("<Return>", yesButton)
+        top.bind("y", yesButton)
+        top.bind("Y", yesButton)
+        top.bind("n", noButton)
+        top.bind("N", noButton)
+        top.lift()
+        top.update_idletasks()
+        #center the dialog
+        width = top.winfo_width()
+        frm_width = top.winfo_rootx() - top.winfo_x()
+        win_width = width + 2 * frm_width
+        height = top.winfo_height()
+        titlebar_height = top.winfo_rooty() - top.winfo_y()
+        win_height = height + titlebar_height + frm_width
+        x = top.winfo_screenwidth() // 2 - win_width // 2
+        y = top.winfo_screenheight() // 2 - win_height // 2
+        top.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+        top.grab_set()  # Make the dialog a modal dialog.
+        top.deiconify() # show
+        root.wait_window(top)
+        return val
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
-        global wsHost, wsPort
+        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
         args = None
+        # See https://docs.python.org/3/library/getopt.html for 'getopt' usage
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "help:", ["help", "address=", "port="])
+            opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:", ["help", "address=", "port=", "persist", "dirty", "limit="])
         except getopt.GetoptError:
-            print('leoserver.py -a <address> -p <port>')
-            print('defaults to localhost on port 32125')
+            show_help()
             if args:
                 print("unused args: " + str(args))
             sys.exit(2)
         for opt, arg in opts:
             if opt in ("-h", "--help"):
-                print('leoserver.py -a <address> -p <port>')
-                print('defaults to localhost on port 32125')
+                show_help()
                 sys.exit()
             elif opt in ("-a", "--address"):
                 wsHost = arg
             elif opt in ("-p", "--port"):
                 wsPort = arg
+            elif opt in ("-l", "--limit"):
+                wsLimit = arg
+            elif opt in ("--persist"):
+                wsPersist = True
+            elif opt in ("-d", "--dirty"):
+                wsSkipDirty = True
         # Leave other options for unittest.
         for opt, junk in opts:  # opts is a 2-tuple.
             if opt in sys.argv:
                 sys.argv.remove(opt)
-        return wsHost, wsPort
+        return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
+    #@+node:felix.20210804130751.1: *3* function:close_server
+    def close_Server():
+        '''
+        Close the server while using a GUI lib (tk or qt) to
+        ask the user about dirty files if any remained opened.
+        '''
+        monkey_patch() # Replace the 'ask dialogs' methods to use a GUI
+        commanders = g.app.commanders() # Get all commanders
+        for commander in commanders:
+            commander.close() # Patched 'ask' methods should ask if dirty
+        print('Closing Leo Server', flush=True)
+        sys.exit()
+    #@+node:felix.20210803233022.1: *3* function:show_help
+    def show_help():
+        print('Usage:')
+        print('leoserver.py [-a <address>] [-p <port>] [-l <limit>] [--dirty] [--persist]')
+        print('Defaults to address "localhost" on port 32125')
+        print('with a default client limit of 1.')
+        print('"--persist" flag prevents quitting when last client disconnects.')
+        print('"--dirty" flag prevents asking about dirty files upon quitting.')
     #@-others
+
     if '--unittest' in sys.argv:
         sys.argv.remove('--unittest')
         unittest.main()
         return  # Make *sure* we don't start the server.
-    wsHost, wsPort = get_args()
+
+    # Replace default command line arguments values if provided as arguments
+    wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty = get_args()
+
     # Open leoBridge.
-    controller = LeoServer()
+    controller = LeoServer() # Only one instance of 'LeoServer'
+
     # Start the server.
     loop = asyncio.get_event_loop()
     server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
