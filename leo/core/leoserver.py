@@ -19,6 +19,8 @@ import os
 import sys
 import time
 import unittest
+import signal
+import tkinter as Tk
 # Third-party.
 import websockets
 # Make sure leo-editor folder is on sys.path.
@@ -1419,6 +1421,7 @@ class LeoServer:
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
+        c.setChanged()
         return self._make_response()
     #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
     def insert_child_named_node(self, param):
@@ -3586,6 +3589,7 @@ def main():  # pragma: no cover (tested in client)
         tag = 'server'
         trace = False
         verbose = False
+
         try:
             if connectionsTotal >= wsLimit:
                 print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}")
@@ -3646,6 +3650,9 @@ def main():  # pragma: no cover (tested in client)
             connectionsTotal -= 1
             await  unregister_client(websocket)
             print(f"{tag} finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
+            # Check for persistence flag if all connections are closed
+            if connectionsTotal == 0 and not wsPersist:
+                close_Server()
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
     #@+node:felix.20210803174312.1: *3* function:notify_clients
@@ -3667,9 +3674,6 @@ def main():  # pragma: no cover (tested in client)
         global wsPersist, connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
-        # Check for persistence flag if all connections are closed
-        if connectionsTotal == 0 and not wsPersist:
-            close_Server()
     #@+node:ekr.20210801103636.1: *3* function: monkey_patch
     def monkey_patch():
         """monkey patch NullGui.runAskYesNoCancelDialog."""
@@ -3737,7 +3741,6 @@ def main():  # pragma: no cover (tested in client)
         """
         Tk version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
         """
-        import tkinter as Tk
         if g.unitTesting:
             return None
         root = top = val = None  # Non-locals
@@ -3773,10 +3776,15 @@ def main():  # pragma: no cover (tested in client)
             top.destroy()
         #@-others
         root = Tk.Tk()
-        root.eval('tk::PlaceWindow . center')
+
+        # root.eval('tk::PlaceWindow . center')
+
         root.withdraw()
+        root.update()
+
         top = Tk.Toplevel(root)
-        top.withdraw() # hide
+
+        # top.withdraw() # hide
         top.title("Saved changed outline?")
         top = create_frame(message)
         top.bind("<Return>", yesButton)
@@ -3785,20 +3793,28 @@ def main():  # pragma: no cover (tested in client)
         top.bind("n", noButton)
         top.bind("N", noButton)
         top.lift()
-        top.update_idletasks()
-        #center the dialog
-        width = top.winfo_width()
-        frm_width = top.winfo_rootx() - top.winfo_x()
-        win_width = width + 2 * frm_width
-        height = top.winfo_height()
-        titlebar_height = top.winfo_rooty() - top.winfo_y()
-        win_height = height + titlebar_height + frm_width
-        x = top.winfo_screenwidth() // 2 - win_width // 2
-        y = top.winfo_screenheight() // 2 - win_height // 2
-        top.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
+
+        # * center the dialog
+        #top.update_idletasks()
+        #width = top.winfo_width()
+        #frm_width = top.winfo_rootx() - top.winfo_x()
+        #win_width = width + 2 * frm_width
+        #height = top.winfo_height()
+        #titlebar_height = top.winfo_rooty() - top.winfo_y()
+        #win_height = height + titlebar_height + frm_width
+        #x = top.winfo_screenwidth() // 2 - win_width // 2
+        #y = top.winfo_screenheight() // 2 - win_height // 2
+        #top.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
         top.grab_set()  # Make the dialog a modal dialog.
-        top.deiconify() # show
+
+        #top.deiconify() # show
+        root.update()
         root.wait_window(top)
+
+        top.destroy()
+        root.destroy()
         return val
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
@@ -3821,11 +3837,14 @@ def main():  # pragma: no cover (tested in client)
             elif opt in ("-p", "--port"):
                 wsPort = arg
             elif opt in ("-l", "--limit"):
-                wsLimit = arg
+                wsLimit = int(arg)
             elif opt in ("--persist"):
                 wsPersist = True
             elif opt in ("-d", "--dirty"):
                 wsSkipDirty = True
+        # in case of 0 or other values
+        if wsLimit < 1:
+            wsLimit = 1
         # Leave other options for unittest.
         for opt, junk in opts:  # opts is a 2-tuple.
             if opt in sys.argv:
@@ -3840,9 +3859,12 @@ def main():  # pragma: no cover (tested in client)
         monkey_patch() # Replace the 'ask dialogs' methods to use a GUI
         commanders = g.app.commanders() # Get all commanders
         for commander in commanders:
-            commander.close() # Patched 'ask' methods should ask if dirty
+            if commander.isChanged():
+                commander.close() # Patched 'ask' methods will open dialog
         print('Closing Leo Server', flush=True)
-        sys.exit()
+        asyncio.get_event_loop().stop()
+        raise KeyboardInterrupt
+        # sys.exit()
     #@+node:felix.20210803233022.1: *3* function:show_help
     def show_help():
         print('Usage:')
@@ -3866,12 +3888,23 @@ def main():  # pragma: no cover (tested in client)
 
     # Start the server.
     loop = asyncio.get_event_loop()
+
     server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
+
     loop.run_until_complete(server)
-    signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}. Ctrl+c to break"
+    signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
+
+    if wsPersist:
+        signon = signon + "Persistent server "
+
+    if wsLimit > 1:
+        signon = signon + f"Total client limit is {wsLimit}."
+
+    signon = signon + "\nCtrl+c to break"
     print(signon, flush=True)
     loop.run_forever()
     # Execution continues here after server is interupted (e.g. with ctrl+c)
+    server.close()
     print("Stopping leobridge server", flush=True)
 #@-others
 if __name__ == '__main__':
