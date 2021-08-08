@@ -40,37 +40,37 @@
 </v>
 <v t="tom.20210803134601.1"><vh>@command mmap-list</vh></v>
 <v t="tom.20210803134612.1"><vh>@command mmap-tree</vh></v>
-<v t="tom.20210803134542.1"><vh>@command mmap-monkeypatch</vh>
-<v t="tom.20210803134542.2"><vh>Imports</vh></v>
-<v t="tom.20210803134542.3"><vh>Declarations</vh>
-<v t="tom.20210803134542.4"><vh>Font properties</vh></v>
+<v t="tom.20210808144800.1"><vh>@command mmap-monkeypatch</vh>
+<v t="tom.20210808144800.2"><vh>Imports</vh></v>
+<v t="tom.20210808144800.3"><vh>Declarations</vh>
+<v t="tom.20210808144800.4"><vh>Font properties</vh></v>
 </v>
-<v t="tom.20210803134542.5"><vh>normalize_indent</vh></v>
-<v t="tom.20210803134542.6"><vh>get_target_node</vh></v>
-<v t="tom.20210803134542.7"><vh>Class Node</vh></v>
-<v t="tom.20210803134542.8"><vh>Class AbstractParser</vh></v>
-<v t="tom.20210803134542.9"><vh>Class IndentedParser</vh></v>
-<v t="tom.20210803134542.10"><vh>Class Item</vh></v>
-<v t="tom.20210803134542.11"><vh>Class Block</vh></v>
-<v t="tom.20210803134542.12"><vh>count_nodes</vh></v>
-<v t="tom.20210803134542.13"><vh>Root Image</vh></v>
-<v t="tom.20210803134542.14"><vh>get_longest_label</vh></v>
-<v t="tom.20210803134542.15"><vh>Leader Path</vh></v>
-<v t="tom.20210803134542.16"><vh>Label SVG</vh></v>
-<v t="tom.20210803134542.17"><vh>Level 2 Group</vh></v>
-<v t="tom.20210803134542.18"><vh>Create Mindmap</vh></v>
-<v t="tom.20210803134542.19"><vh>Create Blocks</vh></v>
-<v t="tom.20210803134542.20"><vh>layout_am_first_level</vh></v>
-<v t="tom.20210803134542.21"><vh>layout_pm_first_level</vh></v>
-<v t="tom.20210803134542.22"><vh>layout_am_blocks</vh></v>
-<v t="tom.20210803134542.23"><vh>layout_pm_blocks</vh></v>
-<v t="tom.20210803134542.24"><vh>layout_am_block</vh></v>
-<v t="tom.20210803134542.25"><vh>layout_pm_block</vh></v>
-<v t="tom.20210803134542.26"><vh>handle_leftovers</vh></v>
-<v t="tom.20210803134542.27"><vh>render_with_device</vh></v>
-<v t="tom.20210803134542.28"><vh>find_or_create_target</vh></v>
-<v t="tom.20210803134542.29"><vh>build_mmap</vh></v>
-<v t="tom.20210803134542.30"><vh>Main</vh></v>
+<v t="tom.20210808144800.5"><vh>normalize_indent</vh></v>
+<v t="tom.20210808144800.6"><vh>get_target_node</vh></v>
+<v t="tom.20210808144800.7"><vh>Class Node</vh></v>
+<v t="tom.20210808144800.8"><vh>Class AbstractParser</vh></v>
+<v t="tom.20210808144800.9"><vh>Class IndentedParser</vh></v>
+<v t="tom.20210808144800.10"><vh>Class Item</vh></v>
+<v t="tom.20210808144800.11"><vh>Class Block</vh></v>
+<v t="tom.20210808144800.12"><vh>count_nodes</vh></v>
+<v t="tom.20210808144800.13"><vh>Root Image</vh></v>
+<v t="tom.20210808144800.14"><vh>get_longest_label</vh></v>
+<v t="tom.20210808144800.15"><vh>Leader Path</vh></v>
+<v t="tom.20210808144800.16"><vh>Label SVG</vh></v>
+<v t="tom.20210808144800.17"><vh>Level 2 Group</vh></v>
+<v t="tom.20210808144800.18"><vh>Create Mindmap</vh></v>
+<v t="tom.20210808144800.19"><vh>Create Blocks</vh></v>
+<v t="tom.20210808144800.20"><vh>layout_am_first_level</vh></v>
+<v t="tom.20210808144800.21"><vh>layout_pm_first_level</vh></v>
+<v t="tom.20210808144800.22"><vh>layout_am_blocks</vh></v>
+<v t="tom.20210808144800.23"><vh>layout_pm_blocks</vh></v>
+<v t="tom.20210808144800.24"><vh>layout_am_block</vh></v>
+<v t="tom.20210808144800.25"><vh>layout_pm_block</vh></v>
+<v t="tom.20210808144800.26"><vh>handle_leftovers</vh></v>
+<v t="tom.20210808144800.27"><vh>render_with_device</vh></v>
+<v t="tom.20210808144800.28"><vh>find_or_create_target</vh></v>
+<v t="tom.20210808144800.29"><vh>build_mmap</vh></v>
+<v t="tom.20210808144800.30"><vh>Main</vh></v>
 </v>
 </v>
 </v>
@@ -5589,777 +5589,6 @@ plugins, or in the system browser.  A setting specifies the
 display choice.
 
 </t>
-<t tx="tom.20210803134542.1">@tabwidth -4
-@language python
-"""A mindmap svg generator for trees and indented lists..
-
-This command adds a function to the outline commander c that is
-used by the top-level mind mapping commands.  This function
-generates the svg output for a mindmap and renders it in
-the specified rendering pane or program.  The rendering
-"device" is specified by the setting "mmap_render_dev".
-
-@string settings:
-mmap_render_dev -- output "device". One of ('vr3', 'freewin', 'browser').
-                   Default: "vr3"
-mmap-target-node -- name of node where svg output will be copied to.
-                    Default: "@clean mmap.html"
-
-"""
-@others
-</t>
-<t tx="tom.20210803134542.10">@language python
-class Item:
-    """Holds descriptive data about a mmap item."""
-
-    def __init__(self, label=''):
-        self.label = label
-        self.width = 0 # Width of the label from Font Metrics
-        self.ypos = 0
-
-    def __repr__(self):
-        return f'Item({self.label})'
-</t>
-<t tx="tom.20210803134542.11">@language python
-class Block:
-    """Contains a description of a collection of related Items."""
-
-    def __init__(self):
-        self.items = []
-        self.width = 0
-        self.height = 0 # Total height including padding
-        self.axis = 0 # Y position of the axis of this block of items.
-
-    def set_height(self, pitch, padding):
-        self.height = padding + pitch * (len(self.items) - 1)
-
-    def set_width(self, padding=0):
-        width = 0
-        for item in self.items:
-            width = max(width, item.width)
-        self.width = width + LABEL_OFFSET_X
-
-</t>
-<t tx="tom.20210803134542.12">
-def count_nodes(node, depth=1):
-    """Count the number of entries in a node.
-    
-     A Node object contains a list of child nodes
-     and a depth property.  We are only going to go
-     to depth 2 at most.
-    
-    ARGUMENTS
-    node -- a Node object;
-    depth -- the number of levels to count.
-    
-    RETURNS
-    the count as an integer.
-    """
-
-    def count_children(node):
-        return len(node.children)
-
-    cnt = 0
-    depth = min(depth, 2)
-    for n in node.children:
-        cnt += 1
-        for c in n.children:
-            if c.depth &lt;= depth:
-                cnt += 1
-                cnt += len(c.children)
-    return cnt
-</t>
-<t tx="tom.20210803134542.13">@language python
-def root_image(label='Main Node'):
-    """Return svg markup for the map's central object.
-    
-       The object will be sized  to fit its label.
-    """
-
-    label_width = FONT_RESCALE * FM.width(label)
-    height = 1.5 * Q_LINESPACE 
-    xpadding = 3 * Q_ADV
-    width = label_width + xpadding
-    label_x = -.5 * (label_width  - xpadding)
-
-    x = -0.5 * width
-    y = -0.5 * height
-
-    return f'''
-&lt;rect id="central-image" width="{width}" height="{height}"
-    x="{x}" y="{y}" fill="aliceblue"
-    rx='2'
-    style="stroke:black; stroke-width:.1"/&gt;
-&lt;text x="{label_x}" y="{X_HEIGHT}"&gt;{label}&lt;/text&gt;
-'''
-
-</t>
-<t tx="tom.20210803134542.14">@language python
-def get_longest_label(nodelist):
-    """Return the width of the longest label.
-
-    The width equals the font metric's width for
-    the label.
-    
-    RETURNS
-    a tuple (length, text)
-    """
-
-    xpadding = 3 * Q_ADV
-    _maxlen = 0
-    longest_label = ''
-
-    for n in nodelist:
-        newlen = len(n.label)
-        if newlen &gt; _maxlen:
-            _maxlen = newlen
-            longest_label = n.label
-
-    label_len = FM.width(longest_label) + xpadding
-
-    return label_len, longest_label
-</t>
-<t tx="tom.20210803134542.15">@language python
-def leader_path(x, y, width=LEADER_X_LEN):
-    path = f'''
-&lt;path d="M 0 0 l {x} {y} h {width}" 
-    stroke="black"
-    stroke-width='.2'
-    fill='none'/&gt;
-'''
-    return path
-</t>
-<t tx="tom.20210803134542.16">@language python
-def label_svg(label, x, y):
-    svg = f'''&lt;text x="{x + LABEL_OFFSET_X}" 
-      y="{y + LABEL_OFFSET_Y:.3f}"&gt;{label}&lt;/text&gt;
-
-'''
-    return svg
-</t>
-<t tx="tom.20210803134542.17">@language python
-def level2_group(x, y, nodelist):
-    """Generate svg for the depth 2 children of a node.
-
-       The labels are spaced 2 line heights apart.     
-    
-       ARGUMENTS
-       x, y -- the center-left coordinates for the layout.
-       nodelist - a list of the nodes to lay out.
-       
-       RETURNS
-       the generated svg.
-    """
-    # pylint: disable=too-many-locals
-    if not nodelist:
-        return ''\
-
-    xpadding = 3 * Q_ADV
-    indent = 5 * Q_ADV
-    linespace = 1.2 * Q_LINESPACE
-    _maxlen = 0
-    extra_offset = 0.5 * Q_LINESPACE if \
-                    len(nodelist) == 1 else 0
-    _maxlen, longest_label = get_longest_label(nodelist)
-    #label_len = FM.width(longest_label) + xpadding
-    label_len = FM.width(longest_label)
-
-    # get label positions around 0
-    block_height = 2 * (len(nodelist) - 1) * .5 * linespace
-    block_top = y - .5 * block_height
-    deltay = 2 * .5 * linespace
-    positions = [] # [(yy, label), ...]
-
-    for n, node in enumerate(nodelist):
-        yy = block_top + n * deltay + extra_offset
-        positions.append((yy, node.label))
-
-    # Generate SVG
-    svg = ''
-    for y_, l in positions:
-        ylt = y_ + LABEL_OFFSET_Y - 2 * extra_offset
-        xr = label_len + xpadding
-        label_x_start = x + indent + xpadding + 0.5 * label_len
-        svg += f'''
-&lt;path d="M {x} {y} l {indent} {y - y_} h {xr}"
-    stroke="black"
-    stroke-width='.2'
-    fill='none'/&gt;
-&lt;text x="{label_x_start}" y="{ylt}"&gt;{l}&lt;/text&gt;
-&lt;circle cx="{x}" cy="{y}" r="1" fill='blue'/&gt;
-
-'''
-    return svg
-</t>
-<t tx="tom.20210803134542.18">@language python
-def create_map(parser, data):
-    """Build a mind map from data.
-    
-    The following constants must be declared
-    global to the parser:
-        
-        MARGIN_TOP -- top&amp;bottom margins in px
-        Q_ADV -- average horizontal advance per character
-        LEVEL_1_JUNCTION_X -- Horiz. position of 1st level labels
-        SVG_HEADER
-        SVG_TRAILER
-        
-    
-    ARGUMENTS
-    parser -- a parser class, which must be an subclass 
-              of the AbstractParser class.
-    
-    data -- the data to be consumed by the parser.
-    
-    RETURNS
-    the SVG markup for a mind map.
-    """
-    pars = parser(data)
-    root = pars.parse()
-
-    blocks = create_blocks(root)
-
-    # Lay out right side of map
-    left = 1.2 * Q_ADV * LABEL_MAX_CHRS + LEVEL_1_JUNCTION_X
-    axes, layout, remaining = layout_am_blocks(left, blocks)
-    first_level = layout_am_1st_level(root, left, axes)
-
-    # Lay out left side of map
-    left = VBX + 5 * Q_ADV
-    leftover_svg = ''
-    if remaining:
-        axes, pm_layout, leftout = layout_pm_blocks(left, remaining)
-        layout += pm_layout
-        first_level += layout_pm_1st_level(root, left, axes, bool(leftout))
-
-        # Handle overflow blocks
-        leftover_svg = handle_leftovers(leftout)
-
-    svg = (SVG_HEADER
-          + layout
-          + first_level 
-          + leftover_svg
-          + root_image(root.label) 
-          + SVG_TRAILER)
-
-    return svg
-</t>
-<t tx="tom.20210803134542.19">@language python
-def create_blocks(root):
-    """Return list of level-2 blocks.
-    A block includes the lines for each label plus the
-    leader lines that will lead from the 1st level labels
-    plus any padding.
-    
-    The blocks are centered around a height of zero.  They
-    will be moved to their level-1 position later.
-    """
-    blocks = []
-    for c in root.children:
-        items = []
-        for k in c.children:
-            label = k.label
-            item = Item(label)
-            item.width = FONT_RESCALE * FM.width(label)
-            items.append(item)
-
-        block = Block()
-        block.items = items
-        block.set_height(PITCH, V_PADDING)
-        block.set_width()
-        blocks.append(block)
-
-    height = 0
-    width = 0
-    for bl in blocks:
-        height += bl.height
-        width = max(width, bl.width)
-
-    return blocks
-
-</t>
-<t tx="tom.20210803134542.2">@language python
-from os.path import join, isdir
-from os import mkdir
-import webbrowser
-from leo.core.leoQt import QtGui
-
-QFontMetrics = QtGui.QFontMetrics
-QFont = QtGui.QFont
-QFontInfo = QtGui.QFontInfo
-</t>
-<t tx="tom.20210803134542.20">@language python
-def layout_am_1st_level(root, left, heights):
-    """Build the first level nodes from a parse root.
-    
-    Builds the right (AM) side labels.
-
-    The following constants must be declared
-    global to the parser:
-        
-        MARGIN_TOP
-        Q_ADV
-        LEVEL_1_JUNCTION_X
-       
-    
-    ARGUMENTS
-    root -- the root returned by the parser.
-    left -- x coordinate for the left edge of 2nd level blocks.
-    heights -- a list of the axes of the 2nd-level blocks,
-               in the same order as the first level nodes.
-    
-    RETURNS
-    the SVG markup for a mind map.
-    """
-
-    # Layout parameters
-    label_width, _ = get_longest_label(root.children)
-    #leader_width = label_width + 4 * Q_ADV
-    leader_width = left - LEVEL_1_JUNCTION_X
-    leader_svg = level_1_labels = ''
-    elements = len(heights)
-
-    for m, k in enumerate(root.children[:elements]):
-        label = k.label
-        x = LEVEL_1_JUNCTION_X
-        y = heights[m]
-        x1 = x - 3 * Q_ADV
-        leader_svg += leader_path(x, y, leader_width)
-        level_1_labels += label_svg(label, x1, y)
-
-    svg = leader_svg + level_1_labels
-
-    return svg
-</t>
-<t tx="tom.20210803134542.21">@language python
-def layout_pm_1st_level(root, left, heights, overflow):
-    """Build the first level nodes from a parse root.
-    
-    Builds the left (PM) side labels.
-    
-    The following constants must be declared
-    global to the parser:
-        
-        MARGIN_TOP
-        Q_ADV
-        LEVEL_1_JUNCTION_X
-       
-    
-    ARGUMENTS
-    root -- the root returned by the parser.
-    left -- x coordinate for the left edge of 2nd level blocks.
-    heights -- a list of the axes of the 2nd-level blocks,
-               in the same order as the first level nodes.
-    overflow -- True if there are blocks left out of the layout.
-    
-    RETURNS
-    the SVG markup for a mind map.
-    """
-
-    # Layout parameters
-    label_width, _ = get_longest_label(root.children)
-    #leader_width = left - LEVEL_1_JUNCTION_X
-    #leader_width = - LEVEL_1_JUNCTION_X
-    leader_svg = level_1_labels = ''
-
-    # 1st PM element starts at len(root.children) - len(heights)
-    startat = len(root.children) - len(heights)
-    if overflow:
-        startat -= 1
-    elements = len(heights)
-
-    for m, k in enumerate(root.children[startat:startat + elements]):
-        label = k.label
-        x = heights[m][1]
-        y = heights[m][0]
-        x1 = x - 3 * Q_ADV
-        leader_svg += \
-                f'''&lt;path d="M 0 0 L{-LEVEL_1_JUNCTION_X} {y} {x} {y}" 
-    stroke="black"
-    stroke-width='.2'
-    fill='none'/&gt;'''
-
-        level_1_labels += label_svg(label, x1, y)
-
-    svg = leader_svg + level_1_labels
-
-    return svg
-</t>
-<t tx="tom.20210803134542.22">def layout_am_blocks(x, blocklist):
-    """Return SVG for the level-2 blocks on the right.
-    
-    ARGUMENTS
-    x -- the left hand edge positioning of the blocks.
-    blocklist -- a list of the blocks to be laid out.
-    
-    RETURNS
-    a list of the y value of the block axes,
-    the svg markup for these blocks, and
-    a list of the remaining blocks that didn't
-    fit in the layout.    
-    """
-
-    svg = ''
-    level_2_heights = []
-    y = VBY + MARGIN_TOP/2
-
-    remaining = []
-    for n, bl in enumerate(blocklist):
-        if y + bl.height &gt; -VBY:
-            remaining = blocklist[n:]
-            break
-        ax, markup = layout_am_block(x, y, bl)
-        svg += markup
-        level_2_heights.append(ax)
-        y += bl.height
-
-    return level_2_heights, svg, remaining
-</t>
-<t tx="tom.20210803134542.23">def layout_pm_blocks(x, blocklist):
-    """Return SVG for the level-2 blocks on the left.
-    
-    ARGUMENTS
-    x -- the left hand edge positioning of the blocks.
-    blocklist -- a list of the blocks to be laid out.
-    
-    RETURNS
-    a list of the y value of the block axes,
-    the svg markup for these blocks, and
-    a list of the remaining blocks that didn't
-    fit in the layout.    
-    """
-
-    svg = ''
-    level_2_heights = []
-    y = -VBY - MARGIN_TOP/2
-
-    remaining = []
-    for n, bl in enumerate(blocklist):
-        if y - bl.height &lt; VBY:
-            remaining = blocklist[n:]
-            break
-        junction_y, junction_x, markup = layout_pm_block(x, y, bl)
-        svg += markup
-        level_2_heights.append((junction_y, junction_x))
-        y -= bl.height
-
-    return level_2_heights, svg, remaining
-</t>
-<t tx="tom.20210803134542.24">@language python
-def layout_am_block(x, y, block):
-    """Lay out one block with the top given by y."""
-    ht = block.height
-    wd = block.width
-    axis = y + (1. * ht) / 2
-    label_markup = ''
-    line_markup = ''
-    for n, item in enumerate(block.items):
-        label = item.label
-        label_y = y + (n + 1) * PITCH
-        line_y = y + (n + 1) * PITCH
-        line_ystr = f'{line_y:.3f}'
-        label_markup +=  label_svg(label, x + .5 * LABEL_OFFSET_X, label_y)
-        line_markup += f'''&lt;path d="M {x} {axis} L{ x + LABEL_OFFSET_X} {line_ystr} h {wd - LABEL_OFFSET_X}" stroke="black"
-    stroke-width='.2'
-    fill='none'/&gt;
-'''
-
-    return axis, label_markup + line_markup
-
-</t>
-<t tx="tom.20210803134542.25">@language python
-def layout_pm_block(x, y, block):
-    """Lay out one block with the top given by y."""
-    ht = block.height
-    wd = block.width
-    fanout_left = x + wd - 1.8 * LABEL_OFFSET_X
-    fanout_right = fanout_left + LABEL_OFFSET_X + Q_ADV
-    axis_y = y - (1. * ht) / 2
-    label_markup = ''
-    line_markup = ''
-    for n, item in enumerate(reversed(block.items)):
-        label = item.label
-        label_y = y - (n + 1) * PITCH
-        line_y = y - (n + 1) * PITCH
-        line_ystr = f'{line_y:.3f}'
-        lable_x = x - LABEL_OFFSET_X - 3 * Q_ADV
-        label_markup +=  label_svg(label, lable_x, label_y)
-        line_markup += f'''&lt;path d="M {fanout_right} {axis_y} L{ fanout_left} {line_ystr} h {- wd + LABEL_OFFSET_X}" stroke="black"
-    stroke-width='.2'
-    fill='none'/&gt;
-'''
-
-    return axis_y, fanout_right, label_markup + line_markup
-
-</t>
-<t tx="tom.20210803134542.26">def handle_leftovers(leftovers):
-    svg = ''
-    n = 0
-    for b in leftovers:
-        n += len(b.items)
-    if n:
-        msg = f'(Plus {n} more not shown)'
-        label_width = FONT_RESCALE * FM.width(msg)
-        height = 1.5 * Q_LINESPACE 
-        xpadding = 3 * Q_ADV
-        width = label_width + xpadding
-        label_x = -.5 * (label_width  - xpadding)
-
-        x = -0.5 * width
-        y = -0.5 * height + VBY + .5 * MARGIN_TOP
-        yt = y + 0.5 * height + X_HEIGHT
-
-        svg += f'''&lt;line x1='0' y1='0' x2='0' y2='{y + .5 * height}' 
-stroke='black' stroke-width='.2'/&gt;'''
-
-        svg += f'''
-&lt;rect width="{width}" height="{height}"
-    x="{x}" y="{y}" fill="white"
-    rx='2'
-    style="stroke:none;"/&gt;
-&lt;text x="{label_x}" y="{yt}"&gt;{msg}&lt;/text&gt;
-'''
-
-
-    return svg
-
-</t>
-<t tx="tom.20210803134542.27">@language python
-def render_with_device(markup):
-    if RENDERING_DEVICE == 'freewin':
-        c.p.b += ' '
-        c.executeMinibufferCommand('z-open-freewin')
-    elif RENDERING_DEVICE == 'vr3':
-        c.executeMinibufferCommand('vr3-update')
-    elif RENDERING_DEVICE == 'browser':
-        lm = g.app.loadManager
-        leodir = lm.computeHomeLeoDir()
-        tmp_path = join(leodir, 'temp')
-        if not isdir(tmp_path):
-            mkdir(tmp_path)
-        path = join(tmp_path, 'mmap_out.html')
-        with open(path, 'w') as f:
-            f.write(markup)
-        webbrowser.open_new_tab(path)
-    else:
-        g.es('No rendering device available', color='red')
-
-</t>
-<t tx="tom.20210803134542.28">@language python
-def find_or_create_target(c, headline, markup):
-    """Find or create node with given headline.
-    
-    If the node has to be created, it is created after the
-    last visible node. At exit, the target node is selected.
-    The given markup text is inserted into the body of the 
-    target node
-    
-    ARGUMENTS
-    c -- the commander for the current outline
-    headline -- the exact headline of the target node.
-    markup -- the markup text to be inserted into the target node.
-    
-    RETURNS
-    nothing
-    """
-    target = get_target_node(c, headline)
-    if target:
-        target.b = markup
-        target.setDirty()
-        c.selectPosition(target)
-    else:
-        # Create and select target node
-        p_last = c.lastVisible()
-        target = p_last.insertAfter()
-        target.h = headline
-        target.b = markup
-        target.setDirty()
-        c.selectPosition(target)
-        while c.canMoveOutlineLeft():
-            c.executeMinibufferCommand('move-outline-left')
-        c.redraw()
-</t>
-<t tx="tom.20210803134542.29">def build_mmap(data):
-    """Parse data and build mindmap."""
-    data = data.replace('&amp;', '+').replace('&lt;', ' ')
-    svg = create_map(IndentedParser, data)
-
-    find_or_create_target(c, TARGET_NODE, svg)
-    render_with_device(svg)
-
-    # Let others know body has changed.
-    editor = c.frame.body.wrapper.widget
-    doc = editor.document()
-    doc.setModified(True)
-</t>
-<t tx="tom.20210803134542.3">@language python
-FONT_FAMILY = 'corbel'
-FONT_SIZE = 2.4 # will be scaled by svg engine
-VBX = VBY = -100
-VBW = VBH = 200
-
-SVG_HEADER = f'''&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;svg viewBox="{VBX} {VBY} {VBW} {VBH}"
-    xmlns="http://www.w3.org/2000/svg"&gt;
-
-&lt;style&gt;
-text {{
-    font-family:{FONT_FAMILY};
-    font-size:{FONT_SIZE}pt;
-    font-weight:bold;
-    text-anchor:start;
-}}
-
-&lt;/style&gt;
-
-&lt;!--rect id='frame' width='{VBW}' height='{VBH}'
-    x='{VBX}' y='{VBY}'
-    style="stroke:black; stroke-width:.4" fill='none'/--&gt;
-
-'''
-SVG_TRAILER = '&lt;/svg&gt;\n'
-
-# Settings
-DEFAULT_RENDERING_DEVICE = 'vr3'
-RENDERING_SETTING_STR = 'mmap_render_dev'
-# Possible values: freewin, vr3, browser
-RENDERING_DEVICE_VALUES = ('freewin', 'vr3', 'browser')
-RENDERING_DEVICE = c.config.getString(RENDERING_SETTING_STR) or DEFAULT_RENDERING_DEVICE
-if RENDERING_DEVICE not in RENDERING_DEVICE_VALUES:
-    RENDERING_DEVICE = DEFAULT_RENDERING_DEVICE
-
-TARGET_SETTING_STR = 'mmap-target-node'
-TARGET_NODE = c.config.getString(TARGET_SETTING_STR) or '@clean mmap.html'
-
-
-</t>
-<t tx="tom.20210803134542.30">@language python
-c.build_mmap = build_mmap</t>
-<t tx="tom.20210803134542.4">@language python
-# Need a qapp for font metrics to work
-# even if we aren't using it for anything else
-#qapp = QApplication
-
-qf = QFont(FONT_FAMILY, int(FONT_SIZE))
-qfont = QFontInfo(qf) # Uses actual font if different
-FM = QFontMetrics(qf)
-
-FONT_RESCALE = FONT_SIZE / int(FONT_SIZE)
-
-Q_ADV = FONT_RESCALE * FM.horizontalAdvance('c')
-Q_LINESPACE = FONT_RESCALE * FM.lineSpacing()
-Q_HEIGHT = FONT_RESCALE * FM.height()
-X_HEIGHT = FONT_RESCALE * FM.xHeight()
-Q_UNDER  = FONT_RESCALE * FM.underlinePos()
-
-LABEL_OFFSET_X = 6 * Q_ADV
-LABEL_OFFSET_Y = -1
-LABEL_MAX_CHRS = 26
-LEADER_X_LEN = 13
-LEVEL_1_JUNCTION_X = 18
-MARGIN_TOP = 20
-
-PITCH = 1.2 * Q_LINESPACE
-V_PADDING = 2 * Q_LINESPACE
-</t>
-<t tx="tom.20210803134542.5">@language python
-def normalize_indent(line):
-    """Replace tabs with 4 spaces, return indent #."""
-    indent = ''
-    for ch in line:
-        if ch not in (" ", "\t"):
-            break
-        indent += ch
-    indent = len(indent.replace('\t', ' ' * 4))
-
-    return indent // 4
-
-</t>
-<t tx="tom.20210803134542.6">def get_target_node(c, headline):
-    """Find target node if running in Leo."""
-    target = None
-    for p in c.all_unique_positions():
-        if p.h == headline:
-            target = p
-    return target
-
-</t>
-<t tx="tom.20210803134542.7">@language python
-class Node:
-    def __init__(self, label, depth=0):
-        self.depth = depth
-        self.label = label
-        self.id = ''
-        self.children = []
-
-</t>
-<t tx="tom.20210803134542.8">@language python
-class AbstractParser:
-    def __init__(self):
-        self.level_1_cnt = 0
-        self.level_2_cnt = 0
-        self.root = None
-
-    def parse(self):
-        """Returns the root node with children to depth 2."""
-        raise NotImplementedError()
-
-    def count_levels(self, start):
-        """Count depth 1 and depth 2 children."""
-        depth1 = len(start.children)
-        depth2 = 0
-        for c in start.children:
-            for c2 in c.children:
-                depth2 += 1
-        return depth1, depth2
-
-</t>
-<t tx="tom.20210803134542.9">@language python
-class IndentedParser(AbstractParser):
-    """Parse indented list to depth 2."""
-
-    def __init__(self, text=''):
-        super().__init__()
-        self.text = text
-
-    def parse(self):
-        """Returns the root node with children to depth 2."""
-        lines = self.text.split('\n')
-        lines = [l for l in lines if l.strip()]
-
-        # Check initial indent
-        first_indent = normalize_indent(lines[0])
-        if first_indent:
-            print('First line should not be indented')
-            return None
-
-        first = True
-        rootnode = None
-        for line in lines:
-            depth = normalize_indent(line)
-            if len(line) &gt; LABEL_MAX_CHRS and depth &gt; 0:
-                line = line[:LABEL_MAX_CHRS] + '...'
-
-            if depth == 0:
-                if not first: break # only one root allowed
-                first =  False
-                rootnode = Node(line, depth)
-            elif depth &gt; 2:
-                continue
-            elif depth == 1:
-                # All depth 1 nodes are children of the root
-                n1 = Node(line.lstrip(), 1)
-                rootnode.children.append(n1)
-            elif depth == 2:
-                # Depth 2 nodes are children of the last depth 1 node
-                n2 = Node(line.lstrip(), 2)
-                rootnode.children[-1].children.append(n2)
-
-        self.root = rootnode
-        self.level_1_cnt, self.level_2_cnt = self.count_levels(rootnode)
-        return rootnode
-
-</t>
 <t tx="tom.20210803134601.1">@language python
 data = c.p.b
 data = data.replace('&amp;', '+').replace('&lt;', ' ')
@@ -6540,5 +5769,777 @@ much clutter and too small type sizes.</t>
 - On linux, the vertical location of the label of the central image may not be well-centered;
 
 - Handling of "&lt;&lt;", "&gt;&gt;" strings and HTML entities is difficult and could be improved.</t>
+<t tx="tom.20210808144800.1">@tabwidth -4
+@language python
+"""A mindmap svg generator for trees and indented lists..
+
+This command adds a function to the outline commander c that is
+used by the top-level mind mapping commands.  This function
+generates the svg output for a mindmap and renders it in
+the specified rendering pane or program.  The rendering
+"device" is specified by the setting "mmap_render_dev".
+
+@string settings:
+mmap_render_dev -- output "device". One of ('vr3', 'freewin', 'browser').
+                   Default: "vr3"
+mmap-target-node -- name of node where svg output will be copied to.
+                    Default: "@clean mmap.html"
+
+"""
+@others
+</t>
+<t tx="tom.20210808144800.10">@language python
+class Item:
+    """Holds descriptive data about a mmap item."""
+
+    def __init__(self, label=''):
+        self.label = label
+        self.width = 0 # Width of the label from Font Metrics
+        self.ypos = 0
+
+    def __repr__(self):
+        return f'Item({self.label})'
+</t>
+<t tx="tom.20210808144800.11">@language python
+class Block:
+    """Contains a description of a collection of related Items."""
+
+    def __init__(self):
+        self.items = []
+        self.width = 0
+        self.height = 0 # Total height including padding
+        self.axis = 0 # Y position of the axis of this block of items.
+
+    def set_height(self, pitch, padding):
+        self.height = padding + pitch * (len(self.items) - 1)
+
+    def set_width(self, padding=0):
+        width = 0
+        for item in self.items:
+            width = max(width, item.width)
+        self.width = width + LABEL_OFFSET_X
+
+</t>
+<t tx="tom.20210808144800.12">
+def count_nodes(node, depth=1):
+    """Count the number of entries in a node.
+    
+     A Node object contains a list of child nodes
+     and a depth property.  We are only going to go
+     to depth 2 at most.
+    
+    ARGUMENTS
+    node -- a Node object;
+    depth -- the number of levels to count.
+    
+    RETURNS
+    the count as an integer.
+    """
+
+    def count_children(node):
+        return len(node.children)
+
+    cnt = 0
+    depth = min(depth, 2)
+    for n in node.children:
+        cnt += 1
+        for c in n.children:
+            if c.depth &lt;= depth:
+                cnt += 1
+                cnt += len(c.children)
+    return cnt
+</t>
+<t tx="tom.20210808144800.13">@language python
+def root_image(label='Main Node'):
+    """Return svg markup for the map's central object.
+    
+       The object will be sized  to fit its label.
+    """
+    if label.startswith('@'):
+        _, label = label.split()
+        label = basename(label)
+    label_width = FONT_RESCALE * FM.horizontalAdvance(label)
+    height = 1.5 * Q_LINESPACE 
+    xpadding = 3 * Q_ADV
+    width = label_width + xpadding
+    label_x = -.5 * (label_width  - xpadding)
+
+    x = -0.5 * width
+    y = -0.5 * height
+
+    return f'''
+&lt;rect id="central-image" width="{width}" height="{height}"
+    x="{x}" y="{y}" fill="aliceblue"
+    rx='2'
+    style="stroke:black; stroke-width:.1"/&gt;
+&lt;text x="{label_x}" y="{X_HEIGHT}"&gt;{label}&lt;/text&gt;
+'''
+
+</t>
+<t tx="tom.20210808144800.14">@language python
+def get_longest_label(nodelist):
+    """Return the width of the longest label.
+
+    The width equals the font metric's width for
+    the label.
+    
+    RETURNS
+    a tuple (length, text)
+    """
+
+    xpadding = 3 * Q_ADV
+    _maxlen = 0
+    longest_label = ''
+
+    for n in nodelist:
+        newlen = len(n.label)
+        if newlen &gt; _maxlen:
+            _maxlen = newlen
+            longest_label = n.label
+
+    label_len = FM.horizontalAdvance(longest_label) + xpadding
+
+    return label_len, longest_label
+</t>
+<t tx="tom.20210808144800.15">@language python
+def leader_path(x, y, width=LEADER_X_LEN):
+    path = f'''
+&lt;path d="M 0 0 l {x} {y} h {width}" 
+    stroke="black"
+    stroke-width='.2'
+    fill='none'/&gt;
+'''
+    return path
+</t>
+<t tx="tom.20210808144800.16">@language python
+def label_svg(label, x, y):
+    svg = f'''&lt;text x="{x + LABEL_OFFSET_X}" 
+      y="{y + LABEL_OFFSET_Y:.3f}"&gt;{label}&lt;/text&gt;
+
+'''
+    return svg
+</t>
+<t tx="tom.20210808144800.17">@language python
+def level2_group(x, y, nodelist):
+    """Generate svg for the depth 2 children of a node.
+
+       The labels are spaced 2 line heights apart.     
+    
+       ARGUMENTS
+       x, y -- the center-left coordinates for the layout.
+       nodelist - a list of the nodes to lay out.
+       
+       RETURNS
+       the generated svg.
+    """
+    # pylint: disable=too-many-locals
+    if not nodelist:
+        return ''\
+
+    xpadding = 3 * Q_ADV
+    indent = 5 * Q_ADV
+    linespace = 1.2 * Q_LINESPACE
+    _maxlen = 0
+    extra_offset = 0.5 * Q_LINESPACE if \
+                    len(nodelist) == 1 else 0
+    _maxlen, longest_label = get_longest_label(nodelist)
+    #label_len = FM.horizontalAdvance(longest_label) + xpadding
+    label_len = FM.horizontalAdvance(longest_label)
+
+    # get label positions around 0
+    block_height = 2 * (len(nodelist) - 1) * .5 * linespace
+    block_top = y - .5 * block_height
+    deltay = 2 * .5 * linespace
+    positions = [] # [(yy, label), ...]
+
+    for n, node in enumerate(nodelist):
+        yy = block_top + n * deltay + extra_offset
+        positions.append((yy, node.label))
+
+    # Generate SVG
+    svg = ''
+    for y_, l in positions:
+        ylt = y_ + LABEL_OFFSET_Y - 2 * extra_offset
+        xr = label_len + xpadding
+        label_x_start = x + indent + xpadding + 0.5 * label_len
+        svg += f'''
+&lt;path d="M {x} {y} l {indent} {y - y_} h {xr}"
+    stroke="black"
+    stroke-width='.2'
+    fill='none'/&gt;
+&lt;text x="{label_x_start}" y="{ylt}"&gt;{l}&lt;/text&gt;
+&lt;circle cx="{x}" cy="{y}" r="1" fill='blue'/&gt;
+
+'''
+    return svg
+</t>
+<t tx="tom.20210808144800.18">@language python
+def create_map(parser, data):
+    """Build a mind map from data.
+    
+    The following constants must be declared
+    global to the parser:
+        
+        MARGIN_TOP -- top&amp;bottom margins in px
+        Q_ADV -- average horizontal advance per character
+        LEVEL_1_JUNCTION_X -- Horiz. position of 1st level labels
+        SVG_HEADER
+        SVG_TRAILER
+        
+    
+    ARGUMENTS
+    parser -- a parser class, which must be an subclass 
+              of the AbstractParser class.
+    
+    data -- the data to be consumed by the parser.
+    
+    RETURNS
+    the SVG markup for a mind map.
+    """
+    pars = parser(data)
+    root = pars.parse()
+
+    blocks = create_blocks(root)
+
+    # Lay out right side of map
+    left = 1.2 * Q_ADV * LABEL_MAX_CHRS + LEVEL_1_JUNCTION_X
+    axes, layout, remaining = layout_am_blocks(left, blocks)
+    first_level = layout_am_1st_level(root, left, axes)
+
+    # Lay out left side of map
+    left = VBX + 5 * Q_ADV
+    leftover_svg = ''
+    if remaining:
+        axes, pm_layout, leftout = layout_pm_blocks(left, remaining)
+        layout += pm_layout
+        first_level += layout_pm_1st_level(root, left, axes, bool(leftout))
+
+        # Handle overflow blocks
+        leftover_svg = handle_leftovers(leftout)
+
+    svg = (SVG_HEADER
+          + layout
+          + first_level 
+          + leftover_svg
+          + root_image(root.label) 
+          + SVG_TRAILER)
+
+    return svg
+</t>
+<t tx="tom.20210808144800.19">@language python
+def create_blocks(root):
+    """Return list of level-2 blocks.
+    A block includes the lines for each label plus the
+    leader lines that will lead from the 1st level labels
+    plus any padding.
+    
+    The blocks are centered around a height of zero.  They
+    will be moved to their level-1 position later.
+    """
+    blocks = []
+    for c in root.children:
+        items = []
+        for k in c.children:
+            label = k.label
+            item = Item(label)
+            item.width = FONT_RESCALE * FM.horizontalAdvance(label)
+            items.append(item)
+
+        block = Block()
+        block.items = items
+        block.set_height(PITCH, V_PADDING)
+        block.set_width()
+        blocks.append(block)
+
+    height = 0
+    width = 0
+    for bl in blocks:
+        height += bl.height
+        width = max(width, bl.width)
+
+    return blocks
+
+</t>
+<t tx="tom.20210808144800.2">@language python
+from os.path import join, isdir, basename
+from os import mkdir
+import webbrowser
+from leo.core.leoQt import QtGui
+
+QFontMetrics = QtGui.QFontMetrics
+QFont = QtGui.QFont
+QFontInfo = QtGui.QFontInfo
+</t>
+<t tx="tom.20210808144800.20">@language python
+def layout_am_1st_level(root, left, heights):
+    """Build the first level nodes from a parse root.
+    
+    Builds the right (AM) side labels.
+
+    The following constants must be declared
+    global to the parser:
+        
+        MARGIN_TOP
+        Q_ADV
+        LEVEL_1_JUNCTION_X
+       
+    
+    ARGUMENTS
+    root -- the root returned by the parser.
+    left -- x coordinate for the left edge of 2nd level blocks.
+    heights -- a list of the axes of the 2nd-level blocks,
+               in the same order as the first level nodes.
+    
+    RETURNS
+    the SVG markup for a mind map.
+    """
+
+    # Layout parameters
+    label_width, _ = get_longest_label(root.children)
+    #leader_width = label_width + 4 * Q_ADV
+    leader_width = left - LEVEL_1_JUNCTION_X
+    leader_svg = level_1_labels = ''
+    elements = len(heights)
+
+    for m, k in enumerate(root.children[:elements]):
+        label = k.label
+        x = LEVEL_1_JUNCTION_X
+        y = heights[m]
+        x1 = x - 3 * Q_ADV
+        leader_svg += leader_path(x, y, leader_width)
+        level_1_labels += label_svg(label, x1, y)
+
+    svg = leader_svg + level_1_labels
+
+    return svg
+</t>
+<t tx="tom.20210808144800.21">@language python
+def layout_pm_1st_level(root, left, heights, overflow):
+    """Build the first level nodes from a parse root.
+    
+    Builds the left (PM) side labels.
+    
+    The following constants must be declared
+    global to the parser:
+        
+        MARGIN_TOP
+        Q_ADV
+        LEVEL_1_JUNCTION_X
+       
+    
+    ARGUMENTS
+    root -- the root returned by the parser.
+    left -- x coordinate for the left edge of 2nd level blocks.
+    heights -- a list of the axes of the 2nd-level blocks,
+               in the same order as the first level nodes.
+    overflow -- True if there are blocks left out of the layout.
+    
+    RETURNS
+    the SVG markup for a mind map.
+    """
+
+    # Layout parameters
+    label_width, _ = get_longest_label(root.children)
+    #leader_width = left - LEVEL_1_JUNCTION_X
+    #leader_width = - LEVEL_1_JUNCTION_X
+    leader_svg = level_1_labels = ''
+
+    # 1st PM element starts at len(root.children) - len(heights)
+    startat = len(root.children) - len(heights)
+    if overflow:
+        startat -= 1
+    elements = len(heights)
+
+    for m, k in enumerate(root.children[startat:startat + elements]):
+        label = k.label
+        x = heights[m][1]
+        y = heights[m][0]
+        x1 = x - 3 * Q_ADV
+        leader_svg += \
+                f'''&lt;path d="M 0 0 L{-LEVEL_1_JUNCTION_X} {y} {x} {y}" 
+    stroke="black"
+    stroke-width='.2'
+    fill='none'/&gt;'''
+
+        level_1_labels += label_svg(label, x1, y)
+
+    svg = leader_svg + level_1_labels
+
+    return svg
+</t>
+<t tx="tom.20210808144800.22">def layout_am_blocks(x, blocklist):
+    """Return SVG for the level-2 blocks on the right.
+    
+    ARGUMENTS
+    x -- the left hand edge positioning of the blocks.
+    blocklist -- a list of the blocks to be laid out.
+    
+    RETURNS
+    a list of the y value of the block axes,
+    the svg markup for these blocks, and
+    a list of the remaining blocks that didn't
+    fit in the layout.    
+    """
+
+    svg = ''
+    level_2_heights = []
+    y = VBY + MARGIN_TOP/2
+
+    remaining = []
+    for n, bl in enumerate(blocklist):
+        if y + bl.height &gt; -VBY:
+            remaining = blocklist[n:]
+            break
+        ax, markup = layout_am_block(x, y, bl)
+        svg += markup
+        level_2_heights.append(ax)
+        y += bl.height
+
+    return level_2_heights, svg, remaining
+</t>
+<t tx="tom.20210808144800.23">def layout_pm_blocks(x, blocklist):
+    """Return SVG for the level-2 blocks on the left.
+    
+    ARGUMENTS
+    x -- the left hand edge positioning of the blocks.
+    blocklist -- a list of the blocks to be laid out.
+    
+    RETURNS
+    a list of the y value of the block axes,
+    the svg markup for these blocks, and
+    a list of the remaining blocks that didn't
+    fit in the layout.    
+    """
+
+    svg = ''
+    level_2_heights = []
+    y = -VBY - MARGIN_TOP/2
+
+    remaining = []
+    for n, bl in enumerate(blocklist):
+        if y - bl.height &lt; VBY:
+            remaining = blocklist[n:]
+            break
+        junction_y, junction_x, markup = layout_pm_block(x, y, bl)
+        svg += markup
+        level_2_heights.append((junction_y, junction_x))
+        y -= bl.height
+
+    return level_2_heights, svg, remaining
+</t>
+<t tx="tom.20210808144800.24">@language python
+def layout_am_block(x, y, block):
+    """Lay out one block with the top given by y."""
+    ht = block.height
+    wd = block.width
+    axis = y + (1. * ht) / 2
+    label_markup = ''
+    line_markup = ''
+    for n, item in enumerate(block.items):
+        label = item.label
+        label_y = y + (n + 1) * PITCH
+        line_y = y + (n + 1) * PITCH
+        line_ystr = f'{line_y:.3f}'
+        label_markup +=  label_svg(label, x + .5 * LABEL_OFFSET_X, label_y)
+        line_markup += f'''&lt;path d="M {x} {axis} L{ x + LABEL_OFFSET_X} {line_ystr} h {wd - LABEL_OFFSET_X}" stroke="black"
+    stroke-width='.2'
+    fill='none'/&gt;
+'''
+
+    return axis, label_markup + line_markup
+
+</t>
+<t tx="tom.20210808144800.25">@language python
+def layout_pm_block(x, y, block):
+    """Lay out one block with the top given by y."""
+    ht = block.height
+    wd = block.width
+    fanout_left = x + wd - 1.8 * LABEL_OFFSET_X
+    fanout_right = fanout_left + LABEL_OFFSET_X + Q_ADV
+    axis_y = y - (1. * ht) / 2
+    label_markup = ''
+    line_markup = ''
+    for n, item in enumerate(reversed(block.items)):
+        label = item.label
+        label_y = y - (n + 1) * PITCH
+        line_y = y - (n + 1) * PITCH
+        line_ystr = f'{line_y:.3f}'
+        lable_x = x - LABEL_OFFSET_X - 3 * Q_ADV
+        label_markup +=  label_svg(label, lable_x, label_y)
+        line_markup += f'''&lt;path d="M {fanout_right} {axis_y} L{ fanout_left} {line_ystr} h {- wd + LABEL_OFFSET_X}" stroke="black"
+    stroke-width='.2'
+    fill='none'/&gt;
+'''
+
+    return axis_y, fanout_right, label_markup + line_markup
+
+</t>
+<t tx="tom.20210808144800.26">def handle_leftovers(leftovers):
+    svg = ''
+    n = 0
+    for b in leftovers:
+        n += len(b.items)
+    if n:
+        msg = f'(Plus {n} more not shown)'
+        label_width = FONT_RESCALE * FM.horizontalAdvance(msg)
+        height = 1.5 * Q_LINESPACE 
+        xpadding = 3 * Q_ADV
+        width = label_width + xpadding
+        label_x = -.5 * (label_width  - xpadding)
+
+        x = -0.5 * width
+        y = -0.5 * height + VBY + .5 * MARGIN_TOP
+        yt = y + 0.5 * height + X_HEIGHT
+
+        svg += f'''&lt;line x1='0' y1='0' x2='0' y2='{y + .5 * height}' 
+stroke='black' stroke-width='.2'/&gt;'''
+
+        svg += f'''
+&lt;rect width="{width}" height="{height}"
+    x="{x}" y="{y}" fill="white"
+    rx='2'
+    style="stroke:none;"/&gt;
+&lt;text x="{label_x}" y="{yt}"&gt;{msg}&lt;/text&gt;
+'''
+
+
+    return svg
+
+</t>
+<t tx="tom.20210808144800.27">@language python
+def render_with_device(markup):
+    if RENDERING_DEVICE == 'freewin':
+        c.p.b += ' '
+        c.executeMinibufferCommand('z-open-freewin')
+    elif RENDERING_DEVICE == 'vr3':
+        c.executeMinibufferCommand('vr3-update')
+    elif RENDERING_DEVICE == 'browser':
+        lm = g.app.loadManager
+        leodir = lm.computeHomeLeoDir()
+        tmp_path = join(leodir, 'temp')
+        if not isdir(tmp_path):
+            mkdir(tmp_path)
+        path = join(tmp_path, 'mmap_out.html')
+        with open(path, 'w') as f:
+            f.write(markup)
+        webbrowser.open_new_tab(path)
+    else:
+        g.es('No rendering device available', color='red')
+
+</t>
+<t tx="tom.20210808144800.28">@language python
+def find_or_create_target(c, headline, markup):
+    """Find or create node with given headline.
+    
+    If the node has to be created, it is created after the
+    last visible node. At exit, the target node is selected.
+    The given markup text is inserted into the body of the 
+    target node
+    
+    ARGUMENTS
+    c -- the commander for the current outline
+    headline -- the exact headline of the target node.
+    markup -- the markup text to be inserted into the target node.
+    
+    RETURNS
+    nothing
+    """
+    target = get_target_node(c, headline)
+    if target:
+        target.b = markup
+        target.setDirty()
+        c.selectPosition(target)
+    else:
+        # Create and select target node
+        p_last = c.lastVisible()
+        target = p_last.insertAfter()
+        target.h = headline
+        target.b = markup
+        target.setDirty()
+        c.selectPosition(target)
+        while c.canMoveOutlineLeft():
+            c.executeMinibufferCommand('move-outline-left')
+        c.redraw()
+</t>
+<t tx="tom.20210808144800.29">def build_mmap(data):
+    """Parse data and build mindmap."""
+    data = data.replace('&amp;', '+').replace('&lt;', ' ')
+    svg = create_map(IndentedParser, data)
+
+    find_or_create_target(c, TARGET_NODE, svg)
+    render_with_device(svg)
+
+    # Let others know body has changed.
+    editor = c.frame.body.wrapper.widget
+    doc = editor.document()
+    doc.setModified(True)
+</t>
+<t tx="tom.20210808144800.3">@language python
+FONT_FAMILY = 'corbel'
+FONT_SIZE = 2.4 # will be scaled by svg engine
+VBX = VBY = -100
+VBW = VBH = 200
+
+SVG_HEADER = f'''&lt;svg viewBox="{VBX} {VBY} {VBW} {VBH}"
+    xmlns="http://www.w3.org/2000/svg"&gt;
+
+&lt;style&gt;
+text {{
+    font-family:{FONT_FAMILY};
+    font-size:{FONT_SIZE}pt;
+    font-weight:bold;
+    text-anchor:start;
+}}
+
+&lt;/style&gt;
+
+&lt;!--rect id='frame' width='{VBW}' height='{VBH}'
+    x='{VBX}' y='{VBY}'
+    style="stroke:black; stroke-width:.4" fill='none'/--&gt;
+
+'''
+SVG_TRAILER = '&lt;/svg&gt;\n'
+
+# Settings
+DEFAULT_RENDERING_DEVICE = 'vr3'
+RENDERING_SETTING_STR = 'mmap_render_dev'
+# Possible values: freewin, vr3, browser
+RENDERING_DEVICE_VALUES = ('freewin', 'vr3', 'browser')
+RENDERING_DEVICE = c.config.getString(RENDERING_SETTING_STR) or DEFAULT_RENDERING_DEVICE
+if RENDERING_DEVICE not in RENDERING_DEVICE_VALUES:
+    RENDERING_DEVICE = DEFAULT_RENDERING_DEVICE
+
+TARGET_SETTING_STR = 'mmap-target-node'
+TARGET_NODE = c.config.getString(TARGET_SETTING_STR) or '@clean mmap.html'
+
+
+</t>
+<t tx="tom.20210808144800.30">@language python
+c.build_mmap = build_mmap</t>
+<t tx="tom.20210808144800.4">@language python
+# Need a qapp for font metrics to work
+# even if we aren't using it for anything else
+#qapp = QApplication
+
+qf = QFont(FONT_FAMILY, int(FONT_SIZE))
+qfont = QFontInfo(qf) # Uses actual font if different
+FM = QFontMetrics(qf)
+
+FONT_RESCALE = FONT_SIZE / int(FONT_SIZE)
+
+Q_ADV = FONT_RESCALE * FM.horizontalAdvance('c')
+Q_LINESPACE = FONT_RESCALE * FM.lineSpacing()
+Q_HEIGHT = FONT_RESCALE * FM.height()
+X_HEIGHT = FONT_RESCALE * FM.xHeight()
+Q_UNDER  = FONT_RESCALE * FM.underlinePos()
+
+LABEL_OFFSET_X = 6 * Q_ADV
+LABEL_OFFSET_Y = -1
+LABEL_MAX_CHRS = 26
+LEADER_X_LEN = 13
+LEVEL_1_JUNCTION_X = 18
+MARGIN_TOP = 20
+
+PITCH = 1.2 * Q_LINESPACE
+V_PADDING = 2 * Q_LINESPACE
+</t>
+<t tx="tom.20210808144800.5">@language python
+def normalize_indent(line):
+    """Replace tabs with 4 spaces, return indent #."""
+    indent = ''
+    for ch in line:
+        if ch not in (" ", "\t"):
+            break
+        indent += ch
+    indent = len(indent.replace('\t', ' ' * 4))
+
+    return indent // 4
+
+</t>
+<t tx="tom.20210808144800.6">def get_target_node(c, headline):
+    """Find target node if running in Leo."""
+    target = None
+    for p in c.all_unique_positions():
+        if p.h == headline:
+            target = p
+    return target
+
+</t>
+<t tx="tom.20210808144800.7">@language python
+class Node:
+    def __init__(self, label, depth=0):
+        self.depth = depth
+        self.label = label
+        self.id = ''
+        self.children = []
+
+</t>
+<t tx="tom.20210808144800.8">@language python
+class AbstractParser:
+    def __init__(self):
+        self.level_1_cnt = 0
+        self.level_2_cnt = 0
+        self.root = None
+
+    def parse(self):
+        """Returns the root node with children to depth 2."""
+        raise NotImplementedError()
+
+    def count_levels(self, start):
+        """Count depth 1 and depth 2 children."""
+        depth1 = len(start.children)
+        depth2 = 0
+        for c in start.children:
+            for c2 in c.children:
+                depth2 += 1
+        return depth1, depth2
+
+</t>
+<t tx="tom.20210808144800.9">@language python
+class IndentedParser(AbstractParser):
+    """Parse indented list to depth 2."""
+
+    def __init__(self, text=''):
+        super().__init__()
+        self.text = text
+
+    def parse(self):
+        """Returns the root node with children to depth 2."""
+        lines = self.text.split('\n')
+        lines = [l for l in lines if l.strip()]
+
+        # Check initial indent
+        first_indent = normalize_indent(lines[0])
+        if first_indent:
+            print('First line should not be indented')
+            return None
+
+        first = True
+        rootnode = None
+        for line in lines:
+            depth = normalize_indent(line)
+            if len(line) &gt; LABEL_MAX_CHRS and depth &gt; 0:
+                line = line[:LABEL_MAX_CHRS] + '...'
+
+            if depth == 0:
+                if not first: break # only one root allowed
+                first =  False
+                rootnode = Node(line, depth)
+            elif depth &gt; 2:
+                continue
+            elif depth == 1:
+                # All depth 1 nodes are children of the root
+                n1 = Node(line.lstrip(), 1)
+                rootnode.children.append(n1)
+            elif depth == 2:
+                # Depth 2 nodes are children of the last depth 1 node
+                n2 = Node(line.lstrip(), 2)
+                rootnode.children[-1].children.append(n2)
+
+        self.root = rootnode
+        self.level_1_cnt, self.level_2_cnt = self.count_levels(rootnode)
+        return rootnode
+
+</t>
 </tnodes>
 </leo_file>
