@@ -21,6 +21,18 @@ import time
 import unittest
 import signal
 import tkinter as Tk
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Iterable as TypingIterable,
+    List,
+    Optional,
+    Set,
+    Type,
+    Union,
+    cast,
+)
 # Third-party.
 import websockets
 # Make sure leo-editor folder is on sys.path.
@@ -3652,6 +3664,7 @@ def main():  # pragma: no cover (tested in client)
             print(f"{tag} finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
             # Check for persistence flag if all connections are closed
             if connectionsTotal == 0 and not wsPersist:
+                cancel_tasks()
                 close_Server()
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
@@ -3853,18 +3866,24 @@ def main():  # pragma: no cover (tested in client)
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
         '''
-        Close the server while using a GUI lib (tk or qt) to
-        ask the user about dirty files if any remained opened.
+        Close the server
+
+        '''
+        print('Closing Leo Server', flush=True)
+        if loop.is_running():
+            loop.stop()
+        else:
+            print('Loop was not running', flush=True)
+    #@+node:felix.20210807160828.1: *3* function:save_dirty
+    def save_dirty():
+        '''
+        Ask the user about dirty files if any remained opened.
         '''
         monkey_patch() # Replace the 'ask dialogs' methods to use a GUI
         commanders = g.app.commanders() # Get all commanders
         for commander in commanders:
             if commander.isChanged():
                 commander.close() # Patched 'ask' methods will open dialog
-        print('Closing Leo Server', flush=True)
-        asyncio.get_event_loop().stop()
-        raise KeyboardInterrupt
-        # sys.exit()
     #@+node:felix.20210803233022.1: *3* function:show_help
     def show_help():
         print('Usage:')
@@ -3888,30 +3907,73 @@ def main():  # pragma: no cover (tested in client)
 
     # Start the server.
     loop = asyncio.get_event_loop()
-
     server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
 
-    loop.run_until_complete(server)
-    signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
+    try:
+        realtime_server = loop.run_until_complete(server)
+        signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
 
-    if wsPersist:
-        signon = signon + "Persistent server "
+        if wsPersist:
+            signon = signon + "Persistent server "
 
-    if wsLimit > 1:
-        signon = signon + f"Total client limit is {wsLimit}."
+        if wsLimit > 1:
+            signon = signon + f"Total client limit is {wsLimit}."
 
-    signon = signon + "\nCtrl+c to break"
-    print(signon, flush=True)
-    loop.run_forever()
-    # Execution continues here after server is interupted (e.g. with ctrl+c)
-    server.close()
-    print("Stopping leobridge server", flush=True)
+        signon = signon + "\nCtrl+c to break"
+        print(signon, flush=True)
+        loop.run_forever()
+
+    except KeyboardInterrupt:
+        print("Process interrupted")
+    finally:
+        realtime_server.close()
+        # Execution continues here after server is interupted (e.g. with ctrl+c)
+
+        print("Stopping: Check for changed commanders", flush=True)
+        save_dirty()
+
+        _cancel_tasks(asyncio.all_tasks(loop), loop)
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()
+        asyncio.set_event_loop(None)
+
+        print("Stopped leobridge server", flush=True)
+#@+node:felix.20210807172057.1: ** function:exit
+# Stop the loop concurrently
+async def exit():
+    loop = asyncio.get_event_loop()
+    print("Stop")
+    loop.stop()
+#@+node:felix.20210807200911.1: ** function:cancel_tasks
+def cancel_tasks():
+    for task in asyncio.all_tasks():
+        print("canceling task")
+        task.cancel()
+#@+node:felix.20210807214524.1: ** function:_cancel_tasks
+def _cancel_tasks(
+    to_cancel: Set["asyncio.Task[Any]"], loop: asyncio.AbstractEventLoop
+) -> None:
+    if not to_cancel:
+        return
+
+    for task in to_cancel:
+        task.cancel()
+
+    loop.run_until_complete(asyncio.gather(*to_cancel, return_exceptions=True))
+
+    for task in to_cancel:
+        if task.cancelled():
+            continue
+        if task.exception() is not None:
+            loop.call_exception_handler(
+                {
+                    "message": "unhandled exception during asyncio.run() shutdown",
+                    "exception": task.exception(),
+                    "task": task,
+                }
+            )
 #@-others
 if __name__ == '__main__':
     # pytest will *not* execute this code.
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\nKeyboard Interupt: Stopping leoserver.py")
-        sys.exit()
+    main()
 #@-leo
