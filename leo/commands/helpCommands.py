@@ -422,21 +422,23 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.385: *4* replaceBindingPatterns
     def replaceBindingPatterns(self, s):
         """
-        For each instance of the pattern !<command-name>! is s,
+        For each instance of the pattern !<command-name>! in s,
         replace the pattern by the key binding for command-name.
         """
         c = self.c
         pattern = re.compile(r'!<(.*)>!')
         while True:
             m = pattern.search(s, 0)
-            if m is None: break
+            if m is None:
+                break
             name = m.group(1)
             junk, aList = c.config.getShortcut(name)
             for bi in aList:
                 if bi.pane == 'all':
                     key = c.k.prettyPrintKey(bi.stroke.s)
                     break
-            else: key = f"<Alt-X>{name}<Return>"
+            else:
+                key = f"<Alt-X>{name}<Return>"
             s = s[: m.start()] + key + s[m.end() :]
         return s
     #@+node:ekr.20150514063305.386: *3* helpForCreatingExternalFiles

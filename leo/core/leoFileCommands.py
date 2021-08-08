@@ -1815,8 +1815,9 @@ class FileCommands:
             self.mFileName,
             self.leo_file_encoding, reportErrors=True)
         # Write the archive.
-        theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)
-        theFile.writestr(contentsName, s)
+        # These mypy complaints look valid.
+        theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)  # type:ignore
+        theFile.writestr(contentsName, s)  # type:ignore
         theFile.close()
     #@+node:ekr.20210316034532.1: *4* fc.Writing Utils
     #@+node:ekr.20080805085257.2: *5* fc.pickle

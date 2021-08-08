@@ -6,12 +6,17 @@
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import os
+import re
 import shlex
 import sys
 import time
 #
 # Third-party imports.
 # pylint: disable=import-error
+try:
+    from mypy import api as mypy_api
+except Exception:
+    mypy_api = None
 try:
     import flake8
     from flake8 import engine, main
@@ -167,12 +172,6 @@ def flake8_command(event):
         Flake8Command(c).run()
     else:
         g.es_print('can not import flake8')
-#@+node:ekr.20210711070421.1: *3* kill-mypy
-@g.command('kill-mypy')
-@g.command('mypy-kill')
-def kill_mypy(event):
-    """Kill any running mypy processes and clear the queue."""
-    g.app.backgroundProcessManager.kill('mypy')
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
@@ -187,21 +186,29 @@ def mypy_command(event):
     @<file> node in an ancestor. Running mypy on a single file usually
     suffices.
     
-    For example, you can run mypy on most of Leo's files by selecting
+    For example, in LeoPyRef.leo, you can run mypy on most of Leo's files
+    by running this command with the following node selected:
     
       `@edit ../../launchLeo.py`
-      
-    in leoPy.leo, then running Leo's mypy command.
     
     Unlike running mypy outside of Leo, Leo's mypy command creates
     clickable links in Leo's log pane for each error.
+    
+    Settings
+    --------
+    
+    @data mypy-arguments
+    @int mypy-link-limit = 0
+    @string mypy-config-file=''
+    
+    See leoSettings.leo for details.
     """
     c = event.get('c')
     if not c:
         return
     if c.isChanged():
         c.save()
-    if mypy:
+    if mypy_api:
         MypyCommand(c).run(c.p)
     else:
         g.es_print('can not import mypy')
@@ -243,34 +250,88 @@ def pylint_command(event):
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
 
-    # bpm.put_log uses this pattern and assumes the pattern has these groups:
-    # m.group(1): A full file path.
-    # m.group(2): The line number.
-    # m.group(3): The error message.
-    link_pattern = r'^(.+):([0-9]+): error: (.*)\s*$'
-
     def __init__(self, c):
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.seen = []  # List of checked paths.
+        self.link_limit  = None  # Set in check_file.
+        self.unknown_path_names = []
+        # Settings.
+        self.args = c.config.getData('mypy-arguments') or []
+        self.config_file = c.config.getString('mypy-config-file') or None
+        self.link_limit = c.config.getInt('mypy-link-limit') or 0
 
     #@+others
     #@+node:ekr.20210302111935.3: *3* mypy.check_all
     def check_all(self, roots):
-        """Run pyflakes on all files in paths."""
+        """Run mypy on all files in paths."""
         c = self.c
-        bpm = g.app.backgroundProcessManager
-        bpm.unknown_path_names = []
+        self.unknown_path_names = []
         for root in roots:
-            fn = self.finalize(root)
-            bpm.start_process(c,
-                command='mypy',
-                fn=fn,
-                kind='mypy',
-                link_pattern=self.link_pattern,
-                link_root=None,  # Use the file name in the mypy error messages.
-                shell=True, # 2021/04/30.
-            )
+            fn = os.path.normpath(g.fullPath(c, root))
+            self.check_file(fn)
+        
+    #@+node:ekr.20210727212625.1: *3* mypy.check_file
+    def check_file(self, fn):
+        """Run mypy on one file."""
+        c = self.c
+        # Init.
+        c.frame.log.clearLog()
+        link_pattern=re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
+        # Change working directory.
+        directory = os.path.dirname(fn)
+        os.chdir(directory)
+        # Check the config file.
+        if self.config_file:
+            config_file = g.os_path_finalize_join(directory, self.config_file)
+            if not os.path.exists(config_file):
+                print(f"config file not found: {config_file!r}")
+                return
+            args = [f"--config-file={config_file}"] + self.args
+        args_s = ' '.join(args + [g.shortFileName(fn)])
+        args = self.args + [fn]
+        # Run mypy.
+        g.es_print(f"mypy {args_s}")
+        result = mypy.api.run(args)
+        # Print result, making clickable links.
+        print('Exit status:', result[2])
+        lines = g.splitLines(result[0] or [])  # type:ignore
+        s_head = directory.lower() + os.path.sep
+        for i, s in enumerate(lines):
+            # Print the shortened form of s *without* changing s.
+            if s.lower().startswith(s_head):
+                print(f"{i:<3}", s[len(s_head):].rstrip())
+            else:
+                print(f"{i:<3}", s.rstrip())
+            # Create links only up to the link limit.
+            if 0 < self.link_limit <= i:
+                print(lines[-1].rstrip())
+                break
+            m = link_pattern.match(s)
+            if not m:
+                g.es(s.strip())
+                continue
+            # m.group(1) should be an absolute path.
+            path = g.os_path_finalize_join(directory, m.group(1))
+            # m.group(2) should be the line number.
+            try:
+                line_number = int(m.group(2))
+            except Exception:
+                g.es(s.strip())
+                continue  # Not an error.
+            # Look for the @<file> node.
+            link_root = g.findNodeByPath(c, path)
+            if link_root:
+                unl = link_root.get_UNL(with_proto=True, with_count=True)
+                if s.lower().startswith(s_head):
+                    s = s[len(s_head):]  # Do *not* strip the line!
+                c.frame.log.put(s, nodeLink=f"{unl},{-line_number}")
+            elif path not in self.unknown_path_names:
+                self.unknown_path_names.append(path)
+                print(f"no @<file> node found: {path}")
+        # Print stderr.
+        if result[1]:
+            print('stderr...')
+            print(result[1])
     #@+node:ekr.20210302111935.5: *3* mypy.finalize
     def finalize(self, p):
         """Finalize p's path."""

@@ -584,6 +584,11 @@
 <v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
 </v>
+<v t="ekr.20210728045642.1"><vh>mypy settings</vh>
+<v t="ekr.20210728045723.1"><vh>@data mypy-arguments</vh></v>
+<v t="ekr.20210728045750.1"><vh>@int mypy-link-limit = 0</vh></v>
+<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=''</vh></v>
+</v>
 <v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
@@ -1028,7 +1033,7 @@
 <v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
 </v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
-<v t="ekr.20131213135427.21842"><vh>@item check-derived-file</vh></v>
+<v t="ekr.20131213135427.21842"><vh>@@@item check-derived-file</vh></v>
 <v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
@@ -2305,8 +2310,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ville.20091008201813.3911"></v>
-<v t="ekr.20181018113730.1"></v>
+<v t="ekr.20210728045642.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5080,7 +5084,7 @@ Controller(c).run()
         elif ch == '#':
             i = g.skip_to_end_of_line(s, i)
         elif ch in ('"', "'"):
-            i = g.skip_python_string(s, i, verbose=False)
+            i = g.skip_python_string(s, i)
         elif ch == '_' or ch.isalpha():
             j = g.skip_id(s, i)
             kind = s[i: j]
@@ -9716,7 +9720,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 Node = Any
 </t>
-<t tx="ekr.20160127043440.1">For use by make-stub-files command.</t>
+<t tx="ekr.20160127043440.1"></t>
 <t tx="ekr.20160127043520.1">AstFormatter.*: str
 Pattern.all_matches: Sequence
 Pattern.full_balanced_match: Optional[int]
@@ -11637,6 +11641,16 @@ rust: rustc
 go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
+<t tx="ekr.20210728045642.1"></t>
+<t tx="ekr.20210728045723.1"># Arguments to mypy.api, excluding the file name.
+
+# --disable-error-code=attr-defined
+# --disallow-untyped-defs
+# --follow-imports=skip</t>
+<t tx="ekr.20210728045750.1"># 0 means no limit.</t>
+<t tx="ekr.20210802064734.1">Path to .mypy.ini file.
+
+Relative paths are resolved starting from the location of the file being checked.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

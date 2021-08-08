@@ -272,7 +272,9 @@ class QuickSearchEventFilter(QtCore.QObject):
 
         eventType = event.type()
         ev = QtCore.QEvent
-        # QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+        # QLineEdit generates ev.KeyRelease only on Windows, Ubuntu
+        if not hasattr(ev, 'KeyRelease'):  # 2021/07/18.
+            return False
         if eventType == ev.KeyRelease:
             lw = self.listWidget
             k = event.key()

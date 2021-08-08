@@ -280,7 +280,6 @@ def openwith_rclick(c, p, menu):
     """
     # define callbacks
     #@+others
-
     #@+node:ekr.20140613141207.17667: *4* function: openfolder_rclick_cb
 
     def openfolder_rclick_cb():
@@ -319,6 +318,7 @@ def openwith_rclick(c, p, menu):
             chi.h = a
         c.readAtFileNodes()
     #@-others
+
     h = p.h
     parts = h.split(None, 1)
     if len(parts) < 2:

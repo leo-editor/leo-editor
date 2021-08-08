@@ -1703,8 +1703,6 @@ class KeyHandlerClass:
         self.autoCompleteForceKey = None
         self.demoNextKey = None  # New support for the demo.py plugin.
         self.demoPrevKey = None  # New support for the demo.py plugin.
-        self.fullCommandKey = None
-        self.universalArgKey = None
         # Used by k.masterKeyHandler...
         self.stroke = None
         self.mb_event = None
@@ -2199,9 +2197,7 @@ class KeyHandlerClass:
         c, k = self.c, self
         warn = c.config.getBool('warn-about-missing-settings')
         for ivar, commandName in (
-            ('fullCommandKey', 'full-command'),
             ('abortAllModesKey', 'keyboard-quit'),
-            ('universalArgKey', 'universal-argument'),
             ('autoCompleteForceKey', 'auto-complete-force'),
             ('demoNextKey', 'demo-next'),
             ('demoPrevKey', 'demo-prev'),
@@ -2505,6 +2501,7 @@ class KeyHandlerClass:
             'Ctrl+Meta+Shift', 'Ctrl+Meta', 'Ctrl+Shift', 'Ctrl',  # Ctrl+Key: done by Ctrl.
             'Meta+Key', 'Meta+Shift', 'Meta',
             'Shift',
+            'F', # #1972
             # Careful: longer prefixes must come before shorter prefixes.
         ):
             data2 = []
@@ -2512,14 +2509,14 @@ class KeyHandlerClass:
                 s1, s2, s3, s4 = item
                 if s2.startswith(prefix):
                     data2.append(item)
-            result.append(f"***** {prefix}...\n")
+            result.append(f"{prefix} keys...\n")
             self.printBindingsHelper(result, data2, prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        result.append('***** Plain Keys...\n')
+        result.append('Plain keys...\n')
         self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
             g.es_print('', ''.join(result), tabName=tabName)
@@ -3871,7 +3868,7 @@ class KeyHandlerClass:
                         shortcutList.append(data)
                 d[bi.commandName] = shortcutList
         return d
-    #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommand/Name
+    #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommandName
     def getStrokeForCommandName(self, commandName):
         k = self; c = k.c
         command = c.commandsDict.get(commandName)

@@ -15,6 +15,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
 from leo.core import leoFrame
+from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
@@ -915,7 +916,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.oldEvent = w.event
                 w.event = self.wrapper
             #@+others
-            #@+node:ekr.20131120054058.16281: *8* create_d
+            #@+node:ekr.20131120054058.16281: *8* EventWrapper.create_d
             def create_d(self):
                 """Create self.d dictionary."""
                 c = self.c
@@ -940,13 +941,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     'set-find-everywhere',
                     'set-find-node-only',
                     'set-find-suboutline-only',
+                    # #2041 & # 2094 (Leo 6.4): Support Alt-x.
+                    'full-command',
+                    'keyboard-quit', # Might as well :-)
                 )
                 for cmd_name in table:
                     stroke = c.k.getStrokeForCommandName(cmd_name)
                     if stroke:
                         d[stroke.s] = cmd_name
                 return d
-            #@+node:ekr.20131118172620.16893: *8* wrapper
+            #@+node:ekr.20131118172620.16893: *8* EventWrapper.wrapper
             def wrapper(self, event):
 
                 type_ = event.type()
@@ -956,7 +960,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if type_ == Type.KeyRelease:
                     return self.keyRelease(event)
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper)
+            #@+node:ekr.20131118172620.16894: *8* EventWrapper.keyPress
             def keyPress(self, event):
 
                 s = event.text()
@@ -972,16 +976,20 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     elif self.func:
                         self.func()
                     return True
-                # Stay in the present widget.
                 binding, ch, lossage = self.eventFilter.toBinding(event)
-                if binding:
-                    cmd_name = self.d.get(binding)
+                # #2094: Use code similar to the end of LeoQtEventFilter.eventFilter.
+                #        The ctor converts <Alt-X> to <Atl-x> !!
+                #        That is, we must use the stroke, not the binding.
+                key_event = leoGui.LeoKeyEvent(
+                    c=self.c, char=ch, event=event, binding=binding, w=self.w)
+                if key_event.stroke:
+                    cmd_name = self.d.get(key_event.stroke)
                     if cmd_name:
                         self.c.k.simulateCommand(cmd_name)
                         return True
                 # Do the normal processing.
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16895: *8* keyRelease
+            #@+node:ekr.20131118172620.16895: *8* EventWrapper.keyRelease
             def keyRelease(self, event):
                 return self.oldEvent(event)
             #@-others

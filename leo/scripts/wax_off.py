@@ -10,20 +10,13 @@ Create stub files from existing annotation, then remove all function annotations
 So called because having created annotations in the python sources (wax-on)
 we now want to remove them again (wax-off).
 
-This script turns the mypy development process on its head. Instead of
-creating stub files with stubgen or make_stub_files, you can now add mypy
-annotations directly in your source files (in a separate branch).
+**Important**: In most cases it will be better to use make_stub_files (msb)
+to create stub files. Unlike simplistic wax-on scripts, msb does a good job
+of annotating the return values of functions.
 
-Working only with the original sources is much more convenient than
-tweaking stub files. When you are done, you can use wax_off.py to "move"
-the clutter from def lines to stub files.
-
-So you can get the benefits of mypy with minimal clutter. In most cases,
-the remaining "clutter" (annotations of var types) turns out to be
-excellent documentation.
-
-As a result, both the stubgen or make_stub_files projects are practically
-obsolete.
+Stub files provide the benefits of mypy with minimal clutter. The remaining
+"clutter" (annotations of var types) turns out to be excellent
+documentation.
 
 **Tweaking the stub files**
 
@@ -45,9 +38,6 @@ The wax_off script allows you to add full annotations for functions and
 methods directly in the source files. When mypy is happy, just run wax_off
 to move the def lines into stub files. wax_off then "declutters" the def
 lines.
-
-The result is the best of all approaches. It's easy to add annotations, and
-it's easy to remove them.
 """
 #@-<< docstring >>
 import argparse
