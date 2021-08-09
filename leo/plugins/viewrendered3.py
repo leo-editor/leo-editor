@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.42
+About Viewrendered3 V3.43
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -3635,18 +3635,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230503.1: *4* vr3: utils
     #@+node:TomP.20200329230503.2: *5* vr3.set_html
     def set_html(self, s, w):
-        """Set text in w to s, preserving scroll position."""
+        """Set text in w to s."""
         c = self.c
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
-        if isQt6:
-            url_base = QtCore.QUrl('file:///' + path + '/' + s)
-            w.setHtml(s)
-        else:
+        try:
             url_base = QtCore.QUrl('file:///' + path + '/')
             w.setHtml(s, url_base)
+        except Exception as e:
+            # Oops, don't have a QWebviewEngine
+            g.es(e)
+            w.setHtml(s)
+
         w.show()
     #@+node:TomP.20200329230503.3: *5* vr3.underline
     def underline(self, s):
