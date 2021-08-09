@@ -8,6 +8,7 @@ Leo's internet server.
 Written by Félix Malboeuf and Edward K. Ream.
 """
 # pylint: disable=import-self,raise-missing-from
+
 #@+<< imports >>
 #@+node:felix.20210621233316.2: ** << imports >>
 import asyncio
@@ -16,8 +17,10 @@ import inspect
 import json
 import os
 import sys
+import textwrap
 import time
 import unittest
+import tkinter as Tk
 # Third-party.
 import websockets
 # Make sure leo-editor folder is on sys.path.
@@ -33,14 +36,21 @@ from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 from leo.core import leoserver
 #@-<< imports >>
+
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
+
 # For unit tests.
 g_leoserver = None
 g_server = None
-# Server defaults...
-connectionsTotal = 0
-connectionsLimit = 1
-SERVER_STARTED_TOKEN = "LeoBridge started"
+
+# Server defaults
+SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
+connectionsPool = set() # Websocket connections (to be sent 'notify' messages)
+connectionsTotal = 0 # Current connected client total
+# Customizable server options
+wsLimit = 1
+wsPersist = False
+wsSkipDirty = False
 wsHost = "localhost"
 wsPort = 32125
 
@@ -65,13 +75,13 @@ class TerminateServer(Exception):  # pragma: no cover
     pass
 #@+node:felix.20210626222905.1: ** class ServerExternalFilesController
 class ServerExternalFilesController(ExternalFilesController):
-    '''EFC Modified from Leo's sources'''
+    """EFC Modified from Leo's sources"""
     # pylint: disable=no-else-return
 
     #@+others
     #@+node:felix.20210626222905.2: *3* sefc.ctor
     def __init__(self):
-        '''Ctor for ExternalFiles class.'''
+        """Ctor for ExternalFiles class."""
         super().__init__()
 
         self.on_idle_count = 0
@@ -92,7 +102,7 @@ class ServerExternalFilesController(ExternalFilesController):
         self.lastCommander = None
     #@+node:felix.20210626222905.6: *3* sefc.clientResult
     def clientResult(self, p_result):
-        '''Received result from connected client that was 'asked' yes/no/... '''
+        """Received result from connected client that was 'asked' yes/no/... """
         # Got the result to an asked question/warning from the client
         if not self.waitingForAnswer:
             print("ERROR: Received Result but no Asked Dialog", flush=True)
@@ -138,18 +148,17 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+node:felix.20210714205425.1: *3* sefc.entries
     #@+node:felix.20210626222905.19: *4* sefc.check_overwrite
     def check_overwrite(self, c, path):
-        # print("check_overwrite!! ", flush=True)
         if self.has_changed(path):
             package = {"async": "info", "message": "Overwritten "+ path}
-            g.leoServer._send_async_output(package)
+            g.leoServer._send_async_output(package, True)
         return True
 
     #@+node:felix.20210714205604.1: *4* sefc.on_idle & helpers
     def on_idle(self):
-        '''
+        """
         Check for changed open-with files and all external files in commanders
         for which @bool check_for_changed_external_file is True.
-        '''
+        """
         # Fix for flushing the terminal console to pass through
         sys.stdout.flush()
 
@@ -175,10 +184,10 @@ class ServerExternalFilesController(ExternalFilesController):
             ]
     #@+node:felix.20210626222905.4: *5* sefc.idle_check_commander
     def idle_check_commander(self, c):
-        '''
+        """
         Check all external files corresponding to @<file> nodes in c for
         changes.
-        '''
+        """
         self.infoMessage = None  # reset infoMessage
         # False or "detected", "refreshed" or "ignored"
 
@@ -196,7 +205,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # if yesAll/noAll forced, then just show info message
         if self.infoMessage:
             package = {"async": "info", "message": self.infoMessage}
-            g.leoServer._send_async_output(package)
+            g.leoServer._send_async_output(package, True)
     #@+node:felix.20210627013530.1: *5* sefc.idle_check_leo_file
     def idle_check_leo_file(self, c):
         """Check c's .leo file for external changes."""
@@ -213,7 +222,7 @@ class ServerExternalFilesController(ExternalFilesController):
             g.leoServer.open_file({"filename":path }) # ignore returned value
     #@+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
-        '''Check the @<file> node at p for external changes.'''
+        """Check the @<file> node at p for external changes."""
         trace = False
         path = g.fullPath(c, p)
         has_changed = self.has_changed(path)
@@ -233,17 +242,17 @@ class ServerExternalFilesController(ExternalFilesController):
             self.checksum_d[path] = self.checksum(path)
     #@+node:felix.20210626222905.18: *4* sefc.open_with
     def open_with(self, c, d):
-        '''open-with is bypassed in leoserver (for now)'''
+        """open-with is bypassed in leoserver (for now)"""
         return
 
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* sefc.ask
     def ask(self, c, path, p=None):
-        '''
+        """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
         client, blocking further checks until result received.
-        '''
+        """
         # check with leoServer's config first
         if g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower(
@@ -288,7 +297,7 @@ class ServerExternalFilesController(ExternalFilesController):
         return False # return false so as not to refresh until 'clientResult' says so
     #@+node:felix.20210626222905.13: *4* sefc.is_enabled
     def is_enabled(self, c):
-        '''Return the cached @bool check_for_changed_external_file setting.'''
+        """Return the cached @bool check_for_changed_external_file setting."""
         # check with the leoServer config first
         if g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["checkForChangeExternalFiles"].lower(
@@ -301,11 +310,11 @@ class ServerExternalFilesController(ExternalFilesController):
         return super().is_enabled(c)
     #@+node:felix.20210626222905.16: *4* sefc.warn
     def warn(self, c, path, p):
-        '''
+        """
         Warn that an @asis or @nosent node has been changed externally.
 
         There is *no way* to update the tree automatically.
-        '''
+        """
         # check with leoServer's config first
         if g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()
@@ -333,7 +342,7 @@ class ServerExternalFilesController(ExternalFilesController):
         package = {"async": "warn",
                      "warn": 'External file changed', "message": s}
 
-        g.leoServer._send_async_output(package)
+        g.leoServer._send_async_output(package, True)
         self.waitingForAnswer = True
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
@@ -375,7 +384,7 @@ class LeoServer:
         g.es = self._es  # pointer - not a function call
         #
         # Set in _init_connection
-        self.web_socket = None
+        self.web_socket = None # Main Control Client
         self.loop = None
         #
         # To inspect commands
@@ -447,7 +456,7 @@ class LeoServer:
         return "yes"
     #@+node:felix.20210622235209.1: *4* _es
     def _es(self, * args, **keys):  # pragma: no cover (tested in client).
-        '''Output to the Log Pane'''
+        """Output to the Log Pane"""
         d = {
             'color': None,
             'commas': False,
@@ -459,7 +468,7 @@ class LeoServer:
         d = g.doKeywordArgs(keys, d)
         s = g.translateArgs(args, d)
         package = {"async": "log", "log": s}
-        self._send_async_output(package)
+        self._send_async_output(package, True)
     #@+node:felix.20210626002856.1: *4* _getScript
     def _getScript(self, c, p,
                    useSelectedText=True,
@@ -500,7 +509,7 @@ class LeoServer:
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
     #@+node:felix.20210626003327.1: *4* _show_find_success
     def _show_find_success(self, c, in_headline, insert, p):
-        '''Handle a successful find match.'''
+        """Handle a successful find match."""
         if in_headline:
             g.app.gui.set_focus(c, self.headlineWidget)
         # no return
@@ -635,11 +644,11 @@ class LeoServer:
         return self._make_response(result)
     #@+node:felix.20210621233316.15: *5* server.set_opened_file
     def set_opened_file(self, param):
-        '''
+        """
         Choose the new active commander from array of opened files.
         Returns an object with total opened files
         and name of currently last opened & selected document.
-        '''
+        """
         tag = 'set_opened_file'
         index = param.get('index')
         total = len(g.app.commanders())
@@ -1108,7 +1117,7 @@ class LeoServer:
         return self._make_minimal_response({"position-data-list": result})
     #@+node:felix.20210621233316.38: *5* server.get_all_gnx
     def get_all_gnx(self, param):
-        '''Get gnx array from all unique nodes'''
+        """Get gnx array from all unique nodes"""
         if self.log_flag:  # pragma: no cover
             print('\nget_all_gnx\n')
         c = self._check_c()
@@ -1292,11 +1301,11 @@ class LeoServer:
     #@+node:felix.20210621233316.49: *4* server:node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param):
-        '''
+        """
         Clone a node.
         If it was also the current selection, return it,
         otherwise try not to select it.
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         if p == c.p:
@@ -1320,10 +1329,10 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.52: *5* server.cut_node
     def cut_node(self, param):  # pragma: no cover (too dangerous, for now)
-        '''
+        """
         Cut a node, don't select it.
         Try to keep selection, then return the selected node that remains.
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         if p == c.p:
@@ -1396,9 +1405,9 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.56: *5* server.insert_named_node
     def insert_named_node(self, param):
-        '''
+        """
         Insert a node at given node, set its headline, select it and finally return it
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         newHeadline = param.get('name')
@@ -1410,12 +1419,13 @@ class LeoServer:
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
+        c.setChanged()
         return self._make_response()
     #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
     def insert_child_named_node(self, param):
-        '''
+        """
         Insert a child node at given node, set its headline, select it and finally return it
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         newHeadline = param.get('name')
@@ -1476,7 +1486,7 @@ class LeoServer:
             if p.v.gnx == gnx:
                 if body==p.v.b:
                     return self._make_response()
-                    # Just exited if no need to change at all.
+                    # Just exit if there is no need to change at all.
                 bunch = u.beforeChangeNodeContents(p)
                 p.v.setBodyString(body)
                 u.afterChangeNodeContents(p, "Body Text", bunch)
@@ -1590,14 +1600,14 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.65: *5* server.mark_node
     def mark_node(self, param):
-        '''Mark a node, without selecting it'''
+        """Mark a node, without selecting it"""
         self._check_c()
         p = self._get_p(param)
         p.setMarked()
         return self._make_response()
     #@+node:felix.20210621233316.66: *5* server.unmark_node
     def unmark_node(self, param):
-        '''Unmark a node, without selecting it'''
+        """Unmark a node, without selecting it"""
         self._check_c()
         p = self._get_p(param)
         p.clearMarked()
@@ -1614,7 +1624,7 @@ class LeoServer:
     #@+node:felix.20210621233316.68: *4* server:server commands
     #@+node:felix.20210621233316.69: *5* server.set_ask_result
     def set_ask_result(self, param):
-        '''Got the result to an asked question/warning from client'''
+        """Got the result to an asked question/warning from client"""
         tag = "set_ask_result"
         result = param.get("result");
         if not result:
@@ -1623,7 +1633,7 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.70: *5* server.set_config
     def set_config(self, param):
-        '''Got auto-reload's config from client'''
+        """Got auto-reload's config from client"""
         self.leoServerConfig = param # PARAM IS THE CONFIG-DICT
         return self._make_response()
     #@+node:felix.20210621233316.71: *5* server.error
@@ -2824,8 +2834,14 @@ class LeoServer:
     #@+node:felix.20210621233316.76: *5* server.init_connection
     def _init_connection(self, web_socket):  # pragma: no cover (tested in client).
         """Begin the connection."""
-        self.web_socket = web_socket
-        self.loop = asyncio.get_event_loop()
+        global connectionsTotal
+        if connectionsTotal == 1:
+            # First connection, so "Master client" setup
+            self.web_socket = web_socket
+            self.loop = asyncio.get_event_loop()
+        else:
+            # already exist, so "spectator-clients" setup
+            pass # nothing for now
     #@+node:felix.20210621233316.77: *5* server.shut_down
     def shut_down(self, param):
         """Shut down the server."""
@@ -3097,7 +3113,7 @@ class LeoServer:
         print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
     #@+node:felix.20210624160812.1: *4* server._emit_signon
     def _emit_signon(self):
-        '''Simulate the Initial Leo Log Entry'''
+        """Simulate the Initial Leo Log Entry"""
         tag = 'emit_signon'
         if self.loop:
             g.app.computeSignon()
@@ -3327,14 +3343,14 @@ class LeoServer:
         }
     #@+node:felix.20210621233316.96: *4* server._positionFromGnx
     def _positionFromGnx(self, gnx):
-        '''Return first p node with this gnx or false'''
+        """Return first p node with this gnx or false"""
         c = self._check_c()
         for p in c.all_unique_positions():
             if p.v.gnx == gnx:
                 return p
         return False
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package):
+    def _send_async_output(self, package, toAll = False):
         """
         Send data asynchronously to the client
         """
@@ -3343,17 +3359,24 @@ class LeoServer:
         if "async" not in package:
             InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
         if self.loop:
-            self.loop.create_task(self._async_output(jsonPackage))
+            self.loop.create_task(self._async_output(jsonPackage, toAll))
         else:
             InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
-    async def _async_output(self, json):  # pragma: no cover (tested in server)
+    async def _async_output(self, json, toAll = False):  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
+        global connectionsTotal
         tag = '_async_output'
-        if self.web_socket:
-            await self.web_socket.send(bytes(json, 'utf-8'))
+        if toAll:
+            if connectionsPool:  # asyncio.wait doesn't accept an empty list
+                await asyncio.wait([client.send(bytes(json, 'utf-8')) for client in connectionsPool])
+            else:
+                g.trace(f"{tag}: no web socket. json: {json!r}")
         else:
-            g.trace(f"{tag}: no web socket. json: {json!r}")
+            if self.web_socket:
+                await self.web_socket.send(bytes(json, 'utf-8'))
+            else:
+                g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:felix.20210621233316.97: *4* server._test_round_trip_positions
     def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
@@ -3366,7 +3389,7 @@ class LeoServer:
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
     #@+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
     def _yieldAllRootChildren(self):
-        '''Return all root children P nodes'''
+        """Return all root children P nodes"""
         c = self._check_c()
         p = c.rootPosition()
         while p:
@@ -3556,9 +3579,9 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
 #@+node:felix.20210621233316.105: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
-    global wsHost, wsPort
+    global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
     print("Starting LeoBridge... (Launch with -h for help)")
-    # replace default host address and port if provided as arguments
+
     #@+others
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
     async def ws_handler(websocket, path):
@@ -3567,16 +3590,21 @@ def main():  # pragma: no cover (tested in client)
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
-        global connectionsTotal, connectionsLimit
+        global connectionsTotal, wsLimit
         tag = 'server'
         trace = False
         verbose = False
+
         try:
-            if connectionsTotal >= connectionsLimit:
-                websocket.close(1001)
+            if connectionsTotal >= wsLimit:
+                print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}")
+                await websocket.close(1001)
                 return
             connectionsTotal += 1
+            print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {wsLimit}")
+            # If first connection set it as the main client connection
             controller._init_connection(websocket)
+            await register_client(websocket)
             # Start by sending empty as 'ok'.
             n = 0
             await websocket.send(controller._make_response())
@@ -3615,61 +3643,258 @@ def main():  # pragma: no cover (tested in client)
                     g.print_exception()
                     break
                 await websocket.send(answer)
+                # If not a 'getter' send refresh signal to other clients
+
+                if controller.action[0:5] != "!get_":
+                    await notify_clients(controller.action, websocket)
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
-            print(f"{tag}: closed error: {e}")
+            print(f"{tag}: connection closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
-            print(f"{tag}: closed normally: {e}")
-        # Don't call EventLoop.stop(). It terminates abnormally.
-            # asyncio.get_event_loop().stop()
+            print(f"{tag}: connection closed: {e}")
+        finally:
+            connectionsTotal -= 1
+            await  unregister_client(websocket)
+            print(f"{tag} finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
+            # Check for persistence flag if all connections are closed
+            if connectionsTotal == 0 and not wsPersist:
+                # Preemptive closing of tasks
+                for task in asyncio.all_tasks():
+                    task.cancel()
+                close_Server() # Stops the run_forever loop
+    #@+node:felix.20210803174312.1: *3* function:notify_clients
+    async def notify_clients(action, excludedConn = None):
+        global connectionsTotal
+        if connectionsPool:  # asyncio.wait doesn't accept an empty list
+            m =  json.dumps({"async": "refresh", "action": action}, separators=(',', ':'), cls=SetEncoder)
+            clientSetCopy = connectionsPool.copy()
+            if excludedConn:
+                clientSetCopy.discard(excludedConn)
+            if clientSetCopy:
+                # if still at least one to notify
+                await asyncio.wait([client.send(m) for client in clientSetCopy])
+    #@+node:felix.20210803174312.2: *3* function:register_client
+    async def register_client(websocket):
+        global connectionsTotal
+        connectionsPool.add(websocket)
+        await notify_clients("unregister", websocket)
+    #@+node:felix.20210803174312.3: *3* function:unregister_client
+    async def unregister_client(websocket):
+        global connectionsTotal
+        connectionsPool.remove(websocket)
+        await notify_clients("unregister")
+    #@+node:ekr.20210801175921.1: *3* function: tk_runAskYesNoCancelDialog & helpers
+    def tk_runAskYesNoCancelDialog(
+        # self,
+        c,
+        title,  # Not used.
+        message=None,  # Must exist.
+        yesMessage="&Yes",  # Not used.
+        noMessage="&No",  # Not used.
+        yesToAllMessage=None,  # Not used.
+        defaultButton="Yes",  # Not used
+        cancelMessage=None,  # Not used.
+    ):
+        """
+        Tk version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
+        """
+        if g.unitTesting:
+            return None
+        root = top = val = None  # Non-locals
+        #@+others  # define helper functions
+        #@+node:ekr.20210801180311.4: *4* create_frame
+        def create_frame(message):
+            """Create the dialog's frame."""
+            frame = Tk.Frame(top)
+            frame.pack(side="top", expand=1, fill="both")
+            label = Tk.Label(frame, text=message, bg='white')
+            label.pack(pady=10)
+            # Create buttons.
+            f = Tk.Frame(top)
+            f.pack(side="top", padx=30)
+            b = Tk.Button(f, width=6, text="Yes", bd=4, underline=0, command=yesButton)
+            b.pack(side="left", padx=5, pady=10)
+            b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
+            b.pack(side="left", padx=5, pady=10)
+            return top
+        #@+node:ekr.20210801180311.5: *4* callbacks
+        def noButton(event=None):
+            """Do default click action in ok button."""
+            nonlocal val
+            print(f"Not saved: {c.fileName()}")
+            val = "no"
+            top.destroy()
+
+        def yesButton(event=None):
+            """Do default click action in ok button."""
+            nonlocal val
+            print(f"Saved: {c.fileName()}")
+            val = "yes"
+            top.destroy()
+        #@-others
+        root = Tk.Tk()
+        root.withdraw()
+        root.update()
+
+        top = Tk.Toplevel(root)
+
+        top.title("Saved changed outline?")
+        top = create_frame(message)
+        top.bind("<Return>", yesButton)
+        top.bind("y", yesButton)
+        top.bind("Y", yesButton)
+        top.bind("n", noButton)
+        top.bind("N", noButton)
+        top.lift()
+
+        top.grab_set()  # Make the dialog a modal dialog.
+
+        root.update()
+        root.wait_window(top)
+
+        top.destroy()
+        root.destroy()
+        return val
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
-        global wsHost, wsPort
+        """
+        Get arguments from the command that launched the server
+        """
+        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
         args = None
+        # See https://docs.python.org/3/library/getopt.html for 'getopt' usage
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "help:", ["help", "address=", "port="])
+            opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:", ["help", "address=", "port=", "persist", "dirty", "limit="])
         except getopt.GetoptError:
-            print('leoserver.py -a <address> -p <port>')
-            print('defaults to localhost on port 32125')
+            show_help()
             if args:
                 print("unused args: " + str(args))
             sys.exit(2)
         for opt, arg in opts:
             if opt in ("-h", "--help"):
-                print('leoserver.py -a <address> -p <port>')
-                print('defaults to localhost on port 32125')
+                show_help()
                 sys.exit()
             elif opt in ("-a", "--address"):
                 wsHost = arg
             elif opt in ("-p", "--port"):
                 wsPort = arg
+            elif opt in ("-l", "--limit"):
+                wsLimit = int(arg)
+            elif opt in ("--persist"):
+                wsPersist = True
+            elif opt in ("-d", "--dirty"):
+                wsSkipDirty = True
+        # in case of 0 or other values
+        if wsLimit < 1:
+            wsLimit = 1
         # Leave other options for unittest.
         for opt, junk in opts:  # opts is a 2-tuple.
             if opt in sys.argv:
                 sys.argv.remove(opt)
-        return wsHost, wsPort
+        return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
+    #@+node:felix.20210804130751.1: *3* function:close_server
+    def close_Server():
+        """
+        Close the server by stopping the loop
+        """
+        print('Closing Leo Server', flush=True)
+        if loop.is_running():
+            loop.stop()
+        else:
+            print('Loop was not running', flush=True)
+    #@+node:felix.20210807160828.1: *3* function:save_dirty
+    def save_dirty():
+        """
+        Ask the user about dirty files if any remained opened.
+        """
+        # Monkey-patch the dialog method first
+        g.app.gui.runAskYesNoCancelDialog = tk_runAskYesNoCancelDialog
+        # then loop all commanders and 'close' them for dirty check
+        commanders = g.app.commanders()
+        for commander in commanders:
+            if commander.isChanged() and commander.fileName():
+                commander.close() # Patched 'ask' methods will open dialog
+    #@+node:felix.20210803233022.1: *3* function:show_help
+    def show_help():
+        """
+        Printout the available command line parameters for this server script
+        """
+        print(textwrap.dedent("""\
+    Usage:
+    leoserver.py [-a <address>] [-p <port>] [-l <limit>] [--dirty] [--persist]
+    Defaults to address "localhost" on port 32125
+    with a default client limit of 1.
+    "--persist" flag prevents quitting when last client disconnects.
+    "--dirty" flag prevents asking about dirty files upon quitting.
+    """))
+    #@+node:felix.20210807214524.1: *3* function:cancel_tasks
+    def cancel_tasks(to_cancel, loop):
+        if not to_cancel:
+            return
+
+        for task in to_cancel:
+            task.cancel()
+
+        loop.run_until_complete(asyncio.gather(*to_cancel, return_exceptions=True))
+
+        for task in to_cancel:
+            if task.cancelled():
+                continue
+            if task.exception() is not None:
+                loop.call_exception_handler(
+                    {
+                        "message": "unhandled exception during asyncio.run() shutdown",
+                        "exception": task.exception(),
+                        "task": task,
+                    }
+                )
     #@-others
+
     if '--unittest' in sys.argv:
         sys.argv.remove('--unittest')
         unittest.main()
         return  # Make *sure* we don't start the server.
-    wsHost, wsPort = get_args()
+
+    # Replace default command line arguments values if provided as arguments
+    wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty = get_args()
+
     # Open leoBridge.
-    controller = LeoServer()
+    controller = LeoServer() # Only one instance of 'LeoServer'
+
     # Start the server.
     loop = asyncio.get_event_loop()
     server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
-    loop.run_until_complete(server)
-    signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}. Ctrl+c to break"
-    print(signon, flush=True)
-    loop.run_forever()
-    # Execution continues here after server is interupted (e.g. with ctrl+c)
-    print("Stopping leobridge server", flush=True)
+
+    try:
+        realtime_server = loop.run_until_complete(server)
+        signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
+
+        if wsPersist:
+            signon = signon + "Persistent server "
+
+        if wsLimit > 1:
+            signon = signon + f"Total client limit is {wsLimit}."
+
+        signon = signon + "\nCtrl+c to break"
+        print(signon, flush=True)
+        loop.run_forever()
+
+    except KeyboardInterrupt:
+        print("Process interrupted")
+    finally:
+        realtime_server.close()
+        # Execution continues here after server is interupted (e.g. with ctrl+c)
+
+        print("Stopping: Check for changed commanders", flush=True)
+        save_dirty()
+
+        cancel_tasks(asyncio.all_tasks(loop), loop)
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()
+        asyncio.set_event_loop(None)
+
+        print("Stopped leobridge server", flush=True)
 #@-others
 if __name__ == '__main__':
     # pytest will *not* execute this code.
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\nKeyboard Interupt: Stopping leoserver.py")
-        sys.exit()
+    main()
 #@-leo
