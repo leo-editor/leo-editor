@@ -706,6 +706,7 @@ Line 1
 
 Last line: no newline
 #@+node:ekr.20111021115306.3696: *4* @test @file: tex bug
+import textwrap
 if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @<file> node.')
 p = g.findNodeAnywhere(c,"@file unittest/tex-error.tex")
@@ -717,7 +718,7 @@ s2 = r""">>
 \end{document}
 """
 s = s1 + s2
-s = g.adjustTripleString(s,c.tab_width)
+s = textwrap.dedent(s)
 assert p.b == s, (repr(p.b), repr(s))
 #@+node:ekr.20110524120515.3489: *4* @test @raw
 c.testManager.runAtFileTest(p)
@@ -10028,7 +10029,7 @@ g.pr('\nEnd of leoFrame tests.')
 #@+node:ekr.20071113194033.3: *3* leoGlobals
 # No failures with Alt-5 but warnings about no tnode lists.
 #@+node:ekr.20100131180007.5398: *4* @test g.adjustTripleString
-if 1: # The following must be indented.
+if 0: # The following must be indented.
 
     s = '''\
     a
@@ -10411,6 +10412,7 @@ for s,expected in (
     assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
         repr(s),repr(expected),repr(result))
 #@+node:ekr.20071113145804.29: *4* @test g.removeExtraLws
+self.skipTest('g.removeExtraLws no longer exists')
 for s,expected in (
     (' a\n b\n c', 'a\nb\nc'),
     (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),

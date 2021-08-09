@@ -9,6 +9,7 @@ import io
 import json
 import os
 import re
+import textwrap
 import time
 from typing import Any, List
 import urllib
@@ -2585,7 +2586,7 @@ class LegacyExternalFileImporter:
         root.h = f"imported file: {root_h}"
         stack = [root]
         for node in nodes:
-            b = g.removeExtraLws(''.join(node.lines), -4)
+            b = textwrap.dedent(''.join(node.lines))
             level = node.level
             if level == 0:
                 root.h = root_h

@@ -8,6 +8,7 @@ import datetime
 import functools
 import re
 import sys
+import textwrap
 from typing import Dict, List
 
 from leo.core import leoColor
@@ -1127,7 +1128,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
     def put_help(self, c, s, short_title=''):
         """Put the help command."""
-        s = g.adjustTripleString(s.rstrip(), c.tab_width)
+        s = textwrap.dedent(s.rstrip())
         if s.startswith('<') and not s.startswith('<<'):
             pass  # how to do selective replace??
         pc = g.app.pluginsController

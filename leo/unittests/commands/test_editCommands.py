@@ -3,7 +3,7 @@
 #@+node:ekr.20201202144422.1: * @file ../unittests/commands/test_editCommands.py
 #@@first
 """Tests for leo.commands.editCommands"""
-
+import textwrap
 import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoTest2
@@ -27,9 +27,9 @@ class EditCommandsTest(unittest.TestCase):
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
         # Set the text.
-        parent_b = g.adjustTripleString(directives, tab_width=-4)
-        before_b = g.adjustTripleString(before_b, tab_width=-4)
-        after_b = g.adjustTripleString(after_b, tab_width=-4)
+        parent_b = textwrap.dedent(directives)
+        before_b = textwrap.dedent(before_b)
+        after_b = textwrap.dedent(after_b)
         self.parent_p.b = parent_b
         self.tempNode.b = before_b
         self.before_p.b = before_b

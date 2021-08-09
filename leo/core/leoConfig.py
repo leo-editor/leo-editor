@@ -7,6 +7,7 @@
 import os
 import sys
 import re
+import textwrap
 from typing import Any, Dict, List, Tuple, Union
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
@@ -1061,7 +1062,7 @@ class ActiveSettingsOutline:
             '''
         if lm.theme_path:
             legend = legend + f"[T] theme file: {g.shortFileName(lm.theme_path)}\n"
-        return g.adjustTripleString(legend, c.tab_width)
+        return textwrap.dedent(legend)
     #@+node:ekr.20190905091614.8: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
         """
@@ -2176,7 +2177,7 @@ class LocalConfigManager:
     [T] theme .leo file.
     '''
         c = self.c
-        legend = g.adjustTripleString(legend, c.tab_width)
+        legend = textwrap.dedent(legend)
         result = []
         for name, val, c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else f"[{letter}]"

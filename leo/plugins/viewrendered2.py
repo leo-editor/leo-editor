@@ -213,7 +213,7 @@ See the viewrendered.py plugin for additional acknowledgments.
 import os
 import sys
 from io import StringIO
-
+import textwrap
 from leo.core import leoGlobals as g
 from leo.plugins import qt_text
 from leo.plugins import free_layout
@@ -710,7 +710,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if lines:
             i = 0 if lines[0].strip() else 1
             s = ''.join(lines[i:])
-            s = g.adjustTripleString(s, self.c.tab_width)
+            s = textwrap.dedent(s)
         return s
     #@+node:ekr.20140227055626.16845: *3* vr2.gui helpers
     #@+node:ekr.20140226075611.16798: *4* vr2.getUIconfig
@@ -1645,7 +1645,7 @@ class ViewRenderedController(QtWidgets.QWidget):
     </html>
     ''' % (path)
         # Only works in Python 3.x.
-        template = g.adjustTripleString(template, pc.c.tab_width).strip() # Sensitive to leading blank lines.
+        template = textwrap.dedent(template).strip() # Sensitive to leading blank lines.
         # template = g.toUnicode(template)
         pc.show()
         w.setReadOnly(False)
@@ -1751,7 +1751,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = g.adjustTripleString(s, pc.c.tab_width).strip() # Sensitive to leading blank lines.
+            s = textwrap.dedent(s).strip() # Sensitive to leading blank lines.
             s = g.toEncodedString(s)
             pc.show()
             w.load(QtCore.QByteArray(s))
