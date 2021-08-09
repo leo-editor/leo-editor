@@ -489,7 +489,7 @@ class LeoServer:
             else:
                 s = p.b
             # Remove extra leading whitespace so the user may execute indented code.
-            s = g.removeExtraLws(s, c.tab_width)
+            s = textwrap.dedent(s)
             s = g.extractExecutableString(c, p, s)
             script = g.composeScript(c, p, s,
                                       forcePythonSentinels=forcePythonSentinels,

@@ -5896,32 +5896,6 @@ def computeWidth(s: str, tab_width):
         else:
             w += 1
     return w
-#@+node:ekr.20051014175117: *4* g.adjustTripleString (deprecated)
-def adjustTripleString(s: str, tab_width):
-    """
-    Remove leading indentation from a triple-quoted string.
-
-    Useful because Leo nodes can't represent underindented strings.
-    """
-    return textwrap.dedent(s)
-#@+node:ekr.20050211120242.2: *4* g.removeExtraLws
-def removeExtraLws(s: str, tab_width):
-    """
-    Remove extra indentation from one or more lines.
-
-    Warning: used by getScript.
-    """
-    lines = g.splitLines(s)
-    # Find the first non-blank line and compute w, the width of its leading whitespace.
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            w = g.computeWidth(lws, tab_width)
-            break
-    else: return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
 #@+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
 #@@language rest
 #@+at
@@ -7410,7 +7384,7 @@ def getScript(c: Cmdr, p: Pos,
         else:
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
-        s = g.removeExtraLws(s, c.tab_width)
+        s = textwrap.dedent(s)
         s = g.extractExecutableString(c, p, s)
         script = g.composeScript(c, p, s,
                     forcePythonSentinels=forcePythonSentinels,

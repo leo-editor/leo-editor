@@ -9890,6 +9890,33 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
+#@+node:ekr.20210809085711.1: ** From leoGlobals.py
+#@+node:ekr.20051014175117: *3* g.adjustTripleString (deprecated)
+def adjustTripleString(s: str, tab_width):
+    """
+    Remove leading indentation from a triple-quoted string.
+
+    Useful because Leo nodes can't represent underindented strings.
+    """
+    return textwrap.dedent(s)
+#@+node:ekr.20050211120242.2: *3* g.removeExtraLws
+def removeExtraLws(s: str, tab_width):
+    """
+    Remove extra indentation from one or more lines.
+
+    Warning: used by getScript.
+    """
+    lines = g.splitLines(s)
+    # Find the first non-blank line and compute w, the width of its leading whitespace.
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            w = g.computeWidth(lws, tab_width)
+            break
+    else: return s
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
+    return ''.join(result)
 #@+node:ekr.20210327062138.1: ** From leoRst.py
 #@+node:ekr.20120219194520.10444: *3* html parser classes
 # Perhaps mod_http used to use these.
