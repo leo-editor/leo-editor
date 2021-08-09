@@ -33,6 +33,7 @@ import string
 import sys
 import subprocess
 import tempfile
+import textwrap
 import time
 import traceback
 import types
@@ -5895,30 +5896,14 @@ def computeWidth(s: str, tab_width):
         else:
             w += 1
     return w
-#@+node:ekr.20051014175117: *4* g.adjustTripleString
+#@+node:ekr.20051014175117: *4* g.adjustTripleString (deprecated)
 def adjustTripleString(s: str, tab_width):
-    """Remove leading indentation from a triple-quoted string.
-
-    This works around the fact that Leo nodes can't represent underindented strings.
     """
-    # Compute the minimum leading whitespace of all non-blank lines.
-    lines = g.splitLines(s)
-    first, w = True, 0
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            # The sign of w2 does not matter.
-            w2 = abs(g.computeWidth(lws, tab_width))
-            if w2 == 0:
-                return s
-            if first or w2 < w:
-                w = w2
-                first = False
-    if w == 0:
-        return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
+    Remove leading indentation from a triple-quoted string.
+
+    Useful because Leo nodes can't represent underindented strings.
+    """
+    return textwrap.dedent(s)
 #@+node:ekr.20050211120242.2: *4* g.removeExtraLws
 def removeExtraLws(s: str, tab_width):
     """
