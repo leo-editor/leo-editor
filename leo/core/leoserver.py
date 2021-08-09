@@ -19,20 +19,7 @@ import os
 import sys
 import time
 import unittest
-import signal
 import tkinter as Tk
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Iterable as TypingIterable,
-    List,
-    Optional,
-    Set,
-    Type,
-    Union,
-    cast,
-)
 # Third-party.
 import websockets
 # Make sure leo-editor folder is on sys.path.
@@ -50,7 +37,6 @@ from leo.core import leoserver
 #@-<< imports >>
 
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
-use_Tk = True
 
 # For unit tests.
 g_leoserver = None
@@ -161,10 +147,9 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+node:felix.20210714205425.1: *3* sefc.entries
     #@+node:felix.20210626222905.19: *4* sefc.check_overwrite
     def check_overwrite(self, c, path):
-        # print("check_overwrite!! ", flush=True)
         if self.has_changed(path):
             package = {"async": "info", "message": "Overwritten "+ path}
-            g.leoServer._send_async_output(package)
+            g.leoServer._send_async_output(package, True)
         return True
 
     #@+node:felix.20210714205604.1: *4* sefc.on_idle & helpers
@@ -219,7 +204,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # if yesAll/noAll forced, then just show info message
         if self.infoMessage:
             package = {"async": "info", "message": self.infoMessage}
-            g.leoServer._send_async_output(package)
+            g.leoServer._send_async_output(package, True)
     #@+node:felix.20210627013530.1: *5* sefc.idle_check_leo_file
     def idle_check_leo_file(self, c):
         """Check c's .leo file for external changes."""
@@ -356,7 +341,7 @@ class ServerExternalFilesController(ExternalFilesController):
         package = {"async": "warn",
                      "warn": 'External file changed', "message": s}
 
-        g.leoServer._send_async_output(package)
+        g.leoServer._send_async_output(package, True)
         self.waitingForAnswer = True
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
@@ -482,7 +467,7 @@ class LeoServer:
         d = g.doKeywordArgs(keys, d)
         s = g.translateArgs(args, d)
         package = {"async": "log", "log": s}
-        self._send_async_output(package)
+        self._send_async_output(package, True)
     #@+node:felix.20210626002856.1: *4* _getScript
     def _getScript(self, c, p,
                    useSelectedText=True,
@@ -3364,7 +3349,7 @@ class LeoServer:
                 return p
         return False
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package):
+    def _send_async_output(self, package, toAll = False):
         """
         Send data asynchronously to the client
         """
@@ -3373,17 +3358,24 @@ class LeoServer:
         if "async" not in package:
             InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
         if self.loop:
-            self.loop.create_task(self._async_output(jsonPackage))
+            self.loop.create_task(self._async_output(jsonPackage, toAll))
         else:
             InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
-    async def _async_output(self, json):  # pragma: no cover (tested in server)
+    async def _async_output(self, json, toAll = False):  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
+        global connectionsTotal
         tag = '_async_output'
-        if self.web_socket:
-            await self.web_socket.send(bytes(json, 'utf-8'))
+        if toAll:
+            if connectionsPool:  # asyncio.wait doesn't accept an empty list
+                await asyncio.wait([client.send(bytes(json, 'utf-8')) for client in connectionsPool])
+            else:
+                g.trace(f"{tag}: no web socket. json: {json!r}")
         else:
-            g.trace(f"{tag}: no web socket. json: {json!r}")
+            if self.web_socket:
+                await self.web_socket.send(bytes(json, 'utf-8'))
+            else:
+                g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:felix.20210621233316.97: *4* server._test_round_trip_positions
     def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
@@ -3664,12 +3656,13 @@ def main():  # pragma: no cover (tested in client)
             print(f"{tag} finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
             # Check for persistence flag if all connections are closed
             if connectionsTotal == 0 and not wsPersist:
-                cancel_tasks()
-                close_Server()
-        # Don't call EventLoop.stop(). It terminates abnormally.
-            # asyncio.get_event_loop().stop()
+                # Preemptive closing of tasks
+                for task in asyncio.all_tasks():
+                    task.cancel()
+                close_Server() # Stops the run_forever loop
     #@+node:felix.20210803174312.1: *3* function:notify_clients
     async def notify_clients(action, excludedConn = None):
+        global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             m =  json.dumps({"async": "refresh", "action": action}, separators=(',', ':'), cls=SetEncoder)
             clientSetCopy = connectionsPool.copy()
@@ -3680,65 +3673,14 @@ def main():  # pragma: no cover (tested in client)
                 await asyncio.wait([client.send(m) for client in clientSetCopy])
     #@+node:felix.20210803174312.2: *3* function:register_client
     async def register_client(websocket):
+        global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
     #@+node:felix.20210803174312.3: *3* function:unregister_client
     async def unregister_client(websocket):
-        global wsPersist, connectionsTotal
+        global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
-    #@+node:ekr.20210801103636.1: *3* function: monkey_patch
-    def monkey_patch():
-        """monkey patch NullGui.runAskYesNoCancelDialog."""
-        global g, qt_app, use_Tk
-        from leo.core.leoGui import NullGui
-        if use_Tk:
-            # g.funcToMethod(tk_runAskYesNoCancelDialog, NullGui, name='runAskYesNoCancelDialog')
-            g.app.gui.runAskYesNoCancelDialog = tk_runAskYesNoCancelDialog
-        else:
-            # Create a minimal qt application.
-            from leo.plugins.qt_gui import LeoQtGui
-            g.app.use_splash_screen = False  # Suppress the splash screen.
-            qt_app = LeoQtGui()
-            # g.funcToMethod(qt_runAskYesNoCancelDialog, NullGui, name='runAskYesNoCancelDialog')
-            g.app.gui.runAskYesNoCancelDialog = qt_runAskYesNoCancelDialog
-    #@+node:ekr.20210801103854.1: *3* function: qt_runAskYesNoCancelDialog
-    def qt_runAskYesNoCancelDialog(
-        # self,
-        c,
-        title,  # Not used.
-        message=None,  # Must exist.
-        yesMessage="&Yes",
-        noMessage="&No",
-        yesToAllMessage=None,  # Not used.
-        defaultButton="Yes",
-        cancelMessage=None,  # Not used.
-    ):
-        """
-        Simpler version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
-        """
-        from leo.core.leoQt import isQt6, QtWidgets
-        from leo.core.leoQt import ButtonRole, Information
-        if g.unitTesting:
-            return None
-        # Create the dialog.
-        dialog = QtWidgets.QMessageBox(None)
-        # c.active_stylesheet doesn't exist in the NullGui.
-            # stylesheet = getattr(c, 'active_stylesheet', None)
-            # dialog.setStyleSheet(stylesheet)
-        dialog.setText(message)
-        dialog.setIcon(Information.Warning)
-        dialog.setWindowTitle("Saved changed outline?")
-        yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
-        no = dialog.addButton(noMessage, ButtonRole.NoRole)
-        dialog.setDefaultButton(yes if defaultButton == "Yes" else no)
-        # Button creation order determines returned value.
-        val = dialog.exec() if isQt6 else dialog.exec_()
-        if val == 0:
-            print(f"Saving: {c.fileName()}")
-        else:
-            print(f"Not saved: {c.fileName()}")
-        return "yes" if val == 0 else "no"
     #@+node:ekr.20210801175921.1: *3* function: tk_runAskYesNoCancelDialog & helpers
     def tk_runAskYesNoCancelDialog(
         # self,
@@ -3789,15 +3731,11 @@ def main():  # pragma: no cover (tested in client)
             top.destroy()
         #@-others
         root = Tk.Tk()
-
-        # root.eval('tk::PlaceWindow . center')
-
         root.withdraw()
         root.update()
 
         top = Tk.Toplevel(root)
 
-        # top.withdraw() # hide
         top.title("Saved changed outline?")
         top = create_frame(message)
         top.bind("<Return>", yesButton)
@@ -3807,22 +3745,8 @@ def main():  # pragma: no cover (tested in client)
         top.bind("N", noButton)
         top.lift()
 
-
-        # * center the dialog
-        #top.update_idletasks()
-        #width = top.winfo_width()
-        #frm_width = top.winfo_rootx() - top.winfo_x()
-        #win_width = width + 2 * frm_width
-        #height = top.winfo_height()
-        #titlebar_height = top.winfo_rooty() - top.winfo_y()
-        #win_height = height + titlebar_height + frm_width
-        #x = top.winfo_screenwidth() // 2 - win_width // 2
-        #y = top.winfo_screenheight() // 2 - win_height // 2
-        #top.geometry('{}x{}+{}+{}'.format(width, height, x, y))
-
         top.grab_set()  # Make the dialog a modal dialog.
 
-        #top.deiconify() # show
         root.update()
         root.wait_window(top)
 
@@ -3831,6 +3755,9 @@ def main():  # pragma: no cover (tested in client)
         return val
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
+        '''
+        Get arguments from the command that launched the server
+        '''
         global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
         args = None
         # See https://docs.python.org/3/library/getopt.html for 'getopt' usage
@@ -3866,8 +3793,7 @@ def main():  # pragma: no cover (tested in client)
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
         '''
-        Close the server
-
+        Close the server by stopping the loop
         '''
         print('Closing Leo Server', flush=True)
         if loop.is_running():
@@ -3879,19 +3805,45 @@ def main():  # pragma: no cover (tested in client)
         '''
         Ask the user about dirty files if any remained opened.
         '''
-        monkey_patch() # Replace the 'ask dialogs' methods to use a GUI
-        commanders = g.app.commanders() # Get all commanders
+        # Monkey-patch the dialog method first
+        g.app.gui.runAskYesNoCancelDialog = tk_runAskYesNoCancelDialog
+        # then loop all commanders and 'close' them for dirty check
+        commanders = g.app.commanders()
         for commander in commanders:
-            if commander.isChanged():
+            if commander.isChanged() and commander.fileName():
                 commander.close() # Patched 'ask' methods will open dialog
     #@+node:felix.20210803233022.1: *3* function:show_help
     def show_help():
+        '''
+        Printout the available command line parameters for this server script
+        '''
         print('Usage:')
         print('leoserver.py [-a <address>] [-p <port>] [-l <limit>] [--dirty] [--persist]')
         print('Defaults to address "localhost" on port 32125')
         print('with a default client limit of 1.')
         print('"--persist" flag prevents quitting when last client disconnects.')
         print('"--dirty" flag prevents asking about dirty files upon quitting.')
+    #@+node:felix.20210807214524.1: *3* function:cancel_tasks
+    def cancel_tasks(    to_cancel, loop):
+        if not to_cancel:
+            return
+
+        for task in to_cancel:
+            task.cancel()
+
+        loop.run_until_complete(asyncio.gather(*to_cancel, return_exceptions=True))
+
+        for task in to_cancel:
+            if task.cancelled():
+                continue
+            if task.exception() is not None:
+                loop.call_exception_handler(
+                    {
+                        "message": "unhandled exception during asyncio.run() shutdown",
+                        "exception": task.exception(),
+                        "task": task,
+                    }
+                )
     #@-others
 
     if '--unittest' in sys.argv:
@@ -3932,46 +3884,12 @@ def main():  # pragma: no cover (tested in client)
         print("Stopping: Check for changed commanders", flush=True)
         save_dirty()
 
-        _cancel_tasks(asyncio.all_tasks(loop), loop)
+        cancel_tasks(asyncio.all_tasks(loop), loop)
         loop.run_until_complete(loop.shutdown_asyncgens())
         loop.close()
         asyncio.set_event_loop(None)
 
         print("Stopped leobridge server", flush=True)
-#@+node:felix.20210807172057.1: ** function:exit
-# Stop the loop concurrently
-async def exit():
-    loop = asyncio.get_event_loop()
-    print("Stop")
-    loop.stop()
-#@+node:felix.20210807200911.1: ** function:cancel_tasks
-def cancel_tasks():
-    for task in asyncio.all_tasks():
-        print("canceling task")
-        task.cancel()
-#@+node:felix.20210807214524.1: ** function:_cancel_tasks
-def _cancel_tasks(
-    to_cancel: Set["asyncio.Task[Any]"], loop: asyncio.AbstractEventLoop
-) -> None:
-    if not to_cancel:
-        return
-
-    for task in to_cancel:
-        task.cancel()
-
-    loop.run_until_complete(asyncio.gather(*to_cancel, return_exceptions=True))
-
-    for task in to_cancel:
-        if task.cancelled():
-            continue
-        if task.exception() is not None:
-            loop.call_exception_handler(
-                {
-                    "message": "unhandled exception during asyncio.run() shutdown",
-                    "exception": task.exception(),
-                    "task": task,
-                }
-            )
 #@-others
 if __name__ == '__main__':
     # pytest will *not* execute this code.
