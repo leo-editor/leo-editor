@@ -158,6 +158,7 @@ import io
 import os
 import re
 import sys
+import textwrap
 import time
 import tokenize
 import traceback
@@ -189,19 +190,6 @@ class LeoGlobals:  # pragma: no cover
     total_time = 0.0  # For unit testing.
     
     #@+others
-    #@+node:ekr.20191227114503.1: *3* LeoGlobals.adjustTripleString
-    def adjustTripleString(self, s):
-        """Remove leading indentation from a triple-quoted string."""
-        lines = g.splitLines(s)
-        for line in lines:
-            if line.strip():
-                n = len(line) - len(line.lstrip())
-                lws = line[:n]
-                break
-        if not lws:
-            return s
-        return ''.join(
-            (z[n:] if z.startswith(lws) else z) for z in lines)
     #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
     def callerName(self, n):
         """Get the function name from the call stack."""
@@ -269,17 +257,6 @@ class LeoGlobals:  # pragma: no cover
             result.append(repr(obj))
         result.append('')
         return '\n'.join(result)
-    #@+node:ekr.20191231153754.1: *3* LeoGlobals.pdb
-    def pdb(self):
-        """Fall into pdb."""
-        import pdb
-        try:
-            import PyQt5.QtCore as QtCore
-            QtCore.pyqtRemoveInputHook()
-        except Exception:
-            print('can not import PyQt5.QtCore')
-            return
-        pdb.set_trace()
     #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
     def plural(self, obj):
         """Return "s" or "" depending on n."""
@@ -3486,7 +3463,7 @@ class BaseTest(unittest.TestCase):
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
     def adjust_expected(self, s):
         """Adjust leading indentation in the expected string s."""
-        return g.adjustTripleString(s.lstrip('\\\n')).rstrip() + '\n'
+        return textwrap.dedent(s.lstrip('\\\n')).rstrip() + '\n'
     #@+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
     def check_roundtrip(self, contents):
         """Check that the tokenizer round-trips the given contents."""
@@ -3503,11 +3480,10 @@ class BaseTest(unittest.TestCase):
         t1 = get_time()
         self.update_counts('characters', len(contents))
         # Ensure all tests end in exactly one newline.
-        contents = g.adjustTripleString(contents).rstrip() + '\n'
+        contents = textwrap.dedent(contents).rstrip() + '\n'
         # Create the TOG instance.
         self.tog = TokenOrderGenerator()
         self.tog.filename = description or g.callers(2).split(',')[0]
-
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         if not tokens:
@@ -4042,7 +4018,7 @@ class TestFstringify(BaseTest):
     f = TestClass('abc', 0, 10)
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(contents).rstrip() + '\n'
+        expected = textwrap.dedent(contents).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200111043311.2: *5* TestFstringify.test_crash_1
@@ -4166,7 +4142,7 @@ class TestFstringify(BaseTest):
     print(f'{"done"} in {2.9:5.2f} sec') # trailing comment
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(expected).rstrip() + '\n'
+        expected = textwrap.dedent(expected).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200206173126.1: *4* TestFstringify.test_change_quotes
@@ -4627,7 +4603,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(expected)
+        expected = textwrap.dedent(expected)
         # Black also removes parens, which is beyond our scope at present.
             # expected = self.blacken(contents, line_length=40)
         results = self.beautify(contents, tokens, tree)
@@ -4720,7 +4696,7 @@ class TestOrange(BaseTest):
         print(a)
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(expected)
+        expected = textwrap.dedent(expected)
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
@@ -4998,7 +4974,7 @@ class TestOrange(BaseTest):
         fails = 0
         contents, tokens, tree = self.make_data(contents)
         # expected = self.blacken(contents, line_length=line_length)
-        expected = g.adjustTripleString(expected)
+        expected = textwrap.dedent(expected)
         results = self.beautify(contents, tokens, tree,
             max_join_line_length=line_length,
             max_split_line_length=line_length,
@@ -5032,7 +5008,7 @@ class TestOrange(BaseTest):
         fails = 0
         contents, tokens, tree = self.make_data(contents)
         # expected = self.blacken(contents, line_length=line_length)
-        expected = g.adjustTripleString(expected)
+        expected = textwrap.dedent(expected)
         results = self.beautify(contents, tokens, tree,
             max_join_line_length=line_length,
             max_split_line_length=line_length,
@@ -6100,10 +6076,10 @@ class TestTokens(BaseTest):
     #@+node:ekr.20200111085210.1: *4* TT.test_continuation_2
     def test_continuation_2(self):
         # Backslash means line continuation, except for comments
-        contents = """\
-    x=1+\\\n2
-    # This is a comment\\\n# This also
-    """
+        contents = (
+            'x=1+\\\n    2'
+            '# This is a comment\\\n    # This also'
+        )
         self.check_roundtrip(contents)
     #@+node:ekr.20200111085211.1: *4* TT.test_continuation_3
     def test_continuation_3(self):
