@@ -4,6 +4,7 @@
 #@@first
 """Save and show tips to the user."""
 import random
+import textwrap
 from leo.core import leoGlobals as g
 assert g
 
@@ -117,7 +118,7 @@ UserTip(
 
 """),
 '''
-    template = g.adjustTripleString(template, c.tab_width)
+    template = textwrap.dedent(template)
     for kind in ('open',):  # 'closed':
         data = requests.get(url + kind).json()
         for tip in get_tips(data):

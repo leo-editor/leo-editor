@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
 '''The @auto importer for JavaScript.'''
 import re
+import textwrap
 import unittest
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -87,11 +88,9 @@ class JS_Importer(Importer):
     #@+node:ekr.20200202071105.1: *4* js_i.clean_all_nodes
     def clean_all_nodes(self, parent):
         """Remove common leading whitespace from all nodes."""
-        c = self.c
         for p in parent.subtree():
             lines = self.get_lines(p)
-            s = ''.join(lines)
-            s = g.adjustTripleString(s, tab_width=c.tab_width)
+            s = textwrap.dedent(''.join(lines))
             self.set_lines(p, g.splitLines(s))
     #@+node:ekr.20200202091613.1: *4* js_i.move_trailing_comments & helper (new)
     def move_trailing_comments(self, parent):
@@ -553,7 +552,7 @@ class TestJSImporter(unittest.TestCase):
     ) # End table.
         for s, expected_length in table:
             x = JS_Importer(None)
-            s = g.adjustTripleString(s, -4)
+            s = textwrap.dedent(s)
             lines = g.splitLines(s)
             head, tail = x.get_trailing_comments(lines)
             expected_lines = lines[-expected_length:] if expected_length else []

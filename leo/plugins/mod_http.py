@@ -491,7 +491,7 @@ class leo_interface:
         f.write('<pre class="body-text">')
         f.write('<code class="body-code">%s</code>' % escape(p.b))
             # This isn't correct when put in a triple string.
-            # We might be able to use g.adjustTripleString, but this works.
+            # We might be able to use textwrap.dedent, but this works.
         f.write('</pre></div>')
     #@+node:ekr.20161001121838.1: *5* write_head
     def write_head(self, f, headString, window):

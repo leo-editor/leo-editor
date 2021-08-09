@@ -683,6 +683,7 @@ import shutil
 import string
 import subprocess
 import sys
+import textwrap
 import webbrowser
 from urllib.request import urlopen
 
@@ -2310,7 +2311,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         template = image_template % (fname)
         # Only works in Python 3.x.
-        template = g.adjustTripleString(template, pc.c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
             # Sensitive to leading blank lines.
 
         w = pc.ensure_web_widget()
@@ -2391,11 +2392,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
-        c = self.c
         # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
-        template = g.adjustTripleString(template, c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
         return template
     #@+node:TomP.20191215195433.65: *4* vr3.update_md & helpers
     def update_md(self, node_list, keywords):
@@ -3283,8 +3283,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = g.adjustTripleString(s, pc.c.tab_width).strip()
-                # Sensitive to leading blank lines.
+            s = textwrap.dedent(s).strip()  # Sensitive to leading blank lines.
             bytes = g.toEncodedString(s)
             pc.show()
             w.load(QtCore.QByteArray(bytes))

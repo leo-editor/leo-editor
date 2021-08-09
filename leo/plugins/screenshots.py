@@ -321,6 +321,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 import xml.etree.ElementTree as etree
 
 from leo.core import leoGlobals as g
@@ -1223,7 +1224,7 @@ class ScreenShotController:
         # ==================
         # * :ref:`genindex`
         # * :ref:`search`
-        toc_body = g.adjustTripleString(s, sc.c.tab_width)
+        toc_body = textwrap.dedent(s)
         #@-<< define toc_body >>
         fn = sc.finalize('leo_toc.html.txt')
         if g.os_path_exists(fn): return

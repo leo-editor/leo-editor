@@ -5909,7 +5909,7 @@ def removeExtraLws(s: str, tab_width):
     """
     Remove extra indentation from one or more lines.
 
-    Warning: used by getScript. This is *not* the same as g.adjustTripleString.
+    Warning: used by getScript.
     """
     lines = g.splitLines(s)
     # Find the first non-blank line and compute w, the width of its leading whitespace.
