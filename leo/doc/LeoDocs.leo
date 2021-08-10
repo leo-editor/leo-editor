@@ -1760,6 +1760,7 @@
 <v t="ekr.20210710163244.4"><vh>#2041: Alt-x in find panel</vh></v>
 <v t="ekr.20210717092635.1337"><vh>#2076: find-all</vh></v>
 <v t="ekr.20210718082823.28"><vh>#2080: Context Menu</vh></v>
+<v t="ekr.20210810072331.1"><vh>#2127: Hard crash when showing tips</vh></v>
 <v t="ekr.20210405100137.1784"><vh>PR #1822: fix recursive import for @edit</vh></v>
 <v t="ekr.20210405100137.1801"><vh>PR #1865: Ctrl-click must not search @nosearch trees</vh></v>
 </v>
@@ -31732,6 +31733,8 @@ Cover keyword-only arguments.
 pep 570: https://www.python.org/dev/peps/pep-0570/#keyword-only-arguments</t>
 <t tx="ekr.20210802163908.31">https://github.com/leo-editor/leo-editor/issues/2103</t>
 <t tx="ekr.20210802163908.50">https://github.com/leo-editor/leo-editor/issues/2112</t>
+<t tx="ekr.20210810072331.1">https://github.com/leo-editor/leo-editor/issues/2127
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
