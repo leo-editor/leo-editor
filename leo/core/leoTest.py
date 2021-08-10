@@ -16,6 +16,7 @@ import logging.handlers
 import os
 import sys
 import tabnanny
+import textwrap
 import time
 import timeit
 import tokenize
@@ -761,7 +762,7 @@ class TestManager:
         pass
 
     '''
-        return g.adjustTripleString(s, self.c.tab_width)
+        return textwrap.dedent(s)
     #@+node:ekr.20120912094259.10547: *5* tm.get_test_class_script
     def get_test_class_script(self):
         s = '''
@@ -772,7 +773,7 @@ class TestManager:
         pass
 
     '''
-        return g.adjustTripleString(s, self.c.tab_width)
+        return textwrap.dedent(s)
     #@+node:ekr.20181121030240.1: *5* tm.instantiate_gui
     def instantiate_gui(self):
         """

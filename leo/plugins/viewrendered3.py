@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.42
+About Viewrendered3 V3.43
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -683,6 +683,7 @@ import shutil
 import string
 import subprocess
 import sys
+import textwrap
 import webbrowser
 from urllib.request import urlopen
 
@@ -2310,7 +2311,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         template = image_template % (fname)
         # Only works in Python 3.x.
-        template = g.adjustTripleString(template, pc.c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
             # Sensitive to leading blank lines.
 
         w = pc.ensure_web_widget()
@@ -2391,11 +2392,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
-        c = self.c
         # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
-        template = g.adjustTripleString(template, c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
         return template
     #@+node:TomP.20191215195433.65: *4* vr3.update_md & helpers
     def update_md(self, node_list, keywords):
@@ -3283,8 +3283,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = g.adjustTripleString(s, pc.c.tab_width).strip()
-                # Sensitive to leading blank lines.
+            s = textwrap.dedent(s).strip()  # Sensitive to leading blank lines.
             bytes = g.toEncodedString(s)
             pc.show()
             w.load(QtCore.QByteArray(bytes))
@@ -3635,18 +3634,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230503.1: *4* vr3: utils
     #@+node:TomP.20200329230503.2: *5* vr3.set_html
     def set_html(self, s, w):
-        """Set text in w to s, preserving scroll position."""
+        """Set text in w to s."""
         c = self.c
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
-        if isQt6:
-            url_base = QtCore.QUrl('file:///' + path + '/' + s)
-            w.setHtml(s)
-        else:
+        try:
             url_base = QtCore.QUrl('file:///' + path + '/')
             w.setHtml(s, url_base)
+        except Exception as e:
+            # Oops, don't have a QWebviewEngine
+            g.es(e)
+            w.setHtml(s)
+
         w.show()
     #@+node:TomP.20200329230503.3: *5* vr3.underline
     def underline(self, s):

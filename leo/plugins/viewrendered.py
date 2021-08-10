@@ -214,6 +214,7 @@ from distutils.spawn import find_executable
 import json
 import os
 from pathlib import Path
+import textwrap
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 
@@ -1124,7 +1125,7 @@ if QtWidgets: # NOQA
             path = path.replace('\\', '/')
             template = image_template % (path)
             # Only works in Python 3.x.
-            template = g.adjustTripleString(template, pc.c.tab_width).strip()
+            template = textwrap.dedent(template).strip()
                 # Sensitive to leading blank lines.
             # template = g.toUnicode(template)
             pc.show()
@@ -1204,7 +1205,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
             '''Create an html page embedding the latex code s.'''
-            c = self.c
             # pylint: disable=deprecated-method
             try:
                 import html
@@ -1214,7 +1214,7 @@ if QtWidgets: # NOQA
                 escape = cgi.escape
             html_s = escape(s)
             template = latex_template % (html_s)
-            template = g.adjustTripleString(template, c.tab_width).strip()
+            template = textwrap.dedent(template).strip()
             return template
         #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
         def update_md(self, s, keywords):
@@ -1481,8 +1481,7 @@ if QtWidgets: # NOQA
             pth_plantuml_jar = "~/.leo"
             os.system("cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path))
             template = image_template % (path)
-            # Only works in Python 3.x.
-            template = g.adjustTripleString(template, pc.c.tab_width).strip()
+            template = textwrap.dedent(template).strip()
             pc.show()
             w.setReadOnly(False)
             w.setHtml(template)
@@ -1571,7 +1570,7 @@ if QtWidgets: # NOQA
                 w = pc.w
             if s.strip().startswith('<'):
                 # Assume it is the svg (xml) source.
-                s = g.adjustTripleString(s, pc.c.tab_width).strip()
+                s = textwrap.dedent(s).strip()
                     # Sensitive to leading blank lines.
                 s = g.toEncodedString(s)
                 pc.show()

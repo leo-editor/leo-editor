@@ -17,6 +17,7 @@ import inspect
 import json
 import os
 import sys
+import textwrap
 import time
 import unittest
 import tkinter as Tk
@@ -74,13 +75,13 @@ class TerminateServer(Exception):  # pragma: no cover
     pass
 #@+node:felix.20210626222905.1: ** class ServerExternalFilesController
 class ServerExternalFilesController(ExternalFilesController):
-    '''EFC Modified from Leo's sources'''
+    """EFC Modified from Leo's sources"""
     # pylint: disable=no-else-return
 
     #@+others
     #@+node:felix.20210626222905.2: *3* sefc.ctor
     def __init__(self):
-        '''Ctor for ExternalFiles class.'''
+        """Ctor for ExternalFiles class."""
         super().__init__()
 
         self.on_idle_count = 0
@@ -101,7 +102,7 @@ class ServerExternalFilesController(ExternalFilesController):
         self.lastCommander = None
     #@+node:felix.20210626222905.6: *3* sefc.clientResult
     def clientResult(self, p_result):
-        '''Received result from connected client that was 'asked' yes/no/... '''
+        """Received result from connected client that was 'asked' yes/no/... """
         # Got the result to an asked question/warning from the client
         if not self.waitingForAnswer:
             print("ERROR: Received Result but no Asked Dialog", flush=True)
@@ -155,10 +156,10 @@ class ServerExternalFilesController(ExternalFilesController):
 
     #@+node:felix.20210714205604.1: *4* sefc.on_idle & helpers
     def on_idle(self):
-        '''
+        """
         Check for changed open-with files and all external files in commanders
         for which @bool check_for_changed_external_file is True.
-        '''
+        """
         # Fix for flushing the terminal console to pass through
         sys.stdout.flush()
 
@@ -184,10 +185,10 @@ class ServerExternalFilesController(ExternalFilesController):
             ]
     #@+node:felix.20210626222905.4: *5* sefc.idle_check_commander
     def idle_check_commander(self, c):
-        '''
+        """
         Check all external files corresponding to @<file> nodes in c for
         changes.
-        '''
+        """
         self.infoMessage = None  # reset infoMessage
         # False or "detected", "refreshed" or "ignored"
 
@@ -223,7 +224,7 @@ class ServerExternalFilesController(ExternalFilesController):
             g.leoServer.open_file({"filename":path }) # ignore returned value
     #@+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
-        '''Check the @<file> node at p for external changes.'''
+        """Check the @<file> node at p for external changes."""
         trace = False
         path = g.fullPath(c, p)
         has_changed = self.has_changed(path)
@@ -243,17 +244,17 @@ class ServerExternalFilesController(ExternalFilesController):
             self.checksum_d[path] = self.checksum(path)
     #@+node:felix.20210626222905.18: *4* sefc.open_with
     def open_with(self, c, d):
-        '''open-with is bypassed in leoserver (for now)'''
+        """open-with is bypassed in leoserver (for now)"""
         return
 
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* sefc.ask
     def ask(self, c, path, p=None):
-        '''
+        """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
         client, blocking further checks until result received.
-        '''
+        """
         # check with leoServer's config first
         if g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower(
@@ -298,7 +299,7 @@ class ServerExternalFilesController(ExternalFilesController):
         return False # return false so as not to refresh until 'clientResult' says so
     #@+node:felix.20210626222905.13: *4* sefc.is_enabled
     def is_enabled(self, c):
-        '''Return the cached @bool check_for_changed_external_file setting.'''
+        """Return the cached @bool check_for_changed_external_file setting."""
         # check with the leoServer config first
         if g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["checkForChangeExternalFiles"].lower()
@@ -310,11 +311,11 @@ class ServerExternalFilesController(ExternalFilesController):
         return super().is_enabled(c)
     #@+node:felix.20210626222905.16: *4* sefc.warn
     def warn(self, c, path, p):
-        '''
+        """
         Warn that an @asis or @nosent node has been changed externally.
 
         There is *no way* to update the tree automatically.
-        '''
+        """
         # check with leoServer's config first
         if g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()
@@ -456,7 +457,7 @@ class LeoServer:
         return "yes"
     #@+node:felix.20210622235209.1: *4* _es
     def _es(self, * args, **keys):  # pragma: no cover (tested in client).
-        '''Output to the Log Pane'''
+        """Output to the Log Pane"""
         d = {
             'color': None,
             'commas': False,
@@ -489,7 +490,7 @@ class LeoServer:
             else:
                 s = p.b
             # Remove extra leading whitespace so the user may execute indented code.
-            s = g.removeExtraLws(s, c.tab_width)
+            s = textwrap.dedent(s)
             s = g.extractExecutableString(c, p, s)
             script = g.composeScript(c, p, s,
                                       forcePythonSentinels=forcePythonSentinels,
@@ -509,7 +510,7 @@ class LeoServer:
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
     #@+node:felix.20210626003327.1: *4* _show_find_success
     def _show_find_success(self, c, in_headline, insert, p):
-        '''Handle a successful find match.'''
+        """Handle a successful find match."""
         if in_headline:
             g.app.gui.set_focus(c, self.headlineWidget)
         # no return
@@ -644,11 +645,11 @@ class LeoServer:
         return self._make_response(result)
     #@+node:felix.20210621233316.15: *5* server.set_opened_file
     def set_opened_file(self, param):
-        '''
+        """
         Choose the new active commander from array of opened files.
         Returns an object with total opened files
         and name of currently last opened & selected document.
-        '''
+        """
         tag = 'set_opened_file'
         index = param.get('index')
         total = len(g.app.commanders())
@@ -1121,7 +1122,7 @@ class LeoServer:
         return self._make_minimal_response({"position-data-list": result})
     #@+node:felix.20210621233316.38: *5* server.get_all_gnx
     def get_all_gnx(self, param):
-        '''Get gnx array from all unique nodes'''
+        """Get gnx array from all unique nodes"""
         if self.log_flag:  # pragma: no cover
             print('\nget_all_gnx\n', flush=True)
         c = self._check_c()
@@ -1305,11 +1306,11 @@ class LeoServer:
     #@+node:felix.20210621233316.49: *4* server:node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param):
-        '''
+        """
         Clone a node.
         If it was also the current selection, return it,
         otherwise try not to select it.
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         if p == c.p:
@@ -1333,10 +1334,10 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.52: *5* server.cut_node
     def cut_node(self, param):  # pragma: no cover (too dangerous, for now)
-        '''
+        """
         Cut a node, don't select it.
         Try to keep selection, then return the selected node that remains.
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         if p == c.p:
@@ -1409,9 +1410,9 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.56: *5* server.insert_named_node
     def insert_named_node(self, param):
-        '''
+        """
         Insert a node at given node, set its headline, select it and finally return it
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         newHeadline = param.get('name')
@@ -1427,9 +1428,9 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
     def insert_child_named_node(self, param):
-        '''
+        """
         Insert a child node at given node, set its headline, select it and finally return it
-        '''
+        """
         c = self._check_c()
         p = self._get_p(param)
         newHeadline = param.get('name')
@@ -1604,14 +1605,14 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.65: *5* server.mark_node
     def mark_node(self, param):
-        '''Mark a node, without selecting it'''
+        """Mark a node, without selecting it"""
         self._check_c()
         p = self._get_p(param)
         p.setMarked()
         return self._make_response()
     #@+node:felix.20210621233316.66: *5* server.unmark_node
     def unmark_node(self, param):
-        '''Unmark a node, without selecting it'''
+        """Unmark a node, without selecting it"""
         self._check_c()
         p = self._get_p(param)
         p.clearMarked()
@@ -1628,7 +1629,7 @@ class LeoServer:
     #@+node:felix.20210621233316.68: *4* server:server commands
     #@+node:felix.20210621233316.69: *5* server.set_ask_result
     def set_ask_result(self, param):
-        '''Got the result to an asked question/warning from client'''
+        """Got the result to an asked question/warning from client"""
         tag = "set_ask_result"
         result = param.get("result");
         if not result:
@@ -1637,7 +1638,7 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.70: *5* server.set_config
     def set_config(self, param):
-        '''Got auto-reload's config from client'''
+        """Got auto-reload's config from client"""
         self.leoServerConfig = param # PARAM IS THE CONFIG-DICT
         return self._make_response()
     #@+node:felix.20210621233316.71: *5* server.error
@@ -3117,7 +3118,7 @@ class LeoServer:
         print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
     #@+node:felix.20210624160812.1: *4* server._emit_signon
     def _emit_signon(self):
-        '''Simulate the Initial Leo Log Entry'''
+        """Simulate the Initial Leo Log Entry"""
         tag = 'emit_signon'
         if self.loop:
             g.app.computeSignon()
@@ -3347,7 +3348,7 @@ class LeoServer:
         }
     #@+node:felix.20210621233316.96: *4* server._positionFromGnx
     def _positionFromGnx(self, gnx):
-        '''Return first p node with this gnx or false'''
+        """Return first p node with this gnx or false"""
         c = self._check_c()
         for p in c.all_unique_positions():
             if p.v.gnx == gnx:
@@ -3393,7 +3394,7 @@ class LeoServer:
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
     #@+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
     def _yieldAllRootChildren(self):
-        '''Return all root children P nodes'''
+        """Return all root children P nodes"""
         c = self._check_c()
         p = c.rootPosition()
         while p:
@@ -3760,9 +3761,9 @@ def main():  # pragma: no cover (tested in client)
         return val
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
-        '''
+        """
         Get arguments from the command that launched the server
-        '''
+        """
         global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
         args = None
         # See https://docs.python.org/3/library/getopt.html for 'getopt' usage
@@ -3797,9 +3798,9 @@ def main():  # pragma: no cover (tested in client)
         return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
-        '''
+        """
         Close the server by stopping the loop
-        '''
+        """
         print('Closing Leo Server', flush=True)
         if loop.is_running():
             loop.stop()
@@ -3807,9 +3808,9 @@ def main():  # pragma: no cover (tested in client)
             print('Loop was not running', flush=True)
     #@+node:felix.20210807160828.1: *3* function:save_dirty
     def save_dirty():
-        '''
+        """
         Ask the user about dirty files if any remained opened.
-        '''
+        """
         # Monkey-patch the dialog method first
         g.app.gui.runAskYesNoCancelDialog = tk_runAskYesNoCancelDialog
         # then loop all commanders and 'close' them for dirty check
@@ -3819,17 +3820,19 @@ def main():  # pragma: no cover (tested in client)
                 commander.close() # Patched 'ask' methods will open dialog
     #@+node:felix.20210803233022.1: *3* function:show_help
     def show_help():
-        '''
+        """
         Printout the available command line parameters for this server script
-        '''
-        print('Usage:')
-        print('leoserver.py [-a <address>] [-p <port>] [-l <limit>] [--dirty] [--persist]')
-        print('Defaults to address "localhost" on port 32125')
-        print('with a default client limit of 1.')
-        print('"--persist" flag prevents quitting when last client disconnects.')
-        print('"--dirty" flag prevents asking about dirty files upon quitting.')
+        """
+        print(textwrap.dedent("""\
+    Usage:
+    leoserver.py [-a <address>] [-p <port>] [-l <limit>] [--dirty] [--persist]
+    Defaults to address "localhost" on port 32125
+    with a default client limit of 1.
+    "--persist" flag prevents quitting when last client disconnects.
+    "--dirty" flag prevents asking about dirty files upon quitting.
+    """))
     #@+node:felix.20210807214524.1: *3* function:cancel_tasks
-    def cancel_tasks(    to_cancel, loop):
+    def cancel_tasks(to_cancel, loop):
         if not to_cancel:
             return
 

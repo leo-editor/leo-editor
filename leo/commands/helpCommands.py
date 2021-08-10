@@ -8,6 +8,7 @@
 import io
 import re
 import sys
+import textwrap
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
@@ -377,7 +378,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 underline = '+' * len(s2)
                 title = f"{s2}\n{underline}\n\n"
                 if 1:  # 2015/03/24
-                    s = title + g.adjustTripleString(s, c.tab_width)
+                    s = title + textwrap.dedent(s)
                 else:
                     # Fixes bug 618570:
                     s = title + ''.join([
@@ -418,7 +419,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
                 '''
                 #@-<< set s to about help-for-command >>
-            c.putHelpFor(s)  # calls g.adjustTripleString.
+            c.putHelpFor(s)
     #@+node:ekr.20150514063305.385: *4* replaceBindingPatterns
     def replaceBindingPatterns(self, s):
         """

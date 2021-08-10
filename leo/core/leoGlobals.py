@@ -33,6 +33,7 @@ import string
 import sys
 import subprocess
 import tempfile
+import textwrap
 import time
 import traceback
 import types
@@ -5895,48 +5896,6 @@ def computeWidth(s: str, tab_width):
         else:
             w += 1
     return w
-#@+node:ekr.20051014175117: *4* g.adjustTripleString
-def adjustTripleString(s: str, tab_width):
-    """Remove leading indentation from a triple-quoted string.
-
-    This works around the fact that Leo nodes can't represent underindented strings.
-    """
-    # Compute the minimum leading whitespace of all non-blank lines.
-    lines = g.splitLines(s)
-    first, w = True, 0
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            # The sign of w2 does not matter.
-            w2 = abs(g.computeWidth(lws, tab_width))
-            if w2 == 0:
-                return s
-            if first or w2 < w:
-                w = w2
-                first = False
-    if w == 0:
-        return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
-#@+node:ekr.20050211120242.2: *4* g.removeExtraLws
-def removeExtraLws(s: str, tab_width):
-    """
-    Remove extra indentation from one or more lines.
-
-    Warning: used by getScript. This is *not* the same as g.adjustTripleString.
-    """
-    lines = g.splitLines(s)
-    # Find the first non-blank line and compute w, the width of its leading whitespace.
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            w = g.computeWidth(lws, tab_width)
-            break
-    else: return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
 #@+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
 #@@language rest
 #@+at
@@ -7425,7 +7384,7 @@ def getScript(c: Cmdr, p: Pos,
         else:
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
-        s = g.removeExtraLws(s, c.tab_width)
+        s = textwrap.dedent(s)
         s = g.extractExecutableString(c, p, s)
         script = g.composeScript(c, p, s,
                     forcePythonSentinels=forcePythonSentinels,

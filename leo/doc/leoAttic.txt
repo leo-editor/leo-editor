@@ -9890,6 +9890,49 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
+#@+node:ekr.20210809085711.1: ** From leoGlobals.py
+#@+node:ekr.20210809093522.1: *3* g.adjustTripleString
+def adjustTripleString(s, tab_width):
+    """Remove leading indentation from a triple-quoted string.
+
+    This works around the fact that Leo nodes can't represent underindented strings.
+    """
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = g.splitLines(s)
+    first, w = True, 0
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            # The sign of w2 does not matter.
+            w2 = abs(g.computeWidth(lws, tab_width))
+            if w2 == 0:
+                return s
+            if first or w2 < w:
+                w = w2
+                first = False
+    if w == 0:
+        return s
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
+    return ''.join(result)
+#@+node:ekr.20050211120242.2: *3* g.removeExtraLws
+def removeExtraLws(s: str, tab_width):
+    """
+    Remove extra indentation from one or more lines.
+
+    Warning: used by getScript.
+    """
+    lines = g.splitLines(s)
+    # Find the first non-blank line and compute w, the width of its leading whitespace.
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            w = g.computeWidth(lws, tab_width)
+            break
+    else: return s
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
+    return ''.join(result)
 #@+node:ekr.20210327062138.1: ** From leoRst.py
 #@+node:ekr.20120219194520.10444: *3* html parser classes
 # Perhaps mod_http used to use these.

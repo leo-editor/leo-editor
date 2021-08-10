@@ -12,6 +12,7 @@ import os
 import re
 import string
 import sys
+import textwrap
 import time
 from typing import Dict, List, Tuple
 from leo.core import leoGlobals as g
@@ -2481,8 +2482,9 @@ class KeyHandlerClass:
     [@] @mode, @button, @command
 
     '''
-        if not d: return g.es('no bindings')
-        legend = g.adjustTripleString(legend, c.tab_width)
+        if not d:
+            return g.es('no bindings')
+        legend = textwrap.dedent(legend)
         data = []
         for stroke in sorted(d):
             assert g.isStroke(stroke), stroke

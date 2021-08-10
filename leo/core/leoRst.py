@@ -17,6 +17,7 @@ available."""
 import io
 import os
 import re
+import textwrap
 import time
 import unittest
 #
@@ -792,7 +793,7 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         This is test.html
         '''
         #@-<< define root_b >>
-        root.b = g.adjustTripleString(root_b, -4)
+        root.b = textwrap.dedent(root_b)
         child = root.insertAsLastChild()
         child.h = 'section'
         #@+<< define child_b >>
@@ -804,8 +805,8 @@ class TestRst3(unittest.TestCase):  # pragma: no cover
         This is the body of the section.
         '''
         #@-<< define child_b >>
-        child.b = g.adjustTripleString(child_b, -4)
-        expected_source = g.adjustTripleString(expected_s, -4)
+        child.b = textwrap.dedent(child_b)
+        expected_source = textwrap.dedent(expected_s)
         #
         # Compute the result.
         rc.nodeNumber = 0
