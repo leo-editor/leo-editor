@@ -132,7 +132,8 @@ class ServerExternalFilesController(ExternalFilesController):
             path = self.lastCommander.fileName()
             # 6- Same but for Leo file commander (close and reopen .leo file)
             if bool(p_result and 'yes' in p_result.lower()):
-                self.lastCommander.close()
+                # self.lastCommander.close() Stops too much if last file closed
+                g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
                 g.leoServer.open_file({"filename":path }) # ignore returned value
 
         # Always update the path & time to prevent future warnings for this path.
@@ -217,7 +218,8 @@ class ServerExternalFilesController(ExternalFilesController):
         # For now, ignore the #1888 fix method
         if self.ask(c, path):
             #reload Commander
-            self.lastCommander.close()
+            # self.lastCommander.close() Stops too much if last file closed
+            g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
             g.leoServer.open_file({"filename":path }) # ignore returned value
     #@+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
@@ -299,8 +301,7 @@ class ServerExternalFilesController(ExternalFilesController):
         '''Return the cached @bool check_for_changed_external_file setting.'''
         # check with the leoServer config first
         if g.leoServer.leoServerConfig:
-            check_config = g.leoServer.leoServerConfig["checkForChangeExternalFiles"].lower(
-            )
+            check_config = g.leoServer.leoServerConfig["checkForChangeExternalFiles"].lower()
             if bool('check' in check_config):
                 return True
             if bool('ignore' in check_config):
@@ -494,7 +495,7 @@ class LeoServer:
                                       forcePythonSentinels=forcePythonSentinels,
                                       useSentinels=useSentinels)
         except Exception:
-            g.es_print("unexpected exception in g.getScript")
+            g.es_print("unexpected exception in g.getScript", flush=True)
             g.es_exception()
             script = ''
         return script
@@ -671,10 +672,14 @@ class LeoServer:
         if c:
             # First, revert to prevent asking user.
             if forced and c.changed:
-                c.revert()
+                if c.fileName():
+                    c.revert()
+                else:
+                    c.changed = False # Needed in g.app.closeLeoWindow
             # Then, if still possible, close it.
             if forced or not c.changed:
-                c.close()
+                # c.close() # Stops too much if last file closed
+                g.app.closeLeoWindow(c.frame, finish_quit=False)
             else:
                 # Cannot close, return empty response without 'total' (ask to save, ignore or cancel)
                 return self._make_response()
@@ -1118,7 +1123,7 @@ class LeoServer:
     def get_all_gnx(self, param):
         '''Get gnx array from all unique nodes'''
         if self.log_flag:  # pragma: no cover
-            print('\nget_all_gnx\n')
+            print('\nget_all_gnx\n', flush=True)
         c = self._check_c()
         all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
         return self._make_minimal_response({"gnx": all_gnx})
