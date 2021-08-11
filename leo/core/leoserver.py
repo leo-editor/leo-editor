@@ -48,6 +48,7 @@ SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
 connectionsPool = set() # Websocket connections (to be sent 'notify' messages)
 connectionsTotal = 0 # Current connected client total
 # Customizable server options
+argFile = ""
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -3584,7 +3585,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
 #@+node:felix.20210621233316.105: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
-    global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
+    global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
     print("Starting LeoBridge... (Launch with -h for help)")
 
     #@+others
@@ -3601,6 +3602,7 @@ def main():  # pragma: no cover (tested in client)
         verbose = False
 
         try:
+            # Websocket connection startup
             if connectionsTotal >= wsLimit:
                 print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}")
                 await websocket.close(1001)
@@ -3614,6 +3616,8 @@ def main():  # pragma: no cover (tested in client)
             n = 0
             await websocket.send(controller._make_response())
             controller._emit_signon()
+
+            # Websocket connection message handling loop
             async for json_message in websocket:
                 try:
                     n += 1
@@ -3648,10 +3652,11 @@ def main():  # pragma: no cover (tested in client)
                     g.print_exception()
                     break
                 await websocket.send(answer)
-                # If not a 'getter' send refresh signal to other clients
 
+                # If not a 'getter' send refresh signal to other clients
                 if controller.action[0:5] != "!get_":
                     await notify_clients(controller.action, websocket)
+
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: connection closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
@@ -3764,11 +3769,11 @@ def main():  # pragma: no cover (tested in client)
         """
         Get arguments from the command that launched the server
         """
-        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
+        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
         args = None
         # See https://docs.python.org/3/library/getopt.html for 'getopt' usage
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:", ["help", "address=", "port=", "persist", "dirty", "limit="])
+            opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:f:", ["help", "address=", "port=", "persist", "dirty", "limit=", "file="])
         except getopt.GetoptError:
             show_help()
             if args:
@@ -3780,6 +3785,8 @@ def main():  # pragma: no cover (tested in client)
                 sys.exit()
             elif opt in ("-a", "--address"):
                 wsHost = arg
+            elif opt in ("-f", "--file"):
+                argFile = arg
             elif opt in ("-p", "--port"):
                 wsPort = arg
             elif opt in ("-l", "--limit"):
@@ -3825,11 +3832,12 @@ def main():  # pragma: no cover (tested in client)
         """
         print(textwrap.dedent("""\
     Usage:
-    leoserver.py [-a <address>] [-p <port>] [-l <limit>] [--dirty] [--persist]
+    leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]
     Defaults to address "localhost" on port 32125
     with a default client limit of 1.
     "--persist" flag prevents quitting when last client disconnects.
     "--dirty" flag prevents asking about dirty files upon quitting.
+    "-f or --file to specify a file to have open on startup."
     """))
     #@+node:felix.20210807214524.1: *3* function:cancel_tasks
     def cancel_tasks(to_cancel, loop):
@@ -3864,6 +3872,13 @@ def main():  # pragma: no cover (tested in client)
 
     # Open leoBridge.
     controller = LeoServer() # Only one instance of 'LeoServer'
+    if argFile:
+        # Open specified file argument
+        try:
+            print("Opening file: " + argFile)
+            controller.open_file({"filename":argFile})
+        except Exception:
+            print("Opening file failed")
 
     # Start the server.
     loop = asyncio.get_event_loop()
