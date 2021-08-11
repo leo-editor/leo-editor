@@ -14,7 +14,7 @@ from typing import Dict, List
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, isQt6, Qsci, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
 from leo.core.leoQt import Shadow, Shape, StandardButton, Weight, WindowType
     # This import causes pylint to fail on this file and on leoBridge.py.
@@ -1170,8 +1170,11 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20130930062914.16000: *4* qt_gui.runMainLoop
     def runMainLoop(self):
         """Start the Qt main loop."""
-        g.app.gui.dismiss_splash_screen()
-        g.app.gui.show_tips()
+        try:  # #2127: A crash here hard-crashes Leo: There is no main loop!
+            g.app.gui.dismiss_splash_screen()
+            g.app.gui.show_tips()
+        except Exception:
+            g.es_exception()
         if self.script:
             log = g.app.log
             if log:
@@ -1239,37 +1242,35 @@ class LeoQtGui(leoGui.LeoGui):
 
 
     class DialogWithCheckBox(QtWidgets.QMessageBox):
-
+        
         def __init__(self, controller, tip):
             super().__init__()
             c = g.app.log.c
             self.leo_checked = True
             self.setObjectName('TipMessageBox')
-            self.setIcon(self.Information)
+            self.setIcon(Icon.Information)  # #2127.
             # self.setMinimumSize(5000, 4000)
                 # Doesn't work.
                 # Prevent the dialog from jumping around when
                 # selecting multiple tips.
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
-            self.next_tip_button = self.addButton('Show Next Tip', self.ActionRole)
-            self.setStandardButtons(self.Ok)  # | self.Close)
-            self.setDefaultButton(self.Ok)
+            self.next_tip_button = self.addButton('Show Next Tip', ButtonRole.ActionRole)  # #2127
+            self.addButton('Ok', ButtonRole.YesRole)  # #2127.
             c.styleSheetManager.set_style_sheets(w=self)
-            if isQt5 or isQt6:
-                # Workaround #693.
-                layout = self.layout()
-                cb = QtWidgets.QCheckBox()
-                cb.setObjectName('TipCheckbox')
-                cb.setText('Show Tip On Startup')
-                cb.setCheckState(2)
-                cb.stateChanged.connect(controller.onClick)
-                layout.addWidget(cb, 4, 0, -1, -1)
-                if 0:  # Does not work well.
-                    sizePolicy = QtWidgets.QSizePolicy
-                    vSpacer = QtWidgets.QSpacerItem(
-                        200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
-                    layout.addItem(vSpacer)
+            # Workaround #693.
+            layout = self.layout()
+            cb = QtWidgets.QCheckBox()
+            cb.setObjectName('TipCheckbox')
+            cb.setText('Show Tip On Startup')
+            cb.setCheckState(QtConst.CheckState.Checked)  # #2127.
+            cb.stateChanged.connect(controller.onClick)
+            layout.addWidget(cb, 4, 0, -1, -1)
+            if 0:  # Does not work well.
+                sizePolicy = QtWidgets.QSizePolicy
+                vSpacer = QtWidgets.QSpacerItem(
+                    200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
+                layout.addItem(vSpacer)
 
     def show_tips(self, force=False):
         from leo.core import leoTips
@@ -1283,23 +1284,20 @@ class LeoQtGui(leoGui.LeoGui):
         if not force and not self.show_tips_flag:
             return
         tm = leoTips.TipManager()
-        if 1:  # QMessageBox is always a modal dialog.
-            while True:
-                tip = tm.get_next_tip()
-                m = self.DialogWithCheckBox(controller=self, tip=tip)
-                try:
-                    c.in_qt_dialog = True
-                    m.exec_()
-                finally:
-                    c.in_qt_dialog = False
-                b = m.clickedButton()
-                self.update_tips_setting()
-                if b != m.next_tip_button:
-                    break
-        else:
-            m.buttonClicked.connect(self.onButton)
-            m.setModal(False)
-            m.show()
+        while True:  # QMessageBox is always a modal dialog.
+            tip = tm.get_next_tip()
+            m = self.DialogWithCheckBox(controller=self, tip=tip)
+            try:
+                c.in_qt_dialog = True
+                m.exec_()
+            finally:
+                c.in_qt_dialog = False
+            b = m.clickedButton()
+            g.trace(b)
+            self.update_tips_setting()
+            if b != m.next_tip_button:
+                break
+      
     #@+node:ekr.20180117080131.1: *4* onButton (not used)
     def onButton(self, m):
         m.hide()
