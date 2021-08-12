@@ -233,13 +233,11 @@ class ServerExternalFilesController(ExternalFilesController):
             g.trace('changed', has_changed, p.h)
         if has_changed:
             self.lastPNode = p  # can be set here because its the same process for ask/warn
-
-            old_p = c.p # To restore selection if refresh option set to yes-all & is descendant of at-file
-
             if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                 # Fix #1081: issue a warning.
                 self.warn(c, path, p=p)
             elif self.ask(c, path, p=p):
+                old_p = c.p # To restore selection if refresh option set to yes-all & is descendant of at-file
                 c.selectPosition(self.lastPNode)
                 c.refreshFromDisk() # Ends with selection on new c.p which is the at-file node
                 # check with leoServer's config first, and if new c.p is ancestor of old_p
