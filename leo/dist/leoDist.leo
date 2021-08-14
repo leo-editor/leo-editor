@@ -151,6 +151,13 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 <v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
+<v t="ekr.20210813103123.1"><vh>--- no longer used, from setup.py</vh>
+<v t="maphew.20181010203342.385"><vh>get_version (not used)</vh></v>
+<v t="maphew.20181010203342.386"><vh>git_version (not used)</vh>
+<v t="maphew.20180224170257.1"><vh>clean_git_tag</vh></v>
+</v>
+<v t="maphew.20180224170149.1"><vh>get_semantic_version (not used)</vh></v>
+</v>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
@@ -187,6 +194,7 @@
 <v t="ekr.20150416081546.7"></v>
 </v>
 </v>
+<v t="maphew.20180224170853.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2203,6 +2211,8 @@ Public announcements, after Matt creates a package:
 <t tx="ekr.20200313063940.1">git checkout -b 6.3
 git push origin 6.3
 </t>
+<t tx="ekr.20210813103123.1">@language python
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -2328,6 +2338,69 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
+<t tx="maphew.20180224170149.1">def get_semantic_version(tag):
+    """Return 'Semantic Version' from tag string"""
+    try:
+        import semantic_version
+    except Exception:
+        print(f"Can not import semantic_version. Using {tag!r}")
+        return tag
+    try:
+        # tuple of major, minor, build, pre-release, patch.
+        # Example: 5.6b2 --&gt; 5.6-b2
+        return str(semantic_version.Version.coerce(tag, partial=True))
+    except Exception:
+        ### g.es_exception()
+        print_exception()
+        print(f"Bad version: {tag!r}")
+        return tag
+        ###
+        # print(
+            # f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
+            # "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
+            # "This version can't be uploaded to PyPi.org.")
+        # version = tag
+    # return version
+</t>
+<t tx="maphew.20180224170257.1">def clean_git_tag(tag):
+    """Return only version number from tag name. Ignore unknown formats.
+       Is specific to tags in Leo's repository.
+            5.7b1          --&gt;	5.7b1
+            Leo-4-4-8-b1   --&gt;	4-4-8-b1
+            v5.3           --&gt;	5.3
+            Fixed-bug-149  --&gt;  Fixed-bug-149
+    """
+    if tag.lower().startswith('leo-'): tag = tag[4:]
+    if tag.lower().startswith('v'): tag = tag[1:]
+    return tag
+</t>
+<t tx="maphew.20181010203342.385">def get_version(file, version=None):
+    """Determine current Leo version. Use git if in checkout, else internal Leo"""
+    root = os.path.dirname(os.path.realpath(file))
+    if os.path.exists(os.path.join(root, '.git')):
+        version = git_version(file)
+    if not version:
+        version = get_semantic_version(leoVersion.version)
+    return version</t>
+<t tx="maphew.20181010203342.386">def git_version(file, version=None):
+    """
+    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+    Return as semantic version string compliant with PEP440
+    """
+    root = os.path.dirname(os.path.realpath(file))
+    try:
+        tag, distance, commit = g.gitDescribe(root)  # 5.6b2, 55, e1129da
+        ctag = clean_git_tag(tag)
+        #version = get_semver(ctag)
+        version = ctag
+        if int(distance) &gt; 0:
+            version = '{}-dev{}'.format(version, distance)
+    except IndexError:
+        print('Attempt to `git describe` failed with IndexError')
+    except FileNotFoundError:
+        print('Attempt to `git describe` failed with FileNotFoundError')
+    return version
+</t>
 <t tx="maphew.20181010205346.1">**Pushed a commit but nothing is happening in the dashboard?**
 Check the _requests_ log: https://travis-ci.org/leo-editor/leo-editor/requests
 The link is hidden under [more options] at right.
@@ -2366,9 +2439,8 @@ requires = ["setuptools&gt;=38.6.0",
 build-backend = 'setuptools.build_meta'
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
-# This flag says that the code is written to work on both Python 2 and Python
-# 3. If at all possible, it is good practice to do this. If you cannot, you
-# will need to generate wheels for each Python version that you support.
+
+# Leo 6.4: Leo only supports Python 3, so universal should be zero.
 universal=0
 </t>
 <t tx="maphew.20190208142757.1">@language python

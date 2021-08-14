@@ -2,84 +2,22 @@
 #@+leo-ver=5-thin
 #@+node:maphew.20180224170853.1: * @file ../../setup.py
 #@@first
-"""setup.py for leo"""
-#@+others
-#@+node:maphew.20180305124637.1: ** imports
-from codecs import open  # To use a consistent encoding
-import os
+"""
+setup.py for leo.
+
+Run with `python -m build` from the leo-editor directory.
+"""
+#@+<< imports >>
+#@+node:maphew.20180305124637.1: ** << imports >>
 import platform
+import re
 import sys
-# from shutil import rmtree
-from setuptools import setup, find_packages  # Always prefer setuptools over distutils
-
-# Ensure setup.py's folder is in module search path else import leo fails
-# required for pip >v10 and pyproject.toml
-# pylint: disable=wrong-import-position
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-from leo.core import leoGlobals as g
-from leo.core import leoVersion
-
-#@+node:maphew.20181010203342.385: ** get_version & helper (setup.py)
-def get_version(file, version=None):
-    """Determine current Leo version. Use git if in checkout, else internal Leo"""
-    root = os.path.dirname(os.path.realpath(file))
-    if os.path.exists(os.path.join(root, '.git')):
-        version = git_version(file)
-    if not version:
-        version = get_semver(leoVersion.version)
-    return version
-#@+node:maphew.20181010203342.386: *3* git_version
-def git_version(file, version=None):
-    """
-    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-    Return as semantic version string compliant with PEP440
-    """
-    root = os.path.dirname(os.path.realpath(file))
-    try:
-        tag, distance, commit = g.gitDescribe(root)
-            # 5.6b2, 55, e1129da
-        ctag = clean_git_tag(tag)
-        #version = get_semver(ctag)
-        version = ctag
-        if int(distance) > 0:
-            version = '{}-dev{}'.format(version, distance)
-    except IndexError:
-        print('Attempt to `git describe` failed with IndexError')
-    except FileNotFoundError:
-        print('Attempt to `git describe` failed with FileNotFoundError')
-    return version
-#@+node:maphew.20180224170257.1: *4* clean_git_tag
-def clean_git_tag(tag):
-    """Return only version number from tag name. Ignore unknown formats.
-       Is specific to tags in Leo's repository.
-            5.7b1          -->	5.7b1
-            Leo-4-4-8-b1   -->	4-4-8-b1
-            v5.3           -->	5.3
-            Fixed-bug-149  -->  Fixed-bug-149
-    """
-    if tag.lower().startswith('leo-'): tag = tag[4:]
-    if tag.lower().startswith('v'): tag = tag[1:]
-    return tag
-#@+node:maphew.20180224170149.1: *3* get_semver
-def get_semver(tag):
-    """Return 'Semantic Version' from tag string"""
-    try:
-        import semantic_version
-        version = str(semantic_version.Version.coerce(tag, partial=True))
-            # tuple of major, minor, build, pre-release, patch
-            # 5.6b2 --> 5.6-b2
-    except(ImportError, ValueError) as err:
-        print('\n', err)
-        print(
-            f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
-            "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
-            "This version can't be uploaded to PyPi.org.")
-        version = tag
-    return version
-#@+node:maphew.20171006124415.1: ** Get description
-with open('README.md') as f:
-    long_description = f.read()
-#@+node:maphew.20141126230535.4: ** classifiers
+import traceback
+# Third-part tools.
+import setuptools # Always prefer setuptools over distutils.
+#@-<< imports >>
+#@+<< define classifiers >>
+#@+node:maphew.20141126230535.4: ** << define classifiers >>
 classifiers = [
     'Development Status :: 6 - Mature',
     'Intended Audience :: End Users/Desktop',
@@ -94,11 +32,10 @@ classifiers = [
     'Topic :: Text Editors',
     'Topic :: Text Processing',
     ]
-#@+node:maphew.20180415195922.1: ** Setup requirements
-setup_requires = []
-    # setup_requires no longer needed with PEP-518 and pip >v10
-#@+node:maphew.20171120133429.1: ** User requirements
-user_requires = [
+#@-<< define classifiers >>
+#@+<< define install_requires >>
+#@+node:maphew.20171120133429.1: ** << define install_requires >>
+install_requires = [
     'PyQt5 >= 5.12',  # v5.12+ to close #1217
     'PyQtWebEngine',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'asttokens',  # abstract syntax tree text parsing
@@ -111,50 +48,104 @@ user_requires = [
     'sphinx',  # rST plugin
     'windows-curses; platform_system=="Windows"',  # for console mode on Windows
     ]
+#@-<< define install_requires >>
+#@+others  # Define helpers
 #@+node:maphew.20190207205714.1: ** define_entry_points
 def define_entry_points(entry_points=None):
     """
-    Define scripts that get installed to PYTHONHOME/Scripts.
+    Return a dict defining scripts that get installed to PYTHONHOME/Scripts.
     """
-    print('Creating entry_points for [OS name - system]: {} - {}'.format(
-        platform.os.name, platform.system()))
-    entry_points = {'console_scripts': [
+    entry_points = {
+        'console_scripts': [
             'leo-c = leo.core.runLeo:run_console',
-            'leo-console = leo.core.runLeo:run_console'],
-            'gui_scripts': ['leo = leo.core.runLeo:run']}
-
+            'leo-console = leo.core.runLeo:run_console',
+        ],
+        'gui_scripts': ['leo = leo.core.runLeo:run'],
+    }
     # Add leo-messages wrapper for windows platform
-    # (use python.exe instead of pythonw.exe in order to show console msgs)
     if platform.system() == 'Windows':
         x = entry_points['console_scripts']
         x.append('leo-m = leo.core.runLeo:run')
         x.append('leo-messages = leo.core.runLeo:run')
         entry_points.update({'console_scripts': x})
-
     return entry_points
-#@-others
+#@+node:ekr.20210813135632.1: ** dump_entry_points
+def dump_entry_points():
+    
+    global entry_points
+    print(f"setup.py: entry_points. OS = {platform.os.name}, system = {platform.system()}")
+    for key in entry_points:
+        aList = entry_points.get(key)
+        list_s = '\n    '.join(aList)
+        print(f"  {key}: [\n    {list_s}\n  ]")
+#@+node:ekr.20210813100609.1: ** get_readme_contents
+def get_readme_contents():
+    with open('README.md') as f:
+        return f.read()
+#@+node:ekr.20210814041052.1: ** is_valid_version
+pattern = re.compile(r'[0-9]+\.[0-9]+(\.[0-9]+)?((b|rc)[0-9]+)?')
 
-setup(
-    name='leo',
-    # version = leo.core.leoVersion.version,
-    version=get_version(__file__),
-    author='Edward K. Ream',
-    author_email='edreamleo@gmail.com',
-    url='http://leoeditor.com',
-    license='MIT License',
-    description='An IDE, PIM and Outliner',  # becomes 'Summary' in pkg-info
-    long_description=long_description,
-    long_description_content_type="text/markdown",  # PEP566
-    platforms=['Linux', 'Windows', 'MacOS'],
-    download_url='http://leoeditor.com/download.html',
-    classifiers=classifiers,
-    packages=find_packages(),
-    include_package_data=True,  # also include MANIFEST files in wheels
-    setup_requires=setup_requires,
-    install_requires=user_requires,
-    entry_points=define_entry_points(),
-    python_requires='>=3.6',
-)
+def is_valid_version(version):
+    """"
+    Return True if version has the form '5.7b2', 'v4.3', etc.
+    
+    See PEP 440: https://www.python.org/dev/peps/pep-0440/
+    
+    For Leo, we shall limit the valid versions with: N1.N2(.N3)?(bN|rcN)?
+    where N is any integer. Alpha releases aren't valid.
+    """
+    m = pattern.match(version)
+    return bool(m and len(m.group(0)) == len(version))
+#@+node:ekr.20210813103317.1: ** print_exception
+def print_exception():
+    typ, val, tb = sys.exc_info()
+    # val is the second argument to the raise statement.
+    lines = traceback.format_exception(typ, val, tb)
+    for line in lines:
+        print(line)
+    
+#@+node:ekr.20210814043248.1: ** test is_valid_version
+def test_is_valid_version():
+    table = (
+        '1.2', '3.4.5', '6.7b1', '8.9rc3', # good.
+        'v1.2', '3.4a1', '5.6-b1', # bad
+    )
+    for s in table:
+        ok = is_valid_version(s)
+        print(f"{ok!s:5} {s}")
+#@-others
+entry_points = define_entry_points()
+long_description = get_readme_contents()
+# version = get_semantic_version('6.4b2') # leoVersion.version)
+version = '6.4b2'
+assert is_valid_version(version), version
+if 0:
+    print('setup.py: Version', version)
+    dump_entry_points()
+if 0:
+    test_is_valid_version()
+if 1:  # For testing, don't execute setup.
+    setuptools.setup(
+        name='leo',
+        version=version,
+        author='Edward K. Ream',
+        author_email='edreamleo@gmail.com',
+        url='http://leoeditor.com',
+        license='MIT License',
+        description='An IDE, PIM and Outliner',  # becomes 'Summary' in pkg-info
+        long_description=long_description,
+        long_description_content_type="text/markdown",  # PEP566
+        platforms=['Linux', 'Windows', 'MacOS'],
+        download_url='http://leoeditor.com/download.html',
+        classifiers=classifiers,
+        packages=setuptools.find_packages(),
+        include_package_data=True,  # also include MANIFEST files in wheels
+        setup_requires=[],  # No longer needed with PEP-518 and pip >v10.
+        install_requires=install_requires,
+        entry_points=entry_points,
+        python_requires='>=3.6',
+    )
+print('setup.py: done')
 #@@language python
 #@@tabwidth -4
 #@-leo
