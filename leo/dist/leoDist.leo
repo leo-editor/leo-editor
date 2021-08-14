@@ -140,6 +140,7 @@
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
+<v t="ekr.20210814054641.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="maphew.20200605112459.1"><vh>Continual Integration</vh>
 <v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
 <v t="maphew.20200605112532.1"><vh>@clean ../../.github/workflows/build-leo-exe.yml</vh></v>
@@ -2212,6 +2213,35 @@ Public announcements, after Matt creates a package:
 git push origin 6.3
 </t>
 <t tx="ekr.20210813103123.1">@language python
+</t>
+<t tx="ekr.20210814054641.1">@language unknown_language
+# Processed in order listed
+# Global
+#recursive-include leo *.*     # not needed when using `graft`
+graft leo
+global-exclude *.py[cod] __pycache__ *.so
+
+# Root folder
+include *.TXT
+include launchLeo.py
+include profileLeo.py
+include pylint-leo.bat
+include pylint-leo.py
+include *.nsi
+include LICENSE
+# obscure pip bugfix https://github.com/pypa/setuptools/issues/1694
+include pyproject.toml
+
+# Exclusions
+# same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
+prune leo/test
+prune leo/doc/html
+prune leo/core/.mypy_cache
+prune leo/core/mypy_stubs
+
+# Issue #603, https://github.com/leo-editor/leo-editor/issues/603
+include leo/doc/html/conf.py
+include leo/doc/html/index.html
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
