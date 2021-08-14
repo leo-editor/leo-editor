@@ -91,8 +91,10 @@ def is_valid_version(version):
     
     See PEP 440: https://www.python.org/dev/peps/pep-0440/
     
-    For Leo, we shall limit the valid versions with: N1.N2(.N3)?(bN|rcN)?
-    where N is any integer. Alpha releases aren't valid.
+    For Leo, valid versions shall have the form: N1.N2(.N3)?(bN|rcN)?
+    where N is any integer.
+    
+    Note: Neither alternative spellings nor alpha releases are valid.
     """
     m = pattern.match(version)
     return bool(m and len(m.group(0)) == len(version))
@@ -114,15 +116,13 @@ def test_is_valid_version():
         ok = is_valid_version(s)
         print(f"{ok!s:5} {s}")
 #@-others
+version = '6.4b2'  # Should match version in leoVersion.py.
 entry_points = define_entry_points()
 long_description = get_readme_contents()
-# version = get_semantic_version('6.4b2') # leoVersion.version)
-version = '6.4b2'
 assert is_valid_version(version), version
-if 0:
-    print('setup.py: Version', version)
+if 0:  # Testing.
     dump_entry_points()
-if 0:
+if 0:  # Testing.
     test_is_valid_version()
 if 1:  # For testing, don't execute setup.
     setuptools.setup(
