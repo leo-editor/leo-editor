@@ -2462,6 +2462,7 @@ needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
 </t>
 <t tx="maphew.20190206032329.1">[build-system]
 requires = ["setuptools&gt;=38.6.0",
+    "build&gt;=0.6.0",
     "setupext-janitor&gt;=1.1",
     "wheel&gt;=0.31.0",
     "twine&gt;=1.11.0"]

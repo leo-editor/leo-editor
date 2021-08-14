@@ -39,6 +39,7 @@ install_requires = [
     'PyQt5 >= 5.12',  # v5.12+ to close #1217
     'PyQtWebEngine',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'asttokens',  # abstract syntax tree text parsing
+    'build >= 0.6.0',  # simple PEP 517 package builder
     'docutils',  # used by Sphinx, rST plugin
     'flexx',  # for LeoWapp browser gui
     'meta',  # for livecode.py plugin, which is enabled by default
