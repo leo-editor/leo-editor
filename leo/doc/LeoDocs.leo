@@ -31499,7 +31499,7 @@ Note: Leo can not recognize @path directives in the body text of @file nodes!</t
 - Add execute-general-script command and c.general_script_helper.
 - Fix all known bugs.
 </t>
-<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 b1 is now available on
+<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 b2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).

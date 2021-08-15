@@ -165,16 +165,18 @@
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
+<v t="ekr.20210815105140.1"><vh>Overview</vh></v>
 <v t="ekr.20200313063940.1"><vh>Create the release branch *first*</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in the release branch</vh></v>
+<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
+<v t="ekr.20210815111044.1"><vh>----</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20190618104609.1"><vh>Merge master into devel</vh></v>
-<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
@@ -250,7 +252,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 b1 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 b2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -280,8 +282,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
-</t>
+- [More links](http://leoeditor.com/leoLinks.html)</t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
 4.4.5       setup: 547   zip: 379  2007-12-11
@@ -1458,19 +1459,7 @@ g.es_print('done')
 - python setup.py bdist_wheel
 - twine upload dist/leo*.whl
 </t>
-<t tx="ekr.20180405171433.1">@language rest
-
-Overview:
-
-1. Create a **release branch**, called 6.4.  Base this branch on devel.
-   This branch holds all work for 6.4, including beta and rc releases.
-
-2. Fix last-minute bugs in a **bug-fix branch**.
-   Then merge into devel and 6.4.
-   
-3. Create pypi version by running `python -m build` in the leo-editor folder.
-   
-4. Update leoVersion.py in devel after merging the release branch into devel.</t>
+<t tx="ekr.20180405171433.1">@language rest</t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
@@ -1489,16 +1478,14 @@ LeoDist.leo:
   The final version in PKG-INFO.TXT must be called 5.x, not 5.x-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
-- Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
+- Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
 
 LeoPyRef.leo:
-- Regenerate from leoPy.leo:
-  - Run `script: check-files`.
-  - run write-LeoPyRef button in LeoPy.leo.
-</t>
+- Run `script: check-files`.
+- run write-LeoPyRef button in LeoPy.leo.</t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
@@ -1987,7 +1974,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.3 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.4 branch:
     
 - Push any changes to release branch.
 - git merge master
@@ -2048,7 +2035,7 @@ include pylint-leo.bat
 include pylint-leo.py
 include *.nsi
 include LICENSE
-# obscure pip bugfix https://github.com/pypa/setuptools/issues/1694
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
 include pyproject.toml
 
 # Exclusions
@@ -2065,7 +2052,19 @@ include leo/doc/html/conf.py
 include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">- From leo-editor folder, run `python -m build`.
-- See https://packaging.python.org/guides/distributing-packages-using-setuptools/#uploading-your-project-to-pypi</t>
+- Upload to pypi
+
+https://packaging.python.org/guides/distributing-packages-using-setuptools/#uploading-your-project-to-pypi</t>
+<t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
+   This branch holds all work for 6.4, including beta and rc releases.
+
+2. Fix last-minute bugs in a **bug-fix branch**.
+   Then merge into devel and 6.4.
+   
+3. Create pypi version by running `python -m build` in the leo-editor folder.
+   
+4. Update leoVersion.py in devel after merging the release branch into devel.</t>
+<t tx="ekr.20210815111044.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
