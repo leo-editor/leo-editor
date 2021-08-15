@@ -123,15 +123,16 @@ def test_is_valid_version():
         ok = is_valid_version(s)
         print(f"{ok!s:5} {s}")
 #@-others
-version = '6.4b2'  # Should match version in leoVersion.py.
+production = True
+testing = False
+version = '6.4b2'  ##version Should match version in leoVersion.py
 entry_points = define_entry_points()
 long_description = get_readme_contents()
 assert is_valid_version(version), version
-if 0:  # Testing.
+if testing:
     dump_entry_points()
-if 0:  # Testing.
     test_is_valid_version()
-if 1:  # For testing, don't execute setup.
+if production:
     setuptools.setup(
         name='leo',
         version=version,

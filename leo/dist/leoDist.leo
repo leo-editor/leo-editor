@@ -164,7 +164,7 @@
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
 </v>
 </v>
-<v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
+<v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20200313063940.1"><vh>Create the release branch *first*</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
@@ -174,6 +174,7 @@
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20190618104609.1"><vh>Merge master into devel</vh></v>
+<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
@@ -1333,7 +1334,8 @@ I get the following:
     sh: -c: line 0: syntax error near unexpected token `python'
     sh: -c: line 0: `%x(python -c "import sys;print(sys.version[:3])")'
 
-This looks like an old version of leo.rb is being used, but a thorough search shows no such file. Any help would be appreciated.</t>
+This looks like an old version of leo.rb is being used, but a thorough
+search shows no such file. Any help would be appreciated.</t>
 <t tx="ekr.20161024115257.1">*Note*: Brew create now computes the hash automatically.
 
 http://stackoverflow.com/questions/32673943/how-to-update-homebrew-sha256
@@ -1460,18 +1462,15 @@ g.es_print('done')
 
 Overview:
 
-1. Create a **release branch**, called 6.3.
-   This branch should be based on devel.
-   This branch will hold all work for 6.3-b1 and 6.3 final.
+1. Create a **release branch**, called 6.4.  Base this branch on devel.
+   This branch holds all work for 6.4, including beta and rc releases.
 
-2. *Never* merge devel into the release branch.
-   It's fine to merge the release branch into devel.
+2. Fix last-minute bugs in a **bug-fix branch**.
+   Then merge into devel and 6.4.
    
-3. Fix last-minute bugs in a **bug-fix branch**.
-   Base bug-fix branches on the *release* branch, not devel.
-   After fixing the bug, merge the bug-fix branch into both devel and the release branch.
+3. Create pypi version by running `python -m build` in the leo-editor folder.
    
-4. Update leoVersion.py (in devel) after merging the release branch into devel.</t>
+4. Update leoVersion.py in devel after merging the release branch into devel.</t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
@@ -1486,6 +1485,9 @@ Overview:
 
 LeoDist.leo:
 - Make sure copyright dates are correct.
+- Update version numbers. Search for ##version
+  The final version in PKG-INFO.TXT must be called 5.x, not 5.x-final.
+  See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
@@ -2028,8 +2030,8 @@ Public announcements, after Matt creates a package:
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
 </t>
-<t tx="ekr.20200313063940.1">git checkout -b 6.3
-git push origin 6.3
+<t tx="ekr.20200313063940.1">git checkout -b 6.4
+git push origin 6.4
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
 # Processed in order listed
@@ -2062,6 +2064,8 @@ print leo/core/.gitattributes
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
 </t>
+<t tx="ekr.20210815103531.1">- From leo-editor folder, run `python -m build`.
+- See https://packaging.python.org/guides/distributing-packages-using-setuptools/#uploading-your-project-to-pypi</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
