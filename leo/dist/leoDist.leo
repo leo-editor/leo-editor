@@ -2053,8 +2053,7 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">- From leo-editor folder, run `python -m build`.
 - Upload to pypi
-
-https://packaging.python.org/guides/distributing-packages-using-setuptools/#uploading-your-project-to-pypi</t>
+https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</t>
 <t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
    This branch holds all work for 6.4, including beta and rc releases.
 
