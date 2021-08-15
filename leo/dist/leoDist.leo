@@ -196,6 +196,7 @@
 </v>
 </v>
 <v t="maphew.20180224170853.1"></v>
+<v t="ekr.20210814055824.1"><vh>*** remove leo/www</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2236,13 +2237,16 @@ include pyproject.toml
 # same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
 prune leo/test
 prune leo/doc/html
+# EKR: 2021/08/14: further exclusions.
 prune leo/core/.mypy_cache
 prune leo/core/mypy_stubs
+print leo/core/.gitattributes
 
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
 </t>
+<t tx="ekr.20210814055824.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
