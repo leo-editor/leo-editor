@@ -152,13 +152,6 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 <v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
-<v t="ekr.20210813103123.1"><vh>--- no longer used, from setup.py</vh>
-<v t="maphew.20181010203342.385"><vh>get_version (not used)</vh></v>
-<v t="maphew.20181010203342.386"><vh>git_version (not used)</vh>
-<v t="maphew.20180224170257.1"><vh>clean_git_tag</vh></v>
-</v>
-<v t="maphew.20180224170149.1"><vh>get_semantic_version (not used)</vh></v>
-</v>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
@@ -185,18 +178,7 @@
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
-<v t="mhw.20191107063807.1"><vh>Clean up root dir</vh>
-<v t="mhw.20191101123146.1"><vh>To Delete</vh>
-<v t="ekr.20151227063335.1"><vh>@@clean ../../About leo.exe.TXT</vh></v>
-<v t="maphew.20190208142757.1"><vh>@@clean ../../optional-tools.txt</vh></v>
-<v t="ekr.20130809141000.1990"><vh>@@clean ../../INSTALL.TXT</vh></v>
-</v>
-<v t="mhw.20191107063030.1"><vh>To Move</vh>
-<v t="ekr.20150416081546.7"></v>
-</v>
-</v>
 <v t="maphew.20180224170853.1"></v>
-<v t="ekr.20210814055824.1"><vh>*** remove leo/www</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -432,152 +414,6 @@ This checklist is obsolete, for the following reasons:
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
-<t tx="ekr.20130809141000.1990">@language rest
-System requirements
--------------------
-
-Leo requires the `Python`_ and `PyQt_` package.
-The `PyEnchant`_ package is optional. 
-
-**Python**: Leo will work on any platform that supports Python 2.6 or
-above, including Python 3.0 and above. To install Python, see
-http://python.org.
-
-**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
-package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
-The PyQt version must match your installed Python version. Remember that
-Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
-binary PyQt installer.
-
-**PyEnchant**: You must install the PyEnchant package if you want to use
-Leo's Spell tab. Download and install the PyEnchant package from
-http://pythonhosted.org/pyenchant/download.html There is an executable
-installer for Windows users.
-
-
-Leo's HOME directory
---------------------
-
-Python's HOME environment variable specifies Leo's HOME directory.
-See http://docs.python.org/lib/os-procinfo.html for details.
-
-Leo puts several files in your HOME/.leo directory:
-.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
-There are various fallback directories if there is no home directory.
-
-Installing Leo on Linux
------------------------
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
-
-To gain access to Leo, you have two choices:
-
-A. Add  ~/leo-5.2 to your path.
-B. Create alias for Leo.
-
-I prefer using aliases because they allow me to start Leo using Python 2 or 3,
-or other distributions, like Anaconda 2 or 3.
-
-See `Running Leo`_ for how to run Leo after installing it.
-
-Installing Leo on Windows
---------------------------
-
-Install Python and Qt, as described above.
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unpack them
-into a temp folder. You may place the sources anywhere you like, including
-Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
-
-
-Running Leo
------------
-
-You can run Leo from a Python interpreter as follows::
-
-    import leo
-    leo.run() # runs Leo, opening a new outline or,
-    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
-
-Another way to run Leo is as follows::
-
-    cd &lt;path-to-launchLeo.py&gt;
-    python launchLeo.py
-
-Creating File Associations
---------------------------
-
-**Linux**
-
-The following shell script will allow you to open foo.leo files by typing leo foo::
-
-    #!/bin/sh 
-    python &lt;leopath&gt;launchLeo.py $1
-
-where &lt;leopath&gt; is the path to the directory *containing* the leo directory. 
-
-**Windows**
-
-*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-There are two ways of associating .leo files with Leo. The first uses the
-Windows control panel, the second, the Windows console.
-
-**Method 1: Using the Windows Control Panel**
-
-The goal is that you want to associate .leo files with the following command::
-
-    "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1"
-    
-Before Windows 7, you do this with using the Folder Options control panel.
-In Windows 7, you do this with the Default Programs control panel.
-
-*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
-The quotation marks are needed to handle file paths containing spaces.
-
-*Warning:* In a batch file, %1 passes just the first command line parameter.
-It is logical to expect %* to work for file associations just as in batch
-files. Alas, it does not.
-
-**Method 2: Using the Windows Console**
-
-Open a Windows console with administrator privileges, then type::
-
-    ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
-    assoc .leo=LeoFile
-
-And put this leo.bat in %PATH%::
-
-    @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
-    
-You may omit the /b option if you want to create a separate console window for Leo.
-
-Adding Leo to Your Path
------------------------
-
-After you have installed Leo, you should add the location of your leo/core folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:
-
-    import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo\core')
-
-Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
-
-Running Leo for the first time
-------------------------------
-
-The first time you start Leo, a dialog will ask you for a unique identifier. If
-you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
-stores this identifier in the file ``.leoID.txt``. Leo attempts to create
-``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
-finally in Leo's core directory. You can change this identifier at any time by
-editing ``.leoID.txt``.
-</t>
 <t tx="ekr.20141016105045.2119"># .gitattributes file for Leo distribution
 
 # Commit this file after changing it!
@@ -839,24 +675,6 @@ print('done: %s nodes, %s clones' % (nodes,clones))
     system bin/"python", "-c", "import leo"
   end
 end
-</t>
-<t tx="ekr.20151227063335.1">leo.exe contains everything you need to run Leo on Windows without
-installing *anything* else. It contains all needed libraries, including
-Python itself, PyQt, pylint and other packages. It also contains many data
-files, including Leo's source code and various .leo files.
-
-Notes:
-
-1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
-
-2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
-   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
-   is slower than usual.
-
-3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
-   but these files will be in the temp folder. They will be *destroyed*
-   when you exit leo.exe. If you want to do real work with Leo you must
-   create .leo files in a permanent folder on your machine.
 </t>
 <t tx="ekr.20160510090441.1">@language nsi
 
@@ -2213,8 +2031,6 @@ Public announcements, after Matt creates a package:
 <t tx="ekr.20200313063940.1">git checkout -b 6.3
 git push origin 6.3
 </t>
-<t tx="ekr.20210813103123.1">@language python
-</t>
 <t tx="ekr.20210814054641.1">@language unknown_language
 # Processed in order listed
 # Global
@@ -2246,7 +2062,6 @@ print leo/core/.gitattributes
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
 </t>
-<t tx="ekr.20210814055824.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -2372,69 +2187,6 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
-<t tx="maphew.20180224170149.1">def get_semantic_version(tag):
-    """Return 'Semantic Version' from tag string"""
-    try:
-        import semantic_version
-    except Exception:
-        print(f"Can not import semantic_version. Using {tag!r}")
-        return tag
-    try:
-        # tuple of major, minor, build, pre-release, patch.
-        # Example: 5.6b2 --&gt; 5.6-b2
-        return str(semantic_version.Version.coerce(tag, partial=True))
-    except Exception:
-        ### g.es_exception()
-        print_exception()
-        print(f"Bad version: {tag!r}")
-        return tag
-        ###
-        # print(
-            # f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
-            # "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
-            # "This version can't be uploaded to PyPi.org.")
-        # version = tag
-    # return version
-</t>
-<t tx="maphew.20180224170257.1">def clean_git_tag(tag):
-    """Return only version number from tag name. Ignore unknown formats.
-       Is specific to tags in Leo's repository.
-            5.7b1          --&gt;	5.7b1
-            Leo-4-4-8-b1   --&gt;	4-4-8-b1
-            v5.3           --&gt;	5.3
-            Fixed-bug-149  --&gt;  Fixed-bug-149
-    """
-    if tag.lower().startswith('leo-'): tag = tag[4:]
-    if tag.lower().startswith('v'): tag = tag[1:]
-    return tag
-</t>
-<t tx="maphew.20181010203342.385">def get_version(file, version=None):
-    """Determine current Leo version. Use git if in checkout, else internal Leo"""
-    root = os.path.dirname(os.path.realpath(file))
-    if os.path.exists(os.path.join(root, '.git')):
-        version = git_version(file)
-    if not version:
-        version = get_semantic_version(leoVersion.version)
-    return version</t>
-<t tx="maphew.20181010203342.386">def git_version(file, version=None):
-    """
-    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-    Return as semantic version string compliant with PEP440
-    """
-    root = os.path.dirname(os.path.realpath(file))
-    try:
-        tag, distance, commit = g.gitDescribe(root)  # 5.6b2, 55, e1129da
-        ctag = clean_git_tag(tag)
-        #version = get_semver(ctag)
-        version = ctag
-        if int(distance) &gt; 0:
-            version = '{}-dev{}'.format(version, distance)
-    except IndexError:
-        print('Attempt to `git describe` failed with IndexError')
-    except FileNotFoundError:
-        print('Attempt to `git describe` failed with FileNotFoundError')
-    return version
-</t>
 <t tx="maphew.20181010205346.1">**Pushed a commit but nothing is happening in the dashboard?**
 Check the _requests_ log: https://travis-ci.org/leo-editor/leo-editor/requests
 The link is hidden under [more options] at right.
@@ -2477,18 +2229,6 @@ build-backend = 'setuptools.build_meta'
 
 # Leo 6.4: Leo only supports Python 3, so universal should be zero.
 universal=0
-</t>
-<t tx="maphew.20190208142757.1">@language python
-# A list of pip installable tools and libraries in the Requirements File Format
-# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
-#
-# Install with:
-#   
-#       pip install -r optional-tools.txt
-#
-
-pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
-pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
 </t>
 <t tx="maphew.20200424174643.1">@language md
 
@@ -2736,26 +2476,6 @@ deploy:
     on:
       tags: true
       branch: master
-</t>
-<t tx="mhw.20191101123146.1">Refresh / audit MANIFEST.in excludes and includes
-https://github.com/leo-editor/leo-editor/issues/1077
-
-Files in this tree are or will be deleted from the Leo's root directory. They're
-kept here for easy restoration or migration to another place if it's decided
-they should be kept.
-
--matt (@maphew)
-</t>
-<t tx="mhw.20191107063030.1">_Files and nodes which could probably live somewhere else._
-
-
-This is an organizer node of clones for the things-to-be-moved, e.g. use "Go to
-clone" and move that. These nodes can be removed when satisfied nothing was
-broken.</t>
-<t tx="mhw.20191107063807.1">Refresh / audit MANIFEST.in excludes and includes
-https://github.com/leo-editor/leo-editor/issues/1077
-
--matt (@maphew)
 </t>
 <t tx="mhw.20191107064451.1">There is conceptual overlap between this node and the Desktop-integration
 scripts held in Scripts.leo. My current thinking is the scripts should be moved

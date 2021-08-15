@@ -14,7 +14,7 @@ import re
 import sys
 import traceback
 # Third-part tools.
-import setuptools # Always prefer setuptools over distutils.
+import setuptools # Prefer setuptools over distutils.
 #@-<< imports >>
 #@+<< define classifiers >>
 #@+node:maphew.20141126230535.4: ** << define classifiers >>
@@ -31,7 +31,7 @@ classifiers = [
     'Topic :: Software Development',
     'Topic :: Text Editors',
     'Topic :: Text Processing',
-    ]
+]
 #@-<< define classifiers >>
 #@+<< define install_requires >>
 #@+node:maphew.20171120133429.1: ** << define install_requires >>
@@ -48,7 +48,7 @@ install_requires = [
     'pyshortcuts >= 1.7',  # desktop integration (#1243)
     'sphinx',  # rST plugin
     'windows-curses; platform_system=="Windows"',  # for console mode on Windows
-    ]
+]
 #@-<< define install_requires >>
 #@+others  # Define helpers
 #@+node:maphew.20190207205714.1: ** define_entry_points
@@ -72,7 +72,7 @@ def define_entry_points(entry_points=None):
     return entry_points
 #@+node:ekr.20210813135632.1: ** dump_entry_points
 def dump_entry_points():
-    
+    """Dump the entry_points list."""
     global entry_points
     print(f"setup.py: entry_points. OS = {platform.os.name}, system = {platform.system()}")
     for key in entry_points:
@@ -81,6 +81,7 @@ def dump_entry_points():
         print(f"  {key}: [\n    {list_s}\n  ]")
 #@+node:ekr.20210813100609.1: ** get_readme_contents
 def get_readme_contents():
+    """Return the contents of README.md."""
     with open('README.md') as f:
         return f.read()
 #@+node:ekr.20210814041052.1: ** is_valid_version
@@ -92,23 +93,28 @@ def is_valid_version(version):
     
     See PEP 440: https://www.python.org/dev/peps/pep-0440/
     
-    For Leo, valid versions shall have the form: N1.N2(.N3)?(bN|rcN)?
+    For Leo, valid versions shall have the form: `N1.N2(.N3)?(bN|rcN)?`
     where N is any integer.
     
-    Note: Neither alternative spellings nor alpha releases are valid.
+    In particular, neither alternative spellings nor alpha releases are valid.
     """
     m = pattern.match(version)
     return bool(m and len(m.group(0)) == len(version))
 #@+node:ekr.20210813103317.1: ** print_exception
 def print_exception():
+    """Like g.es_exception."""
     typ, val, tb = sys.exc_info()
     # val is the second argument to the raise statement.
     lines = traceback.format_exception(typ, val, tb)
     for line in lines:
         print(line)
-    
 #@+node:ekr.20210814043248.1: ** test is_valid_version
 def test_is_valid_version():
+    """
+    A unit test for is_valid_version.
+    
+    However, `python -m setup` won't work :-)
+    """
     table = (
         '1.2', '3.4.5', '6.7b1', '8.9rc3', # good.
         'v1.2', '3.4a1', '5.6-b1', # bad

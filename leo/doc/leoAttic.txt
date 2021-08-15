@@ -10369,6 +10369,255 @@ The output looks like this::
 .. _`Scripting Tutorial`:   tutorial-scripting.html
 
 See the `Scripting Tutorial`_ for many examples of how to use code-blocks.
+#@+node:ekr.20210815060206.1: ** From leoDist.leo
+
+#@+node:ekr.20210815060352.1: *3* --- from setup.py
+@language python
+#@+node:ekr.20210815060206.2: *4* get_version (not used)
+def get_version(file, version=None):
+    """Determine current Leo version. Use git if in checkout, else internal Leo"""
+    root = os.path.dirname(os.path.realpath(file))
+    if os.path.exists(os.path.join(root, '.git')):
+        version = git_version(file)
+    if not version:
+        version = get_semantic_version(leoVersion.version)
+    return version
+#@+node:ekr.20210815060206.3: *4* git_version (not used)
+def git_version(file, version=None):
+    """
+    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+    Return as semantic version string compliant with PEP440
+    """
+    root = os.path.dirname(os.path.realpath(file))
+    try:
+        tag, distance, commit = g.gitDescribe(root)  # 5.6b2, 55, e1129da
+        ctag = clean_git_tag(tag)
+        #version = get_semver(ctag)
+        version = ctag
+        if int(distance) > 0:
+            version = '{}-dev{}'.format(version, distance)
+    except IndexError:
+        print('Attempt to `git describe` failed with IndexError')
+    except FileNotFoundError:
+        print('Attempt to `git describe` failed with FileNotFoundError')
+    return version
+#@+node:ekr.20210815060206.4: *5* clean_git_tag
+def clean_git_tag(tag):
+    """Return only version number from tag name. Ignore unknown formats.
+       Is specific to tags in Leo's repository.
+            5.7b1          -->	5.7b1
+            Leo-4-4-8-b1   -->	4-4-8-b1
+            v5.3           -->	5.3
+            Fixed-bug-149  -->  Fixed-bug-149
+    """
+    if tag.lower().startswith('leo-'): tag = tag[4:]
+    if tag.lower().startswith('v'): tag = tag[1:]
+    return tag
+#@+node:ekr.20210815060206.5: *4* get_semantic_version (not used)
+def get_semantic_version(tag):
+    """Return 'Semantic Version' from tag string"""
+    try:
+        import semantic_version
+    except Exception:
+        print(f"Can not import semantic_version. Using {tag!r}")
+        return tag
+    try:
+        # tuple of major, minor, build, pre-release, patch.
+        # Example: 5.6b2 --> 5.6-b2
+        return str(semantic_version.Version.coerce(tag, partial=True))
+    except Exception:
+        ### g.es_exception()
+        print_exception()
+        print(f"Bad version: {tag!r}")
+        return tag
+        ###
+        # print(
+            # f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
+            # "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
+            # "This version can't be uploaded to PyPi.org.")
+        # version = tag
+    # return version
+#@+node:ekr.20210815060405.1: *3* --- old distribution files
+@language rest
+@wrap
+
+-matt (@maphew)
+
+Old distribution files.
+#@+node:ekr.20210815060405.2: *4* @@clean ../../About leo.exe.TXT
+leo.exe contains everything you need to run Leo on Windows without
+installing *anything* else. It contains all needed libraries, including
+Python itself, PyQt, pylint and other packages. It also contains many data
+files, including Leo's source code and various .leo files.
+
+Notes:
+
+1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
+
+2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
+   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
+   is slower than usual.
+
+3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
+   but these files will be in the temp folder. They will be *destroyed*
+   when you exit leo.exe. If you want to do real work with Leo you must
+   create .leo files in a permanent folder on your machine.
+#@+node:ekr.20210815060405.3: *4* @@clean ../../optional-tools.txt
+# A list of pip installable tools and libraries in the Requirements File Format
+# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
+#
+# Install with:
+#   
+#       pip install -r optional-tools.txt
+#
+
+pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
+pyxml; python_version < "3.0"   # Used for XML import. Appears to be only python 2 package
+#@+node:ekr.20210815060405.4: *4* @@clean ../../INSTALL.TXT
+System requirements
+-------------------
+
+Leo requires the `Python`_ and `PyQt_` package.
+The `PyEnchant`_ package is optional. 
+
+**Python**: Leo will work on any platform that supports Python 2.6 or
+above, including Python 3.0 and above. To install Python, see
+http://python.org.
+
+**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
+package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
+The PyQt version must match your installed Python version. Remember that
+Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
+binary PyQt installer.
+
+**PyEnchant**: You must install the PyEnchant package if you want to use
+Leo's Spell tab. Download and install the PyEnchant package from
+http://pythonhosted.org/pyenchant/download.html There is an executable
+installer for Windows users.
+
+
+Leo's HOME directory
+--------------------
+
+Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo puts several files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.
+
+Installing Leo on Linux
+-----------------------
+
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unzip them
+into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
+
+To gain access to Leo, you have two choices:
+
+A. Add  ~/leo-5.2 to your path.
+B. Create alias for Leo.
+
+I prefer using aliases because they allow me to start Leo using Python 2 or 3,
+or other distributions, like Anaconda 2 or 3.
+
+See `Running Leo`_ for how to run Leo after installing it.
+
+Installing Leo on Windows
+--------------------------
+
+Install Python and Qt, as described above.
+
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unpack them
+into a temp folder. You may place the sources anywhere you like, including
+Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
+
+
+Running Leo
+-----------
+
+You can run Leo from a Python interpreter as follows::
+
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+
+Another way to run Leo is as follows::
+
+    cd <path-to-launchLeo.py>
+    python launchLeo.py
+
+Creating File Associations
+--------------------------
+
+**Linux**
+
+The following shell script will allow you to open foo.leo files by typing leo foo::
+
+    #!/bin/sh 
+    python <leopath>launchLeo.py $1
+
+where <leopath> is the path to the directory *containing* the leo directory. 
+
+**Windows**
+
+*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
+
+There are two ways of associating .leo files with Leo. The first uses the
+Windows control panel, the second, the Windows console.
+
+**Method 1: Using the Windows Control Panel**
+
+The goal is that you want to associate .leo files with the following command::
+
+    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" "%1"
+    
+Before Windows 7, you do this with using the Folder Options control panel.
+In Windows 7, you do this with the Default Programs control panel.
+
+*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
+The quotation marks are needed to handle file paths containing spaces.
+
+*Warning:* In a batch file, %1 passes just the first command line parameter.
+It is logical to expect %* to work for file associations just as in batch
+files. Alas, it does not.
+
+**Method 2: Using the Windows Console**
+
+Open a Windows console with administrator privileges, then type::
+
+    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%::
+
+    @start /b "Leo" "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" %*
+    
+You may omit the /b option if you want to create a separate console window for Leo.
+
+Adding Leo to Your Path
+-----------------------
+
+After you have installed Leo, you should add the location of your leo/core folder to your python path.
+One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+
+    import sys
+    sys.path.append(r'<path-to-leo>leo\core')
+
+Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
+
+Running Leo for the first time
+------------------------------
+
+The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file ``.leoID.txt``. Leo attempts to create
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
+finally in Leo's core directory. You can change this identifier at any time by
+editing ``.leoID.txt``.
 #@+node:ekr.20210312150753.1: ** leoTangle.py
 '''
 Support for @root and Leo's tangle and untangle commands.
