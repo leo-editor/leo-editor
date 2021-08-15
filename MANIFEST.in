@@ -19,6 +19,8 @@ include pyproject.toml
 # same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
 prune leo/test
 prune leo/doc/html
+prune leo/core/.mypy_cache
+prune leo/core/mypy_stubs
 
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py
