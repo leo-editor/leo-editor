@@ -134,7 +134,7 @@ if testing:
     test_is_valid_version()
 if production:
     setuptools.setup(
-        name='leo',
+        name='leo',  # Add username?.
         version=version,
         author='Edward K. Ream',
         author_email='edreamleo@gmail.com',

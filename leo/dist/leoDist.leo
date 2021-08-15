@@ -182,6 +182,7 @@
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 <v t="maphew.20180224170853.1"></v>
+<v t="ekr.20210815103531.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2051,9 +2052,24 @@ print leo/core/.gitattributes
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
 </t>
-<t tx="ekr.20210815103531.1">- From leo-editor folder, run `python -m build`.
-- Upload to pypi
-https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</t>
+<t tx="ekr.20210815103531.1">From leo-editor folder:
+
+1. Build leo-editor/dist
+
+    python -m build
+
+2. Upload to testpypi:
+https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives
+
+    python -m twine upload -r testpypi dist/*
+    
+3. Upload to pypi:
+
+    python -m twine upload -r pypi dist/*
+
+username: __token__
+password: (value of token)  Choose paste from console window.
+</t>
 <t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
    This branch holds all work for 6.4, including beta and rc releases.
 
