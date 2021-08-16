@@ -296,7 +296,7 @@ def new_cmd_decorator(name, ivars):
     def _decorator(func):
 
         def new_cmd_wrapper(event):
-            c = event.c
+            c = event.get('c')
             self = g.ivars2instance(c, g, ivars)
             try:
                 func(self, event=event)
