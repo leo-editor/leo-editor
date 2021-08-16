@@ -210,10 +210,10 @@ Jacob Peck added markdown support to this plugin.
 #@-<< to do >>
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
-from distutils.spawn import find_executable
 import json
 import os
 from pathlib import Path
+import shutil
 import textwrap
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
@@ -279,9 +279,9 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #pylint: disable=no-member
 trace = False
     # This global trace is convenient.
-asciidoctor_exec = find_executable('asciidoctor')
-asciidoc3_exec = find_executable('asciidoc3')
-pandoc_exec = find_executable('pandoc')
+asciidoctor_exec = shutil.which('asciidoctor')
+asciidoc3_exec = shutil.which('asciidoc3')
+pandoc_exec = shutil.which('pandoc')
 #@+<< set BaseTextWidget >>
 #@+node:ekr.20190424081947.1: ** << set BaseTextWidget >> (vr)
 if QtWidgets:
