@@ -296,7 +296,10 @@ def new_cmd_decorator(name, ivars):
     def _decorator(func):
 
         def new_cmd_wrapper(event):
-            c = event.c
+            if isinstance(event, dict):
+                c = event.get('c')
+            else:
+                c = event.c
             self = g.ivars2instance(c, g, ivars)
             try:
                 func(self, event=event)
