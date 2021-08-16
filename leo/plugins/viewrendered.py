@@ -1562,8 +1562,20 @@ if QtWidgets: # NOQA
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
         def update_svg(self, s, keywords):
             pc = self
-            if pc.must_change_widget(QtSvg.QSvgWidget):
-                w = QtSvg.QSvgWidget()
+            if hasattr(QtSvg, "QSvgWidget"):  # #2134
+                QSvgWidget = QtSvg.QSvgWidget
+            else: 
+                try:
+                    from PyQt6 import QtSvgWidgets
+                    QSvgWidget = QtSvgWidgets.QSvgWidget
+                except Exception:
+                    QSvgWidget = None
+            if not QSvgWidget:
+                w = pc.ensure_text_widget()
+                w.setPlainText(s)
+                return
+            if pc.must_change_widget(QSvgWidget):
+                w = QSvgWidget()
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
