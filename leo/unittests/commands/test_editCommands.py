@@ -18,7 +18,8 @@ class EditCommandsTest(unittest.TestCase):
             before_b, after_b,  # before/after body text.
             before_sel, after_sel,  # before and after selection ranges.
             command_name,
-            directives=''
+            directives='',
+            dedent=True,
         ):
         c = self.c
         # For shortDescription().
@@ -27,9 +28,13 @@ class EditCommandsTest(unittest.TestCase):
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
         # Set the text.
-        parent_b = textwrap.dedent(directives)
-        before_b = textwrap.dedent(before_b)
-        after_b = textwrap.dedent(after_b)
+        if dedent:
+            parent_b = textwrap.dedent(directives)
+            before_b = textwrap.dedent(before_b)
+            after_b = textwrap.dedent(after_b)
+        else:
+            # The unit test is responsible for all indentation.
+            parent_b = directives
         self.parent_p.b = parent_b
         self.tempNode.b = before_b
         self.before_p.b = before_b
@@ -42,58 +47,7 @@ class EditCommandsTest(unittest.TestCase):
         w.setSelectionRange(i, j, insert=j)
         # Run the command!
         c.k.simulateCommand(command_name)
-
-        s1 = self.tempNode.b
-        s2 = self.after_p.b
-        if s1 != s2:  # pragma: no cover
-            print('mismatch in body')
-            g.printObj(g.splitLines(s2), tag='expected')
-            g.printObj(g.splitLines(s1), tag='got')
-            print('parent_p.b', repr(self.parent_p.b))
-            assert False
-        if 0:  ### Not ready yet.
-            sel3 = w.getSelectionRange()
-            # Convert both selection ranges to gui indices.
-            ### sel1 = before_sel
-            sel2 = after_sel
-            sel2_orig = sel2
-            assert len(sel2) == 2, f"Bad headline index.  Expected index,index.  got: {sel2}"
-            i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
-            assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
-            i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-            if 0:  # Be more permissive.
-                if sel2 != sel3:
-                    print(f"\n{c.p.h}\nexpected: {sel2_orig} = {sel2}, got: {sel3}")
-            else:
-                message = f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
-                assert sel2 == sel3, message
-
-            # c.selectPosition(atTest)
-            # atTest.contract()
-            # Don't redraw.
-
-
-            # if 0: # Not correct!
-
-                # def compare(before, after, report):
-                    # return self.compareOutlines(before, after, compareHeadlines=False, report=report)
-
-                # # Call the undoer only if we expect a change.
-                # same = compare(self.before_p, self.after_p, False)
-                # if same:
-                    # return
-                # # These never test the resulting selection range or insert point.
-                # ok = compare(self.tempNode, self.after_p, True)
-                # assert ok, f"{command_name}: before undo1"
-                # u.undo()
-                # ok = compare(self.tempNode, self.before_p, True)
-                # assert ok, f"{command_name}: after undo1"
-                # u.redo()
-                # ok = compare(self.tempNode, self.after_p, True)
-                # assert ok, f"{command_name}: after redo1"
-                # u.undo()
-                # ok = compare(self.tempNode, self.before_p, True)
-                # assert ok, f"{command_name}: after undo2"
+        self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
     #@+node:ekr.20201201084621.1: ** EditCommandsTest.setUp & tearDown
     def setUp(self):
         """Create the nodes in the commander."""
@@ -2478,29 +2432,31 @@ class EditCommandsTest(unittest.TestCase):
     #@+node:ekr.20201130090918.91: *3* newline-and-indent
     def test_newline_and_indent(self):
         """Test case for newline-and-indent"""
-        before_b = """\
+        before_b = textwrap.dedent("""\
     first line
     line 1
         line a
             line b
     line c
     last line
-    """
-        after_b = """\
-    first line
-    line 1
-        
-        line a
-            line b
-    line c
-    last line
-    """
+    """)
+        # docstrings strip blank lines, so we can't use a doctring here!
+        after_b = ''.join([
+            'first line\n'
+            'line 1\n'
+            '    \n',  # Would be stripped in a docstring!   
+            '    line a\n'
+            '        line b\n'
+            'line c\n'
+            'last line\n'
+        ])
         self.run_test(
             before_b=before_b,
             after_b=after_b,
             before_sel=("2.6", "2.6"),
             after_sel=("3.4", "3.4"),
             command_name="newline-and-indent",
+            dedent=False
         )
     #@+node:ekr.20201130090918.92: *3* next-line
     def test_next_line(self):
