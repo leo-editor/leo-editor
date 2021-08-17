@@ -179,13 +179,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3371017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20210215043210.1"><vh>New-style unit tests</vh>
-<v t="ekr.20210817092233.1"><vh>@test python -m leo</vh></v>
-<v t="ekr.20200219070034.1"><vh>@@test python -m leo.core.leoAst</vh></v>
-<v t="ekr.20200219070324.1"><vh>@@test python -m leo.core.leoFind</vh></v>
-<v t="ekr.20200219072300.1"><vh>@@test python -m leo.core.leoGlobals</vh></v>
-<v t="ekr.20210215043324.1"><vh>@@test python -m leo.core.leoserver</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1319,40 +1312,6 @@ nodeB
     pass</t>
 <t tx="ekr.20200205065723.3">def eggs():
     pass
-</t>
-<t tx="ekr.20200219070034.1">#1498: Run per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoAst'
-g.run_unit_test_in_separate_process(command)
-</t>
-<t tx="ekr.20200219070324.1">#1498: Run per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoFind'
-g.run_unit_test_in_separate_process(command)
-</t>
-<t tx="ekr.20200219072300.1">#1498: Run per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoGlobals'
-g.run_unit_test_in_separate_process(command)
-</t>
-<t tx="ekr.20210215043210.1"># These are more typically run using unittest or pytest -cov
-# They are included here for reference.
-</t>
-<t tx="ekr.20210215043324.1">#1498: Run per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoserver'
-g.run_unit_test_in_separate_process(command)
-</t>
-<t tx="ekr.20210817092233.1">#2137: Run *all* per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest'
-print('\nRunning `python -m unittest`')
-g.run_unit_test_in_separate_process(command)
 </t>
 </tnodes>
 </leo_file>
