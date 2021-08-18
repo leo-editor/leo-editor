@@ -3378,14 +3378,15 @@ class LeoServer:
         """Output json string to the web_socket"""
         global connectionsTotal
         tag = '_async_output'
+        outputBytes = bytes(json, 'utf-8')
         if toAll:
             if connectionsPool:  # asyncio.wait doesn't accept an empty list
-                await asyncio.wait([client.send(bytes(json, 'utf-8')) for client in connectionsPool])
+                await asyncio.wait([asyncio.create_task(client.send(outputBytes)) for client in connectionsPool])
             else:
                 g.trace(f"{tag}: no web socket. json: {json!r}")
         else:
             if self.web_socket:
-                await self.web_socket.send(bytes(json, 'utf-8'))
+                await self.web_socket.send(outputBytes)
             else:
                 g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:felix.20210621233316.97: *4* server._test_round_trip_positions
@@ -3605,15 +3606,17 @@ def main():  # pragma: no cover (tested in client)
         tag = 'server'
         trace = False
         verbose = False
+        connected = False
 
         try:
             # Websocket connection startup
             if connectionsTotal >= wsLimit:
-                print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}")
+                print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}", flush=True)
                 await websocket.close(1001)
                 return
-            connectionsTotal += 1
-            print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {wsLimit}")
+            connected = True # local variable
+            connectionsTotal += 1 # global variable
+            print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {wsLimit}", flush=True)
             # If first connection set it as the main client connection
             controller._init_connection(websocket)
             await register_client(websocket)
@@ -3629,10 +3632,10 @@ def main():  # pragma: no cover (tested in client)
                     d = None
                     d = json.loads(json_message)
                     if trace and verbose:
-                        print(f"{tag}: got: {d}")
+                        print(f"{tag}: got: {d}", flush=True)
                     elif trace:
                         # print(f"{tag}: got: {d.get('action')}")
-                        print(f"{tag}: got: {d}")
+                        print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
@@ -3667,11 +3670,13 @@ def main():  # pragma: no cover (tested in client)
         except websockets.exceptions.ConnectionClosed as e:
             print(f"{tag}: connection closed: {e}")
         finally:
-            connectionsTotal -= 1
-            await  unregister_client(websocket)
-            print(f"{tag} finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
+            if connected:
+                connectionsTotal -= 1
+                await  unregister_client(websocket)
+                print(f"{tag} connection finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
             # Check for persistence flag if all connections are closed
             if connectionsTotal == 0 and not wsPersist:
+                print("Shutting down leoserver")
                 # Preemptive closing of tasks
                 for task in asyncio.all_tasks():
                     task.cancel()
@@ -3686,7 +3691,8 @@ def main():  # pragma: no cover (tested in client)
                 clientSetCopy.discard(excludedConn)
             if clientSetCopy:
                 # if still at least one to notify
-                await asyncio.wait([client.send(m) for client in clientSetCopy])
+                await asyncio.wait([asyncio.create_task(client.send(m)) for client in clientSetCopy])
+
     #@+node:felix.20210803174312.2: *3* function:register_client
     async def register_client(websocket):
         global connectionsTotal
