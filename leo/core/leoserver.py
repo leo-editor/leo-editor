@@ -414,7 +414,7 @@ class LeoServer:
         g.app.externalFilesController = ServerExternalFilesController()  # Replace
         g.app.idleTimeManager.start()
         t2 = time.process_time()
-        print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.")
+        print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server:leo overridden methods
     #@+node:felix.20210711194729.1: *4* _runAskOkDialog
     def _runAskOkDialog(self, c, title, message=None, text="Ok"):
@@ -1088,6 +1088,7 @@ class LeoServer:
         n, p = fc.do_clone_find_tag(tag_param)
         if self.log_flag:  # pragma: no cover
             g.trace("tag: {tag_param} n: {n} p: {p and p.h!r}")
+            print('', flush=True)
         return self._make_response({"n": n})
     #@+node:felix.20210621233316.34: *5* server.tag_children
     def tag_children(self, param):
@@ -1530,7 +1531,9 @@ class LeoServer:
                 if foundPNode:
                     c.selectPosition(foundPNode)
                 else:
-                    print(f"{tag}: node does not exist! ap was: {json.dumps(ap, cls=SetEncoder)}")
+                    print(
+                        f"{tag}: node does not exist! "
+                        f"ap was: {json.dumps(ap, cls=SetEncoder)}", flush=True)
 
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
@@ -1666,14 +1669,14 @@ class LeoServer:
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
         if duplicates:  # pragma: no cover
-            print(f"{tag}: duplicate command names...")
+            print(f"{tag}: duplicate command names...", flush=True)
             for z in sorted(duplicates):
-                print(z)
+                print(z, flush=True)
         result = []
         for command_name in sorted(d):
             func = d.get(command_name)
             if not func:  # pragma: no cover
-                print(f"{tag}: no func: {command_name!r}")
+                print(f"{tag}: no func: {command_name!r}", flush=True)
                 continue
             if command_name in bad_names:  # #92.
                 continue
@@ -1683,8 +1686,9 @@ class LeoServer:
                 "detail": doc,
             })
         if self.log_flag:  # pragma: no cover
-            print(f"\n{tag}: {len(result)} leo commands\n")
+            print(f"\n{tag}: {len(result)} leo commands\n", flush=True)
             g.printObj([z.get("label") for z in result], tag=tag)
+            print('', flush=True)
         return self._make_minimal_response({"commands": result})
     #@+node:felix.20210621233316.73: *6* server._bad_commands
     def _bad_commands(self, c):
@@ -2833,8 +2837,9 @@ class LeoServer:
         tag = 'get_all_server_commands'
         names = self._get_all_server_commands()
         if self.log_flag:  # pragma: no cover
-            print(f"\n{tag}: {len(names)} server commands\n")
+            print(f"\n{tag}: {len(names)} server commands\n", flush=True)
             g.printObj(names, tag=tag)
+            print('', flush=True)
         return self._make_response({"server-commands": names})
 
     def _get_all_server_commands(self):
@@ -2921,7 +2926,7 @@ class LeoServer:
                     f"{tag}: Bad ap: {ap!r}\n"
                     # f"{tag}: position: {p!r}\n"
                     f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
-                    f"{tag}: stack: {stack!r}")
+                    f"{tag}: stack: {stack!r}", flush=True)
             return False # fallback to c.p
         return p
     #@+node:felix.20210621233316.80: *4* server._check_c
@@ -2946,7 +2951,7 @@ class LeoServer:
         for p in c.all_positions(copy=False):
             if not c.positionExists(p):  # pragma: no cover
                 message = f"{tag}: position {p!r} does not exist in {c.shortFileName()}"
-                print(message)
+                print(message, flush=True)
                 self._dump_position(p)
                 raise ServerError(message)
     #@+node:felix.20210621233316.84: *4* server._do_leo_command_by_name
@@ -2991,7 +2996,7 @@ class LeoServer:
                     # Only if 'keep' old position was set, and old_p still exists
                     c.selectPosition(old_p)
         except Exception as e:
-            print("_do_leo_command Recovered from Error "+ str(e))
+            print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response() # Return empty on error
         #
         # Tag along a possible return value with info sent back by _make_response
@@ -3037,7 +3042,7 @@ class LeoServer:
                     # Only if 'keep' old position was set, and old_p still exists
                     c.selectPosition(old_p)
         except Exception as e:
-            print("_do_leo_command Recovered from Error "+ str(e))
+            print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response() # Return empty on error
         #
         # Tag along a possible return value with info sent back by _make_response
@@ -3117,14 +3122,14 @@ class LeoServer:
     def _dump_outline(self, c):  # pragma: no cover
         """Dump the outline."""
         tag = '_dump_outline'
-        print(f"{tag}: {c.shortFileName()}...\n")
+        print(f"{tag}: {c.shortFileName()}...\n", flush=True)
         for p in c.all_positions():
             self._dump_position(p)
-        print('')
+        print('', flush=True)
 
     def _dump_position(self, p):  # pragma: no cover
         level_s = ' ' * 2 * p.level()
-        print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
+        print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}", flush=True)
     #@+node:felix.20210624160812.1: *4* server._emit_signon
     def _emit_signon(self):
         """Simulate the Initial Leo Log Entry"""
@@ -3336,6 +3341,7 @@ class LeoServer:
             package ["node"] = redraw_d
         if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
+            print('', flush=True)
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.95: *4* server._p_to_ap
     def _p_to_ap(self, p):
@@ -3595,7 +3601,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
-    print("Starting LeoBridge... (Launch with -h for help)")
+    print("Starting LeoBridge... (Launch with -h for help)", flush=True)
 
     #@+others
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
@@ -3637,7 +3643,6 @@ def main():  # pragma: no cover (tested in client)
                     if trace and verbose:
                         print(f"{tag}: got: {d}", flush=True)
                     elif trace:
-                        # print(f"{tag}: got: {d.get('action')}")
                         print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
@@ -3645,9 +3650,9 @@ def main():  # pragma: no cover (tested in client)
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
-                    print("")
-                    print(error)
-                    print("")
+                    print("", flush=True)
+                    print(error, flush=True)
+                    print("", flush=True)
                     package = {
                         "id": controller.current_id,
                         "action": controller.action,
@@ -3656,11 +3661,12 @@ def main():  # pragma: no cover (tested in client)
                     }
                     answer = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
                 except InternalServerError as e:  # pragma: no cover
-                    print(f"{tag}: InternalServerError {e}")
+                    print(f"{tag}: InternalServerError {e}", flush=True)
                     break
                 except Exception as e:  # pragma: no cover
-                    print(f"{tag}: Unexpected Exception! {e}")
+                    print(f"{tag}: Unexpected Exception! {e}", flush=True)
                     g.print_exception()
+                    print('', flush=True)
                     break
                 await websocket.send(answer)
 
@@ -3890,10 +3896,10 @@ def main():  # pragma: no cover (tested in client)
     if argFile:
         # Open specified file argument
         try:
-            print("Opening file: " + argFile)
+            print(f"Opening file: {argFile}", flush=True)
             controller.open_file({"filename":argFile})
         except Exception:
-            print("Opening file failed")
+            print("Opening file failed", flush=True)
 
     # Start the server.
     loop = asyncio.get_event_loop()
@@ -3914,7 +3920,7 @@ def main():  # pragma: no cover (tested in client)
         loop.run_forever()
 
     except KeyboardInterrupt:
-        print("Process interrupted")
+        print("Process interrupted", flush=True)
     finally:
         realtime_server.close()
         # Execution continues here after server is interupted (e.g. with ctrl+c)
