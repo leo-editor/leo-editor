@@ -1633,6 +1633,10 @@ class LeoServer:
         # Félix: Caller can get focus using other calls.
         return self._make_response()
     #@+node:felix.20210621233316.68: *4* server:server commands
+    #@+node:felix.20210818012827.1: *5* server.do_nothing
+    def do_nothing(self, param):
+        """Simply return states from _make_response"""
+        return self._make_response()
     #@+node:felix.20210621233316.69: *5* server.set_ask_result
     def set_ask_result(self, param):
         """Got the result to an asked question/warning from client"""
@@ -2071,7 +2075,6 @@ class LeoServer:
             'delete-trace-statements',
 
             'disable-idle-time-events',
-            'do-nothing',
 
             'enable-idle-time-events',
             'enter-quick-command-mode',
@@ -2448,7 +2451,7 @@ class LeoServer:
             'delete-node',
             # 'demangle-recent-files',
             'demote',
-
+            'do-nothing',
             'expand-and-go-right',
             'expand-next-level',
             'expand-node',
@@ -3685,7 +3688,8 @@ def main():  # pragma: no cover (tested in client)
     async def notify_clients(action, excludedConn = None):
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
-            m =  json.dumps({"async": "refresh", "action": action}, separators=(',', ':'), cls=SetEncoder)
+            opened = bool(controller.c) # c can be none if no files opened
+            m =  json.dumps({"async": "refresh", "action": action, "opened": opened}, separators=(',', ':'), cls=SetEncoder)
             clientSetCopy = connectionsPool.copy()
             if excludedConn:
                 clientSetCopy.discard(excludedConn)
