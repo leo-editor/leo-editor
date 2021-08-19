@@ -4900,19 +4900,17 @@ def backupGitIssues(c: Cmdr, base_url=None):
     c.selectPosition(root)
     c.redraw()
     g.trace('done')
-#@+node:ekr.20170616102324.1: *3* g.execGitCommand (changed)
+#@+node:ekr.20170616102324.1: *3* g.execGitCommand
 def execGitCommand(command, directory):
     """Execute the given git command in the given directory."""
-    ###
-        # git_dir = g.os_path_finalize_join(directory, '.git')
-        # if not g.os_path_exists(git_dir):
-            # g.trace('not found:', git_dir, g.callers())
-            # return []
+    git_dir = g.os_path_finalize_join(directory, '.git')
+    if not g.os_path_exists(git_dir):
+        g.trace('not found:', git_dir, g.callers())
+        return []
     if '\n' in command:
         g.trace('removing newline from', command)
         command = command.replace('\n', '')
     # #1777: Save/restore os.curdir
-    ### old_dir = os.path.normpath(os.path.abspath(os.curdir))
     old_dir = os.getcwd()
     if directory:
         os.chdir(directory)
@@ -5094,8 +5092,6 @@ def getGitVersion(directory=None):
             stderr=subprocess.DEVNULL,
             shell=True,
         )
-        if trace:
-            g.trace(s)
     # #1209.
     except subprocess.CalledProcessError as e:
         s = e.output
@@ -5154,7 +5150,7 @@ def gitInfoForOutline(c: Cmdr):
     Return the git (branch, commit) info associated for commander c.
     """
     return g.gitInfoForFile(c.fileName())
-#@+node:maphew.20171112205129.1: *3* g.gitDescribe (unchanged)
+#@+node:maphew.20171112205129.1: *3* g.gitDescribe
 def gitDescribe(path: str=None):
     """
     Return the Git tag, distance-from-tag, and commit hash for the

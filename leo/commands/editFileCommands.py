@@ -669,11 +669,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 class GitDiffController:
     """A class to do git diffs."""
 
-    def __init__(self, c): ###, repo_dir=None):
+    def __init__(self, c):
         self.c = c
         self.file_node = None
-        ### self.old_dir = g.os_path_abspath('.')
-        ### self.repo_dir = repo_dir
         self.root = None
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
@@ -684,13 +682,6 @@ class GitDiffController:
         """
         # Common code.
         c = self.c
-        ###
-            # if not self.set_directory(directory):
-            #     return
-            # path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
-            # if not os.path.exists(path):
-                # g.trace('NOT FOUND', path)
-                # return
         # #1781, #2143
         directory = self.get_directory(directory=directory, filename=fn)
         if not directory:
@@ -742,9 +733,6 @@ class GitDiffController:
         directory = self.get_directory(directory=directory, filename=None)
         if not directory:
             return
-        ### os.chdir(directory) # #2143
-        ### if not directory:
-        ###    directory = os.path.join(g.app.loadDir, '..', '..')
         aList = g.execGitCommand("git rev-parse devel", directory)
         if aList:
             devel_rev = aList[0]
@@ -760,7 +748,7 @@ class GitDiffController:
     def diff_two_branches(self, branch1, branch2, fn, directory=None):
         """Create an outline describing the git diffs for fn."""
         c = self.c
-        if not self.get_directory(directory):  ### was set_directory.
+        if not self.get_directory(directory):
             return
         self.root = p = c.lastTopLevel().insertAfter()
         p.h = f"git-diff-branches {branch1} {branch2}"
@@ -785,14 +773,14 @@ class GitDiffController:
             self.make_diff_outlines(c1, c2, fn)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
-    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs (modify???)
+    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs (test)
     def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
         c = self.c
-        if not self.get_directory(directory):  ### was set_directory.
+        if not self.get_directory(directory):
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
@@ -831,7 +819,7 @@ class GitDiffController:
             n1, n2 = n1 + 1, n2 + 1
         if not ok:
             g.es_print('no changed readable files from HEAD@{1}..HEAD@{5}')
-    #@+node:ekr.20170820082125.1: *5* gdc.diff_revs (modify???)
+    #@+node:ekr.20170820082125.1: *5* gdc.diff_revs (test)
     def diff_revs(self, rev1, rev2):
         """Diff all files given by rev1 and rev2."""
         files = self.get_files(rev1, rev2)
@@ -951,13 +939,12 @@ class GitDiffController:
     def finish(self):
         """Finish execution of this command."""
         c = self.c
-        ### os.chdir(self.old_dir)
         c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
         c.selectPosition(self.root)
         c.redraw()
         c.treeWantsFocusNow()
-    #@+node:ekr.20210819080657.1: *4* gdc.get_directory (#2143)
+    #@+node:ekr.20210819080657.1: *4* gdc.get_directory
     def get_directory(self, directory=None, filename=None):  #2143.
         """
         Resolve filename to a directory using directory or c.fileName().
@@ -979,10 +966,12 @@ class GitDiffController:
         # Does path/../ref exist?
         base_directory = g.gitHeadPath(directory)
         if not base_directory:
-        ### if not g.gitHeadPath(directory):
             print(f"git-diff: no .git directory: {directory!r} filename: {filename!r}")
             return None
-        return g.os_path_finalize_join(base_directory, '..', '..')
+        # This should guarantee that the directory contains a .git directory.
+        directory = g.os_path_finalize_join(base_directory, '..', '..')
+        return directory
+        
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch (test)
     def get_file_from_branch(self, branch, fn):
         """Get the file from the hed of the given branch."""
@@ -994,18 +983,13 @@ class GitDiffController:
         lines = g.execGitCommand(command, directory)
         s = ''.join(lines)
         return g.toUnicode(s).replace('\r', '')
-    #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev (test)
+    #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         """Get the file from the given rev, or the working directory if None."""
-        ###
-            # path = g.os_path_finalize_join(self.repo_dir, fn)
-            # if not g.os_path_exists(path):
-            #    return ''
         # #2143
         directory = self.get_directory(fn)
         if not directory:
             return ''
-        g.trace('directory', directory)
         path = g.os_path_finalize_join(directory, fn)
         if not g.os_path_exists(path):
             g.trace(f"File not found: {path!r} fn: {fn!r}")
@@ -1017,7 +1001,7 @@ class GitDiffController:
             lines = g.execGitCommand(command, directory)
             return g.toUnicode(''.join(lines)).replace('\r', '')
         try:
-            with open(path, 'rb') as f:  # Was 'r'
+            with open(path, 'rb') as f:
                 b = f.read()
             return g.toUnicode(b).replace('\r', '')
         except Exception:
@@ -1037,16 +1021,16 @@ class GitDiffController:
             z.strip() for z in g.execGitCommand(command, directory)
                 if not z.strip().endswith(('.db', '.zip')) 
         ]
-    #@+node:ekr.20170821052348.1: *4* gdc.get_revno (test)
+    #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec, abbreviated=True):
         """Return the abbreviated hash the given revision spec."""
         if not revspec:
             return 'uncommitted'
         # Return only the abbreviated hash for the revspec.
-        ### command = 'git show --format=%%%s --no-patch %s' % (code, revspec)
-        h = 'h' if abbreviated else 'H'
-        command = f"git show --format=%%{h} --no-patch {revspec}"
-        lines = g.execGitCommand(command, directory=None) ###self.repo_dir)
+        format_s = 'h' if abbreviated else 'H'
+        command = f"git show --format=%{format_s} --no-patch {revspec}"
+        directory = self.get_directory()
+        lines = g.execGitCommand(command, directory=directory)
         return ''.join(lines).strip()
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
     def make_at_clean_outline(self, fn, root, s, rev):
@@ -1165,4 +1149,5 @@ class GitDiffController:
         return hidden_c
     #@-others
 #@-others
+#@@language python
 #@-leo
