@@ -724,13 +724,12 @@ class GitDiffController:
             self.file_node.b = (
                 f"{self.file_node.b.rstrip()}\n"
                 f"@language {c2.target_language}\n")
-    #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request (test)
+    #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self, base_branch_name='devel', directory=None):
         """
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
-        g.trace(base_branch_name)  ###
         directory = self.get_directory(directory=directory, filename=None)
         if not directory:
             return
@@ -745,7 +744,7 @@ class GitDiffController:
             )
         else:
             g.es_print('FAIL: git rev-parse devel')
-    #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches (test)
+    #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
     def diff_two_branches(self, branch1, branch2, fn, directory=None):
         """Create an outline describing the git diffs for fn."""
         c = self.c
@@ -780,12 +779,13 @@ class GitDiffController:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        g.trace(rev1, rev2)  ###
         c = self.c
+        g.trace(rev1, rev2)  ###
         if not self.get_directory(directory):
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
+        g.printObj(files)
         n = len(files)
         message = f"diffing {n} file{g.plural(n)}"
         if n > 5:
@@ -974,11 +974,10 @@ class GitDiffController:
         directory = g.os_path_finalize_join(base_directory, '..', '..')
         return directory
         
-    #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch (test)
+    #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch, fn):
         """Get the file from the head of the given branch."""
         # #2143
-        g.trace(branch)  ###
         directory = self.get_directory(fn)
         if not directory:
             return ''
