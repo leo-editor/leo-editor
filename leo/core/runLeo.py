@@ -13,9 +13,13 @@ import traceback
 def leo_excepthook(typ, val, tb):
     # Like g.es_exception.
     lines = traceback.format_exception(typ, val, tb)
-    print('\nUncaught exception in Leo...\n', flush=True)
+    # #2144: The python_terminal crashes if this method uses the "flush" kwarg.
+    #        This is a bug in the plugin, but it's not worth fixing.
+    print('')
+    print('Uncaught exception in Leo...')
     for line in lines:
-        print(line.rstrip(), flush=True)
+        print(line.rstrip())
+    print('')
         
 sys.excepthook = leo_excepthook
 #  
