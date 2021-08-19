@@ -1106,12 +1106,23 @@ class GitDiffController:
         Handle directory inits.
         Return self.repo_dir if the .git directory has been found.
         """
-        if not directory:
-            if self.repo_dir:
-                # Use previously-computed result.
-                # g.trace('EXISTS', self.repo_dir)
-                return self.repo_dir
-            directory = g.os_path_abspath(os.curdir)
+        if 1:  # #2143. Code similar to path logic in g.gitInfo.
+            if not directory:
+                # Default to leo/core.
+                directory = os.path.dirname(__file__)
+            if not os.path.isdir(directory):
+                directory = os.path.dirname(directory)
+            # Does path/../ref exist?
+            if not g.gitHeadPath(directory):
+                g.trace('NO DIRECTORY')
+                return None
+        else:  ### Legacy code.
+            if not directory:
+                if self.repo_dir:
+                    # Use previously-computed result.
+                    # g.trace('EXISTS', self.repo_dir)
+                    return self.repo_dir
+                directory = g.os_path_abspath(os.curdir)
         #
         # Change to the new directory.
         self.repo_dir = self.find_git_working_directory(directory)
