@@ -2762,7 +2762,7 @@ class LoadManager:
             '--session-save',
             '--use-docks',
         )
-        trace_m = '''abbrev,beauty,cache,coloring,drawing,events,focus,git
+        trace_m = '''abbrev,beauty,cache,coloring,drawing,events,focus,git,
           gnx,importers,ipython,keys,layouts,plugins,save,select,
           shutdown,size,speed,startup,themes,undo,verbose,zoom'''
         for bad_option in table:
