@@ -675,7 +675,7 @@ class GitDiffController:
         self.root = None
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
-    #@+node:ekr.20170806094320.6: *4* gdc.diff_file (test)
+    #@+node:ekr.20170806094320.6: *4* gdc.diff_file
     def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for fn.
@@ -730,6 +730,7 @@ class GitDiffController:
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
+        g.trace(base_branch_name)  ###
         directory = self.get_directory(directory=directory, filename=None)
         if not directory:
             return
@@ -779,6 +780,7 @@ class GitDiffController:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
+        g.trace(rev1, rev2)  ###
         c = self.c
         if not self.get_directory(directory):
             return
@@ -819,7 +821,7 @@ class GitDiffController:
             n1, n2 = n1 + 1, n2 + 1
         if not ok:
             g.es_print('no changed readable files from HEAD@{1}..HEAD@{5}')
-    #@+node:ekr.20170820082125.1: *5* gdc.diff_revs (test)
+    #@+node:ekr.20170820082125.1: *5* gdc.diff_revs
     def diff_revs(self, rev1, rev2):
         """Diff all files given by rev1 and rev2."""
         files = self.get_files(rev1, rev2)
@@ -974,8 +976,9 @@ class GitDiffController:
         
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch (test)
     def get_file_from_branch(self, branch, fn):
-        """Get the file from the hed of the given branch."""
+        """Get the file from the head of the given branch."""
         # #2143
+        g.trace(branch)  ###
         directory = self.get_directory(fn)
         if not directory:
             return ''
@@ -1008,7 +1011,7 @@ class GitDiffController:
             g.es_print('Can not read', path)
             g.es_exception()
             return ''
-    #@+node:ekr.20170806094320.9: *4* gdc.get_files (test)
+    #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self, rev1, rev2):
         """Return a list of changed files."""
         # #2143
