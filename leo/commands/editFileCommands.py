@@ -959,6 +959,7 @@ class GitDiffController:
             directory = os.path.dirname(directory)
         if not directory:
             print(f"git-diff: outline has no directory. filename: {filename!r}")
+            return None
         # Does path/../ref exist?
         base_directory = g.gitHeadPath(directory)
         if not base_directory:
