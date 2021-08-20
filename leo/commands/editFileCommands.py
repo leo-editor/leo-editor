@@ -730,7 +730,7 @@ class GitDiffController:
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
-        directory = self.get_directory(directory=directory, filename=None)
+        directory = self.get_directory(directory)
         if not directory:
             return
         aList = g.execGitCommand("git rev-parse devel", directory)
@@ -773,19 +773,17 @@ class GitDiffController:
             self.make_diff_outlines(c1, c2, fn)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
-    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs (test)
+    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
         c = self.c
-        g.trace(rev1, rev2)  ###
         if not self.get_directory(directory):
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
-        g.printObj(files)
         n = len(files)
         message = f"diffing {n} file{g.plural(n)}"
         if n > 5:
@@ -978,7 +976,7 @@ class GitDiffController:
     def get_file_from_branch(self, branch, fn):
         """Get the file from the head of the given branch."""
         # #2143
-        directory = self.get_directory(fn)
+        directory = self.get_directory(filename=fn)
         if not directory:
             return ''
         command = f"git show {branch}:{fn}"
@@ -989,7 +987,7 @@ class GitDiffController:
     def get_file_from_rev(self, rev, fn):
         """Get the file from the given rev, or the working directory if None."""
         # #2143
-        directory = self.get_directory(fn)
+        directory = self.get_directory(filename=fn)
         if not directory:
             return ''
         path = g.os_path_finalize_join(directory, fn)
