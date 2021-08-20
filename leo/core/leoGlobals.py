@@ -6294,7 +6294,7 @@ def print_exception(full=True, c: Cmdr=None, flush=False, color="red"):
         lines = traceback.format_exception(typ, val, tb)
     else:
         lines = traceback.format_exception_only(typ, val)
-    print(''.join(lines), flush=True)
+    print(''.join(lines), flush=flush)
     try:
         fileName, n = g.getLastTracebackFileAndLineNumber()
         return fileName, n
