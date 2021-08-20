@@ -676,14 +676,14 @@ class GitDiffController:
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file
-    def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
+    def diff_file(self, fn, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for fn.
         """
         # Common code.
         c = self.c
         # #1781, #2143
-        directory = self.get_directory(directory=directory, filename=fn)
+        directory = self.get_directory(fn)
         if not directory:
             return
         path = g.os_path_finalize_join(directory, fn)  # #1781: bug fix.
@@ -725,12 +725,12 @@ class GitDiffController:
                 f"{self.file_node.b.rstrip()}\n"
                 f"@language {c2.target_language}\n")
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
-    def diff_pull_request(self, base_branch_name='devel', directory=None):
+    def diff_pull_request(self):
         """
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
-        directory = self.get_directory(directory)
+        directory = self.get_directory()
         if not directory:
             return
         aList = g.execGitCommand("git rev-parse devel", directory)
@@ -740,15 +740,14 @@ class GitDiffController:
             self.diff_two_revs(
                 rev1=devel_rev,  # Before: Latest devel commit.
                 rev2='HEAD',  # After: Lastest branch commit
-                directory=directory,
             )
         else:
             g.es_print('FAIL: git rev-parse devel')
     #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
-    def diff_two_branches(self, branch1, branch2, fn, directory=None):
+    def diff_two_branches(self, branch1, branch2, fn):
         """Create an outline describing the git diffs for fn."""
         c = self.c
-        if not self.get_directory(directory):
+        if not self.get_directory():
             return
         self.root = p = c.lastTopLevel().insertAfter()
         p.h = f"git-diff-branches {branch1} {branch2}"
@@ -774,13 +773,13 @@ class GitDiffController:
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
-    def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
+    def diff_two_revs(self, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
         c = self.c
-        if not self.get_directory(directory):
+        if not self.get_directory():
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
@@ -798,9 +797,9 @@ class GitDiffController:
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
-    def git_diff(self, directory=None, rev1='HEAD', rev2=''):
+    def git_diff(self, rev1='HEAD', rev2=''):
         """The main line of the git diff command."""
-        if not self.get_directory(directory):
+        if not self.get_directory():
             return
         #
         # Diff the given revs.
@@ -945,20 +944,17 @@ class GitDiffController:
         c.redraw()
         c.treeWantsFocusNow()
     #@+node:ekr.20210819080657.1: *4* gdc.get_directory
-    def get_directory(self, directory=None, filename=None):  #2143.
+    def get_directory(self, filename=None):  #2143.
         """
-        Resolve filename to a directory using directory or c.fileName().
-        
-        Return the directory provided it contains a .git directory.
+        Resolve filename to the nearest directory containing a .git directory.
         """
         c = self.c
-        if not directory:
-            if not filename:
-                filename = c.fileName()
-            if not filename:
-                print('git-diff: outline has no name')
-                return None
-            directory = os.path.dirname(filename)
+        if not filename:
+            filename = c.fileName()
+        if not filename:
+            print('git-diff: outline has no name')
+            return None
+        directory = os.path.dirname(filename)
         if directory and not os.path.isdir(directory):
             directory = os.path.dirname(directory)
         if not directory:
@@ -971,12 +967,11 @@ class GitDiffController:
         # This should guarantee that the directory contains a .git directory.
         directory = g.os_path_finalize_join(base_directory, '..', '..')
         return directory
-        
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch, fn):
         """Get the file from the head of the given branch."""
         # #2143
-        directory = self.get_directory(filename=fn)
+        directory = self.get_directory(fn)
         if not directory:
             return ''
         command = f"git show {branch}:{fn}"
@@ -987,7 +982,7 @@ class GitDiffController:
     def get_file_from_rev(self, rev, fn):
         """Get the file from the given rev, or the working directory if None."""
         # #2143
-        directory = self.get_directory(filename=fn)
+        directory = self.get_directory(fn)
         if not directory:
             return ''
         path = g.os_path_finalize_join(directory, fn)
