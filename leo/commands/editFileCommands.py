@@ -683,10 +683,9 @@ class GitDiffController:
         # Common code.
         c = self.c
         # #1781, #2143
-        directory = self.get_directory(fn)
+        directory = self.get_directory()
         if not directory:
             return
-        path = g.os_path_finalize_join(directory, fn)  # #1781: bug fix.
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
         lines1 = g.splitLines(s1)
@@ -707,6 +706,7 @@ class GitDiffController:
             self.file_node.h = f"Deleted: {self.file_node.h}"
             return
         # Finish.
+        path = g.os_path_finalize_join(directory, fn)  # #1781: bug fix.
         c1 = c2 = None
         if fn.endswith('.leo'):
             c1 = self.make_leo_outline(fn, path, s1, rev1)
@@ -944,13 +944,13 @@ class GitDiffController:
         c.redraw()
         c.treeWantsFocusNow()
     #@+node:ekr.20210819080657.1: *4* gdc.get_directory
-    def get_directory(self, filename=None):  #2143.
+    def get_directory(self):  
         """
+        #2143.
         Resolve filename to the nearest directory containing a .git directory.
         """
         c = self.c
-        if not filename:
-            filename = c.fileName()
+        filename = c.fileName()
         if not filename:
             print('git-diff: outline has no name')
             return None
@@ -966,12 +966,13 @@ class GitDiffController:
             return None
         # This should guarantee that the directory contains a .git directory.
         directory = g.os_path_finalize_join(base_directory, '..', '..')
+        g.trace(filename, '-->', directory) ###
         return directory
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch, fn):
         """Get the file from the head of the given branch."""
         # #2143
-        directory = self.get_directory(fn)
+        directory = self.get_directory()
         if not directory:
             return ''
         command = f"git show {branch}:{fn}"
@@ -982,7 +983,7 @@ class GitDiffController:
     def get_file_from_rev(self, rev, fn):
         """Get the file from the given rev, or the working directory if None."""
         # #2143
-        directory = self.get_directory(fn)
+        directory = self.get_directory()
         if not directory:
             return ''
         path = g.os_path_finalize_join(directory, fn)
