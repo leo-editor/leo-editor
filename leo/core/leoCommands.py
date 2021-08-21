@@ -2870,11 +2870,7 @@ class Commands:
         between rev1 and rev2.
         """
         from leo.commands import editFileCommands as efc
-        efc.GitDiffController(c=self).diff_two_revs(
-            directory=directory,
-            rev1=rev1,
-            rev2=rev2,
-        )
+        efc.GitDiffController(c=self).diff_two_revs(rev1=rev1, rev2=rev2)
     #@+node:ekr.20180510103923.1: *4* c.diff_two_branches
     def diff_two_branches(self, branch1, branch2, fn):
         """
