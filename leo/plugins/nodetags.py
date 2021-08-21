@@ -176,7 +176,8 @@ class TagController:
                 for h in sorted(aList):
                     print(f"{key:>8} {h}")
         else:
-            print(f"no tags in {c.shortFileName()}")
+            if not g.unitTesting:
+                print(f"no tags in {c.shortFileName()}")
      
     #@+node:peckj.20140804103733.9267: *4* tag_c.update_taglist
     def update_taglist(self, tag):

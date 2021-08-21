@@ -7,19 +7,17 @@ Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
 """
-# pylint: disable=import-self,raise-missing-from
-
+# pylint: disable=import-self,raise-missing-from,wrong-import-position
 #@+<< imports >>
 #@+node:felix.20210621233316.2: ** << imports >>
+import argparse
 import asyncio
-import getopt
 import inspect
 import json
 import os
 import sys
 import textwrap
 import time
-import unittest
 import tkinter as Tk
 # Third-party.
 import websockets
@@ -30,18 +28,12 @@ assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
     sys.path.append(leo_path)
 # Leo
-# pylint: disable=wrong-import-position
 from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
-from leo.core import leoserver
 #@-<< imports >>
-
-g = None  # The bridge's leoGlobals module. Unit tests use self.g.
-
-# For unit tests.
-g_leoserver = None
-g_server = None
+__version__ = 'leoserver.py version 1.0'
+g = None  # The bridge's leoGlobals module.
 
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
@@ -49,6 +41,7 @@ connectionsPool = set() # Websocket connections (to be sent 'notify' messages)
 connectionsTotal = 0 # Current connected client total
 # Customizable server options
 argFile = ""
+traces = []
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -414,7 +407,8 @@ class LeoServer:
         g.app.externalFilesController = ServerExternalFilesController()  # Replace
         g.app.idleTimeManager.start()
         t2 = time.process_time()
-        print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
+        if not testing:
+            print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server:leo overridden methods
     #@+node:felix.20210711194729.1: *4* _runAskOkDialog
     def _runAskOkDialog(self, c, title, message=None, text="Ok"):
@@ -3069,7 +3063,9 @@ class LeoServer:
         that contains at least an 'id' key.
 
         """
+        global traces
         tag = '_do_message'
+        trace, verbose = 'request' in traces, 'verbose' in traces
 
         # Require "id" and "action" keys
         id_ = d.get("id")
@@ -3087,6 +3083,20 @@ class LeoServer:
             pass
         else:
             param = {}
+            
+        # Handle traces.
+        if trace and verbose:  # pragma: no cover
+            g.printObj(d, tag=f"request {id_}")
+            print('', flush=True)
+        elif trace:  # pragma: no cover
+            keys = sorted(param.keys())
+            if action == '!set_config':
+                keys_s = f"({len(keys)} keys)"
+            elif len(keys) > 5:
+                keys_s = '\n  ' + '\n  '.join(keys)
+            else:
+                keys_s = ', '.join(keys)
+            print(f" request {id_:<4} {action:<30} {keys_s}", flush=True)
 
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
@@ -3304,7 +3314,10 @@ class LeoServer:
         Finally, this method returns the json string corresponding to the
         response.
         """
+        global traces
         tag = '_make_response'
+        trace = self.log_flag or 'response' in traces
+        verbose = 'verbose' in traces
         c = self.c  # It is valid for c to be None.
         if package is None:
             package = {}
@@ -3339,9 +3352,16 @@ class LeoServer:
             # - All the *cheap* redraw data for p.
             redraw_d = self._get_position_d(p)
             package ["node"] = redraw_d
-        if self.log_flag:  # pragma: no cover
-            g.printObj(package, tag=f"{tag} returns")
+        
+        # Handle traces.
+        if trace and verbose:  # pragma: no cover
+            g.printObj(package, tag=f"response {self.current_id}")
             print('', flush=True)
+        elif trace:  # pragma: no cover
+            keys = sorted(package.keys())
+            keys_s = ', '.join(keys)
+            print(f"response {self.current_id:<4} {keys_s}", flush=True)
+
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.95: *4* server._p_to_ap
     def _p_to_ap(self, p):
@@ -3418,190 +3438,10 @@ class LeoServer:
             p.moveToNext()
 
     #@-others
-#@+node:felix.20210621233316.98: ** class TestLeoServer (unittest.TestCase)
-class TestLeoServer (unittest.TestCase):  # pragma: no cover
-    """Tests of LeoServer class."""
-    request_number = 0
-
-    #@+others
-    #@+node:felix.20210621233316.99: *3* test: Setup and TearDown
-    @classmethod
-    def setUpClass(cls):
-        # Assume we are running in the leo-editor directory.
-        # pylint: disable=import-self
-        global g, g_leoserver, g_server
-        g_leoserver = leoserver
-        g_server = leoserver.LeoServer(testing=True)
-        g = g_server.g
-        assert g
-
-    @classmethod
-    def tearDownClass(cls):
-        global g_leoserver, g_server
-        try:
-            g_server.shut_down({})
-            print('===== server did not terminate properly ====')
-        except g_leoserver.TerminateServer:
-            pass
-
-    def setUp(self):
-        global g_server
-        self.server = g_server
-        g.unitTesting = True
-
-    def tearDown(self):
-        g.unitTesting = False
-
-    #@+node:felix.20210621233316.100: *3* test._request
-    def _request(self, action, param=None):
-        server = self.server
-        self.request_number += 1
-        log_flag = param.get("log")
-        # Direct server commands require an exclamation mark '!' prefix
-        # to distinguish them from Leo's commander's own methods.
-        d = {
-            "action": action,
-            "id": self.request_number
-        }
-        if param:
-            d ["param"] = param
-        response = server._do_message(d)
-        # _make_response calls json_dumps. Undo it with json.loads.
-        answer = json.loads(response)
-        if log_flag:
-            g.printObj(answer, tag=f"response to {action!r}")
-        return answer
-    #@+node:felix.20210621233316.102: *3* test.test_most_public_server_methods
-    def test_most_public_server_methods(self):
-        server=self.server
-        tag = 'test_most_public_server_methods'
-        assert isinstance(server, g_leoserver.LeoServer), self.server
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
-        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
-        methods = server._get_all_server_commands()
-        # Ensure that some methods happen at the end.
-        for z in ('toggle_mark', 'undo', 'redo'):
-            methods.remove(z)
-        for z in ('toggle_mark', 'toggle_mark', 'undo', 'redo'):
-            methods.append(z)
-        # g.printObj(methods, tag=methods)
-        exclude = [
-            # Find methods...
-            'change_all', 'change_then_find',
-            'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
-            'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
-            'tag_children',
-            # Other methods
-            'delete_node', 'cut_node',  # dangerous.
-            'click_button', 'get_buttons', 'remove_button',  # Require plugins.
-            'save_file',  # way too dangerous!
-            # 'set_selection',  ### Not ready yet.
-            'open_file', 'close_file',  # Done by hand.
-            'import_any_file',
-            'insert_child_named_node',
-            'insert_named_node',
-            'set_ask_result',
-            'set_opened_file',
-            'set_search_settings',
-            'shut_down',  # Don't shut down the server.
-        ]
-        expected = ['error']
-        param_d = {
-            # "apply_config": {"config": {"whatever": True}},
-            "get_focus": {"log": False},
-            "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
-            "set_headline": {"name": "new headline"},
-            "get_all_server_commands": {"log": False},
-            "get_all_leo_commands": {"log": False},
-        }
-        # First open a test file & performa all tests.
-        server.open_file({"filename": test_dot_leo})  # A real file.
-        try:
-            id_ = 0
-            for method_name in methods:
-                id_ += 1
-                if method_name not in exclude:
-                    assert getattr(server, method_name), method_name
-                    param = param_d.get(method_name, {})
-                    message = {
-                        "id": id_,
-                        "action": "!"+method_name,
-                        "param": param,
-                    }
-                    try:
-                        # Don't call the method directly.
-                        # That would disable trace/verbose logic, checking, etc.
-                        server._do_message(message)
-                    except Exception as e:
-                        if method_name not in expected:
-                            print(f"Exception in {tag}: {method_name!r} {e}")
-        finally:
-            server.close_file({"forced": True})
-    #@+node:felix.20210621233316.103: *3* test.test_open_and_close
-    def test_open_and_close(self):
-        # server = self.server
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
-        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
-        log = False
-        table = [
-            # Open file.
-            ("!open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
-            # Switch to the second file.
-            ("!open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
-            # Open again. This should be valid.
-            ("!open_file", {"log": False, "filename": test_dot_leo}),
-            # Better test of _ap_to_p.
-            ("!set_current_position", {
-                "ap": {
-                    "gnx": "ekr.20180311131424.1",  # Recent
-                    "childIndex": 1,
-                    "stack": [],
-                }
-            }),
-            ("!get_ua", {"log": log}),
-            # Close the second file.
-            ("!close_file", {"log": log, "forced": True }),
-            # Close the first file.
-            ("!close_file", {"log": log, "forced": True}),
-        ]
-        for action, package in table:
-            self._request(action, package)
-    #@+node:felix.20210621233316.104: *3* test.test_find_commands
-    def test_find_commands(self):
-
-        tag = 'test_find_commands'
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
-        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
-        log = False
-        # Open the file & create the StringFindTabManager.
-        self._request("!open_file", {"log": False, "filename": test_dot_leo})
-        #
-        # Batch find commands: The answer is a count of found nodes.
-        for method in ('!find_all', '!clone_find_all', '!clone_find_all_flattened'):
-            answer = self._request(method, {"log": log, "find_text": "def"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-        #
-        # Find commands that may select text: The answer is (p, pos, newpos).
-        for method in ('!find_next', '!find_previous', '!find_def', '!find_var'):
-            answer = self._request(method, {"log": log, "find_text": "def"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-        #
-        # Change commands: The answer is a count of changed nodes.
-        for method in ('!replace_all', '!replace_then_find'):
-            answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-        #
-        # Tag commands. Why they are in leoFind.py??
-        for method in ('!clone_find_tag', '!tag_children'):
-            answer = self._request(method, {"log": log, "tag": "my-tag"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-
-    #@-others
 #@+node:felix.20210621233316.105: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
-    print("Starting LeoBridge... (Launch with -h for help)", flush=True)
 
     #@+others
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
@@ -3788,41 +3628,65 @@ def main():  # pragma: no cover (tested in client)
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
         """
-        Get arguments from the command that launched the server
+        Get arguments from the command that launched the server.
         """
-        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
-        args = None
-        # See https://docs.python.org/3/library/getopt.html for 'getopt' usage
-        try:
-            opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:f:", ["help", "address=", "port=", "persist", "dirty", "limit=", "file="])
-        except getopt.GetoptError:
-            show_help()
-            if args:
-                print("unused args: " + str(args))
-            sys.exit(2)
-        for opt, arg in opts:
-            if opt in ("-h", "--help"):
-                show_help()
-                sys.exit()
-            elif opt in ("-a", "--address"):
-                wsHost = arg
-            elif opt in ("-f", "--file"):
-                argFile = arg
-            elif opt in ("-p", "--port"):
-                wsPort = arg
-            elif opt in ("-l", "--limit"):
-                wsLimit = int(arg)
-            elif opt in ("--persist"):
-                wsPersist = True
-            elif opt in ("-d", "--dirty"):
-                wsSkipDirty = True
-        # in case of 0 or other values
+        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile, traces
+        
+        def leo_file(s):
+            if os.path.exists(s):
+                return s
+            print(f"\nNot a .leo file: {s!r}")
+            sys.exit(1)
+
+        description = ''.join([
+            "  Leo's socket server, providing Leo resources to clients via Leo's bridge.\n",
+            "  Clients may be written in any language:\n",
+            "  - leo.core.leoclient is an example client written in python.\n",
+            "  - leoInteg (https://github.com/boltex/leointeg) is a client for vs-code written in typescript.\n"
+        ])
+        # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
+        usage = 'python leo.core.leoserver [options...]'
+        trace_s = 'request,response,verbose'
+        valid_traces = [z.strip() for z in trace_s.split(',')]
+        parser = argparse.ArgumentParser(description=description, usage=usage,
+            formatter_class=argparse.RawTextHelpFormatter)
+        add = parser.add_argument
+        add('-a', '--address', dest='wsHost', type=str, default='localhost', metavar='STR', 
+            help='server address. Defaults to "localhost"')
+        add('-d', '--dirty', dest='wsSkipDirty', action='store_true',
+            help='don\'t warn about dirty files when quitting')
+        add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
+            help='open a .leo file at startup')
+        add('-p', '--port', dest='wsPort', type=int, default=32125, metavar='N', 
+            help='port number. Defaults to 32125')
+        add('-l', '--limit', dest='wsLimit', type=int, default=1, metavar='N', 
+            help='maximum number of clients(defaults to 1)')
+        add('--persist', dest='wsPersist', action='store_true',
+            help='don\'t quit when last client disconnects')
+        add('--trace', dest='traces', type=str, metavar='STRINGS',
+            help=f"comma-separated list of {trace_s}")
+        add('-v', '--version', dest='v', action='store_true',
+            help='show version and exit')
+        # Parse.
+        args = parser.parse_args()
+        # Handle the args...
+        if args.traces:
+            ok = True
+            for z in args.traces.split(','):
+                if z in valid_traces:
+                    traces.append(z)
+                else:
+                    ok = False
+                    print(f"Ignoring invalid --trace value: {z!r}", flush=True)
+            if not ok:
+                print(f"Valid traces are: {','.join(valid_traces)}", flush=True)
+            print(f"--trace={','.join(traces)}", flush=True)
+        if args.v:
+            print(__version__)
+            sys.exit(0)
+        # Sanitize limit.
         if wsLimit < 1:
             wsLimit = 1
-        # Leave other options for unittest.
-        for opt, junk in opts:  # opts is a 2-tuple.
-            if opt in sys.argv:
-                sys.argv.remove(opt)
         return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
@@ -3883,13 +3747,12 @@ def main():  # pragma: no cover (tested in client)
                 )
     #@-others
 
-    if '--unittest' in sys.argv:
-        sys.argv.remove('--unittest')
-        unittest.main()
-        return  # Make *sure* we don't start the server.
-
-    # Replace default command line arguments values if provided as arguments
+    # Make the first real line of output more visible.
+    print("", flush=True)  
+    
+    # Get values from the command line.
     wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty = get_args()
+    print("Starting LeoBridge... (Launch with -h for help)", flush=True)
 
     # Open leoBridge.
     controller = LeoServer() # Only one instance of 'LeoServer'
@@ -3925,7 +3788,7 @@ def main():  # pragma: no cover (tested in client)
         realtime_server.close()
         # Execution continues here after server is interupted (e.g. with ctrl+c)
 
-        print("Stopping: Check for changed commanders", flush=True)
+        print("Checking for changed commanders...", flush=True)
         save_dirty()
 
         cancel_tasks(asyncio.all_tasks(loop), loop)
