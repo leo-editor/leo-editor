@@ -483,7 +483,6 @@
 <v t="tbrown.20090119215428.2" descendentVnodeUnknownAttributes="7d71005808000000302e362e31332e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file ../plugins/todo.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file ../plugins/valuespace.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
-<v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
 <v t="ekr.20160519123329.1"><vh>@file ../plugins/QNCalendarWidget.py</vh></v>
 <v t="ekr.20060328125925"><vh>@file ../plugins/chapter_hoist.py</vh></v>
@@ -662,8 +661,9 @@
 <v t="ekr.20051104075904"><vh>@file leoTest.py</vh></v>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
-<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
+<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
+<v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
 </v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -1989,10 +1989,9 @@ print('path:', path)
 os.chdir(path)
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='ekr-mypy', # '6bd282f', # 'bc24e607a5', # old branch/rev
-    branch2='ekr-2103', # new branch/rev
-    fn='leo/core/leoGlobals.py',  # Don't use back slashes.
-    directory=None,
+    branch1='devel', # old branch/rev
+    branch2='ekr-git-diff', # new branch/rev
+    fn='leo/commands/editFileCommands.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20201208114843.1"># No longer needed. Use the git-diff-pr command.
@@ -2003,8 +2002,8 @@ x.diff_pull_request()
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='51715f5', # Before, the *original* base of ekr-theme.
-    rev2='HEAD',    # After: Latest ekr-theme (or devel) commit.
+    rev1='af93a09b', # Before.
+    rev2='HEAD',   # After.
 )
 </t>
 <t tx="ekr.20201015145257.1">import leo.core.leoImport as leoImport
