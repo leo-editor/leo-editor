@@ -11,8 +11,8 @@ Written by Félix Malboeuf and Edward K. Ream.
 
 #@+<< imports >>
 #@+node:felix.20210621233316.2: ** << imports >>
+import argparse
 import asyncio
-import getopt
 import inspect
 import json
 import os
@@ -36,6 +36,8 @@ from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 from leo.core import leoserver
 #@-<< imports >>
+
+__version__ = 'leoserver.py version 1.0'
 
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 
@@ -3791,39 +3793,79 @@ def main():  # pragma: no cover (tested in client)
         Get arguments from the command that launched the server
         """
         global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
-        args = None
-        # See https://docs.python.org/3/library/getopt.html for 'getopt' usage
-        try:
-            opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:f:", ["help", "address=", "port=", "persist", "dirty", "limit=", "file="])
-        except getopt.GetoptError:
-            show_help()
-            if args:
-                print("unused args: " + str(args))
-            sys.exit(2)
-        for opt, arg in opts:
-            if opt in ("-h", "--help"):
-                show_help()
-                sys.exit()
-            elif opt in ("-a", "--address"):
-                wsHost = arg
-            elif opt in ("-f", "--file"):
-                argFile = arg
-            elif opt in ("-p", "--port"):
-                wsPort = arg
-            elif opt in ("-l", "--limit"):
-                wsLimit = int(arg)
-            elif opt in ("--persist"):
-                wsPersist = True
-            elif opt in ("-d", "--dirty"):
-                wsSkipDirty = True
-        # in case of 0 or other values
+        
+        def leo_file(s):
+            if os.path.exists(s):
+                return s
+            print(f"\nNot a .leo file: {s!r}")
+            sys.exit(1)
+
+        description = 'Serve Leo commands to clients.'
+        usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
+        parser = argparse.ArgumentParser(description=description, usage=usage)
+        add = parser.add_argument
+        add('-a', '--address', dest='wsHost', type=str, default='localhost', metavar='STR', 
+            help='server address. Defaults to "localhost"')
+        add('-d', '--dirty', dest='wsSkipDirt', action='store_true',
+            help='don\'t warn about dirty files when quitting')
+        add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
+            help='open a .leo file at startup.')
+        add('-p', '--port', dest='wsPort', type=int, default=32125, metavar='N', 
+            help='port number. Defaults to 32125')
+        add('-l', '--limit', dest='wsLimit', type=int, default=1, metavar='N', 
+            help='maximum number of clients(defaults to 1)')
+        add('--persist', dest='wsPersist', action='store_true',
+            help='don\'t quit when last client disconnects')
+        add('-v', '--version', dest='v', action='store_true',
+            help='show version and exit')
+         # Parse.
+        args = parser.parse_args()
+        # Handle the args...
+        if args.v:
+            print(__version__)
+            sys.exit(0)
+        # Sanitize limit.
         if wsLimit < 1:
             wsLimit = 1
         # Leave other options for unittest.
-        for opt, junk in opts:  # opts is a 2-tuple.
-            if opt in sys.argv:
-                sys.argv.remove(opt)
+        # for opt, junk in opts:  # opts is a 2-tuple.
+            # if opt in sys.argv:
+                # sys.argv.remove(opt)
         return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
+                
+        ### OLD ###
+        # args = None
+        # try:
+            # opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:f:", ["help", "address=", "port=", "persist", "dirty", "limit=", "file="])
+        # except getopt.GetoptError:
+            # show_help()
+            # if args:
+                # print("unused args: " + str(args))
+            # sys.exit(2)
+        # for opt, arg in opts:
+            # if opt in ("-h", "--help"):
+                # show_help()
+                # sys.exit()
+            # elif opt in ("-a", "--address"):
+                # wsHost = arg
+            # elif opt in ("-f", "--file"):
+                # argFile = arg
+            # elif opt in ("-p", "--port"):
+                # wsPort = arg
+            # elif opt in ("-l", "--limit"):
+                # wsLimit = int(arg)
+            # elif opt in ("--persist"):
+                # wsPersist = True
+            # elif opt in ("-d", "--dirty"):
+                # wsSkipDirty = True
+        # # in case of 0 or other values
+        # if wsLimit < 1:
+            # wsLimit = 1
+        # # Leave other options for unittest.
+        # for opt, junk in opts:  # opts is a 2-tuple.
+            # if opt in sys.argv:
+                # sys.argv.remove(opt)
+        # return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
         """
