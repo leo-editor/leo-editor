@@ -3633,7 +3633,7 @@ def main():  # pragma: no cover (tested in client)
             help=f"comma-separated list of {trace_s}")
         add('-v', '--version', dest='v', action='store_true',
             help='show version and exit')
-         # Parse.
+        # Parse.
         args = parser.parse_args()
         # Handle the args...
         traces = [z.strip() for z in args.traces.split(',')] if args.traces else []
