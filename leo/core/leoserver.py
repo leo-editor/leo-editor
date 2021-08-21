@@ -407,7 +407,8 @@ class LeoServer:
         g.app.externalFilesController = ServerExternalFilesController()  # Replace
         g.app.idleTimeManager.start()
         t2 = time.process_time()
-        print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
+        if not testing:
+            print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server:leo overridden methods
     #@+node:felix.20210711194729.1: *4* _runAskOkDialog
     def _runAskOkDialog(self, c, title, message=None, text="Ok"):

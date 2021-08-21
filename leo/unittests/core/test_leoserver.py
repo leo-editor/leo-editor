@@ -7,15 +7,14 @@ import os
 import unittest
 import leo.core.leoserver as leoserver
 
-# For unit tests.
+# Globals.
 g = None
 g_leoserver = None
 g_server = None
 
-class TestLeoServer (unittest.TestCase):  # pragma: no cover
+class TestLeoServer (unittest.TestCase):
     """Tests of LeoServer class."""
     request_number = 0
-
     #@+others
     #@+node:felix.20210621233316.99: ** test: Setup and TearDown
     @classmethod
