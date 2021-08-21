@@ -3602,7 +3602,7 @@ def main():  # pragma: no cover (tested in client)
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
         """
-        Get arguments from the command that launched the server
+        Get arguments from the command that launched the server.
         """
         global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile, traces
         
@@ -3612,10 +3612,18 @@ def main():  # pragma: no cover (tested in client)
             print(f"\nNot a .leo file: {s!r}")
             sys.exit(1)
 
-        description = 'Serve Leo resources to clients.'
-        usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
+        description = ''.join([
+            "  Leo's socket server, providing Leo resources to clients via Leo's bridge.\n",
+            "  Clients may be written in any language:\n",
+            "  - leo.core.leoclient is an example client written in python.\n",
+            "  - leoInteg (https://github.com/boltex/leointeg) is a client for vs-code written in typescript.\n"
+        ])
+        # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
+        usage = 'python leo.core.leoserver [options...]'
         trace_s = 'request,response,shutdown,startup,verbose'
-        parser = argparse.ArgumentParser(description=description, usage=usage)
+        valid_traces = [z.strip() for z in trace_s.split(',')]
+        parser = argparse.ArgumentParser(description=description, usage=usage,
+            formatter_class=argparse.RawTextHelpFormatter)
         add = parser.add_argument
         add('-a', '--address', dest='wsHost', type=str, default='localhost', metavar='STR', 
             help='server address. Defaults to "localhost"')
@@ -3636,8 +3644,13 @@ def main():  # pragma: no cover (tested in client)
         # Parse.
         args = parser.parse_args()
         # Handle the args...
-        traces = [z.strip() for z in args.traces.split(',')] if args.traces else []
-        print('traces', traces)
+        if args.traces:
+            for z in args.traces.split(','):
+                if z in valid_traces:
+                    traces.append(z)
+                else:
+                    print(f"Ignoring invalid --trace value: {z!r}")
+            print(f"Tracing: {', '.join(traces)}")
         if args.v:
             print(__version__)
             sys.exit(0)
@@ -3704,7 +3717,10 @@ def main():  # pragma: no cover (tested in client)
                 )
     #@-others
 
-    # Replace default command line arguments values if provided as arguments
+    # Make the first real line of output more visible.
+    print("", flush=True)  
+    
+    # Get values from the command line.
     wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty = get_args()
     print("Starting LeoBridge... (Launch with -h for help)", flush=True)
 
@@ -3742,7 +3758,7 @@ def main():  # pragma: no cover (tested in client)
         realtime_server.close()
         # Execution continues here after server is interupted (e.g. with ctrl+c)
 
-        print("Stopping: Check for changed commanders", flush=True)
+        print("Checking for changed commanders...", flush=True)
         save_dirty()
 
         cancel_tasks(asyncio.all_tasks(loop), loop)
