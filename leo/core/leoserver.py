@@ -3645,12 +3645,16 @@ def main():  # pragma: no cover (tested in client)
         args = parser.parse_args()
         # Handle the args...
         if args.traces:
+            ok = True
             for z in args.traces.split(','):
                 if z in valid_traces:
                     traces.append(z)
                 else:
-                    print(f"Ignoring invalid --trace value: {z!r}")
-            print(f"Tracing: {', '.join(traces)}")
+                    ok = False
+                    print(f"Ignoring invalid --trace value: {z!r}", flush=True)
+            if not ok:
+                print(f"Valid traces are: {','.join(valid_traces)}", flush=True)
+            print(f"--trace={','.join(traces)}", flush=True)
         if args.v:
             print(__version__)
             sys.exit(0)
