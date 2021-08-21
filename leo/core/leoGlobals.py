@@ -4901,7 +4901,7 @@ def backupGitIssues(c: Cmdr, base_url=None):
     c.redraw()
     g.trace('done')
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
-def execGitCommand(command, directory=None):
+def execGitCommand(command, directory):
     """Execute the given git command in the given directory."""
     git_dir = g.os_path_finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
@@ -4911,7 +4911,7 @@ def execGitCommand(command, directory=None):
         g.trace('removing newline from', command)
         command = command.replace('\n', '')
     # #1777: Save/restore os.curdir
-    old_dir = os.path.normpath(os.path.abspath(os.curdir))
+    old_dir = os.getcwd()
     if directory:
         os.chdir(directory)
     try:
@@ -5092,8 +5092,6 @@ def getGitVersion(directory=None):
             stderr=subprocess.DEVNULL,
             shell=True,
         )
-        if trace:
-            g.trace(s)
     # #1209.
     except subprocess.CalledProcessError as e:
         s = e.output
@@ -5164,8 +5162,9 @@ def gitDescribe(path: str=None):
     describe = g.execGitCommand('git describe --tags --long', path)
     tag, distance, commit = describe[0].rsplit('-', 2)
         # rsplit not split, as '-' might be in tag name
-    if 'g' in commit[0:]: commit = commit[1:]
+    if 'g' in commit[0:]:
         # leading 'g' isn't part of the commit hash
+        commit = commit[1:]
     commit = commit.rstrip()
     return tag, distance, commit
 #@+node:ekr.20170414034616.6: *3* g.gitHeadPath
