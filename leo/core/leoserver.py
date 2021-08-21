@@ -3828,44 +3828,10 @@ def main():  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
         # Leave other options for unittest.
-        # for opt, junk in opts:  # opts is a 2-tuple.
-            # if opt in sys.argv:
-                # sys.argv.remove(opt)
+            # for opt, junk in opts:  # opts is a 2-tuple.
+                # if opt in sys.argv:
+                    # sys.argv.remove(opt)
         return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
-                
-        ### OLD ###
-        # args = None
-        # try:
-            # opts, args = getopt.getopt(sys.argv[1:], "hda:p:l:f:", ["help", "address=", "port=", "persist", "dirty", "limit=", "file="])
-        # except getopt.GetoptError:
-            # show_help()
-            # if args:
-                # print("unused args: " + str(args))
-            # sys.exit(2)
-        # for opt, arg in opts:
-            # if opt in ("-h", "--help"):
-                # show_help()
-                # sys.exit()
-            # elif opt in ("-a", "--address"):
-                # wsHost = arg
-            # elif opt in ("-f", "--file"):
-                # argFile = arg
-            # elif opt in ("-p", "--port"):
-                # wsPort = arg
-            # elif opt in ("-l", "--limit"):
-                # wsLimit = int(arg)
-            # elif opt in ("--persist"):
-                # wsPersist = True
-            # elif opt in ("-d", "--dirty"):
-                # wsSkipDirty = True
-        # # in case of 0 or other values
-        # if wsLimit < 1:
-            # wsLimit = 1
-        # # Leave other options for unittest.
-        # for opt, junk in opts:  # opts is a 2-tuple.
-            # if opt in sys.argv:
-                # sys.argv.remove(opt)
-        # return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
         """
