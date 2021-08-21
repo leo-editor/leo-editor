@@ -3612,9 +3612,9 @@ def main():  # pragma: no cover (tested in client)
             print(f"\nNot a .leo file: {s!r}")
             sys.exit(1)
 
-        description = 'Serve Leo commands to clients.'
+        description = 'Serve Leo resources to clients.'
         usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
-        trace_s = 'request,response,shutdown,shutdown,verbose'
+        trace_s = 'request,response,shutdown,startup,verbose'
         parser = argparse.ArgumentParser(description=description, usage=usage)
         add = parser.add_argument
         add('-a', '--address', dest='wsHost', type=str, default='localhost', metavar='STR', 
