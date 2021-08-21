@@ -3063,7 +3063,9 @@ class LeoServer:
         that contains at least an 'id' key.
 
         """
+        global traces
         tag = '_do_message'
+        trace, verbose = 'request' in traces, 'verbose' in traces
 
         # Require "id" and "action" keys
         id_ = d.get("id")
@@ -3081,6 +3083,20 @@ class LeoServer:
             pass
         else:
             param = {}
+            
+        # Handle traces.
+        if trace and verbose:  # pragma: no cover
+            g.printObj(d, tag=f"request {id_}")
+            print('', flush=True)
+        elif trace:  # pragma: no cover
+            keys = sorted(param.keys())
+            if action == '!set_config':
+                keys_s = f"({len(keys)} keys)"
+            elif len(keys) > 5:
+                keys_s = '\n  ' + '\n  '.join(keys)
+            else:
+                keys_s = ', '.join(keys)
+            print(f" request {id_:<4} {action:<30} {keys_s}", flush=True)
 
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
@@ -3298,7 +3314,10 @@ class LeoServer:
         Finally, this method returns the json string corresponding to the
         response.
         """
+        global traces
         tag = '_make_response'
+        trace = self.log_flag or 'response' in traces
+        verbose = 'verbose' in traces
         c = self.c  # It is valid for c to be None.
         if package is None:
             package = {}
@@ -3333,9 +3352,16 @@ class LeoServer:
             # - All the *cheap* redraw data for p.
             redraw_d = self._get_position_d(p)
             package ["node"] = redraw_d
-        if self.log_flag:  # pragma: no cover
-            g.printObj(package, tag=f"{tag} returns")
+        
+        # Handle traces.
+        if trace and verbose:  # pragma: no cover
+            g.printObj(package, tag=f"response {self.current_id}")
             print('', flush=True)
+        elif trace:  # pragma: no cover
+            keys = sorted(package.keys())
+            keys_s = ', '.join(keys)
+            print(f"response {self.current_id:<4} {keys_s}", flush=True)
+
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.95: *4* server._p_to_ap
     def _p_to_ap(self, p):
@@ -3620,7 +3646,7 @@ def main():  # pragma: no cover (tested in client)
         ])
         # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
         usage = 'python leo.core.leoserver [options...]'
-        trace_s = 'request,response,shutdown,startup,verbose'
+        trace_s = 'request,response,verbose'
         valid_traces = [z.strip() for z in trace_s.split(',')]
         parser = argparse.ArgumentParser(description=description, usage=usage,
             formatter_class=argparse.RawTextHelpFormatter)
