@@ -3618,7 +3618,7 @@ def main():  # pragma: no cover (tested in client)
         add = parser.add_argument
         add('-a', '--address', dest='wsHost', type=str, default='localhost', metavar='STR', 
             help='server address. Defaults to "localhost"')
-        add('-d', '--dirty', dest='wsSkipDirt', action='store_true',
+        add('-d', '--dirty', dest='wsSkipDirty', action='store_true',
             help='don\'t warn about dirty files when quitting')
         add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
             help='open a .leo file at startup.')
