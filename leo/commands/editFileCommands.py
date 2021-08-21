@@ -669,26 +669,22 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 class GitDiffController:
     """A class to do git diffs."""
 
-    def __init__(self, c, repo_dir=None):
+    def __init__(self, c):
         self.c = c
         self.file_node = None
-        self.old_dir = g.os_path_abspath('.')
-        self.repo_dir = repo_dir
         self.root = None
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file
-    def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
+    def diff_file(self, fn, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for fn.
         """
         # Common code.
         c = self.c
-        if not self.set_directory(directory):
-            return
-        path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
-        if not os.path.exists(path):
-            g.trace('NOT FOUND', path)
+        # #1781, #2143
+        directory = self.get_directory()
+        if not directory:
             return
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
@@ -710,6 +706,7 @@ class GitDiffController:
             self.file_node.h = f"Deleted: {self.file_node.h}"
             return
         # Finish.
+        path = g.os_path_finalize_join(directory, fn)  # #1781: bug fix.
         c1 = c2 = None
         if fn.endswith('.leo'):
             c1 = self.make_leo_outline(fn, path, s1, rev1)
@@ -728,13 +725,14 @@ class GitDiffController:
                 f"{self.file_node.b.rstrip()}\n"
                 f"@language {c2.target_language}\n")
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
-    def diff_pull_request(self, base_branch_name='devel', directory=None):
+    def diff_pull_request(self):
         """
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
+        directory = self.get_directory()
         if not directory:
-            directory = os.path.join(g.app.loadDir, '..', '..')
+            return
         aList = g.execGitCommand("git rev-parse devel", directory)
         if aList:
             devel_rev = aList[0]
@@ -742,15 +740,14 @@ class GitDiffController:
             self.diff_two_revs(
                 rev1=devel_rev,  # Before: Latest devel commit.
                 rev2='HEAD',  # After: Lastest branch commit
-                directory=directory,
             )
         else:
             g.es_print('FAIL: git rev-parse devel')
     #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
-    def diff_two_branches(self, branch1, branch2, fn, directory=None):
+    def diff_two_branches(self, branch1, branch2, fn):
         """Create an outline describing the git diffs for fn."""
         c = self.c
-        if not self.set_directory(directory):
+        if not self.get_directory():
             return
         self.root = p = c.lastTopLevel().insertAfter()
         p.h = f"git-diff-branches {branch1} {branch2}"
@@ -776,13 +773,13 @@ class GitDiffController:
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
-    def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
+    def diff_two_revs(self, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
         c = self.c
-        if not self.set_directory(directory):
+        if not self.get_directory():
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
@@ -800,14 +797,15 @@ class GitDiffController:
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
-    def git_diff(self, directory=None, rev1='HEAD', rev2=''):
+    def git_diff(self, rev1='HEAD', rev2=''):
         """The main line of the git diff command."""
-        if not self.set_directory(directory):
+        if not self.get_directory():
             return
         #
         # Diff the given revs.
         ok = self.diff_revs(rev1, rev2)
-        if ok: return
+        if ok:
+            return
         #
         # Go back at most 5 revs...
         n1, n2 = 1, 0
@@ -918,6 +916,17 @@ class GitDiffController:
                 if fn2.endswith(fn):
                     return p
         return None
+    #@+node:ekr.20170806094321.3: *4* gdc.find_git_working_directory
+    def find_git_working_directory(self, directory):
+        """Return the git working directory, starting at directory."""
+        while directory:
+            if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
+                return directory
+            path2 = g.os_path_finalize_join(directory, '..')
+            if path2 == directory:
+                break
+            directory = path2
+        return None
     #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
     def find_gnx(self, c, gnx):
         """Return a position in c having the given gnx."""
@@ -929,35 +938,67 @@ class GitDiffController:
     def finish(self):
         """Finish execution of this command."""
         c = self.c
-        os.chdir(self.old_dir)
         c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
         c.selectPosition(self.root)
         c.redraw()
         c.treeWantsFocusNow()
+    #@+node:ekr.20210819080657.1: *4* gdc.get_directory
+    def get_directory(self):  
+        """
+        #2143.
+        Resolve filename to the nearest directory containing a .git directory.
+        """
+        c = self.c
+        filename = c.fileName()
+        if not filename:
+            print('git-diff: outline has no name')
+            return None
+        directory = os.path.dirname(filename)
+        if directory and not os.path.isdir(directory):
+            directory = os.path.dirname(directory)
+        if not directory:
+            print(f"git-diff: outline has no directory. filename: {filename!r}")
+            return None
+        # Does path/../ref exist?
+        base_directory = g.gitHeadPath(directory)
+        if not base_directory:
+            print(f"git-diff: no .git directory: {directory!r} filename: {filename!r}")
+            return None
+        # This should guarantee that the directory contains a .git directory.
+        directory = g.os_path_finalize_join(base_directory, '..', '..')
+        ### g.trace(filename, '-->', directory) ###
+        return directory
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch, fn):
-        """Get the file from the hed of the given branch."""
-        # Get the file using git.
+        """Get the file from the head of the given branch."""
+        # #2143
+        directory = self.get_directory()
+        if not directory:
+            return ''
         command = f"git show {branch}:{fn}"
-        directory = self.repo_dir
         lines = g.execGitCommand(command, directory)
         s = ''.join(lines)
         return g.toUnicode(s).replace('\r', '')
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         """Get the file from the given rev, or the working directory if None."""
-        path = g.os_path_finalize_join(self.repo_dir, fn)
+        # #2143
+        directory = self.get_directory()
+        if not directory:
+            return ''
+        path = g.os_path_finalize_join(directory, fn)
         if not g.os_path_exists(path):
+            g.trace(f"File not found: {path!r} fn: {fn!r}")
             return ''
         if rev:
             # Get the file using git.
             # Use the file name, not the path.
             command = f"git show {rev}:{fn}"
-            lines = g.execGitCommand(command, self.repo_dir)
+            lines = g.execGitCommand(command, directory)
             return g.toUnicode(''.join(lines)).replace('\r', '')
         try:
-            with open(path, 'rb') as f:  # Was 'r'
+            with open(path, 'rb') as f:
                 b = f.read()
             return g.toUnicode(b).replace('\r', '')
         except Exception:
@@ -967,24 +1008,27 @@ class GitDiffController:
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self, rev1, rev2):
         """Return a list of changed files."""
+        # #2143
+        directory = self.get_directory()
+        if not directory:
+            return []
         command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
-        files = [
-            z.strip() for z in g.execGitCommand(command, self.repo_dir)
-                if not z.strip().endswith(('.db', '.zip'))
-                    # #1781: Allow diffs of .leo files.
+        # #1781: Allow diffs of .leo files.
+        return [
+            z.strip() for z in g.execGitCommand(command, directory)
+                if not z.strip().endswith(('.db', '.zip')) 
         ]
-        return files
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec, abbreviated=True):
         """Return the abbreviated hash the given revision spec."""
-        if revspec:
-            # Return only the abbreviated hash for the revspec.
-            command = 'git show --format=%%%s --no-patch %s' % (
-                'h' if abbreviated else 'H',
-                revspec)
-            lines = g.execGitCommand(command, self.repo_dir)
-            return ''.join(lines).strip()
-        return 'uncommitted'
+        if not revspec:
+            return 'uncommitted'
+        # Return only the abbreviated hash for the revspec.
+        format_s = 'h' if abbreviated else 'H'
+        command = f"git show --format=%{format_s} --no-patch {revspec}"
+        directory = self.get_directory()
+        lines = g.execGitCommand(command, directory=directory)
+        return ''.join(lines).strip()
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
     def make_at_clean_outline(self, fn, root, s, rev):
         """
@@ -1043,21 +1087,6 @@ class GitDiffController:
             root=root,
         )
         return hidden_c
-    #@+node:ekr.20201215050832.1: *4* gdc.make_leo_outline
-    def make_leo_outline(self, fn, path, s, rev):
-        """Create a hidden temp outline for the .leo file in s."""
-        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-        hidden_c.frame.createFirstTreeNode()
-        root = hidden_c.rootPosition()
-        root.h = fn + ':' + rev if rev else fn
-        hidden_c.fileCommands.getLeoFile(
-            theFile=io.StringIO(initial_value=s),
-            fileName=path,
-            readAtFileNodesFlag=False,
-            silent=False,
-            checkOpenFiles=False,
-        )
-        return hidden_c
     #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helper
     def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
         """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
@@ -1100,38 +1129,22 @@ class GitDiffController:
                 if v1.h != v2.h or v1.b != v2.b:
                     changed[key] = (v1, v2)
         return added, deleted, changed
-    #@+node:ekr.20180510095807.1: *4* gdc.set_directory & helper
-    def set_directory(self, directory):
-        """
-        Handle directory inits.
-        Return self.repo_dir if the .git directory has been found.
-        """
-        if not directory:
-            if self.repo_dir:
-                # Use previously-computed result.
-                # g.trace('EXISTS', self.repo_dir)
-                return self.repo_dir
-            directory = g.os_path_abspath(os.curdir)
-        #
-        # Change to the new directory.
-        self.repo_dir = self.find_git_working_directory(directory)
-        if self.repo_dir:
-            os.chdir(directory)
-        else:
-            g.es_print(f"no .git directory found in {directory!r}")
-        # g.trace('CREATE', self.repo_dir)
-        return self.repo_dir
-    #@+node:ekr.20170806094321.3: *5* gdc.find_git_working_directory
-    def find_git_working_directory(self, directory):
-        """Return the git working directory, starting at directory."""
-        while directory:
-            if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
-                return directory
-            path2 = g.os_path_finalize_join(directory, '..')
-            if path2 == directory:
-                break
-            directory = path2
-        return None
+    #@+node:ekr.20201215050832.1: *4* gdc.make_leo_outline
+    def make_leo_outline(self, fn, path, s, rev):
+        """Create a hidden temp outline for the .leo file in s."""
+        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        hidden_c.frame.createFirstTreeNode()
+        root = hidden_c.rootPosition()
+        root.h = fn + ':' + rev if rev else fn
+        hidden_c.fileCommands.getLeoFile(
+            theFile=io.StringIO(initial_value=s),
+            fileName=path,
+            readAtFileNodesFlag=False,
+            silent=False,
+            checkOpenFiles=False,
+        )
+        return hidden_c
     #@-others
 #@-others
+#@@language python
 #@-leo
