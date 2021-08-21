@@ -3622,7 +3622,7 @@ def main():  # pragma: no cover (tested in client)
         add('-d', '--dirty', dest='wsSkipDirty', action='store_true',
             help='don\'t warn about dirty files when quitting')
         add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
-            help='open a .leo file at startup.')
+            help='open a .leo file at startup')
         add('-p', '--port', dest='wsPort', type=int, default=32125, metavar='N', 
             help='port number. Defaults to 32125')
         add('-l', '--limit', dest='wsLimit', type=int, default=1, metavar='N', 
