@@ -2855,14 +2855,14 @@ class Commands:
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
-    def diff_file(self, fn, rev1='HEAD', rev2='', directory=None):
+    def diff_file(self, fn, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
         from leo.commands import editFileCommands as efc
         x = efc.GitDiffController(c=self)
-        x.diff_file(directory=directory, fn=fn, rev1=rev1, rev2=rev2)
+        x.diff_file(fn=fn, rev1=rev1, rev2=rev2)
     #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
     def diff_two_revs(self, directory=None, rev1='', rev2=''):
         """
@@ -2876,27 +2876,19 @@ class Commands:
             rev2=rev2,
         )
     #@+node:ekr.20180510103923.1: *4* c.diff_two_branches
-    def diff_two_branches(self, branch1, branch2, fn, directory=None):
+    def diff_two_branches(self, branch1, branch2, fn):
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
         from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).diff_two_branches(
-            branch1=branch1,
-            branch2=branch2,
-            directory=directory,
-            fn=fn,
-        )
+            branch1=branch1, branch2=branch2, fn=fn)
     #@+node:ekr.20180510105125.1: *4* c.git_diff
-    def git_diff(self, rev1='HEAD', rev2='', directory=None):
+    def git_diff(self, rev1='HEAD', rev2=''):
 
         from leo.commands import editFileCommands as efc
-        efc.GitDiffController(c=self).git_diff(
-            directory=directory,
-            rev1=rev1,
-            rev2=rev2,
-        )
+        efc.GitDiffController(c=self).git_diff(rev1, rev2)
     #@+node:ekr.20171124100534.1: *3* c.Gui
     #@+node:ekr.20111217154130.10286: *4* c.Dialogs & messages
     #@+node:ekr.20110510052422.14618: *5* c.alert
