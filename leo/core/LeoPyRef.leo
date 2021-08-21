@@ -306,7 +306,6 @@
 <v t="ekr.20040910070811.1"><vh>@file ../plugins/run_nodes.py</vh></v>
 <v t="ekr.20170313020320.1"><vh>@file ../plugins/settings_finder.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file ../plugins/stickynotes_plus.py</vh></v>
-<v t="ekr.20140225222704.16748"><vh>@file ../plugins/viewrendered2.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file ../plugins/mod_leo2ascd.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file ../plugins/mod_leo2ascd.txt</vh></v>
@@ -662,8 +661,9 @@
 <v t="ekr.20051104075904"><vh>@file leoTest.py</vh></v>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
-<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
+<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
+<v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
 </v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -1989,10 +1989,9 @@ print('path:', path)
 os.chdir(path)
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='ekr-mypy', # '6bd282f', # 'bc24e607a5', # old branch/rev
-    branch2='ekr-2103', # new branch/rev
-    fn='leo/core/leoGlobals.py',  # Don't use back slashes.
-    directory=None,
+    branch1='devel', # old branch/rev
+    branch2='ekr-git-diff', # new branch/rev
+    fn='leo/commands/editFileCommands.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20201208114843.1"># No longer needed. Use the git-diff-pr command.
@@ -2003,8 +2002,8 @@ x.diff_pull_request()
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='51715f5', # Before, the *original* base of ekr-theme.
-    rev2='HEAD',    # After: Latest ekr-theme (or devel) commit.
+    rev1='af93a09b', # Before.
+    rev2='HEAD',   # After.
 )
 </t>
 <t tx="ekr.20201015145257.1">import leo.core.leoImport as leoImport
