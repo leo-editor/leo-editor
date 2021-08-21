@@ -3643,10 +3643,6 @@ def main():  # pragma: no cover (tested in client)
         # Sanitize limit.
         if wsLimit < 1:
             wsLimit = 1
-        # Leave other options for unittest.
-            # for opt, junk in opts:  # opts is a 2-tuple.
-                # if opt in sys.argv:
-                    # sys.argv.remove(opt)
         return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
