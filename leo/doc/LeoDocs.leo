@@ -10,7 +10,7 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="rkeeney.20190823135126.4"><vh>@persistence</vh>
 <v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
-<v t="ekr.20191216061528.2"><vh>@gnxs</vh></v>
+<v t="ekr.20210822061928.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201013034546.1"><vh>@data:@auto-md importers.md </vh>
 <v t="ekr.20201013034546.2"><vh>@gnxs</vh></v>
@@ -609,7 +609,6 @@
 <v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 </v>
 <v t="ekr.20170906090516.1"><vh>Developing Leo</vh>
-<v t="ekr.20170804153108.2"><vh>How can I use dev nodes to develop and test Leo's own code?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
 <v t="ekr.20110531155858.20559"><vh>How does EKR (Leo's developer) use Leo?</vh></v>
 <v t="ekr.20160309092522.1"><vh>What is the Stupendous Aha and why does it matter?</vh></v>
@@ -676,9 +675,7 @@
 <v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
 <v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
 <v t="ekr.20170612093902.1"><vh>How do I choose between @others and section references?</vh></v>
-<v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
 <v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20160304081437.6"><vh>Tip: run unit tests locally using clones</vh></v>
 <v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
@@ -742,7 +739,6 @@
 <v t="ekr.20170217093639.1"><vh>c, g, and p</vh></v>
 <v t="ekr.20170217093640.1"><vh>Accessing outline data</vh></v>
 <v t="ekr.20170217093640.2"><vh>\@button and @command nodes</vh></v>
-<v t="ekr.20170217093640.3"><vh>\@test nodes</vh></v>
 <v t="ekr.20170217093641.1"><vh>Autocompletion and calltips</vh></v>
 </v>
 <v t="ekr.20131005214621.16090"><vh>Summary</vh></v>
@@ -819,7 +815,6 @@
 <v t="ekr.20180126061429.19"><vh>g.callers() returns a list of callers</vh></v>
 <v t="ekr.20180126061429.5"><vh>The @button make-md-toc script in LeoDocs.leo</vh></v>
 <v t="ekr.20180126061429.12"><vh>Use @button nodes</vh></v>
-<v t="ekr.20180126061429.11"><vh>Use @test nodes</vh></v>
 <v t="ekr.20180126061429.2"><vh>Use a universal shortcut for your scripts</vh></v>
 <v t="ekr.20180126061429.17"><vh>Use cff to gather nodes matching a pattern</vh></v>
 <v t="ekr.20180126061429.21"><vh>Use g.pdb from the console</vh></v>
@@ -1244,17 +1239,6 @@
 <v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
 </v>
 </v>
-<v t="ekr.20070628083442"><vh>Unit testing with Leo</vh>
-<v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
-<v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
-<v t="ekr.20070628094515.1"><vh>Using @suite nodes</vh></v>
-<v t="ekr.20120229094652.15125"><vh>Using @mark-for-unit-tests</vh></v>
-<v t="ekr.20170301013432.1"><vh>Test driven development in Leo</vh></v>
-<v t="ekr.20070628094515.2"><vh>How the unit test commands work</vh></v>
-<v t="ekr.20080729064227.6"><vh>\@button timer</vh></v>
-<v t="ekr.20080729064227.7"><vh>\@button profile</vh></v>
-</v>
-</v>
 <v t="ekr.20060527105211"><vh>Debugging with Leo</vh>
 <v t="ekr.20060527105617"><vh>@rst html\debuggers.html</vh>
 <v t="ekr.20070116062405"><vh>Using g.trace and g.pdb</vh></v>
@@ -1377,7 +1361,6 @@
 <v t="ekr.20180505114327.9"><vh>Lesson 5: c.recursiveImport imports files recursively</vh></v>
 <v t="ekr.20180505114327.10"><vh>Lesson 6: How devs should use git branches</vh></v>
 <v t="ekr.20180505114327.11"><vh>Lesson 7: How to make complex changes to a code base</vh></v>
-<v t="ekr.20180505114327.2"><vh>LeoU: Unit tests should not depend on settings</vh></v>
 <v t="ekr.20180505114327.3"><vh>LeoU: Suggestions for theme developers</vh></v>
 <v t="ekr.20180505141445.1"><vh>LeoU: About Leo's architecture</vh></v>
 <v t="ekr.20180505114327.12"><vh>LeoU: About Leo's Position and VNode classes</vh></v>
@@ -6572,132 +6555,6 @@ It also contains other information of little interest to most Leo users.</t>
 <t tx="ekr.20070623145346"></t>
 <t tx="ekr.20070623145346.1">Leo's setup.py script is intended only to create source distributions. It can't be used to install Leo because Leo is not a Python package.
 </t>
-<t tx="ekr.20070628083442"></t>
-<t tx="ekr.20070628083442.1">#####################
-Unit testing with Leo
-#####################
-
-.. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
-
-This chapter describes how you can execute Python unit test from within Leo
-outlines.
-
-Leo's **unit test commands** run the unit tests created by @test and @suite
-nodes. run-unit-tests and run-unit-tests-locally run all unit tests in the
-presently selected part of the Leo outline; run-all-unit-tests and
-run-all-unit-tests-locally run all unit tests in the entire Leo outline.
-
-Important: you must `run Leo in a console window`_ to see the output the
-unit tests. Leo's unit test commands run all the unit tests using the
-standard unittest text test runner, and the output of the unit tests
-appears in the console.
-
-test/unitTest.leo contains many examples of using @test and @suite nodes.
-
-.. contents:: Contents
-    :depth: 2
-    :local:
-
-</t>
-<t tx="ekr.20070628084351">**@test nodes** are nodes whose headlines start with @test. The unit test commands convert the body text of @test nodes into a unit test automatically. That is, Leo's unit test commands automatically create a unittest.TestCase instances which run the body text of the @test node. For example, let us consider one of Leo's actual unit tests. The headline is::
-
-    @test consistency of back/next links
-
-The body text is::
-
-    if g.unitTesting:
-        c,p = g.getTestVars() # Optional: prevents pychecker warnings.
-        for p in c.all_positions():
-            back = p.back()
-            next = p.next()
-            if back: assert(back.getNext() == p)
-            if next: assert(next.getBack() == p)
-
-When either of Leo's unit test commands finds this @test node the command will
-run a unit test equivalent to the following::
-
-    import leo.core.leoGlobals as g
-
-    class aTestCase (unittest.TestCase):
-        def shortDescription():
-            return '@test consistency of back/next links'
-        def runTest():
-            c,p = g.getTestVars()
-            for p in c.all_positions():
-                back = p.back()
-                next = p.next()
-                if back: assert(back.getNext() == p)
-                if next: assert(next.getBack() == p)
-
-As you can see, using @test nodes saves a lot of typing:
-
-- You don't have to define a subclass of unittest.TestCase.
-- Within your unit test, the c, g and p variables are predefined, just like in Leo scripts.
-- The entire headline of the @test node becomes the short description of the unit test.
-
-**Important note**: notice that the first line of the body text is a **guard line**::
-
-    if g.unitTesting:
-
-This guard line is needed because this particular @test node is contained in the file leoNodes.py. @test nodes that appear outside of Python source files do not need guard lines. The guard line prevents the unit testing code from being executed when Python imports the leoNodes module; the g.unitTesting variable is True only while running unit tests.
-
-**New in Leo 4.6**: When Leo runs unit tests, Leo predefines the 'self' variable to be the instance of the test itself, that is an instance of unittest.TestCase. This allows you to use methods such as self.assertTrue in @test and @suite nodes.
-
-**Note**: Leo predefines the c, g, and p variables in @test and @suite nodes, just like in other scripts.  Thus, the line::
-
-    c,p = g.getTestVars()
-
-is not needed. However, it prevents pychecker warnings that c and p are undefined.
-</t>
-<t tx="ekr.20070628094515.1">**@suite nodes** are nodes whose headlines start with @suite. @suite nodes allow you to create and run custom subclasses of unittest.TestCase.
-
-Leo's test commands assume that the body of an suite node is a script that creates a suite of tests and places that suite in g.app.scriptDict['suite']. Something like this::
-
-    if g.unitTesting:
-        __pychecker__ = '--no-reimport' # Prevents pychecker complaint.
-        import unittest
-        c,p = g.getTestVars() # Optional.
-        suite = unittest.makeSuite(unittest.TestCase)
-        &lt;&lt; add one or more tests (instances of unittest.TestCase) to suite &gt;&gt;
-        g.app.scriptDict['suite'] = suite
-
-**Note**: as in @test nodes, the guard line, 'if unitTesting:', is needed only if the
-@suite node appears in a Python source file.
-
-Leo's test commands first execute the script and then run suite in g.app.scriptDict.get('suite') using the standard unittest text runner.
-
-You can organize the script in an @suite nodes just as usual using @others, section references, etc. For example::
-
-    if g.unitTesting:
-        __pychecker__ = '--no-reimport'
-        import unittest
-        c,p = g.getTestVars() # Optional.
-        # children define test1,test2..., subclasses of unittest.TestCase.
-        @others 
-        suite = unittest.makeSuite(unittest.TestCase)
-        for test in (test1,test2,test3,test4):
-            suite.addTest(test)
-        g.app.scriptDict['suite'] = suite
-</t>
-<t tx="ekr.20070628094515.2">The run-all-unit-tests-locally and run-unit-tests-locally commands run unit tests in the process that is running Leo. These commands *can* change the outline containing the unit tests.
-
-The run-all-unit-tests and run-unit-tests commands run all tests in a separate process, so unit tests can never have any side effects. These commands never changes the outline from which the tests were run. These commands do the following:
-
-1. Copy all @test, @suite, @unit-tests and @mark-for-unit-test nodes (including their descendants) to the file test/dynamicUnitTest.leo.
-
-2. Run test/leoDynamicTest.py in a separate process.
-
-   - leoDynamicTest.py opens dynamicUnitTest.leo with the leoBridge module.
-     Thus, all unit tests get run with the nullGui in effect.
-
-   - After opening dynamicUnitTest.leo, leoDynamicTest.py runs all unit tests
-     by executing the leoTest.doTests function.
-
-   - The leoTests.doTests function searches for @test and @suite nodes and
-     processes them generally as described above. The details are a bit
-     different from as described, but they usually don't matter. If you *really*
-     care, see the source code for leoTests.doTests.
-</t>
 <t tx="ekr.20070806090235">Leo 4.4.4 Final was released November 2, 2007.
 
 ::
@@ -6989,20 +6846,6 @@ And in the body of the "Profiling experiment", I used this code::
 And then I hit Control-B to execute the Profiling Experiment body. This let me make adjustments to the code in the clone body and keep hitting Control-B to execute the code with the timeit module to see immediately if what I had done was making a difference.
 
 The great thing about this was that I just used the Leo @others construct to create a wrapper around the code and did not need to litter my code with debug or profiling statements.---Kayvan
-</t>
-<t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module. See http://docs.python.org/lib/module-timeit.html. The contents of @button timer is::
-
-    import leo.core.leoTest as leoTest
-    leoTest.runTimerOnNode(c,p,count=100)
-
-runTimerOnNode executes the script in the presently selected node using timit.Timer and prints the results.
-</t>
-<t tx="ekr.20080729064227.7">The profile button in unitTest.leo allows you to profile nodes using Python's profiler module. See http://docs.python.org/lib/module-profile.html The contents of @button profile is::
-
-    import leo.core.leoTest as leoTest
-    leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
-
-runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
 </t>
 <t tx="ekr.20080730212711.52">There are several boundary cases that the update algorithm can not resolve.
 For example, if a line is inserted between nodes, the algorithm can not
@@ -13597,12 +13440,6 @@ Similarly to see the list of your @button nodes, type::
 
 But you don't have to do that.  Instead, use Alt-tab once to change away from Leo, and then use Alt-tab again to change back to Leo.  When you do this, Leo puts focus in the body pane and you are all set.
 </t>
-<t tx="ekr.20120229094652.15125">When running unit tests externally, Leo copies any @mark-for-unit-tests nodes to dynamicUnitTest.leo.  Of course, this is in addition to all @test nodes and @suite nodes that are to be executed. You can use @mark-for-unit-test nodes to include any "supporting data" you want, including, say, "@common test code" to be imported as follows::
-
-    exec(g.findTestScript(c,'@common test code'))
-
-**Note**: putting @settings trees as descendants of an @mark-for-unit-test node will copy the @setting tree, but will *not* actually set the corresponding settings.
-</t>
 <t tx="ekr.20120229094652.15130">@pagewidth 75
 
 Q. When I run the following script I see a window appear and then immediately disappear::
@@ -14812,7 +14649,6 @@ For programmers:
 
 - Leo has an easy-to-use scripting API, giving full access to all data in the outline.
 - @button and @command nodes define scripts that can be applied to *other* nodes.
-- @test nodes create unit tests.
 - Alt-1 enables autocompletion.
 
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
@@ -16261,7 +16097,6 @@ Leo *completely integrates* Python scripting and outlines. Simulating the follow
 - Leo's `clone find commands`_ enable the `Leonine way to refactor programs`_.
 - Scripts and programs can be composed from outlines using `outline-oriented directives`_.
 - Importers convert flat text into outlines.
-- @test and @suite scripts create unit tests automatically.
 - @button scripts apply scripts to outline data.
 
 These features combine to create a `Leonine`_ way of programming and
@@ -16291,13 +16126,7 @@ The Leonine World
 
 **Programming**: Leo outlines naturally organize programs into modules, classes and functions. Leonine sources are their own design document. How you organize outlines is a choice in a new design space.
 
-**User-defined types**: Headlines naturally describe a node's contents: **headlines naturally define types**. Leo's core supports types such as @button, @rst, @suite, @url, etc. Plugins define @bookmark, @graph, @html and @task types. Scripts can easily define other types.
-
-**Testing**: Leo's @test nodes creates a unique unit-testing framework:
-
-- @test nodes focus on the real test code.
-- It is easy to run only the @test nodes in a particular suboutline.
-- @test scripts can easily use data in their children.
+**User-defined types**: Headlines naturally describe a node's contents: **headlines naturally define types**. Leo's core supports types such as @button, @rst, @url, etc. Plugins define @bookmark, @graph, @html and @task types. Scripts can easily define other types.
 
 .. _`clone-find`: tutorial-basics.html#clone-find-commands
 
@@ -16310,10 +16139,6 @@ The Leonine World
     c: The commander of the present outline.
     g: The leo.core.leoGlobals module.
     p: The presently selected position, c.p.
-    
-@test scripts predefine all the above, plus::
-
-    self: The instance of unittest.TestCase
 </t>
 <t tx="ekr.20131019061259.16688">**Ivars**::
 
@@ -16862,7 +16687,6 @@ More resources:
     @chapter
     @rst, @rst-no-head, @rst-ignore, @rst-ignore-tree
     @settings
-    @test, @testsetup, @testclass
     @url
 
 Within @settings trees::
@@ -17612,39 +17436,6 @@ https://groups.google.com/d/msg/leo-editor/BDzmytlSegw/C0IbSz0US54J
 
 </t>
 <t tx="ekr.20141105055521.8">Creates a global search window. Use the global-search command to show this window. To restore the original appearance of the window, type help. Requires the whoosh library ('easy_install whoosh') to do full text searches.
-</t>
-<t tx="ekr.20141108064630.10">Leo makes it easy to create and run unit tests from individual outline nodes or trees. A node whose headline starts with @test defines a unit test. The body text of the @test node contains a **self-contained** unit test. For example, this creates a complete unit test::
-
-    @test fails  (headline)
-    assert False (body text)
-
-To run this test, select the @test node and do::
-
-    &lt;alt-x&gt;run-selected-unit-tests-locally.
-
-Leo will create and run the unit test automatically.
-
-To see all of Leo's unit testing commands, do::
-
-    &lt;alt-x&gt;run&lt;tab&gt;
-
-Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
-
-.. _`unit testing`: unitTesting.html
-
-For more details about unit testing, the `unit testing`_ page.
-
-**Notes for Leo developers**
-
-leo/test/unitTest.leo contains all of Leo's own unit tests.
-
-Running all tests is not necessary.  Just select::
-
-    Active Unit Tests
-
-and then do Alt-4 (run-selected-unit-tests-locally).
-
-**Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
 </t>
 <t tx="ekr.20141108064630.12">File under things-I-didn't-know-but-should-have:
 
@@ -19646,7 +19437,9 @@ The following commands work much like the `Emacs cursor commands`_::
     previous-line
     previous-line-extend-selection
 </t>
-<t tx="ekr.20150318110552.86">``run-all-unit-tests-externally``
+<t tx="ekr.20150318110552.86">The following commands support @test and @suite nodes.  These commands (and @test and @suite nodes themselves) are deprecated and will be removed in Leo 6.5.
+
+``run-all-unit-tests-externally``
     Run all unit tests in a separate process.
 ``run-all-unit-tests-locally``
     Run all unit tests in this outline.
@@ -20476,37 +20269,6 @@ I use gitk on both platforms to review commits.
 
 And that's about it. I use "git help" and "git help command" as needed.
 </t>
-<t tx="ekr.20160304081437.6">Running a unit test locally, without exiting Leo, saves a lots of time.  It's much faster than having to load unitTest.leo or even a small .leo file.
-
-The question is, how to use the newest code?  imp.reload often doesn't work. But there is a trick that does work.  Clone the code under development and put it under an @test node.  The script in the @test node uses @others to gain access to the code, not an import.
-
-For instance, here is the @test node I use to develop the new javascript importer::
-
-    g.cls()
-    p1 = p.copy()
-    if c.isChanged():
-        c.save()
-    import leo.plugins.importers.basescanner as basescanner
-    @others
-    scanner = JavaScriptScanner(c.importCommands)
-    h = '@ignore js-test'
-    p = g.findNodeAnywhere(c, h)
-    if p:
-        while p.firstChild():
-            p.firstChild().doDelete()
-    else:
-        p = c.insertHeadline()
-        p.h = h
-    c.selectPosition(p)
-    fn = r'c:\prog\jQuery-short2.js'
-    s = open(fn, 'r').read()
-    print('Sources..\n\n%s\n\n' % s)
-    scanner.scan(s, p)
-    c.selectPosition(p1)
-    c.redraw()
-    print('done')
-
-To repeat, the code under test is a child of this node, so the script uses @others to gain access to it.  It's super fast.</t>
 <t tx="ekr.20160304081437.7">Leo is a superb tool for understanding, studying and organizing any kind of complex data, including computer programs. The first great Aha in Leo's history was that webs (literate programs) are outlines in disguise. Leo's importers (@auto) make it easy to studying other people's programs. Leo's always-present outline structure clarifies overall program structure and makes many kinds of comments unnecessary.
 
 Leo is also a superb browser for code and data. Unlike many other folding editors, Leo remembers which nodes were expanded when you last saved an outline. This is surprisingly important. And Leo's clones let you organize any data as you want, even if all folds are collapsed.
@@ -20525,7 +20287,6 @@ So much for the theory.  The following also are important in practice:
 - Leo's plugin architecture.
 - Leo's rst3 command, vim, xemacs and ILeo (IPython bridge), and leoBridge module.
 - Leo's minibuffer commands, borrowed shamelessly from Emacs.
-- @test and @suite: Leo's outline-oriented unit testing framework.
 - @button: bringing scripts to data.
 - Leo's outline-oriented directives.
 
@@ -20579,7 +20340,7 @@ Unit tests permanent check of the correctness of a piece of code. Test Driven De
 
 In short, unit tests are a *master tool* for any programmer or designer.
 
-Leo's @test nodes are one way to run unit tests.  You can also use @button to encapsulate your tests.  After running an @button script, you can quickly re-run @button scripts with Ctrl-P, repeat-complex-command.
+You can also use @button to encapsulate your tests.  After running an @button script, you can quickly re-run @button scripts with Ctrl-P, repeat-complex-command.
 </t>
 <t tx="ekr.20160310060817.1">::
 
@@ -22580,21 +22341,6 @@ For more information, see Leo's `scripting tutorial`_.</t>
             ' '*p.level(),  # p.level() is p's indentation level.
             p.h,            # p.h is p's headline.
         )
-        
-.. index::
-    pair: @test Node; Tutorial</t>
-<t tx="ekr.20170217093640.3">**@test nodes** create unit tests. @test nodes automatically convert the body to a subclass of unittest.TestCase. Run these tests with one of Leo's ``run-unit-test-`` commands. ``&lt;Alt-X&gt;run&lt;tab&gt;`` gives the full list. Here one of Leo's actual unit tests::
-
-    @test c.positionExists for all nodes # In the headline
-
-    for p in c.all_positions():
-        assert c.positionExists(p)
-    
-Within @test nodes, c, g, and p are predefined as usual. Also, **self** is the instance of unittest.TestCase created by the @test node. For example::
-  
-    self.assertTrue(g)
-    
-For more details, see `Leo's unit-testing reference &lt;unitTesting.html&gt;`_.
 </t>
 <t tx="ekr.20170217093641.1">**Autocompletion** reminds you of all members (functions, methods, ivars, etc.) contained in objects in Leo's source code, and in Python's standard library modules. ``Alt-1 (toggle-autocompleter)`` enables and disables autocompletion. **Note**: Autocompletion can be enabled only when @language python is in effect.
 
@@ -22970,64 +22716,6 @@ The new code contains the following improvements:
 2. The new code organizes messages by threads.  Messages that start with "re:" become children of the node that started the thread.
 
 3. Better warning and informational messages, and a better docstring.</t>
-<t tx="ekr.20170301013432.1">Test Driven Development (TDD) takes a bit of setup, but the initial investment repays itself many times over. To use TDD with Leo, start @test nodes with **preamble code**. As explained below, the preamble will do the following:
-
-1. Optional: save the present outline if it has been changed.
-
-2. Reload modules with imp.reload.
-
-3. Create *new instances* of all objects under test.
-
-Here is the actual preamble code used in Leo's import tests::
-
-    if 0: # Preamble...
-        # g.cls()
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        import imp
-        imp.reload(leo.plugins.importers.linescanner)
-        imp.reload(leo.plugins.importers.python)
-        imp.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
-
-    # run the test.
-    ic.pythonUnitTest(p,s=s,showTree=True)
-    
-Let's look at this example in detail. These lines optionally clear the screen and save the outline::
-
-    # g.cls()
-    if c.isChanged(): c.save()
-
-The next lines use imp.reload to re-import the affected modules::
-
-    import leo.core.leoImport as leoImport
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.python
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
-    
-Using imp.reload is usually not enough.  The preamble must *create new instances* of all objects under test. This can be a bit tricky. In the example above, the following lines create the new objects::
-
-    g.app.loadManager.createAllImporetersData()
-    ic = leoImport.LeoImportCommands(c)
-    
-The call to LM.createAllImporetersData() recomputes global tables describing importers. These tables must be updated to reflect possibly-changed importers. The call to leoImport.LeoImportCommands(c) creates a *new instance* of the c.importController. We want to use this new instance instead of the old instance, c.importController.
-
-**Summary**
-    
-TDD makes a big difference when developing code. I can run tests repeatedly from the Leo outline that contains the code under test. TDD significantly improves my productivity.
-
-Preamble code reload changed modules using imp.reload(). Preamble code must also create new instances of *all* objects that may have changed.
-
-When creating several related unit tests, cutting and pasting the preamble from previous unit tests is usually good enough. @button scripts that create preamble code might be useful if you create lots of tests at once.
-</t>
 <t tx="ekr.20170303051729.1">https://github.com/leo-editor/leo-editor/issues/430
 rst import: titles with different underline characters on same level.
 </t>
@@ -23309,7 +22997,7 @@ More generally, org mode lacks the following Leonine features:
 - Importers for programming languages.
 - Clones and especially Leo's clone-find commands. 
 - A full Python API and DOM, including generators.
-- @command, @button, @test.
+- @command, @button.
 
 .. _`algorithm`: appendices.html#the-mulder-ream-update-algorithm
 .. _`Directed Acyclic Graphs`:  https://en.wikipedia.org/wiki/Directed_acyclic_graph
@@ -24001,56 +23689,6 @@ The push/pop model works well with speech recognition because you don't have to 
 <t tx="ekr.20170804153108.184">https://github.com/leo-editor/leo-editor/issues/516
 </t>
 <t tx="ekr.20170804153108.198">https://github.com/leo-editor/leo-editor/issues/522
-</t>
-<t tx="ekr.20170804153108.2">Here are step-by-step instructions for developing code in Leo without having to reload Leo.
-
-1. Create a **dev node** as a test harness.
-
-This node (in the Leo outline) defines your development environment. You can use an @test node, an @button node, or an @command node. Using a plain outline node would be less convenient because you won't be able to execute it so easily.
-
-The **dev script** is the script in the dev node itself.  The **code under development** is the code exercised by the dev script.
-
-This is the most important step! Once you say to yourself, "Ok, I'm going to be clever and develop my code using a dev script, everything else will happen naturally. That is, the programming process itself will lead you to the next action. If you don't create a custom dev environment you will have to reload Leo to test your new code. That will be much slower.
-
-2. Set up your dev node so you can execute it with a single keystroke.
-
-You can do any of the following:
-
-- Use a marked @test node and use run-marked-unit-tests-locally.
-- Disable or ignore all other @test nodes and then use run-all-unit-tests-locally.
-- Bind a keystroke to an @button or @command node.
-- Run an @button or @command node the first time from the minibuffer, and then re-execute it with Ctrl-P (repeat-complex-command.
-
-3. Define or access the code under development.
-
-There are two main ways to do this:
-
-A. Clone the code under test and move the clones so they are children of the dev node. Access the code under test using @others in the top-level node.
-
-B. Import one or more modules containing the code under test. Access the code using imp.reload to ensure that all imported modules are up-to-date.
-
-4. Create new instances of objects
-
-**You must not use existing Leo objects when testing Leo code.**  This includes all objects accessible via c, g and p, either directly or indirectly.  For example, you must not use c, c.frame, c.frame.body, etc., etc., even if you have reloaded all of Leo's modules!
-
-You will seldom need to worry about reloading code if you use @others to define the code under test.
-
-5. Run the test, edit, repeat
-
-After creating the dev node you simply run the dev script until everything works :-)  The details depend on the code being developed.  Otoh, we can safely assume that devs can handle problems as they arise.
-
-Summary
-
-@test, @command or @button can be thought of as defining an (almost) pristine dev environment. This is another way of describing the Stupendous Aha. The initial cost of creating dev nodes pays off immediately.
-
-Dev scripts should create a new, pristine environment every time it they are executed, using imp.reload as needed. Dev scripts should always create new objects for testing.  Dev scripts may use Leo's core objects provided they have not been modified.
-
-Dev scripts have many advantages.  They can:
-
-- access code using clones.
-- use outlines to organize the code under development.
-- form a permanent record of completed work.
-- can morph into unit tests.
 </t>
 <t tx="ekr.20170804153108.4">https://github.com/leo-editor/leo-editor/issues/505
 
@@ -25266,11 +24904,6 @@ or even trees of nodes. Abbreviations can execute scripts and can prompt
 for values to be substituted within the abbreviation.
 See the `abbreviations tutorial`_ for more details.
 </t>
-<t tx="ekr.20180126061429.11">.. _`@test nodes`: tutorial-basics.html#test-nodes
-
-`@test nodes`_ create unit tests. They automatically convert the body to a
-subclass of unittest.TestCase. Leo's run-* commands execute unit tests.
-</t>
 <t tx="ekr.20180126061429.12">.. _`@button nodes`: tutorial-basics.html#button-and-command-nodes
 
 `@button nodes`_ create commands. For example, `@button my-command` creates
@@ -26252,53 +25885,6 @@ The VNode class is, in fact, an excellent example of information hiding.  The bo
 The (small) advantage is that clients of c.new_vnode(gnx) would no longer need to import leo.core.leoNodes.
 
 2. The  v.saveCursorAndScroll and v.restoreCursorAndScroll could be moved elsewhere. At present, these methods cause no problems, but moving them would be part of #883.</t>
-<t tx="ekr.20180505114327.2">.. https://github.com/leo-editor/leo-editor/issues/527
-
-Relying on settings nodes in unitTest.leo risks creating hard-to-find dependencies between seemingly unrelated unit tests.  Instead, unit tests can follow the pattern for, say, `@test add python comments`::
-
-
-    w = c.frame.body.wrapper
-    p = g.findNodeInTree(c,p,'python')
-    assert p,'not found: python'
-    # Save the initial value of the setting.
-    old_indent = c.config.getBool('indent_added_comments',default=True)
-    table = (
-        (
-            True,
-            '@language python\ndef spam():\n    pass\n\n# after',
-            '@language python\ndef spam():\n    # pass\n\n# after',
-        ),
-        (
-            False,
-            '@language python\ndef spam():\n    pass\n\n# after',
-            '@language python\ndef spam():\n#     pass\n\n# after',
-        ),
-    )
-    try:
-        for indent, s1, expected in table:
-            # Step 1: set the setting.
-            c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
-            val = c.config.getBool('indent_added_comments')
-            assert indent == val, (repr(indent), repr(val))
-            # Step 2: set p.b and the insert point.
-            c.selectPosition(p)
-            p.b = s1
-            i = p.b.find('pass')
-            assert i &gt; -1,'fail1: %s' % (repr(p.b))
-            w.setSelectionRange(i,i+4)
-            # Step 3: test add-comments
-            c.addComments()
-            assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
-    finally:
-        # Restore the initial value of the setting.
-        c.config.set(p, 'bool', 'indent_added_comments', old_indent)
-        val = c.config.getBool('indent_added_comments')
-
-This code saves and restores the actual value of the `@bool indent_added_comments` setting. It uses::
-
-    c.config.set(c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
-
-to set the setting to the value of 'indent'.  Note that c.config.set is seldom (never?) used in Leo's core.</t>
 <t tx="ekr.20180505114327.3">.. https://github.com/leo-editor/leo-editor/issues/786
 
 I recommend using the organization of leo/themes/EKRDark.leo as a guide. **Note**: Syntax coloring settings are required because they are *not* used in the css.
@@ -30392,57 +29978,6 @@ To summarize token syncing:
 </t>
 <t tx="ekr.20191216061528.1">gnx: ekr.20170130080532.1
 </t>
-<t tx="ekr.20191216061528.2">gnx: ekr.20191216061356.4
-unl: Leo's demo.py plugin
-gnx: ekr.20191216061356.5
-unl: Overview
-gnx: ekr.20191216061356.6
-unl: A simpler work flow
-gnx: ekr.20191216061356.7
-unl: Graphics classes &amp; helpers
-gnx: ekr.20191216061356.8
-unl: Using demo scripts
-gnx: ekr.20191216061356.9
-unl: Using demo scripts--&gt;Script trees and lists
-gnx: ekr.20191216061356.10
-unl: Using demo scripts--&gt;Predefined symbols
-gnx: ekr.20191216061356.11
-unl: Using demo scripts--&gt;Positioning graphics
-gnx: ekr.20191216061356.12
-unl: Using demo scripts--&gt;Deleting graphics
-gnx: ekr.20191216061356.13
-unl: Using demo scripts--&gt;Details
-gnx: ekr.20191216061356.14
-unl: Example scripts
-gnx: ekr.20191216061356.15
-unl: Example scripts--&gt;Top-level script
-gnx: ekr.20191216061356.16
-unl: Example scripts--&gt;Simulate typing
-gnx: ekr.20191216061356.17
-unl: Example scripts--&gt;Change the demo namespace
-gnx: ekr.20191216061356.18
-unl: Example scripts--&gt;Add graphics
-gnx: ekr.20191216061356.19
-unl: Example scripts--&gt;Switch focus
-gnx: ekr.20191216061356.20
-unl: Helper methods
-gnx: ekr.20191216061356.21
-unl: Helper methods--&gt;Ivars
-gnx: ekr.20191216061356.22
-unl: Helper methods--&gt;Menus
-gnx: ekr.20191216061356.23
-unl: Helper methods--&gt;Magnification and styling
-gnx: ekr.20191216061356.24
-unl: Helper methods--&gt;Simulated typing
-gnx: ekr.20191216061356.25
-unl: Helper methods--&gt;Startup, setup and teardown
-gnx: ekr.20191216061356.26
-unl: Helper methods--&gt;Window position and ratios
-gnx: ekr.20191216061356.27
-unl: Summary
-gnx: ekr.20191216061356.28
-unl: History and change log
-</t>
 <t tx="ekr.20200107105607.1">**Simplicity**:
 
 - The distinction between significant and insignificant tokens makes
@@ -31734,6 +31269,57 @@ pep 570: https://www.python.org/dev/peps/pep-0570/#keyword-only-arguments</t>
 <t tx="ekr.20210802163908.31">https://github.com/leo-editor/leo-editor/issues/2103</t>
 <t tx="ekr.20210802163908.50">https://github.com/leo-editor/leo-editor/issues/2112</t>
 <t tx="ekr.20210810072331.1">https://github.com/leo-editor/leo-editor/issues/2127
+</t>
+<t tx="ekr.20210822061928.1">gnx: ekr.20191216061356.4
+unl: Leo's demo.py plugin
+gnx: ekr.20191216061356.5
+unl: Overview
+gnx: ekr.20191216061356.6
+unl: A simpler work flow
+gnx: ekr.20191216061356.7
+unl: Graphics classes &amp; helpers
+gnx: ekr.20191216061356.8
+unl: Using demo scripts
+gnx: ekr.20191216061356.9
+unl: Using demo scripts--&gt;Script trees and lists
+gnx: ekr.20191216061356.10
+unl: Using demo scripts--&gt;Predefined symbols
+gnx: ekr.20191216061356.11
+unl: Using demo scripts--&gt;Positioning graphics
+gnx: ekr.20191216061356.12
+unl: Using demo scripts--&gt;Deleting graphics
+gnx: ekr.20191216061356.13
+unl: Using demo scripts--&gt;Details
+gnx: ekr.20191216061356.14
+unl: Example scripts
+gnx: ekr.20191216061356.15
+unl: Example scripts--&gt;Top-level script
+gnx: ekr.20191216061356.16
+unl: Example scripts--&gt;Simulate typing
+gnx: ekr.20191216061356.17
+unl: Example scripts--&gt;Change the demo namespace
+gnx: ekr.20191216061356.18
+unl: Example scripts--&gt;Add graphics
+gnx: ekr.20191216061356.19
+unl: Example scripts--&gt;Switch focus
+gnx: ekr.20191216061356.20
+unl: Helper methods
+gnx: ekr.20191216061356.21
+unl: Helper methods--&gt;Ivars
+gnx: ekr.20191216061356.22
+unl: Helper methods--&gt;Menus
+gnx: ekr.20191216061356.23
+unl: Helper methods--&gt;Magnification and styling
+gnx: ekr.20191216061356.24
+unl: Helper methods--&gt;Simulated typing
+gnx: ekr.20191216061356.25
+unl: Helper methods--&gt;Startup, setup and teardown
+gnx: ekr.20191216061356.26
+unl: Helper methods--&gt;Window position and ratios
+gnx: ekr.20191216061356.27
+unl: Summary
+gnx: ekr.20191216061356.28
+unl: History and change log
 </t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
