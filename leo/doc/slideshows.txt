@@ -48,7 +48,6 @@ To generate screenshots from Wink & meld-slides & make-slide:
 #@+node:ekr.20101025080245.5540: ** To do: slideshows
 #@+node:ekr.20101115152915.4933: *3* Next
 #@+node:ekr.20101113110328.4947: *4* Using @button nodes
-#@+node:ekr.20101115152915.4932: *4* Using @test nodes
 #@+node:ekr.20101115152915.4934: *4* Using @url nodes
 #@+node:ekr.20101121032151.5375: *3* Maybe
 #@+node:ekr.20101113110328.4945: *4* Top 10 coolest features
@@ -166,10 +165,6 @@ c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\sl
 Discuss @button nodes
 #@+node:ekr.20101011103613.4946: *6* @url built slide
 c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-008.html
-#@+node:ekr.20101011103613.4936: *5* @slide Outlines Create Unit tests
-Discuss @test nodes
-#@+node:ekr.20101011103613.4947: *6* @url built slide
-c:\leo.repo\leo-editor\leo\doc\html\slides\whetting-your-appetite\_build\html\slide-009.html
 #@+node:ekr.20101011103613.4937: *5* @slide Outlines Create Restructured Text
 Leo outlines make it easy to create Restructured Text (rST) documents.
 

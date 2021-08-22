@@ -10271,14 +10271,15 @@ def enablePopupMenuItems(self, p, event):
 #@+node:ekr.20110605121601.17904: *4* qtree.showPopupMenu
 def showPopupMenu(self, event):
     """Show a popup menu."""
-#@+node:ekr.20210718034819.1: ** From LeoDocs.leo: rstplugin3.html: Advanced topics
+#@+node:ekr.20210718034819.1: ** From LeoDocs.leo: 
 The section covers complex options arising from two equivalent problems:
 
 - How to generate documentation from computer source code in a Leo outline.
 - How to embed documentation in computer source code in a Leo outline.
 
 *Please stop reading now if these problems don't interest you!*
-#@+node:ekr.20210718034819.2: *3* Modes
+#@+node:ekr.20210822060917.1: *3* rstplugin3.html: Advanced topics
+#@+node:ekr.20210718034819.2: *4* Modes
 The rst3 command supports three different modes.
 
 ``rst mode``
@@ -10304,7 +10305,7 @@ The code_mode and doc_only_mode options determine the mode as follows:
 
 ``code_mode=True; (doc_only_mode ignored)``
     Enters code mode.
-#@+node:ekr.20210718034819.3: *3* Code mode options
+#@+node:ekr.20210718034819.3: *4* Code mode options
 The following options have effect only in code mode.
 
 .. glossary::
@@ -10329,7 +10330,7 @@ The following options have effect only in code mode.
 
 ``show_options_nodes (default: False)``
     True: show @rst-options nodes. False: Ignore @
-#@+node:ekr.20210718034819.4: *3* Rst mode options
+#@+node:ekr.20210718034819.4: *4* Rst mode options
 The following option has effect only in rst mode.
 
 .. glossary::
@@ -10351,7 +10352,7 @@ The following option has effect only in rst mode.
          @c
 
 This would wrap the doc part contents in the output in a div with classes "container notes literal". Furthermore, if one of the class names is ``literal``, then the doc part content will be output as a literal block wrapped in a container as described above. This allows you to use text which is not valid rst as rough notes for annotating a draft document.
-#@+node:ekr.20210718034819.5: *3* The code-block directive
+#@+node:ekr.20210718034819.5: *4* The code-block directive
 The rst3 command defines a code-block rST directive. The primary purpose of this directive is to show formatted source code.
 
 In rst mode you can insert the code-block directive like any other rST markup. The rst3 command generates code-block directives automatically in code mode. This directive takes one argument, a language name.  Like this::
@@ -10369,6 +10370,386 @@ The output looks like this::
 .. _`Scripting Tutorial`:   tutorial-scripting.html
 
 See the `Scripting Tutorial`_ for many examples of how to use code-blocks.
+#@+node:ekr.20210822060938.1: *3* \@test and @suite nodes
+#@+node:ekr.20210822055951.1: *4* \@test nodes
+**@test nodes** create unit tests. @test nodes automatically convert the body to a subclass of unittest.TestCase. Run these tests with one of Leo's ``run-unit-test-`` commands. ``<Alt-X>run<tab>`` gives the full list. Here one of Leo's actual unit tests::
+
+    @test c.positionExists for all nodes # In the headline
+
+    for p in c.all_positions():
+        assert c.positionExists(p)
+    
+Within @test nodes, c, g, and p are predefined as usual. Also, **self** is the instance of unittest.TestCase created by the @test node. For example::
+  
+    self.assertTrue(g)
+    
+For more details, see `Leo's unit-testing reference <unitTesting.html>`_.
+#@+node:ekr.20210822060903.1: *4* @rst html\unitTesting.html
+#####################
+Unit testing with Leo
+#####################
+
+.. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
+
+This chapter describes how you can execute Python unit test from within Leo
+outlines.
+
+Leo's **unit test commands** run the unit tests created by @test and @suite
+nodes. run-unit-tests and run-unit-tests-locally run all unit tests in the
+presently selected part of the Leo outline; run-all-unit-tests and
+run-all-unit-tests-locally run all unit tests in the entire Leo outline.
+
+Important: you must `run Leo in a console window`_ to see the output the
+unit tests. Leo's unit test commands run all the unit tests using the
+standard unittest text test runner, and the output of the unit tests
+appears in the console.
+
+test/unitTest.leo contains many examples of using @test and @suite nodes.
+
+.. contents:: Contents
+    :depth: 2
+    :local:
+
+#@+node:ekr.20210822060903.2: *5* Using @test nodes
+**@test nodes** are nodes whose headlines start with @test. The unit test commands convert the body text of @test nodes into a unit test automatically. That is, Leo's unit test commands automatically create a unittest.TestCase instances which run the body text of the @test node. For example, let us consider one of Leo's actual unit tests. The headline is::
+
+    @test consistency of back/next links
+
+The body text is::
+
+    if g.unitTesting:
+        c,p = g.getTestVars() # Optional: prevents pychecker warnings.
+        for p in c.all_positions():
+            back = p.back()
+            next = p.next()
+            if back: assert(back.getNext() == p)
+            if next: assert(next.getBack() == p)
+
+When either of Leo's unit test commands finds this @test node the command will
+run a unit test equivalent to the following::
+
+    import leo.core.leoGlobals as g
+
+    class aTestCase (unittest.TestCase):
+        def shortDescription():
+            return '@test consistency of back/next links'
+        def runTest():
+            c,p = g.getTestVars()
+            for p in c.all_positions():
+                back = p.back()
+                next = p.next()
+                if back: assert(back.getNext() == p)
+                if next: assert(next.getBack() == p)
+
+As you can see, using @test nodes saves a lot of typing:
+
+- You don't have to define a subclass of unittest.TestCase.
+- Within your unit test, the c, g and p variables are predefined, just like in Leo scripts.
+- The entire headline of the @test node becomes the short description of the unit test.
+
+**Important note**: notice that the first line of the body text is a **guard line**::
+
+    if g.unitTesting:
+
+This guard line is needed because this particular @test node is contained in the file leoNodes.py. @test nodes that appear outside of Python source files do not need guard lines. The guard line prevents the unit testing code from being executed when Python imports the leoNodes module; the g.unitTesting variable is True only while running unit tests.
+
+**New in Leo 4.6**: When Leo runs unit tests, Leo predefines the 'self' variable to be the instance of the test itself, that is an instance of unittest.TestCase. This allows you to use methods such as self.assertTrue in @test and @suite nodes.
+
+**Note**: Leo predefines the c, g, and p variables in @test and @suite nodes, just like in other scripts.  Thus, the line::
+
+    c,p = g.getTestVars()
+
+is not needed. However, it prevents pychecker warnings that c and p are undefined.
+#@+node:ekr.20210822060903.3: *5* Using @suite nodes
+**@suite nodes** are nodes whose headlines start with @suite. @suite nodes allow you to create and run custom subclasses of unittest.TestCase.
+
+Leo's test commands assume that the body of an suite node is a script that creates a suite of tests and places that suite in g.app.scriptDict['suite']. Something like this::
+
+    if g.unitTesting:
+        __pychecker__ = '--no-reimport' # Prevents pychecker complaint.
+        import unittest
+        c,p = g.getTestVars() # Optional.
+        suite = unittest.makeSuite(unittest.TestCase)
+        << add one or more tests (instances of unittest.TestCase) to suite >>
+        g.app.scriptDict['suite'] = suite
+
+**Note**: as in @test nodes, the guard line, 'if unitTesting:', is needed only if the
+@suite node appears in a Python source file.
+
+Leo's test commands first execute the script and then run suite in g.app.scriptDict.get('suite') using the standard unittest text runner.
+
+You can organize the script in an @suite nodes just as usual using @others, section references, etc. For example::
+
+    if g.unitTesting:
+        __pychecker__ = '--no-reimport'
+        import unittest
+        c,p = g.getTestVars() # Optional.
+        # children define test1,test2..., subclasses of unittest.TestCase.
+        @others 
+        suite = unittest.makeSuite(unittest.TestCase)
+        for test in (test1,test2,test3,test4):
+            suite.addTest(test)
+        g.app.scriptDict['suite'] = suite
+#@+node:ekr.20210822060903.4: *5* Using @mark-for-unit-tests
+When running unit tests externally, Leo copies any @mark-for-unit-tests nodes to dynamicUnitTest.leo.  Of course, this is in addition to all @test nodes and @suite nodes that are to be executed. You can use @mark-for-unit-test nodes to include any "supporting data" you want, including, say, "@common test code" to be imported as follows::
+
+    exec(g.findTestScript(c,'@common test code'))
+
+**Note**: putting @settings trees as descendants of an @mark-for-unit-test node will copy the @setting tree, but will *not* actually set the corresponding settings.
+#@+node:ekr.20210822060903.5: *5* Test driven development in Leo
+Test Driven Development (TDD) takes a bit of setup, but the initial investment repays itself many times over. To use TDD with Leo, start @test nodes with **preamble code**. As explained below, the preamble will do the following:
+
+1. Optional: save the present outline if it has been changed.
+
+2. Reload modules with imp.reload.
+
+3. Create *new instances* of all objects under test.
+
+Here is the actual preamble code used in Leo's import tests::
+
+    if 0: # Preamble...
+        # g.cls()
+        if c.isChanged(): c.save()
+        import leo.core.leoImport as leoImport
+        import leo.plugins.importers.linescanner as linescanner
+        import leo.plugins.importers.python
+        import imp
+        imp.reload(leo.plugins.importers.linescanner)
+        imp.reload(leo.plugins.importers.python)
+        imp.reload(leoImport)
+        g.app.loadManager.createAllImporetersData()
+        ic = leoImport.LeoImportCommands(c)
+    else:
+        ic = c.importCommands
+
+    # run the test.
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    
+Let's look at this example in detail. These lines optionally clear the screen and save the outline::
+
+    # g.cls()
+    if c.isChanged(): c.save()
+
+The next lines use imp.reload to re-import the affected modules::
+
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    
+Using imp.reload is usually not enough.  The preamble must *create new instances* of all objects under test. This can be a bit tricky. In the example above, the following lines create the new objects::
+
+    g.app.loadManager.createAllImporetersData()
+    ic = leoImport.LeoImportCommands(c)
+    
+The call to LM.createAllImporetersData() recomputes global tables describing importers. These tables must be updated to reflect possibly-changed importers. The call to leoImport.LeoImportCommands(c) creates a *new instance* of the c.importController. We want to use this new instance instead of the old instance, c.importController.
+
+**Summary**
+    
+TDD makes a big difference when developing code. I can run tests repeatedly from the Leo outline that contains the code under test. TDD significantly improves my productivity.
+
+Preamble code reload changed modules using imp.reload(). Preamble code must also create new instances of *all* objects that may have changed.
+
+When creating several related unit tests, cutting and pasting the preamble from previous unit tests is usually good enough. @button scripts that create preamble code might be useful if you create lots of tests at once.
+#@+node:ekr.20210822060903.6: *5* How the unit test commands work
+The run-all-unit-tests-locally and run-unit-tests-locally commands run unit tests in the process that is running Leo. These commands *can* change the outline containing the unit tests.
+
+The run-all-unit-tests and run-unit-tests commands run all tests in a separate process, so unit tests can never have any side effects. These commands never changes the outline from which the tests were run. These commands do the following:
+
+1. Copy all @test, @suite, @unit-tests and @mark-for-unit-test nodes (including their descendants) to the file test/dynamicUnitTest.leo.
+
+2. Run test/leoDynamicTest.py in a separate process.
+
+   - leoDynamicTest.py opens dynamicUnitTest.leo with the leoBridge module.
+     Thus, all unit tests get run with the nullGui in effect.
+
+   - After opening dynamicUnitTest.leo, leoDynamicTest.py runs all unit tests
+     by executing the leoTest.doTests function.
+
+   - The leoTests.doTests function searches for @test and @suite nodes and
+     processes them generally as described above. The details are a bit
+     different from as described, but they usually don't matter. If you *really*
+     care, see the source code for leoTests.doTests.
+#@+node:ekr.20210822060903.7: *5* \@button timer
+The timit button in unitTest.leo allows you to apply Python's timeit module. See http://docs.python.org/lib/module-timeit.html. The contents of @button timer is::
+
+    import leo.core.leoTest as leoTest
+    leoTest.runTimerOnNode(c,p,count=100)
+
+runTimerOnNode executes the script in the presently selected node using timit.Timer and prints the results.
+#@+node:ekr.20210822060903.8: *5* \@button profile
+The profile button in unitTest.leo allows you to profile nodes using Python's profiler module. See http://docs.python.org/lib/module-profile.html The contents of @button profile is::
+
+    import leo.core.leoTest as leoTest
+    leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
+
+runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
+#@+node:ekr.20210822061141.1: *4* Tip: run unit tests locally using clones
+Running a unit test locally, without exiting Leo, saves a lots of time.  It's much faster than having to load unitTest.leo or even a small .leo file.
+
+The question is, how to use the newest code?  imp.reload often doesn't work. But there is a trick that does work.  Clone the code under development and put it under an @test node.  The script in the @test node uses @others to gain access to the code, not an import.
+
+For instance, here is the @test node I use to develop the new javascript importer::
+
+    g.cls()
+    p1 = p.copy()
+    if c.isChanged():
+        c.save()
+    import leo.plugins.importers.basescanner as basescanner
+    @others
+    scanner = JavaScriptScanner(c.importCommands)
+    h = '@ignore js-test'
+    p = g.findNodeAnywhere(c, h)
+    if p:
+        while p.firstChild():
+            p.firstChild().doDelete()
+    else:
+        p = c.insertHeadline()
+        p.h = h
+    c.selectPosition(p)
+    fn = r'c:\prog\jQuery-short2.js'
+    s = open(fn, 'r').read()
+    print('Sources..\n\n%s\n\n' % s)
+    scanner.scan(s, p)
+    c.selectPosition(p1)
+    c.redraw()
+    print('done')
+
+To repeat, the code under test is a child of this node, so the script uses @others to gain access to it.  It's super fast.
+#@+node:ekr.20210822061214.1: *3* LeoU: Unit tests should not depend on settings
+.. https://github.com/leo-editor/leo-editor/issues/527
+
+Relying on settings nodes in unitTest.leo risks creating hard-to-find dependencies between seemingly unrelated unit tests.  Instead, unit tests can follow the pattern for, say, `@test add python comments`::
+
+
+    w = c.frame.body.wrapper
+    p = g.findNodeInTree(c,p,'python')
+    assert p,'not found: python'
+    # Save the initial value of the setting.
+    old_indent = c.config.getBool('indent_added_comments',default=True)
+    table = (
+        (
+            True,
+            '@language python\ndef spam():\n    pass\n\n# after',
+            '@language python\ndef spam():\n    # pass\n\n# after',
+        ),
+        (
+            False,
+            '@language python\ndef spam():\n    pass\n\n# after',
+            '@language python\ndef spam():\n#     pass\n\n# after',
+        ),
+    )
+    try:
+        for indent, s1, expected in table:
+            # Step 1: set the setting.
+            c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+            val = c.config.getBool('indent_added_comments')
+            assert indent == val, (repr(indent), repr(val))
+            # Step 2: set p.b and the insert point.
+            c.selectPosition(p)
+            p.b = s1
+            i = p.b.find('pass')
+            assert i > -1,'fail1: %s' % (repr(p.b))
+            w.setSelectionRange(i,i+4)
+            # Step 3: test add-comments
+            c.addComments()
+            assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+    finally:
+        # Restore the initial value of the setting.
+        c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+        val = c.config.getBool('indent_added_comments')
+
+This code saves and restores the actual value of the `@bool indent_added_comments` setting. It uses::
+
+    c.config.set(c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+
+to set the setting to the value of 'indent'.  Note that c.config.set is seldom (never?) used in Leo's core.
+#@+node:ekr.20210822061319.1: *3* How can I use dev nodes to develop and test Leo's own code?
+Here are step-by-step instructions for developing code in Leo without having to reload Leo.
+
+1. Create a **dev node** as a test harness.
+
+This node (in the Leo outline) defines your development environment. You can use an @test node, an @button node, or an @command node. Using a plain outline node would be less convenient because you won't be able to execute it so easily.
+
+The **dev script** is the script in the dev node itself.  The **code under development** is the code exercised by the dev script.
+
+This is the most important step! Once you say to yourself, "Ok, I'm going to be clever and develop my code using a dev script, everything else will happen naturally. That is, the programming process itself will lead you to the next action. If you don't create a custom dev environment you will have to reload Leo to test your new code. That will be much slower.
+
+2. Set up your dev node so you can execute it with a single keystroke.
+
+You can do any of the following:
+
+- Use a marked @test node and use run-marked-unit-tests-locally.
+- Disable or ignore all other @test nodes and then use run-all-unit-tests-locally.
+- Bind a keystroke to an @button or @command node.
+- Run an @button or @command node the first time from the minibuffer, and then re-execute it with Ctrl-P (repeat-complex-command.
+
+3. Define or access the code under development.
+
+There are two main ways to do this:
+
+A. Clone the code under test and move the clones so they are children of the dev node. Access the code under test using @others in the top-level node.
+
+B. Import one or more modules containing the code under test. Access the code using imp.reload to ensure that all imported modules are up-to-date.
+
+4. Create new instances of objects
+
+**You must not use existing Leo objects when testing Leo code.**  This includes all objects accessible via c, g and p, either directly or indirectly.  For example, you must not use c, c.frame, c.frame.body, etc., etc., even if you have reloaded all of Leo's modules!
+
+You will seldom need to worry about reloading code if you use @others to define the code under test.
+
+5. Run the test, edit, repeat
+
+After creating the dev node you simply run the dev script until everything works :-)  The details depend on the code being developed.  Otoh, we can safely assume that devs can handle problems as they arise.
+
+Summary
+
+@test, @command or @button can be thought of as defining an (almost) pristine dev environment. This is another way of describing the Stupendous Aha. The initial cost of creating dev nodes pays off immediately.
+
+Dev scripts should create a new, pristine environment every time it they are executed, using imp.reload as needed. Dev scripts should always create new objects for testing.  Dev scripts may use Leo's core objects provided they have not been modified.
+
+Dev scripts have many advantages.  They can:
+
+- access code using clones.
+- use outlines to organize the code under development.
+- form a permanent record of completed work.
+- can morph into unit tests.
+#@+node:ekr.20210822061354.1: *3* How do I run unit tests from Leo?
+Leo makes it easy to create and run unit tests from individual outline nodes or trees. A node whose headline starts with @test defines a unit test. The body text of the @test node contains a **self-contained** unit test. For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do::
+
+    <alt-x>run-selected-unit-tests-locally.
+
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do::
+
+    <alt-x>run<tab>
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+.. _`unit testing`: unitTesting.html
+
+For more details about unit testing, the `unit testing`_ page.
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
 #@+node:ekr.20210815060206.1: ** From leoDist.leo
 
 #@+node:ekr.20210815060352.1: *3* --- from setup.py
