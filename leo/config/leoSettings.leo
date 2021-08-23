@@ -1946,6 +1946,10 @@
 <v t="ekr.20060807103220.10"><vh>@bool datenodes-year-node-omit-saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes-year-node-omit-sundays = True</vh></v>
 </v>
+<v t="ekr.20210823172721.1"><vh>freewin plugin</vh>
+<v t="ekr.20210823172729.1"><vh>@bool fw-copy-html = False</vh></v>
+<v t="ekr.20210823173032.1"><vh>@string fw-render-pane = ''</vh></v>
+</v>
 <v t="ekr.20181018105433.1"><vh>graphcanvas plugin</vh>
 <v t="ekr.20181018105440.1"><vh>@bool graph-manual-layout = False</vh></v>
 </v>
@@ -2055,9 +2059,11 @@
 <v t="ekr.20201021105654.2"><vh>@bool vr3-math-output = False</vh></v>
 <v t="ekr.20201021110420.1"><vh>@bool vr3-md-math-output = False</vh></v>
 <v t="ekr.20201021110503.1"><vh>@bool vr3-prefer-asciidoc3 = False</vh></v>
+<v t="ekr.20210823172944.1"><vh>@bool vr3-rst-use-dark-theme = False</vh></v>
 <v t="ekr.20201021110638.1"><vh>@int qweb-view-font-size = 16</vh></v>
 <v t="ekr.20201021105651.1"><vh>@string vr3-asciidoc-path = None</vh></v>
 <v t="ekr.20201021105654.1"><vh>@string vr3-default-kind = None</vh></v>
+<v t="ekr.20210823173736.1"><vh>@string vr3-ext-editor = NOne</vh></v>
 <v t="ekr.20201021105654.3"><vh>@string vr3-mathjax-url = None</vh></v>
 <v t="ekr.20201021110716.1"><vh>@string vr3-md-stylesheet = None</vh></v>
 <v t="ekr.20201021110839.1"><vh>@string vr3-prefer-external = None</vh></v>
@@ -2310,7 +2316,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20210728045642.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11651,6 +11656,11 @@ rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 <t tx="ekr.20210802064734.1">Path to .mypy.ini file.
 
 Relative paths are resolved starting from the location of the file being checked.</t>
+<t tx="ekr.20210823172721.1"></t>
+<t tx="ekr.20210823172729.1"></t>
+<t tx="ekr.20210823172944.1"></t>
+<t tx="ekr.20210823173032.1">Valid values:  '', 'browser_view', 'nav-view'</t>
+<t tx="ekr.20210823173736.1">Path to external editor.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
