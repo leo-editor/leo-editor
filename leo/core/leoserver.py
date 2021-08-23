@@ -3083,7 +3083,7 @@ class LeoServer:
             pass
         else:
             param = {}
-            
+
         # Handle traces.
         if trace and verbose:  # pragma: no cover
             g.printObj(d, tag=f"request {id_}")
@@ -3352,7 +3352,7 @@ class LeoServer:
             # - All the *cheap* redraw data for p.
             redraw_d = self._get_position_d(p)
             package ["node"] = redraw_d
-        
+
         # Handle traces.
         if trace and verbose:  # pragma: no cover
             g.printObj(package, tag=f"response {self.current_id}")
@@ -3577,7 +3577,7 @@ def main():  # pragma: no cover (tested in client)
             """Create the dialog's frame."""
             frame = Tk.Frame(top)
             frame.pack(side="top", expand=1, fill="both")
-            label = Tk.Label(frame, text=message, bg='white')
+            label = Tk.Label(frame, text=message, bg="white")
             label.pack(pady=10)
             # Create buttons.
             f = Tk.Frame(top)
@@ -3628,10 +3628,10 @@ def main():  # pragma: no cover (tested in client)
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
         """
-        Get arguments from the command that launched the server.
+        Get arguments from the command line and sets them globally.
         """
         global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile, traces
-        
+
         def leo_file(s):
             if os.path.exists(s):
                 return s
@@ -3639,10 +3639,15 @@ def main():  # pragma: no cover (tested in client)
             sys.exit(1)
 
         description = ''.join([
-            "  Leo's socket server, providing Leo resources to clients via Leo's bridge.\n",
+            "  leoserver.py\n",
+            "  ------------\n",
+            "  Offers single or multiple concurrent websockets\n",
+            "  for JSON based remote-procedure-calls\n",
+            "  to a shared instance of leo.core.leoBridge\n",
+            "  \n",
             "  Clients may be written in any language:\n",
             "  - leo.core.leoclient is an example client written in python.\n",
-            "  - leoInteg (https://github.com/boltex/leointeg) is a client for vs-code written in typescript.\n"
+            "  - leoInteg (https://github.com/boltex/leointeg) is written in typescript.\n"
         ])
         # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
         usage = 'python leo.core.leoserver [options...]'
@@ -3651,25 +3656,31 @@ def main():  # pragma: no cover (tested in client)
         parser = argparse.ArgumentParser(description=description, usage=usage,
             formatter_class=argparse.RawTextHelpFormatter)
         add = parser.add_argument
-        add('-a', '--address', dest='wsHost', type=str, default='localhost', metavar='STR', 
-            help='server address. Defaults to "localhost"')
-        add('-d', '--dirty', dest='wsSkipDirty', action='store_true',
-            help='don\'t warn about dirty files when quitting')
+        add('-a', '--address', dest='wsHost', type=str, default=wsHost, metavar='STR',
+            help='server address. Defaults to ' + str(wsHost))
+        add('-p', '--port', dest='wsPort', type=int, default=wsPort, metavar='N',
+            help='port number. Defaults to ' + str(wsPort))
+        add('-l', '--limit', dest='wsLimit', type=int, default=wsLimit, metavar='N',
+            help='maximum number of clients. Defaults to '+ str(wsLimit))
         add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
             help='open a .leo file at startup')
-        add('-p', '--port', dest='wsPort', type=int, default=32125, metavar='N', 
-            help='port number. Defaults to 32125')
-        add('-l', '--limit', dest='wsLimit', type=int, default=1, metavar='N', 
-            help='maximum number of clients(defaults to 1)')
         add('--persist', dest='wsPersist', action='store_true',
-            help='don\'t quit when last client disconnects')
+            help='do not quit when last client disconnects')
+        add('-d', '--dirty', dest='wsSkipDirty', action='store_true',
+            help='do not warn about dirty files when quitting')
         add('--trace', dest='traces', type=str, metavar='STRINGS',
             help=f"comma-separated list of {trace_s}")
         add('-v', '--version', dest='v', action='store_true',
             help='show version and exit')
-        # Parse.
+        # Parse
         args = parser.parse_args()
-        # Handle the args...
+        # Handle the args and set them up globally
+        wsHost = args.wsHost
+        wsPort = args.wsPort
+        wsLimit = args.wsLimit
+        wsPersist = bool(args.wsPersist)
+        wsSkipDirty = bool(args.wsSkipDirty)
+        argFile = args.argFile
         if args.traces:
             ok = True
             for z in args.traces.split(','):
@@ -3687,7 +3698,7 @@ def main():  # pragma: no cover (tested in client)
         # Sanitize limit.
         if wsLimit < 1:
             wsLimit = 1
-        return wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty
+        return # No return value(s) command line args are global
     #@+node:felix.20210804130751.1: *3* function:close_server
     def close_Server():
         """
@@ -3710,20 +3721,6 @@ def main():  # pragma: no cover (tested in client)
         for commander in commanders:
             if commander.isChanged() and commander.fileName():
                 commander.close() # Patched 'ask' methods will open dialog
-    #@+node:felix.20210803233022.1: *3* function:show_help
-    def show_help():
-        """
-        Printout the available command line parameters for this server script
-        """
-        print(textwrap.dedent("""\
-    Usage:
-    leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]
-    Defaults to address "localhost" on port 32125
-    with a default client limit of 1.
-    "--persist" flag prevents quitting when last client disconnects.
-    "--dirty" flag prevents asking about dirty files upon quitting.
-    "-f or --file to specify a file to have open on startup."
-    """))
     #@+node:felix.20210807214524.1: *3* function:cancel_tasks
     def cancel_tasks(to_cancel, loop):
         if not to_cancel:
@@ -3748,14 +3745,14 @@ def main():  # pragma: no cover (tested in client)
     #@-others
 
     # Make the first real line of output more visible.
-    print("", flush=True)  
-    
-    # Get values from the command line.
-    wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty = get_args()
+    print("", flush=True)
+
+    # Sets sHost, wsPort, wsLimit, wsPersist, wsSkipDirty fileArg and traces
+    get_args() # Set global values from the command line arguments
     print("Starting LeoBridge... (Launch with -h for help)", flush=True)
 
     # Open leoBridge.
-    controller = LeoServer() # Only one instance of 'LeoServer'
+    controller = LeoServer() # Single instance of LeoServer, i.e., an instance of leoBridge
     if argFile:
         # Open specified file argument
         try:
@@ -3771,31 +3768,29 @@ def main():  # pragma: no cover (tested in client)
     try:
         realtime_server = loop.run_until_complete(server)
         signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
-
         if wsPersist:
-            signon = signon + "Persistent server "
-
+            signon = signon + "Persistent server\n"
+        if wsSkipDirty:
+            signon = signon + "No prompt about dirty file(s) when closing server\n"
         if wsLimit > 1:
-            signon = signon + f"Total client limit is {wsLimit}."
-
-        signon = signon + "\nCtrl+c to break"
+            signon = signon + f"Total client limit is {wsLimit}.\n"
+        signon = signon + "Ctrl+c to break"
         print(signon, flush=True)
         loop.run_forever()
 
     except KeyboardInterrupt:
         print("Process interrupted", flush=True)
+
     finally:
-        realtime_server.close()
         # Execution continues here after server is interupted (e.g. with ctrl+c)
-
-        print("Checking for changed commanders...", flush=True)
-        save_dirty()
-
+        realtime_server.close()
+        if not wsSkipDirty:
+            print("Checking for changed commanders...", flush=True)
+            save_dirty()
         cancel_tasks(asyncio.all_tasks(loop), loop)
         loop.run_until_complete(loop.shutdown_asyncgens())
         loop.close()
         asyncio.set_event_loop(None)
-
         print("Stopped leobridge server", flush=True)
 #@-others
 if __name__ == '__main__':
