@@ -1269,6 +1269,12 @@
 </v>
 </v>
 </v>
+<v t="ekr.20210824081721.1"><vh>Leo's socket server</vh>
+<v t="ekr.20210824081815.1"><vh>@rst html/leoserver.html</vh>
+<v t="ekr.20210824083951.1"><vh>Requests</vh></v>
+<v t="ekr.20210824085857.1"><vh>Responses</vh></v>
+</v>
+</v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
@@ -2371,6 +2377,7 @@
 </v>
 <v t="ekr.20210405104357.1"></v>
 <v t="ekr.20210405104422.1"></v>
+<v t="ekr.20210824081815.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14784,6 +14791,7 @@ Advanced Topics
    unitTesting
    debuggers
    console-gui
+   leoserver
    
 .. toctree::
    :maxdepth: 1
@@ -31105,6 +31113,51 @@ unl: History and change log
 </t>
 <t tx="ekr.20210823181157.1">https://github.com/leo-editor/leo-editor/issues/2005
 https://github.com/leo-editor/leo-editor/issues/1973</t>
+<t tx="ekr.20210824081721.1"></t>
+<t tx="ekr.20210824081815.1">####################
+Leo's Socket Server
+####################
+
+leo/core/leoserver.py is websocket server providing Leo's resources to
+clients. The server offers single or multiple concurrent websockets.
+
+Clients can be written in any language:
+- leo.core.leoclient is an example client written in python.
+- leoInteg (https://github.com/boltex/leointeg) is written in typescript.
+
+At startup, the server connects to a single instance of Leo's bridge.
+Clients can open (or create) Leo outlines in the bridge. Thereafter,
+clients can query or change the contents of the outline.
+
+Clients encode requests as JSON strings and receive results from the server
+as JSON strings. The following sections describe the communication protocol
+in detail.</t>
+<t tx="ekr.20210824083951.1">JSON requests (from the client to the server) must have three keys: 
+
+"id": A string containing a positive integer.
+
+"action": A string denoting the kind of request. There are three forms:
+
+1. Actions starting with '!' must be the name of public method of the
+   LeoServer class in leoserver.py.
+2. Actions starting with '-' must be the name of a Leo command.
+3. Otherwise, the action must be name of a method in a one of Leo's
+   subcommander classes.
+
+"param": A dict containing additional information. The param key often
+contains "ap", "text" and "keep" keys.
+
+The LeoServer._do_message method checks and handles incoming requests.</t>
+<t tx="ekr.20210824085857.1">JSON responses (from the server to the client) always have the following keys:
+
+"id": The incoming id.
+"commander": A dict describing c, the open commanders.
+"node":  None, or an archived position describing c.p.
+
+Optional keys:
+
+"package": A dict containing extra data.
+"p": "An archived position".</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
