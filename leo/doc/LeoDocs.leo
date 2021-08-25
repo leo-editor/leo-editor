@@ -31160,7 +31160,8 @@ Optional keys:
 
 "package": A dict containing extra data.
 "p": "An archived position".</t>
-<t tx="ekr.20210825021830.1">The following sections describe the communication protocol, that is, the format of requests sent from the client and responses sent from the server.</t>
+<t tx="ekr.20210825021830.1">The following sections describe the communication protocol, that is, the
+format of requests sent from the client and responses sent from the server.</t>
 <t tx="ekr.20210825021904.1">Requests from the client to the server may reference:
 
 - Public methods of the LeoServer class.
