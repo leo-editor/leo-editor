@@ -1271,8 +1271,11 @@
 </v>
 <v t="ekr.20210824081721.1"><vh>Leo's socket server</vh>
 <v t="ekr.20210824081815.1"><vh>@rst html/leoserver.html</vh>
+<v t="ekr.20210825021830.1"><vh>The communication protocol</vh>
 <v t="ekr.20210824083951.1"><vh>Requests</vh></v>
 <v t="ekr.20210824085857.1"><vh>Responses</vh></v>
+</v>
+<v t="ekr.20210825021904.1"><vh>Compatibility and extensibility</vh></v>
 </v>
 </v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
@@ -31130,8 +31133,7 @@ Clients can open (or create) Leo outlines in the bridge. Thereafter,
 clients can query or change the contents of the outline.
 
 Clients encode requests as JSON strings and receive results from the server
-as JSON strings. The following sections describe the communication protocol
-in detail.</t>
+as JSON strings. </t>
 <t tx="ekr.20210824083951.1">JSON requests (from the client to the server) must have three keys: 
 
 "id": A string containing a positive integer.
@@ -31158,6 +31160,18 @@ Optional keys:
 
 "package": A dict containing extra data.
 "p": "An archived position".</t>
+<t tx="ekr.20210825021830.1">The following sections describe the communication protocol, that is, the format of requests sent from the client and responses sent from the server.</t>
+<t tx="ekr.20210825021904.1">Requests from the client to the server may reference:
+
+- Public methods of the LeoServer class.
+- The names of Leo commands.
+- Methods of Leo's subcommander classes.
+
+The public methods of the LeoServer class can only be changed in an upward compatible manner. If necessary, new public methods can be added at any time.
+
+Leo is a programming environment in which user scripts can access all of Leo's source code. For this reason, the names of methods in Leo's core change rarely.  Similarly, clients can usually assume that the names of Leo commands won't change.
+
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
