@@ -140,7 +140,7 @@ All settings are of type @string unless shown as ``@bool``
    :widths: 18, 5, 5, 30
 
    "vr3-default-kind", "rst", "rst, md, asciidoc", "Default for rendering type"
-   "vr3-external-editor", "", "Path to external editor", "Specify
+   "vr3-ext-editor", "", "Path to external editor", "Specify
    desired external editor to receive generated markup"
    "vr3-math-output", "False", "bool (True, False)", "RsT MathJax math rendering"
    "vr3-md-math-output", "False", "bool (True, False)", "MD MathJax math rendering"
@@ -294,13 +294,11 @@ rarely a reason to invoke any of them, except two:
     1. ``vr3-toggle``, which shows or hides the VR3 pane. 
     This is best bound to a hot key (see `Hot Key`_).
 
-    2.``vr3-open-markup-in-editor`` exports the generated markup
-    to temporary file and opens it in a text editor. The editor
-    is one specified by the setting ``@string vr3-external-editor``,
-    the setting ``@string external-editor``, by the environmental
-    variable ``EDITOR`` or ``LEO-EDITOR``, or is the default 
+    2.``vr3-open-markup-in-editor`` exports the generated markup to
+    temporary file and opens it in a text editor. The editor is one
+    specified by the setting ``@string vr3-ext-editor``, by the
+    environmental variable ``EDITOR`` or ``LEO-EDITOR``, or is the default
     editor chosen by Leo.
-
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
 Structured Text
