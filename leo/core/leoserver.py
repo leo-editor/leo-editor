@@ -3445,6 +3445,288 @@ def main():  # pragma: no cover (tested in client)
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
 
     #@+others
+    #@+node:felix.20210807214524.1: *3* function: cancel_tasks
+    def cancel_tasks(to_cancel, loop):
+        if not to_cancel:
+            return
+
+        for task in to_cancel:
+            task.cancel()
+
+        loop.run_until_complete(asyncio.gather(*to_cancel, return_exceptions=True))
+
+        for task in to_cancel:
+            if task.cancelled():
+                continue
+            if task.exception() is not None:
+                loop.call_exception_handler(
+                    {
+                        "message": "unhandled exception during asyncio.run() shutdown",
+                        "exception": task.exception(),
+                        "task": task,
+                    }
+                )
+    #@+node:felix.20210804130751.1: *3* function: close_server
+    def close_Server():
+        """
+        Close the server by stopping the loop
+        """
+        print('Closing Leo Server', flush=True)
+        if loop.is_running():
+            loop.stop()
+        else:
+            print('Loop was not running', flush=True)
+    #@+node:ekr.20210825172913.1: *3* function: general_yes_no_dialog & helpers
+    def general_yes_no_dialog(
+        c,
+        title,  # Not used.
+        message=None,  # Must exist.
+        yesMessage="&Yes",  # Not used.
+        noMessage="&No",  # Not used.
+        yesToAllMessage=None,  # Not used.
+        defaultButton="Yes",  # Not used
+        cancelMessage=None,  # Not used.
+    ):
+        """
+        Monkey-patched version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
+        
+        Raise a dialog and return either 'yes' or 'no'
+        """
+        #@+others  # define all helper functions.
+        #@+node:ekr.20210801175921.1: *4* function: tk_runAskYesNoCancelDialog & helpers
+        def tk_runAskYesNoCancelDialog(c):
+            """
+            Tk version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
+            """
+            if g.unitTesting:
+                return None
+            root = top = val = None  # Non-locals
+            #@+others  # define helper functions
+            #@+node:ekr.20210825115746.1: *5* function: center
+            def center(toplevel):
+                """Center the top-level Frame."""
+                # https://stackoverflow.com/questions/3352918
+                toplevel.update_idletasks()
+                screen_width = toplevel.winfo_screenwidth()
+                screen_height = toplevel.winfo_screenheight()
+                size = tuple(int(_) for _ in toplevel.geometry().split('+')[0].split('x'))
+                x = screen_width/2 - size[0]/2
+                y = screen_height/2 - size[1]/2
+                toplevel.geometry("+%d+%d" % (x, y))
+            #@+node:ekr.20210801180311.4: *5* function: create_frame
+            def create_frame(message):
+                """Create the dialog's frame."""
+                frame = Tk.Frame(top)
+                frame.pack(side="top", expand=1, fill="both")
+                label = Tk.Label(frame, text=message, bg="white")
+                label.pack(pady=10)
+                # Create buttons.
+                f = Tk.Frame(top)
+                f.pack(side="top", padx=30)
+                b = Tk.Button(f, width=6, text="Yes", bd=4, underline=0, command=yesButton)
+                b.pack(side="left", padx=5, pady=10)
+                b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
+                b.pack(side="left", padx=5, pady=10)
+                return top
+            #@+node:ekr.20210801180311.5: *5* function: callbacks
+            def noButton(event=None):
+                """Do default click action in ok button."""
+                nonlocal val
+                print(f"Not saved: {c.fileName()}")
+                val = "no"
+                top.destroy()
+
+            def yesButton(event=None):
+                """Do default click action in ok button."""
+                nonlocal val
+                print(f"Saved: {c.fileName()}")
+                val = "yes"
+                top.destroy()
+            #@-others
+            root = Tk.Tk()
+            root.withdraw()
+            root.update()
+
+            top = Tk.Toplevel(root)
+
+            top.title("Saved changed outline?")
+            top = create_frame(message)
+            top.bind("<Return>", yesButton)
+            top.bind("y", yesButton)
+            top.bind("Y", yesButton)
+            top.bind("n", noButton)
+            top.bind("N", noButton)
+            top.lift()
+            
+            center(top)
+
+            top.grab_set()  # Make the dialog a modal dialog.
+
+            root.update()
+            root.wait_window(top)
+
+            top.destroy()
+            root.destroy()
+            return val
+        #@+node:ekr.20210825170952.1: *4* function: qt_runAskYesNoCancelDialog
+        def qt_runAskYesNoCancelDialog(c):
+            """
+            Qt version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
+            """
+            if g.unitTesting:
+                return None
+            dialog = QtWidgets.QMessageBox(None)
+            dialog.setIcon(Information.Warning)
+            dialog.setWindowTitle("Saved changed outline?")
+            if message:
+                dialog.setText(message)
+            # Creation order determines returned value.
+            yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
+            dialog.addButton(noMessage, ButtonRole.NoRole)
+            dialog.setDefaultButton(yes)
+            # Set the Leo icon.
+            core_dir = os.path.dirname(__file__)
+            icon_path = os.path.join(core_dir, "..", "Icons", "leoApp.ico")
+            if os.path.exists(icon_path):
+                pixmap = QtGui.QPixmap()
+                pixmap.load(icon_path)
+                icon = QtGui.QIcon(pixmap)
+                dialog.setWindowIcon(icon)
+            # None of these grabs focus from the console window.
+            dialog.raise_()
+            dialog.setFocus()
+            app.processEvents()
+            # val is the same as the creation order.
+            # Tested with both Qt6 and Qt5.
+            val = dialog.exec() if isQt6 else dialog.exec_()
+            if val == 0:
+                print(f"Saved: {c.fileName()}")
+                return 'yes'
+            print(f"Not saved: {c.fileName()}")
+            return 'no'
+        #@-others
+        try:
+            # Careful: raise the Tk dialog if there are errors in the Qt code.
+            if 1:  # Prefer Qt.
+                from leo.core.leoQt import isQt6, QtGui, QtWidgets
+                from leo.core.leoQt import ButtonRole, Information
+                if QtGui and QtWidgets:
+                    app = QtWidgets.QApplication([])
+                    assert app
+                    val = qt_runAskYesNoCancelDialog(c)
+                    assert val in ('yes', 'no')
+                    return val
+        except Exception:
+            pass
+        return tk_runAskYesNoCancelDialog(c)
+    #@+node:felix.20210621233316.107: *3* function: get_args
+    def get_args():  # pragma: no cover
+        """
+        Get arguments from the command line and sets them globally.
+        """
+        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile, traces
+
+        def leo_file(s):
+            if os.path.exists(s):
+                return s
+            print(f"\nNot a .leo file: {s!r}")
+            sys.exit(1)
+
+        description = ''.join([
+            "  leoserver.py\n",
+            "  ------------\n",
+            "  Offers single or multiple concurrent websockets\n",
+            "  for JSON based remote-procedure-calls\n",
+            "  to a shared instance of leo.core.leoBridge\n",
+            "  \n",
+            "  Clients may be written in any language:\n",
+            "  - leo.core.leoclient is an example client written in python.\n",
+            "  - leoInteg (https://github.com/boltex/leointeg) is written in typescript.\n"
+        ])
+        # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
+        usage = 'python leo.core.leoserver [options...]'
+        trace_s = 'request,response,verbose'
+        valid_traces = [z.strip() for z in trace_s.split(',')]
+        parser = argparse.ArgumentParser(description=description, usage=usage,
+            formatter_class=argparse.RawTextHelpFormatter)
+        add = parser.add_argument
+        add('-a', '--address', dest='wsHost', type=str, default=wsHost, metavar='STR',
+            help='server address. Defaults to ' + str(wsHost))
+        add('-p', '--port', dest='wsPort', type=int, default=wsPort, metavar='N',
+            help='port number. Defaults to ' + str(wsPort))
+        add('-l', '--limit', dest='wsLimit', type=int, default=wsLimit, metavar='N',
+            help='maximum number of clients. Defaults to '+ str(wsLimit))
+        add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
+            help='open a .leo file at startup')
+        add('--persist', dest='wsPersist', action='store_true',
+            help='do not quit when last client disconnects')
+        add('-d', '--dirty', dest='wsSkipDirty', action='store_true',
+            help='do not warn about dirty files when quitting')
+        add('--trace', dest='traces', type=str, metavar='STRINGS',
+            help=f"comma-separated list of {trace_s}")
+        add('-v', '--version', dest='v', action='store_true',
+            help='show version and exit')
+        # Parse
+        args = parser.parse_args()
+        # Handle the args and set them up globally
+        wsHost = args.wsHost
+        wsPort = args.wsPort
+        wsLimit = args.wsLimit
+        wsPersist = bool(args.wsPersist)
+        wsSkipDirty = bool(args.wsSkipDirty)
+        argFile = args.argFile
+        if args.traces:
+            ok = True
+            for z in args.traces.split(','):
+                if z in valid_traces:
+                    traces.append(z)
+                else:
+                    ok = False
+                    print(f"Ignoring invalid --trace value: {z!r}", flush=True)
+            if not ok:
+                print(f"Valid traces are: {','.join(valid_traces)}", flush=True)
+            print(f"--trace={','.join(traces)}", flush=True)
+        if args.v:
+            print(__version__)
+            sys.exit(0)
+        # Sanitize limit.
+        if wsLimit < 1:
+            wsLimit = 1
+    #@+node:felix.20210803174312.1: *3* function: notify_clients
+    async def notify_clients(action, excludedConn = None):
+        global connectionsTotal
+        if connectionsPool:  # asyncio.wait doesn't accept an empty list
+            opened = bool(controller.c) # c can be none if no files opened
+            m =  json.dumps({"async": "refresh", "action": action, "opened": opened}, separators=(',', ':'), cls=SetEncoder)
+            clientSetCopy = connectionsPool.copy()
+            if excludedConn:
+                clientSetCopy.discard(excludedConn)
+            if clientSetCopy:
+                # if still at least one to notify
+                await asyncio.wait([asyncio.create_task(client.send(m)) for client in clientSetCopy])
+
+    #@+node:felix.20210803174312.2: *3* function: register_client
+    async def register_client(websocket):
+        global connectionsTotal
+        connectionsPool.add(websocket)
+        await notify_clients("unregister", websocket)
+    #@+node:felix.20210807160828.1: *3* function: save_dirty
+    def save_dirty():
+        """
+        Ask the user about dirty files if any remained opened.
+        """
+        # Monkey-patch the dialog method first.
+        g.app.gui.runAskYesNoCancelDialog = general_yes_no_dialog
+        # Loop all commanders and 'close' them for dirty check
+        commanders = g.app.commanders()
+        for commander in commanders:
+            if commander.isChanged() and commander.fileName():
+                commander.close() # Patched 'ask' methods will open dialog
+    #@+node:felix.20210803174312.3: *3* function: unregister_client
+    async def unregister_client(websocket):
+        global connectionsTotal
+        connectionsPool.remove(websocket)
+        await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
     async def ws_handler(websocket, path):
         """
@@ -3531,231 +3813,6 @@ def main():  # pragma: no cover (tested in client)
                 for task in asyncio.all_tasks():
                     task.cancel()
                 close_Server() # Stops the run_forever loop
-    #@+node:felix.20210803174312.1: *3* function:notify_clients
-    async def notify_clients(action, excludedConn = None):
-        global connectionsTotal
-        if connectionsPool:  # asyncio.wait doesn't accept an empty list
-            opened = bool(controller.c) # c can be none if no files opened
-            m =  json.dumps({"async": "refresh", "action": action, "opened": opened}, separators=(',', ':'), cls=SetEncoder)
-            clientSetCopy = connectionsPool.copy()
-            if excludedConn:
-                clientSetCopy.discard(excludedConn)
-            if clientSetCopy:
-                # if still at least one to notify
-                await asyncio.wait([asyncio.create_task(client.send(m)) for client in clientSetCopy])
-
-    #@+node:felix.20210803174312.2: *3* function:register_client
-    async def register_client(websocket):
-        global connectionsTotal
-        connectionsPool.add(websocket)
-        await notify_clients("unregister", websocket)
-    #@+node:felix.20210803174312.3: *3* function:unregister_client
-    async def unregister_client(websocket):
-        global connectionsTotal
-        connectionsPool.remove(websocket)
-        await notify_clients("unregister")
-    #@+node:ekr.20210801175921.1: *3* function: tk_runAskYesNoCancelDialog & helpers
-    def tk_runAskYesNoCancelDialog(
-        # self,
-        c,
-        title,  # Not used.
-        message=None,  # Must exist.
-        yesMessage="&Yes",  # Not used.
-        noMessage="&No",  # Not used.
-        yesToAllMessage=None,  # Not used.
-        defaultButton="Yes",  # Not used
-        cancelMessage=None,  # Not used.
-    ):
-        """
-        Tk version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
-        """
-        if g.unitTesting:
-            return None
-        root = top = val = None  # Non-locals
-        #@+others  # define helper functions
-        #@+node:ekr.20210825115746.1: *4* center
-        def center(toplevel):
-            """Center the top-level Frame."""
-            # https://stackoverflow.com/questions/3352918
-            toplevel.update_idletasks()
-            screen_width = toplevel.winfo_screenwidth()
-            screen_height = toplevel.winfo_screenheight()
-            size = tuple(int(_) for _ in toplevel.geometry().split('+')[0].split('x'))
-            x = screen_width/2 - size[0]/2
-            y = screen_height/2 - size[1]/2
-            toplevel.geometry("+%d+%d" % (x, y))
-        #@+node:ekr.20210801180311.4: *4* create_frame
-        def create_frame(message):
-            """Create the dialog's frame."""
-            frame = Tk.Frame(top)
-            frame.pack(side="top", expand=1, fill="both")
-            label = Tk.Label(frame, text=message, bg="white")
-            label.pack(pady=10)
-            # Create buttons.
-            f = Tk.Frame(top)
-            f.pack(side="top", padx=30)
-            b = Tk.Button(f, width=6, text="Yes", bd=4, underline=0, command=yesButton)
-            b.pack(side="left", padx=5, pady=10)
-            b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
-            b.pack(side="left", padx=5, pady=10)
-            return top
-        #@+node:ekr.20210801180311.5: *4* callbacks
-        def noButton(event=None):
-            """Do default click action in ok button."""
-            nonlocal val
-            print(f"Not saved: {c.fileName()}")
-            val = "no"
-            top.destroy()
-
-        def yesButton(event=None):
-            """Do default click action in ok button."""
-            nonlocal val
-            print(f"Saved: {c.fileName()}")
-            val = "yes"
-            top.destroy()
-        #@-others
-        root = Tk.Tk()
-        root.withdraw()
-        root.update()
-
-        top = Tk.Toplevel(root)
-
-        top.title("Saved changed outline?")
-        top = create_frame(message)
-        top.bind("<Return>", yesButton)
-        top.bind("y", yesButton)
-        top.bind("Y", yesButton)
-        top.bind("n", noButton)
-        top.bind("N", noButton)
-        top.lift()
-        
-        center(top)
-
-        top.grab_set()  # Make the dialog a modal dialog.
-
-        root.update()
-        root.wait_window(top)
-
-        top.destroy()
-        root.destroy()
-        return val
-    #@+node:felix.20210621233316.107: *3* function: get_args
-    def get_args():  # pragma: no cover
-        """
-        Get arguments from the command line and sets them globally.
-        """
-        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile, traces
-
-        def leo_file(s):
-            if os.path.exists(s):
-                return s
-            print(f"\nNot a .leo file: {s!r}")
-            sys.exit(1)
-
-        description = ''.join([
-            "  leoserver.py\n",
-            "  ------------\n",
-            "  Offers single or multiple concurrent websockets\n",
-            "  for JSON based remote-procedure-calls\n",
-            "  to a shared instance of leo.core.leoBridge\n",
-            "  \n",
-            "  Clients may be written in any language:\n",
-            "  - leo.core.leoclient is an example client written in python.\n",
-            "  - leoInteg (https://github.com/boltex/leointeg) is written in typescript.\n"
-        ])
-        # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
-        usage = 'python leo.core.leoserver [options...]'
-        trace_s = 'request,response,verbose'
-        valid_traces = [z.strip() for z in trace_s.split(',')]
-        parser = argparse.ArgumentParser(description=description, usage=usage,
-            formatter_class=argparse.RawTextHelpFormatter)
-        add = parser.add_argument
-        add('-a', '--address', dest='wsHost', type=str, default=wsHost, metavar='STR',
-            help='server address. Defaults to ' + str(wsHost))
-        add('-p', '--port', dest='wsPort', type=int, default=wsPort, metavar='N',
-            help='port number. Defaults to ' + str(wsPort))
-        add('-l', '--limit', dest='wsLimit', type=int, default=wsLimit, metavar='N',
-            help='maximum number of clients. Defaults to '+ str(wsLimit))
-        add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
-            help='open a .leo file at startup')
-        add('--persist', dest='wsPersist', action='store_true',
-            help='do not quit when last client disconnects')
-        add('-d', '--dirty', dest='wsSkipDirty', action='store_true',
-            help='do not warn about dirty files when quitting')
-        add('--trace', dest='traces', type=str, metavar='STRINGS',
-            help=f"comma-separated list of {trace_s}")
-        add('-v', '--version', dest='v', action='store_true',
-            help='show version and exit')
-        # Parse
-        args = parser.parse_args()
-        # Handle the args and set them up globally
-        wsHost = args.wsHost
-        wsPort = args.wsPort
-        wsLimit = args.wsLimit
-        wsPersist = bool(args.wsPersist)
-        wsSkipDirty = bool(args.wsSkipDirty)
-        argFile = args.argFile
-        if args.traces:
-            ok = True
-            for z in args.traces.split(','):
-                if z in valid_traces:
-                    traces.append(z)
-                else:
-                    ok = False
-                    print(f"Ignoring invalid --trace value: {z!r}", flush=True)
-            if not ok:
-                print(f"Valid traces are: {','.join(valid_traces)}", flush=True)
-            print(f"--trace={','.join(traces)}", flush=True)
-        if args.v:
-            print(__version__)
-            sys.exit(0)
-        # Sanitize limit.
-        if wsLimit < 1:
-            wsLimit = 1
-        return # No return value(s) command line args are global
-    #@+node:felix.20210804130751.1: *3* function:close_server
-    def close_Server():
-        """
-        Close the server by stopping the loop
-        """
-        print('Closing Leo Server', flush=True)
-        if loop.is_running():
-            loop.stop()
-        else:
-            print('Loop was not running', flush=True)
-    #@+node:felix.20210807160828.1: *3* function:save_dirty
-    def save_dirty():
-        """
-        Ask the user about dirty files if any remained opened.
-        """
-        # Monkey-patch the dialog method first
-        g.app.gui.runAskYesNoCancelDialog = tk_runAskYesNoCancelDialog
-        # then loop all commanders and 'close' them for dirty check
-        commanders = g.app.commanders()
-        for commander in commanders:
-            if commander.isChanged() and commander.fileName():
-                commander.close() # Patched 'ask' methods will open dialog
-    #@+node:felix.20210807214524.1: *3* function:cancel_tasks
-    def cancel_tasks(to_cancel, loop):
-        if not to_cancel:
-            return
-
-        for task in to_cancel:
-            task.cancel()
-
-        loop.run_until_complete(asyncio.gather(*to_cancel, return_exceptions=True))
-
-        for task in to_cancel:
-            if task.cancelled():
-                continue
-            if task.exception() is not None:
-                loop.call_exception_handler(
-                    {
-                        "message": "unhandled exception during asyncio.run() shutdown",
-                        "exception": task.exception(),
-                        "task": task,
-                    }
-                )
     #@-others
 
     # Make the first real line of output more visible.
