@@ -31167,11 +31167,14 @@ Optional keys:
 - The names of Leo commands.
 - Methods of Leo's subcommander classes.
 
-The public methods of the LeoServer class can only be changed in an upward compatible manner. If necessary, new public methods can be added at any time.
+The public methods of the LeoServer class can only be changed in an upward
+compatible manner. If necessary, new public methods can be added at any
+time.
 
-Leo is a programming environment in which user scripts can access all of Leo's source code. For this reason, the names of methods in Leo's core change rarely.  Similarly, clients can usually assume that the names of Leo commands won't change.
-
-</t>
+Leo is a programming environment in which user scripts can access all of
+Leo's source code. For this reason, the names of methods in Leo's core
+change rarely. Similarly, clients can usually assume that the names of Leo
+commands won't change.</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
