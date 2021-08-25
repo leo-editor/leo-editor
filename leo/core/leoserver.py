@@ -620,6 +620,7 @@ class LeoServer:
         self.c = c
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
+        c.recreateGnxDict() # refresh c.fileCommands.gnxDict used in ap_to_p
         self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
@@ -2915,13 +2916,13 @@ class LeoServer:
             if not c.positionExists(p):  # pragma: no cover.
                 raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
         except Exception:
-            if self.log_flag:
+            if self.log_flag or traces:
                 print(
                     f"{tag}: Bad ap: {ap!r}\n"
                     # f"{tag}: position: {p!r}\n"
                     f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
                     f"{tag}: stack: {stack!r}", flush=True)
-            return False # fallback to c.p
+            return False # Return false on any error so caller can react
         return p
     #@+node:felix.20210621233316.80: *4* server._check_c
     def _check_c(self):
