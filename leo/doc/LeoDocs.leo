@@ -31162,7 +31162,7 @@ The "action" and "param" members mimic the "function name" and "parameters" or
 a procedure call. And is in fact implemented as a remote procedure call.
 
 The LeoServer._do_message method checks and handles incoming requests in a
-one by one, blocking synchronuous manner.
+one by one, blocking synchronous manner.
 </t>
 <t tx="ekr.20210824085857.1">JSON responses (from the server to the client) always have the following keys
 unless the request was a 'getter' command:
@@ -31234,13 +31234,13 @@ Use the --file &lt;filename&gt; or -f &lt;filename&gt;'to specify a given Leo fi
 opened upon starting the server.
 
 * Prevent the server from closing when last client disconnects
-Use the --persist flag to have the server persist until explicitely closed.
+Use the --persist flag to have the server persist until explicitly closed.
 
 * Set maximum number of possible concurrent connections
 Use the --limit &lt;number&gt; or -l &lt;number&gt; argument to change the maximum from
 the default single connection maximum.
 
-* Set the listening adress and port
+* Set the listening address and port
 Use the --port &lt;number&gt; or -p &lt;number&gt;
 along with the --address &lt;address&gt; or -a &lt;address&gt; arguments.
 
