@@ -1269,13 +1269,16 @@
 </v>
 </v>
 </v>
-<v t="ekr.20210824081721.1"><vh>Leo's socket server</vh>
+<v t="ekr.20210824081721.1"><vh>Leo's websocket server</vh>
 <v t="ekr.20210824081815.1"><vh>@rst html/leoserver.html</vh>
 <v t="ekr.20210825021830.1"><vh>The communication protocol</vh>
 <v t="ekr.20210824083951.1"><vh>Requests</vh></v>
 <v t="ekr.20210824085857.1"><vh>Responses</vh></v>
+<v t="felix.20210825222316.1"><vh>Async messages</vh></v>
 </v>
 <v t="ekr.20210825021904.1"><vh>Compatibility and extensibility</vh></v>
+<v t="felix.20210825213137.1"><vh>Multiple concurent connections</vh></v>
+<v t="felix.20210826001302.1"><vh>Command line arguments</vh></v>
 </v>
 </v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
@@ -31117,51 +31120,68 @@ unl: History and change log
 <t tx="ekr.20210823181157.1">https://github.com/leo-editor/leo-editor/issues/2005
 https://github.com/leo-editor/leo-editor/issues/1973</t>
 <t tx="ekr.20210824081721.1"></t>
-<t tx="ekr.20210824081815.1">####################
-Leo's Socket Server
-####################
+<t tx="ekr.20210824081815.1">######################
+Leo's WebSocket Server
+######################
 
 leo/core/leoserver.py is websocket server providing Leo's resources to
 clients. The server offers single or multiple concurrent websockets.
+
+*WebSocket is a computer communications protocol, providing full-duplex
+communication channels over a single TCP connection.*
 
 Clients can be written in any language:
 - leo.core.leoclient is an example client written in python.
 - leoInteg (https://github.com/boltex/leointeg) is written in typescript.
 
-At startup, the server connects to a single instance of Leo's bridge.
+At startup, the server creates a single instance of Leo's bridge. (core.leoBridge)
 Clients can open (or create) Leo outlines in the bridge. Thereafter,
-clients can query or change the contents of the outline.
+clients can query or change the contents of the outlines.
 
 Clients encode requests as JSON strings and receive results from the server
-as JSON strings. </t>
-<t tx="ekr.20210824083951.1">JSON requests (from the client to the server) must have three keys: 
+as JSON strings.
+
+Run the leoserver.py script with the "--help" command line parameter to learn
+more about the server's capabilities.</t>
+<t tx="ekr.20210824083951.1">JSON requests (from the client to the server) must have three keys:
 
 "id": A string containing a positive integer.
 
 "action": A string denoting the kind of request. There are three forms:
 
-1. Actions starting with '!' must be the name of public method of the
+1. Actions prefixed with '!' must be the name of public method of the
    LeoServer class in leoserver.py.
-2. Actions starting with '-' must be the name of a Leo command.
-3. Otherwise, the action must be name of a method in a one of Leo's
+2. Actions prefixed with '-' must be the name of a Leo command.
+3. Otherwise, the action must be name of a method in one of Leo's
    subcommander classes.
 
 "param": A dict containing additional information. The param key often
 contains "ap", "text" and "keep" keys.
 
-The LeoServer._do_message method checks and handles incoming requests.</t>
-<t tx="ekr.20210824085857.1">JSON responses (from the server to the client) always have the following keys:
+The "action" and "param" members mimic the "function name" and "parameters" or
+a procedure call. And is in fact implemented as a remote procedure call.
 
-"id": The incoming id.
-"commander": A dict describing c, the open commanders.
+The LeoServer._do_message method checks and handles incoming requests in a
+one by one, blocking synchronuous manner.
+</t>
+<t tx="ekr.20210824085857.1">JSON responses (from the server to the client) always have the following keys
+unless the request was a 'getter' command:
+
+"id": The incoming request id this JSON message is responding to.
+"commander": A dict describing c, the open commander.
 "node":  None, or an archived position describing c.p.
 
 Optional keys:
 
 "package": A dict containing extra data.
-"p": "An archived position".</t>
+"p": "An archived position".
+
+If the request was a 'getter' command, the JSON response will only contain the
+specific structure that was requested.
+</t>
 <t tx="ekr.20210825021830.1">The following sections describe the communication protocol, that is, the
-format of requests sent from the client and responses sent from the server.</t>
+format of requests sent from the client and responses sent from the server.
+</t>
 <t tx="ekr.20210825021904.1">Requests from the client to the server may reference:
 
 - Public methods of the LeoServer class.
@@ -31175,7 +31195,57 @@ time.
 Leo is a programming environment in which user scripts can access all of
 Leo's source code. For this reason, the names of methods in Leo's core
 change rarely. Similarly, clients can usually assume that the names of Leo
-commands won't change.</t>
+commands won't change.
+</t>
+<t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
+application state, and synchronize the resulting state across clients, leoserver.py
+has the ability to listen and interact with more than one concurrent client, and have
+the state of the underlying Leo core application be represented in real time to all
+connected clients.
+
+If a server is started with the command line argument parameter 'limit' set to more than one (1),
+then it will allow for more than one client to be connected at the same time, sharing in real
+time the state, and control, of the underlying Leo instance.
+
+This can be used to have multiple client programs share the same views and functionality
+of a single Leo instance. Or be used to live-share the editing process with collaborators
+or spectators in real time.
+
+*By default, this limit is set to one (1) to prevent multiple connections and force each client
+to have their own individual Leo server instances running on different ports.*
+</t>
+<t tx="felix.20210825222316.1">The server also sends asynchronous messages, i.e. messages that are not responses
+to a specific request, that are meant to communicate a changed state or request
+a user input through a modal dialog, or anything else that was not initiated by
+a connected clients' direct request.
+
+Examples of 'async' messages:
+
+- An entry added to the log pane.
+- Signal the detection of an external file change.
+- Signal the automatic refresh of an outline.
+- A signal to ask the user about reloading a Leo file that has changed after changing a git branch.
+</t>
+<t tx="felix.20210826001302.1">leoserver.py has optional command line arguments that you can provide
+to get specific behaviors from the server.
+
+* Have the server start with a specific file opened
+Use the --file &lt;filename&gt; or -f &lt;filename&gt;'to specify a given Leo file to be
+opened upon starting the server.
+
+* Prevent the server from closing when last client disconnects
+Use the --persist flag to have the server persist until explicitely closed.
+
+* Set maximum number of possible concurrent connections
+Use the --limit &lt;number&gt; or -l &lt;number&gt; argument to change the maximum from
+the default single connection maximum.
+
+* Set the listening adress and port
+Use the --port &lt;number&gt; or -p &lt;number&gt;
+along with the --address &lt;address&gt; or -a &lt;address&gt; arguments.
+
+For more details, use the *--help* argument to list all available options details.
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
