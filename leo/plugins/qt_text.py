@@ -10,6 +10,10 @@ from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
+
+QColor = QtGui.QColor
+FullWidthSelection = 0x06000 # works for both Qt5 and Qt6
+
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -465,6 +469,7 @@ if QtWidgets:
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
                 self.textChanged.connect(self.onTextChanged)
+            self.cursorPositionChanged.connect(self.highlightCurrentLine)
             self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
@@ -669,6 +674,120 @@ if QtWidgets:
         def show_completions(self, aList):
             if hasattr(self, 'leo_qc'):
                 self.leo_qc.show_completions(aList)
+        #@+node:tom.20210827230127.1: *3* lqtb Highlight Current Line
+        #@+node:tom.20210827225119.3: *4* lqtb.parse_css
+        #@@language python
+        def parse_css(self, css_string, clas=''):
+            """Extract colors from a css stylesheet string. 
+            
+            This is an extremely simple-minded function. It assumes
+            that no quotation marks are being used, and that the
+            first block in braces with the name clas is the controlling
+            css for our widget.
+            
+            Returns a tuple of strings (foregound, background).
+            """
+            # Get first block with name matching "clas'
+            block = css_string.split(clas, 1)
+            block = block[1].split('{', 1)
+            block = block[1].split('}', 1)
+
+            # Split into styles separated by ";"
+            styles = block[0].split(';')
+
+            # Split into fields separated by ":"
+            fields = [style.split(':') for style in styles if style.strip()]
+
+            # Only get fields whose names are "color" and "background"
+            color = bg = ''
+            for style, val in fields:
+                style = style.strip()
+                if style == 'color':
+                    color = val.strip()
+                elif style == 'background':
+                    bg = val.strip()
+                if color and bg:
+                    break
+            return color, bg
+
+        #@+node:tom.20210827225119.4: *4* lqtb.assign_bg
+        #@@language python
+        def assign_bg(self, fg):
+            """If fg or bg colors are missing, assign
+            reasonable values.  Can happen with incorrectly
+            constructed themes, or no-theme color schemes.
+            
+            RETURNS
+            a QColor object for the background color
+            """
+            if not fg:
+                fg = 'black' # QTextEdit default
+                bg = 'white' # QTextEdit default
+            if fg == 'black':
+                bg = 'white' # QTextEdit default
+            else:
+                fg_color = QColor(fg)
+                h, s, v, a = fg_color.getHsv()
+                if v < 128: # dark foreground
+                    bg = 'white'
+                else:
+                    bg = 'black'
+            return QColor(bg)
+        #@+node:tom.20210827225119.5: *4* lqtb.calc_hl
+        #@@language python
+        def calc_hl(self, bg_color):
+            """Return the line highlight color.
+            
+            ARGUMENT
+            bg_color -- a QColor object for the background color
+            
+            RETURNS
+            a QColor object for the highlight color
+            """
+            h, s, v, a = bg_color.getHsv()
+
+            if v < 24:
+                v = 50
+                bg_color.setHsv(h, s, v, a)
+            elif v > 240:
+                v = 220
+                bg_color.setHsv(h, s, v, a)
+            elif v < 128:
+                bg_color = bg_color.lighter(130)
+            else:
+                bg_color = bg_color.darker(130)
+
+            return bg_color
+        #@+node:tom.20210827225119.2: *4* lqtb.highlightCurrentLine
+        #@@language python
+        def highlightCurrentLine(self):
+            """Highlight cursor line.
+            
+            Based in part on code from
+            https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
+            """
+            c = self.leo_c
+
+            w = c.frame.body.wrapper
+            editor = w.widget
+            if not c.config.getBool('highlight-body-line'):
+                editor.setExtraSelections([])
+                return
+
+            ssm = c.styleSheetManager
+            sheet = ssm.expand_css_constants(c.active_stylesheet)
+
+            fg, bg = self.parse_css(sheet, 'QTextEdit')
+            bg_color = QColor(bg) if bg else self.assign_bg(fg)
+            hl_color = self.calc_hl(bg_color)
+
+            selection = editor.ExtraSelection()
+            selection.format.setBackground(hl_color)
+            selection.format.setProperty(FullWidthSelection, True)
+            selection.cursor = editor.textCursor()
+            selection.cursor.clearSelection()
+
+            editor.setExtraSelections([selection])
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             """Get the horizontal scrollbar position."""
