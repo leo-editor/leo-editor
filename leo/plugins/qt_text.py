@@ -746,8 +746,8 @@ if QtWidgets:
             """
             h, s, v, a = bg_color.getHsv()
 
-            if v < 24:
-                v = 50
+            if v < 45:
+                v = 60
                 bg_color.setHsv(h, s, v, a)
             elif v > 240:
                 v = 220
@@ -777,9 +777,14 @@ if QtWidgets:
             ssm = c.styleSheetManager
             sheet = ssm.expand_css_constants(c.active_stylesheet)
 
-            fg, bg = self.parse_css(sheet, 'QTextEdit')
-            bg_color = QColor(bg) if bg else self.assign_bg(fg)
-            hl_color = self.calc_hl(bg_color)
+            bg = c.config.getString('line-highlight-color') or ''
+            hl_color = QColor(bg)
+            if hl_color.getHsv() == (0, 0, 0, 255) and bg != 'black':
+                # Always returns black for an invalid color
+                # so if we didn't ask for black, compute the color instead
+                fg, bg = self.parse_css(sheet, 'QTextEdit')
+                bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                hl_color = self.calc_hl(bg_color)
 
             selection = editor.ExtraSelection()
             selection.format.setBackground(hl_color)
