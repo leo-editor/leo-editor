@@ -9890,387 +9890,255 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
-#@+node:ekr.20210809085711.1: ** From leoGlobals.py
-#@+node:ekr.20210809093522.1: *3* g.adjustTripleString
-def adjustTripleString(s, tab_width):
-    """Remove leading indentation from a triple-quoted string.
+#@+node:ekr.20210815060206.1: ** From leoDist.leo
 
-    This works around the fact that Leo nodes can't represent underindented strings.
-    """
-    # Compute the minimum leading whitespace of all non-blank lines.
-    lines = g.splitLines(s)
-    first, w = True, 0
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            # The sign of w2 does not matter.
-            w2 = abs(g.computeWidth(lws, tab_width))
-            if w2 == 0:
-                return s
-            if first or w2 < w:
-                w = w2
-                first = False
-    if w == 0:
-        return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
-#@+node:ekr.20050211120242.2: *3* g.removeExtraLws
-def removeExtraLws(s: str, tab_width):
-    """
-    Remove extra indentation from one or more lines.
-
-    Warning: used by getScript.
-    """
-    lines = g.splitLines(s)
-    # Find the first non-blank line and compute w, the width of its leading whitespace.
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            w = g.computeWidth(lws, tab_width)
-            break
-    else: return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
-#@+node:ekr.20210327062138.1: ** From leoRst.py
-#@+node:ekr.20120219194520.10444: *3* html parser classes
-# Perhaps mod_http used to use these.
-#@+node:ekr.20120219194520.10445: *4*  class LinkAnchorParserClass (HTMLParser)
-class LinkAnchorParserClass(HTMLParser.HTMLParser):
-    """
-    The base class to recognize anchors and links in HTML documents. A
-    special marker is the "node_marker" which marks the border between node
-    and the next.
-
-    The parser classes are used to construct the html code for nodes.
-
-    The algorithm has two phases:
-    - Phase 1 AnchorHtmlParserClass: gets the html code for each node.
-    - Phase 2 LinkHtmlParserClass: finds all links and checks whethr
-      these links need to be modified.
-    """
-    @others
-#@+node:ekr.20120219194520.10446: *5* __init__
-def __init__(self, rst, p):
-    """Ctor for the LinkAnchorParserClass class."""
-    super().__init__()
-    self.rst = rst
-    self.p = p.copy()
-    # Set ivars from options.
-    # This works only if we don't change nodes!
-    self.node_begin_marker = rst.getOption(p, 'node_begin_marker')
-    self.clear_http_attributes = rst.getOption(p, 'clear_http_attributes')
-    self.current_file = rst.outputFileName
-#@+node:ekr.20120219194520.10447: *5* is_anchor
-def is_anchor(self, tag, attrs):
-    """
-    Check if the current tag is an anchor.
-    Returns *all* anchors.
-    Works with docutils 0.4
-    """
-    if tag == 'a':
-        return True
-    if self.is_node_marker(attrs):
-        return True
-    return tag == "span"
-#@+node:ekr.20120219194520.10448: *5* is_link
-def is_link(self, tag, attrs):
-    """Return True if tag, attrs is represents a link."""
-    if tag == 'a':
-        return 'href' in dict(attrs)
-    return False
-#@+node:ekr.20120219194520.10449: *5* is_node_marker
-def is_node_marker(self, attrs):
-    """
-    Return the name of the anchor, if this is an anchor for the beginning of a node,
-    False otherwise.
-    """
-    d = dict(attrs)
-    if d.get('id', '').startswith(self.node_begin_marker):
-        return d['id']
-    return False
-#@+node:ekr.20120219194520.10450: *4* class HtmlParserClass (LinkAnchorParserClass)
-class HtmlParserClass(LinkAnchorParserClass):
-    """
-    The responsibility of the html parser is:
-        1. Find out which html code belongs to which node.
-        2. Keep a stack of open tags which apply to the current node.
-        3. Keep a list of tags which should be included in the nodes, even
-           though they might be closed.
-           The <style> tag is one example of that.
-
-    Later, we have to relocate inter-file links: if a reference to another location
-    is in a file, we must change the link.
-
-    """
-    @others
-#@+node:ekr.20120219194520.10451: *5* HtmlParserClass.__init__
-def __init__(self, rst, p):
-    """Ctor for the HtmlParserClass class."""
-    super().__init__(rst, p)
-    self.stack = None
-        # The stack contains lists of the form:
-        # [text1, text2, previous].
-        # text1 is the opening tag
-        # text2 is the closing tag
-        # previous points to the previous stack element
-    self.node_marker_stack = []
-        # self.node_marker_stack.pop() returns True for a closing tag if
-        # the opening tag identified an anchor belonging to a VNode.
-    self.node_code = []
-        # Accumulated html code.
-        # Once the hmtl code is assigned a VNode, it is deleted here.
-    self.deleted_lines = 0
-        # Number of lines deleted in self.node_code
-    self.endpos_pending = False
-        # Do not include self.node_code[0:self.endpos_pending] in the html code.
-    self.last_position = None
-        # Last position; we must attach html code to this node.
-    self.last_marker = None
-#@+node:ekr.20120219194520.10452: *5* HtmlParserClass.handle_starttag
-def handle_starttag(self, tag, attrs):
-    """
-    1. Find out if the current tag is an achor.
-    2. If it is an anchor, we check if this anchor marks the beginning of a new
-       node
-    3. If a new node begins, then we might have to store html code for the previous
-       node.
-    4. In any case, put the new tag on the stack.
-    """
-    is_node_marker = False
-    if self.is_anchor(tag, attrs) and self.is_node_marker(attrs):
-        is_node_marker = self.is_node_marker(attrs)
-        line, column = self.getpos()
-        if self.last_position:
-            lines = self.node_code[:]
-            lines[0] = lines[0][self.startpos:]
-            del lines[line - self.deleted_lines - 1 :]
-            mod_http.get_http_attribute(self.last_position).extend(lines)
-            << trace the unknownAttribute >>
-        if self.deleted_lines < line - 1:
-            del self.node_code[: line - 1 - self.deleted_lines]
-            self.deleted_lines = line - 1
-            self.endpos_pending = True
-    starttag = self.get_starttag_text()
-    self.stack = [starttag, None, self.stack]
-    self.node_marker_stack.append(is_node_marker)
-#@+node:ekr.20120219194520.10453: *6* << trace the unknownAttribute >>
-if 0:
-    g.pr("rst3: unknownAttributes[self.http_attributename]")
-    g.pr("For:", self.last_position)
-    pprint.pprint(mod_http.get_http_attribute(self.last_position))
-#@+node:ekr.20120219194520.10454: *5* HtmlParserClass.handle_endtag
-def handle_endtag(self, tag):
-    """
-    1. Set the second element of the current top of stack.
-    2. If this is the end tag for an anchor for a node,
-       store the current stack for that node.
-    """
-    self.stack[1] = "</" + tag + ">"
-    if self.endpos_pending:
-        line, column = self.getpos()
-        self.startpos = self.node_code[0].find(">", column) + 1
-        self.endpos_pending = False
-    is_node_marker = self.node_marker_stack.pop()
-    if is_node_marker and not self.clear_http_attributes:
-        self.last_position = self.rst.http_map[is_node_marker]
-        if is_node_marker != self.last_marker:
-            # if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
-            mod_http.set_http_attribute(
-                self.rst.http_map[is_node_marker], self.stack)
-            self.last_marker = is_node_marker
-            # bwm: last_marker is not needed?
-    self.stack = self.stack[2]
-#@+node:ekr.20120219194520.10455: *5* HtmlParserClass.feed
-def feed(self, line):
-    # pylint: disable=arguments-differ
-    self.node_code.append(line)
-    HTMLParser.HTMLParser.feed(self, line)  # Call the base class's feed().
-#@+node:ekr.20120219194520.10456: *4* class AnchorHtmlParserClass (LinkAnchorParserClass)
-class AnchorHtmlParserClass(LinkAnchorParserClass):
-    """
-    This htmlparser does the first step of relocating: finding all the
-    anchors within the html nodes.
-
-    Each anchor is mapped to a tuple: (current_file, position).
-
-    Filters out markers which mark the beginning of the html code for a node.
-    """
-    @others
-#@+node:ekr.20120219194520.10457: *5*  __init__
-def __init__(self, rst, p):
-    """Ctor for the AnchorHtmlParserClass class."""
-    super().__init__(rst, p)
-    self.p = p.copy()
-    self.anchor_map = rst.anchor_map
-#@+node:ekr.20120219194520.10458: *5* handle_starttag
-def handle_starttag(self, tag, attrs):
-    """
-    1. Find out if the current tag is an achor.
-    2. If the current tag is an anchor, update the mapping;
-         anchor -> (filename, p)
-    """
-    if not self.is_anchor(tag, attrs):
-        return
-    if self.current_file not in self.anchor_map:
-        self.anchor_map[self.current_file] = (self.current_file, self.p)
-        simple_name = g.os_path_split(self.current_file)[1]
-        self.anchor_map[simple_name] = self.anchor_map[self.current_file]
-        # if bwm_file:
-        #   print >> bwm_file, "anchor(1): current_file:",
-        #   self.current_file, "position:", self.p, "Simple name:", simple_name
-        # Not sure what to do here, exactly. Do I need to manipulate
-        # the pathname?
-    for name, value in attrs:
-        if name == 'name' or tag == 'span' and name == 'id':
-            if not value.startswith(self.node_begin_marker):
-                # if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
-                self.anchor_map[value] = (self.current_file, self.p.copy())
-#@+node:ekr.20120219194520.10459: *4* class LinkHtmlParserClass (LinkAnchorParserClass)
-class LinkHtmlparserClass(LinkAnchorParserClass):
-    """This html parser does the second step of relocating links:
-    1. It scans the html code for links.
-    2. If there is a link which links to a previously processed file
-       then this link is changed so that it now refers to the node.
-    """
-    @others
-#@+node:ekr.20120219194520.10460: *5* __init__
-def __init__(self, rst, p):
-    """Ctor for the LinkHtmlParserClass class."""
-    super().__init__(rst, p)
-    self.anchor_map = rst.anchor_map
-    self.replacements = []
-#@+node:ekr.20120219194520.10461: *5* handle_starttag
-def handle_starttag(self, tag, attrs):
-    """
-    1. Find out if the current tag is an achor.
-    2. If the current tag is an anchor, update the mapping;
-         anchor -> p
-        Update the list of replacements for the document.
-    """
-    if not self.is_link(tag, attrs):
-        return
-    marker = self.node_begin_marker
-    for name, value in attrs:
-        if name == 'href':
-            href = value
-            href_parts = href.split("#")
-            if len(href_parts) == 1:
-                href_a = href_parts[0]
-            else:
-                href_a = href_parts[1]
-            if not href_a.startswith(marker):
-                if href_a in self.anchor_map:
-                    href_file, href_node = self.anchor_map[href_a]
-                    http_node_ref = mod_http.node_reference(href_node)
-                    line, column = self.getpos()
-                    self.replacements.append(
-                        (line, column, href, href_file, http_node_ref))
-#@+node:ekr.20120219194520.10462: *5* get_replacements
-def get_replacements(self):
-    return self.replacements
-#@+node:ekr.20210328100631.1: *3* insert-* commands from #1843 (move to attic)
-# These will never
-#@+node:ekr.20210328100510.2: *4* rst.insertBody
-def insertBody(self, p):
-    """
-    Handle @rst-insert-body.
-    
-    Insert p2.b into the output, where p2 has the given gnx.
-    """
-    c = self.c
-    lines = g.splitLines(p.b.strip())
-    gnx = lines and lines[0].strip()
-    p2 = self.findGnx(c, gnx)
-    if p2:
-        self.write(f"\n\n{p2.b.strip()}\n\n")
-    else:
-        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
-#@+node:ekr.20210328100510.3: *4* rst.insertHead
-def insertHead(self, p):
-    """
-    Handle @rst-insert-head.
-    
-    Insert p2.h into the output, where p2 has the given gnx.
-    """
-    c = self.c
-    lines = g.splitLines(p.b.strip())
-    gnx = lines and lines[0].strip()
-    p2 = self.findGnx(c, gnx)
-    if p2:
-        self.write(f"\n\n{p2.h}\n\n")
-    else:
-        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
-#@+node:ekr.20210328100510.4: *4* rst.insertTree
-def insertTree(self, p):
-    """
-    Handle @rst-insert-tree.
-    
-    Insert a representation of the tree of headlines.
-    """
-    c = self.c
-    lines = g.splitLines(p.b.strip())
-    gnx = lines and lines[0].strip()
-    p2 = self.findGnx(c, gnx)
-    if p2:
-        level0 = p.level()
-        tree = [f"    {' '*2*(z.level()-level0)}- {z.h}\n" for z in p2.self_and_subtree()]
-        self.write(f"\n\n::\n\n{''.join(tree)}\n\n")
-    else:
-        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
-#@+node:ekr.20210712134630.1: ** From leoPersistence.py
-@g.command('at-file-to-at-auto')
-def at_file_to_at_auto_command(event):
-    c = event.get('c')
-    if c and c.persistenceController:
-        c.persistenceController.convert_at_file_to_at_auto(c.p)
-#@+node:ekr.20210717043934.1: ** From qt_tree.pyi
-#@+node:ekr.20110605121601.17900: *3* qtree.OnPopup & allies
-def OnPopup(self, p, event):
-    """Handle right-clicks in the outline.
-
-    This is *not* an event handler: it is called from other event handlers."""
-    # Note: "headrclick" hooks handled by VNode callback routine.
-    if event:
-        c = self.c
-        c.setLog()
-        if not g.doHook("create-popup-menu", c=c, p=p, event=event):
-            self.createPopupMenu(event)
-        if not g.doHook("enable-popup-menu-items", c=c, p=p, event=event):
-            self.enablePopupMenuItems(p, event)
-        if not g.doHook("show-popup-menu", c=c, p=p, event=event):
-            self.showPopupMenu(event)
-    return "break"
-#@+node:ekr.20110605121601.17901: *4* qtree.OnPopupFocusLost
-@language rest
-@
-On Linux we must do something special to make the popup menu "unpost" if the
-mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
-explicitly unpost. In order to process the <FocusOut> event, we need to be able
-to find the reference to the popup window again, so this needs to be an
-attribute of the tree object; hence, "self.popupMenu".
-
-Aside: though Qt tries to be muli-platform, the interaction with different
-window managers does cause small differences that will need to be compensated by
-system specific application code. :-(
-@c
+#@+node:ekr.20210815060352.1: *3* --- from setup.py
 @language python
+#@+node:ekr.20210815060206.2: *4* get_version (not used)
+def get_version(file, version=None):
+    """Determine current Leo version. Use git if in checkout, else internal Leo"""
+    root = os.path.dirname(os.path.realpath(file))
+    if os.path.exists(os.path.join(root, '.git')):
+        version = git_version(file)
+    if not version:
+        version = get_semantic_version(leoVersion.version)
+    return version
+#@+node:ekr.20210815060206.3: *4* git_version (not used)
+def git_version(file, version=None):
+    """
+    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+    Return as semantic version string compliant with PEP440
+    """
+    root = os.path.dirname(os.path.realpath(file))
+    try:
+        tag, distance, commit = g.gitDescribe(root)  # 5.6b2, 55, e1129da
+        ctag = clean_git_tag(tag)
+        #version = get_semver(ctag)
+        version = ctag
+        if int(distance) > 0:
+            version = '{}-dev{}'.format(version, distance)
+    except IndexError:
+        print('Attempt to `git describe` failed with IndexError')
+    except FileNotFoundError:
+        print('Attempt to `git describe` failed with FileNotFoundError')
+    return version
+#@+node:ekr.20210815060206.4: *5* clean_git_tag
+def clean_git_tag(tag):
+    """Return only version number from tag name. Ignore unknown formats.
+       Is specific to tags in Leo's repository.
+            5.7b1          -->	5.7b1
+            Leo-4-4-8-b1   -->	4-4-8-b1
+            v5.3           -->	5.3
+            Fixed-bug-149  -->  Fixed-bug-149
+    """
+    if tag.lower().startswith('leo-'): tag = tag[4:]
+    if tag.lower().startswith('v'): tag = tag[1:]
+    return tag
+#@+node:ekr.20210815060206.5: *4* get_semantic_version (not used)
+def get_semantic_version(tag):
+    """Return 'Semantic Version' from tag string"""
+    try:
+        import semantic_version
+    except Exception:
+        print(f"Can not import semantic_version. Using {tag!r}")
+        return tag
+    try:
+        # tuple of major, minor, build, pre-release, patch.
+        # Example: 5.6b2 --> 5.6-b2
+        return str(semantic_version.Version.coerce(tag, partial=True))
+    except Exception:
+        ### g.es_exception()
+        print_exception()
+        print(f"Bad version: {tag!r}")
+        return tag
+        ###
+        # print(
+            # f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
+            # "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
+            # "This version can't be uploaded to PyPi.org.")
+        # version = tag
+    # return version
+#@+node:ekr.20210815060405.1: *3* --- old distribution files
+@language rest
+@wrap
 
-# 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
+-matt (@maphew)
 
-def OnPopupFocusLost(self, event=None):
-    # self.popupMenu.unpost()
-    pass
-#@+node:ekr.20110605121601.17902: *4* qtree.createPopupMenu
-def createPopupMenu(self, event):
-    """This might be a placeholder for plugins.  Or not :-)"""
-#@+node:ekr.20110605121601.17903: *4* qtree.enablePopupMenuItems
-def enablePopupMenuItems(self, p, event):
-    """Enable and disable items in the popup menu."""
-#@+node:ekr.20110605121601.17904: *4* qtree.showPopupMenu
-def showPopupMenu(self, event):
-    """Show a popup menu."""
+Old distribution files.
+#@+node:ekr.20210815060405.2: *4* @@clean ../../About leo.exe.TXT
+leo.exe contains everything you need to run Leo on Windows without
+installing *anything* else. It contains all needed libraries, including
+Python itself, PyQt, pylint and other packages. It also contains many data
+files, including Leo's source code and various .leo files.
+
+Notes:
+
+1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
+
+2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
+   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
+   is slower than usual.
+
+3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
+   but these files will be in the temp folder. They will be *destroyed*
+   when you exit leo.exe. If you want to do real work with Leo you must
+   create .leo files in a permanent folder on your machine.
+#@+node:ekr.20210815060405.3: *4* @@clean ../../optional-tools.txt
+# A list of pip installable tools and libraries in the Requirements File Format
+# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
+#
+# Install with:
+#   
+#       pip install -r optional-tools.txt
+#
+
+pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
+pyxml; python_version < "3.0"   # Used for XML import. Appears to be only python 2 package
+#@+node:ekr.20210815060405.4: *4* @@clean ../../INSTALL.TXT
+System requirements
+-------------------
+
+Leo requires the `Python`_ and `PyQt_` package.
+The `PyEnchant`_ package is optional. 
+
+**Python**: Leo will work on any platform that supports Python 2.6 or
+above, including Python 3.0 and above. To install Python, see
+http://python.org.
+
+**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
+package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
+The PyQt version must match your installed Python version. Remember that
+Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
+binary PyQt installer.
+
+**PyEnchant**: You must install the PyEnchant package if you want to use
+Leo's Spell tab. Download and install the PyEnchant package from
+http://pythonhosted.org/pyenchant/download.html There is an executable
+installer for Windows users.
+
+
+Leo's HOME directory
+--------------------
+
+Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo puts several files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.
+
+Installing Leo on Linux
+-----------------------
+
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unzip them
+into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
+
+To gain access to Leo, you have two choices:
+
+A. Add  ~/leo-5.2 to your path.
+B. Create alias for Leo.
+
+I prefer using aliases because they allow me to start Leo using Python 2 or 3,
+or other distributions, like Anaconda 2 or 3.
+
+See `Running Leo`_ for how to run Leo after installing it.
+
+Installing Leo on Windows
+--------------------------
+
+Install Python and Qt, as described above.
+
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unpack them
+into a temp folder. You may place the sources anywhere you like, including
+Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
+
+
+Running Leo
+-----------
+
+You can run Leo from a Python interpreter as follows::
+
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+
+Another way to run Leo is as follows::
+
+    cd <path-to-launchLeo.py>
+    python launchLeo.py
+
+Creating File Associations
+--------------------------
+
+**Linux**
+
+The following shell script will allow you to open foo.leo files by typing leo foo::
+
+    #!/bin/sh 
+    python <leopath>launchLeo.py $1
+
+where <leopath> is the path to the directory *containing* the leo directory. 
+
+**Windows**
+
+*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
+
+There are two ways of associating .leo files with Leo. The first uses the
+Windows control panel, the second, the Windows console.
+
+**Method 1: Using the Windows Control Panel**
+
+The goal is that you want to associate .leo files with the following command::
+
+    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" "%1"
+    
+Before Windows 7, you do this with using the Folder Options control panel.
+In Windows 7, you do this with the Default Programs control panel.
+
+*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
+The quotation marks are needed to handle file paths containing spaces.
+
+*Warning:* In a batch file, %1 passes just the first command line parameter.
+It is logical to expect %* to work for file associations just as in batch
+files. Alas, it does not.
+
+**Method 2: Using the Windows Console**
+
+Open a Windows console with administrator privileges, then type::
+
+    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%::
+
+    @start /b "Leo" "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" %*
+    
+You may omit the /b option if you want to create a separate console window for Leo.
+
+Adding Leo to Your Path
+-----------------------
+
+After you have installed Leo, you should add the location of your leo/core folder to your python path.
+One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+
+    import sys
+    sys.path.append(r'<path-to-leo>leo\core')
+
+Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
+
+Running Leo for the first time
+------------------------------
+
+The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file ``.leoID.txt``. Leo attempts to create
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
+finally in Leo's core directory. You can change this identifier at any time by
+editing ``.leoID.txt``.
 #@+node:ekr.20210718034819.1: ** From LeoDocs.leo: 
 The section covers complex options arising from two equivalent problems:
 
@@ -10750,256 +10618,342 @@ Running all tests is not necessary.  Just select::
 and then do Alt-4 (run-selected-unit-tests-locally).
 
 **Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
-#@+node:ekr.20210815060206.1: ** From leoDist.leo
+#@+node:ekr.20210809085711.1: ** From leoGlobals.py
+#@+node:ekr.20210809093522.1: *3* g.adjustTripleString
+def adjustTripleString(s, tab_width):
+    """Remove leading indentation from a triple-quoted string.
 
-#@+node:ekr.20210815060352.1: *3* --- from setup.py
-@language python
-#@+node:ekr.20210815060206.2: *4* get_version (not used)
-def get_version(file, version=None):
-    """Determine current Leo version. Use git if in checkout, else internal Leo"""
-    root = os.path.dirname(os.path.realpath(file))
-    if os.path.exists(os.path.join(root, '.git')):
-        version = git_version(file)
-    if not version:
-        version = get_semantic_version(leoVersion.version)
-    return version
-#@+node:ekr.20210815060206.3: *4* git_version (not used)
-def git_version(file, version=None):
+    This works around the fact that Leo nodes can't represent underindented strings.
     """
-    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-    Return as semantic version string compliant with PEP440
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = g.splitLines(s)
+    first, w = True, 0
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            # The sign of w2 does not matter.
+            w2 = abs(g.computeWidth(lws, tab_width))
+            if w2 == 0:
+                return s
+            if first or w2 < w:
+                w = w2
+                first = False
+    if w == 0:
+        return s
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
+    return ''.join(result)
+#@+node:ekr.20050211120242.2: *3* g.removeExtraLws
+def removeExtraLws(s: str, tab_width):
     """
-    root = os.path.dirname(os.path.realpath(file))
-    try:
-        tag, distance, commit = g.gitDescribe(root)  # 5.6b2, 55, e1129da
-        ctag = clean_git_tag(tag)
-        #version = get_semver(ctag)
-        version = ctag
-        if int(distance) > 0:
-            version = '{}-dev{}'.format(version, distance)
-    except IndexError:
-        print('Attempt to `git describe` failed with IndexError')
-    except FileNotFoundError:
-        print('Attempt to `git describe` failed with FileNotFoundError')
-    return version
-#@+node:ekr.20210815060206.4: *5* clean_git_tag
-def clean_git_tag(tag):
-    """Return only version number from tag name. Ignore unknown formats.
-       Is specific to tags in Leo's repository.
-            5.7b1          -->	5.7b1
-            Leo-4-4-8-b1   -->	4-4-8-b1
-            v5.3           -->	5.3
-            Fixed-bug-149  -->  Fixed-bug-149
+    Remove extra indentation from one or more lines.
+
+    Warning: used by getScript.
     """
-    if tag.lower().startswith('leo-'): tag = tag[4:]
-    if tag.lower().startswith('v'): tag = tag[1:]
-    return tag
-#@+node:ekr.20210815060206.5: *4* get_semantic_version (not used)
-def get_semantic_version(tag):
-    """Return 'Semantic Version' from tag string"""
-    try:
-        import semantic_version
-    except Exception:
-        print(f"Can not import semantic_version. Using {tag!r}")
-        return tag
-    try:
-        # tuple of major, minor, build, pre-release, patch.
-        # Example: 5.6b2 --> 5.6-b2
-        return str(semantic_version.Version.coerce(tag, partial=True))
-    except Exception:
-        ### g.es_exception()
-        print_exception()
-        print(f"Bad version: {tag!r}")
-        return tag
-        ###
-        # print(
-            # f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
-            # "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
-            # "This version can't be uploaded to PyPi.org.")
-        # version = tag
-    # return version
-#@+node:ekr.20210815060405.1: *3* --- old distribution files
-@language rest
-@wrap
+    lines = g.splitLines(s)
+    # Find the first non-blank line and compute w, the width of its leading whitespace.
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            w = g.computeWidth(lws, tab_width)
+            break
+    else: return s
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
+    return ''.join(result)
+#@+node:ekr.20210712134630.1: ** From leoPersistence.py
+@g.command('at-file-to-at-auto')
+def at_file_to_at_auto_command(event):
+    c = event.get('c')
+    if c and c.persistenceController:
+        c.persistenceController.convert_at_file_to_at_auto(c.p)
+#@+node:ekr.20210327062138.1: ** From leoRst.py
+#@+node:ekr.20120219194520.10444: *3* html parser classes
+# Perhaps mod_http used to use these.
+#@+node:ekr.20120219194520.10445: *4*  class LinkAnchorParserClass (HTMLParser)
+class LinkAnchorParserClass(HTMLParser.HTMLParser):
+    """
+    The base class to recognize anchors and links in HTML documents. A
+    special marker is the "node_marker" which marks the border between node
+    and the next.
 
--matt (@maphew)
+    The parser classes are used to construct the html code for nodes.
 
-Old distribution files.
-#@+node:ekr.20210815060405.2: *4* @@clean ../../About leo.exe.TXT
-leo.exe contains everything you need to run Leo on Windows without
-installing *anything* else. It contains all needed libraries, including
-Python itself, PyQt, pylint and other packages. It also contains many data
-files, including Leo's source code and various .leo files.
+    The algorithm has two phases:
+    - Phase 1 AnchorHtmlParserClass: gets the html code for each node.
+    - Phase 2 LinkHtmlParserClass: finds all links and checks whethr
+      these links need to be modified.
+    """
+    @others
+#@+node:ekr.20120219194520.10446: *5* __init__
+def __init__(self, rst, p):
+    """Ctor for the LinkAnchorParserClass class."""
+    super().__init__()
+    self.rst = rst
+    self.p = p.copy()
+    # Set ivars from options.
+    # This works only if we don't change nodes!
+    self.node_begin_marker = rst.getOption(p, 'node_begin_marker')
+    self.clear_http_attributes = rst.getOption(p, 'clear_http_attributes')
+    self.current_file = rst.outputFileName
+#@+node:ekr.20120219194520.10447: *5* is_anchor
+def is_anchor(self, tag, attrs):
+    """
+    Check if the current tag is an anchor.
+    Returns *all* anchors.
+    Works with docutils 0.4
+    """
+    if tag == 'a':
+        return True
+    if self.is_node_marker(attrs):
+        return True
+    return tag == "span"
+#@+node:ekr.20120219194520.10448: *5* is_link
+def is_link(self, tag, attrs):
+    """Return True if tag, attrs is represents a link."""
+    if tag == 'a':
+        return 'href' in dict(attrs)
+    return False
+#@+node:ekr.20120219194520.10449: *5* is_node_marker
+def is_node_marker(self, attrs):
+    """
+    Return the name of the anchor, if this is an anchor for the beginning of a node,
+    False otherwise.
+    """
+    d = dict(attrs)
+    if d.get('id', '').startswith(self.node_begin_marker):
+        return d['id']
+    return False
+#@+node:ekr.20120219194520.10450: *4* class HtmlParserClass (LinkAnchorParserClass)
+class HtmlParserClass(LinkAnchorParserClass):
+    """
+    The responsibility of the html parser is:
+        1. Find out which html code belongs to which node.
+        2. Keep a stack of open tags which apply to the current node.
+        3. Keep a list of tags which should be included in the nodes, even
+           though they might be closed.
+           The <style> tag is one example of that.
 
-Notes:
+    Later, we have to relocate inter-file links: if a reference to another location
+    is in a file, we must change the link.
 
-1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
+    """
+    @others
+#@+node:ekr.20120219194520.10451: *5* HtmlParserClass.__init__
+def __init__(self, rst, p):
+    """Ctor for the HtmlParserClass class."""
+    super().__init__(rst, p)
+    self.stack = None
+        # The stack contains lists of the form:
+        # [text1, text2, previous].
+        # text1 is the opening tag
+        # text2 is the closing tag
+        # previous points to the previous stack element
+    self.node_marker_stack = []
+        # self.node_marker_stack.pop() returns True for a closing tag if
+        # the opening tag identified an anchor belonging to a VNode.
+    self.node_code = []
+        # Accumulated html code.
+        # Once the hmtl code is assigned a VNode, it is deleted here.
+    self.deleted_lines = 0
+        # Number of lines deleted in self.node_code
+    self.endpos_pending = False
+        # Do not include self.node_code[0:self.endpos_pending] in the html code.
+    self.last_position = None
+        # Last position; we must attach html code to this node.
+    self.last_marker = None
+#@+node:ekr.20120219194520.10452: *5* HtmlParserClass.handle_starttag
+def handle_starttag(self, tag, attrs):
+    """
+    1. Find out if the current tag is an achor.
+    2. If it is an anchor, we check if this anchor marks the beginning of a new
+       node
+    3. If a new node begins, then we might have to store html code for the previous
+       node.
+    4. In any case, put the new tag on the stack.
+    """
+    is_node_marker = False
+    if self.is_anchor(tag, attrs) and self.is_node_marker(attrs):
+        is_node_marker = self.is_node_marker(attrs)
+        line, column = self.getpos()
+        if self.last_position:
+            lines = self.node_code[:]
+            lines[0] = lines[0][self.startpos:]
+            del lines[line - self.deleted_lines - 1 :]
+            mod_http.get_http_attribute(self.last_position).extend(lines)
+            << trace the unknownAttribute >>
+        if self.deleted_lines < line - 1:
+            del self.node_code[: line - 1 - self.deleted_lines]
+            self.deleted_lines = line - 1
+            self.endpos_pending = True
+    starttag = self.get_starttag_text()
+    self.stack = [starttag, None, self.stack]
+    self.node_marker_stack.append(is_node_marker)
+#@+node:ekr.20120219194520.10453: *6* << trace the unknownAttribute >>
+if 0:
+    g.pr("rst3: unknownAttributes[self.http_attributename]")
+    g.pr("For:", self.last_position)
+    pprint.pprint(mod_http.get_http_attribute(self.last_position))
+#@+node:ekr.20120219194520.10454: *5* HtmlParserClass.handle_endtag
+def handle_endtag(self, tag):
+    """
+    1. Set the second element of the current top of stack.
+    2. If this is the end tag for an anchor for a node,
+       store the current stack for that node.
+    """
+    self.stack[1] = "</" + tag + ">"
+    if self.endpos_pending:
+        line, column = self.getpos()
+        self.startpos = self.node_code[0].find(">", column) + 1
+        self.endpos_pending = False
+    is_node_marker = self.node_marker_stack.pop()
+    if is_node_marker and not self.clear_http_attributes:
+        self.last_position = self.rst.http_map[is_node_marker]
+        if is_node_marker != self.last_marker:
+            # if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
+            mod_http.set_http_attribute(
+                self.rst.http_map[is_node_marker], self.stack)
+            self.last_marker = is_node_marker
+            # bwm: last_marker is not needed?
+    self.stack = self.stack[2]
+#@+node:ekr.20120219194520.10455: *5* HtmlParserClass.feed
+def feed(self, line):
+    # pylint: disable=arguments-differ
+    self.node_code.append(line)
+    HTMLParser.HTMLParser.feed(self, line)  # Call the base class's feed().
+#@+node:ekr.20120219194520.10456: *4* class AnchorHtmlParserClass (LinkAnchorParserClass)
+class AnchorHtmlParserClass(LinkAnchorParserClass):
+    """
+    This htmlparser does the first step of relocating: finding all the
+    anchors within the html nodes.
 
-2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
-   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
-   is slower than usual.
+    Each anchor is mapped to a tuple: (current_file, position).
 
-3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
-   but these files will be in the temp folder. They will be *destroyed*
-   when you exit leo.exe. If you want to do real work with Leo you must
-   create .leo files in a permanent folder on your machine.
-#@+node:ekr.20210815060405.3: *4* @@clean ../../optional-tools.txt
-# A list of pip installable tools and libraries in the Requirements File Format
-# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
-#
-# Install with:
-#   
-#       pip install -r optional-tools.txt
-#
-
-pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
-pyxml; python_version < "3.0"   # Used for XML import. Appears to be only python 2 package
-#@+node:ekr.20210815060405.4: *4* @@clean ../../INSTALL.TXT
-System requirements
--------------------
-
-Leo requires the `Python`_ and `PyQt_` package.
-The `PyEnchant`_ package is optional. 
-
-**Python**: Leo will work on any platform that supports Python 2.6 or
-above, including Python 3.0 and above. To install Python, see
-http://python.org.
-
-**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
-package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
-The PyQt version must match your installed Python version. Remember that
-Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
-binary PyQt installer.
-
-**PyEnchant**: You must install the PyEnchant package if you want to use
-Leo's Spell tab. Download and install the PyEnchant package from
-http://pythonhosted.org/pyenchant/download.html There is an executable
-installer for Windows users.
-
-
-Leo's HOME directory
---------------------
-
-Python's HOME environment variable specifies Leo's HOME directory.
-See http://docs.python.org/lib/os-procinfo.html for details.
-
-Leo puts several files in your HOME/.leo directory:
-.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
-There are various fallback directories if there is no home directory.
-
-Installing Leo on Linux
------------------------
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
-
-To gain access to Leo, you have two choices:
-
-A. Add  ~/leo-5.2 to your path.
-B. Create alias for Leo.
-
-I prefer using aliases because they allow me to start Leo using Python 2 or 3,
-or other distributions, like Anaconda 2 or 3.
-
-See `Running Leo`_ for how to run Leo after installing it.
-
-Installing Leo on Windows
---------------------------
-
-Install Python and Qt, as described above.
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unpack them
-into a temp folder. You may place the sources anywhere you like, including
-Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
-
-
-Running Leo
------------
-
-You can run Leo from a Python interpreter as follows::
-
-    import leo
-    leo.run() # runs Leo, opening a new outline or,
-    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
-
-Another way to run Leo is as follows::
-
-    cd <path-to-launchLeo.py>
-    python launchLeo.py
-
-Creating File Associations
---------------------------
-
-**Linux**
-
-The following shell script will allow you to open foo.leo files by typing leo foo::
-
-    #!/bin/sh 
-    python <leopath>launchLeo.py $1
-
-where <leopath> is the path to the directory *containing* the leo directory. 
-
-**Windows**
-
-*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-There are two ways of associating .leo files with Leo. The first uses the
-Windows control panel, the second, the Windows console.
-
-**Method 1: Using the Windows Control Panel**
-
-The goal is that you want to associate .leo files with the following command::
-
-    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" "%1"
+    Filters out markers which mark the beginning of the html code for a node.
+    """
+    @others
+#@+node:ekr.20120219194520.10457: *5*  __init__
+def __init__(self, rst, p):
+    """Ctor for the AnchorHtmlParserClass class."""
+    super().__init__(rst, p)
+    self.p = p.copy()
+    self.anchor_map = rst.anchor_map
+#@+node:ekr.20120219194520.10458: *5* handle_starttag
+def handle_starttag(self, tag, attrs):
+    """
+    1. Find out if the current tag is an achor.
+    2. If the current tag is an anchor, update the mapping;
+         anchor -> (filename, p)
+    """
+    if not self.is_anchor(tag, attrs):
+        return
+    if self.current_file not in self.anchor_map:
+        self.anchor_map[self.current_file] = (self.current_file, self.p)
+        simple_name = g.os_path_split(self.current_file)[1]
+        self.anchor_map[simple_name] = self.anchor_map[self.current_file]
+        # if bwm_file:
+        #   print >> bwm_file, "anchor(1): current_file:",
+        #   self.current_file, "position:", self.p, "Simple name:", simple_name
+        # Not sure what to do here, exactly. Do I need to manipulate
+        # the pathname?
+    for name, value in attrs:
+        if name == 'name' or tag == 'span' and name == 'id':
+            if not value.startswith(self.node_begin_marker):
+                # if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
+                self.anchor_map[value] = (self.current_file, self.p.copy())
+#@+node:ekr.20120219194520.10459: *4* class LinkHtmlParserClass (LinkAnchorParserClass)
+class LinkHtmlparserClass(LinkAnchorParserClass):
+    """This html parser does the second step of relocating links:
+    1. It scans the html code for links.
+    2. If there is a link which links to a previously processed file
+       then this link is changed so that it now refers to the node.
+    """
+    @others
+#@+node:ekr.20120219194520.10460: *5* __init__
+def __init__(self, rst, p):
+    """Ctor for the LinkHtmlParserClass class."""
+    super().__init__(rst, p)
+    self.anchor_map = rst.anchor_map
+    self.replacements = []
+#@+node:ekr.20120219194520.10461: *5* handle_starttag
+def handle_starttag(self, tag, attrs):
+    """
+    1. Find out if the current tag is an achor.
+    2. If the current tag is an anchor, update the mapping;
+         anchor -> p
+        Update the list of replacements for the document.
+    """
+    if not self.is_link(tag, attrs):
+        return
+    marker = self.node_begin_marker
+    for name, value in attrs:
+        if name == 'href':
+            href = value
+            href_parts = href.split("#")
+            if len(href_parts) == 1:
+                href_a = href_parts[0]
+            else:
+                href_a = href_parts[1]
+            if not href_a.startswith(marker):
+                if href_a in self.anchor_map:
+                    href_file, href_node = self.anchor_map[href_a]
+                    http_node_ref = mod_http.node_reference(href_node)
+                    line, column = self.getpos()
+                    self.replacements.append(
+                        (line, column, href, href_file, http_node_ref))
+#@+node:ekr.20120219194520.10462: *5* get_replacements
+def get_replacements(self):
+    return self.replacements
+#@+node:ekr.20210328100631.1: *3* insert-* commands from #1843 (move to attic)
+# These will never
+#@+node:ekr.20210328100510.2: *4* rst.insertBody
+def insertBody(self, p):
+    """
+    Handle @rst-insert-body.
     
-Before Windows 7, you do this with using the Folder Options control panel.
-In Windows 7, you do this with the Default Programs control panel.
-
-*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
-The quotation marks are needed to handle file paths containing spaces.
-
-*Warning:* In a batch file, %1 passes just the first command line parameter.
-It is logical to expect %* to work for file associations just as in batch
-files. Alas, it does not.
-
-**Method 2: Using the Windows Console**
-
-Open a Windows console with administrator privileges, then type::
-
-    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
-    assoc .leo=LeoFile
-
-And put this leo.bat in %PATH%::
-
-    @start /b "Leo" "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" %*
+    Insert p2.b into the output, where p2 has the given gnx.
+    """
+    c = self.c
+    lines = g.splitLines(p.b.strip())
+    gnx = lines and lines[0].strip()
+    p2 = self.findGnx(c, gnx)
+    if p2:
+        self.write(f"\n\n{p2.b.strip()}\n\n")
+    else:
+        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210328100510.3: *4* rst.insertHead
+def insertHead(self, p):
+    """
+    Handle @rst-insert-head.
     
-You may omit the /b option if you want to create a separate console window for Leo.
-
-Adding Leo to Your Path
------------------------
-
-After you have installed Leo, you should add the location of your leo/core folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:
-
-    import sys
-    sys.path.append(r'<path-to-leo>leo\core')
-
-Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
-
-Running Leo for the first time
-------------------------------
-
-The first time you start Leo, a dialog will ask you for a unique identifier. If
-you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
-stores this identifier in the file ``.leoID.txt``. Leo attempts to create
-``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
-finally in Leo's core directory. You can change this identifier at any time by
-editing ``.leoID.txt``.
-#@+node:ekr.20210312150753.1: ** leoTangle.py
+    Insert p2.h into the output, where p2 has the given gnx.
+    """
+    c = self.c
+    lines = g.splitLines(p.b.strip())
+    gnx = lines and lines[0].strip()
+    p2 = self.findGnx(c, gnx)
+    if p2:
+        self.write(f"\n\n{p2.h}\n\n")
+    else:
+        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210328100510.4: *4* rst.insertTree
+def insertTree(self, p):
+    """
+    Handle @rst-insert-tree.
+    
+    Insert a representation of the tree of headlines.
+    """
+    c = self.c
+    lines = g.splitLines(p.b.strip())
+    gnx = lines and lines[0].strip()
+    p2 = self.findGnx(c, gnx)
+    if p2:
+        level0 = p.level()
+        tree = [f"    {' '*2*(z.level()-level0)}- {z.h}\n" for z in p2.self_and_subtree()]
+        self.write(f"\n\n::\n\n{''.join(tree)}\n\n")
+    else:
+        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210312150753.1: ** From leoTangle.py
 '''
 Support for @root and Leo's tangle and untangle commands.
 '''
@@ -14064,8 +14018,98 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
-#@+node:ekr.20200209055601.1: ** Test stuff
-#@+node:ekr.20200505050955.1: *3* ----- mvc-prototype branch
+#@+node:ekr.20210828103919.1: ** From leoTest2.py
+if 0:
+    @others
+#@+node:ekr.20201129133424.6: *3* function: expected_got
+def expected_got(expected, got):
+    """
+    Return a message, mostly for unit tests.
+    
+    This function is deprecated.  Use unittest.TestCase.assertEqual instead.
+    """
+    from leo.core import leoGlobals as g
+    #
+    # Let block.
+    e_lines = g.splitLines(expected)
+    g_lines = g.splitLines(got)
+    #
+    # Print all the lines.
+    result = ['\n']
+    result.append('Expected:\n')
+    for i, z in enumerate(e_lines):
+        result.extend(f"{i:3} {z!r}\n")
+    result.append('Got:\n')
+    for i, z in enumerate(g_lines):
+        result.extend(f"{i:3} {z!r}\n")
+    #
+    # Report first mismatched line.
+    for i, data in enumerate(zip(e_lines, g_lines)):
+        e_line, g_line = data
+        if e_line != g_line:
+            result.append(f"\nFirst mismatch at line {i}\n")
+            result.append(f"expected: {i:3} {e_line!r}\n")
+            result.append(f"     got: {i:3} {g_line!r}\n")
+            break
+    else:
+        result.append('\nDifferent lengths\n')
+    return ''.join(result)
+#@+node:ekr.20201129133502.1: *3* function: get_time
+def get_time():
+    return time.process_time()
+#@+node:ekr.20201129195238.1: *3* function: compareOutlines & helpers
+def compareOutlines(root1, root2, compareHeadlines=True, tag='', report=True):
+    """
+    Compares two outlines, making sure that their topologies, content and
+    join lists are equivalent
+    """
+    print('==== compareOutlines =====')
+    p2 = root2.copy()
+    ok = True
+    p1 = None
+    for p1 in root1.self_and_subtree():
+        b1 = p1.b
+        b2 = p2.b
+        if p1.h.endswith('@nonl') and b1.endswith('\n'):
+            b1 = b1[:-1]
+        if p2.h.endswith('@nonl') and b2.endswith('\n'):
+            b2 = b2[:-1]
+        ok = (
+            p1 and p2
+            and p1.numberOfChildren() == p2.numberOfChildren()
+            and (not compareHeadlines or (p1.h == p2.h))
+            and b1 == b2
+            and p1.isCloned() == p2.isCloned()
+        )
+        if not ok: break
+        p2.moveToThreadNext()
+    if report and not ok:
+        print('\ncompareOutlines failed: tag:', (tag or ''))
+        print('p1.h:', p1 and p1.h or '<no p1>')
+        print('p2.h:', p2 and p2.h or '<no p2>')
+        print(f"p1.numberOfChildren(): {p1.numberOfChildren()}")
+        print(f"p2.numberOfChildren(): {p2.numberOfChildren()}")
+        if b1 != b2:
+            showTwoBodies(p1.h, p1.b, p2.b)
+        if p1.isCloned() != p2.isCloned():
+            print('p1.isCloned() == p2.isCloned()')
+    return ok
+#@+node:ekr.20201129204348.1: *4* function: showTwoBodies
+def showTwoBodies(t, b1, b2):
+    print('\n', '-' * 20)
+    print(f"expected for {t}...")
+    for line in splitLines(b1):
+        print(f"{len(line):3d}", repr(line))
+    print('-' * 20)
+    print(f"result for {t}...")
+    for line in splitLines(b2):
+        print(f"{len(line):3d}", repr(line))
+    print('-' * 20)
+#@+node:ekr.20201203081125.1: *4* function: splitLines
+def splitLines(s):
+    """Same as g.splitLines(s)"""
+    return s.splitlines(True) if s else []
+#@+node:ekr.20200505050955.1: ** From mvc-prototype branch
 @language rest
 @wrap
 
@@ -14075,8 +14119,8 @@ def checkConventions(event):
   This should provide a large outline for the prototype to play with.
 
 - python leo/extensions/myleoqt.py leo\core\leoPy.db
-#@+node:vitalije.20200502083732.1: *4* @@@file ../extensions/myleoqt.py
-#@+node:vitalije.20200502091628.1: *4* <<imports>>
+#@+node:vitalije.20200502083732.1: *3* @@@file ../extensions/myleoqt.py
+#@+node:vitalije.20200502091628.1: *3* <<imports>>
 from collections import defaultdict
 import sys
 import os
@@ -14105,7 +14149,7 @@ except ImportError:
 g.app = g.bunch(nodeIndices=leoNodes.NodeIndices('vitalije'))
 
 Q = QtCore.Qt
-#@+node:vitalije.20200502103535.1: *4* draw_tree
+#@+node:vitalije.20200502103535.1: *3* draw_tree
 def draw_tree(tree, root, icons):
     def additem(par, parItem):
         for ch in par.children:
@@ -14122,7 +14166,7 @@ def draw_tree(tree, root, icons):
     ritem = tree.invisibleRootItem()
     ritem.setData(0, 1024, root)
     additem(root, ritem)
-#@+node:vitalije.20200508091419.1: *4* execute_script
+#@+node:vitalije.20200508091419.1: *3* execute_script
 def execute_script(self):
     c = self.c
     t = self.tree
@@ -14202,7 +14246,7 @@ def execute_script(self):
         return
     # script terminated successfully let's add undo/redo pair
     self.c.addUndo(undoexec, redoexec)
-#@+node:vitalije.20200508104717.1: *5* undoexec
+#@+node:vitalije.20200508104717.1: *4* undoexec
 def undoexec():
     for v, h, b in old_vs:
         v.b = b
@@ -14214,7 +14258,7 @@ def undoexec():
     reconnect_vnodes(root)
     t.blockSignals(False)
     t.setCurrentItem(curr)
-#@+node:vitalije.20200508104721.1: *5* redoexec
+#@+node:vitalije.20200508104721.1: *4* redoexec
 def redoexec():
     for v, h, b in new_vs:
         v.b = b
@@ -14226,7 +14270,7 @@ def redoexec():
     reconnect_vnodes(root)
     t.blockSignals(False)
     t.setCurrentItem(newcurr)
-#@+node:vitalije.20200507182943.1: *4* test_select_and_commnads
+#@+node:vitalije.20200507182943.1: *3* test_select_and_commnads
 @settings(max_examples=50, deadline=timedelta(seconds=4))
 @given(data())
 def test_select_and_commnads(data):
@@ -14254,6 +14298,53 @@ def test_select_and_commnads(data):
                 assert b == b1
                 app.redo()
             a1, b1 = a2, b2
+#@+node:ekr.20210717043934.1: ** From qt_tree.pyi
+#@+node:ekr.20110605121601.17900: *3* qtree.OnPopup & allies
+def OnPopup(self, p, event):
+    """Handle right-clicks in the outline.
+
+    This is *not* an event handler: it is called from other event handlers."""
+    # Note: "headrclick" hooks handled by VNode callback routine.
+    if event:
+        c = self.c
+        c.setLog()
+        if not g.doHook("create-popup-menu", c=c, p=p, event=event):
+            self.createPopupMenu(event)
+        if not g.doHook("enable-popup-menu-items", c=c, p=p, event=event):
+            self.enablePopupMenuItems(p, event)
+        if not g.doHook("show-popup-menu", c=c, p=p, event=event):
+            self.showPopupMenu(event)
+    return "break"
+#@+node:ekr.20110605121601.17901: *4* qtree.OnPopupFocusLost
+@language rest
+@
+On Linux we must do something special to make the popup menu "unpost" if the
+mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
+explicitly unpost. In order to process the <FocusOut> event, we need to be able
+to find the reference to the popup window again, so this needs to be an
+attribute of the tree object; hence, "self.popupMenu".
+
+Aside: though Qt tries to be muli-platform, the interaction with different
+window managers does cause small differences that will need to be compensated by
+system specific application code. :-(
+@c
+@language python
+
+# 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
+
+def OnPopupFocusLost(self, event=None):
+    # self.popupMenu.unpost()
+    pass
+#@+node:ekr.20110605121601.17902: *4* qtree.createPopupMenu
+def createPopupMenu(self, event):
+    """This might be a placeholder for plugins.  Or not :-)"""
+#@+node:ekr.20110605121601.17903: *4* qtree.enablePopupMenuItems
+def enablePopupMenuItems(self, p, event):
+    """Enable and disable items in the popup menu."""
+#@+node:ekr.20110605121601.17904: *4* qtree.showPopupMenu
+def showPopupMenu(self, event):
+    """Show a popup menu."""
+#@+node:ekr.20200209055601.1: ** Test stuff
 #@+node:ekr.20210429050530.1: *3* @@button test-ConvertAtRoot (obsolete)
 g.cls()
 import importlib
