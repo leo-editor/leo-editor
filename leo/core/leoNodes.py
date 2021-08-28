@@ -1442,7 +1442,7 @@ class Position:
     #@+node:ekr.20160502095354.1: *4* p.copyWithNewVnodes
     def copyWithNewVnodes(self, copyMarked=False):
         """
-        Return an **unliked** copy of p with a new vnode v.
+        Return an **unlinked** copy of p with a new vnode v.
         The new vnode is complete copy of v and all its descendants.
         """
         p = self
