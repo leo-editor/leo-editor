@@ -687,7 +687,7 @@ if QtWidgets:
             first block in braces with the name clas is the controlling
             css for our widget.
             
-            Returns a tuple of strings (foregound, background).
+            Returns a tuple of strings (color, background).
             """
             # Get first block with name matching "clas'
             block = css_string.split(clas, 1)
@@ -718,6 +718,8 @@ if QtWidgets:
             """If fg or bg colors are missing, assign
             reasonable values.  Can happen with incorrectly
             constructed themes, or no-theme color schemes.
+            
+            Intended to be called when bg color is missing.
             
             RETURNS
             a QColor object for the background color
