@@ -4590,15 +4590,7 @@ try:
 finally:
     g.app.gui = oldGui
 #@+node:ekr.20071113192611: *3* leoEditCommands
-#@+node:ekr.20210829055149.1: *4*  Edit command tests: still needed
-#@+node:ekr.20071113145804.16: *5* @test helpForbindings
-vr = c.helpCommands.helpForBindings()
-if not vr:
-    self.skipTest('no vr plugin')
-#@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
-vr = c.helpCommands.helpForFindCommands()
-if not vr:
-    self.skipTest('no vr plugin')
+#@+node:ekr.20210829055149.1: *4* Edit command tests: still needed
 #@+node:ekr.20111104171708.3847: *5* @test c-to-python
 import leo.core.leoBeautify as leoBeautify
 import leo.commands.convertCommands as convertCommands
@@ -4863,14 +4855,6 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
-#@+node:ekr.20191215093835.1: *5* data
-#@+node:ekr.20191215093835.7: *6* a
-#@+node:ekr.20191215093835.8: *7* b
-#@+node:ekr.20191215093835.4: *6* c
-#@+node:ekr.20191215093835.5: *6* d
-#@+node:ekr.20191215093835.6: *6* e
-#@+node:ekr.20191215093835.7: *7* a
-#@+node:ekr.20191215093835.8: *8* b
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -4955,14 +4939,13 @@ else:
         test(p)
     finally:
         tear_down(p)
-#@+node:ekr.20120212130242.3942: *5* data
-#@+node:ekr.20120212130242.3948: *6* a
-#@+node:ekr.20120212130242.3949: *7* b
-#@+node:ekr.20120212130242.3945: *6* c
-#@+node:ekr.20120212130242.3946: *6* d
-#@+node:ekr.20120212130242.3947: *6* e
-#@+node:ekr.20120212130242.3948: *7* a
-#@+node:ekr.20120212130242.3949: *8* b
+#@+node:ekr.20120303054735.3931: *5* @test expand-and-go-right
+# Test of bug 930726: expandNodeAndGoToFirstChild only expands or only goes to first child .
+
+p.contract()
+c.expandNodeAndGoToFirstChild()
+assert c.p == p.firstChild()
+#@+node:ekr.20120303054735.3932: *6* child
 #@+node:ekr.20070305095401: *5* @test goNext/PrevVisitedNode
 p = c.p.copy()
 c.selectPosition(p.threadBack())
@@ -4971,248 +4954,19 @@ c.goPrevVisitedNode()
 p2 = c.p
 c.goNextVisitedNode()
 p3 = c.p
-#@+node:ekr.20170401123840.1: *5* goto-global-line tests
-# To do: use tables as in the clean-c test.
-#@+node:ekr.20170401123840.2: *6* @test c.goToScriptLineNumber
-child = g.findNodeInChildren(c, p, 'syntax-error')
-assert child, 'no child'
-try:
-    c.goToScriptLineNumber(1, child)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-#@+node:ekr.20170401123840.3: *7* syntax-error
-@language python
-def spam:
-    pass
-#@+node:ekr.20170401123840.4: *6* @test find_file_line: @auto-md
-import sys
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-if not sys.platform.startswith('win'):
-    self.skipTest('Requires Windows')
-trace = False
-h = '@auto unittest/at-auto-md-line-number-test.md'
-root = g.findNodeAnywhere(c, h)
-assert root
-s = c.gotoCommands.get_external_file_with_sentinels(root)
-if trace:
-    print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-for n in range(20):
-    p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-    if found:
-        if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-    else:
-        if trace: print('not found: %s' % (n+1))
-        assert n == 8, n
-        break
-#@+node:ekr.20170401123840.5: *6* @test find_file_line: @auto-org
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-org unittest/at-auto-org-line-number-test.org'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-#@+node:ekr.20170401123840.6: *6* @test find_file_line: @auto-otl
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-otl unittest/at-auto-otl-line-number-test.otl'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
-            break
-#@+node:ekr.20170401123840.7: *6* @test find_file_line: @auto-py
-import sys
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('win'):
-    trace = False
-    root = p.parent().parent()
-    # h = '@auto unittest/at-auto-line-number-test.py'
-    h = '@auto unittest/at-auto-unit-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(25):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            assert n == 12, n
-            if trace: print('not found: %s' % (n+1))
-            break
-else:
-    self.skipTest('Skip on Linux')
-#@+node:ekr.20170401123840.9: *6* @test find_file_line: @clean-c
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    lines = g.splitLines(s)
-    stripped_lines = [z for z in lines if not z.startswith('//@')]
-    if trace:
-        # g.printList(stripped_lines)
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(lines)]))
-    table = (
-        # n is the 1-based offset of the *stripped* lines.
-        # Directives do not appear in @clean files.
-        # (1,     '@language c'),
-        # (2,     '@tabwidth -4'),
-        (3,     '// before @others // line 1'),
-        # (4,     '@others'),
-        # spam node.
-        (1,     'def spam(): // line 2'),
-        (2,     '    pass'),
-        # eggs node.
-        (1,    'def eggs(): // line 4'),
-        (2,    '    pass'),
-        # resume top node.
-        (5,    '// last line: line 6'),
-    )
-    for n, data in enumerate(table):
-        offset, line = data
-        p, offset2, found = c.gotoCommands.find_file_line(n+1, p=target)
-        assert offset == offset2, 'expected offset %s, got %s %r' % (
-            offset, offset2, p and p.h)
-    p, offset, found = c.gotoCommands.find_file_line(15, p=target)
-    assert not found
-#@+node:ekr.20170401123840.10: *6* @test find_file_line: @clean-python
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-#@+node:ekr.20170401123840.11: *6* @test find_file_line: @file-c
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n+1)
-            break
-#@+node:ekr.20170401123840.12: *6* @test find_file_line: @file-python
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n+1)
-            break
-#@+node:ekr.20170401123840.13: *6* @test find_file_line: @nosent-python
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@nosent unittest/at-nosent-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtNoSentFileNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-#@+node:ekr.20170401123840.14: *6* @test find_gnx @file
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest or g.in_bridge:
-    self.skipTest('Can not be run externally')
-else:
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    gnx = target.v.fileIndex
-    assert gnx
-    found = c.gotoCommands.find_gnx(root, gnx, h)
-    assert found, 'not found'
-#@+node:ekr.20170401123840.15: *6* @test goto_show_results not found
-c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
-c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
-
+#@+node:ekr.20100212104817.5351: *5* @test help-for-command
+result = c.helpCommands.getBindingsForCommand('help')
+if not result:
+    self.skipTest('no settings')
+assert result.strip().lower()=='f1', repr(result)
+#@+node:ekr.20071113145804.16: *5* @test helpForbindings
+vr = c.helpCommands.helpForBindings()
+if not vr:
+    self.skipTest('no vr plugin')
+#@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
+vr = c.helpCommands.helpForFindCommands()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20071113145804.4: *5* @test selfInsertCommand-1
 @first # -*- coding: utf-8 -*-
 @language python
@@ -5267,6 +5021,8 @@ w.setSelectionRange(2,11)
 c.editCommands.setFillPrefix(event=None)
 prefix = c.editCommands.fillPrefix
 assert prefix == 'xxxx.yyyy',repr(prefix)
+#@+node:ekr.20100212104817.5346: *5* @test sort-recent-files (new)
+c.sortRecentFiles()
 #@+node:ekr.20100212104817.5347: *5* @test sort-siblings (new)
 child = p.firstChild()
 assert child.h == 'b','fail 1'
@@ -5288,9 +5044,318 @@ finally:
 #@+node:ekr.20100212104817.5348: *6* b
 #@+node:ekr.20100212104817.5349: *6* a
 #@+node:ekr.20100212104817.5350: *6* c
-#@+node:ekr.20100212104817.5346: *5* @test sort-recent-files (new)
-c.sortRecentFiles()
-#@+node:ekr.20061104172236.1: *4*  Function tests
+#@+node:ekr.20121016134831.3906: *5* @test typescript-to-python
+import leo.core.leoBeautify as leoBeautify
+cpp = leoBeautify.CPrettyPrinter(c)
+# ts2p = c.convertCommands.TS_To_Python(c)
+fn = 'typescript tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+assert aList
+# bts2p.convertCodeList(aList)
+# s = ''.join(aList)
+#@+node:ekr.20121016134831.3907: *6* typescript tokenize test
+@language javascript
+
+public attemptIncrementalUpdateUnit(previousScript: Script,scriptId: string,newSourceText: ISourceText,editRange: ScriptEditRange): UpdateUnitResult
+    self.logger.log("attemptIncrementalUpdateUnit(\"" + scriptId + "\")")
+    if editRange === None:
+        throw Error("editRange should be valid")
+    var scope1 = self.getEnclosingScopeContextIfSingleScopeEdit(previousScript,scriptId,newSourceText,editRange)
+    if scope1 === None:
+        return None
+    var newScopeLength = scope1.scopeStartAST.limChar - scope1.scopeStartAST.minChar + editRange.delta
+    # Heuristic: if the range to reparse is too big,bail out.
+    # This is because a full parse will be faster than an incremental parse followed by all the necessary fix-ups
+    if newScopeLength >= newSourceText.getLength()/ 2:
+        self.logger.log("  Bailing out because range of scope to reparse(" + newScopeLength + " characters)is greater than half the size of the source text")
+        return None
+    # Capture parsing errors so that they are part of "updateResult"
+    var parseErrors: TypeScript.ErrorEntry:[] = []
+    var errorCapture = function(minChar: number,charLen: number,message: string,unitIndex: number): void
+        parseErrors.push(TypeScript.ErrorEntry:(unitIndex,minChar,minChar + charLen,message))
+    var quickParseResult = TypeScript.quickParse(self.logger,scope1.scopeStartAST,newSourceText,scope1.scopeStartAST.minChar,scope1.scopeStartAST.minChar + newScopeLength,errorCapture)
+    if quickParseResult.endLexState != TypeScript.LexState.Start:
+        self.logger.log("  Bailing out because scope contains unterminated comment")
+        return None
+    var scriptFragment = quickParseResult.Script
+    if scriptFragment.vars.members.length !== 0:
+        self.logger.log("  Bailing out because new source text defines variables")
+        return None
+    #if(scriptFragment.scopes.members.length !== 1)
+    #    logger.log("  Bailing out because new source text defines more than one scope(or none)");
+    #    return null;
+    #
+    # This detects adding close curlies,since they have the side effect of having the parser
+    # parse more members in the scope range.
+    if scriptFragment.bod.members.length !== 1:
+        self.logger.log("  Bailing out because new source text defines more than one scope(or none)")
+        return None
+    var oldScope = scope1.scopeStartAST
+    var newScope = scriptFragment.bod.members[0]
+    if oldScope.nodeType != newScope.nodeType:
+        self.logger.log("  Bailing out because new source text does not define the same scope type as the existing scope")
+        return None
+    if not (<any>oldScope).leftCurlyCount or not (<any>oldScope).rightCurlyCount:
+        self.logger.log("  Bailing out because sopce doesn't have left/right curly count")
+        return None
+    if(<any>oldScope).leftCurlyCount !==(<any>newScope).leftCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)left curly braces")
+        return None
+    if(<any>oldScope).rightCurlyCount !==(<any>newScope).rightCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)right curly braces")
+        return None
+    if newScope.minChar !== 0:
+        self.logger.log("  Bailing out because new function declaration does not start at position 0")
+        return None
+    if newScope.limChar !== newScopeLength:
+        self.logger.log("  Bailing out because new function declaration does not end at the new end position")
+        return None
+    return TypeScript.UpdateUnitResult.singleScopeEdits(previousScript,scriptFragment,oldScope,newScope,editRange,parseErrors)
+#@+node:ekr.20170401123840.1: *4* goto-global-line tests
+# To do: use tables as in the clean-c test.
+#@+node:ekr.20170401123840.2: *5* @test c.goToScriptLineNumber
+child = g.findNodeInChildren(c, p, 'syntax-error')
+assert child, 'no child'
+try:
+    c.goToScriptLineNumber(1, child)
+finally:
+    p.contract()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20170401123840.3: *6* syntax-error
+@language python
+def spam:
+    pass
+#@+node:ekr.20170401123840.4: *5* @test find_file_line: @auto-md
+import sys
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+if not sys.platform.startswith('win'):
+    self.skipTest('Requires Windows')
+trace = False
+h = '@auto unittest/at-auto-md-line-number-test.md'
+root = g.findNodeAnywhere(c, h)
+assert root
+s = c.gotoCommands.get_external_file_with_sentinels(root)
+if trace:
+    print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+for n in range(20):
+    p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+    if found:
+        if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+    else:
+        if trace: print('not found: %s' % (n+1))
+        assert n == 8, n
+        break
+#@+node:ekr.20170401123840.5: *5* @test find_file_line: @auto-org
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    h = '@auto-org unittest/at-auto-org-line-number-test.org'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
+            break
+#@+node:ekr.20170401123840.6: *5* @test find_file_line: @auto-otl
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    h = '@auto-otl unittest/at-auto-otl-line-number-test.otl'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % n)
+            assert n == 5, n
+            break
+#@+node:ekr.20170401123840.7: *5* @test find_file_line: @auto-py
+import sys
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('win'):
+    trace = False
+    root = p.parent().parent()
+    # h = '@auto unittest/at-auto-line-number-test.py'
+    h = '@auto unittest/at-auto-unit-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(25):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            assert n == 12, n
+            if trace: print('not found: %s' % (n+1))
+            break
+else:
+    self.skipTest('Skip on Linux')
+#@+node:ekr.20170401123840.9: *5* @test find_file_line: @clean-c
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.c'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    lines = g.splitLines(s)
+    stripped_lines = [z for z in lines if not z.startswith('//@')]
+    if trace:
+        # g.printList(stripped_lines)
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(lines)]))
+    table = (
+        # n is the 1-based offset of the *stripped* lines.
+        # Directives do not appear in @clean files.
+        # (1,     '@language c'),
+        # (2,     '@tabwidth -4'),
+        (3,     '// before @others // line 1'),
+        # (4,     '@others'),
+        # spam node.
+        (1,     'def spam(): // line 2'),
+        (2,     '    pass'),
+        # eggs node.
+        (1,    'def eggs(): // line 4'),
+        (2,    '    pass'),
+        # resume top node.
+        (5,    '// last line: line 6'),
+    )
+    for n, data in enumerate(table):
+        offset, line = data
+        p, offset2, found = c.gotoCommands.find_file_line(n+1, p=target)
+        assert offset == offset2, 'expected offset %s, got %s %r' % (
+            offset, offset2, p and p.h)
+    p, offset, found = c.gotoCommands.find_file_line(15, p=target)
+    assert not found
+#@+node:ekr.20170401123840.10: *5* @test find_file_line: @clean-python
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
+            break
+#@+node:ekr.20170401123840.11: *5* @test find_file_line: @file-c
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.c'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            assert n == 10, n
+            if trace: print('not found: %s' % n+1)
+            break
+#@+node:ekr.20170401123840.12: *5* @test find_file_line: @file-python
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            assert n == 10, n
+            if trace: print('not found: %s' % n+1)
+            break
+#@+node:ekr.20170401123840.13: *5* @test find_file_line: @nosent-python
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    h = '@nosent unittest/at-nosent-line-number-test.py'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    assert root.isAtNoSentFileNode(), root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
+            break
+#@+node:ekr.20170401123840.14: *5* @test find_gnx @file
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+else:
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    gnx = target.v.fileIndex
+    assert gnx
+    found = c.gotoCommands.find_gnx(root, gnx, h)
+    assert found, 'not found'
+#@+node:ekr.20170401123840.15: *5* @test goto_show_results not found
+c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
+c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
+
+#@+node:ekr.20061104172236.1: *4* Function tests
 #@+node:ekr.20150430053825.1: *5* @test abbrevCommands.next_place
 ac = c.abbrevCommands
 assert ac
