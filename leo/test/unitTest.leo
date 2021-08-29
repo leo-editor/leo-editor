@@ -1601,7 +1601,7 @@ for name,s,expected in table:
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
 # Dec. 2019: 938 tests, 16 skipped.
-# Aug. 2021: 909 tests, 15 skipped. 144 traditional tests.
+# Aug. 2021: 768 tests, 15 skipped. 145 traditional tests.
 </t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
