@@ -479,6 +479,8 @@ if QtWidgets:
             self.leo_q_completer = None
             self.leo_options = None
             self.leo_model = None
+            
+            self.lastblock = -2
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
         def __repr__(self):
             return f"(LeoQTextBrowser) {id(self)}"
@@ -746,7 +748,7 @@ if QtWidgets:
             """
             h, s, v, a = bg_color.getHsv()
 
-            if v < 45:
+            if v < 40:
                 v = 60
                 bg_color.setHsv(h, s, v, a)
             elif v > 240:
@@ -774,13 +776,20 @@ if QtWidgets:
                 editor.setExtraSelections([])
                 return
 
+            # Some cursor movements don't change the line: ignore them
+            curs = editor.textCursor()
+            blocknum = curs.blockNumber()
+            if blocknum == self.lastblock:
+                return
+
+            self.lastblock = blocknum
             ssm = c.styleSheetManager
             sheet = ssm.expand_css_constants(c.active_stylesheet)
 
             bg = c.config.getString('line-highlight-color') or ''
             hl_color = QColor(bg)
             if hl_color.getHsv() == (0, 0, 0, 255) and bg != 'black':
-                # Always returns black for an invalid color
+                # getHsv() always returns black for an invalid color
                 # so if we didn't ask for black, compute the color instead
                 fg, bg = self.parse_css(sheet, 'QTextEdit')
                 bg_color = QColor(bg) if bg else self.assign_bg(fg)
@@ -789,7 +798,7 @@ if QtWidgets:
             selection = editor.ExtraSelection()
             selection.format.setBackground(hl_color)
             selection.format.setProperty(FullWidthSelection, True)
-            selection.cursor = editor.textCursor()
+            selection.cursor = curs
             selection.cursor.clearSelection()
 
             editor.setExtraSelections([selection])
