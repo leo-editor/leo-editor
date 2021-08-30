@@ -68,6 +68,23 @@ def create_outline(c, s):
     p = c.fileCommands.getLeoOutlineFromClipboard(s2)
     unittest.TestCase().assertTrue(p)
     return c
+#@+node:ekr.20210830070921.1: *3* function: convert_at_test_nodes
+def convert_at_test_nodes(c, converter, root):
+    """
+    Use converter.convert() to convert all the @test nodes in the
+    root's tree to children a new last top-level node.
+    """
+    last = c.lastTopLevel()
+    target = last.insertAfter()
+    target.h = 'Converted nodes'
+    count = 0
+    for p in root.subtree():
+        if p.h.startswith('@test'):
+            converter.convert(p, target)
+            count += 1
+    target.expand()
+    c.redraw(target)
+    print(f"converted {count} @test nodes")
 #@+node:ekr.20201130074836.1: *3* function: convert_leoEditCommands_tests
 def convert_leoEditCommands_tests(c, root, target):
     """
@@ -161,13 +178,13 @@ class ConvertTests:
         h = p.h
         assert h.startswith('@test')
         h = h[len('@test'):].strip()
-        return (
-            h.replace('(', ' ').
-            replace(':', ' ').
-            replace('-', ' ').
-            replace('.', ' ').
-            replace(' ', '_').
-            replace('__', '_').lower())
+        result = []
+        for ch in h:
+            if ch.isalnum():
+                result.append(ch)
+            else:
+                result.append('_')
+        return ''.join(result).replace('__', '_')
     #@+node:ekr.20201202083708.1: *3* ConvertTests.convert
     def convert(self, p, target):
         """
