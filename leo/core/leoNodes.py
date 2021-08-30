@@ -1224,7 +1224,7 @@ class Position:
         p = self; n = p._childIndex
         parent_v = p._parentVnode()
             # Returns None if p.v is None.
-        if not p.v:
+        if p and not p.v:
             g.trace('no p.v:', p, g.callers())
         if p.v and parent_v and len(parent_v.children) > n + 1:
             p._childIndex = n + 1
