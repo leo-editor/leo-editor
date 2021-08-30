@@ -22,6 +22,21 @@ class NodesTest(unittest.TestCase):
         c, p = self.c, self.c.p
         self.assertEqual(p.h, 'NewHeadline')
         p.h = 'root'
+        # Create the following outline:
+        #
+        # test-outline: root
+        #   child clone a
+        #     node clone 1
+        #   child b
+        #     child clone a
+        #       node clone 1
+        #   child c
+        #     node clone 1
+        #   child clone a
+        #     node clone 1
+        #   child b
+        #     child clone a
+        #       node clone 1
         self.test_outline = textwrap.dedent('''\
     <?xml version="1.0" encoding="utf-8"?>
     <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
@@ -87,6 +102,19 @@ class NodesTest(unittest.TestCase):
         s = sib.convertTreeToString()
         for p2 in sib.self_and_subtree():
             self.assertTrue(p2.h in s)
+    #@+node:ekr.20210830095545.44: *4* TestNode.test_deleting_the_root_should_select_another_node
+    def test_deleting_the_root_should_select_another_node(self):
+        c, p = self.c, self.c.p
+        root_h = p.h
+        child = p.next()
+        child.moveToRoot()  # Does not change child position.
+        c.setRootPosition(child)
+        self.assertTrue(c.positionExists(child))
+        self.assertEqual(c.rootPosition().h, child.h)
+        next = c.rootPosition().next()
+        self.assertEqual(next.h, root_h)
+        c.rootPosition().doDelete(newNode=next)
+        c.setRootPosition(next)
     #@+node:ekr.20210830144615.1: *3* Passed tests
     if 0:
         #@+others
@@ -1129,41 +1157,10 @@ class NodesTest(unittest.TestCase):
                 assert result2 == expected2,'fail2: given %s expected %s got %s' % (
                     repr(s),repr(expected2),repr(result2))
         #@-others
-    #@+node:ekr.20210830110221.1: *3* Fails
-    #@+node:ekr.20210830145703.1: *4* Skip
+    #@+node:ekr.20210830145703.1: *3* Skip fails
     if 0:
         #@+others
-        #@+node:ekr.20210830095545.44: *5* TestNode.test_deleting_the_root_should_select_another_node
-        def test_deleting_the_root_should_select_another_node(self):
-            c, p = self.c, self.c.p
-            # Do not change the root during external unit tests!
-            if g.app.isExternalUnitTest:
-                self.skipTest('Can not be run externally')
-            else:
-
-                ### import leo.core.leoNodes as leoNodes
-            
-                while p.hasChildren():
-                    p.firstChild().doDelete(newNode=None)
-            
-                child = p.insertAsNthChild(0)
-                child.setHeadString('child')
-            
-                try:
-                    child.moveToRoot()  # Does not change child position.
-                    c.setRootPosition(child)
-                    assert c.positionExists(child)
-                    assert c.rootPosition().h == 'child', 'fail 1'
-                    next = c.rootPosition().next()
-                    assert next.h == 'Startup', 'fail 2: next: %s' % next
-                    c.rootPosition().doDelete(newNode=next)
-                    c.setRootPosition(next)
-                finally:
-                    while p.hasChildren():
-                        p.firstChild().doDelete(newNode=None)
-                    # c.selectPosition(p)
-                    c.redraw_now()
-        #@+node:ekr.20210830095545.46: *5* TestNode.test_insert_node
+        #@+node:ekr.20210830095545.46: *4* TestNode.test_insert_node
         def test_insert_node(self):
             c, p = self.c, self.c.p
             # This test requires @bool select-next-after-delete = False
@@ -1219,7 +1216,7 @@ class NodesTest(unittest.TestCase):
                     while root.hasChildren():
                         root.firstChild().doDelete(newNode=None)
                 c.redraw_now(root)
-        #@+node:ekr.20210830095545.21: *5* TestNode.test_p__eq_
+        #@+node:ekr.20210830095545.21: *4* TestNode.test_p__eq_
         def test_p__eq_(self):
             c, p = self.c, self.c.p
             # These must not return NotImplemented!
@@ -1228,7 +1225,7 @@ class NodesTest(unittest.TestCase):
             assert p.__ne__(None) is True, p.__ne__(None)
             assert p.__eq__(root) is False, p.__eq__(root)
             assert p.__ne__(root) is True, p.__ne__(root)
-        #@+node:ekr.20210830095545.23: *5* TestNode.test_p_adjustPositionBeforeUnlink
+        #@+node:ekr.20210830095545.23: *4* TestNode.test_p_adjustPositionBeforeUnlink
         def test_p_adjustPositionBeforeUnlink(self):
             c, p = self.c, self.c.p
             table = (
@@ -1265,7 +1262,7 @@ class NodesTest(unittest.TestCase):
             # Data.
             #@+others
             #@-others
-        #@+node:ekr.20210830095545.24: *5* TestNode.test_p_comparisons
+        #@+node:ekr.20210830095545.24: *4* TestNode.test_p_comparisons
         def test_p_comparisons(self):
             c, p = self.c, self.c.p
             copy = p.copy()
@@ -1279,12 +1276,12 @@ class NodesTest(unittest.TestCase):
             assert p.__ne__(copy) is False
             assert p.__eq__(root) is False
             assert p.__ne__(root) is True
-        #@+node:ekr.20210830095545.31: *5* TestNode.test_p_isRootPosition
+        #@+node:ekr.20210830095545.31: *4* TestNode.test_p_isRootPosition
         def test_p_isRootPosition(self):
             c, p = self.c, self.c.p
             assert not c.isRootPosition(None),'fail 1'
             assert not c.isRootPosition(p),'fail 2'
-        #@+node:ekr.20210830095545.33: *5* TestNode.test_p_moveToFirst_LastChild
+        #@+node:ekr.20210830095545.33: *4* TestNode.test_p_moveToFirst_LastChild
         def test_p_moveToFirst_LastChild(self):
             c, p = self.c, self.c.p
 
@@ -1307,7 +1304,7 @@ class NodesTest(unittest.TestCase):
                 if 1:
                     setup(child)
                 c.redraw(p)
-        #@+node:ekr.20210830095545.34: *5* TestNode.test_p_moveToVisBack_in_a_chapter
+        #@+node:ekr.20210830095545.34: *4* TestNode.test_p_moveToVisBack_in_a_chapter
         def test_p_moveToVisBack_in_a_chapter(self):
             c, p = self.c, self.c.p
             # Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
@@ -1325,7 +1322,7 @@ class NodesTest(unittest.TestCase):
                     assert p2 is None,p2
                 finally:
                     c.chapterController.selectChapterByName('main',collapse=True)
-        #@+node:ekr.20210830095545.22: *5* TestNode.test_p_relinkAsCloneOf
+        #@+node:ekr.20210830095545.22: *4* TestNode.test_p_relinkAsCloneOf
         def test_p_relinkAsCloneOf(self):
             c, p = self.c, self.c.p
             u = c.undoer
@@ -1348,7 +1345,7 @@ class NodesTest(unittest.TestCase):
             assert not p2.isCloned()
             assert p1 and p2
             u.clearUndoState()
-        #@+node:ekr.20210830095545.36: *5* TestNode.test_p_setBodyString
+        #@+node:ekr.20210830095545.36: *4* TestNode.test_p_setBodyString
         def test_p_setBodyString(self):
             # Tests that c.setBodyString works immediately.
             c, p = self.c, self.c.p
@@ -1365,7 +1362,7 @@ class NodesTest(unittest.TestCase):
             finally:
                 c.setBodyString(child,before)
                 c.selectPosition(p)
-        #@+node:ekr.20210830095545.38: *5* TestNode.test_p_unique_nodes
+        #@+node:ekr.20210830095545.38: *4* TestNode.test_p_unique_nodes
         def test_p_unique_nodes(self):
             p = self.c.p
             aList = [z for z in p.unique_nodes()]
