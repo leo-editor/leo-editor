@@ -144,7 +144,7 @@ class ConvertTests:
             f'        command_name="{real_command_name}",\n'
             f"    )\n"
         )
-    #@+node:ekr.20201130075024.3: *3* ConvertTests.class_name
+    #@+node:ekr.20201130075024.3: *3* ConvertTests.class_name (not used)
     def class_name(self, command_name):
         """Convert the command name to a class name."""
         # This method is not used.
@@ -155,6 +155,19 @@ class ConvertTests:
             inner_parts = s.split(' ')
             result.append(''.join([z.capitalize() for z in inner_parts]))
         return ''.join(result)
+    #@+node:ekr.20210829142807.1: *3* ConvertTests.clean_headline
+    def clean_headline(self, p):
+        """Make p.h suitable as a function.name."""
+        h = p.h
+        assert h.startswith('@test')
+        h = h[len('@test'):].strip()
+        return (
+            h.replace('(', ' ').
+            replace(':', ' ').
+            replace('-', ' ').
+            replace('.', ' ').
+            replace(' ', '_').
+            replace('__', '_').lower())
     #@+node:ekr.20201202083708.1: *3* ConvertTests.convert
     def convert(self, p, target):
         """
@@ -199,7 +212,34 @@ class ConvertEditCommandsTests(ConvertTests):
         new_child = target.insertAsLastChild()
         new_child.h = command_name
         new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
-
     #@-others
+#@+node:ekr.20210829142231.1: ** class ConvertGeneralTests (ConvertTests)
+class ConvertGeneralTests(ConvertTests):
+    """
+    Convert a general @test node by creating a test function
+    consisting of the (indented) body of the @test node.
+    """
+    
+    class_name = "<class name>"  # To be set in subclasses
+
+    #@+others
+    #@+node:ekr.20210829142231.2: *3* ConvertGeneralTests.convert
+    def convert(self, p, target):
+        """
+        Convert p, an @test node, creating a new node as the last child of
+        target.
+        """
+        # Calculate the headline and body text.
+        test_name = f"test_{self.clean_headline(p)}"
+        body = textwrap.indent(p.b, ' '*4).rstrip()
+        # Create the new node.
+        test_node = target.insertAsLastChild()
+        test_node.h = f"{self.class_name}.{test_name}"
+        test_node.b = f"def {test_name}(self):\n{body}\n"
+    #@-others
+#@+node:ekr.20210829143744.1: ** class ConvertFindTests(ConvertGeneralTests)
+class ConvertFindTests(ConvertGeneralTests):
+    
+    class_name = "TestFind"
 #@-others
 #@-leo
