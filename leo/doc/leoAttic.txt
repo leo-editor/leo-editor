@@ -14385,6 +14385,57 @@ assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
 # assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
 #    repr(rst.atAutoWriteUnderlines))
 print('done')
+#@+node:ekr.20210829205518.1: *3* Find tests that use simulate command
+# These are pointless anyway
+#@+node:ekr.20210829203927.7: *4* TestFind.test_set_find_mode_commands
+def test_set_find_mode_commands(self):
+    c = self.c
+    table = (
+        'set-find-everywhere',
+        'set-find-node-only',
+        'set-find-suboutline-only',
+    )
+    # show-find-tab-options     = Ctrl-o
+    # show-find-options         = o
+    for command in table:
+        c.k.simulateCommand(command)
+#@+node:ekr.20210829203927.8: *4* TestFind.test_show_find_options
+def test_show_find_options(self):
+    c = self.c
+    c.k.simulateCommand('show-find-options')
+#@+node:ekr.20210829203927.9: *4* TestFind.test_toggle_find_options_commands
+def xx_test_toggle_find_options_commands(self):
+    c = self.c
+    table = (
+        # 'toggle-find-clone-find-all-option',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        # 'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        # 'toggle-find-wrap-around-option',
+    )
+    for command in table:
+        c.k.simulateCommand(command)
+        c.k.simulateCommand(command)
+#@+node:ekr.20210829203927.1: *4* TestFind.test_minibuffer_find_commands
+def test_minibuffer_find_commands(self):
+    c = self.c
+    table = (
+        're-search-forward',
+        're-search-backward',
+        'search-forward',
+        'search-backward',
+        'word-search-forward',
+        'word-search-backward',
+    )
+    for command in table:
+        # This is not a full test.  We must use keyboardQuit here!
+        c.k.simulateCommand(command)
+        c.k.keyboardQuit(None)
 #@-all
 #@@nosearch
 #@-leo

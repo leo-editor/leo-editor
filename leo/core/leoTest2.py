@@ -257,9 +257,11 @@ class ConvertGeneralTests(ConvertTests):
         test_node.h = f"{self.class_name}.{test_name}"
         test_node.b = f"def {test_name}(self):\n{body}\n"
     #@-others
-#@+node:ekr.20210829143744.1: ** class ConvertFindTests(ConvertGeneralTests)
+#@+node:ekr.20210829143744.1: ** class Convert*Tests(ConvertGeneralTests)
 class ConvertFindTests(ConvertGeneralTests):
-    
     class_name = "TestFind"
+    
+class ConvertNodeTests(ConvertGeneralTests):
+    class_name = "TestNode"
 #@-others
 #@-leo
