@@ -13,7 +13,6 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 
 import sys
 import textwrap
-import unittest
 
 #@+others
 #@+node:ekr.20201129132455.1: ** Top-level functions...
@@ -57,16 +56,6 @@ def create_app():
             # f"      gui: {(t3-t2):.3f}\n"
             # f"commander: {(t4-t2):.3f}\n"
             # f"    total: {(t4-t1):.3f}\n")
-    return c
-#@+node:ekr.20210828111901.1: *3* function: create_outline
-def create_outline(c, s):
-    """
-    Replace all nodes of c with the nodes formed by string s, copied to the clipboard.
-    """
-    s2 = textwrap.dedent(s.strip() + '\n')
-    # g.printObj(g.splitLines(s2))
-    p = c.fileCommands.getLeoOutlineFromClipboard(s2)
-    unittest.TestCase().assertTrue(p)
     return c
 #@+node:ekr.20210830070921.1: *3* function: convert_at_test_nodes
 def convert_at_test_nodes(c, converter, root):
