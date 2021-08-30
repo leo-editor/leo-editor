@@ -74,6 +74,9 @@ def convert_at_test_nodes(c, converter, root):
     Use converter.convert() to convert all the @test nodes in the
     root's tree to children a new last top-level node.
     """
+    if not root:
+        print('no root')
+        return
     last = c.lastTopLevel()
     target = last.insertAfter()
     target.h = 'Converted nodes'

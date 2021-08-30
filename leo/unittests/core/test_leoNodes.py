@@ -38,7 +38,6 @@ class NodesTest(unittest.TestCase):
     #@+node:ekr.20210828075915.1: *3* NodesTest.test_all_nodes_coverage
     def test_all_nodes_coverage(self):
         # @test c iters: <coverage tests>
-        g.cls()
         c = self.c
         #@+<< define s >>
         #@+node:ekr.20210828113536.1: *4* << define s >>

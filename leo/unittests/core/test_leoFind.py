@@ -475,14 +475,59 @@ class TestFind(unittest.TestCase):
             # print(' '*p.level(), p.h)
             # g.printObj(g.splitLines(p.b), tag=p.h)
     #@+node:ekr.20210110073117.70: *3* Tests of Helpers...
-    #@+node:ekr.20210110073117.80: *4* TestFind._cfa_find_next_match
-    def test_cfa_find_next_match(self):
-        c, settings, x = self.c, self.settings, self.x
-        p = c.rootPosition()
-        for find in ('xxx', 'def'):
+    #@+node:ekr.20210110073117.72: *4* TestFind.test_argument_errors
+    def test_argument_errors(self):
+
+        settings, x = self.settings, self.x
+        # Bad search pattern.
+        settings.find_text = r'^def\b(('
+        settings.pattern_match = True
+        x.do_clone_find_all(settings)
+        x.find_next_match(p=None)
+        x.do_change_all(settings)
+    #@+node:ekr.20210110073117.74: *4* TestFind.test_batch_plain_replace
+    def test_batch_plain_replace(self):
+        settings, x = self.settings, self.x
+        settings.find_text = 'b'
+        settings.change_text = 'B'
+        for ignore in (True, False):
+            settings.ignore_case = ignore
+            x.init_ivars_from_settings(settings)
+            s = 'abc b z'
+            count, s2 = x.batch_plain_replace(s)
+            assert count == 2 and s2 == 'aBc B z', (ignore, count, repr(s2))
+    #@+node:ekr.20210110073117.75: *4* TestFind.test_batch_regex_replace
+    def test_batch_regex_replace(self):
+        settings, x = self.settings, self.x
+        s = 'abc b z'
+        table = (
+            (1, 2, 'B', 'B', 'aBc B z'),
+            (0, 2, 'b', 'B', 'aBc B z'),
+            (1, 2, r'([BX])', 'B', 'aBc B z'),
+        )
+        for ignore, count, find, change, expected_s in table:
+            settings.ignore_case = bool(ignore)
             settings.find_text = find
-            x._cfa_find_next_match(p)
-    #@+node:ekr.20210110073117.71: *4* TestFind._inner_search_backward
+            settings.change_text = change
+            x.init_ivars_from_settings(settings)
+            actual_count, actual_s = x.batch_regex_replace(s)
+            assert actual_count == count and actual_s == expected_s, (
+                f"ignore: {ignore} find: {find} change {change}\n"
+                f"expected count: {count} s: {expected_s}\n"
+                f"     got count: {actual_count} s: {actual_s}")
+
+    #@+node:ekr.20210110073117.73: *4* TestFind.test_batch_word_replace
+    def test_batch_word_replace(self):
+        settings, x = self.settings, self.x
+        settings.find_text = 'b'
+        settings.change_text = 'B'
+        for ignore in (True, False):
+            settings.ignore_case = ignore
+            x.init_ivars_from_settings(settings)
+            s = 'abc b z'
+            count, s2 = x.batch_word_replace(s)
+            assert count == 1 and s2 == 'abc B z', (ignore, count, repr(s2))
+    #@+node:ekr.20210110073117.71: *4* TestFind.test_cfa_backwards_search
     def test_cfa_backwards_search(self):
         settings, x = self.settings, self.x
         pattern = 'def'
@@ -494,13 +539,20 @@ class TestFind(unittest.TestCase):
                     x.init_ivars_from_settings(settings)
                     x._inner_search_backward(s, 0, len(s), pattern, nocase, word)
                     x._inner_search_backward(s, 0, 0, pattern, nocase, word)
-    #@+node:ekr.20210110073117.83: *4* TestFind._inner_search_match_word
+    #@+node:ekr.20210110073117.80: *4* TestFind.test_cfa_find_next_match
+    def test_cfa_find_next_match(self):
+        c, settings, x = self.c, self.settings, self.x
+        p = c.rootPosition()
+        for find in ('xxx', 'def'):
+            settings.find_text = find
+            x._cfa_find_next_match(p)
+    #@+node:ekr.20210110073117.83: *4* TestFind.test_cfa_match_word
     def test_cfa_match_word(self):
         x = self.x
         x._inner_search_match_word("def spam():", 0, "spam")
         x._inner_search_match_word("def spam():", 0, "xxx")
 
-    #@+node:ekr.20210110073117.85: *4* TestFind._inner_search_plain
+    #@+node:ekr.20210110073117.85: *4* TestFind.test_cfa_plain_search
     def test_cfa_plain_search(self):
         settings, x = self.settings, self.x
         pattern = 'def'
@@ -512,7 +564,7 @@ class TestFind(unittest.TestCase):
                     x.init_ivars_from_settings(settings)
                     x._inner_search_plain(s, 0, len(s), pattern, nocase, word)
                     x._inner_search_plain(s, 0, 0, pattern, nocase, word)
-    #@+node:ekr.20210110073117.88: *4* TestFind._inner_search_regex
+    #@+node:ekr.20210110073117.88: *4* TestFind.test_cfa_regex_search
     def test_cfa_regex_search(self):
         x = self.x
         pattern = r'(.*)pattern'
@@ -541,64 +593,7 @@ class TestFind(unittest.TestCase):
                 # f"     groups: {groups}\n"
                 # f"   expected: {expected}\n"
                 # f"        got: {result}")
-    #@+node:ekr.20210110073117.89: *4* TestFind._switch_style
-    def test_switch_style(self):
-        x = self.x
-        table = (
-            ('', None),
-            ('TestClass', None),
-            ('camelCase', 'camel_case'),
-            ('under_score', 'underScore'),
-        )
-        for s, expected in table:
-            result = x._switch_style(s)
-            assert result == expected, (
-                f"       s: {s}\n"
-                f"expected: {expected!r}\n"
-                f"     got: {result!r}")
-    #@+node:ekr.20210110073117.74: *4* TestFind.batch_plain_replace
-    def test_batch_plain_replace(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'b'
-        settings.change_text = 'B'
-        for ignore in (True, False):
-            settings.ignore_case = ignore
-            x.init_ivars_from_settings(settings)
-            s = 'abc b z'
-            count, s2 = x.batch_plain_replace(s)
-            assert count == 2 and s2 == 'aBc B z', (ignore, count, repr(s2))
-    #@+node:ekr.20210110073117.75: *4* TestFind.batch_regex_replace
-    def test_batch_regex_replace(self):
-        settings, x = self.settings, self.x
-        s = 'abc b z'
-        table = (
-            (1, 2, 'B', 'B', 'aBc B z'),
-            (0, 2, 'b', 'B', 'aBc B z'),
-            (1, 2, r'([BX])', 'B', 'aBc B z'),
-        )
-        for ignore, count, find, change, expected_s in table:
-            settings.ignore_case = bool(ignore)
-            settings.find_text = find
-            settings.change_text = change
-            x.init_ivars_from_settings(settings)
-            actual_count, actual_s = x.batch_regex_replace(s)
-            assert actual_count == count and actual_s == expected_s, (
-                f"ignore: {ignore} find: {find} change {change}\n"
-                f"expected count: {count} s: {expected_s}\n"
-                f"     got count: {actual_count} s: {actual_s}")
-
-    #@+node:ekr.20210110073117.73: *4* TestFind.batch_word_replace
-    def test_batch_word_replace(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'b'
-        settings.change_text = 'B'
-        for ignore in (True, False):
-            settings.ignore_case = ignore
-            x.init_ivars_from_settings(settings)
-            s = 'abc b z'
-            count, s2 = x.batch_word_replace(s)
-            assert count == 1 and s2 == 'abc B z', (ignore, count, repr(s2))
-    #@+node:ekr.20210110073117.76: *4* TestFind.check_args
+    #@+node:ekr.20210110073117.76: *4* TestFind.test_check_args
     def test_check_args(self):
         # Bad search patterns..
         x = self.x
@@ -620,7 +615,19 @@ class TestFind(unittest.TestCase):
         x.do_find_prev(settings)
         x.do_change_all(settings)
         x.do_change_then_find(settings)
-    #@+node:ekr.20210110073117.77: *4* TestFind.compute_result_status
+    #@+node:ekr.20210829203927.10: *4* TestFind.test_clean_init
+    def test_clean_init(self):
+        c = self.c
+        x = leoFind.LeoFind(c)
+        table = (
+            'ignore_case', 'node_only', 'pattern_match', 
+            'search_headline', 'search_body', 'suboutline_only',
+            'mark_changes', 'mark_finds', 'whole_word',
+        )
+        for ivar in table:
+            assert getattr(x, ivar) is None, ivar
+        assert x.reverse is False
+    #@+node:ekr.20210110073117.77: *4* TestFind.test_compute_result_status
     def test_compute_result_status(self):
         x = self.x
         # find_all_flag is True
@@ -640,79 +647,8 @@ class TestFind(unittest.TestCase):
         partial_settings.wrapping = True
         x.init_ivars_from_settings(partial_settings)
         x.compute_result_status(find_all_flag=False)
-    #@+node:ekr.20210110073117.82: *4* TestFind.make_regex_subs (to do)
-    def test_make_regex_subs(self):
-        x = self.x
-        x.re_obj = re.compile(r'(.*)pattern')  # The search pattern.
-        m = x.re_obj.search('test pattern')  # The find pattern.
-        change_text = r'\1Pattern\2'  # \2 is non-matching group.
-        x.make_regex_subs(change_text, m.groups())
-
-        # OLD
-        # groups = (r"f'", r"line\n")
-        # change_text = r"""\1 AA \2 BB \3'"""
-        # expected = r"""f' AA line\\n BB \3'"""
-        # result = x.makeRegexSubs(change_text, groups)
-        # assert result == expected, (expected, result)
-    #@+node:ekr.20210110073117.84: *4* TestFind.next_node_after_fail
-    def test_fnm_next_after_fail(self):
-        settings, x = self.settings, self.x
-        for reverse in (True, False):
-            settings.reverse = reverse
-            for wrapping in (True, False):
-                settings.wrapping = wrapping
-                x.init_ivars_from_settings(settings)
-                x._fnm_next_after_fail(settings.p)
-    #@+node:ekr.20210110073117.86: *4* TestFind.replace_all_helper
-    def test_replace_all_helper(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'xyzzy'
-        settings.change_text = 'xYzzy'
-        s = 'abc xyzzy done'
-        x.replace_all_helper('')  # Error test.
-        for regex in (True, False):
-            settings.pattern_match = regex
-            for word in (True, False):
-                settings.whole_word = word
-                x.init_ivars_from_settings(settings)
-                x.replace_all_helper(s)
-    #@+node:ekr.20210110073117.87: *4* TestFind.replace_back_slashes
-    def test_replace_back_slashes(self):
-        x = self.x
-        table = (
-            (r'a\bc', r'a\bc'),
-            (r'a\\bc', r'a\bc'),
-            (r'a\tc', 'a\tc'),  # Replace \t by a tab.
-            (r'a\nc', 'a\nc'),  # Replace \n by a newline.
-        )
-        for s, expected in table:
-            result = x.replace_back_slashes(s)
-            assert result == expected, (s, result, expected)
-    #@+node:ekr.20210110073117.72: *4* TestFind.test_argument_errors
-    def test_argument_errors(self):
-
-        settings, x = self.settings, self.x
-        # Bad search pattern.
-        settings.find_text = r'^def\b(('
-        settings.pattern_match = True
-        x.do_clone_find_all(settings)
-        x.find_next_match(p=None)
-        x.do_change_all(settings)
-    #@+node:ekr.20210829202223.1: *3* Legacy helper tests...
-    #@+node:ekr.20210829203927.10: *4* TestFind.test_clean_init
-    def test_clean_init(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
-        table = (
-            'ignore_case', 'node_only', 'pattern_match', 
-            'search_headline', 'search_body', 'suboutline_only',
-            'mark_changes', 'mark_finds', 'whole_word',
-        )
-        for ivar in table:
-            assert getattr(x, ivar) is None, ivar
-        assert x.reverse is False
-    #@+node:ekr.20210829203927.12: *4* TestFind.test_find_inner_search_backward
-    def test_find_inner_search_backward(self):
+    #@+node:ekr.20210829203927.12: *4* TestFind.test_inner_search_backward
+    def test_inner_search_backward(self):
         c = self.c
         x = leoFind.LeoFind(c)
 
@@ -755,8 +691,8 @@ class TestFind(unittest.TestCase):
         test(plain_table,  'plain_table',  nocase=False, word=False)
         test(nocase_table, 'nocase_table', nocase=True,  word=False)
         test(word_table,   'word_table',   nocase=False, word=True)
-    #@+node:ekr.20210829203927.13: *4* TestFind.test_find_inner_search_plain
-    def test_find_inner_search_plain(self):
+    #@+node:ekr.20210829203927.13: *4* TestFind.test_inner_search_plain
+    def test_inner_search_plain(self):
         c = self.c
         x = leoFind.LeoFind(c)
 
@@ -799,8 +735,8 @@ class TestFind(unittest.TestCase):
         test(plain_table,  'plain_table',  nocase=False, word=False)
         test(nocase_table, 'nocase_table', nocase=True,  word=False)
         test(word_table,   'word_table',   nocase=False, word=True)
-    #@+node:ekr.20210829203927.11: *4* TestFind.test_find_inner_search_regex
-    def test_find_inner_search_regex(self):
+    #@+node:ekr.20210829203927.11: *4* TestFind.test_inner_search_regex
+    def test_inner_search_regex(self):
         c = self.c
         x = leoFind.LeoFind(c)
 
@@ -838,22 +774,42 @@ class TestFind(unittest.TestCase):
         test(plain_table,  'plain_table',  back=False, nocase=False)
         test(nocase_table, 'nocase_table', back=False, nocase=True)
         test(back_table,   'back_table',   back=True,  nocase=False)
-    #@+node:ekr.20210829203927.14: *4* TestFind.test_find_replace_back_slashes
-    def test_find_replace_back_slashes(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
-        table = (
-            ('\\\\', '\\'),
-            ('\\n', '\n'),
-            ('\\t', '\t'),
-        )
-        for s, expected in table:
-            got = x.replace_back_slashes(s)
-            assert expected==got, (
-                '\n         s: %r'
-                '\n  expected: %r'
-                '\n       got: %r'
-                % (s, expected, got))
+    #@+node:ekr.20210110073117.82: *4* TestFind.test_make_regex_subs (to do)
+    def test_make_regex_subs(self):
+        x = self.x
+        x.re_obj = re.compile(r'(.*)pattern')  # The search pattern.
+        m = x.re_obj.search('test pattern')  # The find pattern.
+        change_text = r'\1Pattern\2'  # \2 is non-matching group.
+        x.make_regex_subs(change_text, m.groups())
+
+        # OLD
+        # groups = (r"f'", r"line\n")
+        # change_text = r"""\1 AA \2 BB \3'"""
+        # expected = r"""f' AA line\\n BB \3'"""
+        # result = x.makeRegexSubs(change_text, groups)
+        # assert result == expected, (expected, result)
+    #@+node:ekr.20210110073117.84: *4* TestFind.test_next_node_after_fail
+    def test_fnm_next_after_fail(self):
+        settings, x = self.settings, self.x
+        for reverse in (True, False):
+            settings.reverse = reverse
+            for wrapping in (True, False):
+                settings.wrapping = wrapping
+                x.init_ivars_from_settings(settings)
+                x._fnm_next_after_fail(settings.p)
+    #@+node:ekr.20210110073117.86: *4* TestFind.test_replace_all_helper
+    def test_replace_all_helper(self):
+        settings, x = self.settings, self.x
+        settings.find_text = 'xyzzy'
+        settings.change_text = 'xYzzy'
+        s = 'abc xyzzy done'
+        x.replace_all_helper('')  # Error test.
+        for regex in (True, False):
+            settings.pattern_match = regex
+            for word in (True, False):
+                settings.whole_word = word
+                x.init_ivars_from_settings(settings)
+                x.replace_all_helper(s)
     #@+node:ekr.20210829203927.2: *4* TestFind.test_replace_all_plain_search
     def test_replace_all_plain_search(self):
         c = self.c
@@ -942,6 +898,37 @@ class TestFind(unittest.TestCase):
             assert result == result2, 'expected result: %r: got: %r' % (result, result2)
             assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
         # print('pass')
+    #@+node:ekr.20210829203927.14: *4* TestFind.test_replace_back_slashes
+    def test_replace_back_slashes(self):
+        c = self.c
+        x = leoFind.LeoFind(c)
+        table = (
+            ('\\\\', '\\'),
+            ('\\n', '\n'),
+            ('\\t', '\t'),
+            (r'a\bc', r'a\bc'),
+            (r'a\\bc', r'a\bc'),
+            (r'a\tc', 'a\tc'),  # Replace \t by a tab.
+            (r'a\nc', 'a\nc'),  # Replace \n by a newline.
+        )
+        for s, expected in table:
+            got = x.replace_back_slashes(s)
+            self.assertEqual(expected, got, msg=s)
+    #@+node:ekr.20210110073117.89: *4* TestFind.test_switch_style
+    def test_switch_style(self):
+        x = self.x
+        table = (
+            ('', None),
+            ('TestClass', None),
+            ('camelCase', 'camel_case'),
+            ('under_score', 'underScore'),
+        )
+        for s, expected in table:
+            result = x._switch_style(s)
+            assert result == expected, (
+                f"       s: {s}\n"
+                f"expected: {expected!r}\n"
+                f"     got: {result!r}")
     #@-others
 #@-others
 

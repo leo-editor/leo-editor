@@ -20308,10 +20308,10 @@ if hasattr(c,'theScriptingController'):
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
-#@+node:ekr.20210215043210.1: ** New-style unit tests
+#@+node:ekr.20210215043210.1: ** New-style unit tests (not used)
 # These are more typically run using unittest or pytest -cov
 # They are included here for reference.
-#@+node:ekr.20210817092233.1: *3* @test python -m leo
+#@+node:ekr.20210817092233.1: *3* @@test python -m leo
 #2137: Run *all* per-file unit tests from unitTest.leo.
 import sys
 python = 'python3' if sys.platform == 'linux' else 'python'
