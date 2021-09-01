@@ -252,5 +252,8 @@ class ConvertFindTests(ConvertGeneralTests):
     
 class ConvertNodeTests(ConvertGeneralTests):
     class_name = "TestNode"
+    
+class ConvertBasicTests(ConvertGeneralTests):
+    class_name = "BasicTest"
 #@-others
 #@-leo
