@@ -7524,6 +7524,18 @@ def getTestVars():
     # This is an indirect test that some unit test has run.
     d['getTestVars'] = True
     return c, p and p.copy()
+#@+node:ekr.20210901071523.1: *3* g.run_coverage_tests
+def run_coverage_tests(module='', filename=''):
+    """
+    Run the coverage tests given by the module and filename strings.
+    """
+    g.cls()
+    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+    os.chdir(leo_editor_dir)
+    prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
+    # command = "leo.core.leoAst leo\core\leoAst.py"
+    command = f"{prefix} {module} {filename}"
+    g.execute_shell_commands(command, trace=False)
 #@+node:ekr.20200221050038.1: *3* g.run_unit_test_in_separate_process
 def run_unit_test_in_separate_process(command):
     """
@@ -7556,6 +7568,18 @@ def run_unit_test_in_separate_process(command):
         g.trace('Test failed')
         g.printObj(err_lines, tag='err_lines')
         assert False
+#@+node:ekr.20210901065224.1: *3* g.run_unit_tests
+def run_unit_tests(tests=""):
+    """
+    Run the unit tests given by the "tests" string.
+    
+    Run *all* unit tests if "tests" is not given.
+    """
+    g.cls()
+    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+    os.chdir(leo_editor_dir)
+    command = f"python -m unittest {tests or ''}"
+    g.execute_shell_commands(command, trace=False)
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode(s: Union[bytes, str], encoding, reportErrors=False):
     """For unit testing: convert s to an encoded string and return (s,ok)."""
