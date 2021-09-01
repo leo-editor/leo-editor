@@ -62,9 +62,10 @@ class SyntaxTest(unittest.TestCase):
         c = self.c
         fn = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
         # Only run this test if setup.py exists: it may not in the actual distribution.
-        if g.os_path_exists(fn):
-            s, e = g.readFileIntoString(fn)
-            c.testManager.checkFileSyntax(fn, s, reraise=True, suppress=False)
+        if not g.os_path_exists(fn):
+            self.skipTest('setup.py not found')
+        s, e = g.readFileIntoString(fn)
+        c.testManager.checkFileSyntax(fn, s, reraise=True, suppress=False)
     #@-others
 #@-others
 #@-leo
