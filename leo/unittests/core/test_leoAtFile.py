@@ -3,6 +3,7 @@
 #@+node:ekr.20210901172411.1: * @file ../unittests/core/test_leoAtFile.py
 #@@first
 """Tests of leoApp.py"""
+import textwrap
 import unittest
 import leo.core.leoTest2 as leoTest2
 from leo.core import leoGlobals as g
@@ -44,19 +45,18 @@ class TestApp(unittest.TestCase):
     def test_at_checkPythonSyntax(self):
         c, p = self.c, self.c.p
         at = c.atFileCommands
-        s = '''
-        # no error
-        def spam():
-            pass
-        '''
-
+        s = textwrap.dedent('''\
+    # no error
+    def spam():
+        pass
+        ''')
         assert at.checkPythonSyntax(p,s),'fail 1'
 
-        s2 = '''
-        # syntax error
-        def spam:
-            pass
-        '''
+        s2 = textwrap.dedent('''\
+    # syntax error
+    def spam:  # missing parens.
+        pass
+        ''')
 
         assert not at.checkPythonSyntax(p,s2,supress=True),'fail2'
 

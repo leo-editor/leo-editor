@@ -2343,18 +2343,12 @@ class AtFile:
             return False
     #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
     def tabNannyNode(self, p, body, suppress=False):
-        import parser
+
         import tabnanny
         import tokenize
         try:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
-        except parser.ParserError:
-            junk1, msg, junk = sys.exc_info()
-            if suppress:
-                raise
-            g.error("ParserError in", p.h)
-            g.es('', str(msg))
         except IndentationError:
             junk2, msg, junk = sys.exc_info()
             if suppress:
