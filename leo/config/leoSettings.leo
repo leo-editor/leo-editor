@@ -699,6 +699,7 @@
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
+<v t="ekr.20210901110017.1"><vh>@bool reverse-find-defs = False</vh></v>
 <v t="ekr.20150618105435.1"><vh>@bool use-find-dialog = False</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change-text = None</vh></v>
 <v t="ekr.20041119050105.2"><vh>@string find-text = None</vh></v>
@@ -11661,6 +11662,7 @@ Relative paths are resolved starting from the location of the file being checked
 <t tx="ekr.20210823172944.1"></t>
 <t tx="ekr.20210823173032.1">Valid values:  '', 'browser_view', 'nav-view'</t>
 <t tx="ekr.20210823173736.1">Path to external editor.</t>
+<t tx="ekr.20210901110017.1">True: search for definitions starting from the last node of the ouline.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
