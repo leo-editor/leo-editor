@@ -203,6 +203,7 @@ class LeoFind:
         """LeoFind.reload_settings."""
         c = self.c
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
+        self.reverse_find_defs = c.config.getBool('reverse-find-defs', default=False)
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self, root, replacements, settings=None):
         """
@@ -533,33 +534,47 @@ class LeoFind:
             return None, None, None
         save_sel = w.getSelectionRange()
         ins = w.getInsertPoint()
-        # Always start in the root position.
         old_p = c.p
-        p = c.rootPosition()
+        if self.reverse_find_defs:
+            # #2161: start at the last position.
+            p = c.lastPosition()
+        else:
+            # Always start in the root position.
+            p = c.rootPosition()
         # Required.
         c.selectPosition(p)
         c.redraw()
         c.bodyWantsFocusNow()
         # #1592.  Ignore hits under control of @nosearch
-        while True:
-            p, pos, newpos = self.find_next_match(p)
-            found = pos is not None
-            if not found or not g.inAtNosearch(p):  # 2021/03/25: do *not* use c.p.
-                break
-        if not found and def_flag and not strict:
-            # Leo 5.7.3: Look for an alternative defintion of function/methods.
-            word2 = self._switch_style(word)
-            p = c.rootPosition()  # Bug fix.
-            if word2:
-                find_pattern = prefix + ' ' + word2
-                find.find_text = find_pattern
-                ftm.set_find_text(find_pattern)
-                # #1592.  Ignore hits under control of @nosearch
-                while True:
-                    p, pos, newpos = self.find_next_match(p)
-                    found = pos is not None
-                    if not found or not g.inAtNosearch(p):
-                        break
+        try:
+            # #2161:
+            old_reverse = self.reverse
+            self.reverse = True
+            while True:
+                p, pos, newpos = self.find_next_match(p)
+                found = pos is not None
+                if not found or not g.inAtNosearch(p):  # 2021/03/25: do *not* use c.p.
+                    break
+            if not found and def_flag and not strict:
+                # Leo 5.7.3: Look for an alternative defintion of function/methods.
+                word2 = self._switch_style(word)
+                if 1:
+                    # #2161: start at the last position.
+                    p = c.lastPosition()
+                else:
+                    p = c.rootPosition()
+                if word2:
+                    find_pattern = prefix + ' ' + word2
+                    find.find_text = find_pattern
+                    ftm.set_find_text(find_pattern)
+                    # #1592.  Ignore hits under control of @nosearch
+                    while True:
+                        p, pos, newpos = self.find_next_match(p)
+                        found = pos is not None
+                        if not found or not g.inAtNosearch(p):
+                            break
+        finally:
+            self.reverse = old_reverse
         if found:
             c.redraw(p)
             w.setSelectionRange(pos, newpos, insert=newpos)
