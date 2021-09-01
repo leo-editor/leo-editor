@@ -947,36 +947,6 @@ class NodesTest(unittest.TestCase):
         p1 = p.insertAsLastChild()
         p1.setHeadString('@file zzz')
         self.assertEqual(p1.textOffset(), 0)
-    #@+node:ekr.20210830095545.23: *4* TestNode.xx_test_p_adjustPositionBeforeUnlink (not used)
-    def xx_test_p_adjustPositionBeforeUnlink(self):
-        c, p = self.c, self.c.p
-        table = (
-            '1',
-            '1-1','1-1-1','1-1-2',
-            '1-2','1-2-1','1-2-2',
-            '2',
-            '2-1','2-1-1','2-1-2',
-            '2-2','2-2-1','2-2-2',
-            '3',
-            '3-1','3-1-1','3-1-2',
-            '3-2','3-2-1','3-2-2',
-        )
-        for suffix in table:
-            h = 'node %s' % suffix
-            p2 = g.findNodeInTree(c,p,h)
-            assert p2,h
-        table2 = (
-            ('2-1-2','2-1-1','2-1-1'),
-            ('3','2','2'),
-        )  
-        for h1,h2,h3 in table2:
-            p1 = g.findNodeInTree(c,p,'node %s' % h1)
-            p2 = g.findNodeInTree(c,p,'node %s' % h2)
-            p3 = g.findNodeInTree(c,p,'node %s' % h3)
-            p1._adjustPositionBeforeUnlink(p2)
-            result = p1
-            assert result.stack == p3.stack,'expected %s got %s' % (
-                p3.h,result and result.h or '<none>')
     #@-others
 #@-others
 
