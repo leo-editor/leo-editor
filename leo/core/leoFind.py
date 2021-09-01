@@ -539,7 +539,7 @@ class LeoFind:
             # #2161: start at the last position.
             p = c.lastPosition()
         else:
-            # Always start in the root position.
+            # Start in the root position.
             p = c.rootPosition()
         # Required.
         c.selectPosition(p)
@@ -549,7 +549,7 @@ class LeoFind:
         try:
             # #2161:
             old_reverse = self.reverse
-            self.reverse = True
+            self.reverse = self.reverse_find_defs
             while True:
                 p, pos, newpos = self.find_next_match(p)
                 found = pos is not None
