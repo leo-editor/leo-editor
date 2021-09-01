@@ -558,7 +558,7 @@ class LeoFind:
             if not found and def_flag and not strict:
                 # Leo 5.7.3: Look for an alternative defintion of function/methods.
                 word2 = self._switch_style(word)
-                if 1:
+                if self.reverse_find_defs:
                     # #2161: start at the last position.
                     p = c.lastPosition()
                 else:
