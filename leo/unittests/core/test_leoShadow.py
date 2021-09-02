@@ -15,17 +15,6 @@ class TestShadow(LeoUnitTest):
     These nodes should have two descendant nodes: 'before' and 'after'.
     """
     #@+others
-    #@+node:ekr.20080709062932.6: *3* TestShadow.__init__
-    # def __init__(self, c, p, delims=None):
-        # """Ctor for AtShadowTestCase class."""
-        # super().__init__()
-        # self.c = c
-        # self.p = p.copy()
-        # # Hard value for now.
-        # if delims is None:
-            # delims = '#', '', ''
-        # self.shadow_controller = ShadowController(c)
-        # self.marker = self.shadow_controller.Marker(delims)
     #@+node:ekr.20080709062932.8: *3* TestShadow.setUp & helpers
     def setUp(self):
         """AtShadowTestCase.setup."""
@@ -43,22 +32,21 @@ class TestShadow(LeoUnitTest):
         # Change node:new to node:old in all sentinel lines.
         self.expected_private_lines = self.mungePrivateLines(
             self.new_private_lines, 'node:new', 'node:old')
-    #@+node:ekr.20080709062932.19: *4* findNode (AtShadowTestCase)
+    #@+node:ekr.20080709062932.19: *4* TestShadow.findNode
     def findNode(self, c, p, headline):
         """Return the node in p's subtree with given headline."""
         p = g.findNodeInTree(c, p, headline)
         if not p:
-            g.es_print('can not find', headline)
-            assert False
+            self.fail(f"Node not found: {headline}")
         return p
-    #@+node:ekr.20080709062932.20: *4* createSentinelNode (AtShadowTestCase)
+    #@+node:ekr.20080709062932.20: *4* TestShadow.createSentinelNode
     def createSentinelNode(self, root, p):
         """Write p's tree to a string, as if to a file."""
         h = p.h
         p2 = root.insertAsLastChild()
         p2.setHeadString(h + '-sentinels')
         return p2
-    #@+node:ekr.20080709062932.21: *4* makePrivateLines (AtShadowTestCase)
+    #@+node:ekr.20080709062932.21: *4* TestShadow.makePrivateLines
     def makePrivateLines(self, p):
         """Return a list of the lines of p containing sentinels."""
         at = self.c.atFileCommands
@@ -70,12 +58,12 @@ class TestShadow(LeoUnitTest):
         finally:
             at.at_shadow_test_hack = False
         return g.splitLines(s)
-    #@+node:ekr.20080709062932.22: *4* makePublicLines (AtShadowTestCase)
+    #@+node:ekr.20080709062932.22: *4* TestShadow.makePublicLines
     def makePublicLines(self, lines):
         """Return the public lines in lines."""
         lines, junk = self.shadow_controller.separate_sentinels(lines, self.marker)
         return lines
-    #@+node:ekr.20080709062932.23: *4* mungePrivateLines (AtShadowTestCase)
+    #@+node:ekr.20080709062932.23: *4* TestShadow.mungePrivateLines
     def mungePrivateLines(self, lines, find, replace):
         """Change the 'find' the 'replace' pattern in sentinel lines."""
         marker = self.marker
@@ -97,8 +85,9 @@ class TestShadow(LeoUnitTest):
             i += 1
         return results
     #@+node:ekr.20080709062932.10: *3* TestShadow.runTest
-    def runTest(self): ###, define_g=True):
+    def xx_runTest(self): ###, define_g=True):
         """AtShadowTestCase.runTest."""
+        self.fail('Not ready yet')  ###
         p = self.c.p
         results = self.shadow_controller.propagate_changed_lines(
             self.new_public_lines, self.old_private_lines, self.marker, p=p)

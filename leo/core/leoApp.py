@@ -1391,9 +1391,11 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
-            g.app.global_cacher.commit_and_close()
-            g.app.commander_cacher.commit()
-            g.app.commander_cacher.close()
+            if g.app.global_cacher:  # #1766.
+                g.app.global_cacher.commit_and_close()
+            if g.app.commander_cacher:  # #1766.
+                g.app.commander_cacher.commit()
+                g.app.commander_cacher.close()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()
@@ -2004,7 +2006,7 @@ class LoadManager:
         """
         lm = self
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
-        if not bindings_d:  # For unit tests.
+        if not bindings_d:  # #1766: unit tests.
             settings_d, bindings_d = lm.createDefaultSettingsDicts()
         if settings_d2:
             if g.app.trace_setting:
@@ -2074,8 +2076,11 @@ class LoadManager:
         #
         # The file does not exist, or is not valid.
         # Get the settings from the globals settings dicts.
-        d1 = lm.globalSettingsDict.copy(settingsName)
-        d2 = lm.globalBindingsDict.copy(shortcutsName)
+        if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
+            d1 = lm.globalSettingsDict.copy(settingsName)
+            d2 = lm.globalBindingsDict.copy(shortcutsName)
+        else:
+            d1 = d2 = None
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
@@ -3337,8 +3342,14 @@ class PreviousSettings:
     """
 
     def __init__(self, settingsDict, shortcutsDict):
-        assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
-        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict)
+        
+        
+        
+        if not shortcutsDict or not settingsDict:  # #1766: unit tests.
+            lm = g.app.loadManager
+            settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()
+        ### assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
+        ### assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict)
             # was TypedDictOfLists.
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
