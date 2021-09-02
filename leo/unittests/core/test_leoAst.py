@@ -169,7 +169,7 @@ class BaseTest(unittest.TestCase):
         results = tokens_to_string(tokens)
         assert contents == results, expected_got(contents, results)
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
-    def make_data(self, contents, description=None):  # pragma: no cover
+    def make_data(self, contents, description=None):
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:
@@ -305,7 +305,7 @@ class BaseTest(unittest.TestCase):
         BaseTest.beautify.
         """
         t1 = get_time()
-        if not contents:  # pragma: no cover
+        if not contents:
             return ''
         if not filename:
             filename = g.callers(2).split(',')[0]
@@ -320,7 +320,7 @@ class BaseTest(unittest.TestCase):
     #@+node:ekr.20191228095945.1: *4* BaseTest: stats...
     # Actions should fail by throwing an exception.
     #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
-    def dump_stats(self):  # pragma: no cover.
+    def dump_stats(self):
         """Show all calculated statistics."""
         if self.counts or self.times:
             print('')
@@ -328,12 +328,12 @@ class BaseTest(unittest.TestCase):
             self.dump_times()
             print('')
     #@+node:ekr.20191228154757.1: *6* BaseTest.dump_counts
-    def dump_counts(self):  # pragma: no cover.
+    def dump_counts(self):
         """Show all calculated counts."""
         for key, n in self.counts.items():
             print(f"{key:>16}: {n:>6}")
     #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
-    def dump_times(self):  # pragma: no cover.
+    def dump_times(self):
         """
         Show all calculated times.
         
@@ -355,7 +355,7 @@ class BaseTest(unittest.TestCase):
         self.times[key] = old_t + t
     #@-others
 #@+node:ekr.20200122161530.1: *3* class Optional_TestFiles (BaseTest)
-class Optional_TestFiles(BaseTest):  # pragma: no cover
+class Optional_TestFiles(BaseTest):
     """
     Tests for the TokenOrderGenerator class that act on files.
     
@@ -538,7 +538,7 @@ class TestFstringify(BaseTest):
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200214155156.1: *4* TestFstringify.show_message
-    def show_message(self):  # pragma: no cover.
+    def show_message(self):
         """Separate test of fs.message."""
         fs = Fstringify()
         fs.filename = 'test_file.py'
@@ -754,7 +754,7 @@ class TestFstringify(BaseTest):
             description = f"test_single_quotes: {i}"
             contents, tokens, tree = self.make_data(contents, description)
             results = self.fstringify(contents, tokens, tree, filename=description)
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 g.trace(expected_got(repr(expected), repr(results)))
                 fails.append(description)
         assert not fails, fails
@@ -773,7 +773,7 @@ class TestFstringify(BaseTest):
             description = f"test_single_quotes: {i}"
             contents, tokens, tree = self.make_data(contents, description)
             results = self.fstringify(contents, tokens, tree, filename=description)
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 g.trace(expected_got(expected, results))
                 fails.append(description)
         assert not fails, fails
@@ -1065,7 +1065,7 @@ class TestOrange(BaseTest):
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
             expected = contents
-            if 0:  # pragma: no cover
+            if 0:
                 dump_contents(contents)
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
@@ -1078,10 +1078,10 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:  # pragma: no cover
+            elif 0:
                 print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
@@ -1122,7 +1122,7 @@ class TestOrange(BaseTest):
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
-            if 0:  # pragma: no cover
+            if 0:
                 dump_contents(contents)
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
@@ -1137,10 +1137,10 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:  # pragma: no cover
+            elif 0:
                 print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200121093134.1: *4* TestOrange.test_join_lines
@@ -1156,7 +1156,7 @@ class TestOrange(BaseTest):
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
-            if 0:  # # pragma: no cover
+            if 0:
                 dump_contents(contents)
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
@@ -1170,10 +1170,10 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"    orange: {results!r}")
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:  # pragma: no cover
+            elif 0:
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
@@ -1210,7 +1210,7 @@ class TestOrange(BaseTest):
         fails = 0
         for contents, expected in table:
             contents, tokens, tree = self.make_data(contents)
-            if 0:  # verbose_fail:  # pragma: no cover
+            if 0:
                 dump_contents(contents)
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
@@ -1223,10 +1223,10 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:  # pragma: no cover
+            elif 0:
                 print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
@@ -1394,11 +1394,11 @@ class TestOrange(BaseTest):
                 f"  contents: {contents.rstrip()}\n"
                 f"     black: {expected.rstrip()}\n"
                 f"    orange: {results.rstrip()}")
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 fails += 1
                 if verbose_fail:
                     print(f"Fail: {fails}\n{message}")
-            elif verbose_pass:  # pragma: no cover
+            elif verbose_pass:
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
@@ -1434,7 +1434,7 @@ class TestOrange(BaseTest):
         fails = 0
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
-            if 0:  # verbose_fail:  # pragma: no cover
+            if 0:
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
             expected = self.blacken(contents, line_length=line_length)
@@ -1447,10 +1447,10 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!s}\n"
                 f"     black: {expected!s}\n"
                 f"    orange: {results!s}")
-            if results != expected:  # pragma: no cover
+            if results != expected:
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:  # pragma: no cover
+            elif 0:
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200210073227.1: *4* TestOrange.test_split_lines_2
@@ -1480,10 +1480,10 @@ class TestOrange(BaseTest):
             f"  contents: {contents!r}\n"
             f"  expected: {expected!r}\n"
             f"       got: {results!r}")
-        if results != expected:  # pragma: no cover
+        if results != expected:
             fails += 1
             print(f"Fail: {fails}\n{message}")
-        elif 0:  # pragma: no cover
+        elif 0:
             print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200219144837.1: *4* TestOrange.test_split_lines_3
@@ -1514,10 +1514,10 @@ class TestOrange(BaseTest):
             f"  contents: {contents!r}\n"
             f"  expected: {expected!r}\n"
             f"       got: {results!r}")
-        if results != expected:  # pragma: no cover
+        if results != expected:
             fails += 1
             print(f"Fail: {fails}\n{message}")
-        elif 0:  # pragma: no cover
+        elif 0:
             print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
@@ -1667,7 +1667,7 @@ class TestTOG(BaseTest):
     #@+others
     #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features
     #@+node:ekr.20210318213133.1: *5* test_full_grammar (py3_test_grammar.py exists)
-    def test_full_grammar(self):  # pragma: no cover
+    def test_full_grammar(self):
 
         dir_ = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
@@ -1686,7 +1686,7 @@ class TestTOG(BaseTest):
     '''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
-    def test_line_315(self):  # pragma: no cover
+    def test_line_315(self):
 
         #
         # Known bug: position-only args exist in Python 3.8,
@@ -1704,7 +1704,7 @@ class TestTOG(BaseTest):
             contents = '''f(a, *args, **kwargs)'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320095504.8: *5* test_line_337
-    def test_line_337(self):  # pragma: no cover
+    def test_line_337(self):
 
         if py_version >= (3, 8):  # Requires neither line_no nor col_offset fields.
             contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
@@ -1712,7 +1712,7 @@ class TestTOG(BaseTest):
             contents = '''def f(a, b, d=4, *arg, **keys): pass'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320065202.1: *5* test_line_483
-    def test_line_483(self):  # pragma: no cover
+    def test_line_483(self):
 
         if py_version < (3, 8):
             # Python 3.8: https://bugs.python.org/issue32117
@@ -1720,7 +1720,7 @@ class TestTOG(BaseTest):
         contents = '''def g3(): return 1, *return_list'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320065344.1: *5* test_line_494
-    def test_line_494(self):  # pragma: no cover
+    def test_line_494(self):
 
         """
         https://docs.python.org/3/whatsnew/3.8.html#other-language-changes
@@ -1745,7 +1745,7 @@ class TestTOG(BaseTest):
         contents = '''g = ((i,j) for i in range(x) if t for j in range(x))'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320085705.1: *5* test_walrus_operator
-    def test_walrus_operator(self):  # pragma: no cover
+    def test_walrus_operator(self):
 
         if py_version < (3, 8):
             self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")
@@ -2435,7 +2435,7 @@ class TestTokens(BaseTest):
     """Unit tests for tokenizing."""
     #@+others
     #@+node:ekr.20200122165910.1: *4* TT.show_asttokens_script
-    def show_asttokens_script(self):  # pragma: no cover
+    def show_asttokens_script(self):
         """
         A script showing how asttokens can *easily* do the following:
         - Inject parent/child links into ast nodes. 
@@ -2532,7 +2532,7 @@ class TestTokens(BaseTest):
             # Print the resulting tokens.
             g.printObj(tokens, tag='Tokens')
     #@+node:ekr.20200121025938.1: *4* TT.show_example_dump
-    def show_example_dump(self):  # pragma: no cover
+    def show_example_dump(self):
 
         # Will only be run when enabled explicitly.
 
@@ -2635,7 +2635,7 @@ class TestTokens(BaseTest):
                     nodes += 1
                 elif _op_names.get(z):
                     ops += 1
-                else:  # pragma: no cover
+                else:
                     errors += 1
                     print(
                         f"Missing visitor: "
