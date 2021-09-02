@@ -2004,8 +2004,8 @@ class LoadManager:
         """
         lm = self
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
-        assert bindings_d
-        assert settings_d
+        if not bindings_d:  # For unit tests.
+            settings_d, bindings_d = lm.createDefaultSettingsDicts()
         if settings_d2:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)

@@ -4,8 +4,8 @@
 
 import json
 import os
-import unittest
 import leo.core.leoserver as leoserver
+from leo.core.leoTest2 import LeoUnitTest
 
 # Globals.
 g = None
@@ -13,8 +13,8 @@ g_leoserver = None
 g_server = None
 
 #@+others
-#@+node:ekr.20210901070918.1: ** class TestLeoServer(unittest.TestCase)
-class TestLeoServer (unittest.TestCase):
+#@+node:ekr.20210901070918.1: ** class TestLeoServer(LeoUnitTest)
+class TestLeoServer (LeoUnitTest):
     """Tests of LeoServer class."""
     request_number = 0
     #@+others

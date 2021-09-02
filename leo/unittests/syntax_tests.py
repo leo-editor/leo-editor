@@ -8,8 +8,8 @@ import glob
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
-#@+node:ekr.20210901140855.1: ** class SyntaxTest(BaseUnitTest)
-class SyntaxTest(BaseUnitTest):
+#@+node:ekr.20210901140855.1: ** class SyntaxTest(LeoUnitTest)
+class SyntaxTest(LeoUnitTest):
     """Unit tests checking syntax of Leo files."""
     #@+others
     #@+node:ekr.20210901140645.1: *3* SyntaxTest.tests...
