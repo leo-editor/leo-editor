@@ -12,7 +12,6 @@ import re
 import sys
 import time
 from typing import List
-import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 #@-<< imports >>
@@ -3673,84 +3672,7 @@ class FastAtRead:
             g.trace(f"{t2 - t1:5.2f} sec. {path}")
         return True
     #@-others
-#@+node:ekr.20200204092455.1: ** class TestAtFile (leoAtFile.py)
-class TestAtFile(unittest.TestCase):
-    #@+others
-    #@+node:ekr.20200204104247.1: *3* Helpers
-    #@+node:ekr.20200204095726.1: *4* TestAtFile.bridge
-    def bridge(self):
-        """Return an instance of Leo's bridge."""
-        from leo.core import leoBridge
-        return leoBridge.controller(gui='nullGui',
-            loadPlugins=False,
-            readSettings=False,
-            silent=True,
-            verbose=False,
-        )
-    #@+node:ekr.20200204112501.1: *4* TestAtFile.temp_dir
-    def temp_dir(self):
-        """Create a temp file with the given name."""
-        import warnings
-        warnings.simplefilter("ignore")
-        import tempfile
-        return tempfile.TemporaryDirectory()
-    #@+node:ekr.20200204103744.1: *4* TestAtFile.temp_file
-    def temp_file(self):
-        """Create a temp file with the given name."""
-        import warnings
-        warnings.simplefilter("ignore")
-        import tempfile
-        return tempfile.NamedTemporaryFile(mode='w')
-    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
-    def test_save_after_external_file_rename(self):
-        """Test #1469: saves renaming an external file."""
-        # Create a new outline with @file node and save it
-        bridge = self.bridge()
-        temp_dir = self.temp_dir()
-        filename = f"{temp_dir.name}{os.sep}test_file.leo"
-        c = bridge.openLeoFile(filename)
-        p = c.rootPosition()
-        p.h = '@file 1'
-        p.b = 'b1'
-        c.save()
-        # Rename the @file node and save
-        p1 = c.rootPosition()
-        p1.h = "@file 1_renamed"
-        c.save()
-        # Remove the original "@file 1" from the disk
-        external_filename = f"{temp_dir.name}{os.sep}1"
-        assert os.path.exists(external_filename)
-        os.remove(external_filename)
-        assert not os.path.exists(external_filename)
-        # Change the @file contents, save and reopen the outline
-        p1.b = "b_1_changed"
-        c.save()
-        c.close()
-        c = bridge.openLeoFile(c.fileName())
-        p1 = c.rootPosition()
-        assert p1.h == "@file 1_renamed", repr(p1.h)
-        assert p1.b == "b_1_changed\n", repr(p1.b)
-    #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
-    def test_bug_1889(self):
-        """
-        Test #1889: Honor ~ in ancestor @path nodes.
-        """
-        # Create a new outline with @file node and save it
-        bridge = self.bridge()
-        temp_dir = self.temp_dir()
-        filename = f"{temp_dir.name}{os.sep}test_file.leo"
-        c = bridge.openLeoFile(filename)
-        root = c.rootPosition()
-        root.h = '@path ~/sub-directory/'
-        child = root.insertAsLastChild()
-        child.h = '@file test_bug_1889.py'
-        child.b = '@language python\n# test #1889'
-        path = g.fullPath(c, child)
-        assert '~' not in path, repr(path)
-    #@-others
 #@-others
-if __name__ == '__main__':
-    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
