@@ -6,6 +6,7 @@
 Support for Leo's new unit tests, contained in leo/unittests/test_*.py.
 
 Run these tests using unittest or pytest from the command line.
+See g.run_unit_tests and g.run_coverage_tests.
 
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
@@ -150,7 +151,9 @@ class LeoUnitTest(unittest.TestCase):
             print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
     #@-others
 #@+node:ekr.20210902013852.1: ** Coverter classes
-# These were used to convert tests in unitTest.leo to proper unit tests.
+# Classes to convert tests in unitTest.leo to proper unit tests.
+
+# Eventually these classes will move to scripts.leo.
 #@+node:ekr.20201202083003.1: *3* class ConvertTests
 class ConvertTests:
     """
