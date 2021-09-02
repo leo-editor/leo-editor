@@ -5,35 +5,38 @@
 """
 Support for Leo's new unit tests, contained in leo/unittests/test_*.py.
 
-These tests are intended to be run by unittest or pytest from the command line.
+Run these tests using unittest or pytest from the command line.
 
-This file also contains two classes that convert nodes in unitTest.leo to
+This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
-
-import sys
 import textwrap
-
+import time
+import unittest
+from leo.core import leoGlobals as g
 #@+others
-#@+node:ekr.20201129132455.1: ** Top-level functions...
-#@+node:ekr.20201130195111.1: *3* function: create_app
+#@+node:ekr.20201130195111.1: ** function.create_app
 def create_app():
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
     
-    This method is expensive (about 1 sec) only the first time it is called.
+    This method is expensive (0.5 sec) only the first time it is called.
     
     Thereafter, recreating g.app, g.app.gui, and new commands is fast.
     """
-    # t1 = time.process_time()
+    trace = False
+    t1 = time.process_time()
+    # Early imports.
     from leo.core import leoGlobals as g
     from leo.core import leoApp
-    g.app = leoApp.LeoApp()  # Do this first, to avoid circular dependencies.
+    # Create g.app now, to avoid circular dependencies.
+    g.app = leoApp.LeoApp()
+    # Late imports.
     from leo.core import leoConfig
     from leo.core import leoNodes
     from leo.core import leoCommands
     from leo.core import leoGui
-    # t2 = time.process_time()
+    t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.computeStandardDirectories()
@@ -45,79 +48,110 @@ def create_app():
     g.app.pluginsController = g.NullObject('g.app.pluginsController')
     g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
     g.app.gui = leoGui.NullGui()
-    # t3 = time.process_time()
-    #
+    t3 = time.process_time()
     # Create a dummy commander, to do the imports in c.initObjects.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-    # t4 = time.process_time()
-    # if t4 - t3 > 0.1:
-        # print('create_app\n'
-            # f"  imports: {(t2-t1):.3f}\n"
-            # f"      gui: {(t3-t2):.3f}\n"
-            # f"commander: {(t4-t2):.3f}\n"
-            # f"    total: {(t4-t1):.3f}\n")
+    t4 = time.process_time()
+    # Trace times. This trace happens only once:    
+    #     imports: 0.016
+    #         gui: 0.000
+    #   commander: 0.469
+    #       total: 0.484
+    if trace and t4 - t3 > 0.1:
+        print('create_app:\n'
+            f"  imports: {(t2-t1):.3f}\n"
+            f"      gui: {(t3-t2):.3f}\n"
+            f"commander: {(t4-t2):.3f}\n"
+            f"    total: {(t4-t1):.3f}\n")
     return c
-#@+node:ekr.20210830070921.1: *3* function: convert_at_test_nodes
-def convert_at_test_nodes(c, converter, root):
+#@+node:ekr.20210902014907.1: ** class LeoUnitTest(unittest.TestCase)
+class LeoUnitTest(unittest.TestCase):
     """
-    Use converter.convert() to convert all the @test nodes in the
-    root's tree to children a new last top-level node.
-    """
-    if not root:
-        print('no root')
-        return
-    last = c.lastTopLevel()
-    target = last.insertAfter()
-    target.h = 'Converted nodes'
-    count = 0
-    for p in root.subtree():
-        if p.h.startswith('@test'):
-            converter.convert(p, target)
-            count += 1
-    target.expand()
-    c.redraw(target)
-    print(f"converted {count} @test nodes")
-#@+node:ekr.20201130074836.1: *3* function: convert_leoEditCommands_tests
-def convert_leoEditCommands_tests(c, root, target):
-    """
-    Convert @test nodes to new-style tests.
+    The base class for all unit tests in Leo.
     
-    root:   A node containing (a copy of) tests from unitTest.leo.
-    target: A node whose children will be the resulting tests.
-            These nodes can then be copied to be children of a test class.
+    Contains standard setUp/tearDown methods and various utilites.
     """
-    if not root or not target:
-        print('Error: root and target nodes must be top-level nodes.')
-        return
-    # Be safe.
-    if target.hasChildren():
-        print('Please delete children of ', target.h)
-        return
-    converter = ConvertEditCommandsTests()
-    count = 0
-    for p in root.subtree():
-        if p.h.startswith('@test') and 'runEditCommandTest' in p.b:
-            converter.convert(p, target)
-            count += 1
-    c.redraw()
-    print(f"converted {count} @test nodes")
-#@+node:ekr.20201201144934.1: *3* function: dump_leo_modules
-def dump_leo_modules():
+    #@+others
+    #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
+    @classmethod
+    def setUpClass(cls):
+        create_app()
 
-    core = [z for z in sys.modules if z.startswith('leo.core')]
-    commands = [z for z in sys.modules if z.startswith('leo.commands')]
-    plugins = [z for z in sys.modules if z.startswith('leo.plugins')]
+    def setUp(self):
+        """Create the nodes in the commander."""
+        # Do the import here to avoid circular dependencies.
+        from leo.core import leoCommands
+        # Create a new commander for each test.
+        # This is fast, because setUpClass has done all the imports.
+        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        c.selectPosition(c.rootPosition())
+        g.unitTesting = True
 
-    print(f"{len(core)} leo.core modules...\n")
-    for key in sorted(core):
-        print(key)
-    print(f"\n{len(commands)} leo.command modules...\n")
-    for key in sorted(commands):
-        print(key)
-    print(f"\n{len(plugins)} leo.plugins modules...\n")
-    for key in sorted(plugins):
-        print(key)
-#@+node:ekr.20201202083003.1: ** class ConvertTests
+    def tearDown(self):
+        self.c = None
+        g.unitTesting = False
+    #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
+    def create_test_outline(self):
+        c, p = self.c, self.c.p
+        self.assertEqual(p.h, 'NewHeadline')
+        p.h = 'root'
+        # Create the following outline:
+        #
+        # test-outline: root
+        #   child clone a
+        #     node clone 1
+        #   child b
+        #     child clone a
+        #       node clone 1
+        #   child c
+        #     node clone 1
+        #   child clone a
+        #     node clone 1
+        #   child b
+        #     child clone a
+        #       node clone 1
+        self.test_outline = textwrap.dedent('''\
+    <?xml version="1.0" encoding="utf-8"?>
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+    <leo_header file_format="2"/>
+    <vnodes>
+    <v t="ekr.20210830152319.1"><vh>test-outline: root</vh>
+    <v t="ekr.20210830152337.1"><vh>child clone a</vh>
+    <v t="ekr.20210830152411.1"><vh>node clone 1</vh></v>
+    </v>
+    <v t="ekr.20210830152343.1"><vh>child b</vh>
+    <v t="ekr.20210830152337.1"></v>
+    </v>
+    <v t="ekr.20210830152347.1"><vh>child c</vh>
+    <v t="ekr.20210830152411.1"></v>
+    </v>
+    <v t="ekr.20210830152337.1"></v>
+    <v t="ekr.20210830152343.1"></v>
+    </v>
+    </vnodes>
+    <tnodes>
+    <t tx="ekr.20210830152319.1"></t>
+    <t tx="ekr.20210830152337.1"></t>
+    <t tx="ekr.20210830152343.1"></t>
+    <t tx="ekr.20210830152347.1"></t>
+    <t tx="ekr.20210830152411.1"></t>
+    </tnodes>
+    </leo_file>
+    ''')
+        c.pasteOutline(s=self.test_outline, redrawFlag=False, undoFlag=False)
+        c.selectPosition(c.rootPosition())
+    #@+node:ekr.20210831101111.1: *3* LeoUnitTest.dump_tree
+    def dump_tree(self, tag=''):
+        c = self.c
+        print('')
+        g.trace(tag)
+        for p in c.all_positions():
+            print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
+    #@-others
+#@+node:ekr.20210902013852.1: ** Coverter classes
+# These were used to convert tests in unitTest.leo to proper unit tests.
+#@+node:ekr.20201202083003.1: *3* class ConvertTests
 class ConvertTests:
     """
     A class that converts @test nodes to proper unit tests.
@@ -128,8 +162,11 @@ class ConvertTests:
     pass the data from the old tests to the new tests using args in the
     run_test method.
     """
+    
+    class_name = "XXX_Test"  # To be changed with search/replace!
+    
     #@+others
-    #@+node:ekr.20201130075024.2: *3* ConvertTests.body
+    #@+node:ekr.20201130075024.2: *4* ConvertTests.body
     def body(self, after_p, after_sel, before_p, before_sel, command_name):
         """Return the body of the test"""
         real_command_name = command_name.split(' ')[0]
@@ -153,18 +190,7 @@ class ConvertTests:
             f'        command_name="{real_command_name}",\n'
             f"    )\n"
         )
-    #@+node:ekr.20201130075024.3: *3* ConvertTests.class_name (not used)
-    def class_name(self, command_name):
-        """Convert the command name to a class name."""
-        # This method is not used.
-        result = []
-        parts = command_name.split('-')
-        for part in parts:
-            s = part.replace('(', '').replace(')', '')
-            inner_parts = s.split(' ')
-            result.append(''.join([z.capitalize() for z in inner_parts]))
-        return ''.join(result)
-    #@+node:ekr.20210829142807.1: *3* ConvertTests.clean_headline
+    #@+node:ekr.20210829142807.1: *4* ConvertTests.clean_headline
     def clean_headline(self, p):
         """Make p.h suitable as a function.name."""
         h = p.h
@@ -177,15 +203,42 @@ class ConvertTests:
             else:
                 result.append('_')
         return ''.join(result).replace('__', '_')
-    #@+node:ekr.20201202083708.1: *3* ConvertTests.convert
-    def convert(self, p, target):
+    #@+node:ekr.20210902014405.1: *4* ConvertTests.convert_nodes
+    def convert_nodes(self, c, root):
         """
-        Convert one @test node, creating a new node as the last child of target.
+        Use converter.convert() to convert all the @test nodes in the
+        root's tree to children a new last top-level node.
+        """
+        if not root:
+            print('no root')
+            return
+        last = c.lastTopLevel()
+        target = last.insertAfter()
+        target.h = 'Converted nodes'
+        count = 0
+        for p in root.subtree():
+            if p.h.startswith('@test'):
+                self.convert_node(p, target)
+                count += 1
+        target.expand()
+        c.redraw(target)
+        print(f"converted {count} @test nodes")
+    #@+node:ekr.20210829142231.2: *4* ConvertTests.convert_node
+    def convert_node(self, p, target):
+        """
+        Convert p, an @test node, creating a new node as the last child of
+        target.
         
-        Must be overridden in subclasses.
+        May be overridden in subclasses.
         """
-        print('ConvertTests.convert: Must be overridden')
-    #@+node:ekr.20201130075024.5: *3* ConvertTests.function_name
+        # Calculate the headline and body text.
+        test_name = f"test_{self.clean_headline(p)}"
+        body = textwrap.indent(p.b, ' '*4).rstrip()
+        # Create the new node.
+        test_node = target.insertAsLastChild()
+        test_node.h = f"{self.class_name}.{test_name}"
+        test_node.b = f"def {test_name}(self):\n{body}\n"
+    #@+node:ekr.20201130075024.5: *4* ConvertTests.function_name
     def function_name(self, command_name):
         """Convert a command name into a test function."""
         result = []
@@ -196,12 +249,12 @@ class ConvertTests:
             result.append('_'.join(inner_parts))
         return '_'.join(result)
     #@-others
-#@+node:ekr.20201202083553.1: ** class ConvertEditCommandsTests (ConvertTests)
+#@+node:ekr.20201202083553.1: *3* class ConvertEditCommandsTests (ConvertTests)
 class ConvertEditCommandsTests(ConvertTests):
 
     #@+others
-    #@+node:ekr.20201130075024.4: *3* ConvertEditCommandsTests.convert
-    def convert(self, p, target):
+    #@+node:ekr.20201130075024.4: *4* ConvertEditCommandsTests.convert_node
+    def convert_node(self, p, target):
         """Convert one @test node, creating a new node."""
         after_p, before_p = None, None
         after_sel, before_sel = None, None
@@ -222,38 +275,5 @@ class ConvertEditCommandsTests(ConvertTests):
         new_child.h = command_name
         new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
     #@-others
-#@+node:ekr.20210829142231.1: ** class ConvertGeneralTests (ConvertTests)
-class ConvertGeneralTests(ConvertTests):
-    """
-    Convert a general @test node by creating a test function
-    consisting of the (indented) body of the @test node.
-    """
-    
-    class_name = "<class name>"  # To be set in subclasses
-
-    #@+others
-    #@+node:ekr.20210829142231.2: *3* ConvertGeneralTests.convert
-    def convert(self, p, target):
-        """
-        Convert p, an @test node, creating a new node as the last child of
-        target.
-        """
-        # Calculate the headline and body text.
-        test_name = f"test_{self.clean_headline(p)}"
-        body = textwrap.indent(p.b, ' '*4).rstrip()
-        # Create the new node.
-        test_node = target.insertAsLastChild()
-        test_node.h = f"{self.class_name}.{test_name}"
-        test_node.b = f"def {test_name}(self):\n{body}\n"
-    #@-others
-#@+node:ekr.20210829143744.1: ** class Convert*Tests(ConvertGeneralTests)
-class ConvertFindTests(ConvertGeneralTests):
-    class_name = "TestFind"
-    
-class ConvertNodeTests(ConvertGeneralTests):
-    class_name = "TestNode"
-    
-class ConvertBasicTests(ConvertGeneralTests):
-    class_name = "BasicTest"
 #@-others
 #@-leo

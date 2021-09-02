@@ -3,22 +3,13 @@
 #@+node:ekr.20210901170451.1: * @file ../unittests/core/test_leoApp.py
 #@@first
 """Tests of leoApp.py"""
-import unittest
-import leo.core.leoTest2 as leoTest2
 from leo.core import leoGlobals as g
+from leo.core.leoTest2 import LeoUnitTest
 #@+others
-#@+node:ekr.20210901170531.1: ** class TestApp
-class TestApp(unittest.TestCase):
+#@+node:ekr.20210901170531.1: ** class TestApp(LeoUnitTest)
+class TestApp(LeoUnitTest):
     """Test cases for leoApp.py"""
     #@+others
-    #@+node:ekr.20210901170531.5: *3*  TestApp.setUp & tearDown
-    def setUp(self):
-        g.unitTesting = True
-        self.c = c = leoTest2.create_app()
-        c.selectPosition(c.rootPosition())
-
-    def tearDown(self):
-        g.unitTesting = False
     #@+node:ekr.20210901140645.11: *3* TestApp.test_official_g_app_directories
     def test_official_g_app_directories(self):
         ivars = ('extensionsDir','globalConfigDir','loadDir','testDir')

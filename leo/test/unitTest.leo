@@ -947,7 +947,8 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20101220161557.6016"></t>
+<t tx="ekr.20101220161557.6016"># Ran 681 tests in 5.044s
+# OK (skipped=14)</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>

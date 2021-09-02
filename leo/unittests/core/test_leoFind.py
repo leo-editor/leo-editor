@@ -4,27 +4,30 @@
 #@@first
 """Tests for leo.core.leoFind"""
 import re
-import unittest
 from leo.core import leoGlobals as g
 import leo.core.leoFind as leoFind
-from leo.core import leoTest2
 from leo.core.leoGui import StringFindTabManager
+from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
-#@+node:ekr.20200216063538.1: ** class TestFind
-class TestFind(unittest.TestCase):
+#@+node:ekr.20200216063538.1: ** class TestFind(LeoUnitTest)
+class TestFind(LeoUnitTest):
     """Test cases for leoFind.py"""
     #@+others
-    #@+node:ekr.20210110073117.55: *3* TestFind: Top level
-    #@+node:ekr.20210110073117.79: *4* TestFind.dump_tree
-    def dump_tree(self, tag=''):  # pragma: no cover (skip)
-        """Dump the test tree created by make_test_tree."""
-        c = self.c
-        print('dump_tree', tag)
-        for p in c.all_positions():
-            print(' ' * p.level(), p.h)
-            print(' ' * p.level(), p.b)
-    #@+node:ekr.20210110073117.56: *4* TestFind.make_test_tree
+    #@+node:ekr.20210110073117.57: *3* TestFind.setUp
+    def setUp(self):
+        """setUp for TestFind class"""
+        ### self.c = c = leoTest2.create_app()
+        g.unitTesting = True
+        from leo.core import leoCommands
+        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        c.findCommands = self.x = x = leoFind.LeoFind(c)
+        # Set c.p in the command.
+        x.c.selectPosition(self.c.rootPosition())
+        x.ftm = StringFindTabManager(c)
+        self.settings = x.default_settings()
+        self.make_test_tree()
+    #@+node:ekr.20210110073117.56: *3* TestFind.make_test_tree
     def make_test_tree(self):
         """Make a test tree for other tests"""
         c = self.c
@@ -56,20 +59,6 @@ class TestFind(unittest.TestCase):
 
         # Always start with the root selected.
         c.selectPosition(c.rootPosition())
-    #@+node:ekr.20210110073117.57: *4* TestFind.setUp & tearDown
-    def setUp(self):
-        """setUp for TestFind class"""
-        g.unitTesting = True
-        self.c = c = leoTest2.create_app()
-        c.findCommands = self.x = x = leoFind.LeoFind(c)
-        # Set c.p in the command.
-        x.c.selectPosition(self.c.rootPosition())
-        x.ftm = StringFindTabManager(c)
-        self.settings = x.default_settings()
-        self.make_test_tree()
-
-    def tearDown(self):
-        g.unitTesting = False
     #@+node:ekr.20210110073117.59: *3* Tests of Commands...
     #@+node:ekr.20210110073117.67: *4* TestFind.change-all
     def test_change_all(self):

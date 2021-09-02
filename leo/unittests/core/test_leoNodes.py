@@ -4,79 +4,18 @@
 #@@first
 """Tests for leo.core.leoNodes"""
 # pylint: disable=no-member
-import textwrap
-import unittest
 from leo.core import leoGlobals as g
-from leo.core import leoTest2
+from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
-#@+node:ekr.20210828112210.1: ** class NodesTest
-class NodesTest(unittest.TestCase):
+#@+node:ekr.20210828112210.1: ** class NodesTest(LeoUnitTest)
+class NodesTest(LeoUnitTest):
     """Unit tests for leo/core/leoNodes.py."""
     
     test_outline = None  # Set by create_test_outline.
 
     #@+others
-    #@+node:ekr.20210828080615.1: *3* NodesTest: setUp, tearDown...
-    #@+node:ekr.20210830151601.1: *4* NodesTest.create_test_outline
-    def create_test_outline(self):
-        c, p = self.c, self.c.p
-        self.assertEqual(p.h, 'NewHeadline')
-        p.h = 'root'
-        # Create the following outline:
-        #
-        # test-outline: root
-        #   child clone a
-        #     node clone 1
-        #   child b
-        #     child clone a
-        #       node clone 1
-        #   child c
-        #     node clone 1
-        #   child clone a
-        #     node clone 1
-        #   child b
-        #     child clone a
-        #       node clone 1
-        self.test_outline = textwrap.dedent('''\
-    <?xml version="1.0" encoding="utf-8"?>
-    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-    <leo_header file_format="2"/>
-    <vnodes>
-    <v t="ekr.20210830152319.1"><vh>test-outline: root</vh>
-    <v t="ekr.20210830152337.1"><vh>child clone a</vh>
-    <v t="ekr.20210830152411.1"><vh>node clone 1</vh></v>
-    </v>
-    <v t="ekr.20210830152343.1"><vh>child b</vh>
-    <v t="ekr.20210830152337.1"></v>
-    </v>
-    <v t="ekr.20210830152347.1"><vh>child c</vh>
-    <v t="ekr.20210830152411.1"></v>
-    </v>
-    <v t="ekr.20210830152337.1"></v>
-    <v t="ekr.20210830152343.1"></v>
-    </v>
-    </vnodes>
-    <tnodes>
-    <t tx="ekr.20210830152319.1"></t>
-    <t tx="ekr.20210830152337.1"></t>
-    <t tx="ekr.20210830152343.1"></t>
-    <t tx="ekr.20210830152347.1"></t>
-    <t tx="ekr.20210830152411.1"></t>
-    </tnodes>
-    </leo_file>
-    ''')
-        c.pasteOutline(s=self.test_outline, redrawFlag=False, undoFlag=False)
-        c.selectPosition(c.rootPosition())
-    #@+node:ekr.20210831101111.1: *4* NodesTest.dump_tree
-    def dump_tree(self, tag=''):
-        c = self.c
-        print('')
-        g.trace(tag)
-        for p in c.all_positions():
-            print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
-    #@+node:ekr.20201203042409.3: *4* NodesTest.setUp & tearDown
+    #@+node:ekr.20201203042409.3: *3* NodesTest.setUp
     def setUp(self):
         """Create the nodes in the commander."""
         # Create a new commander for each test.
@@ -87,15 +26,7 @@ class NodesTest(unittest.TestCase):
         c.selectPosition(c.rootPosition())
         # self.dump_tree('Initial Outline...')
         g.unitTesting = True
-
-    def tearDown(self):
-        self.c = None
-        g.unitTesting = False
-    #@+node:ekr.20201203042409.4: *4* NodesTest.setUpClass
-    @classmethod
-    def setUpClass(cls):
-        leoTest2.create_app()
-    #@+node:ekr.20210831115411.1: *3* NodesTest.tests...
+    #@+node:ekr.20210902022909.1: *3* NodesTest.tests...
     #@+node:ekr.20210828075915.1: *4* NodesTest.test_all_nodes_coverage
     def test_all_nodes_coverage(self):
         # @test c iters: <coverage tests>

@@ -4,13 +4,12 @@
 #@@first
 """Tests for leo.commands.editCommands"""
 import textwrap
-import unittest
 from leo.core import leoGlobals as g
-from leo.core import leoTest2
+from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
-#@+node:ekr.20210829060957.1: ** class EditCommandsTest
-class EditCommandsTest(unittest.TestCase):
+#@+node:ekr.20210829060957.1: ** class EditCommandsTest(LeoUnitTest)
+class EditCommandsTest(LeoUnitTest):
     """Unit tests for leo/commands/editCommands.py."""
     # For pylint.
     before_p = after_p = parent_p = tempNode = None
@@ -50,7 +49,7 @@ class EditCommandsTest(unittest.TestCase):
         # Run the command!
         c.k.simulateCommand(command_name)
         self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
-    #@+node:ekr.20201201084621.1: *3* EditCommandsTest.setUp & tearDown
+    #@+node:ekr.20201201084621.1: *3* EditCommandsTest.setUp
     def setUp(self):
         """Create the nodes in the commander."""
         # Create a new commander for each test.
@@ -69,12 +68,8 @@ class EditCommandsTest(unittest.TestCase):
         self.after_p.h = 'after'
         c.selectPosition(self.tempNode)
 
-    def tearDown(self):
-        self.c = None
-    #@+node:ekr.20201201084702.1: *3* EditCommandsTest.setUpClass
-    @classmethod
-    def setUpClass(cls):
-        leoTest2.create_app()
+    # def tearDown(self):
+        # self.c = None
     #@+node:ekr.20201130091020.1: *3* EditCommandTest: test cases...
     #@+node:ekr.20210829061326.1: *4* Commands A-B
     #@+node:ekr.20201130090918.1: *5* add-space-to-lines

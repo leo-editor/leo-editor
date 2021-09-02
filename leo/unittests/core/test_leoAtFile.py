@@ -4,22 +4,13 @@
 #@@first
 """Tests of leoApp.py"""
 import textwrap
-import unittest
-import leo.core.leoTest2 as leoTest2
 from leo.core import leoGlobals as g
+from leo.core.leoTest2 import LeoUnitTest
 #@+others
-#@+node:ekr.20210901172446.1: ** class TestAtFile
-class TestApp(unittest.TestCase):
+#@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
+class TestApp(LeoUnitTest):
     """Test cases for leoApp.py"""
     #@+others
-    #@+node:ekr.20210901172446.2: *3*  TestAtFile.setUp & tearDown
-    def setUp(self):
-        g.unitTesting = True
-        self.c = c = leoTest2.create_app()
-        c.selectPosition(c.rootPosition())
-
-    def tearDown(self):
-        g.unitTesting = False
     #@+node:ekr.20210901140645.14: *3* TestAtFile.test_at_tabNannyNode
     def test_at_tabNannyNode(self):
         ### @tabwidth -4

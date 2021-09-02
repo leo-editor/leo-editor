@@ -5,32 +5,13 @@
 """Basic tests for Leo"""
 # pylint: disable=no-member
 import glob
-import unittest
 from leo.core import leoGlobals as g
-from leo.core import leoTest2
+from leo.core.leoTest2 import LeoUnitTest
 #@+others
-#@+node:ekr.20210901140855.1: ** class SyntaxTest
-class SyntaxTest(unittest.TestCase):
+#@+node:ekr.20210901140855.1: ** class SyntaxTest(BaseUnitTest)
+class SyntaxTest(BaseUnitTest):
     """Unit tests checking syntax of Leo files."""
     #@+others
-    #@+node:ekr.20210901140855.2: *3* SyntaxTest: setUp, tearDown...
-    def setUp(self):
-        """Create the nodes in the commander."""
-        # Must do the import here.
-        from leo.core import leoCommands
-        # Create a new commander for each test.
-        # This is fast, because setUpClass has done all the imports.
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-        c.selectPosition(c.rootPosition())
-        g.unitTesting = True
-
-    def tearDown(self):
-        self.c = None
-        g.unitTesting = False
-
-    @classmethod
-    def setUpClass(cls):
-        leoTest2.create_app()
     #@+node:ekr.20210901140645.1: *3* SyntaxTest.tests...
     #@+node:ekr.20210901140645.21: *4* SyntaxTest.test_syntax_of_all_files
     def test_syntax_of_all_files(self):
