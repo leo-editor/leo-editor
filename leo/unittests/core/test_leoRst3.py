@@ -12,31 +12,69 @@ class TestRst3(LeoUnitTest):
     '''A class to run rst-related unit tests.'''
 
     #@+others
-    #@+node:ekr.20210327072030.3: *3* TestRst3.runLegacyTest (to do)
+    #@+node:ekr.20210327072030.3: *3* TestRst3.runLegacyTest (not ready yet)
     def xx_test_legacy_test(self):
-        '''run a legacy rst test.'''
         c, p = self.c, self.c.p
         rc = c.rstCommands
-        fn = p.h
-        source_p = g.findNodeInTree(c, p, 'source')
-        # source_s1 = source_p.firstChild().b
-        expected_p = g.findNodeInTree(c, p, 'expected')
-        expected_source = expected_p.firstChild().b  # type:ignore
-        root = source_p.firstChild()  # type:ignore
-        rc.http_server_support = True  # Override setting for testing.
-        #
+        fn = 'rst3Test test1'
+        source=textwrap.dedent(f'''\
+    .. rst3: filename: {fn}
+
+    #####
+    Title
+    #####
+
+    This is test.html
+
+    #@+at This is a doc part
+    # it has two lines.
+    #@@c
+    This is the body of the section.
+    ''')
+
+        expected_source = textwrap.dedent(f'''\
+    .. rst3: filename: {fn}
+
+    .. _http-node-marker-1:
+
+    \\@language rest
+
+    #####
+    Title
+    #####
+
+    This is test.html
+
+    .. _http-node-marker-2:
+
+    section
+    +++++++
+
+    #@+at This is a doc part
+    # it has two lines.
+    #@@c
+    This is the body of the section.
+
+    ''')
+
+        # Create a root node.
+        root = p.insertAsLastChild()
+        root.h = fn
+        root.b = source
+
         # Compute the result.
+        rc.http_server_support = True  # Override setting for testing.
         rc.nodeNumber = 0
         source = rc.write_rst_tree(root, fn)
         html = rc.writeToDocutils(p, source, ext='.html')
-        #
-        # Tests...
-        # Don't bother testing the html. It will depend on docutils.
-        if 0:
+        # Test the result...
+        if 1:
             g.printObj(g.splitLines(source), tag='source')
             g.printObj(g.splitLines(expected_source), tag='expected source')
-        self.assertEqual(expected_source, source, msg='expected_s != got_s')
-        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
+        self.assertEqual(expected_source, source)
+        # The details of the html will depend on docutils.
+        self.assertTrue(html.startswith('<?xml'))
+        self.assertTrue(html.strip().endswith('</html>'))
     #@+node:ekr.20210327092009.1: *3* TestRst3.test_1
     def test_1(self):
         #@+<< define expected_s >>
