@@ -460,21 +460,6 @@ Within `@button` scripts, c.p is the presently selected outline node.
 As a result, @button nodes bring scripts to data.
 
 """),
-#@+node:ekr.20180324065153.5: *4* Re @test
-UserTip(
-    n=619,
-    tags=['Tutorial', 'Testing', 'Scripting'],
-    title="<html>@test nodes create unit tests",
-    text="""
-
-<p><a href="http://leoeditor.com/tutorial-basics.html#test-nodes">@test nodes</a>
-automatically convert the body to a subclass of
-<a href="https://docs.python.org/3/library/unittest.html#test-cases">unittest.TestCase.</a>
-</p>
-
-<p>Leo's run-* commands execute unit tests.</p>
-
-</html>"""),
 #@+node:ekr.20180324065152.2: *4* Section refs vs @others
 UserTip(
     n=626,

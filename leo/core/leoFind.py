@@ -5,7 +5,6 @@ import keyword
 import re
 import sys
 import time
-import unittest
 from leo.core import leoGlobals as g
 
 #@+<< Theory of operation of find/change >>
@@ -2956,9 +2955,6 @@ class LeoFind:
             self.findTextList.append(s)
     #@-others
 #@-others
-if __name__ == '__main__':
-    unittest.main()
-
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
