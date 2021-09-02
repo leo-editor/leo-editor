@@ -70,7 +70,7 @@ class LeoUnitTest(unittest.TestCase):
     """
     The base class for all unit tests in Leo.
     
-    Contains standard setUp/tearDown methods and various utilites.
+    Contains setUp/tearDown methods and various utilites.
     """
     #@+others
     #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
@@ -150,7 +150,7 @@ class LeoUnitTest(unittest.TestCase):
         for p in c.all_positions():
             print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
     #@-others
-#@+node:ekr.20210902013852.1: ** Coverter classes
+#@+node:ekr.20210902013852.1: ** Converter classes
 # Classes to convert tests in unitTest.leo to proper unit tests.
 
 # Eventually these classes will move to scripts.leo.

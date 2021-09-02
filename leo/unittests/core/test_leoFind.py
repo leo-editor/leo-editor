@@ -4,7 +4,6 @@
 #@@first
 """Tests for leo.core.leoFind"""
 import re
-from leo.core import leoGlobals as g
 import leo.core.leoFind as leoFind
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
@@ -17,13 +16,9 @@ class TestFind(LeoUnitTest):
     #@+node:ekr.20210110073117.57: *3* TestFind.setUp
     def setUp(self):
         """setUp for TestFind class"""
-        ### self.c = c = leoTest2.create_app()
-        g.unitTesting = True
-        from leo.core import leoCommands
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        super().setUp()
+        c = self.c
         c.findCommands = self.x = x = leoFind.LeoFind(c)
-        # Set c.p in the command.
-        x.c.selectPosition(self.c.rootPosition())
         x.ftm = StringFindTabManager(c)
         self.settings = x.default_settings()
         self.make_test_tree()
