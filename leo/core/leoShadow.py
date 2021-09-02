@@ -33,7 +33,6 @@ import difflib
 import os
 import pprint
 from typing import List
-import unittest
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others

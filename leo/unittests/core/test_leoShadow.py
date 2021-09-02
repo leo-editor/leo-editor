@@ -3,11 +3,7 @@
 #@+node:ekr.20210902092024.1: * @file ../unittests/core/test_leoShadow.py
 #@@first
 """Tests of leoShapdw.py"""
-### import os
-### import tempfile
-### import textwrap
 from leo.core import leoGlobals as g
-### from leo.core import leoBridge
 from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
@@ -20,28 +16,24 @@ class TestShadow(LeoUnitTest):
     """
     #@+others
     #@+node:ekr.20080709062932.6: *3* TestShadow.__init__
-    def __init__(self, c, p, delims=None): ###, shadowController, trace=False):
-        """Ctor for AtShadowTestCase class."""
-        super().__init__()
-        self.c = c
-        self.p = p.copy()
-        ### self.shadowController = x = shadowController
-        ### self.trace = trace
-        # Hard value for now.
-        if delims is None:
-            delims = '#', '', ''
-        self.shadow_controller = ShadowController(c)
-        self.marker = self.shadow_controller.Marker(delims)
-            ### self.marker = shadowController.marker = shadowController.Marker(delims)
-                # 2015/04/03: tricky: set *both* ivars.
-                # This bug became apparent because unitTest.leo no longer
-                # pre-loads any @shadow files.
-        # For teardown...
-        self.ok = True
+    # def __init__(self, c, p, delims=None):
+        # """Ctor for AtShadowTestCase class."""
+        # super().__init__()
+        # self.c = c
+        # self.p = p.copy()
+        # # Hard value for now.
+        # if delims is None:
+            # delims = '#', '', ''
+        # self.shadow_controller = ShadowController(c)
+        # self.marker = self.shadow_controller.Marker(delims)
     #@+node:ekr.20080709062932.8: *3* TestShadow.setUp & helpers
     def setUp(self):
         """AtShadowTestCase.setup."""
-        c, p = self.c, self.p
+        super().setUp()
+        c, p = self.c, self.c.p
+        delims = '#', '', '' ###
+        self.shadow_controller = ShadowController(c)
+        self.marker = self.shadow_controller.Marker(delims)
         old = self.findNode(c, p, 'old')
         new = self.findNode(c, p, 'new')
         self.old_private_lines = self.makePrivateLines(old)
@@ -81,13 +73,11 @@ class TestShadow(LeoUnitTest):
     #@+node:ekr.20080709062932.22: *4* makePublicLines (AtShadowTestCase)
     def makePublicLines(self, lines):
         """Return the public lines in lines."""
-        ### x = self.shadowController
         lines, junk = self.shadow_controller.separate_sentinels(lines, self.marker)
         return lines
     #@+node:ekr.20080709062932.23: *4* mungePrivateLines (AtShadowTestCase)
     def mungePrivateLines(self, lines, find, replace):
         """Change the 'find' the 'replace' pattern in sentinel lines."""
-        ### x = self.shadowController
         marker = self.marker
         i, results = 0, []
         while i < len(lines):
@@ -107,26 +97,23 @@ class TestShadow(LeoUnitTest):
             i += 1
         return results
     #@+node:ekr.20080709062932.10: *3* TestShadow.runTest
-    def runTest(self, define_g=True):
+    def runTest(self): ###, define_g=True):
         """AtShadowTestCase.runTest."""
-        x = self.shadow_controller
-        ### x.trace = self.trace
-        p = self.p.copy()
-        results = x.propagate_changed_lines(
+        p = self.c.p
+        results = self.shadow_controller.propagate_changed_lines(
             self.new_public_lines, self.old_private_lines, self.marker, p=p)
-        if results != self.expected_private_lines:
-            g.pr(p.h)
-            for aList, tag in (
-                (results, 'results'),
-                (self.expected_private_lines, 'expected_private_lines')
-            ):
-                g.pr(f"{tag}...")
-                for i, line in enumerate(aList):
-                    g.pr(f"{i:3} {line!r}")
-                g.pr('-' * 40)
-            assert results == self.expected_private_lines
-        assert self.ok
-        return self.ok
+        self.assertEqual(results, self.expected_private_lines)
+        ###
+            # if results != self.expected_private_lines:
+                # g.pr(p.h)
+                # for aList, tag in (
+                    # (results, 'results'),
+                    # (self.expected_private_lines, 'expected_private_lines')
+                # ):
+                    # g.pr(f"{tag}...")
+                    # for i, line in enumerate(aList):
+                        # g.pr(f"{i:3} {line!r}")
+                    # g.pr('-' * 40)
     #@-others
 #@-others
 #@-leo
