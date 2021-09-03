@@ -24,29 +24,50 @@ class TestRst3(LeoUnitTest):
     #@+node:ekr.20210902211919.12: *3* TestRst3.test_at_no_head
     def test_at_no_head(self):
         c = self.c
-        source = textwrap.dedent("""\
-    #####
-    Title
-    #####
+        rc = c.rstCommands
+        # Create the *input* tree.
+        root = c.rootPosition().insertAfter()
+        root.h = fn = '@rst test.html'
+        child = root.insertAsLastChild()
+        child.h = '@rst-no-head section'
+        # Insert the body texts.  Overindent to eliminate @verbatim sentinels.
+        root.b = textwrap.dedent("""\
+            #####
+            Title
+            #####
+            
+            This is test.html
 
-    This is test.html
+            """)
+        child.b = textwrap.dedent("""\
+            This is the body of the section.
+            """)
+        # Define the expected output.
+        expected =  textwrap.dedent(f"""\
+            .. rst3: filename: {fn}
+
+            .. _http-node-marker-1:
+            
+            #####
+            Title
+            #####
+            
+            This is test.html
+            
+            This is the body of the section.
+
     """)
-        expected =  textwrap.dedent("""\
-    .. rst3: filename: @test rst3Test @no-head
+        # Get and check the rst result.
+        rc.nodeNumber = 0
+        rc.http_server_support = True  # Override setting for testing.
+        source = rc.write_rst_tree(root, fn)
+        self.assertEqual(source, expected)
+        # Get the html from docutils.
+        html = rc.writeToDocutils(source, ext='.html')
+        # Don't bother testing the html. It will depend on docutils.
+        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
 
-    .. _http-node-marker-1:
-
-    #####
-    Title
-    #####
-
-    This is test.html
-
-    This is the body of the section.
-
-    """)
-        assert c
-        assert source and expected
+        
     #@+node:ekr.20210902211919.9: *3* TestRst3.test_handleMissingStyleSheetArgs
     def test_handleMissingStyleSheetArgs(self):
         c = self.c
@@ -67,22 +88,37 @@ class TestRst3(LeoUnitTest):
             self.assertEqual(result, expected)
     #@+node:ekr.20210902211919.11: *3* TestRst3.test_unicode_characters
     def test_unicode_characters(self):
-        
-        source = textwrap.dedent("""\
-    Test of unicode characters: ÀǋϢﻙ
+        c = self.c
+        rc = c.rstCommands
+        # Create the *input* tree.
+        root = c.rootPosition().insertAfter()
+        root.h = fn = '@rst unicode_test.html'
+        # Insert the body text.  Overindent to eliminate @verbatim sentinels.
+        root.b = textwrap.dedent("""\
+            Test of unicode characters: ÀǋϢﻙ
 
-    End of test.
+            End of test.
+        """)
+        # Define the expected output.
+        expected = textwrap.dedent(f"""\
+            .. rst3: filename: {fn}
+
+            .. _http-node-marker-1:
+            
+            Test of unicode characters: ÀǋϢﻙ
+            
+            End of test.
+
     """)
-        expected = textwrap.dedent("""\
-    . rst3: filename: @test rst3Test unicode characters
-
-    .. _http-node-marker-1:
-
-    Test of unicode characters: ÀǋϢﻙ
-
-    End of test.
-    """)
-        assert source and expected ###
+        # Get and check the rst result.
+        rc.nodeNumber = 0
+        rc.http_server_support = True  # Override setting for testing.
+        source = rc.write_rst_tree(root, fn)
+        self.assertEqual(source, expected)
+        # Get the html from docutils.
+        html = rc.writeToDocutils(source, ext='.html')
+        # Don't bother testing the html. It will depend on docutils.
+        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
     #@+node:ekr.20210327092009.1: *3* TestRst3.write_logic
     def test_write_to_docutils(self):
         c = self.c
@@ -108,9 +144,9 @@ class TestRst3(LeoUnitTest):
             @c
             This is the body of the section.
         """)
-        # Define the expecte output.
-        expected = textwrap.dedent("""\
-            .. rst3: filename: @rst test.html
+        # Define the expected output.
+        expected = textwrap.dedent(f"""\
+            .. rst3: filename: {fn}
             
             .. _http-node-marker-1:
                 
