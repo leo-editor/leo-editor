@@ -533,6 +533,7 @@ class LeoFind:
         save_sel = w.getSelectionRange()
         ins = w.getInsertPoint()
         old_p = c.p
+        ### g.trace(self.reverse_find_defs)
         if self.reverse_find_defs:
             # #2161: start at the last position.
             p = c.lastPosition()

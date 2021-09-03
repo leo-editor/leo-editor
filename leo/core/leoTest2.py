@@ -16,6 +16,26 @@ import time
 import unittest
 from leo.core import leoGlobals as g
 #@+others
+#@+node:ekr.20210830070921.1: ** function: convert_at_test_nodes
+def convert_at_test_nodes(c, converter, root):
+    """
+    Use converter.convert() to convert all the @test nodes in the
+    root's tree to children a new last top-level node.
+    """
+    if not root:
+        print('no root')
+        return
+    last = c.lastTopLevel()
+    target = last.insertAfter()
+    target.h = 'Converted nodes'
+    count = 0
+    for p in root.subtree():
+        if p.h.startswith('@test'):
+            converter.convert_node(p, target)
+            count += 1
+    target.expand()
+    c.redraw(target)
+    print(f"converted {count} @test nodes")
 #@+node:ekr.20201130195111.1: ** function.create_app
 def create_app():
     """

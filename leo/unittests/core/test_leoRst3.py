@@ -4,14 +4,29 @@
 #@@first
 """Tests of leoRst3.py"""
 import textwrap
+try:
+    import docutils
+except Exception:
+    docutils = None
 from leo.core import leoGlobals as g
+import leo.core.leoRst as leoRst
 from leo.core.leoTest2 import LeoUnitTest
+### import leo.plugins.leo_pdf as leo_pdf
+assert leoRst  ###
 #@+others
 #@+node:ekr.20210327072030.1: ** class TestRst3 (LeoUnitTest)
 class TestRst3(LeoUnitTest):
     '''A class to run rst-related unit tests.'''
 
     #@+others
+    #@+node:ekr.20210902212229.1: *3* TestRst3.setUp
+    def setUp(self):
+        super().setUp()
+        if not docutils:
+             self.skipTest('no docutils')
+        ###
+            # if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+                # self.skipTest('wrong gui')
     #@+node:ekr.20210327072030.3: *3* TestRst3.runLegacyTest (not ready yet)
     def xx_test_legacy_test(self):
         c, p = self.c, self.c.p
