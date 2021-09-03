@@ -8,209 +8,20 @@ try:
     import docutils
 except Exception:
     docutils = None
-from leo.core import leoGlobals as g
-import leo.core.leoRst as leoRst
+# import leo.core.leoRst as leoRst
 from leo.core.leoTest2 import LeoUnitTest
-### import leo.plugins.leo_pdf as leo_pdf
-assert leoRst  ###
 #@+others
 #@+node:ekr.20210327072030.1: ** class TestRst3 (LeoUnitTest)
 class TestRst3(LeoUnitTest):
     '''A class to run rst-related unit tests.'''
-
-    #@+others
-    #@+node:ekr.20210902212229.1: *3* TestRst3.setUp
+    
     def setUp(self):
         super().setUp()
-        self.skipTest('not ready yet') ###
         if not docutils:
              self.skipTest('no docutils')
-        ###
-            # if getattr(g.app, 'old_gui_name', None) in ('browser', None):
-                # self.skipTest('wrong gui')
-    #@+node:ekr.20210327072030.3: *3* TestRst3.runLegacyTest (not ready yet)
-    def xx_test_legacy_test(self):
-        c, p = self.c, self.c.p
-        rc = c.rstCommands
-        fn = 'rst3Test test1'
-        source=textwrap.dedent(f'''\
-    .. rst3: filename: {fn}
 
-    #####
-    Title
-    #####
-
-    This is test.html
-
-    #@+at This is a doc part
-    # it has two lines.
-    #@@c
-    This is the body of the section.
-    ''')
-
-        expected_source = textwrap.dedent(f'''\
-    .. rst3: filename: {fn}
-
-    .. _http-node-marker-1:
-
-    \\@language rest
-
-    #####
-    Title
-    #####
-
-    This is test.html
-
-    .. _http-node-marker-2:
-
-    section
-    +++++++
-
-    #@+at This is a doc part
-    # it has two lines.
-    #@@c
-    This is the body of the section.
-
-    ''')
-
-        # Create a root node.
-        root = p.insertAsLastChild()
-        root.h = fn
-        root.b = source
-
-        # Compute the result.
-        rc.http_server_support = True  # Override setting for testing.
-        rc.nodeNumber = 0
-        source = rc.write_rst_tree(root, fn)
-        html = rc.writeToDocutils(p, source, ext='.html')
-        # Test the result...
-        if 1:
-            g.printObj(g.splitLines(source), tag='source')
-            g.printObj(g.splitLines(expected_source), tag='expected source')
-        self.assertEqual(expected_source, source)
-        # The details of the html will depend on docutils.
-        self.assertTrue(html.startswith('<?xml'))
-        self.assertTrue(html.strip().endswith('</html>'))
-    #@+node:ekr.20210327092009.1: *3* TestRst3.test_1
-    def test_1(self):
-        #@+<< define expected_s >>
-        #@+node:ekr.20210327092210.1: *4* << define expected_s >>
-        expected_s = '''\
-        .. rst3: filename: @rst test.html
-
-        .. _http-node-marker-1:
-
-        #####
-        Title
-        #####
-
-        This is test.html
-
-        .. _http-node-marker-2:
-
-        section
-        +++++++
-
-        #@+at This is a doc part
-        # it has two lines.
-        #@@c
-        This is the body of the section.
-
-        '''
-        #@-<< define expected_s >>
-        c = self.c
-        rc = c.rstCommands
-        root = c.rootPosition().insertAfter()
-        root.h = fn = '@rst test.html'
-        #@+<< define root_b >>
-        #@+node:ekr.20210327092818.1: *4* << define root_b >>
-        root_b = '''\
-        #####
-        Title
-        #####
-
-        This is test.html
-        '''
-        #@-<< define root_b >>
-        root.b = textwrap.dedent(root_b)
-        child = root.insertAsLastChild()
-        child.h = 'section'
-        #@+<< define child_b >>
-        #@+node:ekr.20210327093238.1: *4* << define child_b >>
-        child_b = '''\
-        #@+at This is a doc part
-        # it has two lines.
-        #@@c
-        This is the body of the section.
-        '''
-        #@-<< define child_b >>
-        child.b = textwrap.dedent(child_b)
-        expected_source = textwrap.dedent(expected_s)
-        #
-        # Compute the result.
-        rc.nodeNumber = 0
-        rc.http_server_support = True  # Override setting for testing.
-        source = rc.write_rst_tree(root, fn)
-        html = rc.writeToDocutils(root, source, ext='.html')
-        #
-        # Tests...
-        # Don't bother testing the html. It will depend on docutils.
-        self.assertEqual(expected_source, source, msg='expected_source != source')
-        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
-    #@+node:ekr.20210902211919.8: *3* RstTest.test_show_leo_directives_False
-    def test_show_leo_directives_False(self):
-        c = self.c
-        if 0: ###
-            s = g.findTestScript(c,'@common leoRst test code',warn=True)
-            assert s, repr(p)
-            exec(s)
-                # Defines rst3Test class.
-            rst3Test(c,p)
-    #@+node:ekr.20210902211919.9: *3* RstTest.test_handleMissingStyleSheetArgs
-    def test_handleMissingStyleSheetArgs(self):
-        c = self.c
-        x = c.rstCommands
-        result = x.handleMissingStyleSheetArgs(p, s=None)
-        self.assertEqual(result, {})
-        expected = {
-            'documentoptions':'[english,12pt,lettersize]',
-            'language':'ca',
-            'use-latex-toc':'1',
-        }
-        for s in (
-            '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',
-            '--documentoptions=[english,12pt,lettersize],--language=ca, --use-latex-toc',
-            '--use-latex-toc,--documentoptions=[english,12pt,lettersize],--language=ca, ',
-        ):
-            result = x.handleMissingStyleSheetArgs(p, s=s)
-            self.assertEqual(result, expected)
-    #@+node:ekr.20210902211919.10: *3* RstTest.test_writeToDocutils_pdf
-    def test_writeToDocutils_pdf(self):
-        # Test the interface between docutils and leo_pdf.py. No file is written.
-        c = self.c
-        result = c.rstCommands.writeToDocutils(p, 'This is a test.', '.pdf')
-        self.assertTrue(result)
-
-    #@+node:ekr.20210902211919.11: *3* RstTest.test_unicode_characters
-    def test_unicode_characters(self):
-        
-        source = textwrap.dedent("""\
-    Test of unicode characters: ÀǋϢﻙ
-
-    End of test.
-    """)
-        expected = textwrap.dedent("""\
-    . rst3: filename: @test rst3Test unicode characters
-
-    .. _http-node-marker-1:
-
-    Test of unicode characters: ÀǋϢﻙ
-
-    End of test.
-    """)
-
-        leoRst.TestRst3().runLegacyTest(c, p)
-    #@+node:ekr.20210902211919.12: *3* RstTest.test_at_no_head
+    #@+others
+    #@+node:ekr.20210902211919.12: *3* TestRst3.test_at_no_head
     def test_at_no_head(self):
         c = self.c
         source = textwrap.dedent("""\
@@ -234,8 +45,103 @@ class TestRst3(LeoUnitTest):
     This is the body of the section.
 
     """)
+        assert c
+        assert source and expected
+    #@+node:ekr.20210902211919.9: *3* TestRst3.test_handleMissingStyleSheetArgs
+    def test_handleMissingStyleSheetArgs(self):
+        c = self.c
+        x = c.rstCommands
+        result = x.handleMissingStyleSheetArgs(s=None)
+        self.assertEqual(result, {})
+        expected = {
+            'documentoptions':'[english,12pt,lettersize]',
+            'language':'ca',
+            'use-latex-toc':'1',
+        }
+        for s in (
+            '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',
+            '--documentoptions=[english,12pt,lettersize],--language=ca, --use-latex-toc',
+            '--use-latex-toc,--documentoptions=[english,12pt,lettersize],--language=ca, ',
+        ):
+            result = x.handleMissingStyleSheetArgs(s=s)
+            self.assertEqual(result, expected)
+    #@+node:ekr.20210902211919.11: *3* TestRst3.test_unicode_characters
+    def test_unicode_characters(self):
+        
+        source = textwrap.dedent("""\
+    Test of unicode characters: ÀǋϢﻙ
 
-        leoRst.TestRst3().runLegacyTest(c, p)
+    End of test.
+    """)
+        expected = textwrap.dedent("""\
+    . rst3: filename: @test rst3Test unicode characters
+
+    .. _http-node-marker-1:
+
+    Test of unicode characters: ÀǋϢﻙ
+
+    End of test.
+    """)
+        assert source and expected ###
+    #@+node:ekr.20210327092009.1: *3* TestRst3.write_logic
+    def test_write_to_docutils(self):
+        c = self.c
+        rc = c.rstCommands
+        # Create the *input* tree.
+        root = c.rootPosition().insertAfter()
+        root.h = fn = '@rst test.html'
+        child = root.insertAsLastChild()
+        child.h = 'section'
+        # Insert the body texts.  Overindent to eliminate @verbatim sentinels.
+        root.b = textwrap.dedent("""\
+            @language rest
+            
+            #####
+            Title
+            #####
+           
+            This is test.html
+        """)
+        child.b = textwrap.dedent("""\
+            @ This is a doc part
+            it has two lines.
+            @c
+            This is the body of the section.
+        """)
+        # Define the expecte output.
+        expected = textwrap.dedent("""\
+            .. rst3: filename: @rst test.html
+            
+            .. _http-node-marker-1:
+                
+            @language rest
+            
+            #####
+            Title
+            #####
+            
+            This is test.html
+            
+            .. _http-node-marker-2:
+            
+            section
+            +++++++
+            
+            @ This is a doc part
+            it has two lines.
+            @c
+            This is the body of the section.
+
+    """)
+        # Get and check the rst result.
+        rc.nodeNumber = 0
+        rc.http_server_support = True  # Override setting for testing.
+        source = rc.write_rst_tree(root, fn)
+        self.assertEqual(source, expected)
+        # Get the html from docutils.
+        html = rc.writeToDocutils(source, ext='.html')
+        # Don't bother testing the html. It will depend on docutils.
+        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
     #@-others
 #@-others
 #@-leo

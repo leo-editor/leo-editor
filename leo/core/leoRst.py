@@ -297,7 +297,7 @@ class RstCommands:
         if ext not in ('.htm', '.html', '.tex', '.pdf', '.s5', '.odt'):  # #1884: test now.
             return
         # Write the result from docutils.
-        s = self.writeToDocutils(p, source, ext)
+        s = self.writeToDocutils(source, ext)
         if s and ext in ('.html', '.htm'):
             s = self.addTitleToHtml(s)
         if not s:
@@ -370,7 +370,7 @@ class RstCommands:
             self.n_intermediate += 1
         self.report(fn, p)
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
-    def writeToDocutils(self, p, s, ext):
+    def writeToDocutils(self, s, ext):
         """Send s to docutils using the writer implied by ext and return the result."""
         if not docutils:
             g.error('writeToDocutils: docutils not present')
@@ -380,7 +380,7 @@ class RstCommands:
         overrides = {'output_encoding': self.encoding}
         #
         # Compute the args list if the stylesheet path does not exist.
-        styleSheetArgsDict = self.handleMissingStyleSheetArgs(p)
+        styleSheetArgsDict = self.handleMissingStyleSheetArgs()
         if ext == '.pdf':
             module = g.import_module('leo.plugins.leo_pdf')
             if not module:
@@ -447,7 +447,7 @@ class RstCommands:
             g.es_exception()
         return result
     #@+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs(self, p, s=None):
+    def handleMissingStyleSheetArgs(self, s=None):
         """
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.
@@ -654,7 +654,7 @@ class RstCommands:
         """return s converted to an encoded string."""
         return g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
     #@+node:ekr.20090502071837.91: *4* rst.report
-    def report(self, name, p):
+    def report(self, name):
         """Issue a report to the log pane."""
         if self.silent:
             return
