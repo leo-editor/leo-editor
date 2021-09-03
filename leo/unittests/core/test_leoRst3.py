@@ -22,6 +22,7 @@ class TestRst3(LeoUnitTest):
     #@+node:ekr.20210902212229.1: *3* TestRst3.setUp
     def setUp(self):
         super().setUp()
+        self.skipTest('not ready yet') ###
         if not docutils:
              self.skipTest('no docutils')
         ###
@@ -156,6 +157,81 @@ class TestRst3(LeoUnitTest):
         # Don't bother testing the html. It will depend on docutils.
         self.assertEqual(expected_source, source, msg='expected_source != source')
         assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
+    #@+node:ekr.20210902211919.2: *3* RstTest.test_code_mode_rst3_show_doc_parts_as_paragraphs
+    def test_code_mode_rst3_show_doc_parts_as_paragraphs(self):
+        c = self.c
+        if 0:  ###
+            exec(g.findTestScript(c,'@common leoRst test code'))
+            rst3Test(c,p)
+    #@+node:ekr.20210902211919.3: *3* RstTest.test_code_mode_show_leo_directives
+    def test_code_mode_show_leo_directives(self):
+        pass ###
+    #@+node:ekr.20210902211919.4: *3* RstTest.test_code_mode_show_markup_doc_parts
+    def test_code_mode_show_markup_doc_parts(self):
+        pass ###
+    #@+node:ekr.20210902211919.5: *3* RstTest.test_code_mode_show_options_doc_parts
+    def test_code_mode_show_options_doc_parts(self):
+        pass ###
+    #@+node:ekr.20210902211919.6: *3* RstTest.test_rst3Test_doc_only_mode_set_in_headline_
+    def test_rst3Test_doc_only_mode_set_in_headline_(self):
+        c = self.c
+        if 0:  ###
+            s = g.findTestScript(c,'@common leoRst test code',warn=True)
+            assert s, repr(p)
+            exec(s)
+                # Defines rst3Test class.
+            rst3Test(c,p)
+    #@+node:ekr.20210902211919.7: *3* RstTest.test_rst3Test_doc_only_mode_set_in_options_doc_part_
+    def test_rst3Test_doc_only_mode_set_in_options_doc_part_(self):
+        c = self.c
+        if 0:  ###
+            s = g.findTestScript(c,'@common leoRst test code',warn=True)
+            assert s, repr(p)
+            exec(s)
+                # Defines rst3Test class.
+            rst3Test(c,p)
+    #@+node:ekr.20210902211919.8: *3* RstTest.test_rst3Test_show_leo_directives_False
+    def test_rst3Test_show_leo_directives_False(self):
+        c = self.c
+        if 0: ###
+            s = g.findTestScript(c,'@common leoRst test code',warn=True)
+            assert s, repr(p)
+            exec(s)
+                # Defines rst3Test class.
+            rst3Test(c,p)
+    #@+node:ekr.20210902211919.9: *3* RstTest.test_c_rstCommands_handleMissingStyleSheetArgs
+    def test_c_rstCommands_handleMissingStyleSheetArgs(self):
+        c = self.c
+        x = c.rstCommands
+        result = x.handleMissingStyleSheetArgs(p, s=None)
+        self.assertEqual(result, {})
+        expected = {
+            'documentoptions':'[english,12pt,lettersize]',
+            'language':'ca',
+            'use-latex-toc':'1',
+        }
+        for s in (
+            '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',
+            '--documentoptions=[english,12pt,lettersize],--language=ca, --use-latex-toc',
+            '--use-latex-toc,--documentoptions=[english,12pt,lettersize],--language=ca, ',
+        ):
+            result = x.handleMissingStyleSheetArgs(p, s=s)
+            self.assertEqual(result, expected)
+    #@+node:ekr.20210902211919.10: *3* RstTest.test_c_rstCommands_writeToDocutils_pdf
+    def test_c_rstCommands_writeToDocutils_pdf(self):
+        # Test the interface between docutils and leo_pdf.py. No file is written.
+        c = self.c
+        result = c.rstCommands.writeToDocutils(p, 'This is a test.', '.pdf')
+        self.assertTrue(result)
+
+    #@+node:ekr.20210902211919.11: *3* RstTest.test_rst3Test_unicode_characters
+    def test_rst3Test_unicode_characters(self):
+
+        leoRst.TestRst3().runLegacyTest(c, p)
+    #@+node:ekr.20210902211919.12: *3* RstTest.test_rst3Test_no_head
+    def test_rst3Test_no_head(self):
+        c = self.c
+        leoRst.TestRst3().runLegacyTest(c, p)
     #@-others
 #@-others
 #@-leo
