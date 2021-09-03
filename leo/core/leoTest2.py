@@ -186,7 +186,7 @@ class ConvertTests:
     run_test method.
     """
     
-    class_name = "XXX_Test"  # To be changed with search/replace!
+    class_name = "TestXXX"  # Later, change headlines with search/replace!
     
     #@+others
     #@+node:ekr.20201130075024.2: *4* ConvertTests.body
