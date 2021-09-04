@@ -3,11 +3,20 @@
 #@+node:ekr.20210904064440.2: * @file ../unittests/core/test_leoImport.py
 #@@first
 """Tests of leoImport.py"""
+import glob
+import importlib
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
-# import leo.core.leoImport as leoImport
+import leo.core.leoImport as leoImport
+# Import all tested scanners.
 import leo.plugins.importers.linescanner as linescanner
+import leo.plugins.importers.coffeescript as cs
+import leo.plugins.importers.dart as dart
+import leo.plugins.importers.markdown as markdown
+import leo.plugins.importers.pascal as pascal
+import leo.plugins.importers.python as py
+import leo.plugins.importers.xml as xml
 #@+others
 #@+node:ekr.20210904064440.3: ** class TestImporter(LeoUnitTest):
 class TestImporter(LeoUnitTest):
@@ -22,10 +31,12 @@ class TestImporter(LeoUnitTest):
 #@+node:ekr.20210904065459.2: *3* TestImport.test_collapse_all
 def test_collapse_all(self):
     # Not a real unit test.
+    c = self.c
     c.contractAllHeadlines()
 #@+node:ekr.20210904065632.1: *3* C tests
 #@+node:ekr.20210904065459.3: *3* TestImport.test_c_class_1
 def test_c_class_1(self):
+    c = self.c
     if False: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -58,6 +69,7 @@ def test_c_class_1(self):
         'char bar',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -73,6 +85,7 @@ def test_c_class_1(self):
         c.redraw()
 #@+node:ekr.20210904065459.4: *3* TestImport.test_c_class_underindented_line
 def test_c_class_underindented_line(self):
+    c = self.c
     if g.in_bridge:
         self.skipTest('In bridge')
 
@@ -110,6 +123,7 @@ def test_c_class_underindented_line(self):
         'char bar',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -125,6 +139,7 @@ def test_c_class_underindented_line(self):
         c.redraw()
 #@+node:ekr.20210904065459.5: *3* TestImport.test_c_comment_follows_arg_list
 def test_c_comment_follows_arg_list(self):
+    c = self.c
     if 0: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -162,6 +177,7 @@ def test_c_comment_follows_arg_list(self):
         'bool aaa::bbb::dothat',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -177,6 +193,7 @@ def test_c_comment_follows_arg_list(self):
         c.redraw()
 #@+node:ekr.20210904065459.6: *3* TestImport.test_c_comment_follows_block_delim
 def test_c_comment_follows_block_delim(self):
+    c = self.c
     if 0: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -214,6 +231,7 @@ def test_c_comment_follows_block_delim(self):
         'bool aaa::bbb::dothat',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -229,6 +247,7 @@ def test_c_comment_follows_block_delim(self):
         c.redraw()
 #@+node:ekr.20210904065459.7: *3* TestImport.test_c_intermixed_blanks_and_tabs
 def test_c_intermixed_blanks_and_tabs(self):
+    c = self.c
     if 0: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -257,6 +276,7 @@ def test_c_intermixed_blanks_and_tabs(self):
         'void aaa::bbb::doit',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -272,6 +292,7 @@ def test_c_intermixed_blanks_and_tabs(self):
         c.redraw()
 #@+node:ekr.20210904065459.8: *3* TestImport.test_c_old_style_decl_1
 def test_c_old_style_decl_1(self):
+    c = self.c
     if 0: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -300,6 +321,7 @@ def test_c_old_style_decl_1(self):
         'static void ReleaseCharSet',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -315,6 +337,7 @@ def test_c_old_style_decl_1(self):
         c.redraw()
 #@+node:ekr.20210904065459.9: *3* TestImport.test_c_old_style_decl_2
 def test_c_old_style_decl_2(self):
+    c = self.c
     if 0: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -341,6 +364,7 @@ def test_c_old_style_decl_2(self):
         'Tcl_Obj * Tcl_NewLongObj',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -356,6 +380,7 @@ def test_c_old_style_decl_2(self):
         c.redraw()
 #@+node:ekr.20210904065459.10: *3* TestImport.test_c_extern
 def test_c_extern(self):
+    c = self.c
     if 0: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -381,6 +406,7 @@ def test_c_extern(self):
         'extern "C"',
     )
     try:
+        p = c.p
         ic.cUnitTest(p,s=s,showTree=True)
         if 1:
             root = c.p.lastChild()
@@ -396,6 +422,7 @@ def test_c_extern(self):
         c.redraw()
 #@+node:ekr.20210904065459.11: *3* TestImport.test_cython_importer
 def test_cython_importer(self):
+    c = self.c
     if False: # Preamble
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -432,6 +459,7 @@ def test_cython_importer(self):
         'print_result',
     )
     try:
+        p = c.p
         ic.cythonUnitTest(p,s=s,showTree=True)
         if 1: # Check structure
             root = c.p.lastChild()
@@ -447,6 +475,7 @@ def test_cython_importer(self):
         c.redraw()
 #@+node:ekr.20210904065459.12: *3* TestImport.test_c_namespace_indent
 def test_c_namespace_indent(self):
+    c = self.c
     s = '''\
     namespace {
         class cTestClass1 {
@@ -455,6 +484,7 @@ def test_c_namespace_indent(self):
     }
     '''
     try:
+        p = c.p
         c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
         table = [
             'namespace',
@@ -472,6 +502,7 @@ def test_c_namespace_indent(self):
             c.redraw()
 #@+node:ekr.20210904065459.13: *3* TestImport.test_c_namespace_no_indent
 def test_c_namespace_no_indent(self):
+    c = self.c
     s = '''\
     namespace {
     class cTestClass1 {
@@ -480,6 +511,7 @@ def test_c_namespace_no_indent(self):
     }
     '''
     try:
+        p = c.p
         c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
         table = [
             'namespace',
@@ -497,6 +529,7 @@ def test_c_namespace_no_indent(self):
             c.redraw()
 #@+node:ekr.20210904065459.14: *3* TestImport.test_coffeescript_1
 def test_coffeescript_1(self):
+    c = self.c
 
     s = textwrap.dedent("""\
 
@@ -1335,6 +1368,7 @@ def test_coffeescript_1(self):
     )
 
     try:
+        p = c.p
         c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
         if 1:
           p2 = c.p.firstChild().firstChild()
@@ -1347,6 +1381,7 @@ def test_coffeescript_1(self):
             c.redraw()
 #@+node:ekr.20210904065459.15: *3* TestImport.test_coffeescript_2
 def test_coffeescript_2(self):
+    c = self.c
     s = r'''
 
     # Js2coffee relies on Narcissus's parser.
@@ -1366,6 +1401,7 @@ def test_coffeescript_2(self):
         'buildCoffee = (str) ->',
     )
     try:
+        p = c.p
         c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
         if 1:
           p2 = c.p.firstChild().firstChild()
@@ -1380,6 +1416,7 @@ def test_coffeescript_2(self):
 #@@tabwidth -2 # Required
 
 def test_coffeescript_3(self):
+    c = self.c
     
     s = textwrap.dedent("""\
     class Builder
@@ -1419,6 +1456,7 @@ def test_coffeescript_3(self):
       'body: (node, opts={}) ->',
     )
     try:
+        p = c.p
         c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
         if 1:
           p2 = c.p.firstChild().firstChild()
@@ -1431,6 +1469,7 @@ def test_coffeescript_3(self):
             c.redraw()
 #@+node:ekr.20210904065459.17: *3* TestImport.test_dart_hello_world
 def test_dart_hello_world(self):
+    c = self.c
     s = r'''
     var name = 'Bob';
 
@@ -1468,6 +1507,7 @@ def test_dart_hello_world(self):
             c.redraw()
 #@+node:ekr.20210904065459.18: *3* TestImport.test_elisp
 def test_elisp(self):
+    c = self.c
     if 0:
         # The preamble...
         if c.isChanged(): c.save()
@@ -1518,6 +1558,7 @@ def test_elisp(self):
             c.redraw()
 #@+node:ekr.20210904065459.19: *3* TestImport.test_html_lowercase_tags
 def test_html_lowercase_tags(self):
+    c = self.c
     s = '''\
     <html>
     <head>
@@ -1546,6 +1587,7 @@ def test_html_lowercase_tags(self):
         c.redraw()
 #@+node:ekr.20210904065459.20: *3* TestImport.test_html_multiple_tags_on_a_line
 def test_html_multiple_tags_on_a_line(self):
+    c = self.c
     
     # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
     # NOT: tr, td, tbody, etc.
@@ -1614,6 +1656,7 @@ def test_html_multiple_tags_on_a_line(self):
         c.redraw()
 #@+node:ekr.20210904065459.21: *3* TestImport.test_html_multple_node_completed_on_a_line
 def test_html_multple_node_completed_on_a_line(self):
+    c = self.c
    
     s = textwrap.dedent("""\
         <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
@@ -1635,6 +1678,7 @@ def test_html_multple_node_completed_on_a_line(self):
         c.redraw()
 #@+node:ekr.20210904065459.22: *3* TestImport.test_html_multple_node_starts_on_a_line
 def test_html_multple_node_starts_on_a_line(self):
+    c = self.c
     s = '''
     @language html
     <html>
@@ -1657,6 +1701,7 @@ def test_html_multple_node_starts_on_a_line(self):
         c.redraw()
 #@+node:ekr.20210904065459.23: *3* TestImport.test_html_underindented_comment
 def test_html_underindented_comment(self):
+    c = self.c
     s = r'''
     <td width="550">
     <table cellspacing="0" cellpadding="0" width="600" border="0">
@@ -1693,6 +1738,7 @@ def test_html_underindented_comment(self):
         c.redraw()
 #@+node:ekr.20210904065459.24: *3* TestImport.test_html_uppercase_tags
 def test_html_uppercase_tags(self):
+    c = self.c
     s = '''\
     <HTML>
     <HEAD>
@@ -1708,6 +1754,7 @@ def test_html_uppercase_tags(self):
     c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.25: *3* TestImport.test_html_improperly_nested_tags
 def test_html_improperly_nested_tags(self):
+    c = self.c
     s = '''\
     <body>
 
@@ -1740,6 +1787,7 @@ def test_html_improperly_nested_tags(self):
         c.redraw()
 #@+node:ekr.20210904065459.26: *3* TestImport.test_html_improperly_terminated_tags
 def test_html_improperly_terminated_tags(self):
+    c = self.c
     s = r'''
     <html>
 
@@ -1770,6 +1818,7 @@ def test_html_improperly_terminated_tags(self):
         c.redraw()
 #@+node:ekr.20210904065459.27: *3* TestImport.test_html_improperly_terminated_tags2
 def test_html_improperly_terminated_tags2(self):
+    c = self.c
     s = '''
     <html>
     <head>
@@ -1797,6 +1846,7 @@ def test_html_improperly_terminated_tags2(self):
             c.redraw()
 #@+node:ekr.20210904065459.28: *3* TestImport.test_html_brython
 def test_html_brython(self):
+    c = self.c
     # https://github.com/leo-editor/leo-editor/issues/479
     s = '''
     <!DOCTYPE html>
@@ -1952,6 +2002,7 @@ def test_html_brython(self):
             c.redraw()
 #@+node:ekr.20210904065459.29: *3* TestImport.test_ini_test_1
 def test_ini_test_1(self):
+    c = self.c
     s = r'''; last modified 1 April 2001 by John Doe
     [owner]
     name=John Doe
@@ -1980,6 +2031,7 @@ def test_ini_test_1(self):
             c.redraw()
 #@+node:ekr.20210904065459.30: *3* TestImport.test_from_AdminPermission_java
 def test_from_AdminPermission_java(self):
+    c = self.c
     if 0: # Preamble...
         if c.isChanged(): c.save()
         # import leo
@@ -2032,6 +2084,7 @@ def test_from_AdminPermission_java(self):
         c.redraw()
 #@+node:ekr.20210904065459.31: *3* TestImport.test_from_BundleException_java
 def test_from_BundleException_java(self):
+    c = self.c
     ### @language python
     ### @tabwidth 8
         # Must be in this node when run externally.
@@ -2121,6 +2174,7 @@ def test_from_BundleException_java(self):
         c.redraw()
 #@+node:ekr.20210904065459.32: *3* TestImport.test_java_interface_test1
 def test_java_interface_test1(self):
+    c = self.c
     if 0: # Preamble...
         if c.isChanged(): c.save()
         # import leo
@@ -2162,6 +2216,7 @@ def test_java_interface_test1(self):
         c.redraw()
 #@+node:ekr.20210904065459.33: *3* TestImport.test_java_interface_test2
 def test_java_interface_test2(self):
+    c = self.c
     if 0: # Preamble...
         if c.isChanged(): c.save()
         # import leo
@@ -2203,6 +2258,7 @@ def test_java_interface_test2(self):
         c.redraw()
 #@+node:ekr.20210904065459.34: *3* TestImport.test_Javascript_regex_1
 def test_Javascript_regex_1(self):
+    c = self.c
     s = '''\
 
     String.prototype.toJSONString = function()
@@ -2219,6 +2275,7 @@ def test_Javascript_regex_1(self):
     c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.35: *3* TestImport.test_Javascript_3
 def test_Javascript_3(self):
+    c = self.c
     s = '''\
 
     // Restarting
@@ -2240,6 +2297,7 @@ def test_Javascript_3(self):
     c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.36: *3* TestImport.test_Javascript_4
 def test_Javascript_4(self):
+    c = self.c
     s = '''\
 
     var c3 = (function () {
@@ -2260,6 +2318,7 @@ def test_Javascript_4(self):
     c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.37: *3* TestImport.test_Javascript_5
 def test_Javascript_5(self):
+    c = self.c
     s = '''\
     var express = require('express');
 
@@ -2278,6 +2337,7 @@ def test_Javascript_5(self):
     c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.38: *3* TestImport.test_Javascript_639_many_top_level_nodes
 def test_Javascript_639_many_top_level_nodes(self):
+    c = self.c
     s = '''\
     // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
 
@@ -2312,6 +2372,7 @@ def test_Javascript_639_many_top_level_nodes(self):
     c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.39: *3* TestImport.test_Javascript_639_acid_test_1
 def test_Javascript_639_acid_test_1(self):
+    c = self.c
     s = '''\
     // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
     require([
@@ -2338,6 +2399,7 @@ def test_Javascript_639_acid_test_1(self):
     c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.40: *3* TestImport.test_Javascript_639_acid_test_2
 def test_Javascript_639_acid_test_2(self):
+    c = self.c
     s = '''\
     // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
     require([
@@ -2377,6 +2439,7 @@ def test_Javascript_639_acid_test_2(self):
     c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.41: *3* TestImport.test_org_pattern
 def test_org_pattern(self):
+    c = self.c
     import leo.plugins.importers.org as org
     if 0: # Preamble
         if c.isChanged(): c.save()
@@ -2395,6 +2458,7 @@ def test_org_pattern(self):
         assert m, repr(line)
 #@+node:ekr.20210904065459.42: *3* TestImport.test_org_1
 def test_org_1(self):
+    c = self.c
     s = '''\
     * Section 1
     Sec 1.
@@ -2428,6 +2492,7 @@ def test_org_1(self):
         c.redraw()
 #@+node:ekr.20210904065459.43: *3* TestImport.test_org_tags
 def test_org_tags(self):
+    c = self.c
     s = '''\
     * Section 1 :tag1:
     * Section 2 :tag2:
@@ -2453,6 +2518,7 @@ def test_org_tags(self):
         c.redraw()
 #@+node:ekr.20210904065459.44: *3* TestImport.test_org_intro
 def test_org_intro(self):
+    c = self.c
     s = '''\
     Intro line.
     * Section 1
@@ -2479,6 +2545,7 @@ def test_org_intro(self):
         c.redraw()
 #@+node:ekr.20210904065459.45: *3* TestImport.test_org_552
 def test_org_552(self):
+    c = self.c
     s = '''\
     * Events
       :PROPERTIES:
@@ -2507,6 +2574,7 @@ def test_org_552(self):
         c.redraw()
 #@+node:ekr.20210904065459.46: *3* TestImport.test_org_1074
 def test_org_1074(self):
+    c = self.c
     s = '''\
     *  Test
     First line.
@@ -2529,6 +2597,7 @@ def test_org_1074(self):
         c.redraw()
 #@+node:ekr.20210904065459.47: *3* TestImport.test_org_placeholder
 def test_org_placeholder(self):
+    c = self.c
     if 0:
         # The preamble...
         import leo.plugins.importers.linescanner as linescanner
@@ -2580,6 +2649,7 @@ def test_org_placeholder(self):
             p.deleteAllChildren()
 #@+node:ekr.20210904065459.48: *3* TestImport.test_otl_vim_outline_mode
 def test_otl_vim_outline_mode(self):
+    c = self.c
     import leo.plugins.importers.otl as otl
     if 0: # Preamble
         if c.isChanged(): c.save()
@@ -2599,6 +2669,7 @@ def test_otl_vim_outline_mode(self):
         assert m
 #@+node:ekr.20210904065459.49: *3* TestImport.test_otl_1
 def test_otl_1(self):
+    c = self.c
     ### @tabwidth 4 # Required
     s = '''\
     preamble.
@@ -2635,6 +2706,7 @@ def test_otl_1(self):
             c.redraw()
 #@+node:ekr.20210904065459.50: *3* TestImport.test_pascal_to_delphi_interface
 def test_pascal_to_delphi_interface(self):
+    c = self.c
     if 0:
         # The preamble...
         if c.isChanged(): c.save()
@@ -2708,6 +2780,7 @@ def test_pascal_to_delphi_interface(self):
             c.redraw()
 #@+node:ekr.20210904065459.51: *3* TestImport.test_perl_1
 def test_perl_1(self):
+    c = self.c
     s = '''\
     #!/usr/bin/perl
 
@@ -2739,6 +2812,7 @@ def test_perl_1(self):
             c.redraw()
 #@+node:ekr.20210904065459.52: *3* TestImport.test_perlpod_comment
 def test_perlpod_comment(self):
+    c = self.c
     s = '''\
     #!/usr/bin/perl
           
@@ -2765,6 +2839,7 @@ def test_perlpod_comment(self):
             c.redraw()
 #@+node:ekr.20210904065459.53: *3* TestImport.test_perl_multi_line_string
 def test_perl_multi_line_string(self):
+    c = self.c
     s = '''\
     #!/usr/bin/perl
 
@@ -2785,6 +2860,7 @@ def test_perl_multi_line_string(self):
             c.redraw()
 #@+node:ekr.20210904065459.54: *3* TestImport.test_perl_regex_1
 def test_perl_regex_1(self):
+    c = self.c
     # ('len',   'tr///', '/',       context,  0,       0,       0),
     # ('len',   's///',  '/',       context,  0,       0,       0),
     # ('len',   'm//',   '/',       context,  0,       0,       0),
@@ -2817,6 +2893,7 @@ def test_perl_regex_1(self):
             c.redraw()
 #@+node:ekr.20210904065459.55: *3* TestImport.test_perl_regex_2
 def test_perl_regex_2(self):
+    c = self.c
     if 0:
         # The preamble...
         if c.isChanged(): c.save()
@@ -2875,6 +2952,7 @@ def test_perl_regex_2(self):
             c.redraw()
 #@+node:ekr.20210904065459.56: *3* TestImport.test_php_import_class
 def test_php_import_class(self):
+    c = self.c
     s = '''\
     <?php
 
@@ -2894,6 +2972,7 @@ def test_php_import_class(self):
     c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.57: *3* TestImport.test_php_import_conditional_class
 def test_php_import_conditional_class(self):
+    c = self.c
     s = '''\
     <?php
 
@@ -2913,6 +2992,7 @@ def test_php_import_conditional_class(self):
     c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.58: *3* TestImport.test_php_import_classes__functions
 def test_php_import_classes__functions(self):
+    c = self.c
     s = '''\
     <?php
     class Enum {
@@ -2956,6 +3036,7 @@ def test_php_import_classes__functions(self):
     c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.59: *3* TestImport.test_php_here_doc
 def test_php_here_doc(self):
+    c = self.c
     s = '''\
     <?php
     class foo {
@@ -2970,6 +3051,8 @@ def test_php_here_doc(self):
     c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.60: *3* TestImport.test_i_scan_state_for_python_
 def test_i_scan_state_for_python_(self):
+    c = self.c
+    c = self.c
     import leo.plugins.importers.python as python
     # import importlib
     # importlib.reload(python)
@@ -3005,6 +3088,7 @@ def test_i_scan_state_for_python_(self):
         self.skipTest('Skipping test for new python importer')
 #@+node:ekr.20210904065459.61: *3* TestImport.test_leoApp_fail
 def test_leoApp_fail(self):
+    c = self.c
     if 0: # Preamble...
         if c.isChanged(): c.save()
         # import leo
@@ -3087,6 +3171,7 @@ def test_leoApp_fail(self):
         c.redraw()
 #@+node:ekr.20210904065459.62: *3* TestImport.test_python_bad_class_test
 def test_python_bad_class_test(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -3101,6 +3186,7 @@ def test_python_bad_class_test(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.63: *3* TestImport.test_python_basic_nesting_test
 def test_python_basic_nesting_test(self):
+    c = self.c
     # Was unittest/at_auto-unit-test.py
     if 0: # Preamble...
         if c.isChanged(): c.save()
@@ -3161,6 +3247,7 @@ def test_python_basic_nesting_test(self):
         c.redraw()
 #@+node:ekr.20210904065459.64: *3* TestImport.test_python_bug_346
 def test_python_bug_346(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -3231,6 +3318,7 @@ def test_python_bug_346(self):
         c.redraw()
 #@+node:ekr.20210904065459.65: *3* TestImport.test_python_bug_354
 def test_python_bug_354(self):
+    c = self.c
     if 0: # Preamble...
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -3287,6 +3375,7 @@ def test_python_bug_354(self):
         c.redraw()
 #@+node:ekr.20210904065459.66: *3* TestImport.test_python_bug_357
 def test_python_bug_357(self):
+    c = self.c
     if 0: # Preamble...
         if c.isChanged(): c.save()
         import leo.core.leoImport as leoImport
@@ -3594,6 +3683,7 @@ def test_python_bug_357(self):
         c.redraw()
 #@+node:ekr.20210904065459.67: *3* TestImport.test_python_bug_360
 def test_python_bug_360(self):
+    c = self.c
     s = """
     @base_task(
         targets=['img/who_map.png', 'img/who_map.pdf'],
@@ -3627,6 +3717,7 @@ def test_python_bug_360(self):
         c.redraw()
 #@+node:ekr.20210904065459.68: *3* TestImport.test_python_bug_390
 def test_python_bug_390(self):
+    c = self.c
     s = """\
     import sys
 
@@ -3668,6 +3759,7 @@ def test_python_bug_390(self):
         c.redraw()
 #@+node:ekr.20210904065459.69: *3* TestImport.test_python_bug_978
 def test_python_bug_978(self):
+    c = self.c
     s = """\
     import foo
     import bar
@@ -3706,6 +3798,7 @@ def test_python_bug_978(self):
         c.redraw()
 #@+node:ekr.20210904065459.70: *3* TestImport.test_python_bug_603720
 def test_python_bug_603720(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -3728,6 +3821,7 @@ def test_python_bug_603720(self):
     tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.71: *3* TestImport.test_python_enhancement_481
 def test_python_enhancement_481(self):
+    c = self.c
     s = '''\
     @g.cmd('my-command')
     def myCommand(event=None):
@@ -3757,6 +3851,7 @@ def test_python_enhancement_481(self):
         c.redraw()
 #@+node:ekr.20210904065459.72: *3* TestImport.test_python_class_test_2
 def test_python_class_test_2(self):
+    c = self.c
     ###@tabwidth -4
         # Required when running unit tests externally.
 
@@ -3768,6 +3863,7 @@ def test_python_class_test_2(self):
     tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.73: *3* TestImport.test_python_class_tests_1
 def test_python_class_tests_1(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -3783,6 +3879,7 @@ def test_python_class_tests_1(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.74: *3* TestImport.test_python_comment_after_dict_assign
 def test_python_comment_after_dict_assign(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -3831,6 +3928,7 @@ def test_python_comment_after_dict_assign(self):
         c.redraw()
 #@+node:ekr.20210904065459.75: *3* TestImport.test_python_decls_test_1
 def test_python_decls_test_1(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -3877,6 +3975,7 @@ def test_python_decls_test_1(self):
         c.redraw()
 #@+node:ekr.20210904065459.76: *3* TestImport.test_python_decorator
 def test_python_decorator(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -3909,6 +4008,7 @@ def test_python_decorator(self):
         c.redraw()
 #@+node:ekr.20210904065459.77: *3* TestImport.test_python_decorator_2
 def test_python_decorator_2(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -4043,6 +4143,7 @@ def test_python_decorator_2(self):
         c.redraw()
 #@+node:ekr.20210904065459.78: *3* TestImport.test_python_def_inside_def
 def test_python_def_inside_def(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -4096,6 +4197,7 @@ def test_python_def_inside_def(self):
         c.redraw()
 #@+node:ekr.20210904065459.79: *3* TestImport.test_python_def_test_1
 def test_python_def_test_1(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -4158,6 +4260,7 @@ def test_python_def_test_1(self):
         c.redraw()
 #@+node:ekr.20210904065459.80: *3* TestImport.test_python_def_test_2
 def test_python_def_test_2(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -4213,6 +4316,7 @@ def test_python_def_test_2(self):
         c.redraw()
 #@+node:ekr.20210904065459.81: *3* TestImport.test_python_docstring_only
 def test_python_docstring_only(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4224,6 +4328,7 @@ def test_python_docstring_only(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.82: *3* TestImport.test_python_empty_decls
 def test_python_empty_decls(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4236,6 +4341,7 @@ def test_python_empty_decls(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.83: *3* TestImport.test_python_extra_leading_ws_test
 def test_python_extra_leading_ws_test(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4250,6 +4356,7 @@ def test_python_extra_leading_ws_test(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.84: *3* TestImport.test_python_indent_decls
 def test_python_indent_decls(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -4331,6 +4438,7 @@ def test_python_indent_decls(self):
         c.redraw()
 #@+node:ekr.20210904065459.85: *3* TestImport.test_python_leoImport_py_small_
 def test_python_leoImport_py_small_(self):
+    c = self.c
     if 0: # Preamble...
         if c.isChanged(): c.save()
         # import leo
@@ -4433,6 +4541,7 @@ def test_python_leoImport_py_small_(self):
         c.redraw()
 #@+node:ekr.20210904065459.86: *3* TestImport.test_python_looks_like_section_ref
 def test_python_looks_like_section_ref(self):
+    c = self.c
     # ~/at-auto-test.py
 
     # Careful: don't put a section reference in the string.
@@ -4444,6 +4553,7 @@ def test_python_looks_like_section_ref(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.87: *3* TestImport.test_python_minimal_class_1
 def test_python_minimal_class_1(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4465,6 +4575,7 @@ def test_python_minimal_class_1(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.88: *3* TestImport.test_python_minimal_class_2
 def test_python_minimal_class_2(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4479,6 +4590,7 @@ def test_python_minimal_class_2(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.89: *3* TestImport.test_python_minimal_class_3
 def test_python_minimal_class_3(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4493,6 +4605,7 @@ def test_python_minimal_class_3(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.90: *3* TestImport.test_python_overindent_def_no_following_def
 def test_python_overindent_def_no_following_def(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4512,6 +4625,7 @@ def test_python_overindent_def_no_following_def(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.91: *3* TestImport.test_python_overindent_def_one_following_def
 def test_python_overindent_def_one_following_def(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4534,6 +4648,7 @@ def test_python_overindent_def_one_following_def(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.92: *3* TestImport.test_python_overindented_def_3
 def test_python_overindented_def_3(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -4588,6 +4703,7 @@ def test_python_overindented_def_3(self):
         c.redraw()
 #@+node:ekr.20210904065459.93: *3* TestImport.test_python_string_test_extra_indent
 def test_python_string_test_extra_indent(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4608,6 +4724,7 @@ def test_python_string_test_extra_indent(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.94: *3* TestImport.test_python_string_underindent_lines
 def test_python_string_underindent_lines(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4625,6 +4742,7 @@ def test_python_string_underindent_lines(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.95: *3* TestImport.test_python_string_underindent_lines_2
 def test_python_string_underindent_lines_2(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4643,6 +4761,7 @@ def test_python_string_underindent_lines_2(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.96: *3* TestImport.test_python_top_level_later_decl
 def test_python_top_level_later_decl(self):
+    c = self.c
     # From xo.py.
     if 0: # Preamble...
         if c.isChanged(): c.save()
@@ -4739,6 +4858,7 @@ def test_python_trailing_comment_outer_levels(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.99: *3* TestImport.test_python_two_functions
 def test_python_two_functions(self):
+    c = self.c
     # For comparison with unindent does not end function.
 
     ### @tabwidth -4
@@ -4756,6 +4876,7 @@ def test_python_two_functions(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.100: *3* TestImport.test_python_underindent_method
 def test_python_underindent_method(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
     if 0: # Preamble...
@@ -4810,6 +4931,7 @@ def test_python_underindent_method(self):
         c.redraw()
 #@+node:ekr.20210904065459.101: *3* TestImport.test_python_unindent_in_triple_string_does_not_end_function
 def test_python_unindent_in_triple_string_does_not_end_function(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4848,6 +4970,7 @@ def test_python_unindent_in_triple_string_does_not_end_function(self):
             c.redraw(p)
 #@+node:ekr.20210904065459.102: *3* TestImport.test_python_unittest_perfectImport_formatter_py
 def test_python_unittest_perfectImport_formatter_py(self):
+    c = self.c
 
     s = '''\
 
@@ -5288,6 +5411,7 @@ def test_python_unittest_perfectImport_formatter_py(self):
     c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.103: *3* TestImport.test_TypeScript_class
 def test_TypeScript_class(self):
+    c = self.c
     s = '''
 
     class Greeter {
@@ -5315,6 +5439,7 @@ def test_TypeScript_class(self):
     c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.104: *3* TestImport.test_TypeScript_module
 def test_TypeScript_module(self):
+    c = self.c
     s = '''
 
     module Sayings {
@@ -5344,6 +5469,7 @@ def test_TypeScript_module(self):
     c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20210904065459.105: *3* TestImport.test_xml_with_standard_opening_elements
 def test_xml_with_standard_opening_elements(self):
+    c = self.c
     s = '''\
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE note SYSTEM "Note.dtd">
@@ -5383,6 +5509,7 @@ def test_xml_with_standard_opening_elements(self):
         c.redraw()
 #@+node:ekr.20210904065459.106: *3* TestImport.test_xml_1
 def test_xml_1(self):
+    c = self.c
     s = '''\
     <html>
     <head>
@@ -5420,6 +5547,7 @@ def test_xml_1(self):
         c.redraw()
 #@+node:ekr.20210904065459.107: *3* TestImport.test_xml_2
 def test_xml_2(self):
+    c = self.c
     s = '''\
     <nodeA>
     <nodeB/>
@@ -5450,6 +5578,7 @@ def test_xml_2(self):
         c.redraw()
 #@+node:ekr.20210904065459.108: *3* TestImport.test_xml_non_ascii_tags
 def test_xml_non_ascii_tags(self):
+    c = self.c
 
     s = '''\
     <:À.Ç>
@@ -5467,7 +5596,8 @@ def test_xml_non_ascii_tags(self):
 #@+node:ekr.20210904071301.1: ** Tests of @auto-md
 #@+node:ekr.20210904065459.109: *3* TestImport.test_md_import_test
 def test_md_import_test(self):
-    
+    c = self.c
+    ic = c.importCommands
     s = textwrap.dedent("""\
 s = '''\
 #Top
@@ -5494,54 +5624,30 @@ Section 3, line 1
 
 """)
 
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.markdown
-        import leo.plugins.writers.markdown
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.markdown)
-        importlib.reload(leo.plugins.writers.markdown)
-        importlib.reload(leoImport)
-        markdown = leo.plugins.importers.markdown
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-        # x = markdown.Markdown_Importer(ic)
-    else:
-        ic = c.importCommands  
-    try:
-        ic.markdownUnitTest(p,s=s,showTree=True) # Must be true.
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@auto-m'), root.h
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
-            p.moveToThreadNext()
-        assert p == after, p.h
-    finally:
-        if 1:
-            if root:
-                root.doDelete()
-            c.redraw()
+    ic.markdownUnitTest(c.p, s=s, showTree=True) # Must be true.
+    table = (
+        (1, 'Top'),
+        (2, 'Section 1'),
+        (2, 'Section 2'),
+        (3, 'Section 2.1'),
+        (4, 'Section 2.1.1'),
+        (3, 'Section 2.2'),
+        (2, 'Section 3'),
+    )
+    after = c.p.nodeAfterTree()
+    root = c.p.lastChild()
+    assert root.h.startswith('@@auto-m'), root.h
+    p = root.firstChild()
+    for n, h in table:
+        n2 = p.level() - root.level()
+        assert h == p.h, (h, p.h)
+        assert n == n2, (n, n2, p.h)
+        p.moveToThreadNext()
+    assert p == after, p.h
 #@+node:ekr.20210904065459.110: *3* TestImport.test_md_import_test_rst_style
 def test_md_import_test_rst_style(self):
+    c = self.c
+    ic = c.importCommands  
     s = textwrap.dedent("""\
 s = '''\
 Top
@@ -5578,74 +5684,31 @@ Section 3
 section 3, line 1
 
 """)
-
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.markdown
-        # import leo.plugins.writers.markdown
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.markdown)
-        # importlib.reload(leo.plugins.writers.markdown)
-        importlib.reload(leoImport)
-        markdown = leo.plugins.importers.markdown
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
-    try:
-        ic.markdownUnitTest(p,s=s,showTree=True) # Must be True.
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@auto-m'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, p.h
-    finally:
-        if 1:
-            if root:
-                root.doDelete()
-            c.redraw()
+    
+    ic.markdownUnitTest(p,s=s,showTree=True) # Must be True.
+    table = (
+        (1, 'Top'),
+        (2, 'Section 1'),
+        (2, 'Section 2'),
+        (3, 'Section 2.1'),
+        (4, 'Section 2.1.1'),
+        (3, 'Section 2.2'),
+        (2, 'Section 3'),
+    )
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@auto-m'), root.h
+    p = root.firstChild()
+    for n, h in table:
+        n2 = p.level() - root.level()
+        assert h == p.h, (h, p.h)
+        assert n == n2, (n, n2, p.h)
+        p.moveToThreadNext()
+    assert p == after, p.h
 #@+node:ekr.20210904065459.111: *3* TestImport.test_markdown_importer_basic
 def test_markdown_importer_basic(self):
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.markdown
-        # import leo.plugins.writers.markdown
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.markdown)
-        # importlib.reload(leo.plugins.writers.markdown)
-        importlib.reload(leoImport)
-        markdown = leo.plugins.importers.markdown
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    c = self.c
+    ic = c.importCommands  
     # insert test for markdown here.
     s = '''\
     Decl line.
@@ -5669,41 +5732,18 @@ def test_markdown_importer_basic(self):
             'Subheader',
             'Last header: no text',
     )
-    try:
-        ic.markdownUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    ic.markdownUnitTest(p,s=s,showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@auto-m'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.112: *3* TestImport.test_markdown_importer_implicit_section
 def test_markdown_importer_implicit_section(self):
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.markdown
-        # import leo.plugins.writers.markdown
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.markdown)
-        # importlib.reload(leo.plugins.writers.markdown)
-        importlib.reload(leoImport)
-        markdown = leo.plugins.importers.markdown
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    c = self.c
+    ic = c.importCommands  
     # insert test for markdown here.
     s = '''\
     Decl line.
@@ -5731,46 +5771,21 @@ def test_markdown_importer_implicit_section(self):
                 'This *should* be a section',
             'Last header: no text',
     )
-    try:
-        g.app.suppressImportChecks = True
-            # Required, because the implicit underlining *must*
-            # cause the perfect-import test to fail!
-        ic.markdownUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        g.app.suppressImportChecks = False
-            # Not needed: done in Importer.check
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    g.app.suppressImportChecks = True
+        # Required, because the implicit underlining *must*
+        # cause the perfect-import test to fail!
+    ic.markdownUnitTest(c.p, s=s, showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@auto-m'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.113: *3* TestImport.test_markdown_importer__section_name
 def test_markdown_importer__section_name(self):
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.markdown
-        # import leo.plugins.writers.markdown
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.markdown)
-        # importlib.reload(leo.plugins.writers.markdown)
-        importlib.reload(leoImport)
-        markdown = leo.plugins.importers.markdown
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    c = self.c
+    ic = c.importCommands  
     # insert test for markdown here.
     s = '''\
     Decl line.
@@ -5801,47 +5816,22 @@ def test_markdown_importer__section_name(self):
                 'This *should* be a section',
             'Last header: no text',
     )
-    try:
-        g.app.suppressImportChecks = True
-            # Required, because the implicit underlining *must*
-            # cause the perfect-import test to fail!
-        ic.markdownUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        g.app.suppressImportChecks = False
-            # Not needed: done in Importer.check
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    g.app.suppressImportChecks = True
+        # Required, because the implicit underlining *must*
+        # cause the perfect-import test to fail!
+    ic.markdownUnitTest(c.p, s=s, showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@auto-m'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.114: *3* TestImport.test_markdown_github_syntax
 def test_markdown_github_syntax(self):
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.markdown
-        # import leo.plugins.writers.markdown
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.markdown)
-        # importlib.reload(leo.plugins.writers.markdown)
-        importlib.reload(leoImport)
-        markdown = leo.plugins.importers.markdown
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
-    # insert test for markdown here.
+    c = self.c
+    ic = c.importCommands  
+    ### insert test for markdown here.
     s = '''\
     Decl line.
     #Header
@@ -5859,42 +5849,24 @@ def test_markdown_github_syntax(self):
         'Header',
         'Last header',
     )
-    try:
-        ic.markdownUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    ic.markdownUnitTest(c.p, s=s, showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904071345.1: ** Tests of @auto-rst
 #@+node:ekr.20210904065459.115: *3* TestImport.test_rST_import_test
 def test_rST_import_test(self):
-    ### import leo.core.leoImport as leoImport
+    c = self.c
+    ic = c.importCommands
     try:
         import docutils
+        assert docutils
     except Exception:
         self.skipTest('no docutils')
-
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.leo_rst
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.leo_rst)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
 
     s = '''\
     .. toc
@@ -5948,25 +5920,20 @@ def test_rST_import_test(self):
         'placeholder',
         'section 3.1.1',
     )
-    try:
-        ic.rstUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    ic.rstUnitTest(c.p, s=s, showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.116: *3* TestImport.test_rST_import_test_simple
 def test_rST_import_test_simple(self):
-    ### import leo.core.leoImport as leoImport
+    c = self.c
     try:
         import docutils
+        assert docutils
     except Exception:
         self.skipTest('no docutils')
 
@@ -5985,41 +5952,23 @@ def test_rST_import_test_simple(self):
         "!Dummy chapter",
         "Chapter",
     )
-    try:
-        c.importCommands.rstUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    c.importCommands.rstUnitTest(c,p, s=s ,showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.117: *3* TestImport.test_rST_import_test_no_double_underlines
 def test_rST_import_test_no_double_underlines(self):
-    ### import leo.core.leoImport as leoImport
+    c = self.c
+    ic = c.importCommands
     try:
         import docutils
+        assert docutils
     except Exception:
         self.skipTest('no docutils')
-
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.leo_rst
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.leo_rst)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
 
     s = '''\
     .. toc
@@ -6072,41 +6021,23 @@ def test_rST_import_test_no_double_underlines(self):
         'placeholder',
         'section 3.1.1',
     )
-    try:
-        ic.rstUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    ic.rstUnitTest(c.p, s=s, showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.118: *3* TestImport.test_rST_import_test_long_underlines
 def test_rST_import_test_long_underlines(self):
-    ### import leo.core.leoImport as leoImport
+    c = self.c
+    ic = c.importCommands
     try:
         import docutils
+        assert docutils
     except Exception:
         self.skipTest('no docutils')
-
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.leo_rst
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.leo_rst)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
     s = '''\
     .. toc
 
@@ -6119,41 +6050,23 @@ def test_rST_import_test_long_underlines(self):
         '!Dummy chapter',
         'top',
     )
-    try:
-        ic.rstUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    ic.rstUnitTest(c.p,s=s,showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.119: *3* TestImport.test_rST_import_test_long_overlines
 def test_rST_import_test_long_overlines(self):
-    ### import leo.core.leoImport as leoImport
+    c = self.c
+    ic = c.importCommands
     try:
         import docutils
+        assert docutils
     except Exception:
         self.skipTest('no docutils')
-
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.leo_rst
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.leo_rst)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
 
     s = '''\
     .. toc
@@ -6168,25 +6081,21 @@ def test_rST_import_test_long_overlines(self):
         "!Dummy chapter",
         "top",
     )
-    try:
-        ic.rstUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    p = c.p
+    ic.rstUnitTest(p,s=s,showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.120: *3* TestImport.test_rST_import_test_trailing_whitespace
 def test_rST_import_test_trailing_whitespace(self):
-    ### import leo.core.leoImport as leoImport
+    c = self.c
     try:
         import docutils
+        assert docutils
     except Exception:
         self.skipTest('no docutils')
 
@@ -6205,50 +6114,30 @@ def test_rST_import_test_trailing_whitespace(self):
         "!Dummy chapter",
         "top",
     )
-    try:
-        c.importCommands.rstUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    p = c.p
+    c.importCommands.rstUnitTest(p, s=s, showTree=True)
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.121: *3* TestImport.test_leo_rst
 def test_leo_rst(self):
-    ### import leo.core.leoImport as leoImport
+    c = self.c
+    ic = c.importCommands
     try:
         import docutils
+        assert docutils
     except Exception:
         self.skipTest('no docutils')
-
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.leo_rst as leo_rst
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.leo_rst)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
 
     # Notes:
     # All heading must be followed by an empty line.
     s = '''\
       #########
-    Chapter 1
+      Chapter 1
       #########
 
     It was a dark and stormy night.
@@ -6266,26 +6155,17 @@ def test_leo_rst(self):
         'section 1',
         'section 2',
     )
-    try:
-        ic.rstUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 0:
-            p.deleteAllChildren()
-            c.redraw()
+    ic.rstUnitTest(c.p, s=s, showTree=True)
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904071422.1: ** All other tests
 #@+node:ekr.20210904065459.122: *3* TestImport.test_at_auto_importers
 def test_at_auto_importers(self):
-    # This causes problems!
-    import glob
-    import importlib
     path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
     assert g.os_path_exists(path), repr(path)
     pattern = g.os_path_finalize_join(path,'*.py')
@@ -6295,9 +6175,7 @@ def test_at_auto_importers(self):
         assert m
 #@+node:ekr.20210904065459.123: *3* TestImport.test_Importer_get_leading_indent
 def test_Importer_get_leading_indent(self):
-    
-    # import importlib
-    # importlib.reload(linescanner)
+    c = self.c
     lines_table = [
         'abc',
         '    xyz',
@@ -6311,13 +6189,14 @@ def test_Importer_get_leading_indent(self):
         )
         # print('%s %r' % (language, importer.comment_delim))
         assert importer.single_comment == '#', importer.single_comment
-        for line in lines_table:
-            lines = [line]
-            n = importer.get_leading_indent(lines, 0)
-            # print('%s %r' % (n, line))
+        if 0:
+            for line in lines_table:
+                lines = [line]
+                n = importer.get_leading_indent(lines, 0)
+                print('%s %r' % (n, line))
 #@+node:ekr.20210904065459.124: *3* TestImport.test_Importer_get_str_lws
 def test_Importer_get_str_lws(self):
-    import leo.plugins.importers.linescanner as linescanner
+    c = self.c
     table = [
         ('', 'abc\n'),
         ('    ', '    xyz\n'),
@@ -6330,9 +6209,7 @@ def test_Importer_get_str_lws(self):
         assert val == importer.get_str_lws(s), (val, repr(s))
 #@+node:ekr.20210904065459.125: *3* TestImport.test_Importer_is_ws_line
 def test_Importer_is_ws_line(self):
-    import leo.plugins.importers.linescanner as linescanner
-    # import importlib
-    # importlib.reload(linescanner)
+    c = self.c
     table = [
         (False, 'abc'),
         (False, '    xyz'),
@@ -6344,26 +6221,20 @@ def test_Importer_is_ws_line(self):
         assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20210904065459.126: *3* TestImport.test_importers_coffee_scan_line
 def test_importers_coffee_scan_line(self):
-    import importlib
-    import leo.plugins.importers.coffeescript as cs
-    importlib.reload(cs)
+    c = self.c
     table = [] # State after line, line
     x = cs.CS_Importer(c.importCommands, atAuto=True)
     assert x.single_comment == '#', x.single_comment
     for new_state, line in table:
         print('%5s %r' % (new_state, line))
     if 0:
-        for line in lines_table:
+        for line in table:
             lines = [line]
-            n = importer.get_leading_indent(lines, 0)
-            # print('%s %r' % (n, line))
+            n = x.get_leading_indent(lines, 0)
+            print('%s %r' % (n, line))
 #@+node:ekr.20210904065459.127: *3* TestImport.test_importers_dart_clean_headline
 def test_importers_dart_clean_headline(self):
-    import leo.plugins.importers.dart as dart
-    if 0: # Preamble.
-        if c.isChanged(): c.save()
-        import importlib
-        importlib.reload(dart)
+    c = self.c
     x = dart.Dart_Importer(c.importCommands, atAuto=False)    
     table = (
         ('func(abc) {', 'func'),
@@ -6375,16 +6246,8 @@ def test_importers_dart_clean_headline(self):
         assert got == expected
 #@+node:ekr.20210904065459.128: *3* TestImport.test_importers_markdown_is_hash
 def test_importers_markdown_is_hash(self):
-    import leo.plugins.importers.markdown as markdown
-    if 0: # Preamble.
-        import leo
-        import leo.core.leoImport as leoImport
-        import importlib
-        importlib.reload(markdown)
-        importlib.reload(leoImport)
-        ic = leo.core.leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    c = self.c
+    ic = c.importCommands
     x = markdown.Markdown_Importer(ic, atAuto=False)   
     # insert test for markdown here.
     assert x.md_pattern_table
@@ -6403,16 +6266,9 @@ def test_importers_markdown_is_hash(self):
     assert name == None
 #@+node:ekr.20210904065459.129: *3* TestImport.test_importers_markdown_is_underline
 def test_importers_markdown_is_underline(self):
+    c = self.c
     import leo.plugins.importers.markdown as markdown
-    if 0: # Preamble.
-        import leo
-        import leo.core.leoImport as leoImport
-        import importlib
-        importlib.reload(markdown)
-        importlib.reload(leoImport)
-        ic = leo.core.leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
     x = markdown.Markdown_Importer(ic, atAuto=False)
     for line in ('----\n', '-----\n', '====\n', '====\n'):
         got = x.is_underline(line)
@@ -6422,10 +6278,7 @@ def test_importers_markdown_is_underline(self):
         assert not got, repr(line)
 #@+node:ekr.20210904065459.130: *3* TestImport.test_importers_pascal_methods
 def test_importers_pascal_methods(self):
-    import leo.plugins.importers.pascal as pascal
-    if 0: # Preamble.
-        import importlib
-        importlib.reload(pascal)
+    c = self.c
     x = pascal.Pascal_Importer(c.importCommands, atAuto=False)    
     table = (
         ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
@@ -6434,51 +6287,9 @@ def test_importers_pascal_methods(self):
     for line, cleaned in table:
         assert x.starts_block(0, [line], state, state)
         assert x.clean_headline(line) == cleaned
-#@+node:ekr.20210904065459.131: *3* TestImport.test_importers_python_test_scan_state
-def test_importers_python_test_scan_state(self):
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.python as py
-    if 0: # Preamble.
-        if c.isChanged(): c.save()
-        import importlib
-        importlib.reload(linescanner)
-        importlib.reload(py)
-    State = py.Python_ScanState
-    # A list of dictionaries.
-if 0:
-    tests = [
-        g.Bunch(line='s = "\\""', ctx=('', '')),
-    ]
-else:
-    tests = [
-        g.Bunch(line='\n'),
-        g.Bunch(line='\\\n'),
-        g.Bunch(line='s = "\\""', ctx=('', '')),
-        g.Bunch(line="s = '\\''", ctx=('', '')),
-        g.Bunch(line='# comment'),
-        g.Bunch(line='  # comment'),
-        g.Bunch(line='    # comment'),
-        g.Bunch(line='a = "string"'),
-        g.Bunch(line='a = "Continued string', ctx=('', '"')),
-        g.Bunch(line='end of continued string"', ctx=('"', '')),
-        g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
-        g.Bunch(line='a = """#', ctx=('', '"""')),
-        g.Bunch(line='end of continued string"""', ctx=('"""', '')),
-        g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
-        g.Bunch(line="end of continued string'''", ctx=("'''", '')),
-        g.Bunch(line='a = {[(')
-    ]
-    if 1:
-        importer = py.Py_Importer(c.importCommands, atAuto=True)
-        importer.test_scan_state(tests, State)
 #@+node:ekr.20210904065459.132: *3* TestImport.test_importers_xml_is_ws_line
 def test_importers_xml_is_ws_line(self):
-    import leo.plugins.importers.xml as xml
-    import leo.plugins.importers.linescanner as linescanner
-    if 0: # Prefix
-        import importlib
-        importlib.reload(linescanner)
-        importlib.reload(xml)
+    c = self.c
     x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
     table = (
        (1, ' \n'),
@@ -6494,7 +6305,7 @@ def test_importers_xml_is_ws_line(self):
         assert expected == got, (expected, int(got), repr(line))
 #@+node:ekr.20210904065459.133: *3* TestImport.test_importesrs_xml_scan_line
 def test_importesrs_xml_scan_line(self):
-    import leo.plugins.importers.xml as xml
+    c = self.c
     if 0: # Preamble
         import importlib
         import leo.plugins.importers.linescanner as linescanner
@@ -6517,6 +6328,36 @@ def test_importesrs_xml_scan_line(self):
         assert prev_state.tag_level == 0
         new_state = x.scan_line(line, prev_state)
         assert new_state.tag_level == level, (new_state, repr(line))
+#@+node:ekr.20210904065459.131: ** TestImport.test_importers_python_test_scan_state
+def test_importers_python_test_scan_state(self):
+    c = self.c
+    State = py.Python_ScanState
+    # A list of dictionaries.
+    if 0:
+        tests = [
+            g.Bunch(line='s = "\\""', ctx=('', '')),
+        ]
+    else:
+        tests = [
+            g.Bunch(line='\n'),
+            g.Bunch(line='\\\n'),
+            g.Bunch(line='s = "\\""', ctx=('', '')),
+            g.Bunch(line="s = '\\''", ctx=('', '')),
+            g.Bunch(line='# comment'),
+            g.Bunch(line='  # comment'),
+            g.Bunch(line='    # comment'),
+            g.Bunch(line='a = "string"'),
+            g.Bunch(line='a = "Continued string', ctx=('', '"')),
+            g.Bunch(line='end of continued string"', ctx=('"', '')),
+            g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+            g.Bunch(line='a = """#', ctx=('', '"""')),
+            g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+            g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+            g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+            g.Bunch(line='a = {[(')
+        ]
+    importer = py.Py_Importer(c.importCommands, atAuto=True)
+    importer.test_scan_state(tests, State)
 #@-others
 
 
