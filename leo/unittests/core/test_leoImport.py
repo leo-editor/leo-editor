@@ -67,7 +67,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.4: *5* TestImport.test_c_class_underindented_line
     def test_c_class_underindented_line(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             class cTestClass1 {
         
@@ -88,43 +87,7 @@ class TestImporter(LeoUnitTest):
             'int foo',
             'char bar',
         )
-        ic.cUnitTest(c.p, s=s)
-        # Check structure
-        root = c.p.lastChild()
-        assert root.h == '@file test', root.h
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.5: *5* TestImport.test_c_comment_follows_arg_list
-    def test_c_comment_follows_arg_list(self):
-        c = self.c
-        ic = c.importCommands
-        s = textwrap.dedent("""\
-            void
-            aaa::bbb::doit
-                (
-                awk* b
-                )
-            {
-                assert(false);
-            }
-        
-            bool
-            aaa::bbb::dothat
-                (
-                xyz *b
-                ) //  <---------------------problem
-            {
-                return true;
-            }
-        """)
-        table = (
-            'void aaa::bbb::doit',
-            'bool aaa::bbb::dothat',
-        )
-        ic.cUnitTest(c.p, s=s)
+        c.importCommands.cUnitTest(c.p, s=s)
         # Check structure
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
@@ -136,7 +99,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.6: *5* TestImport.test_c_comment_follows_block_delim
     def test_c_comment_follows_block_delim(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             void
             aaa::bbb::doit
@@ -160,7 +122,7 @@ class TestImporter(LeoUnitTest):
             'void aaa::bbb::doit',
             'bool aaa::bbb::dothat',
         )
-        ic.cUnitTest(c.p, s=s)
+        c.importCommands.cUnitTest(c.p, s=s)
         # Check structure
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
@@ -173,7 +135,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.7: *5* TestImport.test_c_intermixed_blanks_and_tabs
     def test_c_intermixed_blanks_and_tabs(self):
         c = self.c
-        ic = c.importCommands
         s = textwrap.dedent("""\
             void
             aaa::bbb::doit
@@ -188,7 +149,7 @@ class TestImporter(LeoUnitTest):
             'void aaa::bbb::doit',
         )
        
-        ic.cUnitTest(c.p, s=s)
+        c.importCommands.cUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
@@ -200,7 +161,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.8: *5* TestImport.test_c_old_style_decl_1
     def test_c_old_style_decl_1(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             static void
             ReleaseCharSet(cset)
@@ -215,7 +175,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'static void ReleaseCharSet',
         )
-        ic.cUnitTest(c.p, s=s)
+        c.importCommands.cUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
@@ -226,7 +186,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.9: *5* TestImport.test_c_old_style_decl_2
     def test_c_old_style_decl_2(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
@@ -239,7 +198,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'Tcl_Obj * Tcl_NewLongObj',
         )
-        ic.cUnitTest(c.p, s=s)
+        c.importCommands.cUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
@@ -250,7 +209,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.10: *5* TestImport.test_c_extern
     def test_c_extern(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             extern "C"
             {
@@ -263,8 +221,43 @@ class TestImporter(LeoUnitTest):
             'extern "C"',
         )
         p = c.p
-        ic.cUnitTest(p, s=s)
+        c.importCommands.cUnitTest(p, s=s)
         root = p.lastChild()
+        assert root.h == '@file test', root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+    #@+node:ekr.20210904065459.5: *4* TestImport.test_c_comment_follows_arg_list
+    def test_c_comment_follows_arg_list(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            void
+            aaa::bbb::doit
+                (
+                awk* b
+                )
+            {
+                assert(false);
+            }
+        
+            bool
+            aaa::bbb::dothat
+                (
+                xyz *b
+                ) //  <---------------------problem
+            {
+                return true;
+            }
+        """)
+        table = (
+            'void aaa::bbb::doit',
+            'bool aaa::bbb::dothat',
+        )
+        c.importCommands.cUnitTest(c.p, s=s)
+        # Check structure
+        root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
         for h in table:
@@ -921,7 +914,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.30: *5* TestImport.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             /**
              * Indicates the caller's authority to perform lifecycle operations on
@@ -942,7 +934,7 @@ class TestImporter(LeoUnitTest):
             'public final class AdminPermission extends BasicPermission',
             'public AdminPermission',
         )
-        ic.javaUnitTest(c.p, s=s)
+        c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
@@ -954,7 +946,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.31: *5* TestImport.test_from_BundleException_java
     def test_from_BundleException_java(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             /*
              * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
@@ -1008,7 +999,7 @@ class TestImporter(LeoUnitTest):
             'public class BundleException extends Exception',
             'public BundleException',
         )
-        ic.javaUnitTest(c.p, s=s)
+        c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
@@ -1019,7 +1010,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.32: *5* TestImport.test_java_interface_test1
     def test_java_interface_test1(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             interface Bicycle {
                 void changeCadence(int newValue);
@@ -1029,7 +1019,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'interface Bicycle',
         )
-        ic.javaUnitTest(c.p, s=s)
+        c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
@@ -1040,8 +1030,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.33: *5* TestImport.test_java_interface_test2
     def test_java_interface_test2(self):
         c = self.c
-        ic = c.importCommands  
-
         s = textwrap.dedent("""\
             interface Bicycle {
             void changeCadence(int newValue);
@@ -1051,7 +1039,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'interface Bicycle',
         )
-        ic.javaUnitTest(c.p, s=s)
+        c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@file test', root.h
         p2 = root.firstChild()
@@ -1358,7 +1346,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.47: *5* TestImport.test_org_placeholder
     def test_org_placeholder(self):
         c = self.c
-        ic = c.importCommands 
         # insert test for org here.
         s = textwrap.dedent("""\
             * Section 1
@@ -1384,7 +1371,7 @@ class TestImporter(LeoUnitTest):
             'Section 3.1',
         )
         g.app.suppressImportChecks = True
-        ic.orgUnitTest(c.p, s=s)
+        c.importCommands.orgUnitTest(c.p, s=s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1443,7 +1430,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.50: *5* TestImport.test_pascal_to_delphi_interface
     def test_pascal_to_delphi_interface(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             unit Unit1;
         
@@ -1485,7 +1471,7 @@ class TestImporter(LeoUnitTest):
             'procedure FormCreate',
             'procedure TForm1.FormCreate',
         )
-        ic.pascalUnitTest(c.p, s=s)
+        c.importCommands.pascalUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root
         assert root.h == '@file test', root.h
@@ -1760,47 +1746,45 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.61: *5* TestImport.test_leoApp_fail
         def test_leoApp_fail(self):
             c = self.c
-            ic = c.importCommands
-            
-            s = '''
-            def isValidPython(self):
-                if sys.platform == 'cli':
-                    return True
-                minimum_python_version = '2.6'
-                message = """\
-            Leo requires Python %s or higher.
-            You may download Python from
-            http://python.org/download/
-            """ % minimum_python_version
-                try:
-                    version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-                    ok = g.CheckVersion(version, minimum_python_version)
-                    if not ok:
-                        print(message)
-                        try:
-                            # g.app.gui does not exist yet.
-                            import Tkinter as Tk
-                            class EmergencyDialog(object):
-                                def run(self):
-                                    """Run the modal emergency dialog."""
-                                    self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
-                                    self.top.lift()
-                                    self.top.grab_set() # Make the dialog a modal dialog.
-                                    self.root.wait_window(self.top)
-                            d = EmergencyDialog(
-                                title='Python Version Error',
-                                message=message)
-                            d.run()
-                        except Exception:
-                            pass
-                    return ok
-                except Exception:
-                    print("isValidPython: unexpected exception: g.CheckVersion")
-                    traceback.print_exc()
-                    return 0
-            def loadLocalFile(self, fn, gui, old_c):
-                trace = (False or g.trace_startup) and not g.unitTesting
-            '''
+            s = textwrap.dedent('''
+                def isValidPython(self):
+                    if sys.platform == 'cli':
+                        return True
+                    minimum_python_version = '2.6'
+                    message = """\
+                Leo requires Python %s or higher.
+                You may download Python from
+                http://python.org/download/
+                """ % minimum_python_version
+                    try:
+                        version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
+                        ok = g.CheckVersion(version, minimum_python_version)
+                        if not ok:
+                            print(message)
+                            try:
+                                # g.app.gui does not exist yet.
+                                import Tkinter as Tk
+                                class EmergencyDialog(object):
+                                    def run(self):
+                                        """Run the modal emergency dialog."""
+                                        self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+                                        self.top.lift()
+                                        self.top.grab_set() # Make the dialog a modal dialog.
+                                        self.root.wait_window(self.top)
+                                d = EmergencyDialog(
+                                    title='Python Version Error',
+                                    message=message)
+                                d.run()
+                            except Exception:
+                                pass
+                        return ok
+                    except Exception:
+                        print("isValidPython: unexpected exception: g.CheckVersion")
+                        traceback.print_exc()
+                        return 0
+                def loadLocalFile(self, fn, gui, old_c):
+                    trace = (False or g.trace_startup) and not g.unitTesting
+            ''')
             table = (
                 (1, 'isValidPython'),
                 # (2, 'class EmergencyDialog'),
@@ -1808,7 +1792,7 @@ class TestImporter(LeoUnitTest):
                 (1, 'loadLocalFile'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -1836,8 +1820,6 @@ class TestImporter(LeoUnitTest):
         def test_python_basic_nesting_test(self):
             c = self.c
             # Was unittest/at_auto-unit-test.py
-            ic = c.importCommands
-
             s = textwrap.dedent("""\
                 class class1:
                     def class1_method1():
@@ -1861,7 +1843,7 @@ class TestImporter(LeoUnitTest):
                 (2, 'class2_method2'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -1877,7 +1859,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.64: *5* TestImport.test_python_bug_346
         def test_python_bug_346(self):
             c = self.c
-            ic = c.importCommands  
             s = textwrap.dedent('''\
                 import sys
             
@@ -1911,7 +1892,7 @@ class TestImporter(LeoUnitTest):
                 (1, 'make_parser'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -1927,7 +1908,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.65: *5* TestImport.test_python_bug_354
         def test_python_bug_354(self):
             c = self.c
-            ic = c.importCommands 
             s = """
             if isPython3:
                 def u(s):
@@ -1950,7 +1930,7 @@ class TestImporter(LeoUnitTest):
                 # (1, 'ue'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -1966,267 +1946,266 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.66: *5* TestImport.test_python_bug_357
         def test_python_bug_357(self):
             c = self.c
-            ic = c.importCommands 
-            s = '''
+            s = textwrap.dedent('''
             """
-            sheet_stats.py - report column stats for spreadsheets
-
-            requires openpyxl and numpy
-
-            Terry N. Brown, terrynbrown@gmail.com, Fri Dec 16 13:20:47 2016
-            2016-12-26 Henry Helgen added average, variance, standard deviation,
-                                    coefficient of variation to output
-            2016-12-23 Henry Helgen updated to Python 3.5 syntax including print() and
-                                    writer = csv.writer(open(opt.output, 'w', newline=''))
-            """
-
-            import csv
-            import argparse
-            import glob
-            import multiprocessing
-            import os
-            import sys
-            from collections import namedtuple
-            from math import sqrt, isnan
-            NAN = float('NAN')
-
-            from openpyxl import load_workbook
-
-            PYTHON_2 = sys.version_info[0] < 3
-            if not PYTHON_2:
-                unicode = str
-
-            class AttrDict(dict):
-                """allow d.attr instead of d['attr']
-                http://stackoverflow.com/a/14620633
+                sheet_stats.py - report column stats for spreadsheets
+            
+                requires openpyxl and numpy
+            
+                Terry N. Brown, terrynbrown@gmail.com, Fri Dec 16 13:20:47 2016
+                2016-12-26 Henry Helgen added average, variance, standard deviation,
+                                        coefficient of variation to output
+                2016-12-23 Henry Helgen updated to Python 3.5 syntax including print() and
+                                        writer = csv.writer(open(opt.output, 'w', newline=''))
                 """
-                def __init__(self, *args, **kwargs):
-                    super(AttrDict, self).__init__(*args, **kwargs)
-                    self.__dict__ = self
-
-            FIELDS = [  # fields in outout table
-                'file', 'field', 'n', 'blank', 'bad', 'min', 'max', 'mean', 'std',
-                'sum', 'sumsq', 'variance', 'coefvar'
-            ]
-            def make_parser():
-                """build an argparse.ArgumentParser, don't call this directly,
-                   call get_options() instead.
-                """
-                parser = argparse.ArgumentParser(
-                    description="""Report column stats for spreadsheets""",
-                    formatter_class=argparse.ArgumentDefaultsHelpFormatter
-                )
-
-                parser.add_argument('files', type=str, nargs='+',
-                    help="Files to process, '*' patterns expanded."
-                )
-
-                required_named = parser.add_argument_group('required named arguments')
-
-                required_named.add_argument("--output",
-                    help="Path to .csv file for output, will be overwritten",
-                    metavar='FILE'
-                )
-
-                return parser
-
-            def get_options(args=None):
-                """
-                get_options - use argparse to parse args, and return a
-                argparse.Namespace, possibly with some changes / expansions /
-                validatations.
-
-                Client code should call this method with args as per sys.argv[1:],
-                rather than calling make_parser() directly.
-
-                :param [str] args: arguments to parse
-                :return: options with modifications / validations
-                :rtype: argparse.Namespace
-                """
-                opt = make_parser().parse_args(args)
-
-                # modifications / validations go here
-
-                if not opt.output:
-                    print("No --output supplied")
-                    exit(10)
-
-                return opt
-
-            def get_aggregate(psumsqn, psumn, pcountn):
-                """
-                get_aggregate - compute mean, variance, standard deviation,
-                coefficient of variation This function is used instead of
-                numpy.mean, numpy.var, numpy.std since the sum, sumsq, and count are
-                available when the function is called. It avoids an extra pass
-                through the list.
-
-                # note pcountn means the full list n,  not a sample n - 1
-
-                :param sum of squares, sum, count
-                :return: a tuple of floats mean, variance, standard deviation, coefficient of variation
-                """
-
-                Agg = namedtuple("Agg", "mean variance std coefvar")
-
-                # validate inputs check for count == 0
-                if pcountn == 0:
-                    result = Agg(NAN, NAN, NAN, NAN)
-                else:
-
-                    mean = psumn / pcountn # mean
-
-                    # compute variance from sum squared without knowing mean while summing
-                    variance = (psumsqn - (psumn * psumn) / pcountn ) / pcountn
-
-                    #compute standard deviation
-                    if variance < 0:
-                        std = NAN
+            
+                import csv
+                import argparse
+                import glob
+                import multiprocessing
+                import os
+                import sys
+                from collections import namedtuple
+                from math import sqrt, isnan
+                NAN = float('NAN')
+            
+                from openpyxl import load_workbook
+            
+                PYTHON_2 = sys.version_info[0] < 3
+                if not PYTHON_2:
+                    unicode = str
+            
+                class AttrDict(dict):
+                    """allow d.attr instead of d['attr']
+                    http://stackoverflow.com/a/14620633
+                    """
+                    def __init__(self, *args, **kwargs):
+                        super(AttrDict, self).__init__(*args, **kwargs)
+                        self.__dict__ = self
+            
+                FIELDS = [  # fields in outout table
+                    'file', 'field', 'n', 'blank', 'bad', 'min', 'max', 'mean', 'std',
+                    'sum', 'sumsq', 'variance', 'coefvar'
+                ]
+                def make_parser():
+                    """build an argparse.ArgumentParser, don't call this directly,
+                       call get_options() instead.
+                    """
+                    parser = argparse.ArgumentParser(
+                        description="""Report column stats for spreadsheets""",
+                        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+                    )
+            
+                    parser.add_argument('files', type=str, nargs='+',
+                        help="Files to process, '*' patterns expanded."
+                    )
+            
+                    required_named = parser.add_argument_group('required named arguments')
+            
+                    required_named.add_argument("--output",
+                        help="Path to .csv file for output, will be overwritten",
+                        metavar='FILE'
+                    )
+            
+                    return parser
+            
+                def get_options(args=None):
+                    """
+                    get_options - use argparse to parse args, and return a
+                    argparse.Namespace, possibly with some changes / expansions /
+                    validatations.
+            
+                    Client code should call this method with args as per sys.argv[1:],
+                    rather than calling make_parser() directly.
+            
+                    :param [str] args: arguments to parse
+                    :return: options with modifications / validations
+                    :rtype: argparse.Namespace
+                    """
+                    opt = make_parser().parse_args(args)
+            
+                    # modifications / validations go here
+            
+                    if not opt.output:
+                        print("No --output supplied")
+                        exit(10)
+            
+                    return opt
+            
+                def get_aggregate(psumsqn, psumn, pcountn):
+                    """
+                    get_aggregate - compute mean, variance, standard deviation,
+                    coefficient of variation This function is used instead of
+                    numpy.mean, numpy.var, numpy.std since the sum, sumsq, and count are
+                    available when the function is called. It avoids an extra pass
+                    through the list.
+            
+                    # note pcountn means the full list n,  not a sample n - 1
+            
+                    :param sum of squares, sum, count
+                    :return: a tuple of floats mean, variance, standard deviation, coefficient of variation
+                    """
+            
+                    Agg = namedtuple("Agg", "mean variance std coefvar")
+            
+                    # validate inputs check for count == 0
+                    if pcountn == 0:
+                        result = Agg(NAN, NAN, NAN, NAN)
                     else:
-                        std = sqrt(variance)
-
-                    # compute coefficient of variation
-                    if mean == 0:
-                        coefvar = NAN
+            
+                        mean = psumn / pcountn # mean
+            
+                        # compute variance from sum squared without knowing mean while summing
+                        variance = (psumsqn - (psumn * psumn) / pcountn ) / pcountn
+            
+                        #compute standard deviation
+                        if variance < 0:
+                            std = NAN
+                        else:
+                            std = sqrt(variance)
+            
+                        # compute coefficient of variation
+                        if mean == 0:
+                            coefvar = NAN
+                        else:
+                            coefvar = std / mean
+            
+                        result = Agg(mean, variance, std, coefvar)
+            
+                    return result
+            
+            
+                def proc_file(filepath):
+                    """
+                    proc_file - process one .xlsx file
+            
+                    :param str filepath: path to file
+                    :return: list of lists, rows of info. as expected in main()
+                    """
+            
+                    print(filepath)
+            
+                    # get the first sheet
+                    book = load_workbook(filename=filepath, read_only=True)
+                    sheets = book.get_sheet_names()
+                    sheet = book[sheets[0]]
+                    row_source = sheet.rows
+                    row0 = next(row_source)
+                    # get field names from the first row
+                    fields = [i.value for i in row0]
+            
+                    data = {
+                        'filepath': filepath,
+                        'fields': {field:AttrDict({f:0 for f in FIELDS}) for field in fields}
+                    }
+            
+                    for field in fields:
+                        # init. mins/maxs with invalid value for later calc.
+                        data['fields'][field].update(dict(
+                            min=NAN,
+                            max=NAN,
+                            field=field,
+                            file=filepath,
+                        ))
+            
+                    rows = 0
+                    for row in row_source:
+            
+                        if rows % 1000 == 0:  # feedback every 1000 rows
+                            print(rows)
+                            # Much cleaner to exit by creating a file called "STOP" in the
+                            # local directory than to try and use Ctrl-C, when using
+                            # multiprocessing.  Save time by checking only every 1000 rows.
+                            if os.path.exists("STOP"):
+                                return
+            
+                        rows += 1
+            
+                        for cell_n, cell in enumerate(row):
+                            d = data['fields'][fields[cell_n]]
+                            if cell.value is None or unicode(cell.value).strip() == '':
+                                d.blank += 1
+                            else:
+                                try:
+                                    x = float(cell.value)
+                                    d.sum += x
+                                    d.sumsq += x*x
+                                    d.n += 1
+                                    # min is x if no value seen yet, else min(prev-min, x)
+                                    if isnan(d.min):
+                                        d.min = x
+                                    else:
+                                        d.min = min(d.min, x)
+                                    # as for min
+                                    if isnan(d.max):
+                                        d.max = x
+                                    else:
+                                        d.max = max(d.max, x)
+                                except ValueError:
+                                    d.bad += 1
+            
+                    assert sum(d.n+d.blank+d.bad for d in data['fields'].values()) == rows * len(fields)
+            
+                    # compute the derived values
+                    for field in data['fields']:
+                        d = data['fields'][field]
+                        d.update(get_aggregate(d.sumsq, d.sum, d.n)._asdict().items())
+            
+                    return data
+                def get_answers(opt=None, **kwargs):
+                    """get_answers - process files
+            
+                    :param argparse.Namespace opt: options
+                    :return: list of answers from proc_file
+                    """
+            
+                    if opt is None:  # API call rather than command line
+                        opt = type("opt", (), kwargs)
+            
+                    # pass filenames through glob() to expand "2017_*.xlsx" etc.
+                    files = []
+                    for filepath in opt.files:
+                        files.extend(glob.glob(filepath))
+            
+                    # create a pool of processors
+                    pool = multiprocessing.Pool(multiprocessing.cpu_count()-1)
+            
+                    # process file list with processor pool
+                    return pool.map(proc_file, files)
+                def get_table_rows(answers):
+                    """get_table_rows - generator - convert get_answers() output to table format
+            
+                    :param list answers: output from get_answers()
+                    :return: list of rows suitable for csv.writer
+                    """
+                    yield FIELDS
+                    for answer in answers:
+                        for field in answer['fields']:
+                            row = [answer['fields'][field][k] for k in FIELDS]
+                            if PYTHON_2:
+                                yield [unicode(col).encode('utf-8') for col in row]
+                            else:
+                                yield row
+            
+                def main():
+                    """main() - when invoked directly"""
+                    opt = get_options()
+            
+                    # csv.writer does its own EOL handling,
+                    # see https://docs.python.org/3/library/csv.html#csv.reader
+                    if PYTHON_2:
+                        output = open(opt.output, 'wb')
                     else:
-                        coefvar = std / mean
-
-                    result = Agg(mean, variance, std, coefvar)
-
-                return result
-
-
-            def proc_file(filepath):
-                """
-                proc_file - process one .xlsx file
-
-                :param str filepath: path to file
-                :return: list of lists, rows of info. as expected in main()
-                """
-
-                print(filepath)
-
-                # get the first sheet
-                book = load_workbook(filename=filepath, read_only=True)
-                sheets = book.get_sheet_names()
-                sheet = book[sheets[0]]
-                row_source = sheet.rows
-                row0 = next(row_source)
-                # get field names from the first row
-                fields = [i.value for i in row0]
-
-                data = {
-                    'filepath': filepath,
-                    'fields': {field:AttrDict({f:0 for f in FIELDS}) for field in fields}
-                }
-
-                for field in fields:
-                    # init. mins/maxs with invalid value for later calc.
-                    data['fields'][field].update(dict(
-                        min=NAN,
-                        max=NAN,
-                        field=field,
-                        file=filepath,
-                    ))
-
-                rows = 0
-                for row in row_source:
-
-                    if rows % 1000 == 0:  # feedback every 1000 rows
-                        print(rows)
-                        # Much cleaner to exit by creating a file called "STOP" in the
-                        # local directory than to try and use Ctrl-C, when using
-                        # multiprocessing.  Save time by checking only every 1000 rows.
-                        if os.path.exists("STOP"):
-                            return
-
-                    rows += 1
-
-                    for cell_n, cell in enumerate(row):
-                        d = data['fields'][fields[cell_n]]
-                        if cell.value is None or unicode(cell.value).strip() == '':
-                            d.blank += 1
-                        else:
-                            try:
-                                x = float(cell.value)
-                                d.sum += x
-                                d.sumsq += x*x
-                                d.n += 1
-                                # min is x if no value seen yet, else min(prev-min, x)
-                                if isnan(d.min):
-                                    d.min = x
-                                else:
-                                    d.min = min(d.min, x)
-                                # as for min
-                                if isnan(d.max):
-                                    d.max = x
-                                else:
-                                    d.max = max(d.max, x)
-                            except ValueError:
-                                d.bad += 1
-
-                assert sum(d.n+d.blank+d.bad for d in data['fields'].values()) == rows * len(fields)
-
-                # compute the derived values
-                for field in data['fields']:
-                    d = data['fields'][field]
-                    d.update(get_aggregate(d.sumsq, d.sum, d.n)._asdict().items())
-
-                return data
-            def get_answers(opt=None, **kwargs):
-                """get_answers - process files
-
-                :param argparse.Namespace opt: options
-                :return: list of answers from proc_file
-                """
-
-                if opt is None:  # API call rather than command line
-                    opt = type("opt", (), kwargs)
-
-                # pass filenames through glob() to expand "2017_*.xlsx" etc.
-                files = []
-                for filepath in opt.files:
-                    files.extend(glob.glob(filepath))
-
-                # create a pool of processors
-                pool = multiprocessing.Pool(multiprocessing.cpu_count()-1)
-
-                # process file list with processor pool
-                return pool.map(proc_file, files)
-            def get_table_rows(answers):
-                """get_table_rows - generator - convert get_answers() output to table format
-
-                :param list answers: output from get_answers()
-                :return: list of rows suitable for csv.writer
-                """
-                yield FIELDS
-                for answer in answers:
-                    for field in answer['fields']:
-                        row = [answer['fields'][field][k] for k in FIELDS]
-                        if PYTHON_2:
-                            yield [unicode(col).encode('utf-8') for col in row]
-                        else:
-                            yield row
-
-            def main():
-                """main() - when invoked directly"""
-                opt = get_options()
-
-                # csv.writer does its own EOL handling,
-                # see https://docs.python.org/3/library/csv.html#csv.reader
-                if PYTHON_2:
-                    output = open(opt.output, 'wb')
-                else:
-                    output = open(opt.output, 'w', newline='')
-
-                with output as out:
-                    writer = csv.writer(out)
-                    for row in get_table_rows(get_answers(opt)):
-                        writer.writerow(row)
-
-            if __name__ == '__main__':
-                main()
-            '''
+                        output = open(opt.output, 'w', newline='')
+            
+                    with output as out:
+                        writer = csv.writer(out)
+                        for row in get_table_rows(get_answers(opt)):
+                            writer.writerow(row)
+            
+                if __name__ == '__main__':
+                    main()
+            ''')
             table = (
                 (1, "Declarations"),
                 (1, "class AttrDict(dict)"),
@@ -2240,7 +2219,7 @@ class TestImporter(LeoUnitTest):
                 (1, "main"),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2417,7 +2396,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.74: *5* TestImport.test_python_comment_after_dict_assign
         def test_python_comment_after_dict_assign(self):
             c = self.c
-            ic = c.importCommands  
             s = textwrap.dedent("""\
                 NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
                       's': 'http://www.w3.org/2000/svg',
@@ -2429,7 +2407,7 @@ class TestImporter(LeoUnitTest):
                 (1, 'Declarations'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2445,7 +2423,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.75: *5* TestImport.test_python_decls_test_1
         def test_python_decls_test_1(self):
             c = self.c
-            ic = c.importCommands  
             s = textwrap.dedent("""\
                 import leo.core.leoGlobals as g
 
@@ -2455,7 +2432,7 @@ class TestImporter(LeoUnitTest):
                 (1, 'Declarations'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2605,7 +2582,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.78: *5* TestImport.test_python_def_inside_def
         def test_python_def_inside_def(self):
             c = self.c
-            ic = c.importCommands  
             s = textwrap.dedent('''\
             class aClass:
                 def outerDef(self):
@@ -2623,7 +2599,7 @@ class TestImporter(LeoUnitTest):
                 # (3, 'pr'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2639,7 +2615,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.79: *5* TestImport.test_python_def_test_1
         def test_python_def_test_1(self):
             c = self.c
-            ic = c.importCommands  
             s = textwrap.dedent("""\
                 class test:
             
@@ -2664,7 +2639,7 @@ class TestImporter(LeoUnitTest):
                 (2, 'convertMoreStringToOutlineAfter'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2680,7 +2655,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.80: *5* TestImport.test_python_def_test_2
         def test_python_def_test_2(self):
             c = self.c
-            ic = c.importCommands
             s = textwrap.dedent("""\
                 class test:
                     def spam(b):
@@ -2697,7 +2671,7 @@ class TestImporter(LeoUnitTest):
                 (2, 'foo'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2739,7 +2713,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.84: *5* TestImport.test_python_indent_decls
         def test_python_indent_decls(self):
             c = self.c
-            ic = c.importCommands  
             s = textwrap.dedent('''\
                 class mammalProviderBase(object):
                     """Root class for content providers used by DWEtree.py"""
@@ -2783,7 +2756,7 @@ class TestImporter(LeoUnitTest):
                 (2, 'provide'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2799,29 +2772,46 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.85: *5* TestImport.test_python_leoImport_py_small_
         def test_python_leoImport_py_small_(self):
             c = self.c
-            ic = c.importCommands
 
-            s = """\
-            # -*- coding: utf-8 -*-
-            import leo.core.leoGlobals as g
-            class LeoImportCommands(object):
-                '''A class implementing all of Leo's import/export code.'''
-                def createOutline(self, fileName, parent, s=None, ext=None):
-                    '''Create an outline by importing a file or string.'''
-
-                def dispatch(self, ext, p):
-                    '''Return the correct scanner function for p, an @auto node.'''
-                    # Match the @auto type first, then the file extension.
-                    return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
-                def scanner_for_at_auto(self, p):
-                    '''A factory returning a scanner function for p, an @auto node.'''
-                    d = self.atAutoDict
-                    for key in d.keys():
-                        aClass = d.get(key)
-                        if aClass and g.match_word(p.h, 0, key):
-                            if trace: g.trace('found', aClass.__name__)
-
-                            def scanner_for_at_auto_cb(parent, s, prepass=False):
+            s = textwrap.dedent("""\
+                # -*- coding: utf-8 -*-
+                import leo.core.leoGlobals as g
+                class LeoImportCommands(object):
+                    '''A class implementing all of Leo's import/export code.'''
+                    def createOutline(self, fileName, parent, s=None, ext=None):
+                        '''Create an outline by importing a file or string.'''
+            
+                    def dispatch(self, ext, p):
+                        '''Return the correct scanner function for p, an @auto node.'''
+                        # Match the @auto type first, then the file extension.
+                        return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
+                    def scanner_for_at_auto(self, p):
+                        '''A factory returning a scanner function for p, an @auto node.'''
+                        d = self.atAutoDict
+                        for key in d.keys():
+                            aClass = d.get(key)
+                            if aClass and g.match_word(p.h, 0, key):
+                                if trace: g.trace('found', aClass.__name__)
+            
+                                def scanner_for_at_auto_cb(parent, s, prepass=False):
+                                    try:
+                                        scanner = aClass(importCommands=self)
+                                        return scanner.run(s, parent, prepass=prepass)
+                                    except Exception:
+                                        g.es_print('Exception running', aClass.__name__)
+                                        g.es_exception()
+                                        return None
+            
+                                if trace: g.trace('found', p.h)
+                                return scanner_for_at_auto_cb
+                        if trace: g.trace('not found', p.h, sorted(d.keys()))
+                        return None
+                    def scanner_for_ext(self, ext):
+                        '''A factory returning a scanner function for the given file extension.'''
+                        aClass = self.classDispatchDict.get(ext)
+                        if aClass:
+            
+                            def scanner_for_ext_cb(parent, s, prepass=False):
                                 try:
                                     scanner = aClass(importCommands=self)
                                     return scanner.run(s, parent, prepass=prepass)
@@ -2829,34 +2819,16 @@ class TestImporter(LeoUnitTest):
                                     g.es_print('Exception running', aClass.__name__)
                                     g.es_exception()
                                     return None
-
-                            if trace: g.trace('found', p.h)
-                            return scanner_for_at_auto_cb
-                    if trace: g.trace('not found', p.h, sorted(d.keys()))
-                    return None
-                def scanner_for_ext(self, ext):
-                    '''A factory returning a scanner function for the given file extension.'''
-                    aClass = self.classDispatchDict.get(ext)
-                    if aClass:
-
-                        def scanner_for_ext_cb(parent, s, prepass=False):
-                            try:
-                                scanner = aClass(importCommands=self)
-                                return scanner.run(s, parent, prepass=prepass)
-                            except Exception:
-                                g.es_print('Exception running', aClass.__name__)
-                                g.es_exception()
-                                return None
-
-                        return scanner_for_ext_cb
-                    else:
-                        return None
-                def get_import_filename(self, fileName, parent):
-                    '''Return the absolute path of the file and set .default_directory.'''
-
-                def init_import(self, ext, fileName, s):
-                    '''Init ivars & vars for imports.'''
-            """
+            
+                            return scanner_for_ext_cb
+                        else:
+                            return None
+                    def get_import_filename(self, fileName, parent):
+                        '''Return the absolute path of the file and set .default_directory.'''
+            
+                    def init_import(self, ext, fileName, s):
+                        '''Init ivars & vars for imports.'''
+            """)
             table = (
                 (1, 'Declarations'),
                 (1, "class LeoImportCommands(object)"),
@@ -2868,7 +2840,7 @@ class TestImporter(LeoUnitTest):
                 (2, "init_import"),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2966,9 +2938,8 @@ class TestImporter(LeoUnitTest):
             c.importCommands.pythonUnitTest(c.p, s=s)
         #@+node:ekr.20210904065459.92: *5* TestImport.test_python_overindented_def_3
         def test_python_overindented_def_3(self):
-            c = self.c
-            ic = c.importCommands  
             # This caused PyParse.py not to be imported properly.
+            c = self.c
             s = textwrap.dedent(r'''
                 import re
                 if 0: # Causes the 'overindent'
@@ -2985,7 +2956,7 @@ class TestImporter(LeoUnitTest):
                 (1, 'class testClass1'),
             )
             p = c.p
-            ic.pythonUnitTest(c.p, s=s)
+            c.importCommands.pythonUnitTest(c.p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -3048,33 +3019,32 @@ class TestImporter(LeoUnitTest):
         def test_python_top_level_later_decl(self):
             c = self.c
             # From xo.py.
-            ic = c.importCommands  
+            s = textwrap.dedent(r'''\
+                #!/usr/bin/env python3
 
-            s = r'''#!/usr/bin/env python3
-
-            import os
-            import re
-
-            def merge_value(v1, v2):
-                return v
-
-            class MainDisplay(object):
-
-                def save_file(self):
-                    """Write the file out to disk."""
-                    with open(self.save_name, "w") as f:
-                        for newline in newlines:
-                            f.write(newline)
-
-            # This line should be included at the end of the class node.
-            ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
-
-            def retab(s, tabsize):
-                return ''.join(pieces)
-
-            if __name__=="__main__":
-                main()
-            '''
+                import os
+                import re
+            
+                def merge_value(v1, v2):
+                    return v
+            
+                class MainDisplay(object):
+            
+                    def save_file(self):
+                        """Write the file out to disk."""
+                        with open(self.save_name, "w") as f:
+                            for newline in newlines:
+                                f.write(newline)
+            
+                # This line should be included at the end of the class node.
+                ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
+            
+                def retab(s, tabsize):
+                    return ''.join(pieces)
+            
+                if __name__=="__main__":
+                    main()
+            ''')
             table = (
                 (1, 'Declarations'),
                 (1, 'merge_value'),
@@ -3083,7 +3053,7 @@ class TestImporter(LeoUnitTest):
                 (1, 'retab'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -3129,7 +3099,6 @@ class TestImporter(LeoUnitTest):
         #@+node:ekr.20210904065459.100: *5* TestImport.test_python_underindent_method
         def test_python_underindent_method(self):
             c = self.c
-            ic = c.importCommands  
             s = textwrap.dedent('''\
                 class emptyClass: 
             
@@ -3147,7 +3116,7 @@ class TestImporter(LeoUnitTest):
                 (1, 'followingDef'),
             )
             p = c.p
-            ic.pythonUnitTest(p, s=s)
+            c.importCommands.pythonUnitTest(p, s=s)
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -3755,7 +3724,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.109: *4* TestImport.test_md_import_test
     def test_md_import_test(self):
         c = self.c
-        ic = c.importCommands
         s = textwrap.dedent("""\
             #Top
             The top section
@@ -3788,7 +3756,7 @@ class TestImporter(LeoUnitTest):
             (3, 'Section 2.2'),
             (2, 'Section 3'),
         )
-        ic.markdownUnitTest(c.p, s=s)
+        c.importCommands.markdownUnitTest(c.p, s=s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
         assert root.h == '@auto-md test', root.h
@@ -3802,7 +3770,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.110: *4* TestImport.test_md_import_test_rst_style
     def test_md_import_test_rst_style(self):
         c = self.c
-        ic = c.importCommands  
         s = textwrap.dedent("""\
             Top
             ====
@@ -3837,7 +3804,7 @@ class TestImporter(LeoUnitTest):
             
             section 3, line 1
     """)
-        ic.markdownUnitTest(c.p, s=s)
+        c.importCommands.markdownUnitTest(c.p, s=s)
         table = (
             (1, 'Top'),
             (2, 'Section 1'),
@@ -3861,7 +3828,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.111: *4* TestImport.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
         c = self.c
-        ic = c.importCommands  
         # insert test for markdown here.
         s = textwrap.dedent("""\
             Decl line.
@@ -3885,7 +3851,7 @@ class TestImporter(LeoUnitTest):
                 'Subheader',
                 'Last header: no text',
         )
-        ic.markdownUnitTest(c.p, s=s)
+        c.importCommands.markdownUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@auto-md test', root.h
         p2 = root.firstChild()
@@ -3896,7 +3862,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.112: *4* TestImport.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
         c = self.c
-        ic = c.importCommands  
         # insert test for markdown here.
         s = textwrap.dedent("""\
             Decl line.
@@ -3927,7 +3892,7 @@ class TestImporter(LeoUnitTest):
         g.app.suppressImportChecks = True
             # Required, because the implicit underlining *must*
             # cause the perfect-import test to fail!
-        ic.markdownUnitTest(c.p, s=s)
+        c.importCommands.markdownUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@auto-md test', root.h
         p2 = root.firstChild()
@@ -3938,7 +3903,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.114: *4* TestImport.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
         c = self.c
-        ic = c.importCommands  
         ### insert test for markdown here.
         s = textwrap.dedent("""\
             Decl line.
@@ -3957,7 +3921,7 @@ class TestImporter(LeoUnitTest):
             'Header',
             'Last header',
         )
-        ic.markdownUnitTest(c.p, s=s)
+        c.importCommands.markdownUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@auto-md test', root.h
         p2 = root.firstChild()
@@ -3969,7 +3933,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.115: *4* TestImport.test_rST_import_test
     def test_rST_import_test(self):
         c = self.c
-        ic = c.importCommands
         try:
             import docutils
             assert docutils
@@ -4028,7 +3991,7 @@ class TestImporter(LeoUnitTest):
             'placeholder',
             'section 3.1.1',
         )
-        ic.rstUnitTest(c.p, s=s)
+        c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
@@ -4071,7 +4034,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.117: *4* TestImport.test_rST_import_test_no_double_underlines
     def test_rST_import_test_no_double_underlines(self):
         c = self.c
-        ic = c.importCommands
         try:
             import docutils
             assert docutils
@@ -4129,7 +4091,7 @@ class TestImporter(LeoUnitTest):
             'placeholder',
             'section 3.1.1',
         )
-        ic.rstUnitTest(c.p, s=s)
+        c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
@@ -4140,12 +4102,12 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.118: *4* TestImport.test_rST_import_test_long_underlines
     def test_rST_import_test_long_underlines(self):
         c = self.c
-        ic = c.importCommands
         try:
             import docutils
             assert docutils
         except Exception:
             self.skipTest('no docutils')
+
         s = textwrap.dedent("""\
             .. toc
         
@@ -4158,7 +4120,7 @@ class TestImporter(LeoUnitTest):
             '!Dummy chapter',
             'top',
         )
-        ic.rstUnitTest(c.p, s=s)
+        c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
@@ -4169,7 +4131,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.119: *4* TestImport.test_rST_import_test_long_overlines
     def test_rST_import_test_long_overlines(self):
         c = self.c
-        ic = c.importCommands
         try:
             import docutils
             assert docutils
@@ -4189,7 +4150,7 @@ class TestImporter(LeoUnitTest):
             "!Dummy chapter",
             "top",
         )
-        ic.rstUnitTest(c.p, s=s)
+        c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
@@ -4233,12 +4194,12 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.121: *4* TestImport.test_leo_rst
     def test_leo_rst(self):
         c = self.c
-        ic = c.importCommands
         try:
             import docutils
             assert docutils
         except Exception:
             self.skipTest('no docutils')
+
         # All heading must be followed by an empty line.
         s = textwrap.dedent("""\
             #########
@@ -4262,7 +4223,7 @@ class TestImporter(LeoUnitTest):
             'section 1',
             'section 2',
         )
-        ic.rstUnitTest(c.p, s=s) 
+        c.importCommands.rstUnitTest(c.p, s=s) 
         root = c.p.lastChild()
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
