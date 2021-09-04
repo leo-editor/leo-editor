@@ -4716,7 +4716,7 @@ class TestImporter(LeoUnitTest):
             c.importCommands.xmlUnitTest(c.p, s=s, showTree=True)
         #@-others
     #@+node:ekr.20210904071301.1: *3* Tests of @auto-md
-    if 0:
+    if 1:
         #@+others
         #@+node:ekr.20210904065459.109: *4* TestImport.test_md_import_test
         def test_md_import_test(self):
@@ -4757,7 +4757,7 @@ class TestImporter(LeoUnitTest):
             )
             after = c.p.nodeAfterTree()
             root = c.p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
+            assert root.h == '@auto-md test', root.h
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -4817,7 +4817,7 @@ class TestImporter(LeoUnitTest):
             p = c.p
             after = p.nodeAfterTree()
             root = p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
+            assert root.h == '@auto-md test', root.h
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -4854,7 +4854,7 @@ class TestImporter(LeoUnitTest):
             )
             ic.markdownUnitTest(c.p, s=s, showTree=True)
             root = c.p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
+            assert root.h == '@auto-md test', root.h
             p2 = root.firstChild()
             for h in table:
                 assert p2.h == h, (p2.h, h)
@@ -4896,52 +4896,7 @@ class TestImporter(LeoUnitTest):
                 # cause the perfect-import test to fail!
             ic.markdownUnitTest(c.p, s=s, showTree=True)
             root = c.p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-        #@+node:ekr.20210904065459.113: *4* TestImport.test_markdown_importer__section_name
-        def test_markdown_importer__section_name(self):
-            c = self.c
-            ic = c.importCommands  
-            # insert test for markdown here.
-            s = textwrap.dedent("""\
-                Decl line.
-            
-        #@verbatim
-                #@@ Header
-            
-                After header text
-            
-                ##@@Subheader
-            
-                Not an underline
-            
-                ----------------
-            
-                This *should* be a section
-                ==========================
-            
-                After subheader text
-            
-                #Last header: no text
-            """)
-            table = (
-                '!Declarations',
-                '@verbatim', # This is an artifact of the unit test.
-                '@@ Header',
-                    '@@Subheader',
-                        'This *should* be a section',
-                    'Last header: no text',
-            )
-            g.app.suppressImportChecks = True
-                # Required, because the implicit underlining *must*
-                # cause the perfect-import test to fail!
-            ic.markdownUnitTest(c.p, s=s, showTree=True)
-            root = c.p.lastChild()
-            assert root.h.startswith('@@auto-m'), root.h
+            assert root.h == '@auto-md test', root.h
             p2 = root.firstChild()
             for h in table:
                 assert p2.h == h, (p2.h, h)
@@ -4969,9 +4924,9 @@ class TestImporter(LeoUnitTest):
                 'Header',
                 'Last header',
             )
-            ic.markdownUnitTest(c.p, s=s, showTree=True)
+            ic.markdownUnitTest(c.p, s=s)
             root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
+            assert root.h == '@auto-md test', root.h
             p2 = root.firstChild()
             for h in table:
                 assert p2.h == h, (p2.h, h)
