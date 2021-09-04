@@ -16,7 +16,7 @@ import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
 import leo.plugins.importers.pascal as pascal
-import leo.plugins.importers.python as py
+import leo.plugins.importers.python as python
 import leo.plugins.importers.xml as xml
 #@+others
 #@+node:ekr.20210904064440.3: ** class TestImporter(LeoUnitTest):
@@ -354,7 +354,7 @@ class TestImporter(LeoUnitTest):
     def test_coffeescript_1(self):
         c = self.c
 
-        s = textwrap.dedent("""\
+        s = textwrap.dedent(r"""\
 
         # The JavaScript to CoffeeScript compiler.
         # Common usage:
@@ -2580,9 +2580,6 @@ class TestImporter(LeoUnitTest):
     def test_i_scan_state_for_python_(self):
         c = self.c
         c = self.c
-        import leo.plugins.importers.python as python
-        # import importlib
-        # importlib.reload(python)
         # A list of dictionaries.
         if 0:
             tests = [
@@ -5374,12 +5371,11 @@ def test_importers_markdown_is_hash(self):
         assert level == level2
         assert name == name2
     level3, name = x.is_hash('Not a hash')
-    assert level3 == None
-    assert name == None
+    assert level3 is None
+    assert name is None
 #@+node:ekr.20210904065459.129: *3* TestImport.test_importers_markdown_is_underline
 def test_importers_markdown_is_underline(self):
     c = self.c
-    import leo.plugins.importers.markdown as markdown
     ic = c.importCommands
     x = markdown.Markdown_Importer(ic, atAuto=False)
     for line in ('----\n', '-----\n', '====\n', '====\n'):
@@ -5438,7 +5434,7 @@ def test_importesrs_xml_scan_line(self):
 #@+node:ekr.20210904065459.131: ** TestImport.test_importers_python_test_scan_state
 def test_importers_python_test_scan_state(self):
     c = self.c
-    State = py.Python_ScanState
+    State = python.Python_ScanState
     # A list of dictionaries.
     if 0:
         tests = [
@@ -5463,7 +5459,7 @@ def test_importers_python_test_scan_state(self):
             g.Bunch(line="end of continued string'''", ctx=("'''", '')),
             g.Bunch(line='a = {[(')
         ]
-    importer = py.Py_Importer(c.importCommands, atAuto=True)
+    importer = python.Py_Importer(c.importCommands, atAuto=True)
     importer.test_scan_state(tests, State)
 #@-others
 
