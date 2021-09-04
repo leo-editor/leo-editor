@@ -1263,7 +1263,7 @@ class LeoImportCommands:
                 # d = {}
             # g.app.unitTestDict = d
         if not fileName:
-            fileName = p.h  ###
+            fileName = 'test'  ###
         if not s:
             s = self.removeSentinelsCommand([fileName], toString=True)
         # Run the actual test using the **GeneralTestCase** class.
@@ -1277,6 +1277,7 @@ class LeoImportCommands:
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
         self.createOutline(parent=parent.copy(), ext=ext, s=s)
+        return True
         ### g.dump_tree(c, msg='after')
         ### Not necessary!
             # # Set ok.
