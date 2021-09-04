@@ -199,6 +199,7 @@ class ConvertTests:
         return (
             f"def test_{self.function_name(command_name)}(self):\n"
             f'    """Test case for {command_name}"""\n'
+            f'    c = self.c\n'
             f'    before_b = {delim}\\\n'
             f"{before_p.b}"
             f'{delim}\n'
