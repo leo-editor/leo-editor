@@ -37,8 +37,6 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.3: *5* TestImport.test_c_class_1
     def test_c_class_1(self):
         c = self.c
-        ic = c.importCommands  
-
         s = textwrap.dedent("""\
             class cTestClass1 {
         
@@ -56,7 +54,7 @@ class TestImporter(LeoUnitTest):
             'int foo',
             'char bar',
         )
-        ic.cUnitTest(c.p, s=s, showTree=True)
+        c.importCommands.cUnitTest(c.p, s=s, showTree=True)
         # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
@@ -138,7 +136,7 @@ class TestImporter(LeoUnitTest):
     def test_c_comment_follows_block_delim(self):
         c = self.c
         ic = c.importCommands  
-        s = textwrap.dedent("""\\
+        s = textwrap.dedent("""\
             void
             aaa::bbb::doit
                 (
@@ -161,11 +159,12 @@ class TestImporter(LeoUnitTest):
             'void aaa::bbb::doit',
             'bool aaa::bbb::dothat',
         )
-        ic.cUnitTest(c.p, s=s, showTree=True)
+        ic.cUnitTest(c.p, s=s) ###, fileName='test', showTree=True)
         # Check structure
         root = c.p.lastChild()
-        assert root.h.startswith('@@'), root.h
+        assert root.h == '@file test', root.h
         p2 = root.firstChild()
+        assert p2
         for h in table:
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
@@ -350,7 +349,8 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.14: *4* TestImport.test_coffeescript_1
+    #@+node:ekr.20210904122726.1: *4* Coffeescript tests
+    #@+node:ekr.20210904065459.14: *5* TestImport.test_coffeescript_1
     def test_coffeescript_1(self):
         c = self.c
 
@@ -1195,7 +1195,7 @@ class TestImporter(LeoUnitTest):
           for h in table:
               assert p2.h == h, (p2.h, h)
               p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.15: *4* TestImport.test_coffeescript_2
+    #@+node:ekr.20210904065459.15: *5* TestImport.test_coffeescript_2
     def test_coffeescript_2(self):
         c = self.c
         s = r'''
@@ -1222,7 +1222,7 @@ class TestImporter(LeoUnitTest):
           for h in table:
               assert p2.h == h, (p2.h, h)
               p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.16: *4* TestImport.test_coffeescript_3
+    #@+node:ekr.20210904065459.16: *5* TestImport.test_coffeescript_3
     #@@tabwidth -2 # Required
 
     def test_coffeescript_3(self):
@@ -1334,7 +1334,8 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == h, (p2.h, h)
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.19: *4* TestImport.test_html_lowercase_tags
+    #@+node:ekr.20210904122741.1: *4* HTML tests
+    #@+node:ekr.20210904065459.19: *5* TestImport.test_html_lowercase_tags
     def test_html_lowercase_tags(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1362,7 +1363,7 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         ### p.deleteAllChildren()
        
-    #@+node:ekr.20210904065459.20: *4* TestImport.test_html_multiple_tags_on_a_line
+    #@+node:ekr.20210904065459.20: *5* TestImport.test_html_multiple_tags_on_a_line
     def test_html_multiple_tags_on_a_line(self):
         c = self.c
         
@@ -1429,7 +1430,7 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         ### p.deleteAllChildren()
         
-    #@+node:ekr.20210904065459.21: *4* TestImport.test_html_multple_node_completed_on_a_line
+    #@+node:ekr.20210904065459.21: *5* TestImport.test_html_multple_node_completed_on_a_line
     def test_html_multple_node_completed_on_a_line(self):
         c = self.c
        
@@ -1446,7 +1447,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             assert p2 and p2.h == h, (p2 and p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.22: *4* TestImport.test_html_multple_node_starts_on_a_line
+    #@+node:ekr.20210904065459.22: *5* TestImport.test_html_multple_node_starts_on_a_line
     def test_html_multple_node_starts_on_a_line(self):
         c = self.c
         s = '''
@@ -1464,7 +1465,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             assert p2 and p2.h == h, (p2 and p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.23: *4* TestImport.test_html_underindented_comment
+    #@+node:ekr.20210904065459.23: *5* TestImport.test_html_underindented_comment
     def test_html_underindented_comment(self):
         c = self.c
         s = r'''
@@ -1499,7 +1500,7 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
 
         
-    #@+node:ekr.20210904065459.24: *4* TestImport.test_html_uppercase_tags
+    #@+node:ekr.20210904065459.24: *5* TestImport.test_html_uppercase_tags
     def test_html_uppercase_tags(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1513,7 +1514,7 @@ class TestImporter(LeoUnitTest):
             </HTML>
         """)
         c.importCommands.htmlUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.25: *4* TestImport.test_html_improperly_nested_tags
+    #@+node:ekr.20210904065459.25: *5* TestImport.test_html_improperly_nested_tags
     def test_html_improperly_nested_tags(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1543,7 +1544,7 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
             
-    #@+node:ekr.20210904065459.26: *4* TestImport.test_html_improperly_terminated_tags
+    #@+node:ekr.20210904065459.26: *5* TestImport.test_html_improperly_terminated_tags
     def test_html_improperly_terminated_tags(self):
         c = self.c
         s = r'''
@@ -1569,7 +1570,7 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.27: *4* TestImport.test_html_improperly_terminated_tags2
+    #@+node:ekr.20210904065459.27: *5* TestImport.test_html_improperly_terminated_tags2
     def test_html_improperly_terminated_tags2(self):
         c = self.c
         s = '''
@@ -1592,154 +1593,155 @@ class TestImporter(LeoUnitTest):
         for h in table:
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.28: *4* TestImport.test_html_brython
+    #@+node:ekr.20210904065459.28: *5* TestImport.test_html_brython
     def test_html_brython(self):
         c = self.c
         # https://github.com/leo-editor/leo-editor/issues/479
-        s = '''
-        <!DOCTYPE html>
-        <html>
-        <head>
-        <script type="text/python3">
-        """Code for the header menu"""
-        from browser import document as doc
-        from browser import html
-        import header
-
-        qs_lang,language = header.show()
-
-        doc["content"].html = doc["content_%s" %language].html
-
-        if qs_lang:
-            doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
-
-        def ch_lang(ev):
-            sel = ev.target
-            new_lang = sel.options[sel.selectedIndex].value
-            doc.location.href = 'index.html?lang=%s' %new_lang
-
-        for elt in doc[html.SELECT]:
-            if elt.id.startswith('change_lang_'):
-                doc[elt.id].bind('change',ch_lang)
-        </script>
-
-        <script type="text/python3">
-        """Code for the clock"""
-
-        import time
-        import math
-        import datetime
-
-        from browser import document as doc
-        import browser.timer
-
-        sin,cos = math.sin,math.cos
-        width,height = 250,250 # canvas dimensions
-        ray = 100 # clock ray
-
-        def needle(angle,r1,r2,color="#000000"):
-            # draw a needle at specified angle in specified color
-            # r1 and r2 are percentages of clock ray
-            x1 = width/2-ray*cos(angle)*r1
-            y1 = height/2-ray*sin(angle)*r1
-            x2 = width/2+ray*cos(angle)*r2
-            y2 = height/2+ray*sin(angle)*r2
-            ctx.beginPath()
-            ctx.strokeStyle = color
-            ctx.moveTo(x1,y1)
-            ctx.lineTo(x2,y2)
-            ctx.stroke()
-
-        def set_clock():
-            # erase clock
-            ctx.beginPath()
-            ctx.fillStyle = "#FFF"
-            ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
-            ctx.fill()
+        s = textwrap.dedent('''\
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <script type="text/python3">
+            """Code for the header menu"""
+            from browser import document as doc
+            from browser import html
+            import header
         
-            # redraw hours
-            show_hours()
-
-            # print day
-            now = datetime.datetime.now()
-            day = now.day
-            ctx.font = "bold 14px Arial"
-            ctx.textAlign = "center"
-            ctx.textBaseline = "middle"
-            ctx.fillStyle="#FFF"
-            ctx.fillText(day,width*0.7,height*0.5)
-
-            # draw needles for hour, minute, seconds    
-            ctx.lineWidth = 3
-            hour = now.hour%12 + now.minute/60
-            angle = hour*2*math.pi/12 - math.pi/2
-            needle(angle,0.05,0.5)
-            minute = now.minute
-            angle = minute*2*math.pi/60 - math.pi/2
-            needle(angle,0.05,0.85)
-            ctx.lineWidth = 1
-            second = now.second+now.microsecond/1000000
-            angle = second*2*math.pi/60 - math.pi/2
-            needle(angle,0.05,0.85,"#FF0000") # in red
+            qs_lang,language = header.show()
         
-        def show_hours():
-            ctx.beginPath()
-            ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
-            ctx.fillStyle = "#000"
-            ctx.fill()
-            for i in range(1,13):
-                angle = i*math.pi/6-math.pi/2
-                x3 = width/2+ray*cos(angle)*0.75
-                y3 = height/2+ray*sin(angle)*0.75
-                ctx.font = "20px Arial"
-                ctx.textAlign = "center"
-                ctx.textBaseline = "middle"
-                ctx.fillText(i,x3,y3)
-            # cell for day
-            ctx.fillStyle = "#000"
-            ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
-
-        canvas = doc["clock"]
-        # draw clock border
-        if hasattr(canvas,'getContext'):
-            ctx = canvas.getContext("2d")
-            ctx.beginPath()
-            ctx.lineWidth = 10
-            ctx.arc(width/2,height/2,ray,0,2*math.pi)
-            ctx.stroke()
+            doc["content"].html = doc["content_%s" %language].html
         
-            for i in range(60):
-                ctx.lineWidth = 1
-                if i%5 == 0:
-                    ctx.lineWidth = 3
-                angle = i*2*math.pi/60 - math.pi/3
-                x1 = width/2+ray*cos(angle)
-                y1 = height/2+ray*sin(angle)
-                x2 = width/2+ray*cos(angle)*0.9
-                y2 = height/2+ray*sin(angle)*0.9
+            if qs_lang:
+                doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
+        
+            def ch_lang(ev):
+                sel = ev.target
+                new_lang = sel.options[sel.selectedIndex].value
+                doc.location.href = 'index.html?lang=%s' %new_lang
+        
+            for elt in doc[html.SELECT]:
+                if elt.id.startswith('change_lang_'):
+                    doc[elt.id].bind('change',ch_lang)
+            </script>
+        
+            <script type="text/python3">
+            """Code for the clock"""
+        
+            import time
+            import math
+            import datetime
+        
+            from browser import document as doc
+            import browser.timer
+        
+            sin,cos = math.sin,math.cos
+            width,height = 250,250 # canvas dimensions
+            ray = 100 # clock ray
+        
+            def needle(angle,r1,r2,color="#000000"):
+                # draw a needle at specified angle in specified color
+                # r1 and r2 are percentages of clock ray
+                x1 = width/2-ray*cos(angle)*r1
+                y1 = height/2-ray*sin(angle)*r1
+                x2 = width/2+ray*cos(angle)*r2
+                y2 = height/2+ray*sin(angle)*r2
                 ctx.beginPath()
+                ctx.strokeStyle = color
                 ctx.moveTo(x1,y1)
                 ctx.lineTo(x2,y2)
                 ctx.stroke()
-            browser.timer.set_interval(set_clock,100)
-            show_hours()
-        else:
-            doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
-        </script>
-
-        <title>Brython</title>
-        <link rel="stylesheet" href="Brython_files/doc_brython.css">
-        </head>
-        <body onload="brython({debug:1, cache:'none'})">
-        </body></html>
-        '''
+        
+            def set_clock():
+                # erase clock
+                ctx.beginPath()
+                ctx.fillStyle = "#FFF"
+                ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
+                ctx.fill()
+            
+                # redraw hours
+                show_hours()
+        
+                # print day
+                now = datetime.datetime.now()
+                day = now.day
+                ctx.font = "bold 14px Arial"
+                ctx.textAlign = "center"
+                ctx.textBaseline = "middle"
+                ctx.fillStyle="#FFF"
+                ctx.fillText(day,width*0.7,height*0.5)
+        
+                # draw needles for hour, minute, seconds    
+                ctx.lineWidth = 3
+                hour = now.hour%12 + now.minute/60
+                angle = hour*2*math.pi/12 - math.pi/2
+                needle(angle,0.05,0.5)
+                minute = now.minute
+                angle = minute*2*math.pi/60 - math.pi/2
+                needle(angle,0.05,0.85)
+                ctx.lineWidth = 1
+                second = now.second+now.microsecond/1000000
+                angle = second*2*math.pi/60 - math.pi/2
+                needle(angle,0.05,0.85,"#FF0000") # in red
+            
+            def show_hours():
+                ctx.beginPath()
+                ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
+                ctx.fillStyle = "#000"
+                ctx.fill()
+                for i in range(1,13):
+                    angle = i*math.pi/6-math.pi/2
+                    x3 = width/2+ray*cos(angle)*0.75
+                    y3 = height/2+ray*sin(angle)*0.75
+                    ctx.font = "20px Arial"
+                    ctx.textAlign = "center"
+                    ctx.textBaseline = "middle"
+                    ctx.fillText(i,x3,y3)
+                # cell for day
+                ctx.fillStyle = "#000"
+                ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
+        
+            canvas = doc["clock"]
+            # draw clock border
+            if hasattr(canvas,'getContext'):
+                ctx = canvas.getContext("2d")
+                ctx.beginPath()
+                ctx.lineWidth = 10
+                ctx.arc(width/2,height/2,ray,0,2*math.pi)
+                ctx.stroke()
+            
+                for i in range(60):
+                    ctx.lineWidth = 1
+                    if i%5 == 0:
+                        ctx.lineWidth = 3
+                    angle = i*2*math.pi/60 - math.pi/3
+                    x1 = width/2+ray*cos(angle)
+                    y1 = height/2+ray*sin(angle)
+                    x2 = width/2+ray*cos(angle)*0.9
+                    y2 = height/2+ray*sin(angle)*0.9
+                    ctx.beginPath()
+                    ctx.moveTo(x1,y1)
+                    ctx.lineTo(x2,y2)
+                    ctx.stroke()
+                browser.timer.set_interval(set_clock,100)
+                show_hours()
+            else:
+                doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
+            </script>
+        
+            <title>Brython</title>
+            <link rel="stylesheet" href="Brython_files/doc_brython.css">
+            </head>
+            <body onload="brython({debug:1, cache:'none'})">
+            </body></html>
+        ''')
         table = (
             '<html>',
             '<head>', 
             '<body onload="brython({debug:1, cache:\'none\'})">',
         )
-        c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+        c.importCommands.htmlUnitTest(c.p, s=s) ###, showTree=True)
         p2 = c.p.firstChild().firstChild()
+        assert p2
         for h in table:
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
@@ -1770,7 +1772,8 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
         
-    #@+node:ekr.20210904065459.30: *4* TestImport.test_from_AdminPermission_java
+    #@+node:ekr.20210904122815.1: *4* Java tests
+    #@+node:ekr.20210904065459.30: *5* TestImport.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
         c = self.c
         ic = c.importCommands  
@@ -1804,7 +1807,7 @@ class TestImporter(LeoUnitTest):
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
         
-    #@+node:ekr.20210904065459.31: *4* TestImport.test_from_BundleException_java
+    #@+node:ekr.20210904065459.31: *5* TestImport.test_from_BundleException_java
     def test_from_BundleException_java(self):
         c = self.c
         ic = c.importCommands  
@@ -1874,7 +1877,7 @@ class TestImporter(LeoUnitTest):
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
        
-    #@+node:ekr.20210904065459.32: *4* TestImport.test_java_interface_test1
+    #@+node:ekr.20210904065459.32: *5* TestImport.test_java_interface_test1
     def test_java_interface_test1(self):
         c = self.c
         ic = c.importCommands  
@@ -1896,7 +1899,7 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == h, (p2.h, h)
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.33: *4* TestImport.test_java_interface_test2
+    #@+node:ekr.20210904065459.33: *5* TestImport.test_java_interface_test2
     def test_java_interface_test2(self):
         c = self.c
         ic = c.importCommands  
@@ -1919,7 +1922,8 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == h, (p2.h, h)
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.34: *4* TestImport.test_Javascript_regex_1
+    #@+node:ekr.20210904122826.1: *4* Javascript tests
+    #@+node:ekr.20210904065459.34: *5* TestImport.test_Javascript_regex_1
     def test_Javascript_regex_1(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1932,7 +1936,7 @@ class TestImporter(LeoUnitTest):
             };
         """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.35: *4* TestImport.test_Javascript_3
+    #@+node:ekr.20210904065459.35: *5* TestImport.test_Javascript_3
     def test_Javascript_3(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1950,7 +1954,7 @@ class TestImporter(LeoUnitTest):
             }
         """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.36: *4* TestImport.test_Javascript_4
+    #@+node:ekr.20210904065459.36: *5* TestImport.test_Javascript_4
     def test_Javascript_4(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1968,7 +1972,7 @@ class TestImporter(LeoUnitTest):
             }());
         """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.37: *4* TestImport.test_Javascript_5
+    #@+node:ekr.20210904065459.37: *5* TestImport.test_Javascript_5
     def test_Javascript_5(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1986,7 +1990,7 @@ class TestImporter(LeoUnitTest):
             });
         """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.38: *4* TestImport.test_Javascript_639_many_top_level_nodes
+    #@+node:ekr.20210904065459.38: *5* TestImport.test_Javascript_639_many_top_level_nodes
     def test_Javascript_639_many_top_level_nodes(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2020,7 +2024,7 @@ class TestImporter(LeoUnitTest):
             };
         """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.39: *4* TestImport.test_Javascript_639_acid_test_1
+    #@+node:ekr.20210904065459.39: *5* TestImport.test_Javascript_639_acid_test_1
     def test_Javascript_639_acid_test_1(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2046,7 +2050,7 @@ class TestImporter(LeoUnitTest):
             });
         """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.40: *4* TestImport.test_Javascript_639_acid_test_2
+    #@+node:ekr.20210904065459.40: *5* TestImport.test_Javascript_639_acid_test_2
     def test_Javascript_639_acid_test_2(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2085,7 +2089,8 @@ class TestImporter(LeoUnitTest):
             });
         """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.41: *4* TestImport.test_org_pattern
+    #@+node:ekr.20210904122840.1: *4* Org mode tests
+    #@+node:ekr.20210904065459.41: *5* TestImport.test_org_pattern
     def test_org_pattern(self):
         c = self.c
         x = org.Org_Importer(c.importCommands, atAuto=False)    
@@ -2099,7 +2104,7 @@ class TestImporter(LeoUnitTest):
             m = pattern.match(line)
             # print('%20s ==> (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
             assert m, repr(line)
-    #@+node:ekr.20210904065459.42: *4* TestImport.test_org_1
+    #@+node:ekr.20210904065459.42: *5* TestImport.test_org_1
     def test_org_1(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2128,7 +2133,7 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == h, (p2.h, h)
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.43: *4* TestImport.test_org_tags
+    #@+node:ekr.20210904065459.43: *5* TestImport.test_org_tags
     def test_org_tags(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2149,7 +2154,7 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == h, (p2.h, h)
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.44: *4* TestImport.test_org_intro
+    #@+node:ekr.20210904065459.44: *5* TestImport.test_org_intro
     def test_org_intro(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2171,7 +2176,7 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == h, (p2.h, h)
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.45: *4* TestImport.test_org_552
+    #@+node:ekr.20210904065459.45: *5* TestImport.test_org_552
     def test_org_552(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2195,7 +2200,7 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.46: *4* TestImport.test_org_1074
+    #@+node:ekr.20210904065459.46: *5* TestImport.test_org_1074
     def test_org_1074(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2213,7 +2218,7 @@ class TestImporter(LeoUnitTest):
                 assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.47: *4* TestImport.test_org_placeholder
+    #@+node:ekr.20210904065459.47: *5* TestImport.test_org_placeholder
     def test_org_placeholder(self):
         c = self.c
         ic = c.importCommands 
@@ -2249,7 +2254,8 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.48: *4* TestImport.test_otl_vim_outline_mode
+    #@+node:ekr.20210904122853.1: *4* Otl tests
+    #@+node:ekr.20210904065459.48: *5* TestImport.test_otl_vim_outline_mode
     def test_otl_vim_outline_mode(self):
         c = self.c
         x = otl.Otl_Importer(c.importCommands, atAuto=False)    
@@ -2264,7 +2270,7 @@ class TestImporter(LeoUnitTest):
             # print('%20r ==> (%r)(%r)' % (
                 # line, m and m.group(1), m and m.group(2)))
             assert m
-    #@+node:ekr.20210904065459.49: *4* TestImport.test_otl_1
+    #@+node:ekr.20210904065459.49: *5* TestImport.test_otl_1
     def test_otl_1(self):
         c = self.c
         ### @tabwidth 4 # Required
@@ -2352,7 +2358,8 @@ class TestImporter(LeoUnitTest):
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
        
-    #@+node:ekr.20210904065459.51: *4* TestImport.test_perl_1
+    #@+node:ekr.20210904122909.1: *4* Perl tests
+    #@+node:ekr.20210904065459.51: *5* TestImport.test_perl_1
     def test_perl_1(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2379,7 +2386,7 @@ class TestImporter(LeoUnitTest):
             Hello();
         """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
-    #@+node:ekr.20210904065459.52: *4* TestImport.test_perlpod_comment
+    #@+node:ekr.20210904065459.52: *5* TestImport.test_perlpod_comment
     def test_perlpod_comment(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2401,7 +2408,7 @@ class TestImporter(LeoUnitTest):
             }
         """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
-    #@+node:ekr.20210904065459.53: *4* TestImport.test_perl_multi_line_string
+    #@+node:ekr.20210904065459.53: *5* TestImport.test_perl_multi_line_string
     def test_perl_multi_line_string(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2417,7 +2424,7 @@ class TestImporter(LeoUnitTest):
             world\n";
         """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
-    #@+node:ekr.20210904065459.54: *4* TestImport.test_perl_regex_1
+    #@+node:ekr.20210904065459.54: *5* TestImport.test_perl_regex_1
     def test_perl_regex_1(self):
         c = self.c
         # ('len',   'tr///', '/',       context,  0,       0,       0),
@@ -2445,7 +2452,7 @@ class TestImporter(LeoUnitTest):
         """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
        
-    #@+node:ekr.20210904065459.55: *4* TestImport.test_perl_regex_2
+    #@+node:ekr.20210904065459.55: *5* TestImport.test_perl_regex_2
     def test_perl_regex_2(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2483,7 +2490,8 @@ class TestImporter(LeoUnitTest):
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
       
-    #@+node:ekr.20210904065459.56: *4* TestImport.test_php_import_class
+    #@+node:ekr.20210904122920.1: *4* PHP tests
+    #@+node:ekr.20210904065459.56: *5* TestImport.test_php_import_class
     def test_php_import_class(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2501,7 +2509,7 @@ class TestImporter(LeoUnitTest):
             ?>
         """)
         c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.57: *4* TestImport.test_php_import_conditional_class
+    #@+node:ekr.20210904065459.57: *5* TestImport.test_php_import_conditional_class
     def test_php_import_conditional_class(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2520,7 +2528,7 @@ class TestImporter(LeoUnitTest):
             ?>
         """)
         c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.58: *4* TestImport.test_php_import_classes__functions
+    #@+node:ekr.20210904065459.58: *5* TestImport.test_php_import_classes__functions
     def test_php_import_classes__functions(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2562,7 +2570,7 @@ class TestImporter(LeoUnitTest):
             ?>
         """)
         c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.59: *4* TestImport.test_php_here_doc
+    #@+node:ekr.20210904065459.59: *5* TestImport.test_php_here_doc
     def test_php_here_doc(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2610,7 +2618,8 @@ class TestImporter(LeoUnitTest):
             importer.test_scan_state(tests, State=python.Python_ScanState)
         else:
             self.skipTest('Skipping test for new python importer')
-    #@+node:ekr.20210904065459.61: *4* TestImport.test_leoApp_fail
+    #@+node:ekr.20210904122944.1: *4* Python tests
+    #@+node:ekr.20210904065459.61: *5* TestImport.test_leoApp_fail
     def test_leoApp_fail(self):
         c = self.c
         ic = c.importCommands
@@ -2674,7 +2683,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
             
-    #@+node:ekr.20210904065459.62: *4* TestImport.test_python_bad_class_test
+    #@+node:ekr.20210904065459.62: *5* TestImport.test_python_bad_class_test
     def test_python_bad_class_test(self):
         c = self.c
         ### @tabwidth -4
@@ -2687,7 +2696,7 @@ class TestImporter(LeoUnitTest):
                 pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.63: *4* TestImport.test_python_basic_nesting_test
+    #@+node:ekr.20210904065459.63: *5* TestImport.test_python_basic_nesting_test
     def test_python_basic_nesting_test(self):
         c = self.c
         # Was unittest/at_auto-unit-test.py
@@ -2729,7 +2738,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
             
-    #@+node:ekr.20210904065459.64: *4* TestImport.test_python_bug_346
+    #@+node:ekr.20210904065459.64: *5* TestImport.test_python_bug_346
     def test_python_bug_346(self):
         c = self.c
         ### @tabwidth -4
@@ -2781,7 +2790,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
             
-    #@+node:ekr.20210904065459.65: *4* TestImport.test_python_bug_354
+    #@+node:ekr.20210904065459.65: *5* TestImport.test_python_bug_354
     def test_python_bug_354(self):
         c = self.c
         ic = c.importCommands 
@@ -2820,7 +2829,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
             
-    #@+node:ekr.20210904065459.66: *4* TestImport.test_python_bug_357
+    #@+node:ekr.20210904065459.66: *5* TestImport.test_python_bug_357
     def test_python_bug_357(self):
         c = self.c
         ic = c.importCommands 
@@ -3110,7 +3119,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
             
-    #@+node:ekr.20210904065459.67: *4* TestImport.test_python_bug_360
+    #@+node:ekr.20210904065459.67: *5* TestImport.test_python_bug_360
     def test_python_bug_360(self):
         c = self.c
         s = """
@@ -3138,7 +3147,7 @@ class TestImporter(LeoUnitTest):
                 assert n == n2, (n, n2, p.h)
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
-    #@+node:ekr.20210904065459.68: *4* TestImport.test_python_bug_390
+    #@+node:ekr.20210904065459.68: *5* TestImport.test_python_bug_390
     def test_python_bug_390(self):
         c = self.c
         s = """\
@@ -3174,7 +3183,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
             assert root.b.find("if __name__ == '__main__':") > -1
-    #@+node:ekr.20210904065459.69: *4* TestImport.test_python_bug_978
+    #@+node:ekr.20210904065459.69: *5* TestImport.test_python_bug_978
     def test_python_bug_978(self):
         c = self.c
         s = """\
@@ -3207,7 +3216,7 @@ class TestImporter(LeoUnitTest):
                 assert n == n2, (n, n2, p.h)
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
-    #@+node:ekr.20210904065459.70: *4* TestImport.test_python_bug_603720
+    #@+node:ekr.20210904065459.70: *5* TestImport.test_python_bug_603720
     def test_python_bug_603720(self):
         c = self.c
         ### @tabwidth -4
@@ -3229,7 +3238,7 @@ class TestImporter(LeoUnitTest):
             foo()
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.71: *4* TestImport.test_python_enhancement_481
+    #@+node:ekr.20210904065459.71: *5* TestImport.test_python_enhancement_481
     def test_python_enhancement_481(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3254,7 +3263,7 @@ class TestImporter(LeoUnitTest):
                 assert n == n2, (n, n2, p.h)
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
-    #@+node:ekr.20210904065459.72: *4* TestImport.test_python_class_test_2
+    #@+node:ekr.20210904065459.72: *5* TestImport.test_python_class_test_2
     def test_python_class_test_2(self):
         c = self.c
         ###@tabwidth -4
@@ -3265,7 +3274,7 @@ class TestImporter(LeoUnitTest):
                 pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.73: *4* TestImport.test_python_class_tests_1
+    #@+node:ekr.20210904065459.73: *5* TestImport.test_python_class_tests_1
     def test_python_class_tests_1(self):
         c = self.c
         ### @tabwidth -4
@@ -3279,7 +3288,7 @@ class TestImporter(LeoUnitTest):
                 pass
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.74: *4* TestImport.test_python_comment_after_dict_assign
+    #@+node:ekr.20210904065459.74: *5* TestImport.test_python_comment_after_dict_assign
     def test_python_comment_after_dict_assign(self):
         c = self.c
         ### @tabwidth -4
@@ -3310,7 +3319,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
            
-    #@+node:ekr.20210904065459.75: *4* TestImport.test_python_decls_test_1
+    #@+node:ekr.20210904065459.75: *5* TestImport.test_python_decls_test_1
     def test_python_decls_test_1(self):
         c = self.c
         ### @tabwidth -4
@@ -3338,7 +3347,7 @@ class TestImporter(LeoUnitTest):
                 assert n == n2, (n, n2, p.h)
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
-    #@+node:ekr.20210904065459.76: *4* TestImport.test_python_decorator
+    #@+node:ekr.20210904065459.76: *5* TestImport.test_python_decorator
     def test_python_decorator(self):
         c = self.c
         ### @tabwidth -4
@@ -3364,7 +3373,7 @@ class TestImporter(LeoUnitTest):
         abc = g.findNodeInTree(c, c.p, "@cmd('abc') abc")
         lines = g.splitLines(abc.b)
         assert lines[0] == "@cmd('abc')\n", repr(lines[0])
-    #@+node:ekr.20210904065459.77: *4* TestImport.test_python_decorator_2
+    #@+node:ekr.20210904065459.77: *5* TestImport.test_python_decorator_2
     def test_python_decorator_2(self):
         c = self.c
         ### @tabwidth -4
@@ -3478,7 +3487,7 @@ class TestImporter(LeoUnitTest):
         lines = g.splitLines(target.b)
         assert lines[0] == '@command("Exit")\n', repr(lines[0])
        
-    #@+node:ekr.20210904065459.78: *4* TestImport.test_python_def_inside_def
+    #@+node:ekr.20210904065459.78: *5* TestImport.test_python_def_inside_def
     def test_python_def_inside_def(self):
         c = self.c
         ### @tabwidth -4
@@ -3514,7 +3523,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
            
-    #@+node:ekr.20210904065459.79: *4* TestImport.test_python_def_test_1
+    #@+node:ekr.20210904065459.79: *5* TestImport.test_python_def_test_1
     def test_python_def_test_1(self):
         c = self.c
         ### @tabwidth -4
@@ -3557,7 +3566,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
         
-    #@+node:ekr.20210904065459.80: *4* TestImport.test_python_def_test_2
+    #@+node:ekr.20210904065459.80: *5* TestImport.test_python_def_test_2
     def test_python_def_test_2(self):
         c = self.c
         ### @tabwidth -4
@@ -3593,7 +3602,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
         
-    #@+node:ekr.20210904065459.81: *4* TestImport.test_python_docstring_only
+    #@+node:ekr.20210904065459.81: *5* TestImport.test_python_docstring_only
     def test_python_docstring_only(self):
         c = self.c
         ### @tabwidth -4
@@ -3603,7 +3612,7 @@ class TestImporter(LeoUnitTest):
             """
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.82: *4* TestImport.test_python_empty_decls
+    #@+node:ekr.20210904065459.82: *5* TestImport.test_python_empty_decls
     def test_python_empty_decls(self):
         c = self.c
         ### @tabwidth -4
@@ -3614,7 +3623,7 @@ class TestImporter(LeoUnitTest):
             a = 3
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.83: *4* TestImport.test_python_extra_leading_ws_test
+    #@+node:ekr.20210904065459.83: *5* TestImport.test_python_extra_leading_ws_test
     def test_python_extra_leading_ws_test(self):
         c = self.c
         ### @tabwidth -4
@@ -3626,7 +3635,7 @@ class TestImporter(LeoUnitTest):
                     pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.84: *4* TestImport.test_python_indent_decls
+    #@+node:ekr.20210904065459.84: *5* TestImport.test_python_indent_decls
     def test_python_indent_decls(self):
         c = self.c
         ### @tabwidth -4
@@ -3688,7 +3697,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
            
-    #@+node:ekr.20210904065459.85: *4* TestImport.test_python_leoImport_py_small_
+    #@+node:ekr.20210904065459.85: *5* TestImport.test_python_leoImport_py_small_
     def test_python_leoImport_py_small_(self):
         c = self.c
         ic = c.importCommands
@@ -3773,7 +3782,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
            
-    #@+node:ekr.20210904065459.86: *4* TestImport.test_python_looks_like_section_ref
+    #@+node:ekr.20210904065459.86: *5* TestImport.test_python_looks_like_section_ref
     def test_python_looks_like_section_ref(self):
         c = self.c
         # ~/at-auto-test.py
@@ -3784,7 +3793,7 @@ class TestImporter(LeoUnitTest):
             a = b < < c > > d
         """).replace('> >', '>>').replace('< <', '<<')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.87: *4* TestImport.test_python_minimal_class_1
+    #@+node:ekr.20210904065459.87: *5* TestImport.test_python_minimal_class_1
     def test_python_minimal_class_1(self):
         c = self.c
         ### @tabwidth -4
@@ -3803,7 +3812,7 @@ class TestImporter(LeoUnitTest):
                     log('gp: %s: %s\\n' % (cmd, str(args)))
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.88: *4* TestImport.test_python_minimal_class_2
+    #@+node:ekr.20210904065459.88: *5* TestImport.test_python_minimal_class_2
     def test_python_minimal_class_2(self):
         c = self.c
         ### @tabwidth -4
@@ -3816,7 +3825,7 @@ class TestImporter(LeoUnitTest):
                 pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.89: *4* TestImport.test_python_minimal_class_3
+    #@+node:ekr.20210904065459.89: *5* TestImport.test_python_minimal_class_3
     def test_python_minimal_class_3(self):
         c = self.c
         ### @tabwidth -4
@@ -3828,7 +3837,7 @@ class TestImporter(LeoUnitTest):
                 pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.90: *4* TestImport.test_python_overindent_def_no_following_def
+    #@+node:ekr.20210904065459.90: *5* TestImport.test_python_overindent_def_no_following_def
     def test_python_overindent_def_no_following_def(self):
         c = self.c
         ### @tabwidth -4
@@ -3847,7 +3856,7 @@ class TestImporter(LeoUnitTest):
                     pr('input...')
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.91: *4* TestImport.test_python_overindent_def_one_following_def
+    #@+node:ekr.20210904065459.91: *5* TestImport.test_python_overindent_def_one_following_def
     def test_python_overindent_def_one_following_def(self):
         c = self.c
         ### @tabwidth -4
@@ -3868,7 +3877,7 @@ class TestImporter(LeoUnitTest):
                     pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.92: *4* TestImport.test_python_overindented_def_3
+    #@+node:ekr.20210904065459.92: *5* TestImport.test_python_overindented_def_3
     def test_python_overindented_def_3(self):
         c = self.c
         ### @tabwidth -4
@@ -3904,7 +3913,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
            
-    #@+node:ekr.20210904065459.93: *4* TestImport.test_python_string_test_extra_indent
+    #@+node:ekr.20210904065459.93: *5* TestImport.test_python_string_test_extra_indent
     def test_python_string_test_extra_indent(self):
         c = self.c
         ### @tabwidth -4
@@ -3923,7 +3932,7 @@ class TestImporter(LeoUnitTest):
                     return p
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.94: *4* TestImport.test_python_string_underindent_lines
+    #@+node:ekr.20210904065459.94: *5* TestImport.test_python_string_underindent_lines
     def test_python_string_underindent_lines(self):
         c = self.c
         ### @tabwidth -4
@@ -3939,7 +3948,7 @@ class TestImporter(LeoUnitTest):
                     pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.95: *4* TestImport.test_python_string_underindent_lines_2
+    #@+node:ekr.20210904065459.95: *5* TestImport.test_python_string_underindent_lines_2
     def test_python_string_underindent_lines_2(self):
         c = self.c
         ### @tabwidth -4
@@ -3956,7 +3965,7 @@ class TestImporter(LeoUnitTest):
                     pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.96: *4* TestImport.test_python_top_level_later_decl
+    #@+node:ekr.20210904065459.96: *5* TestImport.test_python_top_level_later_decl
     def test_python_top_level_later_decl(self):
         c = self.c
         # From xo.py.
@@ -4007,7 +4016,7 @@ class TestImporter(LeoUnitTest):
                 assert n == n2, (n, n2, p.h)
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
-    #@+node:ekr.20210904065459.97: *4* TestImport.test_python_trailing_comment
+    #@+node:ekr.20210904065459.97: *5* TestImport.test_python_trailing_comment
     def test_python_trailing_comment(self):
         c = self.c
         ### @tabwidth -4
@@ -4020,7 +4029,7 @@ class TestImporter(LeoUnitTest):
                     pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.98: *4* TestImport.test_python_trailing_comment_outer_levels
+    #@+node:ekr.20210904065459.98: *5* TestImport.test_python_trailing_comment_outer_levels
     def test_python_trailing_comment_outer_levels(self):
         c = self.c
         ### @tabwidth -4
@@ -4030,7 +4039,7 @@ class TestImporter(LeoUnitTest):
             pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.99: *4* TestImport.test_python_two_functions
+    #@+node:ekr.20210904065459.99: *5* TestImport.test_python_two_functions
     def test_python_two_functions(self):
         c = self.c
         # For comparison with unindent does not end function.
@@ -4045,7 +4054,7 @@ class TestImporter(LeoUnitTest):
                 pass
         """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.100: *4* TestImport.test_python_underindent_method
+    #@+node:ekr.20210904065459.100: *5* TestImport.test_python_underindent_method
     def test_python_underindent_method(self):
         c = self.c
         ### @tabwidth -4
@@ -4081,7 +4090,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
            
-    #@+node:ekr.20210904065459.101: *4* TestImport.test_python_unindent_in_triple_string_does_not_end_function
+    #@+node:ekr.20210904065459.101: *5* TestImport.test_python_unindent_in_triple_string_does_not_end_function
     def test_python_unindent_in_triple_string_does_not_end_function(self):
         c = self.c
         ### @tabwidth -4
@@ -4103,7 +4112,7 @@ class TestImporter(LeoUnitTest):
         child = p.firstChild()
         n = child.numberOfChildren()
         assert n == 2, 'expected 2 children, got %s' % n
-    #@+node:ekr.20210904065459.102: *4* TestImport.test_python_unittest_perfectImport_formatter_py
+    #@+node:ekr.20210904065459.102: *5* TestImport.test_python_unittest_perfectImport_formatter_py
     def test_python_unittest_perfectImport_formatter_py(self):
         c = self.c
 
@@ -4543,7 +4552,8 @@ class TestImporter(LeoUnitTest):
                 test()
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.103: *4* TestImport.test_TypeScript_class
+    #@+node:ekr.20210904123047.1: *4* Typescript tests
+    #@+node:ekr.20210904065459.103: *5* TestImport.test_TypeScript_class
     def test_TypeScript_class(self):
         c = self.c
         s = '''
@@ -4571,7 +4581,7 @@ class TestImporter(LeoUnitTest):
         '''
 
         c.importCommands.typeScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.104: *4* TestImport.test_TypeScript_module
+    #@+node:ekr.20210904065459.104: *5* TestImport.test_TypeScript_module
     def test_TypeScript_module(self):
         c = self.c
         s = '''
@@ -4601,7 +4611,8 @@ class TestImporter(LeoUnitTest):
         '''
 
         c.importCommands.typeScriptUnitTest(c.p, s=s, showTree=False)
-    #@+node:ekr.20210904065459.105: *4* TestImport.test_xml_with_standard_opening_elements
+    #@+node:ekr.20210904123056.1: *4* XML tests
+    #@+node:ekr.20210904065459.105: *5* TestImport.test_xml_with_standard_opening_elements
     def test_xml_with_standard_opening_elements(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -4636,7 +4647,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
        
-    #@+node:ekr.20210904065459.106: *4* TestImport.test_xml_1
+    #@+node:ekr.20210904065459.106: *5* TestImport.test_xml_1
     def test_xml_1(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -4670,7 +4681,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
         
-    #@+node:ekr.20210904065459.107: *4* TestImport.test_xml_2
+    #@+node:ekr.20210904065459.107: *5* TestImport.test_xml_2
     def test_xml_2(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -4697,7 +4708,7 @@ class TestImporter(LeoUnitTest):
                 p.moveToThreadNext()
             assert p == after, ('tree comp failed', p.h)
         
-    #@+node:ekr.20210904065459.108: *4* TestImport.test_xml_non_ascii_tags
+    #@+node:ekr.20210904065459.108: *5* TestImport.test_xml_non_ascii_tags
     def test_xml_non_ascii_tags(self):
         c = self.c
         s = textwrap.dedent("""\

@@ -653,9 +653,10 @@ class LeoImportCommands:
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             self.scanUnknownFileType(s, p, ext)
-        # Fix bug 488894: unsettling dialog when saving Leo file
-        # Fix bug 889175: Remember the full fileName.
-        c.atFileCommands.rememberReadPath(fileName, p)
+        if not g.unitTesting:
+            # Fix bug 488894: unsettling dialog when saving Leo file
+            # Fix bug 889175: Remember the full fileName.
+            c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
         w.setInsertPoint(0)
@@ -1249,49 +1250,54 @@ class LeoImportCommands:
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        c = self.c
-        old_root = p.copy()
+        ### c = self.c
+        ### old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
-        # A hack.  Let unit tests set the kill-check flag first.
-        d = g.app.unitTestDict
-        if d.get('kill-check'):
-            d = {'kill-check': True}
-        else:
-            d = {}
-        g.app.unitTestDict = d
+        ###
+            # # A hack.  Let unit tests set the kill-check flag first.
+            # d = g.app.unitTestDict
+            # if d.get('kill-check'):
+                # d = {'kill-check': True}
+            # else:
+                # d = {}
+            # g.app.unitTestDict = d
         if not fileName:
-            fileName = p.h
+            fileName = p.h  ###
         if not s:
             s = self.removeSentinelsCommand([fileName], toString=True)
         # Run the actual test using the **GeneralTestCase** class.
-        # Leo 5.6: Compute parent here.
-        if p:
-            parent = p.insertAsLastChild()
-        else:
-            parent = c.lastTopLevel().insertAfter()
+        parent = p.insertAsLastChild()
+        ###
+            # # Leo 5.6: Compute parent here.
+            # if p:
+                # parent = p.insertAsLastChild()
+            # else:
+                # parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
         self.createOutline(parent=parent.copy(), ext=ext, s=s)
-        # Set ok.
-        d = g.app.unitTestDict
-        ok = d.get('result') is True
-        # Clean up.
-        if showTree:
-            # 2016/11/17: Make sure saving the outline doesn't create any file.
-            for child in old_root.children():
-                if child.isAnyAtFileNode():
-                    child.h = '@' + child.h
-        else:
-            while old_root.hasChildren():
-                old_root.firstChild().doDelete()
-        c.redraw(old_root)
-        if g.app.unitTesting:
-            d['kill-check'] = False
-            if not ok:
-                g.app.unitTestDict['fail'] = p.h
-            assert ok, p.h
-        return ok
+        ### g.dump_tree(c, msg='after')
+        ### Not necessary!
+            # # Set ok.
+            # d = g.app.unitTestDict
+            # ok = d.get('result') is True
+            # # Clean up.
+            # if showTree:
+                # # 2016/11/17: Make sure saving the outline doesn't create any file.
+                # for child in old_root.children():
+                    # if child.isAnyAtFileNode():
+                        # child.h = '@' + child.h
+            # else:
+                # while old_root.hasChildren():
+                    # old_root.firstChild().doDelete()
+            # c.redraw(old_root)
+            # if g.app.unitTesting:
+                # d['kill-check'] = False
+                # if not ok:
+                    # g.app.unitTestDict['fail'] = p.h
+                # assert ok, p.h
+            # return ok
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
     def compute_unit_test_kind(self, ext, fn):
         """Return kind from fn's file extension."""

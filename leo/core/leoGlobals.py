@@ -2710,6 +2710,15 @@ def oldDump(s: str):
             out += "["; out += " "; out += "]"
         else: out += i
     return out
+#@+node:ekr.20210904114446.1: *4* g.dump_tree
+def dump_tree(c, msg=None):
+    if msg:
+        print(msg.rstrip())
+    for p in c.all_positions():
+        print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
+        for z in g.splitLines(p.b):
+            # print(f"    {' '*p.level()}{z.rstrip()}")
+            print(z.rstrip())
 #@+node:ekr.20150227102835.8: *4* g.dump_encoded_string
 def dump_encoded_string(encoding, s: str):
     """Dump s, assumed to be an encoded string."""
