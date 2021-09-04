@@ -9,9 +9,9 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 # Import all tested scanners.
-import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
+import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
