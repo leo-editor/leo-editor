@@ -14,6 +14,8 @@ import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
 import leo.plugins.importers.markdown as markdown
+import leo.plugins.importers.org as org
+import leo.plugins.importers.otl as otl
 import leo.plugins.importers.pascal as pascal
 import leo.plugins.importers.python as py
 import leo.plugins.importers.xml as xml
@@ -37,19 +39,7 @@ def test_collapse_all(self):
 #@+node:ekr.20210904065459.3: *3* TestImport.test_c_class_1
 def test_c_class_1(self):
     c = self.c
-    if False: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     class cTestClass1 {
@@ -86,22 +76,7 @@ def test_c_class_1(self):
 #@+node:ekr.20210904065459.4: *3* TestImport.test_c_class_underindented_line
 def test_c_class_underindented_line(self):
     c = self.c
-    if g.in_bridge:
-        self.skipTest('In bridge')
-
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
     class cTestClass1 {
 
@@ -140,19 +115,7 @@ def test_c_class_underindented_line(self):
 #@+node:ekr.20210904065459.5: *3* TestImport.test_c_comment_follows_arg_list
 def test_c_comment_follows_arg_list(self):
     c = self.c
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
     s = '''\
     void
     aaa::bbb::doit
@@ -194,19 +157,7 @@ def test_c_comment_follows_arg_list(self):
 #@+node:ekr.20210904065459.6: *3* TestImport.test_c_comment_follows_block_delim
 def test_c_comment_follows_block_delim(self):
     c = self.c
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
     void
     aaa::bbb::doit
@@ -248,19 +199,7 @@ def test_c_comment_follows_block_delim(self):
 #@+node:ekr.20210904065459.7: *3* TestImport.test_c_intermixed_blanks_and_tabs
 def test_c_intermixed_blanks_and_tabs(self):
     c = self.c
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
     s = '''
     void
     aaa::bbb::doit
@@ -293,19 +232,7 @@ def test_c_intermixed_blanks_and_tabs(self):
 #@+node:ekr.20210904065459.8: *3* TestImport.test_c_old_style_decl_1
 def test_c_old_style_decl_1(self):
     c = self.c
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
     static void
     ReleaseCharSet(cset)
@@ -338,19 +265,7 @@ def test_c_old_style_decl_1(self):
 #@+node:ekr.20210904065459.9: *3* TestImport.test_c_old_style_decl_2
 def test_c_old_style_decl_2(self):
     c = self.c
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
     Tcl_Obj *
     Tcl_NewLongObj(longValue)
@@ -381,19 +296,7 @@ def test_c_old_style_decl_2(self):
 #@+node:ekr.20210904065459.10: *3* TestImport.test_c_extern
 def test_c_extern(self):
     c = self.c
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.c
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.c)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
     extern "C"
     {
@@ -423,19 +326,7 @@ def test_c_extern(self):
 #@+node:ekr.20210904065459.11: *3* TestImport.test_cython_importer
 def test_cython_importer(self):
     c = self.c
-    if False: # Preamble
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.cython
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.cython)
-        importlib.reload(leoImport)
-        # g.app.loadManager.createAllImportersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     from libc.math cimport pow
@@ -1508,22 +1399,7 @@ def test_dart_hello_world(self):
 #@+node:ekr.20210904065459.18: *3* TestImport.test_elisp
 def test_elisp(self):
     c = self.c
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.elisp
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.elisp)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImportersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
 
     s = '''\
     ;;; comment
@@ -2032,21 +1908,7 @@ def test_ini_test_1(self):
 #@+node:ekr.20210904065459.30: *3* TestImport.test_from_AdminPermission_java
 def test_from_AdminPermission_java(self):
     c = self.c
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.java
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.java)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     /**
@@ -2089,21 +1951,7 @@ def test_from_BundleException_java(self):
     ### @tabwidth 8
         # Must be in this node when run externally.
     
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.java
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.java)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     /*
@@ -2175,21 +2023,7 @@ def test_from_BundleException_java(self):
 #@+node:ekr.20210904065459.32: *3* TestImport.test_java_interface_test1
 def test_java_interface_test1(self):
     c = self.c
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.java
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.java)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     interface Bicycle {
@@ -2217,21 +2051,7 @@ def test_java_interface_test1(self):
 #@+node:ekr.20210904065459.33: *3* TestImport.test_java_interface_test2
 def test_java_interface_test2(self):
     c = self.c
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.java
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.java)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     interface Bicycle {
@@ -2440,11 +2260,6 @@ def test_Javascript_639_acid_test_2(self):
 #@+node:ekr.20210904065459.41: *3* TestImport.test_org_pattern
 def test_org_pattern(self):
     c = self.c
-    import leo.plugins.importers.org as org
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import importlib
-        importlib.reload(org)
     x = org.Org_Importer(c.importCommands, atAuto=False)    
     pattern = x.org_pattern
     table = (
@@ -2598,19 +2413,7 @@ def test_org_1074(self):
 #@+node:ekr.20210904065459.47: *3* TestImport.test_org_placeholder
 def test_org_placeholder(self):
     c = self.c
-    if 0:
-        # The preamble...
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.org as org
-        # Reload all.
-        import importlib
-        importlib.reload(linescanner)
-        importlib.reload(org)
-        importlib.reload(leoImport)
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands 
+    ic = c.importCommands 
     # insert test for org here.
     s = '''\
     * Section 1
@@ -2650,11 +2453,6 @@ def test_org_placeholder(self):
 #@+node:ekr.20210904065459.48: *3* TestImport.test_otl_vim_outline_mode
 def test_otl_vim_outline_mode(self):
     c = self.c
-    import leo.plugins.importers.otl as otl
-    if 0: # Preamble
-        if c.isChanged(): c.save()
-        import importlib
-        importlib.reload(otl)
     x = otl.Otl_Importer(c.importCommands, atAuto=False)    
     pattern = x.otl_pattern
     table = (
@@ -2707,22 +2505,7 @@ def test_otl_1(self):
 #@+node:ekr.20210904065459.50: *3* TestImport.test_pascal_to_delphi_interface
 def test_pascal_to_delphi_interface(self):
     c = self.c
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.pascal
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.pascal)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''
     unit Unit1;
 
@@ -2894,22 +2677,7 @@ def test_perl_regex_1(self):
 #@+node:ekr.20210904065459.55: *3* TestImport.test_perl_regex_2
 def test_perl_regex_2(self):
     c = self.c
-    if 0:
-        # The preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.perl
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.perl)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
 
     s = '''\
     #!/usr/bin/perl
@@ -3089,21 +2857,7 @@ def test_i_scan_state_for_python_(self):
 #@+node:ekr.20210904065459.61: *3* TestImport.test_leoApp_fail
 def test_leoApp_fail(self):
     c = self.c
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
     
     s = '''
     def isValidPython(self):
@@ -3188,21 +2942,7 @@ def test_python_bad_class_test(self):
 def test_python_basic_nesting_test(self):
     c = self.c
     # Was unittest/at_auto-unit-test.py
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
 
     s = '''\
     class class1:
@@ -3250,21 +2990,7 @@ def test_python_bug_346(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
     import sys
 
@@ -3319,20 +3045,7 @@ def test_python_bug_346(self):
 #@+node:ekr.20210904065459.65: *3* TestImport.test_python_bug_354
 def test_python_bug_354(self):
     c = self.c
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands 
+    ic = c.importCommands 
     s = """
     if isPython3:
         def u(s):
@@ -3376,20 +3089,7 @@ def test_python_bug_354(self):
 #@+node:ekr.20210904065459.66: *3* TestImport.test_python_bug_357
 def test_python_bug_357(self):
     c = self.c
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands 
+    ic = c.importCommands 
     s = '''
     """
     sheet_stats.py - report column stats for spreadsheets
@@ -3882,21 +3582,7 @@ def test_python_comment_after_dict_assign(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
@@ -3931,21 +3617,7 @@ def test_python_decls_test_1(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = '''\
     import leo.core.leoGlobals as g
@@ -4011,21 +3683,7 @@ def test_python_decorator_2(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
 
     s = '''
     """
@@ -4146,21 +3804,7 @@ def test_python_def_inside_def(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
     class aClass:
         def outerDef(self):
@@ -4200,21 +3844,7 @@ def test_python_def_test_1(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
 
     class test:
@@ -4263,21 +3893,7 @@ def test_python_def_test_2(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
 
     s = '''\
 
@@ -4359,21 +3975,7 @@ def test_python_indent_decls(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
 
     class mammalProviderBase(object):
@@ -4439,21 +4041,7 @@ def test_python_indent_decls(self):
 #@+node:ekr.20210904065459.85: *3* TestImport.test_python_leoImport_py_small_
 def test_python_leoImport_py_small_(self):
     c = self.c
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands
+    ic = c.importCommands
 
     s = """\
     # -*- coding: utf-8 -*-
@@ -4651,21 +4239,7 @@ def test_python_overindented_def_3(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     # This caused PyParse.py not to be imported properly.
     s = r'''
     import re
@@ -4763,21 +4337,7 @@ def test_python_string_underindent_lines_2(self):
 def test_python_top_level_later_decl(self):
     c = self.c
     # From xo.py.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
 
     s = r'''#!/usr/bin/env python3
 
@@ -4879,21 +4439,7 @@ def test_python_underindent_method(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    if 0: # Preamble...
-        if c.isChanged(): c.save()
-        # import leo
-        import leo.core.leoImport as leoImport
-        import leo.plugins.importers.linescanner as linescanner
-        import leo.plugins.importers.python
-        # Reload all.
-        import importlib
-        importlib.reload(leo.plugins.importers.linescanner)
-        importlib.reload(leo.plugins.importers.python)
-        importlib.reload(leoImport)
-        g.app.loadManager.createAllImporetersData()
-        ic = leoImport.LeoImportCommands(c)
-    else:
-        ic = c.importCommands  
+    ic = c.importCommands  
     s = '''\
 
     class emptyClass: 
@@ -6306,11 +5852,6 @@ def test_importers_xml_is_ws_line(self):
 #@+node:ekr.20210904065459.133: *3* TestImport.test_importesrs_xml_scan_line
 def test_importesrs_xml_scan_line(self):
     c = self.c
-    if 0: # Preamble
-        import importlib
-        import leo.plugins.importers.linescanner as linescanner
-        importlib.reload(linescanner)
-        importlib.reload(xml)
     x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
     table = (
         (0, '<tag>'),
