@@ -8,7 +8,6 @@ import importlib
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
-import leo.core.leoImport as leoImport
 # Import all tested scanners.
 import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.coffeescript as cs
@@ -58,21 +57,15 @@ def test_c_class_1(self):
         'int foo',
         'char bar',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    ic.cUnitTest(c.p, s=s, showTree=True)
+    # Check structure
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.4: *3* TestImport.test_c_class_underindented_line
 def test_c_class_underindented_line(self):
     c = self.c
@@ -97,21 +90,15 @@ def test_c_class_underindented_line(self):
         'int foo',
         'char bar',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    ic.cUnitTest(c.p, s=s, showTree=True)
+    # Check structure
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.5: *3* TestImport.test_c_comment_follows_arg_list
 def test_c_comment_follows_arg_list(self):
     c = self.c
@@ -139,21 +126,15 @@ def test_c_comment_follows_arg_list(self):
         'void aaa::bbb::doit',
         'bool aaa::bbb::dothat',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children 
-            p.deleteAllChildren()
-        c.redraw()
+    ic.cUnitTest(c.p, s=s, showTree=True)
+    # Check structure
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.6: *3* TestImport.test_c_comment_follows_block_delim
 def test_c_comment_follows_block_delim(self):
     c = self.c
@@ -181,21 +162,15 @@ def test_c_comment_follows_block_delim(self):
         'void aaa::bbb::doit',
         'bool aaa::bbb::dothat',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    ic.cUnitTest(c.p, s=s, showTree=True)
+    # Check structure
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.7: *3* TestImport.test_c_intermixed_blanks_and_tabs
 def test_c_intermixed_blanks_and_tabs(self):
     c = self.c
@@ -214,21 +189,17 @@ def test_c_intermixed_blanks_and_tabs(self):
     table = (
         'void aaa::bbb::doit',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+   
+    ic.cUnitTest(c.p, s=s, showTree=True)
+    # Check structure
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
+    
 #@+node:ekr.20210904065459.8: *3* TestImport.test_c_old_style_decl_1
 def test_c_old_style_decl_1(self):
     c = self.c
@@ -247,21 +218,15 @@ def test_c_old_style_decl_1(self):
     table = (
         'static void ReleaseCharSet',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    ic.cUnitTest(c.p, s=s, showTree=True)
+    if 1: # Check structure
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.9: *3* TestImport.test_c_old_style_decl_2
 def test_c_old_style_decl_2(self):
     c = self.c
@@ -278,21 +243,15 @@ def test_c_old_style_decl_2(self):
     table = (
         'Tcl_Obj * Tcl_NewLongObj',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    ic.cUnitTest(c.p, s=s, showTree=True)
+    if 1: # Check structure
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.10: *3* TestImport.test_c_extern
 def test_c_extern(self):
     c = self.c
@@ -308,21 +267,16 @@ def test_c_extern(self):
     table = (
         'extern "C"',
     )
-    try:
-        p = c.p
-        ic.cUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    p = c.p
+    ic.cUnitTest(p, s=s, showTree=True)
+    if 1:
+        root = p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.11: *3* TestImport.test_cython_importer
 def test_cython_importer(self):
     c = self.c
@@ -349,21 +303,16 @@ def test_cython_importer(self):
         'double',
         'print_result',
     )
-    try:
-        p = c.p
-        ic.cythonUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+
+    ic.cythonUnitTest(c.p, s=s, showTree=True)
+    if 1: # Check structure
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.12: *3* TestImport.test_c_namespace_indent
 def test_c_namespace_indent(self):
     c = self.c
@@ -374,23 +323,17 @@ def test_c_namespace_indent(self):
         }
     }
     '''
-    try:
-        p = c.p
-        c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
-        table = [
-            'namespace',
-            'class cTestClass1',
-        ]
-        root = c.p.firstChild()
-        assert root.h.endswith('c# namespace indent'), root.h
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    table = [
+        'namespace',
+        'class cTestClass1',
+    ]
+    c.importCommands.cSharpUnitTest(c.p, s=s, showTree=True)
+    root = c.p.firstChild()
+    assert root.h.endswith('c# namespace indent'), root.h
+    p2 = root.firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
 #@+node:ekr.20210904065459.13: *3* TestImport.test_c_namespace_no_indent
 def test_c_namespace_no_indent(self):
     c = self.c
@@ -401,23 +344,17 @@ def test_c_namespace_no_indent(self):
     }
     }
     '''
-    try:
-        p = c.p
-        c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
-        table = [
-            'namespace',
-            'class cTestClass1',
-        ]
-        root = c.p.firstChild()
-        assert root.h.endswith('c# namespace no indent'), root.h
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.cSharpUnitTest(c.p, s=s, showTree=True)
+    table = [
+        'namespace',
+        'class cTestClass1',
+    ]
+    root = c.p.firstChild()
+    assert root.h.endswith('c# namespace no indent'), root.h
+    p2 = root.firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
 #@+node:ekr.20210904065459.14: *3* TestImport.test_coffeescript_1
 def test_coffeescript_1(self):
     c = self.c
@@ -1257,19 +1194,12 @@ def test_coffeescript_1(self):
         "constructor: (str, src) ->",
         "toString: -> @message",
     )
-
-    try:
-        p = c.p
-        c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
-        if 1:
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              assert p2.h == h, (p2.h, h)
-              p2.moveToThreadNext()
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.coffeeScriptUnitTest(c.p, s=s, showTree=True)
+    if 1:
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
 #@+node:ekr.20210904065459.15: *3* TestImport.test_coffeescript_2
 def test_coffeescript_2(self):
     c = self.c
@@ -1291,18 +1221,12 @@ def test_coffeescript_2(self):
     table = (
         'buildCoffee = (str) ->',
     )
-    try:
-        p = c.p
-        c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
-        if 1:
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              assert p2.h == h, (p2.h, h)
-              p2.moveToThreadNext()
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.coffeeScriptUnitTest(c.p, s=s, showTree=True)
+    if 1:
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
 #@+node:ekr.20210904065459.16: *3* TestImport.test_coffeescript_3
 #@@tabwidth -2 # Required
 
@@ -1346,18 +1270,12 @@ def test_coffeescript_3(self):
       'transform: (args...) ->',
       'body: (node, opts={}) ->',
     )
-    try:
-        p = c.p
-        c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
-        if 1:
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              assert p2.h == h, (p2.h, h)
-              p2.moveToThreadNext()
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.coffeeScriptUnitTest(c.p, s=s, showTree=True)
+    if 1:
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
 #@+node:ekr.20210904065459.17: *3* TestImport.test_dart_hello_world
 def test_dart_hello_world(self):
     c = self.c
@@ -1384,18 +1302,14 @@ def test_dart_hello_world(self):
         'printNumber',
         'void main',
     )
-    try:
-        c.importCommands.dartUnitTest(p,s=s,showTree=True)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.dartUnitTest(c.p, s=s, showTree=True)
+    root = c.p.firstChild()
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
+   
 #@+node:ekr.20210904065459.18: *3* TestImport.test_elisp
 def test_elisp(self):
     c = self.c
@@ -1418,20 +1332,15 @@ def test_elisp(self):
         'defun abc',
         'defun cde',
     )
-    try:
-        ic.elispUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    ic.elispUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.19: *3* TestImport.test_html_lowercase_tags
 def test_html_lowercase_tags(self):
     c = self.c
@@ -1450,17 +1359,16 @@ def test_html_lowercase_tags(self):
         '<head>',
         '<body class="bodystring">',
     ]
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        root = c.p.firstChild()
-        assert root.h.endswith('lowercase tags'), root.h
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        p.deleteAllChildren()
-    finally:
-        c.redraw()
+
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    root = c.p.firstChild()
+    assert root.h.endswith('lowercase tags'), root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    ### p.deleteAllChildren()
+   
 #@+node:ekr.20210904065459.20: *3* TestImport.test_html_multiple_tags_on_a_line
 def test_html_multiple_tags_on_a_line(self):
     c = self.c
@@ -1514,22 +1422,20 @@ def test_html_multiple_tags_on_a_line(self):
     </html>
     """)
 
-    # c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    # c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
     table = (
         '<html>',
         '<body>',
         '<table id="0">',
     )
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        if 1:
-            p.deleteAllChildren()
-    finally:
-        c.redraw()
+  
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    ### p.deleteAllChildren()
+    
 #@+node:ekr.20210904065459.21: *3* TestImport.test_html_multple_node_completed_on_a_line
 def test_html_multple_node_completed_on_a_line(self):
     c = self.c
@@ -1542,16 +1448,11 @@ def test_html_multple_node_completed_on_a_line(self):
         # The new xml scanner doesn't generate any new nodes,
         # because the scan state hasn't changed at the end of the line!
     )
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2 and p2.h == h, (p2 and p2.h, h)
-            p2.moveToThreadNext()
-        if 1:
-            p.deleteAllChildren()
-    finally:
-        c.redraw()
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
 #@+node:ekr.20210904065459.22: *3* TestImport.test_html_multple_node_starts_on_a_line
 def test_html_multple_node_starts_on_a_line(self):
     c = self.c
@@ -1565,16 +1466,11 @@ def test_html_multple_node_starts_on_a_line(self):
     table = (
         '<html>',
     )
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2 and p2.h == h, (p2 and p2.h, h)
-            p2.moveToThreadNext()
-        if 1:
-            p.deleteAllChildren()
-    finally:
-        c.redraw()
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
 #@+node:ekr.20210904065459.23: *3* TestImport.test_html_underindented_comment
 def test_html_underindented_comment(self):
     c = self.c
@@ -1603,15 +1499,13 @@ def test_html_underindented_comment(self):
         '<table cellspacing="0" cellpadding="0" width="600" border="0">',
         '<table>',
     )
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        p.deleteAllChildren()
-    finally:
-        c.redraw()
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+
+    
 #@+node:ekr.20210904065459.24: *3* TestImport.test_html_uppercase_tags
 def test_html_uppercase_tags(self):
     c = self.c
@@ -1626,8 +1520,7 @@ def test_html_uppercase_tags(self):
     </HTML>
     '''
 
-
-    c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.25: *3* TestImport.test_html_improperly_nested_tags
 def test_html_improperly_nested_tags(self):
     c = self.c
@@ -1651,16 +1544,13 @@ def test_html_improperly_nested_tags(self):
         ('<body>'),
         ('<div id="D666">'),
     )
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        if 1:
-            p.deleteAllChildren()
-    finally:
-        c.redraw()
+
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+        
 #@+node:ekr.20210904065459.26: *3* TestImport.test_html_improperly_terminated_tags
 def test_html_improperly_terminated_tags(self):
     c = self.c
@@ -1682,16 +1572,11 @@ def test_html_improperly_terminated_tags(self):
         '<html>',
         '<head>',
     )
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        if 1:
-            p.deleteAllChildren()
-    finally:
-        c.redraw()
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
 #@+node:ekr.20210904065459.27: *3* TestImport.test_html_improperly_terminated_tags2
 def test_html_improperly_terminated_tags2(self):
     c = self.c
@@ -1710,16 +1595,11 @@ def test_html_improperly_terminated_tags2(self):
     </html>
     '''
     table = ('<html>', '<head>') # , '<link id="L1">'
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        if 1:
-            p.deleteAllChildren()
-    finally:
-            c.redraw()
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
 #@+node:ekr.20210904065459.28: *3* TestImport.test_html_brython
 def test_html_brython(self):
     c = self.c
@@ -1866,16 +1746,12 @@ def test_html_brython(self):
         '<head>', 
         '<body onload="brython({debug:1, cache:\'none\'})">',
     )
-    try:
-        c.importCommands.htmlUnitTest(p,s=s,showTree=True)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        if 1:
-            p.deleteAllChildren()
-    finally:
-            c.redraw()
+    c.importCommands.htmlUnitTest(c.p, s=s, showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+        
 #@+node:ekr.20210904065459.29: *3* TestImport.test_ini_test_1
 def test_ini_test_1(self):
     c = self.c
@@ -1892,19 +1768,16 @@ def test_ini_test_1(self):
     port=143
     file = "payroll.dat"
     '''
+
     table = ('[owner]', '[database]')
-    try:
-        c.importCommands.iniUnitTest(p,s=s,showTree=True)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.iniUnitTest(c.p, s=s, showTree=True)
+    root = c.p.firstChild()
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
+    
 #@+node:ekr.20210904065459.30: *3* TestImport.test_from_AdminPermission_java
 def test_from_AdminPermission_java(self):
     c = self.c
@@ -1930,20 +1803,16 @@ def test_from_AdminPermission_java(self):
         'public final class AdminPermission extends BasicPermission',
         'public AdminPermission',
     )
-    try:
-        ic.javaUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for i, h in enumerate(table):
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    ic.javaUnitTest(c.p, s=s, showTree=True)
+    if 1: # Check structure
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+    
 #@+node:ekr.20210904065459.31: *3* TestImport.test_from_BundleException_java
 def test_from_BundleException_java(self):
     c = self.c
@@ -2006,20 +1875,16 @@ def test_from_BundleException_java(self):
         'public class BundleException extends Exception',
         'public BundleException',
     )
-    try:
-        ic.javaUnitTest(p,s=s,showTree=True)
-        if 1: # Check structure
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for i, h in enumerate(table):
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1: # Delete children
-            p.deleteAllChildren()
-        c.redraw()
+    ic.javaUnitTest(c.p, s=s, showTree=True)
+    if 1: # Check structure
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+   
 #@+node:ekr.20210904065459.32: *3* TestImport.test_java_interface_test1
 def test_java_interface_test1(self):
     c = self.c
@@ -2034,20 +1899,15 @@ def test_java_interface_test1(self):
     table = (
         'interface Bicycle',
     )
-    try:
-        ic.javaUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for i, h in enumerate(table):
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    ic.javaUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.33: *3* TestImport.test_java_interface_test2
 def test_java_interface_test2(self):
     c = self.c
@@ -2062,20 +1922,15 @@ def test_java_interface_test2(self):
     table = (
         'interface Bicycle',
     )
-    try:
-        ic.javaUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for i, h in enumerate(table):
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    ic.javaUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.34: *3* TestImport.test_Javascript_regex_1
 def test_Javascript_regex_1(self):
     c = self.c
@@ -2092,7 +1947,7 @@ def test_Javascript_regex_1(self):
     '''
 
 
-    c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.35: *3* TestImport.test_Javascript_3
 def test_Javascript_3(self):
     c = self.c
@@ -2114,7 +1969,7 @@ def test_Javascript_3(self):
     '''
 
 
-    c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.36: *3* TestImport.test_Javascript_4
 def test_Javascript_4(self):
     c = self.c
@@ -2135,7 +1990,7 @@ def test_Javascript_4(self):
 
     '''
 
-    c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.37: *3* TestImport.test_Javascript_5
 def test_Javascript_5(self):
     c = self.c
@@ -2154,7 +2009,7 @@ def test_Javascript_5(self):
     });
     '''
 
-    c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.38: *3* TestImport.test_Javascript_639_many_top_level_nodes
 def test_Javascript_639_many_top_level_nodes(self):
     c = self.c
@@ -2189,7 +2044,7 @@ def test_Javascript_639_many_top_level_nodes(self):
     };
     '''
 
-    c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.39: *3* TestImport.test_Javascript_639_acid_test_1
 def test_Javascript_639_acid_test_1(self):
     c = self.c
@@ -2216,7 +2071,7 @@ def test_Javascript_639_acid_test_1(self):
     });
     '''
 
-    c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.40: *3* TestImport.test_Javascript_639_acid_test_2
 def test_Javascript_639_acid_test_2(self):
     c = self.c
@@ -2256,7 +2111,7 @@ def test_Javascript_639_acid_test_2(self):
     });
     '''
 
-    c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.41: *3* TestImport.test_org_pattern
 def test_org_pattern(self):
     c = self.c
@@ -2292,19 +2147,14 @@ def test_org_1(self):
         'Section 2', 'Section 2-1', 'Section 2-1-1',
         'Section 3', 'Section 3.1',
     )
-    try:
-        c.importCommands.orgUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    c.importCommands.orgUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.43: *3* TestImport.test_org_tags
 def test_org_tags(self):
     c = self.c
@@ -2318,19 +2168,15 @@ def test_org_tags(self):
         'Section 2 :tag2:',
         'Section 3 :tag3:tag4:',
     )
-    try:
-        c.importCommands.orgUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+   
+    c.importCommands.orgUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.44: *3* TestImport.test_org_intro
 def test_org_intro(self):
     c = self.c
@@ -2341,23 +2187,19 @@ def test_org_intro(self):
     * Section 2
     Sec 2.
     '''
+
     table = (
         'Section 1',
         'Section 2',
     )
-    try:
-        c.importCommands.orgUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    c.importCommands.orgUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.45: *3* TestImport.test_org_552
 def test_org_552(self):
     c = self.c
@@ -2374,19 +2216,15 @@ def test_org_552(self):
         '整理个人生活',
         '每周惯例',
     )
-    try:
-        c.importCommands.orgUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+   
+    c.importCommands.orgUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.46: *3* TestImport.test_org_1074
 def test_org_1074(self):
     c = self.c
@@ -2394,22 +2232,18 @@ def test_org_1074(self):
     *  Test
     First line.
     '''
+
     table = (
         ' Test',
     )
-    try:
-        c.importCommands.orgUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-        c.redraw()
+    c.importCommands.orgUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.47: *3* TestImport.test_org_placeholder
 def test_org_placeholder(self):
     c = self.c
@@ -2430,6 +2264,7 @@ def test_org_placeholder(self):
     ** Section 3.1
     Sec 3.1
     '''
+
     table = (
         'Section 1',
         'Section 2', 'Section 2-1', 'Section 2-1-1',
@@ -2438,18 +2273,14 @@ def test_org_placeholder(self):
         'Section 3-1-1-1-1-1',
         'Section 3.1',
     )
-    try:
-        g.app.suppressImportChecks = True
-        ic.orgUnitTest(p,s=s,showTree=True)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
+    g.app.suppressImportChecks = True
+    ic.orgUnitTest(c.p, s=s, showTree=True)
+    root = c.p.firstChild()
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 #@+node:ekr.20210904065459.48: *3* TestImport.test_otl_vim_outline_mode
 def test_otl_vim_outline_mode(self):
     c = self.c
@@ -2484,24 +2315,21 @@ def test_otl_1(self):
     \tSection 3.1
     : Sec 3.1
     '''
+
     table = (
         'Section 1',
         'Section 2', 'Section 2-1', 'Section 2-1-1',
         'Section 3', 'Section 3.1',
     )
-    try:
-        c.importCommands.otlUnitTest(p,s=s,showTree=True)
-        if 0:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.otlUnitTest(c.p, s=s, showTree=True)
+    if 0:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+   
 #@+node:ekr.20210904065459.50: *3* TestImport.test_pascal_to_delphi_interface
 def test_pascal_to_delphi_interface(self):
     c = self.c
@@ -2547,20 +2375,16 @@ def test_pascal_to_delphi_interface(self):
         'procedure FormCreate',
         'procedure TForm1.FormCreate',
     )
-    try:
-        ic.pascalUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for i, h in enumerate(table):
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    ic.pascalUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+   
 #@+node:ekr.20210904065459.51: *3* TestImport.test_perl_1
 def test_perl_1(self):
     c = self.c
@@ -2587,12 +2411,7 @@ def test_perl_1(self):
     # Function call
     Hello();
     '''
-    try:
-        c.importCommands.perlUnitTest(p,s=s,showTree=True)
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
 #@+node:ekr.20210904065459.52: *3* TestImport.test_perlpod_comment
 def test_perlpod_comment(self):
     c = self.c
@@ -2614,12 +2433,7 @@ def test_perlpod_comment(self):
        print "Hello, World!\n";
     }
     '''
-    try:
-        c.importCommands.perlUnitTest(p,s=s,showTree=True)
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
 #@+node:ekr.20210904065459.53: *3* TestImport.test_perl_multi_line_string
 def test_perl_multi_line_string(self):
     c = self.c
@@ -2635,12 +2449,7 @@ def test_perl_multi_line_string(self):
 
     world\n";
     '''
-    try:
-        c.importCommands.perlUnitTest(p,s=s,showTree=True)
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
 #@+node:ekr.20210904065459.54: *3* TestImport.test_perl_regex_1
 def test_perl_regex_1(self):
     c = self.c
@@ -2668,12 +2477,8 @@ def test_perl_regex_1(self):
         s = tr///{/;
     }
     '''
-    try:
-        c.importCommands.perlUnitTest(p,s=s,showTree=True)
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
+   
 #@+node:ekr.20210904065459.55: *3* TestImport.test_perl_regex_2
 def test_perl_regex_2(self):
     c = self.c
@@ -2704,20 +2509,16 @@ def test_perl_regex_2(self):
         'sub test3',
         'sub test4'
     )
-    try:
-        ic.perlUnitTest(p,s=s,showTree=True)
-        if 1:
-            root = c.p.lastChild()
-            assert root.h.startswith('@@'), root.h
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    finally:
-        if 1:
-            p.deleteAllChildren()
-            c.redraw()
+    ic.perlUnitTest(c.p, s=s, showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+  
 #@+node:ekr.20210904065459.56: *3* TestImport.test_php_import_class
 def test_php_import_class(self):
     c = self.c
@@ -2737,7 +2538,7 @@ def test_php_import_class(self):
 
     '''
 
-    c.importCommands.phpUnitTest(p,s=s,showTree=False)
+    c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.57: *3* TestImport.test_php_import_conditional_class
 def test_php_import_conditional_class(self):
     c = self.c
@@ -2757,7 +2558,7 @@ def test_php_import_conditional_class(self):
     ?>
     '''
 
-    c.importCommands.phpUnitTest(p,s=s,showTree=False)
+    c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.58: *3* TestImport.test_php_import_classes__functions
 def test_php_import_classes__functions(self):
     c = self.c
@@ -2801,7 +2602,7 @@ def test_php_import_classes__functions(self):
 
     '''
 
-    c.importCommands.phpUnitTest(p,s=s,showTree=False)
+    c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.59: *3* TestImport.test_php_here_doc
 def test_php_here_doc(self):
     c = self.c
@@ -2816,7 +2617,7 @@ def test_php_here_doc(self):
     ?>
     '''
 
-    c.importCommands.phpUnitTest(p,s=s,showTree=False)
+    c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.60: *3* TestImport.test_i_scan_state_for_python_
 def test_i_scan_state_for_python_(self):
     c = self.c
@@ -2904,25 +2705,20 @@ def test_leoApp_fail(self):
         # (3, 'run'),
         (1, 'loadLocalFile'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        
 #@+node:ekr.20210904065459.62: *3* TestImport.test_python_bad_class_test
 def test_python_bad_class_test(self):
     c = self.c
@@ -2937,7 +2733,7 @@ def test_python_bad_class_test(self):
         pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.63: *3* TestImport.test_python_basic_nesting_test
 def test_python_basic_nesting_test(self):
     c = self.c
@@ -2966,25 +2762,20 @@ def test_python_basic_nesting_test(self):
         (2, 'class2_method1'),
         (2, 'class2_method2'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        
 #@+node:ekr.20210904065459.64: *3* TestImport.test_python_bug_346
 def test_python_bug_346(self):
     c = self.c
@@ -3023,25 +2814,20 @@ def test_python_bug_346(self):
         (1, 'Declarations'),
         (1, 'make_parser'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        
 #@+node:ekr.20210904065459.65: *3* TestImport.test_python_bug_354
 def test_python_bug_354(self):
     c = self.c
@@ -3067,25 +2853,20 @@ def test_python_bug_354(self):
         # (1, 'u'),
         # (1, 'ue'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        
 #@+node:ekr.20210904065459.66: *3* TestImport.test_python_bug_357
 def test_python_bug_357(self):
     c = self.c
@@ -3362,25 +3143,20 @@ def test_python_bug_357(self):
         (1, "get_table_rows"),
         (1, "main"),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        
 #@+node:ekr.20210904065459.67: *3* TestImport.test_python_bug_360
 def test_python_bug_360(self):
     c = self.c
@@ -3396,25 +3172,19 @@ def test_python_bug_360(self):
     table = (
         (1, '@base_task make_map'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        c.importCommands .pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    c.importCommands.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
 #@+node:ekr.20210904065459.68: *3* TestImport.test_python_bug_390
 def test_python_bug_390(self):
     c = self.c
@@ -3437,26 +3207,20 @@ def test_python_bug_390(self):
         (1, 'class Foo'),
         (1, 'main'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        c.importCommands .pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-            assert root.b.find("if __name__ == '__main__':") > -1
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    c.importCommands .pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        assert root.b.find("if __name__ == '__main__':") > -1
 #@+node:ekr.20210904065459.69: *3* TestImport.test_python_bug_978
 def test_python_bug_978(self):
     c = self.c
@@ -3477,25 +3241,19 @@ def test_python_bug_978(self):
         (1, 'class B(foo)'),
         (1, 'class C(bar.Bar)'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        c.importCommands .pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    c.importCommands .pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
 #@+node:ekr.20210904065459.70: *3* TestImport.test_python_bug_603720
 def test_python_bug_603720(self):
     c = self.c
@@ -3518,7 +3276,7 @@ def test_python_bug_603720(self):
     foo()
     '''
 
-    tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.71: *3* TestImport.test_python_enhancement_481
 def test_python_enhancement_481(self):
     c = self.c
@@ -3531,24 +3289,19 @@ def test_python_enhancement_481(self):
         # (1, '@g.cmd myCommand'),
         (1, "@g.cmd('my-command') myCommand"),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        c.importCommands.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    c.importCommands.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
 #@+node:ekr.20210904065459.72: *3* TestImport.test_python_class_test_2
 def test_python_class_test_2(self):
     c = self.c
@@ -3560,7 +3313,7 @@ def test_python_class_test_2(self):
         pass
     '''
 
-    tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.73: *3* TestImport.test_python_class_tests_1
 def test_python_class_tests_1(self):
     c = self.c
@@ -3576,7 +3329,7 @@ def test_python_class_tests_1(self):
             pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.74: *3* TestImport.test_python_comment_after_dict_assign
 def test_python_comment_after_dict_assign(self):
     c = self.c
@@ -3594,24 +3347,20 @@ def test_python_comment_after_dict_assign(self):
     table = (
         (1, 'Declarations'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+       
 #@+node:ekr.20210904065459.75: *3* TestImport.test_python_decls_test_1
 def test_python_decls_test_1(self):
     c = self.c
@@ -3627,24 +3376,19 @@ def test_python_decls_test_1(self):
     table = (
         (1, 'Declarations'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
 #@+node:ekr.20210904065459.76: *3* TestImport.test_python_decorator
 def test_python_decorator(self):
     c = self.c
@@ -3663,27 +3407,20 @@ def test_python_decorator(self):
         def abc(self):
             return "abc"
     '''
-
-    try:
-        c.importCommands.pythonUnitTest(p,s=s,showTree=True) # Must be true.
-        index = g.findNodeInTree(c, p, '@cherrypy.nocolor index')
-        assert index
-        lines = g.splitLines(index.b)
-        assert lines[0] == '@cherrypy.nocolor\n', repr(lines[0])
-        assert lines[1] == '@cherrypy.expose\n', repr(lines[1])
-        abc = g.findNodeInTree(c,p, "@cmd('abc') abc")
-        lines = g.splitLines(abc.b)
-        assert lines[0] == "@cmd('abc')\n", repr(lines[0])
-        if 1:
-            p.deleteAllChildren()
-    finally:
-        c.redraw()
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=True) # Must be true.
+    index = g.findNodeInTree(c, c.p, '@cherrypy.nocolor index')
+    assert index
+    lines = g.splitLines(index.b)
+    assert lines[0] == '@cherrypy.nocolor\n', repr(lines[0])
+    assert lines[1] == '@cherrypy.expose\n', repr(lines[1])
+    abc = g.findNodeInTree(c, c.p, "@cmd('abc') abc")
+    lines = g.splitLines(abc.b)
+    assert lines[0] == "@cmd('abc')\n", repr(lines[0])
 #@+node:ekr.20210904065459.77: *3* TestImport.test_python_decorator_2
 def test_python_decorator_2(self):
     c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
-    ic = c.importCommands
 
     s = '''
     """
@@ -3776,29 +3513,23 @@ def test_python_decorator_2(self):
         (1, '@command("Exit") exit_'),
         (1, "main"),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        c.importCommands.pythonUnitTest(p,s=s,showTree=True) # Must be true.
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        target = g.findNodeInTree(c, root, '@command("Exit") exit_')
-        assert target
-        lines = g.splitLines(target.b)
-        assert lines[0] == '@command("Exit")\n', repr(lines[0])
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=True) # Must be true.
+    after = c.p.nodeAfterTree()
+    root = c.p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    target = g.findNodeInTree(c, root, '@command("Exit") exit_')
+    assert target
+    lines = g.splitLines(target.b)
+    assert lines[0] == '@command("Exit")\n', repr(lines[0])
+   
 #@+node:ekr.20210904065459.78: *3* TestImport.test_python_def_inside_def
 def test_python_def_inside_def(self):
     c = self.c
@@ -3821,24 +3552,20 @@ def test_python_def_inside_def(self):
         (2, 'outerDef'),
         # (3, 'pr'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+       
 #@+node:ekr.20210904065459.79: *3* TestImport.test_python_def_test_1
 def test_python_def_test_1(self):
     c = self.c
@@ -3869,25 +3596,20 @@ def test_python_def_test_1(self):
         (2, 'importFilesCommand'),
         (2, 'convertMoreStringToOutlineAfter'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            root.doDelete()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    
 #@+node:ekr.20210904065459.80: *3* TestImport.test_python_def_test_2
 def test_python_def_test_2(self):
     c = self.c
@@ -3911,25 +3633,20 @@ def test_python_def_test_2(self):
         (2, 'spam'),
         (2, 'foo'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    
 #@+node:ekr.20210904065459.81: *3* TestImport.test_python_docstring_only
 def test_python_docstring_only(self):
     c = self.c
@@ -3941,7 +3658,7 @@ def test_python_docstring_only(self):
     """
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.82: *3* TestImport.test_python_empty_decls
 def test_python_empty_decls(self):
     c = self.c
@@ -3954,7 +3671,7 @@ def test_python_empty_decls(self):
     a = 3
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.83: *3* TestImport.test_python_extra_leading_ws_test
 def test_python_extra_leading_ws_test(self):
     c = self.c
@@ -3969,7 +3686,7 @@ def test_python_extra_leading_ws_test(self):
     '''
 
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.84: *3* TestImport.test_python_indent_decls
 def test_python_indent_decls(self):
     c = self.c
@@ -4019,25 +3736,20 @@ def test_python_indent_decls(self):
         (1, 'class mainPages(mammalProviderBase)'),
         (2, 'provide'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+       
 #@+node:ekr.20210904065459.85: *3* TestImport.test_python_leoImport_py_small_
 def test_python_leoImport_py_small_(self):
     c = self.c
@@ -4109,24 +3821,20 @@ def test_python_leoImport_py_small_(self):
         (2, "get_import_filename"),
         (2, "init_import"),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+       
 #@+node:ekr.20210904065459.86: *3* TestImport.test_python_looks_like_section_ref
 def test_python_looks_like_section_ref(self):
     c = self.c
@@ -4138,7 +3846,7 @@ def test_python_looks_like_section_ref(self):
     a = b < < c > > d
     '''.replace('> >', '>>').replace('< <', '<<')
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.87: *3* TestImport.test_python_minimal_class_1
 def test_python_minimal_class_1(self):
     c = self.c
@@ -4160,7 +3868,7 @@ def test_python_minimal_class_1(self):
             log('gp: %s: %s\\n' % (cmd, str(args)))
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.88: *3* TestImport.test_python_minimal_class_2
 def test_python_minimal_class_2(self):
     c = self.c
@@ -4175,7 +3883,7 @@ def test_python_minimal_class_2(self):
         pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.89: *3* TestImport.test_python_minimal_class_3
 def test_python_minimal_class_3(self):
     c = self.c
@@ -4190,7 +3898,7 @@ def test_python_minimal_class_3(self):
         pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.90: *3* TestImport.test_python_overindent_def_no_following_def
 def test_python_overindent_def_no_following_def(self):
     c = self.c
@@ -4210,7 +3918,7 @@ def test_python_overindent_def_no_following_def(self):
             pr('input...')
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.91: *3* TestImport.test_python_overindent_def_one_following_def
 def test_python_overindent_def_one_following_def(self):
     c = self.c
@@ -4233,7 +3941,7 @@ def test_python_overindent_def_one_following_def(self):
             pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.92: *3* TestImport.test_python_overindented_def_3
 def test_python_overindented_def_3(self):
     c = self.c
@@ -4256,25 +3964,20 @@ def test_python_overindented_def_3(self):
         (1, 'Declarations'),
         (1, 'class testClass1'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(c.p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+       
 #@+node:ekr.20210904065459.93: *3* TestImport.test_python_string_test_extra_indent
 def test_python_string_test_extra_indent(self):
     c = self.c
@@ -4295,7 +3998,7 @@ def test_python_string_test_extra_indent(self):
                 return p
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.94: *3* TestImport.test_python_string_underindent_lines
 def test_python_string_underindent_lines(self):
     c = self.c
@@ -4313,7 +4016,7 @@ def test_python_string_underindent_lines(self):
             pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.95: *3* TestImport.test_python_string_underindent_lines_2
 def test_python_string_underindent_lines_2(self):
     c = self.c
@@ -4332,7 +4035,7 @@ def test_python_string_underindent_lines_2(self):
             pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.96: *3* TestImport.test_python_top_level_later_decl
 def test_python_top_level_later_decl(self):
     c = self.c
@@ -4371,27 +4074,22 @@ def test_python_top_level_later_decl(self):
         (2, 'save_file'),
         (1, 'retab'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-    finally:
-        if 1:
-            test_node.deleteAllChildren()
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
 #@+node:ekr.20210904065459.97: *3* TestImport.test_python_trailing_comment
 def test_python_trailing_comment(self):
+    c = self.c
     ### @tabwidth -4
         # Required when running unit tests externally.
 
@@ -4403,19 +4101,19 @@ def test_python_trailing_comment(self):
             pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.98: *3* TestImport.test_python_trailing_comment_outer_levels
 def test_python_trailing_comment_outer_levels(self):
     ### @tabwidth -4
         # Required when running unit tests externally.
-
+    c = self.c
     s = '''\
 
     xyz = 6 # trailing comment
     pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.99: *3* TestImport.test_python_two_functions
 def test_python_two_functions(self):
     c = self.c
@@ -4433,7 +4131,7 @@ def test_python_two_functions(self):
         pass
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.100: *3* TestImport.test_python_underindent_method
 def test_python_underindent_method(self):
     c = self.c
@@ -4457,24 +4155,20 @@ def test_python_underindent_method(self):
         (2, 'spam'),
         (1, 'followingDef'),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.pythonUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.pythonUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+       
 #@+node:ekr.20210904065459.101: *3* TestImport.test_python_unindent_in_triple_string_does_not_end_function
 def test_python_unindent_in_triple_string_does_not_end_function(self):
     c = self.c
@@ -4495,25 +4189,11 @@ def test_python_unindent_in_triple_string_does_not_end_function(self):
         pass
     '''
 
-    showTree = False
-    keepTree = False
-
-    c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
-
-    if showTree:
-        try:
-            child = p.firstChild()
-            n = child.numberOfChildren()
-            assert n == 2, 'expected 2 children, got %s' % n
-        finally:
-            if keepTree:
-                # h = child.h
-                # print('h',h)
-                child.setHeadString('@'+h)
-            else:
-                while p.hasChildren():
-                    p.firstChild().doDelete()
-            c.redraw(p)
+    p = c.p
+    c.importCommands.pythonUnitTest(p, s=s, showTree=True)
+    child = p.firstChild()
+    n = child.numberOfChildren()
+    assert n == 2, 'expected 2 children, got %s' % n
 #@+node:ekr.20210904065459.102: *3* TestImport.test_python_unittest_perfectImport_formatter_py
 def test_python_unittest_perfectImport_formatter_py(self):
     c = self.c
@@ -4954,7 +4634,7 @@ def test_python_unittest_perfectImport_formatter_py(self):
         test()
     '''
 
-    c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+    c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.103: *3* TestImport.test_TypeScript_class
 def test_TypeScript_class(self):
     c = self.c
@@ -4982,7 +4662,7 @@ def test_TypeScript_class(self):
 
     '''
 
-    c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.typeScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.104: *3* TestImport.test_TypeScript_module
 def test_TypeScript_module(self):
     c = self.c
@@ -5012,7 +4692,7 @@ def test_TypeScript_module(self):
 
     '''
 
-    c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+    c.importCommands.typeScriptUnitTest(c.p, s=s, showTree=False)
 #@+node:ekr.20210904065459.105: *3* TestImport.test_xml_with_standard_opening_elements
 def test_xml_with_standard_opening_elements(self):
     c = self.c
@@ -5034,25 +4714,20 @@ def test_xml_with_standard_opening_elements(self):
         (2, "<head>"),
         (2, "<body class='bodystring'>"),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.xmlUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.xmlUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+   
 #@+node:ekr.20210904065459.106: *3* TestImport.test_xml_1
 def test_xml_1(self):
     c = self.c
@@ -5072,25 +4747,20 @@ def test_xml_1(self):
         (2, "<head>"),
         (2, "<body class='bodystring'>"),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.xmlUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.xmlUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    
 #@+node:ekr.20210904065459.107: *3* TestImport.test_xml_2
 def test_xml_2(self):
     c = self.c
@@ -5103,42 +4773,29 @@ def test_xml_2(self):
     table = (
         (1, "<nodeA>"),
     )
-    try:
-        test_node = p.copy()
-        test_node.deleteAllChildren()
-        ic.xmlUnitTest(p,s=s,showTree=True)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    p = c.p
+    ic.xmlUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    
 #@+node:ekr.20210904065459.108: *3* TestImport.test_xml_non_ascii_tags
 def test_xml_non_ascii_tags(self):
     c = self.c
-
     s = '''\
     <:À.Ç>
     <Ì>
     <_.ÌÑ>
     '''
-    ic = c.importCommands
-    try:
-        test_node = p.copy()
-        ic.xmlUnitTest(p,s=s,showTree=True)
-        if 1:
-            test_node.deleteAllChildren()
-    finally:
-        c.redraw()
+    c.importCommands.xmlUnitTest(c.p, s=s, showTree=True)
 #@+node:ekr.20210904071301.1: ** Tests of @auto-md
 #@+node:ekr.20210904065459.109: *3* TestImport.test_md_import_test
 def test_md_import_test(self):
@@ -5231,7 +4888,7 @@ section 3, line 1
 
 """)
     
-    ic.markdownUnitTest(p,s=s,showTree=True) # Must be True.
+    ic.markdownUnitTest(c.p, s=s, showTree=True) # Must be True.
     table = (
         (1, 'Top'),
         (2, 'Section 1'),
@@ -5241,6 +4898,7 @@ section 3, line 1
         (3, 'Section 2.2'),
         (2, 'Section 3'),
     )
+    p = c.p
     after = p.nodeAfterTree()
     root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
@@ -5278,7 +4936,7 @@ def test_markdown_importer_basic(self):
             'Subheader',
             'Last header: no text',
     )
-    ic.markdownUnitTest(p,s=s,showTree=True)
+    ic.markdownUnitTest(c.p, s=s, showTree=True)
     root = c.p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p2 = root.firstChild()
@@ -5498,7 +5156,7 @@ def test_rST_import_test_simple(self):
         "!Dummy chapter",
         "Chapter",
     )
-    c.importCommands.rstUnitTest(c,p, s=s ,showTree=True)
+    c.importCommands.rstUnitTest(c.p, s=s ,showTree=True)
     root = c.p.lastChild()
     assert root.h.startswith('@@'), root.h
     p2 = root.firstChild()
@@ -5627,8 +5285,7 @@ def test_rST_import_test_long_overlines(self):
         "!Dummy chapter",
         "top",
     )
-    p = c.p
-    ic.rstUnitTest(p,s=s,showTree=True)
+    ic.rstUnitTest(c.p, s=s, showTree=True)
     root = c.p.lastChild()
     assert root.h.startswith('@@'), root.h
     p2 = root.firstChild()
