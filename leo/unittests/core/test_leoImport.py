@@ -34,23 +34,23 @@ class TestImporter(LeoUnitTest):
         c = self.c
         c.contractAllHeadlines()
     #@+node:ekr.20210904065632.1: *4* C tests
-    #@+node:ekr.20210904065459.3: *4* TestImport.test_c_class_1
+    #@+node:ekr.20210904065459.3: *5* TestImport.test_c_class_1
     def test_c_class_1(self):
         c = self.c
         ic = c.importCommands  
 
-        s = '''\
-        class cTestClass1 {
-
-            int foo (int a) {
-                a = 2 ;
+        s = textwrap.dedent("""\
+            class cTestClass1 {
+        
+                int foo (int a) {
+                    a = 2 ;
+                }
+        
+                char bar (float c) {
+                    ;
+                }
             }
-
-            char bar (float c) {
-                ;
-            }
-        }
-        '''
+        """)
         table = (
             'class cTestClass1',
             'int foo',
@@ -65,25 +65,25 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.4: *4* TestImport.test_c_class_underindented_line
+    #@+node:ekr.20210904065459.4: *5* TestImport.test_c_class_underindented_line
     def test_c_class_underindented_line(self):
         c = self.c
         ic = c.importCommands  
-        s = '''\
-        class cTestClass1 {
-
-            int foo (int a) {
-        // an underindented line.
-                a = 2 ;
+        s = textwrap.dedent("""\
+            class cTestClass1 {
+        
+                int foo (int a) {
+            // an underindented line.
+                    a = 2 ;
+                }
+        
+                // This should go with the next function.
+        
+                char bar (float c) {
+                    ;
+                }
             }
-
-            // This should go with the next function.
-
-            char bar (float c) {
-                ;
-            }
-        }
-        '''
+        """)
         table = (
             'class cTestClass1',
             'int foo',
@@ -98,29 +98,29 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.5: *4* TestImport.test_c_comment_follows_arg_list
+    #@+node:ekr.20210904065459.5: *5* TestImport.test_c_comment_follows_arg_list
     def test_c_comment_follows_arg_list(self):
         c = self.c
         ic = c.importCommands
-        s = '''\
-        void
-        aaa::bbb::doit
-            (
-            awk* b
-            )
-        {
-            assert(false);
-        }
-
-        bool
-        aaa::bbb::dothat
-            (
-            xyz *b
-            ) //  <---------------------problem
-        {
-            return true;
-        }
-        '''
+        s = textwrap.dedent("""\
+            void
+            aaa::bbb::doit
+                (
+                awk* b
+                )
+            {
+                assert(false);
+            }
+        
+            bool
+            aaa::bbb::dothat
+                (
+                xyz *b
+                ) //  <---------------------problem
+            {
+                return true;
+            }
+        """)
         table = (
             'void aaa::bbb::doit',
             'bool aaa::bbb::dothat',
@@ -134,29 +134,29 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.6: *4* TestImport.test_c_comment_follows_block_delim
+    #@+node:ekr.20210904065459.6: *5* TestImport.test_c_comment_follows_block_delim
     def test_c_comment_follows_block_delim(self):
         c = self.c
         ic = c.importCommands  
-        s = '''\
-        void
-        aaa::bbb::doit
-            (
-            awk* b
-            )
-        {
-            assert(false);
-        }
-
-        bool
-        aaa::bbb::dothat
-            (
-            xyz *b
-            ) 
-        {
-            return true;
-        } //  <---------------------problem
-        '''
+        s = textwrap.dedent("""\\
+            void
+            aaa::bbb::doit
+                (
+                awk* b
+                )
+            {
+                assert(false);
+            }
+        
+            bool
+            aaa::bbb::dothat
+                (
+                xyz *b
+                ) 
+            {
+                return true;
+            } //  <---------------------problem
+        """)
         table = (
             'void aaa::bbb::doit',
             'bool aaa::bbb::dothat',
@@ -170,21 +170,21 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.7: *4* TestImport.test_c_intermixed_blanks_and_tabs
+    #@+node:ekr.20210904065459.7: *5* TestImport.test_c_intermixed_blanks_and_tabs
     def test_c_intermixed_blanks_and_tabs(self):
         c = self.c
         ic = c.importCommands
-        s = '''
-        void
-        aaa::bbb::doit
-            (
-            awk* b  // leading blank
-            )
-        {
-        	assert(false); // leading tab
-        }
-
-        '''
+        s = textwrap.dedent("""\
+            void
+            aaa::bbb::doit
+                (
+                awk* b  // leading blank
+                )
+            {
+                assert(false); // leading tab
+            }
+        
+        """)
         table = (
             'void aaa::bbb::doit',
         )
@@ -199,21 +199,21 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
         
-    #@+node:ekr.20210904065459.8: *4* TestImport.test_c_old_style_decl_1
+    #@+node:ekr.20210904065459.8: *5* TestImport.test_c_old_style_decl_1
     def test_c_old_style_decl_1(self):
         c = self.c
         ic = c.importCommands  
-        s = '''\
-        static void
-        ReleaseCharSet(cset)
-            CharSet *cset;
-        {
-            ckfree((char *)cset->chars);
-            if (cset->ranges) {
-            ckfree((char *)cset->ranges);
+        s = textwrap.dedent("""\
+            static void
+            ReleaseCharSet(cset)
+                CharSet *cset;
+            {
+                ckfree((char *)cset->chars);
+                if (cset->ranges) {
+                ckfree((char *)cset->ranges);
+                }
             }
-        }
-        '''
+        """)
         table = (
             'static void ReleaseCharSet',
         )
@@ -225,19 +225,19 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.9: *4* TestImport.test_c_old_style_decl_2
+    #@+node:ekr.20210904065459.9: *5* TestImport.test_c_old_style_decl_2
     def test_c_old_style_decl_2(self):
         c = self.c
         ic = c.importCommands  
-        s = '''\
-        Tcl_Obj *
-        Tcl_NewLongObj(longValue)
-            register long longValue;	/* Long integer used to initialize the
-                 * new object. */
-        {
-            return Tcl_DbNewLongObj(longValue, "unknown", 0);
-        }
-        '''
+        s = textwrap.dedent("""\
+            Tcl_Obj *
+            Tcl_NewLongObj(longValue)
+                register long longValue;	/* Long integer used to initialize the
+                     * new object. */
+            {
+                return Tcl_DbNewLongObj(longValue, "unknown", 0);
+            }
+        """)
         table = (
             'Tcl_Obj * Tcl_NewLongObj',
         )
@@ -249,18 +249,18 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.10: *4* TestImport.test_c_extern
+    #@+node:ekr.20210904065459.10: *5* TestImport.test_c_extern
     def test_c_extern(self):
         c = self.c
         ic = c.importCommands  
-        s = '''\
-        extern "C"
-        {
-        #include "stuff.h"
-        void    init(void);
-        #include "that.h"
-        }
-        '''
+        s = textwrap.dedent("""\
+            extern "C"
+            {
+            #include "stuff.h"
+            void    init(void);
+            #include "that.h"
+            }
+        """)
         table = (
             'extern "C"',
         )
@@ -273,27 +273,28 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.11: *4* TestImport.test_cython_importer
+    #@+node:ekr.20210904084324.1: *4* Cython tests
+    #@+node:ekr.20210904065459.11: *5* TestImport.test_cython_importer
     def test_cython_importer(self):
         c = self.c
         ic = c.importCommands  
 
-        s = '''\
-        from libc.math cimport pow
+        s = textwrap.dedent('''\
+            from libc.math cimport pow
+        
+            cdef double square_and_add (double x):
+                """Compute x^2 + x as double.
+        
+                This is a cdef function that can be called from within
+                a Cython program, but not from Python.
+                """
+                return pow(x, 2.0) + x
+        
+            cpdef print_result (double x):
+                """This is a cpdef function that can be called from Python."""
+                print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
 
-        cdef double square_and_add (double x):
-            """Compute x^2 + x as double.
-
-            This is a cdef function that can be called from within
-            a Cython program, but not from Python.
-            """
-            return pow(x, 2.0) + x
-
-        cpdef print_result (double x):
-            """This is a cpdef function that can be called from Python."""
-            print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
-
-        '''
+        ''')
         table = (
             'Declarations',
             'double',
@@ -307,16 +308,16 @@ class TestImporter(LeoUnitTest):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
-    #@+node:ekr.20210904065459.12: *4* TestImport.test_c_namespace_indent
+    #@+node:ekr.20210904065459.12: *5* TestImport.test_c_namespace_indent
     def test_c_namespace_indent(self):
         c = self.c
-        s = '''\
-        namespace {
-            class cTestClass1 {
-                ;
+        s = textwrap.dedent("""\
+            namespace {
+                class cTestClass1 {
+                    ;
+                }
             }
-        }
-        '''
+        """)
         table = [
             'namespace',
             'class cTestClass1',
@@ -328,16 +329,16 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             assert p2.h == h, (p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.13: *4* TestImport.test_c_namespace_no_indent
+    #@+node:ekr.20210904065459.13: *5* TestImport.test_c_namespace_no_indent
     def test_c_namespace_no_indent(self):
         c = self.c
-        s = '''\
-        namespace {
-        class cTestClass1 {
-            ;
-        }
-        }
-        '''
+        s = textwrap.dedent("""\
+            namespace {
+            class cTestClass1 {
+                ;
+            }
+            }
+        """)
         c.importCommands.cSharpUnitTest(c.p, s=s, showTree=True)
         table = [
             'namespace',
@@ -1308,20 +1309,18 @@ class TestImporter(LeoUnitTest):
     def test_elisp(self):
         c = self.c
         ic = c.importCommands
-
-        s = '''\
-        ;;; comment
-        ;;; continue
-        ;;;
-
-        (defun abc (a b)
-           (+ 1 2 3))
-
-        ; comm
-        (defun cde (a b)
-           (+ 1 2 3))
-        '''
-
+        s = textwrap.dedent("""\
+            ;;; comment
+            ;;; continue
+            ;;;
+        
+            (defun abc (a b)
+               (+ 1 2 3))
+        
+            ; comm
+            (defun cde (a b)
+               (+ 1 2 3))
+        """)
         table = (
             'defun abc',
             'defun cde',
@@ -1338,16 +1337,16 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.19: *4* TestImport.test_html_lowercase_tags
     def test_html_lowercase_tags(self):
         c = self.c
-        s = '''\
-        <html>
-        <head>
-            <title>Bodystring</title>
-        </head>
-        <body class="bodystring">
-        <div id='bodydisplay'></div>
-        </body>
-        </html>
-        '''
+        s = textwrap.dedent("""\
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class="bodystring">
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
         table = [
             '<html>',
             '<head>',
@@ -1503,37 +1502,36 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.24: *4* TestImport.test_html_uppercase_tags
     def test_html_uppercase_tags(self):
         c = self.c
-        s = '''\
-        <HTML>
-        <HEAD>
-            <title>Bodystring</title>
-        </HEAD>
-        <BODY class='bodystring'>
-        <DIV id='bodydisplay'></DIV>
-        </BODY>
-        </HTML>
-        '''
-
+        s = textwrap.dedent("""\
+            <HTML>
+            <HEAD>
+                <title>Bodystring</title>
+            </HEAD>
+            <BODY class='bodystring'>
+            <DIV id='bodydisplay'></DIV>
+            </BODY>
+            </HTML>
+        """)
         c.importCommands.htmlUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.25: *4* TestImport.test_html_improperly_nested_tags
     def test_html_improperly_nested_tags(self):
         c = self.c
-        s = '''\
-        <body>
-
-        <!-- OOPS: the div and p elements not properly nested.-->
-        <!-- OOPS: this table got generated twice. -->
-
-        <p id="P1">
-        <div id="D666">Paragraph</p> <!-- P1 -->
-        <p id="P2">
-
-        <TABLE id="T666"></TABLE></p> <!-- P2 -->
-        </div>
-        </p> <!-- orphan -->
-
-        </body>
-        '''
+        s = textwrap.dedent("""\
+            <body>
+        
+            <!-- OOPS: the div and p elements not properly nested.-->
+            <!-- OOPS: this table got generated twice. -->
+        
+            <p id="P1">
+            <div id="D666">Paragraph</p> <!-- P1 -->
+            <p id="P2">
+        
+            <TABLE id="T666"></TABLE></p> <!-- P2 -->
+            </div>
+            </p> <!-- orphan -->
+        
+            </body>
+        """)
         table = (
             ('<body>'),
             ('<div id="D666">'),
@@ -1776,23 +1774,22 @@ class TestImporter(LeoUnitTest):
     def test_from_AdminPermission_java(self):
         c = self.c
         ic = c.importCommands  
-
-        s = '''\
-        /**
-         * Indicates the caller's authority to perform lifecycle operations on
-         */
-
-        public final class AdminPermission extends BasicPermission
-        {
+        s = textwrap.dedent("""\
             /**
-             * Creates a new <tt>AdminPermission</tt> object.
+             * Indicates the caller's authority to perform lifecycle operations on
              */
-            public AdminPermission()
+        
+            public final class AdminPermission extends BasicPermission
             {
-                super("AdminPermission");
+                /**
+                 * Creates a new <tt>AdminPermission</tt> object.
+                 */
+                public AdminPermission()
+                {
+                    super("AdminPermission");
+                }
             }
-        }
-        '''
+        """)
         table = (
             'public final class AdminPermission extends BasicPermission',
             'public AdminPermission',
@@ -1810,61 +1807,59 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.31: *4* TestImport.test_from_BundleException_java
     def test_from_BundleException_java(self):
         c = self.c
+        ic = c.importCommands  
         ### @language python
         ### @tabwidth 8
             # Must be in this node when run externally.
+        s = textwrap.dedent("""\
+            /*
+             * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
+             * 
+             * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
+             * 
+             * This program and the accompanying materials are made available under the
+             * terms of the Eclipse Public License v1.0 which accompanies this 
+             * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+             */
         
-        ic = c.importCommands  
+            package org.osgi.framework;
+        
+            /**
+             * A Framework exception used to indicate that a bundle lifecycle problem
+             * occurred.
+             * 
+             * <p>
+             * <code>BundleException</code> object is created by the Framework to denote
+             * an exception condition in the lifecycle of a bundle.
+             * <code>BundleException</code>s should not be created by bundle developers.
+             * 
+             * <p>
+             * This exception is updated to conform to the general purpose exception
+             * chaining mechanism.
+             * 
+             * @version $Revision: 1.247 $
+             */
+        
+            public class BundleException extends Exception {
+                static final long	serialVersionUID	= 3571095144220455665L;
+                /**
+                 * Nested exception.
+                 */
+                private Throwable	cause;
+        
+                /**
+                 * Creates a <code>BundleException</code> that wraps another exception.
+                 * 
+                 * @param msg The associated message.
+                 * @param cause The cause of this exception.
+                 */
+                public BundleException(String msg, Throwable cause) {
+                    super(msg);
+                    this.cause = cause;
+                }
+            }
 
-        s = '''\
-        /*
-         * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
-         * 
-         * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
-         * 
-         * This program and the accompanying materials are made available under the
-         * terms of the Eclipse Public License v1.0 which accompanies this 
-         * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
-         */
-
-        package org.osgi.framework;
-
-        /**
-         * A Framework exception used to indicate that a bundle lifecycle problem
-         * occurred.
-         * 
-         * <p>
-         * <code>BundleException</code> object is created by the Framework to denote
-         * an exception condition in the lifecycle of a bundle.
-         * <code>BundleException</code>s should not be created by bundle developers.
-         * 
-         * <p>
-         * This exception is updated to conform to the general purpose exception
-         * chaining mechanism.
-         * 
-         * @version $Revision: 1.247 $
-         */
-
-        public class BundleException extends Exception {
-        	static final long	serialVersionUID	= 3571095144220455665L;
-        	/**
-        	 * Nested exception.
-        	 */
-        	private Throwable	cause;
-
-        	/**
-        	 * Creates a <code>BundleException</code> that wraps another exception.
-        	 * 
-        	 * @param msg The associated message.
-        	 * @param cause The cause of this exception.
-        	 */
-        	public BundleException(String msg, Throwable cause) {
-        		super(msg);
-        		this.cause = cause;
-        	}
-        }
-
-        '''
+        """)
         table = (
             'public class BundleException extends Exception',
             'public BundleException',
@@ -1883,13 +1878,12 @@ class TestImporter(LeoUnitTest):
     def test_java_interface_test1(self):
         c = self.c
         ic = c.importCommands  
-
-        s = '''\
-        interface Bicycle {
-            void changeCadence(int newValue);
-            void changeGear(int newValue);
-        }
-        '''
+        s = textwrap.dedent("""\
+            interface Bicycle {
+                void changeCadence(int newValue);
+                void changeGear(int newValue);
+            }
+        """)
         table = (
             'interface Bicycle',
         )
@@ -1907,12 +1901,12 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ic = c.importCommands  
 
-        s = '''\
-        interface Bicycle {
-        void changeCadence(int newValue);
-        void changeGear(int newValue);
-        }
-        '''
+        s = textwrap.dedent("""\
+            interface Bicycle {
+            void changeCadence(int newValue);
+            void changeGear(int newValue);
+            }
+        """)
         table = (
             'interface Bicycle',
         )
@@ -1928,183 +1922,168 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.34: *4* TestImport.test_Javascript_regex_1
     def test_Javascript_regex_1(self):
         c = self.c
-        s = '''\
-
-        String.prototype.toJSONString = function()
-        {
-            if(/["\\\\\\x00-\\x1f]/.test(this))
-        		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-
-        	return '"' + this + '"';
-        };
-
-        '''
-
-
+        s = textwrap.dedent("""\
+            String.prototype.toJSONString = function()
+            {
+                if(/["\\\\\\x00-\\x1f]/.test(this))
+                    return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+        
+                return '"' + this + '"';
+            };
+        """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.35: *4* TestImport.test_Javascript_3
     def test_Javascript_3(self):
         c = self.c
-        s = '''\
-
-        // Restarting
-        function restart()
-        {
-        	invokeParamifier(params,"onstart");
-        	if(story.isEmpty()) {
-        		var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
-        		for(var t=0; t<tiddlers.length; t++) {
-        			story.displayTiddler("bottom",tiddlers[t].title);
-        		}
-        	}
-        	window.scrollTo(0,0);
-        }
-
-        '''
-
-
+        s = textwrap.dedent("""\
+            // Restarting
+            function restart()
+            {
+                invokeParamifier(params,"onstart");
+                if(story.isEmpty()) {
+                    var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
+                    for(var t=0; t<tiddlers.length; t++) {
+                        story.displayTiddler("bottom",tiddlers[t].title);
+                    }
+                }
+                window.scrollTo(0,0);
+            }
+        """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.36: *4* TestImport.test_Javascript_4
     def test_Javascript_4(self):
         c = self.c
-        s = '''\
-
-        var c3 = (function () {
-            "use strict";
-
-            // Globals
-            var c3 = { version: "0.0.1"   };
-
-            c3.someFunction = function () {
-                console.log("Just a demo...");
-            };
-
-            return c3;
-        }());
-
-        '''
-
+        s = textwrap.dedent("""\
+            var c3 = (function () {
+                "use strict";
+        
+                // Globals
+                var c3 = { version: "0.0.1"   };
+        
+                c3.someFunction = function () {
+                    console.log("Just a demo...");
+                };
+        
+                return c3;
+            }());
+        """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.37: *4* TestImport.test_Javascript_5
     def test_Javascript_5(self):
         c = self.c
-        s = '''\
-        var express = require('express');
-
-        var app = express.createServer(express.logger());
-
-        app.get('/', function(request, response) {
-        response.send('Hello World!');
-        });
-
-        var port = process.env.PORT || 5000;
-        app.listen(port, function() {
-        console.log("Listening on " + port);
-        });
-        '''
-
+        s = textwrap.dedent("""\
+            var express = require('express');
+        
+            var app = express.createServer(express.logger());
+        
+            app.get('/', function(request, response) {
+            response.send('Hello World!');
+            });
+        
+            var port = process.env.PORT || 5000;
+            app.listen(port, function() {
+            console.log("Listening on " + port);
+            });
+        """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.38: *4* TestImport.test_Javascript_639_many_top_level_nodes
     def test_Javascript_639_many_top_level_nodes(self):
         c = self.c
-        s = '''\
-        // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
-
-        //=============================================================================
-        // rpg_core.js v1.3.0
-        //=============================================================================
-
-        //-----------------------------------------------------------------------------
-        /**
-         * This is not a class, but contains some methods that will be added to the
-         * standard Javascript objects.
-         *
-         * @class JsExtensions
-         */
-        function JsExtensions() {
-            throw new Error('This is not a class');
-        }
-
-        /**
-         * Returns a number whose value is limited to the given range.
-         *
-         * @method Number.prototype.clamp
-         * @param {Number} min The lower boundary
-         * @param {Number} max The upper boundary
-         * @return {Number} A number in the range (min, max)
-         */
-        Number.prototype.clamp = function(min, max) {
-            return Math.min(Math.max(this, min), max);
-        };
-        '''
-
+        s = textwrap.dedent("""\
+            // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
+        
+            //=============================================================================
+            // rpg_core.js v1.3.0
+            //=============================================================================
+        
+            //-----------------------------------------------------------------------------
+            /**
+             * This is not a class, but contains some methods that will be added to the
+             * standard Javascript objects.
+             *
+             * @class JsExtensions
+             */
+            function JsExtensions() {
+                throw new Error('This is not a class');
+            }
+        
+            /**
+             * Returns a number whose value is limited to the given range.
+             *
+             * @method Number.prototype.clamp
+             * @param {Number} min The lower boundary
+             * @param {Number} max The upper boundary
+             * @return {Number} A number in the range (min, max)
+             */
+            Number.prototype.clamp = function(min, max) {
+                return Math.min(Math.max(this, min), max);
+            };
+        """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.39: *4* TestImport.test_Javascript_639_acid_test_1
     def test_Javascript_639_acid_test_1(self):
         c = self.c
-        s = '''\
-        // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
-        require([
-            'jquery',
-        ], function(
-                $,
-                termjs,
-        ){
-            var header = $("#header")[0];
-            function calculate_size() {
-                var height = $(window).height() - header.offsetHeight;
-            }
-            page.show_header();
-            window.onresize = function() {
-              terminal.socket.send(JSON.stringify([
-                    "set_size", geom.rows, geom.cols,
-                    $(window).height(), $(window).width()])
-                );
-            };
-            window.terminal = terminal;
-        });
-        '''
-
+        s = textwrap.dedent("""\
+            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+            require([
+                'jquery',
+            ], function(
+                    $,
+                    termjs,
+            ){
+                var header = $("#header")[0];
+                function calculate_size() {
+                    var height = $(window).height() - header.offsetHeight;
+                }
+                page.show_header();
+                window.onresize = function() {
+                  terminal.socket.send(JSON.stringify([
+                        "set_size", geom.rows, geom.cols,
+                        $(window).height(), $(window).width()])
+                    );
+                };
+                window.terminal = terminal;
+            });
+        """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.40: *4* TestImport.test_Javascript_639_acid_test_2
     def test_Javascript_639_acid_test_2(self):
         c = self.c
-        s = '''\
-        // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
-        require([
-            'jquery',
-        ], function(
-                $,
-                termjs,
-        ){
-            var head = "head"
-            function f1() {
-                var head1 = "head1"
-                function f11 () {
-                    var v11 ="v1.1"
+        s = textwrap.dedent("""\
+            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+            require([
+                'jquery',
+            ], function(
+                    $,
+                    termjs,
+            ){
+                var head = "head"
+                function f1() {
+                    var head1 = "head1"
+                    function f11 () {
+                        var v11 ="v1.1"
+                    }
+                    var middle1 = "middle1"
+                    function f12 () {
+                        var v12 ="v1.2"
+                    }
+                    var tail1 = "tail1"
                 }
-                var middle1 = "middle1"
-                function f12 () {
-                    var v12 ="v1.2"
+                var middle = "middle"
+                function f2() {
+                    var head2 = "head2"
+                    function f21 () {
+                        var v21 ="2.1"
+                    }
+                    var middle2 = "middle2"
+                    function f22 () {
+                        var v22 = "2.2.1"
+                    }
+                    var tail2 = "tail2"
                 }
-                var tail1 = "tail1"
-            }
-            var middle = "middle"
-            function f2() {
-                var head2 = "head2"
-                function f21 () {
-                    var v21 ="2.1"
-                }
-                var middle2 = "middle2"
-                function f22 () {
-                    var v22 = "2.2.1"
-                }
-                var tail2 = "tail2"
-            }
-            var tail = "tail"
-        });
-        '''
-
+                var tail = "tail"
+            });
+        """)
         c.importCommands.javaScriptUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.41: *4* TestImport.test_org_pattern
     def test_org_pattern(self):
@@ -2123,19 +2102,19 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.42: *4* TestImport.test_org_1
     def test_org_1(self):
         c = self.c
-        s = '''\
-        * Section 1
-        Sec 1.
-        * Section 2
-        Sec 2.
-        ** Section 2-1
-        Sec 2.1
-        *** Section 2-1-1
-        Sec 2.1.1
-        * Section 3
-        ** Section 3.1
-        Sec 3.1
-        '''
+        s = textwrap.dedent("""\
+            * Section 1
+            Sec 1.
+            * Section 2
+            Sec 2.
+            ** Section 2-1
+            Sec 2.1
+            *** Section 2-1-1
+            Sec 2.1.1
+            * Section 3
+            ** Section 3.1
+            Sec 3.1
+        """)
         table = (
             'Section 1',
             'Section 2', 'Section 2-1', 'Section 2-1-1',
@@ -2152,17 +2131,16 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.43: *4* TestImport.test_org_tags
     def test_org_tags(self):
         c = self.c
-        s = '''\
-        * Section 1 :tag1:
-        * Section 2 :tag2:
-        * Section 3 :tag3:tag4:
-        '''
+        s = textwrap.dedent("""\
+            * Section 1 :tag1:
+            * Section 2 :tag2:
+            * Section 3 :tag3:tag4:
+        """)
         table = (
             'Section 1 :tag1:',
             'Section 2 :tag2:',
             'Section 3 :tag3:tag4:',
         )
-       
         c.importCommands.orgUnitTest(c.p, s=s, showTree=True)
         if 1:
             root = c.p.firstChild()
@@ -2174,14 +2152,13 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.44: *4* TestImport.test_org_intro
     def test_org_intro(self):
         c = self.c
-        s = '''\
-        Intro line.
-        * Section 1
-        Sec 1.
-        * Section 2
-        Sec 2.
-        '''
-
+        s = textwrap.dedent("""\
+            Intro line.
+            * Section 1
+            Sec 1.
+            * Section 2
+            Sec 2.
+        """)
         table = (
             'Section 1',
             'Section 2',
@@ -2197,20 +2174,19 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.45: *4* TestImport.test_org_552
     def test_org_552(self):
         c = self.c
-        s = '''\
-        * Events
-          :PROPERTIES:
-          :CATEGORY: events
-          :END:
-        ** 整理个人生活
-        *** 每周惯例
-        '''
+        s = textwrap.dedent("""\
+            * Events
+              :PROPERTIES:
+              :CATEGORY: events
+              :END:
+            ** 整理个人生活
+            *** 每周惯例
+        """)
         table = (
             'Events',
             '整理个人生活',
             '每周惯例',
         )
-       
         c.importCommands.orgUnitTest(c.p, s=s, showTree=True)
         if 1:
             root = c.p.firstChild()
@@ -2222,11 +2198,10 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.46: *4* TestImport.test_org_1074
     def test_org_1074(self):
         c = self.c
-        s = '''\
-        *  Test
-        First line.
-        '''
-
+        s = textwrap.dedent("""\
+            *  Test
+            First line.
+        """)
         table = (
             ' Test',
         )
@@ -2243,22 +2218,21 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ic = c.importCommands 
         # insert test for org here.
-        s = '''\
-        * Section 1
-        Sec 1.
-        * Section 2
-        Sec 2.
-        ** Section 2-1
-        Sec 2.1
-        *** Section 2-1-1
-        Sec 2.1.1
-        * Section 3
-        ****** Section 3-1-1-1-1-1
-        : Sec 3-1-1-1-1-1
-        ** Section 3.1
-        Sec 3.1
-        '''
-
+        s = textwrap.dedent("""\
+            * Section 1
+            Sec 1.
+            * Section 2
+            Sec 2.
+            ** Section 2-1
+            Sec 2.1
+            *** Section 2-1-1
+            Sec 2.1.1
+            * Section 3
+            ****** Section 3-1-1-1-1-1
+            : Sec 3-1-1-1-1-1
+            ** Section 3.1
+            Sec 3.1
+        """)
         table = (
             'Section 1',
             'Section 2', 'Section 2-1', 'Section 2-1-1',
@@ -2294,22 +2268,21 @@ class TestImporter(LeoUnitTest):
     def test_otl_1(self):
         c = self.c
         ### @tabwidth 4 # Required
-        s = '''\
-        preamble.
-        Section 1
-        : Sec 1.
-        Section 2
-        : Sec 2.
-        \tSection 2-1
-        : Sec 2-1
-        \t\tSection 2-1-1
-        : Sect 2-1-1
-        Section 3
-        : Sec 3
-        \tSection 3.1
-        : Sec 3.1
-        '''
-
+        s = textwrap.dedent("""\
+            preamble.
+            Section 1
+            : Sec 1.
+            Section 2
+            : Sec 2.
+            \tSection 2-1
+            : Sec 2-1
+            \t\tSection 2-1-1
+            : Sect 2-1-1
+            Section 3
+            : Sec 3
+            \tSection 3.1
+            : Sec 3.1
+        """)
         table = (
             'Section 1',
             'Section 2', 'Section 2-1', 'Section 2-1-1',
@@ -2382,67 +2355,67 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.51: *4* TestImport.test_perl_1
     def test_perl_1(self):
         c = self.c
-        s = '''\
-        #!/usr/bin/perl
-
-        # Function definition
-        sub Hello{
-           print "Hello, World!\n";
-        }
-
-        sub Test{
-           print "Test!\n";
-        }
-        "\N{LATIN SMALL LIGATURE FI}" =~ /fi/i;
-
-        $bar = "foo";
-        if ($bar =~ /foo/){
-           print "Second time is matching\n";
-        }else{
-           print "Second time is not matching\n";
-        }
-
-        # Function call
-        Hello();
-        '''
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+        
+            # Function definition
+            sub Hello{
+               print "Hello, World!\n";
+            }
+        
+            sub Test{
+               print "Test!\n";
+            }
+            "\N{LATIN SMALL LIGATURE FI}" =~ /fi/i;
+        
+            $bar = "foo";
+            if ($bar =~ /foo/){
+               print "Second time is matching\n";
+            }else{
+               print "Second time is not matching\n";
+            }
+        
+            # Function call
+            Hello();
+        """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
     #@+node:ekr.20210904065459.52: *4* TestImport.test_perlpod_comment
     def test_perlpod_comment(self):
         c = self.c
-        s = '''\
-        #!/usr/bin/perl
-              
-        sub Test{
-           print "Test!\n";
-        }
-
-        =begin comment
-        sub World {
-            print "This is not a funtion!"
-        }
-        =cut
-
-        # Function definition
-        sub Hello{
-           print "Hello, World!\n";
-        }
-        '''
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+                  
+            sub Test{
+               print "Test!\n";
+            }
+        
+            =begin comment
+            sub World {
+                print "This is not a funtion!"
+            }
+            =cut
+        
+            # Function definition
+            sub Hello{
+               print "Hello, World!\n";
+            }
+        """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
     #@+node:ekr.20210904065459.53: *4* TestImport.test_perl_multi_line_string
     def test_perl_multi_line_string(self):
         c = self.c
-        s = '''\
-        #!/usr/bin/perl
-
-        # This would print with a line break in the middle
-        print "Hello
-
-        sub World {
-            print "This is not a funtion!"
-        }
-
-        world\n";
-        '''
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+        
+            # This would print with a line break in the middle
+            print "Hello
+        
+            sub World {
+                print "This is not a funtion!"
+            }
+        
+            world\n";
+        """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
     #@+node:ekr.20210904065459.54: *4* TestImport.test_perl_regex_1
     def test_perl_regex_1(self):
@@ -2451,59 +2424,56 @@ class TestImporter(LeoUnitTest):
         # ('len',   's///',  '/',       context,  0,       0,       0),
         # ('len',   'm//',   '/',       context,  0,       0,       0),
         # ('len',   '/',     '/',       '',       0,       0,       0),
-
-        s = '''\
-        #!/usr/bin/perl
-
-        sub test1 {
-            s = /{/g;
-        }
-
-        sub test2 {
-            s = m//{/;
-        }
-
-        sub test3 {
-            s = s///{/;
-        }
-
-        sub test4 {
-            s = tr///{/;
-        }
-        '''
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+        
+            sub test1 {
+                s = /{/g;
+            }
+        
+            sub test2 {
+                s = m//{/;
+            }
+        
+            sub test3 {
+                s = s///{/;
+            }
+        
+            sub test4 {
+                s = tr///{/;
+            }
+        """)
         c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
        
     #@+node:ekr.20210904065459.55: *4* TestImport.test_perl_regex_2
     def test_perl_regex_2(self):
         c = self.c
-        ic = c.importCommands
-
-        s = '''\
-        #!/usr/bin/perl
-
-        sub test1 {
-            s = /}/g;
-        }
-
-        sub test2 {
-            s = m//}/;
-        }
-
-        sub test3 {
-            s = s///}/;
-        }
-
-        sub test4 {
-            s = tr///}/;
-        }
-        '''
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+        
+            sub test1 {
+                s = /}/g;
+            }
+        
+            sub test2 {
+                s = m//}/;
+            }
+        
+            sub test3 {
+                s = s///}/;
+            }
+        
+            sub test4 {
+                s = tr///}/;
+            }
+        """)
         table = (
             'sub test1',
             'sub test2',
             'sub test3',
             'sub test4'
         )
-        ic.perlUnitTest(c.p, s=s, showTree=True)
+        c.importCommands.perlUnitTest(c.p, s=s, showTree=True)
         if 1:
             root = c.p.lastChild()
             assert root.h.startswith('@@'), root.h
@@ -2516,101 +2486,95 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.56: *4* TestImport.test_php_import_class
     def test_php_import_class(self):
         c = self.c
-        s = '''\
-        <?php
-
-        $type = 'cc';
-        $obj = new $type; // outputs "hi!"
-
-        class cc {
-            function __construct() {
-                echo 'hi!';
+        s = textwrap.dedent("""\
+            <?php
+        
+            $type = 'cc';
+            $obj = new $type; // outputs "hi!"
+        
+            class cc {
+                function __construct() {
+                    echo 'hi!';
+                }
             }
-        }
-
-        ?>
-
-        '''
-
+        
+            ?>
+        """)
         c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.57: *4* TestImport.test_php_import_conditional_class
     def test_php_import_conditional_class(self):
         c = self.c
-        s = '''\
-        <?php
-
-        if (expr) {
-            class cc {
-                // version 1
+        s = textwrap.dedent("""\
+            <?php
+        
+            if (expr) {
+                class cc {
+                    // version 1
+                }
+            } else {
+                class cc {
+                    // version 2
+                }
             }
-        } else {
-            class cc {
-                // version 2
-            }
-        }
-
-        ?>
-        '''
-
+        
+            ?>
+        """)
         c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.58: *4* TestImport.test_php_import_classes__functions
     def test_php_import_classes__functions(self):
         c = self.c
-        s = '''\
-        <?php
-        class Enum {
-            protected $self = array();
-            public function __construct( /*...*/ ) {
-                $args = func_get_args();
-                for( $i=0, $n=count($args); $i<$n; $i++ )
-                    $this->add($args[$i]);
+        s = textwrap.dedent("""\
+            <?php
+            class Enum {
+                protected $self = array();
+                public function __construct( /*...*/ ) {
+                    $args = func_get_args();
+                    for( $i=0, $n=count($args); $i<$n; $i++ )
+                        $this->add($args[$i]);
+                }
+        
+                public function __get( /*string*/ $name = null ) {
+                    return $this->self[$name];
+                }
+        
+                public function add( /*string*/ $name = null, /*int*/ $enum = null ) {
+                    if( isset($enum) )
+                        $this->self[$name] = $enum;
+                    else
+                        $this->self[$name] = end($this->self) + 1;
+                }
             }
-
-            public function __get( /*string*/ $name = null ) {
-                return $this->self[$name];
+        
+            class DefinedEnum extends Enum {
+                public function __construct( /*array*/ $itms ) {
+                    foreach( $itms as $name => $enum )
+                        $this->add($name, $enum);
+                }
             }
-
-            public function add( /*string*/ $name = null, /*int*/ $enum = null ) {
-                if( isset($enum) )
-                    $this->self[$name] = $enum;
-                else
-                    $this->self[$name] = end($this->self) + 1;
+        
+            class FlagsEnum extends Enum {
+                public function __construct( /*...*/ ) {
+                    $args = func_get_args();
+                    for( $i=0, $n=count($args), $f=0x1; $i<$n; $i++, $f *= 0x2 )
+                        $this->add($args[$i], $f);
+                }
             }
-        }
-
-        class DefinedEnum extends Enum {
-            public function __construct( /*array*/ $itms ) {
-                foreach( $itms as $name => $enum )
-                    $this->add($name, $enum);
-            }
-        }
-
-        class FlagsEnum extends Enum {
-            public function __construct( /*...*/ ) {
-                $args = func_get_args();
-                for( $i=0, $n=count($args), $f=0x1; $i<$n; $i++, $f *= 0x2 )
-                    $this->add($args[$i], $f);
-            }
-        }
-        ?>
-
-        '''
-
+            ?>
+        """)
         c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.59: *4* TestImport.test_php_here_doc
     def test_php_here_doc(self):
         c = self.c
-        s = '''\
-        <?php
-        class foo {
-            public $bar = <<<EOT
-        a test.
-        bar
-        EOT;
-        }
-        ?>
-        '''
-
+        s = textwrap.dedent("""\
+            <?php
+            class foo {
+                public $bar = <<<EOT
+            a test.
+            bar
+            EOT;
+            }
+            ?>
+        """)
         c.importCommands.phpUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.60: *4* TestImport.test_i_scan_state_for_python_
     def test_i_scan_state_for_python_(self):
@@ -2718,15 +2682,13 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        class testClass1 # no colon
-            pass
-
-        def spam():
-            pass
-        '''
-
+        s = textwrap.dedent("""\
+            class testClass1 # no colon
+                pass
+        
+            def spam():
+                pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.63: *4* TestImport.test_python_basic_nesting_test
     def test_python_basic_nesting_test(self):
@@ -2734,20 +2696,20 @@ class TestImporter(LeoUnitTest):
         # Was unittest/at_auto-unit-test.py
         ic = c.importCommands
 
-        s = '''\
-        class class1:
-            def class1_method1():
-                pass
-            def class1_method2():
-                pass
-            # After @others in child1.
-        class class2:
-            def class2_method1():
-                pass
-            def class2_method2():
-                pass
-        # last line
-        '''
+        s = textwrap.dedent("""\
+            class class1:
+                def class1_method1():
+                    pass
+                def class1_method2():
+                    pass
+                # After @others in child1.
+            class class2:
+                def class2_method1():
+                    pass
+                def class2_method2():
+                    pass
+            # last line
+        """)
         table = (
             (1, 'class class1'),
             (2, 'class1_method1'),
@@ -2776,34 +2738,34 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
         ic = c.importCommands  
-        s = '''\
-        import sys
-
-        if sys.version_info[0] >= 3:
-            exec_ = eval('exec')
-        else:
-            def exec_(_code_, _globs_=None, _locs_=None):
-                """Execute code in a namespace."""
-                if _globs_ is None:
-                    frame = sys._getframe(1)
-                    _globs_ = frame.f_globals
-                    if _locs_ is None:
-                        _locs_ = frame.f_locals
-                    del frame
-                elif _locs_ is None:
-                    _locs_ = _globs_
-                exec("""exec _code_ in _globs_, _locs_""")
-
-        def make_parser():
-
-            parser = argparse.ArgumentParser(
-                description="""Raster calcs. with GDAL.
-                The first --grid defines the projection, extent, cell size, and origin
-                for all calculations, all other grids are transformed and resampled
-                as needed to match.""",
-                formatter_class=argparse.ArgumentDefaultsHelpFormatter
-        )
-        '''
+        s = textwrap.dedent('''\
+            import sys
+        
+            if sys.version_info[0] >= 3:
+                exec_ = eval('exec')
+            else:
+                def exec_(_code_, _globs_=None, _locs_=None):
+                    """Execute code in a namespace."""
+                    if _globs_ is None:
+                        frame = sys._getframe(1)
+                        _globs_ = frame.f_globals
+                        if _locs_ is None:
+                            _locs_ = frame.f_locals
+                        del frame
+                    elif _locs_ is None:
+                        _locs_ = _globs_
+                    exec("""exec _code_ in _globs_, _locs_""")
+        
+            def make_parser():
+        
+                parser = argparse.ArgumentParser(
+                    description="""Raster calcs. with GDAL.
+                    The first --grid defines the projection, extent, cell size, and origin
+                    for all calculations, all other grids are transformed and resampled
+                    as needed to match.""",
+                    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+            )
+        ''')
         table = (
             (1, 'Declarations'),
             (1, 'make_parser'),
@@ -3256,29 +3218,28 @@ class TestImporter(LeoUnitTest):
 
         # Leo bug 603720
         # Within the docstring we must change '\' to '\\'
-        s = '''\
-        def foo():
-            s = \\
-        """#!/bin/bash
-        cd /tmp
-        ls"""
-            file('/tmp/script', 'w').write(s)
-
-        class bar:
-            pass
-
-        foo()
-        '''
-
+        s = textwrap.dedent('''\
+            def foo():
+                s = \\
+            """#!/bin/bash
+            cd /tmp
+            ls"""
+                file('/tmp/script', 'w').write(s)
+        
+            class bar:
+                pass
+        
+            foo()
+        ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.71: *4* TestImport.test_python_enhancement_481
     def test_python_enhancement_481(self):
         c = self.c
-        s = '''\
-        @g.cmd('my-command')
-        def myCommand(event=None):
-            pass
-        '''
+        s = textwrap.dedent("""\
+            @g.cmd('my-command')
+            def myCommand(event=None):
+                pass
+        """)
         table = (
             # (1, '@g.cmd myCommand'),
             (1, "@g.cmd('my-command') myCommand"),
@@ -3302,27 +3263,24 @@ class TestImporter(LeoUnitTest):
         ###@tabwidth -4
             # Required when running unit tests externally.
 
-        s = '''\
-        class testClass2:
-            pass
-        '''
-
+        s = textwrap.dedent("""\
+            class testClass2:
+                pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.73: *4* TestImport.test_python_class_tests_1
     def test_python_class_tests_1(self):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
+        s = textwrap.dedent('''\
         class testClass1:
             """A docstring"""
             def __init__ (self):
                 pass
             def f1(self):
                 pass
-        '''
-
+        ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.74: *4* TestImport.test_python_comment_after_dict_assign
     def test_python_comment_after_dict_assign(self):
@@ -3331,13 +3289,13 @@ class TestImporter(LeoUnitTest):
             # Required when running unit tests externally.
         ic = c.importCommands  
 
-        s = '''\
-        NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
-              's': 'http://www.w3.org/2000/svg',
-              'xlink' : 'http://www.w3.org/1999/xlink'}
-
-        tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
-        '''
+        s = textwrap.dedent("""\
+            NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
+                  's': 'http://www.w3.org/2000/svg',
+                  'xlink' : 'http://www.w3.org/1999/xlink'}
+        
+            tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
+        """)
         table = (
             (1, 'Declarations'),
         )
@@ -3362,11 +3320,11 @@ class TestImporter(LeoUnitTest):
             # Required when running unit tests externally.
         ic = c.importCommands  
 
-        s = '''\
-        import leo.core.leoGlobals as g
+        s = textwrap.dedent("""\
+            import leo.core.leoGlobals as g
 
-        a = 3
-        '''
+            a = 3
+        """)
         table = (
             (1, 'Declarations'),
         )
@@ -3388,19 +3346,18 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        class Index:
-            """docstring"""
-            @cherrypy.nocolor
-            @cherrypy.expose
-            def index(self):
-                return "Hello world!"
-            
-            @cmd('abc')
-            def abc(self):
-                return "abc"
-        '''
+        s = textwrap.dedent('''\
+            class Index:
+                """docstring"""
+                @cherrypy.nocolor
+                @cherrypy.expose
+                def index(self):
+                    return "Hello world!"
+                
+                @cmd('abc')
+                def abc(self):
+                    return "abc"
+        ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=True) # Must be true.
         index = g.findNodeInTree(c, c.p, '@cherrypy.nocolor index')
         assert index
@@ -3530,7 +3487,7 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
         ic = c.importCommands  
-        s = '''\
+        s = textwrap.dedent('''\
         class aClass:
             def outerDef(self):
                 """docstring.
@@ -3540,7 +3497,7 @@ class TestImporter(LeoUnitTest):
                     g.es_print(color='blue',*args,**keys)
 
                 a = 3
-        '''
+        ''')
         table = (
             (1, 'class aClass'),
             (2, 'outerDef'),
@@ -3566,25 +3523,24 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
         ic = c.importCommands  
-        s = '''\
-
-        class test:
-
-            def importFilesCommand (self,files=None,treeType=None,
-                perfectImport=True,testing=False,verbose=False):
-                    # Not a command.  It must *not* have an event arg.
-
-                c = self.c
-                if c == None: return
-                p = c.currentPosition()
-
-            # Used by paste logic.
-
-            def convertMoreStringToOutlineAfter (self,s,firstVnode):
-                s = string.replace(s,"\\r","")
-                strings = string.split(s,"\\n")
-                return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
-        '''
+        s = textwrap.dedent("""\
+            class test:
+        
+                def importFilesCommand (self,files=None,treeType=None,
+                    perfectImport=True,testing=False,verbose=False):
+                        # Not a command.  It must *not* have an event arg.
+        
+                    c = self.c
+                    if c == None: return
+                    p = c.currentPosition()
+        
+                # Used by paste logic.
+        
+                def convertMoreStringToOutlineAfter (self,s,firstVnode):
+                    s = string.replace(s,"\\r","")
+                    strings = string.split(s,"\\n")
+                    return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
+        """)
         table = (
             (1, 'class test'),
             (2, 'importFilesCommand'),
@@ -3611,17 +3567,16 @@ class TestImporter(LeoUnitTest):
             # Required when running unit tests externally.
         ic = c.importCommands
 
-        s = '''\
-
-        class test:
-            def spam(b):
-                pass
-
-            # Used by paste logic.
-
-            def foo(a):
-                pass
-        '''
+        s = textwrap.dedent("""\
+            class test:
+                def spam(b):
+                    pass
+        
+                # Used by paste logic.
+        
+                def foo(a):
+                    pass
+        """)
         table = (
             (1, 'class test'),
             (2, 'spam'),
@@ -3646,25 +3601,21 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        """A file consisting only of a docstring.
-        """
-        '''
-
+        s = textwrap.dedent('''\
+            """A file consisting only of a docstring.
+            """
+        ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.82: *4* TestImport.test_python_empty_decls
     def test_python_empty_decls(self):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        import leo.core.leoGlobals as g
-
-        a = 3
-        '''
-
+        s = textwrap.dedent("""\
+            import leo.core.leoGlobals as g
+        
+            a = 3
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.83: *4* TestImport.test_python_extra_leading_ws_test
     def test_python_extra_leading_ws_test(self):
@@ -3672,14 +3623,11 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
 
-        s = '''\
-
-        class cls:
-             def fun(): # one extra space.
-                pass
-        '''
-
-
+        s = textwrap.dedent("""\
+            class cls:
+                 def fun(): # one extra space.
+                    pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.84: *4* TestImport.test_python_indent_decls
     def test_python_indent_decls(self):
@@ -3687,41 +3635,40 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
         ic = c.importCommands  
-        s = '''\
-
-        class mammalProviderBase(object):
-            """Root class for content providers used by DWEtree.py"""
-            def __init__(self, params):
-                """store reference to parameters"""
-                self.params = params
-            def provide(self, what):
-                """default <BASE> value"""
-                if what == 'doctitle':
-                    return ELE('base', href=self.params['/BASE/'])
-                return None
-
-            def imagePath(self, sppdat):
-                """return path to images and list of images for *species*"""
-                path = 'MNMammals/imglib/Mammalia'
-                for i in 'Order', 'Family', 'Genus', 'Species':
-                    path = os.path.join(path, sppdat['%sName' % (i,)])
-                imglib = os.path.join('/var/www',path)
-                imglib = os.path.join(imglib, '*.[Jj][Pp][Gg]')
-                path = os.path.join('/',path)
-                lst = [os.path.split(i)[1] for i in glob.glob(imglib)]
-                lst.sort()
-                return path, lst
-
-        class mainPages(mammalProviderBase):
-            """provide content for pages in 'main' folder"""
-            __parent = mammalProviderBase
-            def provide(self, what):
-                """add one layer to <BASE>"""
-                ans = self.__parent.provide(self, what)
-                if what == 'doctitle':
-                    return ELE('base', href=self.params['/BASE/']+'main/')
-                return ans
-        ''' 
+        s = textwrap.dedent('''\
+            class mammalProviderBase(object):
+                """Root class for content providers used by DWEtree.py"""
+                def __init__(self, params):
+                    """store reference to parameters"""
+                    self.params = params
+                def provide(self, what):
+                    """default <BASE> value"""
+                    if what == 'doctitle':
+                        return ELE('base', href=self.params['/BASE/'])
+                    return None
+        
+                def imagePath(self, sppdat):
+                    """return path to images and list of images for *species*"""
+                    path = 'MNMammals/imglib/Mammalia'
+                    for i in 'Order', 'Family', 'Genus', 'Species':
+                        path = os.path.join(path, sppdat['%sName' % (i,)])
+                    imglib = os.path.join('/var/www',path)
+                    imglib = os.path.join(imglib, '*.[Jj][Pp][Gg]')
+                    path = os.path.join('/',path)
+                    lst = [os.path.split(i)[1] for i in glob.glob(imglib)]
+                    lst.sort()
+                    return path, lst
+        
+            class mainPages(mammalProviderBase):
+                """provide content for pages in 'main' folder"""
+                __parent = mammalProviderBase
+                def provide(self, what):
+                    """add one layer to <BASE>"""
+                    ans = self.__parent.provide(self, what)
+                    if what == 'doctitle':
+                        return ELE('base', href=self.params['/BASE/']+'main/')
+                    return ans
+        ''') 
         table = (
             (1, 'class mammalProviderBase(object)'),
             (2, '__init__'),
@@ -3835,33 +3782,29 @@ class TestImporter(LeoUnitTest):
         # ~/at-auto-test.py
 
         # Careful: don't put a section reference in the string.
-        s = '''\
-        # This is valid Python, but it looks like a section reference.
-        a = b < < c > > d
-        '''.replace('> >', '>>').replace('< <', '<<')
-
+        s = textwrap.dedent("""\
+            # This is valid Python, but it looks like a section reference.
+            a = b < < c > > d
+        """).replace('> >', '>>').replace('< <', '<<')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.87: *4* TestImport.test_python_minimal_class_1
     def test_python_minimal_class_1(self):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-
-        class ItasException(Exception):
-
-            pass
-
-        def gpRun(gp, cmd, args, log = None):
-
-            """Wrapper for making calls to the geoprocessor and reporting errors"""
-
-            if log:
-
-                log('gp: %s: %s\\n' % (cmd, str(args)))
-        '''
-
+        s = textwrap.dedent('''\
+            class ItasException(Exception):
+        
+                pass
+        
+            def gpRun(gp, cmd, args, log = None):
+        
+                """Wrapper for making calls to the geoprocessor and reporting errors"""
+        
+                if log:
+        
+                    log('gp: %s: %s\\n' % (cmd, str(args)))
+        ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.88: *4* TestImport.test_python_minimal_class_2
     def test_python_minimal_class_2(self):
@@ -3869,29 +3812,24 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
 
-        s = '''\
-
-        class emptyClass: pass
-
-        def followingDef():
-            pass
-        '''
-
+        s = textwrap.dedent("""\
+            class emptyClass: pass
+        
+            def followingDef():
+                pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.89: *4* TestImport.test_python_minimal_class_3
     def test_python_minimal_class_3(self):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-
-        class emptyClass: pass # comment
-
-        def followingDef(): # comment
-            pass
-        '''
-
+        s = textwrap.dedent("""\
+            class emptyClass: pass # comment
+        
+            def followingDef(): # comment
+                pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.90: *4* TestImport.test_python_overindent_def_no_following_def
     def test_python_overindent_def_no_following_def(self):
@@ -3899,42 +3837,39 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
 
-        s = '''\
-        class aClass:
-            def def1(self):
-                pass
-
-            if False or g.unitTesting:
-
-                def pr(*args,**keys): # reportMismatch test
-                    g.es_print(color='blue',*args,**keys)
-
-                pr('input...')
-        '''
-
+        s = textwrap.dedent("""\
+            class aClass:
+                def def1(self):
+                    pass
+        
+                if False or g.unitTesting:
+        
+                    def pr(*args,**keys): # reportMismatch test
+                        g.es_print(color='blue',*args,**keys)
+        
+                    pr('input...')
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.91: *4* TestImport.test_python_overindent_def_one_following_def
     def test_python_overindent_def_one_following_def(self):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        class aClass:
-            def def1(self):
-                pass
-
-            if False or g.unitTesting:
-
-                def pr(*args,**keys): # reportMismatch test
-                    g.es_print(color='blue',*args,**keys)
-
-                pr('input...')
-
-            def def2(self):
-                pass
-        '''
-
+        s = textwrap.dedent("""\
+            class aClass:
+                def def1(self):
+                    pass
+        
+                if False or g.unitTesting:
+        
+                    def pr(*args,**keys): # reportMismatch test
+                        g.es_print(color='blue',*args,**keys)
+        
+                    pr('input...')
+        
+                def def2(self):
+                    pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.92: *4* TestImport.test_python_overindented_def_3
     def test_python_overindented_def_3(self):
@@ -3977,8 +3912,7 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
+        s = textwrap.dedent('''\
         class BaseScanner:
 
                 """The base class for all import scanner classes."""
@@ -3990,45 +3924,40 @@ class TestImporter(LeoUnitTest):
                 def createHeadline (self,parent,body,headline):
                     # g.trace("parent,headline:",parent,headline)
                     return p
-        '''
-
+        ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.94: *4* TestImport.test_python_string_underindent_lines
     def test_python_string_underindent_lines(self):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        class BaseScanner:
-            def containsUnderindentedComment(self):
-                a = 2
-            # A true underindented comment.
-                b = 3
-            # This underindented comment should be placed with next function.
-            def empty(self):
-                pass
-        '''
-
+        s = textwrap.dedent("""\
+            class BaseScanner:
+                def containsUnderindentedComment(self):
+                    a = 2
+                # A true underindented comment.
+                    b = 3
+                # This underindented comment should be placed with next function.
+                def empty(self):
+                    pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.95: *4* TestImport.test_python_string_underindent_lines_2
     def test_python_string_underindent_lines_2(self):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        class BaseScanner:
-            def containsUnderindentedComment(self):
-                a = 2
-            #
-                b = 3
-                # This comment is part of the present function.
-
-            def empty(self):
-                pass
-        '''
-
+        s = textwrap.dedent("""\
+            class BaseScanner:
+                def containsUnderindentedComment(self):
+                    a = 2
+                #
+                    b = 3
+                    # This comment is part of the present function.
+        
+                def empty(self):
+                    pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.96: *4* TestImport.test_python_top_level_later_decl
     def test_python_top_level_later_decl(self):
@@ -4086,27 +4015,23 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-        class aClass: # trailing comment
-
-
-            def def1(self):             # trailing comment
-                pass
-        '''
-
+        s = textwrap.dedent("""\
+            class aClass: # trailing comment
+        
+        
+                def def1(self):             # trailing comment
+                    pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.98: *4* TestImport.test_python_trailing_comment_outer_levels
     def test_python_trailing_comment_outer_levels(self):
+        c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-        c = self.c
-        s = '''\
-
-        xyz = 6 # trailing comment
-        pass
-        '''
-
+        s = textwrap.dedent("""\
+            xyz = 6 # trailing comment
+            pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.99: *4* TestImport.test_python_two_functions
     def test_python_two_functions(self):
@@ -4115,16 +4040,13 @@ class TestImporter(LeoUnitTest):
 
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-
-        def foo():
-            pass
-
-        def bar():
-            pass
-        '''
-
+        s = textwrap.dedent("""\
+            def foo():
+                pass
+        
+            def bar():
+                pass
+        """)
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.100: *4* TestImport.test_python_underindent_method
     def test_python_underindent_method(self):
@@ -4132,18 +4054,17 @@ class TestImporter(LeoUnitTest):
         ### @tabwidth -4
             # Required when running unit tests externally.
         ic = c.importCommands  
-        s = '''\
-
-        class emptyClass: 
-
-            def spam():
-                """docstring line 1
-        under-indented docstring line"""
+        s = textwrap.dedent('''\
+            class emptyClass: 
+        
+                def spam():
+                    """docstring line 1
+            under-indented docstring line"""
+                    pass
+        
+            def followingDef(): # comment
                 pass
-
-        def followingDef(): # comment
-            pass
-        '''
+        ''')
         table = (
             (1, 'class emptyClass'),
             (2, 'spam'),
@@ -4168,21 +4089,18 @@ class TestImporter(LeoUnitTest):
         c = self.c
         ### @tabwidth -4
             # Required when running unit tests externally.
-
-        s = '''\
-
-        def foo():
-
-            error("""line1
-        line2.
-        """)
-
-            a = 5
-
-        def bar():
-            pass
-        '''
-
+        s = textwrap.dedent('''\
+            def foo():
+        
+                error("""line1
+            line2.
+            """)
+        
+                a = 5
+        
+            def bar():
+                pass
+        ''')
         p = c.p
         c.importCommands.pythonUnitTest(p, s=s, showTree=True)
         child = p.firstChild()
@@ -4192,442 +4110,441 @@ class TestImporter(LeoUnitTest):
     def test_python_unittest_perfectImport_formatter_py(self):
         c = self.c
 
-        s = '''\
+        s = textwrap.dedent('''\
 
-        """Generic output formatting.
-        """
-
-        import sys
-
-
-        AS_IS = None
-
-
-        class NullFormatter:
-            """A formatter which does nothing.
-
-            If the writer parameter is omitted, a NullWriter instance is created.
-            No methods of the writer are called by NullFormatter instances.
-
-            Implementations should inherit from this class if implementing a writer
-            interface but don't need to inherit any implementation.
-
+            """Generic output formatting.
             """
-
-            def __init__(self, writer=None):
-                if writer is None:
-                    writer = NullWriter()
-                self.writer = writer
-            def end_paragraph(self, blankline): pass
-            def add_line_break(self): pass
-            def add_hor_rule(self, *args, **kw): pass
-            def add_label_data(self, format, counter, blankline=None): pass
-            def add_flowing_data(self, data): pass
-            def add_literal_data(self, data): pass
-            def flush_softspace(self): pass
-            def push_alignment(self, align): pass
-            def pop_alignment(self): pass
-            def push_font(self, x): pass
-            def pop_font(self): pass
-            def push_margin(self, margin): pass
-            def pop_margin(self): pass
-            def set_spacing(self, spacing): pass
-            def push_style(self, *styles): pass
-            def pop_style(self, n=1): pass
-            def assert_line_data(self, flag=1): pass
-
-
-        class AbstractFormatter:
-            """The standard formatter.
-
-            This implementation has demonstrated wide applicability to many writers,
-            and may be used directly in most circumstances.  It has been used to
-            implement a full-featured World Wide Web browser.
-
-            """
-
-            #  Space handling policy:  blank spaces at the boundary between elements
-            #  are handled by the outermost context.  "Literal" data is not checked
-            #  to determine context, so spaces in literal data are handled directly
-            #  in all circumstances.
-
-            def __init__(self, writer):
-                self.writer = writer            # Output device
-                self.align = None               # Current alignment
-                self.align_stack = []           # Alignment stack
-                self.font_stack = []            # Font state
-                self.margin_stack = []          # Margin state
-                self.spacing = None             # Vertical spacing state
-                self.style_stack = []           # Other state, e.g. color
-                self.nospace = 1                # Should leading space be suppressed
-                self.softspace = 0              # Should a space be inserted
-                self.para_end = 1               # Just ended a paragraph
-                self.parskip = 0                # Skipped space between paragraphs?
-                self.hard_break = 1             # Have a hard break
-                self.have_label = 0
-
-            def end_paragraph(self, blankline):
-                if not self.hard_break:
-                    self.writer.send_line_break()
+        
+            import sys
+        
+        
+            AS_IS = None
+        
+        
+            class NullFormatter:
+                """A formatter which does nothing.
+        
+                If the writer parameter is omitted, a NullWriter instance is created.
+                No methods of the writer are called by NullFormatter instances.
+        
+                Implementations should inherit from this class if implementing a writer
+                interface but don't need to inherit any implementation.
+        
+                """
+        
+                def __init__(self, writer=None):
+                    if writer is None:
+                        writer = NullWriter()
+                    self.writer = writer
+                def end_paragraph(self, blankline): pass
+                def add_line_break(self): pass
+                def add_hor_rule(self, *args, **kw): pass
+                def add_label_data(self, format, counter, blankline=None): pass
+                def add_flowing_data(self, data): pass
+                def add_literal_data(self, data): pass
+                def flush_softspace(self): pass
+                def push_alignment(self, align): pass
+                def pop_alignment(self): pass
+                def push_font(self, x): pass
+                def pop_font(self): pass
+                def push_margin(self, margin): pass
+                def pop_margin(self): pass
+                def set_spacing(self, spacing): pass
+                def push_style(self, *styles): pass
+                def pop_style(self, n=1): pass
+                def assert_line_data(self, flag=1): pass
+        
+        
+            class AbstractFormatter:
+                """The standard formatter.
+        
+                This implementation has demonstrated wide applicability to many writers,
+                and may be used directly in most circumstances.  It has been used to
+                implement a full-featured World Wide Web browser.
+        
+                """
+        
+                #  Space handling policy:  blank spaces at the boundary between elements
+                #  are handled by the outermost context.  "Literal" data is not checked
+                #  to determine context, so spaces in literal data are handled directly
+                #  in all circumstances.
+        
+                def __init__(self, writer):
+                    self.writer = writer            # Output device
+                    self.align = None               # Current alignment
+                    self.align_stack = []           # Alignment stack
+                    self.font_stack = []            # Font state
+                    self.margin_stack = []          # Margin state
+                    self.spacing = None             # Vertical spacing state
+                    self.style_stack = []           # Other state, e.g. color
+                    self.nospace = 1                # Should leading space be suppressed
+                    self.softspace = 0              # Should a space be inserted
+                    self.para_end = 1               # Just ended a paragraph
+                    self.parskip = 0                # Skipped space between paragraphs?
+                    self.hard_break = 1             # Have a hard break
                     self.have_label = 0
-                if self.parskip < blankline and not self.have_label:
-                    self.writer.send_paragraph(blankline - self.parskip)
-                    self.parskip = blankline
-                    self.have_label = 0
-                self.hard_break = self.nospace = self.para_end = 1
-                self.softspace = 0
-
-            def add_line_break(self):
-                if not (self.hard_break or self.para_end):
-                    self.writer.send_line_break()
-                    self.have_label = self.parskip = 0
-                self.hard_break = self.nospace = 1
-                self.softspace = 0
-
-            def add_hor_rule(self, *args, **kw):
-                if not self.hard_break:
-                    self.writer.send_line_break()
-                self.writer.send_hor_rule(*args, **kw)
-                self.hard_break = self.nospace = 1
-                self.have_label = self.para_end = self.softspace = self.parskip = 0
-
-            def add_label_data(self, format, counter, blankline = None):
-                if self.have_label or not self.hard_break:
-                    self.writer.send_line_break()
-                if not self.para_end:
-                    self.writer.send_paragraph((blankline and 1) or 0)
-                if isinstance(format, str):
-                    self.writer.send_label_data(self.format_counter(format, counter))
-                else:
-                    self.writer.send_label_data(format)
-                self.nospace = self.have_label = self.hard_break = self.para_end = 1
-                self.softspace = self.parskip = 0
-
-            def format_counter(self, format, counter):
-                label = ''
-                for c in format:
-                    if c == '1':
-                        label = label + ('%d' % counter)
-                    elif c in 'aA':
-                        if counter > 0:
-                            label = label + self.format_letter(c, counter)
-                    elif c in 'iI':
-                        if counter > 0:
-                            label = label + self.format_roman(c, counter)
+        
+                def end_paragraph(self, blankline):
+                    if not self.hard_break:
+                        self.writer.send_line_break()
+                        self.have_label = 0
+                    if self.parskip < blankline and not self.have_label:
+                        self.writer.send_paragraph(blankline - self.parskip)
+                        self.parskip = blankline
+                        self.have_label = 0
+                    self.hard_break = self.nospace = self.para_end = 1
+                    self.softspace = 0
+        
+                def add_line_break(self):
+                    if not (self.hard_break or self.para_end):
+                        self.writer.send_line_break()
+                        self.have_label = self.parskip = 0
+                    self.hard_break = self.nospace = 1
+                    self.softspace = 0
+        
+                def add_hor_rule(self, *args, **kw):
+                    if not self.hard_break:
+                        self.writer.send_line_break()
+                    self.writer.send_hor_rule(*args, **kw)
+                    self.hard_break = self.nospace = 1
+                    self.have_label = self.para_end = self.softspace = self.parskip = 0
+        
+                def add_label_data(self, format, counter, blankline = None):
+                    if self.have_label or not self.hard_break:
+                        self.writer.send_line_break()
+                    if not self.para_end:
+                        self.writer.send_paragraph((blankline and 1) or 0)
+                    if isinstance(format, str):
+                        self.writer.send_label_data(self.format_counter(format, counter))
                     else:
-                        label = label + c
-                return label
-
-            def format_letter(self, case, counter):
-                label = ''
-                while counter > 0:
-                    counter, x = divmod(counter-1, 26)
-                    # This makes a strong assumption that lowercase letters
-                    # and uppercase letters form two contiguous blocks, with
-                    # letters in order!
-                    s = chr(ord(case) + x)
-                    label = s + label
-                return label
-
-            def format_roman(self, case, counter):
-                ones = ['i', 'x', 'c', 'm']
-                fives = ['v', 'l', 'd']
-                label, index = '', 0
-                # This will die of IndexError when counter is too big
-                while counter > 0:
-                    counter, x = divmod(counter, 10)
-                    if x == 9:
-                        label = ones[index] + ones[index+1] + label
-                    elif x == 4:
-                        label = ones[index] + fives[index] + label
-                    else:
-                        if x >= 5:
-                            s = fives[index]
-                            x = x-5
+                        self.writer.send_label_data(format)
+                    self.nospace = self.have_label = self.hard_break = self.para_end = 1
+                    self.softspace = self.parskip = 0
+        
+                def format_counter(self, format, counter):
+                    label = ''
+                    for c in format:
+                        if c == '1':
+                            label = label + ('%d' % counter)
+                        elif c in 'aA':
+                            if counter > 0:
+                                label = label + self.format_letter(c, counter)
+                        elif c in 'iI':
+                            if counter > 0:
+                                label = label + self.format_roman(c, counter)
                         else:
-                            s = ''
-                        s = s + ones[index]*x
+                            label = label + c
+                    return label
+        
+                def format_letter(self, case, counter):
+                    label = ''
+                    while counter > 0:
+                        counter, x = divmod(counter-1, 26)
+                        # This makes a strong assumption that lowercase letters
+                        # and uppercase letters form two contiguous blocks, with
+                        # letters in order!
+                        s = chr(ord(case) + x)
                         label = s + label
-                    index = index + 1
-                if case == 'I':
-                    return label.upper()
-                return label
-
-            def add_flowing_data(self, data):
-                if not data: return
-                # The following looks a bit convoluted but is a great improvement over
-                # data = regsub.gsub('[' + string.whitespace + ']+', ' ', data)
-                prespace = data[:1].isspace()
-                postspace = data[-1:].isspace()
-                data = " ".join(data.split())
-                if self.nospace and not data:
-                    return
-                elif prespace or self.softspace:
-                    if not data:
-                        if not self.nospace:
-                            self.softspace = 1
-                            self.parskip = 0
-                        return
-                    if not self.nospace:
-                        data = ' ' + data
-                self.hard_break = self.nospace = self.para_end = \
-                                  self.parskip = self.have_label = 0
-                self.softspace = postspace
-                self.writer.send_flowing_data(data)
-
-            def add_literal_data(self, data):
-                if not data: return
-                if self.softspace:
-                    self.writer.send_flowing_data(" ")
-                self.hard_break = data[-1:] == '\n'
-                self.nospace = self.para_end = self.softspace = \
-                               self.parskip = self.have_label = 0
-                self.writer.send_literal_data(data)
-
-            def flush_softspace(self):
-                if self.softspace:
-                    self.hard_break = self.para_end = self.parskip = \
-                                      self.have_label = self.softspace = 0
-                    self.nospace = 1
-                    self.writer.send_flowing_data(' ')
-
-            def push_alignment(self, align):
-                if align and align != self.align:
-                    self.writer.new_alignment(align)
-                    self.align = align
-                    self.align_stack.append(align)
-                else:
-                    self.align_stack.append(self.align)
-
-            def pop_alignment(self):
-                if self.align_stack:
-                    del self.align_stack[-1]
-                if self.align_stack:
-                    self.align = align = self.align_stack[-1]
-                    self.writer.new_alignment(align)
-                else:
-                    self.align = None
-                    self.writer.new_alignment(None)
-
-            def push_font(self, (size, i, b, tt)):
-                if self.softspace:
-                    self.hard_break = self.para_end = self.softspace = 0
-                    self.nospace = 1
-                    self.writer.send_flowing_data(' ')
-                if self.font_stack:
-                    csize, ci, cb, ctt = self.font_stack[-1]
-                    if size is AS_IS: size = csize
-                    if i is AS_IS: i = ci
-                    if b is AS_IS: b = cb
-                    if tt is AS_IS: tt = ctt
-                font = (size, i, b, tt)
-                self.font_stack.append(font)
-                self.writer.new_font(font)
-
-            def pop_font(self):
-                if self.font_stack:
-                    del self.font_stack[-1]
-                if self.font_stack:
-                    font = self.font_stack[-1]
-                else:
-                    font = None
-                self.writer.new_font(font)
-
-            def push_margin(self, margin):
-                self.margin_stack.append(margin)
-                fstack = filter(None, self.margin_stack)
-                if not margin and fstack:
-                    margin = fstack[-1]
-                self.writer.new_margin(margin, len(fstack))
-
-            def pop_margin(self):
-                if self.margin_stack:
-                    del self.margin_stack[-1]
-                fstack = filter(None, self.margin_stack)
-                if fstack:
-                    margin = fstack[-1]
-                else:
-                    margin = None
-                self.writer.new_margin(margin, len(fstack))
-
-            def set_spacing(self, spacing):
-                self.spacing = spacing
-                self.writer.new_spacing(spacing)
-
-            def push_style(self, *styles):
-                if self.softspace:
-                    self.hard_break = self.para_end = self.softspace = 0
-                    self.nospace = 1
-                    self.writer.send_flowing_data(' ')
-                for style in styles:
-                    self.style_stack.append(style)
-                self.writer.new_styles(tuple(self.style_stack))
-
-            def pop_style(self, n=1):
-                del self.style_stack[-n:]
-                self.writer.new_styles(tuple(self.style_stack))
-
-            def assert_line_data(self, flag=1):
-                self.nospace = self.hard_break = not flag
-                self.para_end = self.parskip = self.have_label = 0
-
-
-        class NullWriter:
-            """Minimal writer interface to use in testing & inheritance.
-
-            A writer which only provides the interface definition; no actions are
-            taken on any methods.  This should be the base class for all writers
-            which do not need to inherit any implementation methods.
-
-            """
-            def __init__(self): pass
-            def flush(self): pass
-            def new_alignment(self, align): pass
-            def new_font(self, font): pass
-            def new_margin(self, margin, level): pass
-            def new_spacing(self, spacing): pass
-            def new_styles(self, styles): pass
-            def send_paragraph(self, blankline): pass
-            def send_line_break(self): pass
-            def send_hor_rule(self, *args, **kw): pass
-            def send_label_data(self, data): pass
-            def send_flowing_data(self, data): pass
-            def send_literal_data(self, data): pass
-
-
-        class AbstractWriter(NullWriter):
-            """A writer which can be used in debugging formatters, but not much else.
-
-            Each method simply announces itself by printing its name and
-            arguments on standard output.
-
-            """
-
-            def new_alignment(self, align):
-                print "new_alignment(%s)" % `align`
-
-            def new_font(self, font):
-                print "new_font(%s)" % `font`
-
-            def new_margin(self, margin, level):
-                print "new_margin(%s, %d)" % (`margin`, level)
-
-            def new_spacing(self, spacing):
-                print "new_spacing(%s)" % `spacing`
-
-            def new_styles(self, styles):
-                print "new_styles(%s)" % `styles`
-
-            def send_paragraph(self, blankline):
-                print "send_paragraph(%s)" % `blankline`
-
-            def send_line_break(self):
-                print "send_line_break()"
-
-            def send_hor_rule(self, *args, **kw):
-                print "send_hor_rule()"
-
-            def send_label_data(self, data):
-                print "send_label_data(%s)" % `data`
-
-            def send_flowing_data(self, data):
-                print "send_flowing_data(%s)" % `data`
-
-            def send_literal_data(self, data):
-                print "send_literal_data(%s)" % `data`
-
-
-        class DumbWriter(NullWriter):
-            """Simple writer class which writes output on the file object passed in
-            as the file parameter or, if file is omitted, on standard output.  The
-            output is simply word-wrapped to the number of columns specified by
-            the maxcol parameter.  This class is suitable for reflowing a sequence
-            of paragraphs.
-
-            """
-
-            def __init__(self, file=None, maxcol=72):
-                self.file = file or sys.stdout
-                self.maxcol = maxcol
-                NullWriter.__init__(self)
-                self.reset()
-
-            def reset(self):
-                self.col = 0
-                self.atbreak = 0
-
-            def send_paragraph(self, blankline):
-                self.file.write('\n'*blankline)
-                self.col = 0
-                self.atbreak = 0
-
-            def send_line_break(self):
-                self.file.write('\n')
-                self.col = 0
-                self.atbreak = 0
-
-            def send_hor_rule(self, *args, **kw):
-                self.file.write('\n')
-                self.file.write('-'*self.maxcol)
-                self.file.write('\n')
-                self.col = 0
-                self.atbreak = 0
-
-            def send_literal_data(self, data):
-                self.file.write(data)
-                i = data.rfind('\n')
-                if i >= 0:
-                    self.col = 0
-                    data = data[i+1:]
-                data = data.expandtabs()
-                self.col = self.col + len(data)
-                self.atbreak = 0
-
-            def send_flowing_data(self, data):
-                if not data: return
-                atbreak = self.atbreak or data[0].isspace()
-                col = self.col
-                maxcol = self.maxcol
-                write = self.file.write
-                for word in data.split():
-                    if atbreak:
-                        if col + len(word) >= maxcol:
-                            write('\n')
-                            col = 0
+                    return label
+        
+                def format_roman(self, case, counter):
+                    ones = ['i', 'x', 'c', 'm']
+                    fives = ['v', 'l', 'd']
+                    label, index = '', 0
+                    # This will die of IndexError when counter is too big
+                    while counter > 0:
+                        counter, x = divmod(counter, 10)
+                        if x == 9:
+                            label = ones[index] + ones[index+1] + label
+                        elif x == 4:
+                            label = ones[index] + fives[index] + label
                         else:
-                            write(' ')
-                            col = col + 1
-                    write(word)
-                    col = col + len(word)
-                    atbreak = 1
-                self.col = col
-                self.atbreak = data[-1].isspace()
-
-
-        def test(file = None):
-            w = DumbWriter()
-            f = AbstractFormatter(w)
-            if file is not None:
-                fp = open(file)
-            elif sys.argv[1:]:
-                fp = open(sys.argv[1])
-            else:
-                fp = sys.stdin
-            while 1:
-                line = fp.readline()
-                if not line:
-                    break
-                if line == '\n':
-                    f.end_paragraph(1)
+                            if x >= 5:
+                                s = fives[index]
+                                x = x-5
+                            else:
+                                s = ''
+                            s = s + ones[index]*x
+                            label = s + label
+                        index = index + 1
+                    if case == 'I':
+                        return label.upper()
+                    return label
+        
+                def add_flowing_data(self, data):
+                    if not data: return
+                    # The following looks a bit convoluted but is a great improvement over
+                    # data = regsub.gsub('[' + string.whitespace + ']+', ' ', data)
+                    prespace = data[:1].isspace()
+                    postspace = data[-1:].isspace()
+                    data = " ".join(data.split())
+                    if self.nospace and not data:
+                        return
+                    elif prespace or self.softspace:
+                        if not data:
+                            if not self.nospace:
+                                self.softspace = 1
+                                self.parskip = 0
+                            return
+                        if not self.nospace:
+                            data = ' ' + data
+                    self.hard_break = self.nospace = self.para_end = \
+                                      self.parskip = self.have_label = 0
+                    self.softspace = postspace
+                    self.writer.send_flowing_data(data)
+        
+                def add_literal_data(self, data):
+                    if not data: return
+                    if self.softspace:
+                        self.writer.send_flowing_data(" ")
+                    self.hard_break = data[-1:] == '\n'
+                    self.nospace = self.para_end = self.softspace = \
+                                   self.parskip = self.have_label = 0
+                    self.writer.send_literal_data(data)
+        
+                def flush_softspace(self):
+                    if self.softspace:
+                        self.hard_break = self.para_end = self.parskip = \
+                                          self.have_label = self.softspace = 0
+                        self.nospace = 1
+                        self.writer.send_flowing_data(' ')
+        
+                def push_alignment(self, align):
+                    if align and align != self.align:
+                        self.writer.new_alignment(align)
+                        self.align = align
+                        self.align_stack.append(align)
+                    else:
+                        self.align_stack.append(self.align)
+        
+                def pop_alignment(self):
+                    if self.align_stack:
+                        del self.align_stack[-1]
+                    if self.align_stack:
+                        self.align = align = self.align_stack[-1]
+                        self.writer.new_alignment(align)
+                    else:
+                        self.align = None
+                        self.writer.new_alignment(None)
+        
+                def push_font(self, (size, i, b, tt)):
+                    if self.softspace:
+                        self.hard_break = self.para_end = self.softspace = 0
+                        self.nospace = 1
+                        self.writer.send_flowing_data(' ')
+                    if self.font_stack:
+                        csize, ci, cb, ctt = self.font_stack[-1]
+                        if size is AS_IS: size = csize
+                        if i is AS_IS: i = ci
+                        if b is AS_IS: b = cb
+                        if tt is AS_IS: tt = ctt
+                    font = (size, i, b, tt)
+                    self.font_stack.append(font)
+                    self.writer.new_font(font)
+        
+                def pop_font(self):
+                    if self.font_stack:
+                        del self.font_stack[-1]
+                    if self.font_stack:
+                        font = self.font_stack[-1]
+                    else:
+                        font = None
+                    self.writer.new_font(font)
+        
+                def push_margin(self, margin):
+                    self.margin_stack.append(margin)
+                    fstack = filter(None, self.margin_stack)
+                    if not margin and fstack:
+                        margin = fstack[-1]
+                    self.writer.new_margin(margin, len(fstack))
+        
+                def pop_margin(self):
+                    if self.margin_stack:
+                        del self.margin_stack[-1]
+                    fstack = filter(None, self.margin_stack)
+                    if fstack:
+                        margin = fstack[-1]
+                    else:
+                        margin = None
+                    self.writer.new_margin(margin, len(fstack))
+        
+                def set_spacing(self, spacing):
+                    self.spacing = spacing
+                    self.writer.new_spacing(spacing)
+        
+                def push_style(self, *styles):
+                    if self.softspace:
+                        self.hard_break = self.para_end = self.softspace = 0
+                        self.nospace = 1
+                        self.writer.send_flowing_data(' ')
+                    for style in styles:
+                        self.style_stack.append(style)
+                    self.writer.new_styles(tuple(self.style_stack))
+        
+                def pop_style(self, n=1):
+                    del self.style_stack[-n:]
+                    self.writer.new_styles(tuple(self.style_stack))
+        
+                def assert_line_data(self, flag=1):
+                    self.nospace = self.hard_break = not flag
+                    self.para_end = self.parskip = self.have_label = 0
+        
+        
+            class NullWriter:
+                """Minimal writer interface to use in testing & inheritance.
+        
+                A writer which only provides the interface definition; no actions are
+                taken on any methods.  This should be the base class for all writers
+                which do not need to inherit any implementation methods.
+        
+                """
+                def __init__(self): pass
+                def flush(self): pass
+                def new_alignment(self, align): pass
+                def new_font(self, font): pass
+                def new_margin(self, margin, level): pass
+                def new_spacing(self, spacing): pass
+                def new_styles(self, styles): pass
+                def send_paragraph(self, blankline): pass
+                def send_line_break(self): pass
+                def send_hor_rule(self, *args, **kw): pass
+                def send_label_data(self, data): pass
+                def send_flowing_data(self, data): pass
+                def send_literal_data(self, data): pass
+        
+        
+            class AbstractWriter(NullWriter):
+                """A writer which can be used in debugging formatters, but not much else.
+        
+                Each method simply announces itself by printing its name and
+                arguments on standard output.
+        
+                """
+        
+                def new_alignment(self, align):
+                    print "new_alignment(%s)" % `align`
+        
+                def new_font(self, font):
+                    print "new_font(%s)" % `font`
+        
+                def new_margin(self, margin, level):
+                    print "new_margin(%s, %d)" % (`margin`, level)
+        
+                def new_spacing(self, spacing):
+                    print "new_spacing(%s)" % `spacing`
+        
+                def new_styles(self, styles):
+                    print "new_styles(%s)" % `styles`
+        
+                def send_paragraph(self, blankline):
+                    print "send_paragraph(%s)" % `blankline`
+        
+                def send_line_break(self):
+                    print "send_line_break()"
+        
+                def send_hor_rule(self, *args, **kw):
+                    print "send_hor_rule()"
+        
+                def send_label_data(self, data):
+                    print "send_label_data(%s)" % `data`
+        
+                def send_flowing_data(self, data):
+                    print "send_flowing_data(%s)" % `data`
+        
+                def send_literal_data(self, data):
+                    print "send_literal_data(%s)" % `data`
+        
+        
+            class DumbWriter(NullWriter):
+                """Simple writer class which writes output on the file object passed in
+                as the file parameter or, if file is omitted, on standard output.  The
+                output is simply word-wrapped to the number of columns specified by
+                the maxcol parameter.  This class is suitable for reflowing a sequence
+                of paragraphs.
+        
+                """
+        
+                def __init__(self, file=None, maxcol=72):
+                    self.file = file or sys.stdout
+                    self.maxcol = maxcol
+                    NullWriter.__init__(self)
+                    self.reset()
+        
+                def reset(self):
+                    self.col = 0
+                    self.atbreak = 0
+        
+                def send_paragraph(self, blankline):
+                    self.file.write('\n'*blankline)
+                    self.col = 0
+                    self.atbreak = 0
+        
+                def send_line_break(self):
+                    self.file.write('\n')
+                    self.col = 0
+                    self.atbreak = 0
+        
+                def send_hor_rule(self, *args, **kw):
+                    self.file.write('\n')
+                    self.file.write('-'*self.maxcol)
+                    self.file.write('\n')
+                    self.col = 0
+                    self.atbreak = 0
+        
+                def send_literal_data(self, data):
+                    self.file.write(data)
+                    i = data.rfind('\n')
+                    if i >= 0:
+                        self.col = 0
+                        data = data[i+1:]
+                    data = data.expandtabs()
+                    self.col = self.col + len(data)
+                    self.atbreak = 0
+        
+                def send_flowing_data(self, data):
+                    if not data: return
+                    atbreak = self.atbreak or data[0].isspace()
+                    col = self.col
+                    maxcol = self.maxcol
+                    write = self.file.write
+                    for word in data.split():
+                        if atbreak:
+                            if col + len(word) >= maxcol:
+                                write('\n')
+                                col = 0
+                            else:
+                                write(' ')
+                                col = col + 1
+                        write(word)
+                        col = col + len(word)
+                        atbreak = 1
+                    self.col = col
+                    self.atbreak = data[-1].isspace()
+        
+        
+            def test(file = None):
+                w = DumbWriter()
+                f = AbstractFormatter(w)
+                if file is not None:
+                    fp = open(file)
+                elif sys.argv[1:]:
+                    fp = open(sys.argv[1])
                 else:
-                    f.add_flowing_data(line)
-            f.end_paragraph(0)
-
-
-        if __name__ == '__main__':
-            test()
-        '''
-
+                    fp = sys.stdin
+                while 1:
+                    line = fp.readline()
+                    if not line:
+                        break
+                    if line == '\n':
+                        f.end_paragraph(1)
+                    else:
+                        f.add_flowing_data(line)
+                f.end_paragraph(0)
+        
+        
+            if __name__ == '__main__':
+                test()
+        ''')
         c.importCommands.pythonUnitTest(c.p, s=s, showTree=False)
     #@+node:ekr.20210904065459.103: *4* TestImport.test_TypeScript_class
     def test_TypeScript_class(self):
@@ -4690,18 +4607,18 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.105: *4* TestImport.test_xml_with_standard_opening_elements
     def test_xml_with_standard_opening_elements(self):
         c = self.c
-        s = '''\
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE note SYSTEM "Note.dtd">
-        <html>
-        <head>
-            <title>Bodystring</title>
-        </head>
-        <body class='bodystring'>
-        <div id='bodydisplay'></div>
-        </body>
-        </html>
-        '''
+        s = textwrap.dedent("""\
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE note SYSTEM "Note.dtd">
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class='bodystring'>
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
         ic = c.importCommands
         table = (
             (1, "<html>"),
@@ -4725,16 +4642,16 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.106: *4* TestImport.test_xml_1
     def test_xml_1(self):
         c = self.c
-        s = '''\
-        <html>
-        <head>
-            <title>Bodystring</title>
-        </head>
-        <body class='bodystring'>
-        <div id='bodydisplay'></div>
-        </body>
-        </html>
-        '''
+        s = textwrap.dedent("""\
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class='bodystring'>
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
         ic = c.importCommands
         table = (
             (1, "<html>"),
@@ -4747,6 +4664,7 @@ class TestImporter(LeoUnitTest):
         root = p.lastChild()
         assert root.h.startswith('@@'), root.h
         p = root.firstChild()
+        assert p
         if 1:
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -4758,11 +4676,11 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.107: *4* TestImport.test_xml_2
     def test_xml_2(self):
         c = self.c
-        s = '''\
-        <nodeA>
-        <nodeB/>
-        </nodeA>
-        '''
+        s = textwrap.dedent("""\
+            <nodeA>
+            <nodeB/>
+            </nodeA>
+        """)
         ic = c.importCommands
         table = (
             (1, "<nodeA>"),
@@ -4773,6 +4691,7 @@ class TestImporter(LeoUnitTest):
         root = p.lastChild()
         assert root.h.startswith('@@'), root.h
         p = root.firstChild()
+        assert p
         if 1:
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -4784,11 +4703,11 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.108: *4* TestImport.test_xml_non_ascii_tags
     def test_xml_non_ascii_tags(self):
         c = self.c
-        s = '''\
-        <:À.Ç>
-        <Ì>
-        <_.ÌÑ>
-        '''
+        s = textwrap.dedent("""\
+            <:À.Ç>
+            <Ì>
+            <_.ÌÑ>
+        """)
         c.importCommands.xmlUnitTest(c.p, s=s, showTree=True)
     #@-others
 #@+node:ekr.20210904071301.1: ** Tests of @auto-md
@@ -4797,31 +4716,28 @@ def test_md_import_test(self):
     c = self.c
     ic = c.importCommands
     s = textwrap.dedent("""\
-s = '''\
-#Top
-The top section
-
-##Section 1
-section 1, line 1
-section 1, line 2
-
-##Section 2
-section 2, line 1
-
-###Section 2.1
-section 2.1, line 1
-
-####Section 2.1.1
-section 2.2.1 line 1
-The next section is empty. It must not be deleted.
-
-###Section 2.2
-
-##Section 3
-Section 3, line 1
-
+        #Top
+        The top section
+        
+        ##Section 1
+        section 1, line 1
+        section 1, line 2
+        
+        ##Section 2
+        section 2, line 1
+        
+        ###Section 2.1
+        section 2.1, line 1
+        
+        ####Section 2.1.1
+        section 2.2.1 line 1
+        The next section is empty. It must not be deleted.
+        
+        ###Section 2.2
+        
+        ##Section 3
+        Section 3, line 1
 """)
-
     ic.markdownUnitTest(c.p, s=s, showTree=True) # Must be true.
     table = (
         (1, 'Top'),
@@ -4847,40 +4763,38 @@ def test_md_import_test_rst_style(self):
     c = self.c
     ic = c.importCommands  
     s = textwrap.dedent("""\
-s = '''\
-Top
-====
-
-The top section
-
-Section 1
----------
-
-section 1, line 1
--- Not an underline
-secttion 1, line 2
-
-Section 2
----------
-
-section 2, line 1
-
-###Section 2.1
-
-section 2.1, line 1
-
-####Section 2.1.1
-
-section 2.2.1 line 1
-
-###Section 2.2
-section 2.2, line 1.
-
-Section 3
----------
-
-section 3, line 1
-
+        Top
+        ====
+        
+        The top section
+        
+        Section 1
+        ---------
+        
+        section 1, line 1
+        -- Not an underline
+        secttion 1, line 2
+        
+        Section 2
+        ---------
+        
+        section 2, line 1
+        
+        ###Section 2.1
+        
+        section 2.1, line 1
+        
+        ####Section 2.1.1
+        
+        section 2.2.1 line 1
+        
+        ###Section 2.2
+        section 2.2, line 1.
+        
+        Section 3
+        ---------
+        
+        section 3, line 1
 """)
     
     ic.markdownUnitTest(c.p, s=s, showTree=True) # Must be True.
@@ -4909,22 +4823,22 @@ def test_markdown_importer_basic(self):
     c = self.c
     ic = c.importCommands  
     # insert test for markdown here.
-    s = '''\
-    Decl line.
-    #Header
-
-    After header text
-
-    ##Subheader
-
-    Not an underline
-
-    ----------------
-
-    After subheader text
-
-    #Last header: no text
-    '''
+    s = textwrap.dedent("""\
+        Decl line.
+        #Header
+    
+        After header text
+    
+        ##Subheader
+    
+        Not an underline
+    
+        ----------------
+    
+        After subheader text
+    
+        #Last header: no text
+    """)
     table = (
         '!Declarations',
         'Header',
@@ -4944,25 +4858,25 @@ def test_markdown_importer_implicit_section(self):
     c = self.c
     ic = c.importCommands  
     # insert test for markdown here.
-    s = '''\
-    Decl line.
-    #Header
-
-    After header text
-
-    ##Subheader
-
-    Not an underline
-
-    ----------------
-
-    This *should* be a section
-    ==========================
-
-    After subheader text
-
-    #Last header: no text
-    '''
+    s = textwrap.dedent("""\
+        Decl line.
+        #Header
+    
+        After header text
+    
+        ##Subheader
+    
+        Not an underline
+    
+        ----------------
+    
+        This *should* be a section
+        ==========================
+    
+        After subheader text
+    
+        #Last header: no text
+    """)
     table = (
         '!Declarations',
         'Header',
@@ -4986,27 +4900,27 @@ def test_markdown_importer__section_name(self):
     c = self.c
     ic = c.importCommands  
     # insert test for markdown here.
-    s = '''\
-    Decl line.
-
+    s = textwrap.dedent("""\
+        Decl line.
+    
 #@verbatim
-    #@@ Header
-
-    After header text
-
-    ##@@Subheader
-
-    Not an underline
-
-    ----------------
-
-    This *should* be a section
-    ==========================
-
-    After subheader text
-
-    #Last header: no text
-    '''
+        #@@ Header
+    
+        After header text
+    
+        ##@@Subheader
+    
+        Not an underline
+    
+        ----------------
+    
+        This *should* be a section
+        ==========================
+    
+        After subheader text
+    
+        #Last header: no text
+    """)
     table = (
         '!Declarations',
         '@verbatim', # This is an artifact of the unit test.
@@ -5031,18 +4945,18 @@ def test_markdown_github_syntax(self):
     c = self.c
     ic = c.importCommands  
     ### insert test for markdown here.
-    s = '''\
-    Decl line.
-    #Header
-
-    `​``python
-    loads.init = {
-        Chloride: 11.5,
-        TotalP: 0.002,
-    }
-    `​``
-    #Last header
-    '''
+    s = textwrap.dedent("""\
+        Decl line.
+        #Header
+    
+        `​``python
+        loads.init = {
+            Chloride: 11.5,
+            TotalP: 0.002,
+        }
+        `​``
+        #Last header
+    """)
     table = (
         '!Declarations',
         'Header',
@@ -5067,47 +4981,47 @@ def test_rST_import_test(self):
     except Exception:
         self.skipTest('no docutils')
 
-    s = '''\
-    .. toc
-
-    ====
-    top
-    ====
-
-    The top section
-
-    section 1
-    ---------
-
-    section 1, line 1
-    --
-    section 1, line 2
-
-    section 2
-    ---------
-
-    section 2, line 1
-
-    section 2.1
-    ~~~~~~~~~~~
-
-    section 2.1, line 1
-
-    section 2.1.1
-    .............
-
-    section 2.2.1 line 1
-
-    section 3
-    ---------
-
-    section 3, line 1
-
-    section 3.1.1
-    .............
-
-    section 3.1.1, line 1
-    '''
+    s = textwrap.dedent("""\
+        .. toc
+    
+        ====
+        top
+        ====
+    
+        The top section
+    
+        section 1
+        ---------
+    
+        section 1, line 1
+        --
+        section 1, line 2
+    
+        section 2
+        ---------
+    
+        section 2, line 1
+    
+        section 2.1
+        ~~~~~~~~~~~
+    
+        section 2.1, line 1
+    
+        section 2.1.1
+        .............
+    
+        section 2.2.1 line 1
+    
+        section 3
+        ---------
+    
+        section 3, line 1
+    
+        section 3.1.1
+        .............
+    
+        section 3.1.1, line 1
+    """)
     table = (
         '!Dummy chapter',
         'top',
@@ -5136,17 +5050,17 @@ def test_rST_import_test_simple(self):
     except Exception:
         self.skipTest('no docutils')
 
-    s = '''\
-    .. toc
-
-    .. The section name contains trailing whitespace.
-
-    =======
-    Chapter 
-    =======
-
-    The top chapter.
-    '''
+    s = textwrap.dedent("""\
+        .. toc
+    
+        .. The section name contains trailing whitespace.
+    
+        =======
+        Chapter 
+        =======
+    
+        The top chapter.
+    """)
     table = (
         "!Dummy chapter",
         "Chapter",
@@ -5169,46 +5083,46 @@ def test_rST_import_test_no_double_underlines(self):
     except Exception:
         self.skipTest('no docutils')
 
-    s = '''\
-    .. toc
-
-    top
-    ====
-
-    The top section
-
-    section 1
-    ---------
-
-    section 1, line 1
-    --
-    section 1, line 2
-
-    section 2
-    ---------
-
-    section 2, line 1
-
-    section 2.1
-    ~~~~~~~~~~~
-
-    section 2.1, line 1
-
-    section 2.1.1
-    .............
-
-    section 2.2.1 line 1
-
-    section 3
-    ---------
-
-    section 3, line 1
-
-    section 3.1.1
-    .............
-
-    section 3.1.1, line 1
-    '''
+    s = textwrap.dedent("""\
+        .. toc
+    
+        top
+        ====
+    
+        The top section
+    
+        section 1
+        ---------
+    
+        section 1, line 1
+        --
+        section 1, line 2
+    
+        section 2
+        ---------
+    
+        section 2, line 1
+    
+        section 2.1
+        ~~~~~~~~~~~
+    
+        section 2.1, line 1
+    
+        section 2.1.1
+        .............
+    
+        section 2.2.1 line 1
+    
+        section 3
+        ---------
+    
+        section 3, line 1
+    
+        section 3.1.1
+        .............
+    
+        section 3.1.1, line 1
+    """)
     table = (
         '!Dummy chapter',
         'top',
@@ -5237,14 +5151,14 @@ def test_rST_import_test_long_underlines(self):
         assert docutils
     except Exception:
         self.skipTest('no docutils')
-    s = '''\
-    .. toc
-
-    top
-    -------------
-
-    The top section
-    '''
+    s = textwrap.dedent("""\
+        .. toc
+    
+        top
+        -------------
+    
+        The top section
+    """)
     table = (
         '!Dummy chapter',
         'top',
@@ -5267,15 +5181,15 @@ def test_rST_import_test_long_overlines(self):
     except Exception:
         self.skipTest('no docutils')
 
-    s = '''\
-    .. toc
-
-    ======
-    top
-    ======
-
-    The top section
-    '''
+    s = textwrap.dedent("""\
+        .. toc
+    
+        ======
+        top
+        ======
+    
+        The top section
+    """)
     table = (
         "!Dummy chapter",
         "top",
@@ -5297,17 +5211,17 @@ def test_rST_import_test_trailing_whitespace(self):
     except Exception:
         self.skipTest('no docutils')
 
-    s = '''\
-    .. toc
-
-    .. The section name contains trailing whitespace.
-
-    ======
-    top 
-    ======
-
-    The top section.
-    '''
+    s = textwrap.dedent("""\
+        .. toc
+    
+        .. The section name contains trailing whitespace.
+    
+        ======
+        top 
+        ======
+    
+        The top section.
+    """)
     table = (
         "!Dummy chapter",
         "top",
@@ -5333,21 +5247,21 @@ def test_leo_rst(self):
 
     # Notes:
     # All heading must be followed by an empty line.
-    s = '''\
-      #########
-      Chapter 1
-      #########
-
-    It was a dark and stormy night.
-    section 1
-    +++++++++
-
-    Sec 1.
-    section 2
-    +++++++++
-
-    Sec 2.
-    '''
+    s = textwrap.dedent("""\
+        #########
+        Chapter 1
+        #########
+    
+        It was a dark and stormy night.
+        section 1
+        +++++++++
+    
+        Sec 1.
+        section 2
+        +++++++++
+    
+        Sec 2.
+    """)
     table = (
         '!Dummy chapter',
         'section 1',
