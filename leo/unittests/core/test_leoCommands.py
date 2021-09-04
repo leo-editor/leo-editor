@@ -163,7 +163,6 @@ class TestCommands(LeoUnitTest):
         f = c.frame
         self.assertEqual(c, f.c)
         self.assertEqual(f, c.frame)
-        g.trace(c)
         ivars = (
             '_currentPosition',
             'hoistStack',
