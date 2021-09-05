@@ -18,6 +18,8 @@ import urllib
 try:
     import docutils
     import docutils.core
+    assert docutils
+    assert docutils.core
 except ImportError:
     # print('leoImport.py: can not import docutils')
     docutils = None  # type:ignore
@@ -1218,29 +1220,27 @@ class LeoImportCommands:
     def defaultImporterUnitTest(self, p, s):
         self.scannerUnitTest( p, s, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
-    def scannerUnitTest(self, p, s, ext=None):
+    def scannerUnitTest(self, p, s, ext):
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
+        assert ext, g.callers()
         self.treeType = '@file'  # Fix #352.
         fileName = 'test'
         # Run the test.
         parent = p.insertAsLastChild()
-        kind = self.compute_unit_test_kind(ext, fileName)
+        kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {fileName}"
         self.createOutline(parent=parent.copy(), ext=ext, s=s)
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
-    def compute_unit_test_kind(self, ext, fn):
-        """Return kind from fn's file extension."""
-        if not ext:
-            junk, ext = g.os_path_splitext(fn)
-        if ext:
-            aClass = g.app.classDispatchDict.get(ext)
-            if aClass:
-                d2 = g.app.atAutoDict
-                for z in d2:
-                    if d2.get(z) == aClass:
+    def compute_unit_test_kind(self, ext):
+        """Return kind from the given extention."""
+        aClass = g.app.classDispatchDict.get(ext)
+        if aClass:
+            d2 = g.app.atAutoDict
+            for z in d2:
+                if d2.get(z) == aClass:
                         return z
         return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
