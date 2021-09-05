@@ -140,8 +140,8 @@ class TestApp(LeoUnitTest):
             result = at.directiveKind4(s,i)
             assert result == expected, '%d %s result: %s expected: %s' % (
                 i,repr(s),at.sentinelName(result),at.sentinelName(expected))
-    #@+node:ekr.20210905052021.20: *4* TestXXX.test_at_directiveKind4_new_
-    def test_at_directiveKind4_new_(self):
+    #@+node:ekr.20210905052021.20: *4* TestXXX.test_at_directiveKind4_new
+    def test_at_directiveKind4_new(self):
         c = self.c
         at = c.atFileCommands
         table = (
@@ -225,8 +225,8 @@ class TestApp(LeoUnitTest):
         assert exists(path)
         assert at.remove(path)
         assert not exists(path)
-    #@+node:ekr.20210905052021.25: *4* TestXXX.test_at_replaceFile_different_contents_
-    def test_at_replaceFile_different_contents_(self):
+    #@+node:ekr.20210905052021.25: *4* TestXXX.test_at_replaceFile_different_contents
+    def test_at_replaceFile_different_contents(self):
         c = self.c
         at = c.atFileCommands
         encoding = 'utf-8'
@@ -264,8 +264,8 @@ class TestApp(LeoUnitTest):
                 for fn in (at.outputFileName,at.targetFileName):
                     if fn and exists(fn):
                         os.remove(fn)
-    #@+node:ekr.20210905052021.26: *4* TestXXX.test_at_replaceFile_no_target_file_
-    def test_at_replaceFile_no_target_file_(self):
+    #@+node:ekr.20210905052021.26: *4* TestXXX.test_at_replaceFile_no_target_file
+    def test_at_replaceFile_no_target_file(self):
         c = self.c
         at = c.atFileCommands
         encoding = 'utf-8'
@@ -296,8 +296,8 @@ class TestApp(LeoUnitTest):
                 for fn in (at.outputFileName,at.targetFileName):
                     if fn and exists(fn):
                         os.remove(fn)
-    #@+node:ekr.20210905052021.27: *4* TestXXX.test_at_replaceFile_same_contents_
-    def test_at_replaceFile_same_contents_(self):
+    #@+node:ekr.20210905052021.27: *4* TestXXX.test_at_replaceFile_same_contents
+    def test_at_replaceFile_same_contents(self):
         c = self.c
         at = c.atFileCommands
         encoding = 'utf-8'
@@ -363,17 +363,6 @@ class TestApp(LeoUnitTest):
         assert len(s) == 4, len(s)
         s = s.translate(table)
         assert len(s) == 2, len(s)
-    #@+node:ekr.20210905052021.33: *4* TestXXX.test_utf_16_encoding
-    def test_utf_16_encoding(self):
-        c = self.c
-        h = '@file unittest/utf-16-test.txt'
-        p = g.findNodeAnywhere(c,h)
-        s = 'Test of utf-16.'
-        assert p,h
-        # It's hard to test the utf-16 text directly.
-        assert p.b
-        assert p.b.find(s) > -1
-        assert len(p.b)==66,len(p.b)
     #@-others
 #@-others
 #@-leo
