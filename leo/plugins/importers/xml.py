@@ -37,8 +37,6 @@ class Xml_Importer(Importer):
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         '''Add items to self.class/functionTags and from settings.'''
-        if g.unitTesting:  # Use only standard tags.
-            return ['html', 'body', 'head', 'div', 'table']
         c, setting = self.c, self.tags_setting
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]

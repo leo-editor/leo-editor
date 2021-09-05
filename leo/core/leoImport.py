@@ -1173,6 +1173,12 @@ class LeoImportCommands:
         self.scannerUnitTest(p, s, ext='.el')
 
     def htmlUnitTest(self, p, s):
+        c = self.c
+        # Simulate @data import-html-tags, with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(p, 'data', 'import-html-tags', tags_list, warn=True)
         self.scannerUnitTest(p, s, ext='.htm')
 
     def iniUnitTest(self, p, s):
@@ -1215,6 +1221,12 @@ class LeoImportCommands:
         self.scannerUnitTest(p, s, ext='.ts')
 
     def xmlUnitTest(self, p, s):
+        c = self.c
+        # Simulate @data import-xml-tags with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(p, 'data', 'import-xml-tags', tags_list, warn=True)
         self.scannerUnitTest(p, s, ext='.xml')
 
     def defaultImporterUnitTest(self, p, s):
