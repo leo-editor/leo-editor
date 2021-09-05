@@ -3975,8 +3975,9 @@ class EditCommandsTest(LeoUnitTest):
     def test_delete_key_sticks_in_headline(self):
         c = self.c
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
         c.redraw(p) # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
@@ -4149,14 +4150,11 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.21: *4* TestXXX.test_paste_and_undo_in_headline__at_end
     def test_paste_and_undo_in_headline__at_end(self):
         c = self.c
-        import sys
-        if sys.platform.startswith('linux'):
-            self.skipTest('Not for Linux')
-
         k = c.keyHandler
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
         c.redrawAndEdit(p) # To make node visible
         w = c.edit_widget(p)
         try:
@@ -4183,49 +4181,43 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.22: *4* TestXXX.test_paste_and_undo_in_headline__with_selection
     def test_paste_and_undo_in_headline__with_selection(self):
         c = self.c
-        import sys
-        if sys.platform.startswith('linux'):
-            self.skipTest('skip headline test')
-        else:
-            k = c.keyHandler
-            frame = c.frame ; tree = frame.tree
-            h = 'Test headline abc'
-            p = c.testManager.findNodeAnywhere(h)
-            assert p,'node not found: %s' % h
-            c.redraw(p) # To make node visible
-            tree.editLabel(p)
-            w = c.edit_widget(p)
-            try:
-                assert w, 'Null w'
-                paste = 'ABC'
-                g.app.gui.replaceClipboardWith(paste)
-                w.setSelectionRange('1.1','1.2')
-                if g.app.gui.guiName() == 'curses':
-                    c.frame.pasteText(event=g.Bunch(widget=w))
-                else:
-                    stroke = k.getStrokeForCommandName('paste-text')
-                    if stroke is None:
-                        self.skipTest('no binding for paste-text') # #1345
-                    k.manufactureKeyPressForCommandName(w,'paste-text')
-                    g.app.gui.event_generate(c,'\n','Return',w)
-                assert p.h == h[0] + paste + h[2:]
-                k.manufactureKeyPressForCommandName(w,'undo')
-                assert p.h == h, 'head mismatch'
-            finally:
-                if 1:
-                    c.setHeadString(p,h) # Essential
-                    c.redraw(p)
+        k = c.keyHandler
+        frame = c.frame ; tree = frame.tree
+        h = 'Test headline abc'
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
+        c.redraw(p) # To make node visible
+        tree.editLabel(p)
+        w = c.edit_widget(p)
+        try:
+            assert w, 'Null w'
+            paste = 'ABC'
+            g.app.gui.replaceClipboardWith(paste)
+            w.setSelectionRange('1.1','1.2')
+            if g.app.gui.guiName() == 'curses':
+                c.frame.pasteText(event=g.Bunch(widget=w))
+            else:
+                stroke = k.getStrokeForCommandName('paste-text')
+                if stroke is None:
+                    self.skipTest('no binding for paste-text') # #1345
+                k.manufactureKeyPressForCommandName(w,'paste-text')
+                g.app.gui.event_generate(c,'\n','Return',w)
+            assert p.h == h[0] + paste + h[2:]
+            k.manufactureKeyPressForCommandName(w,'undo')
+            assert p.h == h, 'head mismatch'
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
     #@+node:ekr.20210905064816.23: *4* TestXXX.test_paste_at_end_of_headline
     def test_paste_at_end_of_headline(self):
         c = self.c
-        import sys
-        if sys.platform.startswith('linux'):
-            self.skipTest('Not for Linux')
-
         k = c.keyHandler
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
         c.redrawAndEdit(p) # To make node visible
         w = c.edit_widget(p)
         g.app.gui.set_focus(c,w)
@@ -4255,8 +4247,9 @@ class EditCommandsTest(LeoUnitTest):
     def test_paste_from_menu_into_headline_sticks(self):
         c = self.c
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
         c.selectPosition(p)
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
@@ -4280,8 +4273,9 @@ class EditCommandsTest(LeoUnitTest):
     def test_return_ends_editing_of_headline(self):
         c = self.c
         h = '@test return ends editing of headline'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
         c.redraw(p) # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
@@ -4307,8 +4301,9 @@ class EditCommandsTest(LeoUnitTest):
         k = c.keyHandler
         frame = c.frame ; tree = frame.tree
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
         c.redraw(p) # To make node visible
         tree.editLabel(p)
         w = c.edit_widget(p)
@@ -4346,8 +4341,9 @@ class EditCommandsTest(LeoUnitTest):
         if k.defaultUnboundKeyAction == 'insert':
             frame = c.frame ; tree = frame.tree
             h = 'Test headline abc'
-            p = c.testManager.findNodeAnywhere(h)
-            assert p,'node not found: %s' % h
+            p = c.rootPosition().insertAfter()
+            p.h = h
+            c.selectPosition(p)
             c.redraw(p) # To make node visible
             tree.editLabel(p)
             w = c.edit_widget(p)
@@ -4432,9 +4428,6 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.28: *4* TestXXX.test_typing_and_undo_in_headline__at_end
     def test_typing_and_undo_in_headline__at_end(self):
         c = self.c
-        import sys
-        if sys.platform.startswith('linux'):
-            self.skipTest('skip headline test')
         if g.app.gui.guiName() == 'curses':
             # This could be adapted, but not now.
             self.skipTest('Not for curses gui')
@@ -4445,8 +4438,8 @@ class EditCommandsTest(LeoUnitTest):
             self.skipTest('no settings')
 
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
         c.redrawAndEdit(p) # To make the node visible.
         w = c.edit_widget(p)
         try:
@@ -4477,8 +4470,8 @@ class EditCommandsTest(LeoUnitTest):
     def test_typing_in_non_empty_body_text_does_not_redraw_the_screen(self):
         c = self.c
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
         c.setBodyString(p,'a')
         c.redraw(p) # To make node visible
         c.bodyWantsFocus()
@@ -4496,8 +4489,8 @@ class EditCommandsTest(LeoUnitTest):
     def test_undoing_insert_node_restores_previous_node_s_body_text(self):
         c = self.c
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
         c.selectPosition(p)
         body = 'This is a test'
         c.setBodyString(p,body)
