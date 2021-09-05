@@ -2699,11 +2699,12 @@ class AtFile:
         # Compare the old and new contents.
         old_contents = g.readFileIntoUnicodeString(fileName,
             encoding=at.encoding, silent=True)
+        if not old_contents:
+            old_contents = ''
         unchanged = (
-            contents == old_contents or
-            (not at.explicitLineEnding and at.compareIgnoringLineEndings(
-            old_contents, contents)) or
-            ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
+            contents == old_contents
+            or (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents))
+            or ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
             at.unchangedFiles += 1
             if not g.unitTesting and c.config.getBool(
@@ -2748,8 +2749,8 @@ class AtFile:
     #@+node:ekr.20190114061452.28: *6* at.compareIgnoringLineEndings
     def compareIgnoringLineEndings(self, s1, s2):
         """Compare two strings, ignoring line endings."""
-        assert g.isUnicode(s1), g.callers()
-        assert g.isUnicode(s2), g.callers()
+        assert g.isUnicode(s1), (repr(s1), g.callers())
+        assert g.isUnicode(s2), (repr(s2), g.callers())
         if s1 == s2:
             return True
         # Wrong: equivalent to ignoreBlankLines!

@@ -235,40 +235,16 @@ class TestAtFile(LeoUnitTest):
         at.initCommonIvars()
         at.scanAllDirectives(c.p) 
         encoding = 'utf-8'
-        exists = g.os_path_exists
-        at.outputFileName = None
-        at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
         try:
-            # Create both paths (different contents)
-            table = (at.targetFileName,)
-            at.outputContents = contents = g.toUnicode('test contents')
-            for fn in table:
-                if fn and exists(fn):
-                    os.remove(fn)
-                assert not exists(fn)
-                f = open(fn,'w')
-                s = 'test %s' % fn
-                f.write(s)
-                f.close()
-                assert exists(fn),fn
-            at.toString = False # Set by execute script stuff.
-            at.shortFileName = at.targetFileName
+            # https://stackoverflow.com/questions/23212435
+            f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')
+            fn = f.name
+            contents = 'test contents'
             val = at.replaceFile(contents, encoding, fn, at.root)
-            assert val
-            if 0:
-                print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-                print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-            assert not exists(at.outputFileName), 'oops, output file exists'
-            assert exists(at.targetFileName), 'oops, target file does not exist'
-            f = open(at.targetFileName)
-            s = f.read()
-            f.close()
-            assert s == contents,s
+            assert val, val
         finally:
-            if 1:
-                for fn in (at.outputFileName,at.targetFileName):
-                    if fn and exists(fn):
-                        os.remove(fn)
+            f.close()
+            os.unlink(f.name)
     #@+node:ekr.20210905052021.26: *4* TestXXX.test_at_replaceFile_no_target_file
     def test_at_replaceFile_no_target_file(self):
         c = self.c
@@ -277,33 +253,17 @@ class TestAtFile(LeoUnitTest):
         at.initCommonIvars()
         at.scanAllDirectives(c.p) 
         encoding = 'utf-8'
-        exists = g.os_path_exists
-        at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
-        at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
-        # Remove both files.
-        for fn in (at.outputFileName,at.targetFileName):
-            if fn and exists(fn):
-                os.remove(fn)
+        at.outputFileName = None  # The point of this test, but I'm not sure it matters.
         try:
-            # Create the output file or contents.
-            at.outputContents = contents = g.toUnicode('test output')
-            at.shortFileName = at.targetFileName
+            # https://stackoverflow.com/questions/23212435
+            f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')
+            fn = f.name
+            contents = 'test contents'
             val = at.replaceFile(contents, encoding, fn, at.root)
-            assert not val
-            if 0:
-                print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-                print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-            assert not exists(at.outputFileName),at.outputFileName
-            assert exists(at.targetFileName),at.targetFileName
-            f = open(at.targetFileName)
-            s = f.read()
-            f.close()
-            assert s == contents,'%s len(%s)' % (fn,len(s))
+            assert val, val
         finally:
-            if 1:
-                for fn in (at.outputFileName,at.targetFileName):
-                    if fn and exists(fn):
-                        os.remove(fn)
+            f.close()
+            os.unlink(f.name)
     #@+node:ekr.20210905052021.27: *4* TestXXX.test_at_replaceFile_same_contents
     def test_at_replaceFile_same_contents(self):
         c = self.c
@@ -312,39 +272,18 @@ class TestAtFile(LeoUnitTest):
         at.initCommonIvars()
         at.scanAllDirectives(c.p) 
         encoding = 'utf-8'
-        exists = g.os_path_exists
-        at.outputFileName = None
-        at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-        # Create both paths (identical contents)
-        contents = g.toUnicode('test contents')
         try:
-            table = (at.targetFileName,)
-            at.outputContents = contents
-            for fn in table:
-                if fn and exists(fn):
-                    os.remove(fn)
-                assert not exists(fn)
-                f = open(fn,'w')
-                f.write(contents)
-                f.close()
-                assert exists(fn)
-            at.toString = False # Set by execute script stuff.
-            at.shortFileName = at.targetFileName
-            assert not at.replaceFile(contents, encoding, fn, at.root)
-            if 0:
-                print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-                print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-            assert not exists(at.outputFileName)
-            assert exists(at.targetFileName)
-            f = open(at.targetFileName)
-            s = f.read()
-            f.close()
-            assert s == contents,contents
+            # https://stackoverflow.com/questions/23212435
+            f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')
+            fn = f.name
+            contents = 'test contents'
+            f.write(contents)
+            f.flush()
+            val = at.replaceFile(contents, encoding, fn, at.root)
+            assert not val, val
         finally:
-            if 1:
-                for fn in (at.outputFileName,at.targetFileName):
-                    if fn and exists(fn):
-                        os.remove(fn)
+            f.close()
+            os.unlink(f.name)
     #@+node:ekr.20210905052021.28: *4* TestXXX.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
         c = self.c
