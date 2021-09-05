@@ -4015,19 +4015,15 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.7: *4* TestXXX.test_findWord
     def test_findWord(self):
         c = self.c
-        # start
-        # targetWord
-
-        e = c.editCommands
-        k = c.k
-        w = c.frame.body.wrapper
+        e, k, w = c.editCommands, c.k, c.frame.body.wrapper
+        w.setAllText('start\ntargetWord\n')
         w.setInsertPoint(0)
         k.arg = 't' # 'targetWord'
         e.w = w
         e.oneLineFlag = False
         e.findWord1(event=None)
         i,j = w.getSelectionRange()
-        assert i == 10, 'expected 10, got %s' % (i)
+        self.assertEqual(i, 6)
     #@+node:ekr.20210905064816.8: *4* TestXXX.test_findWordInLine
     def test_findWordInLine(self):
         c = self.c
