@@ -4033,7 +4033,7 @@ class EditCommandsTest(LeoUnitTest):
         e = c.editCommands
         k = c.k
         w = c.frame.body.wrapper
-        for val in (True,False):
+        for val in (True, False):
             k.arg = 't' # 'targetWord'
             w.setInsertPoint(0)
             e.w = w
@@ -4297,9 +4297,34 @@ class EditCommandsTest(LeoUnitTest):
                 ec.scrollHelper(event,direction,distance)
     #@+node:ekr.20210905064816.26: *4* TestXXX.test_selecting_new_node_retains_paste_in_headline
     def test_selecting_new_node_retains_paste_in_headline(self):
+        c, k = self.c, self.c.k
+        h = 'Test headline abc'
+        p = c.rootPosition().insertAfter()
+        p.h = h
+        c.selectPosition(p)
+        c.redraw(p) # To make node visible
+        c.frame.tree.editLabel(p)
+        w = c.edit_widget(p)
+        w.setSelectionRange('end','end')
+        paste = 'ABC'
+        g.app.gui.replaceClipboardWith(paste)
+        w.setSelectionRange('end','end')
+        if False: ### g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w, 'paste-text')
+        c.selectPosition(p.visBack(c))
+        self.assertEqual(p.h, h + paste)
+        # k.manufactureKeyPressForCommandName(w, 'undo')
+        c.undoer.undo()
+        self.assertEqual(p.h, h)
+    #@+node:ekr.20210905064816.27: *4* TestXXX.test_selecting_new_node_retains_typing_in_headline
+    def test_selecting_new_node_retains_typing_in_headline(self):
         c = self.c
-        k = c.keyHandler
-        frame = c.frame ; tree = frame.tree
+        k = c.k
+        if k.defaultUnboundKeyAction != 'insert':
+            return
+        tree = c.frame.tree
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4307,62 +4332,16 @@ class EditCommandsTest(LeoUnitTest):
         c.redraw(p) # To make node visible
         tree.editLabel(p)
         w = c.edit_widget(p)
-        try:
-            assert w,'oops1'
-            w.setSelectionRange('end','end')
-            paste = 'ABC'
-            g.app.gui.replaceClipboardWith(paste)
-            w.setSelectionRange('end','end')
-            if g.app.gui.guiName() == 'curses':
-                c.frame.pasteText(event=g.Bunch(widget=w))
-            else:
-                k.manufactureKeyPressForCommandName(w,'paste-text')
-            c.selectPosition(p.visBack(c))
-            assert p.h == h + paste
-            k.manufactureKeyPressForCommandName(w,'undo')
-            assert p.h == h,'expected: %s, got: %s' % (
-                h,p.h)
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
-    #@+node:ekr.20210905064816.27: *4* TestXXX.test_selecting_new_node_retains_typing_in_headline
-    def test_selecting_new_node_retains_typing_in_headline(self):
-        c = self.c
-        if g.in_bridge:
-            self.skipTest('Not for TravisCI')
-        import sys
-        if sys.platform.startswith('linux'):
-            self.skipTest('Not for Linux')
-        if g.app.gui.guiName() == 'curses':
-            self.skipTest('Not for curses gui')
-
-        k = c.k
-        if k.defaultUnboundKeyAction == 'insert':
-            frame = c.frame ; tree = frame.tree
-            h = 'Test headline abc'
-            p = c.rootPosition().insertAfter()
-            p.h = h
-            c.selectPosition(p)
-            c.redraw(p) # To make node visible
-            tree.editLabel(p)
-            w = c.edit_widget(p)
-            try:
-                assert w
-                w.setSelectionRange('end','end')
-                # char, shortcut.
-                g.app.gui.event_generate(c,'X','Shift+X',w)
-                g.app.gui.event_generate(c,'Y','Shift+Y',w)
-                g.app.gui.event_generate(c,'Z','Shift+Z',w)
-                g.app.gui.event_generate(c,'\n','Return',w)
-                expected = h + 'XYZ'
-                assert p.h == expected, f"oops 1: expected {expected!r} got {p.h!r}"
-                k.manufactureKeyPressForCommandName(w,'undo')
-                assert p.h == h, f"oops 2: expected {h!r} got {p.h!r}"
-            finally:
-                if 1:
-                    c.setHeadString(p, h) # Essential
-                    c.redraw(p)
+        w.setSelectionRange('end','end')
+        # char, shortcut.
+        g.app.gui.event_generate(c,'X','Shift+X',w)
+        g.app.gui.event_generate(c,'Y','Shift+Y',w)
+        g.app.gui.event_generate(c,'Z','Shift+Z',w)
+        g.app.gui.event_generate(c,'\n','Return',w)
+        expected = h + 'XYZ'
+        self.assertEqual(p.h, expected)
+        k.manufactureKeyPressForCommandName(w,'undo')
+        self.assertEqual(p.h, h)
     #@+node:ekr.20210905064816.13: *4* TestXXX.test_setMoveCol
     def test_setMoveCol(self):
         c = self.c
@@ -4380,7 +4359,6 @@ class EditCommandsTest(LeoUnitTest):
         # backward-find-character and find-character
         # can't be tested this way because they require k.getarg.
         # They pass hand tests.
-
         #@+<< define table >>
         #@+node:ekr.20210905065002.1: *5* << define table >>
         # Cursor movement commands affected by extend mode.
@@ -4408,23 +4386,19 @@ class EditCommandsTest(LeoUnitTest):
             'previous-line',
         )
         #@-<< define table >>
-
         w = c.frame.body.wrapper
         child = g.findNodeInChildren(c,p,'work')
         assert child
         c.selectPosition(child)
-
         for commandName in table:
             # Put the cursor in the middle of the middle line
             # so all cursor moves will actually do something.
             w.setInsertPoint(15) # for move-past-close
-            try:
-                c.editCommands.extendMode = True
-                c.keyHandler.simulateCommand(commandName)
-                i,j = w.getSelectionRange()
-                assert i != j,'i == j: %s %s' % (i,commandName)
-            finally:
-                c.editCommands.extendMode = False
+            c.editCommands.extendMode = True
+            c.keyHandler.simulateCommand(commandName)
+            i,j = w.getSelectionRange()
+            assert i != j,'i == j: %s %s' % (i,commandName)
+            
     #@+node:ekr.20210905064816.28: *4* TestXXX.test_typing_and_undo_in_headline__at_end
     def test_typing_and_undo_in_headline__at_end(self):
         c = self.c
