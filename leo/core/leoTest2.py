@@ -261,7 +261,7 @@ class ConvertTests:
         # Create the new node.
         test_node = target.insertAsLastChild()
         test_node.h = f"{self.class_name}.{test_name}"
-        test_node.b = f"def {test_name}(self):\n{body}\n"
+        test_node.b = f"def {test_name}(self):\n    c = self.c\n{body}\n"
     #@+node:ekr.20201130075024.5: *4* ConvertTests.function_name
     def function_name(self, command_name):
         """Convert a command name into a test function."""
