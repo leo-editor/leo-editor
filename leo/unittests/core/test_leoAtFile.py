@@ -46,7 +46,6 @@ class TestApp(LeoUnitTest):
             at.checkPythonSyntax(p,s2)
     #@+node:ekr.20210901140645.14: *3* TestAtFile.test_at_tabNannyNode
     def test_at_tabNannyNode(self):
-        ### @tabwidth -4
         c, p = self.c, self.c.p
         at = c.atFileCommands
         s = '''

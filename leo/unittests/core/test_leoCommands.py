@@ -123,7 +123,6 @@ class TestCommands(LeoUnitTest):
             assert val == val2,"%s %s" % (val,val2)
     #@+node:ekr.20210901140645.17: *3* TestCommands.test_c_tabNannyNode
     def test_c_tabNannyNode(self):
-        ### @tabwidth -4
         c, p = self.c, self.c.p
         s = '''
         # no error

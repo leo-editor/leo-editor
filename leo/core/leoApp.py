@@ -3342,15 +3342,9 @@ class PreviousSettings:
     """
 
     def __init__(self, settingsDict, shortcutsDict):
-        
-        
-        
         if not shortcutsDict or not settingsDict:  # #1766: unit tests.
             lm = g.app.loadManager
             settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()
-        ### assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
-        ### assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict)
-            # was TypedDictOfLists.
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 

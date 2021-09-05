@@ -259,11 +259,6 @@ class TestShadow(LeoUnitTest):
             result1,result2 = marker.getDelims()
             self.assertEqual(delim1, result1, msg=f"language: {language} {lines_s}")
             self.assertEqual(delim2, result2, msg=f"language: {language} {lines_s}")
-            ###
-                # assert delim1==result1, 'language %s expected1 %s got %s lines %s' % (
-                    # language,delim1,result1,'\n'.join(lines))
-                # assert delim2==result2, 'language %s expected2 %s got %s lines %s' % (
-                    # language,delim1,result1,'\n'.join(lines))
     #@+node:ekr.20210902210552.10: *3* TestShadow.test_x_markerFromFileName
     def test_x_markerFromFileName(self):
         c = self.c

@@ -533,7 +533,6 @@ class LeoFind:
         save_sel = w.getSelectionRange()
         ins = w.getInsertPoint()
         old_p = c.p
-        ### g.trace(self.reverse_find_defs)
         if self.reverse_find_defs:
             # #2161: start at the last position.
             p = c.lastPosition()
@@ -2326,29 +2325,6 @@ class LeoFind:
             return mo.start(), mo.end()
         self.match_obj = None
         return -1, -1
-        #
-        # The following is mysterious.
-        # Félix, please don't bother with it.
-        # I'll re-enable it if it ever makes sense to me :-)
-        ###
-            # # if mo and mo.group(0) != 'def': g.trace(i, mo, mo.start(), mo.end())
-            # while mo and 0 <= i <= len(s):
-                # if mo.start() == mo.end():
-                    # if backwards:
-                        # # Search backward using match instead of search.
-                        # i -= 1
-                        # while 0 <= i < len(s):
-                            # mo = re_obj.match(s, i, j)
-                            # if mo: break
-                            # i -= 1
-                    # else:
-                        # i += 1
-                        # mo = re_obj.search(s, i, j)
-                # else:
-                    # self.match_obj = mo
-                    # return mo.start(), mo.end()
-            # self.match_obj = None
-            # return -1, -1
     #@+node:ekr.20210110073117.48: *4* find.make_regex_subs
     def make_regex_subs(self, change_text, groups):
         """

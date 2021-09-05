@@ -1149,127 +1149,93 @@ class LeoImportCommands:
 
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
-    def cUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.c')
+    def cUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.c')
 
-    def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
+    def cSharpUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.c#')
 
-    def cythonUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.pyx')
+    def cythonUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.pyx')
 
-    def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.coffee')
+    def coffeeScriptUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.coffee')
 
-    def ctextUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
+    def ctextUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.txt')
 
-    def dartUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.dart')
+    def dartUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.dart')
 
-    def elispUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.el')
+    def elispUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.el')
 
-    def htmlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.htm')
+    def htmlUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.htm')
 
-    def iniUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.ini')
+    def iniUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.ini')
 
-    def javaUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.java')
+    def javaUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.java')
 
-    def javaScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.js')
+    def javaScriptUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.js')
 
-    def markdownUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.md')
+    def markdownUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.md')
 
-    def orgUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.org')
+    def orgUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.org')
 
-    def otlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.otl')
+    def otlUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.otl')
 
-    def pascalUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.pas')
+    def pascalUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.pas')
 
-    def perlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.pl')
+    def perlUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.pl')
 
-    def phpUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.php')
+    def phpUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.php')
 
-    def pythonUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.py')
+    def pythonUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.py')
 
-    def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
-        if docutils:
-            return self.scannerUnitTest(
-                p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
+    def rstUnitTest(self, p, fileName=None, s=None):
+        if not docutils:
+            return None
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.rst')
 
-        # print('leoImport.py: can not import docutils')
-        return None
+    def textUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.txt')
 
-    def textUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
+    def typeScriptUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.ts')
 
-    def typeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.ts')
+    def xmlUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest(p, fileName=fileName, s=s, ext='.xml')
 
-    def xmlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.xml')
-
-    def defaultImporterUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.xxx')
+    def defaultImporterUnitTest(self, p, fileName=None, s=None):
+        return self.scannerUnitTest( p, fileName=fileName, s=s, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
-    def scannerUnitTest(self, p, ext=None, fileName=None, s=None, showTree=False):
+    def scannerUnitTest(self, p, ext=None, fileName=None, s=None):
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        ### c = self.c
-        ### old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
         if not fileName:
-            fileName = 'test'  ###
+            fileName = 'test'
         if not s:
             s = self.removeSentinelsCommand([fileName], toString=True)
         # Run the actual test using the **GeneralTestCase** class.
         parent = p.insertAsLastChild()
-        ###
-            # # Leo 5.6: Compute parent here.
-            # if p:
-                # parent = p.insertAsLastChild()
-            # else:
-                # parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
         self.createOutline(parent=parent.copy(), ext=ext, s=s)
-        ### c.selectPosition(old_root) ###
         return True
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
     def compute_unit_test_kind(self, ext, fn):

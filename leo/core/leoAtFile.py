@@ -847,11 +847,8 @@ class AtFile:
         if at.errors:
             g.trace('can not happen: at.errors > 0', g.callers())
             e = at.encoding
-            if g.unitTesting: assert False, g.callers()
-                # This can happen when the showTree command in a unit test is left on.
-                # A @file/@clean node is created which refers to a non-existent file.
-                # It's surprisingly difficult to set at.error=0 safely elsewhere.
-                # Otoh, I'm not sure why this test here is ever really useful.
+            if g.unitTesting:
+                assert False, g.callers()
         else:
             at.initReadLine(s)
             old_encoding = at.encoding
