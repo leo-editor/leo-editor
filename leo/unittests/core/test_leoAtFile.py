@@ -231,6 +231,9 @@ class TestAtFile(LeoUnitTest):
     def test_at_replaceFile_different_contents(self):
         c = self.c
         at = c.atFileCommands
+        # Duplicate init logic...
+        at.initCommonIvars()
+        at.scanAllDirectives(c.p) 
         encoding = 'utf-8'
         exists = g.os_path_exists
         at.outputFileName = None
@@ -270,6 +273,9 @@ class TestAtFile(LeoUnitTest):
     def test_at_replaceFile_no_target_file(self):
         c = self.c
         at = c.atFileCommands
+        # Duplicate init logic...
+        at.initCommonIvars()
+        at.scanAllDirectives(c.p) 
         encoding = 'utf-8'
         exists = g.os_path_exists
         at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
@@ -302,6 +308,9 @@ class TestAtFile(LeoUnitTest):
     def test_at_replaceFile_same_contents(self):
         c = self.c
         at = c.atFileCommands
+        # Duplicate init logic...
+        at.initCommonIvars()
+        at.scanAllDirectives(c.p) 
         encoding = 'utf-8'
         exists = g.os_path_exists
         at.outputFileName = None
