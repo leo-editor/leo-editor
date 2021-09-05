@@ -1254,14 +1254,6 @@ class LeoImportCommands:
         ### old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
-        ###
-            # # A hack.  Let unit tests set the kill-check flag first.
-            # d = g.app.unitTestDict
-            # if d.get('kill-check'):
-                # d = {'kill-check': True}
-            # else:
-                # d = {}
-            # g.app.unitTestDict = d
         if not fileName:
             fileName = 'test'  ###
         if not s:
@@ -1277,28 +1269,8 @@ class LeoImportCommands:
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
         self.createOutline(parent=parent.copy(), ext=ext, s=s)
+        ### c.selectPosition(old_root) ###
         return True
-        ### g.dump_tree(c, msg='after')
-        ### Not necessary!
-            # # Set ok.
-            # d = g.app.unitTestDict
-            # ok = d.get('result') is True
-            # # Clean up.
-            # if showTree:
-                # # 2016/11/17: Make sure saving the outline doesn't create any file.
-                # for child in old_root.children():
-                    # if child.isAnyAtFileNode():
-                        # child.h = '@' + child.h
-            # else:
-                # while old_root.hasChildren():
-                    # old_root.firstChild().doDelete()
-            # c.redraw(old_root)
-            # if g.app.unitTesting:
-                # d['kill-check'] = False
-                # if not ok:
-                    # g.app.unitTestDict['fail'] = p.h
-                # assert ok, p.h
-            # return ok
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
     def compute_unit_test_kind(self, ext, fn):
         """Return kind from fn's file extension."""

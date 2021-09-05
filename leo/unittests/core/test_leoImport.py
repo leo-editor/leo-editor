@@ -3001,9 +3001,11 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(c.p, s=s)
     #@+node:ekr.20210904065459.96: *5* TestImport.test_python_top_level_later_decl
     def test_python_top_level_later_decl(self):
-        c = self.c
         # From xo.py.
-        s = textwrap.dedent(r'''\
+        c = self.c
+        # The first line *must* be blank.
+        s = textwrap.dedent(r'''
+
             #!/usr/bin/env python3
 
             import os
@@ -3041,7 +3043,6 @@ class TestImporter(LeoUnitTest):
         p = c.p
         c.importCommands.pythonUnitTest(p, s=s)
         root = p.lastChild()
-        g.dump_tree(c)
         assert root and root.h == '@file test', root.h
         after = p.nodeAfterTree()
         p = root.firstChild()
