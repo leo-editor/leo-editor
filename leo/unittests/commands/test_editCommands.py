@@ -6,7 +6,6 @@
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
-
 #@+others
 #@+node:ekr.20210829060957.1: ** class EditCommandsTest(LeoUnitTest)
 class EditCommandsTest(LeoUnitTest):
@@ -22,6 +21,9 @@ class EditCommandsTest(LeoUnitTest):
             directives='',
             dedent=True,
         ):
+        """
+        A helper for many commands tests.
+        """
         c = self.c
         # For shortDescription().
         self.command_name = command_name
@@ -52,6 +54,7 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20201201084621.1: *3* EditCommandsTest.setUp
     def setUp(self):
         """Create the nodes in the commander."""
+        super().setUp()
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
         from leo.core import leoCommands
@@ -3951,30 +3954,23 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.16: *4* TestXXX.test_delete_key_sticks_in_body
     def test_delete_key_sticks_in_body(self):
         c = self.c
+        w = c.frame.body.wrapper
         h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
+        p = c.rootPosition().insertAfter()
+        p.h = h
         c.selectPosition(p)
         s = 'ABC'
         c.setBodyString(p,s)
-        try:
-            c.bodyWantsFocus()
-            w = c.frame.body.wrapper
-            w.setInsertPoint(2)
-            c.outerUpdate() # This fixed the problem.
-            if 1:
-                c.k.simulateCommand('delete-char')
-            else:
-                # This fails unless Delete is bound to delete-char
-                g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
-            assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
-            c.selectPosition(p.threadBack())
-            c.selectPosition(p)
-            assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
-        finally:
-            if 0:
-                c.setBodyString(p,'')
-                c.redraw(p)
+        c.bodyWantsFocus()
+        w.setInsertPoint(2)
+        c.outerUpdate() # This fixed the problem.
+        c.k.simulateCommand('delete-char')
+        ### assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
+        self.assertEqual(p.b, s[:-1])
+        c.selectPosition(p.threadBack())
+        c.selectPosition(p)
+        ### assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
+        self.assertEqual(p.b, s[:-1])
     #@+node:ekr.20210905064816.17: *4* TestXXX.test_delete_key_sticks_in_headline
     def test_delete_key_sticks_in_headline(self):
         c = self.c
@@ -4515,5 +4511,4 @@ class EditCommandsTest(LeoUnitTest):
             c.setBodyString(p,'')
     #@-others
 #@-others
-
 #@-leo
