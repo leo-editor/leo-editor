@@ -4,6 +4,7 @@
 #@@first
 """Tests of leoApp.py"""
 import os
+import re
 import tempfile
 import textwrap
 from leo.core import leoGlobals as g
@@ -115,59 +116,57 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.2: *5* TestXXX.test_at_auto_newlines_at_end_of_nodes_
     def test_at_auto_newlines_at_end_of_nodes_(self):
         c = self.c
-        c.testManager.runAtFileTest(p)
+        c.testManager.runAtFileTest(c.p)
     #@+node:ekr.20210905045005.3: *6* #@auto
-    #@@language python
-    #@@tabwidth -4
-    #@+others
+    # # # @language python
+    # # # @tabwidth -4
+    # # # @others
+    # # # #end
     #@+node:ekr.20210905045005.4: *7* spam
-    def spam(cheese):
+    # # # def spam(cheese):
 
-        print(cheese)
+        # # # print(cheese)
     #@+node:ekr.20210905045005.5: *7* cheese
-    def cheese():
+    # # # def cheese():
 
-        pass
-    #@-others
-    #end
+        # # # pass
     #@+node:ekr.20210905045005.6: *6* Output
-    def spam(cheese):
+    # # # def spam(cheese):
 
-        print(cheese)
-    def cheese():
+        # # # print(cheese)
+    # # # def cheese():
 
-        pass
-    #end
+        # # # pass
+    # # # #end
     #@+node:ekr.20210905044728.3: *5* TestXXX.test_at_auto_no_newline_at_end_of_nodes_
     def test_at_auto_no_newline_at_end_of_nodes_(self):
         c = self.c
-        c.testManager.runAtFileTest(p)
+        c.testManager.runAtFileTest(c.p)
     #@+node:ekr.20210905045005.8: *6* #@auto
-    #@@language python
-    #@@tabwidth -4
-    #@+others
+    # # # @language python
+    # # # @tabwidth -4
+    # # # @others
+    # # # #end
     #@+node:ekr.20210905045005.9: *7* spam
-    def spam(cheese):
+    # # # def spam(cheese):
 
-        print(cheese)
+        # # # print(cheese)
     #@+node:ekr.20210905045005.10: *7* cheese
-    def cheese():
+    # # # def cheese():
 
-        pass
-    #@-others
-    #end
+        # # # pass
     #@+node:ekr.20210905045005.11: *6* Output
-    def spam(cheese):
+    # # # def spam(cheese):
 
-        print(cheese)
-    def cheese():
+        # # # print(cheese)
+    # # # def cheese():
 
-        pass
-    #end
+        # # # pass
+    # # # #end
     #@+node:ekr.20210905044728.4: *5* TestXXX.test_at_edit
     def test_at_edit(self):
         c = self.c
-        c.testManager.runAtFileTest(p)
+        c.testManager.runAtFileTest(c.p)
     #@+node:ekr.20210905045005.13: *6* #@edit
     ### These were text lines, without the leading '#'
 
@@ -183,7 +182,7 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.5: *5* TestXXX.test_at_raw
     def test_at_raw(self):
         c = self.c
-        c.testManager.runAtFileTest(p)
+        c.testManager.runAtFileTest(c.p)
     #@+node:ekr.20210905045005.16: *6* #@file
     # before
 
@@ -235,7 +234,7 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.6: *5* TestXXX.test_at_thin with at_last
     def test__thin_with_at_last(self):
         c = self.c
-        c.testManager.runAtFileTest(p)
+        c.testManager.runAtFileTest(c.p)
     #@+node:ekr.20210905045005.20: *6* #@thin
     # Line 1
 
@@ -253,11 +252,12 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.7: *5* TestXXX.test_at_readOneAtShadowNode
     def test_at_readOneAtShadowNode(self):
         c = self.c
+        p = c.p
         at = c.atFileCommands
-        x = c.shadowController
-        changed = c.changed
+        # x = c.shadowController
+        # changed = c.changed
         child = p.firstChild()
-        s = child.b
+        # s = child.b
         try:
             fn = 'unittest/read_test.py'
             child.setHeadString('@shadow %s' % fn)
@@ -325,9 +325,9 @@ class TestApp(LeoUnitTest):
                     break
         assert result == expected
     #@+node:ekr.20210905045316.3: *6* ### << a >>
-    a
+    # # # a
     #@+node:ekr.20210905045316.4: *6* ### << b >>
-    b
+    # # # b
     #@+node:ekr.20210905044728.9: *5* TestXXX.test_at_putRefLine_2
     def test_at_putRefLine_2(self):
         c = self.c
@@ -377,13 +377,13 @@ class TestApp(LeoUnitTest):
                     break
         assert result == expected
     #@+node:ekr.20210905045316.6: *6* ### << a >>
-    a
+    ### a
     #@+node:ekr.20210905045316.7: *6* ### << b >>
-    b
+    ### b
     #@+node:ekr.20210905044728.10: *4* TestXXX.test__asis
     def test__asis(self):
         c = self.c
-        c.testManager.runAtFileTest(p)
+        c.testManager.runAtFileTest(c.p)
     #@+node:ekr.20210905044728.11: *4* TestXXX.test__asis___in_headline
     def test__asis___in_headline(self):
         c = self.c
@@ -582,8 +582,8 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.21: *4* TestXXX.test_at_get_setPathUa
     def test_at_get_setPathUa(self):
         c = self.c
+        p = c.p
         at = c.atFileCommands
-
         at.setPathUa(p,'abc')
         d = p.v.tempAttributes
         d2 = d.get('read-path')
@@ -601,15 +601,11 @@ class TestApp(LeoUnitTest):
     def test_at_isFileLike(self):
         c = self.c
         s1 = '''
-    #@verbatim
-        #@+leo-ver=4
-    #@verbatim
-        #@+node:#@file
+        ###@+leo-ver=4
+        ###@+node:#@file
         Line 1
-    #@verbatim
-        #@-node:#@file
-    #@verbatim
-        #@-leo
+        ###@-node:#@file
+        ###@-leo
         '''
 
         s2 = '''
@@ -677,8 +673,6 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.25: *4* TestXXX.test_at_replaceFile_different_contents_
     def test_at_replaceFile_different_contents_(self):
         c = self.c
-        import os
-        import leo.core.leoAtFile as leoAtFile
         at = c.atFileCommands
         encoding = 'utf-8'
         exists = g.os_path_exists
@@ -718,8 +712,6 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.26: *4* TestXXX.test_at_replaceFile_no_target_file_
     def test_at_replaceFile_no_target_file_(self):
         c = self.c
-        import os
-        import leo.core.leoAtFile as leoAtFile
         at = c.atFileCommands
         encoding = 'utf-8'
         exists = g.os_path_exists
@@ -752,8 +744,6 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.27: *4* TestXXX.test_at_replaceFile_same_contents_
     def test_at_replaceFile_same_contents_(self):
         c = self.c
-        import os
-        import leo.core.leoAtFile as leoAtFile
         at = c.atFileCommands
         encoding = 'utf-8'
         exists = g.os_path_exists
@@ -798,7 +788,7 @@ class TestApp(LeoUnitTest):
         # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
         ### @pagewidth 120
 
-        d = c.atFileCommands.scanAllDirectives(p)
+        d = c.atFileCommands.scanAllDirectives(c.p)
 
         assert d.get('language') == 'python'
         assert d.get('tabwidth') == -4
@@ -808,11 +798,12 @@ class TestApp(LeoUnitTest):
     def test_at_scanAllDirectives_minimal_(self):
         c = self.c
         at = c.atFileCommands
-        d = at.scanAllDirectives(p)
+        d = at.scanAllDirectives(c.p)
+        assert d  ###
     #@+node:ekr.20210905044728.30: *4* TestXXX.test_at_write_using_comment
     def test_at_write_using_comment(self):
         c = self.c
-        import re
+        p = c.p
         at = c.atFileCommands
         expected = '''\
         /*@+leo-ver=5-thin*/
@@ -858,12 +849,12 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.31: *4* TestXXX.test_at_writeOneAtShadowNode
     def test_at_writeOneAtShadowNode(self):
         c = self.c
-        import os
+        p = c.p
         at = c.atFileCommands
         x = c.shadowController
-        changed = c.changed
+        # changed = c.changed
         child = p.firstChild()
-        s = child.b
+        # s = child.b
 
         try:
             child.setHeadString('@shadow unittest/test_1.py')
@@ -901,9 +892,6 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905044728.33: *4* TestXXX.test_utf_16_encoding
     def test_utf_16_encoding(self):
         c = self.c
-        import sys
-        if g.app.isExternalUnitTest:
-            self.skipTest('external test')
         h = '@file unittest/utf-16-test.txt'
         p = g.findNodeAnywhere(c,h)
         s = 'Test of utf-16.'
@@ -922,7 +910,7 @@ class TestApp(LeoUnitTest):
 
         # The length of this node should remain constant.
 
-        assert len(p.b) == 175,len(p.b)
+        assert len(c.p.b) == 175, len(c.p.b)
     #@-others
 #@-others
 #@-leo
