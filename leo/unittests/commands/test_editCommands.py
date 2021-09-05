@@ -7,13 +7,13 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
-#@+node:ekr.20210829060957.1: ** class EditCommandsTest(LeoUnitTest)
-class EditCommandsTest(LeoUnitTest):
+#@+node:ekr.20210829060957.1: ** class TestEditCommands(LeoUnitTest)
+class TestEditCommands(LeoUnitTest):
     """Unit tests for leo/commands/editCommands.py."""
     # For pylint.
     before_p = after_p = parent_p = tempNode = None
     #@+others
-    #@+node:ekr.20201129161726.5: *3* EditCommandsTest.run_test
+    #@+node:ekr.20201129161726.5: *3* TestEditCommands.run_test
     def run_test(self,
             before_b, after_b,  # before/after body text.
             before_sel, after_sel,  # before and after selection ranges.
@@ -51,7 +51,7 @@ class EditCommandsTest(LeoUnitTest):
         # Run the command!
         c.k.simulateCommand(command_name)
         self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
-    #@+node:ekr.20201201084621.1: *3* EditCommandsTest.setUp
+    #@+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
         """Create the nodes in the commander."""
         super().setUp()
@@ -73,7 +73,7 @@ class EditCommandsTest(LeoUnitTest):
 
     # def tearDown(self):
         # self.c = None
-    #@+node:ekr.20201130091020.1: *3* EditCommandTest: Commands...
+    #@+node:ekr.20201130091020.1: *3* TestEditCommands: Commands...
     #@+node:ekr.20210829061326.1: *4* Commands A-B
     #@+node:ekr.20201130090918.1: *5* add-space-to-lines
     def test_add_space_to_lines(self):
@@ -3888,13 +3888,14 @@ class EditCommandsTest(LeoUnitTest):
             after_sel=("3.7", "3.7"),
             command_name="upcase-word",
         )
-    #@+node:ekr.20210905064816.1: *3* Converted nodes
-    #@+node:ekr.20210905064816.2: *4* TestXXX.test_abbrevCommands_next_place
+    #@+node:ekr.20210905064816.1: *3* TestEditCommands: Others
+    #@+node:ekr.20210905064816.2: *4* TestEditCommands.test_abbrevCommands_next_place
     def test_abbrevCommands_next_place(self):
         c = self.c
         p = c.p
         ac = c.abbrevCommands
         assert ac
+        # pylint: disable=no-member
         if c.abbrev_place_start is None or c.abbrev_place_end is None:
             self.skipTest('no abbreviation settings') # #1345.
         child = g.findNodeInTree(c,p,'child')
@@ -3911,7 +3912,7 @@ class EditCommandsTest(LeoUnitTest):
             assert i == 54 and j == 58,(i,j)
         finally:
             child.b = old_b
-    #@+node:ekr.20210905064816.3: *4* TestXXX.test_addAbbrevHelper
+    #@+node:ekr.20210905064816.3: *4* TestEditCommands.test_addAbbrevHelper
     def test_addAbbrevHelper(self):
         c = self.c
         f = c.abbrevCommands.addAbbrevHelper
@@ -3936,7 +3937,7 @@ class EditCommandsTest(LeoUnitTest):
                 result,tag = d.get(name,(None,None),)
                 assert result==expected, '%s <%s> expected <%s>, got <%s>' % (
                     kind,s,expected,result)
-    #@+node:ekr.20210905064816.4: *4* TestXXX.test_capitalizeHelper
+    #@+node:ekr.20210905064816.4: *4* TestEditCommands.test_capitalizeHelper
     def test_capitalizeHelper(self):
         c, w = self.c, self.c.frame.body.wrapper
         w.setAllText('# TARGETWORD\n')
@@ -3953,7 +3954,7 @@ class EditCommandsTest(LeoUnitTest):
             self.assertEqual(word, result, msg=which)
             i = w.getInsertPoint()
             self.assertEqual(i, 5, msg=which)
-    #@+node:ekr.20210905064816.16: *4* TestXXX.test_delete_key_sticks_in_body
+    #@+node:ekr.20210905064816.16: *4* TestEditCommands.test_delete_key_sticks_in_body
     def test_delete_key_sticks_in_body(self):
         c = self.c
         w = c.frame.body.wrapper
@@ -3973,7 +3974,7 @@ class EditCommandsTest(LeoUnitTest):
         c.selectPosition(p)
         ### assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
         self.assertEqual(p.b, s[:-1])
-    #@+node:ekr.20210905064816.17: *4* TestXXX.test_delete_key_sticks_in_headline
+    #@+node:ekr.20210905064816.17: *4* TestEditCommands.test_delete_key_sticks_in_headline
     def test_delete_key_sticks_in_headline(self):
         c = self.c
         h = 'Test headline abc'
@@ -3990,14 +3991,14 @@ class EditCommandsTest(LeoUnitTest):
             if 1:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
-    #@+node:ekr.20210905064816.5: *4* TestXXX.test_dynamicExpandHelper
+    #@+node:ekr.20210905064816.5: *4* TestEditCommands.test_dynamicExpandHelper
     def test_dynamicExpandHelper(self):
         c = self.c
         # A totally wimpy test.
         # And it somehow prints a newline to the console.
         if 0:
             c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
-    #@+node:ekr.20210905064816.6: *4* TestXXX.test_extendHelper
+    #@+node:ekr.20210905064816.6: *4* TestEditCommands.test_extendHelper
     def test_extendHelper(self):
         c = self.c
         ec = c.editCommands ; w = c.frame.body.wrapper
@@ -4012,7 +4013,7 @@ class EditCommandsTest(LeoUnitTest):
             i2,j2 = w.getSelectionRange()
             #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
             #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
-    #@+node:ekr.20210905064816.7: *4* TestXXX.test_findWord
+    #@+node:ekr.20210905064816.7: *4* TestEditCommands.test_findWord
     def test_findWord(self):
         c = self.c
         e, k, w = c.editCommands, c.k, c.frame.body.wrapper
@@ -4024,7 +4025,7 @@ class EditCommandsTest(LeoUnitTest):
         e.findWord1(event=None)
         i,j = w.getSelectionRange()
         self.assertEqual(i, 6)
-    #@+node:ekr.20210905064816.8: *4* TestXXX.test_findWordInLine
+    #@+node:ekr.20210905064816.8: *4* TestEditCommands.test_findWordInLine
     def test_findWordInLine(self):
         c = self.c
         e, k, w = c.editCommands, c.k, c.frame.body.wrapper
@@ -4036,34 +4037,37 @@ class EditCommandsTest(LeoUnitTest):
         e.findWord1(event=None)
         i, j = w.getSelectionRange()
         self.assertEqual(i, 4)
-    #@+node:ekr.20210905064816.9: *4* TestXXX.test_helpForMinibuffer
+    #@+node:ekr.20210905064816.9: *4* TestEditCommands.test_helpForMinibuffer
     def test_helpForMinibuffer(self):
         c = self.c
         vr = c.helpCommands.helpForMinibuffer()
         if not vr:
             self.skipTest('no vr plugin')
-    #@+node:ekr.20210905064816.19: *4* TestXXX.test_insert_node_before_node_can_be_undone_and_redone
+    #@+node:ekr.20210905064816.19: *4* TestEditCommands.test_insert_node_before_node_can_be_undone_and_redone
     def test_insert_node_before_node_can_be_undone_and_redone(self):
         c = self.c
         u = c.undoer
         assert u
+        # pylint: disable=no-member
         c.insertHeadlineBefore()
         assert u.undoMenuLabel == 'Undo Insert Node Before',repr(u.undoMenuLabel)
         c.undoer.undo()
         assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
-    #@+node:ekr.20210905064816.18: *4* TestXXX.test_insert_node_can_be_undone_and_redone
+    #@+node:ekr.20210905064816.18: *4* TestEditCommands.test_insert_node_can_be_undone_and_redone
     def test_insert_node_can_be_undone_and_redone(self):
         c = self.c
         u = c.undoer
         assert u
+        # pylint: disable=no-member
         c.insertHeadline()
         assert u.undoMenuLabel == 'Undo Insert Node',repr(u.undoMenuLabel)
         c.undoer.undo()
         assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)
-    #@+node:ekr.20210905064816.20: *4* TestXXX.test_inserting_a_new_node_draws_the_screen_exactly_once
+    #@+node:ekr.20210905064816.20: *4* TestEditCommands.test_inserting_a_new_node_draws_the_screen_exactly_once
     def test_inserting_a_new_node_draws_the_screen_exactly_once(self):
         c = self.c
         n = c.frame.tree.redrawCount
+        # pylint: disable=no-member
         c.insertHeadline()
         c.outerUpdate() # Not actually needed, but should not matter.
         try:
@@ -4074,7 +4078,7 @@ class EditCommandsTest(LeoUnitTest):
                 assert n2 == n + 1,'redraws: %d' % (n2 - n)
         finally:
             c.undoer.undo()
-    #@+node:ekr.20210905064816.15: *4* TestXXX.test_most_toggle_commands
+    #@+node:ekr.20210905064816.15: *4* TestEditCommands.test_most_toggle_commands
     def test_most_toggle_commands(self):
         c, k = self.c, self.c.k
         ed = c.editCommands
@@ -4108,7 +4112,7 @@ class EditCommandsTest(LeoUnitTest):
                 assert val3 == val1,'failed 2 %s' % command
             finally:
                 setattr(obj, ivar, val1)
-    #@+node:ekr.20210905064816.10: *4* TestXXX.test_moveToHelper
+    #@+node:ekr.20210905064816.10: *4* TestEditCommands.test_moveToHelper
     def test_moveToHelper(self):
         c = self.c
         ec = c.editCommands ; w = c.frame.body.wrapper
@@ -4124,7 +4128,7 @@ class EditCommandsTest(LeoUnitTest):
             assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
             assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
             w.setSelectionRange(0,0,insert=None)
-    #@+node:ekr.20210905064816.11: *4* TestXXX.test_moveUpOrDownHelper
+    #@+node:ekr.20210905064816.11: *4* TestEditCommands.test_moveUpOrDownHelper
     def test_moveUpOrDownHelper(self):
         c = self.c
         ec = c.editCommands
@@ -4134,7 +4138,7 @@ class EditCommandsTest(LeoUnitTest):
             ec.moveUpOrDownHelper(event=None, direction=direction, extend=False)
             w.getSelectionRange()
             
-    #@+node:ekr.20210905064816.21: *4* TestXXX.test_paste_and_undo_in_headline__at_end
+    #@+node:ekr.20210905064816.21: *4* TestEditCommands.test_paste_and_undo_in_headline__at_end
     def test_paste_and_undo_in_headline__at_end(self):
         c = self.c
         k = c.keyHandler
@@ -4165,7 +4169,7 @@ class EditCommandsTest(LeoUnitTest):
             if 1:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
-    #@+node:ekr.20210905064816.22: *4* TestXXX.test_paste_and_undo_in_headline__with_selection
+    #@+node:ekr.20210905064816.22: *4* TestEditCommands.test_paste_and_undo_in_headline__with_selection
     def test_paste_and_undo_in_headline__with_selection(self):
         c = self.c
         k = c.keyHandler
@@ -4197,7 +4201,7 @@ class EditCommandsTest(LeoUnitTest):
             if 1:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
-    #@+node:ekr.20210905064816.23: *4* TestXXX.test_paste_at_end_of_headline
+    #@+node:ekr.20210905064816.23: *4* TestEditCommands.test_paste_at_end_of_headline
     def test_paste_at_end_of_headline(self):
         c = self.c
         k = c.keyHandler
@@ -4230,7 +4234,7 @@ class EditCommandsTest(LeoUnitTest):
             if 1:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
-    #@+node:ekr.20210905064816.24: *4* TestXXX.test_paste_from_menu_into_headline_sticks
+    #@+node:ekr.20210905064816.24: *4* TestEditCommands.test_paste_from_menu_into_headline_sticks
     def test_paste_from_menu_into_headline_sticks(self):
         c = self.c
         h = 'Test headline abc'
@@ -4256,7 +4260,7 @@ class EditCommandsTest(LeoUnitTest):
             if 1:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
-    #@+node:ekr.20210905064816.25: *4* TestXXX.test_return_ends_editing_of_headline
+    #@+node:ekr.20210905064816.25: *4* TestEditCommands.test_return_ends_editing_of_headline
     def test_return_ends_editing_of_headline(self):
         c = self.c
         h = '@test return ends editing of headline'
@@ -4272,7 +4276,7 @@ class EditCommandsTest(LeoUnitTest):
         g.app.gui.event_generate(c,'\n','Return',w)
         c.outerUpdate()
         assert w != c.get_focus(),'oops2: focus in headline'
-    #@+node:ekr.20210905064816.12: *4* TestXXX.test_scrollHelper
+    #@+node:ekr.20210905064816.12: *4* TestEditCommands.test_scrollHelper
     def test_scrollHelper(self):
         c = self.c
         ec = c.editCommands
@@ -4282,7 +4286,7 @@ class EditCommandsTest(LeoUnitTest):
             for distance in ('line','page','half-page'):
                 event = g.app.gui.create_key_event(c,w=w)
                 ec.scrollHelper(event,direction,distance)
-    #@+node:ekr.20210905064816.26: *4* TestXXX.test_selecting_new_node_retains_paste_in_headline
+    #@+node:ekr.20210905064816.26: *4* TestEditCommands.test_selecting_new_node_retains_paste_in_headline
     def test_selecting_new_node_retains_paste_in_headline(self):
         c, k = self.c, self.c.k
         h = 'Test headline abc'
@@ -4305,7 +4309,7 @@ class EditCommandsTest(LeoUnitTest):
         # k.manufactureKeyPressForCommandName(w, 'undo')
         c.undoer.undo()
         self.assertEqual(p.h, h)
-    #@+node:ekr.20210905064816.27: *4* TestXXX.test_selecting_new_node_retains_typing_in_headline
+    #@+node:ekr.20210905064816.27: *4* TestEditCommands.test_selecting_new_node_retains_typing_in_headline
     def test_selecting_new_node_retains_typing_in_headline(self):
         c = self.c
         k = c.k
@@ -4329,7 +4333,7 @@ class EditCommandsTest(LeoUnitTest):
         self.assertEqual(p.h, expected)
         k.manufactureKeyPressForCommandName(w,'undo')
         self.assertEqual(p.h, h)
-    #@+node:ekr.20210905064816.13: *4* TestXXX.test_setMoveCol
+    #@+node:ekr.20210905064816.13: *4* TestEditCommands.test_setMoveCol
     def test_setMoveCol(self):
         c = self.c
         ec, w = c.editCommands, c.frame.body.wrapper
@@ -4342,7 +4346,7 @@ class EditCommandsTest(LeoUnitTest):
             ec.setMoveCol(w,spot)
             assert ec.moveSpot == result
             assert ec.moveCol == result
-    #@+node:ekr.20210905064816.14: *4* TestXXX.test_toggle_extend_mode
+    #@+node:ekr.20210905064816.14: *4* TestEditCommands.test_toggle_extend_mode
     def test_toggle_extend_mode(self):
         c = self.c
         # backward-find-character and find-character
@@ -4393,7 +4397,7 @@ class EditCommandsTest(LeoUnitTest):
             c.keyHandler.simulateCommand(commandName)
             # i, j = w.getSelectionRange()
             # self.assertNotEqual(i, j, msg=commandName)
-    #@+node:ekr.20210905064816.28: *4* TestXXX.test_typing_and_undo_in_headline__at_end
+    #@+node:ekr.20210905064816.28: *4* TestEditCommands.test_typing_and_undo_in_headline__at_end
     def test_typing_and_undo_in_headline__at_end(self):
         c = self.c
         if g.app.gui.guiName() == 'curses':
@@ -4434,7 +4438,7 @@ class EditCommandsTest(LeoUnitTest):
             if 1:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
-    #@+node:ekr.20210905064816.29: *4* TestXXX.test_typing_in_non_empty_body_text_does_not_redraw_the_screen
+    #@+node:ekr.20210905064816.29: *4* TestEditCommands.test_typing_in_non_empty_body_text_does_not_redraw_the_screen
     def test_typing_in_non_empty_body_text_does_not_redraw_the_screen(self):
         c = self.c
         w = c.frame.body.wrapper
@@ -4450,7 +4454,7 @@ class EditCommandsTest(LeoUnitTest):
         n2 = c.frame.tree.redrawCount
         self.assertEqual(n2, n)
         
-    #@+node:ekr.20210905064816.30: *4* TestXXX.test_undoing_insert_node_restores_previous_node_s_body_text
+    #@+node:ekr.20210905064816.30: *4* TestEditCommands.test_undoing_insert_node_restores_previous_node_s_body_text
     def test_undoing_insert_node_restores_previous_node_s_body_text(self):
         c = self.c
         h = 'Test headline abc'
@@ -4461,6 +4465,7 @@ class EditCommandsTest(LeoUnitTest):
         c.setBodyString(p,body)
 
         try:
+            # pylint: disable=no-member
             assert p.b == body
             c.insertHeadline()
             c.undoer.undo()
