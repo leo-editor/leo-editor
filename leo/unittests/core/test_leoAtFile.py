@@ -11,7 +11,7 @@ from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
 #@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
-class TestApp(LeoUnitTest):
+class TestAtFile(LeoUnitTest):
     """Test cases for leoApp.py"""
     #@+others
     #@+node:ekr.20200204095726.1: *3*  TestAtFile.bridge
@@ -337,17 +337,11 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20210905052021.28: *4* TestXXX.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
         c = self.c
-        p = c.p
-        # This will work regardless of where this method is.
-        # @language python
-        # @tabwidth -4
-        # # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-        # @pagewidth 120
-        d = c.atFileCommands.scanAllDirectives(p)
-        assert d.get('language') == 'python'
-        assert d.get('tabwidth') == -4
-        # assert d.get('path').endswith('xyzzy')
-        assert d.get('pagewidth') == 120
+        d = c.atFileCommands.scanAllDirectives(c.p)
+        # These are the commander defaults, without any settings.
+        self.assertEqual(d.get('language'), 'python')
+        self.assertEqual(d.get('tabwidth'), -4)
+        self.assertEqual(d.get('pagewidth'), 132)
     #@+node:ekr.20210905052021.29: *4* TestXXX.test_at_scanAllDirectives_minimal_
     def test_at_scanAllDirectives_minimal_(self):
         c = self.c
