@@ -48,7 +48,7 @@ class TestColorizer(LeoUnitTest):
         ### child = p.firstChild().next()
         ### assert child.h == 'test-child'
         ### grand = child.firstChild()
-        child = self.rootPosition().insertAsLastChild()
+        child = c.rootPosition().insertAsLastChild()
         grand = child.insertAsLastChild()
         language_table = [
             ('python', '@language rest\n@language python\n', ''),
@@ -73,7 +73,7 @@ class TestColorizer(LeoUnitTest):
         ### child = p.firstChild().next()
         ### assert child.h == 'test-child'
         ### grand = child.firstChild()
-        child = self.rootPosition().insertAsLastChild()
+        child = c.rootPosition().insertAsLastChild()
         grand = child.insertAsLastChild()
         language_table = [
             (True, '', ''),

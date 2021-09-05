@@ -331,7 +331,7 @@ class ConvertColorizerTests(ConvertTests):
                 language_name = m.group(1)
                 result.append(f'''{indent}text = textwrap.dedent("""\\\n''')
                 result.append(child_s.rstrip() + '\n')
-                result.append(f'''{indent}""")\n''')
+                result.append('''""")\n''')
                 result.append(f"{indent}self.color('{language_name}', text)\n")
                 test_node.b = ''.join(result)
                 # result.append(f"{indent}language_name = '{m.group(1)}'\n")
