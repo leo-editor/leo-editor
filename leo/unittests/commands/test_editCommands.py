@@ -3938,19 +3938,21 @@ class EditCommandsTest(LeoUnitTest):
                     kind,s,expected,result)
     #@+node:ekr.20210905064816.4: *4* TestXXX.test_capitalizeHelper
     def test_capitalizeHelper(self):
-        c = self.c
-        # TARGETWORD
-
-        w = c.frame.body.wrapper
-
-        for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
-            w.setInsertPoint(5)
-            c.editCommands.capitalizeHelper(event=None,which=which,undoType='X')
+        c, w = self.c, self.c.frame.body.wrapper
+        w.setAllText('# TARGETWORD\n')
+        table = (
+            ('cap','Targetword'),
+            ('low','targetword'),
+            ('up','TARGETWORD'),
+        )
+        for (which, result) in table:
+            w.setInsertPoint(5)  # Must be inside the target.
+            c.editCommands.capitalizeHelper(event=None, which=which, undoType='X')
             s = w.getAllText()
             word = s[2:12]
-            assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+            self.assertEqual(word, result, msg=which)
             i = w.getInsertPoint()
-            assert i == 5, 'Expected 5, got: %d' % i
+            self.assertEqual(i, 5, msg=which)
     #@+node:ekr.20210905064816.16: *4* TestXXX.test_delete_key_sticks_in_body
     def test_delete_key_sticks_in_body(self):
         c = self.c

@@ -472,10 +472,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not word.strip():
             return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType=undoType)
-        if which == 'cap': word2 = word.capitalize()
-        elif which == 'low': word2 = word.lower()
-        elif which == 'up': word2 = word.upper()
-        else: g.trace(f"can not happen: which = {s(which)}")
+        if which == 'cap':
+            word2 = word.capitalize()
+        elif which == 'low':
+            word2 = word.lower()
+        elif which == 'up':
+            word2 = word.upper()
+        else:
+            g.trace(f"can not happen: which = {s(which)}")
         changed = word != word2
         if changed:
             w.delete(i, j)
