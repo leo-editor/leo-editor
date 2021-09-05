@@ -4027,21 +4027,15 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.8: *4* TestXXX.test_findWordInLine
     def test_findWordInLine(self):
         c = self.c
-        # targetWord
-        e = c.editCommands
-        k = c.k
-        w = c.frame.body.wrapper
-        for val in (True, False):
-            k.arg = 't' # 'targetWord'
-            w.setInsertPoint(0)
-            e.w = w
-            e.oneLineFlag = val
-            ### f = e.findWord1(event=None)
-            i,j = w.getSelectionRange()
-            assert i == 2, 'expected 2, got %s' % (i)
-            # s = w.getAllText()
-            # ch = s[i]
-            # assert word == 'targetWord', 'got: %s' % word
+        e, k, w = c.editCommands, c.k, c.frame.body.wrapper
+        w.setAllText('abc\ntargetWord\n')
+        k.arg = 't' # 'targetWord'
+        w.setInsertPoint(0)
+        e.w = w
+        e.oneLineFlag = False
+        e.findWord1(event=None)
+        i, j = w.getSelectionRange()
+        self.assertEqual(i, 4)
     #@+node:ekr.20210905064816.9: *4* TestXXX.test_helpForMinibuffer
     def test_helpForMinibuffer(self):
         c = self.c
