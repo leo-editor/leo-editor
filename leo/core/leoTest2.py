@@ -218,8 +218,9 @@ class ConvertTests:
     def clean_headline(self, p):
         """Make p.h suitable as a function.name."""
         h = p.h
-        assert h.startswith('@test')
-        h = h[len('@test'):].strip()
+        if h.startswith('@test'):
+            h = h[len('@test'):]
+        h = h.strip()
         result = []
         for ch in h:
             if ch.isalnum():
@@ -275,7 +276,7 @@ class ConvertTests:
     #@-others
 #@+node:ekr.20201202083553.1: *3* class ConvertEditCommandsTests (ConvertTests)
 class ConvertEditCommandsTests(ConvertTests):
-
+    """Convert @edit nodes for edit commands."""
     #@+others
     #@+node:ekr.20201130075024.4: *4* ConvertEditCommandsTests.convert_node
     def convert_node(self, p, target):
@@ -298,6 +299,49 @@ class ConvertEditCommandsTests(ConvertTests):
         new_child = target.insertAsLastChild()
         new_child.h = command_name
         new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
+    #@-others
+#@+node:ekr.20210905151425.1: *3* class ConvertColorizerTests (ConvertTests)
+class ConvertColorizerTests(ConvertTests):
+    """Convert @edit nodes for colorizer commands."""
+    #@+others
+    #@+node:ekr.20210905151425.2: *4* ConvertColorizerTests.convert_node
+    def convert_node(self, p, target):
+        """Convert one @test node, creating a new node."""
+        import re
+        indent = ' '*4
+        # Create the new node.
+        test_node = target.insertAsLastChild()
+        # Set the headline.
+        test_name = f"test_{self.clean_headline(p)}"
+        test_node.h = f"{self.class_name}.{test_name}"
+        # Compute the start of the body text.
+        result = [
+            f"def {test_name}(self):\n",
+            f"{indent}c = self.c\n",
+        ]
+        # Compute the data, if there is a child node.
+        child = p.firstChild()
+        if child:
+            child_s = child.b.rstrip()
+            pat = re.compile(r'@language (\w+)\s*\n')
+            m = pat.search(child.b)
+            if m:
+                # g.trace(child.h, m.group(0).rstrip())
+                child_s = child_s.replace(m.group(0), '')
+                language_name = m.group(1)
+                result.append(f'''{indent}text = textwrap.dedent("""\\\n''')
+                result.append(child_s.rstrip() + '\n')
+                result.append(f'''{indent}""")\n''')
+                result.append(f"{indent}self.color('{language_name}', text)\n")
+                test_node.b = ''.join(result)
+                # result.append(f"{indent}language_name = '{m.group(1)}'\n")
+                return
+        # Default:
+        # Compute the tail.
+        body = textwrap.indent(p.b, ' '*4).rstrip()
+        result.append(f"{body}\n")
+        # Set the body text!
+        test_node.b = ''.join(result)
     #@-others
 #@-others
 #@-leo
