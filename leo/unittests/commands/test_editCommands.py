@@ -4469,22 +4469,19 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.29: *4* TestXXX.test_typing_in_non_empty_body_text_does_not_redraw_the_screen
     def test_typing_in_non_empty_body_text_does_not_redraw_the_screen(self):
         c = self.c
+        w = c.frame.body.wrapper
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
-        c.setBodyString(p,'a')
+        c.setBodyString(p, 'a')
+        p.v.iconVal =  p.computeIcon()  # To suppress redraw!
         c.redraw(p) # To make node visible
         c.bodyWantsFocus()
         n = c.frame.tree.redrawCount
-        try:
-            w = c.frame.body.wrapper
-            g.app.gui.event_generate(c,'a','a',w)
-            n2 = c.frame.tree.redrawCount
-            assert n2 == n,'too many redraws: %d' % (n2-n)
-        finally:
-            if 1:
-                c.setBodyString(p,'')
-                c.redraw(p)
+        g.app.gui.event_generate(c, 'a', 'a', w)
+        n2 = c.frame.tree.redrawCount
+        self.assertEqual(n2, n)
+        
     #@+node:ekr.20210905064816.30: *4* TestXXX.test_undoing_insert_node_restores_previous_node_s_body_text
     def test_undoing_insert_node_restores_previous_node_s_body_text(self):
         c = self.c
