@@ -114,22 +114,23 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20210905052021.19: *4* TestXXX.test_at_directiveKind4
     def test_at_directiveKind4(self):
         c = self.c
-        at=c.atFileCommands
+        at = c.atFileCommands
+        at.language = 'python' # Usually set by atFile read/write logic.
         table = [
-            ('@=',0,at.noDirective),
-            ('@',0,at.atDirective),
-            ('@ ',0,at.atDirective),
-            ('@\t',0,at.atDirective),
-            ('@\n',0,at.atDirective),
-            ('@all',0,at.allDirective),
-            ('    @all',4,at.allDirective),
-            ("@c",0,at.cDirective),
-            ("@code",0,at.codeDirective),
-            ("@doc",0,at.docDirective),
-            ("@end_raw",0,at.endRawDirective),
-            ('@others',0,at.othersDirective),
-            ('    @others',4,at.othersDirective),
-            ("@raw",0,at.rawDirective),
+            ('@=', 0, at.noDirective),
+            ('@', 0, at.atDirective),
+            ('@ ', 0, at.atDirective),
+            ('@\t', 0, at.atDirective),
+            ('@\n', 0, at.atDirective),
+            ('@all', 0, at.allDirective),
+            ('    @all', 4, at.allDirective),
+            ("@c",0, at.cDirective),
+            ("@code",0, at.codeDirective),
+            ("@doc",0, at.docDirective),
+            ("@end_raw", 0, at.endRawDirective),
+            ('@others', 0, at.othersDirective),
+            ('    @others', 4, at.othersDirective),
+            ("@raw", 0, at.rawDirective),
         ]
         for name in g.globalDirectiveList:
             # Note: entries in g.globalDirectiveList do not start with '@'
@@ -144,6 +145,7 @@ class TestAtFile(LeoUnitTest):
     def test_at_directiveKind4_new(self):
         c = self.c
         at = c.atFileCommands
+        at.language = 'python' # Usually set by atFile read/write logic.
         table = (
             (at.othersDirective, '@others'),
             (at.othersDirective, '@others\n'),
