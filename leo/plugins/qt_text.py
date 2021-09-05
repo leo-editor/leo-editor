@@ -62,6 +62,21 @@ def zoom_helper(event, delta):
     colorizer.configure_fonts()
     wrapper.setAllText(wrapper.getAllText())
         # Recolor everything.
+#@+node:tom.20210904233317.1: ** Show Hilite Settings command
+# Add item to known "help-for" commands
+hilite_doc = r'''
+Settings for Current Line Highlighting
+---------------------------------------
+\@bool highlight-body-line -- if False, do not highlight current line.
+
+\@string line-highlight-color -- override highlight color with css value.
+'''
+
+@g.command('help-for-highlight-current-line')
+def helpForLineHighlight(self, event=None):
+    """Prints Settings used by current line highlighter."""
+    self.c.putHelpFor(hilite_doc)
+
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
     """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
@@ -481,6 +496,7 @@ if QtWidgets:
             self.leo_model = None
             
             self.lastblock = -2
+
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
         def __repr__(self):
             return f"(LeoQTextBrowser) {id(self)}"
@@ -774,7 +790,7 @@ if QtWidgets:
 
             w = c.frame.body.wrapper
             editor = w.widget
-            if not c.config.getBool('highlight-body-line'):
+            if not c.config.getBool('highlight-body-line', True):
                 editor.setExtraSelections([])
                 return
 
@@ -804,6 +820,18 @@ if QtWidgets:
             selection.cursor.clearSelection()
 
             editor.setExtraSelections([selection])
+        #@+node:tom.20210905130804.1: *4* Add Help Menu Item
+        # Add entry to Help menu
+        new_entry = ('@item', 'help-for-&highlight-current-line', '')
+
+        for item in g.app.config.menusList:
+            if 'Help' in item[0]:
+                for entry in item[1]:
+                    if entry[0] == '@menu &Open Help topics':
+                        menu_items = entry[1]
+                        menu_items.append(new_entry)
+                        menu_items.sort()
+                        break
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             """Get the horizontal scrollbar position."""
