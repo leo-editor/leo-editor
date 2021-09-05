@@ -4337,10 +4337,13 @@ class EditCommandsTest(LeoUnitTest):
     #@+node:ekr.20210905064816.13: *4* TestXXX.test_setMoveCol
     def test_setMoveCol(self):
         c = self.c
-        w = c.frame.body.wrapper
-        ec = c.editCommands
-
-        for spot,result in (('1.0',0),(5,5)):
+        ec, w = c.editCommands, c.frame.body.wrapper
+        table = (
+            ('1.0',0),
+            (5,5),
+        )
+        w.setAllText('1234567890')
+        for spot,result in table:
             ec.setMoveCol(w,spot)
             assert ec.moveSpot == result
             assert ec.moveCol == result
