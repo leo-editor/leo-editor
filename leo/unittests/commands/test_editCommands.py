@@ -70,7 +70,7 @@ class EditCommandsTest(LeoUnitTest):
 
     # def tearDown(self):
         # self.c = None
-    #@+node:ekr.20201130091020.1: *3* EditCommandTest: test cases...
+    #@+node:ekr.20201130091020.1: *3* EditCommandTest: Commands...
     #@+node:ekr.20210829061326.1: *4* Commands A-B
     #@+node:ekr.20201130090918.1: *5* add-space-to-lines
     def test_add_space_to_lines(self):
@@ -3885,6 +3885,634 @@ class EditCommandsTest(LeoUnitTest):
             after_sel=("3.7", "3.7"),
             command_name="upcase-word",
         )
+    #@+node:ekr.20210905064816.1: *3* Converted nodes
+    #@+node:ekr.20210905064816.2: *4* TestXXX.test_abbrevCommands_next_place
+    def test_abbrevCommands_next_place(self):
+        c = self.c
+        p = c.p
+        ac = c.abbrevCommands
+        assert ac
+        if c.abbrev_place_start is None or c.abbrev_place_end is None:
+            self.skipTest('no abbreviation settings') # #1345.
+        child = g.findNodeInTree(c,p,'child')
+        assert child
+        old_b = child.b
+        try:
+            ### i, j,val = 0,0,child.b
+            i, j = 0, 0
+            # ac.make_script_substitutions(i,j,val)
+            # ac.find_place_holder(child,True)
+            new_s,i,j = ac.next_place(child.b,offset=0)
+            assert i == 34 and j == 40,(i,j)
+            new_s2,i,j = ac.next_place(new_s,offset=40)
+            assert i == 54 and j == 58,(i,j)
+        finally:
+            child.b = old_b
+    #@+node:ekr.20210905064816.3: *4* TestXXX.test_addAbbrevHelper
+    def test_addAbbrevHelper(self):
+        c = self.c
+        f = c.abbrevCommands.addAbbrevHelper
+        d = c.abbrevCommands.abbrevs
+
+        # New in Leo 4.10: whitespace (blank,tab,newline) *is* significant in definitions.
+        table = (
+            ('ut1','ut1=aa','aa'),
+            # ('ut2','ut2 =bb','bb'),
+            ('ut3','ut3=cc=dd','cc=dd'),
+            ('ut4','ut4= ee',' ee'),
+            ('ut5','ut5= ff = gg',' ff = gg'),
+            ('ut6','ut6= hh==ii',' hh==ii'),
+            ('ut7','ut7=j=k','j=k'),
+            ('ut8','ut8=l==m','l==m'),
+            ('@ut1','@ut1=@a','@a'),
+        )
+
+        for name,s,expected in table:
+            for s2,kind in ((s,'(no nl)'),(s+'\n','(nl)')):
+                f(s2,tag='unit-test')
+                result,tag = d.get(name,(None,None),)
+                assert result==expected, '%s <%s> expected <%s>, got <%s>' % (
+                    kind,s,expected,result)
+    #@+node:ekr.20210905064816.4: *4* TestXXX.test_capitalizeHelper
+    def test_capitalizeHelper(self):
+        c = self.c
+        # TARGETWORD
+
+        w = c.frame.body.wrapper
+
+        for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
+            w.setInsertPoint(5)
+            c.editCommands.capitalizeHelper(event=None,which=which,undoType='X')
+            s = w.getAllText()
+            word = s[2:12]
+            assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+            i = w.getInsertPoint()
+            assert i == 5, 'Expected 5, got: %d' % i
+    #@+node:ekr.20210905064816.16: *4* TestXXX.test_delete_key_sticks_in_body
+    def test_delete_key_sticks_in_body(self):
+        c = self.c
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.selectPosition(p)
+        s = 'ABC'
+        c.setBodyString(p,s)
+        try:
+            c.bodyWantsFocus()
+            w = c.frame.body.wrapper
+            w.setInsertPoint(2)
+            c.outerUpdate() # This fixed the problem.
+            if 1:
+                c.k.simulateCommand('delete-char')
+            else:
+                # This fails unless Delete is bound to delete-char
+                g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
+            assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
+            c.selectPosition(p.threadBack())
+            c.selectPosition(p)
+            assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
+        finally:
+            if 0:
+                c.setBodyString(p,'')
+                c.redraw(p)
+    #@+node:ekr.20210905064816.17: *4* TestXXX.test_delete_key_sticks_in_headline
+    def test_delete_key_sticks_in_headline(self):
+        c = self.c
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redraw(p) # To make node visible
+        c.frame.tree.editLabel(p)
+        w = c.edit_widget(p)
+        try:
+            assert w
+            w.setSelectionRange('end','end')
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+    #@+node:ekr.20210905064816.5: *4* TestXXX.test_dynamicExpandHelper
+    def test_dynamicExpandHelper(self):
+        c = self.c
+        # A totally wimpy test.
+        # And it somehow prints a newline to the console.
+        if 0:
+            c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
+    #@+node:ekr.20210905064816.6: *4* TestXXX.test_extendHelper
+    def test_extendHelper(self):
+        c = self.c
+        ec = c.editCommands ; w = c.frame.body.wrapper
+
+        for i,j,python in (
+            # ('1.0','4.5',False),
+            (5,50,True),
+        ):
+            extend = True
+            ec.moveSpot = None # It's hard to init this properly.
+            ec.extendHelper(w,extend,j)
+            i2,j2 = w.getSelectionRange()
+            #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
+            #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
+    #@+node:ekr.20210905064816.7: *4* TestXXX.test_findWord
+    def test_findWord(self):
+        c = self.c
+        # start
+        # targetWord
+
+        e = c.editCommands
+        k = c.k
+        w = c.frame.body.wrapper
+        w.setInsertPoint(0)
+        k.arg = 't' # 'targetWord'
+        e.w = w
+        e.oneLineFlag = False
+        e.findWord1(event=None)
+        i,j = w.getSelectionRange()
+        assert i == 10, 'expected 10, got %s' % (i)
+    #@+node:ekr.20210905064816.8: *4* TestXXX.test_findWordInLine
+    def test_findWordInLine(self):
+        c = self.c
+        # targetWord
+        e = c.editCommands
+        k = c.k
+        w = c.frame.body.wrapper
+        for val in (True,False):
+            k.arg = 't' # 'targetWord'
+            w.setInsertPoint(0)
+            e.w = w
+            e.oneLineFlag = val
+            ### f = e.findWord1(event=None)
+            i,j = w.getSelectionRange()
+            assert i == 2, 'expected 2, got %s' % (i)
+            # s = w.getAllText()
+            # ch = s[i]
+            # assert word == 'targetWord', 'got: %s' % word
+    #@+node:ekr.20210905064816.9: *4* TestXXX.test_helpForMinibuffer
+    def test_helpForMinibuffer(self):
+        c = self.c
+        vr = c.helpCommands.helpForMinibuffer()
+        if not vr:
+            self.skipTest('no vr plugin')
+    #@+node:ekr.20210905064816.19: *4* TestXXX.test_insert_node_before_node_can_be_undone_and_redone
+    def test_insert_node_before_node_can_be_undone_and_redone(self):
+        c = self.c
+        u = c.undoer
+        assert u
+        c.insertHeadlineBefore()
+        assert u.undoMenuLabel == 'Undo Insert Node Before',repr(u.undoMenuLabel)
+        c.undoer.undo()
+        assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
+    #@+node:ekr.20210905064816.18: *4* TestXXX.test_insert_node_can_be_undone_and_redone
+    def test_insert_node_can_be_undone_and_redone(self):
+        c = self.c
+        u = c.undoer
+        assert u
+        c.insertHeadline()
+        assert u.undoMenuLabel == 'Undo Insert Node',repr(u.undoMenuLabel)
+        c.undoer.undo()
+        assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)
+    #@+node:ekr.20210905064816.20: *4* TestXXX.test_inserting_a_new_node_draws_the_screen_exactly_once
+    def test_inserting_a_new_node_draws_the_screen_exactly_once(self):
+        c = self.c
+        n = c.frame.tree.redrawCount
+        c.insertHeadline()
+        c.outerUpdate() # Not actually needed, but should not matter.
+        try:
+            n2 = c.frame.tree.redrawCount
+            if g.app.isExternalUnitTest:
+                self.skipTest('Can not be run externally')
+            else:
+                assert n2 == n + 1,'redraws: %d' % (n2 - n)
+        finally:
+            c.undoer.undo()
+    #@+node:ekr.20210905064816.15: *4* TestXXX.test_most_toggle_commands
+    def test_most_toggle_commands(self):
+        c = self.c
+        if g.app.inBridge:
+            self.skipTest('in bridge')
+        k = c.k
+        colorizer = c.frame.body.getColorizer()
+        ed = c.editCommands
+        # These don't set ivars
+            # 'toggle-active-pane'),
+            # 'toggle-angle-brackets',
+            # 'toggle-input-state'),
+            # 'toggle-mini-buffer'),
+            # 'toggle-split-direction'),
+        table = [
+            (k,'abbrevOn','toggle-abbrev-mode'),
+            (ed,'extendMode','toggle-extend-mode'),
+        ]
+        # Not valid for external tests.
+        table2 = [
+            (k,'enable_autocompleter','toggle-autocompleter'),
+            (k,'enable_calltips','toggle-calltips'),
+            (c,'sparse_find','toggle-find-collapses-nodes'),
+            (colorizer,'showInvisibles','toggle-invisibles'),
+            (c,'sparse_move','toggle-sparse-move'),
+        ]
+        if not g.app.isExternalUnitTest:
+            table.extend(table2)
+        for obj,ivar,command in table:
+            val1 = getattr(obj,ivar)
+            try:
+                k.simulateCommand(command)
+                val2 = getattr(obj,ivar)
+                assert val2 == (not val1),'failed 1 %s' % command
+                k.simulateCommand(command)
+                val3 = getattr(obj,ivar)
+                assert val3 == val1,'failed 2 %s' % command
+            finally:
+                setattr(obj,ivar,val1)
+    #@+node:ekr.20210905064816.10: *4* TestXXX.test_moveToHelper
+    def test_moveToHelper(self):
+        c = self.c
+        ec = c.editCommands ; w = c.frame.body.wrapper
+
+        for i,j,python in (
+            #('1.0','4.5',False),
+            (5,50,True),
+        ):
+            event = None ; extend = True ; ec.moveSpot = None
+            w.setInsertPoint(i)
+            ec.moveToHelper (event,j,extend)
+            i2,j2 = w.getSelectionRange()
+            assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
+            assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
+            w.setSelectionRange(0,0,insert=None)
+    #@+node:ekr.20210905064816.11: *4* TestXXX.test_moveUpOrDownHelper
+    def test_moveUpOrDownHelper(self):
+        c = self.c
+        ec = c.editCommands
+        w = c.frame.body.wrapper
+        for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
+            w.setInsertPoint(i)
+            ec.moveUpOrDownHelper(event=None, direction=direction, extend=False)
+            w.getSelectionRange()
+            
+    #@+node:ekr.20210905064816.21: *4* TestXXX.test_paste_and_undo_in_headline__at_end
+    def test_paste_and_undo_in_headline__at_end(self):
+        c = self.c
+        import sys
+        if sys.platform.startswith('linux'):
+            self.skipTest('Not for Linux')
+
+        k = c.keyHandler
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redrawAndEdit(p) # To make node visible
+        w = c.edit_widget(p)
+        try:
+            assert w,'oops1'
+            w.setSelectionRange('end','end')
+            paste = 'ABC'
+            g.app.gui.replaceClipboardWith(paste)
+            w.setSelectionRange('end','end')
+            if g.app.gui.guiName() == 'curses':
+                c.frame.pasteText(event=g.Bunch(widget=w))
+            else:
+                stroke = k.getStrokeForCommandName('paste-text')
+                if stroke is None:
+                    self.skipTest('no binding for paste-text') # #1345
+                k.manufactureKeyPressForCommandName(w, 'paste-text')
+                g.app.gui.event_generate(c,'\n','Return',w)
+            assert p.h == h + paste, 'oops2 got: %s' % p.h
+            k.manufactureKeyPressForCommandName(w,'undo')
+            assert p.h == h, f"oops3 expected {h} got: {p.h}"
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+    #@+node:ekr.20210905064816.22: *4* TestXXX.test_paste_and_undo_in_headline__with_selection
+    def test_paste_and_undo_in_headline__with_selection(self):
+        c = self.c
+        import sys
+        if sys.platform.startswith('linux'):
+            self.skipTest('skip headline test')
+        else:
+            k = c.keyHandler
+            frame = c.frame ; tree = frame.tree
+            h = 'Test headline abc'
+            p = c.testManager.findNodeAnywhere(h)
+            assert p,'node not found: %s' % h
+            c.redraw(p) # To make node visible
+            tree.editLabel(p)
+            w = c.edit_widget(p)
+            try:
+                assert w, 'Null w'
+                paste = 'ABC'
+                g.app.gui.replaceClipboardWith(paste)
+                w.setSelectionRange('1.1','1.2')
+                if g.app.gui.guiName() == 'curses':
+                    c.frame.pasteText(event=g.Bunch(widget=w))
+                else:
+                    stroke = k.getStrokeForCommandName('paste-text')
+                    if stroke is None:
+                        self.skipTest('no binding for paste-text') # #1345
+                    k.manufactureKeyPressForCommandName(w,'paste-text')
+                    g.app.gui.event_generate(c,'\n','Return',w)
+                assert p.h == h[0] + paste + h[2:]
+                k.manufactureKeyPressForCommandName(w,'undo')
+                assert p.h == h, 'head mismatch'
+            finally:
+                if 1:
+                    c.setHeadString(p,h) # Essential
+                    c.redraw(p)
+    #@+node:ekr.20210905064816.23: *4* TestXXX.test_paste_at_end_of_headline
+    def test_paste_at_end_of_headline(self):
+        c = self.c
+        import sys
+        if sys.platform.startswith('linux'):
+            self.skipTest('Not for Linux')
+
+        k = c.keyHandler
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redrawAndEdit(p) # To make node visible
+        w = c.edit_widget(p)
+        g.app.gui.set_focus(c,w)
+        ### w2 = g.app.gui.get_focus(c)
+        try:
+            assert w
+            paste = 'ABC'
+            g.app.gui.replaceClipboardWith(paste)
+            g.app.gui.set_focus(c,w)
+            ### w2 = g.app.gui.get_focus(c)
+            w.setSelectionRange('end','end')
+            if g.app.gui.guiName() == 'curses':
+                c.frame.pasteText(event=g.Bunch(widget=w))
+            else:
+                stroke = k.getStrokeForCommandName('paste-text')
+                if stroke is None:
+                    self.skipTest('no binding for paste-text') # #1345
+                k.manufactureKeyPressForCommandName(w,'paste-text')
+                g.app.gui.event_generate(c,'\n','Return',w)
+            assert p.h == h + paste,'Expected: %s, got %s' % (
+                h + paste,p.h)
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+    #@+node:ekr.20210905064816.24: *4* TestXXX.test_paste_from_menu_into_headline_sticks
+    def test_paste_from_menu_into_headline_sticks(self):
+        c = self.c
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.selectPosition(p)
+        c.frame.tree.editLabel(p)
+        w = c.edit_widget(p)
+        w.setSelectionRange('end','end',insert='end')
+        paste = 'ABC'
+        g.app.gui.replaceClipboardWith(paste)
+        event = g.app.gui.create_key_event(c,w=w)
+        c.frame.pasteText(event)
+        # Move around and and make sure it doesn't change.
+        try:
+            # g.trace('before select',w,w.getAllText())
+            c.selectPosition(p.threadBack())
+            assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
+            c.selectPosition(p)
+            assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+    #@+node:ekr.20210905064816.25: *4* TestXXX.test_return_ends_editing_of_headline
+    def test_return_ends_editing_of_headline(self):
+        c = self.c
+        h = '@test return ends editing of headline'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redraw(p) # To make node visible
+        c.frame.tree.editLabel(p)
+        w = c.edit_widget(p)
+        ### guiName = g.app.gui.guiName()
+        wName = g.app.gui.widget_name(w)
+        assert wName.startswith('head'),'w.name:%s' % wName
+        g.app.gui.event_generate(c,'\n','Return',w)
+        c.outerUpdate()
+        assert w != c.get_focus(),'oops2: focus in headline'
+    #@+node:ekr.20210905064816.12: *4* TestXXX.test_scrollHelper
+    def test_scrollHelper(self):
+        c = self.c
+        ec = c.editCommands
+        w = c.frame.body.wrapper
+
+        for direction in ('up','down'):
+            for distance in ('line','page','half-page'):
+                event = g.app.gui.create_key_event(c,w=w)
+                ec.scrollHelper(event,direction,distance)
+    #@+node:ekr.20210905064816.26: *4* TestXXX.test_selecting_new_node_retains_paste_in_headline
+    def test_selecting_new_node_retains_paste_in_headline(self):
+        c = self.c
+        k = c.keyHandler
+        frame = c.frame ; tree = frame.tree
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redraw(p) # To make node visible
+        tree.editLabel(p)
+        w = c.edit_widget(p)
+        try:
+            assert w,'oops1'
+            w.setSelectionRange('end','end')
+            paste = 'ABC'
+            g.app.gui.replaceClipboardWith(paste)
+            w.setSelectionRange('end','end')
+            if g.app.gui.guiName() == 'curses':
+                c.frame.pasteText(event=g.Bunch(widget=w))
+            else:
+                k.manufactureKeyPressForCommandName(w,'paste-text')
+            c.selectPosition(p.visBack(c))
+            assert p.h == h + paste
+            k.manufactureKeyPressForCommandName(w,'undo')
+            assert p.h == h,'expected: %s, got: %s' % (
+                h,p.h)
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+    #@+node:ekr.20210905064816.27: *4* TestXXX.test_selecting_new_node_retains_typing_in_headline
+    def test_selecting_new_node_retains_typing_in_headline(self):
+        c = self.c
+        if g.in_bridge:
+            self.skipTest('Not for TravisCI')
+        import sys
+        if sys.platform.startswith('linux'):
+            self.skipTest('Not for Linux')
+        if g.app.gui.guiName() == 'curses':
+            self.skipTest('Not for curses gui')
+
+        k = c.k
+        if k.defaultUnboundKeyAction == 'insert':
+            frame = c.frame ; tree = frame.tree
+            h = 'Test headline abc'
+            p = c.testManager.findNodeAnywhere(h)
+            assert p,'node not found: %s' % h
+            c.redraw(p) # To make node visible
+            tree.editLabel(p)
+            w = c.edit_widget(p)
+            try:
+                assert w
+                w.setSelectionRange('end','end')
+                # char, shortcut.
+                g.app.gui.event_generate(c,'X','Shift+X',w)
+                g.app.gui.event_generate(c,'Y','Shift+Y',w)
+                g.app.gui.event_generate(c,'Z','Shift+Z',w)
+                g.app.gui.event_generate(c,'\n','Return',w)
+                expected = h + 'XYZ'
+                assert p.h == expected, f"oops 1: expected {expected!r} got {p.h!r}"
+                k.manufactureKeyPressForCommandName(w,'undo')
+                assert p.h == h, f"oops 2: expected {h!r} got {p.h!r}"
+            finally:
+                if 1:
+                    c.setHeadString(p, h) # Essential
+                    c.redraw(p)
+    #@+node:ekr.20210905064816.13: *4* TestXXX.test_setMoveCol
+    def test_setMoveCol(self):
+        c = self.c
+        w = c.frame.body.wrapper
+        ec = c.editCommands
+
+        for spot,result in (('1.0',0),(5,5)):
+            ec.setMoveCol(w,spot)
+            assert ec.moveSpot == result
+            assert ec.moveCol == result
+    #@+node:ekr.20210905064816.14: *4* TestXXX.test_toggle_extend_mode
+    def test_toggle_extend_mode(self):
+        c = self.c
+        p = c.p
+        # backward-find-character and find-character
+        # can't be tested this way because they require k.getarg.
+        # They pass hand tests.
+
+        #@+<< define table >>
+        #@+node:ekr.20210905065002.1: *5* << define table >>
+        # Cursor movement commands affected by extend mode.
+        # The x-extend-selection commands are not so affected.
+        table = (
+            'back-to-indentation',
+            'back-to-home',
+            'back-char',
+            'back-page',
+            'back-paragraph',
+            'back-sentence',
+            'back-word',
+            'beginning-of-buffer',
+            'beginning-of-line',
+            'end-of-buffer',
+            'end-of-line',
+            'forward-char',
+            'forward-page',
+            'forward-paragraph',
+            'forward-sentence',
+            'forward-end-word',
+            'forward-word',
+            'move-past-close',
+            'next-line',
+            'previous-line',
+        )
+        #@-<< define table >>
+
+        w = c.frame.body.wrapper
+        child = g.findNodeInChildren(c,p,'work')
+        assert child
+        c.selectPosition(child)
+
+        for commandName in table:
+            # Put the cursor in the middle of the middle line
+            # so all cursor moves will actually do something.
+            w.setInsertPoint(15) # for move-past-close
+            try:
+                c.editCommands.extendMode = True
+                c.keyHandler.simulateCommand(commandName)
+                i,j = w.getSelectionRange()
+                assert i != j,'i == j: %s %s' % (i,commandName)
+            finally:
+                c.editCommands.extendMode = False
+    #@+node:ekr.20210905064816.28: *4* TestXXX.test_typing_and_undo_in_headline__at_end
+    def test_typing_and_undo_in_headline__at_end(self):
+        c = self.c
+        import sys
+        if sys.platform.startswith('linux'):
+            self.skipTest('skip headline test')
+        if g.app.gui.guiName() == 'curses':
+            # This could be adapted, but not now.
+            self.skipTest('Not for curses gui')
+        k = c.k
+        if k.defaultUnboundKeyAction != 'insert':
+            self.skipTest('defaultUnboundKeyAction != insert')
+        if not k.getStrokeForCommandName('undo'):
+            self.skipTest('no settings')
+
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redrawAndEdit(p) # To make the node visible.
+        w = c.edit_widget(p)
+        try:
+            assert w, 'oops1'
+            wName = g.app.gui.widget_name(w)
+            assert wName.startswith('head'),'w.name:%s' % wName
+            w.setSelectionRange('end','end')
+            g.app.gui.event_generate(c,'X','Shift+X',w)
+            g.app.gui.event_generate(c,'Y','Shift+Y',w)
+            g.app.gui.event_generate(c,'Z','Shift+Z',w)
+            g.app.gui.event_generate(c,'\n','Return',w)
+            assert p.h == h + 'XYZ',(
+                'oops2: expected: %s, got: %s' % (
+                    h + 'XYZ',p.h))
+            if g.app.gui.guiName() != 'nullGui':
+                assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+                    c.undoer.undoMenuLabel)
+            k.manufactureKeyPressForCommandName(w,'undo')
+            if g.app.gui.guiName() != 'nullGui':
+                assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+            assert p.h == h,'oops5 got: %s, expected: %s' % (
+                p.h,h)
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+    #@+node:ekr.20210905064816.29: *4* TestXXX.test_typing_in_non_empty_body_text_does_not_redraw_the_screen
+    def test_typing_in_non_empty_body_text_does_not_redraw_the_screen(self):
+        c = self.c
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.setBodyString(p,'a')
+        c.redraw(p) # To make node visible
+        c.bodyWantsFocus()
+        n = c.frame.tree.redrawCount
+        try:
+            w = c.frame.body.wrapper
+            g.app.gui.event_generate(c,'a','a',w)
+            n2 = c.frame.tree.redrawCount
+            assert n2 == n,'too many redraws: %d' % (n2-n)
+        finally:
+            if 1:
+                c.setBodyString(p,'')
+                c.redraw(p)
+    #@+node:ekr.20210905064816.30: *4* TestXXX.test_undoing_insert_node_restores_previous_node_s_body_text
+    def test_undoing_insert_node_restores_previous_node_s_body_text(self):
+        c = self.c
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.selectPosition(p)
+        body = 'This is a test'
+        c.setBodyString(p,body)
+
+        try:
+            assert p.b == body
+            c.insertHeadline()
+            c.undoer.undo()
+            assert p.b == body
+        finally:
+            c.setBodyString(p,'')
     #@-others
 #@-others
 
