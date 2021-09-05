@@ -1150,91 +1150,86 @@ class LeoImportCommands:
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
     def cUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.c')
+        self.scannerUnitTest(p, s, ext='.c')
 
     def cSharpUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.c#')
+        self.scannerUnitTest(p, s, ext='.c#')
 
     def cythonUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.pyx')
+        self.scannerUnitTest(p, s, ext='.pyx')
 
     def coffeeScriptUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.coffee')
+        self.scannerUnitTest(p, s, ext='.coffee')
 
     def ctextUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.txt')
+        self.scannerUnitTest(p, s, ext='.txt')
 
     def dartUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.dart')
+        self.scannerUnitTest(p, s, ext='.dart')
 
     def elispUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.el')
+        self.scannerUnitTest(p, s, ext='.el')
 
     def htmlUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.htm')
+        self.scannerUnitTest(p, s, ext='.htm')
 
     def iniUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.ini')
+        self.scannerUnitTest(p, s, ext='.ini')
 
     def javaUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.java')
+        self.scannerUnitTest(p, s, ext='.java')
 
     def javaScriptUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.js')
+        self.scannerUnitTest(p, s, ext='.js')
 
     def markdownUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.md')
+        self.scannerUnitTest(p, s, ext='.md')
 
     def orgUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.org')
+        self.scannerUnitTest(p, s, ext='.org')
 
     def otlUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.otl')
+        self.scannerUnitTest(p, s, ext='.otl')
 
     def pascalUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.pas')
+        self.scannerUnitTest(p, s, ext='.pas')
 
     def perlUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.pl')
+        self.scannerUnitTest(p, s, ext='.pl')
 
     def phpUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.php')
+        self.scannerUnitTest(p, s, ext='.php')
 
     def pythonUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.py')
+        self.scannerUnitTest(p, s, ext='.py')
 
     def rstUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.rst') if docutils else False
+        self.scannerUnitTest(p, s, ext='.rst') 
 
     def textUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.txt')
+        self.scannerUnitTest(p, s, ext='.txt')
 
     def typeScriptUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.ts')
+        self.scannerUnitTest(p, s, ext='.ts')
 
     def xmlUnitTest(self, p, s):
-        return self.scannerUnitTest(p, s, ext='.xml')
+        self.scannerUnitTest(p, s, ext='.xml')
 
     def defaultImporterUnitTest(self, p, s):
-        return self.scannerUnitTest( p, s, ext='.xxx')
+        self.scannerUnitTest( p, s, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
     def scannerUnitTest(self, p, s, ext=None):
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        self.treeType = '@file'
-            # Fix #352.
+        self.treeType = '@file'  # Fix #352.
         fileName = 'test'
-        assert s, g.callers()
-        ### if not s:
-        ###    s = self.removeSentinelsCommand([fileName], toString=True)
-        # Run the actual test using the **GeneralTestCase** class.
+        # Run the test.
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
         self.createOutline(parent=parent.copy(), ext=ext, s=s)
-        return True
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
     def compute_unit_test_kind(self, ext, fn):
         """Return kind from fn's file extension."""
