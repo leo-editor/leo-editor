@@ -7591,7 +7591,7 @@ def run_unit_test_in_separate_process(command):
         g.printObj(err_lines, tag='err_lines')
         assert False
 #@+node:ekr.20210901065224.1: *3* g.run_unit_tests
-def run_unit_tests(tests=""):
+def run_unit_tests(tests=None, verbose=False):
     """
     Run the unit tests given by the "tests" string.
     
@@ -7600,7 +7600,8 @@ def run_unit_tests(tests=""):
     g.cls()
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
-    command = f"python -m unittest {tests or ''}"
+    verbosity = '-v' if verbose else ''
+    command = f"python -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command, trace=False)
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode(s: Union[bytes, str], encoding, reportErrors=False):

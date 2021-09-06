@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20210901140718.1: * @file ../unittests/syntax_tests.py
+#@+node:ekr.20210901140718.1: * @file ../unittests/test_syntax.py
 #@@first
-"""Basic tests for Leo"""
+"""Syntax tests, including a check that Leo will continue to load!"""
 # pylint: disable=no-member
 import glob
+import os
+import subprocess
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
-#@+node:ekr.20210901140855.1: ** class SyntaxTest(LeoUnitTest)
-class SyntaxTest(LeoUnitTest):
+#@+node:ekr.20210901140855.1: ** class TestSyntax(LeoUnitTest)
+class TestSyntax(LeoUnitTest):
     """Unit tests checking syntax of Leo files."""
     #@+others
-    #@+node:ekr.20210901140645.1: *3* SyntaxTest.tests...
-    #@+node:ekr.20210901140645.21: *4* SyntaxTest.test_syntax_of_all_files
+    #@+node:ekr.20210901140645.1: *3* TestSyntax.tests...
+    #@+node:ekr.20210901140645.21: *4* TestSyntax.test_syntax_of_all_files
     def test_syntax_of_all_files(self):
         c = self.c
         failed,n = [],0
@@ -38,7 +40,7 @@ class SyntaxTest(LeoUnitTest):
                     if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
                         failed.append(z)
         assert not failed,'failed %s\n' % g.listToString(failed)
-    #@+node:ekr.20210901140645.22: *4* SyntaxTest.test_syntax_of_setup_py
+    #@+node:ekr.20210901140645.22: *4* TestSyntax.test_syntax_of_setup_py
     def test_syntax_of_setup_py(self):
         c = self.c
         fn = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
@@ -47,6 +49,19 @@ class SyntaxTest(LeoUnitTest):
             self.skipTest('setup.py not found')
         s, e = g.readFileIntoString(fn)
         c.testManager.checkFileSyntax(fn, s, reraise=True, suppress=False)
+    #@+node:ekr.20210906062410.1: *4* TestSyntax.test_load_leo_file
+    def test_load_leo_file(self):
+        # Make sure that Leo can still load!
+        trace = False
+        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        assert os.path.exists(test_dot_leo)
+        gui = 'null' #, 'Qt'
+        trace = '--trace=startup' if trace else ''
+        # --quit suppresses the loading of settings files for greater speed.
+        command = f"leo {test_dot_leo} --quit --gui={gui} --no-plugins --silent {trace}"
+        ### g.execute_shell_commands(command)
+        proc = subprocess.Popen(command, stdout=subprocess.DEVNULL, shell=True)
+        proc.communicate()
     #@-others
 #@-others
 #@-leo

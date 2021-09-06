@@ -294,6 +294,8 @@ class LeoApp:
             # True: we are pre-reading a settings file.
         self.quitting = False
             # True: quitting.  Locks out some events.
+        self.quit_after_load = False
+            # True: quit immediately after loading.  For unit a unit test.
         self.restarting = False
             # True: restarting all of Leo. #1240.
         self.reverting = False
@@ -1423,15 +1425,19 @@ class LeoApp:
         for c in app.commanders():
             app.forgetOpenFile(c.fileName(), force=True)
         # Wait until everything is quiet before really quitting.
-        if trace: g.pr('forceShutdown: before end1')
+        if trace:
+            g.pr('forceShutdown: before end1')
         g.doHook("end1")
-        if trace: g.pr('forceShutdown: after end1')
+        if trace:
+            g.pr('forceShutdown: after end1')
         self.log = None  # Disable writeWaitingLog
         self.killed = True  # Disable all further hooks.
         for w in self.windowList[:]:
-            if trace: g.pr(f"forceShutdown: {w}")
+            if trace:
+                g.pr(f"forceShutdown: {w}")
             self.destroyWindow(w)
-        if trace: g.pr('before finishQuit')
+        if trace:
+            g.pr('before finishQuit')
         self.finishQuit()
     #@+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
@@ -2366,6 +2372,12 @@ class LoadManager:
             g.es_print(f"   files:{t4 - t3:5.2f} sec")
             g.es_print(f"   total:{t4 - t1:5.2f} sec")
             print('')
+        # -- quit
+        if g.app.quit_after_load:
+            if 'shutdown' in g.app.debug or 'startup' in g.app.debug:
+                print('--quit')
+            g.app.forceShutdown()
+            return
         # #1128: support for restart-leo.
         if not g.app.start_minimized:
             try:  # Careful: we may be unit testing.
@@ -2522,13 +2534,16 @@ class LoadManager:
             lm.reportDirectories()
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
-        lm.readGlobalSettingsFiles()
-            # reads only standard settings files, using a null gui.
-            # uses lm.files[0] to compute the local directory
-            # that might contain myLeoSettings.leo.
-        # Read the recent files file.
-        localConfigFile = lm.files[0] if lm.files else None
-        g.app.recentFilesManager.readRecentFiles(localConfigFile)
+        if g.app.quit_after_load:
+            localConfigFile = None
+        else:
+            lm.readGlobalSettingsFiles()
+                # reads only standard settings files, using a null gui.
+                # uses lm.files[0] to compute the local directory
+                # that might contain myLeoSettings.leo.
+            # Read the recent files file.
+            localConfigFile = lm.files[0] if lm.files else None
+            g.app.recentFilesManager.readRecentFiles(localConfigFile)
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
@@ -2830,6 +2845,7 @@ class LoadManager:
         add_bool('--minimized',     'start minimized')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
+        add_bool('--quit',          'quit immediately after loading')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
@@ -2936,6 +2952,8 @@ class LoadManager:
             g.app.enablePlugins = False
         # --no-splash: --minimized disables the splash screen
         g.app.use_splash_screen = not options.no_splash and not options.minimized
+        # -- quit
+        g.app.quit_after_load = options.quit
         # --silent
         g.app.silentMode = options.silent
         # --trace=...
