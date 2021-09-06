@@ -74,7 +74,7 @@ Settings for Current Line Highlighting
 
 @g.command('help-for-highlight-current-line')
 def helpForLineHighlight(self, event=None):
-    """Prints Settings used by current line highlighter."""
+    """Displays Settings used by current line highlighter."""
     self.c.putHelpFor(hilite_doc)
 
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
@@ -827,7 +827,7 @@ if QtWidgets:
         for item in g.app.config.menusList:
             if 'Help' in item[0]:
                 for entry in item[1]:
-                    if entry[0] == '@menu &Open Help topics':
+                    if entry[0].lower() == '@menu &open help topics':
                         menu_items = entry[1]
                         menu_items.append(new_entry)
                         menu_items.sort()
