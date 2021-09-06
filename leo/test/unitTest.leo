@@ -627,8 +627,89 @@
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
 <v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
 </v>
+<v t="ekr.20071113193624"><vh>leoCommands</vh>
+<v t="ekr.20110510054817.3475"><vh>@test c.alert</vh></v>
+<v t="ekr.20050512084850"><vh>@test c.checkOutline</vh>
+<v t="ekr.20040713070526"><vh>Scripts</vh>
+<v t="ekr.20040713123617"><vh>tempNode</vh></v>
+<v t="ekr.20050726141158"><vh>before</vh></v>
+<v t="ekr.20040713123828.1"><vh>after</vh></v>
 </v>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005805000000302e372e3371017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
+<v t="ekr.20070611105423.1"><vh>@test c.contractAllHeadlines</vh></v>
+<v t="ekr.20070611105728"><vh>@test c.demote: illegal clone demote</vh></v>
+<v t="ekr.20180120142320.1"><vh>@test c.expand_path_expression</vh></v>
+<v t="ekr.20111121140833.3916"><vh>@test c.findMatchingBracket</vh></v>
+<v t="ekr.20141016101308.4747"><vh>@test c.hiddenRootNode.fileIndex</vh></v>
+<v t="ekr.20120310121839.3949"><vh>@test c.hoist @chapter node</vh></v>
+<v t="ekr.20120311124038.3951"><vh>@test c.hoist followed by goto-first-node</vh></v>
+<v t="ekr.20071113105654.1"><vh>@test c.hoist with no children</vh></v>
+<v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
+<v t="ekr.20050512083807.1"><vh>@test c.markAllAtFileNodesDirty</vh></v>
+<v t="ekr.20050512083822.1"><vh>@test c.markSubheads</vh>
+<v t="ekr.20050512084850.1"><vh>child 1</vh></v>
+<v t="ekr.20050512084850.2"><vh>child 2</vh></v>
+</v>
+<v t="ekr.20111212142649.3971"><vh>@test c.pasteOutline does not clone top node</vh>
+<v t="ekr.20111212142649.3972"><vh>child</vh></v>
+</v>
+<v t="ekr.20191215093834.2"><vh>@test c.pasteOutline does not clone top node</vh>
+<v t="ekr.20191215093834.3"><vh>child</vh></v>
+</v>
+<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20100131180007.5466"><vh>@test c.scanAtPathDirectives</vh>
+<v t="ekr.20100131180007.5467"><vh>@path one</vh>
+<v t="ekr.20100131180007.5468"><vh>@path two</vh>
+<v t="ekr.20100131180007.5469"><vh>xyz</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100531034136.20110"><vh>@test c.scanAtPathDirectives same name subdirs</vh>
+<v t="sps.20100531034136.20111"><vh>@path again</vh>
+<v t="sps.20100531034136.20112"><vh>@path again</vh>
+<v t="sps.20100531034136.20113"><vh>xyz</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20040802065214"><vh>@@test c.setHeadString marks descendent @thin nodes dirty</vh>
+<v t="ekr.20040802065214.1"><vh>bogus</vh></v>
+</v>
+<v t="ekr.20050512083822.2"><vh>@test c.unmarkAll</vh></v>
+<v t="ekr.20100131180007.5465"><vh>@test class StubConfig</vh></v>
+<v t="ekr.20100203103015.5353"><vh>@test efc.ask</vh></v>
+<v t="ekr.20100203103015.5355"><vh>@test efc.compute_ext</vh></v>
+<v t="ekr.20100203103015.5354"><vh>@test efc.compute_temp_file_path</vh></v>
+<v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
+<v t="ekr.20100203103015.5357"><vh>@test g.isCallable</vh></v>
+<v t="ekr.20071113201833"><vh>@test zz end of leoCommands tests</vh></v>
+<v t="ekr.20170712132824.1"><vh>add/delete comments</vh>
+<v t="ekr.20120309155126.3949"><vh>@test add comments with multiple @language directives</vh>
+<v t="ekr.20120309155126.3950"><vh>rest and python</vh></v>
+</v>
+<v t="ekr.20170712135224.1"><vh>@test delete comments with multiple @language directives</vh>
+<v t="ekr.20170712135224.2"><vh>rest and python</vh></v>
+</v>
+<v t="ekr.20111112171235.3854"><vh>@test add html comments</vh>
+<v t="ekr.20170128023431.1"><vh>@language html</vh>
+<v t="ekr.20111112171235.3855"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20170712132900.1"><vh>@test delete html comments</vh>
+<v t="ekr.20170712132933.1"><vh>@language html</vh>
+<v t="ekr.20170712132933.2"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20170712134334.1"><vh>@test add python comments</vh>
+<v t="ekr.20170712134334.2"><vh>python</vh></v>
+</v>
+<v t="ekr.20170712134948.1"><vh>@test delete python comments</vh>
+<v t="ekr.20170712134948.3"><vh>python</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005805000000302e362e3371017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -668,6 +749,94 @@ Line 1
 #@@last
 #@-leo
 last line 1: no newline
+</t>
+<t tx="ekr.20040713070526">@language python 
+dump = False 
+all = False 
+tm = c.testManager
+if all:
+    c.prettyPrintAllPythonCode(dump=dump)
+else:
+    # Warning: at present the before and after text is unprotected:
+    # Running Pretty Print on these nodes will negate the value of the test.
+    temp = tm.findNodeInTree(p,"tempNode")
+    c.setBodyString(temp,"")
+    before = tm.findNodeInTree(p,"before")
+    after = tm.findNodeInTree(p,"after")
+    temp.scriptSetBodyString(before.b)
+    c.prettyPrintPythonCode(p=temp,dump=dump)
+    assert temp.b == after.b,"Pretty Print Test failed"
+</t>
+<t tx="ekr.20040713123617">@ This is a test of stuff.in doc parts.
+
+         I wonder what will happen.
+@c
+
+def spam (self):
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a == 3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+</t>
+<t tx="ekr.20040713123828.1">@ This is a test of stuff.in doc parts.
+
+         I wonder what will happen.
+@c
+
+def spam (self):
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a == 3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+</t>
+<t tx="ekr.20040802065214"># Make sure that changing this headline marks descendant @thin nodes dirty.
+h = p.h
+
+try:
+    child = p.firstChild()
+    child.initHeadString("@thin bogus")
+    assert child.h == "@thin bogus", "setting headline failed"
+    child.clearDirty()
+    assert not child.isDirty(), "clearing dirty failed"
+    c.setHeadString(p,"changed")
+    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
+finally:
+    try:
+        c.setHeadString(p,h)
+        c.setHeadString(child,"bogus")
+        p.clearDirty()
+        child.clearDirty()
+    finally: pass
+</t>
+<t tx="ekr.20040802065214.1">test
 </t>
 <t tx="ekr.20041021065844">c.testManager.runAtFileTest(p)
 </t>
@@ -833,6 +1002,68 @@ finally:
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
 <t tx="ekr.20050328101834.3"></t>
+<t tx="ekr.20050512083807.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.markAllAtFileNodesDirty()
+    except Exception:
+        g.es_exception()
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+assert ok
+</t>
+<t tx="ekr.20050512083822.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.markSubheads()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
+</t>
+<t tx="ekr.20050512083822.2">marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.unmarkAll()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
+</t>
+<t tx="ekr.20050512084850">errors = c.checkOutline()
+assert errors == 0, "Check Outline reported %d errors" % errors
+</t>
+<t tx="ekr.20050512084850.1">pass
+</t>
+<t tx="ekr.20050512084850.2">pass
+</t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -1068,6 +1299,31 @@ Instead of a dot denoting success, we get an 'F' denoting a failure on the line 
 It also includes a trace back, but for AssertionErrors, it does not seem to offer much added value to me right now. On second thought: when you have multiple asserts in a test, the trace back can tell you which assert function failed. Still, I would choose for only one assert function per test and get rid of this trace back altogether. This would keep the console much cleaner, IMHO.</t>
 <t tx="ekr.20050618061835.9">@color
 assert('Spam' == 'Ham')</t>
+<t tx="ekr.20050726141158">@ This is    a test of stuff.in doc parts.
+
+         I wonder           what will happen.
+@c
+
+def        spam (self         )  :   
+
+    """ This is a ' triple'   quoted string:
+        It should remain untouched."""
+
+    if a==3:
+        g.pr("Ä á Û")
+
+    ''' Another ' triple'   quoted string:
+        It should remain untouched.'''
+
+    "yet another\
+    multi-line string"
+
+class eggs:
+
+    """ A typical doc string """
+
+    @others
+</t>
 <t tx="ekr.20051012104957">@nosearch</t>
 <t tx="ekr.20051013162226"></t>
 <t tx="ekr.20051107115231"># These are mysteriously fragile tests, so they go first
@@ -1617,6 +1873,19 @@ for direction in ('up','down'):
         event = g.app.gui.create_key_event(c,w=w)
         ec.scrollHelper(event,direction,distance)
 </t>
+<t tx="ekr.20061106112522">w = c.frame.body.wrapper
+s = w.getAllText()
+
+try:
+    w.setInsertPoint(len(s))
+    c.insertBodyTime()
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # c.recolor()
+
+# end:
+</t>
 <t tx="ekr.20061110094226">ec = c.editCommands ; w = c.frame.body.wrapper
 
 for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
@@ -1793,6 +2062,31 @@ p3 = c.p
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
+<t tx="ekr.20070611105423.1">c.contractAllHeadlines()
+</t>
+<t tx="ekr.20070611105728"># Remove any previous children.
+while p.hasChildren():
+    p.firstChild().doDelete()
+# Create two cloned children.
+c.selectPosition(p)
+c.insertHeadline()
+p2 = c.p
+p2.moveToFirstChildOf(p)
+p2.setHeadString('aClone')
+c.selectPosition(p2)
+c.clone()
+assert 2 == p.numberOfChildren()
+
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()
+</t>
 <t tx="ekr.20071007120750.6"># xxxx.yyyy
 
 s = p.b
@@ -1827,6 +2121,9 @@ assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
 assert d.get('pagewidth') == 120
 </t>
+<t tx="ekr.20071113105654.1">c.hoist()
+c.dehoist()
+</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -1855,6 +2152,12 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20071113143844.9">assert g.CheckVersionToInt('12') == 12,'fail 1'
 assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
 assert g.CheckVersionToInt('b2') == 0, 'fail 3'
+</t>
+<t tx="ekr.20071113145804.10">c.contractAllHeadlines()
+p = c.rootPosition()
+while p.hasNext():
+    p.moveToNext()
+c.selectPosition(p)
 </t>
 <t tx="ekr.20071113145804.15">vr = c.helpCommands.helpForMinibuffer()
 if not vr:
@@ -2077,7 +2380,12 @@ for s,i,expected in table:
         i,repr(s),at.sentinelName(result),at.sentinelName(expected))
 </t>
 <t tx="ekr.20071113192611"></t>
+<t tx="ekr.20071113193624"># 7 failures with Alt-5
+</t>
 <t tx="ekr.20071113194033.3"># No failures with Alt-5 but warnings about no tnode lists.
+</t>
+<t tx="ekr.20071113201833"># Print does not work: it is redirected.
+g.pr('\nEnd of leoCommands tests')
 </t>
 <t tx="ekr.20071113202153.2"># Print does not work: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
@@ -2212,6 +2520,30 @@ assert s is True,repr(s)
 s = g.scanAtWrapDirectives(aList)
 
 assert s is None,repr(s)
+</t>
+<t tx="ekr.20080917151620.9">@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+
+d = c.scanAllDirectives(p)
+
+table = (
+    ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
 </t>
 <t tx="ekr.20090225102051.2">c.testManager.runAtFileTest(p)
 </t>
@@ -4712,6 +5044,71 @@ d = at.scanAllDirectives(p)
 
 assert len(p.b) == 175,len(p.b)
 </t>
+<t tx="ekr.20100131180007.5465">class StubConfig(g.NullObject):
+    pass
+
+x = StubConfig()
+assert not x.getBool(c,'mySetting')
+assert not x.enabledPluginsFileName
+</t>
+<t tx="ekr.20100131180007.5466">p2 = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList)
+endpath = g.os_path_normpath('one/two')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
+</t>
+<t tx="ekr.20100131180007.5467"></t>
+<t tx="ekr.20100131180007.5468"></t>
+<t tx="ekr.20100131180007.5469"></t>
+<t tx="ekr.20100203103015.5353"># Not a perfect test, but stil significant.
+efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('No externalFilesController')
+result = efc.ask(c,p.h)
+assert result in (True, False),result
+</t>
+<t tx="ekr.20100203103015.5354">efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('no externalFilesController')
+s = efc.compute_temp_file_path(c,p,'.py')
+assert s.endswith('.py')
+</t>
+<t tx="ekr.20100203103015.5355">@language python
+
+efc = g.app.externalFilesController
+if not efc:
+    self.skipTest('No externalFilesController')
+table = (
+    # (None,'.py'),
+    # ('','.py'),
+    ('txt','.txt'),
+    ('.txt','.txt'),
+)
+for ext,result in table:
+    result2 = efc.compute_ext(c,p,ext)
+    assert result==result2,'ext: %s, expected %s, got %s' % (
+        repr(ext),repr(result),repr(result2))
+</t>
+<t tx="ekr.20100203103015.5357">def spam(): pass
+lam = lambda a: None
+class aCallable:
+    def __call__ (self):
+        pass
+c = aCallable()
+
+table = (
+    ('abc',False),
+    (spam,True),
+    (lam,True),
+    (c,True)
+)
+
+for obj,val in table:
+    val2 = g.isCallable(obj)
+    assert val == val2,'%s, expected %s, got %s' % (
+        repr(obj),val,val2)
+</t>
 <t tx="ekr.20100204165850.5371"># These tests will be important when revising config code.
 </t>
 <t tx="ekr.20100204165850.5373">if g.app.inBridge:
@@ -4896,6 +5293,8 @@ the @interface
 @var test
 @todo
 */
+</t>
+<t tx="ekr.20110510054817.3475">c.alert('test of c.alert')
 </t>
 <t tx="ekr.20110510054817.3476">g.alert(c,'test of g.alert')
 </t>
@@ -5428,9 +5827,58 @@ run-all-unit-tests-locally          = Alt-6
 
 # Important: Alt-9 is used by a unit test
 </t>
+<t tx="ekr.20111112171235.3854">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'html')
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n&lt;html&gt;\ntext\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n&lt;!-- text --&gt;\n&lt;/html&gt;\n',
+    ),
+    (
+        True,
+        '@language html\n&lt;html&gt;\n    text\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n    &lt;!-- text --&gt;\n&lt;/html&gt;\n'
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('text')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.addComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20111112171235.3855">@language html
+&lt;html&gt;
+    &lt;!-- text --&gt;
+&lt;/html&gt;
+</t>
 <t tx="ekr.20111113102936.4600"></t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111115105448.3880"></t>
+<t tx="ekr.20111121140833.3916">w = c.frame.body.wrapper
+s = w.getAllText()
+i = s.find('(')
+w.setInsertPoint(i)
+c.findMatchingBracket(event=None)
+i,j = w.getSelectionRange()
+assert i &lt; j,'i: %s j: %s' % (i,j)
+</t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put
@@ -5494,6 +5942,24 @@ finally:
 <t tx="ekr.20111211094602.3978"></t>
 <t tx="ekr.20111211094602.3979"></t>
 <t tx="ekr.20111211094936.3970"></t>
+<t tx="ekr.20111212142649.3971">import sys
+if sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    self.skipTest('Not for Linux')
+else:
+    c.selectPosition(p)
+    c.copyOutline()
+    try:
+        p2 = c.pasteOutline()
+        assert p2
+        assert not p2.isCloned()
+    finally:
+        if p2: p2.doDelete()
+        c.redraw(p)
+</t>
+<t tx="ekr.20111212142649.3972"># child text.
+</t>
 <t tx="ekr.20120212130242.3980"></t>
 <t tx="ekr.20120228174052.3929"># node 1 text A.
 </t>
@@ -5530,6 +5996,92 @@ if sys.platform.startswith('win'):
         for kind in aList:
             assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
                 kind,url,g.dictToString(d))
+</t>
+<t tx="ekr.20120309155126.3949">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.addComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20120309155126.3950">@language rest
+rest text.
+@language python
+def spam():
+    # pass
+# after
+</t>
+<t tx="ekr.20120310121839.3949"># Not valid when run externally: the chapter node will not exist.
+if not g.app.isExternalUnitTest:
+
+    p1 = g.findNodeAnywhere(c,'@chapter aaa')
+    assert p1
+    p2 = g.findNodeAnywhere(c,'aaa node 1')
+    assert p2
+    try:
+        # g.es_print('**1**', c.hoistStack)
+        assert not c.hoistStack, ('fail1', c.hoistStack)
+        c.selectPosition(p1)
+        assert c.p == p1, ('fail2', c.p, p1)
+        c.hoist()
+            # New in Leo 5.3: should do nothing
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, ('fail3', c.p, p2)
+        c.dehoist()
+            # New in Leo 5.3: should do nothing:
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, 'fail4\n%s\n%s' % (c.p, p2)
+        assert c.hoistStack == [], ('fail5', c.hoistStack)
+    finally:
+        c.hoistStack = []
+        c.selectPosition(p)
+        c.redraw()
+else:
+    self.skipTest('Can not be run locally')
+</t>
+<t tx="ekr.20120311124038.3951">p1 = p.copy()
+try:
+    assert not c.hoistStack
+    c.selectPosition(p1)
+    assert c.p == p1
+    c.hoist()
+    c.goToFirstNode()
+    assert not c.hoistStack
+        # The hoist stack must be cleared to show the first node.
+    assert c.p == c.rootPosition()
+    assert c.p.isVisible(c)
+finally:
+    c.selectPosition(p1)
+    c.redraw()
 </t>
 <t tx="ekr.20121016134831.3906">import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
@@ -5901,6 +6453,8 @@ for s,word,i,expected in table:
 </t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
+<t tx="ekr.20141016101308.4747">assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
+</t>
 <t tx="ekr.20141208130803.11">assert g.import_module('leo.core.leoAst')
     # Top-level .py file.
 </t>
@@ -6056,6 +6610,8 @@ table = (
 for expected, s in table:
     result = at.directiveKind4(s, 0)
     assert expected == result, (expected, result, repr(s))
+</t>
+<t tx="ekr.20170128023431.1">@language html
 </t>
 <t tx="ekr.20170201143435.1">@language python
 
@@ -6535,9 +7091,191 @@ for data in table:
     assert expected == got, (expected, i, word, line)
 # print('done')
 </t>
+<t tx="ekr.20170712132824.1"></t>
+<t tx="ekr.20170712132900.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'html')
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n&lt;html&gt;\n&lt;!-- text --&gt;\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\ntext\n&lt;/html&gt;\n',
+    ),
+    (
+        True,
+        '@language html\n&lt;html&gt;\n    &lt;!-- text --&gt;\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n    text\n&lt;/html&gt;\n',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('text')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test delete-comments
+        c.deleteComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712132933.1">@language html
+</t>
+<t tx="ekr.20170712132933.2">@language html
+&lt;html&gt;
+    text
+&lt;/html&gt;
+</t>
+<t tx="ekr.20170712134334.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n    # pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n#     pass\n\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.addComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712134334.2">@language python
+def spam():
+#     pass
+
+# after
+</t>
+<t tx="ekr.20170712134948.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    # pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n#     pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test delete-comments
+        c.deleteComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712134948.3">@language python
+def spam():
+    pass
+
+# after
+</t>
+<t tx="ekr.20170712135224.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.deleteComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712135224.2">@language rest
+rest text.
+@language python
+def spam():
+    pass
+# after
+</t>
 <t tx="ekr.20171126152936.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153044.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153138.1">See #577: https://github.com/leo-editor/leo-editor/issues/577
+</t>
+<t tx="ekr.20180120142320.1">import os
+sep = os.sep
+table = (
+    ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
+)
+for s, expected in table:
+    if g.isWindows:
+        expected = expected.replace('\\','/')
+    got = c.expand_path_expression(s)
+    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
 </t>
 <t tx="ekr.20180128105733.1">trace = False
 skipped = 0
@@ -6682,6 +7420,24 @@ if 0:
 val = at.precheck(path, p)
 assert val is True
 </t>
+<t tx="ekr.20191215093834.2">import sys
+if sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    self.skipTest('Not for Linux')
+else:
+    c.selectPosition(p)
+    c.copyOutline()
+    try:
+        p2 = c.pasteOutline()
+        assert p2
+        assert not p2.isCloned()
+    finally:
+        if p2: p2.doDelete()
+        c.redraw(p)
+</t>
+<t tx="ekr.20191215093834.3"># child text.
+</t>
 <t tx="ekr.20191215093835.12"></t>
 <t tx="ekr.20191215093835.13"></t>
 <t tx="ekr.20191215093835.14"></t>
@@ -6721,6 +7477,16 @@ assert len(s) == 2, len(s)
 <t tx="ekr.20210829055149.1"></t>
 <t tx="ekr.20210901174825.1"></t>
 <t tx="ekr.20210905065744.1"></t>
+<t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList)
+endpath = g.os_path_normpath('again/again')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
+</t>
+<t tx="sps.20100531034136.20111"></t>
+<t tx="sps.20100531034136.20112"></t>
+<t tx="sps.20100531034136.20113"></t>
 <t tx="sps.20100609234650.16094">end = g.skip_blank_lines("",0)
 assert end == 0, "expected 0, got %d" % end
 end = g.skip_blank_lines(" ",0)
@@ -6733,6 +7499,24 @@ end = g.skip_blank_lines("\n\na\n",0)
 assert end == 2, "expected 2, got %d" % end
 end = g.skip_blank_lines("\n\n a\n",0)
 assert end == 2, "expected 2, got %d" % end
+</t>
+<t tx="ville.20090602190735.4770">_foo = 0
+
+@g.command('my-test-command')
+def mytestcommand(event):
+    global _foo
+    _foo = 1
+
+try:
+    c.k.simulateCommand('my-test-command')
+    assert _foo == 1
+    
+    # bonus test: c.app.commanders()
+    assert c in g.app.commanders()
+
+except AttributeError:
+    # Raised only for unit testing.
+    pass
 </t>
 </tnodes>
 </leo_file>
