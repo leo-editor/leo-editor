@@ -215,7 +215,6 @@ class TestCommands(LeoUnitTest):
         # Select the first clone and demote (it should be illegal)
         c.selectPosition(p2)
         c.demote() # This should do nothing.
-        ### assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
         assert 0 == c.checkOutline(), 'fail 2'
         assert 2 == p.numberOfChildren(), 'fail 3'
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
@@ -233,14 +232,12 @@ class TestCommands(LeoUnitTest):
             assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
     #@+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
     def test_c_findMatchingBracket(self):
-        c = self.c
-        w = c.frame.body.wrapper
-        s = w.getAllText()
-        i = s.find('(')
-        w.setInsertPoint(i)
+        c, w = self.c, self.c.frame.body.wrapper
+        c.p.b = '(abc)'
         c.findMatchingBracket(event=None)
-        i,j = w.getSelectionRange()
+        i, j = w.getSelectionRange()
         assert i < j,'i: %s j: %s' % (i,j)
+
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
         c = self.c
