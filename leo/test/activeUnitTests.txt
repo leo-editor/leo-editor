@@ -3,10 +3,8 @@
 # All the following should pass when run locally (Alt-4).
 #@@language python
 #@+all
-#@+node:ekr.20071113194858: ** Organized by file
-# All the following files have problems when run with Alt-5.
-#@+node:ekr.20190608143232.1: *3* commands/checkerCommands.py
-#@+node:ekr.20190608071309.1: *4* @test regex for pylint
+#@+node:ekr.20190608143232.1: ** commands/checkerCommands.py
+#@+node:ekr.20190608071309.1: *3* @test regex for pylint
 import re
 import leo.commands.checkerCommands as checkerCommands
 x = checkerCommands.PylintCommand(c)
@@ -24,8 +22,8 @@ for message in table:
     message = message.replace('\\', '/')
     m = pattern.match(message)
     assert m, message
-#@+node:ekr.20100131171342.5506: *3* leoApp
-#@+node:ekr.20100131171342.5507: *4* @test consistency of leoApp tables
+#@+node:ekr.20100131171342.5506: ** leoApp
+#@+node:ekr.20100131171342.5507: *3* @test consistency of leoApp tables
 @
 language_delims_dict 
     # Keys are languages, values are 1,2 or 3-tuples of delims. 
@@ -46,7 +44,7 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
-#@+node:ekr.20100131180007.5417: *4* @test lm.openAnyLeoFile
+#@+node:ekr.20100131180007.5417: *3* @test lm.openAnyLeoFile
 import zipfile
 lm = g.app.loadManager
 
@@ -64,7 +62,7 @@ theFile = lm.openAnyLeoFile(path)
 assert theFile
 s2 = theFile.read()
 assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
-#@+node:ekr.20100211110729.5389: *4* @test rfm.writeRecentFilesFileHelper
+#@+node:ekr.20100211110729.5389: *3* @test rfm.writeRecentFilesFileHelper
 @first # -*- coding: utf-8 -*-
 #
 # On Windows, this works with or without the following line in sitecustomize.py
@@ -75,9 +73,9 @@ g.app.recentFilesManager.writeRecentFilesFileHelper(fn)
 assert g.os_path_exists(fn),'fail 1'
 os.remove(fn)
 assert not g.os_path_exists(fn),'fail 1'
-#@+node:ekr.20150521123343.1: *3* leoBeautify
+#@+node:ekr.20150521123343.1: ** leoBeautify
 # These tests are now in leoAst.py.
-#@+node:ekr.20111104171708.3843: *4* @test leoBeautify.CPrettyPrinter
+#@+node:ekr.20111104171708.3843: *3* @test leoBeautify.CPrettyPrinter
 import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
 fn = 'c tokenize test'
@@ -90,7 +88,7 @@ if 1: # test of indent.
 if 0: # test of tokenize.
     aList = cpp.tokenize(p2.b)
     assert(p2.b == ''.join(aList))
-#@+node:ekr.20111104171708.3844: *5* c tokenize test
+#@+node:ekr.20111104171708.3844: *4* c tokenize test
 @language c
 
 static exit_values_ty indent_main_loop(void)
@@ -342,8 +340,8 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
-#@+node:ekr.20110608135658.3377: *3* leoChapters
-#@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
+#@+node:ekr.20110608135658.3377: ** leoChapters
+#@+node:ekr.20110608162543.3363: *3* @test chapter-create/remove & undo
 # cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
 new_code = getattr(leoChapters, 'new_code', True)
@@ -363,7 +361,7 @@ elif cc and not g.app.isExternalUnitTest:
     cc.selectChapterByName('main',collapse=True)
 else:
     self.skipTest('Can not be run locally')
-#@+node:ekr.20110608162543.3365: *4* @test chapter-rename & undo
+#@+node:ekr.20110608162543.3365: *3* @test chapter-rename & undo
 # cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
 new_code = getattr(leoChapters, 'new_code', True)
@@ -386,7 +384,7 @@ elif cc and not g.app.isExternalUnitTest:
         cc.selectChapterByName('main',collapse=True)
 else:
     self.skipTest('Can not be run locally')
-#@+node:ekr.20110608181936.3368: *4* @test chapter-move/clone/copy-node-to
+#@+node:ekr.20110608181936.3368: *3* @test chapter-move/clone/copy-node-to
 # cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
 new_code = getattr(leoChapters, 'new_code', True)
@@ -434,13 +432,13 @@ elif cc and not g.app.isExternalUnitTest:
         c.redraw()
 else:
     self.skipTest('Can not be run locally')
-#@+node:ekr.20160402043006.1: *5* node a
+#@+node:ekr.20160402043006.1: *4* node a
 # node a
-#@+node:ekr.20160402043006.2: *5* node b
+#@+node:ekr.20160402043006.2: *4* node b
 # node b
-#@+node:ekr.20160402043006.3: *5* node c
+#@+node:ekr.20160402043006.3: *4* node c
 # node c
-#@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
+#@+node:ekr.20080503132221.1: *3* @test chapter-create-from-node
 # cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
 new_code = getattr(leoChapters, 'new_code', True)
@@ -485,14 +483,14 @@ elif cc and not g.app.isExternalUnitTest:
 else:
     self.skipTest('Can not be run locally')
 
-#@+node:ekr.20071113193624: *3* leoCommands
+#@+node:ekr.20071113193624: ** leoCommands
 # 7 failures with Alt-5
-#@+node:ekr.20110510054817.3475: *4* @test c.alert
+#@+node:ekr.20110510054817.3475: *3* @test c.alert
 c.alert('test of c.alert')
-#@+node:ekr.20050512084850: *4* @test c.checkOutline
+#@+node:ekr.20050512084850: *3* @test c.checkOutline
 errors = c.checkOutline()
 assert errors == 0, "Check Outline reported %d errors" % errors
-#@+node:ekr.20040713070526: *5* Scripts
+#@+node:ekr.20040713070526: *4* Scripts
 @language python 
 dump = False 
 all = False 
@@ -509,7 +507,7 @@ else:
     temp.scriptSetBodyString(before.b)
     c.prettyPrintPythonCode(p=temp,dump=dump)
     assert temp.b == after.b,"Pretty Print Test failed"
-#@+node:ekr.20040713123617: *6* tempNode
+#@+node:ekr.20040713123617: *5* tempNode
 @ This is a test of stuff.in doc parts.
 
          I wonder what will happen.
@@ -534,7 +532,7 @@ class eggs:
     """ A typical doc string """
 
     @others
-#@+node:ekr.20050726141158: *6* before
+#@+node:ekr.20050726141158: *5* before
 @ This is    a test of stuff.in doc parts.
 
          I wonder           what will happen.
@@ -559,7 +557,7 @@ class eggs:
     """ A typical doc string """
 
     @others
-#@+node:ekr.20040713123828.1: *6* after
+#@+node:ekr.20040713123828.1: *5* after
 @ This is a test of stuff.in doc parts.
 
          I wonder what will happen.
@@ -584,15 +582,15 @@ class eggs:
     """ A typical doc string """
 
     @others
-#@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
+#@+node:ekr.20071113145804.10: *3* @test c.contractAllHeadlines
 c.contractAllHeadlines()
 p = c.rootPosition()
 while p.hasNext():
     p.moveToNext()
 c.selectPosition(p)
-#@+node:ekr.20070611105423.1: *4* @test c.contractAllHeadlines
+#@+node:ekr.20070611105423.1: *3* @test c.contractAllHeadlines
 c.contractAllHeadlines()
-#@+node:ekr.20070611105728: *4* @test c.demote: illegal clone demote
+#@+node:ekr.20070611105728: *3* @test c.demote: illegal clone demote
 # Remove any previous children.
 while p.hasChildren():
     p.firstChild().doDelete()
@@ -615,7 +613,7 @@ assert 2 == p.numberOfChildren(), 'fail 3'
 # Delete the children, but only if there are no errors.
 while p.hasChildren():
     p.firstChild().doDelete()
-#@+node:ekr.20180120142320.1: *4* @test c.expand_path_expression
+#@+node:ekr.20180120142320.1: *3* @test c.expand_path_expression
 import os
 sep = os.sep
 table = (
@@ -626,7 +624,7 @@ for s, expected in table:
         expected = expected.replace('\\','/')
     got = c.expand_path_expression(s)
     assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
-#@+node:ekr.20111121140833.3916: *4* @test c.findMatchingBracket
+#@+node:ekr.20111121140833.3916: *3* @test c.findMatchingBracket
 w = c.frame.body.wrapper
 s = w.getAllText()
 i = s.find('(')
@@ -634,9 +632,9 @@ w.setInsertPoint(i)
 c.findMatchingBracket(event=None)
 i,j = w.getSelectionRange()
 assert i < j,'i: %s j: %s' % (i,j)
-#@+node:ekr.20141016101308.4747: *4* @test c.hiddenRootNode.fileIndex
+#@+node:ekr.20141016101308.4747: *3* @test c.hiddenRootNode.fileIndex
 assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
-#@+node:ekr.20120310121839.3949: *4* @test c.hoist @chapter node
+#@+node:ekr.20120310121839.3949: *3* @test c.hoist @chapter node
 # Not valid when run externally: the chapter node will not exist.
 if not g.app.isExternalUnitTest:
 
@@ -664,7 +662,7 @@ if not g.app.isExternalUnitTest:
         c.redraw()
 else:
     self.skipTest('Can not be run locally')
-#@+node:ekr.20120311124038.3951: *4* @test c.hoist followed by goto-first-node
+#@+node:ekr.20120311124038.3951: *3* @test c.hoist followed by goto-first-node
 p1 = p.copy()
 try:
     assert not c.hoistStack
@@ -679,10 +677,10 @@ try:
 finally:
     c.selectPosition(p1)
     c.redraw()
-#@+node:ekr.20071113105654.1: *4* @test c.hoist with no children
+#@+node:ekr.20071113105654.1: *3* @test c.hoist with no children
 c.hoist()
 c.dehoist()
-#@+node:ekr.20061106112522: *4* @test c.insertBodyTime
+#@+node:ekr.20061106112522: *3* @test c.insertBodyTime
 w = c.frame.body.wrapper
 s = w.getAllText()
 
@@ -695,7 +693,7 @@ finally:
     # c.recolor()
 
 # end:
-#@+node:ekr.20050512083807.1: *4* @test c.markAllAtFileNodesDirty
+#@+node:ekr.20050512083807.1: *3* @test c.markAllAtFileNodesDirty
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
@@ -714,7 +712,7 @@ finally:
                 c.clearMarked(p)
 
 assert ok
-#@+node:ekr.20050512083822.1: *4* @test c.markSubheads
+#@+node:ekr.20050512083822.1: *3* @test c.markSubheads
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
@@ -732,11 +730,11 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
-#@+node:ekr.20050512084850.1: *5* child 1
+#@+node:ekr.20050512084850.1: *4* child 1
 pass
-#@+node:ekr.20050512084850.2: *5* child 2
+#@+node:ekr.20050512084850.2: *4* child 2
 pass
-#@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
+#@+node:ekr.20111212142649.3971: *3* @test c.pasteOutline does not clone top node
 import sys
 if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
@@ -752,9 +750,9 @@ else:
     finally:
         if p2: p2.doDelete()
         c.redraw(p)
-#@+node:ekr.20111212142649.3972: *5* child
+#@+node:ekr.20111212142649.3972: *4* child
 # child text.
-#@+node:ekr.20191215093834.2: *4* @test c.pasteOutline does not clone top node
+#@+node:ekr.20191215093834.2: *3* @test c.pasteOutline does not clone top node
 import sys
 if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
@@ -770,9 +768,9 @@ else:
     finally:
         if p2: p2.doDelete()
         c.redraw(p)
-#@+node:ekr.20191215093834.3: *5* child
+#@+node:ekr.20191215093834.3: *4* child
 # child text.
-#@+node:ekr.20080917151620.9: *4* @test c.scanAllDirectives
+#@+node:ekr.20080917151620.9: *3* @test c.scanAllDirectives
 @language python
 @comment a b c
     # @comment must follow @language
@@ -796,27 +794,27 @@ for kind,expected in table:
     got = d.get(kind)
     assert got == expected, 'kind: %s, expected %s, got %s' % (
         kind,repr(expected),repr(got))
-#@+node:ekr.20100131180007.5466: *4* @test c.scanAtPathDirectives
+#@+node:ekr.20100131180007.5466: *3* @test c.scanAtPathDirectives
 p2 = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(p2)
 path = c.scanAtPathDirectives(aList)
 endpath = g.os_path_normpath('one/two')
 assert path and path.endswith(endpath),'expected ending %s got %s' % (
     endpath,path)
-#@+node:ekr.20100131180007.5467: *5* @path one
-#@+node:ekr.20100131180007.5468: *6* @path two
-#@+node:ekr.20100131180007.5469: *7* xyz
-#@+node:sps.20100531034136.20110: *4* @test c.scanAtPathDirectives same name subdirs
+#@+node:ekr.20100131180007.5467: *4* @path one
+#@+node:ekr.20100131180007.5468: *5* @path two
+#@+node:ekr.20100131180007.5469: *6* xyz
+#@+node:sps.20100531034136.20110: *3* @test c.scanAtPathDirectives same name subdirs
 p2 = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(p2)
 path = c.scanAtPathDirectives(aList)
 endpath = g.os_path_normpath('again/again')
 assert path and path.endswith(endpath),'expected ending %s got %s' % (
     endpath,path)
-#@+node:sps.20100531034136.20111: *5* @path again
-#@+node:sps.20100531034136.20112: *6* @path again
-#@+node:sps.20100531034136.20113: *7* xyz
-#@+node:ekr.20040802065214: *4* @@test c.setHeadString marks descendent @thin nodes dirty
+#@+node:sps.20100531034136.20111: *4* @path again
+#@+node:sps.20100531034136.20112: *5* @path again
+#@+node:sps.20100531034136.20113: *6* xyz
+#@+node:ekr.20040802065214: *3* @@test c.setHeadString marks descendent @thin nodes dirty
 # Make sure that changing this headline marks descendant @thin nodes dirty.
 h = p.h
 
@@ -835,9 +833,9 @@ finally:
         p.clearDirty()
         child.clearDirty()
     finally: pass
-#@+node:ekr.20040802065214.1: *5* bogus
+#@+node:ekr.20040802065214.1: *4* bogus
 test
-#@+node:ekr.20050512083822.2: *4* @test c.unmarkAll
+#@+node:ekr.20050512083822.2: *3* @test c.unmarkAll
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
@@ -855,21 +853,21 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
-#@+node:ekr.20100131180007.5465: *4* @test class StubConfig
+#@+node:ekr.20100131180007.5465: *3* @test class StubConfig
 class StubConfig(g.NullObject):
     pass
 
 x = StubConfig()
 assert not x.getBool(c,'mySetting')
 assert not x.enabledPluginsFileName
-#@+node:ekr.20100203103015.5353: *4* @test efc.ask
+#@+node:ekr.20100203103015.5353: *3* @test efc.ask
 # Not a perfect test, but stil significant.
 efc = g.app.externalFilesController
 if not efc:
     self.skipTest('No externalFilesController')
 result = efc.ask(c,p.h)
 assert result in (True, False),result
-#@+node:ekr.20100203103015.5355: *4* @test efc.compute_ext
+#@+node:ekr.20100203103015.5355: *3* @test efc.compute_ext
 @language python
 
 efc = g.app.externalFilesController
@@ -885,13 +883,13 @@ for ext,result in table:
     result2 = efc.compute_ext(c,p,ext)
     assert result==result2,'ext: %s, expected %s, got %s' % (
         repr(ext),repr(result),repr(result2))
-#@+node:ekr.20100203103015.5354: *4* @test efc.compute_temp_file_path
+#@+node:ekr.20100203103015.5354: *3* @test efc.compute_temp_file_path
 efc = g.app.externalFilesController
 if not efc:
     self.skipTest('no externalFilesController')
 s = efc.compute_temp_file_path(c,p,'.py')
 assert s.endswith('.py')
-#@+node:ville.20090602190735.4770: *4* @test g.command decorator
+#@+node:ville.20090602190735.4770: *3* @test g.command decorator
 _foo = 0
 
 @g.command('my-test-command')
@@ -909,7 +907,7 @@ try:
 except AttributeError:
     # Raised only for unit testing.
     pass
-#@+node:ekr.20100203103015.5357: *4* @test g.isCallable
+#@+node:ekr.20100203103015.5357: *3* @test g.isCallable
 def spam(): pass
 lam = lambda a: None
 class aCallable:
@@ -928,11 +926,11 @@ for obj,val in table:
     val2 = g.isCallable(obj)
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
-#@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
+#@+node:ekr.20071113201833: *3* @test zz end of leoCommands tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoCommands tests')
-#@+node:ekr.20170712132824.1: *4* add/delete comments
-#@+node:ekr.20120309155126.3949: *5* @test add comments with multiple @language directives
+#@+node:ekr.20170712132824.1: *3* add/delete comments
+#@+node:ekr.20120309155126.3949: *4* @test add comments with multiple @language directives
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'not found: rest and python'
@@ -968,14 +966,14 @@ finally:
     c.config.set(p, 'bool', 'indent_added_comments', old_indent)
     val = c.config.getBool('indent_added_comments')
     assert old_indent == val, (repr(indent), repr(val))
-#@+node:ekr.20120309155126.3950: *6* rest and python
+#@+node:ekr.20120309155126.3950: *5* rest and python
 @language rest
 rest text.
 @language python
 def spam():
     # pass
 # after
-#@+node:ekr.20170712135224.1: *5* @test delete comments with multiple @language directives
+#@+node:ekr.20170712135224.1: *4* @test delete comments with multiple @language directives
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'not found: rest and python'
@@ -1011,14 +1009,14 @@ finally:
     c.config.set(p, 'bool', 'indent_added_comments', old_indent)
     val = c.config.getBool('indent_added_comments')
     assert old_indent == val, (repr(indent), repr(val))
-#@+node:ekr.20170712135224.2: *6* rest and python
+#@+node:ekr.20170712135224.2: *5* rest and python
 @language rest
 rest text.
 @language python
 def spam():
     pass
 # after
-#@+node:ekr.20111112171235.3854: *5* @test add html comments
+#@+node:ekr.20111112171235.3854: *4* @test add html comments
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'html')
 assert p,'not found: html'
@@ -1054,14 +1052,14 @@ finally:
     c.config.set(p, 'bool', 'indent_added_comments', old_indent)
     val = c.config.getBool('indent_added_comments')
     assert old_indent == val, (repr(indent), repr(val))
-#@+node:ekr.20170128023431.1: *6* @language html
+#@+node:ekr.20170128023431.1: *5* @language html
 @language html
-#@+node:ekr.20111112171235.3855: *7* html
+#@+node:ekr.20111112171235.3855: *6* html
 @language html
 <html>
     <!-- text -->
 </html>
-#@+node:ekr.20170712132900.1: *5* @test delete html comments
+#@+node:ekr.20170712132900.1: *4* @test delete html comments
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'html')
 assert p,'not found: html'
@@ -1097,14 +1095,14 @@ finally:
     c.config.set(p, 'bool', 'indent_added_comments', old_indent)
     val = c.config.getBool('indent_added_comments')
     assert old_indent == val, (repr(indent), repr(val))
-#@+node:ekr.20170712132933.1: *6* @language html
+#@+node:ekr.20170712132933.1: *5* @language html
 @language html
-#@+node:ekr.20170712132933.2: *7* html
+#@+node:ekr.20170712132933.2: *6* html
 @language html
 <html>
     text
 </html>
-#@+node:ekr.20170712134334.1: *5* @test add python comments
+#@+node:ekr.20170712134334.1: *4* @test add python comments
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
 assert p,'not found: python'
@@ -1140,13 +1138,13 @@ finally:
     c.config.set(p, 'bool', 'indent_added_comments', old_indent)
     val = c.config.getBool('indent_added_comments')
     assert old_indent == val, (repr(indent), repr(val))
-#@+node:ekr.20170712134334.2: *6* python
+#@+node:ekr.20170712134334.2: *5* python
 @language python
 def spam():
 #     pass
 
 # after
-#@+node:ekr.20170712134948.1: *5* @test delete python comments
+#@+node:ekr.20170712134948.1: *4* @test delete python comments
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
 assert p,'not found: python'
@@ -1182,18 +1180,18 @@ finally:
     c.config.set(p, 'bool', 'indent_added_comments', old_indent)
     val = c.config.getBool('indent_added_comments')
     assert old_indent == val, (repr(indent), repr(val))
-#@+node:ekr.20170712134948.3: *6* python
+#@+node:ekr.20170712134948.3: *5* python
 @language python
 def spam():
     pass
 
 # after
-#@+node:ekr.20071113194216: *3* leoConfig
+#@+node:ekr.20071113194216: ** leoConfig
 # 3 failurs with Alt-5
-#@+node:ekr.20111115071700.3870: *4* @test c.config.printSettings
+#@+node:ekr.20111115071700.3870: *3* @test c.config.printSettings
 c.config.printSettings()
 
-#@+node:ekr.20120201101804.3907: *4* @test c.config.updateSetting with no @settings node
+#@+node:ekr.20120201101804.3907: *3* @test c.config.updateSetting with no @settings node
 import leo.core.leoConfig as leoConfig
     
 p = c.config.settingsRoot()
@@ -1211,7 +1209,7 @@ finally:
     if p:
         p.h = h
         c.redraw()
-#@+node:ekr.20111124090010.3939: *4* @test g.app.config @buttons and @commands logic
+#@+node:ekr.20111124090010.3939: *3* @test g.app.config @buttons and @commands logic
 if g.app.gui.guiName() == 'browser':
     self.skipTest('browser gui')
 if g.app.isExternalUnitTest:
@@ -1233,11 +1231,11 @@ for key in keys:
             print('key', key, 'ext', ext, 'base', base)
             g.printObj(aList)
             assert False,'%s not in unitTestDict[%s]' % (base,key)
-#@+node:ekr.20050203084930.1: *4* @test g.app.config.get
+#@+node:ekr.20050203084930.1: *3* @test g.app.config.get
 w = g.app.config.get('global_setting_for_unit_tests','int')
 
 assert w in (None,132) # Will be None when tests run dynamically.
-#@+node:ekr.20111105124216.3840: *4* @test g.app.config.set
+#@+node:ekr.20111105124216.3840: *3* @test g.app.config.set
 setting = 'import_html_tags'
 html_tags = ('body','head','html','table','xxx')
 
@@ -1247,7 +1245,7 @@ if not existing_tags:
     g.app.config.set(None,setting,'data',html_tags)
     tags = c.config.getData(setting)
     assert c.config.getData(setting) == html_tags
-#@+node:ekr.20060325071703.1: *4* @test ifplatform
+#@+node:ekr.20060325071703.1: *3* @test ifplatform
 import sys
 
 win32  = c.config.getBool('test_win32_setting')
@@ -1264,13 +1262,13 @@ elif sys.platform== 'darwin':
     assert(not win32)
     assert(darwin)
 
-#@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
+#@+node:ekr.20050203001146: *3* @test local settings (c.page_width)
 assert c.page_width == c.config.getInt('page_width'),c.page_width
-#@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
+#@+node:ekr.20071113201854: *3* @test zz end of leoConfig tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoConfig tests')
-#@+node:ekr.20100131171342.5592: *3* leoDialogs
-#@+node:ekr.20100131171342.5593: *4* @test ctors for all dialogs
+#@+node:ekr.20100131171342.5592: ** leoDialogs
+#@+node:ekr.20100131171342.5593: *3* @test ctors for all dialogs
 # For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
 # Also, for unit testing the value of c doesn't matter.
@@ -1290,9 +1288,9 @@ try:
         # gui.runCompareDialog(c) # Removed.
 finally:
     g.app.gui = oldGui
-#@+node:ekr.20061001114637: *3* leoFileCommands
+#@+node:ekr.20061001114637: ** leoFileCommands
 # 3 failures with Alt-5
-#@+node:ekr.20080806072412.1: *4* @test fc.resolveArchivedPosition
+#@+node:ekr.20080806072412.1: *3* @test fc.resolveArchivedPosition
 child1 = p.firstChild()
 child2 = p.firstChild().next()
 grandChild1 = child2.firstChild()
@@ -1325,15 +1323,15 @@ table = (
 for v,archivedPosition in table:
     v2 = c.fileCommands.resolveArchivedPosition(archivedPosition,root_v)
     assert v == v2,'got %s, expected %s' % (v2,v)
-#@+node:ekr.20080806072412.2: *5* first child
-#@+node:ekr.20080806072412.3: *5* second child
-#@+node:ekr.20080806072412.4: *6* grandChild1
-#@+node:ekr.20080806080425.1: *7* greatGrandChild11
-#@+node:ekr.20080806080425.2: *7* greatGrandChild12
-#@+node:ekr.20080806072412.5: *6* grandChild 2
-#@+node:ekr.20080806080425.3: *7* greatGrandChild21
-#@+node:ekr.20080806080425.4: *7* greatGrandChild22
-#@+node:ekr.20080805105541.1: *4* @test p.archivedPosition
+#@+node:ekr.20080806072412.2: *4* first child
+#@+node:ekr.20080806072412.3: *4* second child
+#@+node:ekr.20080806072412.4: *5* grandChild1
+#@+node:ekr.20080806080425.1: *6* greatGrandChild11
+#@+node:ekr.20080806080425.2: *6* greatGrandChild12
+#@+node:ekr.20080806072412.5: *5* grandChild 2
+#@+node:ekr.20080806080425.3: *6* greatGrandChild21
+#@+node:ekr.20080806080425.4: *6* greatGrandChild22
+#@+node:ekr.20080805105541.1: *3* @test p.archivedPosition
 val = p.archivedPosition(root_p=p)
 assert val == [0],'expected %s, got %s' % ([0],val)
 
@@ -1354,11 +1352,11 @@ for z in p.firstChild().next().children_iter():
     val = z.archivedPosition(root_p=p)
     assert val == [0,1,i],'expected %s, got %s'%([0,1,i],val)
     i += 1
-#@+node:ekr.20080805122315.1: *5* first child
-#@+node:ekr.20080805122315.2: *5* second child
-#@+node:ekr.20080805122315.3: *6* grandChild
-#@+node:ekr.20080805122315.4: *6* grandChild 2
-#@+node:ekr.20080805104144.1: *4* @test putDescendentVnodeUas
+#@+node:ekr.20080805122315.1: *4* first child
+#@+node:ekr.20080805122315.2: *4* second child
+#@+node:ekr.20080805122315.3: *5* grandChild
+#@+node:ekr.20080805122315.4: *5* grandChild 2
+#@+node:ekr.20080805104144.1: *3* @test putDescendentVnodeUas
 fc = c.fileCommands
 child = p.firstChild()
 grandChild = child.firstChild()
@@ -1376,15 +1374,15 @@ try:
 finally:
     del child.v.unknownAttributes
     del grandChild.v.unknownAttributes
-#@+node:ekr.20080805104144.2: *5* child
-#@+node:ekr.20080805104144.3: *6* grandChild
-#@+node:ekr.20061001114236: *4* @test putUa
+#@+node:ekr.20080805104144.2: *4* child
+#@+node:ekr.20080805104144.3: *5* grandChild
+#@+node:ekr.20061001114236: *3* @test putUa
 fc = c.fileCommands # self is a dummy
 p.v.unknownAttributes = {'unit_test': 'abcd'}
 s = fc.putUnknownAttributes (p.v)
 expected = ' unit_test="58040000006162636471002e"'
 assert s == expected, '\nexpected: %s\ngot:      %s' % (repr(expected),repr(s))
-#@+node:ekr.20051107115231.9: *4* @test Select a node when file is first loaded
+#@+node:ekr.20051107115231.9: *3* @test Select a node when file is first loaded
 c.redraw(p) # To make node visible
 
 c2 = c.new()
@@ -1399,7 +1397,7 @@ finally:
     ### c2.setChanged(False)
     c2.clearChanged()
     c2.close()
-#@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same
+#@+node:ekr.20090507084947.5152: *3* @test t.fileIndex remains the same
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
@@ -1407,12 +1405,12 @@ else:
     assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
     # old gnxs:
     # assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
-#@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
+#@+node:ekr.20071113202045: *3* @test zz end of leoFile tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoFileCommands tests.')
-#@+node:ekr.20071113193527: *3* leoFind
+#@+node:ekr.20071113193527: ** leoFind
 # 4 failures with Alt-5
-#@+node:ekr.20060130151716.3: *4* @test minibuffer find commands
+#@+node:ekr.20060130151716.3: *3* @test minibuffer find commands
 if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 table = (
@@ -1428,7 +1426,7 @@ for command in table:
     # This is not a full test.  We must use keyboardQuit here!
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)
-#@+node:ekr.20190603184713.1: *4* @test replace-all: plain search
+#@+node:ekr.20190603184713.1: *3* @test replace-all: plain search
 fc = c.findCommands
 
 plain_table = (
@@ -1445,7 +1443,7 @@ for s, find, change, count, result in plain_table:
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
-#@+node:ekr.20190603192140.1: *4* @test replace-all: plain search: ignore case
+#@+node:ekr.20190603192140.1: *3* @test replace-all: plain search: ignore case
 fc = c.findCommands
 
 plain_table = (
@@ -1461,7 +1459,7 @@ for s, find, change, count, result in plain_table:
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
-#@+node:ekr.20190603193938.1: *4* @test replace-all: regex search
+#@+node:ekr.20190603193938.1: *3* @test replace-all: regex search
 fc = c.findCommands
 regex_table = (
     # s                 find        change  count   result
@@ -1478,7 +1476,7 @@ for s, find, change, count, result in regex_table:
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
-#@+node:ekr.20190603193204.1: *4* @test replace-all: word search
+#@+node:ekr.20190603193204.1: *3* @test replace-all: word search
 fc = c.findCommands
 
 word_table = (
@@ -1494,7 +1492,7 @@ for s, find, change, count, result in word_table:
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
-#@+node:ekr.20190603193214.1: *4* @test replace-all: word search: ignore case
+#@+node:ekr.20190603193214.1: *3* @test replace-all: word search: ignore case
 fc = c.findCommands
 
 word_table = (
@@ -1510,7 +1508,7 @@ for s, find, change, count, result in word_table:
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
-#@+node:ekr.20060130151716.2: *4* @test set find mode commands
+#@+node:ekr.20060130151716.2: *3* @test set find mode commands
 if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 table = (
@@ -1522,9 +1520,9 @@ table = (
 # show-find-options         = o
 for command in table:
     c.k.simulateCommand(command)
-#@+node:ekr.20060130151716.4: *4* @test show-find-options
+#@+node:ekr.20060130151716.4: *3* @test show-find-options
 c.k.simulateCommand('show-find-options')
-#@+node:ekr.20060130151716.1: *4* @test toggle find options commands
+#@+node:ekr.20060130151716.1: *3* @test toggle find options commands
 if g.app.isExternalUnitTest or g.in_bridge:
     self.skipTest('Can not be run externally')
 table = (
@@ -1542,8 +1540,8 @@ table = (
 for command in table:
     c.k.simulateCommand(command)
     c.k.simulateCommand(command)
-#@+node:ekr.20190608143418.1: *4* New leoFind Tests
-#@+node:ekr.20190608144111.1: *5* @test leoFind.LeoFind clean init
+#@+node:ekr.20190608143418.1: *3* New leoFind Tests
+#@+node:ekr.20190608144111.1: *4* @test leoFind.LeoFind clean init
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
@@ -1556,7 +1554,7 @@ table = (
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
 assert x.reverse is False
-#@+node:ekr.20190608143502.1: *5* @test find._inner_search_regex
+#@+node:ekr.20190608143502.1: *4* @test find._inner_search_regex
 import re
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
@@ -1595,7 +1593,7 @@ back_table = (
 test(plain_table,  'plain_table',  back=False, nocase=False)
 test(nocase_table, 'nocase_table', back=False, nocase=True)
 test(back_table,   'back_table',   back=True,  nocase=False)
-#@+node:ekr.20190608143502.2: *5* @test find._inner_search_backward
+#@+node:ekr.20190608143502.2: *4* @test find._inner_search_backward
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -1638,7 +1636,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143502.3: *5* @test find._inner_search_plain
+#@+node:ekr.20190608143502.3: *4* @test find._inner_search_plain
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -1681,7 +1679,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143503.1: *5* @test find.replace_back_slashes
+#@+node:ekr.20190608143503.1: *4* @test find.replace_back_slashes
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
@@ -1696,12 +1694,12 @@ for s, expected in table:
         '\n  expected: %r'
         '\n       got: %r'
         % (s, expected, got))
-#@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
+#@+node:ekr.20071113202153: *3* @test zz end of leoFind tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoFind tests.')
-#@+node:ekr.20071113194424: *3* leoFrame
+#@+node:ekr.20071113194424: ** leoFrame
 # 3 failures with Alt-5
-#@+node:ekr.20061106201509.6: *4* @test c.frame.body.getInsertLines
+#@+node:ekr.20061106201509.6: *3* @test c.frame.body.getInsertLines
 # line 1
 # line 2
 # line 3
@@ -1716,7 +1714,7 @@ assert after.startswith('# line 3\n'),'line3'
 assert after.endswith('# end.\n'),'end'
 
 # end.
-#@+node:ekr.20061106201509.7: *4* @test c.frame.body.getSelectionAreas
+#@+node:ekr.20061106201509.7: *3* @test c.frame.body.getSelectionAreas
 # line 1
 # line 2
 # line 3
@@ -1731,7 +1729,7 @@ assert ins    == s[start:end],'Got %s' % repr(ins)
 assert after == s[end:]
 
 # end.
-#@+node:ekr.20071113145804.32: *4* @test c.frame.body.getSelectionAreas & test
+#@+node:ekr.20071113145804.32: *3* @test c.frame.body.getSelectionAreas & test
 # line 1
 # line 2
 # line 3
@@ -1746,13 +1744,13 @@ assert ins    == s[start:end],'Got %s' % repr(ins)
 assert after == s[end:]
 
 # end.
-#@+node:ekr.20111121152019.3929: *4* @test c.frame.body.updateEditors
+#@+node:ekr.20111121152019.3929: *3* @test c.frame.body.updateEditors
 '''updateEditors was crashing due to calling setSelectionRange(ins=i).
 The proper keyword argument is insert=i.
 '''
 
 c.frame.body.updateEditors()
-#@+node:ekr.20111107065530.3833: *4* @test c.frame.resize-to-screen
+#@+node:ekr.20111107065530.3833: *3* @test c.frame.resize-to-screen
 # The actual code contains the unit test.
 # This test will have effect only when run locally.
 
@@ -1764,13 +1762,13 @@ tag = 'resize-to-screen'
 assert not d.get(tag)
 c.frame.resizeToScreen()
 assert d.get(tag) is True
-#@+node:ekr.20100131180007.5359: *4* @test c.frame.tree.OnIconDoubleClick
+#@+node:ekr.20100131180007.5359: *3* @test c.frame.tree.OnIconDoubleClick
 c.frame.tree.OnIconDoubleClick(p)
-#@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
+#@+node:ekr.20071113202153.1: *3* @test zz end of leoFrame tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoFrame tests.')
-#@+node:ekr.20100131171342.5604: *3* leoKeys
-#@+node:ekr.20100131171342.5608: *4* @test g.KeyStroke
+#@+node:ekr.20100131171342.5604: ** leoKeys
+#@+node:ekr.20100131171342.5608: *3* @test g.KeyStroke
 table = [
     # Gang of four, unmodified)
     ('bksp', 'BackSpace'),
@@ -1830,7 +1828,7 @@ for setting, result in table:
     stroke = g.KeyStroke(binding=setting)
     val = stroke.s
     assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
-#@+node:ekr.20180527141026.1: *4* @test g.KeyStroke (printable characters)
+#@+node:ekr.20180527141026.1: *3* @test g.KeyStroke (printable characters)
 import string
 # Unshifted.
 for ch in string.printable:
@@ -1844,7 +1842,7 @@ for ch in string.printable:
 for ch in string.digits + string.ascii_letters:
     stroke = g.KeyStroke(binding='Shift-'+ch)
     assert stroke.s in string.printable, (repr(ch), repr(stroke.s))
-#@+node:ekr.20110509104953.3474: *4* @test k.get_leo_completions
+#@+node:ekr.20110509104953.3474: *3* @test k.get_leo_completions
 table = (
     ( 50,'c.'),
     (  3,'p.ins'),
@@ -1856,7 +1854,7 @@ ac.w = c.frame.body.wrapper
 for expected,prefix in table:
     aList = ac.get_leo_completions(prefix)
     assert len(aList) >= expected,'len(aList): %s, prefix: %s' % (len(aList),prefix)
-#@+node:ekr.20100131171342.5605: *4* @test k.isPlainKey
+#@+node:ekr.20100131171342.5605: *3* @test k.isPlainKey
 import string
 k = c.k
 for ch in (string.printable):
@@ -1878,10 +1876,10 @@ if 0:
     )
     for ch in special:
         assert not k.isPlainKey(ch), 'is plain: %s' % (ch)
-#@+node:ekr.20100212110954.5359: *4* @test k.print-bindings
+#@+node:ekr.20100212110954.5359: *3* @test k.print-bindings
 lines = c.k.printBindings()
 # assert lines[0].strip().endswith('Alt+Ctrl+Shift')
-#@+node:ekr.20100131171342.5607: *4* @test k.registerCommand
+#@+node:ekr.20100131171342.5607: *3* @test k.registerCommand
 k = c.k ; p = c.p
 w = c.edit_widget(p)
 commandName = 'test-registerCommand'
@@ -1900,11 +1898,11 @@ if 0: # Test 2
     g.app.unitTestDict[commandName] = False
     k.manufactureKeyPressForCommandName(w,commandName)
     assert g.app.unitTestDict.get(commandName)
-#@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
+#@+node:ekr.20100131171342.5609: *3* @test zz end of leoKeys tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoKeys tests.')
-#@+node:ekr.20140712142620.4458: *3* leoPersistence tests (do not clone)
-#@+node:ekr.20140712142620.4503: *4* @test p.sort_key
+#@+node:ekr.20140712142620.4458: ** leoPersistence tests (do not clone)
+#@+node:ekr.20140712142620.4503: *3* @test p.sort_key
 aList = [p.copy() for p in c.all_positions()]
 aList2 = sorted(reversed(aList),key=p.sort_key)
 i = 0
@@ -1913,7 +1911,7 @@ for p in aList2:
     i += 1
     assert p == p2,'\n%s:%s\n%s:%s' % (
         p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
-#@+node:ekr.20140712142620.4550: *4* @test pd.find_at_...
+#@+node:ekr.20140712142620.4550: *3* @test pd.find_at_...
 # Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
 import sys
 if sys.platform.startswith('linux'):
@@ -1934,13 +1932,13 @@ else:
         # views.deleteAllChildren()
         c.selectPosition(p)
         c.redraw()
-#@+node:ekr.20140712142620.4551: *5* root
-#@+node:ekr.20140712142620.4552: *6* aClass
+#@+node:ekr.20140712142620.4551: *4* root
+#@+node:ekr.20140712142620.4552: *5* aClass
 class aClass:
     @others
-#@+node:ekr.20140712142620.4556: *7* clone
-#@+node:ekr.20140712142620.4556: *5* clone
-#@+node:ekr.20140712142620.4538: *4* @test pd.find_at_persistence_node
+#@+node:ekr.20140712142620.4556: *6* clone
+#@+node:ekr.20140712142620.4556: *4* clone
+#@+node:ekr.20140712142620.4538: *3* @test pd.find_at_persistence_node
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
@@ -1951,7 +1949,7 @@ else:
     assert p1
     p2 = pd.has_at_persistence_node()
     assert p1 == p2,(p1,p2)
-#@+node:ekr.20140712142620.4539: *4* @test pd.find_position_for_relative_unl
+#@+node:ekr.20140712142620.4539: *3* @test pd.find_position_for_relative_unl
 pd = c.persistenceController
 parent = p.copy()
 node1 = p.firstChild()
@@ -1990,16 +1988,16 @@ for unl,expected in table:
     got = pd.find_position_for_relative_unl(parent,unl)
     assert got == expected,'unl: %s expected: %s got: %s' % (
         unl,expected and expected.h,got and got.h)
-#@+node:ekr.20140712142620.4540: *5* node1
-#@+node:ekr.20140712142620.4541: *6* child11
-#@+node:ekr.20140712142620.4542: *6* child12
-#@+node:ekr.20140712142620.4543: *5* node2
-#@+node:ekr.20140712142620.4544: *6* child21
-#@+node:ekr.20140712142620.4545: *6* child22
-#@+node:ekr.20140715080507.4340: *5* node3
-#@+node:ekr.20140715080507.4341: *6* node3_child1
-#@+node:ekr.20140715080507.4339: *7* child21
-#@+node:ekr.20140712142620.4546: *4* @test pd.find_representative_node
+#@+node:ekr.20140712142620.4540: *4* node1
+#@+node:ekr.20140712142620.4541: *5* child11
+#@+node:ekr.20140712142620.4542: *5* child12
+#@+node:ekr.20140712142620.4543: *4* node2
+#@+node:ekr.20140712142620.4544: *5* child21
+#@+node:ekr.20140712142620.4545: *5* child22
+#@+node:ekr.20140715080507.4340: *4* node3
+#@+node:ekr.20140715080507.4341: *5* node3_child1
+#@+node:ekr.20140715080507.4339: *6* child21
+#@+node:ekr.20140712142620.4546: *3* @test pd.find_representative_node
 if g.app.isExternalUnitTest:
     # There will not be a proper cloned node in the copy of these tests.
     self.skipTest('Can not be run externally')
@@ -2025,10 +2023,10 @@ else:
     finally:
         root.h = 'root' # root must not be an @auto node.
         c.redraw()
-#@+node:ekr.20140712142620.4547: *5* root
-#@+node:ekr.20140712142620.4549: *6* clone
+#@+node:ekr.20140712142620.4547: *4* root
 #@+node:ekr.20140712142620.4549: *5* clone
-#@+node:ekr.20140712142620.4557: *4* @test pd.has_..._node
+#@+node:ekr.20140712142620.4549: *4* clone
+#@+node:ekr.20140712142620.4557: *3* @test pd.has_..._node
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
@@ -2066,22 +2064,22 @@ else:
         finally:
             root.h = 'root' # Make the root *not* an @auto node.
             c.redraw()
-#@+node:ekr.20140712142620.4558: *5* root
+#@+node:ekr.20140712142620.4558: *4* root
 @others
-#@+node:ekr.20140712142620.4559: *6* aClass
+#@+node:ekr.20140712142620.4559: *5* aClass
 class aClass:
     @others
-#@+node:ekr.20140712142620.4563: *7* clone-test
+#@+node:ekr.20140712142620.4563: *6* clone-test
 def clone_test():
     pass
-#@+node:ekr.20140712142620.4561: *7* organizer node
-#@+node:ekr.20140712142620.4562: *8* child2
+#@+node:ekr.20140712142620.4561: *6* organizer node
+#@+node:ekr.20140712142620.4562: *7* child2
 def spam():
     pass
-#@+node:ekr.20140712142620.4563: *5* clone-test
+#@+node:ekr.20140712142620.4563: *4* clone-test
 def clone_test():
     pass
-#@+node:ekr.20140712142620.4507: *4* @test pd.restore_gnxs
+#@+node:ekr.20140712142620.4507: *3* @test pd.restore_gnxs
 pd = c.persistenceController
 gnxs = g.findNodeInTree(c,p,'@gnxs')
 root = g.findNodeInTree(c,p,'root')
@@ -2097,18 +2095,18 @@ try:
     # but new_node1 should not be used.
 finally:
     c.redraw()
-#@+node:ekr.20140712142620.4508: *5* @gnxs
+#@+node:ekr.20140712142620.4508: *4* @gnxs
 gnx: ekr.20140923080452.6565
 unl: node1
+#@+node:ekr.20140923080452.6565: *4* node1
+#@+node:ekr.20140712142620.4510: *4* root
 #@+node:ekr.20140923080452.6565: *5* node1
-#@+node:ekr.20140712142620.4510: *5* root
-#@+node:ekr.20140923080452.6565: *6* node1
-#@+node:ekr.20140712142620.4574: *4* @test pd.unl
+#@+node:ekr.20140712142620.4574: *3* @test pd.unl
 pd = c.persistenceController
 unl = pd.unl(p)
 expected = p.h if g.app.isExternalUnitTest else '-->'+p.h
 assert unl.endswith(expected),repr(unl)
-#@+node:ekr.20140712142620.4575: *4* @test pd.update_before_write_foreign_file
+#@+node:ekr.20140712142620.4575: *3* @test pd.update_before_write_foreign_file
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
@@ -2130,18 +2128,18 @@ else:
         root.h = 'root' # Make root *not* an @auto node.
         # persistence.deleteAllChildren()
         c.redraw()
-#@+node:ekr.20140712142620.4576: *5* root
-#@+node:ekr.20140712142620.4577: *6* aClass
+#@+node:ekr.20140712142620.4576: *4* root
+#@+node:ekr.20140712142620.4577: *5* aClass
 class aClass:
     @others
-#@+node:ekr.20140712142620.4582: *7* clone
-#@+node:ekr.20140712142620.4579: *6* organizer node
-#@+node:ekr.20140712142620.4580: *7* child1
-#@+node:ekr.20140712142620.4581: *7* child2
+#@+node:ekr.20140712142620.4582: *6* clone
+#@+node:ekr.20140712142620.4579: *5* organizer node
+#@+node:ekr.20140712142620.4580: *6* child1
+#@+node:ekr.20140712142620.4581: *6* child2
 def spam():
     pass
-#@+node:ekr.20140712142620.4582: *5* clone
-#@+node:ekr.20150216111306.25: *4* @test delete all children of @persistence node
+#@+node:ekr.20140712142620.4582: *4* clone
+#@+node:ekr.20150216111306.25: *3* @test delete all children of @persistence node
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
@@ -2152,8 +2150,8 @@ else:
     assert pd.has_at_persistence_node()
     persistence.deleteAllChildren()
     assert persistence
-#@+node:ekr.20100131171342.5610: *3* leoPlugins
-#@+node:ekr.20100131171342.5611: *4* @test getHandlersForTag
+#@+node:ekr.20100131171342.5610: ** leoPlugins
+#@+node:ekr.20100131171342.5611: *3* @test getHandlersForTag
 pc = g.app.pluginsController
 
 aList1 = pc.getHandlersForTag('select1')
@@ -2162,7 +2160,7 @@ aList2 = pc.getHandlersForOneTag('select1')
 assert type(aList1) == type([])
 assert type(aList2) == type([])
 assert aList1 == aList2
-#@+node:ekr.20100909082308.5990: *4* @test regularizeName
+#@+node:ekr.20100909082308.5990: *3* @test regularizeName
 pc = g.app.pluginsController
 
 table = (
@@ -2179,8 +2177,8 @@ for fn,expected in table:
     # Make sure that calling regularizeName twice is benign.
     result2 = pc.regularizeName(result)
     assert result2==result
-#@+node:ekr.20100131171342.5612: *3* leoTest
-#@+node:ekr.20111102122424.3975: *4* @test all unit tests have access to sources
+#@+node:ekr.20100131171342.5612: ** leoTest
+#@+node:ekr.20111102122424.3975: *3* @test all unit tests have access to sources
 if g.app.gui.guiName() == 'browser':
     self.skipTest('browser gui')
 if c.shortFileName() == 'dynamicUnitTest.leo':
@@ -2189,7 +2187,7 @@ if c.shortFileName() == 'dynamicUnitTest.leo':
 else:
     setting = "c.config.getBool('write-script-file')"
     assert c.write_script_file,'fail 2: check %s' % (setting)
-#@+node:ekr.20111105221757.3833: *4* @test TM.findAllUnitTestNodes
+#@+node:ekr.20111105221757.3833: *3* @test TM.findAllUnitTestNodes
 p1 = p.copy()
 
 def found(p,result):
@@ -2205,7 +2203,7 @@ try:
     assert p == p1,(p,p1)
 finally:
     p1.clearMarked()
-#@+node:ekr.20100131171342.5613: *4* @test unit testing with embedded class
+#@+node:ekr.20100131171342.5613: *3* @test unit testing with embedded class
 def sendEmail(self):
     pass # g.trace('self2',self)
 
@@ -2214,14 +2212,14 @@ class test:
 
 X = test()
 sendEmail(X)
-#@+node:ekr.20071113193729: *3* leoUndo
-#@+node:ekr.20040712101754.37: *4* @suite Edit body tests
+#@+node:ekr.20071113193729: ** leoUndo
+#@+node:ekr.20040712101754.37: *3* @suite Edit body tests
 # Create unit tests in g.app.scriptDict["suite"]
 
 suite = c.testManager.makeEditBodySuite(p)
 
 # g.app.scriptDict['suite'] = suite
-#@+node:ekr.20040712101754.38: *5* editBodyTests
+#@+node:ekr.20040712101754.38: *4* editBodyTests
 @language plain
 @
 
@@ -2233,9 +2231,9 @@ Each child node will in turn have two or more children:
 - an "after" node
 - an optional selection node containing two lines giving the selection range in Tk coordinates.
 - An optional insert node containing one line giving the insert point in Tk coordinates.
-#@+node:ekr.20060127120604: *6* tempNode
-#@+node:ekr.20050417202713: *6* addComments
-#@+node:ekr.20050417202713.1: *7* before
+#@+node:ekr.20060127120604: *5* tempNode
+#@+node:ekr.20050417202713: *5* addComments
+#@+node:ekr.20050417202713.1: *6* before
 @language python
 
 def addCommentTest():
@@ -2245,7 +2243,7 @@ def addCommentTest():
         b = 3
 
     pass
-#@+node:ekr.20050417202713.2: *7* after
+#@+node:ekr.20050417202713.2: *6* after
 @language python
 
 def addCommentTest():
@@ -2255,98 +2253,98 @@ def addCommentTest():
         # b = 3
 
     pass
-#@+node:ekr.20050417202713.3: *7* selection
+#@+node:ekr.20050417202713.3: *6* selection
 5.0
 7.8
-#@+node:ekr.20050417204940: *6* convertAllBlanks
-#@+node:ekr.20050417204940.1: *7* before
+#@+node:ekr.20050417204940: *5* convertAllBlanks
+#@+node:ekr.20050417204940.1: *6* before
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20050417204940.2: *7* after
+#@+node:ekr.20050417204940.2: *6* after
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20050417204940.3: *7* selection
+#@+node:ekr.20050417204940.3: *6* selection
 1.0
 6.5
-#@+node:ekr.20050417205012: *6* convertAllTabs
-#@+node:ekr.20050417205012.1: *7* before
+#@+node:ekr.20050417205012: *5* convertAllTabs
+#@+node:ekr.20050417205012.1: *6* before
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20050417205012.2: *7* after
+#@+node:ekr.20050417205012.2: *6* after
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20050417205012.3: *7* selection
+#@+node:ekr.20050417205012.3: *6* selection
 1.0
 6.5
-#@+node:ekr.20050417203114: *6* convertBlanks
-#@+node:ekr.20050417203310: *7* before
+#@+node:ekr.20050417203114: *5* convertBlanks
+#@+node:ekr.20050417203310: *6* before
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20050417203310.1: *7* after
+#@+node:ekr.20050417203310.1: *6* after
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20050417203336: *7* selection
+#@+node:ekr.20050417203336: *6* selection
 1.0
 6.5
-#@+node:ekr.20050417203114.1: *6* convertTabs
-#@+node:ekr.20050417204834: *7* before
+#@+node:ekr.20050417203114.1: *5* convertTabs
+#@+node:ekr.20050417204834: *6* before
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20050417204830: *7* after
+#@+node:ekr.20050417204830: *6* after
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20050417204901: *7* selection
+#@+node:ekr.20050417204901: *6* selection
 1.0
 6.5
-#@+node:ekr.20040712101754.49: *6* dedentBody
-#@+node:ekr.20040712101754.50: *7* before
+#@+node:ekr.20040712101754.49: *5* dedentBody
+#@+node:ekr.20040712101754.50: *6* before
 line 1
     line 2
     line 3
 line 4
-#@+node:ekr.20040712101754.51: *7* after
+#@+node:ekr.20040712101754.51: *6* after
 line 1
 line 2
 line 3
 line 4
-#@+node:ekr.20040712101754.52: *7* selection
+#@+node:ekr.20040712101754.52: *6* selection
 2.0
 3.5
-#@+node:ekr.20050417202817: *6* deleteComments
+#@+node:ekr.20050417202817: *5* deleteComments
 # created by new add-comments
-#@+node:ekr.20050417202817.1: *7* before
+#@+node:ekr.20050417202817.1: *6* before
 @language python
 
 def deleteCommentTest():
@@ -2356,7 +2354,7 @@ def deleteCommentTest():
 #         b = 3
 
     pass
-#@+node:ekr.20050417202817.2: *7* after
+#@+node:ekr.20050417202817.2: *6* after
 @language python
 
 def deleteCommentTest():
@@ -2366,12 +2364,12 @@ def deleteCommentTest():
         b = 3
 
     pass
-#@+node:ekr.20050417202817.3: *7* selection
+#@+node:ekr.20050417202817.3: *6* selection
 5.0
 7.8
-#@+node:ekr.20111112211307.3910: *6* deleteComments
+#@+node:ekr.20111112211307.3910: *5* deleteComments
 # created by old and new add-comments.
-#@+node:ekr.20111112211307.3911: *7* before
+#@+node:ekr.20111112211307.3911: *6* before
 @language python
 
 def deleteCommentTest():
@@ -2385,7 +2383,7 @@ def deleteCommentTest():
         # b = 3
 
     pass
-#@+node:ekr.20111112211307.3912: *7* after
+#@+node:ekr.20111112211307.3912: *6* after
 @language python
 
 def deleteCommentTest():
@@ -2399,96 +2397,96 @@ def deleteCommentTest():
         b = 3
 
     pass
-#@+node:ekr.20111112211307.3913: *7* selection
+#@+node:ekr.20111112211307.3913: *6* selection
 5.0
 12.8
-#@+node:ekr.20050417201845: *6* extract test1
-#@+node:ekr.20050417201845.1: *7* before
+#@+node:ekr.20050417201845: *5* extract test1
+#@+node:ekr.20050417201845.1: *6* before
 before
     << section >>
     sec line 1
         sec line 2 indented
 sec line 3
 after
-#@+node:ekr.20050417201845.2: *7* after
+#@+node:ekr.20050417201845.2: *6* after
 before
     << section >>
 after
-#@+node:ekr.20050417201845.3: *8* << section >>
+#@+node:ekr.20050417201845.3: *7* << section >>
 sec line 1
     sec line 2 indented
 sec line 3
-#@+node:ekr.20050417201845.4: *7* selection
+#@+node:ekr.20050417201845.4: *6* selection
 2.0
 5.10
-#@+node:ekr.20050518070540: *6* extract test2
-#@+node:ekr.20050518070540.1: *7* before
+#@+node:ekr.20050518070540: *5* extract test2
+#@+node:ekr.20050518070540.1: *6* before
 before
     << section >>
     sec line 1
         sec line 2 indented
 sec line 3
 after
-#@+node:ekr.20050518070545: *7* after
+#@+node:ekr.20050518070545: *6* after
 before
     << section >>
     sec line 1
         sec line 2 indented
 sec line 3
 after
-#@+node:ekr.20050518070540.4: *7* selection
+#@+node:ekr.20050518070540.4: *6* selection
 2.0
 2.16
-#@+node:ekr.20050518070927: *6* extract test3
-#@+node:ekr.20050518070927.1: *7* before
+#@+node:ekr.20050518070927: *5* extract test3
+#@+node:ekr.20050518070927.1: *6* before
 before
     << section >>
     sec line 1
         sec line 2 indented
 sec line 3
 after
-#@+node:ekr.20050518070927.2: *7* after
+#@+node:ekr.20050518070927.2: *6* after
 before
     << section >>
 after
-#@+node:ekr.20050518070927.3: *8* << section >>
+#@+node:ekr.20050518070927.3: *7* << section >>
 sec line 1
     sec line 2 indented
 sec line 3
-#@+node:ekr.20050518070927.4: *7* selection
+#@+node:ekr.20050518070927.4: *6* selection
 2.0
 5.10
-#@+node:ekr.20050518071251: *6* extract test4
-#@+node:ekr.20050518071251.1: *7* before
+#@+node:ekr.20050518071251: *5* extract test4
+#@+node:ekr.20050518071251.1: *6* before
 before
     << section >>
     sec line 1
         sec line 2 indented
 sec line 3
 after
-#@+node:ekr.20050518071258: *7* after
+#@+node:ekr.20050518071258: *6* after
 before
     << section >>
     sec line 1
         sec line 2 indented
 sec line 3
 after
-#@+node:ekr.20050518071251.4: *7* selection
+#@+node:ekr.20050518071251.4: *6* selection
 2.0
 2.16
-#@+node:ekr.20190210103111.1: *6* line_to_headline test1
-#@+node:ekr.20190210103111.2: *7* before
+#@+node:ekr.20190210103111.1: *5* line_to_headline test1
+#@+node:ekr.20190210103111.2: *6* before
 before
 headline
 after
-#@+node:ekr.20190210103111.3: *7* after
+#@+node:ekr.20190210103111.3: *6* after
 before
 after
-#@+node:ekr.20190210103111.4: *8* headline
-#@+node:ekr.20190210103111.5: *7* selection
+#@+node:ekr.20190210103111.4: *7* headline
+#@+node:ekr.20190210103111.5: *6* selection
 2.0
 2.0
-#@+node:ekr.20201018144248.1: *4* @test restore marked bits
+#@+node:ekr.20201018144248.1: *3* @test restore marked bits
 # Test of #1694.
 u, w = c.undoer, c.frame.body.wrapper
 oldText = p.b
@@ -2513,7 +2511,7 @@ try:
 finally:
     p.b = oldText
     p.clearMarked()
-#@+node:ekr.20190923170025.1: *4* @test undo editHeadline
+#@+node:ekr.20190923170025.1: *3* @test undo editHeadline
 # Brian Theado.
 c.undoer.clearUndoState()
 assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
@@ -2536,10 +2534,10 @@ assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
 
 # The undo should select the edited headline.
 assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
-#@+node:ekr.20190923170025.2: *5* node 1
-#@+node:ekr.20190923170025.3: *5* node 2
-#@+node:ekr.20190923170025.4: *5* node 3
-#@+node:bpt.20190825074247.1: *4* @test undo/redoGroup
+#@+node:ekr.20190923170025.2: *4* node 1
+#@+node:ekr.20190923170025.3: *4* node 2
+#@+node:ekr.20190923170025.4: *4* node 3
+#@+node:bpt.20190825074247.1: *3* @test undo/redoGroup
 # This test exposed a bug with redoGroup c.undoer.bead index off-by-one
 # The first c.pasteOutline() is there to setup the test cases, but it also serves
 # an important hidden purpose of adding undo state to the undo stack. Due
@@ -2571,123 +2569,123 @@ c.convertAllBlanks()
 c.undoer.undo()
 c.undoer.redo()
 assert do.b == do_undo_redo.b, "Redo should do the operation again"
-#@+node:bpt.20190825074316.1: *5* original
+#@+node:bpt.20190825074316.1: *4* original
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20210518075231.6: *5* do and undo
+#@+node:ekr.20210518075231.6: *4* do and undo
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20210518075231.7: *5* do
+#@+node:ekr.20210518075231.7: *4* do
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20210518075231.8: *5* do, undo, redo
+#@+node:ekr.20210518075231.8: *4* do, undo, redo
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20201018151721.1: *5* do and undo
+#@+node:ekr.20201018151721.1: *4* do and undo
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20201018151721.2: *5* do
+#@+node:ekr.20201018151721.2: *4* do
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20201018151721.3: *5* do, undo, redo
+#@+node:ekr.20201018151721.3: *4* do, undo, redo
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20191219051337.3: *5* do and undo
+#@+node:ekr.20191219051337.3: *4* do and undo
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20191219051337.4: *5* do
+#@+node:ekr.20191219051337.4: *4* do
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20191219051337.5: *5* do, undo, redo
+#@+node:ekr.20191219051337.5: *4* do, undo, redo
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20191219045732.6: *5* do and undo
+#@+node:ekr.20191219045732.6: *4* do and undo
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20191219045732.7: *5* do
+#@+node:ekr.20191219045732.7: *4* do
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20191219045732.8: *5* do, undo, redo
+#@+node:ekr.20191219045732.8: *4* do, undo, redo
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20191106202329.2: *5* do and undo
+#@+node:ekr.20191106202329.2: *4* do and undo
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20191106202329.3: *5* do
+#@+node:ekr.20191106202329.3: *4* do
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20191106202329.4: *5* do, undo, redo
+#@+node:ekr.20191106202329.4: *4* do, undo, redo
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
+#@+node:ekr.20071113202510: *3* @test zz end of leoUndo tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoUndo tests.')
-#@+node:ekr.20140802074328.4471: *3* leoVim.py
-#@+node:ekr.20140802074328.4472: *4* @test vc.on_same_line
+#@+node:ekr.20140802074328.4471: ** leoVim.py
+#@+node:ekr.20140802074328.4472: *3* @test vc.on_same_line
 vc = c.vimCommands
 s = '''
 abc
@@ -2705,7 +2703,7 @@ for a,b,expected in table:
     result = vc.on_same_line(s,i1,i2)
     assert result == expected,'%s expected: %s got: %s' % (
         s[i1:i2],expected,got)
-#@+node:ekr.20140802074328.4473: *4* @test vc.to_bol
+#@+node:ekr.20140802074328.4473: *3* @test vc.to_bol
 vc = c.vimCommands
 s = '''
 abc
@@ -2721,7 +2719,7 @@ for a,b,in table:
     result = vc.to_bol(s,i2)
     assert result == i1,'%s expected: %s got: %s' % (
         s[i1:i2],expected,got)
-#@+node:ekr.20140802074328.4474: *4* @test vc.to_eol
+#@+node:ekr.20140802074328.4474: *3* @test vc.to_eol
 vc = c.vimCommands
 s = '''
 abc
@@ -2738,10 +2736,10 @@ for a,b,in table:
     result = vc.to_eol(s,i1)
     assert result == i2,'%s expected: %s got: %s' % (
         s[i1:i2],expected,got)
-#@+node:ekr.20050120095423: *3* Plugins
+#@+node:ekr.20050120095423: ** Plugins
 # Do this last.
-#@+node:ekr.20110610082755.3362: *4*  qt gui
-#@+node:ekr.20100131171342.5503: *5* @test c.vnode2position
+#@+node:ekr.20110610082755.3362: *3*  qt gui
+#@+node:ekr.20100131171342.5503: *4* @test c.vnode2position
 for p in c.all_positions():
     p2 = c.vnode2position(p.v)
     # print(p2.level(), p2.headString())
@@ -2750,7 +2748,7 @@ for p in c.all_positions():
     assert p2
     assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
     assert c.positionExists(p2),'does not exist: %s' % p2
-#@+node:ekr.20100131171342.5504: *5* @test position2Item
+#@+node:ekr.20100131171342.5504: *4* @test position2Item
 if g.app.gui.guiName() == 'curses':
     self.skipTest('Not for curses')
         # All "item" logic is for Qt only.
@@ -2766,7 +2764,7 @@ if hasattr(tree,'position2item'):
         if v: # New test needed with per-clone expansions.
             assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
         p.moveToVisNext(c)
-#@+node:ekr.20050120095423.11: *4* @suite import or test syntax of all plugins
+#@+node:ekr.20050120095423.11: *3* @suite import or test syntax of all plugins
 '''Imports all plugins or just tests their syntax,
 epending on a switch in PluginTestCase.runTest.'''
 
@@ -2779,7 +2777,7 @@ import unittest
 suite = makePluginsTestSuite(c)
 
 # g.app.scriptDict['suite'] = suite
-#@+node:ekr.20050120095423.12: *5* makePluginsTestSuite
+#@+node:ekr.20050120095423.12: *4* makePluginsTestSuite
 def makePluginsTestSuite(c):
 
     '''Create a plugin test for .py file in the plugins directory'''
@@ -2811,13 +2809,13 @@ def makePluginsTestSuite(c):
         suite.addTest(lastTest)
 
     return suite
-#@+node:ekr.20050120095423.13: *5* class pluginTestCase
+#@+node:ekr.20050120095423.13: *4* class pluginTestCase
 class pluginTestCase(unittest.TestCase):
 
     '''A test case to test a single Leo plugin.'''
 
     @others
-#@+node:ekr.20050120095423.14: *6* __init__
+#@+node:ekr.20050120095423.14: *5* __init__
 def __init__ (self,c,path):
 
     # Init the base class.
@@ -2825,13 +2823,13 @@ def __init__ (self,c,path):
 
     self.c = c
     self.path = path
-#@+node:ekr.20050120095423.15: *6* fail
+#@+node:ekr.20050120095423.15: *5* fail
 def fail (self,msg=None):
 
     """Mark a unit test as having failed."""
 
     g.app.unitTestDict["fail"] = g.callerName(2)
-#@+node:ekr.20050120095423.16: *6* runTest
+#@+node:ekr.20050120095423.16: *5* runTest
 def runTest(self):
 
     trace = False
@@ -2872,15 +2870,15 @@ def runTest(self):
     else: # Good for initial tests, but pollutes all other unit tests.
         exec('import leo.plugins.%s' % fn)
     
-#@+node:ekr.20050120095423.17: *6* setUp
+#@+node:ekr.20050120095423.17: *5* setUp
 def setUp(self):
 
     g.app.unitTestDict = {}
-#@+node:ekr.20050120095423.18: *6* shortDescription
+#@+node:ekr.20050120095423.18: *5* shortDescription
 def shortDescription (self):
 
     return "pluginTestCase: %s" % g.shortFileName(self.path)
-#@+node:ekr.20050120095423.20: *5* class lastTestCase
+#@+node:ekr.20050120095423.20: *4* class lastTestCase
 class lastTestCase(unittest.TestCase):
 
     '''A test case to print a message at the end of plugin tests.'''
@@ -2903,7 +2901,7 @@ class lastTestCase(unittest.TestCase):
         def shutDown(self):
             c = self.new_c
             c.close()
-#@+node:ekr.20111104214341.3835: *4* @test all plugins have top-level init method
+#@+node:ekr.20111104214341.3835: *3* @test all plugins have top-level init method
 '''Ensure all plugins have top-level init method *without* importing them.'''
 
 import glob
@@ -2950,7 +2948,7 @@ for fn in files:
         ok2 = s.find('def init ():') > -1
         assert ok1 or ok2,'fail: %s' % (fn)
     
-#@+node:ekr.20210518092129.1: *4* @test all qt plugins call g.assertUi('qt')
+#@+node:ekr.20210518092129.1: *3* @test all qt plugins call g.assertUi('qt')
 '''Ensure all plugins have top-level init method *without* importing them.'''
 
 import glob
@@ -3012,18 +3010,15 @@ for fn in files:
 if fails:
     g.printObj(fails)
     assert False, f"{len(fails)} failures"
-#@+node:ekr.20140217055617.4230: *4* @test c.theScriptingController.atScriptNodes
+#@+node:ekr.20140217055617.4230: *3* @test c.theScriptingController.atScriptNodes
 # This must be true even though @bool scriptingatscriptnodes is True in this file.
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
     assert c.theScriptingController.atScriptNodes in (val, None, False), (val, c.theScriptingController.atScriptNodes)
-#@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
+#@+node:ekr.20100131171342.5501: *3* @test zz end of plugins unit tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
-#@+node:ekr.20081111150402.11: ** @test zz end of all tests
-# Print does not work: it is redirected.
-g.pr('\nall unit tests done',color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
 import sys
 if not g.app.inBridge:

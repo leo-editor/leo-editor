@@ -628,7 +628,7 @@
 <v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
 </v>
 </v>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005807000000302e302e372e3371017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005805000000302e372e3371017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
