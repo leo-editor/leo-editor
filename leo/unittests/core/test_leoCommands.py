@@ -3,7 +3,7 @@
 #@+node:ekr.20210903162431.1: * @file ../unittests/core/test_leoCommands.py
 #@@first
 """Tests of leoCommands.py"""
-
+# pylint: disable=no-member
 import inspect
 import textwrap
 from leo.core import leoGlobals as g
@@ -387,23 +387,9 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210906075242.20: *3* TestCommands.test_c_unmarkAll
     def test_c_unmarkAll(self):
         c = self.c
-        marks = [p.v for p in c.all_positions() if p.isMarked()]
-        try:
-            ok = True
-            try:
-                c.unmarkAll()
-            except Exception:
-                ok = False
-        finally:
-            for p in c.all_positions():
-                if p.v in marks:
-                    if not p.isMarked():
-                        c.setMarked(p)
-                else:
-                    if p.isMarked():
-                        c.clearMarked(p)
-
-        if not ok: raise
+        c.unmarkAll()
+        for p in c.all_positions():
+            assert not p.isMarked(), p.h
     #@+node:ekr.20210906075242.21: *3* TestCommands.test_class_StubConfig
     def test_class_StubConfig(self):
         c = self.c
@@ -453,6 +439,8 @@ class TestCommands(LeoUnitTest):
         assert s.endswith('.py')
     #@+node:ekr.20210906075242.25: *3* TestCommands.test_g_command_decorator
     def test_g_command_decorator(self):
+        
+        # pylint: disable=global-variable-undefined
         c = self.c
         _foo = 0
 
@@ -474,32 +462,43 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210906075242.26: *3* TestCommands.test_g_isCallable
     def test_g_isCallable(self):
         c = self.c
-        def spam(): pass
+        
+        def spam():
+            pass
+
         lam = lambda a: None
+        
         class aCallable:
             def __call__ (self):
                 pass
-        c = aCallable()
 
+        c = aCallable()
         table = (
             ('abc',False),
             (spam,True),
             (lam,True),
             (c,True)
         )
-
         for obj,val in table:
             val2 = g.isCallable(obj)
             assert val == val2,'%s, expected %s, got %s' % (
                 repr(obj),val,val2)
     #@+node:ekr.20210906075255.1: *3* --- Used child nodes
+    #@+node:ekr.20210906081429.1: *3* add/delete comments
     #@+node:ekr.20210906075242.28: *3* TestCommands.test_add_comments_with_multiple_language_directives
     def test_add_comments_with_multiple_language_directives(self):
         c = self.c
         p = c.p
         w = c.frame.body.wrapper
-        ### p = g.findNodeInTree(c,p,'rest and python')
-        ### assert p,'not found: rest and python'
+        s = textwrap.dedent("""\
+            @language rest
+            rest text.
+            @language python
+            def spam():
+                # pass
+            # after
+    """)
+        assert s  ###
         table = (
             (
                 False,
@@ -527,13 +526,22 @@ class TestCommands(LeoUnitTest):
             c.addComments()
             ### assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
             self.assertEqual(p.b, expected)
-    #@+node:ekr.20210906075242.29: *3* TestCommands.test_delete_comments_with_multiple_language_directives
-    def test_delete_comments_with_multiple_language_directives(self):
+    #@+node:ekr.20210906075242.29: *3* TestCommands.test_delete_comments_with_multiple_at_language_directives
+    def test_delete_comments_with_multiple_at_language_directives(self):
         c = self.c
         p = c.p
         w = c.frame.body.wrapper
         ### p = g.findNodeInTree(c,p,'rest and python')
         ### assert p,'not found: rest and python'
+        s = textwrap.dedent("""\
+            @language rest
+            rest text.
+            @language python
+            def spam():
+                pass
+            # after
+    """)
+        assert s  ###
         old_indent = c.config.getBool('indent_added_comments',default=True)
         table = (
             (
@@ -572,7 +580,14 @@ class TestCommands(LeoUnitTest):
         p = c.p
         w = c.frame.body.wrapper
         ### p = g.findNodeInTree(c,p,'html')
-        assert p,'not found: html'
+        ### assert p,'not found: html'
+        s = textwrap.dedent("""\
+            @language html
+            <html>
+                <!-- text -->
+            </html>
+    """)
+        assert s  ###
         old_indent = c.config.getBool('indent_added_comments',default=True)
         table = (
             (
@@ -611,7 +626,14 @@ class TestCommands(LeoUnitTest):
         p = c.p
         w = c.frame.body.wrapper
         ### p = g.findNodeInTree(c,p,'html')
-        assert p,'not found: html'
+        ### assert p,'not found: html'
+        s = textwrap.dedent("""\
+            @language html
+            <html>
+                text
+            </html>
+    """)
+        assert s  ###
         old_indent = c.config.getBool('indent_added_comments',default=True)
         table = (
             (
@@ -650,7 +672,15 @@ class TestCommands(LeoUnitTest):
         p = c.p
         w = c.frame.body.wrapper
         ### p = g.findNodeInTree(c,p,'python')
-        assert p,'not found: python'
+        ### assert p,'not found: python'
+        s = textwrap.dedent("""\
+            @language python
+            def spam():
+            #     pass
+            
+            # after
+    """)
+        assert s  ###
         old_indent = c.config.getBool('indent_added_comments',default=True)
         table = (
             (
@@ -689,7 +719,15 @@ class TestCommands(LeoUnitTest):
         p = c.p
         w = c.frame.body.wrapper
         ### p = g.findNodeInTree(c, p,'python')
-        assert p,'not found: python'
+        ### assert p,'not found: python'
+        s = textwrap.dedent("""\
+            @language python
+            def spam():
+                pass
+            
+            # after
+    """)
+        assert s  ###
         old_indent = c.config.getBool('indent_added_comments',default=True)
         table = (
             (
