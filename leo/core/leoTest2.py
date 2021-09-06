@@ -15,6 +15,8 @@ import textwrap
 import time
 import unittest
 from leo.core import leoGlobals as g
+from leo.core import leoApp
+
 #@+others
 #@+node:ekr.20210830070921.1: ** function: convert_at_test_nodes
 def convert_at_test_nodes(c, converter, root):
@@ -47,9 +49,6 @@ def create_app():
     """
     trace = False
     t1 = time.process_time()
-    # Early imports.
-    from leo.core import leoGlobals as g
-    from leo.core import leoApp
     # Create g.app now, to avoid circular dependencies.
     g.app = leoApp.LeoApp()
     # Late imports.
@@ -160,6 +159,7 @@ class LeoUnitTest(unittest.TestCase):
     </tnodes>
     </leo_file>
     ''')
+        # pylint: disable=no-member
         c.pasteOutline(s=self.test_outline, redrawFlag=False, undoFlag=False)
         c.selectPosition(c.rootPosition())
     #@+node:ekr.20210831101111.1: *3* LeoUnitTest.dump_tree

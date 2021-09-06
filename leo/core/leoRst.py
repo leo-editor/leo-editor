@@ -290,7 +290,7 @@ class RstCommands:
             return
         # Write the intermediate file.
         if self.write_intermediate_file:
-            self.writeIntermediateFile(fn, p, source)
+            self.writeIntermediateFile(fn, source)
         # Should we call docutils?
         if not self.call_docutils:
             return
@@ -306,7 +306,7 @@ class RstCommands:
         with open(fn, 'wb') as f:
             f.write(s)
             self.n_docutils += 1
-        self.report(fn, p)
+        self.report(fn)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s):
         """
@@ -358,7 +358,7 @@ class RstCommands:
                 g.error('did not create:', theDir)
         return ok
     #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile
-    def writeIntermediateFile(self, fn, p, s):
+    def writeIntermediateFile(self, fn, s):
         """Write s to to the file whose name is fn."""
         # ext = self.getOption(p, 'write_intermediate_extension')
         ext = self.write_intermediate_extension
@@ -368,7 +368,7 @@ class RstCommands:
         with open(fn, 'w', encoding=self.encoding) as f:
             f.write(s)
             self.n_intermediate += 1
-        self.report(fn, p)
+        self.report(fn)
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, s, ext):
         """Send s to docutils using the writer implied by ext and return the result."""

@@ -2681,13 +2681,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         # Scan backwards for i,j.
         i = ins
-        while i >= 0 and i < len(s) and s[i] != '\n':
+        while len(s) > i >= 0 and s[i] != '\n':
             if s[i] == '(': break
             i -= 1
         else:
             return
         j = ins
-        while j >= 0 and j < len(s) and s[j] != '\n':
+        while len(s) > j >= 0 and s[j] != '\n':
             if s[j] == '(': break
             j -= 1
         if i < j:
