@@ -17,9 +17,8 @@ class TestColorizer(LeoUnitTest):
     #@+others
     #@+node:ekr.20210905161336.1: *3* TestColorizer.color
     def color(self, language_name, text):
-        """Runs the test."""
+        """Run the test by colorizing a node with the given text."""
         c = self.c
-        ### g.trace(language_name)
         c.p.b = text.replace('> >', '>>').replace('< <', '<<')
         c.recolor_now()
     #@+node:ekr.20210905170507.2: *3* TestColorizer.test__comment_after_language_plain
@@ -510,8 +509,21 @@ class TestColorizer(LeoUnitTest):
         self.color('html', text)
     #@+node:ekr.20210905170507.17: *3* TestColorizer.test_colorizer_Java
     def test_colorizer_Java(self):
-        c = self.c
-        c.recolor_now()
+        text = textwrap.dedent('''\
+    #@+at doc part
+    #@@c
+
+    #@@language java /* Colored by match_leo_keyword: tag = leoKeyword. */
+
+    @whatever /* Colored by java match_following rule: tag = keyword4. */
+
+    /** A javadoc: tag = comment3 */
+
+    /** <!-- comment --> tag = comment1. */
+
+    /** @see tag = label */
+    ''')
+        self.color('java', text)
     #@+node:ekr.20210905170507.18: *3* TestColorizer.test_colorizer_LaTex
     def test_colorizer_LaTex(self):
         text = textwrap.dedent("""\
@@ -1088,8 +1100,27 @@ class TestColorizer(LeoUnitTest):
         self.color('python', text)
     #@+node:ekr.20210905170507.26: *3* TestColorizer.test_colorizer_Python2
     def test_colorizer_Python2(self):
-        c = self.c
-        c.recolor_now()
+
+        text = textwrap.dedent('''\
+    """This creates a free-floating copy of v's tree for undo.
+    The copied trees must use different tnodes than the original."""
+
+    def copyTree(self,root):
+        c = self
+        # Create the root VNode.
+        result = v = leoNodes.VNode(c)
+        # Copy the headline and icon values v.copyNode(root,v)
+        # Copy the rest of tree.
+        v.copyTree(root,v)
+        # Replace all tnodes in v by copies.
+        assert(v.nodeAfterTree() == None)
+        while v:
+            v = leoNodes.VNode(c)
+            v = v.threadNext()
+        return result
+    ''')
+        self.color('python', text)
+        
     #@+node:ekr.20210905170507.27: *3* TestColorizer.test_colorizer_r
     def test_colorizer_r(self):
         text = textwrap.dedent("""\
@@ -1353,22 +1384,20 @@ class TestColorizer(LeoUnitTest):
     </MODE>
     """)
         self.color('html', text)
-    #@+node:ekr.20210905170507.36: *3* TestColorizer.test_colorizer_wikiTest2
-    def test_colorizer_wikiTest2(self):
-        c = self.c
-        c.recolor_now()
-    #@+node:ekr.20210905170507.37: *3* TestColorizer.test_colorizer_wikiTest3
-    def test_colorizer_wikiTest3(self):
-        c = self.c
-        c.recolor_now()
-    #@+node:ekr.20210905170507.38: *3* TestColorizer.test_python_keywords_new_colorizer_
-    def test_python_keywords_new_colorizer_(self):
-        c = self.c
-        try:
-            mode = c.frame.body.colorizer.modes.get('python')
-            mode.keywords['as'] = 1 # append the keyword, colorize with 'keyword1' tag.
-        except AttributeError:
-            pass # modes only exists for new colorizer.
+    #@+node:ekr.20210905170507.36: *3* TestColorizer.test_colorizer_wikiTest
+    def test_colorizer_wikiTest(self):
+        # both color_markup & add_directives plugins must be enabled.
+        text = textwrap.dedent('''\
+    #@@markup wiki
+
+    """ text~~red:some text~~more text"""
+
+    """ text~~#ee0ff:some text~~more text"""
+
+    if 1 and 2:
+        pass
+    ''')
+        self.color('html', text)
     #@+node:ekr.20210905170507.39: *3* TestColorizer.test_scanColorDirectives
     def test_scanColorDirectives(self):
         c = self.c
