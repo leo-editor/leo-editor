@@ -1873,105 +1873,21 @@ line 1
     line 2
       line 3
 line4
-#@+node:ekr.20210518075231.6: *4* do and undo
+#@+node:ekr.20210906133808.1: *4* do and undo
 @tabwidth -4
 
 line 1
     line 2
       line 3
 line4
-#@+node:ekr.20210518075231.7: *4* do
+#@+node:ekr.20210906133808.2: *4* do
 @tabwidth -4
 
 line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20210518075231.8: *4* do, undo, redo
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20201018151721.1: *4* do and undo
-@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-#@+node:ekr.20201018151721.2: *4* do
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20201018151721.3: *4* do, undo, redo
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20191219051337.3: *4* do and undo
-@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-#@+node:ekr.20191219051337.4: *4* do
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20191219051337.5: *4* do, undo, redo
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20191219045732.6: *4* do and undo
-@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-#@+node:ekr.20191219045732.7: *4* do
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20191219045732.8: *4* do, undo, redo
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20191106202329.2: *4* do and undo
-@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-#@+node:ekr.20191106202329.3: *4* do
-@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-#@+node:ekr.20191106202329.4: *4* do, undo, redo
+#@+node:ekr.20210906133808.3: *4* do, undo, redo
 @tabwidth -4
 
 line 1
