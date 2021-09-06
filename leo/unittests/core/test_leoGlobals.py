@@ -90,17 +90,17 @@ class TestGlobals(LeoUnitTest):
         )
         s3 = 'ab' # Test special case.  This was the cause of off-by-one problems.
         table3 = (
-            (-1,(0,0)), # One too small.
-            (0,(0,0)),
-            (1,(0,1)),
-            (2,(0,2)), # One too many.
-            (3,(0,3)), # Two too many.
+            (-1, (0, 0)), # One too small.
+            (0, (0, 0)),
+            (1, (0, 1)),
+            (2, (0, 2)), # One too many.
+            (3, (0, 2)), # Two too many.
         )
-        for s,table in ((s1,table1),(s2,table2),(s3, table3)):
-            for i,result in table:
-                row,col = g.convertPythonIndexToRowCol(s,i)
-                assert row == result[0], 'i: %d, expected row %d, got %d' % (i,result[0],row)
-                assert col == result[1], 'i: %d, expected col %d, got %d' % (i,result[1],col)
+        for n, s, table in ((1, s1,table1),(2, s2,table2),(3, s3, table3)):
+            for i, result in table:
+                row, col = g.convertPythonIndexToRowCol(s,i)
+                self.assertEqual(row, result[0], msg=f"n: {n}, i: {i}")
+                self.assertEqual(col, result[1], msg=f"n: {n}, i: {i}")
     #@+node:ekr.20210905203541.8: *3* TestGlobals.test_g_convertRowColToPythonIndex
     def test_g_convertRowColToPythonIndex(self):
         s1 = 'abc\n\np\nxy'
@@ -165,57 +165,15 @@ class TestGlobals(LeoUnitTest):
         for s,word,i,expected in table:
             actual = g.find_word(s,word,i)
             assert actual == expected
-    #@+node:ekr.20210905203541.13: *3* TestGlobals.test_g_findNode_
-    def test_g_findNode_(self):
-        c = self.c
-        p = c.p
-        trace = False
-        skipped = 0
-        p0 = p.copy()
-        p2 = g.findNodeAnywhere(c,'@test g.findNode*')
-        assert p2 and p2.v == p.v, ('1', repr(p2), repr(p))
-        p2 = g.findNodeAnywhere(c,'@test g.findNode',exact=False)
-        assert p2 and p2.v == p.v, ('2', repr(p2), repr(p))
-        #
-        parent = p0.parent()
-        if parent: # Will fail for a top-level clone
-            p2 = g.findNodeInChildren(c,parent,'@test g.findNode*')
-            assert p2 and p2.v == p.v, ('3', repr(p2), repr(p))
-            p2 = g.findNodeInChildren(c,parent,'@test g.findNode',exact=False)
-            assert p2 and p2.v == p.v, ('4', repr(p2), repr(p))
-        else:
-            skipped += 1
-        #
-        parent = p0.parent()
-        if parent: # Will fail for a top-level clone
-            p2 = g.findNodeInTree(c,parent,'@test g.findNode*')
-            assert p2 and p2.v == p.v, ('5', repr(p2), repr(p))
-            p2 = g.findNodeInTree(c,parent,'@test g.findNode',exact=False)
-            assert p2 and p2.v == p.v, ('6', repr(p2), repr(p))
-        else:
-            skipped += 1
-        #
-        p1 = g.findTopLevelNode(c,'Active Unit Tests')
-        if p1:
-            p2 = g.findTopLevelNode(c,'Active Unit Test',exact=False)
-            assert p2 and p2.v == p1.v, ('7', repr(p2), repr(p1))
-            p2 = g.findNodeInTree(c,p1,'@test g.findNode*')
-            assert p2 and p2.v == p.v, ('8', repr(p2), repr(p))
-            p2 = g.findNodeInTree(c,p1,'@test g.findNode',exact=False)
-            assert p2 and p2.v == p.v, ('9', repr(p2), repr(p))
-        else:
-            skipped += 1
-        if trace and skipped:
-            print('%s: skipped %s sub-tests' % (p0.h, skipped))
     #@+node:ekr.20210905203541.14: *3* TestGlobals.test_g_fullPath
     def test_g_fullPath(self):
         c = self.c
-        child = c.rootPosition().insertAsLastChild()
+        child = c.rootPosition().insertAfter()
         child.h = '@path abc'
         grand = child.insertAsLastChild()
         grand.h = 'xyz'
         ### p2 = p.firstChild().firstChild()
-        path = g.fullPath(c, c.p, simulate=True)
+        path = g.fullPath(c, grand, simulate=True)
         end = g.os_path_normpath('abc/xyz')
         assert path.endswith(end),repr(path)
     #@+node:ekr.20210905203541.16: *3* TestGlobals.test_g_get_directives_dict
@@ -441,7 +399,7 @@ class TestGlobals(LeoUnitTest):
     def test_g_scanAtLineendingDirectives_crlf(self):
         c = self.c
         p = c.p
-        p.b = '@lineending cr\n'
+        p.b = '@lineending crlf\n'
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
         assert s == '\r\n', repr(s)
@@ -643,10 +601,6 @@ class TestGlobals(LeoUnitTest):
             assert fc.read_only
         else:
             fc.warnOnReadOnlyFiles(path)
-    #@+node:ekr.20210905203541.57: *3* TestGlobals.test_pre_definition_of_g_in_scripts
-    def test_pre_definition_of_g_in_scripts(self):
-        for ivar in ('c','g','p'):
-            assert ivar in dir()
     #@-others
 #@-others
 #@-leo
