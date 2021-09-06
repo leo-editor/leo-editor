@@ -11,6 +11,7 @@ See g.run_unit_tests and g.run_coverage_tests.
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
+import re
 import textwrap
 import time
 import unittest
@@ -33,7 +34,7 @@ def convert_at_test_nodes(c, converter, root):
     count = 0
     for p in root.subtree():
         if p.h.startswith('@test'):
-            converter.convert_node(p, target)
+            converter.convert_node(c, p, target)
             count += 1
     target.expand()
     c.redraw(target)
@@ -243,13 +244,13 @@ class ConvertTests:
         count = 0
         for p in root.subtree():
             if p.h.startswith('@test'):
-                self.convert_node(p, target)
+                self.convert_node(c, p, target)
                 count += 1
         target.expand()
         c.redraw(target)
         print(f"converted {count} @test nodes")
     #@+node:ekr.20210829142231.2: *4* ConvertTests.convert_node
-    def convert_node(self, p, target):
+    def convert_node(self, c, p, target):
         """
         Convert p, an @test node, creating a new node as the last child of
         target.
@@ -302,12 +303,11 @@ class ConvertEditCommandsTests(ConvertTests):
     #@-others
 #@+node:ekr.20210905151425.1: *3* class ConvertColorizerTests (ConvertTests)
 class ConvertColorizerTests(ConvertTests):
-    """Convert @edit nodes for colorizer commands."""
+    """Convert @test nodes for colorizer commands."""
     #@+others
     #@+node:ekr.20210905151425.2: *4* ConvertColorizerTests.convert_node
     def convert_node(self, p, target):
         """Convert one @test node, creating a new node."""
-        import re
         indent = ' '*4
         # Create the new node.
         test_node = target.insertAsLastChild()
@@ -340,6 +340,60 @@ class ConvertColorizerTests(ConvertTests):
         # Compute the tail.
         body = textwrap.indent(p.b, ' '*4).rstrip()
         result.append(f"{body}\n")
+        # Set the body text!
+        test_node.b = ''.join(result)
+    #@-others
+#@+node:ekr.20210906140154.1: *3* class ConvertUndoTests (ConvertTests)
+class ConvertUndoTests(ConvertTests):
+    """Convert @test nodes for undo commands."""
+    #@+others
+    #@+node:ekr.20210906140220.1: *4* ConvertUndoTests.convert_node (REVISE)
+    def convert_node(self, c, p, target):
+        """Convert one @test node, creating a new node."""
+        assert p.h.startswith('@test')
+        before = g.findNodeInTree(c, p, 'before')
+        after = g.findNodeInTree(c, p, 'after')
+        sel = g.findNodeInTree(c, p, 'selection')
+        # Do regular conversion if the nodes don't come from the children of @suite.
+        if not (before and after and sel):
+            super().convert_node(c, p, target)
+            return
+        # Create the new node.
+        indent = ' '*4
+        test_node = target.insertAsLastChild()
+        # Set the headline.
+        test_name = f"test_{self.clean_headline(p)}"
+        test_node.h = f"{self.class_name}.{test_name}"
+        # Compute the start of the body text.
+        result = [
+            f"def {test_name}(self):\n",
+            f"{indent}c = self.c\n",
+        ]
+        # Append the assignment to 'before'.
+        result.append(f'{indent}before = textwrap.dedent("""\\\n')
+        for z in g.splitLines(before.b):
+            result.append(f"{indent}{indent}{z.rstrip()}\n")
+        result.append('""")\n')
+        # Append the assignment to 'after'.
+        result.append(f'{indent}after = textwrap.dedent("""\\\n')
+        for z in g.splitLines(after.b):
+            result.append(f"{indent}{indent}{z.rstrip()}\n")
+        result.append('""")\n')
+        # Compute the i, j values..
+        lines = g.splitLines(sel.b)
+        assert len(lines) >= 2
+        row1, col1 = lines[0].split('.')
+        row2, col2 = lines[1].split('.')
+        i = g.convertRowColToPythonIndex(before.b, int(row1), int(col1))
+        j = g.convertRowColToPythonIndex(before.b, int(row2), int(col2))
+        # Compute the function name.
+        pat = re.compile(r'@test (\w+)')
+        m = pat.match(p.h)
+        func = m.group(1)
+        # Compute the tail.
+        result.append(f"{indent}i, j = {i}, {j}\n")
+        result.append(f"{indent}func = getattr(c, '{func}')\n")
+        result.append(f"{indent}self.runTest(before, after, i, j, func)\n")
         # Set the body text!
         test_node.b = ''.join(result)
     #@-others
