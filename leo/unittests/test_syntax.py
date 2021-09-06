@@ -59,7 +59,6 @@ class TestSyntax(LeoUnitTest):
         trace = '--trace=startup' if trace else ''
         # --quit suppresses the loading of settings files for greater speed.
         command = f"leo {test_dot_leo} --quit --gui={gui} --no-plugins --silent {trace}"
-        ### g.execute_shell_commands(command)
         proc = subprocess.Popen(command, stdout=subprocess.DEVNULL, shell=True)
         proc.communicate()
     #@-others
