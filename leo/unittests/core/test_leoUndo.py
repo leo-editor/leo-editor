@@ -25,6 +25,9 @@ class TestUndo(LeoUnitTest):
         # Restore section references.
         before = before.replace('> >', '>>').replace('< <', '<<')
         after = after.replace('> >', '>>').replace('< <', '<<')
+        # Check indices.
+        self.assertTrue(0 <= i < len(before))
+        self.assertTrue(0 <= j < len(before))
         # Set the text and selection range.
         p.b = before
         self.assertEqual(p.b, w.getAllText())
@@ -241,8 +244,8 @@ class TestUndo(LeoUnitTest):
         i, j = 56, 142
         func = getattr(c, 'deleteComments')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test1
-    def test_extract_test1(self):
+    #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
+    def test_extract_test(self):
         c = self.c
         before = textwrap.dedent("""\
             before
@@ -257,70 +260,8 @@ class TestUndo(LeoUnitTest):
                 < < section > >
             after
     """)
-        i, j = 25, 85
-        func = getattr(c, 'extract')
-        self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.11: *3* TestUndo.test_extract_test2
-    def test_extract_test2(self):
-        c = self.c
-        before = textwrap.dedent("""\
-            before
-                < < section > >
-                sec line 1
-                    sec line 2 indented
-            sec line 3
-            after
-    """)
-        after = textwrap.dedent("""\
-            before
-                < < section > >
-                sec line 1
-                    sec line 2 indented
-            sec line 3
-            after
-    """)
-        i, j = 25, 40
-        func = getattr(c, 'extract')
-        self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.12: *3* TestUndo.test_extract_test3
-    def test_extract_test3(self):
-        c = self.c
-        before = textwrap.dedent("""\
-            before
-                < < section > >
-                sec line 1
-                    sec line 2 indented
-            sec line 3
-            after
-    """)
-        after = textwrap.dedent("""\
-            before
-                < < section > >
-            after
-    """)
-        i, j = 25, 85
-        func = getattr(c, 'extract')
-        self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.13: *3* TestUndo.test_extract_test4
-    def test_extract_test4(self):
-        c = self.c
-        before = textwrap.dedent("""\
-            before
-                < < section > >
-                sec line 1
-                    sec line 2 indented
-            sec line 3
-            after
-    """)
-        after = textwrap.dedent("""\
-            before
-                < < section > >
-                sec line 1
-                    sec line 2 indented
-            sec line 3
-            after
-    """)
-        i, j = 25, 40
+        i = before.find('< <')
+        j = before.find('line 3')
         func = getattr(c, 'extract')
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline
