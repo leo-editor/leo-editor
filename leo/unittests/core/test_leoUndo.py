@@ -26,8 +26,8 @@ class TestUndo(LeoUnitTest):
         before = before.replace('> >', '>>').replace('< <', '<<')
         after = after.replace('> >', '>>').replace('< <', '<<')
         # Check indices.
-        self.assertTrue(0 <= i < len(before))
-        self.assertTrue(0 <= j < len(before))
+        self.assertTrue(0 <= i <= len(before), msg=f"i: {i} len(before): {len(before)}")
+        self.assertTrue(0 <= j <= len(before), msg=f"j: {j} len(before): {len(before)}")
         # Set the text and selection range.
         p.b = before
         self.assertEqual(p.b, w.getAllText())
@@ -71,8 +71,9 @@ class TestUndo(LeoUnitTest):
             
                 pass
     """)
-        i, j = 51, 80
-        func = getattr(c, 'addComments')
+        i = before.find('if 1')
+        j = before.find('b = 3')
+        func = c.addComments
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.3: *3* TestUndo.test_convertAllBlanks
     def test_convertAllBlanks(self):
@@ -93,8 +94,8 @@ class TestUndo(LeoUnitTest):
             	  line 3
             line4
     """)
-        i, j = 13, 51
-        func = getattr(c, 'convertAllBlanks')
+        i, j = 13, len(before)
+        func = c.convertAllBlanks
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.4: *3* TestUndo.test_convertAllTabs
     def test_convertAllTabs(self):
@@ -116,7 +117,7 @@ class TestUndo(LeoUnitTest):
             line4
     """)
         i, j = 13, 45
-        func = getattr(c, 'convertAllTabs')
+        func = c.convertAllTabs
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.5: *3* TestUndo.test_convertBlanks
     def test_convertBlanks(self):
@@ -138,7 +139,7 @@ class TestUndo(LeoUnitTest):
             line4
     """)
         i, j = 13, 51
-        func = getattr(c, 'convertBlanks')
+        func = c.convertBlanks
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.6: *3* TestUndo.test_convertTabs
     def test_convertTabs(self):
@@ -160,7 +161,7 @@ class TestUndo(LeoUnitTest):
             line4
     """)
         i, j = 13, 45
-        func = getattr(c, 'convertTabs')
+        func = c.convertTabs
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.7: *3* TestUndo.test_dedentBody
     def test_dedentBody(self):
@@ -178,7 +179,7 @@ class TestUndo(LeoUnitTest):
             line 4
     """)
         i, j = 18, 34
-        func = getattr(c, 'dedentBody')
+        func = c.dedentBody
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.8: *3* TestUndo.test_deleteComments
     def test_deleteComments(self):
@@ -206,7 +207,7 @@ class TestUndo(LeoUnitTest):
                 pass
     """)
         i, j = 56, 89
-        func = getattr(c, 'deleteComments')
+        func = c.deleteComments
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.9: *3* TestUndo.test_deleteComments 2
     def test_deleteComments_2(self):
@@ -242,7 +243,7 @@ class TestUndo(LeoUnitTest):
                 pass
     """)
         i, j = 56, 142
-        func = getattr(c, 'deleteComments')
+        func = c.deleteComments
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
     def test_extract_test(self):
@@ -262,7 +263,7 @@ class TestUndo(LeoUnitTest):
     """)
         i = before.find('< <')
         j = before.find('line 3')
-        func = getattr(c, 'extract')
+        func = c.extract
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline
     def test_line_to_headline(self):
@@ -277,7 +278,7 @@ class TestUndo(LeoUnitTest):
             after
     """)
         i, j = 10, 10
-        func = getattr(c, 'line_to_headline')
+        func = c.line_to_headline
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.15: *3* TestUndo.test_restore_marked_bits
     def test_restore_marked_bits(self):

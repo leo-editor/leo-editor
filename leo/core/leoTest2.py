@@ -392,7 +392,7 @@ class ConvertUndoTests(ConvertTests):
         func = m.group(1)
         # Compute the tail.
         result.append(f"{indent}i, j = {i}, {j}\n")
-        result.append(f"{indent}func = getattr(c, '{func}')\n")
+        result.append(f"{indent}func = c.{func}\n")  # Changed
         result.append(f"{indent}self.runTest(before, after, i, j, func)\n")
         # Set the body text!
         test_node.b = ''.join(result)
