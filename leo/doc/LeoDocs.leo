@@ -31160,30 +31160,30 @@ Examples of 'async' messages:
 <t tx="felix.20210826001302.1">leoserver.py has optional command line arguments that you can provide
 to get specific behaviors from the server.
 
-Have the server start with a specific file opened
-=================================================
+**--file &lt;filename&gt; or -f &lt;filename&gt;**
 
-Use the --file &lt;filename&gt; or -f &lt;filename&gt;'to specify a given Leo file to be
-opened upon starting the server.
+    Open the given file after starting the server.
+    
+**--persist**
 
-Prevent the server from closing when last client disconnects
-============================================================
+    Prevent the server from closing when last client disconnects
+    
+**--limit &lt;number&gt; or -l &lt;number&gt;**
 
-Use the --persist flag to have the server persist until explicitly closed.
+    Allow more than one connection to be open simultaneously.
+    By default, only one connection may be open at a time.
+    
+**--address &lt;address&gt; or -a &lt;address&gt;**
 
-Set maximum number of possible concurrent connections
-=====================================================
+    Set the listening address.
+    
+**--port &lt;number&gt; or -p &lt;number&gt;**
 
-Use the --limit &lt;number&gt; or -l &lt;number&gt; argument to change the maximum from
-the default single connection maximum.
-
-Set the listening address and port
-==================================
-
-Use the --port &lt;number&gt; or -p &lt;number&gt;
-along with the --address &lt;address&gt; or -a &lt;address&gt; arguments.
-
-For more details, use the *--help* argument to list all available options details.
+    Set the listening port.
+    
+**--help or -h**
+    
+    List all available command-line arguments.
 </t>
 <t tx="felix.20210902210559.1">The **ws_handler** function contains the main server loop. 
 
