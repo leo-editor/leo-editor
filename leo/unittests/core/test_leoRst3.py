@@ -3,6 +3,7 @@
 #@+node:ekr.20210902055206.1: * @file ../unittests/core/test_leoRst3.py
 #@@first
 """Tests of leoRst3.py"""
+
 import textwrap
 try:
     import docutils
@@ -10,6 +11,7 @@ except Exception:
     docutils = None
 # import leo.core.leoRst as leoRst
 from leo.core.leoTest2 import LeoUnitTest
+
 #@+others
 #@+node:ekr.20210327072030.1: ** class TestRst3 (LeoUnitTest)
 class TestRst3(LeoUnitTest):

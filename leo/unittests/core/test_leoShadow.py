@@ -3,19 +3,16 @@
 #@+node:ekr.20210902092024.1: * @file ../unittests/core/test_leoShadow.py
 #@@first
 """Tests of leoShapdw.py"""
+
 import glob
 import os
 from leo.core import leoGlobals as g
 from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
+
 #@+others
 #@+node:ekr.20080709062932.2: ** class TestShadow (LeoUnitTest)
 class TestShadow(LeoUnitTest):
-    """
-    Support @shadow-test nodes.
-
-    These nodes should have two descendant nodes: 'before' and 'after'.
-    """
     #@+others
     #@+node:ekr.20080709062932.8: *3* TestShadow.setUp & helpers
     def setUp(self):

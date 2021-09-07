@@ -3,7 +3,9 @@
 #@+node:ekr.20210903161742.1: * @file ../unittests/core/test_leoFrame.py
 #@@first
 """Tests of leoFrame.py"""
+
 from leo.core.leoTest2 import LeoUnitTest
+
 #@+others
 #@+node:ekr.20210903161742.2: ** class TestFrame(LeoUnitTest)
 class TestFrame(LeoUnitTest):

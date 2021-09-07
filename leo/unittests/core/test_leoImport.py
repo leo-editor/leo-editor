@@ -3,6 +3,7 @@
 #@+node:ekr.20210904064440.2: * @file ../unittests/core/test_leoImport.py
 #@@first
 """Tests of leoImport.py"""
+
 import glob
 import importlib
 import textwrap

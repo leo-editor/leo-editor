@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210904022712.2: * @file ../unittests/commands/test_leoCheckerCommands.py
 #@@first
-"""Tests of leoCheckerCommands.py"""
+"""Tests of leo.commands.leoCheckerCommands."""
 import re
 from leo.core.leoTest2 import LeoUnitTest
 import leo.commands.checkerCommands as checkerCommands

@@ -8,7 +8,6 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 import leo.core.leoColorizer as leoColorizer
-assert textwrap and leoColorizer ### temp.
 
 #@+others
 #@+node:ekr.20210905151702.2: ** class TestColorizer(LeoUnitTest)

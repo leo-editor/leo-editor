@@ -12,11 +12,6 @@ assert g
 #@+others
 #@+node:ekr.20210906141410.2: ** class TestUndo (LeoUnitTest)
 class TestUndo(LeoUnitTest):
-    """
-    Support @shadow-test nodes.
-
-    These nodes should have two descendant nodes: 'before' and 'after'.
-    """
     #@+others
     #@+node:ekr.20210906141410.9: *3* TestUndo.runTest (Test)
     def runTest(self, before, after, i, j, func):

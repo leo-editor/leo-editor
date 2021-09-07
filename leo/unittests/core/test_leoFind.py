@@ -3,6 +3,7 @@
 #@+node:ekr.20210829124658.1: * @file ../unittests/core/test_leoFind.py
 #@@first
 """Tests for leo.core.leoFind"""
+
 import re
 import leo.core.leoFind as leoFind
 from leo.core.leoGui import StringFindTabManager
