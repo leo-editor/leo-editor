@@ -318,8 +318,8 @@ class TestUndo(LeoUnitTest):
         i, j = 25, 40
         func = getattr(c, 'extract')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline_test1
-    def test_line_to_headline_test1(self):
+    #@+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline
+    def test_line_to_headline(self):
         c = self.c
         before = textwrap.dedent("""\
             before
@@ -362,12 +362,17 @@ class TestUndo(LeoUnitTest):
             p.clearMarked()
     #@+node:ekr.20210906172626.16: *3* TestUndo.test_undo_editHeadline
     def test_undo_editHeadline(self):
-        c, p = self.c, self.c.p
         # Brian Theado.
-        c.undoer.clearUndoState()
+        c, p = self.c, self.c.p
+        node1 = p.insertAsLastChild()
+        node2 = node1.insertAfter()
+        node3 = node2.insertAfter()
+        node1.h = 'node 1'
+        node2.h = 'node 2'
+        node3.h = 'node 3'
         assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
-
         # Select 'node 1' and modify the headline as if a user did it
+        c.undoer.clearUndoState()
         node1 = p.copy().moveToFirstChild()
         c.selectPosition(node1)
         c.editHeadline()
@@ -375,14 +380,11 @@ class TestUndo(LeoUnitTest):
         w.insert('1.0', 'changed - ')
         c.endEditing()
         assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
-
         # Move the selection and undo the headline change
         c.selectPosition(node1.copy().moveToNext())
         c.undoer.undo()
-
         # The undo should restore the 'node 1' headline string
         assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
-
         # The undo should select the edited headline.
         assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
     #@+node:ekr.20210906172626.17: *3* TestUndo.test_undo_redoGroup
