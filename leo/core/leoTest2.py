@@ -347,7 +347,7 @@ class ConvertColorizerTests(ConvertTests):
 class ConvertUndoTests(ConvertTests):
     """Convert @test nodes for undo commands."""
     #@+others
-    #@+node:ekr.20210906140220.1: *4* ConvertUndoTests.convert_node (REVISE)
+    #@+node:ekr.20210906140220.1: *4* ConvertUndoTests.convert_node
     def convert_node(self, c, p, target):
         """Convert one @test node, creating a new node."""
         assert p.h.startswith('@test')
