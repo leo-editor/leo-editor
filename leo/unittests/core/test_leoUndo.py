@@ -206,7 +206,8 @@ class TestUndo(LeoUnitTest):
             
                 pass
     """)
-        i, j = 56, 89
+        i = before.find('if 1')
+        j = before.find('b = 3')
         func = c.deleteComments
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.9: *3* TestUndo.test_deleteComments 2
@@ -242,7 +243,8 @@ class TestUndo(LeoUnitTest):
             
                 pass
     """)
-        i, j = 56, 142
+        i = before.find('if 1')
+        j = before.find('# b = 3')
         func = c.deleteComments
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
