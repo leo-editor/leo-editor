@@ -21,22 +21,27 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906141410.9: *3* TestUndo.runTest (Test)
     def runTest(self, before, after, i, j, func):
         """TestUndo.runTest."""
-        c, w = self.c, self.c.frame.body.wrapper
+        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
         # Restore section references.
         before = before.replace('> >', '>>').replace('< <', '<<')
         after = after.replace('> >', '>>').replace('< <', '<<')
         # Set the text and selection range.
-        w.setAllText(before)
+        p.b = before
+        self.assertEqual(p.b, w.getAllText())
         w.setSelectionRange(i, j, insert=i)
         # Test.
         self.assertNotEqual(before, after)
-        result = func()
+        func()
+        result = p.b
         self.assertEqual(result, after, msg='before undo1')
         c.undoer.undo()
+        result = w.getAllText()
         self.assertEqual(result, before, msg='after undo1')
         c.undoer.redo()
+        result = w.getAllText()
         self.assertEqual(result, after, msg='after redo1')
         c.undoer.undo()
+        result = w.getAllText()
         self.assertEqual(result, before, msg='after undo2')
     #@+node:ekr.20210906172626.2: *3* TestUndo.test_addComments
     def test_addComments(self):
@@ -330,7 +335,7 @@ class TestUndo(LeoUnitTest):
             before
             after
     """)
-        i, j = 16, 16
+        i, j = 10, 10
         func = getattr(c, 'line_to_headline')
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.15: *3* TestUndo.test_restore_marked_bits
