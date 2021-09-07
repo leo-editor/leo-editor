@@ -178,7 +178,8 @@ class TestUndo(LeoUnitTest):
             line 3
             line 4
     """)
-        i, j = 18, 34
+        i = before.find('line 2')
+        j = before.find('3')
         func = c.dedentBody
         self.runTest(before, after, i, j, func)
     #@+node:ekr.20210906172626.8: *3* TestUndo.test_deleteComments
@@ -247,6 +248,33 @@ class TestUndo(LeoUnitTest):
         j = before.find('# b = 3')
         func = c.deleteComments
         self.runTest(before, after, i, j, func)
+    #@+node:ekr.20210906172626.16: *3* TestUndo.test_edit_headline
+    def test_edit_headline(self):
+        # Brian Theado.
+        c, p = self.c, self.c.p
+        node1 = p.insertAsLastChild()
+        node2 = node1.insertAfter()
+        node3 = node2.insertAfter()
+        node1.h = 'node 1'
+        node2.h = 'node 2'
+        node3.h = 'node 3'
+        assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+        # Select 'node 1' and modify the headline as if a user did it
+        c.undoer.clearUndoState()
+        node1 = p.copy().moveToFirstChild()
+        c.selectPosition(node1)
+        c.editHeadline()
+        w = c.frame.tree.edit_widget(node1)
+        w.insert('1.0', 'changed - ')
+        c.endEditing()
+        assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
+        # Move the selection and undo the headline change
+        c.selectPosition(node1.copy().moveToNext())
+        c.undoer.undo()
+        # The undo should restore the 'node 1' headline string
+        assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+        # The undo should select the edited headline.
+        assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
     #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
     def test_extract_test(self):
         c = self.c
@@ -309,67 +337,34 @@ class TestUndo(LeoUnitTest):
         finally:
             p.b = oldText
             p.clearMarked()
-    #@+node:ekr.20210906172626.16: *3* TestUndo.test_undo_editHeadline
-    def test_undo_editHeadline(self):
-        # Brian Theado.
+    #@+node:ekr.20210906172626.17: *3* TestUndo.test_undo_group
+    def test_undo_group(self):
+        # Test an off-by-one error in c.undoer.bead.
+        # The buggy redoGroup code worked if the undo group was the first item on the undo stack.
         c, p = self.c, self.c.p
-        node1 = p.insertAsLastChild()
-        node2 = node1.insertAfter()
-        node3 = node2.insertAfter()
-        node1.h = 'node 1'
-        node2.h = 'node 2'
-        node3.h = 'node 3'
-        assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
-        # Select 'node 1' and modify the headline as if a user did it
+        original = p.insertAfter()
+        original_s = original.b = textwrap.dedent("""\
+            @tabwidth -4
+        
+            line 1
+                line 2
+                  line 3
+            line4
+    """)
         c.undoer.clearUndoState()
-        node1 = p.copy().moveToFirstChild()
-        c.selectPosition(node1)
-        c.editHeadline()
-        w = c.frame.tree.edit_widget(node1)
-        w.insert('1.0', 'changed - ')
-        c.endEditing()
-        assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
-        # Move the selection and undo the headline change
-        c.selectPosition(node1.copy().moveToNext())
-        c.undoer.undo()
-        # The undo should restore the 'node 1' headline string
-        assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
-        # The undo should select the edited headline.
-        assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
-    #@+node:ekr.20210906172626.17: *3* TestUndo.test_undo_redoGroup
-    def test_undo_redoGroup(self):
-        c, p = self.c, self.c.p
-        # This test exposed a bug with redoGroup c.undoer.bead index off-by-one
-        # The first c.pasteOutline() is there to setup the test cases, but it also serves
-        # an important hidden purpose of adding undo state to the undo stack. Due
-        # to the wrap-around nature of python index = -1, the original redoGroup code
-        # worked fine when the undo group is the first one on the undo stack.
-        # There are several commands which use undoGroup. The convertAllBlanks
-        # was arbitrarily chosen to expose the bug.
-        c.undoer.clearUndoState()
-        original = p.copy().moveToFirstChild()
         c.selectPosition(original)
-        c.copyOutline()
-        # Do and undo
+        c.copyOutline()  # Add state to the undo stack!
         c.pasteOutline()
-        do_and_undo = original.copy().moveToNext()
-        do_and_undo.h = "do and undo"
-        c.convertAllBlanks()
+        c.convertAllBlanks()  # Uses undoGroup.
         c.undoer.undo()
-        assert original.b == do_and_undo.b, "Undo should restore to original"
-        # Do
+        self.assertEqual(original.b, original_s)
         c.pasteOutline()
-        do = do_and_undo.copy().moveToNext()
-        do.h = "do"
         c.convertAllBlanks()
-        # Do, undo, redo
         c.pasteOutline()
-        do_undo_redo = do.copy().moveToNext()
-        do_undo_redo.h = "do, undo, redo"
         c.convertAllBlanks()
         c.undoer.undo()
         c.undoer.redo()
-        assert do.b == do_undo_redo.b, "Redo should do the operation again"
+        self.assertEqual(original.b, original_s)
     #@-others
 #@-others
 #@-leo
