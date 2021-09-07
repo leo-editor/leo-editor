@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210902092024.1: * @file ../unittests/core/test_leoShadow.py
 #@@first
-"""Tests of leoShapdw.py"""
+"""Tests of leoShadow.py"""
 
 import glob
 import os
@@ -11,13 +11,12 @@ from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
-#@+node:ekr.20080709062932.2: ** class TestShadow (LeoUnitTest)
-class TestShadow(LeoUnitTest):
+#@+node:ekr.20080709062932.2: ** class TestAtShadow (LeoUnitTest)
+class TestAtShadow(LeoUnitTest):
     #@+others
     #@+node:ekr.20080709062932.8: *3* TestShadow.setUp & helpers
     def setUp(self):
         """AtShadowTestCase.setup."""
-        self.skipTest('Not ready yet')
         super().setUp()
         c, p = self.c, self.c.p
         delims = '#', '', '' ###
@@ -87,7 +86,6 @@ class TestShadow(LeoUnitTest):
     #@+node:ekr.20080709062932.10: *3* TestShadow.runTest
     def xx_runTest(self): ###, define_g=True):
         """AtShadowTestCase.runTest."""
-        self.fail('Not ready yet')  ###
         p = self.c.p
         results = self.shadow_controller.propagate_changed_lines(
             self.new_public_lines, self.old_private_lines, self.marker, p=p)
