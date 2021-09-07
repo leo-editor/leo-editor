@@ -80,63 +80,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20191215093835.9"><vh>data</vh>
-<v t="ekr.20191215093835.15"><vh>a</vh>
-<v t="ekr.20191215093835.16"><vh>b</vh></v>
-</v>
-<v t="ekr.20191215093835.12"><vh>c</vh></v>
-<v t="ekr.20191215093835.13"><vh>d</vh></v>
-<v t="ekr.20191215093835.14"><vh>e</vh>
-<v t="ekr.20191215093835.15"></v>
-</v>
-</v>
-<v t="ekr.20051012104957"><vh>@ignore Docs</vh>
-<v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
-<v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
-<v t="ekr.20050618061835.1"><vh>Intro</vh>
-<v t="ekr.20050618061835.2"><vh>@url http://www.onlamp.com/pub/a/python/2005/02/03/tdd_pyunit2.html</vh></v>
-</v>
-<v t="ekr.20050618061835.3"><vh>Preparations: adding a button</vh>
-<v t="ekr.20050618061835.4"><vh>@@button Do @test</vh></v>
-</v>
-<v t="ekr.20050618061835.5"><vh>Alpha</vh>
-<v t="ekr.20050618061835.6"><vh>@test my first Leo test</vh></v>
-<v t="ekr.20050618061835.7"><vh>output on the console</vh></v>
-</v>
-<v t="ekr.20050618061835.8"><vh>Bravo</vh>
-<v t="ekr.20050618061835.9"><vh>@@test my second Leo test</vh></v>
-<v t="ekr.20050618061835.10"><vh>output on the console</vh></v>
-</v>
-<v t="ekr.20050618061835.11"><vh>It takes two to tango</vh>
-<v t="ekr.20050618061835.6"></v>
-<v t="ekr.20050618061835.9"></v>
-<v t="ekr.20050618061835.12"><vh>output on the console</vh></v>
-</v>
-<v t="ekr.20050618061835.13"><vh>Life gets more interesting</vh>
-<v t="ekr.20050618061835.14"><vh>@@test koekiemonster.wants()</vh>
-<v t="ekr.20050618061835.15"><vh>input data</vh></v>
-<v t="ekr.20050618061835.16"><vh>expected result</vh></v>
-</v>
-<v t="ekr.20050618061835.17"><vh>output on the console</vh></v>
-<v t="ekr.20050618061835.18"><vh>output on the console using print statements</vh></v>
-</v>
-<v t="ekr.20050618061835.19"><vh>How about @suite?</vh></v>
-<v t="ekr.20050618061835.20"><vh>Final remarks</vh></v>
-</v>
-<v t="ekr.20111211094936.3970"><vh>@ignore To do</vh>
-<v t="ekr.20111115080347.3872"><vh>To do: tests of the high-level interface</vh>
-<v t="ekr.20100131171342.5478"><vh>@@@test that log and body implements high-level interface</vh></v>
-</v>
-<v t="ekr.20100131171342.5473"><vh>Tk gui tests</vh>
-<v t="ekr.20100131171342.5474"><vh>@test leoBody is subset of leoTkBody</vh></v>
-<v t="ekr.20100131171342.5475"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
-<v t="ekr.20100131171342.5476"><vh>@test leoGui is subset of leoTkGui</vh></v>
-<v t="ekr.20100131171342.5477"><vh>@test leoTree is subset of leoTkTree</vh></v>
-</v>
-<v t="ekr.20111125183140.3952"><vh>@test ic.createOutline changes back-slashes to slashes</vh></v>
-<v t="ekr.20111125182408.3947"><vh>@test ic.createImportParent changes back-slashes to slashes</vh></v>
-</v>
-</v>
 <v t="ekr.20190113120618.1"><vh>Files</vh>
 <v t="ekr.20190113120734.1"><vh>@asis unittest/at-asis-test.py</vh>
 <v t="ekr.20190113120734.2"><vh>spam</vh></v>
@@ -177,6 +120,16 @@
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
 <v t="ekr.20210901174825.1"><vh>Unused tests</vh>
+<v t="ekr.20191215093835.9"><vh>data</vh>
+<v t="ekr.20191215093835.15"><vh>a</vh>
+<v t="ekr.20191215093835.16"><vh>b</vh></v>
+</v>
+<v t="ekr.20191215093835.12"><vh>c</vh></v>
+<v t="ekr.20191215093835.13"><vh>d</vh></v>
+<v t="ekr.20191215093835.14"><vh>e</vh>
+<v t="ekr.20191215093835.15"></v>
+</v>
+</v>
 <v t="ekr.20190509044054.1"><vh>@test print gui name</vh></v>
 <v t="ekr.20111112092813.4060"><vh>@mark-for-unit-tests</vh>
 <v t="ekr.20111113102936.4600"><vh>Test headline abc</vh></v>
@@ -712,27 +665,6 @@
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005805000000302e362e3371017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </vnodes>
 <tnodes>
-<t tx="bwmulder.20050108100437.1">@killcolor
-
-Running unit tests from test.leo is easy, provided you have enabled the
-Scripting plugin. When this plugin is enabled Leo will create a blue 'script
-button' in the icon bar called 'unit test'. 
-
-- To run all unit tests, select the node in test.leo called 'Unit tests...',
-then do &lt;alt-4&gt; 
-
-- To run a single test, select an @test node and do &lt;alt-4&gt;.
-
-- To run a suite of tests, select an @suite node and do &lt;alt-4&gt;.
-
-- To run any other collection of tests, create an outline containing those @test
-or @suite nodes, select the root of that tree and do &lt;alt-4&gt; .
-
-Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
-code for @test, @suite, etc. so if you want all the gory details you can read
-the code. It's not complicated: Leo creates UnitTest classes automatically whose
-run method is the body of the @suite or @test node.
-</t>
 <t tx="ekr.20040707141957.12"># Doesn't work when run externally because the copy operation changes the gnx.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -1064,241 +996,6 @@ assert errors == 0, "Check Outline reported %d errors" % errors
 </t>
 <t tx="ekr.20050512084850.2">pass
 </t>
-<t tx="ekr.20050618061835">@killcolor
-
-Here is a tutorial written by Roger Erens.
-
-Version Date        LeoID       Remarks
-------- ----        -----       -------
-0.1     20050519    rogererens  Initial version</t>
-<t tx="ekr.20050618061835.1">So you think "Well, since I've written this piece of funky Python software, and everybody keeps saying how useful unit testing is, I really ought to start using unit tests." And since Leo's creator has said countless times in the Leo forums how easy unit testing in Leo is, a few uncomplicated examples might help convince you that he's not spamming.
-
-Beware: this How-To should be the last time that you write tests AFTER having written your funky software! Test Driven Development dictates that tests have to be prepared BEFORE you get down to writing your actual code. See a nice tutorial on O'Reilly's website (url given in the descendant node).</t>
-<t tx="ekr.20050618061835.10">Start of Do @test
-F
-======================================================================
-FAIL: @test my second Leo test
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\Documents and Settings\re1705\My Documents\PythonStuff\leo\src\leoTes
-t.py", line 148, in runTest
-    exec script + '\n' in {'c':c,'g':g,'p':p}
-  File "&lt;string&gt;", line 3, in ?
-AssertionError
-
-----------------------------------------------------------------------
-Ran 1 test in 0.010s
-
-FAILED (failures=1)
-End of Do @test</t>
-<t tx="ekr.20050618061835.11">A real fun feature of Leo is that Leo saves you from having to select each and single @test node and press the 'Do @test' button to obtain testing results. Just collecting the @test nodes under an organizing node, selecting that organizing node, and pressing the 'Do @test' button will suffice.
-Of course, this was one of the key ideas of unit testing, but it's nice to see it being implemented by Leo so smoothly!
-
-So, press the button while having this node selected, and see if your console's output matches the third child node more or less. </t>
-<t tx="ekr.20050618061835.12">Start of Do @test
-.F
-======================================================================
-FAIL: @test my second Leo test
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo\src\leoTest.py", line 148, in runTest
-    exec script + '\n' in {'c':c,'g':g,'p':p}
-  File "&lt;string&gt;", line 3, in ?
-AssertionError
-
-----------------------------------------------------------------------
-Ran 2 tests in 0.040s
-
-FAILED (failures=1)
-End of Do @test</t>
-<t tx="ekr.20050618061835.13">Okay: so you've seen now some simple stand-alone tests to get your toes wet.
-Now, we get to the 'grande finale' and see real-life usage of the @test nodes.
-
-The @test child node below illustrates the following points:
-
-1.  The node imports the module to test (and keeps it up to date by reloading it).
-2.  It also obtains data to use as input and referral. This is what you might call
-    the setUp methods in traditional unit tests. If more tests need the same data,
-    you can put the nodes in a central place where all the @test nodes can find
-    them. Likewise, common code for several unit tests might be collected in a
-    central place.
-3.  Comparable with the traditional unit tests' tearDown method, some statements
-    can follow the test itself, if neccessary. You might also consider using a
-    try/finally construct.
-4.  I have used g.es() statements instead of print statements, since the latter
-    clutter the console. Try replacing the g.es() statements by corresponding
-    print statements to see what I mean. With more than one @test node being tested,
-    this will give quite a dreadful look.</t>
-<t tx="ekr.20050618061835.14">@color
-
-try:
-    # SETUP
-    import koekiemonster # this module defines a function want() which we want to test
-    reload(koekiemonster) # changes in koekiemonster need to propagate to the test
-
-    # obtaining the input parameter for the function
-    inputNode = p.firstChild()
-    inputData = inputNode.b
-    
-    # obtaining the expected result from the function with above input parameter
-    expectedResultNode = inputNode.next()
-    expected = expectedResultNode.b
-    
-    # execute the function with above input parameter
-    result = koekiemonster.wants(inputData)
-    
-    # TEST
-    assert(result == expected)
-    
-    # TEARDOWN
-    g.es("Now it's time to clean up")
-
-except AssertionError:
-    # TEARDOWN
-    g.es("Oh oh! %s failed:" % p.h.strip())
-    g.es("koekiemonster.wants(%s)==%s" % (inputData, result))
-    g.es("Expected: %s" % expected)
-    raise # pass the exception on to the unit test machinery</t>
-<t tx="ekr.20050618061835.15">vegetables</t>
-<t tx="ekr.20050618061835.16">Yuck!</t>
-<t tx="ekr.20050618061835.17">Start of Do @test
-F
-======================================================================
-FAIL: @test koekiemonster.wants()
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo\src\leoTest.py", line 148, in runTest
-    exec script + '\n' in {'c':c,'g':g,'p':p}
-  File "&lt;string&gt;", line 22, in ?
-AssertionError
-
-----------------------------------------------------------------------
-Ran 1 test in 0.070s
-
-FAILED (failures=1)
-End of Do @test</t>
-<t tx="ekr.20050618061835.18">Start of Do @test
-Oh oh: @test koekiemonster.wants() failed:
-koekiemonster.wants(vegetables)=Yack!
-Expected: Yuck!
-F
-======================================================================
-FAIL: @test koekiemonster.wants()
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo\src\leoTest.py", line 148, in runTest
-    exec script + '\n' in {'c':c,'g':g,'p':p}
-  File "&lt;string&gt;", line 22, in ?
-AssertionError
-
-----------------------------------------------------------------------
-Ran 1 test in 0.051s
-
-FAILED (failures=1)
-End of Do @test</t>
-<t tx="ekr.20050618061835.19">With the aforementioned possibilities of running all @test nodes in a subtree
-with a single click on a button, the sharing of input/expected data, and the
-sharing of setUp/tearDown code, there hardly seems a need for the @suite nodes.
-
-On Leo's website
-(http://webpages.charter.net/edreamleo/scripting.html#unit-testing-with-test-and-suite)
-I could still find some extra info on @suite nodes, not found in LeoDocs.leo:
-
-&lt;quote&gt;
-
-Using @suite nodes
-
-Such nodes create a suite of tests. Leo executes the script in these nodes similar to @test nodes, but Leo assumes that the script in an @suite node will do the following:
-
-    * Create a suite of unit tests
-    * Put the suite in g.app.scriptDict["suite"]
-
-The difference between @test and @suite is:
-
-    * Leo creates a unit test from script in an @test node by creating an instance of generalTestCase, a subclass of unittest.TestCase.
-    * The script in an @suite node creates the test suite.
-
-An @suite nodes allows us to create "legacy" unit tests simply. For example,
-rather than rewriting all the reformatParagraph unit tests to use @test nodes, I
-simply wrote an @suite node with the following body.
-
-    suite = c.testManager.makeReformatParagraphSuite()
-    g.app.scriptDict['suite'] = suite
-
-&lt;/quote&gt;
-
-Well, that's almost, but not quite completely, totally incomprehensible to me.
-Fortunately, since Leo's creator removed most of this quote from LeoDocs.leo and
-test.leo, this information appears to be outdated
-.</t>
-<t tx="ekr.20050618061835.2"></t>
-<t tx="ekr.20050618061835.20">Don't forget to read the node
-Users Guide--&gt;Chapter 7: Scripting Leo with Python--&gt;Unit testing with @test, @suite
-in LeoDocs.leo, especially the final notes. Also investigate a little further in test.leo to see some heavy weight lifting.
-
-This concludes my How-To on using @test. It was not written by an expert on (unit) testing;
-it is more or less the result of keeping notes on my way to find out how I could get started
-with unit tests in Leo. Maybe it's useful for other newbies as well.
-
-Please post any remarks on one of the Leo Fora, and if deemed helpful, I'll be glad to incorporate them into a next version.
-
-Happy testing!</t>
-<t tx="ekr.20050618061835.3">Comment by EKR: There is no need to do this if you use test.leo for your unit tests:  just use the unit test button.
-
-From the console, start up a Leo instance. On MS Windows: go to the folder in which you installed Leo 4.3, open up the 'src' folder and double click the 'leo.py' file. Opening a command window, and typing "python leo.py" may be another way.
-
-Use the File--&gt;Open... menu item to open the outline containing your code.
-
-Choose a good-looking position to insert a new node called 'Test zone'. Copy the child node of the node you're reading right now, and paste it as a child node of 'Test zone'. The code it contains is essentially the same as found in the node
-Unit tests...--&gt;Do @test
-in the file 'test.leo' in the 'test' folder. I just added my 0.2 cents by adding some starting and finishing remarks. Remove them if they clutter your console too much.
-
-Also, make sure that you have an entry 'Scripting' in the 'Plugins' menu (enable the plugin if neccessary). Now is a good time to save your leo file.
-
-With the 'Scripting' plugin (also known as the 'mod_scripting' plugin) enabled, the net effect will be that the next time you open your outline, a blue button with the caption 'Do @test' shows up in the tool bar of Leo, if your screen is wide enough.
-To get the button right away in the tool bar, I have to assume that you started Leo with the scripting plugin enabled. In this case, a yellow button with the caption 'script Button' can be pressed while having the node '@button Do @test' selected. Note: the resulting button will not be blue, but pink. Removing a button from the tool bar can be done by right-clicking it.
-
-We'll see the use of this added button soon, but before that, read up on the 'assert' function in the Python manuals, since it is used a lot in testing. It won't be long before you're back here!</t>
-<t tx="ekr.20050618061835.4">@color
-
-g.pr("\nStart of Do @test")
-c.testManager.doTests(all=False)
-g.pr("End of Do @test")</t>
-<t tx="ekr.20050618061835.5">The first child node of the node you're reading right now, contains the simplest succeeding test possible.
-Select it, and press the button 'Do @test'.
-You can find the verbatim result as it got sent to my console in the second child node.
-
-A few things are worth noting here:
-
-1.  The node containing the test must have its headline start with '@test'.
-2.  Whenever the 'assert' statement finds out that the expression given to it
-    is 'True', a test passes successfully. There are more ways to pass a test, but
-    for now, let us stick to the use of assert functions.
-3.  A passed test is denoted with a single dot in the output. See the line between
-    'Start of Do @test' and the line filled with dashes. This is compatible with the
-    way traditional unit testing shows its progress.
-4.  Below the dashed line in the output, a summary is printed. This one surely gives
-    us a reason to lean back for a moment, and congratualate ourselves with another
-    piece of robust, funky code!</t>
-<t tx="ekr.20050618061835.6">@color
-assert(True)</t>
-<t tx="ekr.20050618061835.7">Start of Do @test
-.
-----------------------------------------------------------------------
-Ran 1 test in 0.010s
-
-OK
-End of Do @test</t>
-<t tx="ekr.20050618061835.8">Now that you've seen a passing test, it should be obvious to imagine how a failing test would look like. See the first child node, and then run it by pressing the 'Do @test' button as before.
-
-Instead of a dot denoting success, we get an 'F' denoting a failure on the line following 'Start of Do @test'. When running a lot of tests, the next part, following the lines filled with '='s, helps to identify which test failed.
-It also includes a trace back, but for AssertionErrors, it does not seem to offer much added value to me right now. On second thought: when you have multiple asserts in a test, the trace back can tell you which assert function failed. Still, I would choose for only one assert function per test and get rid of this trace back altogether. This would keep the console much cleaner, IMHO.</t>
-<t tx="ekr.20050618061835.9">@color
-assert('Spam' == 'Ham')</t>
 <t tx="ekr.20050726141158">@ This is    a test of stuff.in doc parts.
 
          I wonder           what will happen.
@@ -1324,7 +1021,6 @@ class eggs:
 
     @others
 </t>
-<t tx="ekr.20051012104957">@nosearch</t>
 <t tx="ekr.20051013162226"></t>
 <t tx="ekr.20051107115231"># These are mysteriously fragile tests, so they go first
 </t>
@@ -4678,159 +4374,6 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
-<t tx="ekr.20100131171342.5473"></t>
-<t tx="ekr.20100131171342.5474">if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-    assert(tkGui)
-
-    import leo.core.leoFrame as leoFrame
-    import inspect,sys
-
-    baseClass = leoFrame.leoBody
-    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
-    baseObject = c.frame.body
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        try:
-            assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-        except AssertionError:
-            exctype, value = sys.exc_info()[:2]
-            print(value)
-            raise
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            try:
-                if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-                if name in baseObject.mustBeDefinedInSubclasses:
-                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-            except AssertionError:
-                #raise
-                exctype, value = sys.exc_info()[:2]
-                print(value)
-</t>
-<t tx="ekr.20100131171342.5475">if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-
-    import leo.core.leoFrame as leoFrame
-    import inspect
-
-    baseClass = leoFrame.leoFrame
-    subClasses  = (tkGui.leoTkinterFrame,leoFrame.NullFrame)
-    baseObject = c.frame
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-            if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-</t>
-<t tx="ekr.20100131171342.5476">if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-
-    import leo.core.leoGui as leoGui
-    import inspect
-
-    baseClass = leoGui.leoGui
-    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
-    baseObject = g.app.gui
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            try:
-                if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-                if name in baseObject.mustBeDefinedInSubclasses:
-                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-            except AssertionError:
-                raise
-</t>
-<t tx="ekr.20100131171342.5477">if g.app.gui.guiName() == 'tkinter':
-
-    pc = g.app.pluginsController
-    tkGui = pc.loadOnePlugin('leo.plugins.tkGui',verbose=False)
-
-    import leo.core.leoFrame as leoFrame
-    import inspect
-
-    baseClass = leoFrame.leoTree
-    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
-    baseObject = c.frame.tree
-
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-            if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-</t>
-<t tx="ekr.20100131171342.5478">logCtrl = c.frame.log.logCtrl
-
-table = (
-    ('mustBeDefinedInSubclasses',logCtrl.mustBeDefinedInSubclasses),
-    ('mustBeDefinedInBaseClass',logCtrl.mustBeDefinedOnlyInBaseClass),
-    ('mustBeDefined',logCtrl.mustBeDefined),
-)
-
-# Check existence.
-for tag,aList in table:
-    for z in aList:
-        assert hasattr(c.frame.log,z),'%s %s %s' % (tag,c.frame.log,z)
-        assert hasattr(c.frame.body,z),'%s %s %s' % (tag,c.frame.body,z)
-
-# Check signatures.
-import inspect
-for tag,aList in table:
-    for z in aList:
-        func = getattr(c.frame.body.bodyCtrl,z)
-        func2 = getattr(c.frame.log.logCtrl,z)
-        assert func,z
-        assert func2,z
-        d1 = inspect.getargspec(func)
-        d2 = inspect.getargspec(func2)
-        assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
-</t>
 <t tx="ekr.20100131180007.5395">for s,expected in (
     ('a\nb', 'a\nb'),
     ('\n  \nb\n', 'b\n'),
@@ -5869,7 +5412,6 @@ finally:
 &lt;/html&gt;
 </t>
 <t tx="ekr.20111113102936.4600"></t>
-<t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111115105448.3880"></t>
 <t tx="ekr.20111121140833.3916">w = c.frame.body.wrapper
 s = w.getAllText()
@@ -5898,50 +5440,12 @@ todo.py  # #1691.
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
 <t tx="ekr.20111124094121.3943"></t>
-<t tx="ekr.20111125182408.3947">def setup():
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-setup()
-
-try:
-    files = (r'a\b.c',r'a\b.h',)
-    c.importCommands.createImportParent(p,files)
-    child = p.firstChild()
-    assert child
-    assert child.h == 'a/b',child.h
-finally:
-    setup()</t>
-<t tx="ekr.20111125183140.3952">child = p.firstChild()
-def setup():
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-setup()
-try:
-    c.importCommands.createOutline(
-        fileName=r'a\b\c.xyzzy',
-        parent=p,
-        atAuto=False,atShadow=False,
-        s='test body',
-        ext='xyzzy'
-    )
-    child = p.firstChild()
-    assert child
-    h = g.os_path_finalize_join(g.app.loadDir,'..','test','a','b','c.xyzzy')
-    h = h.replace('\\','/')
-    h = '@file ' + h
-    # C: vs c: is not relevant here.
-    assert child.h.lower() == h.lower(),child.h
-finally:
-    setup()</t>
 <t tx="ekr.20111211094602.3972"></t>
 <t tx="ekr.20111211094602.3975"></t>
 <t tx="ekr.20111211094602.3976"></t>
 <t tx="ekr.20111211094602.3977"></t>
 <t tx="ekr.20111211094602.3978"></t>
 <t tx="ekr.20111211094602.3979"></t>
-<t tx="ekr.20111211094936.3970"></t>
 <t tx="ekr.20111212142649.3971">import sys
 if sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600

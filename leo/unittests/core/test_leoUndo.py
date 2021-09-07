@@ -11,7 +11,7 @@ assert g
 
 #@+others
 #@+node:ekr.20210906141410.2: ** class TestUndo (LeoUnitTest)
-class TestShadow(LeoUnitTest):
+class TestUndo(LeoUnitTest):
     """
     Support @shadow-test nodes.
 
@@ -19,11 +19,16 @@ class TestShadow(LeoUnitTest):
     """
     #@+others
     #@+node:ekr.20210906141410.9: *3* TestUndo.runTest (Test)
-    def runTest(self, before, after, func):
+    def runTest(self, before, after, i, j, func):
         """TestUndo.runTest."""
-        c = self.c
+        c, w = self.c, self.c.frame.body.wrapper
+        # Restore section references.
         before = before.replace('> >', '>>').replace('< <', '<<')
         after = after.replace('> >', '>>').replace('< <', '<<')
+        # Set the text and selection range.
+        w.setAllText(before)
+        w.setSelectionRange(i, j, insert=i)
+        # Test.
         self.assertNotEqual(before, after)
         result = func()
         self.assertEqual(result, after, msg='before undo1')
@@ -33,8 +38,7 @@ class TestShadow(LeoUnitTest):
         self.assertEqual(result, after, msg='after redo1')
         c.undoer.undo()
         self.assertEqual(result, before, msg='after undo2')
-    #@+node:ekr.20210906172626.1: *3* Converted nodes
-    #@+node:ekr.20210906172626.2: *4* TestXXX.test_addComments
+    #@+node:ekr.20210906172626.2: *3* TestUndo.test_addComments
     def test_addComments(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -62,7 +66,7 @@ class TestShadow(LeoUnitTest):
         i, j = 51, 80
         func = getattr(c, 'addComments')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.3: *4* TestXXX.test_convertAllBlanks
+    #@+node:ekr.20210906172626.3: *3* TestUndo.test_convertAllBlanks
     def test_convertAllBlanks(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -84,7 +88,7 @@ class TestShadow(LeoUnitTest):
         i, j = 13, 51
         func = getattr(c, 'convertAllBlanks')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.4: *4* TestXXX.test_convertAllTabs
+    #@+node:ekr.20210906172626.4: *3* TestUndo.test_convertAllTabs
     def test_convertAllTabs(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -106,7 +110,7 @@ class TestShadow(LeoUnitTest):
         i, j = 13, 45
         func = getattr(c, 'convertAllTabs')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.5: *4* TestXXX.test_convertBlanks
+    #@+node:ekr.20210906172626.5: *3* TestUndo.test_convertBlanks
     def test_convertBlanks(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -128,7 +132,7 @@ class TestShadow(LeoUnitTest):
         i, j = 13, 51
         func = getattr(c, 'convertBlanks')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.6: *4* TestXXX.test_convertTabs
+    #@+node:ekr.20210906172626.6: *3* TestUndo.test_convertTabs
     def test_convertTabs(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -150,7 +154,7 @@ class TestShadow(LeoUnitTest):
         i, j = 13, 45
         func = getattr(c, 'convertTabs')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.7: *4* TestXXX.test_dedentBody
+    #@+node:ekr.20210906172626.7: *3* TestUndo.test_dedentBody
     def test_dedentBody(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -168,7 +172,7 @@ class TestShadow(LeoUnitTest):
         i, j = 18, 34
         func = getattr(c, 'dedentBody')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.8: *4* TestXXX.test_deleteComments
+    #@+node:ekr.20210906172626.8: *3* TestUndo.test_deleteComments
     def test_deleteComments(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -196,7 +200,7 @@ class TestShadow(LeoUnitTest):
         i, j = 56, 89
         func = getattr(c, 'deleteComments')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.9: *4* TestXXX.test_deleteComments 2
+    #@+node:ekr.20210906172626.9: *3* TestUndo.test_deleteComments 2
     def test_deleteComments_2(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -232,7 +236,7 @@ class TestShadow(LeoUnitTest):
         i, j = 56, 142
         func = getattr(c, 'deleteComments')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.10: *4* TestXXX.test_extract_test1
+    #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test1
     def test_extract_test1(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -251,7 +255,7 @@ class TestShadow(LeoUnitTest):
         i, j = 25, 85
         func = getattr(c, 'extract')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.11: *4* TestXXX.test_extract_test2
+    #@+node:ekr.20210906172626.11: *3* TestUndo.test_extract_test2
     def test_extract_test2(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -273,7 +277,7 @@ class TestShadow(LeoUnitTest):
         i, j = 25, 40
         func = getattr(c, 'extract')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.12: *4* TestXXX.test_extract_test3
+    #@+node:ekr.20210906172626.12: *3* TestUndo.test_extract_test3
     def test_extract_test3(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -292,7 +296,7 @@ class TestShadow(LeoUnitTest):
         i, j = 25, 85
         func = getattr(c, 'extract')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.13: *4* TestXXX.test_extract_test4
+    #@+node:ekr.20210906172626.13: *3* TestUndo.test_extract_test4
     def test_extract_test4(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -314,7 +318,7 @@ class TestShadow(LeoUnitTest):
         i, j = 25, 40
         func = getattr(c, 'extract')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.14: *4* TestXXX.test_line_to_headline_test1
+    #@+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline_test1
     def test_line_to_headline_test1(self):
         c = self.c
         before = textwrap.dedent("""\
@@ -329,7 +333,7 @@ class TestShadow(LeoUnitTest):
         i, j = 16, 16
         func = getattr(c, 'line_to_headline')
         self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.15: *4* TestXXX.test_restore_marked_bits
+    #@+node:ekr.20210906172626.15: *3* TestUndo.test_restore_marked_bits
     def test_restore_marked_bits(self):
         c, p = self.c, self.c.p
         # Test of #1694.
@@ -356,7 +360,7 @@ class TestShadow(LeoUnitTest):
         finally:
             p.b = oldText
             p.clearMarked()
-    #@+node:ekr.20210906172626.16: *4* TestXXX.test_undo_editHeadline
+    #@+node:ekr.20210906172626.16: *3* TestUndo.test_undo_editHeadline
     def test_undo_editHeadline(self):
         c, p = self.c, self.c.p
         # Brian Theado.
@@ -381,7 +385,7 @@ class TestShadow(LeoUnitTest):
 
         # The undo should select the edited headline.
         assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
-    #@+node:ekr.20210906172626.17: *4* TestXXX.test_undo_redoGroup
+    #@+node:ekr.20210906172626.17: *3* TestUndo.test_undo_redoGroup
     def test_undo_redoGroup(self):
         c, p = self.c, self.c.p
         # This test exposed a bug with redoGroup c.undoer.bead index off-by-one
