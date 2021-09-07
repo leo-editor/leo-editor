@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210901172411.1: * @file ../unittests/core/test_leoAtFile.py
 #@@first
-"""Tests of leoApp.py"""
+"""Tests of leoAtFile.py"""
 import os
 import tempfile
 import textwrap

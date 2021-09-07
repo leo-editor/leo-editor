@@ -313,6 +313,9 @@ class Commands:
         from leo.core import leoTest
         from leo.core import leoUndo
         from leo.core import leoVim
+        # Import commands.testCommands to define commands.
+        import leo.commands.testCommands as testCommands
+        assert testCommands # For pylint.
         # Define the subcommanders.
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
         self.chapterController      = leoChapters.ChapterController(c)
