@@ -9,7 +9,41 @@ import time
 from leo.core import leoGlobals as g
 
 #@+others
-#@+node:ekr.20210907113937.1: ** unit tests...
+#@+node:ekr.20210907103024.2: ** coverage test commands...
+if 0:
+    #@+others
+    #@+node:ekr.20210907103024.3: *3* cov-all
+    @g.command('cover-all')
+    def cover_all(event=None):
+        """Run all coverage tests in leo.unittests."""
+        g.run_coverage_tests()
+    #@+node:ekr.20210907103024.4: *3* cov-leoAst
+    @g.command('cover-ast')
+    def cover_ast(event=None):
+        """Run all coverage tests for leoAst.py."""
+        g.run_coverage_tests('leo.core.leoAst', 'leo/unittests/core/test_leoAst.py')
+    #@+node:ekr.20210907103024.5: *3* cov-leoAtFile
+    @g.command('cover-atfile')
+    def cover_atfile(event=None):
+        """Run all coverage tests for leoAtFile.py."""
+        g.run_coverage_tests('leo.core.leoAtFile', 'leo/core/leoAtFile.py')
+    #@+node:ekr.20210907103024.6: *3* cov-edit-commands
+    @g.command('cover-edit-commands')
+    def cover_edit_commands(event=None):
+        """Run all coverage tests for leoEditCommands.py."""    
+        g.run_coverage_tests('leo.commands.leoEditCommands', 'leo/unittests/commands/test_editCommands.py')
+    #@+node:ekr.20210907103024.7: *3* cov-leoFind
+    @g.command('cover-find')
+    def cover_find(event=None):
+        """Run all coverage tests for leoFind.py."""
+        g.run_coverage_tests('leo.core.leoFind', 'leo/unittests/core/test_leoFind.py')
+    #@+node:ekr.20210907103024.8: *3* cov-leoNodes
+    @g.command('cover-nodes')
+    def cover_node(event=None):
+        """Run all coverage tests for leoNodes.py."""
+        g.run_coverage_tests('leo.core.leoNodes', 'leo/unittests/core/test_leoNodes.py')
+    #@-others
+#@+node:ekr.20210907113937.1: ** unit test commands...
 #@+node:ekr.20210907103024.11: *3* test-all
 @g.command('test-all')
 def test_all(event=None):
