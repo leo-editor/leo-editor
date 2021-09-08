@@ -439,7 +439,7 @@ class To_Python:
 
 #@+others
 #@+node:ekr.20210830070921.1: ** function: convert_at_test_nodes
-def convert_at_test_nodes(c, converter, root):
+def convert_at_test_nodes(c, converter, root, copy_tree=False):
     """
     Use converter.convert() to convert all the @test nodes in the
     root's tree to children a new last top-level node.
@@ -454,6 +454,8 @@ def convert_at_test_nodes(c, converter, root):
     for p in root.subtree():
         if p.h.startswith('@test'):
             converter.convert_node(c, p, target)
+            if copy_tree and p.hasChildren():
+                converter.copy_children(c, p, target.lastChild())
             count += 1
     target.expand()
     c.redraw(target)
@@ -1726,7 +1728,15 @@ class ConvertAtTests:
         test_node = target.insertAsLastChild()
         test_node.h = f"{self.class_name}.{test_name}"
         test_node.b = f"def {test_name}(self):\n    c = self.c\n{body}\n"
-    #@+node:ekr.20201130075024.5: *4* ConvertAtTeststs.function_name
+    #@+node:ekr.20210907154923.1: *4* ConvertAtTests.copy_children
+    def copy_children(self, c, p, target):
+        """Copy all children of p to the target."""
+        for child in p.children():
+            target2 = target.insertAsLastChild()
+            target2.h = child.h
+            target2.b = child.b
+            self.copy_children(c, child, target2)
+    #@+node:ekr.20201130075024.5: *4* ConvertAtTests.function_name
     def function_name(self, command_name):
         """Convert a command name into a test function."""
         result = []
