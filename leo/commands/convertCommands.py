@@ -1823,32 +1823,52 @@ class ConvertShadowTests (ConvertAtTests):
     def convert_node(self, c, p, target):
         """Convert one @test node, creating a new node."""
         assert p.h.startswith('@test')
-        # Create the new node.
+        old_p = g.findNodeInChildren(c, p, 'old')
+        assert old_p, p.h
+        new_p = g.findNodeInChildren(c, p, 'new')
+        assert new_p, p.h
+        # Create the new node and init the headline.
         indent = ' '*4
         test_node = target.insertAsLastChild()
-        # Set the headline.
         test_name = f"test_{self.clean_headline(p)}"
         test_node.h = f"{self.class_name}.{test_name}"
-        # Set the body text.
+        # Calculate old_s.
+        old_list = []
+        for z in g.splitLines(old_p.b.rstrip()):
+            old_list.append(f"{indent}{indent}{z.rstrip()}\n")
+        for child in old_p.children():
+            for z in g.splitLines(child.b.rstrip()):
+                old_list.append(f"{indent}{indent}{z.rstrip()}\n")
+        old_s = ''.join(old_list)
+        # Calculate new_s.
+        new_list = []
+        for z in g.splitLines(new_p.b.rstrip()):
+            new_list.append(f"{indent}{indent}{z.rstrip()}\n")
+        for child in new_p.children():
+            for z in g.splitLines(child.b.rstrip()):
+                new_list.append(f"{indent}{indent}{z.rstrip()}\n")
+        new_s = ''.join(new_list)
+        # Set the body text!
         test_node.b = ''.join([
-            # Prolog.
+            # The start of the test.
             f"def {test_name}(self):\n",
             f"{indent}p = self.c.p\n",
-            # 'old' node.
+            # Create the 'old' node.
+            f"{indent}# Create the 'old' node.\n"
             f"{indent}old = p.insertAsLastChild()\n",
             f"{indent}old.h = 'old'\n",
-            # Dummy old.b.
             f"{indent}old.b = textwrap.dedent(\"\"\"\\\n",
-            f"{indent}{indent}OLD\n",
-            f"{indent}\"\"\"\n",
-            # 'new' node.
+            old_s,
+            f"{indent}\"\"\")\n",
+            # Create the 'new' node.
+            f"{indent}# Create the 'new' node.\n"
             f"{indent}new = p.insertAsLastChild()\n",
             f"{indent}new.h = 'new'\n",
-            # Dummy new.b.
             f"{indent}new.b = textwrap.dedent(\"\"\"\\\n",
-            f"{indent}{indent}NEW\n",
-            f"{indent}\"\"\"\n",
+            new_s,
+            f"{indent}\"\"\")\n",
             # The test.
+            f"{indent}# Run the test.\n",
             f"{indent}results = self.make_lines(old, new)\n",
             f"{indent}self.assertEqual(results, self.expected_private_lines)\n",
         ])

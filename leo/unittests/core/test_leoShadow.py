@@ -19,49 +19,25 @@ class TestAtShadow(LeoUnitTest):
     def setUp(self):
         """AtShadowTestCase.setup."""
         super().setUp()
-        c = self.c
         delims = '#', '', '' ###
-        self.shadow_controller = ShadowController(c)
+        self.shadow_controller = ShadowController(self.c)
         self.marker = self.shadow_controller.Marker(delims)
-        
-        ### now done in make_lines.
-            # old = self.findNode(c, p, 'old')
-            # new = self.findNode(c, p, 'new')
-            # self.old_private_lines = self.makePrivateLines(old)
-            # self.new_private_lines = self.makePrivateLines(new)
-            # self.old_public_lines = self.makePublicLines(self.old_private_lines)
-            # self.new_public_lines = self.makePublicLines(self.new_private_lines)
-        # Change node:new to node:old in all sentinel lines.
-        # self.expected_private_lines = self.mungePrivateLines(
-            # self.new_private_lines, 'node:new', 'node:old')
-    #@+node:ekr.20080709062932.20: *4* TestShadow.createSentinelNode
-    def createSentinelNode(self, root, p):
-        """Write p's tree to a string, as if to a file."""
-        h = p.h
-        p2 = root.insertAsLastChild()
-        p2.setHeadString(h + '-sentinels')
-        return p2
     #@+node:ekr.20210902210953.1: *4* TestShadow.deleteShadowDir (was a function)
     def deleteShadowDir(self, shadow_dir):
         if not g.os_path_exists(shadow_dir):
             return
-        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+        files = g.os_path_abspath(g.os_path_join(shadow_dir, "*.*"))
         files = glob.glob(files)
         for z in files:
             if z != shadow_dir:
                 os.unlink(z)
         os.rmdir(shadow_dir)
         self.assertFalse(os.path.exists(shadow_dir), msg=shadow_dir)
-    #@+node:ekr.20080709062932.19: *4* TestShadow.findNode
-    def findNode(self, c, p, headline):
-        """Return the node in p's subtree with given headline."""
-        p = g.findNodeInTree(c, p, headline)
-        if not p:
-            self.fail(f"Node not found: {headline}")
-        return p
     #@+node:ekr.20210908053444.1: *4* TestShadow.make_lines (new)
     def make_lines(self, old, new):
+        """Make all lines and return the result of propagating changed lines."""
         c = self.c
+        # Calculate all required lines.
         self.old_private_lines = self.makePrivateLines(old)
         self.new_private_lines = self.makePrivateLines(new)
         self.old_public_lines = self.makePublicLines(self.old_private_lines)
@@ -88,7 +64,7 @@ class TestAtShadow(LeoUnitTest):
         finally:
             at.at_shadow_test_hack = False
         return g.splitLines(s)
-    #@+node:ekr.20080709062932.22: *4* TestShadow.makePublicLines (new)
+    #@+node:ekr.20080709062932.22: *4* TestShadow.makePublicLines
     def makePublicLines(self, lines):
         """Return the public lines in lines."""
         lines, junk = self.shadow_controller.separate_sentinels(lines, self.marker)
@@ -254,8 +230,6 @@ class TestAtShadow(LeoUnitTest):
         def test_x_makeShadowDirectory(self):
             c = self.c
             x = c.shadowController
-            #@+others
-            #@-others
             shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
             shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
             assert not os.path.exists(shadow_fn), shadow_fn
@@ -268,8 +242,8 @@ class TestAtShadow(LeoUnitTest):
                         # self.skipTest('Can not delete the directory.')
             self.deleteShadowDir(shadow_dir)
             x.makeShadowDirectory(shadow_dir)
-            self.assertFalse(os.path.exists(shadow_dir))
-            ### self.deleteShadowDir(shadow_dir)
+            self.assertTrue(os.path.exists(shadow_dir))  ### ???
+            self.deleteShadowDir(shadow_dir)
         #@+node:ekr.20210902210552.5: *4* TestShadow.test_x_baseDirName
         def test_x_baseDirName(self):
             c = self.c
