@@ -49,6 +49,7 @@ if 0:
 def test_all(event=None):
     """Run all unit tests in leo.unittests."""
     g.run_unit_tests()
+    g.es_print('all tests complete')
 #@+node:ekr.20210907103024.12: *3* test-app
 @g.command('test-app')
 def test_app(event=None):
@@ -127,7 +128,12 @@ def test_leoserver(event=None):
 #@+node:ekr.20210907103024.10: *3* test-leoserver-with-leoclient
 @g.command('test-leoserver-with-leoclient')
 def test_leo_client_and_server(event=None):
-    """Test leoserver.py with leoclient.py"""
+    """
+    Test leoserver.py with leoclient.py.
+    
+    The test-all command does *not* run this command, because there is
+    no corresponding test*.py file.
+    """
     g.cls()
     leo_dir = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
     assert os.path.exists(leo_dir), repr(leo_dir)
