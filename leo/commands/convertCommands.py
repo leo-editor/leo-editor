@@ -1869,8 +1869,8 @@ class ConvertShadowTests (ConvertAtTests):
             f"{indent}\"\"\")\n",
             # The test.
             f"{indent}# Run the test.\n",
-            f"{indent}results = self.make_lines(old, new)\n",
-            f"{indent}self.assertEqual(results, self.expected_private_lines)\n",
+            f"{indent}results, expected = self.make_lines(old, new)\n",
+            f"{indent}self.assertEqual(results, expected)\n",
         ])
     #@-others
 #@+node:ekr.20210906140154.1: *3* class ConvertUndoTests (ConvertAtTests)

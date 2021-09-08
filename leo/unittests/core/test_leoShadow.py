@@ -38,20 +38,23 @@ class TestAtShadow(LeoUnitTest):
         """Make all lines and return the result of propagating changed lines."""
         c = self.c
         # Calculate all required lines.
-        self.old_private_lines = self.makePrivateLines(old)
-        self.new_private_lines = self.makePrivateLines(new)
-        self.old_public_lines = self.makePublicLines(self.old_private_lines)
-        self.new_public_lines = self.makePublicLines(self.new_private_lines)
-        self.expected_private_lines = self.mungePrivateLines(
-            self.new_private_lines, 'node:new', 'node:old')
+        old_private_lines = self.makePrivateLines(old)
+        new_private_lines = self.makePrivateLines(new)
+        old_public_lines = self.makePublicLines(old_private_lines)
+        new_public_lines = self.makePublicLines(new_private_lines)
+        expected_private_lines = self.mungePrivateLines(
+            new_private_lines, 'node:new', 'node:old')
         # Return the propagated results.
         results = self.shadow_controller.propagate_changed_lines(
-                        self.new_public_lines,
-                        self.old_private_lines,
-                        self.marker,
-                        p=c.p,
-                    )
-        return results
+            new_public_lines, old_private_lines, self.marker, p=c.p)
+        if 1:  # To verify that sentinels are as expected.
+            print('')
+            print(g.callers(1))
+            g.printObj(old_private_lines, tag='old_private_lines')
+            g.printObj(new_private_lines, tag='new_private_lines')
+            g.printObj(old_public_lines, tag='old_public_lines')
+            g.printObj(new_public_lines, tag='new_public_lines')
+        return results, expected_private_lines
     #@+node:ekr.20080709062932.21: *4* TestShadow.makePrivateLines
     def makePrivateLines(self, p):
         """Return a list of the lines of p containing sentinels."""
@@ -334,8 +337,8 @@ class TestAtShadow(LeoUnitTest):
             node 1 new line 3
             node 1 line 2
     """)
-        results = self.make_lines(old, new)
-        self.assertEqual(results, self.expected_private_lines)
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
     #@-others
 #@-others
 #@-leo
