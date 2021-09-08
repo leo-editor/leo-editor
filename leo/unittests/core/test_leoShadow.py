@@ -19,7 +19,7 @@ class TestAtShadow(LeoUnitTest):
     def setUp(self):
         """AtShadowTestCase.setup."""
         super().setUp()
-        delims = '#', '', '' ###
+        delims = '#', '', ''
         self.shadow_controller = ShadowController(self.c)
         self.marker = self.shadow_controller.Marker(delims)
     #@+node:ekr.20210902210953.1: *4* TestShadow.deleteShadowDir (was a function)
@@ -47,7 +47,7 @@ class TestAtShadow(LeoUnitTest):
         # Return the propagated results.
         results = self.shadow_controller.propagate_changed_lines(
             new_public_lines, old_private_lines, self.marker, p=c.p)
-        if 1:  # To verify that sentinels are as expected.
+        if 0:  # To verify that sentinels are as expected.
             print('')
             print(g.callers(1))
             g.printObj(old_private_lines, tag='old_private_lines')
@@ -294,6 +294,7 @@ class TestAtShadow(LeoUnitTest):
                 g.os_path_dirname(c.fileName()),subdir,prefix+filename))
             assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
         #@-others
+    #@+node:ekr.20210908134705.1: *3* Passed
     #@+node:ekr.20210902210552.2: *3* TestShadow.test_marker_getDelims
     def test_marker_getDelims(self):
         c = self.c
@@ -311,8 +312,8 @@ class TestAtShadow(LeoUnitTest):
             expected = delim1,delim2
             assert result==expected,'language %s expected %s got %s' % (
                 language,expected,result)
-    #@+node:ekr.20210907162104.2: *3* TestShadow.test_replace_in_node_new_old
-    def test_replace_in_node_new_old(self):
+    #@+node:ekr.20210907162104.2: *3* TestShadow.test_replace_in_node_new_gt_new_old
+    def test_replace_in_node_new_gt_new_old(self):
         p = self.c.p
         old = p.insertAsLastChild()
         old.h = 'old'
@@ -337,6 +338,38 @@ class TestAtShadow(LeoUnitTest):
             node 1 new line 3
             node 1 line 2
     """)
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.2: *3* TestShadow.test_replace_in_node_new_lt_old
+    def test_replace_in_node_new_lt_old(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = '@others\n'
+        old_node1 = old.insertAsLastChild()
+        old_node1.h = 'node1'
+        old_node1.b = textwrap.dedent("""\
+            node 1 line 1
+            node 1 old line 1
+            node 1 old line 2
+            node 1 old line 3
+            node 1 old line 4
+            node 1 line 2
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = '@others\n'
+        new_node1 = new.insertAsLastChild()
+        new_node1.h = 'node1'
+        new_node1.b = textwrap.dedent("""\
+            node 1 line 1
+            node 1 new line 1
+            node 1 new line 2
+            node 1 line 2
+        """)
+        # Run the test.
         results, expected = self.make_lines(old, new)
         self.assertEqual(results, expected)
     #@-others
