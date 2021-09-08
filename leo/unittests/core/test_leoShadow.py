@@ -6,6 +6,7 @@
 
 import glob
 import os
+import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
@@ -18,26 +19,21 @@ class TestAtShadow(LeoUnitTest):
     def setUp(self):
         """AtShadowTestCase.setup."""
         super().setUp()
-        c, p = self.c, self.c.p
+        c = self.c
         delims = '#', '', '' ###
         self.shadow_controller = ShadowController(c)
         self.marker = self.shadow_controller.Marker(delims)
-        old = self.findNode(c, p, 'old')
-        new = self.findNode(c, p, 'new')
-        self.old_private_lines = self.makePrivateLines(old)
-        self.new_private_lines = self.makePrivateLines(new)
-        self.old_public_lines = self.makePublicLines(self.old_private_lines)
-        self.new_public_lines = self.makePublicLines(self.new_private_lines)
+        
+        ### now done in make_lines.
+            # old = self.findNode(c, p, 'old')
+            # new = self.findNode(c, p, 'new')
+            # self.old_private_lines = self.makePrivateLines(old)
+            # self.new_private_lines = self.makePrivateLines(new)
+            # self.old_public_lines = self.makePublicLines(self.old_private_lines)
+            # self.new_public_lines = self.makePublicLines(self.new_private_lines)
         # Change node:new to node:old in all sentinel lines.
-        self.expected_private_lines = self.mungePrivateLines(
-            self.new_private_lines, 'node:new', 'node:old')
-    #@+node:ekr.20080709062932.19: *4* TestShadow.findNode
-    def findNode(self, c, p, headline):
-        """Return the node in p's subtree with given headline."""
-        p = g.findNodeInTree(c, p, headline)
-        if not p:
-            self.fail(f"Node not found: {headline}")
-        return p
+        # self.expected_private_lines = self.mungePrivateLines(
+            # self.new_private_lines, 'node:new', 'node:old')
     #@+node:ekr.20080709062932.20: *4* TestShadow.createSentinelNode
     def createSentinelNode(self, root, p):
         """Write p's tree to a string, as if to a file."""
@@ -45,6 +41,41 @@ class TestAtShadow(LeoUnitTest):
         p2 = root.insertAsLastChild()
         p2.setHeadString(h + '-sentinels')
         return p2
+    #@+node:ekr.20210902210953.1: *4* TestShadow.deleteShadowDir (was a function)
+    def deleteShadowDir(self, shadow_dir):
+        if not g.os_path_exists(shadow_dir):
+            return
+        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+        files = glob.glob(files)
+        for z in files:
+            if z != shadow_dir:
+                os.unlink(z)
+        os.rmdir(shadow_dir)
+        self.assertFalse(os.path.exists(shadow_dir), msg=shadow_dir)
+    #@+node:ekr.20080709062932.19: *4* TestShadow.findNode
+    def findNode(self, c, p, headline):
+        """Return the node in p's subtree with given headline."""
+        p = g.findNodeInTree(c, p, headline)
+        if not p:
+            self.fail(f"Node not found: {headline}")
+        return p
+    #@+node:ekr.20210908053444.1: *4* TestShadow.make_lines (new)
+    def make_lines(self, old, new):
+        c = self.c
+        self.old_private_lines = self.makePrivateLines(old)
+        self.new_private_lines = self.makePrivateLines(new)
+        self.old_public_lines = self.makePublicLines(self.old_private_lines)
+        self.new_public_lines = self.makePublicLines(self.new_private_lines)
+        self.expected_private_lines = self.mungePrivateLines(
+            self.new_private_lines, 'node:new', 'node:old')
+        # Return the propagated results.
+        results = self.shadow_controller.propagate_changed_lines(
+                        self.new_public_lines,
+                        self.old_private_lines,
+                        self.marker,
+                        p=c.p,
+                    )
+        return results
     #@+node:ekr.20080709062932.21: *4* TestShadow.makePrivateLines
     def makePrivateLines(self, p):
         """Return a list of the lines of p containing sentinels."""
@@ -57,7 +88,7 @@ class TestAtShadow(LeoUnitTest):
         finally:
             at.at_shadow_test_hack = False
         return g.splitLines(s)
-    #@+node:ekr.20080709062932.22: *4* TestShadow.makePublicLines
+    #@+node:ekr.20080709062932.22: *4* TestShadow.makePublicLines (new)
     def makePublicLines(self, lines):
         """Return the public lines in lines."""
         lines, junk = self.shadow_controller.separate_sentinels(lines, self.marker)
@@ -83,24 +114,6 @@ class TestAtShadow(LeoUnitTest):
                 results.append(line)
             i += 1
         return results
-    #@+node:ekr.20080709062932.10: *3* TestShadow.runTest
-    def xx_runTest(self): ###, define_g=True):
-        """AtShadowTestCase.runTest."""
-        p = self.c.p
-        results = self.shadow_controller.propagate_changed_lines(
-            self.new_public_lines, self.old_private_lines, self.marker, p=p)
-        self.assertEqual(results, self.expected_private_lines)
-        ###
-            # if results != self.expected_private_lines:
-                # g.pr(p.h)
-                # for aList, tag in (
-                    # (results, 'results'),
-                    # (self.expected_private_lines, 'expected_private_lines')
-                # ):
-                    # g.pr(f"{tag}...")
-                    # for i, line in enumerate(aList):
-                        # g.pr(f"{i:3} {line!r}")
-                    # g.pr('-' * 40)
     #@+node:ekr.20210902210552.2: *3* TestShadow.test_class_Marker_getDelims
     def test_class_Marker_getDelims(self):
         c = self.c
@@ -118,7 +131,8 @@ class TestAtShadow(LeoUnitTest):
             expected = delim1,delim2
             assert result==expected,'language %s expected %s got %s' % (
                 language,expected,result)
-    #@+node:ekr.20210902210552.3: *3* TestShadow.test_class_Marker_isSentinel
+    #@+node:ekr.20210908053206.1: *3* Existing tests
+    #@+node:ekr.20210902210552.3: *4* TestShadow.test_class_Marker_isSentinel
     def test_class_Marker_isSentinel(self):
         c = self.c
         x = c.shadowController
@@ -144,7 +158,7 @@ class TestAtShadow(LeoUnitTest):
             result = marker.isSentinel(s)
             assert result==expected,'language %s s: %s expected %s got %s' % (
                 language,s,expected,result)
-    #@+node:ekr.20210902210552.4: *3* TestShadow.test_class_Marker_isVerbatimSentinel
+    #@+node:ekr.20210902210552.4: *4* TestShadow.test_class_Marker_isVerbatimSentinel
     def test_class_Marker_isVerbatimSentinel(self):
         c = self.c
         x = c.shadowController
@@ -167,14 +181,14 @@ class TestAtShadow(LeoUnitTest):
             result = marker.isVerbatimSentinel(s)
             assert result==expected,'language %s s: %s expected %s got %s' % (
                 language,s,expected,result)
-    #@+node:ekr.20210902210552.5: *3* TestShadow.test_x_baseDirName
+    #@+node:ekr.20210902210552.5: *4* TestShadow.test_x_baseDirName
     def test_x_baseDirName(self):
         c = self.c
         x = c.shadowController
         path = x.baseDirName()
         expected = g.os_path_dirname(g.os_path_abspath(g.os_path_join(c.fileName())))
         assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
-    #@+node:ekr.20210902210552.6: *3* TestShadow.test_x_dirName
+    #@+node:ekr.20210902210552.6: *4* TestShadow.test_x_dirName
     def test_x_dirName(self):
         c = self.c
         x = c.shadowController
@@ -183,7 +197,7 @@ class TestAtShadow(LeoUnitTest):
         expected = g.os_path_dirname(g.os_path_abspath(
             g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
         assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
-    #@+node:ekr.20210902210552.7: *3* TestShadow.test_x_findAtLeoLine
+    #@+node:ekr.20210902210552.7: *4* TestShadow.test_x_findAtLeoLine
     def test_x_findAtLeoLine(self):
         c = self.c
         x = c.shadowController
@@ -202,35 +216,27 @@ class TestAtShadow(LeoUnitTest):
             result = x.findLeoLine(lines)
             assert expected==result, 'language %s expected %s got %s lines %s' % (
                 language,expected,result,'\n'.join(lines))
-    #@+node:ekr.20210902210552.8: *3* TestShadow.test_x_makeShadowDirectory
+    #@+node:ekr.20210902210552.8: *4* TestShadow.test_x_makeShadowDirectory
     def test_x_makeShadowDirectory(self):
         c = self.c
         x = c.shadowController
         #@+others
-        #@+node:ekr.20210902210953.1: *4* TestShadow.deleteShadowDir
-        def deleteShadowDir(shadowDir):
-            if g.os_path_exists(shadow_dir):
-                files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
-                files = glob.glob(files)
-                for z in files:
-                    if z != shadow_dir:
-                        os.unlink(z)
-                os.rmdir(shadow_dir)
-                assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir
         #@-others
         shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
         shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
-        if g.os_path_exists(shadow_fn):
-            g.utils_remove(shadow_fn,verbose=True)
-            # assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
-            if os.path.exists(shadow_fn):
-                # Fix bug #512: Just skip this test.
-                self.skipTest('Can not delete the directory.')
-        deleteShadowDir(shadow_dir)
+        assert not os.path.exists(shadow_fn), shadow_fn
+        ###
+            # if g.os_path_exists(shadow_fn):
+                # g.utils_remove(shadow_fn,verbose=True)
+                # # assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
+                # if os.path.exists(shadow_fn):
+                    # # Fix bug #512: Just skip this test.
+                    # self.skipTest('Can not delete the directory.')
+        self.deleteShadowDir(shadow_dir)
         x.makeShadowDirectory(shadow_dir)
-        assert os.path.exists(shadow_dir)
-        deleteShadowDir(shadow_dir)
-    #@+node:ekr.20210902210552.9: *3* TestShadow.test_x_markerFromFileLines
+        self.assertFalse(os.path.exists(shadow_dir))
+        ### self.deleteShadowDir(shadow_dir)
+    #@+node:ekr.20210902210552.9: *4* TestShadow.test_x_markerFromFileLines
     def test_x_markerFromFileLines(self):
         c = self.c
         x = c.shadowController
@@ -254,7 +260,7 @@ class TestAtShadow(LeoUnitTest):
             result1,result2 = marker.getDelims()
             self.assertEqual(delim1, result1, msg=f"language: {language} {lines_s}")
             self.assertEqual(delim2, result2, msg=f"language: {language} {lines_s}")
-    #@+node:ekr.20210902210552.10: *3* TestShadow.test_x_markerFromFileName
+    #@+node:ekr.20210902210552.10: *4* TestShadow.test_x_markerFromFileName
     def test_x_markerFromFileName(self):
         c = self.c
         x = c.shadowController
@@ -273,7 +279,7 @@ class TestAtShadow(LeoUnitTest):
                 ext,delim1,result1)
             assert delim2==result2, 'ext=%s, got %s, expected %s' % (
                 ext,delim2,result2)
-    #@+node:ekr.20210902210552.11: *3* TestShadow.test_x_pathName
+    #@+node:ekr.20210902210552.11: *4* TestShadow.test_x_pathName
     def test_x_pathName(self):
         c = self.c
         x = c.shadowController
@@ -281,7 +287,7 @@ class TestAtShadow(LeoUnitTest):
         path = x.pathName(filename)
         expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
         assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
-    #@+node:ekr.20210902210552.12: *3* TestShadow.test_x_replaceFileWithString
+    #@+node:ekr.20210902210552.12: *4* TestShadow.test_x_replaceFileWithString
     def test_x_replaceFileWithString(self):
         c = self.c
         x = c.shadowController
@@ -294,7 +300,7 @@ class TestAtShadow(LeoUnitTest):
         s2 = f.read()
         f.close()
         assert s == s2
-    #@+node:ekr.20210902210552.13: *3* TestShadow.test_x_replaceFileWithString_2
+    #@+node:ekr.20210902210552.13: *4* TestShadow.test_x_replaceFileWithString_2
     def test_x_replaceFileWithString_2(self):
         c = self.c
         x = c.shadowController
@@ -302,7 +308,7 @@ class TestAtShadow(LeoUnitTest):
         fn = 'does/not/exist'
         assert not g.os_path_exists(fn)
         assert not x.replaceFileWithString(encoding, fn, 'abc')
-    #@+node:ekr.20210902210552.14: *3* TestShadow.test_x_shadowDirName
+    #@+node:ekr.20210902210552.14: *4* TestShadow.test_x_shadowDirName
     def test_x_shadowDirName(self):
         c = self.c
         x = c.shadowController
@@ -313,7 +319,7 @@ class TestAtShadow(LeoUnitTest):
         expected = g.os_path_abspath(g.os_path_join(
             g.os_path_dirname(c.fileName()), subdir))
         self.assertEqual(path, expected)
-    #@+node:ekr.20210902210552.15: *3* TestShadow.test_x_shadowPathName
+    #@+node:ekr.20210902210552.15: *4* TestShadow.test_x_shadowPathName
     def test_x_shadowPathName(self):
         c = self.c
         x = c.shadowController
@@ -324,6 +330,34 @@ class TestAtShadow(LeoUnitTest):
         expected = g.os_path_abspath(g.os_path_join(
             g.os_path_dirname(c.fileName()),subdir,prefix+filename))
         assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+    #@+node:ekr.20210907162104.2: *3* TestXXX.test_replace_in_node_new_old
+    def test_replace_in_node_new_old(self):
+        p = self.c.p
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = '@others\n'
+        old_node1 = old.insertAsLastChild()
+        old_node1.h = 'node1'
+        old_node1.b = textwrap.dedent("""\
+            node 1 line 1
+            node 1 old line 1
+            node 1 old line 2
+            node 1 line 2
+    """)
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = '@others\n'
+        new_node1 = new.insertAsLastChild()
+        new_node1.h = 'node1'
+        new_node1.b = textwrap.dedent("""\
+            node 1 line 1
+            node 1 new line 1
+            node 1 new line 2
+            node 1 new line 3
+            node 1 line 2
+    """)
+        results = self.make_lines(old, new)
+        self.assertEqual(results, self.expected_private_lines)
     #@-others
 #@-others
 #@-leo
