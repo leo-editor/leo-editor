@@ -334,7 +334,7 @@ class TestAtShadow(LeoUnitTest):
             expected = delim1,delim2
             assert result==expected,'language %s expected %s got %s' % (
                 language,expected,result)
-    #@+node:ekr.20210907162104.2: *3* TestXXX.test_replace_in_node_new_old
+    #@+node:ekr.20210907162104.2: *3* TestShadow.test_replace_in_node_new_old
     def test_replace_in_node_new_old(self):
         p = self.c.p
         old = p.insertAsLastChild()

@@ -1747,32 +1747,6 @@ class ConvertAtTests:
             result.append('_'.join(inner_parts))
         return '_'.join(result)
     #@-others
-#@+node:ekr.20201202083553.1: *3* class ConvertEditCommandsTests (ConvertAtTests)
-class ConvertEditCommandsTests(ConvertAtTests):
-    """Convert @edit nodes for edit commands."""
-    #@+others
-    #@+node:ekr.20201130075024.4: *4* ConvertEditCommandsTests.convert_node
-    def convert_node(self, c, p, target):
-        """Convert one @test node, creating a new node."""
-        after_p, before_p = None, None
-        after_sel, before_sel = None, None
-        assert p.h.startswith('@test')
-        command_name = p.h[len('@test') :].strip()
-        for child in p.children():
-            if child.h.startswith('after'):
-                after_p = child.copy()
-                after_sel = child.h[len('after') :].strip()
-                after_sel = after_sel.replace('sel=', '').strip()
-            elif child.h.startswith('before'):
-                before_p = child.copy()
-                before_sel = child.h[len('before') :].strip()
-                before_sel = before_sel.replace('sel=', '').strip()
-        assert before_p and after_p
-        assert before_sel and after_sel
-        new_child = target.insertAsLastChild()
-        new_child.h = command_name
-        new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
-    #@-others
 #@+node:ekr.20210905151425.1: *3* class ConvertColorizerTests (ConvertAtTests)
 class ConvertColorizerTests(ConvertAtTests):
     """Convert @test nodes for colorizer commands."""
@@ -1814,6 +1788,70 @@ class ConvertColorizerTests(ConvertAtTests):
         result.append(f"{body}\n")
         # Set the body text!
         test_node.b = ''.join(result)
+    #@-others
+#@+node:ekr.20201202083553.1: *3* class ConvertEditCommandsTests (ConvertAtTests)
+class ConvertEditCommandsTests(ConvertAtTests):
+    """Convert @edit nodes for edit commands."""
+    #@+others
+    #@+node:ekr.20201130075024.4: *4* ConvertEditCommandsTests.convert_node
+    def convert_node(self, c, p, target):
+        """Convert one @test node, creating a new node."""
+        after_p, before_p = None, None
+        after_sel, before_sel = None, None
+        assert p.h.startswith('@test')
+        command_name = p.h[len('@test') :].strip()
+        for child in p.children():
+            if child.h.startswith('after'):
+                after_p = child.copy()
+                after_sel = child.h[len('after') :].strip()
+                after_sel = after_sel.replace('sel=', '').strip()
+            elif child.h.startswith('before'):
+                before_p = child.copy()
+                before_sel = child.h[len('before') :].strip()
+                before_sel = before_sel.replace('sel=', '').strip()
+        assert before_p and after_p
+        assert before_sel and after_sel
+        new_child = target.insertAsLastChild()
+        new_child.h = command_name
+        new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
+    #@-others
+#@+node:ekr.20210908062600.1: *3* class ConvertShadowTests (ConvertAtTests)
+class ConvertShadowTests (ConvertAtTests):
+    """Convert @test nodes for @shadow commands."""
+    #@+others
+    #@+node:ekr.20210908062651.1: *4* ConvertShadowTests.convert_node
+    def convert_node(self, c, p, target):
+        """Convert one @test node, creating a new node."""
+        assert p.h.startswith('@test')
+        # Create the new node.
+        indent = ' '*4
+        test_node = target.insertAsLastChild()
+        # Set the headline.
+        test_name = f"test_{self.clean_headline(p)}"
+        test_node.h = f"{self.class_name}.{test_name}"
+        # Set the body text.
+        test_node.b = ''.join([
+            # Prolog.
+            f"def {test_name}(self):\n",
+            f"{indent}p = self.c.p\n",
+            # 'old' node.
+            f"{indent}old = p.insertAsLastChild()\n",
+            f"{indent}old.h = 'old'\n",
+            # Dummy old.b.
+            f"{indent}old.b = textwrap.dedent(\"\"\"\\\n",
+            f"{indent}{indent}OLD\n",
+            f"{indent}\"\"\"\n",
+            # 'new' node.
+            f"{indent}new = p.insertAsLastChild()\n",
+            f"{indent}new.h = 'new'\n",
+            # Dummy new.b.
+            f"{indent}new.b = textwrap.dedent(\"\"\"\\\n",
+            f"{indent}{indent}NEW\n",
+            f"{indent}\"\"\"\n",
+            # The test.
+            f"{indent}results = self.make_lines(old, new)\n",
+            f"{indent}self.assertEqual(results, self.expected_private_lines)\n",
+        ])
     #@-others
 #@+node:ekr.20210906140154.1: *3* class ConvertUndoTests (ConvertAtTests)
 class ConvertUndoTests(ConvertAtTests):
