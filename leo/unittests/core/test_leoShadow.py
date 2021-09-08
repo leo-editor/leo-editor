@@ -33,7 +33,7 @@ class TestAtShadow(LeoUnitTest):
                 os.unlink(z)
         os.rmdir(shadow_dir)
         self.assertFalse(os.path.exists(shadow_dir), msg=shadow_dir)
-    #@+node:ekr.20210908053444.1: *4* TestShadow.make_lines (new)
+    #@+node:ekr.20210908053444.1: *4* TestShadow.make_lines
     def make_lines(self, old, new):
         """Make all lines and return the result of propagating changed lines."""
         c = self.c
@@ -94,7 +94,7 @@ class TestAtShadow(LeoUnitTest):
             i += 1
         return results
     #@+node:ekr.20210908053206.1: *3* Fails...
-    if 0:
+    if 1:
         #@+others
         #@+node:ekr.20210902210552.8: *4* TestShadow.test_x_makeShadowDirectory
         def test_x_makeShadowDirectory(self):
