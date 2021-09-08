@@ -467,8 +467,12 @@ class LeoServer:
             'nodeLink': None,
         }
         d = g.doKeywordArgs(keys, d)
+        color = d.get('color')
+        color = g.actualColor(color)
         s = g.translateArgs(args, d)
         package = {"async": "log", "log": s}
+        if color:
+            package["color"] = color
         self._send_async_output(package, True)
     #@+node:felix.20210626002856.1: *4* _getScript
     def _getScript(self, c, p,
@@ -3489,7 +3493,7 @@ def main():  # pragma: no cover (tested in client)
     ):
         """
         Monkey-patched version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
-        
+
         Raise a dialog and return either 'yes' or 'no'
         """
         #@+others  # define all helper functions.
@@ -3557,7 +3561,7 @@ def main():  # pragma: no cover (tested in client)
             top.bind("n", noButton)
             top.bind("N", noButton)
             top.lift()
-            
+
             center(top)
 
             top.grab_set()  # Make the dialog a modal dialog.
