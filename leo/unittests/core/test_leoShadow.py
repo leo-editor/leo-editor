@@ -15,7 +15,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20080709062932.2: ** class TestAtShadow (LeoUnitTest)
 class TestAtShadow(LeoUnitTest):
     #@+others
-    #@+node:ekr.20080709062932.8: *3* TestShadow.setUp & helpers
+    #@+node:ekr.20080709062932.8: *3*  TestShadow.setUp & helpers
     def setUp(self):
         """AtShadowTestCase.setup."""
         super().setUp()
@@ -93,140 +93,7 @@ class TestAtShadow(LeoUnitTest):
                 results.append(line)
             i += 1
         return results
-    #@+node:ekr.20210908061604.1: *3* Existing Tests
-    #@+node:ekr.20210902210552.3: *4* TestShadow.test_class_Marker_isSentinel
-    def test_class_Marker_isSentinel(self):
-        c = self.c
-        x = c.shadowController
-        table = (
-            ('python','abc',False),
-            ('python','#abc',False),
-            ('python','#@abc',True),
-            ('python','@abc#',False),
-            ('c','abc',False),
-            ('c','//@',True),
-            ('c','// @abc',False),
-            ('c','/*@ abc */',True),
-            ('c','/*@ abc',False),
-            ('html','#@abc',False),
-            ('html','<!--abc-->',False),
-            ('html','<!--@ abc -->',True),
-            ('html','<!--@ abc ->',False),
-            ('xxxx','#--unknown-language--@',True)
-        )
-        for language,s,expected in table:
-            delims = g.set_delims_from_language(language)
-            marker = x.Marker(delims)
-            result = marker.isSentinel(s)
-            assert result==expected,'language %s s: %s expected %s got %s' % (
-                language,s,expected,result)
-    #@+node:ekr.20210902210552.4: *4* TestShadow.test_class_Marker_isVerbatimSentinel
-    def test_class_Marker_isVerbatimSentinel(self):
-        c = self.c
-        x = c.shadowController
-        table = (
-            ('python','abc',False),
-            ('python','#abc',False),
-            ('python','#verbatim',False),
-            ('python','#@verbatim',True),
-            ('c','abc',False),
-            ('c','//@',False),
-            ('c','//@verbatim',True),
-            ('html','#@abc',False),
-            ('html','<!--abc-->',False),
-            ('html','<!--@verbatim -->',True),
-            ('xxxx','#--unknown-language--@verbatim',True)
-        )
-        for language,s,expected in table:
-            delims = g.set_delims_from_language(language)
-            marker = x.Marker(delims)
-            result = marker.isVerbatimSentinel(s)
-            assert result==expected,'language %s s: %s expected %s got %s' % (
-                language,s,expected,result)
-    #@+node:ekr.20210902210552.7: *4* TestShadow.test_x_findAtLeoLine
-    def test_x_findAtLeoLine(self):
-        c = self.c
-        x = c.shadowController
-        table = (
-            ('c',('//@+leo','a'),                   '//@+leo'),
-            ('c',('//@first','//@+leo','b'),        '//@+leo'),
-            ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
-            ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
-            ('python',('#@+leo','a'),               '#@+leo'),
-            ('python',('#@first','#@+leo','b'),     '#@+leo'),
-            ('error',('',),''),
-            ('html',('<!--@+leo-->','a'),                '<!--@+leo-->'),
-            ('html',('<!--@first-->','<!--@+leo-->','b'),'<!--@+leo-->'),
-        )
-        for language,lines,expected in table:
-            result = x.findLeoLine(lines)
-            assert expected==result, 'language %s expected %s got %s lines %s' % (
-                language,expected,result,'\n'.join(lines))
-    #@+node:ekr.20210902210552.9: *4* TestShadow.test_x_markerFromFileLines
-    def test_x_markerFromFileLines(self):
-        c = self.c
-        x = c.shadowController
-        # Add -ver=4 so at.parseLeoSentinel does not complain.
-        table = (
-            ('c',('//@+leo-ver=4','a'),                   '//',''),
-            ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
-            ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
-            ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
-            ('python',('#@+leo-ver=4','a'),               '#',''),
-            ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
-            ('error',('',),             '#--unknown-language--',''),
-            ('html',('<!--@+leo-ver=4-->','a'),                '<!--','-->'),
-            ('html',('<!--@first-->','<!--@+leo-ver=4-->','b'),'<!--','-->'),
-        )
-
-        for language,lines,delim1,delim2 in table:
-            ### s = x.findLeoLine(lines)
-            lines_s = '\n'.join(lines)
-            marker = x.markerFromFileLines(lines,'test-file-name')
-            result1,result2 = marker.getDelims()
-            self.assertEqual(delim1, result1, msg=f"language: {language} {lines_s}")
-            self.assertEqual(delim2, result2, msg=f"language: {language} {lines_s}")
-    #@+node:ekr.20210902210552.10: *4* TestShadow.test_x_markerFromFileName
-    def test_x_markerFromFileName(self):
-        c = self.c
-        x = c.shadowController
-        table = (
-            ('ini',';','',),
-            ('c','//',''),
-            ('h','//',''),
-            ('py','#',''),
-            ('xyzzy','#--unknown-language--',''),
-        )
-        for ext,delim1,delim2 in table:
-            filename = 'x.%s' % ext
-            marker = x.markerFromFileName(filename)
-            result1,result2 = marker.getDelims()
-            assert delim1==result1, 'ext=%s, got %s, expected %s' % (
-                ext,delim1,result1)
-            assert delim2==result2, 'ext=%s, got %s, expected %s' % (
-                ext,delim2,result2)
-    #@+node:ekr.20210902210552.12: *4* TestShadow.test_x_replaceFileWithString
-    def test_x_replaceFileWithString(self):
-        c = self.c
-        x = c.shadowController
-        s = 'abc'
-        encoding = 'utf-8'
-        fn = '../test/unittest/replaceFileWithStringTestFile.py'
-        path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
-        x.replaceFileWithString(encoding, path, s)
-        f = open(path)
-        s2 = f.read()
-        f.close()
-        assert s == s2
-    #@+node:ekr.20210902210552.13: *4* TestShadow.test_x_replaceFileWithString_2
-    def test_x_replaceFileWithString_2(self):
-        c = self.c
-        x = c.shadowController
-        encoding = 'utf-8'
-        fn = 'does/not/exist'
-        assert not g.os_path_exists(fn)
-        assert not x.replaceFileWithString(encoding, fn, 'abc')
-    #@+node:ekr.20210908053206.1: *3* Fails: Existing tests
+    #@+node:ekr.20210908053206.1: *3* Fails...
     if 0:
         #@+others
         #@+node:ekr.20210902210552.8: *4* TestShadow.test_x_makeShadowDirectory
@@ -294,7 +161,374 @@ class TestAtShadow(LeoUnitTest):
                 g.os_path_dirname(c.fileName()),subdir,prefix+filename))
             assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
         #@-others
-    #@+node:ekr.20210908134705.1: *3* Passed
+    #@+node:ekr.20210908134131.16: *3* TestShadow.test_change_end_of_prev_node
+    def test_change_end_of_prev_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 1 changed
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.4: *3* TestShadow.test_change_first_line
+    def test_change_first_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1 changed
+            line 2
+            line 3
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.5: *3* TestShadow.test_change_last_line
+    def test_change_last_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3 changed
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.3: *3* TestShadow.test_change_middle_line
+    def test_change_middle_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1
+            line 2 changed
+            line 3
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.17: *3* TestShadow.test_change_start_of_next_node
+    def test_change_start_of_next_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1 changed
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.14: *3* TestShadow.test_delete_between_nodes_at_end_of_prev_node
+    def test_delete_between_nodes_at_end_of_prev_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.15: *3* TestShadow.test_delete_between_nodes_at_start_of_next_node
+    def test_delete_between_nodes_at_start_of_next_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.6: *3* TestShadow.test_delete_first_line
+    def test_delete_first_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 2
+            line 3
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.8: *3* TestShadow.test_delete_last_line
+    def test_delete_last_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1
+            line 2
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.7: *3* TestShadow.test_delete_middle_line
+    def test_delete_middle_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1
+            line 3
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.12: *3* TestShadow.test_insert_after_last_line
+    def test_insert_after_last_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+            inserted line
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.9: *3* TestShadow.test_insert_before_first_line
+    def test_insert_before_first_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            inserted line
+            line 1
+            line 2
+            line 3
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.10: *3* TestShadow.test_insert_middle_line_after_first_line_
+    def test_insert_middle_line_after_first_line_(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1
+            inserted line
+            line 2
+            line 3
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.11: *3* TestShadow.test_insert_middle_line_before_last_line_
+    def test_insert_middle_line_before_last_line_(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line 1
+            line 2
+            line 3
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line 1
+            line 2
+            inserted line
+            line 3
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.13: *3* TestShadow.test_lax_insert_between_nodes_at_end_of_prev_node
+    def test_lax_insert_between_nodes_at_end_of_prev_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 1
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            inserted node at end of node 1
+            node 2 line 1
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.18: *3* TestShadow.test_lax_multiple_line_insert_between_nodes_at_end_of_prev_node
+    def test_lax_multiple_line_insert_between_nodes_at_end_of_prev_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            inserted node 1 at end of node 1
+            inserted node 2 at end of node 1
+            node 2 line 1
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 1
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
     #@+node:ekr.20210902210552.2: *3* TestShadow.test_marker_getDelims
     def test_marker_getDelims(self):
         c = self.c
@@ -312,6 +546,203 @@ class TestAtShadow(LeoUnitTest):
             expected = delim1,delim2
             assert result==expected,'language %s expected %s got %s' % (
                 language,expected,result)
+    #@+node:ekr.20210902210552.3: *3* TestShadow.test_marker_isSentinel
+    def test_marker_isSentinel(self):
+        c = self.c
+        x = c.shadowController
+        table = (
+            ('python','abc',False),
+            ('python','#abc',False),
+            ('python','#@abc',True),
+            ('python','@abc#',False),
+            ('c','abc',False),
+            ('c','//@',True),
+            ('c','// @abc',False),
+            ('c','/*@ abc */',True),
+            ('c','/*@ abc',False),
+            ('html','#@abc',False),
+            ('html','<!--abc-->',False),
+            ('html','<!--@ abc -->',True),
+            ('html','<!--@ abc ->',False),
+            ('xxxx','#--unknown-language--@',True)
+        )
+        for language,s,expected in table:
+            delims = g.set_delims_from_language(language)
+            marker = x.Marker(delims)
+            result = marker.isSentinel(s)
+            assert result==expected,'language %s s: %s expected %s got %s' % (
+                language,s,expected,result)
+    #@+node:ekr.20210902210552.4: *3* TestShadow.test_marker_isVerbatimSentinel
+    def test_marker_isVerbatimSentinel(self):
+        c = self.c
+        x = c.shadowController
+        table = (
+            ('python','abc',False),
+            ('python','#abc',False),
+            ('python','#verbatim',False),
+            ('python','#@verbatim',True),
+            ('c','abc',False),
+            ('c','//@',False),
+            ('c','//@verbatim',True),
+            ('html','#@abc',False),
+            ('html','<!--abc-->',False),
+            ('html','<!--@verbatim -->',True),
+            ('xxxx','#--unknown-language--@verbatim',True)
+        )
+        for language,s,expected in table:
+            delims = g.set_delims_from_language(language)
+            marker = x.Marker(delims)
+            result = marker.isVerbatimSentinel(s)
+            assert result==expected,'language %s s: %s expected %s got %s' % (
+                language,s,expected,result)
+    #@+node:ekr.20210908134131.19: *3* TestShadow.test_multiple_line_change_end_of_prev_node
+    def test_multiple_line_change_end_of_prev_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 1 line 3
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2 changed
+            node 1 line 3 changed
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.20: *3* TestShadow.test_multiple_line_change_start_of_next_node
+    def test_multiple_line_change_start_of_next_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1 changed
+            node 2 line 2 changed
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.22: *3* TestShadow.test_multiple_line_delete_between_nodes_at_end_of_prev_node
+    def test_multiple_line_delete_between_nodes_at_end_of_prev_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 1 line 3
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.23: *3* TestShadow.test_multiple_line_delete_between_nodes_at_start_of_next_node
+    def test_multiple_line_delete_between_nodes_at_start_of_next_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 1
+            node 2 line 2
+            node 2 line 3
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 3
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.21: *3* TestShadow.test_multiple_NODE_changes
+    def test_multiple_NODE_changes(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-others', '@others')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2 changed
+            node 2 line 1 changed
+            node 2 line 2 changed
+        """).replace('at-others', '@others')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908134131.29: *3* TestShadow.test_no_change_no_ending_newline
+    def test_no_change_no_ending_newline(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            line
+        """)
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            line
+        """)
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
     #@+node:ekr.20210907162104.2: *3* TestShadow.test_replace_in_node_new_gt_new_old
     def test_replace_in_node_new_gt_new_old(self):
         p = self.c.p
@@ -372,6 +803,229 @@ class TestAtShadow(LeoUnitTest):
         # Run the test.
         results, expected = self.make_lines(old, new)
         self.assertEqual(results, expected)
+    #@+node:ekr.20210908140242.6: *3* TestShadow.test_verbatim_sentinels_add_verbatim_line
+    def test_verbatim_sentinels_add_verbatim_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 1 line 2
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-', '@')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            at-verbatim
+            #at- should be handled by verbatim
+            node 1 line 2
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-', '@')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908140242.2: *3* TestShadow.test_verbatim_sentinels_delete_verbatim_line
+    def test_verbatim_sentinels_delete_verbatim_line(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            at-verbatim
+            #at- should be handled by verbatim
+            line 1 line 3
+            node 2 line 1
+            node 2 line 2
+            node 2 line 3
+        """).replace('at-', '@')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            line 1 line 3
+            node 2 line 1
+            node 2 line 2
+            node 2 line 3
+        """).replace('at-', '@')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908140242.5: *3* TestShadow.test_verbatim_sentinels_delete_verbatim_line_at_end_of_node
+    def test_verbatim_sentinels_delete_verbatim_line_at_end_of_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            at-verbatim
+            #at- should be handled by verbatim
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-', '@')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 1
+            node 2 line 2
+        """).replace('at-', '@')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908140242.3: *3* TestShadow.test_verbatim_sentinels_delete_verbatim_line_at_start_of_node
+    def test_verbatim_sentinels_delete_verbatim_line_at_start_of_node(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            at-verbatim
+            #at- should be handled by verbatim
+            node 2 line 2
+        """).replace('at-', '@')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            node 2 line 2
+        """).replace('at-', '@')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210908140242.4: *3* TestShadow.test_verbatim_sentinels_no_change
+    def test_verbatim_sentinels_no_change(self):
+        p = self.c.p
+        # Create the 'old' node.
+        old = p.insertAsLastChild()
+        old.h = 'old'
+        old.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            at-verbatim
+            #at- should be handled by verbatim
+            line 1 line 3
+            node 2 line 1
+            node 2 line 2
+            node 2 line 3
+        """).replace('at-', '@')
+        # Create the 'new' node.
+        new = p.insertAsLastChild()
+        new.h = 'new'
+        new.b = textwrap.dedent("""\
+            at-others
+            node 1 line 1
+            at-verbatim
+            #at- should be handled by verbatim
+            line 1 line 3
+            node 2 line 1
+            node 2 line 2
+            node 2 line 3
+        """).replace('at-', '@')
+        # Run the test.
+        results, expected = self.make_lines(old, new)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210902210552.7: *3* TestShadow.test_x_findAtLeoLine
+    def test_x_findAtLeoLine(self):
+        c = self.c
+        x = c.shadowController
+        table = (
+            ('c',('//@+leo','a'),                   '//@+leo'),
+            ('c',('//@first','//@+leo','b'),        '//@+leo'),
+            ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
+            ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
+            ('python',('#@+leo','a'),               '#@+leo'),
+            ('python',('#@first','#@+leo','b'),     '#@+leo'),
+            ('error',('',),''),
+            ('html',('<!--@+leo-->','a'),                '<!--@+leo-->'),
+            ('html',('<!--@first-->','<!--@+leo-->','b'),'<!--@+leo-->'),
+        )
+        for language,lines,expected in table:
+            result = x.findLeoLine(lines)
+            assert expected==result, 'language %s expected %s got %s lines %s' % (
+                language,expected,result,'\n'.join(lines))
+    #@+node:ekr.20210902210552.9: *3* TestShadow.test_x_markerFromFileLines
+    def test_x_markerFromFileLines(self):
+        c = self.c
+        x = c.shadowController
+        # Add -ver=4 so at.parseLeoSentinel does not complain.
+        table = (
+            ('c',('//@+leo-ver=4','a'),                   '//',''),
+            ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
+            ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
+            ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
+            ('python',('#@+leo-ver=4','a'),               '#',''),
+            ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
+            ('error',('',),             '#--unknown-language--',''),
+            ('html',('<!--@+leo-ver=4-->','a'),                '<!--','-->'),
+            ('html',('<!--@first-->','<!--@+leo-ver=4-->','b'),'<!--','-->'),
+        )
+
+        for language,lines,delim1,delim2 in table:
+            ### s = x.findLeoLine(lines)
+            lines_s = '\n'.join(lines)
+            marker = x.markerFromFileLines(lines,'test-file-name')
+            result1,result2 = marker.getDelims()
+            self.assertEqual(delim1, result1, msg=f"language: {language} {lines_s}")
+            self.assertEqual(delim2, result2, msg=f"language: {language} {lines_s}")
+    #@+node:ekr.20210902210552.10: *3* TestShadow.test_x_markerFromFileName
+    def test_x_markerFromFileName(self):
+        c = self.c
+        x = c.shadowController
+        table = (
+            ('ini',';','',),
+            ('c','//',''),
+            ('h','//',''),
+            ('py','#',''),
+            ('xyzzy','#--unknown-language--',''),
+        )
+        for ext,delim1,delim2 in table:
+            filename = 'x.%s' % ext
+            marker = x.markerFromFileName(filename)
+            result1,result2 = marker.getDelims()
+            assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+                ext,delim1,result1)
+            assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+                ext,delim2,result2)
+    #@+node:ekr.20210902210552.12: *3* TestShadow.test_x_replaceFileWithString
+    def test_x_replaceFileWithString(self):
+        c = self.c
+        x = c.shadowController
+        s = 'abc'
+        encoding = 'utf-8'
+        fn = '../test/unittest/replaceFileWithStringTestFile.py'
+        path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
+        x.replaceFileWithString(encoding, path, s)
+        f = open(path)
+        s2 = f.read()
+        f.close()
+        assert s == s2
+    #@+node:ekr.20210902210552.13: *3* TestShadow.test_x_replaceFileWithString_2
+    def test_x_replaceFileWithString_2(self):
+        c = self.c
+        x = c.shadowController
+        encoding = 'utf-8'
+        fn = 'does/not/exist'
+        assert not g.os_path_exists(fn)
+        assert not x.replaceFileWithString(encoding, fn, 'abc')
     #@-others
 #@-others
 #@-leo
