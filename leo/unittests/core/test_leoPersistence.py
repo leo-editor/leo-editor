@@ -23,8 +23,6 @@ class TestPersistence(LeoUnitTest):
     #@+node:ekr.20210908173748.1: *3* TestPersistence.create_test_outline
     def create_test_outline(self):
         c = self.c
-        # Create the standard tree.
-        super().create_test_outline()
         # Add an @settings, @persistence and @gnx nodes.
         settings_p = c.lastTopLevel()
         settings_p.b = '@settings'
@@ -36,21 +34,6 @@ class TestPersistence(LeoUnitTest):
             'gnx: ekr.20140923080452\n'
             'unl: node1\n'
         )
-
-        # - root
-            # - aClass
-              # - clone
-              # - organizer node
-                # - child2
-            # - clone
-        # - node 1
-          # - child1
-          # - child12
-        # - node 2
-          # - child21
-          # - child22
-        # - node 3
-          # - node3_child1
     #@+node:ekr.20210908172651.2: *3* TestPersistence.test_p_sort_key
     def test_p_sort_key(self):
         c, p = self.c, self.c.p
