@@ -10,8 +10,23 @@ import os
 import sys
 import textwrap
 import time
+import token as token_module
 from typing import Any, Dict, List
 import unittest
+import warnings
+warnings.simplefilter("ignore")
+# pylint: disable=import-error
+# Third-party.
+try:
+    import asttokens
+except Exception:
+    asttokens = None
+try:
+    # Suppress a warning about imp being deprecated.
+    with warnings.catch_warnings():
+        import black
+except Exception:
+    black = None
 from leo.core import leoGlobals as g
 from leo.core.leoAst import AstNotEqual
 from leo.core.leoAst import Fstringify, Orange
@@ -368,11 +383,7 @@ class Optional_TestFiles(BaseTest):
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
         """Compare asttokens token lists with TOG token lists."""
-        import token as token_module
-        try:
-            # pylint: disable=import-error
-            import asttokens
-        except Exception:
+        if not asttokens:
             self.skipTest('requires asttokens')
         # Define TestToken class and helper functions.
         stack: List[ast.AST] = []
@@ -781,13 +792,7 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200115201823.1: *4* TestOrange.blacken
     def blacken(self, contents, line_length=None):
         """Return the results of running black on contents"""
-        import warnings
-        warnings.simplefilter("ignore")
-        try:
-            # Suppress a warning about imp being deprecated.
-            with warnings.catch_warnings():
-                import black
-        except Exception:
+        if not black:
             self.skipTest('Can not import black')
         # Suppress string normalization!
         try:
@@ -1618,6 +1623,7 @@ class TestTOG(BaseTest):
         dir_ = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
         if not os.path.exists(path):
+            # g.trace(f"not found: {path}")
             self.skipTest(f"not found: {path}")
         if py_version < (3, 8):
             self.skipTest('Requires Python 3.8 or above')

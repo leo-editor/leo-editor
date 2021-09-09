@@ -4353,16 +4353,12 @@ class TestEditCommands(LeoUnitTest):
             # self.assertNotEqual(i, j, msg=commandName)
     #@+node:ekr.20210905064816.28: *4* TestEditCommands.test_typing_and_undo_in_headline__at_end
     def test_typing_and_undo_in_headline__at_end(self):
-        c = self.c
-        if g.app.gui.guiName() == 'curses':
-            # This could be adapted, but not now.
-            self.skipTest('Not for curses gui')
-        k = c.k
+        c, k = self.c, self.c.k
+        ###
         if k.defaultUnboundKeyAction != 'insert':
             self.skipTest('defaultUnboundKeyAction != insert')
         if not k.getStrokeForCommandName('undo'):
             self.skipTest('no settings')
-
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
