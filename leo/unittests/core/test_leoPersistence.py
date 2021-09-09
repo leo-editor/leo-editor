@@ -51,8 +51,7 @@ class TestPersistence(LeoUnitTest):
           # - child22
         # - node 3
           # - node3_child1
-    #@+node:ekr.20210908172651.1: *3* Converted nodes
-    #@+node:ekr.20210908172651.2: *4* TestPersistence.test_p_sort_key
+    #@+node:ekr.20210908172651.2: *3* TestPersistence.test_p_sort_key
     def test_p_sort_key(self):
         c, p = self.c, self.c.p
         aList = [z.copy() for z in c.all_positions()]
@@ -60,7 +59,7 @@ class TestPersistence(LeoUnitTest):
         for i, p in enumerate(aList2):
             p2 = aList[i]
             self.assertEqual(p, p2, msg=f"i: {i}, p.h: {p.h}. p2: {p2.h}")
-    #@+node:ekr.20210908172651.3: *4* TestPersistence.test_pd_find_at_data_and gnxs_nodes
+    #@+node:ekr.20210908172651.3: *3* TestPersistence.test_pd_find_at_data_and gnxs_nodes
     def test_pd_find_at__(self):
         pd = self.c.persistenceController
         # Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
@@ -71,6 +70,47 @@ class TestPersistence(LeoUnitTest):
         root.h = '@auto root' # Make root look like an @auto node.
         assert pd.find_at_data_node(root)
         assert pd.find_at_gnxs_node(root)
+    #@+node:ekr.20210908172651.9: *3* TestPersistence.test_pd_find_position_for_relative_unl
+    def test_pd_find_position_for_relative_unl(self):
+        p, pd = self.c.p, self.c.persistenceController
+        parent = p.copy()
+        # node1
+        node1 = parent.insertAsLastChild()
+        node1.h = 'node1'
+        child11 = node1.insertAsLastChild()
+        child11.h = 'child11'
+        child12 = node1.insertAsLastChild()
+        child12.h = 'child12'
+        # node2
+        node2 = parent.insertAsLastChild()
+        node2.h = 'node2'
+        child21 = node2.insertAsLastChild()
+        child21.h = 'child21'
+        child22 = node2.insertAsLastChild()
+        child22.h = 'child22'
+        # node3
+        node3 = parent.insertAsLastChild()
+        node3.h = 'node3'
+        table = (
+            ('', parent), # Important special case.
+            ('node1-->child11', child11),
+            ('node1-->child12', child12),
+            ('node2', node2),
+            ('node2-->child21', child21),
+            ('node2-->child22', child22),
+            # Partial matches.
+                # ('node3-->child1-->child21',node3_child1_child21),
+                # ('child1-->child21',node3_child1_child21),
+                # ('xxx-->child21',node3_child1_child21),
+                    # This is ambiguous.
+            # No matches.
+            ('nodex', None),
+            ('node1-->childx', None),
+            ('node3-->childx', None),
+        )
+        for unl, expected in table:
+            result = pd.find_position_for_relative_unl(parent, unl)
+            self.assertEqual(result, expected, msg=unl)
     #@-others
 #@-others
 
