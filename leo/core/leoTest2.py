@@ -11,7 +11,6 @@ See g.run_unit_tests and g.run_coverage_tests.
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
-import textwrap
 import time
 import unittest
 from leo.core import leoGlobals as g
@@ -98,11 +97,10 @@ class LeoUnitTest(unittest.TestCase):
         g.unitTesting = False
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self):
-        c, p = self.c, self.c.p
-        assert p == self.root_p
+        p = self.c.p
         # Create the following outline:
         #
-        # test-outline: root
+        # root
         #   child clone a
         #     node clone 1
         #   child b
@@ -115,38 +113,31 @@ class LeoUnitTest(unittest.TestCase):
         #   child b
         #     child clone a
         #       node clone 1
-        self.test_outline = textwrap.dedent('''\
-    <?xml version="1.0" encoding="utf-8"?>
-    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-    <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-    <leo_header file_format="2"/>
-    <vnodes>
-    <v t="ekr.20210830152319.1"><vh>test-outline: root</vh>
-    <v t="ekr.20210830152337.1"><vh>child clone a</vh>
-    <v t="ekr.20210830152411.1"><vh>node clone 1</vh></v>
-    </v>
-    <v t="ekr.20210830152343.1"><vh>child b</vh>
-    <v t="ekr.20210830152337.1"></v>
-    </v>
-    <v t="ekr.20210830152347.1"><vh>child c</vh>
-    <v t="ekr.20210830152411.1"></v>
-    </v>
-    <v t="ekr.20210830152337.1"></v>
-    <v t="ekr.20210830152343.1"></v>
-    </v>
-    </vnodes>
-    <tnodes>
-    <t tx="ekr.20210830152319.1"></t>
-    <t tx="ekr.20210830152337.1"></t>
-    <t tx="ekr.20210830152343.1"></t>
-    <t tx="ekr.20210830152347.1"></t>
-    <t tx="ekr.20210830152411.1"></t>
-    </tnodes>
-    </leo_file>
-    ''')
-        # pylint: disable=no-member
-        c.pasteOutline(s=self.test_outline, redrawFlag=False, undoFlag=False)
-        c.selectPosition(c.rootPosition())
+        assert p == self.root_p
+        assert p.h == 'root'
+        # Child a
+        child_clone_a = p.insertAsLastChild()
+        child_clone_a.h = 'child clone a'
+        node_clone_1 = child_clone_a.insertAsLastChild()
+        node_clone_1.h = 'node clone 1'
+        # Child b
+        child_b = p.insertAsLastChild()
+        child_b.h = 'child b'
+        # Clone 'child clone a'
+        clone = child_clone_a.clone()
+        clone.moveToLastChildOf(child_b)
+        # Child c
+        child_c = p.insertAsLastChild()
+        child_c.h = 'child c'
+        # Clone 'node clone 1'
+        clone = node_clone_1.clone()
+        clone.moveToLastChildOf(child_c)
+        # Clone 'child clone a'
+        clone = child_clone_a.clone()
+        clone.moveToLastChildOf(p)
+        # Clone 'child b'
+        clone = child_b.clone()
+        clone.moveToLastChildOf(p)
     #@+node:ekr.20210831101111.1: *3* LeoUnitTest.dump_tree
     def dump_tree(self, tag=''):
         c = self.c

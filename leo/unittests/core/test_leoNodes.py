@@ -705,14 +705,12 @@ class TestNodes(LeoUnitTest):
         
     #@+node:ekr.20210830095545.36: *4* TestNodes.test_p_setBodyString
     def test_p_setBodyString(self):
-        # Tests that c.setBodyString works immediately.
-        c, p = self.c, self.c.p
-        w = c.frame.body.wrapper
-        next = p.next()
-        child = next.firstChild()
-        c.setBodyString(child, "after")
-        c.selectPosition(child)
-        s = w.get("1.0","end")
+        # Test that c.setBodyString works immediately.
+        c, w = self.c, self.c.frame.body.wrapper
+        next = self.root_p.next()
+        c.setBodyString(next, "after")
+        c.selectPosition(next)
+        s = w.get("1.0", "end")
         self.assertEqual(s.rstrip(), "after")
     #@+node:ekr.20210830095545.37: *4* TestNodes.test_p_u
     def test_p_u(self):
@@ -727,10 +725,8 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.v.u, d)
     #@+node:ekr.20210830095545.38: *4* TestNodes.test_p_unique_nodes
     def test_p_unique_nodes(self):
-        p = self.c.p
-        next = p.next()
-        aList = [z for z in next.unique_nodes()]
-        self.assertEqual(len(aList), 5)
+
+        self.assertEqual(len(list(self.root_p.unique_nodes())), 5)
     #@+node:ekr.20210830095545.51: *4* TestNodes.test_paste_node
     def test_paste_node(self):
         c, p = self.c, self.c.p
