@@ -305,18 +305,17 @@ class TestFind(LeoUnitTest):
         c, settings, x = self.c, self.settings, self.x
         settings.find_text = 'def top1'
         # Start at end, so we stay in the node.
-        last = c.lastTopLevel()
-        child = last.firstChild()
-        grand_child = child.firstChild()
-        assert grand_child.h == 'child 6', grand_child.h
-        settings.p = grand_child.copy()
+        grand_child = g.findNodeAnywhere(c, 'child 6')
+        settings.p = grand_child
+        assert settings.p
         settings.find_text = 'def child2'
         # Set c.p in the command.
         x.c.selectPosition(grand_child)
         p, pos, newpos = x.do_find_prev(settings)
-        assert p and p.h == 'child 2', repr(p and p.h)
+        assert p
+        self.assertEqual(p.h, 'child 2')
         s = p.b[pos:newpos]
-        assert s == settings.find_text, repr(s)
+        self.assertEqual(s, settings.find_text)
     #@+node:ekr.20210110073117.66: *4* TestFind.find-var
     def test_find_var(self):
         settings, x = self.settings, self.x
@@ -455,14 +454,8 @@ class TestFind(LeoUnitTest):
         )
         for level, h in table:
             p = g.findNodeAnywhere(c, h)
-        # i = 0
-        # for p in self.c.all_positions():
-            # level, h = table[i]
-            # i += 1
             self.assertEqual(p.h, h)
             self.assertEqual(p.level(), level)
-            # print(' '*p.level(), p.h)
-            # g.printObj(g.splitLines(p.b), tag=p.h)
     #@+node:ekr.20210110073117.70: *3* Tests of Helpers...
     #@+node:ekr.20210110073117.72: *4* TestFind.test_argument_errors
     def test_argument_errors(self):
