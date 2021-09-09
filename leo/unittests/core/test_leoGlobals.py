@@ -64,8 +64,7 @@ class TestGlobals(LeoUnitTest):
         )
         for ext, expected in table:
             result = g.comment_delims_from_extension(ext)
-            assert result==expected,'ext %s expected %s, got %s' % (
-                ext,expected,result)
+            self.assertEqual(result, expected, msg=repr(ext))
     #@+node:ekr.20210905203541.7: *3* TestGlobals.test_g_convertPythonIndexToRowCol
     def test_g_convertPythonIndexToRowCol(self):
         s1 = 'abc\n\np\nxy'
@@ -352,7 +351,7 @@ class TestGlobals(LeoUnitTest):
         )
         for s,expected in table:
             got = g.sanitize_filename(s)
-            assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
+            self.assertEqual(got, expected, msg=repr(s))
     #@+node:ekr.20210905203541.33: *3* TestGlobals.test_g_scanAtHeaderDirectives_header
     def test_g_scanAtHeaderDirectives_header(self):
         c = self.c
@@ -471,8 +470,7 @@ class TestGlobals(LeoUnitTest):
         )
         for language, expected in table:
             result = g.set_delims_from_language(language)
-            assert result==expected,'language %s expected %s, got %s' % (
-                language,expected,result)
+            self.assertEqual(result, expected, msg=language)
     #@+node:ekr.20210905203541.49: *3* TestGlobals.test_g_set_delims_from_string
     def test_g_set_delims_from_string(self):
         table = (
@@ -483,10 +481,9 @@ class TestGlobals(LeoUnitTest):
             ('xxxyyy','@comment a b c', ('a','b','c')),
             ('xxxyyy','a b c',          ('a','b','c')),
         )
-        for language,s,expected in table:
+        for language, s, expected in table:
             result = g.set_delims_from_string(s)
-            assert result==expected,'language %s expected %s, got %s' % (
-                language,expected,result)
+            self.assertEqual(result, expected, msg=language)
     #@+node:ekr.20210905203541.50: *3* TestGlobals.test_g_skip_blank_lines
     def test_g_skip_blank_lines(self):
         end = g.skip_blank_lines("",0)

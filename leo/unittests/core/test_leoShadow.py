@@ -855,8 +855,7 @@ class TestAtShadow(LeoUnitTest):
             delims = g.set_delims_from_language(language)
             marker = x.Marker(delims)
             result = marker.isSentinel(s)
-            assert result==expected,'language %s s: %s expected %s got %s' % (
-                language,s,expected,result)
+            self.assertEqual(result, expected)
     #@+node:ekr.20210902210552.4: *4* TestShadow.test_marker_isVerbatimSentinel
     def test_marker_isVerbatimSentinel(self):
         c = self.c
@@ -874,12 +873,11 @@ class TestAtShadow(LeoUnitTest):
             ('html','<!--@verbatim -->',True),
             ('xxxx','#--unknown-language--@verbatim',True)
         )
-        for language,s,expected in table:
+        for language, s, expected in table:
             delims = g.set_delims_from_language(language)
             marker = x.Marker(delims)
             result = marker.isVerbatimSentinel(s)
-            assert result==expected,'language %s s: %s expected %s got %s' % (
-                language,s,expected,result)
+            self.assertEqual(result, expected)
     #@+node:ekr.20210902210552.5: *4* TestShadow.test_x_baseDirName
     def test_x_baseDirName(self):
         c = self.c
@@ -911,10 +909,9 @@ class TestAtShadow(LeoUnitTest):
             ('html',('<!--@+leo-->','a'),                '<!--@+leo-->'),
             ('html',('<!--@first-->','<!--@+leo-->','b'),'<!--@+leo-->'),
         )
-        for language,lines,expected in table:
+        for language, lines, expected in table:
             result = x.findLeoLine(lines)
-            assert expected==result, 'language %s expected %s got %s lines %s' % (
-                language,expected,result,'\n'.join(lines))
+            self.assertEqual(expected, result)
     #@+node:ekr.20210902210552.8: *4* TestShadow.test_x_makeShadowDirectory
     def test_x_makeShadowDirectory(self):
         c = self.c
@@ -961,14 +958,12 @@ class TestAtShadow(LeoUnitTest):
             ('py','#',''),
             ('xyzzy','#--unknown-language--',''),
         )
-        for ext,delim1,delim2 in table:
+        for ext, delim1, delim2 in table:
             filename = 'x.%s' % ext
             marker = x.markerFromFileName(filename)
             result1,result2 = marker.getDelims()
-            assert delim1==result1, 'ext=%s, got %s, expected %s' % (
-                ext,delim1,result1)
-            assert delim2==result2, 'ext=%s, got %s, expected %s' % (
-                ext,delim2,result2)
+            self.assertEqual(delim1, result1)
+            self.assertEqual(delim2, result2)
     #@+node:ekr.20210902210552.11: *4* TestShadow.test_x_pathName
     def test_x_pathName(self):
         c = self.c

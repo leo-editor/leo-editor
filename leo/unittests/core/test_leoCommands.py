@@ -229,7 +229,7 @@ class TestCommands(LeoUnitTest):
             if g.isWindows:
                 expected = expected.replace('\\','/')
             got = c.expand_path_expression(s)
-            assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
+            self.assertEqual(got, expected, msg=repr(s))
     #@+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
     def test_c_findMatchingBracket(self):
         c, w = self.c, self.c.frame.body.wrapper
@@ -493,8 +493,7 @@ class TestCommands(LeoUnitTest):
         )
         for ext,result in table:
             result2 = efc.compute_ext(c,p,ext)
-            assert result==result2,'ext: %s, expected %s, got %s' % (
-                repr(ext),repr(result),repr(result2))
+            self.assertEqual(result, result2, msg=repr(ext))
     #@+node:ekr.20210906075242.24: *3* TestCommands.test_efc_compute_temp_file_path
     def test_efc_compute_temp_file_path(self):
         c = self.c
