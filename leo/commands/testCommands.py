@@ -146,6 +146,11 @@ def test_leo_client_and_server(event=None):
 def test_nodes(event=None):
     """Run all unit tests for leoNodes.py."""
     g.run_unit_tests('leo.unittests.core.test_leoNodes.TestNodes')
+#@+node:ekr.20210909091424.1: *3* test-persistence
+@g.command('test-persistence')
+def test_persistence(event=None):
+    """Run all unit tests for leoPersistence.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoPersistence.TestPersistence')
 #@+node:ekr.20210907103024.27: *3* test-plugins
 @g.command('test-plugins')
 def test_plugins(event=None):
