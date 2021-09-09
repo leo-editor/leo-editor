@@ -5,6 +5,7 @@
 """Tests for leo.core.leoGlobals"""
 
 import os
+import stat
 import sys
 import textwrap
 from leo.core import leoGlobals as g
@@ -49,9 +50,9 @@ class TestGlobals(LeoUnitTest):
             assert g.CheckVersion(v1,v2,condition=condition,trace=False)
     #@+node:ekr.20210905203541.5: *3* TestGlobals.test_g_CheckVersionToInt
     def test_g_CheckVersionToInt(self):
-        assert g.CheckVersionToInt('12') == 12,'fail 1'
-        assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
-        assert g.CheckVersionToInt('b2') == 0, 'fail 3'
+        self.assertEqual(g.CheckVersionToInt('12'), 12)
+        self.assertEqual(g.CheckVersionToInt('2a5'), 2)
+        self.assertEqual(g.CheckVersionToInt('b2'), 0)
     #@+node:ekr.20210905203541.6: *3* TestGlobals.test_g_comment_delims_from_extension
     def test_g_comment_delims_from_extension(self):
         # New in Leo 4.6, set_delims_from_language returns '' instead of None.
@@ -122,11 +123,11 @@ class TestGlobals(LeoUnitTest):
             (9,(3,2)),
             (10,(4,0)), # One two many.
         )
-        for s,table in ((s1,table1),(s2,table2)):
-            for i,data in table:
+        for s, table in ((s1,table1),(s2,table2)):
+            for i, data in table:
                 row,col = data
                 result = g.convertRowColToPythonIndex(s,row,col)
-                assert i == result, 'row: %d, col: %d, expected: %d, got: %s' % (row,col,i,result)
+                self.assertEqual(i, result, msg=f"row: {row}, col: {col}, i: {i}")
     #@+node:ekr.20210905203541.9: *3* TestGlobals.test_g_create_temp_file
     def test_g_create_temp_file(self):
         theFile = None
@@ -247,7 +248,6 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
     def test_g_handleUrl(self):
         c = self.c
-        import sys
         if sys.platform.startswith('win'):
             file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
             fn1 = 'LeoDocs.leo#'
@@ -328,17 +328,6 @@ class TestGlobals(LeoUnitTest):
             (' \t \n\n  \n c\n\t\n', ' c\n'),
         ):
             result = g.removeBlankLines(s)
-            assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-                repr(s),repr(expected),repr(result))
-    #@+node:ekr.20210905203541.29: *3* TestGlobals.test_g_removeExtraLws
-    def test_g_removeExtraLws(self):
-        c = self.c
-        self.skipTest('g.removeExtraLws no longer exists')
-        for s,expected in (
-            (' a\n b\n c', 'a\nb\nc'),
-            (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
-        ):
-            result = g.removeExtraLws(s,c.tab_width)
             assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
                 repr(s),repr(expected),repr(result))
     #@+node:ekr.20210905203541.30: *3* TestGlobals.test_g_removeLeadingBlankLines
@@ -591,8 +580,6 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.56: *3* TestGlobals.test_g_warnOnReadOnlyFile
     def test_g_warnOnReadOnlyFile(self):
         c = self.c
-        import os,stat
-
         fc = c.fileCommands
         path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
         if os.path.exists(path):

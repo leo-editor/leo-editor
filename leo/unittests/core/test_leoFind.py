@@ -289,19 +289,20 @@ class TestFind(LeoUnitTest):
         settings, x = self.settings, self.x
         settings.find_text = 'def top1'
         p, pos, newpos = x.do_find_next(settings)
-        assert p and p.h == 'Node 1', repr(p)
+        assert p
+        self.assertEqual(p.h, 'Node 1')
         s = p.b[pos:newpos]
-        assert s == settings.find_text, repr(s)
+        self.assertEqual(s, settings.find_text)
     #@+node:ekr.20210220072631.1: *4* TestFind.find-next (suboutline-only)
     def test_find_next_suboutline_only(self):
         settings, x = self.settings, self.x
         settings.find_text = 'def root()'
-        settings.suboutline_only = True
-            # init_ivars_from_settings will set the ivar.
+        settings.suboutline_only = True # init_ivars_from_settings will set the ivar.
         p, pos, newpos = x.do_find_next(settings)
-        assert p and p.h == 'Root', repr(p)  # Test2
+        assert p
+        self.assertEqual(p.h, 'Root')
         s = p.b[pos:newpos]
-        assert s == settings.find_text, repr(s)  # Test 2.
+        self.assertEqual(s, settings.find_text)
     #@+node:ekr.20210216094444.1: *4* TestFind.find-prev
     def test_find_prev(self):
         c, settings, x = self.c, self.settings, self.x
@@ -322,9 +323,10 @@ class TestFind(LeoUnitTest):
     def test_find_var(self):
         settings, x = self.settings, self.x
         p, pos, newpos = x.do_find_var(settings, word='v5')
-        assert p and p.h == 'child 5', repr(p)
+        assert p
+        self.assertEqual(p.h, 'child 5')
         s = p.b[pos:newpos]
-        assert s == 'v5 =', repr(s)
+        self.assertEqual(s, 'v5 =')
     #@+node:ekr.20210110073117.68: *4* TestFind.replace-then-find
     def test_replace_then_find(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
@@ -332,9 +334,10 @@ class TestFind(LeoUnitTest):
         settings.change_text = 'def top'
         # find-next
         p, pos, newpos = x.do_find_next(settings)
-        assert p and p.h == 'Node 1', p.h
+        assert p
+        self.assertEqual(p.h, 'Node 1')
         s = p.b[pos:newpos]
-        assert s == settings.find_text, repr(s)
+        self.assertEqual(s, settings.find_text)
         # replace-then-find
         w.setSelectionRange(pos, newpos, insert=pos)
         x.do_change_then_find(settings)
@@ -350,7 +353,7 @@ class TestFind(LeoUnitTest):
         # find-next
         p, pos, newpos = x.do_find_next(settings)
         s = p.b[pos:newpos]
-        assert s == 'def top1', repr(s)
+        self.assertEqual(s, 'def top1')
         # replace-then-find
         w.setSelectionRange(pos, newpos, insert=pos)
         x.do_change_then_find(settings)
@@ -363,11 +366,12 @@ class TestFind(LeoUnitTest):
         settings.in_headline = True
         # find-next
         p, pos, newpos = x.do_find_next(settings)
-        assert p and p.h == settings.find_text, p.h
+        assert p
+        self.assertEqual(p.h, settings.find_text)
         w = self.c.edit_widget(p)
         assert w
         s = p.h[pos:newpos]
-        assert s == settings.find_text, repr(s)
+        self.assertEqual(s, settings.find_text)
     #@+node:ekr.20210110073117.69: *4* TestFind.tag-children
     def test_tag_children(self):
 
@@ -407,14 +411,14 @@ class TestFind(LeoUnitTest):
             root=c.rootPosition(),
             replacements=((r'^Node\b', 'DEF'),),
             settings=settings)
-        assert n == 2, n  # Test 2.
+        self.assertEqual(n, 2)
         # Test 3: node-only.
         settings['node_only'] = True
         n = x.batch_change(
             root=c.rootPosition(),
             replacements=((r'^DEF\b', 'def'),),
             settings=settings)
-        assert n == 1, n  # Text 3.
+        self.assertEqual(n, 1)
         # Test 4: suboutline-only.
         settings['node_only'] = False
         settings['suboutline_only'] = True
@@ -422,7 +426,7 @@ class TestFind(LeoUnitTest):
             root=c.rootPosition(),
             replacements=((r'^def\b', 'DEF'),),
             settings=settings)
-        assert n == 1, n  # Test 4.
+        self.assertEqual(n, 1)
     #@+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
     def test_batch_change_word(self):
         # settings, x = self.settings, self.x
@@ -479,7 +483,8 @@ class TestFind(LeoUnitTest):
             x.init_ivars_from_settings(settings)
             s = 'abc b z'
             count, s2 = x.batch_plain_replace(s)
-            assert count == 2 and s2 == 'aBc B z', (ignore, count, repr(s2))
+            self.assertEqual(count, 2, msg=f"ignore: {ignore}")
+            self.assertEqual(s2, 'aBc B z', msg=f"ignore: {ignore}")
     #@+node:ekr.20210110073117.75: *4* TestFind.test_batch_regex_replace
     def test_batch_regex_replace(self):
         settings, x = self.settings, self.x
@@ -495,11 +500,8 @@ class TestFind(LeoUnitTest):
             settings.change_text = change
             x.init_ivars_from_settings(settings)
             actual_count, actual_s = x.batch_regex_replace(s)
-            assert actual_count == count and actual_s == expected_s, (
-                f"ignore: {ignore} find: {find} change {change}\n"
-                f"expected count: {count} s: {expected_s}\n"
-                f"     got count: {actual_count} s: {actual_s}")
-
+            self.assertEqual(actual_count, count, msg=find)
+            self.assertEqual(actual_s, expected_s, msg=find)
     #@+node:ekr.20210110073117.73: *4* TestFind.test_batch_word_replace
     def test_batch_word_replace(self):
         settings, x = self.settings, self.x
@@ -510,7 +512,8 @@ class TestFind(LeoUnitTest):
             x.init_ivars_from_settings(settings)
             s = 'abc b z'
             count, s2 = x.batch_word_replace(s)
-            assert count == 1 and s2 == 'abc B z', (ignore, count, repr(s2))
+            self.assertEqual(count, 1)
+            self.assertEqual(s2, 'abc B z')
     #@+node:ekr.20210110073117.71: *4* TestFind.test_cfa_backwards_search
     def test_cfa_backwards_search(self):
         settings, x = self.settings, self.x
@@ -569,14 +572,6 @@ class TestFind(LeoUnitTest):
         x.re_obj = None
         backwards = pattern = nocase = None
         x._inner_search_regex("", 0, 0, pattern, backwards, nocase)
-
-        # for change_text, groups, expected in table:
-            # result = x.make_regex_subs(change_text, groups)
-            # assert result == expected, (
-                # f"change_text: {change_text}\n"
-                # f"     groups: {groups}\n"
-                # f"   expected: {expected}\n"
-                # f"        got: {result}")
     #@+node:ekr.20210110073117.76: *4* TestFind.test_check_args
     def test_check_args(self):
         # Bad search patterns..
@@ -688,7 +683,7 @@ class TestFind(LeoUnitTest):
                 got_i, got_j = x._inner_search_plain(s, i, j, pattern,
                     nocase=nocase, word=word)
                 got = s[got_i: got_j]
-                assert expected==got and got_i == expected_i and got_j == expected_j, (
+                assert expected == got and got_i == expected_i and got_j == expected_j, (
                     '\n     table: %s'
                     '\n    i test: %s'
                     '\n   pattern: %r'
@@ -765,13 +760,6 @@ class TestFind(LeoUnitTest):
         m = x.re_obj.search('test pattern')  # The find pattern.
         change_text = r'\1Pattern\2'  # \2 is non-matching group.
         x.make_regex_subs(change_text, m.groups())
-
-        # OLD
-        # groups = (r"f'", r"line\n")
-        # change_text = r"""\1 AA \2 BB \3'"""
-        # expected = r"""f' AA line\\n BB \3'"""
-        # result = x.makeRegexSubs(change_text, groups)
-        # assert result == expected, (expected, result)
     #@+node:ekr.20210110073117.84: *4* TestFind.test_next_node_after_fail
     def test_fnm_next_after_fail(self):
         settings, x = self.settings, self.x
@@ -809,9 +797,8 @@ class TestFind(LeoUnitTest):
             fc.find_text = find
             fc.change_text = change
             count2, result2 = fc._change_all_plain(s)
-            assert result == result2, 'expected result: %r: got: %r' % (result, result2)
-            assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
-        # print('pass')
+            self.assertEqual(result, result2)
+            self.assertEqual(count, count2)
     #@+node:ekr.20210829203927.3: *4* TestFind.test_replace_all_plain_search_ignore_case
     def test_replace_all_plain_search_ignore_case(self):
         c = self.c
@@ -826,9 +813,8 @@ class TestFind(LeoUnitTest):
             fc.find_text = find
             fc.change_text = change
             count2, result2 = fc._change_all_plain(s)
-            assert result == result2, 'expected result: %r: got: %r' % (result, result2)
-            assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
-        # print('pass')
+            self.assertEqual(result, result2)
+            self.assertEqual(count, count2)
     #@+node:ekr.20210829203927.4: *4* TestFind.test_replace_all_regex_search
     def test_replace_all_regex_search(self):
         c = self.c
@@ -845,9 +831,8 @@ class TestFind(LeoUnitTest):
             fc.find_text = find
             fc.change_text = change
             count2, result2 = fc._change_all_regex(s)
-            assert result == result2, 'expected result: %r: got: %r' % (result, result2)
-            assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
-        # print('pass')
+            self.assertEqual(result, result2)
+            self.assertEqual(count, count2)
     #@+node:ekr.20210829203927.5: *4* TestFind.test_replace_all_word_search
     def test_replace_all_word_search(self):
         c = self.c
@@ -862,9 +847,8 @@ class TestFind(LeoUnitTest):
             fc.find_text = find
             fc.change_text = change
             count2, result2 = fc._change_all_word(s)
-            assert result == result2, 'expected result: %r: got: %r' % (result, result2)
-            assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
-        # print('pass')
+            self.assertEqual(result, result2)
+            self.assertEqual(count, count2)
     #@+node:ekr.20210829203927.6: *4* TestFind.test_replace_all_word_search_ignore_case
     def test_replace_all_word_search_ignore_case(self):
         c = self.c
@@ -879,9 +863,8 @@ class TestFind(LeoUnitTest):
             fc.find_text = find
             fc.change_text = change
             count2, result2 = fc._change_all_word(s)
-            assert result == result2, 'expected result: %r: got: %r' % (result, result2)
-            assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
-        # print('pass')
+            self.assertEqual(result, result2)
+            self.assertEqual(count, count2)
     #@+node:ekr.20210829203927.14: *4* TestFind.test_replace_back_slashes
     def test_replace_back_slashes(self):
         c = self.c
@@ -909,10 +892,7 @@ class TestFind(LeoUnitTest):
         )
         for s, expected in table:
             result = x._switch_style(s)
-            assert result == expected, (
-                f"       s: {s}\n"
-                f"expected: {expected!r}\n"
-                f"     got: {result!r}")
+            self.assertEqual(result, expected, msg=repr(s))
     #@-others
 #@-others
 
