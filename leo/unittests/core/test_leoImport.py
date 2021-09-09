@@ -3019,7 +3019,8 @@ class TestImporter(LeoUnitTest):
         p = c.p
         c.importCommands.pythonUnitTest(p, s=s)
         root = p.lastChild()
-        assert root and root.h == '@file test', root.h
+        assert root
+        self.assertEqual(root.h, '@file test')
         after = p.nodeAfterTree()
         p = root.firstChild()
         for n, h in table:
@@ -3028,7 +3029,7 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(h, p.h)
             self.assertEqual(n, n2)
             p.moveToThreadNext()
-        assert p == after, p
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.97: *5* TestImport.test_python_trailing_comment
     def test_python_trailing_comment(self):
         c = self.c
@@ -3110,7 +3111,7 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         child = p.firstChild()
         n = child.numberOfChildren()
-        assert n == 2, 'expected 2 children, got %s' % n
+        self.assertEqual(n, 2)
     #@+node:ekr.20210904065459.102: *5* TestImport.test_python_unittest_perfectImport_formatter_py
     def test_python_unittest_perfectImport_formatter_py(self):
         c = self.c
@@ -3720,14 +3721,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.markdownUnitTest(c.p, s=s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
-        assert root.h == '@auto-md test', root.h
+        self.assertEqual(root.h, '@auto-md test')
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
             self.assertEqual(h, p.h)
             self.assertEqual(n, n2)
             p.moveToThreadNext()
-        assert p == after, p.h
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.110: *4* TestImport.test_md_import_test_rst_style
     def test_md_import_test_rst_style(self):
         c = self.c
@@ -3778,14 +3779,14 @@ class TestImporter(LeoUnitTest):
         p = c.p
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@auto-md test', root.h
+        self.assertEqual(root.h, '@auto-md test')
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
             self.assertEqual(h, p.h)
             self.assertEqual(n, n2)
             p.moveToThreadNext()
-        assert p == after, p.h
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.111: *4* TestImport.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
         c = self.c
@@ -3814,7 +3815,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.markdownUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-md test', root.h
+        self.assertEqual(root.h, '@auto-md test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -3855,7 +3856,7 @@ class TestImporter(LeoUnitTest):
             # cause the perfect-import test to fail!
         c.importCommands.markdownUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-md test', root.h
+        self.assertEqual(root.h, '@auto-md test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -3884,7 +3885,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.markdownUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-md test', root.h
+        self.assertEqual(root.h, '@auto-md test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -3954,7 +3955,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-rst test', root.h
+        self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -3986,7 +3987,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-rst test', root.h
+        self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4054,7 +4055,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-rst test', root.h
+        self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4083,7 +4084,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-rst test', root.h
+        self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4113,7 +4114,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@auto-rst test', root.h
+        self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4146,7 +4147,7 @@ class TestImporter(LeoUnitTest):
         p = c.p
         c.importCommands.rstUnitTest(p, s=s)
         root = p.lastChild()
-        assert root.h == '@auto-rst test', root.h
+        self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4186,7 +4187,7 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.rstUnitTest(c.p, s=s) 
         root = c.p.lastChild()
-        assert root.h == '@auto-rst test', root.h
+        self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
         assert p2, g.tree_to_string(c)
         for h in table:
@@ -4217,8 +4218,7 @@ class TestImporter(LeoUnitTest):
                 c.importCommands,
                 language = language,
             )
-            # print('%s %r' % (language, importer.comment_delim))
-            assert importer.single_comment == '#', importer.single_comment
+            self.assertEqual(importer.single_comment, '#')
             if 0:
                 for line in lines_table:
                     lines = [line]
@@ -4236,7 +4236,7 @@ class TestImporter(LeoUnitTest):
         ]
         importer = linescanner.Importer(c.importCommands, language='python')
         for val, s in table:
-            assert val == importer.get_str_lws(s), (val, repr(s))
+            self.assertEqual(val, importer.get_str_lws(s), msg=repr(s))
     #@+node:ekr.20210904065459.125: *4* TestImport.test_Importer_is_ws_line
     def test_Importer_is_ws_line(self):
         c = self.c
@@ -4248,13 +4248,13 @@ class TestImporter(LeoUnitTest):
         ]
         importer = linescanner.Importer(c.importCommands, language = 'python')
         for val, s in table:
-            assert val == importer.is_ws_line(s), (val, repr(s))
+            self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
     #@+node:ekr.20210904065459.126: *4* TestImport.test_importers_coffee_scan_line
     def test_importers_coffee_scan_line(self):
         c = self.c
         table = [] # State after line, line
         x = cs.CS_Importer(c.importCommands, atAuto=True)
-        assert x.single_comment == '#', x.single_comment
+        self.assertEqual(x.single_comment, '#')
         for new_state, line in table:
             print('%5s %r' % (new_state, line))
         if 0:
@@ -4271,9 +4271,8 @@ class TestImporter(LeoUnitTest):
             ('void foo() {', 'void foo'),
         )
         for s, expected in table:
-            # print('%20s ==> %s' % (s, x.clean_headline(s)))
             got = x.clean_headline(s)
-            assert got == expected
+            self.assertEqual(got, expected)
     #@+node:ekr.20210904065459.128: *4* TestImport.test_importers_markdown_is_hash
     def test_importers_markdown_is_hash(self):
         c = self.c
@@ -4289,8 +4288,8 @@ class TestImporter(LeoUnitTest):
         for data in table:
             level, name, line = data
             level2, name2 = x.is_hash(line)
-            assert level == level2
-            assert name == name2
+            self.assertEqual(level, level2)
+            self.assertEqual(name, name2)
         level3, name = x.is_hash('Not a hash')
         assert level3 is None
         assert name is None
@@ -4315,7 +4314,7 @@ class TestImporter(LeoUnitTest):
         state = g.Bunch(context='')
         for line, cleaned in table:
             assert x.starts_block(0, [line], state, state)
-            assert x.clean_headline(line) == cleaned
+            self.assertEqual(x.clean_headline(line), cleaned)
     #@+node:ekr.20210904065459.132: *4* TestImport.test_importers_xml_is_ws_line
     def test_importers_xml_is_ws_line(self):
         c = self.c
@@ -4331,7 +4330,7 @@ class TestImporter(LeoUnitTest):
         )
         for expected, line in table:
             got = x.is_ws_line(line)
-            assert expected == got, (expected, int(got), repr(line))
+            self.assertEqual(expected, got, msg=repr(line))
     #@+node:ekr.20210904065459.133: *4* TestImport.test_importers_xml_scan_line
     def test_importers_xml_scan_line(self):
         c = self.c

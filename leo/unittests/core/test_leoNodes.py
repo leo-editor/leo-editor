@@ -121,8 +121,8 @@ class TestNodes(LeoUnitTest):
         self.assertTrue(child)
         c.selectPosition(child)
         clone = c.clone()
-        assert clone == c.p
-        assert clone.h == 'child','fail headstring: %s' % clone.h
+        self.assertEqual(clone, c.p)
+        self.assertEqual(clone.h, 'child')
         assert child.isCloned(), 'fail 1'
         assert clone.isCloned(), 'fail 2'
         assert child.isCloned(), 'fail 3'
@@ -248,28 +248,28 @@ class TestNodes(LeoUnitTest):
         c.deleteOutline()
         c.redraw_now()
         p = c.p
-        assert p.h == 'A', 'fail 1: got %s' % p.h
-        assert p.next().h == 'C', 'fail 2'
+        self.assertEqual(p.h, 'A')
+        self.assertEqual(p.next().h, 'C')
         c.undoer.undo()
         c.outerUpdate()
         p = c.p
-        assert p.back() == p2, 'fail 4 %s' % p.back()
-        assert p.next() == p4, 'fail 5'
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p4)
         c.undoer.redo()
         c.outerUpdate()
         p = c.p
-        assert p.h == 'A',          'fail 1-2'
-        assert p.next().h == 'C',   'fail 2-2'
+        self.assertEqual(p.h, 'A')
+        self.assertEqual(p.next().h, 'C')
         c.undoer.undo()
         c.outerUpdate()
         p = c.p
-        assert p.back() == p2,  'fail 4-2'
-        assert p.next() == p4,  'fail 5-2'
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p4)
         c.undoer.redo()
         c.outerUpdate()
         p = c.p
-        assert p.h == 'A',          'fail 1-3'
-        assert p.next().h == 'C',   'fail 2-3'
+        self.assertEqual(p.h, 'A')
+        self.assertEqual(p.next().h, 'C')
     #@+node:ekr.20210830095545.44: *4* TestNodes.test_deleting_the_root_should_select_another_node
     def test_deleting_the_root_should_select_another_node(self):
         c, p = self.c, self.c.p
@@ -298,32 +298,32 @@ class TestNodes(LeoUnitTest):
         c.setCurrentPosition(p3)
         c.demote()
         p = c.p
-        assert p == p3,         'fail 1'
-        assert p.h == 'B',      'fail 2'
-        assert not p.next(),    'fail 3'
-        assert p.firstChild().h == 'C',          'fail child 1'
-        assert p.firstChild().next().h == 'D',   'fail child 2'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.h, 'B')
+        assert not p.next()
+        self.assertEqual(p.firstChild().h, 'C')
+        self.assertEqual(p.firstChild().next().h, 'D')
         c.undoer.undo()
         p = c.p
-        assert p == p3
-        assert p.back() == p2, 'fail 5'
-        assert p.next() == p4, 'fail 6'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p4)
         c.undoer.redo()
-        assert p == p3,         'fail 1-2'
-        assert p.h == 'B',      'fail 2-2'
-        assert not p.next(),    'fail 3-2'
-        assert p.firstChild().h == 'C',         'fail child 1-2'
-        assert p.firstChild().next().h == 'D',  'fail child 2-2'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.h, 'B')
+        assert not p.next()
+        self.assertEqual(p.firstChild().h, 'C')
+        self.assertEqual(p.firstChild().next().h, 'D')
         c.undoer.undo()
         p = c.p
-        assert p.back() == p2, 'fail 4-2'
-        assert p.next() == p4, 'fail 5-2'
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p4)
         c.undoer.redo()
-        assert p == p3,         'fail 1-3'
-        assert p.h == 'B',      'fail 2-3'
-        assert not p.next(),    'fail 3-3'
-        assert p.firstChild().h == 'C',         'fail child 1-3'
-        assert p.firstChild().next().h == 'D',  'fail child 2-3'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.h, 'B')
+        assert not p.next()
+        self.assertEqual(p.firstChild().h, 'C')
+        self.assertEqual(p.firstChild().next().h, 'D')
     #@+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
         c, p = self.c, self.c.p
@@ -369,19 +369,19 @@ class TestNodes(LeoUnitTest):
         v = p.v
         b = p.b
         p.b = b
-        assert p.b == b
+        self.assertEqual(p.b, b)
         v.b = b
-        assert v.b == b
+        self.assertEqual(v.b, b)
         h = p.h
         p.h = h
-        assert p.h == h
+        self.assertEqual(p.h, h)
         v.h = h
-        assert v.h == h
+        self.assertEqual(v.h, h)
         for p in c.all_positions():
-            assert p.b == p.bodyString()
-            assert p.v.b == p.v.bodyString()
-            assert p.h == p.headString()
-            assert p.v.h == p.v.headString()
+            self.assertEqual(p.b, p.bodyString())
+            self.assertEqual(p.v.b, p.v.bodyString())
+            self.assertEqual(p.h, p.headString())
+            self.assertEqual(p.v.h, p.v.headString())
     #@+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down__undo_redo
     def test_move_outline_down__undo_redo(self):
         c, p = self.c, self.c.p
@@ -397,30 +397,28 @@ class TestNodes(LeoUnitTest):
         c.setCurrentPosition(p3)
         c.moveOutlineDown()
         moved = c.p
-        assert moved.h == 'B',          'fail 1: %s' % moved.h
-        assert moved.back().h == 'C',   'fail 2'
-        assert moved.next().h == 'D',   'fail 3'
-        # This assert fails because p4._childIndex != moved.back()._childIndex.
-        # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
-        assert moved.next() == p5,      'fail 5: %s != %s' % (moved.next(),p5)
+        self.assertEqual(moved.h, 'B')
+        self.assertEqual(moved.back().h, 'C')
+        self.assertEqual(moved.next().h, 'D')
+        self.assertEqual(moved.next(), p5)
         c.undoer.undo()
         moved = c.p
-        assert moved.back() == p2,      'fail 4'
-        assert moved.next() == p4,      'fail 5'
+        self.assertEqual(moved.back(), p2)
+        self.assertEqual(moved.next(), p4)
         c.undoer.redo()
         moved = c.p
-        assert moved.h == 'B',          'fail 1-2: %s' % moved.h
-        assert moved.back().h == 'C',   'fail 2-2'
-        assert moved.next().h == 'D',   'fail 3-2'
+        self.assertEqual(moved.h, 'B')
+        self.assertEqual(moved.back().h, 'C')
+        self.assertEqual(moved.next().h, 'D')
         c.undoer.undo()
         moved = c.p
-        assert moved.back() == p2,      'fail 4-2'
-        assert moved.next() == p4,      'fail 5-2'
+        self.assertEqual(moved.back(), p2)
+        self.assertEqual(moved.next(), p4)
         c.undoer.redo()
         moved = c.p
-        assert moved.h == 'B',          'fail 1-3'
-        assert moved.back().h == 'C',   'fail 2-3'
-        assert moved.next().h == 'D',   'fail 3-3'
+        self.assertEqual(moved.h, 'B')
+        self.assertEqual(moved.back().h, 'C')
+        self.assertEqual(moved.next().h, 'D')
     #@+node:ekr.20210830095545.48: *4* TestNodes.test_move_outline_left
     def test_move_outline_left(self):
         c, p = self.c, self.c.p
@@ -430,9 +428,8 @@ class TestNodes(LeoUnitTest):
         c.setCurrentPosition(p2)
         c.moveOutlineLeft()
         moved = c.p
-        assert moved.h == 'A','fail 1'
-        # This assert fails because p2._childIndex != moved.back()._childIndex.
-        assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p2)
+        self.assertEqual(moved.h, 'A')
+        self.assertEqual(moved.back(), p)
         c.undoer.undo()
         c.undoer.redo()
         c.undoer.undo()
@@ -451,8 +448,8 @@ class TestNodes(LeoUnitTest):
         c.setCurrentPosition(p3)
         c.moveOutlineRight()
         moved = c.p
-        assert moved.h == 'B', 'fail 1'
-        assert moved.parent() == p2
+        self.assertEqual(moved.h, 'B')
+        self.assertEqual(moved.parent(), p2)
         c.undoer.undo()
         c.undoer.redo()
         c.undoer.undo()
@@ -472,12 +469,10 @@ class TestNodes(LeoUnitTest):
         c.setCurrentPosition(p4)
         c.moveOutlineUp()
         moved = c.p
-        assert moved.h == 'C',          'fail 1'
-        assert moved.back().h == 'A',   'fail 2'
-        assert moved.next().h == 'B',   'fail 3'
-        assert moved.back() == p2,      'fail 4: %s != %s' % (moved.back(),p2)
-        # This assert fails because p4._childIndex != moved.back()._childIndex.
-        # assert moved.next() == p3,    'fail 5: %s != %s' % (moved.next(),p3)
+        self.assertEqual(moved.h, 'C')
+        self.assertEqual(moved.back().h, 'A')
+        self.assertEqual(moved.next().h, 'B')
+        self.assertEqual(moved.back(), p2)
         c.undoer.undo()
         c.undoer.redo()
         c.undoer.undo()
@@ -750,17 +745,17 @@ class TestNodes(LeoUnitTest):
         c.selectPosition(child)
         p.expand()
         c.selectPosition(child)
-        assert c.p.h == 'child','fail 1'
+        self.assertEqual(c.p.h, 'child')
         c.copyOutline()
         oldVnodes = [p2.v for p2 in child.self_and_subtree()]
         c.selectPosition(child)
         c.p.contract() # Essential
         c.pasteOutline()
-        assert c.p != child, 'fail 2'
-        assert c.p.h == 'child','fail 3'
+        assert c.p != child
+        self.assertEqual(c.p.h, 'child')
         newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
         for v in newVnodes:
-            assert v not in oldVnodes, 'fail 4'
+            assert v not in oldVnodes
         c.undoer.undo()
         c.undoer.redo()
         c.undoer.undo()
