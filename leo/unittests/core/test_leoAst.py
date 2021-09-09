@@ -105,34 +105,6 @@ def compare_lists(list1, list2):
         if s1 != s2:
             return i
     return None
-#@+node:ekr.20200106094631.1: *3* function: expected_got
-def expected_got(expected, got):
-    """Return a message, mostly for unit tests."""
-    #
-    # Let block.
-    e_lines = g.splitLines(expected)
-    g_lines = g.splitLines(got)
-    #
-    # Print all the lines.
-    result = ['\n']
-    result.append('Expected:\n')
-    for i, z in enumerate(e_lines):
-        result.extend(f"{i:3} {z!r}\n")
-    result.append('Got:\n')
-    for i, z in enumerate(g_lines):
-        result.extend(f"{i:3} {z!r}\n")
-    #
-    # Report first mismatched line.
-    for i, data in enumerate(zip(e_lines, g_lines)):
-        e_line, g_line = data
-        if e_line != g_line:
-            result.append(f"\nFirst mismatch at line {i}\n")
-            result.append(f"expected: {i:3} {e_line!r}\n")
-            result.append(f"     got: {i:3} {g_line!r}\n")
-            break
-    else:
-        result.append('\nDifferent lengths\n')
-    return ''.join(result)
 #@+node:ekr.20191226071135.1: *3* function: get_time
 def get_time():
     return time.process_time()
@@ -748,35 +720,26 @@ class TestFstringify(BaseTest):
             ("""print("%r" % "val")""",
              """print(f'{"val"!r}')\n"""),
         )
-        fails = []
         for i, data in enumerate(table):
             contents, expected = data
             description = f"test_single_quotes: {i}"
             contents, tokens, tree = self.make_data(contents, description)
             results = self.fstringify(contents, tokens, tree, filename=description)
-            if results != expected:
-                g.trace(expected_got(repr(expected), repr(results)))
-                fails.append(description)
-        assert not fails, fails
+            self.assertEqual(results, expected, msg=i)
     #@+node:ekr.20200214094938.1: *4* TestFstringify.test_switch_quotes
     def test_switch_quotes(self):
-
         table = (
             (
                 """print('%r' % 'style_name')""",
                 """print(f"{'style_name'!r}")\n""",
             ),
         )
-        fails = []
         for i, data in enumerate(table):
             contents, expected = data
             description = f"test_single_quotes: {i}"
             contents, tokens, tree = self.make_data(contents, description)
             results = self.fstringify(contents, tokens, tree, filename=description)
-            if results != expected:
-                g.trace(expected_got(expected, results))
-                fails.append(description)
-        assert not fails, fails
+            self.assertEqual(results, expected, msg=i)
     #@+node:ekr.20200206173725.1: *4* TestFstringify.test_switch_quotes_2
     def test_switch_quotes_2(self):
 
