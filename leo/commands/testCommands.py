@@ -154,7 +154,7 @@ def test_persistence(event=None):
 #@+node:ekr.20210907103024.27: *3* test-plugins
 @g.command('test-plugins')
 def test_plugins(event=None):
-    """Run all unit tests for leoPlugins.py."""
+    """Run all unit tests relating to plugins."""
     g.run_unit_tests('leo.unittests.test_plugins.TestPlugins')
 #@+node:ekr.20210907103024.28: *3* test-rst3
 @g.command('test-rst3')

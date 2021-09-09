@@ -15,7 +15,22 @@ assert g
 class TestPlugins(LeoUnitTest):
     """General tests of plugoins."""
     #@+others
-    #@+node:ekr.20210907082746.1: *3* TestPlugins.get_plugins
+    #@+node:ekr.20210909165100.1: *3*  TestPlugin.check_syntax
+    def check_syntax(self, filename):
+        with open(filename, 'r') as f:
+            s = f.read()
+        try:
+            s = s.replace('\r', '')
+            tree = compile(s + '\n', filename, 'exec')
+            # #1454: To suppress -Wd ResourceWarning.
+            del tree
+            return
+        except SyntaxError:
+            g.print_exception(full=True, color="black")
+            self.fail(f"syntax error in: {filename}")
+        except Exception:
+            self.fail(f"unexpected error in: {filename}")
+    #@+node:ekr.20210907082746.1: *3*  TestPlugins.get_plugins
     def get_plugins(self):
         """Return a list of all plugins *without* importing them."""
         excludes = (
@@ -42,6 +57,8 @@ class TestPlugins(LeoUnitTest):
             'qt_tree.py',
             'qt_quicksearch.py',
             'swing_gui.py',
+            # Experimental.
+            'leo_pdf.py',
         )
         plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
         plugins = g.os_path_abspath(plugins)
@@ -78,6 +95,34 @@ class TestPlugins(LeoUnitTest):
             if not re.search(pattern, s):
                 continue
             self.assertTrue(re.search(r"g\.assertUi\(['\"]qt['\"]\)", s), msg=fn)
+    #@+node:ekr.20210909161328.4: *3* TestPlugins.test_syntax_of_all_plugins
+    def test_syntax_of_all_plugins(self):
+        files = self.get_plugins()
+        for filename in files:
+            self.check_syntax(filename)
+    #@+node:ekr.20210909165720.1: *3* TestPlugins.xx_test_import_all_plugins
+    def xx_test_import_of_all_plugins(self):
+        # This works, but is slow.
+        files = self.get_plugins()
+        for filename in files:
+            plugin_module = g.shortFileName(filename)[:-3]
+            try:
+                exec(f"import leo.plugins.{plugin_module}")
+            except g.UiTypeException:
+                pass
+            except AttributeError:
+                pass
+            except ImportError:
+                pass
+    #@+node:ekr.20210909161328.2: *3* TestPlugins.test_c_vnode2position
+    def test_c_vnode2position(self):
+        c = self.c
+        for p in c.all_positions():
+            p2 = c.vnode2position(p.v)
+            # We can *not* assert that p == p2!
+            assert p2
+            self.assertEqual(p2.v, p.v)
+            assert c.positionExists(p2),'does not exist: %s' % p2
     #@-others
 #@-others
 #@-leo

@@ -5426,7 +5426,7 @@ def import_module(name, package=None):
     """
     A thin wrapper over importlib.import_module.
     """
-    trace = True or 'plugins' in g.app.debug
+    trace = 'plugins' in g.app.debug and not g.unitTesting
     exceptions = []
     try:
         m = importlib.import_module(name, package=package)

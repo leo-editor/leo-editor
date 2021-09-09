@@ -245,9 +245,11 @@ try:
     from leo.core.leoQt import QtWebKitWidgets
     QWebView = QtWebKitWidgets.QWebView
 except ImportError:
-    print("Freewin: Can't import QtWebKitWidgets")
+    if not g.unitTesting:
+        print("Freewin: Can't import QtWebKitWidgets")
 except AttributeError:
-    print("Freewin: limited RsT rendering in effect")
+    if not g.unitTesting:
+        print("Freewin: limited RsT rendering in effect")
 #@-<<import  QWebView>>
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
