@@ -111,7 +111,7 @@ class TestPersistence(LeoUnitTest):
         for unl, expected in table:
             result = pd.find_position_for_relative_unl(parent, unl)
             self.assertEqual(result, expected, msg=unl)
-    #@+node:ekr.20210908172651.19: *3* TestXXX.test_pd_find_representative_node
+    #@+node:ekr.20210908172651.19: *3* TestPersistence.test_pd_find_representative_node
     def test_pd_find_representative_node(self):
         pd = self.c.persistenceController
         root = self.root_p
@@ -123,9 +123,6 @@ class TestPersistence(LeoUnitTest):
         rep = pd.find_representative_node(root, inner_clone)
         assert rep
         self.assertEqual(rep, outer_clone)
-    #@+node:ekr.20210908172651.20: *4* root
-    #@+node:ekr.20210908172651.21: *5* clone
-    #@+node:ekr.20210908172651.22: *4* clone
     #@-others
 #@-others
 
