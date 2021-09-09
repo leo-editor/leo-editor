@@ -13,14 +13,7 @@ assert g
 class TestPersistence(LeoUnitTest):
     """Unit tests for leo/core/leoPersistence.py."""
     #@+others
-    #@+node:ekr.20210908171733.3: *3* TestPersistence.setUp
-    def setUp(self):
-        """Create the nodes in the commander."""
-        super().setUp()
-        c = self.c
-        self.create_test_outline()
-        c.selectPosition(c.rootPosition())
-    #@+node:ekr.20210908173748.1: *3* TestPersistence.create_test_outline
+    #@+node:ekr.20210908173748.1: *3*  TestPersistence.create_test_outline
     def create_test_outline(self):
         c = self.c
         # Add an @settings, @persistence and @gnx nodes.
@@ -34,8 +27,22 @@ class TestPersistence(LeoUnitTest):
             'gnx: ekr.20140923080452\n'
             'unl: node1\n'
         )
-    #@+node:ekr.20210909153739.1: *3* Pass..
-    #@+node:ekr.20210908172651.2: *4* TestPersistence.test_p_sort_key
+    #@+node:ekr.20210908171733.3: *3*  TestPersistence.setUp
+    def setUp(self):
+        """Create the nodes in the commander."""
+        super().setUp()
+        c = self.c
+        self.create_test_outline()
+        c.selectPosition(c.rootPosition())
+    #@+node:ekr.20210908172651.44: *3* TestPersistence.test_delete_all_children_of_persistence_node
+    def test_delete_all_children_of_persistence_node(self):
+        c, pd = self.c, self.c.persistenceController
+        persistence = g.findNodeAnywhere(c,'@persistence')
+        assert persistence
+        assert pd.has_at_persistence_node()
+        persistence.deleteAllChildren()
+        assert persistence
+    #@+node:ekr.20210908172651.2: *3* TestPersistence.test_p_sort_key
     def test_p_sort_key(self):
         c, p = self.c, self.c.p
         aList = [z.copy() for z in c.all_positions()]
@@ -43,7 +50,7 @@ class TestPersistence(LeoUnitTest):
         for i, p in enumerate(aList2):
             p2 = aList[i]
             self.assertEqual(p, p2, msg=f"i: {i}, p.h: {p.h}. p2: {p2.h}")
-    #@+node:ekr.20210908172651.3: *4* TestPersistence.test_pd_find_at_data_and gnxs_nodes
+    #@+node:ekr.20210908172651.3: *3* TestPersistence.test_pd_find_at_data_and gnxs_nodes
     def test_pd_find_at__(self):
         pd = self.c.persistenceController
         # Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
@@ -54,7 +61,7 @@ class TestPersistence(LeoUnitTest):
         root.h = '@auto root' # Make root look like an @auto node.
         assert pd.find_at_data_node(root)
         assert pd.find_at_gnxs_node(root)
-    #@+node:ekr.20210908172651.9: *4* TestPersistence.test_pd_find_position_for_relative_unl
+    #@+node:ekr.20210908172651.9: *3* TestPersistence.test_pd_find_position_for_relative_unl
     def test_pd_find_position_for_relative_unl(self):
         p, pd = self.c.p, self.c.persistenceController
         parent = p.copy()
@@ -95,7 +102,7 @@ class TestPersistence(LeoUnitTest):
         for unl, expected in table:
             result = pd.find_position_for_relative_unl(parent, unl)
             self.assertEqual(result, expected, msg=unl)
-    #@+node:ekr.20210908172651.19: *4* TestPersistence.test_pd_find_representative_node
+    #@+node:ekr.20210908172651.19: *3* TestPersistence.test_pd_find_representative_node
     def test_pd_find_representative_node(self):
         pd = self.c.persistenceController
         root = self.root_p
@@ -107,7 +114,7 @@ class TestPersistence(LeoUnitTest):
         rep = pd.find_representative_node(root, inner_clone)
         assert rep
         self.assertEqual(rep, outer_clone)
-    #@+node:ekr.20210908172651.23: *4* TestPersistence.test_pd_has_at_gnxs_node
+    #@+node:ekr.20210908172651.23: *3* TestPersistence.test_pd_has_at_gnxs_node
     def test_pd_has_at_gnxs_node(self):
         c, pd = self.c, self.c.persistenceController
         # Set up the tree.
@@ -135,7 +142,7 @@ class TestPersistence(LeoUnitTest):
         gnxs2 = pd.has_at_gnxs_node(root)
         assert gnxs2
         self.assertEqual(gnxs, gnxs2,(gnxs,gnxs2))
-    #@+node:ekr.20210908172651.30: *4* TestPersistence.test_pd_restore_gnxs
+    #@+node:ekr.20210908172651.30: *3* TestPersistence.test_pd_restore_gnxs
     def test_pd_restore_gnxs(self):
         c, pd = self.c, self.c.persistenceController
         root = self.root_p
@@ -153,6 +160,30 @@ class TestPersistence(LeoUnitTest):
         # Test.
         root.deleteAllChildren()
         pd.restore_gnxs(gnxs, root)
+    #@+node:ekr.20210908172651.35: *3* TestPersistence.test_pd_unl
+    def test_pd_unl(self):
+        c, pd = self.c, self.c.persistenceController
+        root = self.root_p
+        node1 = root.insertAsLastChild()
+        node1.h = 'node1'
+        c.selectPosition(node1)
+        unl = pd.unl(c.p)
+        expected = f"-->{c.p.h}"
+        assert unl.endswith(expected), repr(unl)
+    #@+node:ekr.20210908172651.36: *3* TestPersistence.test_pd_update_before_write_foreign_file
+    def test_pd_update_before_write_foreign_file(self):
+        c, pd = self.c, self.c.persistenceController
+        root = self.root_p
+        assert root
+        persistence = pd.find_at_persistence_node()
+        assert persistence
+        persistence.deleteAllChildren()
+        root.h = '@auto root' # Make root look like an @auto node.
+        pd.update_before_write_foreign_file(root)
+        data = g.findNodeAnywhere(c, '@data:@auto root')
+        assert data
+        gnxs = g.findNodeInTree(c,data, '@gnxs')
+        assert gnxs
     #@-others
 #@-others
 
