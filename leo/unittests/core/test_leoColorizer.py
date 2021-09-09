@@ -1401,7 +1401,7 @@ class TestColorizer(LeoUnitTest):
     def test_scanColorDirectives(self):
         c = self.c
         language = g.findLanguageDirectives(c, c.p)
-        assert language == 'python','got:%s' % language
+        self.assertEqual(language, 'python')
     #@+node:ekr.20210905170507.40: *3* TestColorizer.test_vbscript
     def test_vbscript(self):
         text = textwrap.dedent("""\

@@ -159,7 +159,7 @@ class TestCommands(LeoUnitTest):
     def test_c_checkOutline(self):
         c = self.c
         errors = c.checkOutline()
-        assert errors == 0, "Check Outline reported %d errors" % errors
+        self.assertEqual(errors, 0)
     #@+node:ekr.20210901140645.15: *3* TestCommands.test_c_checkPythonCode
     def test_c_checkPythonCode(self):
         c = self.c
@@ -191,7 +191,7 @@ class TestCommands(LeoUnitTest):
             assert hasattr(c.config,ivar),ivar
             val = getattr(c.config,ivar)
             val2 = c.config.get(ivar,setting_type)
-            assert val == val2,"%s %s" % (val,val2)
+            self.assertEqual(val, val2)
     #@+node:ekr.20210906075242.4: *3* TestCommands.test_c_contractAllHeadlines
     def test_c_contractAllHeadlines(self):
         c = self.c
@@ -211,12 +211,12 @@ class TestCommands(LeoUnitTest):
         p2.setHeadString('aClone')
         c.selectPosition(p2)
         c.clone()
-        assert 2 == p.numberOfChildren()
+        self.assertEqual(2, p.numberOfChildren())
         # Select the first clone and demote (it should be illegal)
         c.selectPosition(p2)
         c.demote() # This should do nothing.
-        assert 0 == c.checkOutline(), 'fail 2'
-        assert 2 == p.numberOfChildren(), 'fail 3'
+        self.assertEqual(0, c.checkOutline())
+        self.assertEqual(2, p.numberOfChildren())
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
     def test_c_expand_path_expression(self):
         c = self.c
@@ -256,10 +256,10 @@ class TestCommands(LeoUnitTest):
         c.selectPosition(aaa)
         # Test.
         c.hoist() # New in Leo 5.3: should do nothing
-        assert c.p == aaa, 'fail 1'
+        self.assertEqual(c.p, aaa)
         c.dehoist() # New in Leo 5.3: should do nothing:
-        assert c.p == aaa, 'fail 2'
-        assert c.hoistStack == [], c.hoistStack
+        self.assertEqual(c.p, aaa)
+        self.assertEqual(c.hoistStack, [])
     #@+node:ekr.20210906075242.11: *3* TestCommands.test_c_hoist_followed_by_goto_first_node
     def test_c_hoist_followed_by_goto_first_node(self):
         c = self.c
@@ -277,7 +277,7 @@ class TestCommands(LeoUnitTest):
         c.hoist()
         c.goToFirstNode()
         assert not c.hoistStack # The hoist stack must be cleared to show the first node.
-        assert c.p == c.rootPosition()
+        self.assertEqual(c.p, c.rootPosition())
         assert c.p.isVisible(c)
     #@+node:ekr.20210906075242.12: *3* TestCommands.test_c_hoist_with_no_children
     def test_c_hoist_with_no_children(self):
@@ -526,8 +526,7 @@ class TestCommands(LeoUnitTest):
         )
         for obj,val in table:
             val2 = g.isCallable(obj)
-            assert val == val2,'%s, expected %s, got %s' % (
-                repr(obj),val,val2)
+            self.assertEqual(val, val2, msg=repr(obj))
     #@+node:ekr.20210901140645.27: *3* TestCommands.test_koi8_r_encoding
     def test_koi8_r_encoding(self):
         c, p = self.c, self.c.p
@@ -539,7 +538,7 @@ class TestCommands(LeoUnitTest):
         c.copyOutline()
         c.pasteOutline()
         p2 = p1.next()
-        assert p1.b == p2.b
+        self.assertEqual(p1.b, p2.b)
         
     #@+node:ekr.20210901140645.9: *3* TestCommands.test_official_commander_ivars
     def test_official_commander_ivars(self):

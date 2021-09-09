@@ -273,15 +273,17 @@ class TestFind(LeoUnitTest):
         # Now the main tests...
         # Test 1.
         p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
-        assert p and p.h == 'child 5', repr(p and p.h)  # Test 1.
+        assert p
+        self.assertEqual(p.h, 'child 5')
         s = p.b[pos:newpos]
-        assert s == 'def child5', repr(s)
+        self.assertEqual(s, 'def child5')
         # Test 2: switch style.
         p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
-        assert p and p.h == 'child 5', repr(p and p.h)  # Test 2.
+        assert p
+        self.assertEqual(p.h, 'child 5')
         # Test 3: not found after switching style.
         p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
-        assert p is None, repr(p)  # Test 3.
+        assert p is None, repr(p)
     #@+node:ekr.20210110073117.64: *4* TestFind.find-next
     def test_find_next(self):
         settings, x = self.settings, self.x

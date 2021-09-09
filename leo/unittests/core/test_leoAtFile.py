@@ -69,11 +69,9 @@ class TestAtFile(LeoUnitTest):
             # Note: entries in g.globalDirectiveList do not start with '@'
             if name not in ('all','c','code','doc','end_raw','others','raw',):
                 table.append(('@' + name,0,at.miscDirective),)
-
-        for s,i,expected in table:
+        for s, i, expected in table:
             result = at.directiveKind4(s,i)
-            assert result == expected, '%d %s result: %s expected: %s' % (
-                i,repr(s),at.sentinelName(result),at.sentinelName(expected))
+            self.assertEqual(result, expected, msg=f"i: {i}, s: {s!r}")
     #@+node:ekr.20210905052021.20: *3* TestAtFile.test_at_directiveKind4_new
     def test_at_directiveKind4_new(self):
         c = self.c
@@ -93,7 +91,7 @@ class TestAtFile(LeoUnitTest):
         )
         for expected, s in table:
             result = at.directiveKind4(s, 0)
-            assert expected == result, (expected, result, repr(s))
+            self.assertEqual(expected, result, msg=repr(s))
     #@+node:ekr.20210905052021.21: *3* TestAtFile.test_at_get_setPathUa
     def test_at_get_setPathUa(self):
         c = self.c
@@ -104,14 +102,12 @@ class TestAtFile(LeoUnitTest):
         d2 = d.get('read-path')
         val1 = d2.get('path')
         val2 = at.getPathUa(p)
-
         table = (
             ('d2.get',val1),
             ('at.getPathUa',val2),
         )
-        for kind,val in table:
-            assert val == 'abc','kind %s expected %s got %s' % (
-                kind,'abc',val)
+        for kind, val in table:
+            self.assertEqual(val, 'abc', msg=kind)
     #@+node:ekr.20210905052021.23: *3* TestAtFile.test_at_parseLeoSentinel
     def test_at_parseLeoSentinel(self):
         c = self.c
@@ -277,8 +273,8 @@ class TestAtFile(LeoUnitTest):
             c.close()
             c = bridge.openLeoFile(c.fileName())
             p1 = c.rootPosition()
-            assert p1.h == "@file 1_renamed", repr(p1.h)
-            assert p1.b == "b_1_changed", repr(p1.b)
+            self.assertEqual(p1.h, "@file 1_renamed")
+            self.assertEqual(p1.b, "b_1_changed")
     #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
     def test_bug_1889(self):
         """

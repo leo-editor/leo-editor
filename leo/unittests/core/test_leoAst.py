@@ -167,7 +167,7 @@ class BaseTest(unittest.TestCase):
         """Check that the tokenizer round-trips the given contents."""
         contents, tokens, tree = self.make_data(contents)
         results = tokens_to_string(tokens)
-        assert contents == results, expected_got(contents, results)
+        self.assertEqual(contents, results)
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
     def make_data(self, contents, description=None):
         """Return (contents, tokens, tree) for the given contents."""
@@ -516,7 +516,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(contents).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200111043311.2: *5* TestFstringify.test_crash_1
     def test_crash_1(self):
         # leoCheck.py.
@@ -524,7 +524,7 @@ class TestFstringify(BaseTest):
         expected = """return ('error', f"no member {ivar}")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200111075114.1: *5* TestFstringify.test_crash_2
     def test_crash_2(self):
         # leoCheck.py, line 1704.
@@ -536,7 +536,7 @@ class TestFstringify(BaseTest):
         expected = contents + '\n'
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200214155156.1: *4* TestFstringify.show_message
     def show_message(self):
         """Separate test of fs.message."""
@@ -591,7 +591,7 @@ class TestFstringify(BaseTest):
         expected = """f"h1 {{font-family: {family}}}"\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200217171334.1: *4* TestFstringify.test_backslash_in_expr
     def test_backslash_in_expr(self):
         # From get_flake8_config.
@@ -599,7 +599,7 @@ class TestFstringify(BaseTest):
         expected = contents.rstrip() + '\n'
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree, silent=True)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20191230150653.1: *4* TestFstringify.test_call_in_rhs
     def test_call_in_rhs(self):
 
@@ -607,7 +607,7 @@ class TestFstringify(BaseTest):
         expected = """f"{d()}"\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+        self.assertEqual(results, expected)
     #@+node:ekr.20200104045907.1: *4* TestFstringify.test_call_in_rhs_2
     def test_call_in_rhs_2(self):
 
@@ -616,7 +616,7 @@ class TestFstringify(BaseTest):
         expected = """print(f"{len(d.keys())}")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+        self.assertEqual(results, expected)
     #@+node:ekr.20200105073155.1: *4* TestFstringify.test_call_with_attribute
     def test_call_with_attribute(self):
 
@@ -624,7 +624,7 @@ class TestFstringify(BaseTest):
         expected = """g.blue(f"wrote {p.atShadowFileNodeName()}")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200122035055.1: *4* TestFstringify.test_call_with_comments
     def test_call_with_comments(self):
 
@@ -640,7 +640,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(expected).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200206173126.1: *4* TestFstringify.test_change_quotes
     def test_change_quotes(self):
 
@@ -648,7 +648,7 @@ class TestFstringify(BaseTest):
         expected = """ret = f"[{','.join([show(z) for z in arg])}]"\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200101060616.1: *4* TestFstringify.test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
@@ -660,7 +660,7 @@ class TestFstringify(BaseTest):
             """binds {binding} to {d.get(binding) or []}")\n""")
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200206174208.1: *4* TestFstringify.test_function_call
     def test_function_call(self):
 
@@ -668,7 +668,7 @@ class TestFstringify(BaseTest):
         expected = """mods = ''.join([f"{z.capitalize()}+" for z in self.mods])\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200106085608.1: *4* TestFstringify.test_ImportFrom
     def test_ImportFrom(self):
 
@@ -680,7 +680,7 @@ class TestFstringify(BaseTest):
         for contents in table:
             contents, tokens, tree = self.make_data(contents)
             results = self.fstringify(contents, tokens, tree)
-            assert results == contents, expected_got(contents, results)
+            self.assertEqual(results, contents)
     #@+node:ekr.20200106042452.1: *4* TestFstringify.test_ListComp
     def test_ListComp(self):
 
@@ -693,7 +693,7 @@ class TestFstringify(BaseTest):
             contents, tokens, tree = self.make_data(contents)
             results = self.fstringify(contents, tokens, tree)
             expected = contents
-            assert results == expected, expected_got(expected, results)
+            self.assertEqual(results, expected)
     #@+node:ekr.20200112163031.1: *4* TestFstringify.test_munge_spec
     def test_munge_spec(self):
 
@@ -725,7 +725,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20191230183652.1: *4* TestFstringify.test_parens_in_rhs
     def test_parens_in_rhs(self):
 
@@ -733,7 +733,7 @@ class TestFstringify(BaseTest):
         expected = """print(f"{ivar:20}", val)\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200106091740.1: *4* TestFstringify.test_single_quotes
     def test_single_quotes(self):
 
@@ -787,7 +787,7 @@ class TestFstringify(BaseTest):
         expected = """g.es(f"{g.angleBrackets(\'*\')} blah blah")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+        self.assertEqual(results, expected)
     #@+node:ekr.20200206173628.1: *4* TestFstringify.test_switch_quotes_3
     def test_switch_quotes_3(self):
 
@@ -795,7 +795,7 @@ class TestFstringify(BaseTest):
         expected = """print(f"Test {'one'}")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+        self.assertEqual(results, expected)
     #@+node:ekr.20200219125956.1: *4* TestFstringify.test_switch_quotes_fail
     def test_switch_quotes_fail(self):
 
@@ -803,7 +803,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+        self.assertEqual(results, expected)
     #@-others
 #@+node:ekr.20200107174645.1: *3* class TestOrange (BaseTest)
 class TestOrange(BaseTest):
@@ -858,7 +858,7 @@ class TestOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
             max_join_line_length=0, max_split_line_length=0)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20210318055702.1: *4* TestOrange.test_bug_1851
     def test_bug_1851(self):
 
@@ -870,7 +870,7 @@ class TestOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
             max_join_line_length=0, max_split_line_length=0)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200219114415.1: *4* TestOrange.test_at_doc_part
     def test_at_doc_part(self):
 
@@ -888,7 +888,7 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """
@@ -905,7 +905,7 @@ class TestOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         # expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200219145639.1: *4* TestOrange.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
 
@@ -924,7 +924,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
 
@@ -941,7 +941,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200220053212.1: *4* TestOrange.test_blank_lines_after_function_3
     def test_blank_lines_after_function_3(self):
 
@@ -960,7 +960,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
 
@@ -991,7 +991,7 @@ class TestOrange(BaseTest):
             results = self.beautify(contents, tokens, tree)
             if results != expected:
                 g.trace('Fail:', i)
-            assert results == expected, expected_got(expected, results)
+            self.assertEqual(results, expected)
     #@+node:ekr.20200211094614.1: *4* TestOrange.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
@@ -1011,7 +1011,7 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200116110652.1: *4* TestOrange.test_function_defs
     def test_function_defs(self):
 
@@ -1042,8 +1042,7 @@ class TestOrange(BaseTest):
             contents, tokens, tree = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
-            assert results == expected, (
-                i, expected_got(expected, results))
+            self.assertEqual(results, expected)
     #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
     def test_indented_comment(self):
 
@@ -1103,7 +1102,7 @@ class TestOrange(BaseTest):
         # Black also removes parens, which is beyond our scope at present.
             # expected = self.blacken(contents, line_length=40)
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace
     def test_join_leading_whitespace(self):
 
@@ -1175,7 +1174,7 @@ class TestOrange(BaseTest):
                 print(f"Fail: {fails}\n{message}")
             elif 0:
                 print(f"Ok:\n{message}")
-        assert fails == 0, fails
+        self.assertEqual(fails, 0)
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
 
@@ -1194,7 +1193,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(expected)
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
     def test_join_too_long_lines(self):
 
@@ -1243,7 +1242,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200209155457.1: *4* TestOrange.test_leo_sentinels_2
     def test_leo_sentinels_2(self):
 
@@ -1258,7 +1257,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class
     def test_lines_before_class(self):
 
@@ -1270,7 +1269,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200110014220.86: *4* TestOrange.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
 
@@ -1302,7 +1301,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200110014220.95: *4* TestOrange.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
@@ -1400,7 +1399,7 @@ class TestOrange(BaseTest):
                     print(f"Fail: {fails}\n{message}")
             elif verbose_pass:
                 print(f"Ok:\n{message}")
-        assert fails == 0, fails
+        self.assertEqual(fails, 0)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
 
@@ -1408,7 +1407,7 @@ class TestOrange(BaseTest):
         expected = self.blacken(contents)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200107174742.1: *4* TestOrange.test_single_quoted_string
     def test_single_quoted_string(self):
 
@@ -1417,7 +1416,7 @@ class TestOrange(BaseTest):
         expected = self.blacken(contents)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200117180956.1: *4* TestOrange.test_split_lines
     def test_split_lines(self):
 
@@ -1452,7 +1451,7 @@ class TestOrange(BaseTest):
                 print(f"Fail: {fails}\n{message}")
             elif 0:
                 print(f"Ok:\n{message}")
-        assert fails == 0, fails
+        self.assertEqual(fails, 0)
     #@+node:ekr.20200210073227.1: *4* TestOrange.test_split_lines_2
     def test_split_lines_2(self):
 
@@ -1485,7 +1484,7 @@ class TestOrange(BaseTest):
             print(f"Fail: {fails}\n{message}")
         elif 0:
             print(f"Ok:\n{message}")
-        assert fails == 0, fails
+        self.assertEqual(fails, 0)
     #@+node:ekr.20200219144837.1: *4* TestOrange.test_split_lines_3
     def test_split_lines_3(self):
 
@@ -1519,7 +1518,7 @@ class TestOrange(BaseTest):
             print(f"Fail: {fails}\n{message}")
         elif 0:
             print(f"Ok:\n{message}")
-        assert fails == 0, fails
+        self.assertEqual(fails, 0)
     #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
     def test_sync_tokens(self):
 
@@ -1529,7 +1528,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200209161226.1: *4* TestOrange.test_ternary
     def test_ternary(self):
 
@@ -1537,7 +1536,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200211093359.1: *4* TestOrange.test_verbatim
     def test_verbatim(self):
 
@@ -1573,13 +1572,7 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        # g.printObj(g.splitLines(results))
-        message = (
-            f"\n"
-            f"contents: {contents}\n"
-            f"expected: {expected!r}\n"
-            f"  orange: {results!r}")
-        assert results == expected, message
+        self.assertEqual(results, expected, msg=contents)
     #@+node:ekr.20200729083027.1: *4* TestOrange.verbatim2
     def test_verbatim2(self):
 
@@ -1594,12 +1587,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        message = (
-            f"\n"
-            f"contents: {contents}\n"
-            f"expected: {expected!r}\n"
-            f"  orange: {results!r}")
-        assert results == expected, message
+        self.assertEqual(results, expected, msg=contents)
     #@+node:ekr.20200211094209.1: *4* TestOrange.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
 
@@ -1631,12 +1619,7 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        message = (
-            f"\n"
-            f"contents: {contents}\n"
-            f"expected: {expected!r}\n"
-            f"  orange: {results!r}")
-        assert results == expected, message
+        self.assertEqual(results, expected, msg=contents)
     #@-others
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
 class TestReassignTokens(BaseTest):
@@ -2655,7 +2638,7 @@ class TestTopLevelFunctions(BaseTest):
         with open(filename, 'rb') as f:
             bb = f.read()
         e = get_encoding_directive(bb)
-        assert e.lower() == 'utf-8', repr(e)
+        self.assertEqual(e.lower(), 'utf-8')
     #@+node:ekr.20200107150857.1: *4* test_strip_BOM
     def test_strip_BOM(self):
 
