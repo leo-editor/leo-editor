@@ -193,6 +193,11 @@
 </v>
 </v>
 </v>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
+<v t="ekr.20111102122424.3975"><vh>@test all unit tests have access to sources</vh></v>
+<v t="ekr.20111105221757.3833"><vh>@test TM.findAllUnitTestNodes</vh></v>
+<v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
+</v>
 </v>
 <v t="ekr.20210905065744.1"><vh>Converted tests</vh>
 <v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
@@ -273,93 +278,6 @@
 <v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
 <v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
 <v t="ekr.20200308204241.1"><vh>@test fast.readWithElementTree</vh></v>
-</v>
-<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
-<v t="ekr.20210829055149.1"><vh>Edit command tests: still needed</vh>
-<v t="ekr.20111104171708.3847"><vh>@test c-to-python</vh>
-<v t="ekr.20111104171708.3848"><vh>c tokenize test</vh></v>
-</v>
-<v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
-<v t="ekr.20150414144103.1"><vh>@test dabbrev-completion</vh></v>
-<v t="ekr.20150414144038.1"><vh>@test dabbrev-expand</vh></v>
-<v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
-<v t="ekr.20120303054735.3931"><vh>@test expand-and-go-right</vh>
-<v t="ekr.20120303054735.3932"><vh>child</vh></v>
-</v>
-<v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
-<v t="ekr.20100212104817.5351"><vh>@test help-for-command</vh></v>
-<v t="ekr.20071113145804.16"><vh>@test helpForbindings</vh></v>
-<v t="ekr.20071113145804.17"><vh>@test helpForFindCommands</vh></v>
-<v t="ekr.20071113145804.4"><vh>@test selfInsertCommand-1</vh></v>
-<v t="ekr.20071113145804.5"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
-<v t="ekr.20071007120750.6"><vh>@test set-fill-prefix</vh></v>
-<v t="ekr.20100212104817.5346"><vh>@test sort-recent-files (new)</vh></v>
-<v t="ekr.20100212104817.5347"><vh>@test sort-siblings (new)</vh>
-<v t="ekr.20100212104817.5348"><vh>b</vh></v>
-<v t="ekr.20100212104817.5349"><vh>a</vh></v>
-<v t="ekr.20100212104817.5350"><vh>c</vh></v>
-</v>
-<v t="ekr.20121016134831.3906"><vh>@test typescript-to-python</vh>
-<v t="ekr.20121016134831.3907"><vh>typescript tokenize test</vh></v>
-</v>
-</v>
-<v t="ekr.20170401123840.1"><vh>goto-global-line tests</vh>
-<v t="ekr.20170401123840.2"><vh>@test c.goToScriptLineNumber</vh>
-<v t="ekr.20170401123840.3"><vh>syntax-error</vh></v>
-</v>
-<v t="ekr.20170401123840.4"><vh>@test find_file_line: @auto-md</vh></v>
-<v t="ekr.20170401123840.5"><vh>@test find_file_line: @auto-org</vh></v>
-<v t="ekr.20170401123840.6"><vh>@test find_file_line: @auto-otl</vh></v>
-<v t="ekr.20170401123840.7"><vh>@test find_file_line: @auto-py</vh></v>
-<v t="ekr.20170401123840.9"><vh>@test find_file_line: @clean-c</vh></v>
-<v t="ekr.20170401123840.10"><vh>@test find_file_line: @clean-python</vh></v>
-<v t="ekr.20170401123840.11"><vh>@test find_file_line: @file-c</vh></v>
-<v t="ekr.20170401123840.12"><vh>@test find_file_line: @file-python</vh></v>
-<v t="ekr.20170401123840.13"><vh>@test find_file_line: @nosent-python</vh></v>
-<v t="ekr.20170401123840.14"><vh>@test find_gnx @file</vh></v>
-<v t="ekr.20170401123840.15"><vh>@test goto_show_results not found</vh></v>
-</v>
-<v t="ekr.20061104172236.1"><vh>Function tests</vh>
-<v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
-<v t="ekr.20150430061225.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20100902074747.5970"><vh>@test addAbbrevHelper</vh></v>
-<v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
-<v t="ekr.20100131180007.5453"><vh>@test dynamicExpandHelper</vh></v>
-<v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
-<v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
-<v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
-<v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
-<v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
-<v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
-<v t="ekr.20061104172236.7"><vh>@test scrollHelper</vh></v>
-<v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
-</v>
-<v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
-<v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
-<v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
-<v t="ekr.20100119102849.5110"><vh>work</vh></v>
-</v>
-<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
-</v>
-<v t="ekr.20051107115231"><vh> Typing</vh>
-<v t="ekr.20060208072415"><vh>@test Delete key sticks in body</vh></v>
-<v t="ekr.20051125170139"><vh>@test Delete key sticks in headline</vh></v>
-<v t="ekr.20051120110335"><vh>@test insert-node can be undone and redone</vh></v>
-<v t="ekr.20130923090601.4178"><vh>@test insert-node-before node can be undone and redone</vh></v>
-<v t="ekr.20051125155134"><vh>@test inserting a new node draws the screen exactly once</vh></v>
-<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
-<v t="ekr.20051107115231.14"><vh>@test return ends editing of headline</vh></v>
-<v t="ekr.20051107115231.28"><vh>@test selecting new node retains paste in headline</vh></v>
-<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
-<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20051109091731"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
-<v t="ekr.20051120115046"><vh>@test undoing insert node restores previous node's body text</vh></v>
-<v t="ekr.20060131102450"><vh>@test zz print end of typing tests</vh></v>
-</v>
 </v>
 <v t="ekr.20090615053403.4876"><vh>leoColorizer</vh>
 <v t="ekr.20090615053403.4877"><vh>@test @comment after @language plain</vh>
@@ -501,85 +419,6 @@
 <v t="ekr.20090615053403.4956"><vh>vbscript</vh></v>
 </v>
 </v>
-<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
-<v t="ekr.20100131180007.5398"><vh>@test g.adjustTripleString</vh></v>
-<v t="ekr.20110510054817.3476"><vh>@test g.alert</vh></v>
-<v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
-<v t="ekr.20071113143844.9"><vh>@test g.CheckVersionToInt</vh></v>
-<v t="ekr.20100131180007.5428"><vh>@test g.comment_delims_from_extension</vh></v>
-<v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
-<v t="ekr.20071113145804.27"><vh>@test g.convertRowColToPythonIndex</vh></v>
-<v t="ekr.20071113145804.21"><vh>@test g.create_temp_file</vh></v>
-<v t="ekr.20100131180007.5403"><vh>@test g.ensureLeadingNewlines</vh></v>
-<v t="ekr.20100131180007.5404"><vh>@test g.ensureTrailingNewlines</vh></v>
-<v t="ekr.20140702101937.4245"><vh>@test g.find_word</vh></v>
-<v t="ekr.20180128105733.1"><vh>@test g.findNode*</vh></v>
-<v t="ekr.20100131180007.5455"><vh>@test g.fullPath</vh>
-<v t="ekr.20100131180007.5456"><vh>@path abc</vh>
-<v t="ekr.20100131180007.5457"><vh>xyz</vh></v>
-</v>
-</v>
-<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
-<v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
-<v t="ekr.20111018163546.3690"><vh>@test g.getDocString</vh></v>
-<v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
-<v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
-<v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
-<v t="ekr.20110612064437.3310"><vh>@test g.guessExternalEditor</vh></v>
-<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
-<v t="ekr.20141208130803.11"><vh>@test g.import_module</vh></v>
-<v t="ekr.20170122164330.1"><vh>@test g.isDirective</vh></v>
-<v t="ekr.20170601070526.1"><vh>@test g.match_word</vh></v>
-<v t="ekr.20111104112332.3953"><vh>@test g.os_path_finalize_join with thumb drive</vh></v>
-<v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
-<v t="ekr.20100131180007.5396"><vh>@test g.removeBlankLines</vh></v>
-<v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
-<v t="ekr.20100131180007.5395"><vh>@test g.removeLeadingBlankLines</vh></v>
-<v t="ekr.20100131180007.5402"><vh>@test g.removeTrailing</vh></v>
-<v t="ekr.20150328120706.1"><vh>@test g.sanitize_filename</vh></v>
-<v t="ekr.20080917151620.13"><vh>@test g.scanAtHeaderDirectives header</vh></v>
-<v t="ekr.20100131180007.5435"><vh>@test g.scanAtHeaderDirectives header</vh></v>
-<v t="ekr.20080917151620.14"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
-<v t="ekr.20080917151620.15"><vh>@test g.scanAtLineendingDirectives cr</vh></v>
-<v t="ekr.20080917151620.16"><vh>@test g.scanAtLineendingDirectives crlf</vh></v>
-<v t="ekr.20080917151620.17"><vh>@test g.scanAtLineendingDirectives lf</vh></v>
-<v t="ekr.20080917151620.18"><vh>@test g.scanAtLineendingDirectives nl</vh></v>
-<v t="ekr.20080917151620.19"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
-<v t="ekr.20100131180007.5442"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
-<v t="ekr.20080917151620.21"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
-<v t="ekr.20080917151620.22"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
-<v t="ekr.20120228145505.4834"><vh>@thin ../test/unittest/at-path-test1.py</vh></v>
-</v>
-<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py</vh>
-<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
-<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
-<v t="ekr.20120228145505.4838"><vh>@thin at-path-test3.py</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py</vh>
-<v t="ekr.20080917151620.25"><vh>@path ../test/unittest</vh>
-<v t="ekr.20120228145505.4841"><vh>@thin at-path-test2.py</vh></v>
-</v>
-</v>
-<v t="ekr.20080917151620.31"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
-<v t="ekr.20080917151620.32"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
-<v t="ekr.20080917151620.33"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
-<v t="ekr.20080917151620.34"><vh>@test g.scanAtWrapDirectives wrap (with @wrap)</vh></v>
-<v t="ekr.20080917151620.35"><vh>@test g.scanAtWrapDirectives wrap (without @nowrap)</vh></v>
-<v t="ekr.20100131180007.5426"><vh>@test g.set_delims_from_language</vh></v>
-<v t="ekr.20100131180007.5425"><vh>@test g.set_delims_from_string</vh></v>
-<v t="ekr.20100131180007.5421"><vh>@@@@test g.setDefaultDirectory</vh></v>
-<v t="sps.20100609234650.16094"><vh>@test g.skip_blank_lines</vh></v>
-<v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
-<v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
-<v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
-<v t="ekr.20150610130646.1"><vh>@test g.splitLongFileName</vh></v>
-<v t="ekr.20100131180007.5427"><vh>@test g.stripPathCruft</vh></v>
-<v t="ekr.20100131180007.5429"><vh>@test g.warnOnReadOnlyFile</vh></v>
-<v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
-<v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
-</v>
 <v t="ekr.20071113193624"><vh>leoCommands</vh>
 <v t="ekr.20110510054817.3475"><vh>@test c.alert</vh></v>
 <v t="ekr.20050512084850"><vh>@test c.checkOutline</vh>
@@ -660,6 +499,191 @@
 <v t="ekr.20170712134948.3"><vh>python</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
+<v t="ekr.20210829055149.1"><vh>Edit command tests: still needed</vh>
+<v t="ekr.20111104171708.3847"><vh>@test c-to-python</vh>
+<v t="ekr.20111104171708.3848"><vh>c tokenize test</vh></v>
+</v>
+<v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
+<v t="ekr.20150414144103.1"><vh>@test dabbrev-completion</vh></v>
+<v t="ekr.20150414144038.1"><vh>@test dabbrev-expand</vh></v>
+<v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
+<v t="ekr.20120303054735.3931"><vh>@test expand-and-go-right</vh>
+<v t="ekr.20120303054735.3932"><vh>child</vh></v>
+</v>
+<v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
+<v t="ekr.20100212104817.5351"><vh>@test help-for-command</vh></v>
+<v t="ekr.20071113145804.16"><vh>@test helpForbindings</vh></v>
+<v t="ekr.20071113145804.17"><vh>@test helpForFindCommands</vh></v>
+<v t="ekr.20071113145804.4"><vh>@test selfInsertCommand-1</vh></v>
+<v t="ekr.20071113145804.5"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
+<v t="ekr.20071007120750.6"><vh>@test set-fill-prefix</vh></v>
+<v t="ekr.20100212104817.5346"><vh>@test sort-recent-files (new)</vh></v>
+<v t="ekr.20100212104817.5347"><vh>@test sort-siblings (new)</vh>
+<v t="ekr.20100212104817.5348"><vh>b</vh></v>
+<v t="ekr.20100212104817.5349"><vh>a</vh></v>
+<v t="ekr.20100212104817.5350"><vh>c</vh></v>
+</v>
+<v t="ekr.20121016134831.3906"><vh>@test typescript-to-python</vh>
+<v t="ekr.20121016134831.3907"><vh>typescript tokenize test</vh></v>
+</v>
+</v>
+<v t="ekr.20170401123840.1"><vh>goto-global-line tests</vh>
+<v t="ekr.20170401123840.2"><vh>@test c.goToScriptLineNumber</vh>
+<v t="ekr.20170401123840.3"><vh>syntax-error</vh></v>
+</v>
+<v t="ekr.20170401123840.4"><vh>@test find_file_line: @auto-md</vh></v>
+<v t="ekr.20170401123840.5"><vh>@test find_file_line: @auto-org</vh></v>
+<v t="ekr.20170401123840.6"><vh>@test find_file_line: @auto-otl</vh></v>
+<v t="ekr.20170401123840.7"><vh>@test find_file_line: @auto-py</vh></v>
+<v t="ekr.20170401123840.9"><vh>@test find_file_line: @clean-c</vh></v>
+<v t="ekr.20170401123840.10"><vh>@test find_file_line: @clean-python</vh></v>
+<v t="ekr.20170401123840.11"><vh>@test find_file_line: @file-c</vh></v>
+<v t="ekr.20170401123840.12"><vh>@test find_file_line: @file-python</vh></v>
+<v t="ekr.20170401123840.13"><vh>@test find_file_line: @nosent-python</vh></v>
+<v t="ekr.20170401123840.14"><vh>@test find_gnx @file</vh></v>
+<v t="ekr.20170401123840.15"><vh>@test goto_show_results not found</vh></v>
+</v>
+<v t="ekr.20061104172236.1"><vh>Function tests</vh>
+<v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
+<v t="ekr.20150430061225.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20100902074747.5970"><vh>@test addAbbrevHelper</vh></v>
+<v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
+<v t="ekr.20100131180007.5453"><vh>@test dynamicExpandHelper</vh></v>
+<v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
+<v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
+<v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
+<v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
+<v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
+<v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
+<v t="ekr.20061104172236.7"><vh>@test scrollHelper</vh></v>
+<v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
+</v>
+<v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
+<v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
+<v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
+<v t="ekr.20100119102849.5110"><vh>work</vh></v>
+</v>
+<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
+</v>
+<v t="ekr.20051107115231"><vh> Typing</vh>
+<v t="ekr.20060208072415"><vh>@test Delete key sticks in body</vh></v>
+<v t="ekr.20051125170139"><vh>@test Delete key sticks in headline</vh></v>
+<v t="ekr.20051120110335"><vh>@test insert-node can be undone and redone</vh></v>
+<v t="ekr.20130923090601.4178"><vh>@test insert-node-before node can be undone and redone</vh></v>
+<v t="ekr.20051125155134"><vh>@test inserting a new node draws the screen exactly once</vh></v>
+<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
+<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
+<v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
+<v t="ekr.20051107115231.14"><vh>@test return ends editing of headline</vh></v>
+<v t="ekr.20051107115231.28"><vh>@test selecting new node retains paste in headline</vh></v>
+<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20051109091731"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
+<v t="ekr.20051120115046"><vh>@test undoing insert node restores previous node's body text</vh></v>
+<v t="ekr.20060131102450"><vh>@test zz print end of typing tests</vh></v>
+</v>
+</v>
+<v t="ekr.20071113193527"><vh>leoFind</vh>
+<v t="ekr.20060130151716.3"><vh>@test minibuffer find commands</vh></v>
+<v t="ekr.20190603184713.1"><vh>@test replace-all: plain search</vh></v>
+<v t="ekr.20190603192140.1"><vh>@test replace-all: plain search: ignore case</vh></v>
+<v t="ekr.20190603193938.1"><vh>@test replace-all: regex search</vh></v>
+<v t="ekr.20190603193204.1"><vh>@test replace-all: word search</vh></v>
+<v t="ekr.20190603193214.1"><vh>@test replace-all: word search: ignore case</vh></v>
+<v t="ekr.20060130151716.2"><vh>@test set find mode commands</vh></v>
+<v t="ekr.20060130151716.4"><vh>@test show-find-options</vh></v>
+<v t="ekr.20060130151716.1"><vh>@test toggle find options commands</vh></v>
+<v t="ekr.20190608143418.1"><vh>New leoFind Tests</vh>
+<v t="ekr.20190608144111.1"><vh>@test leoFind.LeoFind clean init</vh></v>
+<v t="ekr.20190608143502.1"><vh>@test find._inner_search_regex</vh></v>
+<v t="ekr.20190608143502.2"><vh>@test find._inner_search_backward</vh></v>
+<v t="ekr.20190608143502.3"><vh>@test find._inner_search_plain</vh></v>
+<v t="ekr.20190608143503.1"><vh>@test find.replace_back_slashes</vh></v>
+</v>
+<v t="ekr.20071113202153"><vh>@test zz end of leoFind tests</vh></v>
+</v>
+<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
+<v t="ekr.20100131180007.5398"><vh>@test g.adjustTripleString</vh></v>
+<v t="ekr.20110510054817.3476"><vh>@test g.alert</vh></v>
+<v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
+<v t="ekr.20071113143844.9"><vh>@test g.CheckVersionToInt</vh></v>
+<v t="ekr.20100131180007.5428"><vh>@test g.comment_delims_from_extension</vh></v>
+<v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
+<v t="ekr.20071113145804.27"><vh>@test g.convertRowColToPythonIndex</vh></v>
+<v t="ekr.20071113145804.21"><vh>@test g.create_temp_file</vh></v>
+<v t="ekr.20100131180007.5403"><vh>@test g.ensureLeadingNewlines</vh></v>
+<v t="ekr.20100131180007.5404"><vh>@test g.ensureTrailingNewlines</vh></v>
+<v t="ekr.20140702101937.4245"><vh>@test g.find_word</vh></v>
+<v t="ekr.20180128105733.1"><vh>@test g.findNode*</vh></v>
+<v t="ekr.20100131180007.5455"><vh>@test g.fullPath</vh>
+<v t="ekr.20100131180007.5456"><vh>@path abc</vh>
+<v t="ekr.20100131180007.5457"><vh>xyz</vh></v>
+</v>
+</v>
+<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
+<v t="ekr.20111018163546.3690"><vh>@test g.getDocString</vh></v>
+<v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
+<v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
+<v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
+<v t="ekr.20110612064437.3310"><vh>@test g.guessExternalEditor</vh></v>
+<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
+<v t="ekr.20141208130803.11"><vh>@test g.import_module</vh></v>
+<v t="ekr.20170122164330.1"><vh>@test g.isDirective</vh></v>
+<v t="ekr.20170601070526.1"><vh>@test g.match_word</vh></v>
+<v t="ekr.20111104112332.3953"><vh>@test g.os_path_finalize_join with thumb drive</vh></v>
+<v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
+<v t="ekr.20100131180007.5396"><vh>@test g.removeBlankLines</vh></v>
+<v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
+<v t="ekr.20100131180007.5395"><vh>@test g.removeLeadingBlankLines</vh></v>
+<v t="ekr.20100131180007.5402"><vh>@test g.removeTrailing</vh></v>
+<v t="ekr.20150328120706.1"><vh>@test g.sanitize_filename</vh></v>
+<v t="ekr.20080917151620.13"><vh>@test g.scanAtHeaderDirectives header</vh></v>
+<v t="ekr.20100131180007.5435"><vh>@test g.scanAtHeaderDirectives header</vh></v>
+<v t="ekr.20080917151620.14"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
+<v t="ekr.20080917151620.15"><vh>@test g.scanAtLineendingDirectives cr</vh></v>
+<v t="ekr.20080917151620.16"><vh>@test g.scanAtLineendingDirectives crlf</vh></v>
+<v t="ekr.20080917151620.17"><vh>@test g.scanAtLineendingDirectives lf</vh></v>
+<v t="ekr.20080917151620.18"><vh>@test g.scanAtLineendingDirectives nl</vh></v>
+<v t="ekr.20080917151620.19"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
+<v t="ekr.20100131180007.5442"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
+<v t="ekr.20080917151620.21"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
+<v t="ekr.20080917151620.22"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
+<v t="ekr.20120228145505.4834"><vh>@thin ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py</vh>
+<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
+<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
+<v t="ekr.20120228145505.4838"><vh>@thin at-path-test3.py</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py</vh>
+<v t="ekr.20080917151620.25"><vh>@path ../test/unittest</vh>
+<v t="ekr.20120228145505.4841"><vh>@thin at-path-test2.py</vh></v>
+</v>
+</v>
+<v t="ekr.20080917151620.31"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
+<v t="ekr.20080917151620.32"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
+<v t="ekr.20080917151620.33"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
+<v t="ekr.20080917151620.34"><vh>@test g.scanAtWrapDirectives wrap (with @wrap)</vh></v>
+<v t="ekr.20080917151620.35"><vh>@test g.scanAtWrapDirectives wrap (without @nowrap)</vh></v>
+<v t="ekr.20100131180007.5426"><vh>@test g.set_delims_from_language</vh></v>
+<v t="ekr.20100131180007.5425"><vh>@test g.set_delims_from_string</vh></v>
+<v t="ekr.20100131180007.5421"><vh>@@@@test g.setDefaultDirectory</vh></v>
+<v t="sps.20100609234650.16094"><vh>@test g.skip_blank_lines</vh></v>
+<v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
+<v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
+<v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
+<v t="ekr.20150610130646.1"><vh>@test g.splitLongFileName</vh></v>
+<v t="ekr.20100131180007.5427"><vh>@test g.stripPathCruft</vh></v>
+<v t="ekr.20100131180007.5429"><vh>@test g.warnOnReadOnlyFile</vh></v>
+<v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
+<v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
 </v>
 <v t="ekr.20140712142620.4458"><vh>leoPersistence tests (do not clone)</vh>
 <v t="ekr.20140712142620.4503"><vh>@test p.sort_key</vh></v>
@@ -1903,6 +1927,54 @@ finally:
         c.redraw(p)
 </t>
 <t tx="ekr.20060127120604"></t>
+<t tx="ekr.20060130151716.1">if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    # 'toggle-find-clone-find-all-option',
+    'toggle-find-ignore-case-option',
+    'toggle-find-in-body-option',
+    'toggle-find-in-headline-option',
+    'toggle-find-mark-changes-option',
+    'toggle-find-mark-finds-option',
+    'toggle-find-regex-option',
+    # 'toggle-find-reverse-option',
+    'toggle-find-word-option',
+    # 'toggle-find-wrap-around-option',
+)
+for command in table:
+    c.k.simulateCommand(command)
+    c.k.simulateCommand(command)
+</t>
+<t tx="ekr.20060130151716.2">if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    'set-find-everywhere',
+    'set-find-node-only',
+    'set-find-suboutline-only',
+)
+# show-find-tab-options     = Ctrl-o
+# show-find-options         = o
+for command in table:
+    c.k.simulateCommand(command)
+</t>
+<t tx="ekr.20060130151716.3">if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    're-search-forward',
+    're-search-backward',
+    'search-forward',
+    'search-backward',
+    'word-search-forward',
+    'word-search-backward',
+)
+
+for command in table:
+    # This is not a full test.  We must use keyboardQuit here!
+    c.k.simulateCommand(command)
+    c.k.keyboardQuit(None)
+</t>
+<t tx="ekr.20060130151716.4">c.k.simulateCommand('show-find-options')
+</t>
 <t tx="ekr.20060131102450"># Print does not work: it is redirected.
 g.pr('\nEnd of typing tests')
 </t>
@@ -2663,6 +2735,8 @@ for s,i,expected in table:
         i,repr(s),at.sentinelName(result),at.sentinelName(expected))
 </t>
 <t tx="ekr.20071113192611"></t>
+<t tx="ekr.20071113193527"># 4 failures with Alt-5
+</t>
 <t tx="ekr.20071113193624"># 7 failures with Alt-5
 </t>
 <t tx="ekr.20071113193729"></t>
@@ -2670,6 +2744,9 @@ for s,i,expected in table:
 </t>
 <t tx="ekr.20071113201833"># Print does not work: it is redirected.
 g.pr('\nEnd of leoCommands tests')
+</t>
+<t tx="ekr.20071113202153"># Print does not work: it is redirected.
+g.pr('\nEnd of leoFind tests.')
 </t>
 <t tx="ekr.20071113202153.2"># Print does not work: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
@@ -5003,6 +5080,16 @@ assert type(aList1) == type([])
 assert type(aList2) == type([])
 assert aList1 == aList2
 </t>
+<t tx="ekr.20100131171342.5612"></t>
+<t tx="ekr.20100131171342.5613">def sendEmail(self):
+    pass # g.trace('self2',self)
+
+class test:
+    pass
+
+X = test()
+sendEmail(X)
+</t>
 <t tx="ekr.20100131180007.5395">for s,expected in (
     ('a\nb', 'a\nb'),
     ('\n  \nb\n', 'b\n'),
@@ -5724,6 +5811,15 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111102122424.3975">if g.app.gui.guiName() == 'browser':
+    self.skipTest('browser gui')
+if c.shortFileName() == 'dynamicUnitTest.leo':
+    setting = 'c.write-script-file'
+    assert c.write_script_file,'fail 1: %s should be hard set' % (setting)
+else:
+    setting = "c.config.getBool('write-script-file')"
+    assert c.write_script_file,'fail 2: check %s' % (setting)
+</t>
 <t tx="ekr.20111104112332.3953">import os
 
 path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
@@ -6047,6 +6143,22 @@ for fn in files:
         ok2 = s.find('def init ():') &gt; -1
         assert ok1 or ok2,'fail: %s' % (fn)
     
+</t>
+<t tx="ekr.20111105221757.3833">p1 = p.copy()
+
+def found(p,result):
+    return any([p.v == p2.v for p2 in result])
+
+table = (('all',True,False),('marked',False,True))
+try:
+    p.setMarked()
+    assert p.isMarked(),p
+    for kind,all,marked in table:
+        result = c.testManager.findAllUnitTestNodes(all,marked)
+        assert found(p,result),(kind,len(result))
+    assert p == p1,(p,p1)
+finally:
+    p1.clearMarked()
 </t>
 <t tx="ekr.20111112092813.4060">@nocolor-node
 
@@ -7854,6 +7966,242 @@ after
 </t>
 <t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
     getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
+</t>
+<t tx="ekr.20190603184713.1">fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    1,      'CA'),
+    ('Aa',      'A',    'C',    1,      'Ca'),
+    ('Aba',     'b',    'C',    1,      'ACa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_plain(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190603192140.1">fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    2,      'CC'),
+    ('AbBa',    'b',    'C',    2,      'ACCa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_plain(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190603193204.1">fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa a ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa a ab a',  'aa',   'C',    1,      'a ba C a ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_word(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190603193214.1">fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa A ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa AA ab a', 'aa',   'C',    2,      'a ba C C ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_word(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190603193938.1">fc = c.findCommands
+regex_table = (
+    # s                 find        change  count   result
+    ('a ba aa a ab a',  r'\b\w+\b', 'C',    6,      'C C C C C C'),
+    ('a AA aa aab ab a',r'\baa\b',  'C',    1,      'a AA C aab ab a'),
+    # Multi-line
+    ('aaa AA\naa aab',  r'\baa\b',  'C',    1,      'aaa AA\nC aab'),
+)
+for s, find, change, count, result in regex_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_regex(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+</t>
+<t tx="ekr.20190608143418.1"></t>
+<t tx="ekr.20190608143502.1">import re
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, back, nocase):
+    for pattern, s, expected in table:
+        flags = re.IGNORECASE if nocase else 0
+        x.re_obj = re.compile(pattern, flags)
+        pos, new_pos = x._inner_search_regex(s, 0, len(s),
+            pattern, backwards=back, nocase=nocase)
+        got = s[pos:new_pos]
+        assert expected==got, (
+            '\n   table: %s'
+            '\n pattern: %r'
+            '\n       s: %r'
+            '\nexpected: %r'
+            '\n     got: %r' % (table_name, pattern, s, expected, got)
+        )
+
+plain_table = (
+    # pattern   s       expected
+    (r'.',      'A',    'A'),
+    (r'A',      'xAy',  'A'),
+)
+nocase_table = (
+    # pattern   s       expected
+    (r'.',      'A',    'A'),
+    (r'.',      'a',    'a'),
+    (r'A',      'xay',  'a'),
+    (r'a',      'xAy',  'A'),
+)
+back_table = (
+    # pattern   s           expected
+    (r'a.b',    'a1b a2b',  'a2b'),
+)
+test(plain_table,  'plain_table',  back=False, nocase=False)
+test(nocase_table, 'nocase_table', back=False, nocase=True)
+test(back_table,   'back_table',   back=True,  nocase=False)
+</t>
+<t tx="ekr.20190608143502.2">import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, nocase, word):
+    test_n = 0
+    for pattern, s, i, j, expected, expected_i, expected_j in table:
+        test_n += 1
+        if j == -1: j = len(s)
+        got_i, got_j = x._inner_search_backward(s, i, j,
+            pattern, nocase=nocase, word=word)
+        got = s[got_i: got_j]
+        assert expected==got and got_i == expected_i and got_j == expected_j, (
+            '\n     table: %s'
+            '\n    i test: %s'
+            '\n   pattern: %r'
+            '\n         s: %r'
+            '\n  expected: %r'
+            '\n       got: %r'
+            '\nexpected i: %s'
+            '\n     got i: %s'
+            '\nexpected j: %s'
+            '\n     got j: %s'
+            % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
+
+plain_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',      'abaca',     0, -1,  'a',      4,          5),
+    ('A',      'Abcde',     0, -1,  'A',      0,          1),
+)
+nocase_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  'a',      5,          6),
+    ('A',       'Abcdca',   0, -1,  'a',      5,          6),
+)
+word_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  '',      -1,          -1),
+    ('A',       'AA A AB',  0, -1,  'A',      3,          4),
+)
+test(plain_table,  'plain_table',  nocase=False, word=False)
+test(nocase_table, 'nocase_table', nocase=True,  word=False)
+test(word_table,   'word_table',   nocase=False, word=True)
+</t>
+<t tx="ekr.20190608143502.3">import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, nocase, word):
+    test_n = 0
+    for pattern, s, i, j, expected, expected_i, expected_j in table:
+        test_n += 1
+        if j == -1: j = len(s)
+        got_i, got_j = x._inner_search_plain(s, i, j, pattern,
+            nocase=nocase, word=word)
+        got = s[got_i: got_j]
+        assert expected==got and got_i == expected_i and got_j == expected_j, (
+            '\n     table: %s'
+            '\n    i test: %s'
+            '\n   pattern: %r'
+            '\n         s: %r'
+            '\n  expected: %r'
+            '\n       got: %r'
+            '\nexpected i: %s'
+            '\n     got i: %s'
+            '\nexpected j: %s'
+            '\n     got j: %s'
+            % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
+
+plain_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',      'baca',     0, -1,   'a',      1,          2),
+    ('A',      'bAcde',     0, -1,  'A',      1,          2),
+)
+nocase_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  'a',      0,          1),
+    ('A',       'abcdca',   0, -1,  'a',      0,          1),
+)
+word_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  '',      -1,          -1),
+    ('A',       'AA A AAB', 0, -1,  'A',      3,          4),
+)
+test(plain_table,  'plain_table',  nocase=False, word=False)
+test(nocase_table, 'nocase_table', nocase=True,  word=False)
+test(word_table,   'word_table',   nocase=False, word=True)
+</t>
+<t tx="ekr.20190608143503.1">import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+table = (
+    ('\\\\', '\\'),
+    ('\\n', '\n'),
+    ('\\t', '\t'),
+)
+for s, expected in table:
+    got = x.replace_back_slashes(s)
+    assert expected==got, (
+        '\n         s: %r'
+        '\n  expected: %r'
+        '\n       got: %r'
+        % (s, expected, got))
+</t>
+<t tx="ekr.20190608144111.1">import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+table = (
+    # 'batch',  # 'wrap', 
+    'ignore_case', 'node_only', 'pattern_match', 
+    'search_headline', 'search_body', 'suboutline_only',
+    'mark_changes', 'mark_finds', 'whole_word',
+   
+)
+for ivar in table:
+    assert getattr(x, ivar) is None, ivar
+assert x.reverse is False
 </t>
 <t tx="ekr.20190923170025.1"># Brian Theado.
 c.undoer.clearUndoState()
