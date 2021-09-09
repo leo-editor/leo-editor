@@ -661,6 +661,71 @@
 </v>
 </v>
 </v>
+<v t="ekr.20140712142620.4458"><vh>leoPersistence tests (do not clone)</vh>
+<v t="ekr.20140712142620.4503"><vh>@test p.sort_key</vh></v>
+<v t="ekr.20140712142620.4550"><vh>@test pd.find_at_...</vh>
+<v t="ekr.20140712142620.4551"><vh>root</vh>
+<v t="ekr.20140712142620.4552"><vh>aClass</vh>
+<v t="ekr.20140712142620.4556"><vh>clone</vh></v>
+</v>
+</v>
+<v t="ekr.20140712142620.4556"></v>
+</v>
+<v t="ekr.20140712142620.4538"><vh>@test pd.find_at_persistence_node</vh></v>
+<v t="ekr.20140712142620.4539"><vh>@test pd.find_position_for_relative_unl</vh>
+<v t="ekr.20140712142620.4540"><vh>node1</vh>
+<v t="ekr.20140712142620.4541"><vh>child11</vh></v>
+<v t="ekr.20140712142620.4542"><vh>child12</vh></v>
+</v>
+<v t="ekr.20140712142620.4543"><vh>node2</vh>
+<v t="ekr.20140712142620.4544"><vh>child21</vh></v>
+<v t="ekr.20140712142620.4545"><vh>child22</vh></v>
+</v>
+<v t="ekr.20140715080507.4340"><vh>node3</vh>
+<v t="ekr.20140715080507.4341"><vh>node3_child1</vh>
+<v t="ekr.20140715080507.4339"><vh>child21</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140712142620.4546"><vh>@test pd.find_representative_node</vh>
+<v t="ekr.20140712142620.4547"><vh>root</vh>
+<v t="ekr.20140712142620.4549"><vh>clone</vh></v>
+</v>
+<v t="ekr.20140712142620.4549"></v>
+</v>
+<v t="ekr.20140712142620.4557"><vh>@test pd.has_..._node</vh>
+<v t="ekr.20140712142620.4558"><vh>root</vh>
+<v t="ekr.20140712142620.4559"><vh>aClass</vh>
+<v t="ekr.20140712142620.4563"><vh>clone-test</vh></v>
+<v t="ekr.20140712142620.4561"><vh>organizer node</vh>
+<v t="ekr.20140712142620.4562"><vh>child2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140712142620.4563"></v>
+</v>
+<v t="ekr.20140712142620.4507"><vh>@test pd.restore_gnxs</vh>
+<v t="ekr.20140712142620.4508"><vh>@gnxs</vh></v>
+<v t="ekr.20140923080452.6565"><vh>node1</vh></v>
+<v t="ekr.20140712142620.4510"><vh>root</vh>
+<v t="ekr.20140923080452.6565"></v>
+</v>
+</v>
+<v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
+<v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
+<v t="ekr.20140712142620.4576"><vh>root</vh>
+<v t="ekr.20140712142620.4577"><vh>aClass</vh>
+<v t="ekr.20140712142620.4582"><vh>clone</vh></v>
+</v>
+<v t="ekr.20140712142620.4579"><vh>organizer node</vh>
+<v t="ekr.20140712142620.4580"><vh>child1</vh></v>
+<v t="ekr.20140712142620.4581"><vh>child2</vh></v>
+</v>
+</v>
+<v t="ekr.20140712142620.4582"></v>
+</v>
+<v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
+</v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005805000000302e362e3371017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </vnodes>
@@ -5955,8 +6020,239 @@ for s,word,i,expected in table:
     actual = g.find_word(s,word,i)
     assert actual == expected
 </t>
+<t tx="ekr.20140712142620.4458"></t>
+<t tx="ekr.20140712142620.4503">aList = [p.copy() for p in c.all_positions()]
+aList2 = sorted(reversed(aList),key=p.sort_key)
+i = 0
+for p in aList2:
+    p2 = aList[i]
+    i += 1
+    assert p == p2,'\n%s:%s\n%s:%s' % (
+        p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
+</t>
+<t tx="ekr.20140712142620.4507">pd = c.persistenceController
+gnxs = g.findNodeInTree(c,p,'@gnxs')
+root = g.findNodeInTree(c,p,'root')
+node1 = g.findNodeInTree(c,p,'node1')
+assert gnxs and root and node1
+root.deleteAllChildren()
+new_node1 = root.insertAsLastChild()
+new_node1.h = 'node1'
+gnxs.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
+try:
+    pd.restore_gnxs(gnxs,root)
+    # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
+    # but new_node1 should not be used.
+finally:
+    c.redraw()
+</t>
+<t tx="ekr.20140712142620.4508">gnx: ekr.20140923080452.6565
+unl: node1
+</t>
+<t tx="ekr.20140712142620.4510"></t>
+<t tx="ekr.20140712142620.4538">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    h = '@persistence'
+    p1 = pd.find_at_persistence_node()
+    assert p1
+    p2 = pd.has_at_persistence_node()
+    assert p1 == p2,(p1,p2)
+</t>
+<t tx="ekr.20140712142620.4539">pd = c.persistenceController
+parent = p.copy()
+node1 = p.firstChild()
+node2 = node1.next()
+node3 = node2.next()
+assert node1 and node2 and node3
+child11 = node1.firstChild()
+child12 = child11.next()
+assert child11 and child12
+child21 = node2.firstChild()
+child22 = child21.next()
+assert child21 and child22
+node3_child1 = node3.firstChild()
+assert node3_child1
+node3_child1_child21 = node3_child1.firstChild()
+assert node3_child1_child21
+table = (
+    ('node1',node1),
+    ('',parent), # This special case is important.
+    ('node1--&gt;child11',child11),
+    ('node1--&gt;child12',child12),
+    ('node2',node2),
+    ('node2--&gt;child21',child21),
+    ('node2--&gt;child22',child22),
+    # Partial matches.
+    ### ('node3--&gt;child1--&gt;child21',node3_child1_child21),
+    ### ('child1--&gt;child21',node3_child1_child21),
+    ### ('xxx--&gt;child21',node3_child1_child21),
+        # This is ambiguous.
+    # No matches.
+    ('nodex',None),
+    ('node1--&gt;childx',None),
+    ('node3--&gt;childx',None),
+)
+for unl,expected in table:
+    got = pd.find_position_for_relative_unl(parent,unl)
+    assert got == expected,'unl: %s expected: %s got: %s' % (
+        unl,expected and expected.h,got and got.h)
+</t>
+<t tx="ekr.20140712142620.4540"></t>
+<t tx="ekr.20140712142620.4541"></t>
+<t tx="ekr.20140712142620.4542"></t>
+<t tx="ekr.20140712142620.4543"></t>
+<t tx="ekr.20140712142620.4544"></t>
+<t tx="ekr.20140712142620.4545"></t>
+<t tx="ekr.20140712142620.4546">if g.app.isExternalUnitTest:
+    # There will not be a proper cloned node in the copy of these tests.
+    self.skipTest('Can not be run externally')
+else:
+    pd = c.persistenceController
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    root.h = '@auto root'
+    try:
+        clone = root.next()
+        assert clone and clone.h == 'clone'
+        inner_clone = root.firstChild()
+        assert inner_clone
+        assert clone.v == inner_clone.v
+        rep = pd.find_representative_node(root,inner_clone)
+        # Careful: cloning this test can cause problems.
+        oops = '\n  rep: %s\nparent:%s\nclone: %s\nparent:%s\ninner: %s\nparent: %s' % (
+            rep,rep.parent(),clone,clone.parent(),inner_clone,inner_clone.parent())
+        if g.app.isExternalUnitTest:
+            pass
+        else:
+            assert rep == clone,(repr(rep),repr(clone))
+    finally:
+        root.h = 'root' # root must not be an @auto node.
+        c.redraw()
+</t>
+<t tx="ekr.20140712142620.4547"></t>
+<t tx="ekr.20140712142620.4549"></t>
+<t tx="ekr.20140712142620.4550"># Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    try:
+        persistence = pd.find_at_persistence_node()
+        assert persistence
+        persistence.deleteAllChildren()
+        root.h = '@auto root' # Make root look like an @auto node.
+        assert pd.find_at_data_node(root)
+        assert pd.find_at_gnxs_node(root)
+    finally:
+        root.h = 'root' # Make sure root is *not* an @auto node.
+        # views.deleteAllChildren()
+        c.selectPosition(p)
+        c.redraw()
+</t>
+<t tx="ekr.20140712142620.4551"></t>
+<t tx="ekr.20140712142620.4552">class aClass:
+    @others
+</t>
+<t tx="ekr.20140712142620.4556"></t>
+<t tx="ekr.20140712142620.4557">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    # Test pd.has_at_auto_view_node, pd.has_at_clones_node and pd.has_at_organizers_node.
+    pd = c.persistenceController
+    persistence = g.findNodeAnywhere(c,'@persistence')
+    assert persistence
+    assert pd.has_at_persistence_node()
+    persistence.deleteAllChildren()
+    assert persistence
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    # The representative of clone_test node must appear outside of root's tree.
+    clone_test = g.findNodeInTree(c,p,'clone-test')
+    if g.app.isExternalUnitTest:
+        # There will not be a proper node in the copied tree.
+        self.skipTest('Can not be run externally')
+    else:
+        assert clone_test
+        assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
+        try:
+            root.h = '@auto root' # Make root look like an @auto node.
+            pd.update_before_write_foreign_file(root)
+            data = g.findNodeInTree(c,persistence,'@data:@auto root')
+            assert data
+            data2 = pd.has_at_data_node(root)
+            assert data2
+            assert data == data2,(data,data2)
+            gnxs = g.findNodeInTree(c,persistence,'@gnxs')
+            assert gnxs
+            gnxs2 = pd.has_at_gnxs_node(root)
+            assert gnxs2
+            assert gnxs == gnxs2,(gnxs,gnxs2)
+        finally:
+            root.h = 'root' # Make the root *not* an @auto node.
+            c.redraw()
+</t>
+<t tx="ekr.20140712142620.4558">@others
+</t>
+<t tx="ekr.20140712142620.4559">class aClass:
+    @others
+</t>
+<t tx="ekr.20140712142620.4561"></t>
+<t tx="ekr.20140712142620.4562">def spam():
+    pass
+</t>
+<t tx="ekr.20140712142620.4563">def clone_test():
+    pass
+</t>
+<t tx="ekr.20140712142620.4574">pd = c.persistenceController
+unl = pd.unl(p)
+expected = p.h if g.app.isExternalUnitTest else '--&gt;'+p.h
+assert unl.endswith(expected),repr(unl)
+</t>
+<t tx="ekr.20140712142620.4575">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    persistence = pd.find_at_persistence_node()
+    assert persistence
+    persistence.deleteAllChildren()
+    try:
+        root.h = '@auto root' # Make root look like an @auto node.
+        pd.update_before_write_foreign_file(root)
+        data = g.findNodeAnywhere(c,'@data:@auto root')
+        assert data
+        gnxs = g.findNodeInTree(c,data,'@gnxs')
+        assert gnxs
+    finally:
+        root.h = 'root' # Make root *not* an @auto node.
+        # persistence.deleteAllChildren()
+        c.redraw()
+</t>
+<t tx="ekr.20140712142620.4576"></t>
+<t tx="ekr.20140712142620.4577">class aClass:
+    @others
+</t>
+<t tx="ekr.20140712142620.4579"></t>
+<t tx="ekr.20140712142620.4580"></t>
+<t tx="ekr.20140712142620.4581">def spam():
+    pass
+</t>
+<t tx="ekr.20140712142620.4582"></t>
+<t tx="ekr.20140715080507.4339"></t>
+<t tx="ekr.20140715080507.4340"></t>
+<t tx="ekr.20140715080507.4341"></t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
+<t tx="ekr.20140923080452.6565"></t>
 <t tx="ekr.20141016101308.4747">assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
 </t>
 <t tx="ekr.20141208130803.11">assert g.import_module('leo.core.leoAst')
@@ -5964,6 +6260,17 @@ for s,word,i,expected in table:
 </t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
+<t tx="ekr.20150216111306.25">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    persistence = g.findNodeAnywhere(c,'@persistence')
+    assert persistence
+    assert pd.has_at_persistence_node()
+    persistence.deleteAllChildren()
+    assert persistence
+</t>
 <t tx="ekr.20150321155210.11"></t>
 <t tx="ekr.20150328120706.1">table = (
     ('A25&amp;()','A'),         # Non-alpha characters.
