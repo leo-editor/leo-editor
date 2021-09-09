@@ -55,13 +55,9 @@ class TestEditCommands(LeoUnitTest):
     def setUp(self):
         """Create the nodes in the commander."""
         super().setUp()
-        # Create a new commander for each test.
-        # This is fast, because setUpClass has done all the imports.
-        from leo.core import leoCommands
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        c = self.c
         # Create top-level parent node.
-        root = c.rootPosition()
-        self.parent_p = root.insertAsLastChild()
+        self.parent_p = self.root_p.insertAsLastChild()
         # Create children of the parent node.
         self.tempNode = self.parent_p.insertAsLastChild()
         self.before_p = self.parent_p.insertAsLastChild()

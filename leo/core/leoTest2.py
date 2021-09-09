@@ -84,7 +84,13 @@ class LeoUnitTest(unittest.TestCase):
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
         self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-        c.selectPosition(c.rootPosition())
+        # Init the 'root' and '@settings' nodes.
+        self.root_p = c.rootPosition()
+        self.root_p.h = 'root'
+        self.settings_p = self.root_p.insertAfter()
+        self.settings_p.h = '@settings'
+        # Select the 'root' node.
+        c.selectPosition(self.root_p)
         g.unitTesting = True
 
     def tearDown(self):
@@ -93,8 +99,7 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self):
         c, p = self.c, self.c.p
-        self.assertEqual(p.h, 'NewHeadline')
-        p.h = 'root'
+        assert p == self.root_p
         # Create the following outline:
         #
         # test-outline: root

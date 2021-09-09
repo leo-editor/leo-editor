@@ -19,14 +19,10 @@ class TestNodes(LeoUnitTest):
     #@+node:ekr.20201203042409.3: *3* TestNodes.setUp
     def setUp(self):
         """Create the nodes in the commander."""
-        # Create a new commander for each test.
-        # This is fast, because setUpClass has done all the imports.
-        from leo.core import leoCommands
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        super().setUp()
+        c = self.c
         self.create_test_outline()
         c.selectPosition(c.rootPosition())
-        # self.dump_tree('Initial Outline...')
-        g.unitTesting = True
     #@+node:ekr.20210902022909.1: *3* TestNodes.tests...
     #@+node:ekr.20210830095545.3: *4* TestNodes.test_all_generators_return_unique_positions
     def test_all_generators_return_unique_positions(self):

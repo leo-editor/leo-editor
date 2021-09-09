@@ -7,6 +7,7 @@
 from leo.core import leoGlobals as g
 import leo.core.leoApp as leoApp
 from leo.core.leoTest2 import LeoUnitTest
+import leo.core.leoExternalFiles as leoExternalFiles
 
 #@+others
 #@+node:ekr.20210427165225.1: ** class TestExternalFiles (LeoUnitTest)
@@ -15,7 +16,6 @@ class TestExternalFiles(LeoUnitTest):
     #@+node:ekr.20210428090950.1: *3* TEF.setUp
     def setUp(self):
         """setUp for TestFind class"""
-        import leo.core.leoExternalFiles as leoExternalFiles
         super().setUp()
         c = self.c
         g.app.idleTimeManager = leoApp.IdleTimeManager()

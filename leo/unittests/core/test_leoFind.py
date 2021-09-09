@@ -5,6 +5,7 @@
 """Tests for leo.core.leoFind"""
 
 import re
+from leo.core import leoGlobals as g
 import leo.core.leoFind as leoFind
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
@@ -442,6 +443,7 @@ class TestFind(LeoUnitTest):
 
     #@+node:ekr.20210110073117.58: *4* TestFind.test_tree
     def test_tree(self):
+        c = self.c
         table = (
             (0, 'Root'),
             (0, 'Node 1'),
@@ -451,12 +453,14 @@ class TestFind(LeoUnitTest):
             (1, 'child 5'),
             (2, 'child 6'),
         )
-        i = 0
-        for p in self.c.all_positions():
-            level, h = table[i]
-            i += 1
-            assert p.h == h, (p.h, h)
-            assert p.level() == level, (p.level(), level, p.h)
+        for level, h in table:
+            p = g.findNodeAnywhere(c, h)
+        # i = 0
+        # for p in self.c.all_positions():
+            # level, h = table[i]
+            # i += 1
+            self.assertEqual(p.h, h)
+            self.assertEqual(p.level(), level)
             # print(' '*p.level(), p.h)
             # g.printObj(g.splitLines(p.b), tag=p.h)
     #@+node:ekr.20210110073117.70: *3* Tests of Helpers...
