@@ -886,7 +886,7 @@ class TestAtShadow(LeoUnitTest):
         x = c.shadowController
         path = x.baseDirName()
         expected = g.os_path_dirname(g.os_path_abspath(g.os_path_join(c.fileName())))
-        assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+        self.assertEqual(path, expected)
     #@+node:ekr.20210902210552.6: *4* TestShadow.test_x_dirName
     def test_x_dirName(self):
         c = self.c
@@ -895,7 +895,7 @@ class TestAtShadow(LeoUnitTest):
         path = x.dirName(filename)
         expected = g.os_path_dirname(g.os_path_abspath(
             g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
-        assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+        self.assertEqual(path, expected)
     #@+node:ekr.20210902210552.7: *4* TestShadow.test_x_findAtLeoLine
     def test_x_findAtLeoLine(self):
         c = self.c
@@ -976,7 +976,7 @@ class TestAtShadow(LeoUnitTest):
         filename = 'xyzzy'
         path = x.pathName(filename)
         expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
-        assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+        self.assertEqual(path, expected)
     #@+node:ekr.20210902210552.12: *4* TestShadow.test_x_replaceFileWithString
     def test_x_replaceFileWithString(self):
         c = self.c
@@ -988,7 +988,7 @@ class TestAtShadow(LeoUnitTest):
         x.replaceFileWithString(encoding, path, s)
         with open(path) as f:
             s2 = f.read()
-        assert s == s2
+        self.assertEqual(s, s2)
     #@+node:ekr.20210902210552.13: *4* TestShadow.test_x_replaceFileWithString_2
     def test_x_replaceFileWithString_2(self):
         c = self.c
@@ -1017,7 +1017,7 @@ class TestAtShadow(LeoUnitTest):
         path = x.shadowPathName(filename)
         expected = g.os_path_abspath(g.os_path_join(
             g.os_path_dirname(c.fileName()),subdir,prefix+filename))
-        assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+        self.assertEqual(path, expected)
     #@-others
 #@-others
 #@-leo

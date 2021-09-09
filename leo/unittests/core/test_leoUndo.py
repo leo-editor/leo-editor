@@ -253,7 +253,7 @@ class TestUndo(LeoUnitTest):
         node1.h = 'node 1'
         node2.h = 'node 2'
         node3.h = 'node 3'
-        assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+        self.assertEqual([p.h for p in p.subtree()], ['node 1', 'node 2', 'node 3'])
         # Select 'node 1' and modify the headline as if a user did it
         c.undoer.clearUndoState()
         node1 = p.copy().moveToFirstChild()
@@ -262,14 +262,14 @@ class TestUndo(LeoUnitTest):
         w = c.frame.tree.edit_widget(node1)
         w.insert('1.0', 'changed - ')
         c.endEditing()
-        assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
+        self.assertEqual([p.h for p in p.subtree()], ['changed - node 1', 'node 2', 'node 3'])
         # Move the selection and undo the headline change
         c.selectPosition(node1.copy().moveToNext())
         c.undoer.undo()
         # The undo should restore the 'node 1' headline string
-        assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+        self.assertEqual([p.h for p in p.subtree()], ['node 1', 'node 2', 'node 3'])
         # The undo should select the edited headline.
-        assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
+        self.assertEqual(c.p, node1)
     #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
     def test_extract_test(self):
         c = self.c
@@ -312,26 +312,22 @@ class TestUndo(LeoUnitTest):
         u, w = c.undoer, c.frame.body.wrapper
         oldText = p.b
         newText = p.b + '\n#changed'
-        try:
-            for marked in (True, False):
-                c.undoer.clearUndoState()  # Required.
-                p.setMarked() if marked else p.clearMarked()
-                oldMarked = p.isMarked()
-                w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
-                u.setUndoTypingParams(p,
-                    undo_type = 'typing',
-                    oldText = oldText,
-                    newText = newText,
-                )
-                u.undo()
-                assert p.b == oldText, repr(p.b)
-                assert p.isMarked() == oldMarked, ('fail 1', p.isMarked(), oldMarked)
-                u.redo()
-                assert p.b == newText, repr(p.b)
-                assert p.isMarked() == oldMarked, ('fail 2', p.isMarked(), oldMarked)
-        finally:
-            p.b = oldText
-            p.clearMarked()
+        for marked in (True, False):
+            c.undoer.clearUndoState()  # Required.
+            p.setMarked() if marked else p.clearMarked()
+            oldMarked = p.isMarked()
+            w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
+            u.setUndoTypingParams(p,
+                undo_type = 'typing',
+                oldText = oldText,
+                newText = newText,
+            )
+            u.undo()
+            self.assertEqual(p.b, oldText)
+            self.assertEqual(p.isMarked(), oldMarked)
+            u.redo()
+            self.assertEqual(p.b, newText)
+            self.assertEqual(p.isMarked(), oldMarked)
     #@+node:ekr.20210906172626.17: *3* TestUndo.test_undo_group
     def test_undo_group(self):
         # Test an off-by-one error in c.undoer.bead.

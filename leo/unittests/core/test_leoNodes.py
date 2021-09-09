@@ -803,39 +803,39 @@ class TestNodes(LeoUnitTest):
         c.setCurrentPosition(p3)
         c.promote()
         p = c.p
-        assert p == p3,         'fail 1'
-        assert p.h == 'B',      'fail 2'
-        assert p.next().h=='child 1',            'fail 3'
-        assert p.next().next().h == 'child 2',   'fail child 1'
-        assert p.next().next().next().h == 'C',  'fail child 2'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.h, 'B')
+        self.assertEqual(p.next().h, 'child 1')
+        self.assertEqual(p.next().next().h, 'child 2')
+        self.assertEqual(p.next().next().next().h, 'C')
         c.undoer.undo()
         p = c.p
-        assert p == p3
-        assert p.back() == p2,  'fail 5'
-        assert p.next() == p6,  'fail 6'
-        assert p.firstChild().h=='child 1',          'fail child 3'
-        assert p.firstChild().next().h == 'child 2', 'fail child 4'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p6)
+        self.assertEqual(p.firstChild().h, 'child 1')
+        self.assertEqual(p.firstChild().next().h, 'child 2')
         c.undoer.redo()
         p = c.p
-        assert p == p3,         'fail 1-2'
-        assert p.h == 'B',      'fail 2-2'
-        assert p.next().h=='child 1',            'fail 3-2'
-        assert p.next().next().h == 'child 2',   'fail child 1-2'
-        assert p.next().next().next().h == 'C',  'fail child 2-2'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.h, 'B')
+        self.assertEqual(p.next().h, 'child 1')
+        self.assertEqual(p.next().next().h, 'child 2')
+        self.assertEqual(p.next().next().next().h, 'C')
         c.undoer.undo()
         p = c.p
-        assert p == p3
-        assert p.back() == p2,                      'fail 5-2'
-        assert p.next() == p6,                      'fail 6-2'
-        assert p.firstChild().h=='child 1',         'fail child 3-2'
-        assert p.firstChild().next().h == 'child 2','fail child 4-2'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p6)
+        self.assertEqual(p.firstChild().h, 'child 1')
+        self.assertEqual(p.firstChild().next().h, 'child 2')
         c.undoer.redo()
         p = c.p
-        assert p == p3,     'fail 1-3'
-        assert p.h == 'B',  'fail 2-3'
-        assert p.next().h=='child 1',            'fail 3-3'
-        assert p.next().next().h == 'child 2',   'fail child 1-3'
-        assert p.next().next().next().h == 'C',  'fail child 2-3'
+        self.assertEqual(p, p3)
+        self.assertEqual(p.h, 'B')
+        self.assertEqual(p.next().h, 'child 1')
+        self.assertEqual(p.next().next().h, 'child 2')
+        self.assertEqual(p.next().next().next().h, 'C')
     #@+node:ekr.20210830095545.55: *4* TestNodes.test_root_of_a_derived_file
     def test_root_of_a_derived_file(self):
         p = self.c.p

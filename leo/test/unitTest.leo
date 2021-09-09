@@ -726,10 +726,140 @@
 </v>
 <v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
 </v>
+<v t="ekr.20071113193729"><vh>leoUndo</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
+<v t="ekr.20060127120604"><vh>tempNode</vh></v>
+<v t="ekr.20050417202713"><vh>addComments</vh>
+<v t="ekr.20050417202713.1"><vh>before</vh></v>
+<v t="ekr.20050417202713.2"><vh>after</vh></v>
+<v t="ekr.20050417202713.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417204940"><vh>convertAllBlanks</vh>
+<v t="ekr.20050417204940.1"><vh>before</vh></v>
+<v t="ekr.20050417204940.2"><vh>after</vh></v>
+<v t="ekr.20050417204940.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417205012"><vh>convertAllTabs</vh>
+<v t="ekr.20050417205012.1"><vh>before</vh></v>
+<v t="ekr.20050417205012.2"><vh>after</vh></v>
+<v t="ekr.20050417205012.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114"><vh>convertBlanks</vh>
+<v t="ekr.20050417203310"><vh>before</vh></v>
+<v t="ekr.20050417203310.1"><vh>after</vh></v>
+<v t="ekr.20050417203336"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114.1"><vh>convertTabs</vh>
+<v t="ekr.20050417204834"><vh>before</vh></v>
+<v t="ekr.20050417204830"><vh>after</vh></v>
+<v t="ekr.20050417204901"><vh>selection</vh></v>
+</v>
+<v t="ekr.20040712101754.49"><vh>dedentBody</vh>
+<v t="ekr.20040712101754.50"><vh>before</vh></v>
+<v t="ekr.20040712101754.51"><vh>after</vh></v>
+<v t="ekr.20040712101754.52"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417202817"><vh>deleteComments</vh>
+<v t="ekr.20050417202817.1"><vh>before</vh></v>
+<v t="ekr.20050417202817.2"><vh>after</vh></v>
+<v t="ekr.20050417202817.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20111112211307.3910"><vh>deleteComments</vh>
+<v t="ekr.20111112211307.3911"><vh>before</vh></v>
+<v t="ekr.20111112211307.3912"><vh>after</vh></v>
+<v t="ekr.20111112211307.3913"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417201845"><vh>extract test1</vh>
+<v t="ekr.20050417201845.1"><vh>before</vh></v>
+<v t="ekr.20050417201845.2"><vh>after</vh>
+<v t="ekr.20050417201845.3"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050417201845.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070540"><vh>extract test2</vh>
+<v t="ekr.20050518070540.1"><vh>before</vh></v>
+<v t="ekr.20050518070545"><vh>after</vh></v>
+<v t="ekr.20050518070540.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070927"><vh>extract test3</vh>
+<v t="ekr.20050518070927.1"><vh>before</vh></v>
+<v t="ekr.20050518070927.2"><vh>after</vh>
+<v t="ekr.20050518070927.3"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050518070927.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518071251"><vh>extract test4</vh>
+<v t="ekr.20050518071251.1"><vh>before</vh></v>
+<v t="ekr.20050518071258"><vh>after</vh></v>
+<v t="ekr.20050518071251.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20190210103111.1"><vh>line_to_headline test1</vh>
+<v t="ekr.20190210103111.2"><vh>before</vh></v>
+<v t="ekr.20190210103111.3"><vh>after</vh>
+<v t="ekr.20190210103111.4"><vh>headline</vh></v>
+</v>
+<v t="ekr.20190210103111.5"><vh>selection</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20201018144248.1"><vh>@test restore marked bits</vh></v>
+<v t="ekr.20190923170025.1"><vh>@test undo editHeadline</vh>
+<v t="ekr.20190923170025.2"><vh>node 1</vh></v>
+<v t="ekr.20190923170025.3"><vh>node 2</vh></v>
+<v t="ekr.20190923170025.4"><vh>node 3</vh></v>
+</v>
+<v t="bpt.20190825074247.1"><vh>@test undo/redoGroup</vh>
+<v t="bpt.20190825074316.1"><vh>original</vh></v>
+<v t="ekr.20210906133808.1"><vh>do and undo</vh></v>
+<v t="ekr.20210906133808.2"><vh>do</vh></v>
+<v t="ekr.20210906133808.3"><vh>do, undo, redo</vh></v>
+</v>
+<v t="ekr.20071113202510"><vh>@test zz end of leoUndo tests</vh></v>
+</v>
 </v>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71005805000000302e362e3371017d71025809000000756e69745f746573747103580400000061626364710473732e"><vh>@file activeUnitTests.txt</vh></v>
 </vnodes>
 <tnodes>
+<t tx="bpt.20190825074247.1"># This test exposed a bug with redoGroup c.undoer.bead index off-by-one
+# The first c.pasteOutline() is there to setup the test cases, but it also serves
+# an important hidden purpose of adding undo state to the undo stack. Due
+# to the wrap-around nature of python index = -1, the original redoGroup code
+# worked fine when the undo group is the first one on the undo stack.
+# There are several commands which use undoGroup. The convertAllBlanks
+# was arbitrarily chosen to expose the bug.
+c.undoer.clearUndoState()
+original = p.copy().moveToFirstChild()
+c.selectPosition(original)
+c.copyOutline()
+# Do and undo
+c.pasteOutline()
+do_and_undo = original.copy().moveToNext()
+do_and_undo.h = "do and undo"
+c.convertAllBlanks()
+c.undoer.undo()
+assert original.b == do_and_undo.b, "Undo should restore to original"
+# Do
+c.pasteOutline()
+do = do_and_undo.copy().moveToNext()
+do.h = "do"
+c.convertAllBlanks()
+# Do, undo, redo
+c.pasteOutline()
+do_undo_redo = do.copy().moveToNext()
+do_undo_redo.h = "do, undo, redo"
+c.convertAllBlanks()
+c.undoer.undo()
+c.undoer.redo()
+assert do.b == do_undo_redo.b, "Redo should do the operation again"
+</t>
+<t tx="bpt.20190825074316.1">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
 <t tx="ekr.20040707141957.12"># Doesn't work when run externally because the copy operation changes the gnx.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -746,6 +876,38 @@ Line 1
 #@@last
 #@-leo
 last line 1: no newline
+</t>
+<t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
+
+suite = c.testManager.makeEditBodySuite(p)
+
+# g.app.scriptDict['suite'] = suite
+</t>
+<t tx="ekr.20040712101754.38">@language plain
+@
+
+The names of child nodes are the names of commander methods to be called to do the test.
+
+Each child node will in turn have two or more children:
+
+- a "before" node
+- an "after" node
+- an optional selection node containing two lines giving the selection range in Tk coordinates.
+- An optional insert node containing one line giving the insert point in Tk coordinates.
+</t>
+<t tx="ekr.20040712101754.49"></t>
+<t tx="ekr.20040712101754.50">line 1
+    line 2
+    line 3
+line 4
+</t>
+<t tx="ekr.20040712101754.51">line 1
+line 2
+line 3
+line 4
+</t>
+<t tx="ekr.20040712101754.52">2.0
+3.5
 </t>
 <t tx="ekr.20040713070526">@language python 
 dump = False 
@@ -999,6 +1161,146 @@ finally:
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
 <t tx="ekr.20050328101834.3"></t>
+<t tx="ekr.20050417201845"></t>
+<t tx="ekr.20050417201845.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050417201845.2">before
+    &lt;&lt; section &gt;&gt;
+after
+</t>
+<t tx="ekr.20050417201845.3">sec line 1
+    sec line 2 indented
+sec line 3
+</t>
+<t tx="ekr.20050417201845.4">2.0
+5.10
+</t>
+<t tx="ekr.20050417202713"></t>
+<t tx="ekr.20050417202713.1">@language python
+
+def addCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202713.2">@language python
+
+def addCommentTest():
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202713.3">5.0
+7.8
+</t>
+<t tx="ekr.20050417202817"># created by new add-comments
+</t>
+<t tx="ekr.20050417202817.1">@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202817.2">@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202817.3">5.0
+7.8
+</t>
+<t tx="ekr.20050417203114"></t>
+<t tx="ekr.20050417203114.1"></t>
+<t tx="ekr.20050417203310">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417203310.1">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417203336">1.0
+6.5
+</t>
+<t tx="ekr.20050417204830">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417204834">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417204901">1.0
+6.5
+</t>
+<t tx="ekr.20050417204940"></t>
+<t tx="ekr.20050417204940.1">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417204940.2">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417204940.3">1.0
+6.5
+</t>
+<t tx="ekr.20050417205012"></t>
+<t tx="ekr.20050417205012.1">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417205012.2">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417205012.3">1.0
+6.5
+</t>
 <t tx="ekr.20050512083807.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
@@ -1060,6 +1362,61 @@ assert errors == 0, "Check Outline reported %d errors" % errors
 <t tx="ekr.20050512084850.1">pass
 </t>
 <t tx="ekr.20050512084850.2">pass
+</t>
+<t tx="ekr.20050518070540"></t>
+<t tx="ekr.20050518070540.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070540.4">2.0
+2.16
+</t>
+<t tx="ekr.20050518070545">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070927"></t>
+<t tx="ekr.20050518070927.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070927.2">before
+    &lt;&lt; section &gt;&gt;
+after
+</t>
+<t tx="ekr.20050518070927.3">sec line 1
+    sec line 2 indented
+sec line 3
+</t>
+<t tx="ekr.20050518070927.4">2.0
+5.10
+</t>
+<t tx="ekr.20050518071251"></t>
+<t tx="ekr.20050518071251.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518071251.4">2.0
+2.16
+</t>
+<t tx="ekr.20050518071258">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
 </t>
 <t tx="ekr.20050726141158">@ This is    a test of stuff.in doc parts.
 
@@ -1381,6 +1738,7 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 </t>
+<t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060131102450"># Print does not work: it is redirected.
 g.pr('\nEnd of typing tests')
 </t>
@@ -2143,6 +2501,7 @@ for s,i,expected in table:
 <t tx="ekr.20071113192611"></t>
 <t tx="ekr.20071113193624"># 7 failures with Alt-5
 </t>
+<t tx="ekr.20071113193729"></t>
 <t tx="ekr.20071113194033.3"># No failures with Alt-5 but warnings about no tnode lists.
 </t>
 <t tx="ekr.20071113201833"># Print does not work: it is redirected.
@@ -2150,6 +2509,9 @@ g.pr('\nEnd of leoCommands tests')
 </t>
 <t tx="ekr.20071113202153.2"># Print does not work: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
+</t>
+<t tx="ekr.20071113202510"># Print does not work: it is redirected.
+g.pr('\nEnd of leoUndo tests.')
 </t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -5476,6 +5838,39 @@ finally:
     &lt;!-- text --&gt;
 &lt;/html&gt;
 </t>
+<t tx="ekr.20111112211307.3910"># created by old and new add-comments.
+</t>
+<t tx="ekr.20111112211307.3911">@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+</t>
+<t tx="ekr.20111112211307.3912">@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20111112211307.3913">5.0
+12.8
+</t>
 <t tx="ekr.20111113102936.4600"></t>
 <t tx="ekr.20111115105448.3880"></t>
 <t tx="ekr.20111121140833.3916">w = c.frame.body.wrapper
@@ -7172,9 +7567,47 @@ if trace and skipped:
 </t>
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
+<t tx="ekr.20190210103111.1"></t>
+<t tx="ekr.20190210103111.2">before
+headline
+after
+</t>
+<t tx="ekr.20190210103111.3">before
+after
+</t>
+<t tx="ekr.20190210103111.4"></t>
+<t tx="ekr.20190210103111.5">2.0
+2.0
+</t>
 <t tx="ekr.20190509044054.1">print('\ng.app.old_gui_name: %r, g.app.gui.guiName(): %s\n' % (
     getattr(g.app, 'old_gui_name', None), g.app.gui.guiName()))
 </t>
+<t tx="ekr.20190923170025.1"># Brian Theado.
+c.undoer.clearUndoState()
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# Select 'node 1' and modify the headline as if a user did it
+node1 = p.copy().moveToFirstChild()
+c.selectPosition(node1)
+c.editHeadline()
+w = c.frame.tree.edit_widget(node1)
+w.insert('1.0', 'changed - ')
+c.endEditing()
+assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
+
+# Move the selection and undo the headline change
+c.selectPosition(node1.copy().moveToNext())
+c.undoer.undo()
+
+# The undo should restore the 'node 1' headline string
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# The undo should select the edited headline.
+assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
+</t>
+<t tx="ekr.20190923170025.2"></t>
+<t tx="ekr.20190923170025.3"></t>
+<t tx="ekr.20190923170025.4"></t>
 <t tx="ekr.20191207060127.1">if g.app.isExternalUnitTest:
     self.skipTest('Not for external tests: uses @&lt;file&gt; node.')
 if g.in_bridge:
@@ -7285,9 +7718,55 @@ assert len(s) == 4, len(s)
 s = s.translate(table)
 assert len(s) == 2, len(s)
 </t>
+<t tx="ekr.20201018144248.1"># Test of #1694.
+u, w = c.undoer, c.frame.body.wrapper
+oldText = p.b
+newText = p.b + '\n#changed'
+try:
+    for marked in (True, False):
+        c.undoer.clearUndoState()  # Required.
+        p.setMarked() if marked else p.clearMarked()
+        oldMarked = p.isMarked()
+        w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
+        u.setUndoTypingParams(p,
+            undo_type = 'typing',
+            oldText = oldText,
+            newText = newText,
+        )
+        u.undo()
+        assert p.b == oldText, repr(p.b)
+        assert p.isMarked() == oldMarked, ('fail 1', p.isMarked(), oldMarked)
+        u.redo()
+        assert p.b == newText, repr(p.b)
+        assert p.isMarked() == oldMarked, ('fail 2', p.isMarked(), oldMarked)
+finally:
+    p.b = oldText
+    p.clearMarked()
+</t>
 <t tx="ekr.20210829055149.1"></t>
 <t tx="ekr.20210901174825.1"></t>
 <t tx="ekr.20210905065744.1"></t>
+<t tx="ekr.20210906133808.1">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20210906133808.2">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20210906133808.3">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(p2)
 path = c.scanAtPathDirectives(aList)
