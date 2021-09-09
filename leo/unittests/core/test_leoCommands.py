@@ -186,7 +186,7 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210901140645.7: *3* TestCommands.test_c_config_initIvar_sets_commander_ivars
     def test_c_config_initIvar_sets_commander_ivars(self):
         c = self.c
-        for ivar,setting_type,default in g.app.config.ivarsData:
+        for ivar, setting_type, default in g.app.config.ivarsData:
             assert hasattr(c,ivar),ivar
             assert hasattr(c.config,ivar),ivar
             val = getattr(c.config,ivar)

@@ -145,6 +145,9 @@ class LeoUnitTest(unittest.TestCase):
         g.trace(tag)
         for p in c.all_positions():
             print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
+    #@+node:ekr.20210909130423.1: *3* LeoUnitTest.init_setting (to do)
+    def init_setting(self, setting, value):
+        pass
     #@-others
 #@-others
 #@-leo
