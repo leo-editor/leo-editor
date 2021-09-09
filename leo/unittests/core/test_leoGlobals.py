@@ -145,8 +145,7 @@ class TestGlobals(LeoUnitTest):
         for i in range(3):
             result = g.ensureLeadingNewlines(s,i)
             val = ('\n' * i) + s2
-            assert result == val, 'expected %s, got %s' % (
-                repr(val),repr(result))
+            self.assertEqual(result, val)
     #@+node:ekr.20210905203541.11: *3* TestGlobals.test_g_ensureTrailingNewlines
     def test_g_ensureTrailingNewlines(self):
         s = 'aa bc \n \n\t\n'
@@ -154,8 +153,7 @@ class TestGlobals(LeoUnitTest):
         for i in range(3):
             result = g.ensureTrailingNewlines(s,i)
             val = s2 + ('\n' * i)
-            assert result == val, 'expected %s, got %s' % (
-                repr(val),repr(result))
+            self.assertEqual(result, val)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
@@ -165,7 +163,7 @@ class TestGlobals(LeoUnitTest):
         )
         for s,word,i,expected in table:
             actual = g.find_word(s,word,i)
-            assert actual == expected
+            self.assertEqual(actual, expected)
     #@+node:ekr.20210905203541.14: *3* TestGlobals.test_g_fullPath
     def test_g_fullPath(self):
         c = self.c
@@ -189,15 +187,13 @@ class TestGlobals(LeoUnitTest):
             @pagewidth 72
             @encoding utf-8
     """)
-        # @path: anError # @path ends with ':'.
-        # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
         d = g.get_directives_dict(p)
-        assert d.get('language') == 'python'
-        assert d.get('tabwidth') == '-8'
-        assert d.get('pagewidth') == '72'
-        assert d.get('encoding') == 'utf-8'
-        assert d.get('comment') == 'a b c'
-        assert not d.get('path'),d.get('path')
+        self.assertEqual(d.get('language'), 'python')
+        self.assertEqual(d.get('tabwidth'), '-8')
+        self.assertEqual(d.get('pagewidth'), '72')
+        self.assertEqual(d.get('encoding'), 'utf-8')
+        self.assertEqual(d.get('comment'), 'a b c')
+        assert not d.get('path'), d.get('path')
     #@+node:ekr.20210905203541.17: *3* TestGlobals.test_g_getDocString
     def test_g_getDocString(self):
         s1 = 'no docstring'
@@ -216,7 +212,7 @@ class TestGlobals(LeoUnitTest):
         )
         for s,result in table:
             s2 = g.getDocString(s)
-            assert s2 == result,'Expected %s, got %s' % (repr(result),repr(s2))
+            self.assertEqual(s2, result)
     #@+node:ekr.20210905203541.18: *3* TestGlobals.test_g_getLine
     def test_g_getLine(self):
         s = 'a\ncd\n\ne'
@@ -229,17 +225,12 @@ class TestGlobals(LeoUnitTest):
             (7,(6,7)), # One too many.
         ):
             j,k = g.getLine(s,i)
-            assert (j,k) == result, 'i: %d, expected %d,%d, got %d,%d' % (i,result[0],result[1],j,k)
-    #@+node:ekr.20210905203541.19: *3* TestGlobals.test_g_getScript_strips_crlf
-    def test_g_getScript_strips_crlf(self):
-        c = self.c
-        script = g.getScript(c, c.p) # This will get the text of this node.
-        assert script.find('\r\n') == -1, repr(script)
+            self.assertEqual((j,k), result, msg=f"i: {i}, j: {j}, k: {k}")
     #@+node:ekr.20210905203541.20: *3* TestGlobals.test_g_getWord
     def test_g_getWord(self):
         s = 'abc xy_z5 pdq'
         i,j = g.getWord(s,5)
-        assert s[i:j] == 'xy_z5','got %s' % s[i:j]
+        self.assertEqual(s[i:j], 'xy_z5')
     #@+node:ekr.20210905203541.21: *3* TestGlobals.test_g_guessExternalEditor
     def test_g_guessExternalEditor(self):
         c = self.c
@@ -291,7 +282,7 @@ class TestGlobals(LeoUnitTest):
         )
         for expected, s in table:
             result = g.isDirective(s)
-            assert expected == bool(result), (expected, bool(result), repr(s))
+            self.assertEqual(expected, bool(result), msg=s)
     #@+node:ekr.20210905203541.25: *3* TestGlobals.test_g_match_word
     def test_g_match_word(self):
         table = (
@@ -308,8 +299,7 @@ class TestGlobals(LeoUnitTest):
         for data in table:
             expected, i, word, line = data
             got = g.match_word(line + '\n', i, word)
-            assert expected == got, (expected, i, word, line)
-        # print('done')
+            self.assertEqual(expected, got)
     #@+node:ekr.20210905203541.26: *3* TestGlobals.test_g_os_path_finalize_join_with_thumb_drive
     def test_g_os_path_finalize_join_with_thumb_drive(self):
         path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
@@ -328,8 +318,7 @@ class TestGlobals(LeoUnitTest):
             (' \t \n\n  \n c\n\t\n', ' c\n'),
         ):
             result = g.removeBlankLines(s)
-            assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-                repr(s),repr(expected),repr(result))
+            self.assertEqual(result, expected, msg=repr(s))
     #@+node:ekr.20210905203541.30: *3* TestGlobals.test_g_removeLeadingBlankLines
     def test_g_removeLeadingBlankLines(self):
         for s,expected in (
@@ -338,8 +327,7 @@ class TestGlobals(LeoUnitTest):
             (' \t \n\n\n c', ' c'),
         ):
             result = g.removeLeadingBlankLines(s)
-            assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-                repr(s),repr(expected),repr(result))
+            self.assertEqual(result, expected, msg=repr(s))
     #@+node:ekr.20210905203541.31: *3* TestGlobals.test_g_removeTrailing
     def test_g_removeTrailing(self):
         s = 'aa bc \n \n\t\n'
@@ -348,10 +336,9 @@ class TestGlobals(LeoUnitTest):
             ('abc\t\n ',''),
             ('c\t\n ','aa b'),
         )
-
         for arg,val in table:
             result = g.removeTrailing(s,arg)
-            assert result == val, 'expected %s, got %s' % (val,result)
+            self.assertEqual(result, val)
     #@+node:ekr.20210905203541.32: *3* TestGlobals.test_g_sanitize_filename
     def test_g_sanitize_filename(self):
         table = (
@@ -383,7 +370,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@lineending cr\n'
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
-        assert s == '\r'
+        self.assertEqual(s, '\r')
     #@+node:ekr.20210905203541.37: *3* TestGlobals.test_g_scanAtLineendingDirectives_crlf
     def test_g_scanAtLineendingDirectives_crlf(self):
         c = self.c
@@ -391,7 +378,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@lineending crlf\n'
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
-        assert s == '\r\n', repr(s)
+        self.assertEqual(s, '\r\n')
     #@+node:ekr.20210905203541.38: *3* TestGlobals.test_g_scanAtLineendingDirectives_lf
     def test_g_scanAtLineendingDirectives_lf(self):
         c = self.c
@@ -399,7 +386,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@lineending lf\n'
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
-        assert s == '\n'
+        self.assertEqual(s, '\n')
     #@+node:ekr.20210905203541.39: *3* TestGlobals.test_g_scanAtLineendingDirectives_nl
     def test_g_scanAtLineendingDirectives_nl(self):
         c = self.c
@@ -407,7 +394,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@lineending nl\n'
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
-        assert s == '\n'
+        self.assertEqual(s, '\n')
     #@+node:ekr.20210905203541.40: *3* TestGlobals.test_g_scanAtLineendingDirectives_platform
     def test_g_scanAtLineendingDirectives_platform(self):
         c = self.c
@@ -416,9 +403,9 @@ class TestGlobals(LeoUnitTest):
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
         if sys.platform.startswith('win'):
-            assert s == '\r\n'
+            self.assertEqual(s, '\r\n')
         else:
-            assert s == '\n'
+            self.assertEqual(s, '\n')
     #@+node:ekr.20210905203541.41: *3* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
     def test_g_scanAtPagewidthDirectives_minus_40(self):
         c = self.c
@@ -436,7 +423,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@pagewidth 40\n'
         aList = g.get_directives_dict_list(p)
         n = g.scanAtPagewidthDirectives(aList)
-        assert n == 40
+        self.assertEqual(n, 40)
     #@+node:ekr.20210905203541.43: *3* TestGlobals.test_g_scanAtTabwidthDirectives_6
     def test_g_scanAtTabwidthDirectives_6(self):
         c = self.c
@@ -444,7 +431,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@tabwidth 6\n'
         aList = g.get_directives_dict_list(p)
         n = g.scanAtTabwidthDirectives(aList)
-        assert n == 6,repr(n)
+        self.assertEqual(n, 6)
     #@+node:ekr.20210905203541.44: *3* TestGlobals.test_g_scanAtTabwidthDirectives_minus_6
     def test_g_scanAtTabwidthDirectives_minus_6(self):
         c = self.c
@@ -452,7 +439,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@tabwidth -6\n'
         aList = g.get_directives_dict_list(p)
         n = g.scanAtTabwidthDirectives(aList)
-        assert n == -6
+        self.assertEqual(n, -6)
     #@+node:ekr.20210905203541.45: *3* TestGlobals.test_g_scanAtWrapDirectives_nowrap
     def test_g_scanAtWrapDirectives_nowrap(self):
         c = self.c
@@ -503,41 +490,41 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.50: *3* TestGlobals.test_g_skip_blank_lines
     def test_g_skip_blank_lines(self):
         end = g.skip_blank_lines("",0)
-        assert end == 0, "expected 0, got %d" % end
+        self.assertEqual(end, 0)
         end = g.skip_blank_lines(" ",0)
-        assert end == 0, "expected 0, got %d" % end
+        self.assertEqual(end, 0)
         end = g.skip_blank_lines("\n",0)
-        assert end == 1, "expected 1, got %d" % end
+        self.assertEqual(end, 1)
         end = g.skip_blank_lines(" \n",0)
-        assert end == 2, "expected 1, got %d" % end
+        self.assertEqual(end, 2)
         end = g.skip_blank_lines("\n\na\n",0)
-        assert end == 2, "expected 2, got %d" % end
+        self.assertEqual(end, 2)
         end = g.skip_blank_lines("\n\n a\n",0)
-        assert end == 2, "expected 2, got %d" % end
+        self.assertEqual(end, 2)
     #@+node:ekr.20210905203541.51: *3* TestGlobals.test_g_skip_line
     def test_g_skip_line(self):
         s = 'a\n\nc'
-        for i,result in (
+        for i, result in (
             (-1,2), # One too few.
-            (0,2),(1,2),
+            (0,2), (1,2),
             (2,3),
             (3,4),
             (4,4), # One too many.
         ):
-            j = g.skip_line(s,i)
-            assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+            j = g.skip_line(s, i)
+            self.assertEqual(j, result, msg=i)
     #@+node:ekr.20210905203541.52: *3* TestGlobals.test_g_skip_to_end_of_line
     def test_g_skip_to_end_of_line(self):
         s = 'a\n\nc'
-        for i,result in (
+        for i, result in (
             (-1,1), # One too few.
-            (0,1),(1,1),
+            (0,1), (1,1),
             (2,2),
             (3,4),
             (4,4), # One too many.
         ):
             j = g.skip_to_end_of_line(s,i)
-            assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+            self.assertEqual(j, result, msg=i)
     #@+node:ekr.20210905203541.53: *3* TestGlobals.test_g_skip_to_start_of_line
     def test_g_skip_to_start_of_line(self):
         s1 = 'a\n\nc'
@@ -556,7 +543,7 @@ class TestGlobals(LeoUnitTest):
         for s,table in ((s1,table1),(s2,table2)):
             for i,result in table:
                 j = g.skip_to_start_of_line(s,i)
-                assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+                self.assertEqual(j, result, msg=i)
     #@+node:ekr.20210905203541.54: *3* TestGlobals.test_g_splitLongFileName
     def test_g_splitLongFileName(self):
         table = (
@@ -576,7 +563,7 @@ class TestGlobals(LeoUnitTest):
         )
         for path,expected in table:
             result = g.stripPathCruft(path)
-            assert result == expected
+            self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.56: *3* TestGlobals.test_g_warnOnReadOnlyFile
     def test_g_warnOnReadOnlyFile(self):
         c = self.c
