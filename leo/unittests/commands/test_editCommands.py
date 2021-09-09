@@ -3896,18 +3896,15 @@ class TestEditCommands(LeoUnitTest):
             self.skipTest('no abbreviation settings') # #1345.
         child = g.findNodeInTree(c,p,'child')
         assert child
-        old_b = child.b
-        try:
-            ### i, j,val = 0,0,child.b
-            i, j = 0, 0
-            # ac.make_script_substitutions(i,j,val)
-            # ac.find_place_holder(child,True)
-            new_s,i,j = ac.next_place(child.b,offset=0)
-            assert i == 34 and j == 40, (i,j)
-            new_s2,i,j = ac.next_place(new_s,offset=40)
-            assert i == 54 and j == 58, (i,j)
-        finally:
-            child.b = old_b
+        i, j = 0, 0
+        # ac.make_script_substitutions(i,j,val)
+        # ac.find_place_holder(child,True)
+        new_s,i,j = ac.next_place(child.b,offset=0)
+        self.assertEqual(i, 34)
+        self.assertEqual(j, 40)
+        new_s2, i, j = ac.next_place(new_s,offset=40)
+        self.assertEqual(i, 54)
+        self.assertEqual(j, 58)
     #@+node:ekr.20210905064816.3: *4* TestEditCommands.test_addAbbrevHelper
     def test_addAbbrevHelper(self):
         c = self.c

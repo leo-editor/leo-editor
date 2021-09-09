@@ -128,10 +128,10 @@ class TestAtFile(LeoUnitTest):
                 valid, new_df2, start2, end2, isThin2 = at.parseLeoSentinel(s)
                 # g.trace('start',start,'end',repr(end),'len(s)',len(s))
                 assert valid, s
-                assert new_df == new_df2, s
-                assert isThin == isThin2, s
-                assert end == end2, (end, end2, s)
-                assert at.encoding == encoding, s
+                self.assertEqual(new_df, new_df2, msg=repr(s))
+                self.assertEqual(isThin, isThin2, msg=repr(s))
+                self.assertEqual(end, end2, msg=repr(s))
+                self.assertEqual(at.encoding, encoding, msg=repr(s))
         finally:
             at.encoding = 'utf-8'
     #@+node:ekr.20210905052021.24: *3* TestAtFile.test_at_remove
@@ -299,9 +299,9 @@ class TestAtFile(LeoUnitTest):
         import leo.core.leoFileCommands as leoFileCommands
         table = leoFileCommands.FastRead(c, {}).translate_table
         s = chr(0) + "a" + chr(0) + "b"
-        assert len(s) == 4, len(s)
+        self.assertEqual(len(s), 4)
         s = s.translate(table)
-        assert len(s) == 2, len(s)
+        self.assertEqual(len(s), 2)
     #@-others
 #@-others
 #@-leo

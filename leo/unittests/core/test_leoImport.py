@@ -52,7 +52,7 @@ class TestImporter(LeoUnitTest):
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065632.1: *4* C tests
@@ -79,11 +79,10 @@ class TestImporter(LeoUnitTest):
         c.importCommands.cUnitTest(c.p, s=s)
         # Check structure
         root = c.p.lastChild()
-        # assert root.h.startswith('@@'), root.h
-        assert root.h == '@file test'
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.4: *5* TestImport.test_c_class_underindented_line
@@ -112,10 +111,10 @@ class TestImporter(LeoUnitTest):
         c.importCommands.cUnitTest(c.p, s=s)
         # Check structure
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.5: *5* TestImport.test_c_comment_follows_arg_list
@@ -147,10 +146,10 @@ class TestImporter(LeoUnitTest):
         c.importCommands.cUnitTest(c.p, s=s)
         # Check structure
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.6: *5* TestImport.test_c_comment_follows_block_delim
@@ -182,11 +181,11 @@ class TestImporter(LeoUnitTest):
         c.importCommands.cUnitTest(c.p, s=s)
         # Check structure
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         assert p2, g.tree_to_string(c)
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.10: *5* TestImport.test_c_extern
@@ -206,10 +205,10 @@ class TestImporter(LeoUnitTest):
         p = c.p
         c.importCommands.cUnitTest(p, s=s)
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.7: *5* TestImport.test_c_intermixed_blanks_and_tabs
@@ -231,10 +230,10 @@ class TestImporter(LeoUnitTest):
        
         c.importCommands.cUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
         
@@ -257,10 +256,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.cUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test', root.h)
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.9: *5* TestImport.test_c_old_style_decl_2
@@ -280,10 +279,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.cUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904144251.1: *4* C# tests
@@ -303,10 +302,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.cSharpUnitTest(c.p, s=s)
         root = c.p.firstChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904065459.13: *5* TestImport.test_c_sharp_namespace_no_indent
     def test_c_sharp_namespace_no_indent(self):
@@ -325,10 +324,10 @@ class TestImporter(LeoUnitTest):
         )
         root = c.p.firstChild()
         # assert root.h.endswith('c# namespace no indent'), root.h
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904122726.1: *4* Coffeescript tests
     #@+node:ekr.20210904065459.15: *5* TestImport.test_coffeescript_2
@@ -356,7 +355,7 @@ class TestImporter(LeoUnitTest):
         if 1:
           p2 = c.p.firstChild().firstChild()
           for h in table:
-              assert p2.h == h, (p2.h, h)
+              self.assertEqual(p2.h, h)
               p2.moveToThreadNext()
     #@+node:ekr.20210904065459.16: *5* TestImport.test_coffeescript_3
     #@@tabwidth -2 # Required
@@ -405,7 +404,7 @@ class TestImporter(LeoUnitTest):
         if 1:
           p2 = c.p.firstChild().firstChild()
           for h in table:
-              assert p2.h == h, (p2.h, h)
+              self.assertEqual(p2.h, h)
               p2.moveToThreadNext()
     #@+node:ekr.20210904084324.1: *4* Cython tests
     #@+node:ekr.20210904065459.11: *5* TestImport.test_cython_importer
@@ -434,10 +433,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.cythonUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904144021.1: *4* Dart tests
@@ -471,7 +470,7 @@ class TestImporter(LeoUnitTest):
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
        
@@ -497,10 +496,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.elispUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904122741.1: *4* HTML tests
@@ -524,10 +523,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.htmlUnitTest(c.p, s=s)
         root = c.p.firstChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904065459.20: *5* TestImport.test_html_multiple_tags_on_a_line
     def test_html_multiple_tags_on_a_line(self):
@@ -587,7 +586,7 @@ class TestImporter(LeoUnitTest):
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904065459.21: *5* TestImport.test_html_multple_node_completed_on_a_line
     def test_html_multple_node_completed_on_a_line(self):
@@ -604,7 +603,8 @@ class TestImporter(LeoUnitTest):
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
-            assert p2 and p2.h == h, (p2 and p2.h, h)
+            assert p2
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904065459.22: *5* TestImport.test_html_multple_node_starts_on_a_line
     def test_html_multple_node_starts_on_a_line(self):
@@ -622,7 +622,8 @@ class TestImporter(LeoUnitTest):
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
-            assert p2 and p2.h == h, (p2 and p2.h, h)
+            assert p2
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904065459.23: *5* TestImport.test_html_underindented_comment
     def test_html_underindented_comment(self):
@@ -655,7 +656,7 @@ class TestImporter(LeoUnitTest):
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
 
         
@@ -700,7 +701,7 @@ class TestImporter(LeoUnitTest):
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
             
     #@+node:ekr.20210904065459.26: *5* TestImport.test_html_improperly_terminated_tags
@@ -727,7 +728,7 @@ class TestImporter(LeoUnitTest):
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904065459.27: *5* TestImport.test_html_improperly_terminated_tags2
     def test_html_improperly_terminated_tags2(self):
@@ -750,7 +751,7 @@ class TestImporter(LeoUnitTest):
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@+node:ekr.20210904065459.28: *5* TestImport.test_html_brython
     def test_html_brython(self):
@@ -902,7 +903,7 @@ class TestImporter(LeoUnitTest):
         p2 = c.p.firstChild().firstChild()
         assert p2
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
             
     #@+node:ekr.20210904122815.1: *4* Java tests
@@ -931,10 +932,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
         
@@ -996,10 +997,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.32: *5* TestImport.test_java_interface_test1
@@ -1016,10 +1017,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.33: *5* TestImport.test_java_interface_test2
@@ -1036,10 +1037,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.javaUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904122826.1: *4* Javascript tests
@@ -1246,13 +1247,12 @@ class TestImporter(LeoUnitTest):
             'Section 3', 'Section 3.1',
         )
         c.importCommands.orgUnitTest(c.p, s=s)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.43: *5* TestImport.test_org_tags
     def test_org_tags(self):
         c = self.c
@@ -1267,13 +1267,12 @@ class TestImporter(LeoUnitTest):
             'Section 3 :tag3:tag4:',
         )
         c.importCommands.orgUnitTest(c.p, s=s)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.44: *5* TestImport.test_org_intro
     def test_org_intro(self):
         c = self.c
@@ -1289,13 +1288,12 @@ class TestImporter(LeoUnitTest):
             'Section 2',
         )
         c.importCommands.orgUnitTest(c.p, s=s)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == h, (p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.45: *5* TestImport.test_org_552
     def test_org_552(self):
         c = self.c
@@ -1313,13 +1311,12 @@ class TestImporter(LeoUnitTest):
             '每周惯例',
         )
         c.importCommands.orgUnitTest(c.p, s=s)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, g.toUnicode(h))
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.46: *5* TestImport.test_org_1074
     def test_org_1074(self):
         c = self.c
@@ -1331,13 +1328,12 @@ class TestImporter(LeoUnitTest):
             ' Test',
         )
         c.importCommands.orgUnitTest(c.p, s=s)
-        if 1:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, g.toUnicode(h))
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.47: *5* TestImport.test_org_placeholder
     def test_org_placeholder(self):
         c = self.c
@@ -1370,7 +1366,7 @@ class TestImporter(LeoUnitTest):
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904122853.1: *4* Otl tests
@@ -1417,7 +1413,7 @@ class TestImporter(LeoUnitTest):
             root = c.p.firstChild()
             p2 = root.firstChild()
             for h in table:
-                assert p2.h == h, (p2.h, h)
+                self.assertEqual(p2.h, h)
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h # Extra nodes
        
@@ -1469,10 +1465,10 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pascalUnitTest(c.p, s=s)
         root = c.p.lastChild()
         assert root
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
        
@@ -1600,10 +1596,10 @@ class TestImporter(LeoUnitTest):
         )
         c.importCommands.perlUnitTest(c.p, s=s)
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
       
@@ -1781,16 +1777,15 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-            
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+        
     #@+node:ekr.20210904065459.62: *5* TestImport.test_python_bad_class_test
     def test_python_bad_class_test(self):
         c = self.c
@@ -1832,15 +1827,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
             
     #@+node:ekr.20210904065459.64: *5* TestImport.test_python_bug_346
     def test_python_bug_346(self):
@@ -1881,16 +1875,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-            
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.65: *5* TestImport.test_python_bug_354
     def test_python_bug_354(self):
         c = self.c
@@ -1919,16 +1911,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-            
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.66: *5* TestImport.test_python_bug_357
     def test_python_bug_357(self):
         c = self.c
@@ -2208,15 +2198,16 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root and root.h == '@file test', root.h
+        assert root
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
         for n, h in table:
             assert p, h
             n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
             p.moveToThreadNext()
-        assert p == after, ('tree comp failed', p.h)
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.67: *5* TestImport.test_python_bug_360
     def test_python_bug_360(self):
         c = self.c
@@ -2236,15 +2227,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.68: *5* TestImport.test_python_bug_390
     def test_python_bug_390(self):
         c = self.c
@@ -2271,16 +2261,15 @@ class TestImporter(LeoUnitTest):
         c.importCommands .pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-            assert root.b.find("if __name__ == '__main__':") > -1
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+        assert "if __name__ == '__main__':" in root.b
     #@+node:ekr.20210904065459.70: *5* TestImport.test_python_bug_603720
     def test_python_bug_603720(self):
         c = self.c
@@ -2325,14 +2314,14 @@ class TestImporter(LeoUnitTest):
         after = p.nodeAfterTree()
         root = p.lastChild()
         assert root
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
             p.moveToThreadNext()
-        assert p == after, ('tree comp failed', p.h)
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.72: *5* TestImport.test_python_class_test_2
     def test_python_class_test_2(self):
         c = self.c
@@ -2370,16 +2359,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-           
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.75: *5* TestImport.test_python_decls_test_1
     def test_python_decls_test_1(self):
         c = self.c
@@ -2395,15 +2382,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.76: *5* TestImport.test_python_decorator
     def test_python_decorator(self):
         c = self.c
@@ -2423,11 +2409,11 @@ class TestImporter(LeoUnitTest):
         index = g.findNodeInTree(c, c.p, '@cherrypy.nocolor index')
         assert index
         lines = g.splitLines(index.b)
-        assert lines[0] == '@cherrypy.nocolor\n', repr(lines[0])
-        assert lines[1] == '@cherrypy.expose\n', repr(lines[1])
+        self.assertEqual(lines[0], '@cherrypy.nocolor\n')
+        self.assertEqual(lines[1], '@cherrypy.expose\n')
         abc = g.findNodeInTree(c, c.p, "@cmd('abc') abc")
         lines = g.splitLines(abc.b)
-        assert lines[0] == "@cmd('abc')\n", repr(lines[0])
+        self.assertEqual(lines[0], "@cmd('abc')\n")
     #@+node:ekr.20210904065459.77: *5* TestImport.test_python_decorator_2
     def test_python_decorator_2(self):
         c = self.c
@@ -2525,19 +2511,18 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(c.p, s=s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
         target = g.findNodeInTree(c, root, '@command("Exit") exit_')
         assert target
         lines = g.splitLines(target.b)
-        assert lines[0] == '@command("Exit")\n', repr(lines[0])
+        self.assertEqual(lines[0], '@command("Exit")\n')
        
     #@+node:ekr.20210904065459.78: *5* TestImport.test_python_def_inside_def
     def test_python_def_inside_def(self):
@@ -2562,15 +2547,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
            
     #@+node:ekr.20210904065459.79: *5* TestImport.test_python_def_test_1
     def test_python_def_test_1(self):
@@ -2602,16 +2586,15 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+
     #@+node:ekr.20210904065459.80: *5* TestImport.test_python_def_test_2
     def test_python_def_test_2(self):
         c = self.c
@@ -2634,16 +2617,15 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-        
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+
     #@+node:ekr.20210904065459.81: *5* TestImport.test_python_docstring_only
     def test_python_docstring_only(self):
         c = self.c
@@ -2677,15 +2659,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.83: *5* TestImport.test_python_extra_leading_ws_test
     def test_python_extra_leading_ws_test(self):
         c = self.c
@@ -2744,16 +2725,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-           
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.85: *5* TestImport.test_python_leoImport_py_small_
     def test_python_leoImport_py_small_(self):
         c = self.c
@@ -2828,16 +2807,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-           
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.86: *5* TestImport.test_python_looks_like_section_ref
     def test_python_looks_like_section_ref(self):
         c = self.c
@@ -2944,16 +2921,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(c.p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-           
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.93: *5* TestImport.test_python_string_test_extra_indent
     def test_python_string_test_extra_indent(self):
         c = self.c
@@ -3050,8 +3025,8 @@ class TestImporter(LeoUnitTest):
         for n, h in table:
             assert p, h
             n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
             p.moveToThreadNext()
         assert p == after, p
     #@+node:ekr.20210904065459.97: *5* TestImport.test_python_trailing_comment
@@ -3108,16 +3083,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
-        if 1:
-            for n, h in table:
-                n2 = p.level() - root.level()
-                assert h == p.h, (h, p.h)
-                assert n == n2, (n, n2, p.h)
-                p.moveToThreadNext()
-            assert p == after, ('tree comp failed', p.h)
-           
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.101: *5* TestImport.test_python_unindent_in_triple_string_does_not_end_function
     def test_python_unindent_in_triple_string_does_not_end_function(self):
         c = self.c
@@ -3659,14 +3632,14 @@ class TestImporter(LeoUnitTest):
         c.importCommands.xmlUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
             p.moveToThreadNext()
-        assert p == after, ('tree comp failed', p.h)
+        self.assertEqual(p, after)
     #@+node:ekr.20210904065459.106: *5* TestImport.test_xml_1
     def test_xml_1(self):
         c = self.c
@@ -3689,15 +3662,15 @@ class TestImporter(LeoUnitTest):
         c.importCommands.xmlUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        assert root.h == '@file test', root.h
+        self.assertEqual(root.h, '@file test')
         p = root.firstChild()
         assert p, g.tree_to_string(c)
         for n, h in table:
             n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
             p.moveToThreadNext()
-        assert p == after, ('tree comp failed', p.h)
+        self.assertEqual(p, after)
         
     #@+node:ekr.20210904065459.108: *5* TestImport.test_xml_non_ascii_tags
     def test_xml_non_ascii_tags(self):
@@ -3751,8 +3724,8 @@ class TestImporter(LeoUnitTest):
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
             p.moveToThreadNext()
         assert p == after, p.h
     #@+node:ekr.20210904065459.110: *4* TestImport.test_md_import_test_rst_style
@@ -3809,8 +3782,8 @@ class TestImporter(LeoUnitTest):
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
-            assert h == p.h, (h, p.h)
-            assert n == n2, (n, n2, p.h)
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
             p.moveToThreadNext()
         assert p == after, p.h
     #@+node:ekr.20210904065459.111: *4* TestImport.test_markdown_importer_basic
@@ -3844,7 +3817,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-md test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.112: *4* TestImport.test_markdown_importer_implicit_section
@@ -3885,7 +3858,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-md test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.114: *4* TestImport.test_markdown_github_syntax
@@ -3914,7 +3887,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-md test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904071345.1: *3* Tests of @auto-rst
@@ -3984,7 +3957,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.116: *4* TestImport.test_rST_import_test_simple
@@ -4016,7 +3989,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.117: *4* TestImport.test_rST_import_test_no_double_underlines
@@ -4084,7 +4057,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.118: *4* TestImport.test_rST_import_test_long_underlines
@@ -4113,7 +4086,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.119: *4* TestImport.test_rST_import_test_long_overlines
@@ -4143,7 +4116,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.120: *4* TestImport.test_rST_import_test_trailing_whitespace
@@ -4176,7 +4149,7 @@ class TestImporter(LeoUnitTest):
         assert root.h == '@auto-rst test', root.h
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904065459.121: *4* TestImport.test_leo_rst
@@ -4217,7 +4190,7 @@ class TestImporter(LeoUnitTest):
         p2 = root.firstChild()
         assert p2, g.tree_to_string(c)
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
     #@+node:ekr.20210904071422.1: *3* All other tests
