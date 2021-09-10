@@ -65,6 +65,12 @@ def zoom_helper(event, delta):
 #@+node:tom.20210904233317.1: ** Show Hilite Settings command
 # Add item to known "help-for" commands
 hilite_doc = r'''
+Changing The Current Line Highlighting Color
+----------------------------------
+The highlight color for the current line will be changed when the `line-highlight-color` setting is changed.  The color will also be recomputed when the Leo theme is changed, provided that the setting is not present.
+
+The setting will always override the color computed for a theme.
+
 Settings for Current Line Highlighting
 ---------------------------------------
 \@bool highlight-body-line -- if False, do not highlight current line.
@@ -494,8 +500,11 @@ if QtWidgets:
             self.leo_q_completer = None
             self.leo_options = None
             self.leo_model = None
-            
-            self.lastblock = -2
+
+            self.hiliter_params = {
+                    'lastblock': -2, 'last_style_hash': 0,
+                    'last_color_setting': 'not set', 'last_hl_color': ''
+                    }
 
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
         def __repr__(self):
@@ -695,7 +704,8 @@ if QtWidgets:
         #@+node:tom.20210827230127.1: *3* lqtb Highlight Current Line
         #@+node:tom.20210827225119.3: *4* lqtb.parse_css
         #@@language python
-        def parse_css(self, css_string, clas=''):
+        @staticmethod
+        def parse_css(css_string, clas=''):
             """Extract colors from a css stylesheet string. 
             
             This is an extremely simple-minded function. It assumes
@@ -730,7 +740,8 @@ if QtWidgets:
 
         #@+node:tom.20210827225119.4: *4* lqtb.assign_bg
         #@@language python
-        def assign_bg(self, fg):
+        @staticmethod
+        def assign_bg(fg):
             """If fg or bg colors are missing, assign
             reasonable values.  Can happen with incorrectly
             constructed themes, or no-theme color schemes.
@@ -755,7 +766,8 @@ if QtWidgets:
             return QColor(bg)
         #@+node:tom.20210827225119.5: *4* lqtb.calc_hl
         #@@language python
-        def calc_hl(self, bg_color):
+        @staticmethod
+        def calc_hl(bg_color):
             """Return the line highlight color.
             
             ARGUMENT
@@ -781,15 +793,11 @@ if QtWidgets:
         #@+node:tom.20210827225119.2: *4* lqtb.highlightCurrentLine
         #@@language python
         def highlightCurrentLine(self):
-            """Highlight cursor line.
-            
-            Based in part on code from
-            https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
-            """
+            """Highlight cursor line."""
             c = self.leo_c
+            params = self.hiliter_params
+            editor = c.frame.body.wrapper.widget
 
-            w = c.frame.body.wrapper
-            editor = w.widget
             if not c.config.getBool('highlight-body-line', True):
                 editor.setExtraSelections([])
                 return
@@ -797,21 +805,40 @@ if QtWidgets:
             # Some cursor movements don't change the line: ignore them
             curs = editor.textCursor()
             blocknum = curs.blockNumber()
-            if blocknum == self.lastblock:
+            if blocknum == params['lastblock'] and blocknum > 0:
                 return
 
-            self.lastblock = blocknum
-            ssm = c.styleSheetManager
-            sheet = ssm.expand_css_constants(c.active_stylesheet)
+            if blocknum == 0:  # invalid position
+                blocknum = 1
+            params['lastblock'] = blocknum
 
-            bg = c.config.getString('line-highlight-color') or ''
-            hl_color = QColor(bg)
-            if hl_color.getHsv() == (0, 0, 0, 255) and bg != 'black':
-                # getHsv() always returns black for an invalid color
-                # so if we didn't ask for black, compute the color instead
-                fg, bg = self.parse_css(sheet, 'QTextEdit')
-                bg_color = QColor(bg) if bg else self.assign_bg(fg)
-                hl_color = self.calc_hl(bg_color)
+            hl_color = params['last_hl_color']
+
+            #@+<< Recalculate Color >>
+            #@+node:tom.20210909124441.1: *5* << Recalculate Color >>
+            hl_color_setting = c.config.getString('line-highlight-color') or ''
+
+            if params['last_color_setting'] != hl_color_setting:
+                hl_color = QColor(hl_color_setting)
+                params['last_hl_color'] = hl_color
+                params['last_color_setting'] = hl_color_setting
+            else:
+                ssm = c.styleSheetManager
+                sheet = ssm.expand_css_constants(c.active_stylesheet)
+                h = hash(sheet)
+
+                if params['last_style_hash'] != h:
+                    fg, bg = self.parse_css(sheet, 'QTextEdit')
+                    bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                    hl_color = self.calc_hl(bg_color)
+
+                    params['last_hl_color'] = hl_color
+                    params['last_style_hash'] = h
+            #@-<< Recalculate Color >>
+            #@+<< Apply Highlight >>
+            #@+node:tom.20210909124551.1: *5* << Apply Highlight >>
+            # Based on code from
+            # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
 
             selection = editor.ExtraSelection()
             selection.format.setBackground(hl_color)
@@ -820,6 +847,7 @@ if QtWidgets:
             selection.cursor.clearSelection()
 
             editor.setExtraSelections([selection])
+            #@-<< Apply Highlight >>
         #@+node:tom.20210905130804.1: *4* Add Help Menu Item
         # Add entry to Help menu
         new_entry = ('@item', 'help-for-&highlight-current-line', '')
