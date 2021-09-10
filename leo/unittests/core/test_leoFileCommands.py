@@ -76,10 +76,22 @@ class TestFileCommands(LeoUnitTest):
         for i, z in enumerate(list(p.firstChild().next().children_iter())):
             val = z.archivedPosition(root_p=p)
             self.assertEqual(val, [0, 1, i])
-    #@+node:ekr.20210909194336.34: *4* first child
-    #@+node:ekr.20210909194336.35: *4* second child
-    #@+node:ekr.20210909194336.36: *5* grandChild
-    #@+node:ekr.20210909194336.37: *5* grandChild 2
+    #@+node:ekr.20210909194336.38: *3* TestFileCommands.test_putDescendentVnodeUas
+    def test_putDescendentVnodeUas(self):
+        c, root = self.c, self.root_p
+        fc = c.fileCommands
+        # Create the test tree. Headlines don't matter.
+        child1 = root.insertAsLastChild()
+        child2 = root.insertAsLastChild()
+        grandchild2 = child2.insertAsLastChild()
+        # Set the uA's.
+        child1.v.unknownAttributes = {'unit_test_child':'abcd'}
+        grandchild2.v.unknownAttributes = {'unit_test_grandchild':'wxyz'}
+        # Test.
+        s = fc.putDescendentVnodeUas(root)
+        assert s.startswith(' descendentVnodeUnknownAttributes='), s
+    #@+node:ekr.20210909194336.39: *4* child
+    #@+node:ekr.20210909194336.40: *5* grandChild
     #@-others
 #@-others
 #@-leo
