@@ -1702,7 +1702,7 @@ class TestImporter(LeoUnitTest):
     def test_i_scan_state_for_python_(self):
         c = self.c
         # A list of dictionaries.
-        tests = [
+        tests = (
             g.Bunch(line='\n'),
             g.Bunch(line='\\\n'),
             g.Bunch(line='s = "\\""', ctx=('', '')), # empty string.
@@ -1719,12 +1719,9 @@ class TestImporter(LeoUnitTest):
             g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
             g.Bunch(line="end of continued string'''", ctx=("'''", '')),
             g.Bunch(line='a = {[(')
-        ]
-        if hasattr(python, 'Py_Importer'):
-            importer = python.Py_Importer(c.importCommands)
-            importer.test_scan_state(tests, State=python.Python_ScanState)
-        else:
-            self.skipTest('Skipping test for new python importer')
+        )
+        importer = python.Py_Importer(c.importCommands)
+        importer.test_scan_state(tests, State=python.Python_ScanState)
     #@+node:ekr.20210904065459.61: *5* TestImport.test_leoApp_fail
     def test_leoApp_fail(self):
         c = self.c
