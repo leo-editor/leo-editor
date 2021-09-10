@@ -16,7 +16,7 @@ class TestSyntax(LeoUnitTest):
     #@+others
     #@+node:ekr.20210901140645.1: *3* TestSyntax.tests...
     #@+node:ekr.20210910102910.1: *4* TestSyntax.check_syntax
-    def check_syntax(self, fileName, s): ###, reraise=True, suppress=False):
+    def check_syntax(self, fileName, s):
         """Called by a unit test to check the syntax of a file."""
         try:
             s = s.replace('\r', '')
@@ -25,21 +25,14 @@ class TestSyntax(LeoUnitTest):
             del tree
             return True
         except SyntaxError:
-            ### if not suppress:
             g.warning("syntax error in:", fileName)
             g.print_exception(full=True, color="black")
-            ### if reraise: raise
             return False
         except Exception:
-            ### if not suppress:
             g.warning("unexpected error in:", fileName)
-                # g.print_exception(full=False,color="black")
-            ### if reraise: raise
             return False
     #@+node:ekr.20210901140645.21: *4* TestSyntax.test_syntax_of_all_files
     def test_syntax_of_all_files(self):
-        ### c = self.c
-        ### failed, n = [],0
         skip_tuples = (
             ('extensions','asciidoc.py'),
         )
@@ -54,24 +47,19 @@ class TestSyntax(LeoUnitTest):
                 aList = [z.replace('\\','/') for z in aList]
             for z in aList:
                 if z in skip_list:
-                    pass # print('%s: skipped: %s' % (p.h,z))
+                    pass
                 else:
                     n += 1
                     fn = g.shortFileName(z)
                     s,e = g.readFileIntoString(z)
-                    assert self.check_syntax(fn, s) ###,reraise=False,suppress=False):
-                    ### if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-                    ###     failed.append(z)
-        ###assert not failed,'failed %s\n' % g.listToString(failed)
+                    assert self.check_syntax(fn, s)
     #@+node:ekr.20210901140645.22: *4* TestSyntax.test_syntax_of_setup_py
     def test_syntax_of_setup_py(self):
-        ###c = self.c
         fn = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
         # Only run this test if setup.py exists: it may not in the actual distribution.
         if not g.os_path_exists(fn):
             self.skipTest('setup.py not found')
         s, e = g.readFileIntoString(fn)
-        ### c.testManager.checkFileSyntax(fn, s, reraise=True, suppress=False)
         assert self.check_syntax(fn, s)
     #@+node:ekr.20210906062410.1: *4* TestSyntax.test_load_leo_file
     def test_load_leo_file(self):

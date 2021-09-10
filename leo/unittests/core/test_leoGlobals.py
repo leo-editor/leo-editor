@@ -170,7 +170,6 @@ class TestGlobals(LeoUnitTest):
         child.h = '@path abc'
         grand = child.insertAsLastChild()
         grand.h = 'xyz'
-        ### p2 = p.firstChild().firstChild()
         path = g.fullPath(c, grand, simulate=True)
         end = g.os_path_normpath('abc/xyz')
         assert path.endswith(end),repr(path)

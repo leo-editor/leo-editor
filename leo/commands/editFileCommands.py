@@ -967,7 +967,6 @@ class GitDiffController:
             return None
         # This should guarantee that the directory contains a .git directory.
         directory = g.os_path_finalize_join(base_directory, '..', '..')
-        ### g.trace(filename, '-->', directory) ###
         return directory
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch, fn):

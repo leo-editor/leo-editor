@@ -478,10 +478,7 @@ class TestCommands(LeoUnitTest):
         assert result in (True, False),result
     #@+node:ekr.20210906075242.23: *3* TestCommands.test_efc_compute_ext
     def test_efc_compute_ext(self):
-        c = self.c
-        p = c.p
-        ### @language python
-
+        c, p = self.c, self.c.p
         efc = g.app.externalFilesController
         if not efc:
             self.skipTest('No externalFilesController')

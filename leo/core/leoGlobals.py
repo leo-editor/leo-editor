@@ -2597,6 +2597,157 @@ def isTextWidget(w):
 
 def isTextWrapper(w):
     return g.app.gui.isTextWrapper(w)
+#@+node:ekr.20160518074224.1: *3* class g.LinterTable
+class LinterTable():
+    """A class to encapsulate lists of leo modules under test."""
+
+    def __init__(self):
+        """Ctor for LinterTable class."""
+        # Define self. relative to leo.core.leoGlobals
+        self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
+    #@+others
+    #@+node:ekr.20160518074545.2: *4* commands
+    def commands(self):
+        """Return list of all command modules in leo/commands."""
+        pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
+        return self.get_files(pattern)
+    #@+node:ekr.20160518074545.3: *4* core
+    def core(self):
+        """Return list of all of Leo's core files."""
+        pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
+        aList = self.get_files(pattern)
+        for fn in ['runLeo.py',]:
+            aList.append(g.os_path_finalize_join(self.loadDir, 'core', fn))
+        return sorted(aList)
+    #@+node:ekr.20160518074545.4: *4* external
+    def external(self):
+        """Return list of files in leo/external"""
+        pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
+        aList = self.get_files(pattern)
+        remove = [
+            'leoSAGlobals.py',
+            'leoftsindex.py',
+        ]
+        remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
+        return sorted([z for z in aList if z not in remove])
+    #@+node:ekr.20160518074545.5: *4* gui_plugins
+    def gui_plugins(self):
+        """Return list of all of Leo's gui-related files."""
+        pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
+        aList = self.get_files(pattern)
+        # These are not included, because they don't start with 'qt_':
+        add = ['free_layout.py', 'nested_splitter.py',]
+        remove = [
+            'qt_main.py',  # auto-generated file.
+        ]
+        for fn in add:
+            aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
+        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+        return sorted(set([z for z in aList if z not in remove]))
+    #@+node:ekr.20160518074545.6: *4* modes
+    def modes(self):
+        """Return list of all files in leo/modes"""
+        pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
+        return self.get_files(pattern)
+    #@+node:ekr.20160518074545.7: *4* ignores (not used!)
+    def ignores(self):
+        return (
+            '__init__', 'FileActions',
+            # 'UNL', # in plugins table.
+            'active_path', 'add_directives', 'attrib_edit',
+            'backlink', 'base64Packager', 'baseNativeTree', 'bibtex', 'bookmarks',
+            'codewisecompleter', 'colorize_headlines', 'contextmenu',
+            'ctagscompleter', 'cursesGui', 'datenodes', 'debugger_pudb',
+            'detect_urls', 'dtest', 'empty_leo_file', 'enable_gc', 'initinclass',
+            'leo_to_html', 'leo_interface', 'leo_pdf', 'leo_to_rtf',
+            'leoOPML', 'leoremote', 'lineNumbers',
+            'macros', 'mime', 'mod_autosave', 'mod_framesize', 'mod_leo2ascd',
+            # 'mod_scripting', # in plugins table.
+            'mod_speedups', 'mod_timestamp',
+            'nav_buttons', 'nav_qt', 'niceNosent', 'nodeActions', 'nodebar',
+            'open_shell', 'open_with', 'outline_export', 'quit_leo',
+            'paste_as_headlines', 'plugins_menu', 'pretty_print', 'projectwizard',
+            'qt_main', 'qt_quicksearch', 'qt_commands',
+            'quickMove', 'quicksearch', 'redirect_to_log', 'rClickBasePluginClasses',
+            'run_nodes',  # Changed thread.allocate_lock to threading.lock().acquire()
+            'rst3',
+            # 'scrolledmessage', # No longer exists.
+            'setHomeDirectory', 'slideshow', 'spydershell', 'startfile',
+            'testRegisterCommand', 'todo',
+            # 'toolbar', # in plugins table.
+            'trace_gc_plugin', 'trace_keys', 'trace_tags',
+            'vim', 'xemacs',
+        )
+    #@+node:ekr.20160518074545.8: *4* plugins (LinterTable)
+    def plugins(self):
+        """Return a list of all important plugins."""
+        aList = []
+        for theDir in ('', 'importers', 'writers'):
+            pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
+            aList.extend(self.get_files(pattern))
+            # Don't use get_files here.
+            # for fn in g.glob_glob(pattern):
+                # sfn = g.shortFileName(fn)
+                # if sfn != '__init__.py':
+                    # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
+                    # aList.append(sfn)
+        remove = [
+            # 2016/05/20: *do* include gui-related plugins.
+            # This allows the -a option not to doubly-include gui-related plugins.
+                # 'free_layout.py', # Gui-related.
+                # 'nested_splitter.py', # Gui-related.
+            'gtkDialogs.py',  # Many errors, not important.
+            'leofts.py',  # Not (yet) in leoPlugins.leo.
+            'qtGui.py',  # Dummy file
+            'qt_main.py',  # Created automatically.
+            'viewrendered2.py',  # To be removed.
+            'rst3.py',  # Obsolete
+        ]
+        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+        aList = sorted([z for z in aList if z not in remove])
+        return sorted(set(aList))
+    #@+node:ekr.20160520093506.1: *4* get_files (LinterTable)
+    def get_files(self, pattern):
+        """Return the list of absolute file names matching the pattern."""
+        aList = sorted([
+            fn for fn in g.glob_glob(pattern)
+                if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
+        return aList
+    #@+node:ekr.20160518074545.9: *4* get_files_for_scope
+    def get_files_for_scope(self, scope, fn):
+        """Return a list of absolute filenames for external linters."""
+        d = {
+            'all': [self.core, self.commands, self.external, self.plugins],
+            'commands': [self.commands],
+            'core': [self.core, self.commands, self.external, self.gui_plugins],
+            'external': [self.external],
+            'file': [fn],
+            'gui': [self.gui_plugins],
+            'modes': [self.modes],
+            'plugins': [self.plugins],
+        }
+        suppress_list = ['freewin.py',]
+        functions = d.get(scope)
+        paths = []
+        if functions:
+            for func in functions:
+                files = [func] if isinstance(func, str) else func()
+                    # Bug fix: 2016/10/15
+                for fn in files:
+                    fn = g.os_path_abspath(fn)
+                    if g.shortFileName(fn) in suppress_list:
+                        print(f"\npylint-leo: skip {fn}")
+                        continue
+                    if g.os_path_exists(fn):
+                        if g.os_path_isfile(fn):
+                            paths.append(fn)
+                    else:
+                        print(f"does not exist: {fn}")
+            paths = sorted(set(paths))
+            return paths
+        print('LinterTable.get_table: bad scope', scope)
+        return []
+    #@-others
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)

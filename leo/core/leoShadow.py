@@ -81,7 +81,6 @@ class ShadowController:
         if filename:
             return g.os_path_dirname(g.os_path_finalize(filename))  # 1341
         print('')
-        g.trace(g.callers())  ###
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None
     #@+node:ekr.20080711063656.4: *4* x.dirName and pathName

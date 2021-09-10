@@ -90,7 +90,7 @@ class TestColorizer(LeoUnitTest):
             (True, '', '@color\n@nocolor'),
             (True, '', '@nocolor\n@color'),
         ]
-        language = 'python' ###
+        language = 'python'
         for i, data in enumerate(language_table):
             expected, child_s, grand_s = data
             child.b = child_s

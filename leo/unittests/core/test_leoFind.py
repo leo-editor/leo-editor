@@ -587,8 +587,6 @@ class TestFind(LeoUnitTest):
         x.do_clone_find_all(settings)
         x.do_clone_find_all_flattened(settings)
         x.do_find_all(settings)
-        ### x.do_find_def(settings, word='xyzzy')
-        ### x.do_find_var(settings, word='xyzzy')
         x.do_find_next(settings)
         x.do_find_next(settings)
         x.do_find_prev(settings)

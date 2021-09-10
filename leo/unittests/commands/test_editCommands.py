@@ -4224,7 +4224,6 @@ class TestEditCommands(LeoUnitTest):
         c.redraw(p) # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        ### guiName = g.app.gui.guiName()
         wName = g.app.gui.widget_name(w)
         assert wName.startswith('head'),'w.name:%s' % wName
         g.app.gui.event_generate(c,'\n','Return',w)
@@ -4254,13 +4253,9 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('end','end')
-        if False: ### g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            k.manufactureKeyPressForCommandName(w, 'paste-text')
+        k.manufactureKeyPressForCommandName(w, 'paste-text')
         c.selectPosition(p.visBack(c))
         self.assertEqual(p.h, h + paste)
-        # k.manufactureKeyPressForCommandName(w, 'undo')
         c.undoer.undo()
         self.assertEqual(p.h, h)
     #@+node:ekr.20210905064816.27: *4* TestEditCommands.test_selecting_new_node_retains_typing_in_headline
@@ -4354,7 +4349,6 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210905064816.28: *4* TestEditCommands.test_typing_and_undo_in_headline__at_end
     def test_typing_and_undo_in_headline__at_end(self):
         c, k = self.c, self.c.k
-        ###
         if k.defaultUnboundKeyAction != 'insert':
             self.skipTest('defaultUnboundKeyAction != insert')
         if not k.getStrokeForCommandName('undo'):

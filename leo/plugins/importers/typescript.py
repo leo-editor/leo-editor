@@ -100,7 +100,7 @@ class TS_Importer(Importer):
         next node.
         '''
         # Move trailing comments into following nodes.
-        for p in parent.self_and_subtree(): ###
+        for p in parent.self_and_subtree():
             next = p.threadNext()
             #
             # Ensure next is in the proper tree.

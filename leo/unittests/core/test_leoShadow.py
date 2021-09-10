@@ -921,7 +921,7 @@ class TestAtShadow(LeoUnitTest):
         assert not os.path.exists(shadow_fn), shadow_fn
         self.deleteShadowDir(shadow_dir)
         x.makeShadowDirectory(shadow_dir)
-        self.assertTrue(os.path.exists(shadow_dir))  ### ???
+        self.assertTrue(os.path.exists(shadow_dir))
         self.deleteShadowDir(shadow_dir)
     #@+node:ekr.20210902210552.9: *4* TestShadow.test_x_markerFromFileLines
     def test_x_markerFromFileLines(self):
@@ -941,7 +941,6 @@ class TestAtShadow(LeoUnitTest):
         )
 
         for language,lines,delim1,delim2 in table:
-            ### s = x.findLeoLine(lines)
             lines_s = '\n'.join(lines)
             marker = x.markerFromFileLines(lines,'test-file-name')
             result1,result2 = marker.getDelims()

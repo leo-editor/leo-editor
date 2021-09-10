@@ -56,7 +56,6 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.core import leoNodes
-### from leo.core import leoTest
 # Third-party imports.
 try:
     # pylint: disable=import-error

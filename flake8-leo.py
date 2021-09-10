@@ -17,7 +17,6 @@ import optparse
 import os
 import time
 from leo.core import leoGlobals as g
-### from leo.core import leoTest
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(files):
@@ -139,6 +138,6 @@ scope = scanOptions()
 if scope == 'version':
     report_version()
 else:
-    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    files = g.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
     main(files)
 #@-leo
