@@ -19,16 +19,13 @@ class TestSyntax(LeoUnitTest):
         try:
             s = s.replace('\r', '')
             tree = compile(s + '\n', fileName, 'exec')
-            # #1454: To suppress -Wd ResourceWarning.
-            del tree
+            del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
         except SyntaxError:
-            g.warning("syntax error in:", fileName)
-            g.print_exception(full=True, color="black")
-            return False
+            raise
         except Exception:
-            g.warning("unexpected error in:", fileName)
-            return False
+            g.trace("unexpected error in:", fileName)
+            raise
     #@+node:ekr.20210901140645.21: *4* TestSyntax.test_syntax_of_all_files
     def test_syntax_of_all_files(self):
         skip_tuples = (

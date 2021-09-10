@@ -9,10 +9,10 @@ import os
 import re
 import subprocess
 import sys
-import tabnanny  # for Check Python command # Does not exist in jython
+import tabnanny
 import tempfile
 import time
-import tokenize  # for c.checkAllPythonCode
+import tokenize
 from typing import Any, Dict, Callable, List, Optional, Set, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
@@ -1721,12 +1721,12 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     #@+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event=None, unittestFlag=False, ignoreAtIgnore=True):
+    def checkAllPythonCode(self, event=None, ignoreAtIgnore=True):
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self; count = 0; result = "ok"
         for p in c.all_unique_positions():
             count += 1
-            if not unittestFlag:
+            if not g.unitTesting:
                 #@+<< print dots >>
                 #@+node:ekr.20040723094220.2: *5* << print dots >>
                 if count % 100 == 0:
@@ -1739,29 +1739,31 @@ class Commands:
                     not ignoreAtIgnore or not g.scanForAtIgnore(c, p)
                 ):
                     try:
-                        c.checkPythonNode(p, unittestFlag)
+                        c.checkPythonNode(p)
                     except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-                    if unittestFlag and result != "ok":
+                    if result != 'ok':
                         g.pr(f"Syntax error in {p.h}")
                         return result  # End the unit test: it has failed.
-        if not unittestFlag:
+        if not g.unitTesting:
             g.blue("check complete")
         return result
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(self, event=None,
-        unittestFlag=False, ignoreAtIgnore=True,
-        suppressErrors=False, checkOnSave=False
+        # unittestFlag=False,
+        ignoreAtIgnore=True,
+        # suppressErrors=False,
+        checkOnSave=False
     ):
         """Check the selected tree for syntax and tab errors."""
         c = self; count = 0; result = "ok"
-        if not unittestFlag:
+        if not g.unitTesting:
             g.es("checking Python code   ")
         for p in c.p.self_and_subtree():
             count += 1
-            if not unittestFlag and not checkOnSave:
+            if not g.unitTesting and not checkOnSave:
                 #@+<< print dots >>
                 #@+node:ekr.20040723094220.4: *5* << print dots >>
                 if count % 100 == 0:
@@ -1772,70 +1774,71 @@ class Commands:
             if g.scanForAtLanguage(c, p) == "python":
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c, p):
                     try:
-                        c.checkPythonNode(p, unittestFlag, suppressErrors)
+                        c.checkPythonNode(p)
                     except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-        if not unittestFlag:
+        ## if not unittestFlag:
+        if not g.unitTesting:
             g.blue("check complete")
         # We _can_ return a result for unit tests because we aren't using doCommand.
         return result
     #@+node:ekr.20040723094220.5: *4* c.checkPythonNode
-    def checkPythonNode(self, p, unittestFlag=False, suppressErrors=False):
-        c = self; h = p.h
+    def checkPythonNode(self, p):
+        c, h = self, p.h
         # Call getScript to ignore directives and section references.
         body = g.getScript(c, p.copy())
-        if not body: return
+        if not body:
+            return
         try:
             fn = f"<node: {p.h}>"
             compile(body + '\n', fn, 'exec')
-            c.tabNannyNode(p, h, body, unittestFlag, suppressErrors)
+            c.tabNannyNode(p, h, body)
         except SyntaxError:
-            if not suppressErrors:
-                g.warning(f"Syntax error in: {h}")
-                g.es_exception(full=False, color="black")
-            if unittestFlag: raise
+            if g.unitTesting:
+                raise
+            g.warning(f"Syntax error in: {h}")
+            g.es_exception(full=False, color="black")
         except Exception:
             g.es_print('unexpected exception')
             g.es_exception()
-            if unittestFlag: raise
+            raise
     #@+node:ekr.20040723094220.6: *4* c.tabNannyNode
     # This code is based on tabnanny.check.
 
-    def tabNannyNode(self, p, headline, body, unittestFlag=False, suppressErrors=False):
+    def tabNannyNode(self, p, headline, body):
         """Check indentation using tabnanny."""
-        # c = self
         try:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
         except IndentationError:
+            if g.unitTesting:
+                raise
             junk1, msg, junk2 = sys.exc_info()
-            if not suppressErrors:
-                g.warning("IndentationError in", headline)
-                g.es('', msg)
-            if unittestFlag: raise
+            g.warning("IndentationError in", headline)
+            g.es('', msg)
         except tokenize.TokenError:
+            if g.unitTesting:
+                raise
             junk1, msg, junk2 = sys.exc_info()
-            if not suppressErrors:
-                g.warning("TokenError in", headline)
-                g.es('', msg)
-            if unittestFlag: raise
+            g.warning("TokenError in", headline)
+            g.es('', msg)
         except tabnanny.NannyNag:
+            if g.unitTesting:
+                raise
             junk1, nag, junk2 = sys.exc_info()
-            if not suppressErrors:
-                badline = nag.get_lineno()
-                line = nag.get_line()
-                message = nag.get_msg()
-                g.warning("indentation error in", headline, "line", badline)
-                g.es(message)
-                line2 = repr(str(line))[1:-1]
-                g.es("offending line:\n", line2)
-            if unittestFlag: raise
+            badline = nag.get_lineno()
+            line = nag.get_line()
+            message = nag.get_msg()
+            g.warning("indentation error in", headline, "line", badline)
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n", line2)
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
-            if unittestFlag: raise
+            raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body=True):

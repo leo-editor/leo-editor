@@ -10,7 +10,9 @@ import io
 import os
 import re
 import sys
+import tabnanny
 import time
+import tokenize
 from typing import List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
@@ -2338,29 +2340,26 @@ class AtFile:
             g.es_exception()
             return False
     #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
-    def tabNannyNode(self, p, body, suppress=False):
-
-        import tabnanny
-        import tokenize
+    def tabNannyNode(self, p, body):
         try:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
         except IndentationError:
-            junk2, msg, junk = sys.exc_info()
-            if suppress:
+            if g.unitTesting:
                 raise
+            junk2, msg, junk = sys.exc_info()
             g.error("IndentationError in", p.h)
             g.es('', str(msg))
         except tokenize.TokenError:
-            junk3, msg, junk = sys.exc_info()
-            if suppress:
+            if g.unitTesting:
                 raise
+            junk3, msg, junk = sys.exc_info()
             g.error("TokenError in", p.h)
             g.es('', str(msg))
         except tabnanny.NannyNag:
-            junk4, nag, junk = sys.exc_info()
-            if suppress:
+            if g.unitTesting:
                 raise
+            junk4, nag, junk = sys.exc_info()
             badline = nag.get_lineno()
             line = nag.get_line()
             message = nag.get_msg()
@@ -2371,7 +2370,7 @@ class AtFile:
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
-            if suppress: raise
+            raise
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.

@@ -163,9 +163,7 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210901140645.15: *3* TestCommands.test_c_checkPythonCode
     def test_c_checkPythonCode(self):
         c = self.c
-        c.checkPythonCode(event=None,
-            unittestFlag=True,ignoreAtIgnore=False,
-            suppressErrors=True,checkOnSave=False)
+        c.checkPythonCode(event=None, ignoreAtIgnore=False, checkOnSave=False)
     #@+node:ekr.20210901140645.16: *3* TestCommands.test_c_checkPythonNode
     def test_c_checkPythonNode(self):
         c , p = self.c, self.c.p
@@ -175,13 +173,7 @@ class TestCommands(LeoUnitTest):
             def abc:  # missing parens.
                 pass
         """)
-        result = c.checkPythonCode(
-            checkOnSave=False,
-            event=None,
-            ignoreAtIgnore=True,
-            suppressErrors=True,
-            unittestFlag=True,
-        )
+        result = c.checkPythonCode(event=None, checkOnSave=False, ignoreAtIgnore=True)
         self.assertEqual(result, 'error')
     #@+node:ekr.20210901140645.7: *3* TestCommands.test_c_config_initIvar_sets_commander_ivars
     def test_c_config_initIvar_sets_commander_ivars(self):
@@ -370,23 +362,22 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210901140645.17: *3* TestCommands.test_c_tabNannyNode
     def test_c_tabNannyNode(self):
         c, p = self.c, self.c.p
-        s = '''
-        # no error
-        def spam():
-            pass
-        '''
-
-        c.tabNannyNode(p,headline=p.h,body=s,unittestFlag=True,suppressErrors=True)
-
-        s2 = '''
-        # syntax error
-        def spam:
-            pass
-          a = 2
-        '''
-
+        # Test 1.
+        s = textwrap.dedent("""\
+            # no error
+            def spam():
+                pass
+        """)
+        c.tabNannyNode(p, headline=p.h, body=s)
+        # Test 2.
+        s2 = textwrap.dedent("""\
+            # syntax error
+            def spam:
+                pass
+              a = 2
+        """)
         try:
-            c.tabNannyNode(p,headline=p.h,body=s2,unittestFlag=True,suppressErrors=True)
+            c.tabNannyNode(p, headline=p.h, body=s2)
         except IndentationError:
             pass
     #@+node:ekr.20210906075242.20: *3* TestCommands.test_c_unmarkAll

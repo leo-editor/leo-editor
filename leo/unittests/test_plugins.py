@@ -23,12 +23,10 @@ class TestPlugins(LeoUnitTest):
         try:
             s = s.replace('\r', '')
             tree = compile(s + '\n', filename, 'exec')
-            # #1454: To suppress -Wd ResourceWarning.
-            del tree
-            return
+            del tree  # #1454: Suppress -Wd ResourceWarning.
+            return True
         except SyntaxError:
-            g.print_exception(full=True, color="black")
-            self.fail(f"syntax error in: {filename}")
+            raise
         except Exception:
             self.fail(f"unexpected error in: {filename}")
     #@+node:ekr.20210907082746.1: *3*  TestPlugins.get_plugins

@@ -230,20 +230,22 @@ class TestAtFile(LeoUnitTest):
     def test_at_tabNannyNode(self):
         c, p = self.c, self.c.p
         at = c.atFileCommands
-        s = '''
-        # no error
-        def spam():
-            pass
-        '''
-        at.tabNannyNode (p, body=s, suppress=True)
-        s2 = '''
-        # syntax error
-        def spam:
-            pass
-          a = 2
-        '''
+        # Test 1.
+        s = textwrap.dedent("""\
+            # no error
+            def spam():
+                pass
+        """)
+        at.tabNannyNode (p, body=s)
+        # Test 2.
+        s2 = textwrap.dedent("""\
+            # syntax error
+            def spam:
+                pass
+              a = 2
+        """)
         try:
-            at.tabNannyNode(p,body=s2,suppress=True)
+            at.tabNannyNode(p, body=s2)
         except IndentationError:
             pass
     #@+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
