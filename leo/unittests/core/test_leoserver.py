@@ -18,7 +18,7 @@ class TestLeoServer (LeoUnitTest):
     """Tests of LeoServer class."""
     request_number = 0
     #@+others
-    #@+node:felix.20210621233316.99: *3* test: Setup and TearDown
+    #@+node:felix.20210621233316.99: *3* TestLeoServer: Setup and TearDown
     @classmethod
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
@@ -48,7 +48,7 @@ class TestLeoServer (LeoUnitTest):
     def tearDown(self):
         g.unitTesting = False
 
-    #@+node:felix.20210621233316.100: *3* test._request
+    #@+node:felix.20210621233316.100: *3* TestLeoServer._request
     def _request(self, action, param=None):
         server = self.server
         self.request_number += 1
@@ -67,7 +67,7 @@ class TestLeoServer (LeoUnitTest):
         if log_flag:
             g.printObj(answer, tag=f"response to {action!r}")
         return answer
-    #@+node:felix.20210621233316.102: *3* test.test_most_public_server_methods
+    #@+node:felix.20210621233316.102: *3* TestLeoServer.test_most_public_server_methods
     def test_most_public_server_methods(self):
         server=self.server
         tag = 'test_most_public_server_methods'
@@ -133,7 +133,7 @@ class TestLeoServer (LeoUnitTest):
                             print(f"Exception in {tag}: {method_name!r} {e}")
         finally:
             server.close_file({"forced": True})
-    #@+node:felix.20210621233316.103: *3* test.test_open_and_close
+    #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close
     def test_open_and_close(self):
         # server = self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
@@ -162,7 +162,7 @@ class TestLeoServer (LeoUnitTest):
         ]
         for action, package in table:
             self._request(action, package)
-    #@+node:felix.20210621233316.104: *3* test.test_find_commands
+    #@+node:felix.20210621233316.104: *3* TestLeoServer.test_find_commands
     def test_find_commands(self):
 
         tag = 'test_find_commands'
