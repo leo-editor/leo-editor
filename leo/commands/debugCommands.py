@@ -119,54 +119,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
     def pdb(self, event=None):
         """Fall into pdb."""
         g.pdb()
-    #@+node:ekr.20150514063305.113: ** debug.run-tests (to be deleted)
-    # @cmd('run-all-unit-tests-locally')
-    # def runAllUnitTestsLocally(self, event=None):
-        # """Run all unit tests contained in the presently selected outline.
-        # Tests are run in the outline's process, so tests *can* change the outline."""
-        # self.c.testManager.doTests(all=True)
-
-    @cmd('run-marked-unit-tests-locally')
-    def runMarkedUnitTestsLocally(self, event=None):
-        """
-        Run marked unit tests in the outline.
-        Tests are run in the outline's process, so tests *can* change the outline.
-        """
-        self.c.testManager.doTests(all=True, marked=True)
-
-    @cmd('run-selected-unit-tests-locally')
-    def runSelectedUnitTestsLocally(self, event=None):
-        """
-        Run all unit tests contained in the presently selected outline.
-        Tests are run in the outline's process, so tests *can* change the outline.
-        """
-        self.c.testManager.doTests(all=False, marked=False)
-
-    # Externally run tests...
-
-    # @cmd('run-all-unit-tests-externally')
-    # def runAllUnitTestsExternally(self, event=None):
-        # """
-        # Run all unit tests contained in the entire outline.
-        # Tests are run in an external process, so tests *cannot* change the outline.
-        # """
-        # self.c.testManager.runTestsExternally(all=True, marked=False)
-
-    # @cmd('run-marked-unit-tests-externally')
-    # def runMarkedUnitTestsExternally(self, event=None):
-        # """
-        # Run all marked unit tests in the outline.
-        # Tests are run in an external process, so tests *cannot* change the outline.
-        # """
-        # self.c.testManager.runTestsExternally(all=True, marked=True)
-
-    # @cmd('run-selected-unit-tests-externally')
-    # def runSelectedUnitTestsExternally(self, event=None):
-        # """
-        # Run all unit tests contained in the presently selected outline
-        # Tests are run in an external process, so tests *cannot* change the outline.
-        # """
-        # self.c.testManager.runTestsExternally(all=False, marked=False)
     #@+node:ekr.20150514063305.110: ** debug.show-focus
     @cmd('show-focus')
     def printFocus(self, event=None):
