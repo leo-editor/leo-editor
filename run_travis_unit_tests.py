@@ -60,11 +60,12 @@ def open_unittest_dot_leo():
 #@-others
 try:
     g.unitTesting = g.app.unitTesting = True
+    # Compute the test suite.
     if 1:
         suite = get_new_suite()
-    else:
+    else:  # Reference only!
         c = open_unittest_dot_leo()
-    suite = get_legacy_suite(c)
+        suite = get_legacy_suite(c)
     runner = unittest.TextTestRunner(failfast=True, verbosity=1)
     result = runner.run(suite)
     if result.errors or result.failures:
