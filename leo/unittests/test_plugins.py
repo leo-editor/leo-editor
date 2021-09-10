@@ -8,6 +8,7 @@ import glob
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
+from leo.core.leoPlugins import LeoPluginsController
 assert g
 
 #@+others
@@ -95,6 +96,30 @@ class TestPlugins(LeoUnitTest):
             if not re.search(pattern, s):
                 continue
             self.assertTrue(re.search(r"g\.assertUi\(['\"]qt['\"]\)", s), msg=fn)
+    #@+node:ekr.20210909161328.2: *3* TestPlugins.test_c_vnode2position
+    def test_c_vnode2position(self):
+        c = self.c
+        for p in c.all_positions():
+            p2 = c.vnode2position(p.v)
+            # We can *not* assert that p == p2!
+            assert p2
+            self.assertEqual(p2.v, p.v)
+            assert c.positionExists(p2),'does not exist: %s' % p2
+    #@+node:ekr.20210909194336.57: *3* TestPlugins.test_regularizeName
+    def test_regularizeName(self):
+        pc = LeoPluginsController()
+        table = (
+            ('x',               'x'),
+            ('foo.bar',         'foo.bar'),
+            ('x.py',            'leo.plugins.x'),
+            ('leo.plugins.x',   'leo.plugins.x')    
+        )
+        for fn,expected in table:
+            result = pc.regularizeName(fn)
+            self.assertEqual(result, expected, msg=fn)
+            # Make sure that calling regularizeName twice is benign.
+            result2 = pc.regularizeName(result)
+            assert result2==result
     #@+node:ekr.20210909161328.4: *3* TestPlugins.test_syntax_of_all_plugins
     def test_syntax_of_all_plugins(self):
         files = self.get_plugins()
@@ -114,15 +139,6 @@ class TestPlugins(LeoUnitTest):
                 pass
             except ImportError:
                 pass
-    #@+node:ekr.20210909161328.2: *3* TestPlugins.test_c_vnode2position
-    def test_c_vnode2position(self):
-        c = self.c
-        for p in c.all_positions():
-            p2 = c.vnode2position(p.v)
-            # We can *not* assert that p == p2!
-            assert p2
-            self.assertEqual(p2.v, p.v)
-            assert c.positionExists(p2),'does not exist: %s' % p2
     #@-others
 #@-others
 #@-leo
