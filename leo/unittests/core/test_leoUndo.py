@@ -9,6 +9,8 @@ from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 assert g
 
+# pylint: disable=no-member
+
 #@+others
 #@+node:ekr.20210906141410.2: ** class TestUndo (LeoUnitTest)
 class TestUndo(LeoUnitTest):
@@ -314,7 +316,10 @@ class TestUndo(LeoUnitTest):
         newText = p.b + '\n#changed'
         for marked in (True, False):
             c.undoer.clearUndoState()  # Required.
-            p.setMarked() if marked else p.clearMarked()
+            if marked:
+                p.setMarked()
+            else:
+                p.clearMarked()
             oldMarked = p.isMarked()
             w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
             u.setUndoTypingParams(p,
