@@ -1619,16 +1619,15 @@ class TestTOG(BaseTest):
 
     #@+others
     #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features
-    #@+node:ekr.20210318213133.1: *5* test_full_grammar (py3_test_grammar.py exists)
+    #@+node:ekr.20210318213133.1: *5* test_full_grammar
     def test_full_grammar(self):
-
+        # Load py3_test_grammar.py.
         dir_ = os.path.dirname(__file__)
-        path = os.path.abspath(os.path.join(dir_, '..', 'test', 'py3_test_grammar.py'))
-        if not os.path.exists(path):
-            # g.trace(f"not found: {path}")
-            self.skipTest(f"not found: {path}")
+        path = os.path.abspath(os.path.join(dir_, '..', 'py3_test_grammar.py'))
+        assert os.path.exists(path), path
         if py_version < (3, 8):
             self.skipTest('Requires Python 3.8 or above')
+        # Verify that leoAst can parse the file.
         contents = read_file(path)
         self.make_data(contents)
     #@+node:ekr.20210321172902.1: *5* test_bug_1851

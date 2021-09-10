@@ -916,8 +916,8 @@ class TestAtShadow(LeoUnitTest):
     def test_x_makeShadowDirectory(self):
         c = self.c
         x = c.shadowController
-        shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
-        shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
+        shadow_fn  = x.shadowPathName('unittests/xyzzy/test.py')
+        shadow_dir = x.shadowDirName('unittests/xyzzy/test.py')
         assert not os.path.exists(shadow_fn), shadow_fn
         self.deleteShadowDir(shadow_dir)
         x.makeShadowDirectory(shadow_dir)
