@@ -6,22 +6,20 @@ import sys
 import unittest
 from leo.core import leoBridge
 
-load_dir = os.path.abspath(os.path.dirname(__file__))
-test_dir = os.path.join(load_dir, 'leo', 'test')
-path = os.path.join(test_dir, 'unitTest.leo')
-assert os.path.exists(path), repr(path)
 controller = leoBridge.controller(gui='nullGui',
     loadPlugins=False, readSettings=True,
     silent=False, verbose=False)
 g = controller.globals()
-c = controller.openLeoFile(path)
-try:
+g.unitTesting = g.app.unitTesting = True
+#@+others
+#@+node:ekr.20210910180232.1: ** function: get_legacy_suite
+def get_legacy_suite(c):
     # Run all unit tests locally.
     root = g.findTopLevelNode(c, 'Active Unit Tests', exact=True)
     assert root, 'Not found: Active Unit Tests'
     c.selectPosition(root)
     tm = c.testManager
-    g.unitTesting = g.app.unitTesting = True
+    ###g.unitTesting = g.app.unitTesting = True
     suite = unittest.makeSuite(unittest.TestCase)
     aList = tm.findAllUnitTestNodes(all=False, marked=False)
     setup_script = None
@@ -41,23 +39,42 @@ try:
         if test:
             suite.addTest(test)
             found = True
-    if not found:
-        print('No unit tests')
-        sys.exit(1)
+    if found:
+        return suite
+    print('No unit tests')
+    sys.exit(1)
+#@+node:ekr.20210910180509.1: ** function: get_new_suite
+def get_new_suite():
+    suite = unittest.makeSuite(unittest.TestCase)
+    ### To do.
+    return suite
+#@+node:ekr.20210910181115.1: ** function: open_unittest_dot_leo
+def open_unittest_dot_leo():
+    """open unitTest.leo and return its commander."""
+    load_dir = os.path.abspath(os.path.dirname(__file__))
+    test_dir = os.path.join(load_dir, 'leo', 'test')
+    path = os.path.join(test_dir, 'unitTest.leo')
+    assert os.path.exists(path), repr(path)
+    c = controller.openLeoFile(path)
+    assert c
+    return c
+#@-others
+if 1:
+    suite = get_new_suite()
+else:
+    c = open_unittest_dot_leo()
+    suite = get_legacy_suite(c)
+try:
     runner = unittest.TextTestRunner(failfast=True, verbosity=1)
-    try:
-        result = runner.run(suite)
-        if result.errors or result.failures:
-            print(f"errors: {len(result.errors)}, failures: {len(result.failures)}")
-            sys.exit(1)
-        else:
-            print('Travis unit tests all passed.')
-            sys.exit(0)
-    except Exception:
-        print('Unexpected exception')
-        g.es_exception()
+    result = runner.run(suite)
+    if result.errors or result.failures:
+        print(f"errors: {len(result.errors)}, failures: {len(result.failures)}")
         sys.exit(1)
-except Exception as e:
-    print('Unexpected exception 2', e)
+    else:
+        print('Travis unit tests all passed.')
+        sys.exit(0)
+except Exception:
+    print('Unexpected exception')
+    g.es_exception()
     sys.exit(1)
 #@-leo
