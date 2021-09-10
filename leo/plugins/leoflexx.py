@@ -242,13 +242,6 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         super().setAllText(s)
         self.finish_setter('insert')
     #@-others
-#@+node:ekr.20181121031304.1: *3* class BrowserTestManager
-# class BrowserTestManager (leoTest.TestManager):
-    # '''Run tests using the browser gui.'''
-    
-    # def instantiate_gui(self):
-        # assert isinstance(g.app.gui, LeoBrowserGui)
-        # return g.app.gui
 #@+node:ekr.20181206153831.1: *3* class DummyFrame
 class DummyFrame (leoFrame.NullFrame):
     '''
@@ -369,7 +362,6 @@ class LeoBrowserApp(flx.PyComponent):
         # Make sure everything is as expected.
         assert self.c and c == self.c
         assert g.app.gui.guiName() == 'browser'
-            # Important: the leoTest module special cases this name.
         # 
         # When running from Leo's core, we must wait until now to set LeoBrowserGui.root.
         gui.root = get_root()
@@ -1131,29 +1123,6 @@ class LeoBrowserApp(flx.PyComponent):
         c.redraw()
         w.body.set_focus()
 
-    #@+node:ekr.20181210055110.1: *6* app.do_unit
-    def do_unit(self):
-        # This ends up exiting.
-        self.run_all_unit_tests()
-    #@+node:ekr.20181112182636.1: *5* app.run_all_unit_tests
-    def run_all_unit_tests (self):
-        '''Run all unit tests from the bridge.'''
-        c = self.c
-        h = 'Active Unit Tests'
-        p = g.findTopLevelNode(c, h, exact=True)
-        if p:
-            try:
-                old_debug = g.app.debug
-                g.app.failFast = False
-                g.app.debug = [] # ['focus', 'keys',]
-                c.frame.tree.select(p)
-                tm = BrowserTestManager(c)
-                # Run selected tests locallyk.
-                tm.doTests(all=False, marked=False)
-            finally:
-                g.app.debug = old_debug
-        else:
-            print('app.run_all_unit_tests: select: not found: %s' % h)
     #@+node:ekr.20181126104843.1: *5* app.test_full_outline
     def test_full_outline(self, p):
         '''Exercise the new diff-based redraw code on a fully-expanded outline.'''

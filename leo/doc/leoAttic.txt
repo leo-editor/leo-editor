@@ -10618,6 +10618,37 @@ Running all tests is not necessary.  Just select::
 and then do Alt-4 (run-selected-unit-tests-locally).
 
 **Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
+#@+node:ekr.20210910175451.1: ** From leoflexx.py
+#@+node:ekr.20181121031304.1: *3* class BrowserTestManager
+# class BrowserTestManager (leoTest.TestManager):
+    # '''Run tests using the browser gui.'''
+    
+    # def instantiate_gui(self):
+        # assert isinstance(g.app.gui, LeoBrowserGui)
+        # return g.app.gui
+#@+node:ekr.20181112182636.1: *3* app.run_all_unit_tests
+def run_all_unit_tests (self):
+    '''Run all unit tests from the bridge.'''
+    c = self.c
+    h = 'Active Unit Tests'
+    p = g.findTopLevelNode(c, h, exact=True)
+    if p:
+        try:
+            old_debug = g.app.debug
+            g.app.failFast = False
+            g.app.debug = [] # ['focus', 'keys',]
+            c.frame.tree.select(p)
+            tm = BrowserTestManager(c)
+            # Run selected tests locallyk.
+            tm.doTests(all=False, marked=False)
+        finally:
+            g.app.debug = old_debug
+    else:
+        print('app.run_all_unit_tests: select: not found: %s' % h)
+#@+node:ekr.20181210055110.1: *3* app.do_unit
+def do_unit(self):
+    # This ends up exiting.
+    self.run_all_unit_tests()
 #@+node:ekr.20210809085711.1: ** From leoGlobals.py
 #@+node:ekr.20210809093522.1: *3* g.adjustTripleString
 def adjustTripleString(s, tab_width):
