@@ -7597,8 +7597,7 @@ def run_unit_tests(tests=None, verbose=False):
     
     Run *all* unit tests if "tests" is not given.
     """
-    g.cls()
-    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+    leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
     verbosity = '-v' if verbose else ''
     command = f"python -m unittest {verbosity} {tests or ''} "
