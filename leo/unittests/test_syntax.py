@@ -5,8 +5,6 @@
 """Syntax tests, including a check that Leo will continue to load!"""
 # pylint: disable=no-member
 import glob
-import os
-import subprocess
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
@@ -61,18 +59,34 @@ class TestSyntax(LeoUnitTest):
             self.skipTest('setup.py not found')
         s, e = g.readFileIntoString(fn)
         assert self.check_syntax(fn, s)
-    #@+node:ekr.20210906062410.1: *4* TestSyntax.test_load_leo_file
-    def test_load_leo_file(self):
-        # Make sure that Leo can still load!
-        trace = False
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
-        assert os.path.exists(test_dot_leo)
-        gui = 'null' #, 'Qt'
-        trace = '--trace=startup' if trace else ''
-        # --quit suppresses the loading of settings files for greater speed.
-        command = f"leo {test_dot_leo} --quit --gui={gui} --no-plugins --silent {trace}"
-        proc = subprocess.Popen(command, stdout=subprocess.DEVNULL, shell=True)
-        proc.communicate()
+    #@+node:ekr.20210906062410.1: *4* TestSyntax.test_that_leo_starts
+    def test_that_leo_starts(self):
+        # It's possible that Leo can be corrupted without this test failing.
+        # However, the risk seems small enough!
+        if 1:
+            # Verify (weakly) that Leo's startup logic doesn't crash.
+            # Similar (but not exactly so) the startup code in runLeo.py
+            import importlib
+            import leo.core.leoApp as leoApp
+            # It's not clear that the reloads improve the test.
+            importlib.reload(g)
+            importlib.reload(leoApp)
+            assert g
+            assert leoApp
+            app = leoApp.LeoApp()
+            lm = leoApp.LoadManager()
+            assert app and lm
+        else:
+            # Run Leo in a separate process.
+            # Alas, this can leave files open in g.app.db,
+            # and it's not easy here to do anything about it
+            import subprocess
+            command = 'leo --quit --gui=null --no-plugins'
+            proc = subprocess.Popen(
+                command,
+                stdout=subprocess.DEVNULL,
+                shell=True)
+            proc.communicate()
     #@-others
 #@-others
 #@-leo
