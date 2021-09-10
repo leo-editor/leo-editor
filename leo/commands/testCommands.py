@@ -120,6 +120,11 @@ def test_frame(event=None):
 def test_globals(event=None):
     """Run all unit tests for leoGlobals.py."""
     g.run_unit_tests('leo.unittests.core.test_leoGlobals.TestGlobals')
+#@+node:ekr.20210910085337.1: *3* test_gui
+@g.command('test-gui')
+def test_gui(event=None):
+    """Run all gui-related unit tests."""
+    g.run_unit_tests('leo.unittests.core.test_gui.TestGui')
 #@+node:ekr.20210907103024.24: *3* test-import
 @g.command('test-import')
 def test_import(event=None):
