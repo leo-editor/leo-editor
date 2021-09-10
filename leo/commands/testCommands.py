@@ -100,6 +100,11 @@ def test_external_files(event=None):
 def test_find(event=None):
     """Run all unit tests for leoFind.py."""
     g.run_unit_tests('leo.unittests.core.test_leoFind.TestFind')
+#@+node:ekr.20210910065945.1: *3* test-file-commands
+@g.command('test-file-commands')
+def test_file_commands(event=None):
+    """Run all unit tests for leoFileCommands.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFileCommands.TestFileCommands')
 #@+node:ekr.20210907103024.22: *3* test-frame
 @g.command('test-frame')
 def test_frame(event=None):

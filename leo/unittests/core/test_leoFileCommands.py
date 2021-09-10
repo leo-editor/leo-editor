@@ -21,6 +21,40 @@ class TestFileCommands(LeoUnitTest):
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.idleTimeManager.start()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(c=c)
+    #@+node:ekr.20210909194336.24: *3* TestFileCommands.test_fc_resolveArchivedPosition
+    def test_fc_resolveArchivedPosition(self):
+        c, root = self.c, self.root_p
+        root_v = root.v
+        # Create the test tree. Headlines don't matter.
+        child1 = root.insertAsLastChild()
+        child2 = root.insertAsLastChild()
+        grandChild1 = child2.insertAsLastChild()
+        grandChild2 = child2.insertAsLastChild()
+        greatGrandChild11 = grandChild1.insertAsLastChild()
+        greatGrandChild12 = grandChild1.insertAsLastChild()
+        greatGrandChild21 = grandChild2.insertAsLastChild()
+        greatGrandChild22 = grandChild2.insertAsLastChild()
+        table = (
+            # Errors.
+            (None, '-1'),
+            (None, '1'),
+            (None, '0.2'),
+            (None, '0.0.0'),
+            (None, '0.1.2'),
+            # Valid.
+            (root_v, '0'),
+            (child1.v, '0.0'),
+            (child2.v, '0.1'),
+            (grandChild1.v, '0.1.0'),
+            (greatGrandChild11.v, '0.1.0.0'),
+            (greatGrandChild12.v, '0.1.0.1'),
+            (grandChild2.v, '0.1.1'),
+            (greatGrandChild21.v, '0.1.1.0'),
+            (greatGrandChild22.v, '0.1.1.1'),
+        )
+        for v, archivedPosition in table:
+            v2 = c.fileCommands.resolveArchivedPosition(archivedPosition, root_v)
+            self.assertEqual(v, v2)
     #@-others
 #@-others
 #@-leo
