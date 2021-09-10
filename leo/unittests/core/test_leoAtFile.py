@@ -9,6 +9,8 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
+import leo.core.leoFileCommands as leoFileCommands
+
 #@+others
 #@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
 class TestAtFile(LeoUnitTest):
@@ -137,8 +139,6 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20210905052021.24: *3* TestAtFile.test_at_remove
     def test_at_remove(self):
         c = self.c
-        import os
-
         at = c.atFileCommands
         exists = g.os_path_exists
 
@@ -294,9 +294,8 @@ class TestAtFile(LeoUnitTest):
             assert '~' not in path, repr(path)
     #@+node:ekr.20210905052021.32: *3* TestAtFile.test_fast_readWithElementTree
     def test_fast_readWithElementTree(self):
+        # Test the translation table and associated logic.
         c = self.c
-        """This code tests the translation table and associated logic."""
-        import leo.core.leoFileCommands as leoFileCommands
         table = leoFileCommands.FastRead(c, {}).translate_table
         s = chr(0) + "a" + chr(0) + "b"
         self.assertEqual(len(s), 4)

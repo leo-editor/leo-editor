@@ -27,6 +27,8 @@ try:
         import black
 except Exception:
     black = None
+    
+# pylint: disable=wrong-import-position
 from leo.core import leoGlobals as g
 from leo.core.leoAst import AstNotEqual
 from leo.core.leoAst import Fstringify, Orange
