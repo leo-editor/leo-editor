@@ -5,12 +5,11 @@ import os
 import sys
 import unittest
 from leo.core import leoBridge
-
+# Open the bridge.
 controller = leoBridge.controller(gui='nullGui',
     loadPlugins=False, readSettings=True,
     silent=False, verbose=False)
 g = controller.globals()
-g.unitTesting = g.app.unitTesting = True
 #@+others
 #@+node:ekr.20210910180232.1: ** function: get_legacy_suite
 def get_legacy_suite(c):
@@ -59,12 +58,13 @@ def open_unittest_dot_leo():
     assert c
     return c
 #@-others
-if 1:
-    suite = get_new_suite()
-else:
-    c = open_unittest_dot_leo()
-    suite = get_legacy_suite(c)
 try:
+    g.unitTesting = g.app.unitTesting = True
+    if 1:
+        suite = get_new_suite()
+    else:
+        c = open_unittest_dot_leo()
+    suite = get_legacy_suite(c)
     runner = unittest.TextTestRunner(failfast=True, verbosity=1)
     result = runner.run(suite)
     if result.errors or result.failures:
