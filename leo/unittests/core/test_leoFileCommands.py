@@ -55,6 +55,31 @@ class TestFileCommands(LeoUnitTest):
         for v, archivedPosition in table:
             v2 = c.fileCommands.resolveArchivedPosition(archivedPosition, root_v)
             self.assertEqual(v, v2)
+    #@+node:ekr.20210909194336.33: *3* TestFileCommands.test_p_archivedPosition
+    def test_p_archivedPosition(self):
+        p, root = self.c.p, self.root_p
+        # Create the test tree. Headlines don't matter.
+        child1 = root.insertAsLastChild()
+        child2 = root.insertAsLastChild()
+        grandChild1 = child2.insertAsLastChild()
+        grandChild2 = child2.insertAsLastChild()
+        assert child1 and grandChild1 and grandChild2
+        # Tests...
+        val = p.archivedPosition(root_p=p)
+        self.assertEqual(val, [0])
+        for i, z in enumerate(list(p.parent().children_iter())):
+            val = z.archivedPosition(root_p=p.parent())
+            self.assertEqual(val, [0, i])
+        for i, z in enumerate(list(p.children_iter())):
+            val = z.archivedPosition(root_p=p)
+            self.assertEqual(val, [0, i])
+        for i, z in enumerate(list(p.firstChild().next().children_iter())):
+            val = z.archivedPosition(root_p=p)
+            self.assertEqual(val, [0, 1, i])
+    #@+node:ekr.20210909194336.34: *4* first child
+    #@+node:ekr.20210909194336.35: *4* second child
+    #@+node:ekr.20210909194336.36: *5* grandChild
+    #@+node:ekr.20210909194336.37: *5* grandChild 2
     #@-others
 #@-others
 #@-leo
