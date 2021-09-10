@@ -17,7 +17,7 @@ import optparse
 import os
 import time
 from leo.core import leoGlobals as g
-from leo.core import leoTest
+### from leo.core import leoTest
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(files):

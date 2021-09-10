@@ -9,8 +9,6 @@ Important: This module imports no other Leo module.
 """
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
-# Don't import leoTest here: it messes up Leo's startup code.
-    # from leo.core import leoTest
 import binascii
 import codecs
 import fnmatch
@@ -7564,8 +7562,6 @@ def run_unit_test_in_separate_process(command):
     A script to be run from unitTest.leo.
     
     Run the unit testing command (say `python -m leo.core.leoAst`) in a separate process.
-    
-    Fail (in leoTest.leo) if that fails.
     """
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)

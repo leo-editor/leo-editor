@@ -1099,7 +1099,6 @@
 <v t="ekr.20150603120245.1"><vh>Enough is enough</vh></v>
 <v t="ekr.20150603120150.1"><vh>Summary of the beautifier</vh></v>
 </v>
-<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
 </v>
@@ -1358,7 +1357,6 @@
 <v t="ekr.20180509042555.1"><vh>@rst html\leo-university.html</vh>
 <v t="ekr.20180505114327.5"><vh>Lesson 1: Think process, not knowledge</vh></v>
 <v t="ekr.20180505114327.7"><vh>Lesson 2: Learn Leo's debugging tools</vh></v>
-<v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
 <v t="ekr.20180505114327.6"><vh>Lesson 4: Use issues as an programming notebook</vh></v>
 <v t="ekr.20180505114327.9"><vh>Lesson 5: c.recursiveImport imports files recursively</vh></v>
 <v t="ekr.20180505114327.10"><vh>Lesson 6: How devs should use git branches</vh></v>
@@ -2374,6 +2372,10 @@
 <v t="ekr.20210405104357.1"></v>
 <v t="ekr.20210405104422.1"></v>
 <v t="ekr.20210824081815.1"></v>
+<v t="ekr.20210910100145.1"><vh>Removed re unit tests</vh>
+<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
+<v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20224,7 +20226,7 @@ Acknowledgements: Working with Leo's community of Leo's developers and users has
 
 A successful software tool is one that was used to do something undreamed of by its author.' -- Stephen Johnson
 
-Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @test, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
+Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
 
 Edward K. Ream
 </t>
@@ -31128,6 +31130,7 @@ Leo's source code. For this reason, the names of methods in Leo's core
 change rarely. Similarly, clients can usually assume that the names of Leo
 commands won't change.
 </t>
+<t tx="ekr.20210910100145.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

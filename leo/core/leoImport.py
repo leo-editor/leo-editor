@@ -433,7 +433,7 @@ class LeoImportCommands:
         return i, result.rstrip()
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName):
-        c = self.c; p = c.p
+        p = self.c.p
         nl = self.output_newline
         if not p:
             return
@@ -446,7 +446,7 @@ class LeoImportCommands:
                     theFile.write(head + nl)
         except IOError:
             g.warning("can not open", fileName)
-            c.testManager.fail()
+            ### c.testManager.fail()
     #@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
     def flattenOutline(self, fileName):
         """
@@ -467,7 +467,7 @@ class LeoImportCommands:
                 # Fix crasher: open in 'wb' mode.
         except IOError:
             g.warning("can not open", fileName)
-            c.testManager.fail()
+            ### c.testManager.fail()
             return
         for p in p.self_and_subtree(copy=False):
             s = p.moreHead(firstLevel) + nl
@@ -489,7 +489,7 @@ class LeoImportCommands:
             theFile = open(fileName, 'w')
         except IOError:
             g.warning("can not open", fileName)
-            c.testManager.fail()
+            ### c.testManager.fail()
             return
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.

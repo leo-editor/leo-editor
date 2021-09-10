@@ -66,14 +66,20 @@ class TestApp(LeoUnitTest):
         lm = g.app.loadManager
         # Create a zip file for testing.
         s = 'this is a test file'
-        testDir = g.os_path_join(g.app.loadDir,'..','test')
+        testDir = g.os_path_join(g.app.loadDir, '..', 'test')
         assert g.os_path_exists(testDir), testDir
-        path = g.os_path_finalize_join(testDir,'testzip.zip')
-        with zipfile.ZipFile(path,'w') as f:
+        path = g.os_path_finalize_join(testDir, 'testzip.zip')
+        f = zipfile.ZipFile(path, 'x')
+        assert f, path
+        try:
             f.writestr('leo-zip-file',s)
-        # Open the file, and get the contents.
-        with lm.openAnyLeoFile(path) as f:
+            f.close()
+            # Open the file, and get the contents.
+            f = lm.openAnyLeoFile(path)
             s2 = f.read()
+            f.close()
+        finally:
+            os.remove(path)
         self.assertEqual(s, s2)
     #@+node:ekr.20210909194336.4: *3* TestApp.test_rfm_writeRecentFilesFileHelper
     def test_rfm_writeRecentFilesFileHelper(self):

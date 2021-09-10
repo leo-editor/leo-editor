@@ -310,7 +310,7 @@ class Commands:
         from leo.core import leoPrinting
         from leo.core import leoRst
         from leo.core import leoShadow
-        from leo.core import leoTest
+        ### from leo.core import leoTest
         from leo.core import leoUndo
         from leo.core import leoVim
         # Import commands.testCommands to define commands.
@@ -328,7 +328,7 @@ class Commands:
         self.persistenceController  = leoPersistence.PersistenceDataController(c)
         self.printingController     = leoPrinting.PrintingController(c)
         self.rstCommands            = leoRst.RstCommands(c)
-        self.testManager            = leoTest.TestManager(c)
+        ### self.testManager            = leoTest.TestManager(c)
         self.vimCommands            = leoVim.VimCommands(c)
         # User commands
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
@@ -370,7 +370,7 @@ class Commands:
             self.rstCommands,
             self.shadowController,
             self.spellCommands,
-            self.testManager,
+            ### self.testManager,
             self.vimCommands,
             self.undoer,
         ]

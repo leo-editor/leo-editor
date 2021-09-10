@@ -972,18 +972,6 @@ class TestAtShadow(LeoUnitTest):
         path = x.pathName(filename)
         expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
         self.assertEqual(path, expected)
-    #@+node:ekr.20210902210552.12: *4* TestShadow.test_x_replaceFileWithString
-    def test_x_replaceFileWithString(self):
-        c = self.c
-        x = c.shadowController
-        s = 'abc'
-        encoding = 'utf-8'
-        fn = '../test/unittest/replaceFileWithStringTestFile.py'
-        path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
-        x.replaceFileWithString(encoding, path, s)
-        with open(path) as f:
-            s2 = f.read()
-        self.assertEqual(s, s2)
     #@+node:ekr.20210902210552.13: *4* TestShadow.test_x_replaceFileWithString_2
     def test_x_replaceFileWithString_2(self):
         c = self.c

@@ -56,7 +56,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.core import leoNodes
-from leo.core import leoTest
+### from leo.core import leoTest
 # Third-party imports.
 try:
     # pylint: disable=import-error
@@ -244,12 +244,12 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         self.finish_setter('insert')
     #@-others
 #@+node:ekr.20181121031304.1: *3* class BrowserTestManager
-class BrowserTestManager (leoTest.TestManager):
-    '''Run tests using the browser gui.'''
+# class BrowserTestManager (leoTest.TestManager):
+    # '''Run tests using the browser gui.'''
     
-    def instantiate_gui(self):
-        assert isinstance(g.app.gui, LeoBrowserGui)
-        return g.app.gui
+    # def instantiate_gui(self):
+        # assert isinstance(g.app.gui, LeoBrowserGui)
+        # return g.app.gui
 #@+node:ekr.20181206153831.1: *3* class DummyFrame
 class DummyFrame (leoFrame.NullFrame):
     '''
