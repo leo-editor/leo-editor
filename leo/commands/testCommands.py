@@ -181,6 +181,11 @@ def test_syntax(event=None):
 def test_undo(event=None):
     """Run all unit tests for leoUndo.py."""
     g.run_unit_tests('leo.unittests.core.test_leoUndo.TestUndo')
+#@+node:ekr.20210910073036.1: *3* test-vim
+@g.command('test-vim')
+def test_vim(event=None):
+    """Run all unit tests for leoVim.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoVim.TestVim')
 #@-others
 #@@language python
 #@@tabwidth -4
