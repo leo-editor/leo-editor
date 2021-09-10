@@ -92,6 +92,14 @@ class TestFileCommands(LeoUnitTest):
         assert s.startswith(' descendentVnodeUnknownAttributes='), s
     #@+node:ekr.20210909194336.39: *4* child
     #@+node:ekr.20210909194336.40: *5* grandChild
+    #@+node:ekr.20210909194336.41: *3* TestFileCommands.test_putUa
+    def test_putUa(self):
+        c, p = self.c, self.c.p
+        fc = c.fileCommands
+        p.v.unknownAttributes = {'unit_test': 'abcd'}
+        s = fc.putUnknownAttributes (p.v)
+        expected = ' unit_test="58040000006162636471002e"'
+        self.assertEqual(s, expected)
     #@-others
 #@-others
 #@-leo
