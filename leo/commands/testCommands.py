@@ -80,6 +80,11 @@ def test_checker_commands(event=None):
 def test_colorizer(event=None):
     """Run all unit tests for leoColorizer.py."""
     g.run_unit_tests('leo.unittests.core.test_leoColorizer.TestColorizer')
+#@+node:ekr.20210910074026.1: *3* test-config
+@g.command('test-config')
+def test_config(event=None):
+    """Run all unit tests for leoConfig.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoConfig.TestConfig')
 #@+node:ekr.20210907103024.18: *3* test-commands
 @g.command('test-commands')
 def test_commands(event=None):

@@ -37,8 +37,8 @@ def create_app():
     from leo.core import leoGui
     t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
-    g.app.loadManager = leoApp.LoadManager()
-    g.app.loadManager.computeStandardDirectories()
+    g.app.loadManager = lm = leoApp.LoadManager()
+    lm.computeStandardDirectories()
     if not g.app.setLeoID(useDialog=False, verbose=True):
         raise ValueError("unable to set LeoID.")
     g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
@@ -50,6 +50,12 @@ def create_app():
     t3 = time.process_time()
     # Create a dummy commander, to do the imports in c.initObjects.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+    # Create minimal config dictionaries.
+    settings_d, bindings_d = lm.createDefaultSettingsDicts()
+    lm.globalSettingsDict = settings_d
+    lm.globalBindingsDict = bindings_d
+    c.config.settingsDict = settings_d
+    c.config.bindingsDict = bindings_d
     t4 = time.process_time()
     # Trace times. This trace happens only once:    
     #     imports: 0.016
