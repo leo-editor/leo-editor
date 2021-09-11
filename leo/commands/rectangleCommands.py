@@ -143,13 +143,12 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         with a string on each line.
         """
         k = self.c.k
-        ###
-            # if g.app.unitTesting:
-                # k.arg = 's...s'  # This string is known to the unit test.
-                # self.w = self.editWidget(event)
-                # self.stringRect = self.getRectanglePoints(self.w)
-                # self.stringRectangle1(event)
-            # else:
+        if g.unitTesting:
+            k.arg = 's...s'  # This string is known to the unit test.
+            self.w = self.editWidget(event)
+            self.stringRect = self.getRectanglePoints(self.w)
+            self.stringRectangle1(event)
+            return
         self.w = self.editWidget(event)
         if self.w and self.check(event):
             self.stringRect = self.getRectanglePoints(self.w)
@@ -188,12 +187,10 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         killRect = killRect or self.theKillRectangle
-        ###
-            # if g.unitTesting:
-                # # This value is used by the unit test.
-                # killRect = ['Y1Y', 'Y2Y', 'Y3Y', 'Y4Y']
-        ###elif not killRect:
-        if not killRect:
+        if g.unitTesting:
+            # This value is used by the unit test.
+            killRect = ['Y1Y', 'Y2Y', 'Y3Y', 'Y4Y']
+        elif not killRect:
             k.setLabelGrey('No kill rect')
             return
         self.beginCommand(w, 'yank-rectangle')

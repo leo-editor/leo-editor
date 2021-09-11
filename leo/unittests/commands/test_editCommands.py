@@ -2628,40 +2628,34 @@ class TestEditCommands(LeoUnitTest):
             after_sel=("2.3", "5.6"),
             command_name="rectangle-open",
         )
-    #@+node:ekr.20201130090918.99: *5* xx_test_rectangle-string
-    def xx_test_rectangle_string(self):
+    #@+node:ekr.20201130090918.99: *5* test_rectangle-string
+    def test_rectangle_string(self):
         """Test case for rectangle-string"""
-        before_b = """\
-    before
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    after
-    """
-        after_b = """\
-    before
-    aaas...sbbb
-    aaas...sbbb
-    aaas...sbbb
-    aaas...sbbb
-    after
-    """
-        # A hack. The command tests for g.unitTesting.
-        ### g.unitTesting = True
-        try:
-            self.run_test(
-                before_b=before_b,
-                after_b=after_b,
-                before_sel=("2.3", "5.6"),
-                after_sel=("2.3", "5.8"),
-                command_name="rectangle-string",
-            )
-        finally:
-            pass
-           ### g.app.unitTesting = False
-    #@+node:ekr.20201130090918.100: *5* xx_test_rectangle-yank
-    def xx_test_rectangle_yank(self):
+        before_b = textwrap.dedent("""\
+            before
+            aaaxxxbbb
+            aaaxxxbbb
+            aaaxxxbbb
+            aaaxxxbbb
+            after
+    """)
+        after_b = textwrap.dedent("""\
+            before
+            aaas...sbbb
+            aaas...sbbb
+            aaas...sbbb
+            aaas...sbbb
+            after
+    """)
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.3", "5.6"),
+            after_sel=("2.3", "5.8"),
+            command_name="rectangle-string",
+        )
+    #@+node:ekr.20201130090918.100: *5* test_rectangle-yank
+    def test_rectangle_yank(self):
         """Test case for rectangle-yank"""
         before_b = textwrap.dedent("""\
             before
@@ -2680,18 +2674,14 @@ class TestEditCommands(LeoUnitTest):
             after
         """)
         # A hack. The command tests for g.app.unitTesting.
-        ### g.app.unitTesting = True
-        try:
-            self.run_test(
-                before_b=before_b,
-                after_b=after_b,
-                before_sel=("2.3", "5.6"),
-                after_sel=("2.3", "5.6"),
-                command_name="rectangle-yank",
-            )
-        finally:
-            pass
-            ### g.app.unitTesting = False
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.3", "5.6"),
+            after_sel=("2.3", "5.6"),
+            command_name="rectangle-yank",
+        )
+        
     #@+node:ekr.20201130090918.122: *5* reformat-paragraph list 1 of 5
     def test_reformat_paragraph_list_1_of_5(self):
         """Test case for reformat-paragraph list 1 of 5"""
