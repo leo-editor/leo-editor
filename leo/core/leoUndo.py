@@ -1254,9 +1254,6 @@ class Undoer:
         # Recolor the body.
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor()
-        ###
-            # if g.app.unitTesting:
-                # g.app.unitTestDict['colorized'] = True
         if redraw_flag:
             c.redraw_after_icons_changed()
         w.setFocus()

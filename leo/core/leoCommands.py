@@ -1673,10 +1673,7 @@ class Commands:
             return True
         for p in root.self_and_subtree(copy=False):
             if p.isCloned() and clonedVnodes.get(p.v):
-                if g.unitTesting:
-                    ### g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
-                    pass
-                elif warningFlag:
+                if not g.unitTesting and warningFlag:
                     c.alert(message)
                 return False
         return True
@@ -1687,10 +1684,7 @@ class Commands:
         message = "Can not drag a node into its descendant tree."
         for z in root.subtree():
             if z == target:
-                if g.unitTesting:
-                    ### g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
-                    pass
-                else:
+                if not g.unitTesting:
                     c.alert(message)
                 return False
         return True
@@ -2914,11 +2908,6 @@ class Commands:
         c.import_error_nodes = []
         c.ignored_at_file_nodes = []
         c.orphan_at_file_nodes = []
-        ###
-            # if g.unitTesting:  ###
-                # d = g.app.unitTestDict
-                # tag = 'init_error_dialogs'
-                # d[tag] = 1 + d.get(tag, 0)
     #@+node:ekr.20171123135805.1: *5* c.notValidInBatchMode
     def notValidInBatchMode(self, commandName):
         g.es('the', commandName, "command is not valid in batch mode")
@@ -2933,12 +2922,6 @@ class Commands:
         c = self
         use_dialogs = True
         if g.unitTesting:
-            ###
-                # d = g.app.unitTestDict
-                # tag = 'raise_error_dialogs'
-                # d[tag] = 1 + d.get(tag, 0)
-            # This trace catches all too-many-calls failures.
-                # g.trace(g.callers())
             c.init_error_dialogs()
             return
         #

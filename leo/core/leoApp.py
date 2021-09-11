@@ -364,12 +364,8 @@ class LeoApp:
         self.suppressImportChecks = False
             # Used only in basescanner.py
             # True: suppress importCommands.check
-        ### self.unitTestDict = {}  ### To be removed.
-            # For communication between unit tests and code.
         self.unitTestGui = None
             # A way to override the gui in external unit tests.
-        ### self.unitTesting = False
-            # True if unit testing.
         self.unitTestMenusDict = {}
             # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.

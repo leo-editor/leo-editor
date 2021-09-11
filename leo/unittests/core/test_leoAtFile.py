@@ -276,8 +276,6 @@ class TestAtFile(LeoUnitTest):
             c = bridge.openLeoFile(c.fileName())
             p1 = c.rootPosition()
             self.assertEqual(p1.h, "@file 1_renamed")
-            ### Bad: required hack in c.init_error_dialogs
-            ### self.assertEqual(p1.b, "b_1_changed")
     #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
     def test_bug_1889(self):
         """

@@ -128,17 +128,18 @@ class TestKeys(LeoUnitTest):
         c = self.c
         c.k.printBindings()
     #@+node:ekr.20210909194336.55: *3* TestKeys.test_k_registerCommand
+    callback_was_called = False
+
     def test_k_registerCommand(self):
         c, k = self.c, self.c.k
 
         def callback (event=None, c=c):
-            pass
-            ## g.app.unitTestDict[commandName] = True
+            self.callback_was_called = True
 
         commandName = 'test-registerCommand'
         k.registerCommand(commandName, callback)
         k.simulateCommand(commandName)
-        ### assert g.app.unitTestDict.get(commandName)
+        assert self.callback_was_called, commandName
     #@+node:ekr.20210901140645.8: *3* TestKeys.test_k_settings_ivars_match_settings
     def test_k_settings_ivars_match_settings(self):
         c = self.c

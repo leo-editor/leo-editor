@@ -2895,11 +2895,6 @@ class AtFile:
     def promptForDangerousWrite(self, fileName, message=None):
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
-        ###
-            # if g.unitTesting:
-                # val = g.app.unitTestDict.get('promptForDangerousWrite')
-                # g.trace(val)
-                # return val in (None, True)
         if at.cancelFlag:
             assert at.canCancelFlag
             return False

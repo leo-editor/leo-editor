@@ -709,7 +709,6 @@ class LeoImportCommands:
         self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
             p.clearDirty()
-        ### g.app.unitTestDict = {'result': True}
         return True
     #@+node:ekr.20080811174246.1: *6* ic.languageForExtension
     def languageForExtension(self, ext):

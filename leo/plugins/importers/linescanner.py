@@ -435,7 +435,6 @@ class Importer:
             ok = self.errors == 0 # Work around problems with directives.
         else:
             ok = self.errors == 0 and self.check(s, parent)
-        ### g.app.unitTestDict['result'] = ok
         # Insert an @ignore directive if there were any serious problems.
         if not ok:
             self.insert_ignore_directive(parent)
@@ -932,18 +931,6 @@ class Importer:
                 print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
             self.show_failure(lines1, lines2, sfn)
-            # self.trace_lines(lines1, lines2, parent)
-        # Ensure that the unit tests fail when they should.
-        
-        ###
-            # # Unit tests do not generate errors unless the mismatch line does not match.
-            # if g.app.unitTesting:
-                # d = g.app.unitTestDict
-                # d['result'] = ok
-                # if not ok:
-                    # d['fail'] = g.callers()
-                    # # Used in a unit test.
-                    # c.importCommands.errors += 1
         return ok
     #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines (not used)
     def clean_blank_lines(self, lines):
@@ -1056,7 +1043,6 @@ class Importer:
         parent.v.b = parent.v.b.rstrip() + '\n@ignore\n'
             # Do *not* update the screen by setting p.b.
         if g.unitTesting:
-            ### g.app.unitTestDict['fail'] = g.callers()
             pass
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
             g.warning('inserting @ignore')

@@ -397,16 +397,6 @@ def save(self, event=None, fileName=None):
     inBody = g.app.gui.widget_name(w).startswith('body')
     if inBody:
         p.saveCursorAndScroll()
-        
-    ###
-        # if g.unitTesting and g.app.unitTestDict.get('init_error_dialogs') is not None:
-            # g.trace('=====', g.callers)
-            # # A kludge for unit testing:
-            # # indicate that c.init_error_dialogs and c.raise_error_dialogs
-            # # will be called below, *without* actually saving the .leo file.
-            # c.init_error_dialogs()
-            # c.raise_error_dialogs(kind='write')
-            # return
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return

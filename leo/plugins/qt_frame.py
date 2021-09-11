@@ -2861,7 +2861,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if frame and frame.top:
             w = frame.top.leo_master or frame.top
             if g.unitTesting:
-                ### g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMinimized)
@@ -2882,7 +2881,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # frame.top is a DynamicWindow.
             w = frame.top.leo_master or frame.top
             if g.unitTesting:
-                ### g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMaximized)

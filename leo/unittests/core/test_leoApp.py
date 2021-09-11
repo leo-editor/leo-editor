@@ -27,23 +27,22 @@ class TestApp(LeoUnitTest):
             # Global managers.
             'config',
             # 'externalFilesController',
-            'loadManager','pluginsController','recentFilesManager',
+            'loadManager', 'pluginsController', 'recentFilesManager',
             # Official ivars.
             'gui',
-            'initing','killed','quitting',
+            'initing', 'killed', 'quitting',
             'leoID',
-            'log','logIsLocked','logWaiting',
+            'log','logIsLocked', 'logWaiting',
             'nodeIndices',
-            ### 'unitTesting', 'unitTestDict',
             'windowList',
             # Less-official and might be removed...
             'batchMode',
             # 'debugSwitch',
             'disableSave',
-            'hookError','hookFunction',
+            'hookError', 'hookFunction',
             'numberOfUntitledWindows',
             'realMenuNameDict',
-            'searchDict','scriptDict',
+            'searchDict', 'scriptDict',
             'use_psyco',
         )
         for ivar in ivars:

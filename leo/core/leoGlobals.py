@@ -4343,7 +4343,6 @@ def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=
           how far we will recurse.  So it should default to 0 (zero).
     """
     if g.unitTesting:
-        ### g.app.unitTestDict['g.recursiveUNLSearch'] = True
         return True, maxdepth, maxp
 
     def moveToP(c, p, unlList):
@@ -7686,16 +7685,6 @@ def findTestScript(c: Cmdr, h, where=None, warn=True):
         return g.getScript(c, p)
     if warn: g.trace('Not found', h)
     return None
-#@+node:ekr.20070619173330: *3* g.getTestVars
-def getTestVars():
-    assert False ###
-    d = g.app.unitTestDict
-    c = d.get('c')
-    p = d.get('p')
-    # Indicate that getTestVars has run.
-    # This is an indirect test that some unit test has run.
-    d['getTestVars'] = True
-    return c, p and p.copy()
 #@+node:ekr.20210901071523.1: *3* g.run_coverage_tests
 def run_coverage_tests(module='', filename=''):
     """
@@ -7894,22 +7883,22 @@ def handleUrlHelper(url, c: Cmdr, p: Pos):
         # "readme.txt" gets parsed into .netloc...
     else:
         leo_path = parsed.path
-    if leo_path.endswith('\\'): leo_path = leo_path[:-1]
-    if leo_path.endswith('/'): leo_path = leo_path[:-1]
+    if leo_path.endswith('\\'):
+        leo_path = leo_path[:-1]
+    if leo_path.endswith('/'):
+        leo_path = leo_path[:-1]
     if parsed.scheme == 'file' and leo_path.endswith('.leo'):
         g.handleUnl(original_url, c)
     elif parsed.scheme in ('', 'file'):
         unquote_path = g.unquoteUrl(leo_path)
         if g.unitTesting:
             pass
-            ### g.app.unitTestDict['os_startfile'] = unquote_path
         elif g.os_path_exists(leo_path):
             g.os_startfile(unquote_path)
         else:
             g.es(f"File '{leo_path}' does not exist")
     else:
         if g.unitTesting:
-            ### g.app.unitTestDict['browser'] = url
             pass
         else:
             # Mozilla throws a weird exception, then opens the file!
@@ -7990,7 +7979,6 @@ def handleUnl(unl, c: Cmdr):
     c.endEditing()
     c.redraw()
     if g.unitTesting:
-        ### g.app.unitTestDict['g.recursiveUNLSearch'] = path
         return None
     c2 = g.openWithFileName(path, old_c=c)
     if unl:
