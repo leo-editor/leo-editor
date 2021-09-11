@@ -7656,7 +7656,6 @@ def run_coverage_tests(module='', filename=''):
     """
     Run the coverage tests given by the module and filename strings.
     """
-    g.cls()
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "

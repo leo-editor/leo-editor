@@ -10,120 +10,142 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ekr.20210907103024.2: ** coverage test commands...
-#@+node:ekr.20210911074054.1: *3* fail
-#@+node:ekr.20210907103024.3: *4* cover-all
+#@+node:ekr.20210907103024.3: *3* cover-all
 @g.command('cover-all')
 def cover_all(event=None):
     """Run all coverage tests in leo.unittests."""
-    g.run_coverage_tests()
-#@+node:ekr.20210911075257.1: *3* no report
-#@+node:ekr.20210911072153.7: *4* cover-checker-commands
-@g.command('cover-checker-commands')
-def cover_checker_commands(event=None):
-    """Run all coverage tests for leoCheckerCommands.py."""
-    g.run_coverage_tests('leo.commands.leoCheckerCommands', 'leo/unittests/commands/test_leoCheckerCommands.py')
-#@+node:ekr.20210907103024.6: *4* cover-edit-commands
-@g.command('cover-edit-commands')
-def cover_edit_commands(event=None):
-    """Run all coverage tests for leoEditCommands.py."""    
-    g.run_coverage_tests('leo.commands.leoEditCommands', 'leo/unittests/commands/test_editCommands.py')
-#@+node:ekr.20210911072153.25: *4* cover-rst3
-@g.command('cover-rst3')
-def cover_rst3(event=None):
-    """Run all coverage tests for leoRst3.py."""
-    g.run_coverage_tests('leo.core.leoRst3', 'leo/unittests/core/test_leoRst3.py')
-#@+node:ekr.20210911074042.1: *3* pass
-#@+node:ekr.20210911072153.3: *4* cover-app
+    table = (
+        ('leo.core.leoApp', 'leo/unittests/core/test_leoApp.py'),
+        ('leo.core.leoAst', 'leo/unittests/core/test_leoAst.py'),
+        ('leo.core.leoAtFile', 'leo/core/leoAtFile.py'),
+        ('leo.core.leoBridge', 'leo/unittests/core/test_leoBridge.py'),
+        ('leo.commands.checkerCommands', 'leo/unittests/commands/test_leoCheckerCommands.py'),
+        ('leo.core.leoColorizer', 'leo/unittests/core/test_leoColorizer.py'),
+        ('leo.core.leoCommands', 'leo/unittests/core/test_leoCommands.py'),
+        ('leo.core.leoConfig', 'leo/unittests/core/test_leoConfig.py'),
+        ('leo.commands.editCommands', 'leo/unittests/commands/test_editCommands.py'),
+        ('leo.core.leoFileCommands', 'leo/unittests/core/test_leoFileCommands.py'),
+        ('leo.core.leoFind', 'leo/unittests/core/test_leoFind.py'),
+        ('leo.core.leoFrame', 'leo/unittests/core/test_leoFrame.py'),
+        ('leo.core.leoGlobals', 'leo/unittests/core/test_leoGlobals.py'),
+        ('leo.core.leoImport', 'leo/unittests/core/test_leoImport.py'),
+        ('leo.core.leoKeys', 'leo/unittests/core/test_leoKeys.py'),
+        ('leo.core.leoserver', 'leo/unittests/core/test_leoserver.py'),
+        ('leo.core.leoNodes', 'leo/unittests/core/test_leoNodes.py'),
+        ('leo.core.leoPersistence', 'leo/unittests/core/test_leoPersistence.py'),
+        ('leo.core.leoRst', 'leo/unittests/core/test_leoRst.py'),
+        ('leo.core.leoShadow', 'leo/unittests/core/test_leoShadow.py'),
+        ('leo.core.leoUndo', 'leo/unittests/core/test_leoUndo.py'),
+        ('leo.core.leoVim', 'leo/unittests/core/test_leoVim.py'),
+    )
+    for module, filename in table:
+        g.run_coverage_tests(module, filename)
+#@+node:ekr.20210911072153.3: *3* cover-app
 @g.command('cover-app')
 def cover_app(event=None):
     """Run all coverage tests for leoApp.py."""
     g.run_coverage_tests('leo.core.leoApp', 'leo/unittests/core/test_leoApp.py')
-#@+node:ekr.20210907103024.4: *4* cover-ast
+#@+node:ekr.20210907103024.4: *3* cover-ast
 @g.command('cover-ast')
 def cover_ast(event=None):
     """Run all coverage tests for leoAst.py."""
     g.run_coverage_tests('leo.core.leoAst', 'leo/unittests/core/test_leoAst.py')
-#@+node:ekr.20210907103024.5: *4* cover-atfile
+#@+node:ekr.20210907103024.5: *3* cover-atfile
 @g.command('cover-atfile')
 def cover_atfile(event=None):
     """Run all coverage tests for leoAtFile.py."""
     g.run_coverage_tests('leo.core.leoAtFile', 'leo/core/leoAtFile.py')
-#@+node:ekr.20210911072153.6: *4* cover-bridge
+#@+node:ekr.20210911072153.6: *3* cover-bridge
 @g.command('cover-bridge')
 def cover_bridge(event=None):
     """Run all coverage tests for leoBridge.py."""
     g.run_coverage_tests('leo.core.leoBridge', 'leo/unittests/core/test_leoBridge.py')
-#@+node:ekr.20210911072153.8: *4* cover-colorizer
+#@+node:ekr.20210911072153.7: *3* cover-checker-commands
+@g.command('cover-checker-commands')
+def cover_checker_commands(event=None):
+    """Run all coverage tests for leoCheckerCommands.py."""
+    g.run_coverage_tests('leo.commands.checkerCommands', 'leo/unittests/commands/test_leoCheckerCommands.py')
+#@+node:ekr.20210911072153.8: *3* cover-colorizer
 @g.command('cover-colorizer')
 def cover_colorizer(event=None):
     """Run all coverage tests for leoColorizer.py."""
     g.run_coverage_tests('leo.core.leoColorizer', 'leo/unittests/core/test_leoColorizer.py')
-#@+node:ekr.20210911072153.10: *4* cover-commands
+#@+node:ekr.20210911072153.10: *3* cover-commands
 @g.command('cover-commands')
 def cover_commands(event=None):
     """Run all coverage tests for leoCommands.py."""
     g.run_coverage_tests('leo.core.leoCommands', 'leo/unittests/core/test_leoCommands.py')
-#@+node:ekr.20210911072153.9: *4* cover-config
+#@+node:ekr.20210911072153.9: *3* cover-config
 @g.command('cover-config')
 def cover_config(event=None):
     """Run all coverage tests for leoConfig.py."""
     g.run_coverage_tests('leo.core.leoConfig', 'leo/unittests/core/test_leoConfig.py')
-#@+node:ekr.20210911072153.12: *4* cover-external-files
+#@+node:ekr.20210907103024.6: *3* cover-edit-commands
+@g.command('cover-edit-commands')
+def cover_edit_commands(event=None):
+    """Run all coverage tests for leoEditCommands.py."""    
+    g.run_coverage_tests('leo.commands.editCommands', 'leo/unittests/commands/test_editCommands.py')
+#@+node:ekr.20210911072153.12: *3* cover-external-files
 @g.command('cover-external-files')
 def cover_external_files(event=None):
     """Run all coverage tests for leoExternalFiles.py."""
     g.run_coverage_tests('leo.core.leoExternalFiles', 'leo/unittests/core/test_leoExternalFiles.py')
-#@+node:ekr.20210911072153.14: *4* cover-file-commands
+#@+node:ekr.20210911072153.14: *3* cover-file-commands
 @g.command('cover-file-commands')
 def cover_file_commands(event=None):
     """Run all coverage tests for leoFileCommands.py."""
     g.run_coverage_tests('leo.core.leoFileCommands', 'leo/unittests/core/test_leoFileCommands.py')
-#@+node:ekr.20210907103024.7: *4* cover-find
+#@+node:ekr.20210907103024.7: *3* cover-find
 @g.command('cover-find')
 def cover_find(event=None):
     """Run all coverage tests for leoFind.py."""
     g.run_coverage_tests('leo.core.leoFind', 'leo/unittests/core/test_leoFind.py')
-#@+node:ekr.20210911072153.15: *4* cover-frame
+#@+node:ekr.20210911072153.15: *3* cover-frame
 @g.command('cover-frame')
 def cover_frame(event=None):
     """Run all coverage tests for leoFrame.py."""
     g.run_coverage_tests('leo.core.leoFrame', 'leo/unittests/core/test_leoFrame.py')
-#@+node:ekr.20210911072153.16: *4* cover-globals
+#@+node:ekr.20210911072153.16: *3* cover-globals
 @g.command('cover-globals')
 def cover_globals(event=None):
     """Run all coverage tests for leoGlobals.py."""
     g.run_coverage_tests('leo.core.leoGlobals', 'leo/unittests/core/test_leoGlobals.py')
-#@+node:ekr.20210911072153.18: *4* cover-import
+#@+node:ekr.20210911072153.18: *3* cover-import
 @g.command('cover-import')
 def cover_import(event=None):
     """Run all coverage tests for leoImport.py."""
     g.run_coverage_tests('leo.core.leoImport', 'leo/unittests/core/test_leoImport.py')
-#@+node:ekr.20210911072153.19: *4* cover-keys
+#@+node:ekr.20210911072153.19: *3* cover-keys
 @g.command('cover-keys')
 def cover_keys(event=None):
     """Run all coverage tests for leoKeys.py."""
     g.run_coverage_tests('leo.core.leoKeys', 'leo/unittests/core/test_leoKeys.py')
-#@+node:ekr.20210911072153.20: *4* cover-leoserver
+#@+node:ekr.20210911072153.20: *3* cover-leoserver
 @g.command('cover-leoserver')
 def cover_leoserver(event=None):
     """Run all unittests for leoserver.py"""
     g.run_coverage_tests('leo.core.leoserver', 'leo/unittests/core/test_leoserver.py')
-#@+node:ekr.20210907103024.8: *4* cover-nodes
+#@+node:ekr.20210907103024.8: *3* cover-nodes
 @g.command('cover-nodes')
 def cover_node(event=None):
     """Run all coverage tests for leoNodes.py."""
     g.run_coverage_tests('leo.core.leoNodes', 'leo/unittests/core/test_leoNodes.py')
-#@+node:ekr.20210911072153.23: *4* cover-persistence
+#@+node:ekr.20210911072153.23: *3* cover-persistence
 @g.command('cover-persistence')
 def cover_persistence(event=None):
     """Run all coverage tests for leoPersistence.py."""
     g.run_coverage_tests('leo.core.leoPersistence', 'leo/unittests/core/test_leoPersistence.py')
-#@+node:ekr.20210911072153.26: *4* cover-shadow
+#@+node:ekr.20210911072153.25: *3* cover-rst
+@g.command('cover-rst')
+def cover_rst3(event=None):
+    """Run all coverage tests for leoRst.py."""
+    g.run_coverage_tests('leo.core.leoRst', 'leo/unittests/core/test_leoRst.py')
+#@+node:ekr.20210911072153.26: *3* cover-shadow
 @g.command('cover-shadow')
 def cover_shadow(event=None):
     """Run all coverage tests for leoShadow.py."""
     g.run_coverage_tests('leo.core.leoShadow', 'leo/unittests/core/test_leoShadow.py')
-#@+node:ekr.20210911072153.28: *4* cover-undo
+#@+node:ekr.20210911072153.28: *3* cover-undo
 @g.command('cover-undo')
 def cover_undo(event=None):
     """Run all coverage tests for leoUndo.py."""
@@ -261,11 +283,11 @@ def test_persistence(event=None):
 def test_plugins(event=None):
     """Run all unit tests relating to plugins."""
     g.run_unit_tests('leo.unittests.test_plugins.TestPlugins')
-#@+node:ekr.20210907103024.28: *3* test-rst3
-@g.command('test-rst3')
+#@+node:ekr.20210907103024.28: *3* test-rst
+@g.command('test-rst')
 def test_rst3(event=None):
-    """Run all unit tests for leoRst3.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoRst3.TestRst3')
+    """Run all unit tests for leoRst.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoRst.TestRst')
 #@+node:ekr.20210907103024.30: *3* test-shadow
 @g.command('test-shadow')
 def test_shadow(event=None):

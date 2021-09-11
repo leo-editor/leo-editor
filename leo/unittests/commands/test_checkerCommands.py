@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20210904022712.2: * @file ../unittests/commands/test_leoCheckerCommands.py
+#@+node:ekr.20210904022712.2: * @file ../unittests/commands/test_checkerCommands.py
 #@@first
 """Tests of leo.commands.leoCheckerCommands."""
 import re
