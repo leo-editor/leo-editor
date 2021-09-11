@@ -751,7 +751,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
-            if g.app.unitTesting:
+            if g.unitTesting:
                 return
             # Create the inner contents.
             self.setObjectName('viewrendered_pane')

@@ -3594,7 +3594,7 @@ def scanAtEncodingDirectives(aList):
         encoding = d.get('encoding')
         if encoding and g.isValidEncoding(encoding):
             return encoding
-        if encoding and not g.app.unitTesting:
+        if encoding and not g.unitTesting:
             g.error("invalid @encoding:", encoding)
     return None
 #@+node:ekr.20080827175609.53: *3* g.scanAtHeaderDirectives
@@ -3623,7 +3623,7 @@ def scanAtPagewidthDirectives(aList, issue_error_flag=False):
             i, val = g.skip_long(s, 0)
             if val is not None and val > 0:
                 return val
-            if issue_error_flag and not g.app.unitTesting:
+            if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @pagewidth", s)
     return None
 #@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives scanAllAtPathDirectives
@@ -3644,7 +3644,7 @@ def scanAtTabwidthDirectives(aList, issue_error_flag=False):
             junk, val = g.skip_long(s, 0)
             if val not in (None, 0):
                 return val
-            if issue_error_flag and not g.app.unitTesting:
+            if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @tabwidth", s)
     return None
 
@@ -3680,7 +3680,7 @@ def scanAllAtWrapDirectives(c: Cmdr, p: Pos):
 #@+node:ekr.20040715155607: *3* g.scanForAtIgnore
 def scanForAtIgnore(c: Cmdr, p: Pos):
     """Scan position p and its ancestors looking for @ignore directives."""
-    if g.app.unitTesting:
+    if g.unitTesting:
         return False  # For unit tests.
     for p in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p)
@@ -4343,7 +4343,7 @@ def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=
           how far we will recurse.  So it should default to 0 (zero).
     """
     if g.unitTesting:
-        g.app.unitTestDict['g.recursiveUNLSearch'] = True
+        ### g.app.unitTestDict['g.recursiveUNLSearch'] = True
         return True, maxdepth, maxp
 
     def moveToP(c, p, unlList):
@@ -6391,7 +6391,7 @@ def es_debug(*args, **keys):
     if name.endswith('.pyc'):
         name = name[:-1]
     g.pr(name, *args, **keys)
-    if not g.app.unitTesting:
+    if not g.unitTesting:
         g.es(name, *args, **keys)
 #@+node:ekr.20060917120951: *3* g.es_dump
 def es_dump(s: str, n=30, title=None):
@@ -6454,7 +6454,7 @@ def es_print(*args, **keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     """
     g.pr(*args, **keys)
-    if g.app and not g.app.unitTesting:
+    if g.app and not g.unitTesting:
         g.es(*args, **keys)
 #@+node:ekr.20111107181638.9741: *3* g.print_exception
 def print_exception(full=True, c: Cmdr=None, flush=False, color="red"):
@@ -7688,6 +7688,7 @@ def findTestScript(c: Cmdr, h, where=None, warn=True):
     return None
 #@+node:ekr.20070619173330: *3* g.getTestVars
 def getTestVars():
+    assert False ###
     d = g.app.unitTestDict
     c = d.get('c')
     p = d.get('p')
@@ -7900,14 +7901,16 @@ def handleUrlHelper(url, c: Cmdr, p: Pos):
     elif parsed.scheme in ('', 'file'):
         unquote_path = g.unquoteUrl(leo_path)
         if g.unitTesting:
-            g.app.unitTestDict['os_startfile'] = unquote_path
+            pass
+            ### g.app.unitTestDict['os_startfile'] = unquote_path
         elif g.os_path_exists(leo_path):
             g.os_startfile(unquote_path)
         else:
             g.es(f"File '{leo_path}' does not exist")
     else:
         if g.unitTesting:
-            g.app.unitTestDict['browser'] = url
+            ### g.app.unitTestDict['browser'] = url
+            pass
         else:
             # Mozilla throws a weird exception, then opens the file!
             try:
@@ -7987,7 +7990,7 @@ def handleUnl(unl, c: Cmdr):
     c.endEditing()
     c.redraw()
     if g.unitTesting:
-        g.app.unitTestDict['g.recursiveUNLSearch'] = path
+        ### g.app.unitTestDict['g.recursiveUNLSearch'] = path
         return None
     c2 = g.openWithFileName(path, old_c=c)
     if unl:

@@ -1816,7 +1816,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18211: *5* LeoQtBody.injectIvars
     def injectIvars(self, parentFrame, name, p, wrapper):
 
-        trace = g.app.debug == 'select' and not g.app.unitTesting
+        trace = g.app.debug == 'select' and not g.unitTesting
         tag = 'qt_body.injectIvars'
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
@@ -2861,7 +2861,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if frame and frame.top:
             w = frame.top.leo_master or frame.top
             if g.unitTesting:
-                g.app.unitTestDict['minimize-all'] = True
+                ### g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMinimized)
@@ -2882,7 +2882,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # frame.top is a DynamicWindow.
             w = frame.top.leo_master or frame.top
             if g.unitTesting:
-                g.app.unitTestDict['resize-to-screen'] = True
+                ### g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMaximized)

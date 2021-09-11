@@ -364,11 +364,11 @@ class LeoApp:
         self.suppressImportChecks = False
             # Used only in basescanner.py
             # True: suppress importCommands.check
-        self.unitTestDict = {}
+        ### self.unitTestDict = {}  ### To be removed.
             # For communication between unit tests and code.
         self.unitTestGui = None
             # A way to override the gui in external unit tests.
-        self.unitTesting = False
+        ### self.unitTesting = False
             # True if unit testing.
         self.unitTestMenusDict = {}
             # Created in LeoMenu.createMenuEntries for a unit test.
@@ -1360,7 +1360,7 @@ class LeoApp:
         if g.app.windowList:
             c2 = new_c or g.app.windowList[0].c
             g.app.selectLeoWindow(c2)
-        elif finish_quit and not g.app.unitTesting:
+        elif finish_quit and not g.unitTesting:
             g.app.finishQuit()
         return True  # The window has been closed.
     #@+node:ekr.20031218072017.2612: *4* app.destroyAllOpenWithFiles
@@ -1468,7 +1468,7 @@ class LeoApp:
             # #302: revert to saved doesn't reset external file change monitoring
             g.app.already_open_files = []
         if (d is None or
-            g.app.unitTesting or
+            g.unitTesting or
             g.app.batchMode or
             g.app.reverting or
             g.app.inBridge
@@ -1497,7 +1497,7 @@ class LeoApp:
             # #69.
             return
         if not force and (
-            d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
+            d is None or g.unitTesting or g.app.batchMode or g.app.reverting):
             return
         aList = d.get(tag) or []
         fn = os.path.normpath(fn)
@@ -1513,7 +1513,7 @@ class LeoApp:
         #
         # Do not call g.trace, etc. here.
         d, tag = g.app.db, 'open-leo-files'
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+        if d is None or g.unitTesting or g.app.batchMode or g.app.reverting:
             pass
         elif g.app.preReadFlag:
             pass
@@ -2224,7 +2224,7 @@ class LoadManager:
         theFile = lm.openAnyLeoFile(fn)
         if not theFile:
             return None  # Fix #843.
-        if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
+        if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
             s = f"reading settings in {os.path.normpath(fn)}"
             if 'startup' in g.app.debug:
@@ -3630,7 +3630,7 @@ class RecentFilesManager:
     def updateRecentFiles(self, fileName):
         """Create the RecentFiles menu.  May be called with Null fileName."""
         rf = self
-        if g.app.unitTesting: return
+        if g.unitTesting: return
 
         def munge(name):
             return g.os_path_finalize(name or '').lower()
@@ -3682,7 +3682,7 @@ class RecentFilesManager:
         tag = '.leoRecentFiles.txt'
         rf = self
         # tag:#661. Do nothing if in leoBride.
-        if g.app.unitTesting or g.app.inBridge:
+        if g.unitTesting or g.app.inBridge:
             return
         localFileName = c.fileName()
         if localFileName:

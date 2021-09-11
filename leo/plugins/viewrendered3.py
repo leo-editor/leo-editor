@@ -1525,7 +1525,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def create_pane(self, parent):
         """Create the vr3 pane."""
 
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         # Create the inner contents.
         self.setObjectName('viewrendered3_pane')

@@ -24,7 +24,7 @@ linere = re.compile("^#line 1 \".*\"$")
 
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting # Not safe for unit testing.  Changes core class.
+    ok = not g.unitTesting ### # Not safe for unit testing.  Changes core class.
     if ok:
         #@+<< override write methods >>
         #@+node:ekr.20040419105219.1: ** << override write methods >> (lineNumbers.py)

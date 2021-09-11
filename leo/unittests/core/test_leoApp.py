@@ -34,7 +34,7 @@ class TestApp(LeoUnitTest):
             'leoID',
             'log','logIsLocked','logWaiting',
             'nodeIndices',
-            'unitTesting','unitTestDict',
+            ### 'unitTesting', 'unitTestDict',
             'windowList',
             # Less-official and might be removed...
             'batchMode',

@@ -255,13 +255,14 @@ class TestGlobals(LeoUnitTest):
                 (unl1 + unl2,           ['g.recursiveUNLSearch']),
                 (unl1 + unl3,           ['g.recursiveUNLSearch']),
             )
-            d = g.app.unitTestDict
+            ### d = g.app.unitTestDict
             for url,aList in table:
-                d = g.app.unitTestDict = {}
-                g.handleUrl(c=c,p=c.p,url=url)
-                for kind in aList:
-                    assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
-                        kind,url,g.dictToString(d))
+                ### d = g.app.unitTestDict = {}
+                g.handleUrl(c=c, p=c.p, url=url)
+                ###
+                # for kind in aList:
+                    # assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
+                        # kind,url,g.dictToString(d))
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')

@@ -9,7 +9,7 @@ from leo.core import leoGlobals as g
 
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting # Not for unit tests.
+    ok = not g.unitTesting ### # Not for unit tests.
     if ok: # Register the handlers...
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)

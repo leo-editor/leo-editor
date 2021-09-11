@@ -470,7 +470,7 @@ class Commands:
         trace_in_dialog = False  # Not useful enough for --trace-focus
         c = self
         assert tag == 'idle'
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         if keys.get('c') != c:
             if trace: g.trace('no c')
@@ -1673,8 +1673,9 @@ class Commands:
             return True
         for p in root.self_and_subtree(copy=False):
             if p.isCloned() and clonedVnodes.get(p.v):
-                if g.app.unitTesting:
-                    g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
+                if g.unitTesting:
+                    ### g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
+                    pass
                 elif warningFlag:
                     c.alert(message)
                 return False
@@ -1686,8 +1687,9 @@ class Commands:
         message = "Can not drag a node into its descendant tree."
         for z in root.subtree():
             if z == target:
-                if g.app.unitTesting:
-                    g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
+                if g.unitTesting:
+                    ### g.app.unitTestDict['checkMoveWithParentWithWarning'] = True
+                    pass
                 else:
                     c.alert(message)
                 return False
@@ -2221,7 +2223,7 @@ class Commands:
                     ## c.k.funcReturn = return_value
             except Exception:
                 c.inCommand = False
-                if g.app.unitTesting:
+                if g.unitTesting:
                     raise
                 g.es_print("exception executing command")
                 g.es_exception(c=c)
@@ -2250,7 +2252,7 @@ class Commands:
         command_func = c.commandsDict.get(command_name.replace('&', ''))
         if not command_func:
             message = f"no command function for {command_name!r}"
-            if g.app.unitTesting or g.app.inBridge:
+            if g.unitTesting or g.app.inBridge:
                 raise AttributeError(message)
             g.es_print(message, color='red')
             g.trace(g.callers())
@@ -2912,10 +2914,11 @@ class Commands:
         c.import_error_nodes = []
         c.ignored_at_file_nodes = []
         c.orphan_at_file_nodes = []
-        if g.unitTesting:
-            d = g.app.unitTestDict
-            tag = 'init_error_dialogs'
-            d[tag] = 1 + d.get(tag, 0)
+        ###
+            # if g.unitTesting:  ###
+                # d = g.app.unitTestDict
+                # tag = 'init_error_dialogs'
+                # d[tag] = 1 + d.get(tag, 0)
     #@+node:ekr.20171123135805.1: *5* c.notValidInBatchMode
     def notValidInBatchMode(self, commandName):
         g.es('the', commandName, "command is not valid in batch mode")
@@ -2930,9 +2933,10 @@ class Commands:
         c = self
         use_dialogs = True
         if g.unitTesting:
-            d = g.app.unitTestDict
-            tag = 'raise_error_dialogs'
-            d[tag] = 1 + d.get(tag, 0)
+            ###
+                # d = g.app.unitTestDict
+                # tag = 'raise_error_dialogs'
+                # d[tag] = 1 + d.get(tag, 0)
             # This trace catches all too-many-calls failures.
                 # g.trace(g.callers())
             c.init_error_dialogs()
@@ -3087,12 +3091,12 @@ class Commands:
     def beginUpdate(self):
         """Deprecated: does nothing."""
         g.trace('***** c.beginUpdate is deprecated', g.callers())
-        if g.app.unitTesting: assert(False)
+        if g.unitTesting: assert(False)
 
     def endUpdate(self, flag=True):
         """Request a redraw of the screen if flag is True."""
         g.trace('***** c.endUpdate is deprecated', g.callers())
-        if g.app.unitTesting: assert(False)
+        if g.unitTesting: assert(False)
         c = self
         if flag:
             c.requestRedrawFlag = True

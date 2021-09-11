@@ -2782,9 +2782,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             return  # pragma: no cover (defensive)
         s = w.getAllText()
         i, j = w.getSelectionRange()
-        # A hack for wx gui: set the insertion point to the end of the selection range.
-        if g.app.unitTesting:
-            w.setInsertPoint(j)
+        ### Huh??
+            # if g.unitTesting:
+                # w.setInsertPoint(j)
         i, j = g.getLine(s, j)
         line = s[i:j]
         if line.strip():

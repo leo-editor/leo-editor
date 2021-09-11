@@ -166,7 +166,7 @@ def add_menu_from_settings(c):
 #@+node:ekr.20070302175530: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    if g.app.unitTesting:
+    if g.unitTesting:
         return False
     if not g.app.gui:
         g.app.createDefaultGui()

@@ -213,7 +213,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     if not g.app.batchMode:
         g.blue("nodeActions: Init")
-    ok = not g.app.unitTesting # Dangerous for unit testing.
+    ok = not g.unitTesting # Dangerous for unit testing.
     if ok:
         g.registerHandler("headdclick1", onIconDoubleClickNA)
         g.plugin_signon(__name__)

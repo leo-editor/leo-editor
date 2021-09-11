@@ -174,7 +174,7 @@ class AtFile:
         at.sentinels = True
         #
         # Override initCommonIvars.
-        if g.app.unitTesting:
+        if g.unitTesting:
             at.output_newline = '\n'
         #
         # Set other ivars.
@@ -1564,7 +1564,8 @@ class AtFile:
             # what is used in x.propegate changes.
             marker = x.markerFromFileName(full_path)
             at.startSentinelComment, at.endSentinelComment = marker.getDelims()
-            if g.app.unitTesting:
+            if g.unitTesting:
+                ###
                 ivars_dict = g.getIvarsDict(at)
             #
             # Write the public and private files to strings.
@@ -1578,7 +1579,7 @@ class AtFile:
             at.public_s = put(False)
             at.private_s = put(True)
             at.warnAboutOrphandAndIgnoredNodes()
-            if g.app.unitTesting:
+            if g.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
                 assert g.checkUnchangedIvars(
                     at, ivars_dict, exceptions), 'writeOneAtShadowNode'
@@ -2894,9 +2895,11 @@ class AtFile:
     def promptForDangerousWrite(self, fileName, message=None):
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
-        if g.app.unitTesting:
-            val = g.app.unitTestDict.get('promptForDangerousWrite')
-            return val in (None, True)
+        ###
+            # if g.unitTesting:
+                # val = g.app.unitTestDict.get('promptForDangerousWrite')
+                # g.trace(val)
+                # return val in (None, True)
         if at.cancelFlag:
             assert at.canCancelFlag
             return False
@@ -2987,7 +2990,8 @@ class AtFile:
             #
             # Issue an error only if at.language has been set.
             # This suppresses a message from the markdown importer.
-            if not g.app.unitTesting and at.language:
+            ### if not g.app.unitTesting and at.language:
+            if not g.unitTesting and at.language: ###
                 g.trace(repr(at.language), g.callers())
                 g.es_print("unknown language: using Python comment delimiters")
                 g.es_print("c.target_language:", c.target_language)

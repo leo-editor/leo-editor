@@ -31,7 +31,7 @@ assert qt_commands
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init():
 
-    if g.app.unitTesting:  # Not Ok for unit testing!
+    if g.unitTesting:  # Not Ok for unit testing!
         return False
     if not QtCore:
         return False
@@ -1274,7 +1274,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def show_tips(self, force=False):
         from leo.core import leoTips
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         c = g.app.log and g.app.log.c
         if not c:

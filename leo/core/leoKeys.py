@@ -2857,7 +2857,7 @@ class KeyHandlerClass:
             g.app.gui.event_generate(c, None, shortcut, w)
         else:
             message = f"no shortcut for {commandName}"
-            if g.app.unitTesting:
+            if g.unitTesting:
                 raise AttributeError(message)
             g.error(message)
     #@+node:ekr.20071212104050: *4* k.overrideCommand
