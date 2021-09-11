@@ -6370,28 +6370,6 @@ def es_clickable_link(c: Cmdr, p: Pos, line_number, message):
         log.put(message, nodeLink=f"{unl},{line_number}")
     else:
         log.put(message)
-#@+node:ekr.20141107085700.4: *3* g.es_debug
-def es_debug(*args, **keys):
-    """
-    Print all non-keyword args, and put them to the log pane in orange.
-
-    The first, third, fifth, etc. arg translated by g.translateString.
-    Supports color, comma, newline, spaces and tabName keyword arguments.
-    """
-    keys['color'] = 'blue'
-    try:  # get the function name from the call stack.
-        f1 = sys._getframe(1)  # The stack frame, one level up.
-        code1 = f1.f_code  # The code object
-        name = code1.co_name  # The code name
-    except Exception:
-        name = g.shortFileName(__file__)
-    if name == '<module>':
-        name = g.shortFileName(__file__)
-    if name.endswith('.pyc'):
-        name = name[:-1]
-    g.pr(name, *args, **keys)
-    if not g.unitTesting:
-        g.es(name, *args, **keys)
 #@+node:ekr.20060917120951: *3* g.es_dump
 def es_dump(s: str, n=30, title=None):
     if title:
@@ -7673,18 +7651,6 @@ def insertCodingLine(encoding, script):
             script = ''.join(lines)
     return script
 #@+node:ekr.20070524083513: ** g.Unit Tests
-#@+node:ekr.20100812172650.5909: *3* g.findTestScript
-def findTestScript(c: Cmdr, h, where=None, warn=True):
-    if where:
-        p = g.findNodeAnywhere(c, where)
-        if p:
-            p = g.findNodeInTree(c, p, h)
-    else:
-        p = g.findNodeAnywhere(c, h)
-    if p:
-        return g.getScript(c, p)
-    if warn: g.trace('Not found', h)
-    return None
 #@+node:ekr.20210901071523.1: *3* g.run_coverage_tests
 def run_coverage_tests(module='', filename=''):
     """
@@ -7739,34 +7705,6 @@ def run_unit_tests(tests=None, verbose=False):
     verbosity = '-v' if verbose else ''
     command = f"python -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command, trace=False)
-#@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
-def toEncodedStringWithErrorCode(s: Union[bytes, str], encoding, reportErrors=False):
-    """For unit testing: convert s to an encoded string and return (s,ok)."""
-    ok = True
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding, "strict")  # type:ignore
-        except UnicodeError:
-            s = s.encode(encoding, "replace")  # type:ignore
-            if reportErrors:
-                g.error(f"Error converting {s} from unicode to {encoding} encoding")  # type:ignore
-            ok = False
-    return s, ok
-#@+node:ekr.20080919065433.1: *3* g.toUnicodeWithErrorCode (for unit testing)
-def toUnicodeWithErrorCode(s: Union[bytes, str], encoding, reportErrors=False):
-    """For unit testing: convert s to unicode and return (s,ok)."""
-    if s is None:
-        return '', True
-    if isinstance(s, str):
-        return s, True
-    try:
-        s = str(s, encoding, 'strict')
-        return s, True
-    except UnicodeError:
-        s = str(s, encoding, 'replace')  # type:ignore
-        if reportErrors:
-            g.error(f"Error converting {s} from {encoding} encoding to unicode")
-        return s, False
 #@+node:ekr.20120311151914.9916: ** g.Urls
 unl_regex = re.compile(r'\bunl:.*$')
 

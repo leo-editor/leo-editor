@@ -15,14 +15,6 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
     #@+others
-    #@+node:ekr.20210901140645.26: *3* TestGlobals.unicode conversions
-    def test_failure_with_ascii_encodings(self):
-        encoding = 'ascii'
-        s = '炰'
-        s2, ok = g.toUnicodeWithErrorCode(s,encoding)
-        self.assertTrue(ok)
-        s3, ok = g.toEncodedStringWithErrorCode(s,encoding)
-        self.assertFalse(ok)
     #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
     def test_getLastTracebackFileAndLineNumber(self):
         try:

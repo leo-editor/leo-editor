@@ -1565,7 +1565,6 @@ class AtFile:
             marker = x.markerFromFileName(full_path)
             at.startSentinelComment, at.endSentinelComment = marker.getDelims()
             if g.unitTesting:
-                ###
                 ivars_dict = g.getIvarsDict(at)
             #
             # Write the public and private files to strings.
