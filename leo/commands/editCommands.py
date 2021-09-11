@@ -2782,9 +2782,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             return  # pragma: no cover (defensive)
         s = w.getAllText()
         i, j = w.getSelectionRange()
-        ### Huh??
-            # if g.unitTesting:
-                # w.setInsertPoint(j)
         i, j = g.getLine(s, j)
         line = s[i:j]
         if line.strip():

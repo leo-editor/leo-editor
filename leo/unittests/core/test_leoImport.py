@@ -3862,7 +3862,7 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.114: *4* TestImport.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
         c = self.c
-        ### insert test for markdown here.
+        # insert test for markdown here.
         s = textwrap.dedent("""\
             Decl line.
             #Header

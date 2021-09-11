@@ -2647,6 +2647,7 @@ class TestEditCommands(LeoUnitTest):
             aaas...sbbb
             after
     """)
+        # A hack. The command tests for g.unitTesting!
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2673,7 +2674,7 @@ class TestEditCommands(LeoUnitTest):
             aaaY4Ybbb
             after
         """)
-        # A hack. The command tests for g.app.unitTesting.
+        # A hack. The command tests for g.unitTesting!
         self.run_test(
             before_b=before_b,
             after_b=after_b,

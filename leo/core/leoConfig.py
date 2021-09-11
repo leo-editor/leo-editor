@@ -471,7 +471,7 @@ class ParserBaseClass:
 
         c = self.c
         p = p.copy()
-        aList: List[Any] = []   ### This entire logic is mysterious, and likely buggy.
+        aList: List[Any] = []   # This entire logic is mysterious, and likely buggy.
         after = p.nodeAfterTree()
         while p and p != after:
             self.debug_count += 1
@@ -608,7 +608,7 @@ class ParserBaseClass:
                             aList2: List[Any] = [] 
                             kind = f"{itemName}"
                             body = p.b
-                            self.doPopupItems(p, aList2)  ### Huh?
+                            self.doPopupItems(p, aList2)  # Huh?
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
                             break

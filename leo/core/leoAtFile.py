@@ -2984,8 +2984,7 @@ class AtFile:
             #
             # Issue an error only if at.language has been set.
             # This suppresses a message from the markdown importer.
-            ### if not g.app.unitTesting and at.language:
-            if not g.unitTesting and at.language: ###
+            if not g.unitTesting and at.language:
                 g.trace(repr(at.language), g.callers())
                 g.es_print("unknown language: using Python comment delimiters")
                 g.es_print("c.target_language:", c.target_language)

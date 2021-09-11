@@ -260,7 +260,7 @@ class LeoQtEventFilter(QtCore.QObject):
         ):
             mods.remove('Shift')
         elif kind == 'us-international':
-            pass  ### To do.
+            pass  # To do.
         #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.

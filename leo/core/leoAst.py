@@ -3753,7 +3753,7 @@ class Fstringify(TokenOrderTraverser):
         
         Example specs: s2, r3
         """
-        ### To do: handle more specs.
+        # To do: handle more specs.
         head, tail = [], []
         if spec.startswith('+'):
             pass  # Leave it alone!

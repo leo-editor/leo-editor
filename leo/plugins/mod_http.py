@@ -1070,7 +1070,7 @@ class RequestHandler(
         """
         header = self.headers.getheader('content-type')
         g.trace('not ready yet', repr(header))
-        ### This code is obsolete.
+        # This code is obsolete.
             # pylint: disable=undefined-variable
                 # urlparse_header and urlparse_multipart appear to be undefined.
             ### ctype, pdict = urlparse_header(self.headers.getheader('content-type'))
