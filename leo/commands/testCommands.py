@@ -54,7 +54,7 @@ def cover_ast(event=None):
 @g.command('cover-atfile')
 def cover_atfile(event=None):
     """Run all coverage tests for leoAtFile.py."""
-    g.run_coverage_tests('leo.core.leoAtFile', 'leo/core/leoAtFile.py')
+    g.run_coverage_tests('leo.core.leoAtFile', 'leo/unittests/core/test_leoAtFile.py')
 #@+node:ekr.20210911072153.6: *3* cover-bridge
 @g.command('cover-bridge')
 def cover_bridge(event=None):
@@ -64,7 +64,7 @@ def cover_bridge(event=None):
 @g.command('cover-checker-commands')
 def cover_checker_commands(event=None):
     """Run all coverage tests for leoCheckerCommands.py."""
-    g.run_coverage_tests('leo.commands.checkerCommands', 'leo/unittests/commands/test_leoCheckerCommands.py')
+    g.run_coverage_tests('leo.commands.checkerCommands', 'leo/unittests/commands/test_checkerCommands.py')
 #@+node:ekr.20210911072153.8: *3* cover-colorizer
 @g.command('cover-colorizer')
 def cover_colorizer(event=None):

@@ -287,7 +287,7 @@ class TestColorizer(LeoUnitTest):
         self.color('css', text)
     #@+node:ekr.20210905170507.9: *3* TestColorizer.test_colorizer_CWEB
     def test_colorizer_CWEB(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(r"""\\\
             % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
             % The following should not be colorized: class,if,else.
             
@@ -361,7 +361,7 @@ class TestColorizer(LeoUnitTest):
         self.color('erlang', text)
     #@+node:ekr.20210905170507.13: *3* TestColorizer.test_colorizer_forth
     def test_colorizer_forth(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(r"""\\\
             \ tiny demo of Leo forth syntax colouring
             
             : some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
@@ -525,7 +525,7 @@ class TestColorizer(LeoUnitTest):
         self.color('java', text)
     #@+node:ekr.20210905170507.18: *3* TestColorizer.test_colorizer_LaTex
     def test_colorizer_LaTex(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(r"""\\\
             % This is a \LaTeX mode comment.
             
             This is a test of \LaTeX mode.
@@ -1068,7 +1068,7 @@ class TestColorizer(LeoUnitTest):
         self.color('plsql', text)
     #@+node:ekr.20210905170507.24: *3* TestColorizer.test_colorizer_python_xml_jEdit_
     def test_colorizer_python_xml_jEdit_(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(r"""\\\
             <?xml version="1.0"?>
             
             <!DOCTYPE MODE SYSTEM "xmode.dtd">
@@ -1236,7 +1236,7 @@ class TestColorizer(LeoUnitTest):
         self.color('rebol', text)
     #@+node:ekr.20210905170507.30: *3* TestColorizer.test_colorizer_rest
     def test_colorizer_rest(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(r"""\\\
             @ @rst-options
             code_mode=False
             generate_rst=True
@@ -1362,7 +1362,7 @@ class TestColorizer(LeoUnitTest):
     #@+node:ekr.20210905170507.34: *3* TestColorizer.test_colorizer_tex_xml_jEdit_
     def test_colorizer_tex_xml_jEdit_(self):
         text = textwrap.dedent("""\
-            <!-- ekr uses the MARK_FOLLOWING to mark _anything_ after \ -->
+            <!-- ekr uses the MARK_FOLLOWING to mark _anything_ after \\ -->
             
             <?xml version="1.0"?>
             
