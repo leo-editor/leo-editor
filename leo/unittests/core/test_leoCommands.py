@@ -34,8 +34,8 @@ class TestCommands(LeoUnitTest):
             # after
     """)
         i = p.b.find('pass')
-        assert i > -1,'fail1: %s' % (repr(p.b))
-        w.setSelectionRange(i,i+4)
+        assert i > -1, 'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i, i + 4)
         c.addComments()
         self.assertEqual(p.b, expected)
     #@+node:ekr.20210906075242.30: *3* TestCommands.test_add_html_comments
@@ -54,7 +54,7 @@ class TestCommands(LeoUnitTest):
             </html>
     """)
         i = p.b.find('text')
-        w.setSelectionRange(i,i+4)
+        w.setSelectionRange(i, i + 4)
         c.addComments()
         self.assertEqual(p.b, expected)
     #@+node:ekr.20210906075242.32: *3* TestCommands.test_add_python_comments
@@ -73,7 +73,7 @@ class TestCommands(LeoUnitTest):
             # after
     """)
         i = p.b.find('pass')
-        w.setSelectionRange(i, i+4)
+        w.setSelectionRange(i, i + 4)
         c.addComments()
         self.assertEqual(p.b, expected)
     #@+node:ekr.20210901140645.2: *3* TestCommands.test_all_commands_have_an_event_arg
@@ -87,15 +87,15 @@ class TestCommands(LeoUnitTest):
             for prefix in table:
                 if key.startswith(prefix):
                     continue_flag = True
-                    break # These plugins have their own signatures.
+                    break  # These plugins have their own signatures.
             if continue_flag:
                 continue
             f = d.get(key)
             # print(key, f.__name__ if f else repr(f))
             # Test true __call__ methods if they exist.
-            name = getattr(f,'__name__',None) or repr(f)
-            if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
-                f = getattr(f,'__call__')
+            name = getattr(f, '__name__', None) or repr(f)
+            if hasattr(f, '__call__') and inspect.ismethod(f.__call__):
+                f = getattr(f, '__call__')
             t = inspect.getfullargspec(f)  # t is a named tuple.
             args = t.args
             arg0 = len(args) > 0 and args[0]
@@ -116,7 +116,7 @@ class TestCommands(LeoUnitTest):
 
         createMenuEntries creates the association of stroke to commandName.
         """
-        trace = False # False: the unit test can fail.
+        trace = False  # False: the unit test can fail.
         c, p = self.c, self.c.p
         k = c.k
         d = g.app.unitTestMenusDict
@@ -124,9 +124,9 @@ class TestCommands(LeoUnitTest):
         d2name = 'k.bindingsDict'
         commandNames = list(d.keys())
         commandNames.sort()
-        exclude_strokes = ('Alt+F4','Ctrl+q','Ctrl+Shift+Tab',)
+        exclude_strokes = ('Alt+F4', 'Ctrl+q', 'Ctrl+Shift+Tab',)
         for name in commandNames:
-            assert name in c.commandsDict,'unexpected command name: %s' % (
+            assert name in c.commandsDict, 'unexpected command name: %s' % (
                 repr(name))
             aSet = d.get(name)
             aList = list(aSet)
@@ -136,8 +136,8 @@ class TestCommands(LeoUnitTest):
                     aList.remove(z)
             for stroke in aList:
                 aList2 = d2.get(stroke)
-                assert aList2,'stroke %s not in %s' % (
-                    repr(stroke),d2name)
+                assert aList2, 'stroke %s not in %s' % (
+                    repr(stroke), d2name)
                 for b in aList2:
                     if b.commandName == name:
                         break
@@ -145,12 +145,12 @@ class TestCommands(LeoUnitTest):
                     if trace:
                         inverseBindingDict = k.computeInverseBindingDict()
                         print('%s: stroke %s not bound to %s in %s' % (
-                            p.h,repr(stroke),repr(name),d2name))
+                            p.h, repr(stroke), repr(name), d2name))
                         print('%s: inverseBindingDict.get(%s): %s' % (
-                            p.h,name,inverseBindingDict.get(name)))
+                            p.h, name, inverseBindingDict.get(name)))
                     else:
-                        assert False,'stroke %s not bound to %s in %s' % (
-                            repr(stroke),repr(name),d2name)
+                        assert False, 'stroke %s not bound to %s in %s' % (
+                            repr(stroke), repr(name), d2name)
     #@+node:ekr.20210906075242.2: *3* TestCommands.test_c_alert
     def test_c_alert(self):
         c = self.c
@@ -166,7 +166,7 @@ class TestCommands(LeoUnitTest):
         c.checkPythonCode(event=None, ignoreAtIgnore=False, checkOnSave=False)
     #@+node:ekr.20210901140645.16: *3* TestCommands.test_c_checkPythonNode
     def test_c_checkPythonNode(self):
-        c , p = self.c, self.c.p
+        c, p = self.c, self.c.p
         p.b = textwrap.dedent("""\
             @language python
 
@@ -179,10 +179,10 @@ class TestCommands(LeoUnitTest):
     def test_c_config_initIvar_sets_commander_ivars(self):
         c = self.c
         for ivar, setting_type, default in g.app.config.ivarsData:
-            assert hasattr(c,ivar),ivar
-            assert hasattr(c.config,ivar),ivar
-            val = getattr(c.config,ivar)
-            val2 = c.config.get(ivar,setting_type)
+            assert hasattr(c, ivar), ivar
+            assert hasattr(c.config, ivar), ivar
+            val = getattr(c.config, ivar)
+            val2 = c.config.get(ivar, setting_type)
             self.assertEqual(val, val2)
     #@+node:ekr.20210906075242.4: *3* TestCommands.test_c_contractAllHeadlines
     def test_c_contractAllHeadlines(self):
@@ -206,7 +206,7 @@ class TestCommands(LeoUnitTest):
         self.assertEqual(2, p.numberOfChildren())
         # Select the first clone and demote (it should be illegal)
         c.selectPosition(p2)
-        c.demote() # This should do nothing.
+        c.demote()  # This should do nothing.
         self.assertEqual(0, c.checkOutline())
         self.assertEqual(2, p.numberOfChildren())
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
@@ -219,7 +219,7 @@ class TestCommands(LeoUnitTest):
         )
         for s, expected in table:
             if g.isWindows:
-                expected = expected.replace('\\','/')
+                expected = expected.replace('\\', '/')
             got = c.expand_path_expression(s)
             self.assertEqual(got, expected, msg=repr(s))
     #@+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
@@ -228,7 +228,7 @@ class TestCommands(LeoUnitTest):
         c.p.b = '(abc)'
         c.findMatchingBracket(event=None)
         i, j = w.getSelectionRange()
-        assert i < j,'i: %s j: %s' % (i,j)
+        assert i < j, 'i: %s j: %s' % (i, j)
 
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
@@ -241,15 +241,15 @@ class TestCommands(LeoUnitTest):
         settings = c.rootPosition().insertAfter()
         settings.h = '@settings'
         chapter = settings.insertAsLastChild()
-        chapter.h ='@chapter aaa'
+        chapter.h = '@chapter aaa'
         aaa = chapter.insertAsLastChild()
         aaa.h = 'aaa node 1'
         assert not c.hoistStack
         c.selectPosition(aaa)
         # Test.
-        c.hoist() # New in Leo 5.3: should do nothing
+        c.hoist()  # New in Leo 5.3: should do nothing
         self.assertEqual(c.p, aaa)
-        c.dehoist() # New in Leo 5.3: should do nothing:
+        c.dehoist()  # New in Leo 5.3: should do nothing:
         self.assertEqual(c.p, aaa)
         self.assertEqual(c.hoistStack, [])
     #@+node:ekr.20210906075242.11: *3* TestCommands.test_c_hoist_followed_by_goto_first_node
@@ -259,7 +259,7 @@ class TestCommands(LeoUnitTest):
         settings = c.rootPosition().insertAfter()
         settings.h = '@settings'
         chapter = settings.insertAsLastChild()
-        chapter.h ='@chapter aaa'
+        chapter.h = '@chapter aaa'
         aaa = chapter.insertAsLastChild()
         aaa.h = 'aaa node 1'
         # Test.
@@ -268,7 +268,7 @@ class TestCommands(LeoUnitTest):
         assert not c.hoistStack
         c.hoist()
         c.goToFirstNode()
-        assert not c.hoistStack # The hoist stack must be cleared to show the first node.
+        assert not c.hoistStack  # The hoist stack must be cleared to show the first node.
         self.assertEqual(c.p, c.rootPosition())
         assert c.p.isVisible(c)
     #@+node:ekr.20210906075242.12: *3* TestCommands.test_c_hoist_with_no_children
@@ -393,7 +393,7 @@ class TestCommands(LeoUnitTest):
             pass
 
         x = StubConfig()
-        assert not x.getBool(c,'mySetting')
+        assert not x.getBool(c, 'mySetting')
         assert not x.enabledPluginsFileName
     #@+node:ekr.20210906075242.29: *3* TestCommands.test_delete_comments_with_multiple_at_language_directives
     def test_delete_comments_with_multiple_at_language_directives(self):
@@ -415,10 +415,10 @@ class TestCommands(LeoUnitTest):
             # after
     """)
         i = p.b.find('pass')
-        w.setSelectionRange(i,i+4)
+        w.setSelectionRange(i, i + 4)
         c.deleteComments()
         self.assertEqual(p.b, expected)
-        
+
     #@+node:ekr.20210906075242.31: *3* TestCommands.test_delete_html_comments
     def test_delete_html_comments(self):
         c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
@@ -435,7 +435,7 @@ class TestCommands(LeoUnitTest):
             </html>
     """)
         i = p.b.find('text')
-        w.setSelectionRange(i,i+4)
+        w.setSelectionRange(i, i + 4)
         c.deleteComments()
         self.assertEqual(p.b, expected)
     #@+node:ekr.20210906075242.33: *3* TestCommands.test_delete_python_comments
@@ -454,7 +454,7 @@ class TestCommands(LeoUnitTest):
             # after
     """)
         i = p.b.find('pass')
-        w.setSelectionRange(i, i+4)
+        w.setSelectionRange(i, i + 4)
         c.deleteComments()
         self.assertEqual(p.b, expected)
     #@+node:ekr.20210906075242.22: *3* TestCommands.test_efc_ask
@@ -465,8 +465,8 @@ class TestCommands(LeoUnitTest):
         efc = g.app.externalFilesController
         if not efc:
             self.skipTest('No externalFilesController')
-        result = efc.ask(c,p.h)
-        assert result in (True, False),result
+        result = efc.ask(c, p.h)
+        assert result in (True, False), result
     #@+node:ekr.20210906075242.23: *3* TestCommands.test_efc_compute_ext
     def test_efc_compute_ext(self):
         c, p = self.c, self.c.p
@@ -476,11 +476,11 @@ class TestCommands(LeoUnitTest):
         table = (
             # (None,'.py'),
             # ('','.py'),
-            ('txt','.txt'),
-            ('.txt','.txt'),
+            ('txt', '.txt'),
+            ('.txt', '.txt'),
         )
-        for ext,result in table:
-            result2 = efc.compute_ext(c,p,ext)
+        for ext, result in table:
+            result2 = efc.compute_ext(c, p, ext)
             self.assertEqual(result, result2, msg=repr(ext))
     #@+node:ekr.20210906075242.24: *3* TestCommands.test_efc_compute_temp_file_path
     def test_efc_compute_temp_file_path(self):
@@ -489,36 +489,36 @@ class TestCommands(LeoUnitTest):
         efc = g.app.externalFilesController
         if not efc:
             self.skipTest('no externalFilesController')
-        s = efc.compute_temp_file_path(c, p,'.py')
+        s = efc.compute_temp_file_path(c, p, '.py')
         assert s.endswith('.py')
     #@+node:ekr.20210906075242.26: *3* TestCommands.test_g_isCallable
     def test_g_isCallable(self):
         c = self.c
-        
+
         def spam():
             pass
 
         lam = lambda a: None
-        
+
         class aCallable:
-            def __call__ (self):
+            def __call__(self):
                 pass
 
         c = aCallable()
         table = (
-            ('abc',False),
-            (spam,True),
-            (lam,True),
-            (c,True)
+            ('abc', False),
+            (spam, True),
+            (lam, True),
+            (c, True)
         )
-        for obj,val in table:
+        for obj, val in table:
             val2 = g.isCallable(obj)
             self.assertEqual(val, val2, msg=repr(obj))
     #@+node:ekr.20210901140645.27: *3* TestCommands.test_koi8_r_encoding
     def test_koi8_r_encoding(self):
         c, p = self.c, self.c.p
         p1 = p.insertAsLastChild()
-        s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
+        s = '\xd4\xc5\xd3\xd4'  # the word 'test' in Russian, koi8-r
         assert isinstance(s, str), repr(s)
         p1.setBodyString(s)
         c.selectPosition(p1)
@@ -526,7 +526,7 @@ class TestCommands(LeoUnitTest):
         c.pasteOutline()
         p2 = p1.next()
         self.assertEqual(p1.b, p2.b)
-        
+
     #@+node:ekr.20210901140645.9: *3* TestCommands.test_official_commander_ivars
     def test_official_commander_ivars(self):
         c = self.c
@@ -536,11 +536,11 @@ class TestCommands(LeoUnitTest):
         ivars = (
             '_currentPosition',
             'hoistStack',
-            'mFileName', 
+            'mFileName',
             # Subcommanders...
-            'atFileCommands','fileCommands','importCommands','undoer',
+            'atFileCommands', 'fileCommands', 'importCommands', 'undoer',
             # Args...
-            'page_width','tab_width', 'target_language',
+            'page_width', 'tab_width', 'target_language',
         )
         for ivar in ivars:
             self.assertTrue(hasattr(c, ivar), msg=ivar)

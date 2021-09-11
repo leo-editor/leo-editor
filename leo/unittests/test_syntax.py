@@ -29,24 +29,24 @@ class TestSyntax(LeoUnitTest):
     #@+node:ekr.20210901140645.21: *4* TestSyntax.test_syntax_of_all_files
     def test_syntax_of_all_files(self):
         skip_tuples = (
-            ('extensions','asciidoc.py'),
+            ('extensions', 'asciidoc.py'),
         )
         join = g.os_path_finalize_join
-        skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
+        skip_list = [join(g.app.loadDir, '..', a, b) for a, b in skip_tuples]
         n = 0
         for theDir in ('core', 'external', 'extensions', 'plugins', 'scripts', 'test'):
-            path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-            assert g.os_path_exists(path),path
-            aList = glob.glob(g.os_path_join(path,'*.py'))
+            path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
+            assert g.os_path_exists(path), path
+            aList = glob.glob(g.os_path_join(path, '*.py'))
             if g.isWindows:
-                aList = [z.replace('\\','/') for z in aList]
+                aList = [z.replace('\\', '/') for z in aList]
             for z in aList:
                 if z in skip_list:
                     pass
                 else:
                     n += 1
                     fn = g.shortFileName(z)
-                    s,e = g.readFileIntoString(z)
+                    s, e = g.readFileIntoString(z)
                     assert self.check_syntax(fn, s)
     #@+node:ekr.20210901140645.22: *4* TestSyntax.test_syntax_of_setup_py
     def test_syntax_of_setup_py(self):

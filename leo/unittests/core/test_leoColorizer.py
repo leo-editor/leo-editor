@@ -71,7 +71,7 @@ class TestColorizer(LeoUnitTest):
             (True, '@color \n@nocolor\n', ''),
             (True, '@nocolor \n@color\n', ''),
             # Unambiguous parent.
-            (True, '@nocolor-node', ''), # Does not apply to descendants.
+            (True, '@nocolor-node', ''),  # Does not apply to descendants.
             (False, '@nocolor', ''),
             (False, '@killcolor', ''),
             #
@@ -1119,7 +1119,7 @@ class TestColorizer(LeoUnitTest):
                 return result
     ''')
         self.color('python', text)
-        
+
     #@+node:ekr.20210905170507.27: *3* TestColorizer.test_colorizer_r
     def test_colorizer_r(self):
         text = textwrap.dedent("""\

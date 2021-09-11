@@ -54,7 +54,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065632.1: *4* C tests
     #@+node:ekr.20210904065459.3: *5* TestImport.test_c_class_1
     def test_c_class_1(self):
@@ -84,7 +84,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.4: *5* TestImport.test_c_class_underindented_line
     def test_c_class_underindented_line(self):
         c = self.c
@@ -116,7 +116,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.5: *5* TestImport.test_c_comment_follows_arg_list
     def test_c_comment_follows_arg_list(self):
         c = self.c
@@ -151,7 +151,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.6: *5* TestImport.test_c_comment_follows_block_delim
     def test_c_comment_follows_block_delim(self):
         c = self.c
@@ -187,7 +187,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.10: *5* TestImport.test_c_extern
     def test_c_extern(self):
         c = self.c
@@ -210,7 +210,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.7: *5* TestImport.test_c_intermixed_blanks_and_tabs
     def test_c_intermixed_blanks_and_tabs(self):
         c = self.c
@@ -227,7 +227,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'void aaa::bbb::doit',
         )
-       
+
         c.importCommands.cUnitTest(c.p, s=s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -235,8 +235,8 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-        
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
     #@+node:ekr.20210904065459.8: *5* TestImport.test_c_old_style_decl_1
     def test_c_old_style_decl_1(self):
         c = self.c
@@ -261,7 +261,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.9: *5* TestImport.test_c_old_style_decl_2
     def test_c_old_style_decl_2(self):
         c = self.c
@@ -284,7 +284,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904144251.1: *4* C# tests
     #@+node:ekr.20210904065459.12: *5* TestImport.test_c_sharp_namespace_indent
     def test_c_sharp_namespace_indent(self):
@@ -362,7 +362,7 @@ class TestImporter(LeoUnitTest):
 
     def test_coffeescript_3(self):
         c = self.c
-        
+
         s = textwrap.dedent("""\
         class Builder
           constructor: ->
@@ -438,7 +438,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904144021.1: *4* Dart tests
     #@+node:ekr.20210904065459.17: *5* TestImport.test_dart_hello_world
     def test_dart_hello_world(self):
@@ -472,8 +472,8 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-       
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
     #@+node:ekr.20210904143920.1: *4* Elisp tests
     #@+node:ekr.20210904065459.18: *5* TestImport.test_elisp
     def test_elisp(self):
@@ -501,7 +501,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904122741.1: *4* HTML tests
     #@+node:ekr.20210904065459.19: *5* TestImport.test_html_lowercase_tags
     def test_html_lowercase_tags(self):
@@ -591,7 +591,7 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.21: *5* TestImport.test_html_multple_node_completed_on_a_line
     def test_html_multple_node_completed_on_a_line(self):
         c = self.c
-       
+
         s = textwrap.dedent("""\
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html><head>headline</head><body>body</body></html>
@@ -659,7 +659,7 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
 
-        
+
     #@+node:ekr.20210904065459.24: *5* TestImport.test_html_uppercase_tags
     def test_html_uppercase_tags(self):
         c = self.c
@@ -703,7 +703,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-            
+
     #@+node:ekr.20210904065459.26: *5* TestImport.test_html_improperly_terminated_tags
     def test_html_improperly_terminated_tags(self):
         c = self.c
@@ -747,7 +747,7 @@ class TestImporter(LeoUnitTest):
         </head>
         </html>
         '''
-        table = ('<html>', '<head>') # , '<link id="L1">'
+        table = ('<html>', '<head>')  # , '<link id="L1">'
         c.importCommands.htmlUnitTest(c.p, s=s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
@@ -896,7 +896,7 @@ class TestImporter(LeoUnitTest):
         ''')
         table = (
             '<html>',
-            '<head>', 
+            '<head>',
             '<body onload="brython({debug:1, cache:\'none\'})">',
         )
         c.importCommands.htmlUnitTest(c.p, s=s)
@@ -905,7 +905,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-            
+
     #@+node:ekr.20210904122815.1: *4* Java tests
     #@+node:ekr.20210904065459.30: *5* TestImport.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
@@ -937,8 +937,8 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-        
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
     #@+node:ekr.20210904065459.31: *5* TestImport.test_from_BundleException_java
     def test_from_BundleException_java(self):
         c = self.c
@@ -1002,7 +1002,7 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.32: *5* TestImport.test_java_interface_test1
     def test_java_interface_test1(self):
         c = self.c
@@ -1022,7 +1022,7 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.33: *5* TestImport.test_java_interface_test2
     def test_java_interface_test2(self):
         c = self.c
@@ -1042,7 +1042,7 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904122826.1: *4* Javascript tests
     #@+node:ekr.20210904065459.34: *5* TestImport.test_Javascript_regex_1
     def test_Javascript_regex_1(self):
@@ -1214,7 +1214,7 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.41: *5* TestImport.test_org_pattern
     def test_org_pattern(self):
         c = self.c
-        x = org.Org_Importer(c.importCommands, atAuto=False)    
+        x = org.Org_Importer(c.importCommands, atAuto=False)
         pattern = x.org_pattern
         table = (
             # 'body * line',
@@ -1252,7 +1252,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.43: *5* TestImport.test_org_tags
     def test_org_tags(self):
         c = self.c
@@ -1272,7 +1272,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.44: *5* TestImport.test_org_intro
     def test_org_intro(self):
         c = self.c
@@ -1293,7 +1293,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.45: *5* TestImport.test_org_552
     def test_org_552(self):
         c = self.c
@@ -1316,7 +1316,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, g.toUnicode(h))
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.46: *5* TestImport.test_org_1074
     def test_org_1074(self):
         c = self.c
@@ -1333,7 +1333,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, g.toUnicode(h))
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.47: *5* TestImport.test_org_placeholder
     def test_org_placeholder(self):
         c = self.c
@@ -1368,12 +1368,12 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904122853.1: *4* Otl tests
     #@+node:ekr.20210904065459.48: *5* TestImport.test_otl_vim_outline_mode
     def test_otl_vim_outline_mode(self):
         c = self.c
-        x = otl.Otl_Importer(c.importCommands, atAuto=False)    
+        x = otl.Otl_Importer(c.importCommands, atAuto=False)
         pattern = x.otl_pattern
         table = (
             'body line',
@@ -1415,8 +1415,8 @@ class TestImporter(LeoUnitTest):
             for h in table:
                 self.assertEqual(p2.h, h)
                 p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h # Extra nodes
-       
+            assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
     #@+node:ekr.20210904143328.1: *4* Pascal tests
     #@+node:ekr.20210904065459.50: *5* TestImport.test_pascal_to_delphi_interface
     def test_pascal_to_delphi_interface(self):
@@ -1470,8 +1470,8 @@ class TestImporter(LeoUnitTest):
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-       
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
     #@+node:ekr.20210904122909.1: *4* Perl tests
     #@+node:ekr.20210904065459.51: *5* TestImport.test_perl_1
     def test_perl_1(self):
@@ -1565,7 +1565,7 @@ class TestImporter(LeoUnitTest):
             }
         """)
         c.importCommands.perlUnitTest(c.p, s=s)
-       
+
     #@+node:ekr.20210904065459.55: *5* TestImport.test_perl_regex_2
     def test_perl_regex_2(self):
         c = self.c
@@ -1601,8 +1601,8 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-      
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
     #@+node:ekr.20210904122920.1: *4* PHP tests
     #@+node:ekr.20210904065459.56: *5* TestImport.test_php_import_class
     def test_php_import_class(self):
@@ -1705,8 +1705,8 @@ class TestImporter(LeoUnitTest):
         tests = (
             g.Bunch(line='\n'),
             g.Bunch(line='\\\n'),
-            g.Bunch(line='s = "\\""', ctx=('', '')), # empty string.
-            g.Bunch(line="s = '\\''", ctx=('', '')), # empty string.
+            g.Bunch(line='s = "\\""', ctx=('', '')),  # empty string.
+            g.Bunch(line="s = '\\''", ctx=('', '')),  # empty string.
             g.Bunch(line='# comment'),
             g.Bunch(line='  # comment'),
             g.Bunch(line='    # comment'),
@@ -1782,7 +1782,7 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-        
+
     #@+node:ekr.20210904065459.62: *5* TestImport.test_python_bad_class_test
     def test_python_bad_class_test(self):
         c = self.c
@@ -1832,7 +1832,7 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-            
+
     #@+node:ekr.20210904065459.64: *5* TestImport.test_python_bug_346
     def test_python_bug_346(self):
         c = self.c
@@ -2255,7 +2255,7 @@ class TestImporter(LeoUnitTest):
             (1, 'main'),
         )
         p = c.p
-        c.importCommands .pythonUnitTest(p, s=s)
+        c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2307,7 +2307,7 @@ class TestImporter(LeoUnitTest):
             (1, 'class C(bar.Bar)'),
         )
         p = c.p
-        c.importCommands .pythonUnitTest(p, s=s)
+        c.importCommands.pythonUnitTest(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         assert root
@@ -2402,7 +2402,7 @@ class TestImporter(LeoUnitTest):
                 def abc(self):
                     return "abc"
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s) # Must be true.
+        c.importCommands.pythonUnitTest(c.p, s=s)  # Must be true.
         index = g.findNodeInTree(c, c.p, '@cherrypy.nocolor index')
         assert index
         lines = g.splitLines(index.b)
@@ -2520,7 +2520,7 @@ class TestImporter(LeoUnitTest):
         assert target
         lines = g.splitLines(target.b)
         self.assertEqual(lines[0], '@command("Exit")\n')
-       
+
     #@+node:ekr.20210904065459.78: *5* TestImport.test_python_def_inside_def
     def test_python_def_inside_def(self):
         c = self.c
@@ -2552,7 +2552,7 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-           
+
     #@+node:ekr.20210904065459.79: *5* TestImport.test_python_def_test_1
     def test_python_def_test_1(self):
         c = self.c
@@ -2709,7 +2709,7 @@ class TestImporter(LeoUnitTest):
                     if what == 'doctitle':
                         return ELE('base', href=self.params['/BASE/']+'main/')
                     return ans
-        ''') 
+        ''')
         table = (
             (1, 'class mammalProviderBase(object)'),
             (2, '__init__'),
@@ -3669,7 +3669,7 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-        
+
     #@+node:ekr.20210904065459.108: *5* TestImport.test_xml_non_ascii_tags
     def test_xml_non_ascii_tags(self):
         c = self.c
@@ -3817,7 +3817,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.112: *4* TestImport.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
         c = self.c
@@ -3858,7 +3858,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.114: *4* TestImport.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
         c = self.c
@@ -3887,7 +3887,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904071345.1: *3* Tests of @auto-rst
     #@+node:ekr.20210904065459.115: *4* TestImport.test_rST_import_test
     def test_rST_import_test(self):
@@ -3957,7 +3957,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.116: *4* TestImport.test_rST_import_test_simple
     def test_rST_import_test_simple(self):
         c = self.c
@@ -3989,7 +3989,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.117: *4* TestImport.test_rST_import_test_no_double_underlines
     def test_rST_import_test_no_double_underlines(self):
         c = self.c
@@ -4057,7 +4057,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.118: *4* TestImport.test_rST_import_test_long_underlines
     def test_rST_import_test_long_underlines(self):
         c = self.c
@@ -4086,7 +4086,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.119: *4* TestImport.test_rST_import_test_long_overlines
     def test_rST_import_test_long_overlines(self):
         c = self.c
@@ -4116,7 +4116,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.120: *4* TestImport.test_rST_import_test_trailing_whitespace
     def test_rST_import_test_trailing_whitespace(self):
         c = self.c
@@ -4149,7 +4149,7 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065459.121: *4* TestImport.test_leo_rst
     def test_leo_rst(self):
         c = self.c
@@ -4182,7 +4182,7 @@ class TestImporter(LeoUnitTest):
             'section 1',
             'section 2',
         )
-        c.importCommands.rstUnitTest(c.p, s=s) 
+        c.importCommands.rstUnitTest(c.p, s=s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -4190,13 +4190,13 @@ class TestImporter(LeoUnitTest):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904071422.1: *3* All other tests
     #@+node:ekr.20210904065459.122: *4* TestImport.test_at_auto_importers
     def test_at_auto_importers(self):
-        path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
         assert g.os_path_exists(path), repr(path)
-        pattern = g.os_path_finalize_join(path,'*.py')
+        pattern = g.os_path_finalize_join(path, '*.py')
         for fn in glob.glob(pattern):
             sfn = g.shortFileName(fn)
             m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
@@ -4213,7 +4213,7 @@ class TestImporter(LeoUnitTest):
         for language in ('python', 'coffeescript'):
             importer = linescanner.Importer(
                 c.importCommands,
-                language = language,
+                language=language,
             )
             self.assertEqual(importer.single_comment, '#')
             if 0:
@@ -4228,7 +4228,7 @@ class TestImporter(LeoUnitTest):
             ('', 'abc\n'),
             ('    ', '    xyz\n'),
             ('    ', '    \n'),
-            ('  ','  # comment\n'),
+            ('  ', '  # comment\n'),
             ('', '\n'),
         ]
         importer = linescanner.Importer(c.importCommands, language='python')
@@ -4241,15 +4241,15 @@ class TestImporter(LeoUnitTest):
             (False, 'abc'),
             (False, '    xyz'),
             (True, '    '),
-            (True,'  # comment'),
+            (True, '  # comment'),
         ]
-        importer = linescanner.Importer(c.importCommands, language = 'python')
+        importer = linescanner.Importer(c.importCommands, language='python')
         for val, s in table:
             self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
     #@+node:ekr.20210904065459.126: *4* TestImport.test_importers_coffee_scan_line
     def test_importers_coffee_scan_line(self):
         c = self.c
-        table = [] # State after line, line
+        table = []  # State after line, line
         x = cs.CS_Importer(c.importCommands, atAuto=True)
         self.assertEqual(x.single_comment, '#')
         for new_state, line in table:
@@ -4262,7 +4262,7 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.127: *4* TestImport.test_importers_dart_clean_headline
     def test_importers_dart_clean_headline(self):
         c = self.c
-        x = dart.Dart_Importer(c.importCommands, atAuto=False)    
+        x = dart.Dart_Importer(c.importCommands, atAuto=False)
         table = (
             ('func(abc) {', 'func'),
             ('void foo() {', 'void foo'),
@@ -4274,13 +4274,13 @@ class TestImporter(LeoUnitTest):
     def test_importers_markdown_is_hash(self):
         c = self.c
         ic = c.importCommands
-        x = markdown.Markdown_Importer(ic, atAuto=False)   
+        x = markdown.Markdown_Importer(ic, atAuto=False)
         # insert test for markdown here.
         assert x.md_pattern_table
         table = (
-            (1, 'name',     '# name\n'),
-            (2, 'a test',   '## a test\n'),
-            (3, 'a test',   '### a test\n'),
+            (1, 'name', '# name\n'),
+            (2, 'a test', '## a test\n'),
+            (3, 'a test', '### a test\n'),
         )
         for data in table:
             level, name, line = data
@@ -4298,13 +4298,13 @@ class TestImporter(LeoUnitTest):
         for line in ('----\n', '-----\n', '====\n', '====\n'):
             got = x.is_underline(line)
             assert got, repr(line)
-        for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n','==-==\n', 'abc\n'):
+        for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n', '==-==\n', 'abc\n'):
             got = x.is_underline(line)
             assert not got, repr(line)
     #@+node:ekr.20210904065459.130: *4* TestImport.test_importers_pascal_methods
     def test_importers_pascal_methods(self):
         c = self.c
-        x = pascal.Pascal_Importer(c.importCommands, atAuto=False)    
+        x = pascal.Pascal_Importer(c.importCommands, atAuto=False)
         table = (
             ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
         )
@@ -4315,7 +4315,7 @@ class TestImporter(LeoUnitTest):
     #@+node:ekr.20210904065459.132: *4* TestImport.test_importers_xml_is_ws_line
     def test_importers_xml_is_ws_line(self):
         c = self.c
-        x = xml.Xml_Importer(importCommands = c.importCommands, atAuto = False)
+        x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
         table = (
            (1, ' \n'),
            (1, '\n'),
@@ -4340,7 +4340,7 @@ class TestImporter(LeoUnitTest):
             (1, '<html attrib="<">'),
             (0, '<html attrib="<" />'),
             (0, '<html>x</html>'),
-            (0, '</br>'), # Tag underflow
+            (0, '</br>'),  # Tag underflow
             (0, '<br />'),
             (0, '<br/>'),
         )

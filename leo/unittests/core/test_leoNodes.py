@@ -12,7 +12,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210828112210.1: ** class TestNodes(LeoUnitTest)
 class TestNodes(LeoUnitTest):
     """Unit tests for leo/core/leoNodes.py."""
-    
+
     test_outline = None  # Set by create_test_outline.
 
     #@+others
@@ -60,7 +60,7 @@ class TestNodes(LeoUnitTest):
         c = self.c
         n = 0
         for v in c.all_unique_vnodes_iter():
-            if hasattr(v,'unknownAttributes'):
+            if hasattr(v, 'unknownAttributes'):
                 d = v.unknownAttributes
                 if d.get('str_leo_pos'):
                     n += 1
@@ -71,7 +71,7 @@ class TestNodes(LeoUnitTest):
         p1 = p.insertAsLastChild()
         p1.setHeadString('@file zzz')
         body = '''     %s
-        ''' % (chr(64) + 'others') # ugly hack
+        ''' % (chr(64) + 'others')  # ugly hack
         p1.setBodyString(body)
         p2 = p1.insertAsLastChild()
         self.assertEqual(p1.textOffset(), 0)
@@ -103,11 +103,11 @@ class TestNodes(LeoUnitTest):
     #@+node:ekr.20210830095545.9: *4* TestNodes.test_check_all_gnx_s_exist_and_are_unique
     def test_check_all_gnx_s_exist_and_are_unique(self):
         c, p = self.c, self.c.p
-        d = {} # Keys are gnx's, values are lists of vnodes with that gnx.
+        d = {}  # Keys are gnx's, values are lists of vnodes with that gnx.
         for p in c.all_positions():
             gnx = p.v.fileIndex
             self.assertTrue(gnx)
-            aSet = d.get(gnx,set())
+            aSet = d.get(gnx, set())
             aSet.add(p.v)
             d[gnx] = aSet
         for gnx in sorted(d.keys()):
@@ -117,7 +117,7 @@ class TestNodes(LeoUnitTest):
     def test_clone_and_move_the_clone_to_the_root(self):
         c, p = self.c, self.c.p
         child = p.insertAsNthChild(0)
-        c.setHeadString(child,'child') # Force the headline to update.
+        c.setHeadString(child, 'child')  # Force the headline to update.
         self.assertTrue(child)
         c.selectPosition(child)
         clone = c.clone()
@@ -130,16 +130,16 @@ class TestNodes(LeoUnitTest):
         c.undoer.undo()
         assert not child.isCloned(), 'fail 1-a'
         c.undoer.redo()
-        assert child.isCloned(),    'fail 1-b'
+        assert child.isCloned(), 'fail 1-b'
         c.undoer.undo()
         assert not child.isCloned(), 'fail 1-c'
         c.undoer.redo()
-        assert child.isCloned(),    'fail 1-d'
+        assert child.isCloned(), 'fail 1-d'
         clone.moveToRoot()  # Does not change child position.
-        assert child.isCloned(),    'fail 3-2'
-        assert clone.isCloned(),    'fail 4-2'
-        assert not clone.parent(),  'fail 5'
-        assert not clone.back(),    'fail 6'
+        assert child.isCloned(), 'fail 3-2'
+        assert clone.isCloned(), 'fail 4-2'
+        assert not clone.parent(), 'fail 5'
+        assert not clone.back(), 'fail 6'
         clone.doDelete()
         assert not child.isCloned(), 'fail 7'
     #@+node:ekr.20210830095545.2: *4* TestNodes.test_consistency_between_parents_iter_and_v_parents
@@ -348,7 +348,7 @@ class TestNodes(LeoUnitTest):
         c.undoer.undo()
         c.undoer.undo()
         p = c.p
-        self.assertEqual(p, p2) 
+        self.assertEqual(p, p2)
         self.assertEqual(p.next(), p3)
         c.undoer.redo()
         p = c.p
@@ -481,7 +481,7 @@ class TestNodes(LeoUnitTest):
     def test_new_vnodes_methods(self):
         c, p = self.c, self.c.p
         parent_v = p.parent().v or c.hiddenRootNode
-        p.v.cloneAsNthChild(parent_v,p.childIndex())
+        p.v.cloneAsNthChild(parent_v, p.childIndex())
         v2 = p.v.insertAsFirstChild()
         v2.h = 'insertAsFirstChild'
         v2 = p.v.insertAsLastChild()
@@ -494,14 +494,14 @@ class TestNodes(LeoUnitTest):
         p = self.c.p
         p.h = '\nab\nxy\n'
         self.assertEqual(p.h, 'abxy')
-        
+
     #@+node:ekr.20210830095545.54: *4* TestNodes.test_node_that_does_nott_belong_to_a_derived_file
     def test_node_that_does_not_belong_to_a_derived_file(self):
         # Change @file activeUnitTests.txt to @@file activeUnitTests.txt
         p = self.c.p
         p1 = p.insertAsLastChild()
         self.assertFalse(p1.textOffset())
-       
+
     #@+node:ekr.20210830095545.56: *4* TestNodes.test_organizer_node
     def test_organizer_node(self):
         p = self.c.p
@@ -510,13 +510,13 @@ class TestNodes(LeoUnitTest):
         p2 = p1.insertAsLastChild()
         self.assertEqual(p1.textOffset(), 0)
         self.assertEqual(p2.textOffset(), 0)
-        
+
     #@+node:ekr.20210830095545.21: *4* TestNodes.test_p__eq_
     def test_p__eq_(self):
         c, p = self.c, self.c.p
         # These must not return NotImplemented!
         root = c.rootPosition()
-        self.assertFalse( p.__eq__(None))
+        self.assertFalse(p.__eq__(None))
         self.assertTrue(p.__ne__(None))
         self.assertTrue(p.__eq__(root))
         self.assertFalse(p.__ne__(root))
@@ -562,7 +562,7 @@ class TestNodes(LeoUnitTest):
                 aList.append(p.copy())
         self.assertEqual(len(aList), 6)
         c.deletePositionsInList(aList)
-        
+
     #@+node:ekr.20210830095545.26: *4* TestNodes.test_p_hasNextBack
     def test_p_hasNextBack(self):
         c, p = self.c, self.c.p
@@ -653,7 +653,7 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p2, None)
     #@+node:ekr.20210830095545.35: *4* TestNodes.test_p_nosentinels
     def test_p_nosentinels(self):
-        
+
         p = self.c.p
 
         def not_a_sentinel(x):
@@ -663,12 +663,12 @@ class TestNodes(LeoUnitTest):
         def spam():
             pass
 
-        s1 = ''.join(g.splitLines(p.b) [2:])
-        s2 = p.nosentinels   
+        s1 = ''.join(g.splitLines(p.b)[2:])
+        s2 = p.nosentinels
         self.assertEqual(s1, s2)
     #@+node:ekr.20210830095545.22: *4* TestNodes.test_p_relinkAsCloneOf
     def test_p_relinkAsCloneOf(self):
-        
+
         # test-outline: root
         #   child clone a
         #     node clone 1
@@ -702,7 +702,7 @@ class TestNodes(LeoUnitTest):
         # self.dump_tree('After...')
         self.assertTrue(child_b.isCloned())
         self.assertFalse(child_c.isCloned())
-        
+
     #@+node:ekr.20210830095545.36: *4* TestNodes.test_p_setBodyString
     def test_p_setBodyString(self):
         # Test that c.setBodyString works immediately.
@@ -745,7 +745,7 @@ class TestNodes(LeoUnitTest):
         c.copyOutline()
         oldVnodes = [p2.v for p2 in child.self_and_subtree()]
         c.selectPosition(child)
-        c.p.contract() # Essential
+        c.p.contract()  # Essential
         c.pasteOutline()
         assert c.p != child
         self.assertEqual(c.p.h, 'child')
@@ -767,7 +767,7 @@ class TestNodes(LeoUnitTest):
         c.selectPosition(child)
         c.copyOutline()
         oldVnodes = [p2.v for p2 in child.self_and_subtree()]
-        c.p.contract() # Essential
+        c.p.contract()  # Essential
         c.pasteOutlineRetainingClones()
         self.assertNotEqual(c.p, child)
         newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
@@ -857,9 +857,9 @@ class TestNodes(LeoUnitTest):
     def test_v_atAutoNodeName_and_v_atAutoRstNodeName(self):
         p = self.c.p
         table = (
-            ('@auto-rst rst-file','rst-file','rst-file'),
-            ('@auto x','x',''),
-            ('xyz','',''),
+            ('@auto-rst rst-file', 'rst-file', 'rst-file'),
+            ('@auto x', 'x', ''),
+            ('xyz', '', ''),
         )
         for s, expected1, expected2 in table:
             result1 = p.v.atAutoNodeName(h=s)

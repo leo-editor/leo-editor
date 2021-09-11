@@ -192,14 +192,14 @@ class TestFind(LeoUnitTest):
         root.setMarked()
     #@+node:ekr.20210615084049.1: *4* TestFind.clone-find-parents
     def test_clone_find_parents(self):
-        
+
         c, x = self.c, self.x
         root = c.rootPosition()
         p = root.next().firstChild()
         p.clone()  # c.p must be a clone.
         c.selectPosition(p)
         x.cloneFindParents()
-       
+
     #@+node:ekr.20210110073117.62: *4* TestFind.clone-find-tag
     def test_clone_find_tag(self):
         c, x = self.c, self.x
@@ -297,7 +297,7 @@ class TestFind(LeoUnitTest):
     def test_find_next_suboutline_only(self):
         settings, x = self.settings, self.x
         settings.find_text = 'def root()'
-        settings.suboutline_only = True # init_ivars_from_settings will set the ivar.
+        settings.suboutline_only = True  # init_ivars_from_settings will set the ivar.
         p, pos, newpos = x.do_find_next(settings)
         assert p
         self.assertEqual(p.h, 'Root')
@@ -597,7 +597,7 @@ class TestFind(LeoUnitTest):
         c = self.c
         x = leoFind.LeoFind(c)
         table = (
-            'ignore_case', 'node_only', 'pattern_match', 
+            'ignore_case', 'node_only', 'pattern_match',
             'search_headline', 'search_body', 'suboutline_only',
             'mark_changes', 'mark_finds', 'whole_word',
         )
@@ -636,51 +636,7 @@ class TestFind(LeoUnitTest):
                 if j == -1: j = len(s)
                 got_i, got_j = x._inner_search_backward(s, i, j,
                     pattern, nocase=nocase, word=word)
-                got = s[got_i: got_j]
-                assert expected==got and got_i == expected_i and got_j == expected_j, (
-                    '\n     table: %s'
-                    '\n    i test: %s'
-                    '\n   pattern: %r'
-                    '\n         s: %r'
-                    '\n  expected: %r'
-                    '\n       got: %r'
-                    '\nexpected i: %s'
-                    '\n     got i: %s'
-                    '\nexpected j: %s'
-                    '\n     got j: %s'
-                    % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
-
-        plain_table = (
-            # pattern   s           i,  j   expected, expected_i, expected_j
-            ('a',      'abaca',     0, -1,  'a',      4,          5),
-            ('A',      'Abcde',     0, -1,  'A',      0,          1),
-        )
-        nocase_table = (
-            # pattern   s           i,  j   expected, expected_i, expected_j
-            ('a',       'abaAca',   0, -1,  'a',      5,          6),
-            ('A',       'Abcdca',   0, -1,  'a',      5,          6),
-        )
-        word_table = (
-            # pattern   s           i,  j   expected, expected_i, expected_j
-            ('a',       'abaAca',   0, -1,  '',      -1,          -1),
-            ('A',       'AA A AB',  0, -1,  'A',      3,          4),
-        )
-        test(plain_table,  'plain_table',  nocase=False, word=False)
-        test(nocase_table, 'nocase_table', nocase=True,  word=False)
-        test(word_table,   'word_table',   nocase=False, word=True)
-    #@+node:ekr.20210829203927.13: *4* TestFind.test_inner_search_plain
-    def test_inner_search_plain(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
-
-        def test(table, table_name, nocase, word):
-            test_n = 0
-            for pattern, s, i, j, expected, expected_i, expected_j in table:
-                test_n += 1
-                if j == -1: j = len(s)
-                got_i, got_j = x._inner_search_plain(s, i, j, pattern,
-                    nocase=nocase, word=word)
-                got = s[got_i: got_j]
+                got = s[got_i:got_j]
                 assert expected == got and got_i == expected_i and got_j == expected_j, (
                     '\n     table: %s'
                     '\n    i test: %s'
@@ -696,22 +652,66 @@ class TestFind(LeoUnitTest):
 
         plain_table = (
             # pattern   s           i,  j   expected, expected_i, expected_j
-            ('a',      'baca',     0, -1,   'a',      1,          2),
-            ('A',      'bAcde',     0, -1,  'A',      1,          2),
+            ('a', 'abaca', 0, -1, 'a', 4, 5),
+            ('A', 'Abcde', 0, -1, 'A', 0, 1),
         )
         nocase_table = (
             # pattern   s           i,  j   expected, expected_i, expected_j
-            ('a',       'abaAca',   0, -1,  'a',      0,          1),
-            ('A',       'abcdca',   0, -1,  'a',      0,          1),
+            ('a', 'abaAca', 0, -1, 'a', 5, 6),
+            ('A', 'Abcdca', 0, -1, 'a', 5, 6),
         )
         word_table = (
             # pattern   s           i,  j   expected, expected_i, expected_j
-            ('a',       'abaAca',   0, -1,  '',      -1,          -1),
-            ('A',       'AA A AAB', 0, -1,  'A',      3,          4),
+            ('a', 'abaAca', 0, -1, '', -1, -1),
+            ('A', 'AA A AB', 0, -1, 'A', 3, 4),
         )
-        test(plain_table,  'plain_table',  nocase=False, word=False)
-        test(nocase_table, 'nocase_table', nocase=True,  word=False)
-        test(word_table,   'word_table',   nocase=False, word=True)
+        test(plain_table, 'plain_table', nocase=False, word=False)
+        test(nocase_table, 'nocase_table', nocase=True, word=False)
+        test(word_table, 'word_table', nocase=False, word=True)
+    #@+node:ekr.20210829203927.13: *4* TestFind.test_inner_search_plain
+    def test_inner_search_plain(self):
+        c = self.c
+        x = leoFind.LeoFind(c)
+
+        def test(table, table_name, nocase, word):
+            test_n = 0
+            for pattern, s, i, j, expected, expected_i, expected_j in table:
+                test_n += 1
+                if j == -1: j = len(s)
+                got_i, got_j = x._inner_search_plain(s, i, j, pattern,
+                    nocase=nocase, word=word)
+                got = s[got_i:got_j]
+                assert expected == got and got_i == expected_i and got_j == expected_j, (
+                    '\n     table: %s'
+                    '\n    i test: %s'
+                    '\n   pattern: %r'
+                    '\n         s: %r'
+                    '\n  expected: %r'
+                    '\n       got: %r'
+                    '\nexpected i: %s'
+                    '\n     got i: %s'
+                    '\nexpected j: %s'
+                    '\n     got j: %s'
+                    % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
+
+        plain_table = (
+            # pattern   s           i,  j   expected, expected_i, expected_j
+            ('a', 'baca', 0, -1, 'a', 1, 2),
+            ('A', 'bAcde', 0, -1, 'A', 1, 2),
+        )
+        nocase_table = (
+            # pattern   s           i,  j   expected, expected_i, expected_j
+            ('a', 'abaAca', 0, -1, 'a', 0, 1),
+            ('A', 'abcdca', 0, -1, 'a', 0, 1),
+        )
+        word_table = (
+            # pattern   s           i,  j   expected, expected_i, expected_j
+            ('a', 'abaAca', 0, -1, '', -1, -1),
+            ('A', 'AA A AAB', 0, -1, 'A', 3, 4),
+        )
+        test(plain_table, 'plain_table', nocase=False, word=False)
+        test(nocase_table, 'nocase_table', nocase=True, word=False)
+        test(word_table, 'word_table', nocase=False, word=True)
     #@+node:ekr.20210829203927.11: *4* TestFind.test_inner_search_regex
     def test_inner_search_regex(self):
         c = self.c
@@ -724,7 +724,7 @@ class TestFind(LeoUnitTest):
                 pos, new_pos = x._inner_search_regex(s, 0, len(s),
                     pattern, backwards=back, nocase=nocase)
                 got = s[pos:new_pos]
-                assert expected==got, (
+                assert expected == got, (
                     '\n   table: %s'
                     '\n pattern: %r'
                     '\n       s: %r'
@@ -734,23 +734,23 @@ class TestFind(LeoUnitTest):
 
         plain_table = (
             # pattern   s       expected
-            (r'.',      'A',    'A'),
-            (r'A',      'xAy',  'A'),
+            (r'.', 'A', 'A'),
+            (r'A', 'xAy', 'A'),
         )
         nocase_table = (
             # pattern   s       expected
-            (r'.',      'A',    'A'),
-            (r'.',      'a',    'a'),
-            (r'A',      'xay',  'a'),
-            (r'a',      'xAy',  'A'),
+            (r'.', 'A', 'A'),
+            (r'.', 'a', 'a'),
+            (r'A', 'xay', 'a'),
+            (r'a', 'xAy', 'A'),
         )
         back_table = (
             # pattern   s           expected
-            (r'a.b',    'a1b a2b',  'a2b'),
+            (r'a.b', 'a1b a2b', 'a2b'),
         )
-        test(plain_table,  'plain_table',  back=False, nocase=False)
+        test(plain_table, 'plain_table', back=False, nocase=False)
         test(nocase_table, 'nocase_table', back=False, nocase=True)
-        test(back_table,   'back_table',   back=True,  nocase=False)
+        test(back_table, 'back_table', back=True, nocase=False)
     #@+node:ekr.20210110073117.82: *4* TestFind.test_make_regex_subs (to do)
     def test_make_regex_subs(self):
         x = self.x
@@ -786,9 +786,9 @@ class TestFind(LeoUnitTest):
         fc = c.findCommands
         plain_table = (
             # s         find    change  count   result
-            ('aA',      'a',    'C',    1,      'CA'),
-            ('Aa',      'A',    'C',    1,      'Ca'),
-            ('Aba',     'b',    'C',    1,      'ACa'),
+            ('aA', 'a', 'C', 1, 'CA'),
+            ('Aa', 'A', 'C', 1, 'Ca'),
+            ('Aba', 'b', 'C', 1, 'ACa'),
         )
         for s, find, change, count, result in plain_table:
             fc.ignore_case = False
@@ -803,8 +803,8 @@ class TestFind(LeoUnitTest):
         fc = c.findCommands
         plain_table = (
             # s         find    change  count   result
-            ('aA',      'a',    'C',    2,      'CC'),
-            ('AbBa',    'b',    'C',    2,      'ACCa'),
+            ('aA', 'a', 'C', 2, 'CC'),
+            ('AbBa', 'b', 'C', 2, 'ACCa'),
         )
         for s, find, change, count, result in plain_table:
             fc.ignore_case = True
@@ -819,10 +819,10 @@ class TestFind(LeoUnitTest):
         fc = c.findCommands
         regex_table = (
             # s                 find        change  count   result
-            ('a ba aa a ab a',  r'\b\w+\b', 'C',    6,      'C C C C C C'),
-            ('a AA aa aab ab a',r'\baa\b',  'C',    1,      'a AA C aab ab a'),
+            ('a ba aa a ab a', r'\b\w+\b', 'C', 6, 'C C C C C C'),
+            ('a AA aa aab ab a', r'\baa\b', 'C', 1, 'a AA C aab ab a'),
             # Multi-line
-            ('aaa AA\naa aab',  r'\baa\b',  'C',    1,      'aaa AA\nC aab'),
+            ('aaa AA\naa aab', r'\baa\b', 'C', 1, 'aaa AA\nC aab'),
         )
         for s, find, change, count, result in regex_table:
             fc.ignore_case = False
@@ -837,8 +837,8 @@ class TestFind(LeoUnitTest):
         fc = c.findCommands
         word_table = (
             # s                 find    change  count   result
-            ('a ba aa a ab a',  'a',    'C',    3,      'C ba aa C ab C'),
-            ('a ba aa a ab a',  'aa',   'C',    1,      'a ba C a ab a'),
+            ('a ba aa a ab a', 'a', 'C', 3, 'C ba aa C ab C'),
+            ('a ba aa a ab a', 'aa', 'C', 1, 'a ba C a ab a'),
         )
         for s, find, change, count, result in word_table:
             fc.ignore_case = False
@@ -853,8 +853,8 @@ class TestFind(LeoUnitTest):
         fc = c.findCommands
         word_table = (
             # s                 find    change  count   result
-            ('a ba aa A ab a',  'a',    'C',    3,      'C ba aa C ab C'),
-            ('a ba aa AA ab a', 'aa',   'C',    2,      'a ba C C ab a'),
+            ('a ba aa A ab a', 'a', 'C', 3, 'C ba aa C ab C'),
+            ('a ba aa AA ab a', 'aa', 'C', 2, 'a ba C C ab a'),
         )
         for s, find, change, count, result in word_table:
             fc.ignore_case = True

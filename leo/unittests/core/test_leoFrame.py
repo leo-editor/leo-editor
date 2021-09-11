@@ -19,12 +19,12 @@ class TestFrame(LeoUnitTest):
         self.assertEqual(f.c, c)
         self.assertEqual(c.frame, f)
         for ivar in ('body', 'iconBar', 'log', 'statusLine', 'tree',):
-            assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
-            val = getattr(f,ivar)
+            assert hasattr(f, ivar), 'missing frame ivar: %s' % ivar
+            val = getattr(f, ivar)
             self.assertTrue(val is not None, msg=ivar)
         # These do not have to be initied.
         for ivar in ('findPanel',):
-            self.assertTrue(hasattr(f,ivar), msg=ivar)
+            self.assertTrue(hasattr(f, ivar), msg=ivar)
     #@+node:ekr.20210909194526.1: *3* Converted: leoFrame
     #@+node:ekr.20210909194336.44: *3* TestXXX.test_c_frame_body_getInsertLines
     def test_c_frame_body_getInsertLines(self):
@@ -50,11 +50,11 @@ class TestFrame(LeoUnitTest):
 
         w = c.frame.body.wrapper
         s = w.getAllText()
-        start,end = 11,15
-        w.setSelectionRange(start,end)
-        before,ins,after = c.frame.body.getSelectionAreas()
-        assert before == s[0:start],'Got %s' % repr(before)
-        assert ins    == s[start:end],'Got %s' % repr(ins)
+        start, end = 11, 15
+        w.setSelectionRange(start, end)
+        before, ins, after = c.frame.body.getSelectionAreas()
+        assert before == s[0:start], 'Got %s' % repr(before)
+        assert ins == s[start:end], 'Got %s' % repr(ins)
         assert after == s[end:]
 
         # end.

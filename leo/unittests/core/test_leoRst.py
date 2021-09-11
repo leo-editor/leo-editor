@@ -17,7 +17,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210327072030.1: ** class TestRst (LeoUnitTest)
 class TestRst(LeoUnitTest):
     '''A class to run rst-related unit tests.'''
-    
+
     def setUp(self):
         super().setUp()
         if not docutils:
@@ -46,7 +46,7 @@ class TestRst(LeoUnitTest):
             This is the body of the section.
             """)
         # Define the expected output.
-        expected =  textwrap.dedent(f"""\
+        expected = textwrap.dedent(f"""\
             .. rst3: filename: {fn}
 
             .. _http-node-marker-1:
@@ -76,9 +76,9 @@ class TestRst(LeoUnitTest):
         result = x.handleMissingStyleSheetArgs(s=None)
         self.assertEqual(result, {})
         expected = {
-            'documentoptions':'[english,12pt,lettersize]',
-            'language':'ca',
-            'use-latex-toc':'1',
+            'documentoptions': '[english,12pt,lettersize]',
+            'language': 'ca',
+            'use-latex-toc': '1',
         }
         for s in (
             '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',

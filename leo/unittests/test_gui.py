@@ -17,13 +17,13 @@ class TestGui(LeoUnitTest):
         c = self.c
         # Make sure the ctors don't crash.
         gui = g.app.gui
-        gui.runAboutLeoDialog(c,'version','copyright','url','email')
+        gui.runAboutLeoDialog(c, 'version', 'copyright', 'url', 'email')
         gui.runAskLeoIDDialog()
-        gui.runAskOkDialog(c,'title','message')
-        gui.runAskOkCancelNumberDialog(c,'title','message')
-        gui.runAskOkCancelStringDialog(c,'title','message')
-        gui.runAskYesNoDialog(c,'title','message')
-        gui.runAskYesNoCancelDialog(c,'title','message')
+        gui.runAskOkDialog(c, 'title', 'message')
+        gui.runAskOkCancelNumberDialog(c, 'title', 'message')
+        gui.runAskOkCancelStringDialog(c, 'title', 'message')
+        gui.runAskYesNoDialog(c, 'title', 'message')
+        gui.runAskYesNoCancelDialog(c, 'title', 'message')
         # gui.runCompareDialog(c) # Removed.
     #@-others
 #@-others

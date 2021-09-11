@@ -25,7 +25,7 @@ class TestAtShadow(LeoUnitTest):
         c.mFileName = g.os_path_finalize_join(base_dir, '..', '..', 'test666.leo')
         self.shadow_controller = ShadowController(c)
         self.marker = self.shadow_controller.Marker(delims)
-        
+
     #@+node:ekr.20210902210953.1: *4* TestShadow.deleteShadowDir (was a function)
     def deleteShadowDir(self, shadow_dir):
         if not g.os_path_exists(shadow_dir):
@@ -820,10 +820,10 @@ class TestAtShadow(LeoUnitTest):
         c = self.c
         x = c.shadowController
         table = (
-            ('python','#',''),
-            ('c','//',''),
-            ('html','<!--','-->'),
-            ('xxxx','#--unknown-language--',''),
+            ('python', '#', ''),
+            ('c', '//', ''),
+            ('html', '<!--', '-->'),
+            ('xxxx', '#--unknown-language--', ''),
         )
         for language, delim1, delim2 in table:
             delims = g.set_delims_from_language(language)
@@ -836,22 +836,22 @@ class TestAtShadow(LeoUnitTest):
         c = self.c
         x = c.shadowController
         table = (
-            ('python','abc',False),
-            ('python','#abc',False),
-            ('python','#@abc',True),
-            ('python','@abc#',False),
-            ('c','abc',False),
-            ('c','//@',True),
-            ('c','// @abc',False),
-            ('c','/*@ abc */',True),
-            ('c','/*@ abc',False),
-            ('html','#@abc',False),
-            ('html','<!--abc-->',False),
-            ('html','<!--@ abc -->',True),
-            ('html','<!--@ abc ->',False),
-            ('xxxx','#--unknown-language--@',True)
+            ('python', 'abc', False),
+            ('python', '#abc', False),
+            ('python', '#@abc', True),
+            ('python', '@abc#', False),
+            ('c', 'abc', False),
+            ('c', '//@', True),
+            ('c', '// @abc', False),
+            ('c', '/*@ abc */', True),
+            ('c', '/*@ abc', False),
+            ('html', '#@abc', False),
+            ('html', '<!--abc-->', False),
+            ('html', '<!--@ abc -->', True),
+            ('html', '<!--@ abc ->', False),
+            ('xxxx', '#--unknown-language--@', True)
         )
-        for language,s,expected in table:
+        for language, s, expected in table:
             delims = g.set_delims_from_language(language)
             marker = x.Marker(delims)
             result = marker.isSentinel(s)
@@ -861,17 +861,17 @@ class TestAtShadow(LeoUnitTest):
         c = self.c
         x = c.shadowController
         table = (
-            ('python','abc',False),
-            ('python','#abc',False),
-            ('python','#verbatim',False),
-            ('python','#@verbatim',True),
-            ('c','abc',False),
-            ('c','//@',False),
-            ('c','//@verbatim',True),
-            ('html','#@abc',False),
-            ('html','<!--abc-->',False),
-            ('html','<!--@verbatim -->',True),
-            ('xxxx','#--unknown-language--@verbatim',True)
+            ('python', 'abc', False),
+            ('python', '#abc', False),
+            ('python', '#verbatim', False),
+            ('python', '#@verbatim', True),
+            ('c', 'abc', False),
+            ('c', '//@', False),
+            ('c', '//@verbatim', True),
+            ('html', '#@abc', False),
+            ('html', '<!--abc-->', False),
+            ('html', '<!--@verbatim -->', True),
+            ('xxxx', '#--unknown-language--@verbatim', True)
         )
         for language, s, expected in table:
             delims = g.set_delims_from_language(language)
@@ -892,22 +892,22 @@ class TestAtShadow(LeoUnitTest):
         filename = 'xyzzy'
         path = x.dirName(filename)
         expected = g.os_path_dirname(g.os_path_abspath(
-            g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
+            g.os_path_join(g.os_path_dirname(c.fileName()), filename)))
         self.assertEqual(path, expected)
     #@+node:ekr.20210902210552.7: *4* TestShadow.test_x_findAtLeoLine
     def test_x_findAtLeoLine(self):
         c = self.c
         x = c.shadowController
         table = (
-            ('c',('//@+leo','a'),                   '//@+leo'),
-            ('c',('//@first','//@+leo','b'),        '//@+leo'),
-            ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
-            ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
-            ('python',('#@+leo','a'),               '#@+leo'),
-            ('python',('#@first','#@+leo','b'),     '#@+leo'),
-            ('error',('',),''),
-            ('html',('<!--@+leo-->','a'),                '<!--@+leo-->'),
-            ('html',('<!--@first-->','<!--@+leo-->','b'),'<!--@+leo-->'),
+            ('c', ('//@+leo', 'a'), '//@+leo'),
+            ('c', ('//@first', '//@+leo', 'b'), '//@+leo'),
+            ('c', ('/*@+leo*/', 'a'), '/*@+leo*/'),
+            ('c', ('/*@first*/', '/*@+leo*/', 'b'), '/*@+leo*/'),
+            ('python', ('#@+leo', 'a'), '#@+leo'),
+            ('python', ('#@first', '#@+leo', 'b'), '#@+leo'),
+            ('error', ('',), ''),
+            ('html', ('<!--@+leo-->', 'a'), '<!--@+leo-->'),
+            ('html', ('<!--@first-->', '<!--@+leo-->', 'b'), '<!--@+leo-->'),
         )
         for language, lines, expected in table:
             result = x.findLeoLine(lines)
@@ -916,7 +916,7 @@ class TestAtShadow(LeoUnitTest):
     def test_x_makeShadowDirectory(self):
         c = self.c
         x = c.shadowController
-        shadow_fn  = x.shadowPathName('unittests/xyzzy/test.py')
+        shadow_fn = x.shadowPathName('unittests/xyzzy/test.py')
         shadow_dir = x.shadowDirName('unittests/xyzzy/test.py')
         assert not os.path.exists(shadow_fn), shadow_fn
         self.deleteShadowDir(shadow_dir)
@@ -929,21 +929,21 @@ class TestAtShadow(LeoUnitTest):
         x = c.shadowController
         # Add -ver=4 so at.parseLeoSentinel does not complain.
         table = (
-            ('c',('//@+leo-ver=4','a'),                   '//',''),
-            ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
-            ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
-            ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
-            ('python',('#@+leo-ver=4','a'),               '#',''),
-            ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
-            ('error',('',),             '#--unknown-language--',''),
-            ('html',('<!--@+leo-ver=4-->','a'),                '<!--','-->'),
-            ('html',('<!--@first-->','<!--@+leo-ver=4-->','b'),'<!--','-->'),
+            ('c', ('//@+leo-ver=4', 'a'), '//', ''),
+            ('c', ('//@first', '//@+leo-ver=4', 'b'), '//', ''),
+            ('c', ('/*@+leo-ver=4*/', 'a'), '/*', '*/'),
+            ('c', ('/*@first*/', '/*@+leo-ver=4*/', 'b'), '/*', '*/'),
+            ('python', ('#@+leo-ver=4', 'a'), '#', ''),
+            ('python', ('#@first', '#@+leo-ver=4', 'b'), '#', ''),
+            ('error', ('',), '#--unknown-language--', ''),
+            ('html', ('<!--@+leo-ver=4-->', 'a'), '<!--', '-->'),
+            ('html', ('<!--@first-->', '<!--@+leo-ver=4-->', 'b'), '<!--', '-->'),
         )
 
-        for language,lines,delim1,delim2 in table:
+        for language, lines, delim1, delim2 in table:
             lines_s = '\n'.join(lines)
-            marker = x.markerFromFileLines(lines,'test-file-name')
-            result1,result2 = marker.getDelims()
+            marker = x.markerFromFileLines(lines, 'test-file-name')
+            result1, result2 = marker.getDelims()
             self.assertEqual(delim1, result1, msg=f"language: {language} {lines_s}")
             self.assertEqual(delim2, result2, msg=f"language: {language} {lines_s}")
     #@+node:ekr.20210902210552.10: *4* TestShadow.test_x_markerFromFileName
@@ -951,16 +951,16 @@ class TestAtShadow(LeoUnitTest):
         c = self.c
         x = c.shadowController
         table = (
-            ('ini',';','',),
-            ('c','//',''),
-            ('h','//',''),
-            ('py','#',''),
-            ('xyzzy','#--unknown-language--',''),
+            ('ini', ';', '',),
+            ('c', '//', ''),
+            ('h', '//', ''),
+            ('py', '#', ''),
+            ('xyzzy', '#--unknown-language--', ''),
         )
         for ext, delim1, delim2 in table:
             filename = 'x.%s' % ext
             marker = x.markerFromFileName(filename)
-            result1,result2 = marker.getDelims()
+            result1, result2 = marker.getDelims()
             self.assertEqual(delim1, result1)
             self.assertEqual(delim2, result2)
     #@+node:ekr.20210902210552.11: *4* TestShadow.test_x_pathName
@@ -969,7 +969,7 @@ class TestAtShadow(LeoUnitTest):
         x = c.shadowController
         filename = 'xyzzy'
         path = x.pathName(filename)
-        expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
+        expected = g.os_path_abspath(g.os_path_join(x.baseDirName(), filename))
         self.assertEqual(path, expected)
     #@+node:ekr.20210902210552.13: *4* TestShadow.test_x_replaceFileWithString_2
     def test_x_replaceFileWithString_2(self):
@@ -998,7 +998,7 @@ class TestAtShadow(LeoUnitTest):
         filename = 'xyzzy'
         path = x.shadowPathName(filename)
         expected = g.os_path_abspath(g.os_path_join(
-            g.os_path_dirname(c.fileName()),subdir,prefix+filename))
+            g.os_path_dirname(c.fileName()), subdir, prefix + filename))
         self.assertEqual(path, expected)
     #@-others
 #@-others

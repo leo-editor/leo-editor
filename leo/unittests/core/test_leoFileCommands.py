@@ -85,8 +85,8 @@ class TestFileCommands(LeoUnitTest):
         child2 = root.insertAsLastChild()
         grandchild2 = child2.insertAsLastChild()
         # Set the uA's.
-        child1.v.unknownAttributes = {'unit_test_child':'abcd'}
-        grandchild2.v.unknownAttributes = {'unit_test_grandchild':'wxyz'}
+        child1.v.unknownAttributes = {'unit_test_child': 'abcd'}
+        grandchild2.v.unknownAttributes = {'unit_test_grandchild': 'wxyz'}
         # Test.
         s = fc.putDescendentVnodeUas(root)
         assert s.startswith(' descendentVnodeUnknownAttributes='), s
@@ -97,7 +97,7 @@ class TestFileCommands(LeoUnitTest):
         c, p = self.c, self.c.p
         fc = c.fileCommands
         p.v.unknownAttributes = {'unit_test': 'abcd'}
-        s = fc.putUnknownAttributes (p.v)
+        s = fc.putUnknownAttributes(p.v)
         expected = ' unit_test="58040000006162636471002e"'
         self.assertEqual(s, expected)
     #@-others

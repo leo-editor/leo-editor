@@ -22,24 +22,24 @@ class TestGlobals(LeoUnitTest):
         except AssertionError:
             fn, n = g.getLastTracebackFileAndLineNumber()
         self.assertEqual(fn, __file__)
-        
+
     #@+node:ekr.20210905203541.3: *3* TestGlobals.test_g_alert
     def test_g_alert(self):
         c = self.c
-        g.alert(c,'test of g.alert')
+        g.alert(c, 'test of g.alert')
     #@+node:ekr.20210905203541.4: *3* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
         # for condition in ('<','<=','>','>='):
-        for v1,condition,v2 in (
-            ('8.4.12','>','8.4.3'),
-            ('1','==','1.0'),
-            ('2','>','1'),
-            ('1.2','>','1'),
-            ('2','>','1.2.3'),
-            ('1.2.3','<','2'),
-            ('1','<','1.1'),
+        for v1, condition, v2 in (
+            ('8.4.12', '>', '8.4.3'),
+            ('1', '==', '1.0'),
+            ('2', '>', '1'),
+            ('1.2', '>', '1'),
+            ('2', '>', '1.2.3'),
+            ('1.2.3', '<', '2'),
+            ('1', '<', '1.1'),
         ):
-            assert g.CheckVersion(v1,v2,condition=condition,trace=False)
+            assert g.CheckVersion(v1, v2, condition=condition, trace=False)
     #@+node:ekr.20210905203541.5: *3* TestGlobals.test_g_CheckVersionToInt
     def test_g_CheckVersionToInt(self):
         self.assertEqual(g.CheckVersionToInt('12'), 12)
@@ -49,10 +49,10 @@ class TestGlobals(LeoUnitTest):
     def test_g_comment_delims_from_extension(self):
         # New in Leo 4.6, set_delims_from_language returns '' instead of None.
         table = (
-            ('.c',      ('//','/*','*/')),
-            ('.html',   ('', '<!--', '-->')),
-            ('.py',     ('#','','')),
-            ('.Globals',    ('','','')),
+            ('.c', ('//', '/*', '*/')),
+            ('.html', ('', '<!--', '-->')),
+            ('.py', ('#', '', '')),
+            ('.Globals', ('', '', '')),
         )
         for ext, expected in table:
             result = g.comment_delims_from_extension(ext)
@@ -61,36 +61,36 @@ class TestGlobals(LeoUnitTest):
     def test_g_convertPythonIndexToRowCol(self):
         s1 = 'abc\n\np\nxy'
         table1 = (
-            (-1,(0,0)), # One too small.
-            (0,(0,0)),
-            (1,(0,1)),
-            (2,(0,2)),
-            (3,(0,3)), # The newline ends a row.
-            (4,(1,0)),
-            (5,(2,0)),
-            (6,(2,1)),
-            (7,(3,0)),
-            (8,(3,1)),
-            (9,(3,2)), # One too many.
-            (10,(3,2)), # Two too many.
+            (-1, (0, 0)),  # One too small.
+            (0, (0, 0)),
+            (1, (0, 1)),
+            (2, (0, 2)),
+            (3, (0, 3)),  # The newline ends a row.
+            (4, (1, 0)),
+            (5, (2, 0)),
+            (6, (2, 1)),
+            (7, (3, 0)),
+            (8, (3, 1)),
+            (9, (3, 2)),  # One too many.
+            (10, (3, 2)),  # Two too many.
         )
         s2 = 'abc\n\np\nxy\n'
         table2 = (
-            (9,(3,2)),
-            (10,(4,0)), # One too many.
-            (11,(4,0)), # Two too many.
+            (9, (3, 2)),
+            (10, (4, 0)),  # One too many.
+            (11, (4, 0)),  # Two too many.
         )
-        s3 = 'ab' # Test special case.  This was the cause of off-by-one problems.
+        s3 = 'ab'  # Test special case.  This was the cause of off-by-one problems.
         table3 = (
-            (-1, (0, 0)), # One too small.
+            (-1, (0, 0)),  # One too small.
             (0, (0, 0)),
             (1, (0, 1)),
-            (2, (0, 2)), # One too many.
-            (3, (0, 2)), # Two too many.
+            (2, (0, 2)),  # One too many.
+            (3, (0, 2)),  # Two too many.
         )
-        for n, s, table in ((1, s1,table1),(2, s2,table2),(3, s3, table3)):
+        for n, s, table in ((1, s1, table1), (2, s2, table2), (3, s3, table3)):
             for i, result in table:
-                row, col = g.convertPythonIndexToRowCol(s,i)
+                row, col = g.convertPythonIndexToRowCol(s, i)
                 self.assertEqual(row, result[0], msg=f"n: {n}, i: {i}")
                 self.assertEqual(col, result[1], msg=f"n: {n}, i: {i}")
     #@+node:ekr.20210905203541.8: *3* TestGlobals.test_g_convertRowColToPythonIndex
@@ -98,32 +98,32 @@ class TestGlobals(LeoUnitTest):
         s1 = 'abc\n\np\nxy'
         s2 = 'abc\n\np\nxy\n'
         table1 = (
-            (0,(-1,0)), # One too small.
-            (0,(0,0)),
-            (1,(0,1)),
-            (2,(0,2)),
-            (3,(0,3)), # The newline ends a row.
-            (4,(1,0)),
-            (5,(2,0)),
-            (6,(2,1)),
-            (7,(3,0)),
-            (8,(3,1)),
-            (9,(3,2)), # One too large.
+            (0, (-1, 0)),  # One too small.
+            (0, (0, 0)),
+            (1, (0, 1)),
+            (2, (0, 2)),
+            (3, (0, 3)),  # The newline ends a row.
+            (4, (1, 0)),
+            (5, (2, 0)),
+            (6, (2, 1)),
+            (7, (3, 0)),
+            (8, (3, 1)),
+            (9, (3, 2)),  # One too large.
         )
         table2 = (
-            (9,(3,2)),
-            (10,(4,0)), # One two many.
+            (9, (3, 2)),
+            (10, (4, 0)),  # One two many.
         )
-        for s, table in ((s1,table1),(s2,table2)):
+        for s, table in ((s1, table1), (s2, table2)):
             for i, data in table:
-                row,col = data
-                result = g.convertRowColToPythonIndex(s,row,col)
+                row, col = data
+                result = g.convertRowColToPythonIndex(s, row, col)
                 self.assertEqual(i, result, msg=f"row: {row}, col: {col}, i: {i}")
     #@+node:ekr.20210905203541.9: *3* TestGlobals.test_g_create_temp_file
     def test_g_create_temp_file(self):
         theFile = None
         try:
-            theFile,fn = g.create_temp_file()
+            theFile, fn = g.create_temp_file()
             assert theFile
             assert isinstance(fn, str)
         finally:
@@ -134,7 +134,7 @@ class TestGlobals(LeoUnitTest):
         s = ' \n \n\t\naa bc'
         s2 = 'aa bc'
         for i in range(3):
-            result = g.ensureLeadingNewlines(s,i)
+            result = g.ensureLeadingNewlines(s, i)
             val = ('\n' * i) + s2
             self.assertEqual(result, val)
     #@+node:ekr.20210905203541.11: *3* TestGlobals.test_g_ensureTrailingNewlines
@@ -142,18 +142,18 @@ class TestGlobals(LeoUnitTest):
         s = 'aa bc \n \n\t\n'
         s2 = 'aa bc'
         for i in range(3):
-            result = g.ensureTrailingNewlines(s,i)
+            result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
-            ('abc a bc x','bc',0,6),
-            ('abc a bc x','bc',1,6),
-            ('abc a x','bc',0,-1),
+            ('abc a bc x', 'bc', 0, 6),
+            ('abc a bc x', 'bc', 1, 6),
+            ('abc a x', 'bc', 0, -1),
         )
-        for s,word,i,expected in table:
-            actual = g.find_word(s,word,i)
+        for s, word, i, expected in table:
+            actual = g.find_word(s, word, i)
             self.assertEqual(actual, expected)
     #@+node:ekr.20210905203541.14: *3* TestGlobals.test_g_fullPath
     def test_g_fullPath(self):
@@ -164,7 +164,7 @@ class TestGlobals(LeoUnitTest):
         grand.h = 'xyz'
         path = g.fullPath(c, grand, simulate=True)
         end = g.os_path_normpath('abc/xyz')
-        assert path.endswith(end),repr(path)
+        assert path.endswith(end), repr(path)
     #@+node:ekr.20210905203541.16: *3* TestGlobals.test_g_get_directives_dict
     def test_g_get_directives_dict(self):
         c = self.c
@@ -196,36 +196,36 @@ class TestGlobals(LeoUnitTest):
     \'\'\'docstring2.\'\'\'
     ''')
         table = (
-            (s1,''),
-            (s2,'docstring2.'),
-            (s3,'docstring3.'),
+            (s1, ''),
+            (s2, 'docstring2.'),
+            (s3, 'docstring3.'),
         )
-        for s,result in table:
+        for s, result in table:
             s2 = g.getDocString(s)
             self.assertEqual(s2, result)
     #@+node:ekr.20210905203541.18: *3* TestGlobals.test_g_getLine
     def test_g_getLine(self):
         s = 'a\ncd\n\ne'
-        for i,result in (
-            (-1,(0,2)), # One too few.
-            (0,(0,2)),(1,(0,2)),
-            (2,(2,5)),(3,(2,5)),(4,(2,5)),
-            (5,(5,6)),
-            (6,(6,7)),
-            (7,(6,7)), # One too many.
+        for i, result in (
+            (-1, (0, 2)),  # One too few.
+            (0, (0, 2)), (1, (0, 2)),
+            (2, (2, 5)), (3, (2, 5)), (4, (2, 5)),
+            (5, (5, 6)),
+            (6, (6, 7)),
+            (7, (6, 7)),  # One too many.
         ):
-            j,k = g.getLine(s,i)
-            self.assertEqual((j,k), result, msg=f"i: {i}, j: {j}, k: {k}")
+            j, k = g.getLine(s, i)
+            self.assertEqual((j, k), result, msg=f"i: {i}, j: {j}, k: {k}")
     #@+node:ekr.20210905203541.20: *3* TestGlobals.test_g_getWord
     def test_g_getWord(self):
         s = 'abc xy_z5 pdq'
-        i,j = g.getWord(s,5)
+        i, j = g.getWord(s, 5)
         self.assertEqual(s[i:j], 'xy_z5')
     #@+node:ekr.20210905203541.21: *3* TestGlobals.test_g_guessExternalEditor
     def test_g_guessExternalEditor(self):
         c = self.c
         val = g.guessExternalEditor(c)
-        assert val,'no val' # This can be different on different platforms.
+        assert val, 'no val'  # This can be different on different platforms.
     #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
     def test_g_handleUrl(self):
         c = self.c
@@ -237,17 +237,17 @@ class TestGlobals(LeoUnitTest):
             unl3 = '@settings-->Plugins-->wikiview%20plugin'
             table = (
                 (http + 'writemonkey.com/index.php', ['browser']),
-                (file_ + 'x.py',        ['os_startfile']),
-                (file_ + fn1,           ['g.recursiveUNLSearch']),
-                (file_ + fn2,           ['g.recursiveUNLSearch']),
-                (unl1 + fn1 + unl2,     ['g.recursiveUNLSearch']),
-                (unl1 + fn1 + unl3,     ['g.recursiveUNLSearch']),
-                (unl1 + '#' + unl2,     ['g.recursiveUNLSearch']),
-                (unl1 + '#' + unl3,     ['g.recursiveUNLSearch']),
-                (unl1 + unl2,           ['g.recursiveUNLSearch']),
-                (unl1 + unl3,           ['g.recursiveUNLSearch']),
+                (file_ + 'x.py', ['os_startfile']),
+                (file_ + fn1, ['g.recursiveUNLSearch']),
+                (file_ + fn2, ['g.recursiveUNLSearch']),
+                (unl1 + fn1 + unl2, ['g.recursiveUNLSearch']),
+                (unl1 + fn1 + unl3, ['g.recursiveUNLSearch']),
+                (unl1 + '#' + unl2, ['g.recursiveUNLSearch']),
+                (unl1 + '#' + unl3, ['g.recursiveUNLSearch']),
+                (unl1 + unl2, ['g.recursiveUNLSearch']),
+                (unl1 + unl3, ['g.recursiveUNLSearch']),
             )
-            for url,aList in table:
+            for url, aList in table:
                 g.handleUrl(c=c, p=c.p, url=url)
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
@@ -274,7 +274,7 @@ class TestGlobals(LeoUnitTest):
             (True, 0, 'a', 'a'),
             (False, 0, 'a', 'b'),
             (True, 0, 'a', 'a b'),
-            (False, 1, 'a', 'aa b'), # Tests bug fixed 2017/06/01.
+            (False, 1, 'a', 'aa b'),  # Tests bug fixed 2017/06/01.
             (False, 1, 'a', '_a b'),
             (False, 0, 'a', 'aw b'),
             (False, 0, 'a', 'a_'),
@@ -290,14 +290,14 @@ class TestGlobals(LeoUnitTest):
         path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
         path2 = r'\N:Home\PTC_Creo\Creo.wmv'
         path3 = r'N:\Home\PTC_Creo\Creo.wmv'
-        path12 = os.path.join(path1,path2)
-        path13 = os.path.join(path1,path3)
+        path12 = os.path.join(path1, path2)
+        path13 = os.path.join(path1, path3)
         if 0:
-            print(path12,g.os.path.abspath(path12))
-            print(path13,g.os.path.abspath(path13))
+            print(path12, g.os.path.abspath(path12))
+            print(path13, g.os.path.abspath(path13))
     #@+node:ekr.20210905203541.28: *3* TestGlobals.test_g_removeBlankLines
     def test_g_removeBlankLines(self):
-        for s,expected in (
+        for s, expected in (
             ('a\nb', 'a\nb'),
             ('\n  \n\nb\n', 'b\n'),
             (' \t \n\n  \n c\n\t\n', ' c\n'),
@@ -306,7 +306,7 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(result, expected, msg=repr(s))
     #@+node:ekr.20210905203541.30: *3* TestGlobals.test_g_removeLeadingBlankLines
     def test_g_removeLeadingBlankLines(self):
-        for s,expected in (
+        for s, expected in (
             ('a\nb', 'a\nb'),
             ('\n  \nb\n', 'b\n'),
             (' \t \n\n\n c', ' c'),
@@ -317,25 +317,25 @@ class TestGlobals(LeoUnitTest):
     def test_g_removeTrailing(self):
         s = 'aa bc \n \n\t\n'
         table = (
-            ('\t\n ','aa bc'),
-            ('abc\t\n ',''),
-            ('c\t\n ','aa b'),
+            ('\t\n ', 'aa bc'),
+            ('abc\t\n ', ''),
+            ('c\t\n ', 'aa b'),
         )
-        for arg,val in table:
-            result = g.removeTrailing(s,arg)
+        for arg, val in table:
+            result = g.removeTrailing(s, arg)
             self.assertEqual(result, val)
     #@+node:ekr.20210905203541.32: *3* TestGlobals.test_g_sanitize_filename
     def test_g_sanitize_filename(self):
         table = (
-            ('A25&()','A'),         # Non-alpha characters.
-            ('B\tc','B c'),         # Tabs.
-            ('"AB"',"'AB'"),        # Double quotes.
-            ('\\/:|<>*:.','_'),     # Special characters.
-            ('_____________','_'),  # Combining underscores.
-            ('A' * 200,'A' * 128),  # Maximum length.
-            ('abc.','abc_'),        # Trailing dots.
+            ('A25&()', 'A'),  # Non-alpha characters.
+            ('B\tc', 'B c'),  # Tabs.
+            ('"AB"', "'AB'"),  # Double quotes.
+            ('\\/:|<>*:.', '_'),  # Special characters.
+            ('_____________', '_'),  # Combining underscores.
+            ('A' * 200, 'A' * 128),  # Maximum length.
+            ('abc.', 'abc_'),  # Trailing dots.
         )
-        for s,expected in table:
+        for s, expected in table:
             got = g.sanitize_filename(s)
             self.assertEqual(got, expected, msg=repr(s))
     #@+node:ekr.20210905203541.33: *3* TestGlobals.test_g_scanAtHeaderDirectives_header
@@ -400,7 +400,7 @@ class TestGlobals(LeoUnitTest):
         n = g.scanAtPagewidthDirectives(aList)
         # The @pagewidth directive in the parent should control.
         # Depending on how this test is run, the result could be 80 or None.
-        assert n in (None, 80),repr(n)
+        assert n in (None, 80), repr(n)
     #@+node:ekr.20210905203541.42: *3* TestGlobals.test_g_scanAtPagewidthDirectives_40
     def test_g_scanAtPagewidthDirectives_40(self):
         c = self.c
@@ -432,7 +432,7 @@ class TestGlobals(LeoUnitTest):
         p.b = '@nowrap\n'
         aList = g.get_directives_dict_list(p)
         s = g.scanAtWrapDirectives(aList)
-        assert s is False,repr(s)
+        assert s is False, repr(s)
     #@+node:ekr.20210905203541.46: *3* TestGlobals.test_g_scanAtWrapDirectives_wrap_with_wrap_
     def test_g_scanAtWrapDirectives_wrap_with_wrap_(self):
         c = self.c
@@ -446,13 +446,13 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         aList = g.get_directives_dict_list(c.p)
         s = g.scanAtWrapDirectives(aList)
-        assert s is None,repr(s)
+        assert s is None, repr(s)
     #@+node:ekr.20210905203541.48: *3* TestGlobals.test_g_set_delims_from_language
     def test_g_set_delims_from_language(self):
         table = (
-            ('c',       ('//','/*','*/')),
-            ('python',  ('#','','')),
-            ('xxxyyy',  ('','','')),
+            ('c', ('//', '/*', '*/')),
+            ('python', ('#', '', '')),
+            ('xxxyyy', ('', '', '')),
         )
         for language, expected in table:
             result = g.set_delims_from_language(language)
@@ -460,39 +460,39 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.49: *3* TestGlobals.test_g_set_delims_from_string
     def test_g_set_delims_from_string(self):
         table = (
-            ('c','@comment // /* */',   ('//','/*','*/')),
-            ('c','// /* */',            ('//','/*','*/')),
-            ('python','@comment #',     ('#','','')),
-            ('python','#',              ('#','','')),
-            ('xxxyyy','@comment a b c', ('a','b','c')),
-            ('xxxyyy','a b c',          ('a','b','c')),
+            ('c', '@comment // /* */', ('//', '/*', '*/')),
+            ('c', '// /* */', ('//', '/*', '*/')),
+            ('python', '@comment #', ('#', '', '')),
+            ('python', '#', ('#', '', '')),
+            ('xxxyyy', '@comment a b c', ('a', 'b', 'c')),
+            ('xxxyyy', 'a b c', ('a', 'b', 'c')),
         )
         for language, s, expected in table:
             result = g.set_delims_from_string(s)
             self.assertEqual(result, expected, msg=language)
     #@+node:ekr.20210905203541.50: *3* TestGlobals.test_g_skip_blank_lines
     def test_g_skip_blank_lines(self):
-        end = g.skip_blank_lines("",0)
+        end = g.skip_blank_lines("", 0)
         self.assertEqual(end, 0)
-        end = g.skip_blank_lines(" ",0)
+        end = g.skip_blank_lines(" ", 0)
         self.assertEqual(end, 0)
-        end = g.skip_blank_lines("\n",0)
+        end = g.skip_blank_lines("\n", 0)
         self.assertEqual(end, 1)
-        end = g.skip_blank_lines(" \n",0)
+        end = g.skip_blank_lines(" \n", 0)
         self.assertEqual(end, 2)
-        end = g.skip_blank_lines("\n\na\n",0)
+        end = g.skip_blank_lines("\n\na\n", 0)
         self.assertEqual(end, 2)
-        end = g.skip_blank_lines("\n\n a\n",0)
+        end = g.skip_blank_lines("\n\n a\n", 0)
         self.assertEqual(end, 2)
     #@+node:ekr.20210905203541.51: *3* TestGlobals.test_g_skip_line
     def test_g_skip_line(self):
         s = 'a\n\nc'
         for i, result in (
-            (-1,2), # One too few.
-            (0,2), (1,2),
-            (2,3),
-            (3,4),
-            (4,4), # One too many.
+            (-1, 2),  # One too few.
+            (0, 2), (1, 2),
+            (2, 3),
+            (3, 4),
+            (4, 4),  # One too many.
         ):
             j = g.skip_line(s, i)
             self.assertEqual(j, result, msg=i)
@@ -500,32 +500,32 @@ class TestGlobals(LeoUnitTest):
     def test_g_skip_to_end_of_line(self):
         s = 'a\n\nc'
         for i, result in (
-            (-1,1), # One too few.
-            (0,1), (1,1),
-            (2,2),
-            (3,4),
-            (4,4), # One too many.
+            (-1, 1),  # One too few.
+            (0, 1), (1, 1),
+            (2, 2),
+            (3, 4),
+            (4, 4),  # One too many.
         ):
-            j = g.skip_to_end_of_line(s,i)
+            j = g.skip_to_end_of_line(s, i)
             self.assertEqual(j, result, msg=i)
     #@+node:ekr.20210905203541.53: *3* TestGlobals.test_g_skip_to_start_of_line
     def test_g_skip_to_start_of_line(self):
         s1 = 'a\n\nc'
         table1 = (
-            (-1,0), # One too few.
-            (0,0),(1,0),
-            (2,2),
-            (3,3),
-            (4,4), # One too many.
+            (-1, 0),  # One too few.
+            (0, 0), (1, 0),
+            (2, 2),
+            (3, 3),
+            (4, 4),  # One too many.
         )
         s2 = 'a\n'
         table2 = (
-            (1,0),
-            (2,2),
-        ) # A special case at end.
-        for s,table in ((s1,table1),(s2,table2)):
-            for i,result in table:
-                j = g.skip_to_start_of_line(s,i)
+            (1, 0),
+            (2, 2),
+        )  # A special case at end.
+        for s, table in ((s1, table1), (s2, table2)):
+            for i, result in table:
+                j = g.skip_to_start_of_line(s, i)
                 self.assertEqual(j, result, msg=i)
     #@+node:ekr.20210905203541.54: *3* TestGlobals.test_g_splitLongFileName
     def test_g_splitLongFileName(self):
@@ -533,25 +533,25 @@ class TestGlobals(LeoUnitTest):
             r'abcd/xy\pdqabc/aaa.py',
         )
         for s in table:
-            g.splitLongFileName(s,limit=3)
+            g.splitLongFileName(s, limit=3)
     #@+node:ekr.20210905203541.55: *3* TestGlobals.test_g_stripPathCruft
     def test_g_stripPathCruft(self):
-        table =  (
-            (None,None), # Retain empty paths for warnings.
-            ('',''),
-            (g.app.loadDir,g.app.loadDir),
-            ('<abc>','abc'),
-            ('"abc"','abc'),
-            ("'abc'",'abc'),
+        table = (
+            (None, None),  # Retain empty paths for warnings.
+            ('', ''),
+            (g.app.loadDir, g.app.loadDir),
+            ('<abc>', 'abc'),
+            ('"abc"', 'abc'),
+            ("'abc'", 'abc'),
         )
-        for path,expected in table:
+        for path, expected in table:
             result = g.stripPathCruft(path)
             self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.56: *3* TestGlobals.test_g_warnOnReadOnlyFile
     def test_g_warnOnReadOnlyFile(self):
         c = self.c
         fc = c.fileCommands
-        path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test-read-only.txt')
         if os.path.exists(path):
             os.chmod(path, stat.S_IREAD)
             fc.warnOnReadOnlyFiles(path)

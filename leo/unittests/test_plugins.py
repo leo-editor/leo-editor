@@ -59,7 +59,7 @@ class TestPlugins(LeoUnitTest):
             # Experimental.
             'leo_pdf.py',
         )
-        plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+        plugins = g.os_path_join(g.app.loadDir, '..', 'plugins', '*.py')
         plugins = g.os_path_abspath(plugins)
         files = glob.glob(plugins)
         files = [z for z in files if not z.endswith('__init__.py')]
@@ -71,7 +71,7 @@ class TestPlugins(LeoUnitTest):
         # Ensure all plugins have top-level init method *without* importing them.
         files = self.get_plugins()
         for fn in files:
-            with open(fn,'r') as f:
+            with open(fn, 'r') as f:
                 s = f.read()
             self.assertTrue('def init():' in s or 'def init ():' in s, msg=fn)
     #@+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
@@ -85,7 +85,7 @@ class TestPlugins(LeoUnitTest):
             'pyplot_backend.py',
             # 'free_layout.py',
         )
-        pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b') # Don't search for Qt.
+        pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
         for fn in files:
             if g.shortFileName(fn) in excludes:
                 continue
@@ -102,22 +102,22 @@ class TestPlugins(LeoUnitTest):
             # We can *not* assert that p == p2!
             assert p2
             self.assertEqual(p2.v, p.v)
-            assert c.positionExists(p2),'does not exist: %s' % p2
+            assert c.positionExists(p2), 'does not exist: %s' % p2
     #@+node:ekr.20210909194336.57: *3* TestPlugins.test_regularizeName
     def test_regularizeName(self):
         pc = LeoPluginsController()
         table = (
-            ('x',               'x'),
-            ('foo.bar',         'foo.bar'),
-            ('x.py',            'leo.plugins.x'),
-            ('leo.plugins.x',   'leo.plugins.x')    
+            ('x', 'x'),
+            ('foo.bar', 'foo.bar'),
+            ('x.py', 'leo.plugins.x'),
+            ('leo.plugins.x', 'leo.plugins.x')
         )
-        for fn,expected in table:
+        for fn, expected in table:
             result = pc.regularizeName(fn)
             self.assertEqual(result, expected, msg=fn)
             # Make sure that calling regularizeName twice is benign.
             result2 = pc.regularizeName(result)
-            assert result2==result
+            assert result2 == result
     #@+node:ekr.20210909161328.4: *3* TestPlugins.test_syntax_of_all_plugins
     def test_syntax_of_all_plugins(self):
         files = self.get_plugins()

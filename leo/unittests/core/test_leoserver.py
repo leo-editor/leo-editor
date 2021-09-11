@@ -14,7 +14,7 @@ g_server = None
 
 #@+others
 #@+node:ekr.20210901070918.1: ** class TestLeoServer(LeoUnitTest)
-class TestLeoServer (LeoUnitTest):
+class TestLeoServer(LeoUnitTest):
     """Tests of LeoServer class."""
     request_number = 0
     #@+others
@@ -60,7 +60,7 @@ class TestLeoServer (LeoUnitTest):
             "id": self.request_number
         }
         if param:
-            d ["param"] = param
+            d["param"] = param
         response = server._do_message(d)
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
@@ -69,7 +69,7 @@ class TestLeoServer (LeoUnitTest):
         return answer
     #@+node:felix.20210621233316.102: *3* TestLeoServer.test_most_public_server_methods
     def test_most_public_server_methods(self):
-        server=self.server
+        server = self.server
         tag = 'test_most_public_server_methods'
         assert isinstance(server, g_leoserver.LeoServer), self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
@@ -121,7 +121,7 @@ class TestLeoServer (LeoUnitTest):
                     param = param_d.get(method_name, {})
                     message = {
                         "id": id_,
-                        "action": "!"+method_name,
+                        "action": "!" + method_name,
                         "param": param,
                     }
                     try:
@@ -143,7 +143,7 @@ class TestLeoServer (LeoUnitTest):
             # Open file.
             ("!open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
             # Switch to the second file.
-            ("!open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
+            ("!open_file", {"log": log, "filename": test_dot_leo}),  # Does exist.
             # Open again. This should be valid.
             ("!open_file", {"log": False, "filename": test_dot_leo}),
             # Better test of _ap_to_p.
@@ -156,7 +156,7 @@ class TestLeoServer (LeoUnitTest):
             }),
             ("!get_ua", {"log": log}),
             # Close the second file.
-            ("!close_file", {"log": log, "forced": True }),
+            ("!close_file", {"log": log, "forced": True}),
             # Close the first file.
             ("!close_file", {"log": log, "forced": True}),
         ]

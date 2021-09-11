@@ -27,7 +27,7 @@ try:
         import black
 except Exception:
     black = None
-    
+
 # pylint: disable=wrong-import-position
 from leo.core import leoGlobals as g
 from leo.core.leoAst import AstNotEqual
@@ -1752,7 +1752,7 @@ class TestTOG(BaseTest):
         # dump_ast(tree)
     #@+node:ekr.20210802162650.1: *5* test_FunctionDef_with_posonly_args
     def test_FunctionDef_with_posonly_args(self):
-        
+
         # From PEP 570
         contents = r"""\
     def pos_only_arg(arg, /):
@@ -2440,7 +2440,7 @@ class TestTokens(BaseTest):
                 stack = []
             if stack:
                 parent = stack[-1]
-                children: List[ast.AST] = getattr(parent, 'children', []) 
+                children: List[ast.AST] = getattr(parent, 'children', [])
                 parent.children = children + [node]  # type:ignore
                 node.parent = parent
             else:

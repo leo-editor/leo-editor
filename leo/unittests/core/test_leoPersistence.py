@@ -37,7 +37,7 @@ class TestPersistence(LeoUnitTest):
     #@+node:ekr.20210908172651.44: *3* TestPersistence.test_delete_all_children_of_persistence_node
     def test_delete_all_children_of_persistence_node(self):
         c, pd = self.c, self.c.persistenceController
-        persistence = g.findNodeAnywhere(c,'@persistence')
+        persistence = g.findNodeAnywhere(c, '@persistence')
         assert persistence
         assert pd.has_at_persistence_node()
         persistence.deleteAllChildren()
@@ -58,7 +58,7 @@ class TestPersistence(LeoUnitTest):
         assert persistence
         persistence.deleteAllChildren()
         root = self.root_p
-        root.h = '@auto root' # Make root look like an @auto node.
+        root.h = '@auto root'  # Make root look like an @auto node.
         assert pd.find_at_data_node(root)
         assert pd.find_at_gnxs_node(root)
     #@+node:ekr.20210908172651.9: *3* TestPersistence.test_pd_find_position_for_relative_unl
@@ -83,7 +83,7 @@ class TestPersistence(LeoUnitTest):
         node3 = parent.insertAsLastChild()
         node3.h = 'node3'
         table = (
-            ('', parent), # Important special case.
+            ('', parent),  # Important special case.
             ('node1-->child11', child11),
             ('node1-->child12', child12),
             ('node2', node2),
@@ -136,12 +136,12 @@ class TestPersistence(LeoUnitTest):
         assert data
         data2 = pd.has_at_data_node(root)
         assert data2
-        self.assertEqual(data, data2,(data,data2))
-        gnxs = g.findNodeInTree(c,persistence,'@gnxs')
+        self.assertEqual(data, data2, (data, data2))
+        gnxs = g.findNodeInTree(c, persistence, '@gnxs')
         assert gnxs
         gnxs2 = pd.has_at_gnxs_node(root)
         assert gnxs2
-        self.assertEqual(gnxs, gnxs2,(gnxs,gnxs2))
+        self.assertEqual(gnxs, gnxs2, (gnxs, gnxs2))
     #@+node:ekr.20210908172651.30: *3* TestPersistence.test_pd_restore_gnxs
     def test_pd_restore_gnxs(self):
         c, pd = self.c, self.c.persistenceController
@@ -178,11 +178,11 @@ class TestPersistence(LeoUnitTest):
         persistence = pd.find_at_persistence_node()
         assert persistence
         persistence.deleteAllChildren()
-        root.h = '@auto root' # Make root look like an @auto node.
+        root.h = '@auto root'  # Make root look like an @auto node.
         pd.update_before_write_foreign_file(root)
         data = g.findNodeAnywhere(c, '@data:@auto root')
         assert data
-        gnxs = g.findNodeInTree(c,data, '@gnxs')
+        gnxs = g.findNodeInTree(c, data, '@gnxs')
         assert gnxs
     #@-others
 #@-others

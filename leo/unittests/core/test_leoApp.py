@@ -14,13 +14,13 @@ class TestApp(LeoUnitTest):
     #@+others
     #@+node:ekr.20210901140645.11: *3* TestApp.test_official_g_app_directories
     def test_official_g_app_directories(self):
-        ivars = ('extensionsDir','globalConfigDir','loadDir','testDir')
+        ivars = ('extensionsDir', 'globalConfigDir', 'loadDir', 'testDir')
         for ivar in ivars:
-            assert hasattr(g.app,ivar), 'missing g.app directory: %s' % ivar
-            val = getattr(g.app,ivar)
-            assert val is not None, 'null g.app directory: %s'% ivar
+            assert hasattr(g.app, ivar), 'missing g.app directory: %s' % ivar
+            val = getattr(g.app, ivar)
+            assert val is not None, 'null g.app directory: %s' % ivar
             assert g.os_path_exists(g.os_path_abspath(val)), 'non-existent g.app directory: %s' % ivar
-        assert hasattr(g.app, 'homeDir') # May well be None.
+        assert hasattr(g.app, 'homeDir')  # May well be None.
     #@+node:ekr.20210901140645.12: *3* TestApp.test_official_g_app_ivars
     def test_official_g_app_ivars(self):
         ivars = (
@@ -32,7 +32,7 @@ class TestApp(LeoUnitTest):
             'gui',
             'initing', 'killed', 'quitting',
             'leoID',
-            'log','logIsLocked', 'logWaiting',
+            'log', 'logIsLocked', 'logWaiting',
             'nodeIndices',
             'windowList',
             # Less-official and might be removed...
@@ -47,7 +47,7 @@ class TestApp(LeoUnitTest):
         )
         for ivar in ivars:
             self.assertTrue(hasattr(g.app, ivar))
-            
+
     #@+node:ekr.20210909194336.2: *3* TestApp.test_consistency_of_leoApp_tables
     def test_consistency_of_leoApp_tables(self):
         delims_d = g.app.language_delims_dict
@@ -55,11 +55,11 @@ class TestApp(LeoUnitTest):
         ext_d = g.app.extension_dict
         for lang in lang_d:
             ext = lang_d.get(lang)
-            assert lang in delims_d,'fail 1: %s' % lang
-            assert ext in ext_d,    'fail 2: %s' % ext
+            assert lang in delims_d, lang
+            assert ext in ext_d, ext
         for ext in ext_d:
             lang = ext_d.get(ext)
-            assert lang in lang_d,  'fail 3: %s' % lang
+            assert lang in lang_d, lang
     #@+node:ekr.20210909194336.3: *3* TestApp.test_lm_openAnyLeoFile
     def test_lm_openAnyLeoFile(self):
         lm = g.app.loadManager
@@ -71,7 +71,7 @@ class TestApp(LeoUnitTest):
         f = zipfile.ZipFile(path, 'x')
         assert f, path
         try:
-            f.writestr('leo-zip-file',s)
+            f.writestr('leo-zip-file', s)
             f.close()
             # Open the file, and get the contents.
             f = lm.openAnyLeoFile(path)
@@ -82,7 +82,7 @@ class TestApp(LeoUnitTest):
         self.assertEqual(s, s2)
     #@+node:ekr.20210909194336.4: *3* TestApp.test_rfm_writeRecentFilesFileHelper
     def test_rfm_writeRecentFilesFileHelper(self):
-        fn ='ффф.leo'
+        fn = 'ффф.leo'
         g.app.recentFilesManager.writeRecentFilesFileHelper(fn)
         assert g.os_path_exists(fn), fn
         os.remove(fn)

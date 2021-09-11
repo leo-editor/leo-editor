@@ -323,9 +323,9 @@ class TestUndo(LeoUnitTest):
             oldMarked = p.isMarked()
             w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
             u.setUndoTypingParams(p,
-                undo_type = 'typing',
-                oldText = oldText,
-                newText = newText,
+                undo_type='typing',
+                oldText=oldText,
+                newText=newText,
             )
             u.undo()
             self.assertEqual(p.b, oldText)

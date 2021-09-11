@@ -34,7 +34,7 @@ class TestAtFile(LeoUnitTest):
     def spam():
         pass
         ''')
-        assert at.checkPythonSyntax(p,s),'fail 1'
+        assert at.checkPythonSyntax(p, s), 'fail 1'
 
         s2 = textwrap.dedent('''\
     # syntax error
@@ -42,15 +42,15 @@ class TestAtFile(LeoUnitTest):
         pass
         ''')
 
-        assert not at.checkPythonSyntax(p,s2,supress=True),'fail2'
+        assert not at.checkPythonSyntax(p, s2, supress=True), 'fail2'
 
-        if not g.unitTesting: # A hand test of at.syntaxError
-            at.checkPythonSyntax(p,s2)
+        if not g.unitTesting:  # A hand test of at.syntaxError
+            at.checkPythonSyntax(p, s2)
     #@+node:ekr.20210905052021.19: *3* TestAtFile.test_at_directiveKind4
     def test_at_directiveKind4(self):
         c = self.c
         at = c.atFileCommands
-        at.language = 'python' # Usually set by atFile read/write logic.
+        at.language = 'python'  # Usually set by atFile read/write logic.
         table = [
             ('@=', 0, at.noDirective),
             ('@', 0, at.atDirective),
@@ -59,9 +59,9 @@ class TestAtFile(LeoUnitTest):
             ('@\n', 0, at.atDirective),
             ('@all', 0, at.allDirective),
             ('    @all', 4, at.allDirective),
-            ("@c",0, at.cDirective),
-            ("@code",0, at.codeDirective),
-            ("@doc",0, at.docDirective),
+            ("@c", 0, at.cDirective),
+            ("@code", 0, at.codeDirective),
+            ("@doc", 0, at.docDirective),
             ("@end_raw", 0, at.endRawDirective),
             ('@others', 0, at.othersDirective),
             ('    @others', 4, at.othersDirective),
@@ -69,27 +69,27 @@ class TestAtFile(LeoUnitTest):
         ]
         for name in g.globalDirectiveList:
             # Note: entries in g.globalDirectiveList do not start with '@'
-            if name not in ('all','c','code','doc','end_raw','others','raw',):
-                table.append(('@' + name,0,at.miscDirective),)
+            if name not in ('all', 'c', 'code', 'doc', 'end_raw', 'others', 'raw',):
+                table.append(('@' + name, 0, at.miscDirective),)
         for s, i, expected in table:
-            result = at.directiveKind4(s,i)
+            result = at.directiveKind4(s, i)
             self.assertEqual(result, expected, msg=f"i: {i}, s: {s!r}")
     #@+node:ekr.20210905052021.20: *3* TestAtFile.test_at_directiveKind4_new
     def test_at_directiveKind4_new(self):
         c = self.c
         at = c.atFileCommands
-        at.language = 'python' # Usually set by atFile read/write logic.
+        at.language = 'python'  # Usually set by atFile read/write logic.
         table = (
             (at.othersDirective, '@others'),
             (at.othersDirective, '@others\n'),
             (at.othersDirective, '    @others'),
-            (at.miscDirective,   '@tabwidth -4'),
-            (at.miscDirective,   '@tabwidth -4\n'),
-            (at.miscDirective,   '@encoding'),
-            (at.noDirective,     '@encoding.setter'),
-            (at.noDirective,     '@encoding("abc")'),
-            (at.noDirective,     'encoding = "abc"'),
-            (at.noDirective,     '@directive'), # A crucial new test.
+            (at.miscDirective, '@tabwidth -4'),
+            (at.miscDirective, '@tabwidth -4\n'),
+            (at.miscDirective, '@encoding'),
+            (at.noDirective, '@encoding.setter'),
+            (at.noDirective, '@encoding("abc")'),
+            (at.noDirective, 'encoding = "abc"'),
+            (at.noDirective, '@directive'),  # A crucial new test.
         )
         for expected, s in table:
             result = at.directiveKind4(s, 0)
@@ -105,25 +105,25 @@ class TestAtFile(LeoUnitTest):
         val1 = d2.get('path')
         val2 = at.getPathUa(p)
         table = (
-            ('d2.get',val1),
-            ('at.getPathUa',val2),
+            ('d2.get', val1),
+            ('at.getPathUa', val2),
         )
         for kind, val in table:
             self.assertEqual(val, 'abc', msg=kind)
     #@+node:ekr.20210905052021.23: *3* TestAtFile.test_at_parseLeoSentinel
     def test_at_parseLeoSentinel(self):
         c = self.c
-        at=c.atFileCommands # self is a dummy argument.
+        at = c.atFileCommands  # self is a dummy argument.
         table = (
             # start, end, new_df, isThin, encoding
             # pre 4.2 formats...
-            ('#',   '',   False,  True, 'utf-8', '#@+leo-thin-encoding=utf-8.'),
-            ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
+            ('#', '', False, True, 'utf-8', '#@+leo-thin-encoding=utf-8.'),
+            ('#', '', False, False, 'utf-8', '#@+leo-encoding=utf-8.'),
             # 4.2 formats...
-            ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
-            ('/*',  '*/', True,   True, 'utf-8',  r'\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
-            ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
-            ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
+            ('#', '', True, True, 'utf-8', '#@+leo-ver=4-thin-encoding=utf-8,.'),
+            ('/*', '*/', True, True, 'utf-8', r'\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
+            ('#', '', True, True, 'utf-8', '#@+leo-ver=5-thin'),
+            ('#', '', True, True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
         )
         try:
             for start, end, new_df, isThin, encoding, s in table:
@@ -142,14 +142,14 @@ class TestAtFile(LeoUnitTest):
         at = c.atFileCommands
         exists = g.os_path_exists
 
-        path = g.os_path_join(g.app.testDir,'xyzzy')
+        path = g.os_path_join(g.app.testDir, 'xyzzy')
         if exists(path):
             os.remove(path)
 
         assert not exists(path)
         assert not at.remove(path)
 
-        f = open(path,'w')
+        f = open(path, 'w')
         f.write('test')
         f.close()
 
@@ -162,7 +162,7 @@ class TestAtFile(LeoUnitTest):
         at = c.atFileCommands
         # Duplicate init logic...
         at.initCommonIvars()
-        at.scanAllDirectives(c.p) 
+        at.scanAllDirectives(c.p)
         encoding = 'utf-8'
         try:
             # https://stackoverflow.com/questions/23212435
@@ -180,7 +180,7 @@ class TestAtFile(LeoUnitTest):
         at = c.atFileCommands
         # Duplicate init logic...
         at.initCommonIvars()
-        at.scanAllDirectives(c.p) 
+        at.scanAllDirectives(c.p)
         encoding = 'utf-8'
         at.outputFileName = None  # The point of this test, but I'm not sure it matters.
         try:
@@ -199,7 +199,7 @@ class TestAtFile(LeoUnitTest):
         at = c.atFileCommands
         # Duplicate init logic...
         at.initCommonIvars()
-        at.scanAllDirectives(c.p) 
+        at.scanAllDirectives(c.p)
         encoding = 'utf-8'
         try:
             # https://stackoverflow.com/questions/23212435
@@ -236,7 +236,7 @@ class TestAtFile(LeoUnitTest):
             def spam():
                 pass
         """)
-        at.tabNannyNode (p, body=s)
+        at.tabNannyNode(p, body=s)
         # Test 2.
         s2 = textwrap.dedent("""\
             # syntax error

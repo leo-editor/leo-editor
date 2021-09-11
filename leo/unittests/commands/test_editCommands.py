@@ -2444,7 +2444,7 @@ class TestEditCommands(LeoUnitTest):
         after_b = ''.join([
             'first line\n'
             'line 1\n'
-            '    \n',  # Would be stripped in a docstring!   
+            '    \n',  # Would be stripped in a docstring!
             '    line a\n'
             '        line b\n'
             'line c\n'
@@ -2681,7 +2681,7 @@ class TestEditCommands(LeoUnitTest):
             after_sel=("2.3", "5.6"),
             command_name="rectangle-yank",
         )
-        
+
     #@+node:ekr.20201130090918.122: *5* reformat-paragraph list 1 of 5
     def test_reformat_paragraph_list_1_of_5(self):
         """Test case for reformat-paragraph list 1 of 5"""
@@ -3885,16 +3885,16 @@ class TestEditCommands(LeoUnitTest):
         assert ac
         # pylint: disable=no-member
         if c.abbrev_place_start is None or c.abbrev_place_end is None:
-            self.skipTest('no abbreviation settings') # #1345.
-        child = g.findNodeInTree(c,p,'child')
+            self.skipTest('no abbreviation settings')  # #1345.
+        child = g.findNodeInTree(c, p, 'child')
         assert child
         i, j = 0, 0
         # ac.make_script_substitutions(i,j,val)
         # ac.find_place_holder(child,True)
-        new_s,i,j = ac.next_place(child.b,offset=0)
+        new_s, i, j = ac.next_place(child.b, offset=0)
         self.assertEqual(i, 34)
         self.assertEqual(j, 40)
-        new_s2, i, j = ac.next_place(new_s,offset=40)
+        new_s2, i, j = ac.next_place(new_s, offset=40)
         self.assertEqual(i, 54)
         self.assertEqual(j, 58)
     #@+node:ekr.20210905064816.3: *4* TestEditCommands.test_addAbbrevHelper
@@ -3905,29 +3905,29 @@ class TestEditCommands(LeoUnitTest):
 
         # New in Leo 4.10: whitespace (blank,tab,newline) *is* significant in definitions.
         table = (
-            ('ut1','ut1=aa','aa'),
+            ('ut1', 'ut1=aa', 'aa'),
             # ('ut2','ut2 =bb','bb'),
-            ('ut3','ut3=cc=dd','cc=dd'),
-            ('ut4','ut4= ee',' ee'),
-            ('ut5','ut5= ff = gg',' ff = gg'),
-            ('ut6','ut6= hh==ii',' hh==ii'),
-            ('ut7','ut7=j=k','j=k'),
-            ('ut8','ut8=l==m','l==m'),
-            ('@ut1','@ut1=@a','@a'),
+            ('ut3', 'ut3=cc=dd', 'cc=dd'),
+            ('ut4', 'ut4= ee', ' ee'),
+            ('ut5', 'ut5= ff = gg', ' ff = gg'),
+            ('ut6', 'ut6= hh==ii', ' hh==ii'),
+            ('ut7', 'ut7=j=k', 'j=k'),
+            ('ut8', 'ut8=l==m', 'l==m'),
+            ('@ut1', '@ut1=@a', '@a'),
         )
         for name, s, expected in table:
-            for s2, kind in ((s,'(no nl)'),(s+'\n','(nl)')):
+            for s2, kind in ((s, '(no nl)'), (s + '\n', '(nl)')):
                 f(s2, tag='unit-test')
-                result, tag = d.get(name,(None,None),)
+                result, tag = d.get(name, (None, None),)
                 self.assertEqual(result, expected, msg=kind)
     #@+node:ekr.20210905064816.4: *4* TestEditCommands.test_capitalizeHelper
     def test_capitalizeHelper(self):
         c, w = self.c, self.c.frame.body.wrapper
         w.setAllText('# TARGETWORD\n')
         table = (
-            ('cap','Targetword'),
-            ('low','targetword'),
-            ('up','TARGETWORD'),
+            ('cap', 'Targetword'),
+            ('low', 'targetword'),
+            ('up', 'TARGETWORD'),
         )
         for (which, result) in table:
             w.setInsertPoint(5)  # Must be inside the target.
@@ -3946,10 +3946,10 @@ class TestEditCommands(LeoUnitTest):
         p.h = h
         c.selectPosition(p)
         s = 'ABC'
-        c.setBodyString(p,s)
+        c.setBodyString(p, s)
         c.bodyWantsFocus()
         w.setInsertPoint(2)
-        c.outerUpdate() # This fixed the problem.
+        c.outerUpdate()  # This fixed the problem.
         c.k.simulateCommand('delete-char')
         self.assertEqual(p.b, s[:-1])
         c.selectPosition(p.threadBack())
@@ -3962,15 +3962,15 @@ class TestEditCommands(LeoUnitTest):
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redraw(p) # To make node visible
+        c.redraw(p)  # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         try:
             assert w
-            w.setSelectionRange('end','end')
+            w.setSelectionRange('end', 'end')
         finally:
             if 1:
-                c.setHeadString(p,h) # Essential
+                c.setHeadString(p, h)  # Essential
                 c.redraw(p)
     #@+node:ekr.20210905064816.5: *4* TestEditCommands.test_dynamicExpandHelper
     def test_dynamicExpandHelper(self):
@@ -3978,38 +3978,38 @@ class TestEditCommands(LeoUnitTest):
         # A totally wimpy test.
         # And it somehow prints a newline to the console.
         if 0:
-            c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
+            c.abbrevCommands.dynamicExpandHelper(event=None, prefix='', aList=[], w=None)
     #@+node:ekr.20210905064816.6: *4* TestEditCommands.test_extendHelper
     def test_extendHelper(self):
         c = self.c
-        ec = c.editCommands ; w = c.frame.body.wrapper
+        ec = c.editCommands; w = c.frame.body.wrapper
 
-        for i,j,python in (
+        for i, j, python in (
             # ('1.0','4.5',False),
-            (5,50,True),
+            (5, 50, True),
         ):
             extend = True
-            ec.moveSpot = None # It's hard to init this properly.
-            ec.extendHelper(w,extend,j)
-            i2,j2 = w.getSelectionRange()
+            ec.moveSpot = None  # It's hard to init this properly.
+            ec.extendHelper(w, extend, j)
+            i2, j2 = w.getSelectionRange()
     #@+node:ekr.20210905064816.7: *4* TestEditCommands.test_findWord
     def test_findWord(self):
         c = self.c
         e, k, w = c.editCommands, c.k, c.frame.body.wrapper
         w.setAllText('start\ntargetWord\n')
         w.setInsertPoint(0)
-        k.arg = 't' # 'targetWord'
+        k.arg = 't'  # 'targetWord'
         e.w = w
         e.oneLineFlag = False
         e.findWord1(event=None)
-        i,j = w.getSelectionRange()
+        i, j = w.getSelectionRange()
         self.assertEqual(i, 6)
     #@+node:ekr.20210905064816.8: *4* TestEditCommands.test_findWordInLine
     def test_findWordInLine(self):
         c = self.c
         e, k, w = c.editCommands, c.k, c.frame.body.wrapper
         w.setAllText('abc\ntargetWord\n')
-        k.arg = 't' # 'targetWord'
+        k.arg = 't'  # 'targetWord'
         w.setInsertPoint(0)
         e.w = w
         e.oneLineFlag = False
@@ -4048,10 +4048,10 @@ class TestEditCommands(LeoUnitTest):
         n = c.frame.tree.redrawCount
         # pylint: disable=no-member
         c.insertHeadline()
-        c.outerUpdate() # Not actually needed, but should not matter.
+        c.outerUpdate()  # Not actually needed, but should not matter.
         n2 = c.frame.tree.redrawCount
         self.assertEqual(n2, n + 1)
-        
+
     #@+node:ekr.20210905064816.15: *4* TestEditCommands.test_most_toggle_commands
     def test_most_toggle_commands(self):
         c, k = self.c, self.c.k
@@ -4063,44 +4063,44 @@ class TestEditCommands(LeoUnitTest):
             # 'toggle-mini-buffer'),
             # 'toggle-split-direction'),
         table = [
-            (k,'abbrevOn','toggle-abbrev-mode'),
-            (ed,'extendMode','toggle-extend-mode'),
+            (k, 'abbrevOn', 'toggle-abbrev-mode'),
+            (ed, 'extendMode', 'toggle-extend-mode'),
         ]
-        for obj,ivar,command in table:
-            val1 = getattr(obj,ivar)
+        for obj, ivar, command in table:
+            val1 = getattr(obj, ivar)
             k.simulateCommand(command)
-            val2 = getattr(obj,ivar)
-            self.assertEqual(val2 , not val1, msg=command)
+            val2 = getattr(obj, ivar)
+            self.assertEqual(val2, not val1, msg=command)
             k.simulateCommand(command)
             val3 = getattr(obj, ivar)
             self.assertEqual(val3, val1, msg=command)
     #@+node:ekr.20210905064816.10: *4* TestEditCommands.test_moveToHelper
     def test_moveToHelper(self):
         c = self.c
-        ec = c.editCommands ; w = c.frame.body.wrapper
+        ec = c.editCommands; w = c.frame.body.wrapper
         for i, j, python in (
             #('1.0','4.5',False),
-            (5,50,True),
+            (5, 50, True),
         ):
             event = None
             extend = True
             ec.moveSpot = None
             w.setInsertPoint(i)
-            ec.moveToHelper (event,j,extend)
-            i2,j2 = w.getSelectionRange()
+            ec.moveToHelper(event, j, extend)
+            i2, j2 = w.getSelectionRange()
             self.assertEqual(i, i2)
             self.assertEqual(j, j2)
-            w.setSelectionRange(0,0,insert=None)
+            w.setSelectionRange(0, 0, insert=None)
     #@+node:ekr.20210905064816.11: *4* TestEditCommands.test_moveUpOrDownHelper
     def test_moveUpOrDownHelper(self):
         c = self.c
         ec = c.editCommands
         w = c.frame.body.wrapper
-        for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
+        for i, result, direction in (('5.8', '4.8', 'up'), ('5.8', '6.8', 'down')):
             w.setInsertPoint(i)
             ec.moveUpOrDownHelper(event=None, direction=direction, extend=False)
             w.getSelectionRange()
-            
+
     #@+node:ekr.20210905064816.21: *4* TestEditCommands.test_paste_and_undo_in_headline__at_end
     def test_paste_and_undo_in_headline__at_end(self):
         c = self.c
@@ -4109,52 +4109,52 @@ class TestEditCommands(LeoUnitTest):
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redrawAndEdit(p) # To make node visible
+        c.redrawAndEdit(p)  # To make node visible
         w = c.edit_widget(p)
         assert w
-        w.setSelectionRange('end','end')
+        w.setSelectionRange('end', 'end')
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
+        w.setSelectionRange('end', 'end')
         if g.app.gui.guiName() == 'curses':
             c.frame.pasteText(event=g.Bunch(widget=w))
         else:
             stroke = k.getStrokeForCommandName('paste-text')
             if stroke is None:
-                self.skipTest('no binding for paste-text') # #1345
+                self.skipTest('no binding for paste-text')  # #1345
             k.manufactureKeyPressForCommandName(w, 'paste-text')
-            g.app.gui.event_generate(c,'\n','Return',w)
-        self.assertEqual(p.h,  h + paste)
-        k.manufactureKeyPressForCommandName(w,'undo')
+            g.app.gui.event_generate(c, '\n', 'Return', w)
+        self.assertEqual(p.h, h + paste)
+        k.manufactureKeyPressForCommandName(w, 'undo')
         self.assertEqual(p.h, h)
     #@+node:ekr.20210905064816.22: *4* TestEditCommands.test_paste_and_undo_in_headline__with_selection
     def test_paste_and_undo_in_headline__with_selection(self):
         c = self.c
         k = c.keyHandler
-        frame = c.frame ; tree = frame.tree
+        frame = c.frame; tree = frame.tree
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redraw(p) # To make node visible
+        c.redraw(p)  # To make node visible
         tree.editLabel(p)
         w = c.edit_widget(p)
         assert w
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('1.1','1.2')
+        w.setSelectionRange('1.1', '1.2')
         if g.app.gui.guiName() == 'curses':
             c.frame.pasteText(event=g.Bunch(widget=w))
         else:
             stroke = k.getStrokeForCommandName('paste-text')
             if stroke is None:
-                self.skipTest('no binding for paste-text') # #1345
-            k.manufactureKeyPressForCommandName(w,'paste-text')
-            g.app.gui.event_generate(c,'\n','Return',w)
+                self.skipTest('no binding for paste-text')  # #1345
+            k.manufactureKeyPressForCommandName(w, 'paste-text')
+            g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h[0] + paste + h[2:])
-        k.manufactureKeyPressForCommandName(w,'undo')
+        k.manufactureKeyPressForCommandName(w, 'undo')
         self.assertEqual(p.h, h)
-        
+
     #@+node:ekr.20210905064816.23: *4* TestEditCommands.test_paste_at_end_of_headline
     def test_paste_at_end_of_headline(self):
         c = self.c
@@ -4163,22 +4163,22 @@ class TestEditCommands(LeoUnitTest):
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redrawAndEdit(p) # To make node visible
+        c.redrawAndEdit(p)  # To make node visible
         w = c.edit_widget(p)
-        g.app.gui.set_focus(c,w)
+        g.app.gui.set_focus(c, w)
         assert w
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        g.app.gui.set_focus(c,w)
-        w.setSelectionRange('end','end')
+        g.app.gui.set_focus(c, w)
+        w.setSelectionRange('end', 'end')
         if g.app.gui.guiName() == 'curses':
             c.frame.pasteText(event=g.Bunch(widget=w))
         else:
             stroke = k.getStrokeForCommandName('paste-text')
             if stroke is None:
-                self.skipTest('no binding for paste-text') # #1345
-            k.manufactureKeyPressForCommandName(w,'paste-text')
-            g.app.gui.event_generate(c,'\n','Return',w)
+                self.skipTest('no binding for paste-text')  # #1345
+            k.manufactureKeyPressForCommandName(w, 'paste-text')
+            g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
     #@+node:ekr.20210905064816.24: *4* TestEditCommands.test_paste_from_menu_into_headline_sticks
     def test_paste_from_menu_into_headline_sticks(self):
@@ -4190,10 +4190,10 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(p)
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        w.setSelectionRange('end','end',insert='end')
+        w.setSelectionRange('end', 'end', insert='end')
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        event = g.app.gui.create_key_event(c,w=w)
+        event = g.app.gui.create_key_event(c, w=w)
         c.frame.pasteText(event)
         # Move around and and make sure it doesn't change.
         try:
@@ -4204,7 +4204,7 @@ class TestEditCommands(LeoUnitTest):
             self.assertEqual(p.h, h + paste)
         finally:
             if 1:
-                c.setHeadString(p,h) # Essential
+                c.setHeadString(p, h)  # Essential
                 c.redraw(p)
     #@+node:ekr.20210905064816.25: *4* TestEditCommands.test_return_ends_editing_of_headline
     def test_return_ends_editing_of_headline(self):
@@ -4213,24 +4213,24 @@ class TestEditCommands(LeoUnitTest):
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redraw(p) # To make node visible
+        c.redraw(p)  # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         wName = g.app.gui.widget_name(w)
-        assert wName.startswith('head'),'w.name:%s' % wName
-        g.app.gui.event_generate(c,'\n','Return',w)
+        assert wName.startswith('head'), 'w.name:%s' % wName
+        g.app.gui.event_generate(c, '\n', 'Return', w)
         c.outerUpdate()
-        assert w != c.get_focus(),'oops2: focus in headline'
+        assert w != c.get_focus(), 'oops2: focus in headline'
     #@+node:ekr.20210905064816.12: *4* TestEditCommands.test_scrollHelper
     def test_scrollHelper(self):
         c = self.c
         ec = c.editCommands
         w = c.frame.body.wrapper
 
-        for direction in ('up','down'):
-            for distance in ('line','page','half-page'):
-                event = g.app.gui.create_key_event(c,w=w)
-                ec.scrollHelper(event,direction,distance)
+        for direction in ('up', 'down'):
+            for distance in ('line', 'page', 'half-page'):
+                event = g.app.gui.create_key_event(c, w=w)
+                ec.scrollHelper(event, direction, distance)
     #@+node:ekr.20210905064816.26: *4* TestEditCommands.test_selecting_new_node_retains_paste_in_headline
     def test_selecting_new_node_retains_paste_in_headline(self):
         c, k = self.c, self.c.k
@@ -4238,13 +4238,13 @@ class TestEditCommands(LeoUnitTest):
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redraw(p) # To make node visible
+        c.redraw(p)  # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        w.setSelectionRange('end','end')
+        w.setSelectionRange('end', 'end')
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
+        w.setSelectionRange('end', 'end')
         k.manufactureKeyPressForCommandName(w, 'paste-text')
         c.selectPosition(p.visBack(c))
         self.assertEqual(p.h, h + paste)
@@ -4261,30 +4261,30 @@ class TestEditCommands(LeoUnitTest):
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redraw(p) # To make node visible
+        c.redraw(p)  # To make node visible
         tree.editLabel(p)
         w = c.edit_widget(p)
-        w.setSelectionRange('end','end')
+        w.setSelectionRange('end', 'end')
         # char, shortcut.
-        g.app.gui.event_generate(c,'X','Shift+X',w)
-        g.app.gui.event_generate(c,'Y','Shift+Y',w)
-        g.app.gui.event_generate(c,'Z','Shift+Z',w)
-        g.app.gui.event_generate(c,'\n','Return',w)
+        g.app.gui.event_generate(c, 'X', 'Shift+X', w)
+        g.app.gui.event_generate(c, 'Y', 'Shift+Y', w)
+        g.app.gui.event_generate(c, 'Z', 'Shift+Z', w)
+        g.app.gui.event_generate(c, '\n', 'Return', w)
         expected = h + 'XYZ'
         self.assertEqual(p.h, expected)
-        k.manufactureKeyPressForCommandName(w,'undo')
+        k.manufactureKeyPressForCommandName(w, 'undo')
         self.assertEqual(p.h, h)
     #@+node:ekr.20210905064816.13: *4* TestEditCommands.test_setMoveCol
     def test_setMoveCol(self):
         c = self.c
         ec, w = c.editCommands, c.frame.body.wrapper
         table = (
-            ('1.0',0),
-            (5,5),
+            ('1.0', 0),
+            (5, 5),
         )
         w.setAllText('1234567890')
-        for spot,result in table:
-            ec.setMoveCol(w,spot)
+        for spot, result in table:
+            ec.setMoveCol(w, spot)
             self.assertEqual(ec.moveSpot, result)
             self.assertEqual(ec.moveCol, result)
     #@+node:ekr.20210905064816.14: *4* TestEditCommands.test_toggle_extend_mode
@@ -4348,20 +4348,20 @@ class TestEditCommands(LeoUnitTest):
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
-        c.redrawAndEdit(p) # To make the node visible.
+        c.redrawAndEdit(p)  # To make the node visible.
         w = c.edit_widget(p)
         assert w
         wName = g.app.gui.widget_name(w)
         self.assertTrue(wName.startswith('head'))
-        w.setSelectionRange('end','end')
-        g.app.gui.event_generate(c,'X','Shift+X',w)
-        g.app.gui.event_generate(c,'Y','Shift+Y',w)
-        g.app.gui.event_generate(c,'Z','Shift+Z',w)
-        g.app.gui.event_generate(c,'\n','Return',w)
+        w.setSelectionRange('end', 'end')
+        g.app.gui.event_generate(c, 'X', 'Shift+X', w)
+        g.app.gui.event_generate(c, 'Y', 'Shift+Y', w)
+        g.app.gui.event_generate(c, 'Z', 'Shift+Z', w)
+        g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + 'XYZ')
         if g.app.gui.guiName() != 'nullGui':
             self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
-        k.manufactureKeyPressForCommandName(w,'undo')
+        k.manufactureKeyPressForCommandName(w, 'undo')
         if g.app.gui.guiName() != 'nullGui':
             self.assertEqual(c.undoer.redoMenuLabel, 'Redo Typing')
         self.assertEqual(p.h, h)
@@ -4373,14 +4373,14 @@ class TestEditCommands(LeoUnitTest):
         p = c.rootPosition().insertAfter()
         p.h = h
         c.setBodyString(p, 'a')
-        p.v.iconVal =  p.computeIcon()  # To suppress redraw!
-        c.redraw(p) # To make node visible
+        p.v.iconVal = p.computeIcon()  # To suppress redraw!
+        c.redraw(p)  # To make node visible
         c.bodyWantsFocus()
         n = c.frame.tree.redrawCount
         g.app.gui.event_generate(c, 'a', 'a', w)
         n2 = c.frame.tree.redrawCount
         self.assertEqual(n2, n)
-        
+
     #@+node:ekr.20210905064816.30: *4* TestEditCommands.test_undoing_insert_node_restores_previous_node_s_body_text
     def test_undoing_insert_node_restores_previous_node_s_body_text(self):
         c = self.c
@@ -4389,7 +4389,7 @@ class TestEditCommands(LeoUnitTest):
         p.h = h
         c.selectPosition(p)
         body = 'This is a test'
-        c.setBodyString(p,body)
+        c.setBodyString(p, body)
         # pylint: disable=no-member
         self.assertEqual(p.b, body)
         c.insertHeadline()
