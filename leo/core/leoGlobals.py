@@ -7660,7 +7660,6 @@ def run_coverage_tests(module='', filename=''):
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
-    # command = "leo.core.leoAst leo\core\leoAst.py"
     command = f"{prefix} {module} {filename}"
     g.execute_shell_commands(command, trace=False)
 #@+node:ekr.20200221050038.1: *3* g.run_unit_test_in_separate_process
