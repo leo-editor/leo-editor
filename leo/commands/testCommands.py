@@ -17,9 +17,9 @@ def cover_all(event=None):
     table = (
         ('leo.core.leoApp', 'leo/unittests/core/test_leoApp.py'),
         ('leo.core.leoAst', 'leo/unittests/core/test_leoAst.py'),
-        ('leo.core.leoAtFile', 'leo/core/leoAtFile.py'),
+        ('leo.core.leoAtFile', 'leo/unittests/core/test_leoAtFile.py'),
         ('leo.core.leoBridge', 'leo/unittests/core/test_leoBridge.py'),
-        ('leo.commands.checkerCommands', 'leo/unittests/commands/test_leoCheckerCommands.py'),
+        ('leo.commands.checkerCommands', 'leo/unittests/commands/test_checkerCommands.py'),
         ('leo.core.leoColorizer', 'leo/unittests/core/test_leoColorizer.py'),
         ('leo.core.leoCommands', 'leo/unittests/core/test_leoCommands.py'),
         ('leo.core.leoConfig', 'leo/unittests/core/test_leoConfig.py'),
