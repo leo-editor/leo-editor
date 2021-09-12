@@ -428,7 +428,6 @@ def viewrendered(event):
     vr._ns_id = '_leo_viewrendered' # for free_layout load/save
     vr.splitter = splitter = c.free_layout.get_top_splitter()
     if splitter:
-        ### Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
         vr.store_layout('closed')
         sizes = split_last_sizes(splitter.sizes())
         ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
@@ -951,7 +950,6 @@ if QtWidgets: # NOQA
             w.show()
             # Special inits for text widgets...
             if w.__class__ == QtWidgets.QTextBrowser:
-                ### WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
                 text_name = 'body-text-renderer'
                 w.setObjectName(text_name)
                 # Do not do this! It interferes with themes.
