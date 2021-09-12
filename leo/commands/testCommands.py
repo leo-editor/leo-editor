@@ -161,7 +161,7 @@ def cover_vim(event=None):
 def test_all(event=None):
     """Run all unit tests in leo.unittests."""
     g.run_unit_tests()
-    g.es_print('all tests complete')
+    # g.es_print('test-all: all tests complete')
 #@+node:ekr.20210907103024.12: *3* test-app
 @g.command('test-app')
 def test_app(event=None):
