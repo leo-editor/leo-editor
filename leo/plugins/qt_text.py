@@ -491,6 +491,7 @@ if QtWidgets:
             # #1286
                 self.textChanged.connect(self.onTextChanged)
             self.cursorPositionChanged.connect(self.highlightCurrentLine)
+            self.textChanged.connect(self.highlightCurrentLine)
             self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
