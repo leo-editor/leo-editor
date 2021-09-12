@@ -4510,7 +4510,9 @@ class TabbedFrameFactory:
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        if True:  # #1327: Must always do this.
+        if not g.unitTesting:
+            # #1327: Must always do this.
+            # 2021/09/12: but not for new unit tests!
             dw.show()
             tabw.show()
         return dw

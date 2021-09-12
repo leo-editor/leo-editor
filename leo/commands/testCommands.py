@@ -236,7 +236,8 @@ def test_globals(event=None):
 @g.command('test-gui')
 def test_gui(event=None):
     """Run all gui-related unit tests."""
-    g.run_unit_tests('leo.unittests.test_gui.TestGui')
+    g.run_unit_tests('leo.unittests.test_gui.TestNullGui')
+    g.run_unit_tests('leo.unittests.test_gui.TestQtGui')
 #@+node:ekr.20210907103024.24: *3* test-import
 @g.command('test-import')
 def test_import(event=None):

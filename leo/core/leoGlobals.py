@@ -5842,9 +5842,11 @@ def checkUnicode(s: str, encoding=None):
     these errors, but they might arise as the result of problems in
     user-defined plugins or scripts.
     """
+    tag = 'g.checkUnicode'
+    if s is None and g.unitTesting:
+        return ''
     if isinstance(s, str):
         return s
-    tag = 'g.checkUnicode'
     if not isinstance(s, bytes):
         g.error(f"{tag}: unexpected argument: {s!r}")
         return ''
@@ -7702,6 +7704,8 @@ def run_unit_tests(tests=None, verbose=False):
     os.chdir(leo_editor_dir)
     verbosity = '-v' if verbose else ''
     command = f"python -m unittest {verbosity} {tests or ''} "
+    # pytest reports too many errors.
+    # command = f"python -m pytest --pdb {tests or ''}"
     g.execute_shell_commands(command, trace=False)
 #@+node:ekr.20120311151914.9916: ** g.Urls
 unl_regex = re.compile(r'\bunl:.*$')

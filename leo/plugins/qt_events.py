@@ -97,6 +97,8 @@ class LeoQtEventFilter(QtCore.QObject):
         c, k = self.c, self.c.k
         #
         # Handle non-key events first.
+        if not g.app:
+            return False  # For unit tests, but g.unitTesting may be False!
         if not self.c.p:
             return False  # Startup.
         #

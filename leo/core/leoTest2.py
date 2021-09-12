@@ -18,7 +18,7 @@ from leo.core import leoApp
 
 #@+others
 #@+node:ekr.20201130195111.1: ** function.create_app
-def create_app():
+def create_app(gui_name='null'):
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
     
@@ -34,7 +34,10 @@ def create_app():
     from leo.core import leoConfig
     from leo.core import leoNodes
     from leo.core import leoCommands
-    from leo.core import leoGui
+    from leo.core.leoGui import NullGui
+    if gui_name == 'qt':
+        g.unitTesting = True  # Suppress the splash screen and other visible effects.
+        from leo.plugins.qt_gui import LeoQtGui
     t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = lm = leoApp.LoadManager()
@@ -46,7 +49,12 @@ def create_app():
     g.app.db = g.NullObject('g.app.db')
     g.app.pluginsController = g.NullObject('g.app.pluginsController')
     g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
-    g.app.gui = leoGui.NullGui()
+    if gui_name == 'null':
+        g.app.gui = NullGui()
+    elif gui_name == 'qt':
+        g.app.gui = LeoQtGui()
+    else:
+        raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
     # Create a dummy commander, to do the imports in c.initObjects.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
@@ -80,7 +88,7 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
     @classmethod
     def setUpClass(cls):
-        create_app()
+        create_app(gui_name='null')
 
     def setUp(self):
         """Create the nodes in the commander."""
