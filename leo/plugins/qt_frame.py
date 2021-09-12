@@ -1504,7 +1504,7 @@ class LeoQtBody(leoFrame.LeoBody):
         d = c.frame.body.wrapper.widget.document()
         option = QtGui.QTextOption()
         if c.frame.body.colorizer.showInvisibles:
-            option.setFlags(TextOption.Flag.ShowTabsAndSpaces)
+            option.setFlags(option.Flag.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
     #@+node:ekr.20140901062324.18563: *5* LeoQtBody.set_widget
     def set_widget(self):
