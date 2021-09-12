@@ -1,5 +1,5 @@
-@language python
-@others
+
 def spam():
-    passdef eggs():
+    pass
+def eggs():
     pass

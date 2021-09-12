@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20080904102243.2: * @file at-file-line-number-test.py
+#@+node:ekr.20080904102243.2: * @file ../test/external_files/at-file-line-number-test.py
 #@@language python
 #@@tabwidth -4
 #@+others

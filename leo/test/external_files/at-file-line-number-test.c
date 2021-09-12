@@ -1,5 +1,5 @@
 //@+leo-ver=5-thin
-//@+node:ekr.20160403123754.1: * @file at-file-line-number-test.c
+//@+node:ekr.20160403123754.1: * @file ../test/external_files/at-file-line-number-test.c
 //@@language c
 //@@tabwidth -4
 //@+others
