@@ -28,6 +28,9 @@ def create_app(gui_name='null'):
     """
     trace = False
     t1 = time.process_time()
+    #
+    # Set g.unitTesting *early*, for guards, to suppress the splash screen, etc.
+    g.unitTesting = True
     # Create g.app now, to avoid circular dependencies.
     g.app = leoApp.LeoApp()
     # Late imports.
@@ -36,7 +39,6 @@ def create_app(gui_name='null'):
     from leo.core import leoCommands
     from leo.core.leoGui import NullGui
     if gui_name == 'qt':
-        g.unitTesting = True  # Suppress the splash screen and other visible effects.
         from leo.plugins.qt_gui import LeoQtGui
     t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
@@ -66,6 +68,7 @@ def create_app(gui_name='null'):
     lm.globalBindingsDict = bindings_d
     c.config.settingsDict = settings_d
     c.config.bindingsDict = bindings_d
+    assert g.unitTesting == True  # Defensive.
     t4 = time.process_time()
     # Trace times. This trace happens only once:    
     #     imports: 0.016
@@ -100,6 +103,8 @@ class LeoUnitTest(unittest.TestCase):
         # Do the import here to avoid circular dependencies.
         from leo.core import leoCommands
         from leo.core.leoGui import NullGui
+        # Set g.unitTesting *early*, for guards.
+        g.unitTesting = True
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
         self.c = c = leoCommands.Commands(fileName=None, gui=NullGui())
@@ -110,11 +115,9 @@ class LeoUnitTest(unittest.TestCase):
         self.settings_p.h = '@settings'
         # Select the 'root' node.
         c.selectPosition(self.root_p)
-        g.unitTesting = True
 
     def tearDown(self):
         self.c = None
-        g.unitTesting = False
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self):
         p = self.c.p
