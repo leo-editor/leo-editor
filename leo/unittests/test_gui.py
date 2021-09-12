@@ -67,6 +67,8 @@ class TestQtGui(LeoUnitTest):
     #@+node:ekr.20210912133358.1: *3* TestQtGui.test_qt_enums
     def test_qt_enums(self):
 
+        # https://github.com/leo-editor/leo-editor/issues/1973 list of enums
+
         if not QtCore and QtCore.Qt:
             self.skipTest('no qt')
         table = (

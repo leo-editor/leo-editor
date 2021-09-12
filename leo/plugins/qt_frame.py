@@ -24,7 +24,7 @@ from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
 from leo.core.leoQt import Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
 from leo.core.leoQt import Shadow, Shape
-from leo.core.leoQt import TextInteractionFlag, TextOption, ToolBarArea, Type, WindowState, WrapMode
+from leo.core.leoQt import TextInteractionFlag, ToolBarArea, Type, WindowState, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
