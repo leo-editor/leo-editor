@@ -23,7 +23,8 @@ from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
 from leo.core.leoQt import Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
-from leo.core.leoQt import Shadow, Shape, TextInteractionFlag, ToolBarArea, Type, WindowState, WrapMode
+from leo.core.leoQt import Shadow, Shape
+from leo.core.leoQt import TextInteractionFlag, TextOption, ToolBarArea, Type, WindowState, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
@@ -1503,7 +1504,8 @@ class LeoQtBody(leoFrame.LeoBody):
         d = c.frame.body.wrapper.widget.document()
         option = QtGui.QTextOption()
         if c.frame.body.colorizer.showInvisibles:
-            option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
+            g.trace(option)
+            option.setFlags(TextOption.ShowTabsAndSpaces) ### QtGui.QTextOption.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
     #@+node:ekr.20140901062324.18563: *5* LeoQtBody.set_widget
     def set_widget(self):
