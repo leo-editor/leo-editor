@@ -57,6 +57,8 @@ def create_app(gui_name='null'):
         raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
     # Create a dummy commander, to do the imports in c.initObjects.
+    # Always use a null gui to avoid screen flash.
+    # setUp will create another commander.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
     # Create minimal config dictionaries.
     settings_d, bindings_d = lm.createDefaultSettingsDicts()
@@ -91,12 +93,16 @@ class LeoUnitTest(unittest.TestCase):
         create_app(gui_name='null')
 
     def setUp(self):
-        """Create the nodes in the commander."""
+        """
+        Create a commander using a **null** gui, regardless of g.app.gui.
+        Create the nodes in the commander.
+        """
         # Do the import here to avoid circular dependencies.
         from leo.core import leoCommands
+        from leo.core.leoGui import NullGui
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        self.c = c = leoCommands.Commands(fileName=None, gui=NullGui())
         # Init the 'root' and '@settings' nodes.
         self.root_p = c.rootPosition()
         self.root_p.h = 'root'

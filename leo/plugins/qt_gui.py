@@ -273,6 +273,8 @@ class LeoQtGui(leoGui.LeoGui):
         return qt_frame.LeoQtFrame(c, title, gui)
 
     def createSpellTab(self, c, spellHandler, tabName):
+        if g.unitTesting:
+            return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
     #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
@@ -375,7 +377,8 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18494: *4* qt_gui.runAskLeoIDDialog (not used)
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return None
         message = (
             "leoID.txt not found\n\n" +
             "Please enter an id that identifies you uniquely.\n" +
@@ -391,7 +394,8 @@ class LeoQtGui(leoGui.LeoGui):
     def runAskOkCancelNumberDialog(
         self, c, title, message, cancelButtonText=None, okButtonText=None):
         """Create and run askOkCancelNumber dialog ."""
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return None
         # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
         d = QtWidgets.QInputDialog()
         d.setStyleSheet(c.active_stylesheet)
@@ -416,7 +420,8 @@ class LeoQtGui(leoGui.LeoGui):
 
         wide - edit a long string
         """
-        if g.unitTesting: return None
+        if g.unitTesting:
+            return None
         d = QtWidgets.QInputDialog()
         d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
@@ -435,7 +440,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runAskOkDialog(self, c, title, message=None, text="Ok"):
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
-            return
+            return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
@@ -544,6 +549,8 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title, startdir):
         """Create and run an Qt open directory dialog ."""
+        if g.unitTesting:
+            return None
         parent = None
         d = QtWidgets.QFileDialog()
         self.attachLeoIcon(d)
@@ -599,7 +606,10 @@ class LeoQtGui(leoGui.LeoGui):
         buttons=None
     ):
         """Dispay a modal TkPropertiesDialog"""
-        if data is None: data = {}
+        if g.unitTesting:
+            return None, None
+        if data is None:
+            data = {}
         g.warning('Properties menu not supported for Qt gui')
         result = 'Cancel'
         return result, data
@@ -607,10 +617,10 @@ class LeoQtGui(leoGui.LeoGui):
     def runSaveFileDialog(
         self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
         """Create and run an Qt save file dialog ."""
-        if filetypes is None:
-            filetypes = []
         if g.unitTesting:
             return ''
+        if filetypes is None:
+            filetypes = []
         parent = None
         filter_ = self.makeFilter(filetypes)
         d = QtWidgets.QFileDialog()

@@ -5843,7 +5843,7 @@ def checkUnicode(s: str, encoding=None):
     user-defined plugins or scripts.
     """
     tag = 'g.checkUnicode'
-    if s is None and g.unitTesting:
+    if s is None:  # For unit tests, but g.unitTesting may be False!
         return ''
     if isinstance(s, str):
         return s
