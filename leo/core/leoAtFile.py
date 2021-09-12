@@ -2788,7 +2788,8 @@ class AtFile:
         '''Issue an error while writing an @<file> node.'''
         at = self
         if at.errors == 0:
-            g.es_error("errors writing: " + at.targetFileName)
+            fn = at.targetFileName or 'unnamed file'
+            g.es_error(f"errors writing: {fn}")
         at.error(message)
         at.addToOrphanList(at.root)
     #@+node:ekr.20041005105605.218: *5* at.writeException
