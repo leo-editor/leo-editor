@@ -6,7 +6,7 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20100128091412.5380: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting # Not for unit testing.
+    ok = not g.unitTesting # Not for unit testing.
     if ok:
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)

@@ -2822,7 +2822,7 @@ class KeyHandlerClass:
             # This was what caused the unwanted scrolling.
             k.showStateAndMode(setFocus=setFocus)
         k.resetCommandHistory()
-    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName
+    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (only for unit tests!)
     def manufactureKeyPressForCommandName(self, w, commandName):
         """
         Implement a command by passing a keypress to the gui.
@@ -2830,7 +2830,25 @@ class KeyHandlerClass:
         **Only unit tests use this method.**
         """
         c, k = self.c, self
+        # Unit tests do not ordinarily read settings files.
         stroke = k.getStrokeForCommandName(commandName)
+        if stroke is None:
+            # Create the stroke and binding info data.
+            stroke = g.KeyStroke('Ctrl+F1')
+            bi = g.BindingInfo(
+                kind='manufactured-binding',
+                commandName=commandName,
+                func=None,
+                pane='all',
+                stroke=stroke,
+            )
+            # Make the binding!
+            # k.masterBindingsDict keys: scope names; values: masterBindingDicts (3)
+            # Interior masterBindingDicts: Keys are strokes; values are BindingInfo objects.
+            d = k.masterBindingsDict
+            d2 = d.get('all', {})
+            d2 [stroke] = bi
+            d ['all'] = d2
         assert g.isStroke(stroke), (commandName, stroke.__class__.__name__)
         shortcut = stroke.s
         shortcut = g.checkUnicode(shortcut)
@@ -2839,7 +2857,7 @@ class KeyHandlerClass:
             g.app.gui.event_generate(c, None, shortcut, w)
         else:
             message = f"no shortcut for {commandName}"
-            if g.app.unitTesting:
+            if g.unitTesting:
                 raise AttributeError(message)
             g.error(message)
     #@+node:ekr.20071212104050: *4* k.overrideCommand
@@ -3376,12 +3394,10 @@ class KeyHandlerClass:
         return False
     #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
     def getPaneBinding(self, event):
-
         c, k, state = self.c, self, self.unboundKeyAction
         stroke, w = event.stroke, event.w
         if not g.assert_is(stroke, g.KeyStroke):
             return None
-        #
         # #1757: Always insert plain keys in the body.
         #        Valid because mode bindings have already been handled.
         if (

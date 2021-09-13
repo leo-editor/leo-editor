@@ -7,7 +7,7 @@ tagCount = 0
 #@+node:ekr.20050303073056.1: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    ok = not g.unitTesting
     if ok:
         g.registerHandler("all", trace_tags)
         g.plugin_signon(__name__)

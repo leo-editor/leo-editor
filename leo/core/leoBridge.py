@@ -270,14 +270,12 @@ class BridgeController:
                 self.reopen_cachers()
             else:
                 g.app.db = g.NullObject()
-                    # g.TracingNullObject(tag='g.app.db')
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
             # Leo 6.3: support leoInteg.
             g.app.windowList.append(c.frame)
             if not self.useCaches:
                 c.db = g.NullObject()
-                    # g.TracingNullObject(tag='c.db')
             g.app.nodeIndices.compute_last_index(c)
                 # New in Leo 5.1. An alternate fix for bug #130.
                 # When using a bridge Leo might open a file, modify it,

@@ -9890,387 +9890,255 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
-#@+node:ekr.20210809085711.1: ** From leoGlobals.py
-#@+node:ekr.20210809093522.1: *3* g.adjustTripleString
-def adjustTripleString(s, tab_width):
-    """Remove leading indentation from a triple-quoted string.
+#@+node:ekr.20210815060206.1: ** From leoDist.leo
 
-    This works around the fact that Leo nodes can't represent underindented strings.
-    """
-    # Compute the minimum leading whitespace of all non-blank lines.
-    lines = g.splitLines(s)
-    first, w = True, 0
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            # The sign of w2 does not matter.
-            w2 = abs(g.computeWidth(lws, tab_width))
-            if w2 == 0:
-                return s
-            if first or w2 < w:
-                w = w2
-                first = False
-    if w == 0:
-        return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
-#@+node:ekr.20050211120242.2: *3* g.removeExtraLws
-def removeExtraLws(s: str, tab_width):
-    """
-    Remove extra indentation from one or more lines.
-
-    Warning: used by getScript.
-    """
-    lines = g.splitLines(s)
-    # Find the first non-blank line and compute w, the width of its leading whitespace.
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            w = g.computeWidth(lws, tab_width)
-            break
-    else: return s
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
-    return ''.join(result)
-#@+node:ekr.20210327062138.1: ** From leoRst.py
-#@+node:ekr.20120219194520.10444: *3* html parser classes
-# Perhaps mod_http used to use these.
-#@+node:ekr.20120219194520.10445: *4*  class LinkAnchorParserClass (HTMLParser)
-class LinkAnchorParserClass(HTMLParser.HTMLParser):
-    """
-    The base class to recognize anchors and links in HTML documents. A
-    special marker is the "node_marker" which marks the border between node
-    and the next.
-
-    The parser classes are used to construct the html code for nodes.
-
-    The algorithm has two phases:
-    - Phase 1 AnchorHtmlParserClass: gets the html code for each node.
-    - Phase 2 LinkHtmlParserClass: finds all links and checks whethr
-      these links need to be modified.
-    """
-    @others
-#@+node:ekr.20120219194520.10446: *5* __init__
-def __init__(self, rst, p):
-    """Ctor for the LinkAnchorParserClass class."""
-    super().__init__()
-    self.rst = rst
-    self.p = p.copy()
-    # Set ivars from options.
-    # This works only if we don't change nodes!
-    self.node_begin_marker = rst.getOption(p, 'node_begin_marker')
-    self.clear_http_attributes = rst.getOption(p, 'clear_http_attributes')
-    self.current_file = rst.outputFileName
-#@+node:ekr.20120219194520.10447: *5* is_anchor
-def is_anchor(self, tag, attrs):
-    """
-    Check if the current tag is an anchor.
-    Returns *all* anchors.
-    Works with docutils 0.4
-    """
-    if tag == 'a':
-        return True
-    if self.is_node_marker(attrs):
-        return True
-    return tag == "span"
-#@+node:ekr.20120219194520.10448: *5* is_link
-def is_link(self, tag, attrs):
-    """Return True if tag, attrs is represents a link."""
-    if tag == 'a':
-        return 'href' in dict(attrs)
-    return False
-#@+node:ekr.20120219194520.10449: *5* is_node_marker
-def is_node_marker(self, attrs):
-    """
-    Return the name of the anchor, if this is an anchor for the beginning of a node,
-    False otherwise.
-    """
-    d = dict(attrs)
-    if d.get('id', '').startswith(self.node_begin_marker):
-        return d['id']
-    return False
-#@+node:ekr.20120219194520.10450: *4* class HtmlParserClass (LinkAnchorParserClass)
-class HtmlParserClass(LinkAnchorParserClass):
-    """
-    The responsibility of the html parser is:
-        1. Find out which html code belongs to which node.
-        2. Keep a stack of open tags which apply to the current node.
-        3. Keep a list of tags which should be included in the nodes, even
-           though they might be closed.
-           The <style> tag is one example of that.
-
-    Later, we have to relocate inter-file links: if a reference to another location
-    is in a file, we must change the link.
-
-    """
-    @others
-#@+node:ekr.20120219194520.10451: *5* HtmlParserClass.__init__
-def __init__(self, rst, p):
-    """Ctor for the HtmlParserClass class."""
-    super().__init__(rst, p)
-    self.stack = None
-        # The stack contains lists of the form:
-        # [text1, text2, previous].
-        # text1 is the opening tag
-        # text2 is the closing tag
-        # previous points to the previous stack element
-    self.node_marker_stack = []
-        # self.node_marker_stack.pop() returns True for a closing tag if
-        # the opening tag identified an anchor belonging to a VNode.
-    self.node_code = []
-        # Accumulated html code.
-        # Once the hmtl code is assigned a VNode, it is deleted here.
-    self.deleted_lines = 0
-        # Number of lines deleted in self.node_code
-    self.endpos_pending = False
-        # Do not include self.node_code[0:self.endpos_pending] in the html code.
-    self.last_position = None
-        # Last position; we must attach html code to this node.
-    self.last_marker = None
-#@+node:ekr.20120219194520.10452: *5* HtmlParserClass.handle_starttag
-def handle_starttag(self, tag, attrs):
-    """
-    1. Find out if the current tag is an achor.
-    2. If it is an anchor, we check if this anchor marks the beginning of a new
-       node
-    3. If a new node begins, then we might have to store html code for the previous
-       node.
-    4. In any case, put the new tag on the stack.
-    """
-    is_node_marker = False
-    if self.is_anchor(tag, attrs) and self.is_node_marker(attrs):
-        is_node_marker = self.is_node_marker(attrs)
-        line, column = self.getpos()
-        if self.last_position:
-            lines = self.node_code[:]
-            lines[0] = lines[0][self.startpos:]
-            del lines[line - self.deleted_lines - 1 :]
-            mod_http.get_http_attribute(self.last_position).extend(lines)
-            << trace the unknownAttribute >>
-        if self.deleted_lines < line - 1:
-            del self.node_code[: line - 1 - self.deleted_lines]
-            self.deleted_lines = line - 1
-            self.endpos_pending = True
-    starttag = self.get_starttag_text()
-    self.stack = [starttag, None, self.stack]
-    self.node_marker_stack.append(is_node_marker)
-#@+node:ekr.20120219194520.10453: *6* << trace the unknownAttribute >>
-if 0:
-    g.pr("rst3: unknownAttributes[self.http_attributename]")
-    g.pr("For:", self.last_position)
-    pprint.pprint(mod_http.get_http_attribute(self.last_position))
-#@+node:ekr.20120219194520.10454: *5* HtmlParserClass.handle_endtag
-def handle_endtag(self, tag):
-    """
-    1. Set the second element of the current top of stack.
-    2. If this is the end tag for an anchor for a node,
-       store the current stack for that node.
-    """
-    self.stack[1] = "</" + tag + ">"
-    if self.endpos_pending:
-        line, column = self.getpos()
-        self.startpos = self.node_code[0].find(">", column) + 1
-        self.endpos_pending = False
-    is_node_marker = self.node_marker_stack.pop()
-    if is_node_marker and not self.clear_http_attributes:
-        self.last_position = self.rst.http_map[is_node_marker]
-        if is_node_marker != self.last_marker:
-            # if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
-            mod_http.set_http_attribute(
-                self.rst.http_map[is_node_marker], self.stack)
-            self.last_marker = is_node_marker
-            # bwm: last_marker is not needed?
-    self.stack = self.stack[2]
-#@+node:ekr.20120219194520.10455: *5* HtmlParserClass.feed
-def feed(self, line):
-    # pylint: disable=arguments-differ
-    self.node_code.append(line)
-    HTMLParser.HTMLParser.feed(self, line)  # Call the base class's feed().
-#@+node:ekr.20120219194520.10456: *4* class AnchorHtmlParserClass (LinkAnchorParserClass)
-class AnchorHtmlParserClass(LinkAnchorParserClass):
-    """
-    This htmlparser does the first step of relocating: finding all the
-    anchors within the html nodes.
-
-    Each anchor is mapped to a tuple: (current_file, position).
-
-    Filters out markers which mark the beginning of the html code for a node.
-    """
-    @others
-#@+node:ekr.20120219194520.10457: *5*  __init__
-def __init__(self, rst, p):
-    """Ctor for the AnchorHtmlParserClass class."""
-    super().__init__(rst, p)
-    self.p = p.copy()
-    self.anchor_map = rst.anchor_map
-#@+node:ekr.20120219194520.10458: *5* handle_starttag
-def handle_starttag(self, tag, attrs):
-    """
-    1. Find out if the current tag is an achor.
-    2. If the current tag is an anchor, update the mapping;
-         anchor -> (filename, p)
-    """
-    if not self.is_anchor(tag, attrs):
-        return
-    if self.current_file not in self.anchor_map:
-        self.anchor_map[self.current_file] = (self.current_file, self.p)
-        simple_name = g.os_path_split(self.current_file)[1]
-        self.anchor_map[simple_name] = self.anchor_map[self.current_file]
-        # if bwm_file:
-        #   print >> bwm_file, "anchor(1): current_file:",
-        #   self.current_file, "position:", self.p, "Simple name:", simple_name
-        # Not sure what to do here, exactly. Do I need to manipulate
-        # the pathname?
-    for name, value in attrs:
-        if name == 'name' or tag == 'span' and name == 'id':
-            if not value.startswith(self.node_begin_marker):
-                # if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
-                self.anchor_map[value] = (self.current_file, self.p.copy())
-#@+node:ekr.20120219194520.10459: *4* class LinkHtmlParserClass (LinkAnchorParserClass)
-class LinkHtmlparserClass(LinkAnchorParserClass):
-    """This html parser does the second step of relocating links:
-    1. It scans the html code for links.
-    2. If there is a link which links to a previously processed file
-       then this link is changed so that it now refers to the node.
-    """
-    @others
-#@+node:ekr.20120219194520.10460: *5* __init__
-def __init__(self, rst, p):
-    """Ctor for the LinkHtmlParserClass class."""
-    super().__init__(rst, p)
-    self.anchor_map = rst.anchor_map
-    self.replacements = []
-#@+node:ekr.20120219194520.10461: *5* handle_starttag
-def handle_starttag(self, tag, attrs):
-    """
-    1. Find out if the current tag is an achor.
-    2. If the current tag is an anchor, update the mapping;
-         anchor -> p
-        Update the list of replacements for the document.
-    """
-    if not self.is_link(tag, attrs):
-        return
-    marker = self.node_begin_marker
-    for name, value in attrs:
-        if name == 'href':
-            href = value
-            href_parts = href.split("#")
-            if len(href_parts) == 1:
-                href_a = href_parts[0]
-            else:
-                href_a = href_parts[1]
-            if not href_a.startswith(marker):
-                if href_a in self.anchor_map:
-                    href_file, href_node = self.anchor_map[href_a]
-                    http_node_ref = mod_http.node_reference(href_node)
-                    line, column = self.getpos()
-                    self.replacements.append(
-                        (line, column, href, href_file, http_node_ref))
-#@+node:ekr.20120219194520.10462: *5* get_replacements
-def get_replacements(self):
-    return self.replacements
-#@+node:ekr.20210328100631.1: *3* insert-* commands from #1843 (move to attic)
-# These will never
-#@+node:ekr.20210328100510.2: *4* rst.insertBody
-def insertBody(self, p):
-    """
-    Handle @rst-insert-body.
-    
-    Insert p2.b into the output, where p2 has the given gnx.
-    """
-    c = self.c
-    lines = g.splitLines(p.b.strip())
-    gnx = lines and lines[0].strip()
-    p2 = self.findGnx(c, gnx)
-    if p2:
-        self.write(f"\n\n{p2.b.strip()}\n\n")
-    else:
-        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
-#@+node:ekr.20210328100510.3: *4* rst.insertHead
-def insertHead(self, p):
-    """
-    Handle @rst-insert-head.
-    
-    Insert p2.h into the output, where p2 has the given gnx.
-    """
-    c = self.c
-    lines = g.splitLines(p.b.strip())
-    gnx = lines and lines[0].strip()
-    p2 = self.findGnx(c, gnx)
-    if p2:
-        self.write(f"\n\n{p2.h}\n\n")
-    else:
-        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
-#@+node:ekr.20210328100510.4: *4* rst.insertTree
-def insertTree(self, p):
-    """
-    Handle @rst-insert-tree.
-    
-    Insert a representation of the tree of headlines.
-    """
-    c = self.c
-    lines = g.splitLines(p.b.strip())
-    gnx = lines and lines[0].strip()
-    p2 = self.findGnx(c, gnx)
-    if p2:
-        level0 = p.level()
-        tree = [f"    {' '*2*(z.level()-level0)}- {z.h}\n" for z in p2.self_and_subtree()]
-        self.write(f"\n\n::\n\n{''.join(tree)}\n\n")
-    else:
-        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
-#@+node:ekr.20210712134630.1: ** From leoPersistence.py
-@g.command('at-file-to-at-auto')
-def at_file_to_at_auto_command(event):
-    c = event.get('c')
-    if c and c.persistenceController:
-        c.persistenceController.convert_at_file_to_at_auto(c.p)
-#@+node:ekr.20210717043934.1: ** From qt_tree.pyi
-#@+node:ekr.20110605121601.17900: *3* qtree.OnPopup & allies
-def OnPopup(self, p, event):
-    """Handle right-clicks in the outline.
-
-    This is *not* an event handler: it is called from other event handlers."""
-    # Note: "headrclick" hooks handled by VNode callback routine.
-    if event:
-        c = self.c
-        c.setLog()
-        if not g.doHook("create-popup-menu", c=c, p=p, event=event):
-            self.createPopupMenu(event)
-        if not g.doHook("enable-popup-menu-items", c=c, p=p, event=event):
-            self.enablePopupMenuItems(p, event)
-        if not g.doHook("show-popup-menu", c=c, p=p, event=event):
-            self.showPopupMenu(event)
-    return "break"
-#@+node:ekr.20110605121601.17901: *4* qtree.OnPopupFocusLost
-@language rest
-@
-On Linux we must do something special to make the popup menu "unpost" if the
-mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
-explicitly unpost. In order to process the <FocusOut> event, we need to be able
-to find the reference to the popup window again, so this needs to be an
-attribute of the tree object; hence, "self.popupMenu".
-
-Aside: though Qt tries to be muli-platform, the interaction with different
-window managers does cause small differences that will need to be compensated by
-system specific application code. :-(
-@c
+#@+node:ekr.20210815060352.1: *3* --- from setup.py
 @language python
+#@+node:ekr.20210815060206.2: *4* get_version (not used)
+def get_version(file, version=None):
+    """Determine current Leo version. Use git if in checkout, else internal Leo"""
+    root = os.path.dirname(os.path.realpath(file))
+    if os.path.exists(os.path.join(root, '.git')):
+        version = git_version(file)
+    if not version:
+        version = get_semantic_version(leoVersion.version)
+    return version
+#@+node:ekr.20210815060206.3: *4* git_version (not used)
+def git_version(file, version=None):
+    """
+    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+    Return as semantic version string compliant with PEP440
+    """
+    root = os.path.dirname(os.path.realpath(file))
+    try:
+        tag, distance, commit = g.gitDescribe(root)  # 5.6b2, 55, e1129da
+        ctag = clean_git_tag(tag)
+        #version = get_semver(ctag)
+        version = ctag
+        if int(distance) > 0:
+            version = '{}-dev{}'.format(version, distance)
+    except IndexError:
+        print('Attempt to `git describe` failed with IndexError')
+    except FileNotFoundError:
+        print('Attempt to `git describe` failed with FileNotFoundError')
+    return version
+#@+node:ekr.20210815060206.4: *5* clean_git_tag
+def clean_git_tag(tag):
+    """Return only version number from tag name. Ignore unknown formats.
+       Is specific to tags in Leo's repository.
+            5.7b1          -->	5.7b1
+            Leo-4-4-8-b1   -->	4-4-8-b1
+            v5.3           -->	5.3
+            Fixed-bug-149  -->  Fixed-bug-149
+    """
+    if tag.lower().startswith('leo-'): tag = tag[4:]
+    if tag.lower().startswith('v'): tag = tag[1:]
+    return tag
+#@+node:ekr.20210815060206.5: *4* get_semantic_version (not used)
+def get_semantic_version(tag):
+    """Return 'Semantic Version' from tag string"""
+    try:
+        import semantic_version
+    except Exception:
+        print(f"Can not import semantic_version. Using {tag!r}")
+        return tag
+    try:
+        # tuple of major, minor, build, pre-release, patch.
+        # Example: 5.6b2 --> 5.6-b2
+        return str(semantic_version.Version.coerce(tag, partial=True))
+    except Exception:
+        ### g.es_exception()
+        print_exception()
+        print(f"Bad version: {tag!r}")
+        return tag
+        ###
+        # print(
+            # f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
+            # "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
+            # "This version can't be uploaded to PyPi.org.")
+        # version = tag
+    # return version
+#@+node:ekr.20210815060405.1: *3* --- old distribution files
+@language rest
+@wrap
 
-# 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
+-matt (@maphew)
 
-def OnPopupFocusLost(self, event=None):
-    # self.popupMenu.unpost()
-    pass
-#@+node:ekr.20110605121601.17902: *4* qtree.createPopupMenu
-def createPopupMenu(self, event):
-    """This might be a placeholder for plugins.  Or not :-)"""
-#@+node:ekr.20110605121601.17903: *4* qtree.enablePopupMenuItems
-def enablePopupMenuItems(self, p, event):
-    """Enable and disable items in the popup menu."""
-#@+node:ekr.20110605121601.17904: *4* qtree.showPopupMenu
-def showPopupMenu(self, event):
-    """Show a popup menu."""
+Old distribution files.
+#@+node:ekr.20210815060405.2: *4* @@clean ../../About leo.exe.TXT
+leo.exe contains everything you need to run Leo on Windows without
+installing *anything* else. It contains all needed libraries, including
+Python itself, PyQt, pylint and other packages. It also contains many data
+files, including Leo's source code and various .leo files.
+
+Notes:
+
+1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
+
+2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
+   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
+   is slower than usual.
+
+3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
+   but these files will be in the temp folder. They will be *destroyed*
+   when you exit leo.exe. If you want to do real work with Leo you must
+   create .leo files in a permanent folder on your machine.
+#@+node:ekr.20210815060405.3: *4* @@clean ../../optional-tools.txt
+# A list of pip installable tools and libraries in the Requirements File Format
+# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
+#
+# Install with:
+#   
+#       pip install -r optional-tools.txt
+#
+
+pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
+pyxml; python_version < "3.0"   # Used for XML import. Appears to be only python 2 package
+#@+node:ekr.20210815060405.4: *4* @@clean ../../INSTALL.TXT
+System requirements
+-------------------
+
+Leo requires the `Python`_ and `PyQt_` package.
+The `PyEnchant`_ package is optional. 
+
+**Python**: Leo will work on any platform that supports Python 2.6 or
+above, including Python 3.0 and above. To install Python, see
+http://python.org.
+
+**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
+package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
+The PyQt version must match your installed Python version. Remember that
+Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
+binary PyQt installer.
+
+**PyEnchant**: You must install the PyEnchant package if you want to use
+Leo's Spell tab. Download and install the PyEnchant package from
+http://pythonhosted.org/pyenchant/download.html There is an executable
+installer for Windows users.
+
+
+Leo's HOME directory
+--------------------
+
+Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo puts several files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.
+
+Installing Leo on Linux
+-----------------------
+
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unzip them
+into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
+
+To gain access to Leo, you have two choices:
+
+A. Add  ~/leo-5.2 to your path.
+B. Create alias for Leo.
+
+I prefer using aliases because they allow me to start Leo using Python 2 or 3,
+or other distributions, like Anaconda 2 or 3.
+
+See `Running Leo`_ for how to run Leo after installing it.
+
+Installing Leo on Windows
+--------------------------
+
+Install Python and Qt, as described above.
+
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unpack them
+into a temp folder. You may place the sources anywhere you like, including
+Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
+
+
+Running Leo
+-----------
+
+You can run Leo from a Python interpreter as follows::
+
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+
+Another way to run Leo is as follows::
+
+    cd <path-to-launchLeo.py>
+    python launchLeo.py
+
+Creating File Associations
+--------------------------
+
+**Linux**
+
+The following shell script will allow you to open foo.leo files by typing leo foo::
+
+    #!/bin/sh 
+    python <leopath>launchLeo.py $1
+
+where <leopath> is the path to the directory *containing* the leo directory. 
+
+**Windows**
+
+*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
+
+There are two ways of associating .leo files with Leo. The first uses the
+Windows control panel, the second, the Windows console.
+
+**Method 1: Using the Windows Control Panel**
+
+The goal is that you want to associate .leo files with the following command::
+
+    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" "%1"
+    
+Before Windows 7, you do this with using the Folder Options control panel.
+In Windows 7, you do this with the Default Programs control panel.
+
+*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
+The quotation marks are needed to handle file paths containing spaces.
+
+*Warning:* In a batch file, %1 passes just the first command line parameter.
+It is logical to expect %* to work for file associations just as in batch
+files. Alas, it does not.
+
+**Method 2: Using the Windows Console**
+
+Open a Windows console with administrator privileges, then type::
+
+    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%::
+
+    @start /b "Leo" "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" %*
+    
+You may omit the /b option if you want to create a separate console window for Leo.
+
+Adding Leo to Your Path
+-----------------------
+
+After you have installed Leo, you should add the location of your leo/core folder to your python path.
+One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+
+    import sys
+    sys.path.append(r'<path-to-leo>leo\core')
+
+Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
+
+Running Leo for the first time
+------------------------------
+
+The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file ``.leoID.txt``. Leo attempts to create
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
+finally in Leo's core directory. You can change this identifier at any time by
+editing ``.leoID.txt``.
 #@+node:ekr.20210718034819.1: ** From LeoDocs.leo: 
 The section covers complex options arising from two equivalent problems:
 
@@ -10750,256 +10618,373 @@ Running all tests is not necessary.  Just select::
 and then do Alt-4 (run-selected-unit-tests-locally).
 
 **Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
-#@+node:ekr.20210815060206.1: ** From leoDist.leo
-
-#@+node:ekr.20210815060352.1: *3* --- from setup.py
-@language python
-#@+node:ekr.20210815060206.2: *4* get_version (not used)
-def get_version(file, version=None):
-    """Determine current Leo version. Use git if in checkout, else internal Leo"""
-    root = os.path.dirname(os.path.realpath(file))
-    if os.path.exists(os.path.join(root, '.git')):
-        version = git_version(file)
-    if not version:
-        version = get_semantic_version(leoVersion.version)
-    return version
-#@+node:ekr.20210815060206.3: *4* git_version (not used)
-def git_version(file, version=None):
-    """
-    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-    Return as semantic version string compliant with PEP440
-    """
-    root = os.path.dirname(os.path.realpath(file))
-    try:
-        tag, distance, commit = g.gitDescribe(root)  # 5.6b2, 55, e1129da
-        ctag = clean_git_tag(tag)
-        #version = get_semver(ctag)
-        version = ctag
-        if int(distance) > 0:
-            version = '{}-dev{}'.format(version, distance)
-    except IndexError:
-        print('Attempt to `git describe` failed with IndexError')
-    except FileNotFoundError:
-        print('Attempt to `git describe` failed with FileNotFoundError')
-    return version
-#@+node:ekr.20210815060206.4: *5* clean_git_tag
-def clean_git_tag(tag):
-    """Return only version number from tag name. Ignore unknown formats.
-       Is specific to tags in Leo's repository.
-            5.7b1          -->	5.7b1
-            Leo-4-4-8-b1   -->	4-4-8-b1
-            v5.3           -->	5.3
-            Fixed-bug-149  -->  Fixed-bug-149
-    """
-    if tag.lower().startswith('leo-'): tag = tag[4:]
-    if tag.lower().startswith('v'): tag = tag[1:]
-    return tag
-#@+node:ekr.20210815060206.5: *4* get_semantic_version (not used)
-def get_semantic_version(tag):
-    """Return 'Semantic Version' from tag string"""
-    try:
-        import semantic_version
-    except Exception:
-        print(f"Can not import semantic_version. Using {tag!r}")
-        return tag
-    try:
-        # tuple of major, minor, build, pre-release, patch.
-        # Example: 5.6b2 --> 5.6-b2
-        return str(semantic_version.Version.coerce(tag, partial=True))
-    except Exception:
-        ### g.es_exception()
-        print_exception()
-        print(f"Bad version: {tag!r}")
-        return tag
-        ###
-        # print(
-            # f"*** Failed to parse Semantic Version from git tag '{tag}'.\n"
-            # "Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.\n"
-            # "This version can't be uploaded to PyPi.org.")
-        # version = tag
-    # return version
-#@+node:ekr.20210815060405.1: *3* --- old distribution files
-@language rest
-@wrap
-
--matt (@maphew)
-
-Old distribution files.
-#@+node:ekr.20210815060405.2: *4* @@clean ../../About leo.exe.TXT
-leo.exe contains everything you need to run Leo on Windows without
-installing *anything* else. It contains all needed libraries, including
-Python itself, PyQt, pylint and other packages. It also contains many data
-files, including Leo's source code and various .leo files.
-
-Notes:
-
-1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
-
-2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
-   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
-   is slower than usual.
-
-3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
-   but these files will be in the temp folder. They will be *destroyed*
-   when you exit leo.exe. If you want to do real work with Leo you must
-   create .leo files in a permanent folder on your machine.
-#@+node:ekr.20210815060405.3: *4* @@clean ../../optional-tools.txt
-# A list of pip installable tools and libraries in the Requirements File Format
-# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
-#
-# Install with:
-#   
-#       pip install -r optional-tools.txt
-#
-
-pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
-pyxml; python_version < "3.0"   # Used for XML import. Appears to be only python 2 package
-#@+node:ekr.20210815060405.4: *4* @@clean ../../INSTALL.TXT
-System requirements
--------------------
-
-Leo requires the `Python`_ and `PyQt_` package.
-The `PyEnchant`_ package is optional. 
-
-**Python**: Leo will work on any platform that supports Python 2.6 or
-above, including Python 3.0 and above. To install Python, see
-http://python.org.
-
-**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
-package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
-The PyQt version must match your installed Python version. Remember that
-Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
-binary PyQt installer.
-
-**PyEnchant**: You must install the PyEnchant package if you want to use
-Leo's Spell tab. Download and install the PyEnchant package from
-http://pythonhosted.org/pyenchant/download.html There is an executable
-installer for Windows users.
-
-
-Leo's HOME directory
---------------------
-
-Python's HOME environment variable specifies Leo's HOME directory.
-See http://docs.python.org/lib/os-procinfo.html for details.
-
-Leo puts several files in your HOME/.leo directory:
-.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
-There are various fallback directories if there is no home directory.
-
-Installing Leo on Linux
------------------------
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
-
-To gain access to Leo, you have two choices:
-
-A. Add  ~/leo-5.2 to your path.
-B. Create alias for Leo.
-
-I prefer using aliases because they allow me to start Leo using Python 2 or 3,
-or other distributions, like Anaconda 2 or 3.
-
-See `Running Leo`_ for how to run Leo after installing it.
-
-Installing Leo on Windows
---------------------------
-
-Install Python and Qt, as described above.
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unpack them
-into a temp folder. You may place the sources anywhere you like, including
-Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
-
-
-Running Leo
------------
-
-You can run Leo from a Python interpreter as follows::
-
-    import leo
-    leo.run() # runs Leo, opening a new outline or,
-    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
-
-Another way to run Leo is as follows::
-
-    cd <path-to-launchLeo.py>
-    python launchLeo.py
-
-Creating File Associations
---------------------------
-
-**Linux**
-
-The following shell script will allow you to open foo.leo files by typing leo foo::
-
-    #!/bin/sh 
-    python <leopath>launchLeo.py $1
-
-where <leopath> is the path to the directory *containing* the leo directory. 
-
-**Windows**
-
-*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-There are two ways of associating .leo files with Leo. The first uses the
-Windows control panel, the second, the Windows console.
-
-**Method 1: Using the Windows Control Panel**
-
-The goal is that you want to associate .leo files with the following command::
-
-    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" "%1"
+#@+node:ekr.20210910175451.1: ** From leoflexx.py
+#@+node:ekr.20181121031304.1: *3* class BrowserTestManager
+# class BrowserTestManager (leoTest.TestManager):
+    # '''Run tests using the browser gui.'''
     
-Before Windows 7, you do this with using the Folder Options control panel.
-In Windows 7, you do this with the Default Programs control panel.
+    # def instantiate_gui(self):
+        # assert isinstance(g.app.gui, LeoBrowserGui)
+        # return g.app.gui
+#@+node:ekr.20181112182636.1: *3* app.run_all_unit_tests
+def run_all_unit_tests (self):
+    '''Run all unit tests from the bridge.'''
+    c = self.c
+    h = 'Active Unit Tests'
+    p = g.findTopLevelNode(c, h, exact=True)
+    if p:
+        try:
+            old_debug = g.app.debug
+            g.app.failFast = False
+            g.app.debug = [] # ['focus', 'keys',]
+            c.frame.tree.select(p)
+            tm = BrowserTestManager(c)
+            # Run selected tests locallyk.
+            tm.doTests(all=False, marked=False)
+        finally:
+            g.app.debug = old_debug
+    else:
+        print('app.run_all_unit_tests: select: not found: %s' % h)
+#@+node:ekr.20181210055110.1: *3* app.do_unit
+def do_unit(self):
+    # This ends up exiting.
+    self.run_all_unit_tests()
+#@+node:ekr.20210809085711.1: ** From leoGlobals.py
+#@+node:ekr.20210809093522.1: *3* g.adjustTripleString
+def adjustTripleString(s, tab_width):
+    """Remove leading indentation from a triple-quoted string.
 
-*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
-The quotation marks are needed to handle file paths containing spaces.
+    This works around the fact that Leo nodes can't represent underindented strings.
+    """
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = g.splitLines(s)
+    first, w = True, 0
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            # The sign of w2 does not matter.
+            w2 = abs(g.computeWidth(lws, tab_width))
+            if w2 == 0:
+                return s
+            if first or w2 < w:
+                w = w2
+                first = False
+    if w == 0:
+        return s
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
+    return ''.join(result)
+#@+node:ekr.20050211120242.2: *3* g.removeExtraLws
+def removeExtraLws(s: str, tab_width):
+    """
+    Remove extra indentation from one or more lines.
 
-*Warning:* In a batch file, %1 passes just the first command line parameter.
-It is logical to expect %* to work for file associations just as in batch
-files. Alas, it does not.
+    Warning: used by getScript.
+    """
+    lines = g.splitLines(s)
+    # Find the first non-blank line and compute w, the width of its leading whitespace.
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            w = g.computeWidth(lws, tab_width)
+            break
+    else: return s
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
+    return ''.join(result)
+#@+node:ekr.20210712134630.1: ** From leoPersistence.py
+@g.command('at-file-to-at-auto')
+def at_file_to_at_auto_command(event):
+    c = event.get('c')
+    if c and c.persistenceController:
+        c.persistenceController.convert_at_file_to_at_auto(c.p)
+#@+node:ekr.20210327062138.1: ** From leoRst.py
+#@+node:ekr.20120219194520.10444: *3* html parser classes
+# Perhaps mod_http used to use these.
+#@+node:ekr.20120219194520.10445: *4*  class LinkAnchorParserClass (HTMLParser)
+class LinkAnchorParserClass(HTMLParser.HTMLParser):
+    """
+    The base class to recognize anchors and links in HTML documents. A
+    special marker is the "node_marker" which marks the border between node
+    and the next.
 
-**Method 2: Using the Windows Console**
+    The parser classes are used to construct the html code for nodes.
 
-Open a Windows console with administrator privileges, then type::
+    The algorithm has two phases:
+    - Phase 1 AnchorHtmlParserClass: gets the html code for each node.
+    - Phase 2 LinkHtmlParserClass: finds all links and checks whethr
+      these links need to be modified.
+    """
+    @others
+#@+node:ekr.20120219194520.10446: *5* __init__
+def __init__(self, rst, p):
+    """Ctor for the LinkAnchorParserClass class."""
+    super().__init__()
+    self.rst = rst
+    self.p = p.copy()
+    # Set ivars from options.
+    # This works only if we don't change nodes!
+    self.node_begin_marker = rst.getOption(p, 'node_begin_marker')
+    self.clear_http_attributes = rst.getOption(p, 'clear_http_attributes')
+    self.current_file = rst.outputFileName
+#@+node:ekr.20120219194520.10447: *5* is_anchor
+def is_anchor(self, tag, attrs):
+    """
+    Check if the current tag is an anchor.
+    Returns *all* anchors.
+    Works with docutils 0.4
+    """
+    if tag == 'a':
+        return True
+    if self.is_node_marker(attrs):
+        return True
+    return tag == "span"
+#@+node:ekr.20120219194520.10448: *5* is_link
+def is_link(self, tag, attrs):
+    """Return True if tag, attrs is represents a link."""
+    if tag == 'a':
+        return 'href' in dict(attrs)
+    return False
+#@+node:ekr.20120219194520.10449: *5* is_node_marker
+def is_node_marker(self, attrs):
+    """
+    Return the name of the anchor, if this is an anchor for the beginning of a node,
+    False otherwise.
+    """
+    d = dict(attrs)
+    if d.get('id', '').startswith(self.node_begin_marker):
+        return d['id']
+    return False
+#@+node:ekr.20120219194520.10450: *4* class HtmlParserClass (LinkAnchorParserClass)
+class HtmlParserClass(LinkAnchorParserClass):
+    """
+    The responsibility of the html parser is:
+        1. Find out which html code belongs to which node.
+        2. Keep a stack of open tags which apply to the current node.
+        3. Keep a list of tags which should be included in the nodes, even
+           though they might be closed.
+           The <style> tag is one example of that.
 
-    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
-    assoc .leo=LeoFile
+    Later, we have to relocate inter-file links: if a reference to another location
+    is in a file, we must change the link.
 
-And put this leo.bat in %PATH%::
+    """
+    @others
+#@+node:ekr.20120219194520.10451: *5* HtmlParserClass.__init__
+def __init__(self, rst, p):
+    """Ctor for the HtmlParserClass class."""
+    super().__init__(rst, p)
+    self.stack = None
+        # The stack contains lists of the form:
+        # [text1, text2, previous].
+        # text1 is the opening tag
+        # text2 is the closing tag
+        # previous points to the previous stack element
+    self.node_marker_stack = []
+        # self.node_marker_stack.pop() returns True for a closing tag if
+        # the opening tag identified an anchor belonging to a VNode.
+    self.node_code = []
+        # Accumulated html code.
+        # Once the hmtl code is assigned a VNode, it is deleted here.
+    self.deleted_lines = 0
+        # Number of lines deleted in self.node_code
+    self.endpos_pending = False
+        # Do not include self.node_code[0:self.endpos_pending] in the html code.
+    self.last_position = None
+        # Last position; we must attach html code to this node.
+    self.last_marker = None
+#@+node:ekr.20120219194520.10452: *5* HtmlParserClass.handle_starttag
+def handle_starttag(self, tag, attrs):
+    """
+    1. Find out if the current tag is an achor.
+    2. If it is an anchor, we check if this anchor marks the beginning of a new
+       node
+    3. If a new node begins, then we might have to store html code for the previous
+       node.
+    4. In any case, put the new tag on the stack.
+    """
+    is_node_marker = False
+    if self.is_anchor(tag, attrs) and self.is_node_marker(attrs):
+        is_node_marker = self.is_node_marker(attrs)
+        line, column = self.getpos()
+        if self.last_position:
+            lines = self.node_code[:]
+            lines[0] = lines[0][self.startpos:]
+            del lines[line - self.deleted_lines - 1 :]
+            mod_http.get_http_attribute(self.last_position).extend(lines)
+            << trace the unknownAttribute >>
+        if self.deleted_lines < line - 1:
+            del self.node_code[: line - 1 - self.deleted_lines]
+            self.deleted_lines = line - 1
+            self.endpos_pending = True
+    starttag = self.get_starttag_text()
+    self.stack = [starttag, None, self.stack]
+    self.node_marker_stack.append(is_node_marker)
+#@+node:ekr.20120219194520.10453: *6* << trace the unknownAttribute >>
+if 0:
+    g.pr("rst3: unknownAttributes[self.http_attributename]")
+    g.pr("For:", self.last_position)
+    pprint.pprint(mod_http.get_http_attribute(self.last_position))
+#@+node:ekr.20120219194520.10454: *5* HtmlParserClass.handle_endtag
+def handle_endtag(self, tag):
+    """
+    1. Set the second element of the current top of stack.
+    2. If this is the end tag for an anchor for a node,
+       store the current stack for that node.
+    """
+    self.stack[1] = "</" + tag + ">"
+    if self.endpos_pending:
+        line, column = self.getpos()
+        self.startpos = self.node_code[0].find(">", column) + 1
+        self.endpos_pending = False
+    is_node_marker = self.node_marker_stack.pop()
+    if is_node_marker and not self.clear_http_attributes:
+        self.last_position = self.rst.http_map[is_node_marker]
+        if is_node_marker != self.last_marker:
+            # if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
+            mod_http.set_http_attribute(
+                self.rst.http_map[is_node_marker], self.stack)
+            self.last_marker = is_node_marker
+            # bwm: last_marker is not needed?
+    self.stack = self.stack[2]
+#@+node:ekr.20120219194520.10455: *5* HtmlParserClass.feed
+def feed(self, line):
+    # pylint: disable=arguments-differ
+    self.node_code.append(line)
+    HTMLParser.HTMLParser.feed(self, line)  # Call the base class's feed().
+#@+node:ekr.20120219194520.10456: *4* class AnchorHtmlParserClass (LinkAnchorParserClass)
+class AnchorHtmlParserClass(LinkAnchorParserClass):
+    """
+    This htmlparser does the first step of relocating: finding all the
+    anchors within the html nodes.
 
-    @start /b "Leo" "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" %*
+    Each anchor is mapped to a tuple: (current_file, position).
+
+    Filters out markers which mark the beginning of the html code for a node.
+    """
+    @others
+#@+node:ekr.20120219194520.10457: *5*  __init__
+def __init__(self, rst, p):
+    """Ctor for the AnchorHtmlParserClass class."""
+    super().__init__(rst, p)
+    self.p = p.copy()
+    self.anchor_map = rst.anchor_map
+#@+node:ekr.20120219194520.10458: *5* handle_starttag
+def handle_starttag(self, tag, attrs):
+    """
+    1. Find out if the current tag is an achor.
+    2. If the current tag is an anchor, update the mapping;
+         anchor -> (filename, p)
+    """
+    if not self.is_anchor(tag, attrs):
+        return
+    if self.current_file not in self.anchor_map:
+        self.anchor_map[self.current_file] = (self.current_file, self.p)
+        simple_name = g.os_path_split(self.current_file)[1]
+        self.anchor_map[simple_name] = self.anchor_map[self.current_file]
+        # if bwm_file:
+        #   print >> bwm_file, "anchor(1): current_file:",
+        #   self.current_file, "position:", self.p, "Simple name:", simple_name
+        # Not sure what to do here, exactly. Do I need to manipulate
+        # the pathname?
+    for name, value in attrs:
+        if name == 'name' or tag == 'span' and name == 'id':
+            if not value.startswith(self.node_begin_marker):
+                # if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
+                self.anchor_map[value] = (self.current_file, self.p.copy())
+#@+node:ekr.20120219194520.10459: *4* class LinkHtmlParserClass (LinkAnchorParserClass)
+class LinkHtmlparserClass(LinkAnchorParserClass):
+    """This html parser does the second step of relocating links:
+    1. It scans the html code for links.
+    2. If there is a link which links to a previously processed file
+       then this link is changed so that it now refers to the node.
+    """
+    @others
+#@+node:ekr.20120219194520.10460: *5* __init__
+def __init__(self, rst, p):
+    """Ctor for the LinkHtmlParserClass class."""
+    super().__init__(rst, p)
+    self.anchor_map = rst.anchor_map
+    self.replacements = []
+#@+node:ekr.20120219194520.10461: *5* handle_starttag
+def handle_starttag(self, tag, attrs):
+    """
+    1. Find out if the current tag is an achor.
+    2. If the current tag is an anchor, update the mapping;
+         anchor -> p
+        Update the list of replacements for the document.
+    """
+    if not self.is_link(tag, attrs):
+        return
+    marker = self.node_begin_marker
+    for name, value in attrs:
+        if name == 'href':
+            href = value
+            href_parts = href.split("#")
+            if len(href_parts) == 1:
+                href_a = href_parts[0]
+            else:
+                href_a = href_parts[1]
+            if not href_a.startswith(marker):
+                if href_a in self.anchor_map:
+                    href_file, href_node = self.anchor_map[href_a]
+                    http_node_ref = mod_http.node_reference(href_node)
+                    line, column = self.getpos()
+                    self.replacements.append(
+                        (line, column, href, href_file, http_node_ref))
+#@+node:ekr.20120219194520.10462: *5* get_replacements
+def get_replacements(self):
+    return self.replacements
+#@+node:ekr.20210328100631.1: *3* insert-* commands from #1843 (move to attic)
+# These will never
+#@+node:ekr.20210328100510.2: *4* rst.insertBody
+def insertBody(self, p):
+    """
+    Handle @rst-insert-body.
     
-You may omit the /b option if you want to create a separate console window for Leo.
-
-Adding Leo to Your Path
------------------------
-
-After you have installed Leo, you should add the location of your leo/core folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:
-
-    import sys
-    sys.path.append(r'<path-to-leo>leo\core')
-
-Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
-
-Running Leo for the first time
-------------------------------
-
-The first time you start Leo, a dialog will ask you for a unique identifier. If
-you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
-stores this identifier in the file ``.leoID.txt``. Leo attempts to create
-``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
-finally in Leo's core directory. You can change this identifier at any time by
-editing ``.leoID.txt``.
-#@+node:ekr.20210312150753.1: ** leoTangle.py
+    Insert p2.b into the output, where p2 has the given gnx.
+    """
+    c = self.c
+    lines = g.splitLines(p.b.strip())
+    gnx = lines and lines[0].strip()
+    p2 = self.findGnx(c, gnx)
+    if p2:
+        self.write(f"\n\n{p2.b.strip()}\n\n")
+    else:
+        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210328100510.3: *4* rst.insertHead
+def insertHead(self, p):
+    """
+    Handle @rst-insert-head.
+    
+    Insert p2.h into the output, where p2 has the given gnx.
+    """
+    c = self.c
+    lines = g.splitLines(p.b.strip())
+    gnx = lines and lines[0].strip()
+    p2 = self.findGnx(c, gnx)
+    if p2:
+        self.write(f"\n\n{p2.h}\n\n")
+    else:
+        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210328100510.4: *4* rst.insertTree
+def insertTree(self, p):
+    """
+    Handle @rst-insert-tree.
+    
+    Insert a representation of the tree of headlines.
+    """
+    c = self.c
+    lines = g.splitLines(p.b.strip())
+    gnx = lines and lines[0].strip()
+    p2 = self.findGnx(c, gnx)
+    if p2:
+        level0 = p.level()
+        tree = [f"    {' '*2*(z.level()-level0)}- {z.h}\n" for z in p2.self_and_subtree()]
+        self.write(f"\n\n::\n\n{''.join(tree)}\n\n")
+    else:
+        g.es_print(f"gnx not found: {gnx!r} in {p.h}")
+#@+node:ekr.20210312150753.1: ** From leoTangle.py
 '''
 Support for @root and Leo's tangle and untangle commands.
 '''
@@ -14064,8 +14049,7 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
-#@+node:ekr.20200209055601.1: ** Test stuff
-#@+node:ekr.20200505050955.1: *3* ----- mvc-prototype branch
+#@+node:ekr.20200505050955.1: ** From mvc-prototype branch
 @language rest
 @wrap
 
@@ -14075,8 +14059,8 @@ def checkConventions(event):
   This should provide a large outline for the prototype to play with.
 
 - python leo/extensions/myleoqt.py leo\core\leoPy.db
-#@+node:vitalije.20200502083732.1: *4* @@@file ../extensions/myleoqt.py
-#@+node:vitalije.20200502091628.1: *4* <<imports>>
+#@+node:vitalije.20200502083732.1: *3* @@@file ../extensions/myleoqt.py
+#@+node:vitalije.20200502091628.1: *3* <<imports>>
 from collections import defaultdict
 import sys
 import os
@@ -14105,7 +14089,7 @@ except ImportError:
 g.app = g.bunch(nodeIndices=leoNodes.NodeIndices('vitalije'))
 
 Q = QtCore.Qt
-#@+node:vitalije.20200502103535.1: *4* draw_tree
+#@+node:vitalije.20200502103535.1: *3* draw_tree
 def draw_tree(tree, root, icons):
     def additem(par, parItem):
         for ch in par.children:
@@ -14122,7 +14106,7 @@ def draw_tree(tree, root, icons):
     ritem = tree.invisibleRootItem()
     ritem.setData(0, 1024, root)
     additem(root, ritem)
-#@+node:vitalije.20200508091419.1: *4* execute_script
+#@+node:vitalije.20200508091419.1: *3* execute_script
 def execute_script(self):
     c = self.c
     t = self.tree
@@ -14202,7 +14186,7 @@ def execute_script(self):
         return
     # script terminated successfully let's add undo/redo pair
     self.c.addUndo(undoexec, redoexec)
-#@+node:vitalije.20200508104717.1: *5* undoexec
+#@+node:vitalije.20200508104717.1: *4* undoexec
 def undoexec():
     for v, h, b in old_vs:
         v.b = b
@@ -14214,7 +14198,7 @@ def undoexec():
     reconnect_vnodes(root)
     t.blockSignals(False)
     t.setCurrentItem(curr)
-#@+node:vitalije.20200508104721.1: *5* redoexec
+#@+node:vitalije.20200508104721.1: *4* redoexec
 def redoexec():
     for v, h, b in new_vs:
         v.b = b
@@ -14226,7 +14210,7 @@ def redoexec():
     reconnect_vnodes(root)
     t.blockSignals(False)
     t.setCurrentItem(newcurr)
-#@+node:vitalije.20200507182943.1: *4* test_select_and_commnads
+#@+node:vitalije.20200507182943.1: *3* test_select_and_commnads
 @settings(max_examples=50, deadline=timedelta(seconds=4))
 @given(data())
 def test_select_and_commnads(data):
@@ -14254,6 +14238,3599 @@ def test_select_and_commnads(data):
                 assert b == b1
                 app.redo()
             a1, b1 = a2, b2
+#@+node:ekr.20210717043934.1: ** From qt_tree.pyi
+#@+node:ekr.20110605121601.17900: *3* qtree.OnPopup & allies
+def OnPopup(self, p, event):
+    """Handle right-clicks in the outline.
+
+    This is *not* an event handler: it is called from other event handlers."""
+    # Note: "headrclick" hooks handled by VNode callback routine.
+    if event:
+        c = self.c
+        c.setLog()
+        if not g.doHook("create-popup-menu", c=c, p=p, event=event):
+            self.createPopupMenu(event)
+        if not g.doHook("enable-popup-menu-items", c=c, p=p, event=event):
+            self.enablePopupMenuItems(p, event)
+        if not g.doHook("show-popup-menu", c=c, p=p, event=event):
+            self.showPopupMenu(event)
+    return "break"
+#@+node:ekr.20110605121601.17901: *4* qtree.OnPopupFocusLost
+@language rest
+@
+On Linux we must do something special to make the popup menu "unpost" if the
+mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
+explicitly unpost. In order to process the <FocusOut> event, we need to be able
+to find the reference to the popup window again, so this needs to be an
+attribute of the tree object; hence, "self.popupMenu".
+
+Aside: though Qt tries to be muli-platform, the interaction with different
+window managers does cause small differences that will need to be compensated by
+system specific application code. :-(
+@c
+@language python
+
+# 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
+
+def OnPopupFocusLost(self, event=None):
+    # self.popupMenu.unpost()
+    pass
+#@+node:ekr.20110605121601.17902: *4* qtree.createPopupMenu
+def createPopupMenu(self, event):
+    """This might be a placeholder for plugins.  Or not :-)"""
+#@+node:ekr.20110605121601.17903: *4* qtree.enablePopupMenuItems
+def enablePopupMenuItems(self, p, event):
+    """Enable and disable items in the popup menu."""
+#@+node:ekr.20110605121601.17904: *4* qtree.showPopupMenu
+def showPopupMenu(self, event):
+    """Show a popup menu."""
+#@+node:ekr.20210902064148.1: ** From unitTest.leo
+#@+node:ekr.20210903164446.1959: *3*  qt gui
+#@+node:ekr.20210903164446.1960: *4* @test c.vnode2position
+for p in c.all_positions():
+    p2 = c.vnode2position(p.v)
+    # print(p2.level(), p2.headString())
+    # We can *not* assert that p == p2, only that
+    # p2.v == p.v and c.positionExists(p2)
+    assert p2
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),'does not exist: %s' % p2
+#@+node:ekr.20210903164446.1961: *4* @test position2Item
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses')
+        # All "item" logic is for Qt only.
+
+tree = c.frame.tree
+# position2item does not exist when running unit tests dynamically.
+if hasattr(tree,'position2item'):
+    c.redraw()
+    p = c.rootPosition()
+    while p:
+        item = tree.position2item(p)
+        v = tree.item2vnode(item)
+        if v: # New test needed with per-clone expansions.
+            assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+        p.moveToVisNext(c)
+#@+node:ekr.20210903112222.1: *3* --- @test rst3Test test1
+import leo.core.leoRst as leoRst
+# import importlib
+# importlib.reload(leoRst)
+try:
+    import docutils
+except Exception:
+    self.skipTest('no docutils')
+if getattr(g.app, 'old_gui_name', None) in ('browser', None):
+    self.skipTest('wrong gui')
+leoRst.TestRst3().runLegacyTest(c, p)
+#@+node:ekr.20210903112222.2: *4* source
+@language rest
+#@+node:ekr.20210903112222.3: *5* @rst test.html
+@language rest
+
+#####
+Title
+#####
+
+This is test.html
+#@+node:ekr.20210903112222.4: *6* section
+@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+#@+node:ekr.20210903112222.5: *4* expected
+@language rest
+#@+node:ekr.20210903112222.6: *5* rst
+.. rst3: filename: @test rst3Test test1
+
+.. _http-node-marker-1:
+
+@language rest
+
+#####
+Title
+#####
+
+This is test.html
+
+.. _http-node-marker-2:
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+
+#@+node:ekr.20170805060844.1: *3* @@@file ../test/leo-bridge-test.py
+"""A simple test bed for the leoBridge module."""
+# pylint: disable=invalid-name
+import os
+import sys
+# Adjust the path before importing
+# pylint: disable=wrong-import-order,wrong-import-position
+dir_ = os.path.abspath('.')
+if dir_ not in sys.path:
+    # print(f"appending {dir_} to sys.path")
+    sys.path.append(dir_)
+from leo.core import leoBridge
+
+# Leo files.
+files = [
+    'c:/leo.repo/leo-editor/leo/test/unitTest.leo',
+    'c:/leo.repo/leo-editor/leo/test/test.leo',
+    'c:/xyzzy.xxx',
+]
+
+# Switches...
+kill_leo_output = True  # True: kill all output produced by g.es_print.
+silent = True
+
+controller = leoBridge.controller(
+    gui='nullGui',  # 'nullGui', 'qt'
+    loadPlugins=False,  # True: attempt to load plugins.,
+    readSettings=True,  # True: read standard settings files.
+    silent=silent,  # True: don't print signon messages.
+    verbose=True,
+)
+g = controller.globals()
+
+# This kills all output from commanders.
+if kill_leo_output:
+
+    def do_nothing(*args, **keys):
+        pass
+
+    g.es_print = do_nothing
+
+for path in files:
+    if os.path.exists(path):
+        c = controller.openLeoFile(path)
+        if c:
+            n = 0
+            for p in c.all_positions():
+                n += 1
+            if not silent:
+                print(f"{c.shortFileName()} has {n} nodes")
+        else:
+            assert False, path  # For unit testing
+    elif not silent:
+        if path.endswith('xyzzy.xxx'):
+            print(f"file not found: {path}")
+        else:
+            assert False, path  # For unit testing
+#@+node:ekr.20210903111150.1: *3* BasicTest...
+#@+node:ekr.20210901140645.4: *4* BasicTest.test_batch_mode
+def test_batch_mode(self):
+   
+    silent = True
+    trace = False
+    python_interp = f"\"{sys.executable}\""  # 2021/07/05: Allow blanks in path to python.
+    test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
+    src_path  = g.os_path_join(g.app.loadDir,"..","..")
+
+    leo_file   = g.os_path_join(src_path,"launchLeo.py")
+    batch_file = g.os_path_join(test_path,"batchTest.py")
+    test_file  = g.os_path_join(test_path,"createdFile.txt")
+
+    assert g.os_path_exists(batch_file)
+
+    # Execute this command: python launchLeo.py --script test\unittest\batchTest.py
+    # Note: batchTest.py is defined in this file, unitTest.leo.
+    if silent:
+        command = r'%s %s --silent --script %s' % (python_interp,leo_file,batch_file)
+    else:
+        command = r'%s %s --script %s' % (python_interp,leo_file,batch_file)
+
+    @others
+
+    if trace:
+        print('@test batch mode: loadDir: %s' % g.app.loadDir)
+        print('test_file: %s' % test_file)
+    os.remove(test_file)
+    if trace:
+        print('command: %s' %  command)
+    os.system(command)
+    assert g.os_path_exists(test_file), repr(test_file)
+#@+node:ekr.20210901140645.20: *4* BasicTest.test_leoTest_checkFileSyntax
+def test_leoTest_checkFileSyntax(self):
+    c = self.c
+    s = '''
+    # syntax error
+    def spam:
+        pass
+    '''
+    try:
+        c.testManager.checkFileSyntax('<fileName>',s,suppress=True)
+        assert False
+    except SyntaxError:
+        pass
+#@+node:ekr.20210901140645.23: *4* BasicTest.test_operator_with_unicode
+def test_operator_with_unicode(self):
+    
+    s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    s2 = 'test: %s' % s
+    assert s2
+#@+node:ekr.20210901140645.29: *4* BasicTest.test_rst_write_with_unicode_character
+def test_rst_write_with_unicode_character(self):
+    name = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','rst_write_test.txt')
+    s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    with open(name,'w',encoding='utf-8') as f:
+        f.write(s)
+    assert g.os_path_exists(name)
+#@+node:ekr.20210903154959.1: *3* leoBridge
+#@+node:ekr.20210903154959.2: *4* @@test leoBridge init logic
+import leo.core.leoBridge as leoBridge
+if g.app.isExternalUnitTest:
+    print('running @test leoBridge init logic')
+    # This can not be run locally!
+    b = leoBridge.controller(gui='nullGui',
+        loadPlugins=True,
+        readSettings=True,
+        silent=False,
+        tracePlugins=True,
+        verbose=True)
+    g = b.globals()
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(path)
+    c = b.openLeoFile(path)
+    assert c
+    assert c.rootPosition()
+else:
+    import subprocess
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
+    assert g.os_path_exists(path), path
+    command = 'python %s' % path
+    pid = subprocess.Popen(
+        command,
+        shell=True,
+        stdout=subprocess.PIPE, # Eliminate output.
+        universal_newlines=True,
+    )
+    pid.communicate()
+#@+node:ekr.20210903111404.1: *3* TestApp...
+#@+node:ekr.20210901170531.5: *4*  TestApp.setUp & tearDown
+def setUp(self):
+    g.unitTesting = True
+    self.c = c = leoTest2.create_app()
+    c.selectPosition(c.rootPosition())
+
+def tearDown(self):
+    g.unitTesting = False
+#@+node:ekr.20210903111247.1: *3* TestAtFile...
+#@+node:ekr.20210901172446.2: *4*  TestAtFile.setUp & tearDown
+def setUp(self):
+    g.unitTesting = True
+    self.c = c = leoTest2.create_app()
+    c.selectPosition(c.rootPosition())
+
+def tearDown(self):
+    g.unitTesting = False
+#@+node:ekr.20200204112501.1: *4* TestAtFile.temp_dir
+def temp_dir(self):
+    """Create a temp file with the given name."""
+    import warnings
+    warnings.simplefilter("ignore")
+    import tempfile
+    return tempfile.TemporaryDirectory()
+#@+node:ekr.20200204103744.1: *4* TestAtFile.temp_file
+def temp_file(self):
+    """Create a temp file with the given name."""
+    import warnings
+    warnings.simplefilter("ignore")
+    import tempfile
+    return tempfile.NamedTemporaryFile(mode='w')
+#@+node:ekr.20210905052100.1: *4* --- Can't be converted?
+#@+node:ekr.20051104075904.44: *5* TM.runAtFileTest
+def runAtFileTest(self, p):
+    """Common code for testing output of @file, @thin, etc."""
+    c = self.c
+    at = c.atFileCommands
+    child1 = p.firstChild()
+    child2 = child1.next()
+    h1 = child1.h.lower().strip()
+    h2 = child2.h.lower().strip()
+    assert(g.match(h1, 0, "#@"))
+    assert(g.match(h2, 0, "output"))
+    expected = child2.b
+    # Compute the type from child1's headline.
+    j = g.skip_c_id(h1, 2)
+    theType = h1[1:j]
+    kinds = ('@auto', '@clean', '@edit', '@file', '@thin', '@nosent', '@asis')
+    assert theType in kinds, f"bad type: {theType}"
+    if theType == "@asis":
+        result = at.atAsisToString(child1)
+    elif theType == "@auto":
+        result = at.atAutoToString(child1)
+    elif theType == "@edit":
+        result = at.atEditToString(child1)
+    else:
+        result = at.atFileToString(child1,
+            sentinels=theType not in ("@asis", "@clean", "@edit", "@nosent"))
+    try:
+        assert result == expected
+    except AssertionError:
+        << dump result and expected >>
+        raise
+#@+node:ekr.20051104075904.45: *6* << dump result and expected >>
+print('\n', '-' * 20)
+print("result...")
+for line in g.splitLines(result):
+    print(f"{len(line):3d}", repr(line))
+print('-' * 20)
+print("expected...")
+for line in g.splitLines(expected):
+    print(f"{len(line):3d}", repr(line))
+print('-' * 20)
+#@+node:ekr.20210905053144.1: *5* Problems with section references, etc.
+#@+node:ekr.20210905052021.2: *6* TestXXX.test_at_auto_newlines_at_end_of_nodes_
+def test_at_auto_newlines_at_end_of_nodes_(self):
+    c = self.c
+    c.testManager.runAtFileTest(p)
+#@+node:ekr.20210905052021.3: *6* TestXXX.test_at_auto_no_newline_at_end_of_nodes_
+def test_at_auto_no_newline_at_end_of_nodes_(self):
+    c = self.c
+    c.testManager.runAtFileTest(p)
+#@+node:ekr.20210905052021.4: *6* TestXXX.test_at_edit
+def test_at_edit(self):
+    c = self.c
+    c.testManager.runAtFileTest(p)
+#@+node:ekr.20210905052021.5: *6* TestXXX.test_at_raw
+def test_at_raw(self):
+    c = self.c
+    c.testManager.runAtFileTest(p)
+#@+node:ekr.20210905052021.6: *6* TestXXX.test_at_thin_with_at_last
+def test_at_thin_at_last(self):
+    c = self.c
+    # Doesn't work when run externally because the copy operation changes the gnx.
+    if g.app.isExternalUnitTest:
+        self.skipTest('Can not be run externally')
+    c.testManager.runAtFileTest(p)
+#@+node:ekr.20210905052021.7: *6* TestXXX.test_at_readOneAtShadowNode
+def test_at_readOneAtShadowNode(self):
+    c = self.c
+    at = c.atFileCommands
+    x = c.shadowController
+    changed = c.changed
+    child = p.firstChild()
+    s = child.b
+    try:
+        fn = 'unittest/read_test.py'
+        child.setHeadString('@shadow %s' % fn)
+        at.writeOneAtShadowNode(child, testing=True)
+        at.readOneAtShadowNode(fn,child)
+    finally:
+        child.setHeadString('@@shadow %s' % fn)
+        c.clearChanged()
+#@+node:ekr.20210905052021.8: *6* TestXXX.test_at_putRefLine_1
+def test_at_putRefLine_1(self):
+    c = self.c
+    import re
+    import leo.core.leoAtFile as atFile
+    if 0: # prefix
+        import importlib
+        importlib.reload(atFile)
+    at = atFile.AtFile(c)
+    s = '''\
+    if (
+        %s and 
+        %s > 3
+    ):
+        pass
+    ''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+    # Careful: avoid @verbatim and other substitutions.
+    expected = '''\
+    AT+leo-ver=5-thin
+    AT+node:GNX: * @test at.putRefLine 1
+    if (
+        AT+< <a> >
+        AT+node:GNX: ** < < a > >
+        a
+        AT-< <a> >
+        ATafterref
+     and 
+        AT+< <b> >
+        AT+node:GNX: ** < < b > >
+        b
+        AT-< <b> >
+        ATafterref
+     > 3
+    ):
+        pass
+    AT-leo
+    '''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+
+    result = at.stringToString(c.p, s)
+    result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+        # Don't test actual gnx's, so we can copy/paste this test.
+    if 0: # Show unexpected mismatches.
+        result = g.splitLines(result)
+        expected = g.splitLines(expected)
+        assert len(expected) == len(result)
+        for i, s in enumerate(result):
+            if expected[i] != result[i]:
+                print(i)
+                print('expected: %r' % expected[i])
+                print('result:   %r' % result[i])
+                break
+    assert result == expected
+#@+node:ekr.20210905052021.9: *6* TestXXX.test_at_putRefLine_2
+def test_at_putRefLine_2(self):
+    c = self.c
+    import re
+    import leo.core.leoAtFile as atFile
+    if 0: # prefix
+        import importlib
+        importlib.reload(atFile)
+    at = atFile.AtFile(c)
+    s = '''\
+    if (%s and %s > 3):
+        pass
+    ''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+    # Careful: avoid @verbatim and other substitutions.
+    expected = '''\
+    AT+leo-ver=5-thin
+    AT+node:GNX: * @test at.putRefLine 2
+    if (
+    AT+< <a> >
+    AT+node:GNX: ** < < a > >
+    a
+    AT-< <a> >
+    ATafterref
+     and 
+    AT+< <b> >
+    AT+node:GNX: ** < < b > >
+    b
+    AT-< <b> >
+    ATafterref
+     > 3):
+        pass
+    AT-leo
+    '''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+        # Recreate expected string.
+    result = at.stringToString(c.p, s)
+    result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+        # Don't test actual gnx's, so we can copy/paste this test.
+    if 0: # Show unexpected mismatches.
+        result = g.splitLines(result)
+        expected = g.splitLines(expected)
+        # assert len(expected) == len(result)
+        for i, s in enumerate(result):
+            if expected[i] != result[i]:
+                print(i)
+                print('expected: %r' % expected[i])
+                print('result:   %r' % result[i])
+                break
+    assert result == expected
+#@+node:ekr.20210905052021.22: *6* TestXXX.test_at_isFileLike
+def test_at_isFileLike(self):
+    c = self.c
+    s1 = '''
+#@verbatim
+    #@+leo-ver=4
+#@verbatim
+    #@+node:#@file
+    Line 1
+#@verbatim
+    #@-node:#@file
+#@verbatim
+    #@-leo
+    '''
+
+    s2 = '''
+#@verbatim
+    #@+leo-ver=4-thin
+#@verbatim
+    #@+node:ekr.20040707141957.13:#@thin
+#@verbatim
+    #@-node:ekr.20040707141957.13:#@thin
+#@verbatim
+    #@-leo
+    '''
+
+    at = c.atFileCommands
+    assert at.isFileLike(s1),'fail1'
+    assert not at.isFileLike(s2),'fail2'
+#@+node:ekr.20210905052021.34: *6* TestXXX.test_verbatim_sentinel
+def test_verbatim_sentinel(self):
+    c = self.c
+    # Here is something that should generate a verbtim sentinel::
+
+
+    # The length of this node should remain constant.
+
+    assert len(p.b) == 175,len(p.b)
+#@+node:ekr.20210905052725.1: *5* Uses external files
+#@+node:ekr.20210905052021.11: *6* TestXXX.test_at_asis_with_at_in_headline
+def test_at_asis_with_at_in_headline(self):
+    c = self.c
+    if g.app.isExternalUnitTest:
+        self.skipTest('Not for external tests: uses @<file> node.')
+    h = '@asis unittest/at-asis-test2.txt'
+    p = g.findNodeAnywhere(c,h)
+    assert p, h
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'@@eggs')
+    )
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    for p2,h2 in table:
+        assert p2.h == h2
+        assert len(p2.b) > 10
+#@+node:ekr.20210905052021.12: *6* TestXXX.test_at_asis_shape_of_tree
+def test_at_asis_shape_of_tree(self):
+    c = self.c
+    if g.app.isExternalUnitTest:
+        self.skipTest('Not for external tests: uses @<file> node.')
+    h = '@asis unittest/at-asis-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p, h
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    for p2,h2 in table:
+        assert p2.h == h2
+        assert len(p2.b) > 10
+#@+node:ekr.20210905052021.13: *6* TestXXX.test_at_auto_shape_of_tree
+def test_at_auto_shape_of_tree(self):
+    c = self.c
+    if g.app.isExternalUnitTest:
+        self.skipTest('Not for external tests: uses @<file> node.')
+    if g.in_bridge:
+        self.skipTest('Not for TravisCI')
+    h = '@auto unittest/at-auto-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p, h
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    assert not p.isDirty(), p.h # Do not ignore this failure!
+    for p2, h2 in table:
+        assert p2 and p2.h == h2, (p2 and p2.h, h2)
+        assert len(p2.b) > 10
+#@+node:ekr.20210905052021.14: *6* TestXXX.test_at_clean_with_at_precheck
+def test_at_clean_with_at_precheck(self):
+    c = self.c
+    if g.app.isExternalUnitTest:
+        self.skipTest('Not for external tests: uses @<file> node.')
+    if g.in_bridge:
+        self.skipTest('Not for TravisCI')
+    h = '@clean unittest/at-clean-write-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p, h
+    #
+    # Enable --trace=save
+    at = c.atFileCommands
+    # Get the correct file name.
+    fn = p.anyAtFileNodeName()
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
+    assert g.os_path_exists(path), path
+    #
+    # Run the test.
+    if 0:
+        g.app.debug.append('save')
+        print(f"Running {c.p.h}...\n")
+    val = at.precheck(path, p)
+    assert val is True
+#@+node:ekr.20210905052021.15: *6* TestXXX.test_at_clean_with_at_shouldPrompt
+def test_at_clean_with_at_shouldPrompt(self):
+    c = self.c
+    if g.app.isExternalUnitTest:
+        self.skipTest('Not for external tests: uses @<file> node.')
+    if g.in_bridge:
+        self.skipTest('Not for TravisCI')
+    h = '@clean unittest/at-clean-write-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p, h
+    #
+    # Enable --trace=save
+    at = c.atFileCommands
+    # Get the correct file name.
+    fn = p.anyAtFileNodeName()
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
+    assert g.os_path_exists(path), path
+    #
+    # Run the test.
+    if 0:
+        g.app.debug.append('save')
+        print(f"Running {c.p.h}...\n")
+    val = at.shouldPromptForDangerousWrite(path, p)
+    assert val is False
+#@+node:ekr.20210905052021.16: *6* TestXXX.test_at_file_tex_bug
+def test_at_file_tex_bug(self):
+    c = self.c
+    import textwrap
+    if g.app.isExternalUnitTest:
+        self.skipTest('Not for external tests: uses @<file> node.')
+    p = g.findNodeAnywhere(c,"@file unittest/tex-error.tex")
+    assert(p)
+    s1 = r"""\begin{document}
+    << Document """
+    s2 = r""">>
+    % hidden comment
+    \end{document}
+    """
+    s = s1 + s2
+    s = textwrap.dedent(s)
+    assert p.b == s, (repr(p.b), repr(s))
+#@+node:ekr.20210905052021.17: *6* TestXXX.test_at_thin_html_section_references
+def test_at_thin_html_section_references(self):
+    c = self.c
+    # html uses block comments.  This is an important test.
+    h = '@thin unittest/at-thin-html-test.html'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    s = (
+        '@language html\n\n<< ' +
+        'a section reference >>\n\n' +
+        'after.\n')
+    assert p.b == s,'body failure'
+#@+node:ekr.20210905052021.18: *6* TestXXX.test_at_thin_shape_of_tree
+def test_at_thin_shape_of_tree(self):
+    c = self.c
+    if g.app.isExternalUnitTest:
+        self.skipTest('Not for external tests: uses @<file> node.')
+    h = '@thin unittest/at-thin-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    for p2,h2 in table:
+        assert p2.h == h2
+        assert len(p2.b) > 10
+#@+node:ekr.20210905052021.10: *6* TestXXX.test_at_asis
+def test_at_asis(self):
+    c = self.c
+    c.testManager.runAtFileTest(c.p)
+#@+node:ekr.20210905052021.31: *6* TestXXX.test_at_writeOneAtShadowNode
+def test_at_writeOneAtShadowNode(self):
+    c = self.c
+    import os
+    at = c.atFileCommands
+    x = c.shadowController
+    # changed = c.changed
+    child = p.firstChild()
+    s = child.b
+
+    try:
+        child.setHeadString('@shadow unittest/test_1.py')
+        fn = 'unittest/test_1.py'
+        shadow_fn = x.shadowPathName(fn)
+        shadow_dir = x.shadowDirName(fn)
+        x.makeShadowDirectory(shadow_dir)
+        if g.os_path_exists(shadow_fn):
+            os.remove(shadow_fn)
+        at.writeOneAtShadowNode(child, testing=True)
+        assert at.startSentinelComment == '#','startSentinelComment: %s' % (
+            repr(at.startSentinelComment))
+        assert at.endSentinelComment == '','endSentinelComment: %s' % (
+            repr(at.endSentinelComment))
+        if 0:
+            print('public...\n',at.public_s)
+            print('private...\n',at.private_s)
+        at.writeOneAtShadowNode(child, testing=False)
+        assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
+        # No need to remove this: it's in the unittest directory.
+        # os.remove(shadow_fn)
+    finally:
+        child.setHeadString('@@shadow unittest/test_1.py')
+        c.clearChanged()
+#@+node:ekr.20210905052021.30: *6* TestXXX.test_at_write_using_comment
+def test_at_write_using_comment(self):
+    c = self.c
+    import re
+    at = c.atFileCommands
+    expected = '''\
+    /*@+leo-ver=5-thin*/
+    /*@+node:GNX: * root*/
+    /*@@language c*/
+    #ifdef COMMENT
+    /*@@comment /* */ */
+    #endif
+    /*@@tabwidth 4*/
+    /*@@lineending crlf*/
+
+    /*@+others*/
+    /*@-others*/
+
+    /*@+< < Get LRR Task > >*/
+    /*@+node:GNX: ** < < Get LRR Task > >*/
+    /*@-< < Get LRR Task > >*/
+    /*@+< < Start LRR > >*/
+    /*@+node:GNX: ** < < Start LRR > >*/
+    /*@-< < Start LRR > >*/
+    /*@-leo*/
+    '''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+
+    child = p.firstChild()
+    result = at.atFileToString(child)
+    result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
+    if result != expected: # Show unexpected mismatches.
+        g.printObj(result, tag='result')
+        g.printObj(expected, tag='expected')
+        result = g.splitLines(result)
+        expected = g.splitLines(expected)
+        print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
+        for i, s in enumerate(result):
+            if expected[i] != result[i]:
+                print(i)
+                print('expected: %r' % expected[i])
+                print('result:   %r' % result[i])
+                break
+    elif 0:
+        g.printObj(result, tag='result')
+
+    assert result == expected
+#@+node:ekr.20210905052021.33: *6* TestXXX.test_utf_16_encoding
+def test_utf_16_encoding(self):
+    c = self.c
+    h = '@file unittest/utf-16-test.txt'
+    p = g.findNodeAnywhere(c,h)
+    s = 'Test of utf-16.'
+    assert p,h
+    # It's hard to test the utf-16 text directly.
+    assert p.b
+    assert p.b.find(s) > -1
+    assert len(p.b)==66,len(p.b)
+#@+node:ekr.20210905044744.1: *5* calling runAtFileTest 
+#@+node:ekr.20210905044728.2: *6* TestXXX.test_at_auto_newlines_at_end_of_nodes_
+def test_at_auto_newlines_at_end_of_nodes_(self):
+    c = self.c
+    c.testManager.runAtFileTest(c.p)
+#@+node:ekr.20210905045005.3: *7* #@auto
+# # # @language python
+# # # @tabwidth -4
+# # # @others
+# # # #end
+#@+node:ekr.20210905045005.4: *8* spam
+# # # def spam(cheese):
+
+    # # # print(cheese)
+#@+node:ekr.20210905045005.5: *8* cheese
+# # # def cheese():
+
+    # # # pass
+#@+node:ekr.20210905045005.6: *7* Output
+# # # def spam(cheese):
+
+    # # # print(cheese)
+# # # def cheese():
+
+    # # # pass
+# # # #end
+#@+node:ekr.20210905044728.3: *6* TestXXX.test_at_auto_no_newline_at_end_of_nodes_
+def test_at_auto_no_newline_at_end_of_nodes_(self):
+    c = self.c
+    c.testManager.runAtFileTest(c.p)
+#@+node:ekr.20210905045005.8: *7* #@auto
+# # # @language python
+# # # @tabwidth -4
+# # # @others
+# # # #end
+#@+node:ekr.20210905045005.9: *8* spam
+# # # def spam(cheese):
+
+    # # # print(cheese)
+#@+node:ekr.20210905045005.10: *8* cheese
+# # # def cheese():
+
+    # # # pass
+#@+node:ekr.20210905045005.11: *7* Output
+# # # def spam(cheese):
+
+    # # # print(cheese)
+# # # def cheese():
+
+    # # # pass
+# # # #end
+#@+node:ekr.20210905044728.4: *6* TestXXX.test_at_edit
+def test_at_edit(self):
+    c = self.c
+    c.testManager.runAtFileTest(c.p)
+#@+node:ekr.20210905045005.13: *7* #@edit
+### These were text lines, without the leading '#'
+
+# Line 1
+
+# Last line: no newline
+#@+node:ekr.20210905045005.14: *7* Output
+### These were text lines, without the leading '#'
+
+# Line 1
+
+# Last line: no newline
+#@+node:ekr.20210905044728.5: *6* TestXXX.test_at_raw
+def test_at_raw(self):
+    c = self.c
+    c.testManager.runAtFileTest(c.p)
+#@+node:ekr.20210905045005.16: *7* #@file
+# before
+
+# @raw
+
+# @c
+
+### < < ref > >  ### Was an actual section ref.
+
+# @end_raw
+
+#after
+#@+node:ekr.20210905045005.17: *7* Output
+###@+leo-ver=5-thin
+###@+node:ekr.20110524120515.3490: * #@file
+# before
+
+@raw
+
+# @c
+
+### < < ref > >  ### Was real section ref ###
+
+@end_raw
+
+#after
+#@+node:ekr.20210909194401.1: *3* TestBeautify...
+#@+node:ekr.20210909194336.5: *4* TestBeautify.test_leoBeautify_CPrettyPrinter
+def test_leoBeautify_CPrettyPrinter(self):
+    c = self.c
+    import leo.core.leoBeautify as leoBeautify
+    cpp = leoBeautify.CPrettyPrinter(c)
+    fn = 'c tokenize test'
+    p2 = g.findNodeInTree(c,p,fn)
+    assert p2,'not found: %s' % (fn)
+
+    if 1: # test of indent.
+        # import os ; os.system('cls')
+        cpp.indent(p2)
+    if 0: # test of tokenize.
+        aList = cpp.tokenize(p2.b)
+        assert(p2.b == ''.join(aList))
+#@+node:ekr.20210909194336.6: *5* c tokenize test
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+#@+node:ekr.20210909194336.7: *4* TestBeautify.test_c_to_python
+def test_c_to_python(self):
+    c = self.c
+    import leo.core.leoBeautify as leoBeautify
+    import leo.commands.convertCommands as convertCommands
+    cpp = leoBeautify.CPrettyPrinter(c)
+    # c2p = convertCommands.C_To_Python(c)
+    fn = 'c tokenize test'
+    p2 = g.findNodeInTree(c,p,fn)
+    assert p2,'not found: %s' % (fn)
+    aList = cpp.tokenize(p2.b)
+    assert aList
+    # c2p.convertCodeList(aList)
+    # s = ''.join(aList)
+#@+node:ekr.20210909194336.8: *5* c tokenize test
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+#@+node:ekr.20210909231735.1: *3* TestChapters
+#@+node:ekr.20210909194336.9: *4* TestChapters.test_chapter_create_remove__undo
+def test_chapter_create_remove__undo(self):
+    c = self.c
+    # cc will be None when unit tests run dynamically.
+    import leo.core.leoChapters as leoChapters
+    new_code = getattr(leoChapters, 'new_code', True)
+    cc = c.chapterController
+    if new_code:
+        self.skipTest('create/remove commands no longer exist.')
+    elif cc and not g.app.isExternalUnitTest:
+        chaptersNode = cc.findChaptersNode()
+        assert chaptersNode
+        chapterNode = (
+            cc.findChapterNode('aaa') or
+            cc.createChapterByName('aaa',p=None))
+        cc.selectChapterByName('aaa',chaptersNode)
+        cc.removeChapterByName('aaa')
+        c.undoer.undo()
+        assert cc.findChapterNode('aaa')
+        cc.selectChapterByName('main',collapse=True)
+    else:
+        self.skipTest('Can not be run locally')
+#@+node:ekr.20210909194336.10: *4* TestChapters.test_chapter_rename__undo
+def test_chapter_rename__undo(self):
+    c = self.c
+    # cc will be None when unit tests run dynamically.
+    import leo.core.leoChapters as leoChapters
+    new_code = getattr(leoChapters, 'new_code', True)
+    cc = c.chapterController
+    if new_code:
+        self.skipTest('create/remove commands no longer exist.')
+    elif cc and not g.app.isExternalUnitTest:
+        chaptersNode = cc.findChaptersNode()
+        assert chaptersNode
+        chapterNode = (
+            cc.findChapterNode('aaa') or
+            cc.createChapterByName('aaa',p=None))
+        try:
+            cc.selectChapterByName('aaa',chaptersNode)
+            cc.renameChapterByName('bbb')
+            cc.selectChapterByName('bbb',chaptersNode)
+            cc.renameChapterByName('aaa')
+            assert cc.findChapterNode('aaa'),'after undo'
+        finally:
+            cc.selectChapterByName('main',collapse=True)
+    else:
+        self.skipTest('Can not be run locally')
+#@+node:ekr.20210909194336.11: *4* TestChapters.test_chapter_move_clone_copy_node_to
+def test_chapter_move_clone_copy_node_to(self):
+    c = self.c
+    # cc will be None when unit tests run dynamically.
+    import leo.core.leoChapters as leoChapters
+    new_code = getattr(leoChapters, 'new_code', True)
+    cc = c.chapterController
+    if new_code:
+        self.skipTest('move/clone/copy commands no longer exist.')
+    elif cc and not g.app.isExternalUnitTest:
+        chaptersNode = cc.findChaptersNode()
+        assert chaptersNode,'fail 0'
+        chapterNode = (
+            cc.findChapterNode('aaa') or
+            cc.createChapterByName('aaa',p=None))
+        table = (
+            ('node a',cc.moveNodeToChapterHelper),
+            ('node b',cc.copyNodeToChapterHelper),
+            ('node c',cc.cloneNodeToChapterHelper),
+        )
+        # Initialze 
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        for h,unused_f in table:
+            p2 = p.insertAsLastChild()
+            p2.h = h
+            p2.b = '# %s' % h
+        try:
+            cc.selectChapterByName('aaa')
+            for h,f in table:
+                p2 = g.findNodeInTree(c,p,h)
+                assert p2,'fail 1'
+                c.selectPosition(p2) # All helpers work on c.p.
+                f('aaa')
+                assert g.findNodeInTree(c,chapterNode,h),(
+                    'fail 2', chapterNode.h, h, f.__name__)
+            assert not g.findNodeInTree(c,p,'node a')
+            assert g.findNodeInTree(c,p,'node b')
+            assert g.findNodeInTree(c,p,'node c')
+        finally:
+            if 1: # Restore the tree so activeUnitTests.txt does not change.
+                while p.hasChildren():
+                    p.firstChild().doDelete(newNode=None)
+                for h,f in table:
+                    p3 = g.findNodeInTree(c,chapterNode,h)
+                    if p3: p3.doDelete()
+            cc.selectChapterByName('main',collapse=True)
+            c.redraw()
+    else:
+        self.skipTest('Can not be run locally')
+#@+node:ekr.20210909194336.12: *5* node a
+# node a
+#@+node:ekr.20210909194336.13: *5* node b
+# node b
+#@+node:ekr.20210909194336.14: *5* node c
+# node c
+#@+node:ekr.20210909194336.15: *4* TestChapters.test_chapter_create_from_node
+def test_chapter_create_from_node(self):
+    c = self.c
+    # cc will be None when unit tests run dynamically.
+    import leo.core.leoChapters as leoChapters
+    new_code = getattr(leoChapters, 'new_code', True)
+    cc = c.chapterController
+    if new_code:
+        self.skipTest('create-from-node no longer exist.')
+    elif cc and not g.app.isExternalUnitTest:
+        root = p.copy()
+        # Init the children
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        child = p.insertAsNthChild(0)
+        # c.setHeadString(child,'child') # Force the headline to update.
+        child.h = 'child'
+        child.b = '# child'
+        # Kill the chapter so the test will not fail if run twice.
+        chapter = cc.chaptersDict.get('new-chapter')
+        if chapter:
+            cc.removeChapterByName('new-chapter')
+        try:
+            c.selectPosition(child)
+            c.chapterController.createChapterByName(
+                'new-chapter',child,'Create Chapter From Node')
+            if 0:
+                c.undoer.undo()
+                c.undoer.redo()
+                c.undoer.undo()
+                c.undoer.redo()
+                c.undoer.undo() # Don't pollute future unit tests.
+            else:
+                c.redraw_now() # Required.
+                chapterNode = cc.findChapterNode('new-chapter')
+                assert chapterNode,'fail 1: %s' % (undoType)
+                chapterNode.doDelete()
+                c.redraw_now()
+        finally:
+            cc.selectChapterByName('main',collapse=True)
+            if 1: # Do this so the activeUnitTests.txt does not change.
+                while root.hasChildren():
+                    root.firstChild().doDelete(newNode=None)
+            c.redraw_now()
+    else:
+        self.skipTest('Can not be run locally')
+#@+node:ekr.20210910073542.1: *3* TestColorer...
+#@+node:ekr.20210905170507.35: *4* TestColorer.test_colorizer_wikiTest1
+def test_colorizer_wikiTest1(self):
+    c = self.c
+    text = textwrap.dedent("""\
+# both color_markup & add_directives plugins must be enabled.
+
+@markup wiki
+""" {picture file=../Icons/Leoapp.GIF}this """ # Problems with correct indexing following a graphic.
+
+""" {picture file=../Icons/Leoapp.GIF}this """ # two copies work.
+
+abc
+
+""" {picture file=../Icons/Leodoc.GIF} """ # xyz
+
+""" continued
+string"""
+
+@ ''ab'' __xxx__ ''wx'' __xyz__
+@c
+
+# /* ''ab'' __xxx__ ''wx'' __xyz__ */
+
+# Test
+
+""" ''' """ ''' """'''  # Leo handles the common cases correctly.
+
+''' ''ab'' __xxx__ ''wx'' __xyz__ ''' # No wiki markup in ''' strings.
+
+""" ''ab'' __xxx__ ''wx'' __xyz__ """
+
+# ''ab'' __xxx__ ''wx'' __xyz__
+
+""" ''y'' """
+
+""" text~~#ff00ff:some text~~more text"""
+
+if 1 and 2:
+    pass
+
+print(g.app().loadDir)
+    """)
+    self.color('python', text)
+#@+node:ekr.20210906104351.1: *3* TestCommands...
+#@+node:ekr.20210906075242.25: *4* TestCommands.test_g_command_decorator
+def test_g_command_decorator(self):
+    
+    # pylint: disable=global-variable-undefined
+    c = self.c
+    _foo = 0
+
+    @g.command('my-test-command')
+    def mytestcommand(event):
+        global _foo
+        _foo = 1
+
+    c.k.simulateCommand('my-test-command')
+    assert _foo == 1, _foo
+
+    # bonus test: c.app.commanders()
+    assert c in g.app.commanders()
+
+  
+#@+node:ekr.20210905065924.1: *4* Edit tests:
+#@+node:ekr.20210907080819.1: *5* COPY @common x-marked-nodes test code
+@others
+#@+node:ekr.20210907080819.2: *6* setup_test
+def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    if 1: # This is correct.
+        for child in target.children():
+            if child.h == 'a':
+                assert child.isCloned(),'not cloned!: %s' % (child)
+            else:
+                assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+    
+#@+node:ekr.20210907080819.3: *6* tear_down
+def tear_down(p,h=None):
+    
+    if 1:
+        delete_children(p)
+    
+    if h:
+        node = g.findNodeAnywhere(c,h)
+        if node:
+            node.doDelete()
+            # g.trace('deleted',node.h)
+
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    common.contract()
+
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20210907080819.4: *6* delete_children
+def delete_children(p):
+
+    while p.hasChildren():
+        p.firstChild().doDelete()
+#@+node:ekr.20210907080819.5: *6* test_children
+def test_children(p):
+    
+    n = p.numberOfChildren()
+    assert n == 3 ,'children: %s' % (n)
+    
+    child = p.firstChild()
+    assert child.h == 'a','child1: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'c','child2: %s' % (child)
+    
+    child = child.next()
+    assert child.h == 'a','child3: %s' % (child)
+#@+node:ekr.20210907080819.6: *6* data
+#@+node:ekr.20210907080819.12: *7* a
+#@+node:ekr.20210907080819.13: *8* b
+#@+node:ekr.20210907080819.9: *7* c
+#@+node:ekr.20210907080819.10: *7* d
+#@+node:ekr.20210907080819.11: *7* e
+#@+node:ekr.20210907080819.12: *8* a
+#@+node:ekr.20210907080819.13: *9* b
+#@+node:ekr.20210905065924.4: *5* @test clone-marked-nodes
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        target = p.copy()
+        setup_test(p)
+        c.cloneMarked()
+        h = 'Clones of marked nodes'
+        assert c.p.h == h,c.p.h
+        c.undoer.undo()
+        assert not g.findNodeAnywhere(c,h)
+        c.undoer.redo()
+        assert c.p.h == h, c.p.h
+    try:
+        test(p)
+    finally:
+        tear_down(p,'Clones of marked nodes')
+#@+node:ekr.20210905065924.5: *5* @test dabbrev-completion
+# main after
+# mainto
+
+ac = c.abbrevCommands
+w = c.frame.body.wrapper
+s = w.getAllText()
+w.setInsertPoint(4)
+# i,j = g.getWord(s,4)
+# word = s[i:j]
+event = g.bunch(widget=w)
+ac.dynamicCompletion(event)
+try:
+    i = s.find('main')
+    assert i == 2,i
+finally:
+    if 1:
+        c.undoer.undo(event=event)
+
+#@+node:ekr.20210905065924.6: *5* @test dabbrev-expand
+# main after
+# mainto
+
+ac = c.abbrevCommands
+w = c.frame.body.wrapper
+s = w.getAllText()
+w.setInsertPoint(4)
+i,j = g.getWord(s,4)
+word = s[i:j]
+aList = ac.getDynamicList(w,word)
+c.k.arg = aList[1]
+event = g.bunch(char=None, stroke=None, widget=w)
+ac.dynamicExpandHelper(event)
+    # This *does* support undo.
+s = w.getAllText()
+try:
+    i = s.find('main')
+    assert i == 2,i
+finally:
+    if 0:
+        c.undoer.undo()
+#@+node:ekr.20210905065924.7: *5* @test delete-marked-nodes
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        setup_test(p)
+        c.deleteMarked()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+        c.undoer.undo()
+        n = p.numberOfChildren()
+        assert n == 4,'undo: children: %s' % (n)
+        c.undoer.redo()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+    try:
+        test(p)
+    finally:
+        tear_down(p)
+#@+node:ekr.20210905065924.8: *5* @test expand-and-go-right
+# Test of bug 930726: expandNodeAndGoToFirstChild only expands or only goes to first child .
+
+p.contract()
+c.expandNodeAndGoToFirstChild()
+assert c.p == p.firstChild()
+#@+node:ekr.20210905065924.9: *6* child
+#@+node:ekr.20210905065924.10: *5* @test goNext/PrevVisitedNode
+p = c.p.copy()
+c.selectPosition(p.threadBack())
+p1 = c.p
+c.goPrevVisitedNode()
+p2 = c.p
+c.goNextVisitedNode()
+p3 = c.p
+#@+node:ekr.20210905065924.11: *5* @test help-for-command
+result = c.helpCommands.getBindingsForCommand('help')
+if not result:
+    self.skipTest('no settings')
+assert result.strip().lower()=='f1', repr(result)
+#@+node:ekr.20210905065924.12: *5* @test helpForbindings
+vr = c.helpCommands.helpForBindings()
+if not vr:
+    self.skipTest('no vr plugin')
+#@+node:ekr.20210905065924.13: *5* @test helpForFindCommands
+vr = c.helpCommands.helpForFindCommands()
+if not vr:
+    self.skipTest('no vr plugin')
+#@+node:ekr.20210905065924.14: *5* @test selfInsertCommand-1
+@first # -*- coding: utf-8 -*-
+@language python
+
+try:
+    ec = c.editCommands ; w = c.frame.body.wrapper
+    s = w.getAllText()
+
+    # This strings tests unicode, paren matching, and auto-indentation.
+    u = '(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉ©BE|cz):\n'
+    u = '(pdq):\n'
+    w.setInsertPoint(len(s))
+    for char in u:
+        binding = 'Return' if char == '\n' else char
+        event = g.app.gui.create_key_event(c,char=char,binding=binding,w=w)
+        ec.selfInsertCommand(event)
+    result = w.getAllText()
+    assert result.endswith('    '),'result:\n%s' % result
+    # Test of autocompleter.
+finally:
+    if 1:
+        w.setAllText(s)
+        p.setBodyString(s)
+        # g.trace(repr(s))
+        c.recolor()
+
+# end:
+#@+node:ekr.20210905065924.15: *5* @test selfInsertCommand-2 (replacing tabs)
+@language python
+@tabwidth -4
+
+try:
+    ec = c.editCommands ; w = c.frame.body.wrapper
+    s = w.getAllText()
+    w.setSelectionRange(len(s)-9,len(s)-6)
+    event = g.app.gui.create_key_event(c, binding='Tab', char='\t', w=w)
+    ec.selfInsertCommand(event)
+    result = w.getAllText()
+    assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    c.recolor_now()
+    
+###abcdef
+#@+node:ekr.20210905065924.16: *5* @test set-fill-prefix
+# xxxx.yyyy
+
+s = p.b
+w = c.frame.body.wrapper
+w.setSelectionRange(2,11)
+c.editCommands.setFillPrefix(event=None)
+prefix = c.editCommands.fillPrefix
+assert prefix == 'xxxx.yyyy',repr(prefix)
+#@+node:ekr.20210905065924.17: *5* @test sort-recent-files (new)
+c.sortRecentFiles()
+#@+node:ekr.20210905065924.18: *5* @test sort-siblings (new)
+child = p.firstChild()
+assert child.h == 'b','fail 1'
+try:
+    c.selectPosition(child)
+    c.sortSiblings()
+    c.redraw_now()
+    child = p.firstChild()
+    assert child.h == 'a'
+    child = child.next()
+    assert child.h == 'b'
+    child = child.next()
+    assert child.h == 'c'
+    assert not child.next()
+finally:
+    c.undoer.undo()
+    p.contract()
+    c.redraw(p)
+#@+node:ekr.20210905065924.19: *6* b
+#@+node:ekr.20210905065924.20: *6* a
+#@+node:ekr.20210905065924.21: *6* c
+#@+node:ekr.20210905065924.22: *5* @test typescript-to-python
+import leo.core.leoBeautify as leoBeautify
+cpp = leoBeautify.CPrettyPrinter(c)
+# ts2p = c.convertCommands.TS_To_Python(c)
+fn = 'typescript tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+assert aList
+# bts2p.convertCodeList(aList)
+# s = ''.join(aList)
+#@+node:ekr.20210905065924.23: *6* typescript tokenize test
+@language javascript
+
+public attemptIncrementalUpdateUnit(previousScript: Script,scriptId: string,newSourceText: ISourceText,editRange: ScriptEditRange): UpdateUnitResult
+    self.logger.log("attemptIncrementalUpdateUnit(\"" + scriptId + "\")")
+    if editRange === None:
+        throw Error("editRange should be valid")
+    var scope1 = self.getEnclosingScopeContextIfSingleScopeEdit(previousScript,scriptId,newSourceText,editRange)
+    if scope1 === None:
+        return None
+    var newScopeLength = scope1.scopeStartAST.limChar - scope1.scopeStartAST.minChar + editRange.delta
+    # Heuristic: if the range to reparse is too big,bail out.
+    # This is because a full parse will be faster than an incremental parse followed by all the necessary fix-ups
+    if newScopeLength >= newSourceText.getLength()/ 2:
+        self.logger.log("  Bailing out because range of scope to reparse(" + newScopeLength + " characters)is greater than half the size of the source text")
+        return None
+    # Capture parsing errors so that they are part of "updateResult"
+    var parseErrors: TypeScript.ErrorEntry:[] = []
+    var errorCapture = function(minChar: number,charLen: number,message: string,unitIndex: number): void
+        parseErrors.push(TypeScript.ErrorEntry:(unitIndex,minChar,minChar + charLen,message))
+    var quickParseResult = TypeScript.quickParse(self.logger,scope1.scopeStartAST,newSourceText,scope1.scopeStartAST.minChar,scope1.scopeStartAST.minChar + newScopeLength,errorCapture)
+    if quickParseResult.endLexState != TypeScript.LexState.Start:
+        self.logger.log("  Bailing out because scope contains unterminated comment")
+        return None
+    var scriptFragment = quickParseResult.Script
+    if scriptFragment.vars.members.length !== 0:
+        self.logger.log("  Bailing out because new source text defines variables")
+        return None
+    #if(scriptFragment.scopes.members.length !== 1)
+    #    logger.log("  Bailing out because new source text defines more than one scope(or none)");
+    #    return null;
+    #
+    # This detects adding close curlies,since they have the side effect of having the parser
+    # parse more members in the scope range.
+    if scriptFragment.bod.members.length !== 1:
+        self.logger.log("  Bailing out because new source text defines more than one scope(or none)")
+        return None
+    var oldScope = scope1.scopeStartAST
+    var newScope = scriptFragment.bod.members[0]
+    if oldScope.nodeType != newScope.nodeType:
+        self.logger.log("  Bailing out because new source text does not define the same scope type as the existing scope")
+        return None
+    if not (<any>oldScope).leftCurlyCount or not (<any>oldScope).rightCurlyCount:
+        self.logger.log("  Bailing out because sopce doesn't have left/right curly count")
+        return None
+    if(<any>oldScope).leftCurlyCount !==(<any>newScope).leftCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)left curly braces")
+        return None
+    if(<any>oldScope).rightCurlyCount !==(<any>newScope).rightCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)right curly braces")
+        return None
+    if newScope.minChar !== 0:
+        self.logger.log("  Bailing out because new function declaration does not start at position 0")
+        return None
+    if newScope.limChar !== newScopeLength:
+        self.logger.log("  Bailing out because new function declaration does not end at the new end position")
+        return None
+    return TypeScript.UpdateUnitResult.singleScopeEdits(previousScript,scriptFragment,oldScope,newScope,editRange,parseErrors)
+#@+node:ekr.20210910073534.1: *3* TestConfig...
+#@+node:ekr.20210909194336.21: *4* TestConfig.test_ifplatform
+def test_ifplatform(self):
+    c = self.c
+
+
+    win32  = c.config.getBool('test_win32_setting')
+    darwin = c.config.getBool('test_darwin_setting')
+
+    if win32 is None and darwin is None:
+        self.skipTest('settings not loaded') # #1345
+
+    if sys.platform == 'win32':
+        assert(win32)
+        assert(not darwin)
+
+    elif sys.platform== 'darwin':
+        assert(not win32)
+        assert(darwin)
+#@+node:ekr.20210909194336.17: *4* TestConfig.test_c_config_updateSetting_with_no_settings_node
+def test_c_config_updateSetting_with_no_settings_node(self):
+    # Can't be done at top level
+    import leo.core.leoConfig as leoConfig
+    c = self.c
+    p = c.config.settingsRoot()
+    if p:
+        # p will not exist when run externally.
+        h = p.h
+        p.h = '@@' + h
+    parser = leoConfig.SettingsTreeParser(c, localFlag=True)
+    d1, d2 = parser.traverse()
+    assert isinstance(d1, g.TypedDict), d1
+    assert isinstance(d2, g.TypedDict), d2
+#@+node:ekr.20210909194336.20: *4* TestConfig.test_g_app_config_set
+def test_g_app_config_set(self):
+    ### c = self.c
+    setting = 'import_html_tags'
+    html_tags = ('body','head','html','table','xxx')
+    # When run externally, c.config.getData will return None.
+    ### existing_tags = c.config.getData(setting)
+    ### g.trace(existing_tags)
+    ###if not existing_tags:
+    g.app.config.set(None, g.app.config.munge(setting), 'data', html_tags)
+    tags = g.app.config.getData(setting)
+    self.assertEqual(tags, html_tags)
+#@+node:ekr.20210909194336.19: *4* TestConfig.test_g_app_config_get
+def test_g_app_config_get(self):
+    # This will return None
+    g.app.config.get('global_setting_for_unit_tests','int')
+#@+node:ekr.20210909194336.18: *4* TestConfig.test_g_app_config_buttons_and_commands_logic
+def test_g_app_config_buttons_and_commands_logic(self):
+    d = g.app.config.unitTestDict # Always created for this unit test.
+    keys = ('config.doButtons-file-names', 'config.doCommands-file-names')
+    for key in keys:
+        aList = d.get(key,[])
+        ### if 'leoSettings' not in aList:
+        ###    self.skipTest('no settings') # #1345
+        for base in ('leoSettings', 'unitTest'):
+            for ext in ('.leo', '.db'):
+                if base + ext in aList:
+                    break
+            else:
+                print('key', key, 'ext', ext, 'base', base)
+                g.printObj(aList)
+                self.fail(f"{base} not in unitTestDict[{key}]")
+#@+node:ekr.20210909231240.1: *3* TestFileCommands...
+#@+node:ekr.20210909194336.43: *4* TestFileCommands.test_t_fileIndex_remains_the_same
+def test_t_fileIndex_remains_the_same(self):
+    c = self.c
+    if g.app.isExternalUnitTest:
+        self.skipTest('Can not be run externally')
+    else:
+        # new_gnxs:
+        assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
+        # old gnxs:
+        # assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
+#@+node:ekr.20210909194336.42: *4* TestFileCommands.test_Select_a_node_when_file_is_first_loaded
+def test_Select_a_node_when_file_is_first_loaded(self):
+    c = self.c
+    c.redraw(p) # To make node visible
+
+    c2 = c.new()
+    p2 = c2.p
+    try:
+        # This fails, but it is possible to edit the headline.
+        # assert c2.edit_widget(p2),'c2.edit_widget(p2) failed: %s' % repr(p2)
+        assert p2,'p2 failed: %s' % repr(p2)
+        # assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
+    finally:
+        c2.clearChanged()
+        c2.close()
+#@+node:ekr.20210903111256.1: *3* TestFind...
+#@+node:ekr.20210110073117.79: *4* TestFind.dump_tree
+def dump_tree(self, tag=''):  # pragma: no cover (skip)
+    """Dump the test tree created by make_test_tree."""
+    c = self.c
+    print('dump_tree', tag)
+    for p in c.all_positions():
+        print(' ' * p.level(), p.h)
+        print(' ' * p.level(), p.b)
+#@+node:ekr.20210903164446.925: *4* 15 leoFind
+# 4 failures with Alt-5
+#@+node:ekr.20210903164446.926: *5* @test minibuffer find commands
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    're-search-forward',
+    're-search-backward',
+    'search-forward',
+    'search-backward',
+    'word-search-forward',
+    'word-search-backward',
+)
+
+for command in table:
+    # This is not a full test.  We must use keyboardQuit here!
+    c.k.simulateCommand(command)
+    c.k.keyboardQuit(None)
+#@+node:ekr.20210903164446.927: *5* @test replace-all: plain search
+fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    1,      'CA'),
+    ('Aa',      'A',    'C',    1,      'Ca'),
+    ('Aba',     'b',    'C',    1,      'ACa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_plain(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20210903164446.928: *5* @test replace-all: plain search: ignore case
+fc = c.findCommands
+
+plain_table = (
+    # s         find    change  count   result
+    ('aA',      'a',    'C',    2,      'CC'),
+    ('AbBa',    'b',    'C',    2,      'ACCa'),
+)
+for s, find, change, count, result in plain_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_plain(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20210903164446.929: *5* @test replace-all: regex search
+fc = c.findCommands
+regex_table = (
+    # s                 find        change  count   result
+    ('a ba aa a ab a',  r'\b\w+\b', 'C',    6,      'C C C C C C'),
+    ('a AA aa aab ab a',r'\baa\b',  'C',    1,      'a AA C aab ab a'),
+    # Multi-line
+    ('aaa AA\naa aab',  r'\baa\b',  'C',    1,      'aaa AA\nC aab'),
+)
+for s, find, change, count, result in regex_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_regex(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20210903164446.930: *5* @test replace-all: word search
+fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa a ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa a ab a',  'aa',   'C',    1,      'a ba C a ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = False
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_word(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20210903164446.931: *5* @test replace-all: word search: ignore case
+fc = c.findCommands
+
+word_table = (
+    # s                 find    change  count   result
+    ('a ba aa A ab a',  'a',    'C',    3,      'C ba aa C ab C'),
+    ('a ba aa AA ab a', 'aa',   'C',    2,      'a ba C C ab a'),
+)
+for s, find, change, count, result in word_table:
+    fc.ignore_case = True
+    fc.find_text = find
+    fc.change_text = change
+    count2, result2 = fc._change_all_word(s)
+    assert result == result2, 'expected result: %r: got: %r' % (result, result2)
+    assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
+# print('pass')
+#@+node:ekr.20210903164446.932: *5* @test set find mode commands
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    'set-find-everywhere',
+    'set-find-node-only',
+    'set-find-suboutline-only',
+)
+# show-find-tab-options     = Ctrl-o
+# show-find-options         = o
+for command in table:
+    c.k.simulateCommand(command)
+#@+node:ekr.20210903164446.933: *5* @test show-find-options
+c.k.simulateCommand('show-find-options')
+#@+node:ekr.20210903164446.934: *5* @test toggle find options commands
+if g.app.isExternalUnitTest or g.in_bridge:
+    self.skipTest('Can not be run externally')
+table = (
+    # 'toggle-find-clone-find-all-option',
+    'toggle-find-ignore-case-option',
+    'toggle-find-in-body-option',
+    'toggle-find-in-headline-option',
+    'toggle-find-mark-changes-option',
+    'toggle-find-mark-finds-option',
+    'toggle-find-regex-option',
+    # 'toggle-find-reverse-option',
+    'toggle-find-word-option',
+    # 'toggle-find-wrap-around-option',
+)
+for command in table:
+    c.k.simulateCommand(command)
+    c.k.simulateCommand(command)
+#@+node:ekr.20210903164446.936: *5* @test leoFind.LeoFind clean init
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+table = (
+    # 'batch',  # 'wrap', 
+    'ignore_case', 'node_only', 'pattern_match', 
+    'search_headline', 'search_body', 'suboutline_only',
+    'mark_changes', 'mark_finds', 'whole_word',
+   
+)
+for ivar in table:
+    assert getattr(x, ivar) is None, ivar
+assert x.reverse is False
+#@+node:ekr.20210903164446.937: *5* @test find._inner_search_regex
+import re
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, back, nocase):
+    for pattern, s, expected in table:
+        flags = re.IGNORECASE if nocase else 0
+        x.re_obj = re.compile(pattern, flags)
+        pos, new_pos = x._inner_search_regex(s, 0, len(s),
+            pattern, backwards=back, nocase=nocase)
+        got = s[pos:new_pos]
+        assert expected==got, (
+            '\n   table: %s'
+            '\n pattern: %r'
+            '\n       s: %r'
+            '\nexpected: %r'
+            '\n     got: %r' % (table_name, pattern, s, expected, got)
+        )
+
+plain_table = (
+    # pattern   s       expected
+    (r'.',      'A',    'A'),
+    (r'A',      'xAy',  'A'),
+)
+nocase_table = (
+    # pattern   s       expected
+    (r'.',      'A',    'A'),
+    (r'.',      'a',    'a'),
+    (r'A',      'xay',  'a'),
+    (r'a',      'xAy',  'A'),
+)
+back_table = (
+    # pattern   s           expected
+    (r'a.b',    'a1b a2b',  'a2b'),
+)
+test(plain_table,  'plain_table',  back=False, nocase=False)
+test(nocase_table, 'nocase_table', back=False, nocase=True)
+test(back_table,   'back_table',   back=True,  nocase=False)
+#@+node:ekr.20210903164446.938: *5* @test find._inner_search_backward
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, nocase, word):
+    test_n = 0
+    for pattern, s, i, j, expected, expected_i, expected_j in table:
+        test_n += 1
+        if j == -1: j = len(s)
+        got_i, got_j = x._inner_search_backward(s, i, j,
+            pattern, nocase=nocase, word=word)
+        got = s[got_i: got_j]
+        assert expected==got and got_i == expected_i and got_j == expected_j, (
+            '\n     table: %s'
+            '\n    i test: %s'
+            '\n   pattern: %r'
+            '\n         s: %r'
+            '\n  expected: %r'
+            '\n       got: %r'
+            '\nexpected i: %s'
+            '\n     got i: %s'
+            '\nexpected j: %s'
+            '\n     got j: %s'
+            % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
+
+plain_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',      'abaca',     0, -1,  'a',      4,          5),
+    ('A',      'Abcde',     0, -1,  'A',      0,          1),
+)
+nocase_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  'a',      5,          6),
+    ('A',       'Abcdca',   0, -1,  'a',      5,          6),
+)
+word_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  '',      -1,          -1),
+    ('A',       'AA A AB',  0, -1,  'A',      3,          4),
+)
+test(plain_table,  'plain_table',  nocase=False, word=False)
+test(nocase_table, 'nocase_table', nocase=True,  word=False)
+test(word_table,   'word_table',   nocase=False, word=True)
+#@+node:ekr.20210903164446.939: *5* @test find._inner_search_plain
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+
+def test(table, table_name, nocase, word):
+    test_n = 0
+    for pattern, s, i, j, expected, expected_i, expected_j in table:
+        test_n += 1
+        if j == -1: j = len(s)
+        got_i, got_j = x._inner_search_plain(s, i, j, pattern,
+            nocase=nocase, word=word)
+        got = s[got_i: got_j]
+        assert expected==got and got_i == expected_i and got_j == expected_j, (
+            '\n     table: %s'
+            '\n    i test: %s'
+            '\n   pattern: %r'
+            '\n         s: %r'
+            '\n  expected: %r'
+            '\n       got: %r'
+            '\nexpected i: %s'
+            '\n     got i: %s'
+            '\nexpected j: %s'
+            '\n     got j: %s'
+            % (table_name, test_n, pattern, s, expected, got, expected_i, got_i, expected_j, got_j))
+
+plain_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',      'baca',     0, -1,   'a',      1,          2),
+    ('A',      'bAcde',     0, -1,  'A',      1,          2),
+)
+nocase_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  'a',      0,          1),
+    ('A',       'abcdca',   0, -1,  'a',      0,          1),
+)
+word_table = (
+    # pattern   s           i,  j   expected, expected_i, expected_j
+    ('a',       'abaAca',   0, -1,  '',      -1,          -1),
+    ('A',       'AA A AAB', 0, -1,  'A',      3,          4),
+)
+test(plain_table,  'plain_table',  nocase=False, word=False)
+test(nocase_table, 'nocase_table', nocase=True,  word=False)
+test(word_table,   'word_table',   nocase=False, word=True)
+#@+node:ekr.20210903164446.940: *5* @test find.replace_back_slashes
+import leo.core.leoFind as leoFind
+x = leoFind.LeoFind(c)
+table = (
+    ('\\\\', '\\'),
+    ('\\n', '\n'),
+    ('\\t', '\t'),
+)
+for s, expected in table:
+    got = x.replace_back_slashes(s)
+    assert expected==got, (
+        '\n         s: %r'
+        '\n  expected: %r'
+        '\n       got: %r'
+        % (s, expected, got))
+#@+node:ekr.20210909211414.1: *3* TestFrame...
+#@+node:ekr.20210909194336.48: *4* TestFrame.test_c_frame_resize_to_screen
+def test_c_frame_resize_to_screen(self):
+    # The actual code contains the unit test.
+    # This test will have effect only when run locally.
+    c = self.c
+
+    if not g.app.gui.guiName().startswith('qt'):
+        self.skipTest('Requires Qt')
+
+    d = g.app.unitTestDict
+    tag = 'resize-to-screen'
+    assert not d.get(tag)
+    c.frame.resizeToScreen()
+    assert d.get(tag) is True
+#@+node:ekr.20210902172234.1: *3* TestGlobals...
+#@+node:ekr.20210901140645.24: *4* LeoGlobals.test_can_not_open_message_in_g_openWithFileName
+def test_can_not_open_message_in_g_openWithFileName(self):
+    c = self.c
+    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    c2 = g.openWithFileName(filename, old_c=c)
+    self.assertFalse(c2)
+#@+node:ekr.20210901140645.18: *4* LeoGlobals.test_g_es_exception
+def test_g_es_exception(self):
+    # This is just a hand test.
+    if not g.unitTesting:
+        try:
+            assert False
+        except AssertionError:
+            g.es_exception(full=True,c=None,color='red')
+#@+node:ekr.20210901140645.28: *4* LeoGlobals.test_open_non_existent_non_ascii_directory
+def test_open_non_existent_non_ascii_directory(self):
+
+    # g.openWithFileName *always* opens the file.
+    # theFile = 'Ỗ'
+    c = self.c
+    path = g.os_path_join('Ỗ','Ỗ')
+    c2 = g.openWithFileName(path, old_c=c)
+#@+node:ekr.20210901140645.6: *4* LeoGlobals.test_save_new_file
+def test_save_new_file(self):
+    c = self.c
+    ###
+        # if g.in_bridge:
+            # self.skipTest('Not for TravisCI')
+        # if sys.platform.startswith('linux'):
+            # # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+            # # The crash causes several other unit tests to fail.
+            # self.skipTest('Not for Linux.')
+    c1 = c
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
+    g.trace(fn)
+    if g.os_path_exists(fn):
+        os.remove(fn)
+    assert not g.os_path_exists(fn)
+    try:
+        c = c1.new()
+        # Not a perfect unit test, but it similar to c.save.
+        c.mFileName = fn
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+        c.fileCommands.save(c.mFileName,silent=False)
+        c.close()
+        assert g.os_path_exists(fn)
+    finally:
+        if g.os_path_exists(fn):
+            os.remove(fn)
+#@+node:ekr.20210905203541.2: *4* TestGlobals.test_g_adjustTripleString
+def test_g_adjustTripleString(self):
+    c = self.c
+    if 0: # The following must be indented.
+
+        s = '''\
+        a
+          b
+
+    c
+        d'''
+
+        s2 = '    a\n      b\n\nc\n    d'
+
+        result = g.adjustTripleString(s,c.tab_width)
+        # print(c.tab_width)
+        # print(result)
+        # print('=====')
+        # print(s2)
+        assert result == s2,repr(result)
+#@+node:ekr.20210905203541.13: *4* TestGlobals.test_g_findNode
+def test_g_findNode(self):
+    c = self.c
+    p = c.p
+    trace = False
+    skipped = 0
+    p0 = p.copy()
+    p2 = g.findNodeAnywhere(c,'@test g.findNode*')
+    assert p2 and p2.v == p.v, ('1', repr(p2), repr(p))
+    p2 = g.findNodeAnywhere(c,'@test g.findNode',exact=False)
+    assert p2 and p2.v == p.v, ('2', repr(p2), repr(p))
+    #
+    parent = p0.parent()
+    if parent: # Will fail for a top-level clone
+        p2 = g.findNodeInChildren(c,parent,'@test g.findNode*')
+        assert p2 and p2.v == p.v, ('3', repr(p2), repr(p))
+        p2 = g.findNodeInChildren(c,parent,'@test g.findNode',exact=False)
+        assert p2 and p2.v == p.v, ('4', repr(p2), repr(p))
+    else:
+        skipped += 1
+    #
+    parent = p0.parent()
+    if parent: # Will fail for a top-level clone
+        p2 = g.findNodeInTree(c,parent,'@test g.findNode*')
+        assert p2 and p2.v == p.v, ('5', repr(p2), repr(p))
+        p2 = g.findNodeInTree(c,parent,'@test g.findNode',exact=False)
+        assert p2 and p2.v == p.v, ('6', repr(p2), repr(p))
+    else:
+        skipped += 1
+    #
+    p1 = g.findTopLevelNode(c,'Active Unit Tests')
+    if p1:
+        p2 = g.findTopLevelNode(c,'Active Unit Test',exact=False)
+        assert p2 and p2.v == p1.v, ('7', repr(p2), repr(p1))
+        p2 = g.findNodeInTree(c,p1,'@test g.findNode*')
+        assert p2 and p2.v == p.v, ('8', repr(p2), repr(p))
+        p2 = g.findNodeInTree(c,p1,'@test g.findNode',exact=False)
+        assert p2 and p2.v == p.v, ('9', repr(p2), repr(p))
+    else:
+        skipped += 1
+    if trace and skipped:
+        print('%s: skipped %s sub-tests' % (p0.h, skipped))
+#@+node:ekr.20210905203541.27: *4* TestGlobals.test_g_pdb
+def test_g_pdb(self):
+    # This test causes segmentation fault on Linux
+    # vitalije: 27-03-2020
+    self.skipTest("causes seg-fault on Linux")
+    import sys
+
+    # Not a good unit test; it probably will never fail.
+    def aFunction(): pass
+    assert type(g.pdb)==type(aFunction), 'wrong type for g.pdb: %s' % type(g.pdb)
+
+    class myStdout:
+        def write(self,s):
+            pass # g.es('From pdb:',s)
+
+    class myStdin:
+        def readline (self):
+            return 'c' # Return 'c' (continue) for all requests for input.
+
+    def restore():
+        sys.stdout,sys.stdin = sys.__stdout__,sys.__stdin__
+
+    try:
+        sys.stdin = myStdin() # Essential
+        sys.stdout=myStdout() # Optional
+        g.pdb()
+        restore()
+        # assert False,'test of reraising'
+    except Exception:
+        restore()
+        raise
+#@+node:ekr.20210905203541.29: *4* TestGlobals.test_g_removeExtraLws
+def test_g_removeExtraLws(self):
+    c = self.c
+    self.skipTest('g.removeExtraLws no longer exists')
+    for s,expected in (
+        (' a\n b\n c', 'a\nb\nc'),
+        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
+    ):
+        result = g.removeExtraLws(s,c.tab_width)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@+node:ekr.20210905203541.57: *4* TestGlobals.test_pre_definition_of_g_in_scripts
+def test_pre_definition_of_g_in_scripts(self):
+    for ivar in ('c','g','p'):
+        assert ivar in dir()
+#@+node:ekr.20210905203541.19: *4* TestGlobals.test_g_getScript_strips_crlf
+def test_g_getScript_strips_crlf(self):
+    c = self.c
+    script = g.getScript(c, c.p) # This will get the text of this node.
+    self.assertEqual(script.find('\r\n'), -1, msg=repr(script))
+#@+node:ekr.20210903111504.1: *3* TestGui...
+#@+node:ekr.20210901140645.5: *4* TestGui.test_event_classes
+def test_event_classes(self):
+    c = self.c
+    if not g.app.gui.guiName().startswith('qt'):
+        self.skipTest('Requires Qt')
+    event = None
+    char = shortcut = stroke = w = x = y = None
+    x_root = y_root = None
+    # The EventWrapper class is buried too deep to test easily.
+    # I'll try harder if it ever become a problem ;-)
+        # dw = qt_frame.DynamicWindow(c, parent)
+        # event_wrapper = dw.EventWrapper(c, w, next_w, func)
+    key_event = leoGui.LeoKeyEvent(
+        c, char, event, shortcut,
+        w, x, y, x_root, y_root)
+    vim_event = leoVim.VimEvent(c, char, stroke, w)
+    # assert hasattr(event_wrapper, 'c')
+    assert hasattr(key_event, 'c')
+    assert hasattr(vim_event, 'c')
+#@+node:ekr.20210905064201.1: *3* TestImport...
+#@+node:ekr.20210904065459.113: *4* TestImport.test_markdown_importer_section_name
+def test_markdown_importer_section_name(self):
+    c = self.c
+    ic = c.importCommands  
+    # insert test for markdown here.
+    s = textwrap.dedent("""\
+        Decl line.
+    
+#@verbatim
+        #@@ Header
+    
+        After header text
+    
+        ##@@Subheader
+    
+        Not an underline
+    
+        ----------------
+    
+        This *should* be a section
+        ==========================
+    
+        After subheader text
+    
+        #Last header: no text
+    """)
+    table = (
+        '!Declarations',
+        #'@verbatim', # This is an artifact of the unit test.
+        '@@ Header',
+            '@@Subheader',
+                'This *should* be a section',
+            'Last header: no text',
+    )
+    g.app.suppressImportChecks = True
+        # Required, because the implicit underlining *must*
+        # cause the perfect-import test to fail!
+    ic.markdownUnitTest(c.p, s=s, showTree=True)
+    g.dump_tree(c)
+    root = c.p.lastChild()
+    assert root.h == '@auto-md test', root.h
+    p2 = root.firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
+#@+node:ekr.20210904065459.107: *4* TestImport.test_xml_2
+def test_xml_2(self):
+    c = self.c
+    ### This requires that nodeA and nodeB be in @data import-xml-tags
+    s = textwrap.dedent("""\
+        <nodeA>
+        <nodeB/>
+        </nodeA>
+    """)
+    ic = c.importCommands
+    table = (
+        (1, "<nodeA>"),
+    )
+    p = c.p
+    ic.xmlUnitTest(p, s=s, showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h == '@file test', root.h
+    p = root.firstChild()
+    assert p
+    for n, h in table:
+        n2 = p.level() - root.level()
+        assert h == p.h, (h, p.h)
+        assert n == n2, (n, n2, p.h)
+        p.moveToThreadNext()
+    assert p == after, ('tree comp failed', p.h)
+    
+#@+node:ekr.20210904065459.14: *4* TestImport.test_coffeescript_1
+def test_coffeescript_1(self):
+    c = self.c
+    s = textwrap.dedent(r"""\
+
+        # The JavaScript to CoffeeScript compiler.
+        # Common usage:
+        #
+        #
+        #     var src = "var square = function(n) { return n * n };"
+        #
+        #     js2coffee = require('js2coffee');
+        #     js2coffee.build(src);
+        #     //=> "square = (n) -> n * n"
+    
+        # ## Requires
+        #
+        # Js2coffee relies on Narcissus's parser. (Narcissus is Mozilla's JavaScript
+        # engine written in JavaScript).
+    
+        {parser} = @Narcissus or require('./narcissus_packed')
+    
+        _ = @_ or require('underscore')
+    
+        {Types, Typenames, Node} = @NodeExt or require('./node_ext')
+    
+        {Code, p, strEscape, unreserve, unshift, isSingleLine, trim, blockTrim,
+          ltrim, rtrim, strRepeat, paren, truthy} = @Js2coffeeHelpers or require('./helpers')
+    
+        # ## Main entry point
+        # This is `require('js2coffee').build()`. It takes a JavaScript source
+        # string as an argument, and it returns the CoffeeScript version.
+        #
+        # 1. Ask Narcissus to break it down into Nodes (`parser.parse`). This
+        #    returns a `Node` object of type `script`.
+        #
+        # 2. This node is now passed onto `Builder#build()`.
+    
+        buildCoffee = (str) ->
+          str  = str.replace /\r/g, ''
+          str += "\n"
+    
+          builder    = new Builder
+          scriptNode = parser.parse str
+    
+          output = trim builder.build(scriptNode)
+          (rtrim line for line in output.split('\n')).join('\n')
+        # ## Builder class
+        # This is the main class that proccesses the AST and spits out streng.
+        # See the `buildCoffee()` function above for info on how this is used.
+    
+        class Builder
+          constructor: ->
+            @transformer = new Transformer
+          # `build()`
+          # The main entry point.
+    
+          # This finds the appropriate @builder function for `node` based on it's type,
+          # the passes the node onto that function.
+          #
+          # For instance, for a `function` node, it calls `@builders.function(node)`.
+          # It defaults to `@builders.other` if it can't find a function for it.
+    
+          build: (args...) ->
+            node = args[0]
+            @transform node
+    
+            name = 'other'
+            name = node.typeName()  if node != undefined and node.typeName
+    
+            fn  = (@[name] or @other)
+            out = fn.apply(this, args)
+    
+            if node.parenthesized then paren(out) else out
+          # `transform()`
+          # Perform a transformation on the node, if a transformation function is
+          # available.
+    
+          transform: (args...) ->
+            @transformer.transform.apply(@transformer, args)
+          # `body()`
+          # Works like `@build()`, and is used for code blocks. It cleans up the returned
+          # code block by removing any extraneous spaces and such.
+    
+          body: (node, opts={}) ->
+            str = @build(node, opts)
+            str = blockTrim(str)
+            str = unshift(str)
+    
+            if str.length > 0 then str else ""
+          # ## The builders
+          #
+          # Each of these method are passed a Node, and is expected to return
+          # a string representation of it CoffeeScript counterpart.
+          #
+          # These are invoked using the main entry point, `Builder#build()`.
+    
+          # `script`
+          # This is the main entry point.
+    
+          'script': (n, opts={}) ->
+            c = new Code
+    
+            # *Functions must always be declared first in a block.*
+            _.each n.functions,    (item) => c.add @build(item)
+            _.each n.nonfunctions, (item) => c.add @build(item)
+    
+            c.toString()
+          # `property_identifier`
+          # A key in an object literal.
+    
+          'property_identifier': (n) ->
+            str = n.value.toString()
+    
+            # **Caveat:**
+            # *In object literals like `{ '#foo click': b }`, ensure that the key is
+            # quoted if need be.*
+    
+            if str.match(/^([_\$a-z][_\$a-z0-9]*)$/i) or str.match(/^[0-9]+$/i)
+              str
+            else
+              strEscape str
+          # `identifier`
+          # Any object identifier like a variable name.
+    
+          'identifier': (n) ->
+            if n.value is 'undefined'
+              '`undefined`'
+            else if n.property_accessor
+              n.value.toString()
+            else
+              unreserve n.value.toString()
+          'number': (n) ->
+            "#{n.src()}"
+          'id': (n) ->
+            if n.property_accessor
+              n
+            else
+              unreserve n
+          # `id_param`
+          # Function parameters. Belongs to `list`.
+    
+          'id_param': (n) ->
+            if n.toString() in ['undefined']
+              "#{n}_"
+            else
+              @id n
+          # `return`
+          # A return statement. Has `n.value` of type `id`.
+    
+          'return': (n) ->
+            if not n.value?
+              "return\n"
+    
+            else
+              "return #{@build(n.value)}\n"
+          # `;` (aka, statement)
+          # A single statement.
+    
+          ';': (n) ->
+            # **Caveat:**
+            # Some statements can be blank as some people are silly enough to use `;;`
+            # sometimes. They should be ignored.
+    
+            unless n.expression?
+              ""
+    
+            else if n.expression.typeName() == 'object_init'
+              src = @object_init(n.expression)
+              if n.parenthesized
+                src
+              else
+                "#{unshift(blockTrim(src))}\n"
+    
+            else
+              @build(n.expression) + "\n"
+          # `new` + `new_with_args`
+          # For `new X` and `new X(y)` respctively.
+    
+          'new': (n) -> "new #{@build n.left()}"
+          'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
+          # ### Unary operators
+    
+          'unary_plus': (n) -> "+#{@build n.left()}"
+          'unary_minus': (n) -> "-#{@build n.left()}"
+          # ### Keywords
+    
+          'this': (n) -> 'this'
+          'null': (n) -> 'null'
+          'true': (n) -> 'true'
+          'false': (n) -> 'false'
+          'void': (n) -> 'undefined'
+          'debugger': (n) -> "debugger\n"
+          'break': (n) -> "break\n"
+          'continue': (n) -> "continue\n"
+          # ### Some simple operators
+    
+          '~': (n) -> "~#{@build n.left()}"
+          'typeof': (n) -> "typeof #{@build n.left()}"
+          'index': (n) ->
+            right = @build n.right()
+            if _.any(n.children, (child) -> child.typeName() == 'object_init' and child.children.length > 1)
+              right = "{#{right}}"
+            "#{@build n.left()}[#{right}]"
+          'throw': (n) -> "throw #{@build n.exception}"
+          '!': (n) ->
+            target = n.left()
+            negations = 1
+            ++negations while (target.isA '!') and target = target.left()
+            if (negations & 1) and target.isA '==', '!=', '===', '!==', 'in', 'instanceof' # invertible binary operators
+              target.negated = not target.negated
+              return @build target
+            "#{if negations & 1 then 'not ' else '!!'}#{@build target}"
+          # ### Binary operators
+          # All of these are rerouted to the `binary_operator` @builder.
+    
+          # TODO: make a function that generates these functions, invoked like so:
+          #   in: binop 'in', 'of'
+          #   '+': binop '+'
+          #   and so on...
+    
+          in: (n) ->    @binary_operator n, 'of'
+          '+': (n) ->   @binary_operator n, '+'
+          '-': (n) ->   @binary_operator n, '-'
+          '*': (n) ->   @binary_operator n, '*'
+          '/': (n) ->   @binary_operator n, '/'
+          '%': (n) ->   @binary_operator n, '%'
+          '>': (n) ->   @binary_operator n, '>'
+          '<': (n) ->   @binary_operator n, '<'
+          '&': (n) ->   @binary_operator n, '&'
+          '|': (n) ->   @binary_operator n, '|'
+          '^': (n) ->   @binary_operator n, '^'
+          '&&': (n) ->  @binary_operator n, 'and'
+          '||': (n) ->  @binary_operator n, 'or'
+          '<<': (n) ->  @binary_operator n, '<<'
+          '<=': (n) ->  @binary_operator n, '<='
+          '>>': (n) ->  @binary_operator n, '>>'
+          '>=': (n) ->  @binary_operator n, '>='
+          '===': (n) -> @binary_operator n, 'is'
+          '!==': (n) -> @binary_operator n, 'isnt'
+          '>>>': (n) ->  @binary_operator n, '>>>'
+          instanceof: (n) -> @binary_operator n, 'instanceof'
+          '==': (n) ->
+            # TODO: throw warning
+            @binary_operator n, 'is'
+          '!=': (n) ->
+            # TODO: throw warning
+            @binary_operator n, 'isnt'
+          'binary_operator': do ->
+            INVERSIONS =
+              is: 'isnt'
+              in: 'not in'
+              of: 'not of'
+              instanceof: 'not instanceof'
+            INVERSIONS[v] = k for own k, v of INVERSIONS
+            (n, sign) ->
+              sign = INVERSIONS[sign] if n.negated
+              "#{@build n.left()} #{sign} #{@build n.right()}"
+          # ### Increments and decrements
+          # For `a++` and `--b`.
+    
+          '--': (n) -> @increment_decrement n, '--'
+          '++': (n) -> @increment_decrement n, '++'
+          'increment_decrement': (n, sign) ->
+            if n.postfix
+              "#{@build n.left()}#{sign}"
+            else
+              "#{sign}#{@build n.left()}"
+          # `=` (aka, assignment)
+          # For `a = b` (but not `var a = b`: that's `var`).
+    
+          '=': (n) ->
+            sign = if n.assignOp?
+              Types[n.assignOp] + '='
+            else
+              '='
+    
+            "#{@build n.left()} #{sign} #{@build n.right()}"
+          # `,` (aka, comma)
+          # For `a = 1, b = 2'
+    
+          ',': (n) ->
+            list = _.map n.children, (item) => @build(item) + "\n"
+            list.join('')
+          # `regexp`
+          # Regular expressions.
+    
+          'regexp': (n) ->
+            m     = n.value.toString().match(/^\/(.*)\/([a-z]?)/)
+            value = m[1]
+            flag  = m[2]
+    
+            # **Caveat:**
+            # *If it begins with `=` or a space, the CoffeeScript parser will choke if
+            # it's written as `/=/`. Hence, they are written as `new RegExp('=')`.*
+    
+            begins_with = value[0]
+    
+            if begins_with in [' ', '=']
+              if flag.length > 0
+                "RegExp(#{strEscape value}, \"#{flag}\")"
+              else
+                "RegExp(#{strEscape value})"
+            else
+              "/#{value}/#{flag}"
+          'string': (n) ->
+            strEscape n.value
+          # `call`
+          # A Function call.
+          # `n.left` is an `id`, and `n.right` is a `list`.
+    
+          'call': (n) ->
+            if n.right().children.length == 0
+              "#{@build n.left()}()"
+            else
+              "#{@build n.left()}(#{@build n.right()})"
+          # `call_statement`
+          # A `call` that's on it's own line.
+    
+          'call_statement': (n) ->
+            left = @build n.left()
+    
+            # **Caveat:**
+            # *When calling in this way: `function () { ... }()`,
+            # ensure that there are parenthesis around the anon function
+            # (eg, `(-> ...)()`).*
+    
+            left = paren(left)  if n.left().isA('function')
+    
+            if n.right().children.length == 0
+              "#{left}()"
+            else
+              "#{left} #{@build n.right()}"
+          # `list`
+          # A parameter list.
+    
+          'list': (n) ->
+            list = _.map(n.children, (item) =>
+              if n.children.length > 1
+                item.is_list_element = true
+              @build(item))
+    
+            list.join(", ")
+          'delete': (n) ->
+            ids = _.map(n.children, (el) => @build(el))
+            ids = ids.join(', ')
+            "delete #{ids}\n"
+          # `.` (scope resolution?)
+          # For instances such as `object.value`.
+    
+          '.': (n) ->
+            # **Caveat:**
+            # *If called as `this.xxx`, it should use the at sign (`n.xxx`).*
+    
+            # **Caveat:**
+            # *If called as `x.prototype`, it should use double colons (`x::`).*
+    
+            left  = @build n.left()
+            right_obj = n.right()
+            right_obj.property_accessor = true
+            right = @build right_obj
+    
+            if n.isThis and n.isPrototype
+              "@::"
+            else if n.isThis
+              "@#{right}"
+            else if n.isPrototype
+              "#{left}::"
+            else if n.left().isPrototype
+              "#{left}#{right}"
+            else
+              "#{left}.#{right}"
+          'try': (n) ->
+            c = new Code
+            c.add 'try'
+            c.scope @body(n.tryBlock)
+    
+            _.each n.catchClauses, (clause) =>
+              c.add @build(clause)
+    
+            if n.finallyBlock?
+              c.add "finally"
+              c.scope @body(n.finallyBlock)
+    
+            c
+          'catch': (n) ->
+            body_ = @body(n.block)
+            return '' if trim(body_).length == 0
+    
+            c = new Code
+    
+            if n.varName?
+              c.add "catch #{n.varName}"
+            else
+              c.add 'catch'
+    
+            c.scope @body(n.block)
+            c
+          # `?` (ternary operator)
+          # For `a ? b : c`. Note that these will always be parenthesized, as (I
+          # believe) the order of operations in JS is different in CS.
+    
+          '?': (n) ->
+            "(if #{@build n.left()} then #{@build n.children[1]} else #{@build n.children[2]})"
+          'for': (n) ->
+            c = new Code
+    
+            if n.setup?
+              c.add "#{@build n.setup}\n"
+    
+            if n.condition?
+              c.add "while #{@build n.condition}\n"
+            else
+              c.add "loop"
+    
+            c.scope @body(n.body)
+            c.scope @body(n.update)  if n.update?
+            c
+          'for_in': (n) ->
+            c = new Code
+    
+            c.add "for #{@build n.iterator} of #{@build n.object}"
+            c.scope @body(n.body)
+            c
+          'while': (n) ->
+            c = new Code
+    
+            keyword   = if n.positive then "while" else "until"
+            body_     = @body(n.body)
+    
+            # *Use `loop` whin something will go on forever (like `while (true)`).*
+            if truthy(n.condition)
+              statement = "loop"
+            else
+              statement = "#{keyword} #{@build n.condition}"
+    
+            if isSingleLine(body_) and statement isnt "loop"
+              c.add "#{trim body_}  #{statement}\n"
+            else
+              c.add statement
+              c.scope body_
+            c
+          'do': (n) ->
+            c = new Code
+    
+            c.add "loop"
+            c.scope @body(n.body)
+            c.scope "break unless #{@build n.condition}"  if n.condition?
+    
+            c
+          'if': (n) ->
+            c = new Code
+    
+            keyword = if n.positive then "if" else "unless"
+            body_   = @body(n.thenPart)
+            n.condition.parenthesized = false
+    
+            # *Account for `if (xyz) {}`, which should be `xyz`. (#78)*
+            # *Note that `!xyz` still compiles to `xyz` because the `!` will not change anything.*
+            if n.thenPart.isA('block') and n.thenPart.children.length == 0 and !n.elsePart?
+              console.log n.thenPart
+              c.add "#{@build n.condition}\n"
+    
+            else if isSingleLine(body_) and !n.elsePart?
+              c.add "#{trim body_}  #{keyword} #{@build n.condition}\n"
+    
+            else
+              c.add "#{keyword} #{@build n.condition}"
+              c.scope @body(n.thenPart)
+    
+              if n.elsePart?
+                if n.elsePart.typeName() == 'if'
+                  c.add "else #{@build(n.elsePart).toString()}"
+                else
+                  c.add "else\n"
+                  c.scope @body(n.elsePart)
+    
+            c
+          'switch': (n) ->
+            c = new Code
+    
+            c.add "switch #{@build n.discriminant}\n"
+    
+            fall_through = false
+            _.each n.cases, (item) =>
+              if item.value == 'default'
+                c.scope "else"
+              else
+                if fall_through == true
+                  c.add ", #{@build item.caseLabel}\n"
+                else
+                  c.add "  when #{@build item.caseLabel}"
+              
+              if @body(item.statements).length == 0
+                fall_through = true
+              else
+                fall_through = false
+                c.add "\n"
+                c.scope @body(item.statements), 2
+    
+              first = false
+    
+            c
+          'existence_check': (n) ->
+            "#{@build n.left()}?"
+          'array_init': (n) ->
+            if n.children.length == 0
+              "[]"
+            else
+              "[ #{@list n} ]"
+          # `property_init`
+          # Belongs to `object_init`;
+          # left is a `identifier`, right can be anything.
+    
+          'property_init': (n) ->
+            left = n.left()
+            right = n.right()
+            right.is_property_value = true
+            "#{@property_identifier left}: #{@build right}"
+          # `object_init`
+          # An object initializer.
+          # Has many `property_init`.
+    
+          'object_init': (n, options={}) ->
+            if n.children.length == 0
+              "{}"
+    
+            else if n.children.length == 1 and not (n.is_property_value or n.is_list_element)
+              @build n.children[0]
+    
+            else
+              list = _.map n.children, (item) => @build item
+    
+              c = new Code
+              c.scope list.join("\n")
+              c = "{#{c}}"  if options.brackets?
+              c
+          # `function`
+          # A function. Can be an anonymous function (`function () { .. }`), or a named
+          # function (`function name() { .. }`).
+    
+          'function': (n) ->
+            c = new Code
+    
+            params = _.map n.params, (str) =>
+              if str.constructor == String
+                @id_param str
+              else
+                @build str
+    
+            if n.name
+              c.add "#{n.name} = "
+    
+            if n.params.length > 0
+              c.add "(#{params.join ', '}) ->"
+            else
+              c.add "->"
+    
+            body = @body(n.body)
+            if trim(body).length > 0
+              c.scope body
+            else
+              c.add "\n"
+    
+            c
+          'var': (n) ->
+            list = _.map n.children, (item) =>
+              "#{unreserve item.value} = #{if item.initializer? then @build(item.initializer) else 'undefined'}"
+    
+            _.compact(list).join("\n") + "\n"
+          # ### Unsupported things
+          #
+          # Due to CoffeeScript limitations, the following things are not supported:
+          #
+          #  * New getter/setter syntax (`x.prototype = { get name() { ... } };`)
+          #  * Break labels (`my_label: ...`)
+          #  * Constants
+    
+          'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
+          'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
+          'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
+          'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
+          'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
+          'block': (args...) ->
+            @script.apply @, args
+          # `unsupported()`
+          # Throws an unsupported error.
+          'unsupported': (node, message) ->
+            throw new UnsupportedError("Unsupported: #{message}", node)
+
+        # ## AST manipulation
+        # Manipulation of the abstract syntax tree happens here. All these are done on
+        # the `build()` step, done just before a node is passed onto `Builders`.
+    
+        class Transformer
+          transform: (args...) ->
+            node = args[0]
+            return  if node.transformed?
+            type = node.typeName()
+            fn = @[type]
+    
+            if fn
+              fn.apply(this, args)
+              node.transformed = true
+          'script': (n) ->
+            n.functions    = []
+            n.nonfunctions = []
+    
+            _.each n.children, (item) =>
+              if item.isA('function')
+                n.functions.push item
+              else
+                n.nonfunctions.push item
+    
+            last = null
+    
+            # *Statements don't need parens, unless they are consecutive object
+            # literals.*
+            _.each n.nonfunctions, (item) =>
+              if item.expression?
+                expr = item.expression
+    
+                if last?.isA('object_init') and expr.isA('object_init')
+                  item.parenthesized = true
+                else
+                  item.parenthesized = false
+    
+                last = expr
+          '.': (n) ->
+            n.isThis      = n.left().isA('this')
+            n.isPrototype = (n.right().isA('identifier') and n.right().value == 'prototype')
+          ';': (n) ->
+            if n.expression?
+              # *Statements don't need parens.*
+              n.expression.parenthesized = false
+    
+              # *If the statement only has one function call (eg, `alert(2);`), the
+              # parentheses should be omitted (eg, `alert 2`).*
+              if n.expression.isA('call')
+                n.expression.type = Typenames['call_statement']
+                @call_statement n
+          'function': (n) ->
+            # *Unwrap the `return`s.*
+            n.body.walk last: true, (parent, node, list) ->
+              if node.isA('return') and node.value
+                # Hax
+                lastNode = if list
+                  parent[list]
+                else
+                  parent.children[parent.children.length-1]
+    
+                if lastNode
+                  lastNode.type = Typenames[';']
+                  lastNode.expression = lastNode.value
+          'switch': (n) ->
+            _.each n.cases, (item) =>
+              block = item.statements
+              ch    = block.children
+    
+              # *CoffeeScript does not need `break` statements on `switch` blocks.*
+              delete ch[ch.length-1] if block.last()?.isA('break')
+          'call_statement': (n) ->
+            if n.children[1]
+              _.each n.children[1].children, (child, i) ->
+                if child.isA('function') and i != n.children[1].children.length-1
+                  child.parenthesized = true
+          'return': (n) ->
+            # *Doing "return {x:2, y:3}" should parenthesize the return value.*
+            if n.value and n.value.isA('object_init') and n.value.children.length > 1
+              n.value.parenthesized = true
+          'block': (n) ->
+            @script n
+          'if': (n) ->
+            # *Account for `if(x) {} else { something }` which should be `something unless x`.*
+            if n.thenPart.children.length == 0 and n.elsePart?.children.length > 0
+              n.positive = false
+              n.thenPart = n.elsePart
+              delete n.elsePart
+    
+            @inversible n
+          'while': (n) ->
+            # *A while with a blank body (`while(x){}`) should be accounted for.*
+            # *You can't have empty blocks, so put a `continue` in there. (#78)*
+            if n.body.children.length is 0
+              n.body.children.push n.clone(type: Typenames['continue'], value: 'continue', children: [])
+    
+            @inversible n
+          'inversible': (n) ->
+            @transform n.condition
+            positive = if n.positive? then n.positive else true
+    
+            # *Invert a '!='. (`if (x != y)` => `unless x is y`)*
+            if n.condition.isA('!=')
+              n.condition.type = Typenames['==']
+              n.positive = not positive
+    
+            # *Invert a '!'. (`if (!x)` => `unless x`)*
+            else if n.condition.isA('!')
+              n.condition = n.condition.left()
+              n.positive = not positive
+    
+            else
+              n.positive = positive
+          '==': (n) ->
+            if n.right().isA('null', 'void')
+              n.type     = Typenames['!']
+              n.children = [n.clone(type: Typenames['existence_check'], children: [n.left()])]
+          '!=': (n) ->
+            if n.right().isA('null', 'void')
+              n.type     = Typenames['existence_check']
+              n.children = [n.left()]
+        class UnsupportedError
+          constructor: (str, src) ->
+            @message = str
+            @cursor  = src.start
+            @line    = src.lineno
+            @source  = src.tokenizer.source
+          toString: -> @message
+    
+        # ## Exports
+    
+        @Js2coffee = exports =
+          version: '0.1.3'
+          build: buildCoffee
+          UnsupportedError: UnsupportedError
+    
+        module.exports = exports  if module?
+    """)
+    table = (
+        "buildCoffee = (str) ->",
+        "class Builder",
+        "constructor: ->",
+        "build: (args...) ->",
+        "transform: (args...) ->",
+        "body: (node, opts={}) ->",
+        "'script': (n, opts={}) ->",
+        "'property_identifier': (n) ->",
+        "'identifier': (n) ->",
+        "'number': (n) ->",
+        "'id': (n) ->",
+        "'id_param': (n) ->",
+        "'return': (n) ->",
+        "';': (n) ->",
+        "'new': (n) -> \"new #{@build n.left()}\"",
+        "'new_with_args': (n) -> \"new #{@build n.left()}(#{@build n.right()})\"",
+        "'unary_plus': (n) -> \"+#{@build n.left()}\"",
+        "'unary_minus': (n) -> \"-#{@build n.left()}\"",
+        "'this': (n) -> 'this'",
+        "'null': (n) -> 'null'",
+        "'true': (n) -> 'true'",
+        "'false': (n) -> 'false'",
+        "'void': (n) -> 'undefined'",
+        "'debugger': (n) -> \"debugger\\n\"",
+        "'break': (n) -> \"break\\n\"",
+        "'continue': (n) -> \"continue\\n\"",
+        "'~': (n) -> \"~#{@build n.left()}\"",
+        "'typeof': (n) -> \"typeof #{@build n.left()}\"",
+        "'index': (n) ->",
+        "'throw': (n) -> \"throw #{@build n.exception}\"",
+        "'!': (n) ->",
+        "in: (n) ->    @binary_operator n, 'of'",
+        "'+': (n) ->   @binary_operator n, '+'",
+        "'-': (n) ->   @binary_operator n, '-'",
+        "'*': (n) ->   @binary_operator n, '*'",
+        "'/': (n) ->   @binary_operator n, '/'",
+        "'%': (n) ->   @binary_operator n, '%'",
+        "'>': (n) ->   @binary_operator n, '>'",
+        "'<': (n) ->   @binary_operator n, '<'",
+        "'&': (n) ->   @binary_operator n, '&'",
+        "'|': (n) ->   @binary_operator n, '|'",
+        "'^': (n) ->   @binary_operator n, '^'",
+        "'&&': (n) ->  @binary_operator n, 'and'",
+        "'||': (n) ->  @binary_operator n, 'or'",
+        "'<<': (n) ->  @binary_operator n, '<<'",
+        "'<=': (n) ->  @binary_operator n, '<='",
+        "'>>': (n) ->  @binary_operator n, '>>'",
+        "'>=': (n) ->  @binary_operator n, '>='",
+        "'===': (n) -> @binary_operator n, 'is'",
+        "'!==': (n) -> @binary_operator n, 'isnt'",
+        "'>>>': (n) ->  @binary_operator n, '>>>'",
+        "instanceof: (n) -> @binary_operator n, 'instanceof'",
+        "'==': (n) ->",
+        "'!=': (n) ->",
+        "'binary_operator': do ->",
+        "'--': (n) -> @increment_decrement n, '--'",
+        "'++': (n) -> @increment_decrement n, '++'",
+        "'increment_decrement': (n, sign) ->",
+        "'=': (n) ->",
+        "',': (n) ->",
+        "'regexp': (n) ->",
+        "'string': (n) ->",
+        "'call': (n) ->",
+        "'call_statement': (n) ->",
+        "'list': (n) ->",
+        "'delete': (n) ->",
+        "'.': (n) ->",
+        "'try': (n) ->",
+        "'catch': (n) ->",
+        "'?': (n) ->",
+        "'for': (n) ->",
+        "'for_in': (n) ->",
+        "'while': (n) ->",
+        "'do': (n) ->",
+        "'if': (n) ->",
+        "'switch': (n) ->",
+        "'existence_check': (n) ->",
+        "'array_init': (n) ->",
+        "'property_init': (n) ->",
+        "'object_init': (n, options={}) ->",
+        "'function': (n) ->",
+        "'var': (n) ->",
+        "'other': (n) ->   @unsupported n, \"#{n.typeName()} is not supported yet\"",
+        "'getter': (n) ->  @unsupported n, \"getter syntax is not supported; use __defineGetter__\"",
+        "'setter': (n) ->  @unsupported n, \"setter syntax is not supported; use __defineSetter__\"",
+        "'label': (n) ->   @unsupported n, \"labels are not supported by CoffeeScript\"",
+        "'const': (n) ->   @unsupported n, \"consts are not supported by CoffeeScript\"",
+        "'block': (args...) ->",
+        "'unsupported': (node, message) ->",
+        "class Transformer",
+        "transform: (args...) ->",
+        "'script': (n) ->",
+        "'.': (n) ->",
+        "';': (n) ->",
+        "'function': (n) ->",
+        "n.body.walk last: true, (parent, node, list) ->",
+        "'switch': (n) ->",
+        "'call_statement': (n) ->",
+        "'return': (n) ->",
+        "'block': (n) ->",
+        "'if': (n) ->",
+        "'while': (n) ->",
+        "'inversible': (n) ->",
+        "'==': (n) ->",
+        "'!=': (n) ->",
+        "class UnsupportedError",
+        "constructor: (str, src) ->",
+        "toString: -> @message",
+    )
+    c.importCommands.coffeeScriptUnitTest(c.p, s=s, showTree=True)
+    if 1:
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
+#@+node:ekr.20210904065459.2: *4* TestImport.test_collapse_all
+def test_collapse_all(self):
+    # Not a real unit test.
+    c = self.c
+    c.contractAllHeadlines()
+#@+node:ekr.20210903111304.1: *3* TestNode...
+#@+node:ekr.20210830095545.5: *4* TestNode.test_c_iters
+def test_c_iters(self):
+    << coverage tests >>
+    << duplicate tests >>
+
+    if 0:
+        print("vnodes",len([v for v in c.all_vnodes_iter()]),len([v for v in c.all_unique_vnodes_iter()]))
+        print("tnodes",len([t for t in c.all_tnodes_iter()]),len([t for t in c.all_unique_tnodes_iter()]))
+
+    if 0: # all nodes
+        for v in c.all_vnodes_iter(): print(v)
+        for t in c.all_tnodes_iter(): print(t)
+
+    if 0: # unique nodes
+        for v in c.all_unique_vnodes_iter(): print(v)
+        for t in c.all_unique_tnodes_iter(): print(t)
+#@+node:ekr.20210830095545.23: *4* TestNode.test_p_adjustPositionBeforeUnlink (not used)
+def test_p_adjustPositionBeforeUnlink(self):
+    c, p = self.c, self.c.p
+    table = (
+        '1',
+        '1-1','1-1-1','1-1-2',
+        '1-2','1-2-1','1-2-2',
+        '2',
+        '2-1','2-1-1','2-1-2',
+        '2-2','2-2-1','2-2-2',
+        '3',
+        '3-1','3-1-1','3-1-2',
+        '3-2','3-2-1','3-2-2',
+    )
+    for suffix in table:
+        h = 'node %s' % suffix
+        p2 = g.findNodeInTree(c,p,h)
+        assert p2,h
+    table2 = (
+        ('2-1-2','2-1-1','2-1-1'),
+        ('3','2','2'),
+    )  
+    for h1,h2,h3 in table2:
+        p1 = g.findNodeInTree(c,p,'node %s' % h1)
+        p2 = g.findNodeInTree(c,p,'node %s' % h2)
+        p3 = g.findNodeInTree(c,p,'node %s' % h3)
+        p1._adjustPositionBeforeUnlink(p2)
+        result = p1
+        assert result.stack == p3.stack,'expected %s got %s' % (
+            p3.h,result and result.h or '<none>')
+#@+node:ekr.20210830095545.32: *4* TestNode.test_p_iters_and_v_iters
+def test_p_iters_and_v_iters(self):
+    import leo.core.leoNodes as leoNodes
+    current = c.p
+    child = current.firstChild()
+    allList = [p.v for p in c.all_positions_iter()]
+    vList1 = [v for v in c.p.vnodes_iter()]
+    vList2 = [v for v in c.p.unique_vnodes_iter()]
+    if 0:
+        for v in vList1: print(v)
+        for v in vList2: print(v)
+    if 0:
+        print(len(allList),len(vList1),len(vList2))
+
+    if 0: # v.iters no longer exist.
+        << tests of consistency of p and v iters >>
+    << tests that node iterators return no duplicate nodes >>
+    << print nodes returned by iterators >>
+#@+node:ekr.20210907083929.1: *3* TestPlugins
+#@+node:ekr.20210907081455.4: *4* TestPlugins.test_c_theScriptingController_atScriptNodes
+def test_c_theScriptingController_atScriptNodes(self):
+    c = self.c
+    # This must be true even though @bool scriptingatscriptnodes is True in this file.
+    if hasattr(c,'theScriptingController'):
+        # mod_scripting may be disabled when running tests externally.
+    val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
+    assert c.theScriptingController.atScriptNodes in (val, None, False), (val, c.theScriptingController.atScriptNodes)
+#@+node:ekr.20210909161328.3: *4* TestPlugins.test_position2Item
+def test_position2Item(self):
+    c = self.c
+    tree = c.frame.tree
+    # position2item does not exist when running unit tests dynamically.
+    if not hasattr(tree,'position2item'):
+        self.skipTest('no tree.position2item')
+    c.redraw()
+    p = c.rootPosition()
+    while p:
+        item = tree.position2item(p)
+        v = tree.item2vnode(item)
+        if v: # New test needed with per-clone expansions.
+            assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+        p.moveToVisNext(c)
+#@+node:ekr.20210909194336.56: *4* TestPlugins.test_getHandlersForTag
+def test_getHandlersForTag(self):
+    pc = LeoPluginsController()
+    aList1 = pc.getHandlersForTag('select1')
+    aList2 = pc.getHandlersForOneTag('select1')
+    assert aList1
+    self.assertEqual(aList1, aList2)
+#@+node:ekr.20210903111324.1: *3* TestShadow...
+#@+node:ekr.20080709062932.6: *4* __init__ (AtShadowTestCase)
+def __init__(self, c, p, shadowController, delims=None, trace=False):
+    """Ctor for AtShadowTestCase class."""
+    super().__init__()
+    self.c = c
+    self.p = p.copy()
+    self.shadowController = x = shadowController
+    self.trace = trace
+    # Hard value for now.
+    if delims is None:
+        delims = '#', '', ''
+    self.marker = x.marker = shadowController.Marker(delims)
+        # 2015/04/03: tricky: set *both* ivars.
+        # This bug became apparent because unitTest.leo no longer
+        # pre-loads any @shadow files.
+    # For teardown...
+    self.ok = True
+#@+node:ekr.20080709062932.7: *4*  fail (AtShadowTestCase)
+def fail(self, msg=None):
+    """Mark an AtShadowTestCase as having failed."""
+    g.app.unitTestDict["fail"] = g.callers()
+#@+node:ekr.20080709062932.11: *4* shortDescription (AtShadowTestCase)
+def shortDescription(self):
+    """AtShadowTestCase.shortDescription."""
+    return self.p.h if self.p else '@test-shadow: no self.p'
+#@+node:ekr.20080709062932.9: *4* tearDown (AtShadowTestCase)
+def tearDown(self):
+    """AtShadowTestCase.tearDown."""
+    pass
+        # No change is made to the outline.
+        # self.c.redraw()
+#@+node:ekr.20210902210552.12: *4* TestShadow.test_x_replaceFileWithString
+def test_x_replaceFileWithString(self):
+    c = self.c
+    x = c.shadowController
+    s = 'abc'
+    encoding = 'utf-8'
+    fn = '../test/unittest/replaceFileWithStringTestFile.py'
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
+    x.replaceFileWithString(encoding, path, s)
+    with open(path) as f:
+        s2 = f.read()
+    self.assertEqual(s, s2)
+#@+node:ekr.20200209055601.1: ** Test stuff
 #@+node:ekr.20210429050530.1: *3* @@button test-ConvertAtRoot (obsolete)
 g.cls()
 import importlib
@@ -14294,6 +17871,57 @@ assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
 # assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
 #    repr(rst.atAutoWriteUnderlines))
 print('done')
+#@+node:ekr.20210829205518.1: *3* Find tests that use simulate command
+# These are pointless anyway
+#@+node:ekr.20210829203927.7: *4* TestFind.test_set_find_mode_commands
+def test_set_find_mode_commands(self):
+    c = self.c
+    table = (
+        'set-find-everywhere',
+        'set-find-node-only',
+        'set-find-suboutline-only',
+    )
+    # show-find-tab-options     = Ctrl-o
+    # show-find-options         = o
+    for command in table:
+        c.k.simulateCommand(command)
+#@+node:ekr.20210829203927.8: *4* TestFind.test_show_find_options
+def test_show_find_options(self):
+    c = self.c
+    c.k.simulateCommand('show-find-options')
+#@+node:ekr.20210829203927.9: *4* TestFind.test_toggle_find_options_commands
+def xx_test_toggle_find_options_commands(self):
+    c = self.c
+    table = (
+        # 'toggle-find-clone-find-all-option',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        # 'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        # 'toggle-find-wrap-around-option',
+    )
+    for command in table:
+        c.k.simulateCommand(command)
+        c.k.simulateCommand(command)
+#@+node:ekr.20210829203927.1: *4* TestFind.test_minibuffer_find_commands
+def test_minibuffer_find_commands(self):
+    c = self.c
+    table = (
+        're-search-forward',
+        're-search-backward',
+        'search-forward',
+        'search-backward',
+        'word-search-forward',
+        'word-search-backward',
+    )
+    for command in table:
+        # This is not a full test.  We must use keyboardQuit here!
+        c.k.simulateCommand(command)
+        c.k.keyboardQuit(None)
 #@-all
 #@@nosearch
 #@-leo

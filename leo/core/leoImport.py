@@ -18,6 +18,8 @@ import urllib
 try:
     import docutils
     import docutils.core
+    assert docutils
+    assert docutils.core
 except ImportError:
     # print('leoImport.py: can not import docutils')
     docutils = None  # type:ignore
@@ -431,7 +433,7 @@ class LeoImportCommands:
         return i, result.rstrip()
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName):
-        c = self.c; p = c.p
+        p = self.c.p
         nl = self.output_newline
         if not p:
             return
@@ -444,7 +446,6 @@ class LeoImportCommands:
                     theFile.write(head + nl)
         except IOError:
             g.warning("can not open", fileName)
-            c.testManager.fail()
     #@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
     def flattenOutline(self, fileName):
         """
@@ -465,7 +466,6 @@ class LeoImportCommands:
                 # Fix crasher: open in 'wb' mode.
         except IOError:
             g.warning("can not open", fileName)
-            c.testManager.fail()
             return
         for p in p.self_and_subtree(copy=False):
             s = p.moreHead(firstLevel) + nl
@@ -487,7 +487,6 @@ class LeoImportCommands:
             theFile = open(fileName, 'w')
         except IOError:
             g.warning("can not open", fileName)
-            c.testManager.fail()
             return
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.
@@ -653,9 +652,10 @@ class LeoImportCommands:
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             self.scanUnknownFileType(s, p, ext)
-        # Fix bug 488894: unsettling dialog when saving Leo file
-        # Fix bug 889175: Remember the full fileName.
-        c.atFileCommands.rememberReadPath(fileName, p)
+        if not g.unitTesting:
+            # Fix bug 488894: unsettling dialog when saving Leo file
+            # Fix bug 889175: Remember the full fileName.
+            c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
         w.setInsertPoint(0)
@@ -709,7 +709,6 @@ class LeoImportCommands:
         self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
             p.clearDirty()
-        g.app.unitTestDict = {'result': True}
         return True
     #@+node:ekr.20080811174246.1: *6* ic.languageForExtension
     def languageForExtension(self, ext):
@@ -1148,161 +1147,108 @@ class LeoImportCommands:
 
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
-    def cUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.c')
+    def cUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.c')
 
-    def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
+    def cSharpUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.c#')
 
-    def cythonUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.pyx')
+    def cythonUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.pyx')
 
-    def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.coffee')
+    def coffeeScriptUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.coffee')
 
-    def ctextUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
+    def ctextUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.txt')
 
-    def dartUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.dart')
+    def dartUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.dart')
 
-    def elispUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.el')
+    def elispUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.el')
 
-    def htmlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.htm')
+    def htmlUnitTest(self, p, s):
+        c = self.c
+        # Simulate @data import-html-tags, with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(p, 'data', 'import-html-tags', tags_list, warn=True)
+        self.scannerUnitTest(p, s, ext='.htm')
 
-    def iniUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.ini')
+    def iniUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.ini')
 
-    def javaUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.java')
+    def javaUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.java')
 
-    def javaScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.js')
+    def javaScriptUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.js')
 
-    def markdownUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.md')
+    def markdownUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.md')
 
-    def orgUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.org')
+    def orgUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.org')
 
-    def otlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.otl')
+    def otlUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.otl')
 
-    def pascalUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.pas')
+    def pascalUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.pas')
 
-    def perlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.pl')
+    def perlUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.pl')
 
-    def phpUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.php')
+    def phpUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.php')
 
-    def pythonUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.py')
+    def pythonUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.py')
 
-    def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
-        if docutils:
-            return self.scannerUnitTest(
-                p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
+    def rstUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.rst') 
 
-        # print('leoImport.py: can not import docutils')
-        return None
+    def textUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.txt')
 
-    def textUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
+    def typeScriptUnitTest(self, p, s):
+        self.scannerUnitTest(p, s, ext='.ts')
 
-    def typeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.ts')
+    def xmlUnitTest(self, p, s):
+        c = self.c
+        # Simulate @data import-xml-tags with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(p, 'data', 'import-xml-tags', tags_list, warn=True)
+        self.scannerUnitTest(p, s, ext='.xml')
 
-    def xmlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.xml')
-
-    def defaultImporterUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(
-            p, fileName=fileName, s=s, showTree=showTree, ext='.xxx')
+    def defaultImporterUnitTest(self, p, s):
+        self.scannerUnitTest( p, s, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
-    def scannerUnitTest(self, p, ext=None, fileName=None, s=None, showTree=False):
+    def scannerUnitTest(self, p, s, ext):
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        c = self.c
-        old_root = p.copy()
-        self.treeType = '@file'
-            # Fix #352.
-        # A hack.  Let unit tests set the kill-check flag first.
-        d = g.app.unitTestDict
-        if d.get('kill-check'):
-            d = {'kill-check': True}
-        else:
-            d = {}
-        g.app.unitTestDict = d
-        if not fileName:
-            fileName = p.h
-        if not s:
-            s = self.removeSentinelsCommand([fileName], toString=True)
-        # Run the actual test using the **GeneralTestCase** class.
-        # Leo 5.6: Compute parent here.
-        if p:
-            parent = p.insertAsLastChild()
-        else:
-            parent = c.lastTopLevel().insertAfter()
-        kind = self.compute_unit_test_kind(ext, fileName)
+        assert ext, g.callers()
+        self.treeType = '@file'  # Fix #352.
+        fileName = 'test'
+        # Run the test.
+        parent = p.insertAsLastChild()
+        kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {fileName}"
         self.createOutline(parent=parent.copy(), ext=ext, s=s)
-        # Set ok.
-        d = g.app.unitTestDict
-        ok = d.get('result') is True
-        # Clean up.
-        if showTree:
-            # 2016/11/17: Make sure saving the outline doesn't create any file.
-            for child in old_root.children():
-                if child.isAnyAtFileNode():
-                    child.h = '@' + child.h
-        else:
-            while old_root.hasChildren():
-                old_root.firstChild().doDelete()
-        c.redraw(old_root)
-        if g.app.unitTesting:
-            d['kill-check'] = False
-            if not ok:
-                g.app.unitTestDict['fail'] = p.h
-            assert ok, p.h
-        return ok
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
-    def compute_unit_test_kind(self, ext, fn):
-        """Return kind from fn's file extension."""
-        if not ext:
-            junk, ext = g.os_path_splitext(fn)
-        if ext:
-            aClass = g.app.classDispatchDict.get(ext)
-            if aClass:
-                d2 = g.app.atAutoDict
-                for z in d2:
-                    if d2.get(z) == aClass:
+    def compute_unit_test_kind(self, ext):
+        """Return kind from the given extention."""
+        aClass = g.app.classDispatchDict.get(ext)
+        if aClass:
+            d2 = g.app.atAutoDict
+            for z in d2:
+                if d2.get(z) == aClass:
                         return z
         return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities

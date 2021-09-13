@@ -328,7 +328,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                 load_items(menu, provider.ns_context())
                 
         # point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
-        point = pos  ###
+        point = pos
         global_point = self.mapToGlobal(point)
         menu.exec_(global_point)
         

@@ -963,16 +963,13 @@ class quickMoveButton:
         c.redraw()
     #@+node:ekr.20070123061606: *3* checkMove
     def checkMove (self,p,p2):
-
         c = self.c
-
         for z in p2.parents():
             if z == p:
                 return False
-
         return (
-            c.checkMoveWithParentWithWarning (p,p2,warningFlag=False) and
-            c.checkMoveWithParentWithWarning (p2,p,warningFlag=False)
+            c.checkMoveWithParentWithWarning (p, p2, warningFlag=False) and
+            c.checkMoveWithParentWithWarning (p2, p, warningFlag=False)
         )
     #@+node:tbrown.20100114111020.15726: *3* computeUNL
     def computeUNL(self, p):

@@ -10,9 +10,10 @@ import io
 import os
 import re
 import sys
+import tabnanny
 import time
+import tokenize
 from typing import List
-import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 #@-<< imports >>
@@ -173,7 +174,7 @@ class AtFile:
         at.sentinels = True
         #
         # Override initCommonIvars.
-        if g.app.unitTesting:
+        if g.unitTesting:
             at.output_newline = '\n'
         #
         # Set other ivars.
@@ -848,11 +849,8 @@ class AtFile:
         if at.errors:
             g.trace('can not happen: at.errors > 0', g.callers())
             e = at.encoding
-            if g.unitTesting: assert False, g.callers()
-                # This can happen when the showTree command in a unit test is left on.
-                # A @file/@clean node is created which refers to a non-existent file.
-                # It's surprisingly difficult to set at.error=0 safely elsewhere.
-                # Otoh, I'm not sure why this test here is ever really useful.
+            if g.unitTesting:
+                assert False, g.callers()
         else:
             at.initReadLine(s)
             old_encoding = at.encoding
@@ -1566,7 +1564,7 @@ class AtFile:
             # what is used in x.propegate changes.
             marker = x.markerFromFileName(full_path)
             at.startSentinelComment, at.endSentinelComment = marker.getDelims()
-            if g.app.unitTesting:
+            if g.unitTesting:
                 ivars_dict = g.getIvarsDict(at)
             #
             # Write the public and private files to strings.
@@ -1580,7 +1578,7 @@ class AtFile:
             at.public_s = put(False)
             at.private_s = put(True)
             at.warnAboutOrphandAndIgnoredNodes()
-            if g.app.unitTesting:
+            if g.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
                 assert g.checkUnchangedIvars(
                     at, ivars_dict, exceptions), 'writeOneAtShadowNode'
@@ -2342,35 +2340,26 @@ class AtFile:
             g.es_exception()
             return False
     #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
-    def tabNannyNode(self, p, body, suppress=False):
-        import parser
-        import tabnanny
-        import tokenize
+    def tabNannyNode(self, p, body):
         try:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
-        except parser.ParserError:
-            junk1, msg, junk = sys.exc_info()
-            if suppress:
-                raise
-            g.error("ParserError in", p.h)
-            g.es('', str(msg))
         except IndentationError:
-            junk2, msg, junk = sys.exc_info()
-            if suppress:
+            if g.unitTesting:
                 raise
+            junk2, msg, junk = sys.exc_info()
             g.error("IndentationError in", p.h)
             g.es('', str(msg))
         except tokenize.TokenError:
-            junk3, msg, junk = sys.exc_info()
-            if suppress:
+            if g.unitTesting:
                 raise
+            junk3, msg, junk = sys.exc_info()
             g.error("TokenError in", p.h)
             g.es('', str(msg))
         except tabnanny.NannyNag:
-            junk4, nag, junk = sys.exc_info()
-            if suppress:
+            if g.unitTesting:
                 raise
+            junk4, nag, junk = sys.exc_info()
             badline = nag.get_lineno()
             line = nag.get_line()
             message = nag.get_msg()
@@ -2381,7 +2370,7 @@ class AtFile:
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
-            if suppress: raise
+            raise
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.
@@ -2709,11 +2698,12 @@ class AtFile:
         # Compare the old and new contents.
         old_contents = g.readFileIntoUnicodeString(fileName,
             encoding=at.encoding, silent=True)
+        if not old_contents:
+            old_contents = ''
         unchanged = (
-            contents == old_contents or
-            (not at.explicitLineEnding and at.compareIgnoringLineEndings(
-            old_contents, contents)) or
-            ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
+            contents == old_contents
+            or (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents))
+            or ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
             at.unchangedFiles += 1
             if not g.unitTesting and c.config.getBool(
@@ -2758,8 +2748,8 @@ class AtFile:
     #@+node:ekr.20190114061452.28: *6* at.compareIgnoringLineEndings
     def compareIgnoringLineEndings(self, s1, s2):
         """Compare two strings, ignoring line endings."""
-        assert g.isUnicode(s1), g.callers()
-        assert g.isUnicode(s2), g.callers()
+        assert g.isUnicode(s1), (repr(s1), g.callers())
+        assert g.isUnicode(s2), (repr(s2), g.callers())
         if s1 == s2:
             return True
         # Wrong: equivalent to ignoreBlankLines!
@@ -2798,7 +2788,8 @@ class AtFile:
         '''Issue an error while writing an @<file> node.'''
         at = self
         if at.errors == 0:
-            g.es_error("errors writing: " + at.targetFileName)
+            fn = at.targetFileName or 'unnamed file'
+            g.es_error(f"errors writing: {fn}")
         at.error(message)
         at.addToOrphanList(at.root)
     #@+node:ekr.20041005105605.218: *5* at.writeException
@@ -2904,9 +2895,6 @@ class AtFile:
     def promptForDangerousWrite(self, fileName, message=None):
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
-        if g.app.unitTesting:
-            val = g.app.unitTestDict.get('promptForDangerousWrite')
-            return val in (None, True)
         if at.cancelFlag:
             assert at.canCancelFlag
             return False
@@ -2997,7 +2985,7 @@ class AtFile:
             #
             # Issue an error only if at.language has been set.
             # This suppresses a message from the markdown importer.
-            if not g.app.unitTesting and at.language:
+            if not g.unitTesting and at.language:
                 g.trace(repr(at.language), g.callers())
                 g.es_print("unknown language: using Python comment delimiters")
                 g.es_print("c.target_language:", c.target_language)
@@ -3679,84 +3667,7 @@ class FastAtRead:
             g.trace(f"{t2 - t1:5.2f} sec. {path}")
         return True
     #@-others
-#@+node:ekr.20200204092455.1: ** class TestAtFile (leoAtFile.py)
-class TestAtFile(unittest.TestCase):
-    #@+others
-    #@+node:ekr.20200204104247.1: *3* Helpers
-    #@+node:ekr.20200204095726.1: *4* TestAtFile.bridge
-    def bridge(self):
-        """Return an instance of Leo's bridge."""
-        from leo.core import leoBridge
-        return leoBridge.controller(gui='nullGui',
-            loadPlugins=False,
-            readSettings=False,
-            silent=True,
-            verbose=False,
-        )
-    #@+node:ekr.20200204112501.1: *4* TestAtFile.temp_dir
-    def temp_dir(self):
-        """Create a temp file with the given name."""
-        import warnings
-        warnings.simplefilter("ignore")
-        import tempfile
-        return tempfile.TemporaryDirectory()
-    #@+node:ekr.20200204103744.1: *4* TestAtFile.temp_file
-    def temp_file(self):
-        """Create a temp file with the given name."""
-        import warnings
-        warnings.simplefilter("ignore")
-        import tempfile
-        return tempfile.NamedTemporaryFile(mode='w')
-    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
-    def test_save_after_external_file_rename(self):
-        """Test #1469: saves renaming an external file."""
-        # Create a new outline with @file node and save it
-        bridge = self.bridge()
-        temp_dir = self.temp_dir()
-        filename = f"{temp_dir.name}{os.sep}test_file.leo"
-        c = bridge.openLeoFile(filename)
-        p = c.rootPosition()
-        p.h = '@file 1'
-        p.b = 'b1'
-        c.save()
-        # Rename the @file node and save
-        p1 = c.rootPosition()
-        p1.h = "@file 1_renamed"
-        c.save()
-        # Remove the original "@file 1" from the disk
-        external_filename = f"{temp_dir.name}{os.sep}1"
-        assert os.path.exists(external_filename)
-        os.remove(external_filename)
-        assert not os.path.exists(external_filename)
-        # Change the @file contents, save and reopen the outline
-        p1.b = "b_1_changed"
-        c.save()
-        c.close()
-        c = bridge.openLeoFile(c.fileName())
-        p1 = c.rootPosition()
-        assert p1.h == "@file 1_renamed", repr(p1.h)
-        assert p1.b == "b_1_changed\n", repr(p1.b)
-    #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
-    def test_bug_1889(self):
-        """
-        Test #1889: Honor ~ in ancestor @path nodes.
-        """
-        # Create a new outline with @file node and save it
-        bridge = self.bridge()
-        temp_dir = self.temp_dir()
-        filename = f"{temp_dir.name}{os.sep}test_file.leo"
-        c = bridge.openLeoFile(filename)
-        root = c.rootPosition()
-        root.h = '@path ~/sub-directory/'
-        child = root.insertAsLastChild()
-        child.h = '@file test_bug_1889.py'
-        child.b = '@language python\n# test #1889'
-        path = g.fullPath(c, child)
-        assert '~' not in path, repr(path)
-    #@-others
 #@-others
-if __name__ == '__main__':
-    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60

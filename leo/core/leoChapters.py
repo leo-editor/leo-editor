@@ -80,7 +80,7 @@ class ChapterController:
                     c.redraw(chapter.p)  # 2016/04/20.
                 finally:
                     cc.selectChapterLockout = False
-            else:
+            elif not g.unitTesting:
                 # Possible, but not likely.
                 cc.note(f"no such chapter: {name}")
 
@@ -135,7 +135,8 @@ class ChapterController:
             return
         chapter = cc.getChapter(name)
         if not chapter:
-            g.es_print(f"no such @chapter node: {name}")
+            if not g.unitTesting:
+                g.es_print(f"no such @chapter node: {name}")
             return
         try:
             cc.selectChapterLockout = True

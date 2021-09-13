@@ -249,7 +249,7 @@ class extendForth:
                         extras.append(s)
                 if extras:
                     if self.verbose:
-                        if not g.app.unitTesting and not g.app.batchMode:
+                        if not g.unitTesting and not g.app.batchMode:
                             g.pr("Found extra forth: %s" % " ".join(extras))
                     ivarList.extend(extras)
         # Create brackets1/2 and stringwords1/2 lists.

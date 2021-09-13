@@ -925,10 +925,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
             g: The leo.core.leoGlobals module.
             p: The presently selected position, c.p.
 
-        @test scripts predefine all the above, plus::
-
-            self: The instance of unittest.TestCase
-
         Commands class
         ==============
 

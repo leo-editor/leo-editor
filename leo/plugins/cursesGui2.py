@@ -743,11 +743,11 @@ def init():
     This plugin should be loaded only from leoApp.py.
     """
     if g.app.gui:
-        if not g.app.unitTesting:
+        if not g.unitTesting:
             s = "Can't install text gui: previous gui installed"
             g.es_print(s, color="red")
         return False
-    return curses and not g.app.unitTesting
+    return curses and not g.unitTesting
         # Not Ok for unit testing!
 #@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
@@ -2524,7 +2524,7 @@ class CoreTree (leoFrame.LeoTree):
         # Do *not* call redraw_after_select here!
     #@+node:ekr.20170511104032.1: *4* CTree.error
     def error(self, s):
-        if not g.app.unitTesting:
+        if not g.unitTesting:
             g.trace('LeoQtTree Error: %s' % (s), g.callers())
     #@+node:ekr.20170511104533.1: *4* CTree.Event handlers
     #@+node:ekr.20170511104533.10: *5* CTree.busy

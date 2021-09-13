@@ -121,7 +121,7 @@ class LeoQtTree(leoFrame.LeoTree):
         return wrapper
     #@+node:ekr.20110605121601.17868: *3* qtree.Debugging & tracing
     def error(self, s):
-        if not g.app.unitTesting:
+        if not g.unitTesting:
             g.trace('LeoQtTree Error: ', s, g.callers())
 
     def traceItem(self, item):

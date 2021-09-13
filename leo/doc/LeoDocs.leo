@@ -1099,7 +1099,6 @@
 <v t="ekr.20150603120245.1"><vh>Enough is enough</vh></v>
 <v t="ekr.20150603120150.1"><vh>Summary of the beautifier</vh></v>
 </v>
-<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
 </v>
@@ -1181,16 +1180,18 @@
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
 </v>
-<v t="ekr.20210509173514.1"><vh>Using Leo's server</vh>
-<v t="ekr.20210509173536.1"><vh>@rst html\leoserver.html</vh>
-<v t="ekr.20210513093758.1"><vh>Starting the server</vh></v>
-<v t="ekr.20210515095924.1"><vh>Communication protocol</vh>
-<v t="ekr.20210513093910.1"><vh>Requests</vh></v>
-<v t="ekr.20210514075844.1"><vh>Responses</vh></v>
-<v t="ekr.20210514075903.1"><vh>Archived positions</vh></v>
+<v t="ekr.20210824081721.1"><vh>Leo's websocket server</vh>
+<v t="ekr.20210824081815.1"><vh>@rst html/leoserver.html</vh>
+<v t="ekr.20210825021830.1"><vh>The communication protocol</vh>
+<v t="ekr.20210824083951.1"><vh>Requests</vh></v>
+<v t="ekr.20210824085857.1"><vh>Responses</vh></v>
+<v t="felix.20210825222316.1"><vh>Async messages</vh></v>
 </v>
-<v t="ekr.20210513094057.1"><vh>The main server loop</vh></v>
-<v t="ekr.20210513100433.1"><vh>Acknowledgments</vh></v>
+<v t="felix.20210902210559.1"><vh>The main server loop</vh></v>
+<v t="ekr.20210825021904.1"><vh>Compatibility and extensibility</vh></v>
+<v t="felix.20210825213137.1"><vh>Multiple concurent connections</vh></v>
+<v t="felix.20210826001302.1"><vh>Command line arguments</vh></v>
+<v t="felix.20210902210710.1"><vh>Acknowledgments</vh></v>
 </v>
 </v>
 </v>
@@ -1267,18 +1268,6 @@
 <v t="ekr.20171201034133.1"><vh>Noteworthy functions and methods</vh></v>
 <v t="ekr.20171201042151.1"><vh>Running unit tests</vh></v>
 </v>
-</v>
-</v>
-<v t="ekr.20210824081721.1"><vh>Leo's websocket server</vh>
-<v t="ekr.20210824081815.1"><vh>@rst html/leoserver.html</vh>
-<v t="ekr.20210825021830.1"><vh>The communication protocol</vh>
-<v t="ekr.20210824083951.1"><vh>Requests</vh></v>
-<v t="ekr.20210824085857.1"><vh>Responses</vh></v>
-<v t="felix.20210825222316.1"><vh>Async messages</vh></v>
-</v>
-<v t="ekr.20210825021904.1"><vh>Compatibility and extensibility</vh></v>
-<v t="felix.20210825213137.1"><vh>Multiple concurent connections</vh></v>
-<v t="felix.20210826001302.1"><vh>Command line arguments</vh></v>
 </v>
 </v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
@@ -1368,7 +1357,6 @@
 <v t="ekr.20180509042555.1"><vh>@rst html\leo-university.html</vh>
 <v t="ekr.20180505114327.5"><vh>Lesson 1: Think process, not knowledge</vh></v>
 <v t="ekr.20180505114327.7"><vh>Lesson 2: Learn Leo's debugging tools</vh></v>
-<v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
 <v t="ekr.20180505114327.6"><vh>Lesson 4: Use issues as an programming notebook</vh></v>
 <v t="ekr.20180505114327.9"><vh>Lesson 5: c.recursiveImport imports files recursively</vh></v>
 <v t="ekr.20180505114327.10"><vh>Lesson 6: How devs should use git branches</vh></v>
@@ -2384,6 +2372,10 @@
 <v t="ekr.20210405104357.1"></v>
 <v t="ekr.20210405104422.1"></v>
 <v t="ekr.20210824081815.1"></v>
+<v t="ekr.20210910100145.1"><vh>Removed re unit tests</vh>
+<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
+<v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20234,7 +20226,7 @@ Acknowledgements: Working with Leo's community of Leo's developers and users has
 
 A successful software tool is one that was used to do something undreamed of by its author.' -- Stephen Johnson
 
-Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @test, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
+Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
 
 Edward K. Ream
 </t>
@@ -30963,72 +30955,6 @@ https://github.com/leo-editor/leo-editor/issues/2049
 @string mypy-config-file</t>
 <t tx="ekr.20210405110053.1"></t>
 <t tx="ekr.20210405110145.1"></t>
-<t tx="ekr.20210509173514.1"></t>
-<t tx="ekr.20210509173536.1">###################
-Using leoserver.py
-###################
-
-leoserver.py is a stand-alone web socket server that provides access to
-Leo's capabilities using Leo's bridge.
-
-leoserver.py exists to support leoInteg: Leo hosted on Visual Studio Code.
-Future versions of leoserver.py may add new request handlers. Once added,
-request handlers will not be removed or changed in incompatible ways.
-
-leoclient.py is an example client, written in python. Clients can be
-written in any language. Clients send text (JSON) requests to the server
-and receive JSON responses from the server.
-
-.. contents:: Contents
-    :depth: 2
-    :local:</t>
-<t tx="ekr.20210513093758.1">To start the server, execute `python leoserver.py &lt;args&gt;` in a separate
-process, that is, outside of Leo itself. `leoserver -h` prints
-"leoserver.py -a &lt;address&gt; -p &lt;port&gt;"
-
-By default, the server listens on "localhost" and port 32125. You can
-change these defaults with the --address and --port command-line arguments.</t>
-<t tx="ekr.20210513093910.1">The server listens for requests (JSON Objects), converts each incoming
-request to a Python dict, and calls the **_do_message** method. The dict
-must have the following string keys:
-
-"id": A positive integer.
-   
-"action": A string, which is either:
-- The name of a public method of the server class, prefixed with a '!'.
-- The name of a Leo command, without prefix.
-       
-"param": A dict containing data for the request handler.
-
-</t>
-<t tx="ekr.20210513094057.1">The **ws_handler** function contains the main server loop. It calls
-asyncio.get_event_loop() to start listening on the designated socket and
-port.
-
-ws_handler dispatches incoming requests to the **_do_request** method,
-which then calls the appropriate handler, either in the LeoServer class, or
-(via Leo's bridge) to Leo itself.
-
-Request handlers raise the following exceptions:
-
-- ServerError indicates an invalid user request.
-  The server returns a response describing the error.
-- InternalServerError and error within the server itself.
-  The server prints an error message and stops.
-- TerminateServer causes the server to terminate normally.</t>
-<t tx="ekr.20210513100433.1">Félix Malboeuf wrote the original version of leoserver.py, including the
-first draft of the all-important ws_handler function.
-
-Edward K. Ream made the code more pythonic and provided Leo-specific
-advice.
-</t>
-<t tx="ekr.20210514075844.1">The **_make_response** and **_make_minimal_response** methods return python
-dicts. The server's main loop converts those dicts to JSON. All responses
-contain an 'id' key that matches the corresponding requests.
-</t>
-<t tx="ekr.20210514075903.1">The server's **_ap_to_p** and **_p_to_ap** methods convert Leo positions to
-**archived positions** (strings) that can be converted to JSON.</t>
-<t tx="ekr.20210515095924.1"></t>
 <t tx="ekr.20210528082736.11">https://github.com/leo-editor/leo-editor/issues/1955</t>
 <t tx="ekr.20210528083337.1">https://github.com/leo-editor/leo-editor/issues/1846
 </t>
@@ -31142,7 +31068,11 @@ Clients encode requests as JSON strings and receive results from the server
 as JSON strings.
 
 Run the leoserver.py script with the "--help" command line parameter to learn
-more about the server's capabilities.</t>
+more about the server's capabilities.
+
+.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20210824083951.1">JSON requests (from the client to the server) must have three keys:
 
 "id": A string containing a positive integer.
@@ -31158,6 +31088,9 @@ more about the server's capabilities.</t>
 "param": A dict containing additional information. The param key often
 contains "ap", "text" and "keep" keys.
 
+The server's **_ap_to_p** and **_p_to_ap** methods convert Leo positions to
+**archived positions** (strings) that can be converted to JSON.
+
 The "action" and "param" members mimic the "function name" and "parameters" or
 a procedure call. And is in fact implemented as a remote procedure call.
 
@@ -31167,14 +31100,14 @@ one by one, blocking synchronous manner.
 <t tx="ekr.20210824085857.1">JSON responses (from the server to the client) always have the following keys
 unless the request was a 'getter' command:
 
-"id": The incoming request id this JSON message is responding to.
-"commander": A dict describing c, the open commander.
-"node":  None, or an archived position describing c.p.
+* "id": The incoming request id this JSON message is responding to.
+* "commander": A dict describing c, the open commander.
+* "node":  None, or an archived position describing c.p.
 
 Optional keys:
 
-"package": A dict containing extra data.
-"p": "An archived position".
+* "package": A dict containing extra data.
+* "p": "An archived position".
 
 If the request was a 'getter' command, the JSON response will only contain the
 specific structure that was requested.
@@ -31184,9 +31117,9 @@ format of requests sent from the client and responses sent from the server.
 </t>
 <t tx="ekr.20210825021904.1">Requests from the client to the server may reference:
 
-- Public methods of the LeoServer class.
-- The names of Leo commands.
-- Methods of Leo's subcommander classes.
+* Public methods of the LeoServer class.
+* The names of Leo commands.
+* Methods of Leo's subcommander classes.
 
 The public methods of the LeoServer class can only be changed in an upward
 compatible manner. If necessary, new public methods can be added at any
@@ -31197,6 +31130,7 @@ Leo's source code. For this reason, the names of methods in Leo's core
 change rarely. Similarly, clients can usually assume that the names of Leo
 commands won't change.
 </t>
+<t tx="ekr.20210910100145.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
@@ -31221,30 +31155,57 @@ a connected clients' direct request.
 
 Examples of 'async' messages:
 
-- An entry added to the log pane.
-- Signal the detection of an external file change.
-- Signal the automatic refresh of an outline.
-- A signal to ask the user about reloading a Leo file that has changed after changing a git branch.
+* An entry added to the log pane.
+* Signal the detection of an external file change.
+* Signal the automatic refresh of an outline.
+* A signal to ask the user about reloading a Leo file that has changed after changing a git branch.
 </t>
 <t tx="felix.20210826001302.1">leoserver.py has optional command line arguments that you can provide
 to get specific behaviors from the server.
 
-* Have the server start with a specific file opened
-Use the --file &lt;filename&gt; or -f &lt;filename&gt;'to specify a given Leo file to be
-opened upon starting the server.
+**--file &lt;filename&gt; or -f &lt;filename&gt;**
 
-* Prevent the server from closing when last client disconnects
-Use the --persist flag to have the server persist until explicitly closed.
+    Open the given file after starting the server.
+    
+**--persist**
 
-* Set maximum number of possible concurrent connections
-Use the --limit &lt;number&gt; or -l &lt;number&gt; argument to change the maximum from
-the default single connection maximum.
+    Prevent the server from closing when last client disconnects
+    
+**--limit &lt;number&gt; or -l &lt;number&gt;**
 
-* Set the listening address and port
-Use the --port &lt;number&gt; or -p &lt;number&gt;
-along with the --address &lt;address&gt; or -a &lt;address&gt; arguments.
+    Allow more than one connection to be open simultaneously.
+    By default, only one connection may be open at a time.
+    
+**--address &lt;address&gt; or -a &lt;address&gt;**
 
-For more details, use the *--help* argument to list all available options details.
+    Set the listening address.
+    
+**--port &lt;number&gt; or -p &lt;number&gt;**
+
+    Set the listening port.
+    
+**--help or -h**
+    
+    List all available command-line arguments.
+</t>
+<t tx="felix.20210902210559.1">The **ws_handler** function contains the main server loop. 
+
+ws_handler dispatches incoming requests to the **_do_request** method,
+which then calls the appropriate handler, either in the LeoServer class, or
+(via Leo's bridge) to Leo itself.
+
+Request handlers raise the following exceptions:
+
+- ServerError indicates an invalid user request.
+  The server returns a response describing the error.
+- InternalServerError and error within the server itself.
+  The server prints an error message and stops.
+- TerminateServer causes the server to terminate normally.</t>
+<t tx="felix.20210902210710.1">Félix Malboeuf wrote the original version of leoserver.py, including the
+first draft of the all-important ws_handler function.
+
+Edward K. Ream made the code more pythonic and provided Leo-specific
+advice.
 </t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 

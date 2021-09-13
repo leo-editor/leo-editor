@@ -9,8 +9,6 @@ Important: This module imports no other Leo module.
 """
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
-# Don't import leoTest here: it messes up Leo's startup code.
-    # from leo.core import leoTest
 import binascii
 import codecs
 import fnmatch
@@ -2599,6 +2597,157 @@ def isTextWidget(w):
 
 def isTextWrapper(w):
     return g.app.gui.isTextWrapper(w)
+#@+node:ekr.20160518074224.1: *3* class g.LinterTable
+class LinterTable():
+    """A class to encapsulate lists of leo modules under test."""
+
+    def __init__(self):
+        """Ctor for LinterTable class."""
+        # Define self. relative to leo.core.leoGlobals
+        self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
+    #@+others
+    #@+node:ekr.20160518074545.2: *4* commands
+    def commands(self):
+        """Return list of all command modules in leo/commands."""
+        pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
+        return self.get_files(pattern)
+    #@+node:ekr.20160518074545.3: *4* core
+    def core(self):
+        """Return list of all of Leo's core files."""
+        pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
+        aList = self.get_files(pattern)
+        for fn in ['runLeo.py',]:
+            aList.append(g.os_path_finalize_join(self.loadDir, 'core', fn))
+        return sorted(aList)
+    #@+node:ekr.20160518074545.4: *4* external
+    def external(self):
+        """Return list of files in leo/external"""
+        pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
+        aList = self.get_files(pattern)
+        remove = [
+            'leoSAGlobals.py',
+            'leoftsindex.py',
+        ]
+        remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
+        return sorted([z for z in aList if z not in remove])
+    #@+node:ekr.20160518074545.5: *4* gui_plugins
+    def gui_plugins(self):
+        """Return list of all of Leo's gui-related files."""
+        pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
+        aList = self.get_files(pattern)
+        # These are not included, because they don't start with 'qt_':
+        add = ['free_layout.py', 'nested_splitter.py',]
+        remove = [
+            'qt_main.py',  # auto-generated file.
+        ]
+        for fn in add:
+            aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
+        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+        return sorted(set([z for z in aList if z not in remove]))
+    #@+node:ekr.20160518074545.6: *4* modes
+    def modes(self):
+        """Return list of all files in leo/modes"""
+        pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
+        return self.get_files(pattern)
+    #@+node:ekr.20160518074545.7: *4* ignores (not used!)
+    def ignores(self):
+        return (
+            '__init__', 'FileActions',
+            # 'UNL', # in plugins table.
+            'active_path', 'add_directives', 'attrib_edit',
+            'backlink', 'base64Packager', 'baseNativeTree', 'bibtex', 'bookmarks',
+            'codewisecompleter', 'colorize_headlines', 'contextmenu',
+            'ctagscompleter', 'cursesGui', 'datenodes', 'debugger_pudb',
+            'detect_urls', 'dtest', 'empty_leo_file', 'enable_gc', 'initinclass',
+            'leo_to_html', 'leo_interface', 'leo_pdf', 'leo_to_rtf',
+            'leoOPML', 'leoremote', 'lineNumbers',
+            'macros', 'mime', 'mod_autosave', 'mod_framesize', 'mod_leo2ascd',
+            # 'mod_scripting', # in plugins table.
+            'mod_speedups', 'mod_timestamp',
+            'nav_buttons', 'nav_qt', 'niceNosent', 'nodeActions', 'nodebar',
+            'open_shell', 'open_with', 'outline_export', 'quit_leo',
+            'paste_as_headlines', 'plugins_menu', 'pretty_print', 'projectwizard',
+            'qt_main', 'qt_quicksearch', 'qt_commands',
+            'quickMove', 'quicksearch', 'redirect_to_log', 'rClickBasePluginClasses',
+            'run_nodes',  # Changed thread.allocate_lock to threading.lock().acquire()
+            'rst3',
+            # 'scrolledmessage', # No longer exists.
+            'setHomeDirectory', 'slideshow', 'spydershell', 'startfile',
+            'testRegisterCommand', 'todo',
+            # 'toolbar', # in plugins table.
+            'trace_gc_plugin', 'trace_keys', 'trace_tags',
+            'vim', 'xemacs',
+        )
+    #@+node:ekr.20160518074545.8: *4* plugins (LinterTable)
+    def plugins(self):
+        """Return a list of all important plugins."""
+        aList = []
+        for theDir in ('', 'importers', 'writers'):
+            pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
+            aList.extend(self.get_files(pattern))
+            # Don't use get_files here.
+            # for fn in g.glob_glob(pattern):
+                # sfn = g.shortFileName(fn)
+                # if sfn != '__init__.py':
+                    # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
+                    # aList.append(sfn)
+        remove = [
+            # 2016/05/20: *do* include gui-related plugins.
+            # This allows the -a option not to doubly-include gui-related plugins.
+                # 'free_layout.py', # Gui-related.
+                # 'nested_splitter.py', # Gui-related.
+            'gtkDialogs.py',  # Many errors, not important.
+            'leofts.py',  # Not (yet) in leoPlugins.leo.
+            'qtGui.py',  # Dummy file
+            'qt_main.py',  # Created automatically.
+            'viewrendered2.py',  # To be removed.
+            'rst3.py',  # Obsolete
+        ]
+        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+        aList = sorted([z for z in aList if z not in remove])
+        return sorted(set(aList))
+    #@+node:ekr.20160520093506.1: *4* get_files (LinterTable)
+    def get_files(self, pattern):
+        """Return the list of absolute file names matching the pattern."""
+        aList = sorted([
+            fn for fn in g.glob_glob(pattern)
+                if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
+        return aList
+    #@+node:ekr.20160518074545.9: *4* get_files_for_scope
+    def get_files_for_scope(self, scope, fn):
+        """Return a list of absolute filenames for external linters."""
+        d = {
+            'all': [self.core, self.commands, self.external, self.plugins],
+            'commands': [self.commands],
+            'core': [self.core, self.commands, self.external, self.gui_plugins],
+            'external': [self.external],
+            'file': [fn],
+            'gui': [self.gui_plugins],
+            'modes': [self.modes],
+            'plugins': [self.plugins],
+        }
+        suppress_list = ['freewin.py',]
+        functions = d.get(scope)
+        paths = []
+        if functions:
+            for func in functions:
+                files = [func] if isinstance(func, str) else func()
+                    # Bug fix: 2016/10/15
+                for fn in files:
+                    fn = g.os_path_abspath(fn)
+                    if g.shortFileName(fn) in suppress_list:
+                        print(f"\npylint-leo: skip {fn}")
+                        continue
+                    if g.os_path_exists(fn):
+                        if g.os_path_isfile(fn):
+                            paths.append(fn)
+                    else:
+                        print(f"does not exist: {fn}")
+            paths = sorted(set(paths))
+            return paths
+        print('LinterTable.get_table: bad scope', scope)
+        return []
+    #@-others
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)
@@ -2710,6 +2859,28 @@ def oldDump(s: str):
             out += "["; out += " "; out += "]"
         else: out += i
     return out
+#@+node:ekr.20210904114446.1: *4* g.dump_tree & g.tree_to_string
+def dump_tree(c, dump_body=False, msg=None):
+    if msg:
+        print(msg.rstrip())
+    else:
+        print('')
+    for p in c.all_positions():
+        print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
+        if dump_body:
+            for z in g.splitLines(p.b):
+                print(z.rstrip())
+
+def tree_to_string(c, dump_body=False, msg=None):
+    result = ['\n']
+    if msg:
+        result.append(msg)
+    for p in c.all_positions():
+        result.append(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
+        if dump_body:
+            for z in g.splitLines(p.b):
+                result.append(z.rstrip())
+    return '\n'.join(result)
 #@+node:ekr.20150227102835.8: *4* g.dump_encoded_string
 def dump_encoded_string(encoding, s: str):
     """Dump s, assumed to be an encoded string."""
@@ -3423,7 +3594,7 @@ def scanAtEncodingDirectives(aList):
         encoding = d.get('encoding')
         if encoding and g.isValidEncoding(encoding):
             return encoding
-        if encoding and not g.app.unitTesting:
+        if encoding and not g.unitTesting:
             g.error("invalid @encoding:", encoding)
     return None
 #@+node:ekr.20080827175609.53: *3* g.scanAtHeaderDirectives
@@ -3452,7 +3623,7 @@ def scanAtPagewidthDirectives(aList, issue_error_flag=False):
             i, val = g.skip_long(s, 0)
             if val is not None and val > 0:
                 return val
-            if issue_error_flag and not g.app.unitTesting:
+            if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @pagewidth", s)
     return None
 #@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives scanAllAtPathDirectives
@@ -3473,7 +3644,7 @@ def scanAtTabwidthDirectives(aList, issue_error_flag=False):
             junk, val = g.skip_long(s, 0)
             if val not in (None, 0):
                 return val
-            if issue_error_flag and not g.app.unitTesting:
+            if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @tabwidth", s)
     return None
 
@@ -3509,7 +3680,7 @@ def scanAllAtWrapDirectives(c: Cmdr, p: Pos):
 #@+node:ekr.20040715155607: *3* g.scanForAtIgnore
 def scanForAtIgnore(c: Cmdr, p: Pos):
     """Scan position p and its ancestors looking for @ignore directives."""
-    if g.app.unitTesting:
+    if g.unitTesting:
         return False  # For unit tests.
     for p in p.self_and_parents(copy=False):
         d = g.get_directives_dict(p)
@@ -4172,7 +4343,6 @@ def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=
           how far we will recurse.  So it should default to 0 (zero).
     """
     if g.unitTesting:
-        g.app.unitTestDict['g.recursiveUNLSearch'] = True
         return True, maxdepth, maxp
 
     def moveToP(c, p, unlList):
@@ -5404,7 +5574,7 @@ def import_module(name, package=None):
     """
     A thin wrapper over importlib.import_module.
     """
-    trace = True or 'plugins' in g.app.debug
+    trace = 'plugins' in g.app.debug and not g.unitTesting
     exceptions = []
     try:
         m = importlib.import_module(name, package=package)
@@ -5672,9 +5842,11 @@ def checkUnicode(s: str, encoding=None):
     these errors, but they might arise as the result of problems in
     user-defined plugins or scripts.
     """
+    tag = 'g.checkUnicode'
+    if s is None and g.unitTesting:
+        return ''
     if isinstance(s, str):
         return s
-    tag = 'g.checkUnicode'
     if not isinstance(s, bytes):
         g.error(f"{tag}: unexpected argument: {s!r}")
         return ''
@@ -6200,28 +6372,6 @@ def es_clickable_link(c: Cmdr, p: Pos, line_number, message):
         log.put(message, nodeLink=f"{unl},{line_number}")
     else:
         log.put(message)
-#@+node:ekr.20141107085700.4: *3* g.es_debug
-def es_debug(*args, **keys):
-    """
-    Print all non-keyword args, and put them to the log pane in orange.
-
-    The first, third, fifth, etc. arg translated by g.translateString.
-    Supports color, comma, newline, spaces and tabName keyword arguments.
-    """
-    keys['color'] = 'blue'
-    try:  # get the function name from the call stack.
-        f1 = sys._getframe(1)  # The stack frame, one level up.
-        code1 = f1.f_code  # The code object
-        name = code1.co_name  # The code name
-    except Exception:
-        name = g.shortFileName(__file__)
-    if name == '<module>':
-        name = g.shortFileName(__file__)
-    if name.endswith('.pyc'):
-        name = name[:-1]
-    g.pr(name, *args, **keys)
-    if not g.app.unitTesting:
-        g.es(name, *args, **keys)
 #@+node:ekr.20060917120951: *3* g.es_dump
 def es_dump(s: str, n=30, title=None):
     if title:
@@ -6283,7 +6433,7 @@ def es_print(*args, **keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     """
     g.pr(*args, **keys)
-    if g.app and not g.app.unitTesting:
+    if g.app and not g.unitTesting:
         g.es(*args, **keys)
 #@+node:ekr.20111107181638.9741: *3* g.print_exception
 def print_exception(full=True, c: Cmdr=None, flush=False, color="red"):
@@ -7503,35 +7653,22 @@ def insertCodingLine(encoding, script):
             script = ''.join(lines)
     return script
 #@+node:ekr.20070524083513: ** g.Unit Tests
-#@+node:ekr.20100812172650.5909: *3* g.findTestScript
-def findTestScript(c: Cmdr, h, where=None, warn=True):
-    if where:
-        p = g.findNodeAnywhere(c, where)
-        if p:
-            p = g.findNodeInTree(c, p, h)
-    else:
-        p = g.findNodeAnywhere(c, h)
-    if p:
-        return g.getScript(c, p)
-    if warn: g.trace('Not found', h)
-    return None
-#@+node:ekr.20070619173330: *3* g.getTestVars
-def getTestVars():
-    d = g.app.unitTestDict
-    c = d.get('c')
-    p = d.get('p')
-    # Indicate that getTestVars has run.
-    # This is an indirect test that some unit test has run.
-    d['getTestVars'] = True
-    return c, p and p.copy()
+#@+node:ekr.20210901071523.1: *3* g.run_coverage_tests
+def run_coverage_tests(module='', filename=''):
+    """
+    Run the coverage tests given by the module and filename strings.
+    """
+    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+    os.chdir(leo_editor_dir)
+    prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
+    command = f"{prefix} {module} {filename}"
+    g.execute_shell_commands(command, trace=False)
 #@+node:ekr.20200221050038.1: *3* g.run_unit_test_in_separate_process
 def run_unit_test_in_separate_process(command):
     """
     A script to be run from unitTest.leo.
     
     Run the unit testing command (say `python -m leo.core.leoAst`) in a separate process.
-    
-    Fail (in leoTest.leo) if that fails.
     """
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
@@ -7556,34 +7693,20 @@ def run_unit_test_in_separate_process(command):
         g.trace('Test failed')
         g.printObj(err_lines, tag='err_lines')
         assert False
-#@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
-def toEncodedStringWithErrorCode(s: Union[bytes, str], encoding, reportErrors=False):
-    """For unit testing: convert s to an encoded string and return (s,ok)."""
-    ok = True
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding, "strict")  # type:ignore
-        except UnicodeError:
-            s = s.encode(encoding, "replace")  # type:ignore
-            if reportErrors:
-                g.error(f"Error converting {s} from unicode to {encoding} encoding")  # type:ignore
-            ok = False
-    return s, ok
-#@+node:ekr.20080919065433.1: *3* g.toUnicodeWithErrorCode (for unit testing)
-def toUnicodeWithErrorCode(s: Union[bytes, str], encoding, reportErrors=False):
-    """For unit testing: convert s to unicode and return (s,ok)."""
-    if s is None:
-        return '', True
-    if isinstance(s, str):
-        return s, True
-    try:
-        s = str(s, encoding, 'strict')
-        return s, True
-    except UnicodeError:
-        s = str(s, encoding, 'replace')  # type:ignore
-        if reportErrors:
-            g.error(f"Error converting {s} from {encoding} encoding to unicode")
-        return s, False
+#@+node:ekr.20210901065224.1: *3* g.run_unit_tests
+def run_unit_tests(tests=None, verbose=False):
+    """
+    Run the unit tests given by the "tests" string.
+    
+    Run *all* unit tests if "tests" is not given.
+    """
+    leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+    os.chdir(leo_editor_dir)
+    verbosity = '-v' if verbose else ''
+    command = f"python -m unittest {verbosity} {tests or ''} "
+    # pytest reports too many errors.
+    # command = f"python -m pytest --pdb {tests or ''}"
+    g.execute_shell_commands(command, trace=False)
 #@+node:ekr.20120311151914.9916: ** g.Urls
 unl_regex = re.compile(r'\bunl:.*$')
 
@@ -7700,21 +7823,23 @@ def handleUrlHelper(url, c: Cmdr, p: Pos):
         # "readme.txt" gets parsed into .netloc...
     else:
         leo_path = parsed.path
-    if leo_path.endswith('\\'): leo_path = leo_path[:-1]
-    if leo_path.endswith('/'): leo_path = leo_path[:-1]
+    if leo_path.endswith('\\'):
+        leo_path = leo_path[:-1]
+    if leo_path.endswith('/'):
+        leo_path = leo_path[:-1]
     if parsed.scheme == 'file' and leo_path.endswith('.leo'):
         g.handleUnl(original_url, c)
     elif parsed.scheme in ('', 'file'):
         unquote_path = g.unquoteUrl(leo_path)
         if g.unitTesting:
-            g.app.unitTestDict['os_startfile'] = unquote_path
+            pass
         elif g.os_path_exists(leo_path):
             g.os_startfile(unquote_path)
         else:
             g.es(f"File '{leo_path}' does not exist")
     else:
         if g.unitTesting:
-            g.app.unitTestDict['browser'] = url
+            pass
         else:
             # Mozilla throws a weird exception, then opens the file!
             try:
@@ -7794,7 +7919,6 @@ def handleUnl(unl, c: Cmdr):
     c.endEditing()
     c.redraw()
     if g.unitTesting:
-        g.app.unitTestDict['g.recursiveUNLSearch'] = path
         return None
     c2 = g.openWithFileName(path, old_c=c)
     if unl:

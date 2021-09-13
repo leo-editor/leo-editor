@@ -23,7 +23,8 @@ from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
 from leo.core.leoQt import Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
-from leo.core.leoQt import Shadow, Shape, TextInteractionFlag, ToolBarArea, Type, WindowState, WrapMode
+from leo.core.leoQt import Shadow, Shape
+from leo.core.leoQt import TextInteractionFlag, ToolBarArea, Type, WindowState, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
@@ -1503,7 +1504,7 @@ class LeoQtBody(leoFrame.LeoBody):
         d = c.frame.body.wrapper.widget.document()
         option = QtGui.QTextOption()
         if c.frame.body.colorizer.showInvisibles:
-            option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
+            option.setFlags(option.Flag.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
     #@+node:ekr.20140901062324.18563: *5* LeoQtBody.set_widget
     def set_widget(self):
@@ -1816,7 +1817,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18211: *5* LeoQtBody.injectIvars
     def injectIvars(self, parentFrame, name, p, wrapper):
 
-        trace = g.app.debug == 'select' and not g.app.unitTesting
+        trace = g.app.debug == 'select' and not g.unitTesting
         tag = 'qt_body.injectIvars'
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
@@ -2861,7 +2862,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if frame and frame.top:
             w = frame.top.leo_master or frame.top
             if g.unitTesting:
-                g.app.unitTestDict['minimize-all'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMinimized)
@@ -2882,7 +2882,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # frame.top is a DynamicWindow.
             w = frame.top.leo_master or frame.top
             if g.unitTesting:
-                g.app.unitTestDict['resize-to-screen'] = True
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMaximized)
@@ -4512,7 +4511,9 @@ class TabbedFrameFactory:
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        if True:  # #1327: Must always do this.
+        if not g.unitTesting:
+            # #1327: Must always do this.
+            # 2021/09/12: but not for new unit tests!
             dw.show()
             tabw.show()
         return dw

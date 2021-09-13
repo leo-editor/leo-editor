@@ -181,10 +181,6 @@ class ParserBaseClass:
             g.app.config.buttonsFileName = (
                 c.shortFileName() if c else '<no settings file>'
             )
-        d, key = g.app.config.unitTestDict, 'config.doButtons-file-names'
-        aList = d.get(key, [])
-        aList.append(c.shortFileName())
-        d[key] = aList
     #@+node:ekr.20041120094940.2: *4* pbc.doColor
     def doColor(self, p, kind, name, val):
         # At present no checking is done.
@@ -218,10 +214,6 @@ class ParserBaseClass:
         if aList:
             g.app.config.atCommonCommandsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
-        d, key = g.app.config.unitTestDict, 'config.doCommands-file-names'
-        aList = d.get(key, [])
-        aList.append(c.shortFileName())
-        d[key] = aList
     #@+node:ekr.20071214140900: *4* pbc.doData
     def doData(self, p, kind, name, val):
         # New in Leo 4.11: do not strip lines.
@@ -479,7 +471,7 @@ class ParserBaseClass:
 
         c = self.c
         p = p.copy()
-        aList: List[Any] = []   ### This entire logic is mysterious, and likely buggy.
+        aList: List[Any] = []   # This entire logic is mysterious, and likely buggy.
         after = p.nodeAfterTree()
         while p and p != after:
             self.debug_count += 1
@@ -616,7 +608,7 @@ class ParserBaseClass:
                             aList2: List[Any] = [] 
                             kind = f"{itemName}"
                             body = p.b
-                            self.doPopupItems(p, aList2)  ### Huh?
+                            self.doPopupItems(p, aList2)  # Huh?
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
                             break
@@ -1349,7 +1341,6 @@ class GlobalConfigManager:
         self.atLocalCommandsList = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
-        self.unitTestDict = {}  # For unit testing: *not* the same as g.app.unitTestDict.
         self.defaultFont = None  # Set in gui.getDefaultConfigFont.
         self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None

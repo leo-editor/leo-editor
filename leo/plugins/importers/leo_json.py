@@ -58,7 +58,6 @@ class JSON_Scanner:
         '''The common top-level code for all scanners.'''
         c = self.c
         ok = self.scan(s, parent)
-        # g.app.unitTestDict['result'] = ok
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()

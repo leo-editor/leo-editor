@@ -30,7 +30,7 @@ def init():
         # Ok for unit testing.
     if ok:
         g.registerHandler("after-create-leo-frame",onCreate)
-    elif not g.app.unitTesting:
+    elif not g.unitTesting:
         s = 'at_view plugin not loaded: win32Clipboard not present.'
         g.es_print(s)
     return ok

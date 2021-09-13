@@ -1294,7 +1294,7 @@ class QScintillaWrapper(QTextMixin):
         if 0:  # This causes a lot of problems: Better to use Scintilla matching.
             # This causes problems during unit tests:
             # The selection point isn't restored in time.
-            if g.app.unitTesting:
+            if g.unitTesting:
                 return
             #@+others
             #@+node:ekr.20140902084950.18635: *5* after
@@ -1572,7 +1572,7 @@ class QTextEditWrapper(QTextMixin):
             fg = fg[:-1]
         # This might causes problems during unit tests.
         # The selection point isn't restored in time.
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         w = self.widget  # A QTextEdit.
         # Remember highlighted line:
