@@ -803,11 +803,12 @@ if QtWidgets:
                 editor.setExtraSelections([])
                 return
 
-            # Some cursor movements don't change the line: ignore them
             curs = editor.textCursor()
             blocknum = curs.blockNumber()
-            if blocknum == params['lastblock'] and blocknum > 0:
-                return
+
+            # Some cursor movements don't change the line: ignore them
+        #    if blocknum == params['lastblock'] and blocknum > 0:
+        #        return
 
             if blocknum == 0:  # invalid position
                 blocknum = 1
@@ -1574,6 +1575,7 @@ class QTextEditWrapper(QTextMixin):
         if g.app.unitTesting:
             return
         w = self.widget  # A QTextEdit.
+        # Remember highlighted line:
         self.last_selections = w.extraSelections()
 
         def after(func):
@@ -1591,7 +1593,7 @@ class QTextEditWrapper(QTextMixin):
             if self.flashFg:
                 extra.format.setForeground(QtGui.QColor(self.flashFg))
             self.extraSelList = self.last_selections[:]
-            self.extraSelList.append(extra)
+            self.extraSelList.append(extra) # must be last
             w.setExtraSelections(self.extraSelList)
             self.flashCount -= 1
             after(removeFlashCallback)
