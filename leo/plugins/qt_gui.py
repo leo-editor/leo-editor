@@ -1134,7 +1134,6 @@ class LeoQtGui(leoGui.LeoGui):
         pc = g.app.pluginsController
         table = (
             'viewrendered3.py',
-            'viewrendered2.py',
             'viewrendered.py',
         )
         for name in table:
