@@ -2181,23 +2181,7 @@ class TokenOrderGenerator:
             for z in ordered_args:
                 if isinstance(z, ast.Starred):
                     yield from self.gen_op('*')
-                    if 1:
-                         yield from self.gen(z.value)
-                         continue ### Skip the old code.
-                    if isinstance(z.value, ast.Name):  # *Name.
-                        yield from self.arg_helper(z.value)
-                    elif isinstance(z.value, ast.List):  # *[...]
-                        yield from self.gen_op('[')
-                        for z2 in z.value.elts:
-                            yield from self.arg_helper(z2)
-                        yield from self.gen_op(']')
-                    elif isinstance(z.value, ast.Tuple):  # pragma: no cover *(...)
-                        yield from self.gen_op('(')
-                        for z2 in z.value.elts:
-                            yield from self.arg_helper(z2)
-                        yield from self.gen_op(')')
-                    else:
-                        raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
+                    yield from self.gen(z.value)
                 elif isinstance(z, ast.keyword):
                     if getattr(z, 'arg', None) is None:
                         yield from self.gen_op('**')
