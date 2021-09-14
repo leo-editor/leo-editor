@@ -2035,7 +2035,7 @@ class LeoFind:
             p.setMarked()
             p.setDirty()
         if self.in_headline:  # pragma: no cover
-            pass
+            p.h = self.work_s  # #2172
         else:
             c.frame.body.onBodyChanged('Change', oldSel=oldSel)
         c.frame.tree.updateIcon(p)  # redraw only the icon.
