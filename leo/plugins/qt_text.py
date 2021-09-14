@@ -66,8 +66,12 @@ def zoom_helper(event, delta):
 # Add item to known "help-for" commands
 hilite_doc = r'''
 Changing The Current Line Highlighting Color
-----------------------------------
-The highlight color for the current line will be changed when the `line-highlight-color` setting is changed.  The color will also be recomputed when the Leo theme is changed, provided that the setting is not present.
+--------------------------------------------
+
+The highlight color for the current line will be changed when the
+`line-highlight-color` setting is changed. The color will also be
+recomputed when the Leo theme is changed, provided that the setting is
+not present.
 
 The setting will always override the color computed for a theme.
 
@@ -833,7 +837,7 @@ if QtWidgets:
                     fg, bg = self.parse_css(sheet, 'QTextEdit')
                     bg_color = QColor(bg) if bg else self.assign_bg(fg)
                     hl_color = self.calc_hl(bg_color)
-
+                    # g.trace('fg', fg, 'bg', bg, 'hl_color', hl_color.name())
                     params['last_hl_color'] = hl_color
                     params['last_style_hash'] = h
             #@-<< Recalculate Color >>
