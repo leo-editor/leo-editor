@@ -1619,6 +1619,19 @@ class TestTOG(BaseTest):
 
     #@+others
     #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features
+    #@+node:ekr.20210321172902.1: *5* test_bug_1851
+    def test_bug_1851(self):
+
+        contents = r'''\
+    def foo(a1):
+        pass
+    '''
+        contents, tokens, tree = self.make_data(contents)
+    #@+node:ekr.20210914161519.1: *5* test_bug_2171
+    def test_bug_2171(self):
+        
+        contents = "'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) )"
+        contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210318213133.1: *5* test_full_grammar
     def test_full_grammar(self):
         # Load py3_test_grammar.py.
@@ -1630,14 +1643,6 @@ class TestTOG(BaseTest):
         # Verify that leoAst can parse the file.
         contents = read_file(path)
         self.make_data(contents)
-    #@+node:ekr.20210321172902.1: *5* test_bug_1851
-    def test_bug_1851(self):
-
-        contents = r'''\
-    def foo(a1):
-        pass
-    '''
-        contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):
 
