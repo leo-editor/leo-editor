@@ -32,7 +32,9 @@ from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-__version__ = 'leoserver.py version 1.0'
+version_tuple = (1, 0, 0)
+v1, v2, v3 = version_tuple
+__version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
 
 # Server defaults
