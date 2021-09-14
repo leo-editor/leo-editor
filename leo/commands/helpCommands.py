@@ -24,8 +24,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.373: *3* help
     @cmd('help')
-    def help(self, event=None):
-        """Prints and introduction to Leo's help system."""
+    def help_command(self, event=None):
+        """Prints an introduction to Leo's help system."""
         #@+<< define rst_s >>
         #@+node:ekr.20150514063305.374: *4* << define rst_s >> (F1)
         #@@language rest
@@ -1159,7 +1159,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.403: *3* pythonHelp
     @cmd('help-for-python')
     def pythonHelp(self, event=None):
-        """Prompt for a arg for Python's help function, and put it to the log pane."""
+        """Prompt for a arg for Python's help function, and put it to the VR pane."""
         c, k = self.c, self.c.k
         c.minibufferWantsFocus()
         k.setLabelBlue('Python help: ')
@@ -1170,18 +1170,22 @@ class HelpCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         s = k.arg.strip()
-        if s:
-            # Capture the output of Python's help command.
-            old = sys.stdout
-            try:
-                sys.stdout = stdout = io.StringIO()
-                help(str(s))
-                s2 = stdout.read()
-            finally:
-                sys.stdout = old
-            # Send it to the vr pane as a <pre> block
-            s2 = '<pre>' + s2 + '</pre>'
-            c.putHelpFor(s2)
+        if not s:
+            return
+        old = sys.stdout
+        try:
+            sys.stdout = io.StringIO()
+            #  If the argument is a string, the string is looked up as a name...
+            # and a help page is printed on the console.
+            help(str(s))
+            s2 = sys.stdout.getvalue()  # #2165
+        finally:
+            sys.stdout = old
+        if not s2:
+            return
+        # Send it to the vr pane as a <pre> block
+        s2 = '<pre>' + s2 + '</pre>'
+        c.putHelpFor(s2)
     #@-others
 #@-others
 #@-leo
