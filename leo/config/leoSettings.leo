@@ -233,7 +233,7 @@
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
-<v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
+<v t="ekr.20210914081428.1"><vh>@@string line-highlight-color = lightgrey</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
