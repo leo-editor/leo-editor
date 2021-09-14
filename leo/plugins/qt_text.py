@@ -10,6 +10,10 @@ from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
+
+QColor = QtGui.QColor
+FullWidthSelection = 0x06000 # works for both Qt5 and Qt6
+
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -58,6 +62,27 @@ def zoom_helper(event, delta):
     colorizer.configure_fonts()
     wrapper.setAllText(wrapper.getAllText())
         # Recolor everything.
+#@+node:tom.20210904233317.1: ** Show Hilite Settings command
+# Add item to known "help-for" commands
+hilite_doc = r'''
+Changing The Current Line Highlighting Color
+----------------------------------
+The highlight color for the current line will be changed when the `line-highlight-color` setting is changed.  The color will also be recomputed when the Leo theme is changed, provided that the setting is not present.
+
+The setting will always override the color computed for a theme.
+
+Settings for Current Line Highlighting
+---------------------------------------
+\@bool highlight-body-line -- if False, do not highlight current line.
+
+\@string line-highlight-color -- override highlight color with css value.
+'''
+
+@g.command('help-for-highlight-current-line')
+def helpForLineHighlight(self, event=None):
+    """Displays Settings used by current line highlighter."""
+    self.c.putHelpFor(hilite_doc)
+
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
     """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
@@ -465,6 +490,8 @@ if QtWidgets:
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
                 self.textChanged.connect(self.onTextChanged)
+            self.cursorPositionChanged.connect(self.highlightCurrentLine)
+            self.textChanged.connect(self.highlightCurrentLine)
             self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
@@ -474,6 +501,12 @@ if QtWidgets:
             self.leo_q_completer = None
             self.leo_options = None
             self.leo_model = None
+
+            self.hiliter_params = {
+                    'lastblock': -2, 'last_style_hash': 0,
+                    'last_color_setting': 'not set', 'last_hl_color': ''
+                    }
+
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
         def __repr__(self):
             return f"(LeoQTextBrowser) {id(self)}"
@@ -669,6 +702,166 @@ if QtWidgets:
         def show_completions(self, aList):
             if hasattr(self, 'leo_qc'):
                 self.leo_qc.show_completions(aList)
+        #@+node:tom.20210827230127.1: *3* lqtb Highlight Current Line
+        #@+node:tom.20210827225119.3: *4* lqtb.parse_css
+        #@@language python
+        @staticmethod
+        def parse_css(css_string, clas=''):
+            """Extract colors from a css stylesheet string. 
+            
+            This is an extremely simple-minded function. It assumes
+            that no quotation marks are being used, and that the
+            first block in braces with the name clas is the controlling
+            css for our widget.
+            
+            Returns a tuple of strings (color, background).
+            """
+            # Get first block with name matching "clas'
+            block = css_string.split(clas, 1)
+            block = block[1].split('{', 1)
+            block = block[1].split('}', 1)
+
+            # Split into styles separated by ";"
+            styles = block[0].split(';')
+
+            # Split into fields separated by ":"
+            fields = [style.split(':') for style in styles if style.strip()]
+
+            # Only get fields whose names are "color" and "background"
+            color = bg = ''
+            for style, val in fields:
+                style = style.strip()
+                if style == 'color':
+                    color = val.strip()
+                elif style == 'background':
+                    bg = val.strip()
+                if color and bg:
+                    break
+            return color, bg
+
+        #@+node:tom.20210827225119.4: *4* lqtb.assign_bg
+        #@@language python
+        @staticmethod
+        def assign_bg(fg):
+            """If fg or bg colors are missing, assign
+            reasonable values.  Can happen with incorrectly
+            constructed themes, or no-theme color schemes.
+            
+            Intended to be called when bg color is missing.
+            
+            RETURNS
+            a QColor object for the background color
+            """
+            if not fg:
+                fg = 'black' # QTextEdit default
+                bg = 'white' # QTextEdit default
+            if fg == 'black':
+                bg = 'white' # QTextEdit default
+            else:
+                fg_color = QColor(fg)
+                h, s, v, a = fg_color.getHsv()
+                if v < 128: # dark foreground
+                    bg = 'white'
+                else:
+                    bg = 'black'
+            return QColor(bg)
+        #@+node:tom.20210827225119.5: *4* lqtb.calc_hl
+        #@@language python
+        @staticmethod
+        def calc_hl(bg_color):
+            """Return the line highlight color.
+            
+            ARGUMENT
+            bg_color -- a QColor object for the background color
+            
+            RETURNS
+            a QColor object for the highlight color
+            """
+            h, s, v, a = bg_color.getHsv()
+
+            if v < 40:
+                v = 60
+                bg_color.setHsv(h, s, v, a)
+            elif v > 240:
+                v = 220
+                bg_color.setHsv(h, s, v, a)
+            elif v < 128:
+                bg_color = bg_color.lighter(130)
+            else:
+                bg_color = bg_color.darker(130)
+
+            return bg_color
+        #@+node:tom.20210827225119.2: *4* lqtb.highlightCurrentLine
+        #@@language python
+        def highlightCurrentLine(self):
+            """Highlight cursor line."""
+            c = self.leo_c
+            params = self.hiliter_params
+            editor = c.frame.body.wrapper.widget
+
+            if not c.config.getBool('highlight-body-line', True):
+                editor.setExtraSelections([])
+                return
+
+            curs = editor.textCursor()
+            blocknum = curs.blockNumber()
+
+            # Some cursor movements don't change the line: ignore them
+        #    if blocknum == params['lastblock'] and blocknum > 0:
+        #        return
+
+            if blocknum == 0:  # invalid position
+                blocknum = 1
+            params['lastblock'] = blocknum
+
+            hl_color = params['last_hl_color']
+
+            #@+<< Recalculate Color >>
+            #@+node:tom.20210909124441.1: *5* << Recalculate Color >>
+            hl_color_setting = c.config.getString('line-highlight-color') or ''
+
+            if params['last_color_setting'] != hl_color_setting:
+                hl_color = QColor(hl_color_setting)
+                params['last_hl_color'] = hl_color
+                params['last_color_setting'] = hl_color_setting
+            else:
+                ssm = c.styleSheetManager
+                sheet = ssm.expand_css_constants(c.active_stylesheet)
+                h = hash(sheet)
+
+                if params['last_style_hash'] != h:
+                    fg, bg = self.parse_css(sheet, 'QTextEdit')
+                    bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                    hl_color = self.calc_hl(bg_color)
+
+                    params['last_hl_color'] = hl_color
+                    params['last_style_hash'] = h
+            #@-<< Recalculate Color >>
+            #@+<< Apply Highlight >>
+            #@+node:tom.20210909124551.1: *5* << Apply Highlight >>
+            # Based on code from
+            # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
+
+            selection = editor.ExtraSelection()
+            selection.format.setBackground(hl_color)
+            selection.format.setProperty(FullWidthSelection, True)
+            selection.cursor = curs
+            selection.cursor.clearSelection()
+
+            editor.setExtraSelections([selection])
+            #@-<< Apply Highlight >>
+        #@+node:tom.20210905130804.1: *4* Add Help Menu Item
+        # Add entry to Help menu
+        new_entry = ('@item', 'help-for-&highlight-current-line', '')
+
+        for item in g.app.config.menusList:
+            if 'Help' in item[0]:
+                for entry in item[1]:
+                    if entry[0].lower() == '@menu &open help topics':
+                        menu_items = entry[1]
+                        menu_items.append(new_entry)
+                        menu_items.sort()
+                        break
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             """Get the horizontal scrollbar position."""
@@ -1382,6 +1575,8 @@ class QTextEditWrapper(QTextMixin):
         if g.app.unitTesting:
             return
         w = self.widget  # A QTextEdit.
+        # Remember highlighted line:
+        last_selections = w.extraSelections()
 
         def after(func):
             QtCore.QTimer.singleShot(delay, func)
@@ -1397,13 +1592,14 @@ class QTextEditWrapper(QTextMixin):
                 extra.format.setBackground(QtGui.QColor(self.flashBg))
             if self.flashFg:
                 extra.format.setForeground(QtGui.QColor(self.flashFg))
-            self.extraSelList = [extra]  # keep the reference.
+            self.extraSelList = last_selections[:]
+            self.extraSelList.append(extra) # must be last
             w.setExtraSelections(self.extraSelList)
             self.flashCount -= 1
             after(removeFlashCallback)
 
         def removeFlashCallback(self=self, w=w):
-            w.setExtraSelections([])
+            w.setExtraSelections(last_selections)
             if self.flashCount > 0:
                 after(addFlashCallback)
             else:
@@ -1414,6 +1610,7 @@ class QTextEditWrapper(QTextMixin):
         self.flashBg = None if bg.lower() == 'same' else bg
         self.flashFg = None if fg.lower() == 'same' else fg
         addFlashCallback()
+
     #@+node:ekr.20110605121601.18081: *4* qtew.getAllText
     def getAllText(self):
         """QTextEditWrapper."""
