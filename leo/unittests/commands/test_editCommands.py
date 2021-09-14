@@ -4023,6 +4023,12 @@ class TestEditCommands(LeoUnitTest):
         vr = c.helpCommands.helpForMinibuffer()
         if not vr:
             self.skipTest('no vr plugin')
+    #@+node:ekr.20210914154830.1: *4* TestEditCommands.test_helpForPython
+    def test_helpForPthon(self):
+        c, k = self.c, self.c.k
+        k.arg = 'os'
+        s = c.helpCommands.pythonHelp1(event=None)
+        self.assertTrue('Help on module os' in s)
     #@+node:ekr.20210905064816.19: *4* TestEditCommands.test_insert_node_before_node_can_be_undone_and_redone
     def test_insert_node_before_node_can_be_undone_and_redone(self):
         c = self.c
