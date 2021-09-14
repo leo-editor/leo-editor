@@ -2181,6 +2181,9 @@ class TokenOrderGenerator:
             for z in ordered_args:
                 if isinstance(z, ast.Starred):
                     yield from self.gen_op('*')
+                    if 1:
+                         yield from self.gen(z.value)
+                         continue ### Skip the old code.
                     if isinstance(z.value, ast.Name):  # *Name.
                         yield from self.arg_helper(z.value)
                     elif isinstance(z.value, ast.List):  # *[...]
