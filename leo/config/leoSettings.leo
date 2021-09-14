@@ -11667,7 +11667,8 @@ Relative paths are resolved starting from the location of the file being checked
 <t tx="ekr.20210823173736.1">Path to external editor.</t>
 <t tx="ekr.20210901110017.1">True: search for definitions starting from the last node of the ouline.</t>
 <t tx="ekr.20210914081311.1"></t>
-<t tx="ekr.20210914081428.1"></t>
+<t tx="ekr.20210914081428.1">overrides line highlight color with css value.
+Valid values are standard css color names like lightgrey, and css rgb values like #1234ad.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
