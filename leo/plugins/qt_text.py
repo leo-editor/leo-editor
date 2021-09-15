@@ -68,18 +68,16 @@ hilite_doc = r'''
 Changing The Current Line Highlighting Color
 --------------------------------------------
 
-The highlight color for the current line will be changed when the
-`line-highlight-color` setting is changed. The color will also be
-recomputed when the Leo theme is changed, provided that the setting is
-not present.
+The highlight color will be computed based on the Leo theme in effect, unless the `line-highlight-color` setting is set to a non-blank string. 
 
-The setting will always override the color computed for a theme.
+The setting will always override the color computation.  If the setting is changed, after the settings are reloaded the new color will take effect the next time the cursor is moved.
 
 Settings for Current Line Highlighting
 ---------------------------------------
-\@bool highlight-body-line -- if False, do not highlight current line.
+\@bool highlight-body-line -- if True, highlight current line.
 
 \@string line-highlight-color -- override highlight color with css value.
+Valid values are standard css color names like `lightgrey`, and css rgb values like `#1234ad`.
 '''
 
 @g.command('help-for-highlight-current-line')
@@ -506,11 +504,13 @@ if QtWidgets:
             self.leo_options = None
             self.leo_model = None
 
+            hl_color_setting = c.config.getString('line-highlight-color') or ''
+            hl_color = QColor(hl_color_setting)
             self.hiliter_params = {
                     'lastblock': -2, 'last_style_hash': 0,
-                    'last_color_setting': 'not set', 'last_hl_color': ''
+                    'last_color_setting': hl_color_setting,
+                    'last_hl_color': hl_color
                     }
-
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
         def __repr__(self):
             return f"(LeoQTextBrowser) {id(self)}"
@@ -822,18 +822,28 @@ if QtWidgets:
 
             #@+<< Recalculate Color >>
             #@+node:tom.20210909124441.1: *5* << Recalculate Color >>
-            hl_color_setting = c.config.getString('line-highlight-color') or ''
+            config_setting = c.config.getString('line-highlight-color') \
+                or ''
+            config_setting = (config_setting.replace("'", '')
+                              .replace('"', '').lower()
+                              .replace('none', ''))
 
-            if params['last_color_setting'] != hl_color_setting:
-                hl_color = QColor(hl_color_setting)
-                params['last_hl_color'] = hl_color
-                params['last_color_setting'] = hl_color_setting
+            last_color_setting = params['last_color_setting']
+            config_setting_changed = config_setting != last_color_setting
+
+            if config_setting:
+                if config_setting_changed:
+                    hl_color = QColor(config_setting)
+                    params['last_hl_color'] = hl_color
+                    params['last_color_setting'] = config_setting
+                else:
+                    hl_color = params['last_hl_color']
             else:
                 ssm = c.styleSheetManager
                 sheet = ssm.expand_css_constants(c.active_stylesheet)
                 h = hash(sheet)
-
-                if params['last_style_hash'] != h:
+                params['last_color_setting'] = ''
+                if params['last_style_hash'] != h or config_setting_changed:
                     fg, bg = self.parse_css(sheet, 'QTextEdit')
                     bg_color = QColor(bg) if bg else self.assign_bg(fg)
                     hl_color = self.calc_hl(bg_color)
@@ -1298,7 +1308,7 @@ class QScintillaWrapper(QTextMixin):
         if 0:  # This causes a lot of problems: Better to use Scintilla matching.
             # This causes problems during unit tests:
             # The selection point isn't restored in time.
-            if g.app.unitTesting:
+            if g.unitTesting:
                 return
             #@+others
             #@+node:ekr.20140902084950.18635: *5* after
@@ -1576,7 +1586,7 @@ class QTextEditWrapper(QTextMixin):
             fg = fg[:-1]
         # This might causes problems during unit tests.
         # The selection point isn't restored in time.
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         w = self.widget  # A QTextEdit.
         # Remember highlighted line:
