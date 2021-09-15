@@ -1637,6 +1637,15 @@ class LeoServer:
         # Félix: Caller can get focus using other calls.
         return self._make_response()
     #@+node:felix.20210621233316.68: *4* server:server commands
+    #@+node:felix.20210914230846.1: *5* server.get_version
+    def get_version(self, param):
+        """
+        Return this server program name and version as a string representation
+        along with the three version members as numbers 'major', 'minor' and 'patch'.
+        """
+        # uses the __version__ global constant and the v1, v2, v3 global version numbers
+        result = {"version": __version__ , "major": v1, "minor": v2, "patch": v3}
+        return self._make_minimal_response(result)
     #@+node:felix.20210818012827.1: *5* server.do_nothing
     def do_nothing(self, param):
         """Simply return states from _make_response"""
@@ -2438,7 +2447,6 @@ class LeoServer:
         bad.extend(bad_list)
         result = list(sorted(bad))
         return result
-
     #@+node:felix.20210621233316.74: *6* server._good_commands
     def _good_commands(self):
         """Defined commands that should be available in a connected client"""
@@ -2828,8 +2836,7 @@ class LeoServer:
             'create-def-list',  # ?
         ]
         return good_list
-
-    #@+node:felix.20210621233316.75: *5* server.get_all_server_commands
+    #@+node:felix.20210621233316.75: *5* server.get_all_server_commands & helpers
     def get_all_server_commands(self, param):
         """
         Public server method:
@@ -2842,7 +2849,7 @@ class LeoServer:
             g.printObj(names, tag=tag)
             print('', flush=True)
         return self._make_response({"server-commands": names})
-
+    #@+node:felix.20210914231602.1: *6* _get_all_server_commands
     def _get_all_server_commands(self):
         """
         Private server method:
@@ -3494,9 +3501,12 @@ def main():  # pragma: no cover (tested in client)
         cancelMessage=None,  # Not used.
     ):
         """
-        Monkey-patched version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
+        Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
+        offering *only* Yes/No buttons.
 
-        Raise a dialog and return either 'yes' or 'no'
+        This will fallback to a tk implementation if the qt library is unavailable.
+
+        This raises a dialog and return either 'yes' or 'no'.
         """
         #@+others  # define all helper functions.
         #@+node:ekr.20210801175921.1: *4* function: tk_runAskYesNoCancelDialog & helpers
