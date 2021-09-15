@@ -1703,12 +1703,10 @@
 <v t="ekr.20210405100137.563"><vh>#1721: Remove most calls to c.setBody/HeadString</vh></v>
 <v t="ekr.20210405100137.1058"><vh>#1806: Rewrite leoFind.py, with unit tests</vh></v>
 <v t="ekr.20210710040014.2"><vh>#1944: Annotations &amp; stub files</vh></v>
+<v t="ekr.20210823181157.1"><vh>#1973 and #2005: Support Qt6</vh></v>
 <v t="ekr.20210717092635.918"><vh>#2005: Add more qt imports</vh></v>
 <v t="ekr.20210718082823.2"><vh>#2081: Use sys.excepthook, not @g.callback</vh></v>
 <v t="ekr.20210802163908.31"><vh>#2103: stubs for leoGlobals.py</vh></v>
-<v t="ekr.20210710040931.1"><vh>Add leo/scripts/wax_off.py</vh></v>
-<v t="ekr.20210823181157.1"><vh>Leo now supports Qt6</vh></v>
-<v t="ekr.20210405100137.887"><vh>PR #1759: Further improvements to undo code</vh></v>
 </v>
 <v t="ekr.20210405104753.1"><vh>6.4: Commands</vh>
 <v t="ekr.20210606081234.1"></v>
@@ -1738,6 +1736,7 @@
 <v t="ekr.20210405100137.1061"><vh>#1808: Pylint checks last file by default</vh></v>
 <v t="ekr.20210405100137.1384"><vh>#1840: one-shot headline-only</vh></v>
 <v t="ekr.20210710163244.2"><vh>#2023: make find-all links clickable</vh></v>
+<v t="ekr.20210710040931.1"><vh>Add leo/scripts/wax_off.py</vh></v>
 </v>
 <v t="ekr.20210405104825.1"><vh>6.4: Settings &amp; command-line options</vh></v>
 </v>
@@ -2373,7 +2372,6 @@
 </v>
 <v t="ekr.20210405104357.1"></v>
 <v t="ekr.20210405104422.1"></v>
-<v t="ekr.20210824081815.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30862,13 +30860,12 @@ https://github.com/leo-editor/leo-editor/issues/2049
 <t tx="ekr.20210405100137.456">https://github.com/leo-editor/leo-editor/issues/1240</t>
 <t tx="ekr.20210405100137.468">https://github.com/leo-editor/leo-editor/issues/1413
 
-PR: https://github.com/leo-editor/leo-editor/issues/1759</t>
+PR: https://github.com/leo-editor/leo-editor/issues/1759
+</t>
 <t tx="ekr.20210405100137.563">https://github.com/leo-editor/leo-editor/issues/1721</t>
 <t tx="ekr.20210405100137.787">https://github.com/leo-editor/leo-editor/issues/1754
 
 w.see works for the first time ever!</t>
-<t tx="ekr.20210405100137.887">https://github.com/leo-editor/leo-editor/issues/1759
-</t>
 <t tx="ekr.20210405100137.912">https://github.com/leo-editor/leo-editor/issues/1768</t>
 <t tx="ekr.20210405100137.915">https://github.com/leo-editor/leo-editor/issues/1772
 
@@ -30898,8 +30895,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 **The highlights of Leo 6.4**
 
 - Add support for leoInteg: "Leo in vs-code".
-- Add leoserver.py, stand-alone server for Leo.
-- Add support for .leojs, a json outline format.
+  - Add leoserver.py, stand-alone server for Leo.
+  - Add support for .leojs, a json outline format.
 - Add support for Qt6.
 - The wax_off.py script converts function annotations to stub (.pyi) files.
 - Remove support for @root. Create a conversion script.
@@ -30907,7 +30904,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
 - Add execute-general-script command and c.general_script_helper.
 - Several significant code-level changes.
-- The usual assortment of bug fixes.
+- Fixed 160+ issues and merged almost 400 Pull Requests.
 
 **Links**
 
@@ -30928,7 +30925,7 @@ https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.4+label%3Abug+</
 <t tx="ekr.20210405104619.1">For a list of all changes to codebase see:
 https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.4+label%3Acode+
 
-Only the highlights are shown in this node's children.</t>
+Only the highlights are shown below.</t>
 <t tx="ekr.20210405104753.1">Add commands:
 - convert-at-root: #1832.
 - copy-gnx: #1841.
@@ -30950,7 +30947,11 @@ https://github.com/leo-editor/leo-editor/issues/1831
 https://github.com/leo-editor/leo-editor/issues/2049
 @data mypy-arguments
 @int mypy-link-limit
-@string mypy-config-file</t>
+@string mypy-config-file
+
+Add settings for highlighting the selected line:
+@bool highlight-body-line = False
+@string line-highlight-color = None</t>
 <t tx="ekr.20210405110053.1"></t>
 <t tx="ekr.20210405110145.1"></t>
 <t tx="ekr.20210528082736.11">https://github.com/leo-editor/leo-editor/issues/1955</t>
