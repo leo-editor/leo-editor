@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.43
+About Viewrendered3 V3.44
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -265,7 +265,7 @@ then the julia processor will be invoked with the command line::
     <path-to-julia> -q <progfile>
 
 Any number of parameters may be included on one @param line, and
-multiple @param directives are allowed.
+multiple @param directives are allowed.  Parameters can include redirection symbols (e.g., "<", ">").
 
 Only @param directives that occur inside a code block are recognized.  Thus the following @param directive is not recognized because it is
 outside a code block::
@@ -294,11 +294,13 @@ rarely a reason to invoke any of them, except two:
     1. ``vr3-toggle``, which shows or hides the VR3 pane. 
     This is best bound to a hot key (see `Hot Key`_).
 
-    2.``vr3-open-markup-in-editor`` exports the generated markup to
-    temporary file and opens it in a text editor. The editor is one
-    specified by the setting ``@string vr3-ext-editor``, by the
-    environmental variable ``EDITOR`` or ``LEO-EDITOR``, or is the default
+    2.``vr3-open-markup-in-editor`` exports the generated markup
+    to temporary file and opens it in a text editor. The editor
+    is one specified by the setting ``@string vr3-ext-editor``,
+    the setting ``@string external-editor``, by the environmental
+    variable ``EDITOR`` or ``LEO-EDITOR``, or is the default 
     editor chosen by Leo.
+
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
 Structured Text
@@ -681,7 +683,6 @@ import shutil
 import string
 import subprocess
 import sys
-import textwrap
 import webbrowser
 from urllib.request import urlopen
 
@@ -2312,7 +2313,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         template = image_template % (fname)
         # Only works in Python 3.x.
-        template = textwrap.dedent(template).strip()
+        template = g.adjustTripleString(template, pc.c.tab_width).strip()
             # Sensitive to leading blank lines.
 
         w = pc.ensure_web_widget()
@@ -2393,10 +2394,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
+        c = self.c
         # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
-        template = textwrap.dedent(template).strip()
+        template = g.adjustTripleString(template, c.tab_width).strip()
         return template
     #@+node:TomP.20191215195433.65: *4* vr3.update_md & helpers
     def update_md(self, node_list, keywords):
@@ -2909,7 +2911,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # We are not checking the return code here, so:
         # pylint: disable=W1510 # Using subprocess.run without explicitly setting `check`
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, encoding='utf-8')
         return result.stdout, result.stderr
     #@-others
     #@+node:TomP.20200112103934.1: *5* process_rst_node
@@ -3284,7 +3286,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = textwrap.dedent(s).strip()  # Sensitive to leading blank lines.
+            s = g.adjustTripleString(s, pc.c.tab_width).strip()
+                # Sensitive to leading blank lines.
             bytes = g.toEncodedString(s)
             pc.show()
             w.load(QtCore.QByteArray(bytes))

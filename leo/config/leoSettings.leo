@@ -2319,7 +2319,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="tom.20210914212711.1"><vh>@@string line-highlight-color = lightgrey</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -12301,8 +12300,6 @@ AltControlShift hoist
 
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
-<t tx="tom.20210914212711.1">Overrides line highlight color with css value.
-Valid values are standard css color names like lightgrey, and css rgb values like #1234ad.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
