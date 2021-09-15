@@ -100,6 +100,7 @@ SliderAction = QtWidgets.QAbstractSlider
 StandardButton = QtWidgets.QDialogButtonBox
 StandardPixmap = QtWidgets.QStyle
 TextInteractionFlag = QtCore.Qt
+TextOption = QtGui.QTextOption
 ToolBarArea = QtCore.Qt
 Type = QtCore.QEvent
 UnderlineStyle = QtGui.QTextCharFormat

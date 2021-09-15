@@ -232,6 +232,8 @@
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
+<v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
+<v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -11663,6 +11665,8 @@ Relative paths are resolved starting from the location of the file being checked
 <t tx="ekr.20210823173032.1">Valid values:  '', 'browser_view', 'nav-view'</t>
 <t tx="ekr.20210823173736.1">Path to external editor.</t>
 <t tx="ekr.20210901110017.1">True: search for definitions starting from the last node of the ouline.</t>
+<t tx="ekr.20210914081311.1"></t>
+<t tx="ekr.20210914081428.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
