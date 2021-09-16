@@ -664,7 +664,6 @@ class LeoQtGui(leoGui.LeoGui):
             # Load viewrendered (and call vr.onCreate) *only* if not already loaded.
             if (
                 not pc.isLoaded('viewrendered.py')
-                and not pc.isLoaded('viewrendered2.py')
                 and not pc.isLoaded('viewrendered3.py')
             ):
                 vr = pc.loadOnePlugin('viewrendered.py')
