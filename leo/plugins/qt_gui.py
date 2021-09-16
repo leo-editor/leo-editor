@@ -1384,6 +1384,7 @@ class LeoQtGui(leoGui.LeoGui):
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
     if isQt5:
+        # pylint: disable=no-name-in-module
         # To do: https://doc.qt.io/qt-5/qsignalspy.html
         from PyQt5.QtTest import QSignalSpy
         assert QSignalSpy
