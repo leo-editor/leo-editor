@@ -11,8 +11,9 @@ By Adrian Calvin.
 import yaml
 from leo.core import leoGlobals as g
 try:
-    from PyQt5.QtGui import QBrush
-    from PyQt5.QtGui import QColor
+    from leo.core.leoQt import QtGui
+    QBrush = QtGui.QBrush
+    QColor = QtGui.QColor
 except Exception:
     QBrush = QColor = None
 #

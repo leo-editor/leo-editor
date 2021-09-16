@@ -31,8 +31,7 @@ class PrintingController:
     def reload_settings(self):
         c = self.c
         self.font_size = c.config.getString('printing-font-size') or '12'
-        self.font_family = c.config.getString(
-            'printing-font-family') or 'DejaVu Sans Mono'
+        self.font_family = c.config.getString('printing-font-family') or 'DejaVu Sans Mono'
         self.stylesheet = self.construct_stylesheet()
 
     reloadSettings = reload_settings
@@ -275,6 +274,7 @@ class PrintingController:
         if not printsupport:
             g.trace('Qt.printsupport not found.')
             return
+        # pylint: disable=no-member
         dialog = printsupport.QPrintDialog()
         result = dialog.exec_()
         if result == DialogCode.Accepted:
@@ -282,9 +282,10 @@ class PrintingController:
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
     def preview_doc(self, doc):
         """Preview the document."""
+        # pylint: disable=no-member
         dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)
-        dialog.paintRequested.connect(doc.print_)
+        dialog.paintRequested.connect(doc.print)
         dialog.exec_()
     #@-others
 #@-others
