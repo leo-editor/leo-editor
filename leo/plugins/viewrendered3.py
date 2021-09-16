@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.44
+About Viewrendered3 V3.45
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -683,6 +683,7 @@ import shutil
 import string
 import subprocess
 import sys
+import textwrap
 import webbrowser
 from urllib.request import urlopen
 
@@ -698,8 +699,8 @@ from leo.core.leoApp import LoadManager as LM
 #@+<< Qt Imports >>
 #@+node:tom.20210517102737.1: *3* << Qt Imports >>
 try:
-    import leo.plugins.qt_text as qt_text
-    import leo.plugins.free_layout as free_layout
+    from leo.plugins import qt_text
+    from leo.plugins import free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
@@ -768,7 +769,7 @@ except ImportError:
 try:
     import matplotlib # Make *sure* this is imported.
     import matplotlib.pyplot as plt
-    import matplotlib.animation as animation
+    from matplotlib import animation
 except ImportError:
     matplotlib = None
     print('VR3: *** No matplotlib')
@@ -1325,16 +1326,27 @@ def shrink_view(event):
 #@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
 @g.command('vr3-open-markup-in-editor')
 def markup_to_editor(event):
+    """Send VR3's markup to an external editor.
+    
+    This is to make it easier to understand the markup, in case it
+    isn't what was expected.  There is currently no way to 
+    write the text back from the editor into VR3.
+    """
     vr3 = getVr3(event)
-    if vr3.external_editor:
-        editor = vr3.external_editor
-    else:
-        editor = g.guessExternalEditor(event.get('c'))
+    editor_from_settings = vr3.external_editor
+    if editor_from_settings.lower() == 'none': # weird but has happened
+        editor_from_settings = ''
+    editor = editor_from_settings or g.guessExternalEditor(event.get('c'))
+
+    if not editor:
+        g.es('No external editor defined', color = 'red')
+        return
 
     with open('vr3_last_markup.txt', 'w', encoding=ENCODING) as f:
         f.write(vr3.last_markup)
 
     cmd = [editor, 'vr3_last_markup.txt']
+    # pylint: disable = consider-using-with
     subprocess.Popen(cmd)
 
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
@@ -2310,7 +2322,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         template = image_template % (fname)
         # Only works in Python 3.x.
-        template = g.adjustTripleString(template, pc.c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
             # Sensitive to leading blank lines.
 
         w = pc.ensure_web_widget()
@@ -2355,7 +2367,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if not nbformat:
                 return 'can not import nbformat to render url: %r' % url
             try:
-                s = urlopen(url).read().decode()
+                with urlopen(url) as u:
+                    s = u.read().decode()
             except Exception:
                 return 'url not found: %s' % url
         try:
@@ -2391,11 +2404,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
-        c = self.c
         # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
-        template = g.adjustTripleString(template, c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
         return template
     #@+node:TomP.20191215195433.65: *4* vr3.update_md & helpers
     def update_md(self, node_list, keywords):
@@ -3283,7 +3295,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = g.adjustTripleString(s, pc.c.tab_width).strip()
+            s = textwrap.dedent(s).strip()
                 # Sensitive to leading blank lines.
             bytes = g.toEncodedString(s)
             pc.show()
