@@ -183,6 +183,16 @@
 </v>
 <v t="maphew.20180224170853.1"></v>
 <v t="ekr.20210815103531.1"></v>
+<v t="ekr.20210916130337.1"><vh>git diff HEAD </vh>
+<v t="ekr.20210916130337.2"><vh>leo/dist/leoDist.leo</vh>
+<v t="ekr.20210916130337.7"><vh>Changed</vh>
+<v t="ekr.20210916130337.8"><vh>Create pypi distro</vh>
+<v t="ekr.20210916130337.9"><vh>Old:Create pypi distro</vh></v>
+<v t="ekr.20210815103531.1"></v>
+</v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2054,6 +2064,122 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">From leo-editor folder:
 
+rom leo-editor directory
+
+**build**
+
+python -m build
+
+**upload**
+
+python -m twine upload --repository testpypi dist/*
+
+--or--
+
+python -m twine upload -r pypi dist/*
+
+username:  __token__
+password:  (copy it)
+
+**install**
+
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3</t>
+<t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
+   This branch holds all work for 6.4, including beta and rc releases.
+
+2. Fix last-minute bugs in a **bug-fix branch**.
+   Then merge into devel and 6.4.
+   
+3. Create pypi version by running `python -m build` in the leo-editor folder.
+   
+4. Update leoVersion.py in devel after merging the release branch into devel.</t>
+<t tx="ekr.20210815111044.1"></t>
+<t tx="ekr.20210916130337.1">@ignore
+@nosearch
+HEAD=6516148fc</t>
+<t tx="ekr.20210916130337.2">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -2054,22 +2054,22 @@
+ &lt;/t&gt;
+ &lt;t tx="ekr.20210815103531.1"&gt;From leo-editor folder:
+ 
+-1. Build leo-editor/dist
+-
+-    python -m build
+-
+-2. Upload to testpypi:
+-https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives
+-
+-    python -m twine upload -r testpypi dist/*
+-    
+-3. Upload to pypi:
+-
+-    python -m twine upload -r pypi dist/*
+-
+-username: __token__
+-password: (value of token)  Choose paste from console window.
+-&lt;/t&gt;
++rom leo-editor directory
++
++**build**
++
++python -m build
++
++**upload**
++
++python -m twine upload --repository testpypi dist/*
++
++username:  __token__
++password:  (copy it)
++
++**install**
++
++python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3&lt;/t&gt;
+ &lt;t tx="ekr.20210815105140.1"&gt;1. Create a **release branch**, called 6.4.  Base this branch on devel.
+    This branch holds all work for 6.4, including beta and rc releases.
+@language python
+</t>
+<t tx="ekr.20210916130337.7"></t>
+<t tx="ekr.20210916130337.8">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,17 +1,18 @@
+ From leo-editor folder:
+ 
+-1. Build leo-editor/dist
++rom leo-editor directory
+ 
+-    python -m build
++**build**
+ 
+-2. Upload to testpypi:
+-https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives
++python -m build
+ 
+-    python -m twine upload -r testpypi dist/*
+-    
+-3. Upload to pypi:
++**upload**
+ 
+-    python -m twine upload -r pypi dist/*
++python -m twine upload --repository testpypi dist/*
+ 
+-username: __token__
+-password: (value of token)  Choose paste from console window.
++username:  __token__
++password:  (copy it)
++
++**install**
++
++python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3@language python
+</t>
+<t tx="ekr.20210916130337.9">From leo-editor folder:
+
 1. Build leo-editor/dist
 
     python -m build
@@ -2070,16 +2196,6 @@ https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distrib
 username: __token__
 password: (value of token)  Choose paste from console window.
 </t>
-<t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
-   This branch holds all work for 6.4, including beta and rc releases.
-
-2. Fix last-minute bugs in a **bug-fix branch**.
-   Then merge into devel and 6.4.
-   
-3. Create pypi version by running `python -m build` in the leo-editor folder.
-   
-4. Update leoVersion.py in devel after merging the release branch into devel.</t>
-<t tx="ekr.20210815111044.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
