@@ -30876,28 +30876,27 @@ Added gdc.diff_pull_request.</t>
 <t tx="ekr.20210405100137.955">https://github.com/leo-editor/leo-editor/issues/1798
 
 Note: Leo can not recognize @path directives in the body text of @file nodes!</t>
-<t tx="ekr.20210405104357.1">- Add support for leoInteg: "Leo in vs-code".
+<t tx="ekr.20210405104357.1">- Support for leoInteg: "Leo in vs-code".
 - Add leoserver.py, stand-alone server for Leo.
-- Add support for .leojs, a json outline format.
-- Add support for Qt6.
+- Support for .leojs, a json outline format.
+- Support for Qt6.
 - The wax_off.py script converts function annotations to stub (.pyi) files.
 - Remove support for @root. Create a conversion script.
 - Simplify and generalize rst3 command.
 - Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
 - Add execute-general-script command and c.general_script_helper.
-- Fix all known bugs.
 </t>
-<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 b2 is now available on
+<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 b3 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.4**
 
-- Add support for leoInteg: "Leo in vs-code".
+- Support for leoInteg: "Leo in vs-code".
   - Add leoserver.py, stand-alone server for Leo.
   - Add support for .leojs, a json outline format.
-- Add support for Qt6.
+- Support for Qt6.
 - The wax_off.py script converts function annotations to stub (.pyi) files.
 - Remove support for @root. Create a conversion script.
 - Simplify and generalize rst3 command.
