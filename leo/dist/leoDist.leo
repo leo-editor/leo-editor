@@ -1485,10 +1485,13 @@ LeoDist.leo:
 - Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
+  
+LeoSettings.leo:
+- Run all "check" buttons in leoSettings.leo.
 
 LeoPyRef.leo:
-- Run `script: check-files`.
-- run write-LeoPyRef button in LeoPy.leo.</t>
+- run write-LeoPyRef button in LeoPy.leo.
+- Run `script: check-files`.</t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
