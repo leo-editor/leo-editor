@@ -171,8 +171,6 @@
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in the release branch</vh></v>
-<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
-<v t="ekr.20210815111044.1"><vh>----</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
@@ -180,6 +178,7 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
+<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 </v>
 <v t="maphew.20180224170853.1"></v>
 <v t="ekr.20210815103531.1"></v>
@@ -2088,7 +2087,6 @@ python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6
 3. Create pypi version by running `python -m build` in the leo-editor folder.
    
 4. Update leoVersion.py in devel after merging the release branch into devel.</t>
-<t tx="ekr.20210815111044.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
