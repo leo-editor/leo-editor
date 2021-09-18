@@ -144,7 +144,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def drawVisible(self, p):
         """
         Add only the visible nodes to the outline.
-        
+
         Not used, as this causes scrolling issues.
         """
         t1 = time.process_time()
@@ -314,7 +314,7 @@ class LeoQtTree(leoFrame.LeoTree):
         :param commander c: commander containing node
         :param position p: position of node
         :param QWidgetItem item: tree node widget item
-        
+
         returns composite icon for this node
         """
         dd = self.declutter_data
@@ -377,7 +377,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if cmd == 'ICON':
                 def modifier(item, param):
                     # Does not fit well this function. And we cannot
-                    # wrap list 'new_icons' in a saved argument as 
+                    # wrap list 'new_icons' in a saved argument as
                     # the list is recreated before each call.
                     new_icons.append(param)
             elif cmd == 'BG':
@@ -1027,9 +1027,9 @@ class LeoQtTree(leoFrame.LeoTree):
     def connectEditorWidget(self, e, item):
         """
         Connect QLineEdit e to QTreeItem item.
-        
+
         Also callback for when the editor ends.
-        
+
         New in Leo 6.4: The callback handles all updates w/o calling onHeadChanged.
         """
         c, p, u = self.c, self.c.p, self.c.undoer

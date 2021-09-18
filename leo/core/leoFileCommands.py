@@ -99,7 +99,7 @@ class FastRead:
     def readFileFromClipboard(self, s):
         """
         Recreate a file from a string s, and return its hidden vnode.
-        
+
         Unlike readFile above, this does not affect splitter sizes.
         """
         v, g_element = self.readWithElementTree(path=None, s=s)
@@ -205,7 +205,7 @@ class FastRead:
             byte_keys = [i for i in ob if type(i) is bytes]
             for bk in byte_keys:
                 v = ob[bk]
-                del(ob[bk])
+                del ob[bk]
                 ob[str(bk, 'utf-8')] = v
             for k in ob:
                 if type(ob[k]) is bytes:
@@ -747,7 +747,7 @@ class FileCommands:
     def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
         """
         Open a Leo file.
-        
+
         readAtFileNodesFlag: False when reading settings files.
         silent:              True when creating hidden commanders.
         """
@@ -858,12 +858,12 @@ class FileCommands:
     def retrieveVnodesFromDb(self, conn):
         """
         Recreates tree from the data contained in table vnodes.
-        
+
         This method follows behavior of readSaxFile.
         """
 
         c, fc = self.c, self
-        sql = '''select gnx, head, 
+        sql = '''select gnx, head,
              body,
              children,
              parents,
@@ -933,7 +933,7 @@ class FileCommands:
         try:
             d = dict(
                 conn.execute(
-                    '''select * from extra_infos 
+                    '''select * from extra_infos
                     where name in (?, ?, ?, ?, ?, ?, ?)''',
                     keys,
                 ).fetchall(),

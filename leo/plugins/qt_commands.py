@@ -122,7 +122,7 @@ def showColorWheel(self, event=None):
         picker.setCurrentColor(color)
     except(ValueError, IndexError) as e:
         g.trace('error caught', e)
-        
+
     result = picker.exec_()
     if not result:
         g.es("No color selected")

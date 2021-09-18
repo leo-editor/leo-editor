@@ -391,7 +391,7 @@ def deleteComments(self, event=None):
 def editHeadline(self, event=None):
     """
     Begin editing the headline of the selected node.
-    
+
     This is just a wrapper around tree.editLabel.
     """
     c = self
@@ -423,7 +423,7 @@ def extract(self, event=None):
        JavaScript, CoffeeScript or Clojure languages) the
        class/function/method name becomes the child's headline and all
        selected lines become the child's body text.
-       
+
        You may add additional regex patterns for definition lines using
        @data extract-patterns nodes. Each line of the body text should a
        valid regex pattern. Lines starting with # are comment lines. Use \#
@@ -707,7 +707,7 @@ def indentBody(self, event=None):
     The indent-region command indents each line of the selected body text.
     Unlike the always-indent-region command, this command inserts a tab
     (soft or hard) when there is no selected text.
-    
+
     The @tabwidth directive in effect determines amount of indentation.
     """
     c, event_w, w = self, event and event.w, self.frame.body.wrapper
@@ -757,7 +757,7 @@ def justify_toggle_auto(self, event=None):
 def line_to_headline(self, event=None):
     """
     Create child node from the selected line.
-    
+
     Cut the selected line and make it the new node's headline
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
@@ -1026,7 +1026,7 @@ def startsParagraph(s):
         # This could cause problems in some situations.
         val = (
             (g.match(s, 1, ')') or g.match(s, 1, '.')) and
-            (len(s) < 2 or s[2] in (' \t\n')))
+            (len(s) < 2 or s[2] in ' \t\n'))
     else:
         val = s.startswith('@') or s.startswith('-')
     return val

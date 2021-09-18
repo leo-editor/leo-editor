@@ -269,7 +269,7 @@ class RstCommands:
     def http_addNodeMarker(self, p):
         """
         Add a node marker for the mod_http plugin (HtmlParserClass class).
-        
+
         The first three elements are a stack of tags, the rest is html code::
 
             [
@@ -517,7 +517,7 @@ class RstCommands:
         """
         at.writeAtAutoContents calls this method to write an @auto tree
         containing imported rST code.
-        
+
         at.writeAtAutoContents will close the output file.
         """
         self.result_list = []
@@ -581,7 +581,7 @@ class RstCommands:
     def writeNodeToString(self, p):
         """
         rst.writeNodeToString: A utility for scripts. Not used in Leo.
-            
+
         Write p's tree to a string as if it were an @rst node.
         Return the string.
         """

@@ -340,7 +340,7 @@ class LeoBody:
             if i == len(values):
                 i = 0
             w2 = values[i]
-            assert(w != w2)
+            assert w != w2
             self.selectEditor(w2)
             c.frame.body.wrapper = w2
     #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
@@ -622,7 +622,7 @@ class LeoBody:
     def onBodyChanged(self, undoType, oldSel=None):
         """
         Update Leo after the body has been changed.
-        
+
         This method is deprecated. New Leo commands and scripts should
         call u.before/afterChangeBody instead.
         """
@@ -1937,7 +1937,7 @@ class NullTree(LeoTree):
     def __init__(self, frame):
         """Ctor for NullTree class."""
         super().__init__(frame)
-        assert(self.frame)
+        assert self.frame
         self.c = frame.c
         self.editWidgetsDict = {}
             # Keys are tnodes, values are StringTextWidgets.
@@ -2184,9 +2184,9 @@ class StringTextWrapper:
     def toPythonIndex(self, index):
         """
         StringTextWrapper.toPythonIndex.
-        
+
         Convert indices of the form 'end' or 'n1.n2' to integer indices into self.s.
-        
+
         Unit tests *do* use non-integer indices, so removing this method would be tricky.
         """
         return g.toPythonIndex(self.s, index)

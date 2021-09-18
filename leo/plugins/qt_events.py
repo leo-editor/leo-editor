@@ -43,9 +43,9 @@ from leo.core.leoQt import Key, KeyboardModifier, Type
 #@+others
 #@+node:ekr.20210512101604.1: ** class LossageData
 class LossageData:
-    
+
     def __init__(self, actual_ch, binding, ch, keynum, mods, mods2, mods3, text, toString):
-    
+
         self.actual_ch = actual_ch
         self.binding = binding
         self.ch = ch
@@ -56,7 +56,7 @@ class LossageData:
         self.stroke = None  # Set later.
         self.text = text
         self.toString = toString
-        
+
     def __repr__ (self):
         return (
             f"keynum: {self.keynum:>7x} "
@@ -177,7 +177,7 @@ class LeoQtEventFilter(QtCore.QObject):
     def shouldIgnoreKeyEvent(self, event, obj):
         """
         Return True if we should ignore the key event.
-        
+
         Alas, QLineEdit *only* generates ev.KeyRelease on Windows, Ubuntu,
         so the following hack is required.
         """
@@ -330,19 +330,19 @@ class LeoQtEventFilter(QtCore.QObject):
         #          The values are the same in Qt4, Qt5, Qt6.
         keynum = event.key()
         if keynum in (
-            0x01000020, # Key_Shift	
+            0x01000020, # Key_Shift
             0x01000021, # Key_Control
             0x01000022, # Key_Meta
             0x01000023, # Key_Alt
-            0x01001103, # Key_AltGr	
+            0x01001103, # Key_AltGr
             0x01000024, # Key_CapsLock
-        ):	
+        ):
             # Disallow bare modifiers.
             return keynum, text, toString, ch
         #
         # Compute toString and ch.
         text = event.text()  # This is the unicode character!
-        toString = QtGui.QKeySequence(keynum).toString()  
+        toString = QtGui.QKeySequence(keynum).toString()
         #
         # #1244461: Numpad 'Enter' key does not work in minibuffer
         if toString == 'Enter':
@@ -366,6 +366,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (KeyboardModifier.KeypadModifier, 'KeyPad'),
                 # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
+        # pylint: disable=superfluous-parens.
         mods = [b for a, b in mod_table if (modifiers & a)]
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
