@@ -1625,7 +1625,7 @@ def sortSiblings(self, event=None,
     if key is None:
 
         def lowerKey(self):
-            return (self.h.lower())
+            return self.h.lower()
 
         key = lowerKey
     newChildren.sort(key=key, reverse=reverse)

@@ -1767,7 +1767,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         n += 1
                         ins -= 1
                     sins = ins  # start of insert, to collect trailing whitespace
-                    while sins > 0 and s[sins - 1] in (' \t'):
+                    while sins > 0 and s[sins - 1] in ' \t':
                         sins -= 1
                     oldSel = (sins, ins)
                     self.insertNewlineHelper(w, oldSel, undoType=None)
@@ -2318,7 +2318,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if s:
             i, j = g.getLine(s, ins)
             i1 = i
-            while i < j and s[i] in (' \t'):
+            while i < j and s[i] in ' \t':
                 i += 1
             if i == ins:
                 i = i1
@@ -2337,7 +2337,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
-        while i < j and s[i] in (' \t'):
+        while i < j and s[i] in ' \t':
             i += 1
         self.moveToHelper(event, i, extend=False)
     #@+node:ekr.20150514063305.316: *4* ec.backward*/ExtendSelection

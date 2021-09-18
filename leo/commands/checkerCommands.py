@@ -446,6 +446,7 @@ class PyflakesCommand:
         """ctor for PyflakesCommand class."""
         self.c = c
         self.seen = []  # List of checked paths.
+
     #@+others
     #@+node:ekr.20171228013818.1: *3* class PyflakesCommand.LogStream
     class LogStream:
@@ -453,8 +454,8 @@ class PyflakesCommand:
         """A log stream for pyflakes."""
 
         def __init__(self, fn_n=0, roots=None):
-             self.fn_n = fn_n
-             self.roots = roots
+            self.fn_n = fn_n
+            self.roots = roots
 
         def write(self, s):
             fn_n, roots = self.fn_n, self.roots

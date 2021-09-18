@@ -1026,7 +1026,7 @@ def startsParagraph(s):
         # This could cause problems in some situations.
         val = (
             (g.match(s, 1, ')') or g.match(s, 1, '.')) and
-            (len(s) < 2 or s[2] in (' \t\n')))
+            (len(s) < 2 or s[2] in ' \t\n'))
     else:
         val = s.startswith('@') or s.startswith('-')
     return val
