@@ -1512,7 +1512,7 @@ git push --follow-tags
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 - Update date of the release.</t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge, create dev tag that matches
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
     static version added to leoversion.py earlier.
     #static version = '6.4-devel'
 
@@ -1984,7 +1984,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 - Fix any conflicts and push.
 - git checkout master
 - git merge &lt;rel branch&gt;</t>
-<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: When a release tag is created on Master it should be merged to Devel quickly.
+<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">When a release tag is created on Master it should be merged to Devel quickly.
 
 git checkout devel
 git merge master (will update leoVersion.py, so tags are also updated)
@@ -1996,7 +1996,7 @@ There is a "Draft New Release" button at the top-right of the page.
 </t>
 <t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
 
-Public announcements, after Matt creates a package:
+Public announcements, after creating a package.
 
 - Update version number on Wikipedia: https://en.wikipedia.org/wiki/Leo_(text_editor)
 
@@ -2010,9 +2010,7 @@ Public announcements, after Matt creates a package:
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
   
-- Send email to Matt.
-
-- [Matt] Register Leo at https://pypi.python.org/pypi/leo
+- Register Leo at https://pypi.python.org/pypi/leo
 
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
