@@ -265,6 +265,7 @@ class ChapterController:
         # Similar to g.sanitize_filename, but simpler.
         result = []
         for ch in s.strip():
+            # pylint: disable=superfluous-parens
             if ch in (string.ascii_letters + string.digits):
                 result.append(ch)
             elif ch in ' \t':

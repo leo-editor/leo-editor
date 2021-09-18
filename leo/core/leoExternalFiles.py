@@ -484,7 +484,7 @@ class ExternalFilesController:
     def ask(self, c, path, p=None):
         """
         Ask user whether to overwrite an @<file> tree.
-        
+
         Return one of ('yes', 'no', 'yes-all', 'no-all')
         """
         if g.unitTesting:
@@ -614,7 +614,7 @@ class ExternalFilesController:
     def warn(self, c, path, p):
         """
         Warn that an @asis or @nosent node has been changed externally.
-        
+
         There is *no way* to update the tree automatically.
         """
         if g.unitTesting or c not in g.app.commanders():
@@ -653,7 +653,7 @@ class TestExternalFiles(unittest.TestCase):
     def test_on_idle(self):
         """
         A minimal test of the on_idle and all its helpers.
-        
+
         More detail tests would be difficult.
         """
         efc = g.app.externalFilesController

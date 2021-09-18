@@ -68,7 +68,7 @@ hilite_doc = r'''
 Changing The Current Line Highlighting Color
 --------------------------------------------
 
-The highlight color will be computed based on the Leo theme in effect, unless the `line-highlight-color` setting is set to a non-blank string. 
+The highlight color will be computed based on the Leo theme in effect, unless the `line-highlight-color` setting is set to a non-blank string.
 
 The setting will always override the color computation.  If the setting is changed, after the settings are reloaded the new color will take effect the next time the cursor is moved.
 
@@ -289,7 +289,7 @@ class QTextMixin:
         v.insertSpot = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if i > j: i, j = j, i
-        assert(i <= j)
+        assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.getYScrollPosition()
@@ -435,7 +435,7 @@ class QLineEditWrapper(QTextMixin):
 class LeoLineTextWidget(QtWidgets.QFrame):
     """
     A QFrame supporting gutter line numbers.
-    
+
     This class *has* a QTextEdit.
     """
     #@+others
@@ -711,13 +711,13 @@ if QtWidgets:
         #@@language python
         @staticmethod
         def parse_css(css_string, clas=''):
-            """Extract colors from a css stylesheet string. 
-            
+            """Extract colors from a css stylesheet string.
+
             This is an extremely simple-minded function. It assumes
             that no quotation marks are being used, and that the
             first block in braces with the name clas is the controlling
             css for our widget.
-            
+
             Returns a tuple of strings (color, background).
             """
             # Get first block with name matching "clas'
@@ -750,9 +750,9 @@ if QtWidgets:
             """If fg or bg colors are missing, assign
             reasonable values.  Can happen with incorrectly
             constructed themes, or no-theme color schemes.
-            
+
             Intended to be called when bg color is missing.
-            
+
             RETURNS
             a QColor object for the background color
             """
@@ -774,10 +774,10 @@ if QtWidgets:
         @staticmethod
         def calc_hl(bg_color):
             """Return the line highlight color.
-            
+
             ARGUMENT
             bg_color -- a QColor object for the background color
-            
+
             RETURNS
             a QColor object for the highlight color
             """
@@ -947,7 +947,7 @@ if QtWidgets:
         def paintEvent(self, event):
             """
             LeoQTextBrowser.paintEvent.
-            
+
             New in Leo 6.4: Draw a box around the cursor in command mode.
                             This is as close as possible to vim's look.
             """
@@ -1747,7 +1747,7 @@ class QTextEditWrapper(QTextMixin):
                 break
         sb = control.verticalScrollBar()
         if moved:
-            if (op == MoveOperation.Up):
+            if op == MoveOperation.Up:
                 cursor.movePosition(MoveOperation.Down, moveMode)
                 sb.triggerAction(SliderAction.SliderPageStepSub)
             else:
@@ -1870,7 +1870,7 @@ class QTextEditWrapper(QTextMixin):
         v = self.c.p.v  # Always accurate.
         v.insertSpot = ins
         if i > j: i, j = j, i
-        assert(i <= j)
+        assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.verticalScrollBar().value()

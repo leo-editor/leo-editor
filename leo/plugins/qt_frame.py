@@ -119,7 +119,7 @@ def log_cmd(name):
 class DynamicWindow(QtWidgets.QMainWindow):
     """
     A class representing all parts of the main Qt window.
-    
+
     c.frame.top is a DynamicWindow.
     c.frame.top.leo_master is a LeoTabbedTopLevel.
     c.frame.top.parent() is a QStackedWidget()
@@ -511,7 +511,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def packLabel(self, w, n=None):
         """
         Pack w into the body frame's QVGridLayout.
-        
+
         The type of w does not affect the following code. In fact, w is a
         QTextBrowser possibly packed inside a LeoLineTextWidget.
         """
@@ -1124,7 +1124,7 @@ class FindTabManager:
     def get_settings(self):
         """
         Return a g.bunch representing all widget values.
-        
+
         Similar to LeoFind.default_settings, but only for find-tab values.
         """
         return g.Bunch(
@@ -1742,7 +1742,7 @@ class LeoQtBody(leoFrame.LeoBody):
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors(self):
-        c, p = self.c, self.c.p;
+        c, p = self.c, self.c.p
         body = p.b
         d = self.editorWrappers
         if len(list(d.keys())) < 2:
@@ -2142,7 +2142,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def setQtStyle(self):
         """
         Set the default Qt style.  Based on pyzo code.
-        
+
         Copyright (C) 2013-2018, the Pyzo development team
 
         Pyzo is distributed under the terms of the (new) BSD License.
@@ -2150,7 +2150,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """
         # Fix #1936: very slow new command. Only do this once!
         if g.app.initStyleFlag:
-            return  
+            return
         g.app.initStyleFlag = True
         c = self.c
         trace = 'themes' in g.app.debug
@@ -2474,7 +2474,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
             def delete_callback(checked, action=action,):
                 self.w.removeAction(action)
-                
+
             b.leo_removeAction = rb = QAction('Remove Button', b)
             b.addAction(rb)
             rb.triggered.connect(delete_callback)
@@ -2558,7 +2558,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 return
             b = button.button
             b.clicked.connect(command)
-            
+
             # Fix bug 74: use the controller and gnx arguments.
 
             def goto_callback(checked, controller=controller, gnx=gnx):
@@ -3340,7 +3340,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def deleteTab(self, tabName, force=False):
         """
         Delete the tab if it exists.  Otherwise do *nothing*.
-        
+
         The spell code sets force=True if there is no spell dict.
         """
         c = self.c

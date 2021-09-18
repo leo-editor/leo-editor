@@ -383,7 +383,7 @@ class LeoImportCommands:
             else:
                 i, result = self.convertDocPartToWeb(s, i, result)
                 docSeen = True
-            assert(progress < i)
+            assert progress < i
         result = result.strip()
         if result:
             result += nl
@@ -427,7 +427,7 @@ class LeoImportCommands:
                     if not g.match(line, k, "%defs"):
                         line = "@" + line
             result += line
-            assert(progress < i)
+            assert progress < i
         return i, result.rstrip()
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName):
@@ -962,7 +962,7 @@ class LeoImportCommands:
                 i += 2; j = i; k = g.find_on_line(s, j, rb)
                 if k > -1: self.cstEnter(s[j:k])
             else: i += 1
-            assert(i > progress)
+            assert i > progress
         #@-<< Create a symbol table of all section names >>
         #@+<< Create nodes for limbo text and the root section >>
         #@+node:ekr.20031218072017.3233: *6* << Create nodes for limbo text and the root section >>
@@ -973,7 +973,7 @@ class LeoImportCommands:
             if self.isModuleStart(s, i) or g.match(s, i, lb):
                 break
             else: i = g.skip_line(s, i)
-            assert(i > progress)
+            assert i > progress
         j = g.skip_ws(s, 0)
         if j < i:
             self.createHeadline(parent, "@ " + s[j:i], "Limbo")
@@ -985,7 +985,7 @@ class LeoImportCommands:
                 if self.isModuleStart(s, i):
                     break
                 else: i = g.skip_line(s, i)
-                assert(i > progress)
+                assert i > progress
             self.createHeadline(parent, s[j:i], g.angleBrackets(" @ "))
 
         #@-<< Create nodes for limbo text and the root section >>
@@ -994,7 +994,7 @@ class LeoImportCommands:
             #@+<< Create a node for the next module >>
             #@+node:ekr.20031218072017.3234: *6* << Create a node for the next module >>
             if theType == "cweb":
-                assert(self.isModuleStart(s, i))
+                assert self.isModuleStart(s, i)
                 start = i
                 if self.isDocStart(s, i):
                     i += 2
@@ -1003,7 +1003,7 @@ class LeoImportCommands:
                         i = g.skip_ws_and_nl(s, i)
                         if self.isModuleStart(s, i): break
                         else: i = g.skip_line(s, i)
-                        assert(i > progress)
+                        assert i > progress
                 #@+<< Handle cweb @d, @f, @c and @p directives >>
                 #@+node:ekr.20031218072017.3235: *7* << Handle cweb @d, @f, @c and @p directives >>
                 if g.match(s, i, "@d") or g.match(s, i, "@f"):
@@ -1016,13 +1016,13 @@ class LeoImportCommands:
                             i = g.skip_line(s, i)
                         else:
                             break
-                        assert(i > progress)
+                        assert i > progress
                     i = g.skip_ws_and_nl(s, i)
                 while i < len(s) and not self.isModuleStart(s, i):
                     progress = i
                     i = g.skip_line(s, i)
                     i = g.skip_ws_and_nl(s, i)
-                    assert(i > progress)
+                    assert i > progress
                 if g.match(s, i, "@c") or g.match(s, i, "@p"):
                     i += 2
                     while i < len(s):
@@ -1031,23 +1031,23 @@ class LeoImportCommands:
                         i = g.skip_ws_and_nl(s, i)
                         if self.isModuleStart(s, i):
                             break
-                        assert(i > progress)
+                        assert i > progress
                 #@-<< Handle cweb @d, @f, @c and @p directives >>
             else:
-                assert(self.isDocStart(s, i))  # isModuleStart == isDocStart for noweb.
+                assert self.isDocStart(s, i)
                 start = i; i = g.skip_line(s, i)
                 while i < len(s):
                     progress = i
                     i = g.skip_ws_and_nl(s, i)
                     if self.isDocStart(s, i): break
                     else: i = g.skip_line(s, i)
-                    assert(i > progress)
+                    assert i > progress
             body = s[start:i]
             body = self.massageWebBody(body)
             headline = self.scanBodyForHeadline(body)
             self.createHeadline(parent, body, headline)
             #@-<< Create a node for the next module >>
-            assert(i > outer_progress)
+            assert i > outer_progress
     #@+node:ekr.20031218072017.3236: *5* Symbol table
     #@+node:ekr.20031218072017.3237: *6* cstCanonicalize
     # We canonicalize strings before looking them up,
@@ -1390,7 +1390,7 @@ class LeoImportCommands:
                         end = i; break
                     elif theType == "cweb": i += 1
                     else: i = g.skip_to_end_of_line(s, i)
-                    assert(i > progress2)
+                    assert i > progress2
                 # Remove newlines from start to end.
                 doc = s[start:end]
                 doc = doc.replace("\n", " ")
@@ -1404,7 +1404,7 @@ class LeoImportCommands:
                     s = s[:start] + doc + s[end:]
                     i = start + len(doc)
             else: i = g.skip_line(s, i)
-            assert(i > progress)
+            assert i > progress
         #@-<< Remove most newlines from @space and @* sections >>
         #@+<< Replace abbreviated names with full names >>
         #@+node:ekr.20031218072017.3314: *5* << Replace abbreviated names with full names >>
@@ -1421,7 +1421,7 @@ class LeoImportCommands:
                         s = s[:j] + name2 + s[k:]
                         i = j + len(name2)
             i = g.skip_line(s, i)
-            assert(i > progress)
+            assert i > progress
         #@-<< Replace abbreviated names with full names >>
         s = s.rstrip()
         return s
@@ -1637,7 +1637,7 @@ class MORE_Importer:
             if level >= 0:
                 #@+<< Link a new position p into the outline >>
                 #@+node:ekr.20031218072017.3216: *4* << Link a new position p into the outline >>
-                assert(level >= 0)
+                assert level >= 0
                 if not last_p:
                     theRoot = p = first_p.insertAsLastChild()  # 2016/10/06.
                 elif level == lastLevel:
@@ -1645,12 +1645,12 @@ class MORE_Importer:
                 elif level == lastLevel + 1:
                     p = last_p.insertAsNthChild(0)
                 else:
-                    assert(level < lastLevel)
+                    assert level < lastLevel
                     while level < lastLevel:
                         lastLevel -= 1
                         last_p = last_p.parent()
-                        assert(last_p)
-                        assert(lastLevel >= 0)
+                        assert last_p
+                        assert lastLevel >= 0
                     p = last_p.insertAfter()
                 last_p = p
                 lastLevel = level
@@ -2179,7 +2179,7 @@ class ToDoImporter:
     def import_files(self, files):
         """
         Import all todo.txt files in the given list of file names.
-        
+
         Return a dict: keys are full paths, values are lists of ToDoTasks"
         """
         d, tag = {}, 'import-todo-text-files'
@@ -2244,7 +2244,7 @@ class ToDoImporter:
     def prompt_for_files(self):
         """
         Prompt for a list of todo.text files and import them.
-        
+
         Return a python dict. Keys are full paths; values are lists of ToDoTask objects.
         """
         c = self.c
@@ -2677,9 +2677,9 @@ def import_todo_text_files(event):
 def import_zim_command(event):
     """
     Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
-    
+
     First use Zim to export your project to rst files.
-    
+
     This command requires the following Leo settings::
 
         @int rst_level = 0

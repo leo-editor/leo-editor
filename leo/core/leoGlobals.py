@@ -527,7 +527,7 @@ class EmergencyDialog:
         the properties of each button.
         """
         import tkinter as Tk
-        assert(self.frame)
+        assert self.frame
         self.buttonsFrame = f = Tk.Frame(self.top)
         f.pack(side="top", padx=30)
         # Buttons is a list of dictionaries, with an empty dictionary
@@ -3219,7 +3219,7 @@ def findReference(name, root):
     search all the descendants of the @root node.
     """
     for p in root.subtree(copy=False):
-        assert(p != root)
+        assert p != root
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p.copy()
     # New in Leo 4.7: expand the search for @root trees.
@@ -3607,7 +3607,7 @@ def set_language(s: str, i: int, issue_errors_flag=False):
     Returns (language, delim1, delim2, delim3)
     """
     tag = "@language"
-    assert(i is not None)
+    assert i is not None
     if g.match_word(s, i, tag):
         i += len(tag)
     # Get the argument.
@@ -4399,7 +4399,7 @@ joinlines = joinLines
 # Scans past a block comment (an old_style C comment).
 
 def skip_block_comment(s: str, i: int):
-    assert(g.match(s, i, "/*"))
+    assert g.match(s, i, "/*")
     j = i; i += 2; n = len(s)
     k = s.find("*/", i)
     if k == -1:
@@ -4419,7 +4419,7 @@ def skip_braces(s: str, i: int):
     If no matching is found i is set to len(s)
     """
     # start = g.get_line(s,i)
-    assert(g.match(s, i, '{'))
+    assert g.match(s, i, '{')
     level = 0; n = len(s)
     while i < n:
         c = s[i]
@@ -4475,7 +4475,7 @@ def skip_pascal_begin_end(s: str, i: int):
     If found, i points to the end. Otherwise, i >= len(s)
     The end keyword matches begin, case, class, record, and try.
     """
-    assert(g.match_c_word(s, i, "begin"))
+    assert g.match_c_word(s, i, "begin")
     level = 1; i = g.skip_c_id(s, i)  # Skip the opening begin.
     while i < len(s):
         ch = s[i]
@@ -4503,7 +4503,7 @@ def skip_pascal_begin_end(s: str, i: int):
 def skip_pascal_block_comment(s: str, i: int):
     """Scan past a pascal comment delimited by (* and *)."""
     j = i
-    assert(g.match(s, i, "(*"))
+    assert g.match(s, i, "(*")
     i = s.find("*)", i)
     if i > -1:
         return i + 2
@@ -4535,7 +4535,7 @@ def skip_heredoc_string(s: str, i: int):
     It ends with the token on a line by itself (must start in first position.
     """
     j = i
-    assert(g.match(s, i, "<<<"))
+    assert g.match(s, i, "<<<")
     m = re.match(r"\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
     if m is None:
         i += 3
@@ -5871,7 +5871,7 @@ def computeLeadingWhitespace(width, tab_width):
         blanks = int(width % tab_width)
         return ('\t' * tabs) + (' ' * blanks)
     # Negative tab width always gets converted to blanks.
-    return (' ' * width)
+    return ' ' * width
 #@+node:ekr.20120605172139.10263: *4* g.computeLeadingWhitespaceWidth
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
 
@@ -5924,16 +5924,16 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
     # Sentence spacing
     # This should be determined by some setting, and can only be either 1 or 2
     sentenceSpacingWidth = 1
-    assert(0 < sentenceSpacingWidth < 3)
+    assert 0 < sentenceSpacingWidth < 3
     result = []  # The lines of the result.
     line = ""  # The line being formed.  It never ends in whitespace.
     for s in lines:
         i = 0
         while i < len(s):
-            assert(len(line) <= outputLineWidth)  # DTHEIN 18-JAN-2004
+            assert len(line) <= outputLineWidth  # DTHEIN 18-JAN-2004
             j = g.skip_ws(s, i)  # ;   ws = s[i:j]
             k = g.skip_non_ws(s, j); word = s[j:k]
-            assert(k > i)
+            assert k > i
             i = k
             # DTHEIN 18-JAN-2004: wrap at exactly the text width,
             # not one character less
