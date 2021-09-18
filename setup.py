@@ -125,7 +125,7 @@ def test_is_valid_version():
 #@-others
 production = True
 testing = False
-version = '6.4b2'  ##version Should match version in leoVersion.py
+version = '6.4b3'  ##version Should match version in leoVersion.py
 entry_points = define_entry_points()
 long_description = get_readme_contents()
 assert is_valid_version(version), version
