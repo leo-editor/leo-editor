@@ -83,7 +83,7 @@ except AttributeError:
     ControlType = QtWidgets.QSizePolicy.ControlTypes
     DropAction = QtCore.Qt.DropActions
     ItemFlag = QtCore.Qt.ItemFlags
-    KeyboardModifier = QtCore.Qt.KeyboardModifiers
+    KeyboardModifier = QtCore.Qt.KeyboardModifier # #2191: was plural.
     Modifier = QtCore.Qt.Modifiers
     MouseButton = QtCore.Qt.MouseButtons
     Orientation = QtCore.Qt.Orientations
