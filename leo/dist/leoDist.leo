@@ -2071,11 +2071,18 @@ python -m twine upload --repository testpypi dist/*
 python -m twine upload -r pypi dist/*
 
 username:  __token__
-password:  (copy it)
+password:  EKR: Copy contents ofleo_pypi_token.txt
+           Then paste using "Paste" from console Edit menu.
 
 **install**
 
-python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3</t>
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3
+
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.4b3
+
+**uninstall after testint**
+
+python -m pip uninstall leo</t>
 <t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
    This branch holds all work for 6.4, including beta and rc releases.
 
