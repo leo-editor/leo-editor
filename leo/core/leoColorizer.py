@@ -235,11 +235,11 @@ class BaseJEditColorizer(BaseColorizer):
     def configure_hard_tab_width(self, font):
         """
         Set the width of a hard tab.
-        
+
         Qt does not appear to have the required methods. Indeed,
         https://stackoverflow.com/questions/13027091/how-to-override-tab-width-in-qt
         assumes that QTextEdit's have only a single font(!).
-        
+
         This method probabably only works probably if the body text contains
         a single @language directive, and it may not work properly even then.
         """
@@ -1775,7 +1775,7 @@ class JEditColorizer(BaseJEditColorizer):
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0
         n = self.match_regexp_helper(s, i, regexp)
         j = i + n
-        assert(j - i == n)
+        assert j - i == n
         self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
         self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
@@ -1978,7 +1978,7 @@ class JEditColorizer(BaseJEditColorizer):
     def match_tex_backslash(self, s, i, kind):
         """
         Match the tex s[i:].
-        
+
         (Conventional) acro names are a backslashe followed by either:
         1. One or more ascii letters, or
         2. Exactly one character, of any kind.
@@ -2358,7 +2358,7 @@ if QtGui:
         the highlightBlock and rehighlight methods.
 
         All actual syntax coloring is done in the highlighter class.
-        
+
         Used by both the JeditColorizer and PYgmentsColorizer classes.
         """
         # This is c.frame.body.colorizer.highlighter
