@@ -171,8 +171,6 @@
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in the release branch</vh></v>
-<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
-<v t="ekr.20210815111044.1"><vh>----</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
@@ -180,6 +178,7 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
+<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 </v>
 <v t="maphew.20180224170853.1"></v>
 <v t="ekr.20210815103531.1"></v>
@@ -253,23 +252,24 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 b2 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 b3 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.4**
 
-- Add support for leoInteg: "Leo in vs-code".
-- Add leoserver.py, stand-alone server for Leo.
-- Add support for .leojs, a json outline format.
-- Add support for Qt6.
+- Support for leoInteg: "Leo in vs-code".
+  - Add leoserver.py, stand-alone server for Leo.
+  - Add support for .leojs, a json outline format.
+- Support for Qt6.
 - The wax_off.py script converts function annotations to stub (.pyi) files.
 - Remove support for @root. Create a conversion script.
 - Simplify and generalize rst3 command.
 - Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
 - Add execute-general-script command and c.general_script_helper.
 - Several significant code-level changes.
+- Fixed 160+ issues and merged almost 400 Pull Requests.
 
 **Links**
 
@@ -283,7 +283,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)</t>
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
 4.4.5       setup: 547   zip: 379  2007-12-11
@@ -1466,7 +1467,7 @@ g.es_print('done')
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
 - Update the release notes.
-- Remove @language rest where possible in new notes.
+- Remove @language rest where possible in new nodes.
 - Create new "what's new" section.
 - Remove top-level clones.
 - Spell check entire file.
@@ -1483,10 +1484,13 @@ LeoDist.leo:
 - Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
+  
+LeoSettings.leo:
+- Run all "check" buttons in leoSettings.leo.
 
 LeoPyRef.leo:
-- Run `script: check-files`.
-- run write-LeoPyRef button in LeoPy.leo.</t>
+- run write-LeoPyRef button in LeoPy.leo.
+- Run `script: check-files`.</t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
@@ -2054,22 +2058,26 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">From leo-editor folder:
 
-1. Build leo-editor/dist
+rom leo-editor directory
 
-    python -m build
+**build**
 
-2. Upload to testpypi:
-https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives
+python -m build
 
-    python -m twine upload -r testpypi dist/*
-    
-3. Upload to pypi:
+**upload**
 
-    python -m twine upload -r pypi dist/*
+python -m twine upload --repository testpypi dist/*
 
-username: __token__
-password: (value of token)  Choose paste from console window.
-</t>
+--or--
+
+python -m twine upload -r pypi dist/*
+
+username:  __token__
+password:  (copy it)
+
+**install**
+
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3</t>
 <t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
    This branch holds all work for 6.4, including beta and rc releases.
 
@@ -2079,7 +2087,6 @@ password: (value of token)  Choose paste from console window.
 3. Create pypi version by running `python -m build` in the leo-editor folder.
    
 4. Update leoVersion.py in devel after merging the release branch into devel.</t>
-<t tx="ekr.20210815111044.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 

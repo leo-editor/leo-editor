@@ -546,7 +546,7 @@ class LeoServer:
         button = None
         for key in d:
             # Some button keys are objects so we have to convert first
-            if(str(key) == index):
+            if str(key) == index:
                 button = key
 
         if not button:
@@ -590,7 +590,7 @@ class LeoServer:
         # Some button keys are objects so we have to convert first
         key = None
         for i_key in d:
-            if(str(i_key) == index):
+            if str(i_key) == index:
                 key = i_key
         if key:
             try:
@@ -612,7 +612,7 @@ class LeoServer:
         filename = param.get('filename')  # Optional.
         if filename:
             for c in g.app.commanders():
-                 if c.fileName() == filename:
+                if c.fileName() == filename:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
@@ -1654,7 +1654,7 @@ class LeoServer:
     def set_ask_result(self, param):
         """Got the result to an asked question/warning from client"""
         tag = "set_ask_result"
-        result = param.get("result");
+        result = param.get("result")
         if not result:
             raise ServerError(f"{tag}: no param result")
         g.app.externalFilesController.clientResult(result)
@@ -3713,7 +3713,11 @@ def main():  # pragma: no cover (tested in client)
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c) # c can be none if no files opened
-            m =  json.dumps({"async": "refresh", "action": action, "opened": opened}, separators=(',', ':'), cls=SetEncoder)
+            m =  json.dumps({
+                "async": "refresh",
+                "action": action,
+                "opened": opened,
+            }, separators=(',', ':'), cls=SetEncoder)
             clientSetCopy = connectionsPool.copy()
             if excludedConn:
                 clientSetCopy.discard(excludedConn)
