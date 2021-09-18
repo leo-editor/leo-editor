@@ -50,8 +50,10 @@ class IdleTimeManager:
 
     def on_idle(self, timer):
         """IdleTimeManager: Run all idle-time callbacks."""
-        if not g.app: return
-        if g.app.killed: return
+        if not g.app:
+            return
+        if g.app.killed:
+            return
         if not g.app.pluginsController:
             g.trace('No g.app.pluginsController', g.callers())
             timer.stop()
@@ -1341,7 +1343,8 @@ class LeoApp:
             c.promptingForClose = True
             veto = frame.promptForSave()
             c.promptingForClose = False
-            if veto: return False
+            if veto:
+                return False
         g.app.setLog(None)  # no log until we reactive a window.
         g.doHook("close-frame", c=c)
         #
@@ -1421,15 +1424,19 @@ class LeoApp:
         for c in app.commanders():
             app.forgetOpenFile(c.fileName(), force=True)
         # Wait until everything is quiet before really quitting.
-        if trace: g.pr('forceShutdown: before end1')
+        if trace:
+            g.pr('forceShutdown: before end1')
         g.doHook("end1")
-        if trace: g.pr('forceShutdown: after end1')
+        if trace:
+            g.pr('forceShutdown: after end1')
         self.log = None  # Disable writeWaitingLog
         self.killed = True  # Disable all further hooks.
         for w in self.windowList[:]:
-            if trace: g.pr(f"forceShutdown: {w}")
+            if trace:
+                g.pr(f"forceShutdown: {w}")
             self.destroyWindow(w)
-        if trace: g.pr('before finishQuit')
+        if trace:
+            g.pr('before finishQuit')
         self.finishQuit()
     #@+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
@@ -1902,7 +1909,8 @@ class LoadManager:
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path:
             # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
-            if trace: g.trace('--theme:', path)
+            if trace:
+                g.trace('--theme:', path)
             return path
         #
         # Step 2: look for the @string theme-name setting in the first loaded file.
@@ -1923,7 +1931,8 @@ class LoadManager:
                     path = resolve(setting, tag=tag)
                     if path:
                         # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
-                        if trace: g.trace("First loaded file", theme_c.shortFileName(), path)
+                        if trace:
+                            g.trace("First loaded file", theme_c.shortFileName(), path)
                         return path
         #
         # Step 3: use the @string theme-name setting in myLeoSettings.leo.
@@ -1931,7 +1940,8 @@ class LoadManager:
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
         path = resolve(setting, tag=tag)
-        if trace: g.trace("myLeoSettings.leo", path)
+        if trace:
+            g.trace("myLeoSettings.leo", path)
         return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
@@ -2085,8 +2095,10 @@ class LoadManager:
         Both old_d and new_d remain unchanged.
         """
         lm = self
-        if not old_d: return new_d
-        if not new_d: return old_d
+        if not old_d:
+            return new_d
+        if not new_d:
+            return old_d
         bi_list = new_d.get(g.app.trace_setting)
         if bi_list:
             # This code executed only if g.app.trace_setting exists.
@@ -2280,7 +2292,8 @@ class LoadManager:
                 # Set global vars
                 g.app.theme_directory = g.os_path_dirname(lm.theme_path)
                     # Used by the StyleSheetManager.
-                if trace: g.trace('g.app.theme_directory', g.app.theme_directory)
+                if trace:
+                    g.trace('g.app.theme_directory', g.app.theme_directory)
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:
