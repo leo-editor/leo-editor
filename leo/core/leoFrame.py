@@ -622,7 +622,7 @@ class LeoBody:
     def onBodyChanged(self, undoType, oldSel=None):
         """
         Update Leo after the body has been changed.
-        
+
         This method is deprecated. New Leo commands and scripts should
         call u.before/afterChangeBody instead.
         """
@@ -2184,9 +2184,9 @@ class StringTextWrapper:
     def toPythonIndex(self, index):
         """
         StringTextWrapper.toPythonIndex.
-        
+
         Convert indices of the form 'end' or 'n1.n2' to integer indices into self.s.
-        
+
         Unit tests *do* use non-integer indices, so removing this method would be tricky.
         """
         return g.toPythonIndex(self.s, index)
