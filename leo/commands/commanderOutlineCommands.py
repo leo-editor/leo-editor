@@ -150,7 +150,7 @@ def computeVnodeInfoDict(c):
     """
     We don't know yet which nodes will be affected by the paste, so we remember
     everything. This is expensive, but foolproof.
-    
+
     The alternative is to try to remember the 'before' values of nodes in the
     FileCommands read logic. Several experiments failed, and the code is very ugly.
     In short, it seems wise to do things the foolproof way.
@@ -189,9 +189,9 @@ def pasteAsTemplate(self, event=None):
     def viter(parent_gnx, xv):
         '''
         iterates <v> nodes generating tuples:
-            
+
             (parent_gnx, child_gnx, headline, body)
-        
+
         skipping the descendants of already seen nodes.
         '''
         chgnx = xv.attrib.get('t')
@@ -220,7 +220,7 @@ def pasteAsTemplate(self, event=None):
     #@+node:vitalije.20200529115539.1: *4* do_paste
     def do_paste(vpar, index):
         '''
-        pastes a new node as a child of vpar at given index 
+        pastes a new node as a child of vpar at given index
         '''
         vpargnx = vpar.gnx
         # the first node is inserted at the given index

@@ -185,22 +185,22 @@ def mypy_command(event):
     Run mypy on all @<file> nodes of the selected tree, or the first
     @<file> node in an ancestor. Running mypy on a single file usually
     suffices.
-    
+
     For example, in LeoPyRef.leo, you can run mypy on most of Leo's files
     by running this command with the following node selected:
-    
+
       `@edit ../../launchLeo.py`
-    
+
     Unlike running mypy outside of Leo, Leo's mypy command creates
     clickable links in Leo's log pane for each error.
-    
+
     Settings
     --------
-    
+
     @data mypy-arguments
     @int mypy-link-limit = 0
     @string mypy-config-file=''
-    
+
     See leoSettings.leo for details.
     """
     c = event.get('c')
@@ -269,7 +269,7 @@ class MypyCommand:
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn)
-        
+
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn):
         """Run mypy on one file."""
