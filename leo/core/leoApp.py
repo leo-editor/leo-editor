@@ -461,7 +461,7 @@ class LeoApp:
             "jmk":      "jmk",
             "js":       "javascript", # For javascript import test.
             "jsp":      "javaserverpage",
-            "json":     "json", 
+            "json":     "json",
             # "jsp":      "jsp",
             "ksh":      "kshell",
             "kv":       "kivy", # PeckJ 2014/05/05
@@ -685,7 +685,7 @@ class LeoApp:
             "objectrexx"         : "-- /* */",
             "occam"              : "--",
             "omnimark"           : ";",
-            "pandoc"             : "<!-- -->", 
+            "pandoc"             : "<!-- -->",
             "pascal"             : "// { }",
             "perl"               : "#",
             "perlpod"            : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
@@ -836,7 +836,7 @@ class LeoApp:
             "javaserverpage": "jsp", # EKR: 2011/11/25
             "jhtml"         : "jhtml",
             "jmk"           : "jmk",
-            "json"          : "json", 
+            "json"          : "json",
             "jsp"           : "jsp",
             "jupyter"       : "ipynb",
             "kivy"          : "kv", # PeckJ 2014/05/05
@@ -1607,7 +1607,7 @@ class LeoApp:
     def makeAllBindings(self):
         """
         LeoApp.makeAllBindings:
-            
+
         Call c.k.makeAllBindings for all open commanders c.
         """
         app = self
@@ -1885,12 +1885,12 @@ class LoadManager:
     def computeThemeFilePath(self):
         """
         Return the absolute path to the theme .leo file, resolved using the search order for themes.
-        
+
         1. Use the --theme command-line option if it exists.
-        
+
         2. Otherwise, preload the first .leo file.
            Load the file given by @string theme-name setting.
-           
+
         3. Finally, look up the @string theme-name in the already-loaded, myLeoSettings.leo.
            Load the file if setting exists.  Otherwise return None.
         """
@@ -1951,7 +1951,7 @@ class LoadManager:
     def computeWorkbookFileName(self):
         """
         Return full path to the workbook.
-        
+
         Return None if testing, or in batch mode, or if the containing
         directory does not exist.
         """
@@ -2108,8 +2108,8 @@ class LoadManager:
                     f"--trace-binding: {c.shortFileName()} "
                     f"sets {binding} to None")
             elif localFlag and binding in c.commandsDict:
-                 d = c.k.computeInverseBindingDict()
-                 g.trace(
+                d = c.k.computeInverseBindingDict()
+                g.trace(
                     f"--trace-binding: {c.shortFileName():20} "
                     f"binds {binding} to {d.get(binding) or []}")
             else:
@@ -2243,7 +2243,7 @@ class LoadManager:
     def readGlobalSettingsFiles(self):
         """
         Read leoSettings.leo and myLeoSettings.leo using a null gui.
-        
+
         New in Leo 6.1: this sets ivars for the ActiveSettingsOutline class.
         """
         trace = 'themes' in g.app.debug
@@ -2293,7 +2293,8 @@ class LoadManager:
             for key in sorted(list(d.keys())):
                 gs = d.get(key)
                 print(f"{key:35} {g.shortFileName(gs.path):17} {gs.val}")
-            if d: print('')
+            if d:
+                print('')
         else:
             # print(d)
             print(f"{d.name} {len(d.d.keys())}")
@@ -2305,7 +2306,8 @@ class LoadManager:
                 val = d.get(key)
                 # print('%20s %s' % (key,val.dump()))
                 print(f"{key:35} {[z.stroke for z in val]}")
-            if d: print('')
+            if d:
+                print('')
         else:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
@@ -2805,9 +2807,9 @@ class LoadManager:
     #@@nobeautify
 
     def addOptionsToParser(self, parser, trace_m):
-        
+
         add = parser.add_option
-        
+
         def add_bool(option, help, dest=None):
             add(option, action='store_true', dest=dest, help=help)
 
@@ -3006,8 +3008,10 @@ class LoadManager:
                 # Tracing will lead to unbounded recursion unless
                 # sys.stderr has been redirected on the command line.
                 app = g.app
-                if not app or app.killed: return
-                if app.gui and app.gui.consoleOnly: return
+                if not app or app.killed:
+                    return
+                if app.gui and app.gui.consoleOnly:
+                    return
                 log = app.log
                 # Compute the effective args.
                 d = {
@@ -3136,7 +3140,8 @@ class LoadManager:
             # The log is not set properly here.
             ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
                 # Call c.fileCommands.openLeoFile to read the .leo file.
-            if not ok: return None
+            if not ok:
+                return None
         else:
             # Create a wrapper .leo file if:
             # a) fn is a .leo file that does not exist or
@@ -3189,10 +3194,13 @@ class LoadManager:
         c.initAfterLoad()
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if c.chapterController: c.chapterController.finishCreate()
-        if k: k.setDefaultInputState()
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        if k:
+            k.setDefaultInputState()
         c.initialFocusHelper()
-        if k: k.showStateAndMode()
+        if k:
+            k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()
             # #181: Honor focus requests.
@@ -3225,7 +3233,8 @@ class LoadManager:
             if p and p.hasBack():
                 p.back().doDelete()
                 p = c.rootPosition()
-            if not p: return None
+            if not p:
+                return None
         else:
             # Create an @<file> node.
             p = c.rootPosition()
@@ -3287,11 +3296,13 @@ class LoadManager:
         # lm = self
         try:
             theFile = zipfile.ZipFile(fn, 'r')
-            if not theFile: return None
+            if not theFile:
+                return None
             # Read the file into an StringIO file.
             aList = theFile.namelist()
             name = aList and len(aList) == 1 and aList[0]
-            if not name: return None
+            if not name:
+                return None
             s = theFile.read(name)
             s2 = g.toUnicode(s, 'utf-8')
             return StringIO(s2)
@@ -3387,7 +3398,7 @@ class RecentFilesManager:
     def cleanRecentFiles(self, c):
         """
         Remove items from the recent files list that no longer exist.
-        
+
         This almost never does anything because Leo's startup logic removes
         nonexistent files from the recent files list.
         """
@@ -3421,7 +3432,9 @@ class RecentFilesManager:
     #@+node:ekr.20120225072226.10297: *3* rf.clearRecentFiles
     def clearRecentFiles(self, c):
         """Clear the recent files list, then add the present file."""
-        rf = self; u = c.undoer; menu = c.frame.menu
+        rf = self
+        menu = c.frame.menu
+        u = c.undoer
         bunch = u.beforeClearRecentFiles()
         recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
         menu.deleteRecentFilesMenuItems(recentFilesMenu)
@@ -3532,7 +3545,8 @@ class RecentFilesManager:
                 path = g.os_path_realpath(g.os_path_finalize(path))
             if path and path not in seen:
                 ok = rf.readRecentFilesFile(path)
-                if ok: seen.append(path)
+                if ok:
+                    seen.append(path)
         if not seen and rf.write_recent_files_as_needed:
             rf.createRecentFiles()
     #@+node:ekr.20061010121944: *4* rf.createRecentFiles
@@ -3607,7 +3621,8 @@ class RecentFilesManager:
     def updateRecentFiles(self, fileName):
         """Create the RecentFiles menu.  May be called with Null fileName."""
         rf = self
-        if g.app.unitTesting: return
+        if g.app.unitTesting:
+            return
 
         def munge(name):
             return g.os_path_finalize(name or '').lower()
@@ -3638,7 +3653,8 @@ class RecentFilesManager:
         Write content of "edit_headline" node as recentFiles and recreates
         menues.
         """
-        rf = self; p = c.p
+        rf = self
+        p = c.p
         p = g.findNodeAnywhere(c, self.edit_headline)
         if p:
             files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
@@ -3719,7 +3735,8 @@ class RecentFilesManager:
         except Exception:
             g.error('unexpected exception writing', fileName)
             g.es_exception()
-            if g.unitTesting: raise
+            if g.unitTesting:
+                raise
         return False
     #@-others
 #@+node:ekr.20150514125218.1: ** Top-level-commands
@@ -3737,10 +3754,10 @@ def demangle_recent_files_command(event):
     Path demangling potentially alters the paths in the recent files list
     according to find/replace patterns in the @data path-demangle setting.
     For example:
-        
+
         REPLACE: .gnome-desktop
         WITH: My Desktop
-        
+
     The default setting specifies no patterns.
     """
     c = event and event.get('c')
