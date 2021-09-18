@@ -180,8 +180,6 @@
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 </v>
-<v t="maphew.20180224170853.1"></v>
-<v t="ekr.20210815103531.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
