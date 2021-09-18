@@ -186,9 +186,9 @@ class DefaultDict:
 class DefaultWrapper(BaseSpellWrapper):
     """
     A default spell checker for when pyenchant is not available.
-    
+
     Based on http://norvig.com/spell-correct.html
-    
+
     Main dictionary: ~/.leo/main_spelling_dict.txt
     User dictionary:
     - @string enchant_local_dictionary or
@@ -840,7 +840,7 @@ def clean_main_spell_dict(event):
     """
     Clean the main spelling dictionary used *only* by the default spell
     checker.
-    
+
     This command works regardless of the spell checker being used.
     """
     c = event and event.get('c')
@@ -852,7 +852,7 @@ def clean_user_spell_dict(event):
     """
     Clean the user spelling dictionary used *only* by the default spell
     checker. Mostly for debugging, because this happens automatically.
-    
+
     This command works regardless of the spell checker being used.
     """
     c = event and event.get('c')

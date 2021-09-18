@@ -19,7 +19,7 @@ def reloadSettings(self, event=None):
 def reloadSettingsHelper(c):
     """
     Reload settings in all commanders, or just c.
-    
+
     A helper function for reload-settings and reload-all-settings.
     """
     lm = g.app.loadManager
@@ -387,7 +387,7 @@ def save(self, event=None, fileName=None):
     """
     Save a Leo outline to a file, using the existing file name unless
     the fileName kwarg is given.
-    
+
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
     c = self
@@ -478,7 +478,7 @@ def saveAs(self, event=None, fileName=None):
     """
     Save a Leo outline to a file, prompting for a new filename unless the
     fileName kwarg is given.
-    
+
     kwarg: a file name, for use by file-save-as-zipped,
     file-save-as-unzipped and scripts using Leo's bridge.
     """
@@ -542,7 +542,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
     """
     Save a Leo outline to a file, prompting for a new file name unless the
     fileName kwarg is given. Leave the file name of the Leo outline unchanged.
-    
+
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
     c = self; p = c.p
@@ -929,7 +929,7 @@ def writeFileFromNode(self, event=None):
 def cleanRecentFiles(self, event=None):
     """
     Remove items from the recent files list that no longer exist.
-    
+
     This almost never does anything because Leo's startup logic removes
     nonexistent files from the recent files list.
     """
@@ -978,7 +978,7 @@ def sortRecentFiles(self, event=None):
 #@+node:vitalije.20170703115710.2: *3* c_file.writeEditedRecentFiles
 @g.commander_command('write-edited-recent-files')
 def writeEditedRecentFiles(self, event=None):
-    """ 
+    """
     Write content of "edit_headline" node as recentFiles and recreates
     menues.
     """
@@ -993,10 +993,10 @@ def updateRefLeoFile(self, event=None):
     file. The public part consists of all nodes above the **special
     separator node**, a top-level node whose headline is
     `---begin-private-area---`.
-   
+
     Below this special node is **private area** where one can freely make
     changes that should not be copied (published) to the reference Leo file.
-    
+
     **Note**: Use the set-reference-file command to create the separator node.
     """
     c = self
@@ -1012,7 +1012,7 @@ def readRefLeoFile(self, event=None):
 
     Below this special node is **private area** where one can freely make
     changes that should not be copied (published) to the reference Leo file.
-    
+
     **Note**: Use the set-reference-file command to create the separator node.
     """
     c = self
@@ -1023,15 +1023,15 @@ def setReferenceFile(self, event=None):
     """
     Shows a file open dialog allowing you to select a **reference** Leo
     document to which this outline will be connected.
-       
+
     This command creates a **special separator node**, a top-level node
     whose headline is `---begin-private-area---` and whose body is the path
     to reference Leo file.
-    
+
     The separator node splits the outline into two parts. The **public
     part** consists of all nodes above the separator node. The **private
     part** consists of all nodes below the separator node.
-       
+
     The update-ref-file and read-ref-file commands operate on the **public
     part** of the outline. The update-ref-file command saves *only* the
     public part of the outline to reference Leo file. The read-ref-file

@@ -24,7 +24,7 @@ def cmd(name):
 class ConvertAtRoot:
     """
     A class to convert @root directives to @clean nodes:
-    
+
     - Change @root directive in body to @clean in the headline.
     - Make clones of section references defined outside of @clean nodes,
       moving them so they are children of the nodes that reference them.
@@ -944,7 +944,7 @@ class GitDiffController:
         c.redraw()
         c.treeWantsFocusNow()
     #@+node:ekr.20210819080657.1: *4* gdc.get_directory
-    def get_directory(self):  
+    def get_directory(self):
         """
         #2143.
         Resolve filename to the nearest directory containing a .git directory.
@@ -1015,7 +1015,7 @@ class GitDiffController:
         # #1781: Allow diffs of .leo files.
         return [
             z.strip() for z in g.execGitCommand(command, directory)
-                if not z.strip().endswith(('.db', '.zip')) 
+                if not z.strip().endswith(('.db', '.zip'))
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec, abbreviated=True):

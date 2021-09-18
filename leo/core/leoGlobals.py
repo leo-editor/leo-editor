@@ -140,7 +140,7 @@ cmd_instance_dict = {
 def callback(func: Callable) -> Any:
     """
     A global decorator that protects Leo against crashes in callbacks.
-    
+
     This decorator is NOT NEEDED because runLeo.py overrides sys.excepthook.
 
     The OLD, DEPRECATED, way.
@@ -219,13 +219,13 @@ class CommanderCommand:
     """
     A global decorator for creating commander commands, that is, commands
     that were formerly methods of the Commands class in leoCommands.py.
-    
+
     Usage:
 
         @g.command('command-name')
         def command_name(self, *args, **kwargs):
             ...
-        
+
     The decorator injects command_name into the Commander class and calls
     funcToMethod so the ivar will be injected in all future commanders.
 
@@ -286,7 +286,7 @@ def new_cmd_decorator(name, ivars):
     """
     Return a new decorator for a command with the given name.
     Compute the class *instance* using the ivar string or list.
-    
+
     Don't even think about removing the @cmd decorators!
     See https://github.com/leo-editor/leo-editor/issues/325
     """
@@ -347,9 +347,9 @@ def standard_timestamp() -> str:
 def get_backup_path(sub_directory) -> Optional[str]:
     """
     Return the full path to the subdirectory of the main backup directory.
-    
+
     The main backup directory is computed as follows:
-        
+
     1. os.environ['LEO_BACKUP']
     2. ~/Backup
     """
@@ -440,12 +440,12 @@ class Bunch:
     From The Python Cookbook:
 
         Create a Bunch whenever you want to group a few variables:
-        
+
             point = Bunch(datum=y, squared=y*y, coord=x)
-        
+
         You can read/write the named attributes you just created, add others,
         del some of them, etc::
-        
+
             if point.squared > threshold:
                 point.isok = True
     """
@@ -525,7 +525,7 @@ class EmergencyDialog:
         the properties of each button.
         """
         import tkinter as Tk
-        assert(self.frame)
+        assert self.frame
         self.buttonsFrame = f = Tk.Frame(self.top)
         f.pack(side="top", padx=30)
         # Buttons is a list of dictionaries, with an empty dictionary
@@ -668,7 +668,7 @@ class GeneralSetting:
 class KeyStroke:
     """
     A class that represent any key stroke or binding.
-    
+
     stroke.s is the "canonicalized" stroke.
     """
     #@+others
@@ -877,9 +877,9 @@ class KeyStroke:
     def strip_shift(self, s):
         """
         Handle supposedly shifted keys.
-        
+
         User settings might specify an already-shifted key, which is not an error.
-            
+
         The legacy Tk binding names have already been translated,
         so we don't have to worry about Shift-ampersand, etc.
         """
@@ -963,9 +963,9 @@ class KeyStroke:
     def isPlainKey(self):
         """
         Return True if self.s represents a plain key.
-        
+
         A plain key is a key that can be inserted into text.
-        
+
         **Note**: The caller is responsible for handling Alt-Ctrl keys.
         """
         s = self.s
@@ -1064,7 +1064,7 @@ def isStrokeOrNone(obj: Any):
 class MatchBrackets:
     """
     A class implementing the match-brackets command.
-    
+
     In the interest of speed, the code assumes that the user invokes the
     match-bracket command ouside of any string, comment or (for perl or
     javascript) regex.
@@ -1410,7 +1410,7 @@ class MatchBrackets:
 
         With no selected range: find the nearest bracket and select from
         it to it's match, moving cursor to mathc.
-        
+
         With selected range: the first time, move cursor back to other end of
         range. The second time, select enclosing range.
         """
@@ -1695,9 +1695,9 @@ class SherlockTracer:
     Being able to zero in on the code of interest can be a big help in
     studying other people's code. This is a non-invasive method: no tracing
     code needs to be inserted anywhere.
-    
+
     Usage:
-        
+
     g.SherlockTracer(patterns).run()
     """
     #@+others
@@ -2299,7 +2299,7 @@ class NullObject:
     def __len__(self) -> int: return 0
     # Iteration methods:
     def __next__(self) -> None: raise StopIteration
-    
+
 
 class TracingNullObject:
     """Tracing NullObject."""
@@ -2433,7 +2433,7 @@ def null_object_print(id_, kind, *args):
 class TypedDict:
     """
     A class providing additional dictionary-related methods:
-    
+
     __init__:     Specifies types and the dict's name.
     __repr__:     Compatible with g.printObj, based on g.objToString.
     __setitem__:  Type checks its arguments.
@@ -2441,7 +2441,7 @@ class TypedDict:
     add_to_list:  A convenience method that adds a value to its key's list.
     name:         The dict's name.
     setName:      Sets the dict's name, for use by __repr__.
-    
+
     Overrides the following standard methods:
 
     copy:         A thin wrapper for copy.deepcopy.
@@ -2795,7 +2795,7 @@ def callers(n=4, count=0, excludeCaller=True, verbose=False):
     of the function that called g.callerList.
 
     excludeCaller: True (the default), g.callers itself is not on the list.
-    
+
     If the `verbose` keyword is True, return a list separated by newlines.
     """
     # Be careful to call g._callerName with smaller values of i first:
@@ -3210,7 +3210,7 @@ def printGcSummary():
 def printTimes(times):
     """
     Print the differences in the times array.
-    
+
     times: an array of times (calls to time.process_time()).
     """
     for n, junk in enumerate(times[:-1]):
@@ -3227,9 +3227,9 @@ def clearStats():
 def printStats(event=None, name=None):
     """
     Print all gathered statistics.
-    
+
     Here is the recommended code to gather stats for one method/function:
-        
+
         if not g.app.statsLockout:
             g.app.statsLockout = True
             try:
@@ -3390,7 +3390,7 @@ def findReference(name, root):
     search all the descendants of the @root node.
     """
     for p in root.subtree(copy=False):
-        assert(p != root)
+        assert p != root
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p.copy()
     # New in Leo 4.7: expand the search for @root trees.
@@ -3778,7 +3778,7 @@ def set_language(s: str, i: int, issue_errors_flag=False):
     Returns (language, delim1, delim2, delim3)
     """
     tag = "@language"
-    assert(i is not None)
+    assert i is not None
     if g.match_word(s, i, tag):
         i += len(tag)
     # Get the argument.
@@ -4496,11 +4496,11 @@ def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=No
 #@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
 def recursiveUNLParts(text):
     """Parse the tail, returning whatever follows ':'.
-    
+
     Examples: foo or foo:2 or foo:2,0,4,10.
-    
+
     return (index, occurence, line_number, col_number) or (None, None, None, None).
-    
+
     A negative line_number indicates a global line number within the file.
     """
     # Match up to 4 comma-separated ints.
@@ -4569,7 +4569,7 @@ joinlines = joinLines
 # Scans past a block comment (an old_style C comment).
 
 def skip_block_comment(s: str, i: int):
-    assert(g.match(s, i, "/*"))
+    assert g.match(s, i, "/*")
     j = i; i += 2; n = len(s)
     k = s.find("*/", i)
     if k == -1:
@@ -4589,7 +4589,7 @@ def skip_braces(s: str, i: int):
     If no matching is found i is set to len(s)
     """
     # start = g.get_line(s,i)
-    assert(g.match(s, i, '{'))
+    assert g.match(s, i, '{')
     level = 0; n = len(s)
     while i < n:
         c = s[i]
@@ -4645,7 +4645,7 @@ def skip_pascal_begin_end(s: str, i: int):
     If found, i points to the end. Otherwise, i >= len(s)
     The end keyword matches begin, case, class, record, and try.
     """
-    assert(g.match_c_word(s, i, "begin"))
+    assert g.match_c_word(s, i, "begin")
     level = 1; i = g.skip_c_id(s, i)  # Skip the opening begin.
     while i < len(s):
         ch = s[i]
@@ -4673,7 +4673,7 @@ def skip_pascal_begin_end(s: str, i: int):
 def skip_pascal_block_comment(s: str, i: int):
     """Scan past a pascal comment delimited by (* and *)."""
     j = i
-    assert(g.match(s, i, "(*"))
+    assert g.match(s, i, "(*")
     i = s.find("*)", i)
     if i > -1:
         return i + 2
@@ -4694,18 +4694,18 @@ def skip_heredoc_string(s: str, i: int):
     """
     08-SEP-2002 DTHEIN.
     A heredoc string in PHP looks like:
-    
+
       <<<EOS
       This is my string.
       It is mine. I own it.
       No one else has it.
       EOS
-    
+
     It begins with <<< plus a token (naming same as PHP variable names).
     It ends with the token on a line by itself (must start in first position.
     """
     j = i
-    assert(g.match(s, i, "<<<"))
+    assert g.match(s, i, "<<<")
     m = re.match(r"\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
     if m is None:
         i += 3
@@ -5120,7 +5120,7 @@ def getGitIssues(c: Cmdr,
 class GitIssueController:
     """
     A class encapsulating the retrieval of GitHub issues.
-    
+
     The GitHub api: https://developer.github.com/v3/issues/
     """
     #@+others
@@ -5325,7 +5325,7 @@ def gitDescribe(path: str=None):
     """
     Return the Git tag, distance-from-tag, and commit hash for the
     associated path. If path is None, use the leo-editor directory.
-    
+
     Given `git describe` cmd line output: `x-leo-v5.6-55-ge1129da\n`
     This function returns ('x-leo-v5.6', '55', 'e1129da')
     """
@@ -5685,7 +5685,7 @@ def flatten_list(obj: Any):
         sep = obj.get('sep') or ''
         trailing = obj.get('trailing') or ''
         aList = obj.get('aList') or []
-        for i, item in enumerate(aList):  
+        for i, item in enumerate(aList):
             if leading: yield leading
             for s in flatten_list(item):
                 if indent and s.startswith('\n'):
@@ -5837,7 +5837,7 @@ checkUnicode_dict: Dict[str, bool] = {}
 def checkUnicode(s: str, encoding=None):
     """
     Warn when converting bytes. Report *all* errors.
-    
+
     This method is meant to document defensive programming. We don't expect
     these errors, but they might arise as the result of problems in
     user-defined plugins or scripts.
@@ -6025,9 +6025,9 @@ def toUnicode(s: Any, encoding: Optional[str]=None, reportErrors: bool=False) ->
 def u(s: str):
     """
     Return s, converted to unicode from Qt widgets.
-    
+
     Deprecated. QString does not exist on Python 3.
-    
+
     No calls to g.u exist in Leo's core or official plugins.
     """
     return s
@@ -6043,7 +6043,7 @@ def computeLeadingWhitespace(width, tab_width):
         blanks = int(width % tab_width)
         return ('\t' * tabs) + (' ' * blanks)
     # Negative tab width always gets converted to blanks.
-    return (' ' * width)
+    return ' ' * width
 #@+node:ekr.20120605172139.10263: *4* g.computeLeadingWhitespaceWidth
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
 
@@ -6096,16 +6096,16 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
     # Sentence spacing
     # This should be determined by some setting, and can only be either 1 or 2
     sentenceSpacingWidth = 1
-    assert(0 < sentenceSpacingWidth < 3)
+    assert 0 < sentenceSpacingWidth < 3
     result = []  # The lines of the result.
     line = ""  # The line being formed.  It never ends in whitespace.
     for s in lines:
         i = 0
         while i < len(s):
-            assert(len(line) <= outputLineWidth)  # DTHEIN 18-JAN-2004
+            assert len(line) <= outputLineWidth  # DTHEIN 18-JAN-2004
             j = g.skip_ws(s, i)  # ;   ws = s[i:j]
             k = g.skip_non_ws(s, j); word = s[j:k]
-            assert(k > i)
+            assert k > i
             i = k
             # DTHEIN 18-JAN-2004: wrap at exactly the text width,
             # not one character less
@@ -6361,9 +6361,9 @@ log = es
 def es_clickable_link(c: Cmdr, p: Pos, line_number, message):
     """
     Write a clickable message to the given line number of p.b.
-    
+
     Negative line numbers indicate global lines.
-    
+
     """
     log = c.frame.log
     message = message.strip() + '\n'
@@ -6808,9 +6808,9 @@ def funcToMethod(f, theClass, name=None):
     class. The method just added is available instantly to all
     existing instances of the class, and to all instances created in
     the future.
-    
+
     The function's first argument should be self.
-    
+
     The newly created method has the same name as the function unless
     the optional name argument is supplied, in which case that name is
     used as the method name.
@@ -6982,7 +6982,7 @@ deprecated_messages = []
 def os_path_expandExpression(s: str, **keys):
     """
     Expand all {{anExpression}} in c's context.
-    
+
     Deprecated: use c.expand_path_expression(s) instead.
     """
 
@@ -7026,7 +7026,7 @@ def os_path_finalize(path: str):
 def os_path_finalize_join(*args, **keys):
     """
     Join and finalize.
-    
+
     **keys may contain a 'c' kwarg, used by g.os_path_join.
     """
     path = g.os_path_join(*args, **keys)
@@ -7061,7 +7061,7 @@ def os_path_isfile(path: str):
 def os_path_join(*args, **keys):
     """
     Join paths, like os.path.join, with enhancements:
-    
+
     A '!!' arg prepends g.app.loadDir to the list of paths.
     A '.'  arg prepends c.openDirectory to the list of paths,
            provided there is a 'c' kwarg.
@@ -7375,7 +7375,7 @@ def execute_shell_commands_with_options(
     """
     A helper for prototype commands or any other code that
     runs programs in a separate process.
-    
+
     base_dir:           Base directory to use if no config path given.
     commands:           A list of commands, for g.execute_shell_commands.
     commands_setting:   Name of @data setting for commands.
@@ -7667,7 +7667,7 @@ def run_coverage_tests(module='', filename=''):
 def run_unit_test_in_separate_process(command):
     """
     A script to be run from unitTest.leo.
-    
+
     Run the unit testing command (say `python -m leo.core.leoAst`) in a separate process.
     """
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
@@ -7861,7 +7861,7 @@ def traceUrl(c: Cmdr, path: str, parsed, url):
 def handleUnl(unl, c: Cmdr):
     """
     Handle a Leo UNL. This must *never* open a browser.
-    
+
     Return the commander for the UNL, or None.
     """
     if not unl:

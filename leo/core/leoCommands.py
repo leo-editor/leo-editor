@@ -38,7 +38,7 @@ class Commands:
     g.app.pluginsController is Leo's plugins controller. Many plugins
     inject controllers objects into the Commands class. These are
     another kind of subcommander.
-    
+
     The @g..commander_command decorator injects methods into this class.
     """
     #@+others
@@ -592,18 +592,18 @@ class Commands:
     def execute_general_script_command(self, event=None):
         """
         Execute c.p and all its descendants as a script.
-        
+
         Create a temp file if c.p is not an @<file> node.
-        
+
         @data exec-script-commands associates commands with langauges.
-        
+
         @data exec-script-patterns provides patterns to create clickable
         links for error messages.
-        
+
         Set the cwd before calling the command.
         """
         c, p, tag = self, self.p, 'execute-general-script'
-        
+
         def get_setting_for_language(setting: str):
             """
             Return the setting from the given @data setting.
@@ -614,7 +614,7 @@ class Commands:
                 if key.strip() == language:
                     return val.strip()
             return None
-        
+
         # Get the language and extension.
         d = c.scanAllDirectives(p)
         language: str = d.get('language')
@@ -873,11 +873,11 @@ class Commands:
     def all_positions_for_v(self, v, stack=None):
         """
         Generates all positions p in this outline where p.v is v.
-        
+
         Should be called with stack=None.
-        
+
         The generated positions are not necessarily in outline order.
-        
+
         By Виталије Милошевић (Vitalije Milosevic).
         """
         c = self
@@ -1240,7 +1240,7 @@ class Commands:
         """
         c = self
         context = v.context  # v's commander.
-        assert(c == context)
+        assert c == context
         positions = []
         for immediate in v.parents:
             if v in immediate.children:
@@ -1267,7 +1267,7 @@ class Commands:
         """
         c = self
         context = v.context  # v's commander.
-        assert(c == context)
+        assert c == context
         stack: List[Tuple[int, Tuple["leoNodes.VNode", int]]] = []
         while v.parents:
             parent = v.parents[0]
@@ -1344,7 +1344,7 @@ class Commands:
     def setBodyString(self, p, s):
         """
         This is equivalent to p.b = s.
-        
+
         Warning: This method may call c.recolor() or c.redraw().
         """
         c, v = self, p.v
@@ -1903,11 +1903,11 @@ class Commands:
             def i3_command(event):
                 c = event.get('c')
                 if not c: return
-                    
+
                 def callback(args, c, event):
                     g.trace(args)
                     c.bodyWantsFocus()
-            
+
                 c.interactive(callback, event,
                     prompts=['Arg1: ', ' Arg2: ', ' Arg3: '])
         """
@@ -2236,9 +2236,9 @@ class Commands:
     def doCommandByName(self, command_name, event):
         """
         Execute one command, given the name of the command.
-        
+
         The caller must do any required keystroke-only tasks.
-        
+
         Return the result, if any, of the command.
         """
         c = self
@@ -2279,9 +2279,9 @@ class Commands:
                     May be a compiled regex expression or a string.
         root:       The root of the tree containing the script,
                     The script may contain section references and @others.
-                    
+
         Other features:
-        
+
         - Create a temporary external file if `not root.isAnyAtFileNode()`.
         - Compute the final command as follows.
           1. If command contains <FILE>, replace <FILE> with the full path.
@@ -3074,12 +3074,14 @@ class Commands:
     def beginUpdate(self):
         """Deprecated: does nothing."""
         g.trace('***** c.beginUpdate is deprecated', g.callers())
-        if g.unitTesting: assert(False)
+        if g.app.unitTesting:
+            assert False
 
     def endUpdate(self, flag=True):
         """Request a redraw of the screen if flag is True."""
         g.trace('***** c.endUpdate is deprecated', g.callers())
-        if g.unitTesting: assert(False)
+        if g.app.unitTesting:
+            assert False
         c = self
         if flag:
             c.requestRedrawFlag = True
@@ -3263,7 +3265,7 @@ class Commands:
     def redraw_later(self):
         """
         Ensure that c.redraw() will be called eventually.
-        
+
         c.outerUpdate will call c.redraw() only if no other code calls c.redraw().
         """
         c = self

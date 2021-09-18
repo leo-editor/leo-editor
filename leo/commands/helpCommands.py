@@ -1149,9 +1149,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
     def showSettingsOutline(self, event=None):
         """
         Create and open an outline, summarizing all presently active settings.
-        
+
         The outline retains the organization of all active settings files.
-        
+
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
 

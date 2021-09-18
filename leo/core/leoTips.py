@@ -64,19 +64,19 @@ class UserTip:
 def make_tips(c):
     """
     A script to make entries in the global tips array.
-    
+
     Each printed entry has the form:
-        
+
         UserTip(
             n=anInt
             tags=[list of tags],
             title=aString,
             text='''
-            
+
             aString
-            
+
             ''')
-        
+
     After running this script, copy the result from the console to the
     <define tips> section of leoTips.py.
     """
@@ -113,7 +113,7 @@ UserTip(
     tags=%s,
     title="%s",
     text="""\
-    
+
 %s
 
 """),
@@ -159,9 +159,9 @@ UserTip(
     tags=['Plugins'],
     title="Leo's most important plugins",
     text="""\
-    
+
 Become familiar with Leo's most important plugins:
-    
+
 - bookmarks.py manages bookmarks.
 - contextmenu.py shows a menu when when right-clicking.
 - mod_scripting.py supports @button and @command nodes.
@@ -177,7 +177,7 @@ UserTip(
     tags=['Power User',],
     title='Move clones to the last top-level node',
     text="""
-    
+
 Focus your attention of the task at hand by cloning nodes,
 including @file nodes, then moving those clones so they are
 the last top-level nodes in the outline.
@@ -192,7 +192,7 @@ UserTip(
     tags=['Settings',],
     title="Put personal settings myLeoSettings.leo",
     text="""\
-    
+
 Put your personal settings in myLeoSettings.leo, not leoSettings.leo.
 
 - The leo-settings command opens leoSettings.leo.
@@ -269,11 +269,11 @@ UserTip(
     tags=['Commands', 'Power User',],
     title='Alt-N (goto-next-clone) finds "primary" clones',
     text="""
-    
+
 Use Alt-N to cycle through the clones of the present cloned node.
 
 This is a fast way of finding the clone whose ancestor is an @<file> node.
-    
+
 """),
 #@+node:ekr.20180527052858.1: *4* help-*
 UserTip(
@@ -297,7 +297,7 @@ UserTip(
     tags=['Commands',],
     title='leo-* commands open common .leo files',
     text="""
-    
+
 You can open files such as CheatSheet.leo, quickstart.leo,
 leoSettings.leo, myLeoSettings.leo and scripts.leo with
 commands starting with 'leo-'.
@@ -334,7 +334,7 @@ UserTip(
     tags=['Power User',],
     title='Ctrl-P (repeat-complex-command)',
     text="""
-    
+
 Ctrl-P re-executes the last command made from the minibuffer.
 
 You can use this to avoid having to define key bindings.
@@ -372,7 +372,7 @@ UserTip(
     tags=['Scripting'],
     title="Clearing the Log window",
     text="""\
-    
+
 When developing scripts that use Log window to display
 results, it is sometimes useful to clear Log window by
 inserting the following two lines at the beginning of your
@@ -397,7 +397,7 @@ For example:</p>
 <p>You must
 <a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
 run Leo from a console</a> for this to work.</p>
- 
+
 </html>"""),
 #@+node:ekr.20180324072527.1: *4* g.pdb
 UserTip(
@@ -452,7 +452,7 @@ UserTip(
     tags=['Scripting', 'Tutorial'],
     title="@button nodes create commands",
     text="""
-    
+
 For example, `@button my-command` creates the `my-command` button and the `my-command` command.
 
 Within `@button` scripts, c.p is the presently selected outline node.
@@ -541,7 +541,7 @@ UserTip(
     tags=['Scripting'],
     title="How to assign shortcuts to scripts",
     text="""
-    
+
 You can have a personal shortcut to run script while developing it.
 
 For example: put `@key=Alt-4` in headline.
@@ -557,7 +557,7 @@ UserTip(
     tags=['Beginner',],
     title='How to find documentation',
     text="""
-    
+
 Just search LeoDocs.leo.
 
 """),
@@ -567,7 +567,7 @@ UserTip(
     tags=['Settings',],
     title="How to find settings",
     text="""
-    
+
 Just search leoSettings.leo.
 
 leoSettings.leo contains the defaults for all of Leo's settings, with documentation for each.
@@ -579,7 +579,7 @@ UserTip(
     tags=['Settings',],
     title="How to find all your @command nodes",
     text="""
-    
+
 <alt-x>@c<tab> shows all the @command nodes in effect for the present outline, no matter where defined.
 
 myLeoSettings.leo can define *common* @command nodes that apply to all outlines.

@@ -883,7 +883,7 @@ class AutoCompleterClass:
     def insert_string(self, s, select=False):
         """
         Insert an auto-completion string s at the insertion point.
-        
+
         Leo 6.4. This *part* of auto-completion is no longer undoable.
         """
         c, w = self.c, self.w
@@ -1993,7 +1993,7 @@ class KeyHandlerClass:
         and k.bindingsDict.
 
         tag gives the source of the binding.
-        
+
         Return True if the binding was made successfully.
         """
         k = self
@@ -2826,7 +2826,7 @@ class KeyHandlerClass:
     def manufactureKeyPressForCommandName(self, w, commandName):
         """
         Implement a command by passing a keypress to the gui.
-        
+
         **Only unit tests use this method.**
         """
         c, k = self.c, self
@@ -2881,12 +2881,12 @@ class KeyHandlerClass:
     ):
         """
         Make the function available as a minibuffer command.
-        
+
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.
-        
+
         Ignore the 'shortcut' arg unless 'allowBinding' is True.
-        
+
         Only k.bindOpenWith and the mod_scripting.py plugin should set
         allowBinding.
         """
@@ -2919,7 +2919,7 @@ class KeyHandlerClass:
     def registerCommandShortcut(self, commandName, func, pane, shortcut):
         """
         Register a shortcut for the a command.
-        
+
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
         """
@@ -3058,7 +3058,7 @@ class KeyHandlerClass:
     def doKeyboardQuit(self, event):
         """
         A helper for k.masterKeyHandler: Handle keyboard-quit logic.
-        
+
         return True if k.masterKeyHandler should return.
         """
         c, k = self.c, self

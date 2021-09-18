@@ -315,7 +315,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                         load_items(menu.addMenu(k), i[k])
                 else:
                     title, id_ = i
-                    
+
                     def cb(checked, id_=id_):
                         splitter.context_cb(id_, index)
 
@@ -326,12 +326,12 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         for provider in splitter.root.providers:
             if hasattr(provider, 'ns_context'):
                 load_items(menu, provider.ns_context())
-                
+
         # point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
         point = pos
         global_point = self.mapToGlobal(point)
         menu.exec_(global_point)
-        
+
         for i in 0, 1:
             widget[i].setStyleSheet(sheet[i])
     #@+node:tbnorth.20160510091151.1: *3* nsh.mouseEvents
@@ -970,7 +970,7 @@ class NestedSplitter(QtWidgets.QSplitter):
     def get_saveable_layout(self):
         """
         Return the dict for saveable layouts.
-        
+
         The content entry for non-NestedSplitter items is the provider ID
         string for the item, or 'UNKNOWN', and the splitter entry is omitted.
         """
@@ -1008,7 +1008,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             tag = f"layout: {c.shortFileName()}"
             g.printObj(layout, tag=tag)
         if isQt6:
-            if layout['orientation'] == 1: 
+            if layout['orientation'] == 1:
                 self.setOrientation(Orientation.Horizontal)
             else:
                 self.setOrientation(Orientation.Vertical)

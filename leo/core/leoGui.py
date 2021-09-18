@@ -514,7 +514,7 @@ class StringFindTabManager:
     def get_settings(self):
         """
         Return a g.bunch representing all widget values.
-        
+
         Similar to LeoFind.default_settings, but only for find-tab values.
         """
         return g.Bunch(

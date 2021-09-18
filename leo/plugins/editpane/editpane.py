@@ -442,7 +442,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 act.setChecked(widget_class == current)
                 act.triggered.connect(cb)
                 menu.addAction(act)
-                
+
         button = self.control_menu_button
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
@@ -461,7 +461,7 @@ class LeoEditPane(QtWidgets.QWidget):
             act.setCheckable(True)
             act.setChecked(mode == self.mode)
             menu.addAction(act)
-        
+
         button = self.btn_mode
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
@@ -607,7 +607,6 @@ class LeoEditPane(QtWidgets.QWidget):
     def state_changed(self):
         """state_changed - control state has changed
         """
-
         if self.goto and self.get_position() != self.c.p:
             self.goto_node()
 
@@ -618,8 +617,8 @@ class LeoEditPane(QtWidgets.QWidget):
             self.edit_frame.hide()
             self.view_frame.show()
         else:
-           self.edit_frame.show()
-           self.view_frame.show()
+            self.edit_frame.show()
+            self.view_frame.show()
 
         self.update_position(self.c.p)
     #@-others

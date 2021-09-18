@@ -1155,9 +1155,9 @@ class AtFile:
     def writeAllHelper(self, p, root):
         '''
         Write one file for at.writeAll.
-        
+
         Do *not* write @auto files unless p == root.
-        
+
         This prevents the write-all command from needlessly updating
         the @persistence data, thereby annoyingly changing the .leo file.
         '''
@@ -1533,7 +1533,7 @@ class AtFile:
         '''
         Write p, an @shadow node.
         File indices *must* have already been assigned.
-        
+
         testing: set by unit tests to suppress the call to at.precheck.
                  Testing is not the same as g.unitTesting.
         '''
@@ -1869,7 +1869,7 @@ class AtFile:
         i, inCode = 0, True
         while i < len(s):
             next_i = g.skip_line(s, i)
-            assert(next_i > i)
+            assert next_i > i
             if inCode:
                 # Use verbatim sentinels to write all directives.
                 at.putCodeLine(s, i)
@@ -1883,7 +1883,7 @@ class AtFile:
         """
         This code puts only the first of two or more cloned siblings, preceding
         the clone with an @clone n sentinel.
-        
+
         This is a debatable choice: the cloned tree appears only once in the
         external file. This should be benign; the text created by @all is
         likely to be used only for recreating the outline in Leo. The
@@ -2230,7 +2230,7 @@ class AtFile:
     def putSentinel(self, s):
         '''
         Write a sentinel whose text is s, applying the CWEB hack if needed.
-        
+
         This method outputs all sentinels.
         '''
         at = self
@@ -2380,7 +2380,7 @@ class AtFile:
     def directiveKind4(self, s, i):
         """
         Return the kind of at-directive or noDirective.
-        
+
         Potential simplifications:
         - Using strings instead of constants.
         - Using additional regex's to recognize directives.
@@ -2480,7 +2480,7 @@ class AtFile:
     def outputStringWithLineEndings(self, s):
         """
         Write the string s as-is except that we replace '\n' with the proper line ending.
-        
+
         Calling self.onl() runs afoul of queued newlines.
         """
         at = self
@@ -2491,7 +2491,7 @@ class AtFile:
     def precheck(self, fileName, root):
         """
         Check whether a dirty, potentially dangerous, file should be written.
-        
+
         Return True if so.  Return False *and* issue a warning otherwise.
         """
         at = self
@@ -3013,7 +3013,7 @@ class AtFile:
         '''
         Return True if Leo should warn the user that p is an @<file> node that
         was not read during startup. Writing that file might cause data loss.
-        
+
         See #50: https://github.com/leo-editor/leo-editor/issues/50
         '''
         trace = 'save' in g.app.debug
@@ -3249,8 +3249,8 @@ class FastAtRead:
         #
         # get the patterns.
         data = self.get_patterns(delims)
+        # pylint: disable=line-too-long
         after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat, end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = data
-
         #@-<< init scan_lines >>
         #@+<< define dump_v >>
         #@+node:ekr.20180613061743.1: *4* << define dump_v >>
@@ -3291,8 +3291,8 @@ class FastAtRead:
                         in_raw = False
                         verbatim = False
                     else:
-                         body.append(line)
-                         # Continue verbatim/raw mode.
+                        # Continue verbatim/raw mode.
+                        body.append(line)
                 else:
                     body.append(line)
                     verbatim = False

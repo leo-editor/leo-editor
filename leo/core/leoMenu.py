@@ -261,7 +261,7 @@ class LeoMenu:
     def createMenuEntries(self, menu, table):
         """
         Create a menu entry from the table.
-        
+
         This method shows the shortcut in the menu, but **never** binds any shortcuts.
         """
         c = self.c
@@ -289,7 +289,7 @@ class LeoMenu:
     def createMasterMenuCallback(self, command, commandName):
         """
         Create a callback for the given args.
-        
+
         - If command is a string, it is treated as a command name.
         - Otherwise, it should be a callable representing the actual command.
         """
@@ -349,13 +349,13 @@ class LeoMenu:
     def getMenuEntryInfo(self, data, menu):
         """
         Parse a single entry in the table passed to createMenuEntries.
-        
+
         Table entries have the following formats:
-            
+
         1. A string, used as the command name.
         2. A 2-tuple: (command_name, command_func)
         3. A 3-tuple: (command_name, menu_shortcut, command_func)
-        
+
         Special case: If command_name is None or "-" it represents a menu separator.
         """
         done = False

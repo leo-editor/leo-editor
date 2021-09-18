@@ -264,7 +264,7 @@ class LeoPluginsController:
         self.signonModule = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
-        assert(g)
+        assert g
         g.act_on_node = CommandChainDispatcher()
         g.visit_tree_item = CommandChainDispatcher()
         g.tree_popup_handlers = []
@@ -419,7 +419,7 @@ class LeoPluginsController:
     def regularizeName(self, moduleOrFileName):
         """
         Return the module name used as a key to this modules dictionaries.
-        
+
         We *must* allow .py suffixes, for compatibility with @enabled-plugins nodes.
         """
         if not moduleOrFileName.endswith('.py'):
