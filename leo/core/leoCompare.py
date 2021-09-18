@@ -414,7 +414,7 @@ class BaseLeoCompare:
 class LeoCompare(BaseLeoCompare):
     """
     A class containing Leo's compare code.
-    
+
     These are not very useful comparisons.
     """
     pass
@@ -570,7 +570,7 @@ class CompareLeoOutlines:
     def open_outline(self, fn):
         """
         Find the commander for fn, creating a new outline tab if necessary.
-        
+
         Using open commanders works because we always read entire .leo files.
         """
         for frame in g.app.windowList:
@@ -585,7 +585,7 @@ class CompareLeoOutlines:
 def diff_and_open_leo_files(event):
     """
     Open a dialog prompting for two or more .leo files.
-    
+
     Opens all the files and creates a top-level node in c's outline showing
     the diffs of those files, two at a time.
     """
@@ -614,7 +614,7 @@ def diffMarkedNodes(event):
     - Creates a "diff marked node" as the last top-level node. The body of
       this node contains "diff n" nodes, one for each pair of compared
       nodes.
-      
+
     - Each diff n contains the diffs between the two diffed nodes, that is,
       difflib.Differ().compare(p1.b, p2.b).  The children of the diff n are
       *clones* of the two compared nodes.
