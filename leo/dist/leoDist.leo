@@ -2058,8 +2058,6 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">From leo-editor folder:
 
-rom leo-editor directory
-
 **build**
 
 python -m build
