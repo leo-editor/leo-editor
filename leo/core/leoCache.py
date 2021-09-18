@@ -92,9 +92,9 @@ class CommanderCacher:
     def save(self, c, fn):
         """
         Save the per-commander cache.
-        
+
         Change the cache prefix if changeName is True.
-        
+
         save and save-as set changeName to True, save-to does not.
         """
         self.commit()

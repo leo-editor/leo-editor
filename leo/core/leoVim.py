@@ -10,7 +10,7 @@ Leo's vim mode.
 `@bool vim-mode` enables vim *mode*.
 
 `@keys Vim bindings` enables vim *emulation*.
-         
+
 Vim *mode* is independent of vim *emulation* because
 k.masterKeyHandler dispatches keys to vim mode before
 doing the normal key handling that vim emulation uses.
@@ -67,9 +67,9 @@ class VimEvent:
 class VimCommands:
     """
     A class that handles vim mode in Leo.
-    
+
     In vim mode, k.masterKeyHandler calls
-    
+
     """
     #@+others
     #@+node:ekr.20131109170017.16507: *3*  vc.ctor & helpers
@@ -950,7 +950,7 @@ class VimCommands:
         # d2w doesn't extend to line.  d2j does.
         w = self.w
         if self.is_text_wrapper(w):
-            extend_to_line = self.d_stroke in ('jk')
+            extend_to_line = self.d_stroke in 'jk'
             s = w.getAllText()
             i1, i2 = self.motion_i, w.getInsertPoint()
             if i1 == i2:
@@ -1696,7 +1696,7 @@ class VimCommands:
         # The motion is responsible for all repeat counts.
         # y2w doesn't extend to line.  y2j does.
         if self.is_text_wrapper(self.w):
-            extend_to_line = self.y_stroke in ('jk')
+            extend_to_line = self.y_stroke in 'jk'
             # n = self.n1 * self.n
             w = self.w
             s = w.getAllText()

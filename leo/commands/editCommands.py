@@ -78,9 +78,9 @@ def lineScrollHelper(c, prefix1, prefix2, suffix):
 def delete_trace_statements(event=None):
     """
     Delete all trace statements/blocks from c.p to the end of the outline.
-    
+
     **Warning**: Use this command at your own risk.
-    
+
     It can cause "if" and "else" clauses to become empty, resulting in
     syntax errors. Having said that, pyflakes & pylint will usually catch
     the problems.
@@ -1199,8 +1199,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         #        Let repr do the work.
         for i, data in enumerate(reversed(g.app.lossage)):
             print(f"{i:>2} {data!r}")
-            
-            
+
+
         #k = self.c.k
         # aList = g.app.lossage
         # aList.reverse()
@@ -1767,7 +1767,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         n += 1
                         ins -= 1
                     sins = ins  # start of insert, to collect trailing whitespace
-                    while sins > 0 and s[sins - 1] in (' \t'):
+                    while sins > 0 and s[sins - 1] in ' \t':
                         sins -= 1
                     oldSel = (sins, ins)
                     self.insertNewlineHelper(w, oldSel, undoType=None)
@@ -1959,7 +1959,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def doPlainTab(self, s, i, tab_width, w):
         """
         A helper for selfInsertCommand, called from updateTab.
-        
+
         Insert spaces equivalent to one tab.
         """
         trace = 'keys' in g.app.debug
@@ -2318,7 +2318,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if s:
             i, j = g.getLine(s, ins)
             i1 = i
-            while i < j and s[i] in (' \t'):
+            while i < j and s[i] in ' \t':
                 i += 1
             if i == ins:
                 i = i1
@@ -2337,7 +2337,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
-        while i < j and s[i] in (' \t'):
+        while i < j and s[i] in ' \t':
             i += 1
         self.moveToHelper(event, i, extend=False)
     #@+node:ekr.20150514063305.316: *4* ec.backward*/ExtendSelection

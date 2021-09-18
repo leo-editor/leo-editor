@@ -154,10 +154,10 @@ class BackgroundProcessManager:
         """
         Put a string to the originating log.
         This is not what g.es_print does!
-        
+
         Create clickable links if s matches self.data.link_pattern.
         See p.get_UNL.
-        
+
         New in Leo 6.4: get the filename from link_pattern if link_root is None.
         """
         tag = 'BPM.put_log'
@@ -235,7 +235,7 @@ class BackgroundProcessManager:
     ):
         """
         Start or queue a process described by command and fn.
-        
+
         Don't set self.data unless we start the process!
         """
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)

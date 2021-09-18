@@ -30,7 +30,7 @@ from leo.core import leoGlobals as g
 def import_fail(s):
     if not g.unitTesting:
         print(f"leoIpython.py: can not import {s}")
-        
+
 # pylint: disable=import-error
 
 try:
@@ -126,7 +126,7 @@ class InternalIPKernel:
     def new_qt_console(self, event=None):
         """
         Start a new qtconsole connected to our kernel.
-        
+
         Called from qt_gui.runWithIpythonKernel.
         """
         trace = 'ipython' in g.app.debug
