@@ -289,7 +289,7 @@ class QTextMixin:
         v.insertSpot = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if i > j: i, j = j, i
-        assert(i <= j)
+        assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.getYScrollPosition()
@@ -1747,7 +1747,7 @@ class QTextEditWrapper(QTextMixin):
                 break
         sb = control.verticalScrollBar()
         if moved:
-            if (op == MoveOperation.Up):
+            if op == MoveOperation.Up:
                 cursor.movePosition(MoveOperation.Down, moveMode)
                 sb.triggerAction(SliderAction.SliderPageStepSub)
             else:
@@ -1870,7 +1870,7 @@ class QTextEditWrapper(QTextMixin):
         v = self.c.p.v  # Always accurate.
         v.insertSpot = ins
         if i > j: i, j = j, i
-        assert(i <= j)
+        assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.verticalScrollBar().value()

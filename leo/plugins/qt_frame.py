@@ -1742,7 +1742,7 @@ class LeoQtBody(leoFrame.LeoBody):
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors(self):
-        c, p = self.c, self.c.p;
+        c, p = self.c, self.c.p
         body = p.b
         d = self.editorWrappers
         if len(list(d.keys())) < 2:

@@ -1834,7 +1834,7 @@ class StyleSheetManager:
             if sheet == old_sheet:
                 break
         else:
-           g.trace('Too many iterations')
+            g.trace('Too many iterations')
         if to_do:
             g.trace('Unresolved @constants')
             g.printObj(to_do)
