@@ -618,7 +618,7 @@ class BookMarkDisplay:
         KeyboardModifier.AltModifier | KeyboardModifier.ShiftModifier: 'AltShift',
         KeyboardModifier.ControlModifier: 'Control',
         KeyboardModifier.ControlModifier | KeyboardModifier.ShiftModifier: 'ControlShift',
-        KeyboardModifier.ShiftModifier: 'Shift'
+        KeyboardModifier.ShiftModifier: 'Shift',
     }
 
     #@+others
