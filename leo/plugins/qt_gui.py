@@ -462,9 +462,9 @@ class LeoQtGui(leoGui.LeoGui):
     ):
         """
         Create and run an askYesNo dialog.
-        
+
         Return one of ('yes', 'no', 'cancel', 'yes-to-all').
-        
+
         """
         if g.unitTesting:
             return None
@@ -1240,7 +1240,7 @@ class LeoQtGui(leoGui.LeoGui):
 
 
     class DialogWithCheckBox(QtWidgets.QMessageBox):
-        
+
         def __init__(self, controller, tip):
             super().__init__()
             c = g.app.log.c
@@ -1295,7 +1295,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.update_tips_setting()
             if b != m.next_tip_button:
                 break
-      
+
     #@+node:ekr.20180117080131.1: *4* onButton (not used)
     def onButton(self, m):
         m.hide()

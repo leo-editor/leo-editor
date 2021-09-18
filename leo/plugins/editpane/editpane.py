@@ -442,7 +442,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 act.setChecked(widget_class == current)
                 act.triggered.connect(cb)
                 menu.addAction(act)
-                
+
         button = self.control_menu_button
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
@@ -461,7 +461,7 @@ class LeoEditPane(QtWidgets.QWidget):
             act.setCheckable(True)
             act.setChecked(mode == self.mode)
             menu.addAction(act)
-        
+
         button = self.btn_mode
         point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
