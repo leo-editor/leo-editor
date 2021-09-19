@@ -182,7 +182,7 @@ class To_Python:
             elif self.match(aList, i, ' ') or self.match(aList, i, '\t'):
                 # Replace all whitespace by one blank.
                 j = self.skip_ws(aList, i)
-                assert(j > i)
+                assert j > i
                 aList[i:j] = [' ']
                 i += 1  # make sure we don't go past a newline!
             else: i += 1
@@ -222,7 +222,7 @@ class To_Python:
             if self.is_ws(aList[i]):
                 j = i
                 i = self.skip_ws(aList, i)
-                assert(j < i)
+                assert j < i
                 if i >= len(aList) or aList[i] == '\n':
                     # print "removing trailing ws:", `i-j`
                     del aList[j:i]
@@ -343,7 +343,7 @@ class To_Python:
     #@+node:ekr.20150514063305.151: *4* skip
     #@+node:ekr.20150514063305.152: *5* skip_c_block_comment
     def skip_c_block_comment(self, s, i):
-        assert(self.match(s, i, "/*"))
+        assert self.match(s, i, "/*")
         i += 2
         while i < len(s):
             if self.match(s, i, "*/"):
@@ -364,7 +364,7 @@ class To_Python:
         return i
     #@+node:ekr.20150514063305.155: *5* skip_past_word
     def skip_past_word(self, s, i):
-        assert(s[i].isalpha() or s[i] == '~')
+        assert s[i].isalpha() or s[i] == '~'
         # Kludge: this helps recognize dtors.
         if s[i] == '~':
             i += 1
@@ -378,7 +378,7 @@ class To_Python:
     #@+node:ekr.20150514063305.156: *5* skip_string
     def skip_string(self, s, i):
         delim = s[i]  # handle either single or double-quoted strings
-        assert(delim == '"' or delim == "'")
+        assert delim == '"' or delim == "'"
         i += 1
         while i < len(s):
             if s[i] == delim:
@@ -397,15 +397,19 @@ class To_Python:
         elif self.match(s, i, "/*"):
             j = self.skip_c_block_comment(s, i)
         else:
-            assert(0)
+            assert False
         return j
     #@+node:ekr.20150514063305.158: *5* skip_to_matching_bracket
     def skip_to_matching_bracket(self, s, i):
         ch = s[i]
-        if ch == '(': delim = ')'
-        elif ch == '{': delim = '}'
-        elif ch == '[': delim = ']'
-        else: assert(0)
+        if ch == '(':
+            delim = ')'
+        elif ch == '{':
+            delim = '}'
+        elif ch == '[':
+            delim = ']'
+        else:
+            assert False
         i += 1
         while i < len(s):
             ch = s[i]
@@ -592,7 +596,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 5
             elif self.match_word(aList, i, "for"):
                 i += 3
-            else: assert(0)
+            else:
+                assert False
             # Make sure one space follows the keyword.
             k = i
             i = self.skip_ws(aList, i)
@@ -659,7 +664,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             to
                 def y (z1,..zn): {
             """
-            assert(self.match(aList, i, "{"))
+            assert self.match(aList, i, "{")
             prevSemi = self.skip_ws_and_nl(aList, prevSemi)
             close = self.prevNonWsOrNlChar(aList, i)
             if close < 0 or aList[close] != ')':
@@ -671,7 +676,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if close2 != close:
                 return 1 + self.skip_to_matching_bracket(aList, i)
             open_paren = firstOpen
-            assert(aList[open_paren] == '(')
+            assert aList[open_paren] == '('
             head = aList[prevSemi:open_paren]
             # do nothing if the head starts with "if", "for" or "while"
             k = self.skip_ws(head, 0)
@@ -699,8 +704,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return prevSemi + len(result)
         #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
         def massageFunctionArgs(self, args):
-            assert(args[0] == '(')
-            assert(args[-1] == ')')
+            assert args[0] == '('
+            assert args[-1] == ')'
             result = ['(']
             lastWord = []
             if self.class_name:
@@ -1414,7 +1419,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 to
                     def y (z1,..zn): { # (public|private|export)
                 """
-                assert(self.match(aList, i, "{"))
+                assert self.match(aList, i, "{")
                 prevSemi = self.skip_ws_and_nl(aList, prevSemi)
                 close = self.prevNonWsOrNlChar(aList, i)
                 if close < 0 or aList[close] != ')':
@@ -1426,7 +1431,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if close2 != close:
                     return 1 + self.skip_to_matching_bracket(aList, i)
                 open_paren = firstOpen
-                assert(aList[open_paren] == '(')
+                assert aList[open_paren] == '('
                 head = aList[prevSemi:open_paren]
                 # do nothing if the head starts with "if", "for" or "while"
                 k = self.skip_ws(head, 0)
@@ -1453,8 +1458,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return prevSemi + len(result)
             #@+node:ekr.20150514063305.186: *7* massageFunctionArgs
             def massageFunctionArgs(self, args):
-                assert(args[0] == '(')
-                assert(args[-1] == ')')
+                assert args[0] == '('
+                assert args[-1] == ')'
                 result = ['(']
                 lastWord = []
                 if self.class_name:

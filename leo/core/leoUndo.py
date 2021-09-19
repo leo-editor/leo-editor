@@ -409,7 +409,7 @@ class Undoer:
     def afterChangeBody(self, p, command, bunch):
         """
         Create an undo node using d created by beforeChangeNode.
-        
+
         *Important*: Before calling this method, caller must:
         - Set p.v.b. (Setting p.b would cause a redraw).
         - Set the desired selection range and insert point.
@@ -774,7 +774,7 @@ class Undoer:
     def beforeChangeHeadline(self, p):
         """
         Return data that gets passed to afterChangeNode.
-        
+
         The oldHead kwarg works around a Qt difficulty when changing headlines.
         """
         u = self
@@ -902,14 +902,14 @@ class Undoer:
         """
         Save enough information to undo or redo a typing operation efficiently,
         that is, with the proper granularity.
-        
+
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.
-        
+
         **Important**: Code should call this method *only* when the user has
         actually typed something. Commands should use u.beforeChangeBody and
         u.afterChangeBody.
-        
+
         Only qtm.onTextChanged and ec.selfInsertCommand now call this method.
         """
         c, u, w = self.c, self, self.c.frame.body.wrapper
@@ -1205,7 +1205,7 @@ class Undoer:
     def updateAfterTyping(self, p, w):
         """
         Perform all update tasks after changing body text.
-        
+
         This is ugly, ad-hoc code, but should be done uniformly.
         """
         c = self.c
@@ -1458,9 +1458,9 @@ class Undoer:
     def redoMove(self):
         u = self; c = u.c; cc = c.chapterController
         v = u.p.v
-        assert(u.oldParent_v)
-        assert(u.newParent_v)
-        assert(v)
+        assert u.oldParent_v
+        assert u.newParent_v
+        assert v
         if cc:
             cc.selectChapterByName('main')
         # Adjust the children arrays of the old parent.
@@ -1787,9 +1787,9 @@ class Undoer:
         u = self; c = u.c; cc = c.chapterController
         if cc: cc.selectChapterByName('main')
         v = u.p.v
-        assert(u.oldParent_v)
-        assert(u.newParent_v)
-        assert(v)
+        assert u.oldParent_v
+        assert u.newParent_v
+        assert v
         # Adjust the children arrays.
         assert u.newParent_v.children[u.newN] == v
         del u.newParent_v.children[u.newN]
@@ -1856,7 +1856,8 @@ class Undoer:
     ):
         """Handle text undo and redo: converts _new_ text into _old_ text."""
         # newNewlines is unused, but it has symmetry.
-        u = self; c = u.c;
+        u = self
+        c = u.c
         w = c.frame.body.wrapper
         #@+<< Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>

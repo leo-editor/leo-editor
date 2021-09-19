@@ -31,6 +31,8 @@ def import_fail(s):
     if not g.unitTesting:
         print(f"leoIpython.py: can not import {s}")
 
+# pylint: disable=import-error
+
 try:
     from ipykernel.connect import connect_qtconsole
 except ImportError:
@@ -124,7 +126,7 @@ class InternalIPKernel:
     def new_qt_console(self, event=None):
         """
         Start a new qtconsole connected to our kernel.
-        
+
         Called from qt_gui.runWithIpythonKernel.
         """
         trace = 'ipython' in g.app.debug

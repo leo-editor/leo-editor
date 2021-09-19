@@ -76,7 +76,7 @@ class BridgeController:
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
     def __init__(self,
-        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose, 
+        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose,
         vs_code_flag=False,  # #2098.
     ):
         """Ctor for the BridgeController class."""

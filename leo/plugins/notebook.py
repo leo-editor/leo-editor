@@ -72,7 +72,7 @@ class NbController:
         #self.add_all_nodes()
         #self.add_subtree(p)
         try:
-            # pylint: disable=no-name-in-module
+            # pylint: disable=import-error, no-name-in-module
             from PyQt5.QtQuick import QQuickView
             self.view = view = QQuickView()
         except Exception:  #1746.

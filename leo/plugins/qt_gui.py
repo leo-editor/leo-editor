@@ -462,9 +462,9 @@ class LeoQtGui(leoGui.LeoGui):
     ):
         """
         Create and run an askYesNo dialog.
-        
+
         Return one of ('yes', 'no', 'cancel', 'yes-to-all').
-        
+
         """
         if g.unitTesting:
             return None
@@ -664,7 +664,6 @@ class LeoQtGui(leoGui.LeoGui):
             # Load viewrendered (and call vr.onCreate) *only* if not already loaded.
             if (
                 not pc.isLoaded('viewrendered.py')
-                and not pc.isLoaded('viewrendered2.py')
                 and not pc.isLoaded('viewrendered3.py')
             ):
                 vr = pc.loadOnePlugin('viewrendered.py')
@@ -1241,7 +1240,7 @@ class LeoQtGui(leoGui.LeoGui):
 
 
     class DialogWithCheckBox(QtWidgets.QMessageBox):
-        
+
         def __init__(self, controller, tip):
             super().__init__()
             c = g.app.log.c
@@ -1296,7 +1295,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.update_tips_setting()
             if b != m.next_tip_button:
                 break
-      
+
     #@+node:ekr.20180117080131.1: *4* onButton (not used)
     def onButton(self, m):
         m.hide()
@@ -1375,6 +1374,7 @@ class LeoQtGui(leoGui.LeoGui):
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
     if isQt5:
+        # pylint: disable=no-name-in-module
         # To do: https://doc.qt.io/qt-5/qsignalspy.html
         from PyQt5.QtTest import QSignalSpy
         assert QSignalSpy
@@ -1834,7 +1834,7 @@ class StyleSheetManager:
             if sheet == old_sheet:
                 break
         else:
-           g.trace('Too many iterations')
+            g.trace('Too many iterations')
         if to_do:
             g.trace('Unresolved @constants')
             g.printObj(to_do)

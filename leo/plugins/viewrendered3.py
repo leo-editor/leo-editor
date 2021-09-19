@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.43
+About Viewrendered3 V3.45
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -265,7 +265,7 @@ then the julia processor will be invoked with the command line::
     <path-to-julia> -q <progfile>
 
 Any number of parameters may be included on one @param line, and
-multiple @param directives are allowed.
+multiple @param directives are allowed.  Parameters can include redirection symbols (e.g., "<", ">").
 
 Only @param directives that occur inside a code block are recognized.  Thus the following @param directive is not recognized because it is
 outside a code block::
@@ -294,11 +294,13 @@ rarely a reason to invoke any of them, except two:
     1. ``vr3-toggle``, which shows or hides the VR3 pane. 
     This is best bound to a hot key (see `Hot Key`_).
 
-    2.``vr3-open-markup-in-editor`` exports the generated markup to
-    temporary file and opens it in a text editor. The editor is one
-    specified by the setting ``@string vr3-ext-editor``, by the
-    environmental variable ``EDITOR`` or ``LEO-EDITOR``, or is the default
+    2.``vr3-open-markup-in-editor`` exports the generated markup
+    to temporary file and opens it in a text editor. The editor
+    is one specified by the setting ``@string vr3-ext-editor``,
+    the setting ``@string external-editor``, by the environmental
+    variable ``EDITOR`` or ``LEO-EDITOR``, or is the default 
     editor chosen by Leo.
+
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
 Structured Text
@@ -697,8 +699,8 @@ from leo.core.leoApp import LoadManager as LM
 #@+<< Qt Imports >>
 #@+node:tom.20210517102737.1: *3* << Qt Imports >>
 try:
-    import leo.plugins.qt_text as qt_text
-    import leo.plugins.free_layout as free_layout
+    from leo.plugins import qt_text
+    from leo.plugins import free_layout
     from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
@@ -767,7 +769,7 @@ except ImportError:
 try:
     import matplotlib # Make *sure* this is imported.
     import matplotlib.pyplot as plt
-    import matplotlib.animation as animation
+    from matplotlib import animation
 except ImportError:
     matplotlib = None
     print('VR3: *** No matplotlib')
@@ -1324,16 +1326,27 @@ def shrink_view(event):
 #@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
 @g.command('vr3-open-markup-in-editor')
 def markup_to_editor(event):
+    """Send VR3's markup to an external editor.
+    
+    This is to make it easier to understand the markup, in case it
+    isn't what was expected.  There is currently no way to 
+    write the text back from the editor into VR3.
+    """
     vr3 = getVr3(event)
-    if vr3.external_editor:
-        editor = vr3.external_editor
-    else:
-        editor = g.guessExternalEditor(event.get('c'))
+    editor_from_settings = vr3.external_editor
+    if editor_from_settings.lower() == 'none': # weird but has happened
+        editor_from_settings = ''
+    editor = editor_from_settings or g.guessExternalEditor(event.get('c'))
+
+    if not editor:
+        g.es('No external editor defined', color = 'red')
+        return
 
     with open('vr3_last_markup.txt', 'w', encoding=ENCODING) as f:
         f.write(vr3.last_markup)
 
     cmd = [editor, 'vr3_last_markup.txt']
+    # pylint: disable = consider-using-with
     subprocess.Popen(cmd)
 
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
@@ -2354,7 +2367,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if not nbformat:
                 return 'can not import nbformat to render url: %r' % url
             try:
-                s = urlopen(url).read().decode()
+                with urlopen(url) as u:
+                    s = u.read().decode()
             except Exception:
                 return 'url not found: %s' % url
         try:
@@ -2906,7 +2920,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # We are not checking the return code here, so:
         # pylint: disable=W1510 # Using subprocess.run without explicitly setting `check`
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, encoding='utf-8')
         return result.stdout, result.stderr
     #@-others
     #@+node:TomP.20200112103934.1: *5* process_rst_node
@@ -3281,7 +3295,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = textwrap.dedent(s).strip()  # Sensitive to leading blank lines.
+            s = textwrap.dedent(s).strip()
+                # Sensitive to leading blank lines.
             bytes = g.toEncodedString(s)
             pc.show()
             w.load(QtCore.QByteArray(bytes))

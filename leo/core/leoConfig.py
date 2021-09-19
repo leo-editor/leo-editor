@@ -613,7 +613,7 @@ class ParserBaseClass:
                     itemName = h[len(tag) :].strip()
                     if itemName:
                         if tag == '@menu':
-                            aList2: List[Any] = [] 
+                            aList2: List[Any] = []
                             kind = f"{itemName}"
                             body = p.b
                             self.doPopupItems(p, aList2)  ### Huh?
@@ -1141,7 +1141,7 @@ class ActiveSettingsOutline:
     def add(self, p, h=None):
         """
         Add a node for p.
-        
+
         We must *never* alter p in any way.
         Instead, the org flag tells whether the "ORG:" prefix.
         """
@@ -1200,7 +1200,7 @@ class ActiveSettingsOutline:
             if kind == 'ignore':
                 g.trace('IGNORE:', kind, key)
                 continue
-            if kind in ('error'):
+            if kind == 'error':  # 2021/09/18.
                 g.trace('ERROR:', kind, key)
                 continue
             if kind == target_kind:
@@ -1773,9 +1773,9 @@ class LocalConfigManager:
     def createActivesSettingsOutline(self):
         """
         Create and open an outline, summarizing all presently active settings.
-        
+
         The outline retains the organization of all active settings files.
-        
+
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
         ActiveSettingsOutline(self.c)
@@ -2192,7 +2192,7 @@ class LocalConfigManager:
     def set(self, p, kind, name, val, warn=True):
         """
         Init the setting for name to val.
-        
+
         The "p" arg is not used.
         """
         c = self.c

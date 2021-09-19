@@ -19,7 +19,7 @@ from leo.core.leoCommands import Commands as Cmdr
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
 class NodeIndices:
     """A class managing global node indices (gnx's)."""
-    
+
     __slots__ = ['defaultId', 'lastIndex', 'stack', 'timeString', 'userId']
 
     #@+others
@@ -198,7 +198,7 @@ class NodeIndices:
 
 
 class Position:
-    
+
     __slots__ = [
         '_childIndex', 'stack', 'v',
         #
@@ -274,10 +274,10 @@ class Position:
     def __bool__(self):
         """
         Return True if a position is valid.
-        
+
         The tests 'if p' or 'if not p' are the _only_ correct ways to test
         whether a position p is valid.
-        
+
         Tests like 'if p is None' or 'if p is not None' will not work properly.
         """
         return self.v is not None
@@ -1079,7 +1079,7 @@ class Position:
     def _linkAsRoot(self):
         """Link self as the root node."""
         p = self
-        assert(p.v)
+        assert p.v
         parent_v = p.v.context.hiddenRootNode
         assert parent_v, g.callers()
         #
@@ -1129,8 +1129,8 @@ class Position:
         parent_v = p._parentVnode()
             # returns None if p.v is None
         child = p.v
-        assert(p.v)
-        assert(parent_v)
+        assert p.v
+        assert parent_v
         # Delete the child.
         if (0 <= n < len(parent_v.children) and
             parent_v.children[n] == child
@@ -1478,7 +1478,7 @@ class Position:
     def doDelete(self, newNode=None):
         """
         Deletes position p from the outline.
-        
+
         This is the main delete routine.
         It deletes the receiver's entire tree from the screen.
         Because of the undo command we never actually delete vnodes.
@@ -1913,7 +1913,7 @@ class Position:
 position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
 class PosList(list):
-    
+
     __slots__: List[str] = []
 
     #@+others
@@ -2188,7 +2188,7 @@ class VNode:
     def isAtIgnoreNode(self):
         """
         Returns True if:
-            
+
         - the vnode' body contains @ignore at the start of a line or
 
         - the vnode's headline starts with @ignore.
@@ -2392,7 +2392,7 @@ class VNode:
     def setDirty(self):
         """
         Set the vnode dirty bit.
-        
+
         This method is fast, but dangerous. Unlike p.setDirty, this method does
         not call v.setAllAncestorAtFileNodesDirty.
         """
@@ -2481,7 +2481,7 @@ class VNode:
     def setAllAncestorAtFileNodesDirty(self):
         """
         Original idea by Виталије Милошевић (Vitalije Milosevic).
-        
+
         Modified by EKR.
         """
         v = self
@@ -2626,7 +2626,7 @@ class VNode:
     def _deleteAllChildren(self):
         """
         Delete all children of self.
-        
+
         This is a low-level method, used by the read code.
         It is not intended as a general replacement for p.doDelete().
         """

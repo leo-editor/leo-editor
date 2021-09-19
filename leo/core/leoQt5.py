@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210407010914.1: * @file leoQt5.py
 """Import wrapper for pyQt5"""
-# pylint: disable=import-error, unused-import
+# pylint: disable=import-error,no-name-in-module,unused-import
 #
 # Required imports
 from PyQt5 import Qt
@@ -94,7 +94,7 @@ ScrollBarPolicy = QtCore.Qt
 SelectionBehavior = QtWidgets.QAbstractItemView
 SelectionMode = QtWidgets.QAbstractItemView
 Shadow = QtWidgets.QFrame
-Shape = QtWidgets.QFrame 
+Shape = QtWidgets.QFrame
 SizeAdjustPolicy = QtWidgets.QComboBox
 SliderAction = QtWidgets.QAbstractSlider
 StandardButton = QtWidgets.QDialogButtonBox
