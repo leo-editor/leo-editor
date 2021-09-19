@@ -3814,7 +3814,7 @@ def main():  # pragma: no cover (tested in client)
                 await websocket.send(answer)
 
                 # If not a 'getter' send refresh signal to other clients
-                if controller.action[0:5] != "!get_":
+                if controller.action[0:5] != "!get_" and controller.action != "!do_nothing":
                     await notify_clients(controller.action, websocket)
 
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
