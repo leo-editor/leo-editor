@@ -180,8 +180,6 @@
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 </v>
-<v t="maphew.20180224170853.1"></v>
-<v t="ekr.20210815103531.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -252,7 +250,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 b3 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -1477,7 +1475,7 @@ g.es_print('done')
 LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 5.x, not 5.x-final.
+  The final version in PKG-INFO.TXT must be called 6.x, not 6.x-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Check 'PKG-INFO.TXT'
@@ -1492,12 +1490,15 @@ LeoPyRef.leo:
 - run write-LeoPyRef button in LeoPy.leo.
 - Run `script: check-files`.</t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
-- Copy files to web, including leo/doc/html/index.html
+  - Run rst3 command in LeoDocs.leo.
+  - In leo/doc/html run:
+    make clean
+    make html
+- Copy files from leo/doc/html/_build/html to web (FileZilla)
   Do **not** copy searchindex.js.
-- tools/webroot/*  go to top of website, e.g.
-      tools/webroot/load-leo.html --&gt; http://leoeditor.com/load-leo.html</t>
+- Copy leo/doc/html/index.html to web (FileZilla)
+</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
-- Run all "check" buttons in leoSettings.leo.
 - Run all unit tests, on Windows and Linux.
 - Run pylint (EKR's ll -a script).
 </t>
@@ -1508,20 +1509,20 @@ LeoPyRef.leo:
   - Tags should start with "v"
 
 git checkout master
-git tag -a v6.3 -m "Added v6.3 tag"
+git tag -a v6.NNN -m "Added v6.NNN tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 - Update date of the release.</t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge, create dev tag that matches
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
     static version added to leoversion.py earlier.
     #static version = '6.4-devel'
 
 git checkout devel
-git tag -a v6.4-devel -m "Added v6.4.devel tag"
-git push --follow-tags
 update version in leoVersion.py.
+git tag -a v6.NNN-devel -m "Added v6.NNN-devel tag"
+git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
@@ -1986,7 +1987,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 - Fix any conflicts and push.
 - git checkout master
 - git merge &lt;rel branch&gt;</t>
-<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: When a release tag is created on Master it should be merged to Devel quickly.
+<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">When a release tag is created on Master it should be merged to Devel quickly.
 
 git checkout devel
 git merge master (will update leoVersion.py, so tags are also updated)
@@ -1998,7 +1999,7 @@ There is a "Draft New Release" button at the top-right of the page.
 </t>
 <t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
 
-Public announcements, after Matt creates a package:
+Public announcements, after creating a package.
 
 - Update version number on Wikipedia: https://en.wikipedia.org/wiki/Leo_(text_editor)
 
@@ -2012,9 +2013,7 @@ Public announcements, after Matt creates a package:
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
   
-- Send email to Matt.
-
-- [Matt] Register Leo at https://pypi.python.org/pypi/leo
+- Register Leo at https://pypi.python.org/pypi/leo
 
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
@@ -2058,8 +2057,6 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">From leo-editor folder:
 
-rom leo-editor directory
-
 **build**
 
 python -m build
@@ -2073,11 +2070,18 @@ python -m twine upload --repository testpypi dist/*
 python -m twine upload -r pypi dist/*
 
 username:  __token__
-password:  (copy it)
+password:  EKR: Copy contents ofleo_pypi_token.txt
+           Then paste using "Paste" from console Edit menu.
 
 **install**
 
-python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3</t>
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3
+
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.4b3
+
+**uninstall after testint**
+
+python -m pip uninstall leo</t>
 <t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
    This branch holds all work for 6.4, including beta and rc releases.
 

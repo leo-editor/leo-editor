@@ -26275,7 +26275,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20210917085922.1">Leo http://leoeditor.com 6.4 b3 is now available on
+<t tx="ekr.20210917085922.1">Leo http://leoeditor.com 6.4 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
