@@ -95,13 +95,16 @@ sftp-cache-credentials = True`.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20140218144401.6038: ** << imports >>
+# pylint: disable=ungrouped-imports
+from leo.core import leoGlobals as g
+
 try:
     import paramiko
 except ImportError:
     paramiko = None
-    print('sftp.py: can not import paramiko')
+    if not g.unitTesting:
+        print('sftp.py: can not import paramiko')
 
-from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 #
 # Fail fast, right after all imports.

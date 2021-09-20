@@ -925,10 +925,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
             g: The leo.core.leoGlobals module.
             p: The presently selected position, c.p.
 
-        @test scripts predefine all the above, plus::
-
-            self: The instance of unittest.TestCase
-
         Commands class
         ==============
 
@@ -1186,10 +1182,11 @@ class HelpCommandsClass(BaseEditCommandsClass):
         finally:
             sys.stdout = old
         if not s2:
-            return
+            return ''
         # Send it to the vr pane as a <pre> block
         s2 = '<pre>' + s2 + '</pre>'
         c.putHelpFor(s2)
+        return s2  # For unit tests.
     #@-others
 #@-others
 #@-leo

@@ -58,7 +58,6 @@
 <v t="ekr.20180319044254.30"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20180319044254.31"><vh>rst test (including url)</vh></v>
 </v>
-<v t="ekr.20200908073756.1"><vh>render test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -953,9 +952,5 @@ This is a comment</t>
 <t tx="ekr.20180319044254.9">https://www.youtube.com/watch?v=EB3IokHelRk
 
 # Doesn't play, probably because of https.</t>
-<t tx="ekr.20200908073756.1">@language md
-
-*test*
-</t>
 </tnodes>
 </leo_file>

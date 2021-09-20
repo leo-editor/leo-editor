@@ -472,10 +472,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not word.strip():
             return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType=undoType)
-        if which == 'cap': word2 = word.capitalize()
-        elif which == 'low': word2 = word.lower()
-        elif which == 'up': word2 = word.upper()
-        else: g.trace(f"can not happen: which = {s(which)}")
+        if which == 'cap':
+            word2 = word.capitalize()
+        elif which == 'low':
+            word2 = word.lower()
+        elif which == 'up':
+            word2 = word.upper()
+        else:
+            g.trace(f"can not happen: which = {s(which)}")
         changed = word != word2
         if changed:
             w.delete(i, j)
@@ -2671,32 +2675,36 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w:
-            return  # pragma: no cover (defensive)
+            return
         c.widgetWantsFocusNow(w)
         s = w.getAllText()
         ins = w.getInsertPoint()
         # Scan backwards for i,j.
         i = ins
-        while i >= 0 and s[i] != '\n':
+        while len(s) > i >= 0 and s[i] != '\n':
             if s[i] == '(': break
             i -= 1
-        else: return
+        else:
+            return
         j = ins
-        while j >= 0 and s[j] != '\n':
+        while len(s) > j >= 0 and s[j] != '\n':
             if s[j] == '(': break
             j -= 1
-        if i < j: return
+        if i < j:
+            return
         # Scan forward for i2,j2.
         i2 = ins
         while i2 < len(s) and s[i2] != '\n':
             if s[i2] == ')': break
             i2 += 1
-        else: return
+        else:
+            return
         j2 = ins
         while j2 < len(s) and s[j2] != '\n':
             if s[j2] == ')': break
             j2 += 1
-        if i2 > j2: return
+        if i2 > j2:
+            return
         self.moveToHelper(event, i2 + 1, extend)
     #@+node:ekr.20150514063305.306: *4* ec.pages & helper
     @cmd('back-page')
@@ -2774,9 +2782,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             return  # pragma: no cover (defensive)
         s = w.getAllText()
         i, j = w.getSelectionRange()
-        # A hack for wx gui: set the insertion point to the end of the selection range.
-        if g.app.unitTesting:
-            w.setInsertPoint(j)
         i, j = g.getLine(s, j)
         line = s[i:j]
         if line.strip():
@@ -2887,7 +2892,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Find the starting point of the scan.
         i = ins
         i -= 1  # Ensure some progress.
-        if i < 0:
+        if i < 0 or i >= len(s):
             return
         # Tricky.
         if s[i] == '.':

@@ -294,6 +294,8 @@ class LeoApp:
             # True: we are pre-reading a settings file.
         self.quitting = False
             # True: quitting.  Locks out some events.
+        self.quit_after_load = False
+            # True: quit immediately after loading.  For unit a unit test.
         self.restarting = False
             # True: restarting all of Leo. #1240.
         self.reverting = False
@@ -362,12 +364,8 @@ class LeoApp:
         self.suppressImportChecks = False
             # Used only in basescanner.py
             # True: suppress importCommands.check
-        self.unitTestDict = {}
-            # For communication between unit tests and code.
         self.unitTestGui = None
             # A way to override the gui in external unit tests.
-        self.unitTesting = False
-            # True if unit testing.
         self.unitTestMenusDict = {}
             # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
@@ -1358,7 +1356,7 @@ class LeoApp:
         if g.app.windowList:
             c2 = new_c or g.app.windowList[0].c
             g.app.selectLeoWindow(c2)
-        elif finish_quit and not g.app.unitTesting:
+        elif finish_quit and not g.unitTesting:
             g.app.finishQuit()
         return True  # The window has been closed.
     #@+node:ekr.20031218072017.2612: *4* app.destroyAllOpenWithFiles
@@ -1391,9 +1389,11 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
-            g.app.global_cacher.commit_and_close()
-            g.app.commander_cacher.commit()
-            g.app.commander_cacher.close()
+            if g.app.global_cacher:  # #1766.
+                g.app.global_cacher.commit_and_close()
+            if g.app.commander_cacher:  # #1766.
+                g.app.commander_cacher.commit()
+                g.app.commander_cacher.close()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()
@@ -1421,15 +1421,19 @@ class LeoApp:
         for c in app.commanders():
             app.forgetOpenFile(c.fileName(), force=True)
         # Wait until everything is quiet before really quitting.
-        if trace: g.pr('forceShutdown: before end1')
+        if trace:
+            g.pr('forceShutdown: before end1')
         g.doHook("end1")
-        if trace: g.pr('forceShutdown: after end1')
+        if trace:
+            g.pr('forceShutdown: after end1')
         self.log = None  # Disable writeWaitingLog
         self.killed = True  # Disable all further hooks.
         for w in self.windowList[:]:
-            if trace: g.pr(f"forceShutdown: {w}")
+            if trace:
+                g.pr(f"forceShutdown: {w}")
             self.destroyWindow(w)
-        if trace: g.pr('before finishQuit')
+        if trace:
+            g.pr('before finishQuit')
         self.finishQuit()
     #@+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
@@ -1460,7 +1464,7 @@ class LeoApp:
             # #302: revert to saved doesn't reset external file change monitoring
             g.app.already_open_files = []
         if (d is None or
-            g.app.unitTesting or
+            g.unitTesting or
             g.app.batchMode or
             g.app.reverting or
             g.app.inBridge
@@ -1489,7 +1493,7 @@ class LeoApp:
             # #69.
             return
         if not force and (
-            d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
+            d is None or g.unitTesting or g.app.batchMode or g.app.reverting):
             return
         aList = d.get(tag) or []
         fn = os.path.normpath(fn)
@@ -1505,7 +1509,7 @@ class LeoApp:
         #
         # Do not call g.trace, etc. here.
         d, tag = g.app.db, 'open-leo-files'
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+        if d is None or g.unitTesting or g.app.batchMode or g.app.reverting:
             pass
         elif g.app.preReadFlag:
             pass
@@ -2004,8 +2008,8 @@ class LoadManager:
         """
         lm = self
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
-        assert bindings_d
-        assert settings_d
+        if not bindings_d:  # #1766: unit tests.
+            settings_d, bindings_d = lm.createDefaultSettingsDicts()
         if settings_d2:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)
@@ -2074,8 +2078,11 @@ class LoadManager:
         #
         # The file does not exist, or is not valid.
         # Get the settings from the globals settings dicts.
-        d1 = lm.globalSettingsDict.copy(settingsName)
-        d2 = lm.globalBindingsDict.copy(shortcutsName)
+        if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
+            d1 = lm.globalSettingsDict.copy(settingsName)
+            d2 = lm.globalBindingsDict.copy(shortcutsName)
+        else:
+            d1 = d2 = None
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
@@ -2213,7 +2220,7 @@ class LoadManager:
         theFile = lm.openAnyLeoFile(fn)
         if not theFile:
             return None  # Fix #843.
-        if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
+        if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
             s = f"reading settings in {os.path.normpath(fn)}"
             if 'startup' in g.app.debug:
@@ -2361,6 +2368,12 @@ class LoadManager:
             g.es_print(f"   files:{t4 - t3:5.2f} sec")
             g.es_print(f"   total:{t4 - t1:5.2f} sec")
             print('')
+        # -- quit
+        if g.app.quit_after_load:
+            if 'shutdown' in g.app.debug or 'startup' in g.app.debug:
+                print('--quit')
+            g.app.forceShutdown()
+            return
         # #1128: support for restart-leo.
         if not g.app.start_minimized:
             try:  # Careful: we may be unit testing.
@@ -2517,13 +2530,16 @@ class LoadManager:
             lm.reportDirectories()
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
-        lm.readGlobalSettingsFiles()
-            # reads only standard settings files, using a null gui.
-            # uses lm.files[0] to compute the local directory
-            # that might contain myLeoSettings.leo.
-        # Read the recent files file.
-        localConfigFile = lm.files[0] if lm.files else None
-        g.app.recentFilesManager.readRecentFiles(localConfigFile)
+        if g.app.quit_after_load:
+            localConfigFile = None
+        else:
+            lm.readGlobalSettingsFiles()
+                # reads only standard settings files, using a null gui.
+                # uses lm.files[0] to compute the local directory
+                # that might contain myLeoSettings.leo.
+            # Read the recent files file.
+            localConfigFile = lm.files[0] if lm.files else None
+            g.app.recentFilesManager.readRecentFiles(localConfigFile)
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
@@ -2825,6 +2841,7 @@ class LoadManager:
         add_bool('--minimized',     'start minimized')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
+        add_bool('--quit',          'quit immediately after loading')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
         add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
@@ -2931,6 +2948,8 @@ class LoadManager:
             g.app.enablePlugins = False
         # --no-splash: --minimized disables the splash screen
         g.app.use_splash_screen = not options.no_splash and not options.minimized
+        # -- quit
+        g.app.quit_after_load = options.quit
         # --silent
         g.app.silentMode = options.silent
         # --trace=...
@@ -3337,9 +3356,9 @@ class PreviousSettings:
     """
 
     def __init__(self, settingsDict, shortcutsDict):
-        assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
-        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict)
-            # was TypedDictOfLists.
+        if not shortcutsDict or not settingsDict:  # #1766: unit tests.
+            lm = g.app.loadManager
+            settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 
@@ -3607,7 +3626,7 @@ class RecentFilesManager:
     def updateRecentFiles(self, fileName):
         """Create the RecentFiles menu.  May be called with Null fileName."""
         rf = self
-        if g.app.unitTesting: return
+        if g.unitTesting: return
 
         def munge(name):
             return g.os_path_finalize(name or '').lower()
@@ -3659,7 +3678,7 @@ class RecentFilesManager:
         tag = '.leoRecentFiles.txt'
         rf = self
         # tag:#661. Do nothing if in leoBride.
-        if g.app.unitTesting or g.app.inBridge:
+        if g.unitTesting or g.app.inBridge:
             return
         localFileName = c.fileName()
         if localFileName:

@@ -60,7 +60,7 @@ def _get_action_list():
         'delete_node', 'cut_node',  # dangerous.
         'click_button', 'get_buttons', 'remove_button',  # Require plugins.
         'save_file',  # way too dangerous!
-        # 'set_selection',  ### Not ready yet.
+        # 'set_selection',  # Not ready yet.
         'open_file', 'close_file',  # Done by hand.
         'import_any_file',
         'insert_child_named_node',

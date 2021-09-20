@@ -616,7 +616,7 @@ class LeoServer:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
-            # Add ftm. This wont happen if opened outside leoserver
+            # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")

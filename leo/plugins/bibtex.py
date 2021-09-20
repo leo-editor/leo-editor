@@ -108,7 +108,7 @@ entrytypes.append('@string')
 #@+node:ekr.20100128073941.5370: ** init (bibtex.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    ok = not g.unitTesting
     if ok:
         # Register the handlers...
         g.registerHandler("headdclick1", onIconDoubleClick)
