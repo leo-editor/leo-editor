@@ -1509,7 +1509,7 @@ LeoPyRef.leo:
   - Tags should start with "v"
 
 git checkout master
-git tag -a v6.3 -m "Added v6.3 tag"
+git tag -a v6.NNN -m "Added v6.NNN tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1520,9 +1520,9 @@ git push --follow-tags
     #static version = '6.4-devel'
 
 git checkout devel
-git tag -a v6.4-devel -m "Added v6.4.devel tag"
-git push --follow-tags
 update version in leoVersion.py.
+git tag -a v6.NNN-devel -m "Added v6.NNN-devel tag"
+git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
