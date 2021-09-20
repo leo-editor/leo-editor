@@ -2237,6 +2237,8 @@ class AtFile:
         if at.sentinels or hasattr(at, 'force_sentinels'):
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
+            # #2194.  Put two blanks spaces, so black won't change the sentinel!
+            at.os('  ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
             #   double all '@' signs except the first.
