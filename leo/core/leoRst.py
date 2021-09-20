@@ -17,10 +17,7 @@ available."""
 import io
 import os
 import re
-import textwrap
 import time
-import unittest
-#
 # Third-part imports...
 try:
     import docutils
@@ -29,12 +26,8 @@ try:
     from docutils.parsers import rst
 except Exception:
     docutils = None  # type:ignore
-#
 # Leo imports.
 from leo.core import leoGlobals as g
-import leo.core.leoTest2 as leoTest2
-
-#
 # Aliases & traces.
 StringIO = io.StringIO
 if 'plugins' in getattr(g.app, 'debug', []):
@@ -297,14 +290,14 @@ class RstCommands:
             return
         # Write the intermediate file.
         if self.write_intermediate_file:
-            self.writeIntermediateFile(fn, p, source)
+            self.writeIntermediateFile(fn, source)
         # Should we call docutils?
         if not self.call_docutils:
             return
         if ext not in ('.htm', '.html', '.tex', '.pdf', '.s5', '.odt'):  # #1884: test now.
             return
         # Write the result from docutils.
-        s = self.writeToDocutils(p, source, ext)
+        s = self.writeToDocutils(source, ext)
         if s and ext in ('.html', '.htm'):
             s = self.addTitleToHtml(s)
         if not s:
@@ -313,7 +306,7 @@ class RstCommands:
         with open(fn, 'wb') as f:
             f.write(s)
             self.n_docutils += 1
-        self.report(fn, p)
+        self.report(fn)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s):
         """
@@ -365,7 +358,7 @@ class RstCommands:
                 g.error('did not create:', theDir)
         return ok
     #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile
-    def writeIntermediateFile(self, fn, p, s):
+    def writeIntermediateFile(self, fn, s):
         """Write s to to the file whose name is fn."""
         # ext = self.getOption(p, 'write_intermediate_extension')
         ext = self.write_intermediate_extension
@@ -375,9 +368,9 @@ class RstCommands:
         with open(fn, 'w', encoding=self.encoding) as f:
             f.write(s)
             self.n_intermediate += 1
-        self.report(fn, p)
+        self.report(fn)
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
-    def writeToDocutils(self, p, s, ext):
+    def writeToDocutils(self, s, ext):
         """Send s to docutils using the writer implied by ext and return the result."""
         if not docutils:
             g.error('writeToDocutils: docutils not present')
@@ -387,7 +380,7 @@ class RstCommands:
         overrides = {'output_encoding': self.encoding}
         #
         # Compute the args list if the stylesheet path does not exist.
-        styleSheetArgsDict = self.handleMissingStyleSheetArgs(p)
+        styleSheetArgsDict = self.handleMissingStyleSheetArgs()
         if ext == '.pdf':
             module = g.import_module('leo.plugins.leo_pdf')
             if not module:
@@ -454,7 +447,7 @@ class RstCommands:
             g.es_exception()
         return result
     #@+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs(self, p, s=None):
+    def handleMissingStyleSheetArgs(self, s=None):
         """
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.
@@ -661,7 +654,7 @@ class RstCommands:
         """return s converted to an encoded string."""
         return g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
     #@+node:ekr.20090502071837.91: *4* rst.report
-    def report(self, name, p):
+    def report(self, name):
         """Issue a report to the log pane."""
         if self.silent:
             return
@@ -713,115 +706,7 @@ class RstCommands:
         n = max(4, len(encoded_s))
         return f"{s.strip()}\n{ch * n}"
     #@-others
-#@+node:ekr.20210327072030.1: ** class TestRst3 (unittest.TestCase)
-class TestRst3(unittest.TestCase):  # pragma: no cover
-    '''A class to run rst-related unit tests.'''
-
-    #@+others
-    #@+node:ekr.20210327090734.1: *3* TestRst3.setUp & tearDown
-    def setUp(self):
-        """TestRst3.setUp"""
-        g.unitTesting = True
-        self.c = c = leoTest2.create_app()
-        c.selectPosition(c.rootPosition())
-        self.maxDiff = None  # Allow big diffs.
-
-    def tearDown(self):
-        g.unitTesting = False
-    #@+node:ekr.20210327072030.3: *3* TestRst3.runLegacyTest
-    def runLegacyTest(self, c, p):
-        '''run a legacy rst test.'''
-        rc = c.rstCommands
-        fn = p.h
-        source_p = g.findNodeInTree(c, p, 'source')
-        # source_s1 = source_p.firstChild().b
-        expected_p = g.findNodeInTree(c, p, 'expected')
-        expected_source = expected_p.firstChild().b  # type:ignore
-        root = source_p.firstChild()  # type:ignore
-        rc.http_server_support = True  # Override setting for testing.
-        #
-        # Compute the result.
-        rc.nodeNumber = 0
-        source = rc.write_rst_tree(root, fn)
-        html = rc.writeToDocutils(p, source, ext='.html')
-        #
-        # Tests...
-        # Don't bother testing the html. It will depend on docutils.
-        if 0:
-            g.printObj(g.splitLines(source), tag='source')
-            g.printObj(g.splitLines(expected_source), tag='expected source')
-        self.assertEqual(expected_source, source, msg='expected_s != got_s')
-        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
-    #@+node:ekr.20210327092009.1: *3* TestRst3.test_1
-    def test_1(self):
-        #@+<< define expected_s >>
-        #@+node:ekr.20210327092210.1: *4* << define expected_s >>
-        expected_s = '''\
-        .. rst3: filename: @rst test.html
-
-        .. _http-node-marker-1:
-
-        #####
-        Title
-        #####
-
-        This is test.html
-
-        .. _http-node-marker-2:
-
-        section
-        +++++++
-
-        #@+at This is a doc part
-        # it has two lines.
-        #@@c
-        This is the body of the section.
-
-        '''
-        #@-<< define expected_s >>
-        c = self.c
-        rc = c.rstCommands
-        root = c.rootPosition().insertAfter()
-        root.h = fn = '@rst test.html'
-        #@+<< define root_b >>
-        #@+node:ekr.20210327092818.1: *4* << define root_b >>
-        root_b = '''\
-        #####
-        Title
-        #####
-
-        This is test.html
-        '''
-        #@-<< define root_b >>
-        root.b = textwrap.dedent(root_b)
-        child = root.insertAsLastChild()
-        child.h = 'section'
-        #@+<< define child_b >>
-        #@+node:ekr.20210327093238.1: *4* << define child_b >>
-        child_b = '''\
-        #@+at This is a doc part
-        # it has two lines.
-        #@@c
-        This is the body of the section.
-        '''
-        #@-<< define child_b >>
-        child.b = textwrap.dedent(child_b)
-        expected_source = textwrap.dedent(expected_s)
-        #
-        # Compute the result.
-        rc.nodeNumber = 0
-        rc.http_server_support = True  # Override setting for testing.
-        source = rc.write_rst_tree(root, fn)
-        html = rc.writeToDocutils(root, source, ext='.html')
-        #
-        # Tests...
-        # Don't bother testing the html. It will depend on docutils.
-        self.assertEqual(expected_source, source, msg='expected_source != source')
-        assert html and html.startswith('<?xml') and html.strip().endswith('</html>')
-    #@-others
 #@-others
-if __name__ == '__main__':
-    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

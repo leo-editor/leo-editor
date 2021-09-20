@@ -22,7 +22,6 @@ import subprocess
 import sys
 import time
 from leo.core import leoGlobals as g
-from leo.core import leoTest
 #@+others
 #@+node:ekr.20140331201252.16859: ** main (pylint-leo.py)
 def main(files, verbose):
@@ -156,7 +155,7 @@ scope, verbose = scanOptions()
 if scope == 'version':
     report_version()
 else:
-    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    files = g.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
     main(files, verbose)
 #@@beautify
 

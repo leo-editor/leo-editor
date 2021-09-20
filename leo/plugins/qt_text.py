@@ -868,14 +868,15 @@ if QtWidgets:
         # Add entry to Help menu
         new_entry = ('@item', 'help-for-&highlight-current-line', '')
 
-        for item in g.app.config.menusList:
-            if 'Help' in item[0]:
-                for entry in item[1]:
-                    if entry[0].lower() == '@menu &open help topics':
-                        menu_items = entry[1]
-                        menu_items.append(new_entry)
-                        menu_items.sort()
-                        break
+        if g.app.config:
+            for item in g.app.config.menusList:
+                if 'Help' in item[0]:
+                    for entry in item[1]:
+                        if entry[0].lower() == '@menu &open help topics':
+                            menu_items = entry[1]
+                            menu_items.append(new_entry)
+                            menu_items.sort()
+                            break
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             """Get the horizontal scrollbar position."""

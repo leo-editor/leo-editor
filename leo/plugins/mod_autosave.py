@@ -27,7 +27,7 @@ gDict = {} # Keys are commanders, values are settings dicts.
 #@+node:ekr.20060108123141.2: ** init
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    ok = not g.unitTesting
         # Don't want autosave after unit testing.
     if ok:
         # Register the handlers...
@@ -39,7 +39,7 @@ def onCreate(tag, keywords):
     """Handle the per-Leo-file settings."""
     global gDict
     c = keywords.get('c')
-    if g.app.unitTesting or g.app.killed or not c or not c.exists:
+    if g.unitTesting or g.app.killed or not c or not c.exists:
         return
     # Do nothing here if we already have registered the idle-time hook.
     d = gDict.get(c.hash())

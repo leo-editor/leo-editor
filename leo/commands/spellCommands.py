@@ -444,6 +444,8 @@ class SpellCommandsClass(BaseEditCommandsClass):
     @cmd('spell-tab-open')
     def openSpellTab(self, event=None):
         """Open the Spell Checker tab in the log pane."""
+        if g.unitTesting:
+            return
         c = self.c
         log = c.frame.log
         tabName = 'Spell'

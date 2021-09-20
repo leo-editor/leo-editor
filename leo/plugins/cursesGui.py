@@ -46,13 +46,13 @@ get_input = input
 #@+others
 #@+node:ekr.20150107090324.4: ** init
 def init():
-    ok = not g.app.gui and not g.app.unitTesting # Not Ok for unit testing!
+    ok = not g.app.gui and not g.unitTesting # Not Ok for unit testing!
     if ok:
         g.app.gui = textGui()
         g.app.root = g.app.gui.createRootWindow()
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
-    elif g.app.gui and not g.app.unitTesting:
+    elif g.app.gui and not g.unitTesting:
         s = "Can't install text gui: previous gui installed"
         g.es_print(s, color="red")
     return ok

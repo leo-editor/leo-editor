@@ -86,7 +86,6 @@ def openCheatSheet(self, event=None, redraw=True):
     """Open leo/doc/cheatSheet.leo"""
     c = self
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
-    # g.es_debug(g.os_path_exists(fn),fn)
     if g.os_path_exists(fn):
         c2 = g.openWithFileName(fn, old_c=c)
         if redraw:
@@ -243,17 +242,6 @@ def createMyLeoSettings(c):
     )
     c2.redraw()
     return c2
-#@+node:ekr.20151225095102.1: *3* c_help.openUnittest
-@g.commander_command('open-unittest-leo')
-@g.commander_command('leo-unittest-leo')
-def openUnittest(self, event=None):
-    """Open unittest.leo."""
-    c = self
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
-    if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
-    g.es('not found:', fileName)
 #@+node:ekr.20171124093507.1: ** c_help.Open Leo web pages
 #@+node:ekr.20031218072017.2941: *3* c_help.leoHome
 @g.commander_command('open-online-home')

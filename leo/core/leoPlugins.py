@@ -441,7 +441,7 @@ class LeoPluginsController:
         """
 
         def pr(*args, **keys):
-            if not g.app.unitTesting:
+            if not g.unitTesting:
                 g.es_print(*args, **keys)
 
         s = g.app.config.getEnabledPlugins()
@@ -501,7 +501,7 @@ class LeoPluginsController:
                 return callInitFunction(result)
             #
             # No top-level init function.
-            if g.app.unitTesting:
+            if g.unitTesting:
                 # Do *not* load the module.
                 self.loadedModules[moduleName] = None
                 return None
@@ -618,9 +618,9 @@ class LeoPluginsController:
         except IndexError:
             moduleName = '<no module>'
         if 0:
-            if g.app.unitTesting: g.pr('')
-            g.pr(f"{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
-        if g.app.unitTesting: return
+            if g.unitTesting: g.pr('')
+            g.pr(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
+        if g.unitTesting: return
         if tag in self.handlers:
             g.es(f"*** Two exclusive handlers for '{tag}'")
         else:
@@ -642,8 +642,8 @@ class LeoPluginsController:
         except IndexError:
             moduleName = '<no module>'
         if 0:
-            if g.app.unitTesting: g.pr('')
-            g.pr(f"{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
+            if g.unitTesting: g.pr('')
+            g.pr(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
         items = self.handlers.get(tag, [])
         functions = [z.fn for z in items]
         if fn not in functions:  # Vitalije

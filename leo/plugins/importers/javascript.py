@@ -614,7 +614,7 @@ class TestJSImporter(unittest.TestCase):
             ( (0, 1, ''),   "",             r'var x = (0,'),
         )
         for result, prev_context, s in table:
-            importer = JS_Importer(None) ### c.importCommands)
+            importer = JS_Importer(None)
             prev_state = JS_ScanState()
             prev_state.context = prev_context
             new_state = importer.scan_line(s, prev_state)

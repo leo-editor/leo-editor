@@ -75,7 +75,7 @@ insertOffTime = None
 #@+node:ekr.20050311092840: ** init
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    ok = not g.unitTesting
         # Not Ok for unit testing.
     if ok:
         g.registerHandler(('new','open2'), on_open)
