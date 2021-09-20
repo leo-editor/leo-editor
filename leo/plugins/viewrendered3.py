@@ -714,16 +714,19 @@ try:
     from leo.core.leoQt import QtWebKitWidgets
     QWebView = QtWebKitWidgets.QWebView
 except ImportError:
-    g.trace("Can't import QtWebKitWidgets")
+    if not g.unitTesting:
+        g.trace("Can't import QtWebKitWidgets")
 except AttributeError:
-    g.trace('No QWebView')
+    if not g.unitTesting:
+        g.trace('No QWebView')
 except Exception as e:
     g.trace(e)
 
 if not QWebView:
     try:
         QWebView = QtWidgets.QTextBrowser
-        print("VR3: *** limited RsT rendering in effect")
+        if not g.unitTesting:
+            print("VR3: *** limited RsT rendering in effect")
     except Exception as e:
         g.trace(e)
         # The top-level init function gives the error.
@@ -1535,7 +1538,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def create_pane(self, parent):
         """Create the vr3 pane."""
 
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         # Create the inner contents.
         self.setObjectName('viewrendered3_pane')

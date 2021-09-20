@@ -265,7 +265,7 @@ class LeoMenu:
         This method shows the shortcut in the menu, but **never** binds any shortcuts.
         """
         c = self.c
-        if g.app.unitTesting: return
+        if g.unitTesting: return
         if not menu: return
         self.traceMenuTable(table)
         for data in table:
@@ -507,7 +507,7 @@ class LeoMenu:
         'shortcut': optional menu shortcut.
         """
         c = self.c
-        if g.app.unitTesting: return
+        if g.unitTesting: return
         for d in table:
             label = d.get('name')
             args = d.get('args', [])

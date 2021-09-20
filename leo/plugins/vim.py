@@ -145,7 +145,7 @@ locationMessageGiven = False
 #@+node:ekr.20050226184624: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting # Don't conflict with xemacs plugin.
+    ok = not g.unitTesting # Don't conflict with xemacs plugin.
     if ok:
         # print ('vim.py enabled')
         # Register the handlers...

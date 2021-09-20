@@ -73,7 +73,7 @@ def exec_string_cmd(cmd):
 #@+node:dan.20090203174248.30: ** init (mime.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    ok = not g.unitTesting
     if ok:
         # Open on double click
         g.registerHandler('icondclick1', open_mimetype)

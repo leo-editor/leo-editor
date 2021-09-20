@@ -4,19 +4,21 @@
 
 import json
 import os
-import unittest
 import leo.core.leoserver as leoserver
+from leo.core.leoTest2 import LeoUnitTest
 
 # Globals.
 g = None
 g_leoserver = None
 g_server = None
 
-class TestLeoServer (unittest.TestCase):
+#@+others
+#@+node:ekr.20210901070918.1: ** class TestLeoServer(LeoUnitTest)
+class TestLeoServer(LeoUnitTest):
     """Tests of LeoServer class."""
     request_number = 0
     #@+others
-    #@+node:felix.20210621233316.99: ** test: Setup and TearDown
+    #@+node:felix.20210621233316.99: *3* TestLeoServer: Setup and TearDown
     @classmethod
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
@@ -35,6 +37,8 @@ class TestLeoServer (unittest.TestCase):
             print('===== server did not terminate properly ====')
         except g_leoserver.TerminateServer:
             pass
+        except leoserver.ServerError:
+            pass
 
     def setUp(self):
         global g_server
@@ -44,7 +48,7 @@ class TestLeoServer (unittest.TestCase):
     def tearDown(self):
         g.unitTesting = False
 
-    #@+node:felix.20210621233316.100: ** test._request
+    #@+node:felix.20210621233316.100: *3* TestLeoServer._request
     def _request(self, action, param=None):
         server = self.server
         self.request_number += 1
@@ -56,16 +60,16 @@ class TestLeoServer (unittest.TestCase):
             "id": self.request_number
         }
         if param:
-            d ["param"] = param
+            d["param"] = param
         response = server._do_message(d)
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
         if log_flag:
             g.printObj(answer, tag=f"response to {action!r}")
         return answer
-    #@+node:felix.20210621233316.102: ** test.test_most_public_server_methods
+    #@+node:felix.20210621233316.102: *3* TestLeoServer.test_most_public_server_methods
     def test_most_public_server_methods(self):
-        server=self.server
+        server = self.server
         tag = 'test_most_public_server_methods'
         assert isinstance(server, g_leoserver.LeoServer), self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
@@ -87,7 +91,7 @@ class TestLeoServer (unittest.TestCase):
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
             'save_file',  # way too dangerous!
-            # 'set_selection',  ### Not ready yet.
+            # 'set_selection',  # Not ready yet.
             'open_file', 'close_file',  # Done by hand.
             'import_any_file',
             'insert_child_named_node',
@@ -117,7 +121,7 @@ class TestLeoServer (unittest.TestCase):
                     param = param_d.get(method_name, {})
                     message = {
                         "id": id_,
-                        "action": "!"+method_name,
+                        "action": "!" + method_name,
                         "param": param,
                     }
                     try:
@@ -129,7 +133,7 @@ class TestLeoServer (unittest.TestCase):
                             print(f"Exception in {tag}: {method_name!r} {e}")
         finally:
             server.close_file({"forced": True})
-    #@+node:felix.20210621233316.103: ** test.test_open_and_close
+    #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close
     def test_open_and_close(self):
         # server = self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
@@ -139,7 +143,7 @@ class TestLeoServer (unittest.TestCase):
             # Open file.
             ("!open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
             # Switch to the second file.
-            ("!open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
+            ("!open_file", {"log": log, "filename": test_dot_leo}),  # Does exist.
             # Open again. This should be valid.
             ("!open_file", {"log": False, "filename": test_dot_leo}),
             # Better test of _ap_to_p.
@@ -152,13 +156,13 @@ class TestLeoServer (unittest.TestCase):
             }),
             ("!get_ua", {"log": log}),
             # Close the second file.
-            ("!close_file", {"log": log, "forced": True }),
+            ("!close_file", {"log": log, "forced": True}),
             # Close the first file.
             ("!close_file", {"log": log, "forced": True}),
         ]
         for action, package in table:
             self._request(action, package)
-    #@+node:felix.20210621233316.104: ** test.test_find_commands
+    #@+node:felix.20210621233316.104: *3* TestLeoServer.test_find_commands
     def test_find_commands(self):
 
         tag = 'test_find_commands'
@@ -189,4 +193,6 @@ class TestLeoServer (unittest.TestCase):
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
 
     #@-others
+#@-others
+
 #@-leo
