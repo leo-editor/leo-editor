@@ -1190,7 +1190,7 @@
 </v>
 <v t="felix.20210902210559.1"><vh>The main server loop</vh></v>
 <v t="ekr.20210825021904.1"><vh>Compatibility and extensibility</vh></v>
-<v t="felix.20210825213137.1"><vh>Multiple concurent connections</vh></v>
+<v t="felix.20210825213137.1"><vh>Multiple concurrent connections</vh></v>
 <v t="felix.20210826001302.1"><vh>Command line arguments</vh></v>
 <v t="felix.20210902210710.1"><vh>Acknowledgments</vh></v>
 </v>
