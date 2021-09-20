@@ -250,7 +250,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 b3 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -1475,7 +1475,7 @@ g.es_print('done')
 LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 5.x, not 5.x-final.
+  The final version in PKG-INFO.TXT must be called 6.x, not 6.x-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Check 'PKG-INFO.TXT'
@@ -1490,12 +1490,15 @@ LeoPyRef.leo:
 - run write-LeoPyRef button in LeoPy.leo.
 - Run `script: check-files`.</t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
-- Copy files to web, including leo/doc/html/index.html
+  - Run rst3 command in LeoDocs.leo.
+  - In leo/doc/html run:
+    make clean
+    make html
+- Copy files from leo/doc/html/_build/html to web (FileZilla)
   Do **not** copy searchindex.js.
-- tools/webroot/*  go to top of website, e.g.
-      tools/webroot/load-leo.html --&gt; http://leoeditor.com/load-leo.html</t>
+- Copy leo/doc/html/index.html to web (FileZilla)
+</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
-- Run all "check" buttons in leoSettings.leo.
 - Run all unit tests, on Windows and Linux.
 - Run pylint (EKR's ll -a script).
 </t>

@@ -30877,8 +30877,8 @@ Added gdc.diff_pull_request.</t>
 
 Note: Leo can not recognize @path directives in the body text of @file nodes!</t>
 <t tx="ekr.20210405104357.1">- Support for leoInteg: "Leo in vs-code".
-- Add leoserver.py, stand-alone server for Leo.
-- Support for .leojs, a json outline format.
+  - Add leoserver.py, stand-alone server for Leo.
+  - Support .leojs, a json outline format.
 - Support for Qt6.
 - The wax_off.py script converts function annotations to stub (.pyi) files.
 - Remove support for @root. Create a conversion script.
@@ -30886,7 +30886,7 @@ Note: Leo can not recognize @path directives in the body text of @file nodes!</t
 - Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
 - Add execute-general-script command and c.general_script_helper.
 </t>
-<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 b3 is now available on
+<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
