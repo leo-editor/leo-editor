@@ -3611,6 +3611,7 @@ class FastAtRead:
                     continue
                 # Doc lines start with start_delim + one blank.
                 # #1496: Retire the @doc convention:
+                # #2194: Allow exactly two blanks before the delim.
                 tail = line[len(delim_start) + 1 :]
                 if tail.strip():
                     body.append(tail)
