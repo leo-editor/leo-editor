@@ -3784,13 +3784,13 @@ free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 leo_to_html.py
 mod_scripting.py
-nav_qt.py
+nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
-quicksearch.py
+quicksearch.py      # Nav pane.
 screen_capture.py
 stickynotes.py
-todo.py
-viewrendered.py
+todo.py             # Task pane.
+viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.

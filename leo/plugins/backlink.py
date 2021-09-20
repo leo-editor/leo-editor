@@ -73,10 +73,9 @@ where the extra information is the name of the linked node's parent.
 #     - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB
-# **Important**: this plugin is gui-independent.
 from leo.core import leoGlobals as g
+from leo.core.leoQt import isQt6, Qt, QtGui, QtWidgets, uic
 Tk = None
-Qt = None
 #@+others
 #@+node:ekr.20090616105756.3942: ** class backlinkController
 class backlinkController:
@@ -732,8 +731,6 @@ class backlinkController:
 #@+node:ekr.20090616105756.3939: ** class backlinkQtUI
 if g.app.gui.guiName() == "qt":
 
-    from leo.core.leoQt import Qt,QtGui,QtWidgets,uic
-
     class backlinkQtUI(QtWidgets.QWidget):
         #@+others
         #@+node:ekr.20140920145803.17987: *3* __init__
@@ -936,14 +933,21 @@ if g.app.gui.guiName() == "tkinter":
         #@-others
 #@+node:ekr.20140920145803.17995: ** top-level
 #@+node:ekr.20090616105756.3940: *3* init
+warning_given = False
+
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    ok = g.app.gui.guiName() != 'nullGui'
-    if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
-        # can't use before-create-leo-frame because Qt dock's not ready
-        g.plugin_signon(__name__)
-    return ok
+    global warning_given
+    if g.app.gui.guiName() == 'nullGui':
+        return False
+    if isQt6:
+        if not warning_given:
+            warning_given = True
+            print('backlink.py: Qt6 support not ready yet.')
+        return False
+    g.registerHandler('after-create-leo-frame',onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:ekr.20090616105756.3941: *3* onCreate
 def onCreate (tag, keys):
 
