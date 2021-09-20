@@ -3430,9 +3430,9 @@ class FastAtRead:
             #  @+node:ekr.20180602103135.16: *4* << handle end of @doc & @code parts >>
             if in_doc:
                 # When delim_end exists the doc block:
-                # - begins with the opening delim, alonw on its own line
+                # - begins with the opening delim, alone on its own line
                 # - ends with the closing delim, alone on its own line.
-                # Both of these lines should be skipped
+                # Both of these lines should be skipped.
                 #
                 # #1496: Retire the @doc convention.
                 #        An empty line is no longer a sentinel.
@@ -3607,11 +3607,11 @@ class FastAtRead:
             if in_doc:
                 if delim_end:
                     # doc lines are unchanged.
+                    print('doc line:', repr(line))
                     body.append(line)
                     continue
                 # Doc lines start with start_delim + one blank.
-                # #1496: Retire the @doc convention:
-                # #2194: Allow exactly two blanks before the delim.
+                # #1496: Retire the @doc convention.
                 tail = line[len(delim_start) + 1 :]
                 if tail.strip():
                     body.append(tail)
