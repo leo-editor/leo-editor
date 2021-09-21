@@ -161,7 +161,8 @@ class LeoFind:
         # now that configuration settings are valid,
         # we can finish creating the Find pane.
         dw = c.frame.top
-        if dw: dw.finishCreateLogPane()
+        if dw:
+            dw.finishCreateLogPane()
     #@+node:ekr.20210110073117.4: *4* find.init_ivars_from_settings
     def init_ivars_from_settings(self, settings):
         """
@@ -832,7 +833,8 @@ class LeoFind:
         part1 = f"{head}{sep}{body} {scope}  "
         # Set the type field.
         regex = self.pattern_match
-        if regex: z.append('regex')
+        if regex:
+            z.append('regex')
         table = (
             ('reverse', 'reverse'),
             ('ignore_case', 'noCase'),
@@ -843,7 +845,8 @@ class LeoFind:
         )
         for ivar, s in table:
             val = getattr(self, ivar)
-            if val: z.append(s)
+            if val:
+                z.append(s)
         part2 = ' '.join(z)
         return part1, part2
     #@+node:ekr.20131117164142.16919: *4* find.toggle-find-*
@@ -1908,7 +1911,8 @@ class LeoFind:
         c, u = self.c, self.c.undoer
         if self.pattern_match:
             ok = self.compile_pattern()
-            if not ok: return 0
+            if not ok:
+                return 0
         if self.suboutline_only:
             p = c.p
             after = p.nodeAfterTree()
@@ -2058,7 +2062,8 @@ class LeoFind:
         try:  # Precompile the regexp.
             # pylint: disable=no-member
             flags = re.MULTILINE
-            if self.ignore_case: flags |= re.IGNORECASE
+            if self.ignore_case:
+                flags |= re.IGNORECASE
             # Escape the search text.
             # Ignore the whole_word option.
             s = self.find_text
@@ -2360,7 +2365,8 @@ class LeoFind:
         try:  # Precompile the regexp.
             # pylint: disable=no-member
             flags = re.MULTILINE
-            if self.ignore_case: flags |= re.IGNORECASE
+            if self.ignore_case:
+                flags |= re.IGNORECASE
             # Escape the search text.
             # Ignore the whole_word option.
             s = self.find_text
@@ -2710,7 +2716,8 @@ class LeoFind:
             c.selectPosition(p)
             w = c.frame.body.wrapper
             c.bodyWantsFocus()
-            if i > j: i, j = j, i
+            if i > j:
+                i, j = j, i
             w.setSelectionRange(i, j)
         if len(self.stack) <= 1:
             self.abort_search()
@@ -2729,7 +2736,7 @@ class LeoFind:
         return p, i, j, in_headline
     #@+node:ekr.20131117164142.16954: *5* find.set_widget
     def set_widget(self):  # pragma: no cover (cmd)
-        c = self.c; p = c.currentPosition()
+        c, p = self.c, self.c.p
         wrapper = c.frame.body.wrapper
         if self.in_headline:
             w = c.edit_widget(p)
@@ -2741,7 +2748,8 @@ class LeoFind:
                 w = c.edit_widget(p)
             if not w:  # Should never happen.
                 g.trace('**** no edit widget!')
-                self.in_headline = False; w = wrapper
+                self.in_headline = False
+                w = wrapper
         else:
             w = wrapper
         if w == wrapper:
