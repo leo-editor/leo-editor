@@ -3146,7 +3146,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         junk, j = g.getLine(s, j1)
         lines = g.splitlines(s[i:j])
         n = len(lines)
-        lines_s = g.joinLines(['\t' + line for line in lines])
+        lines_s = ''.join('\t' + line for line in lines)
         s = s[:i] + lines_s + s[j:]
         w.setAllText(s)
         # Retain original row/col selection.
@@ -3554,7 +3554,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # key is a function that extracts args.
             if reverse:
                 aList.reverse()
-            s = g.joinLines(aList)
+            s = ''.join(aList)
             w.delete(i, j)
             w.insert(i, s)
             w.setSelectionRange(sel1, sel2, insert=ins)
@@ -3586,7 +3586,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             aList = g.splitLines(txt)
             zlist = list(zip(columns, aList))
             zlist.sort()
-            s = g.joinLines([z[1] for z in zlist])
+            s = ''.join([z[1] for z in zlist])
             w.delete(i, j)
             w.insert(i, s)
             w.setSelectionRange(sel_1, sel_1 + len(s), insert=sel_1 + len(s))
