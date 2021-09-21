@@ -3826,12 +3826,13 @@ class Commands:
         # Update the focus immediately.
         if not keepMinibuffer:
             c.outerUpdate()
-    #@+node:ekr.20031218072017.2997: *5* c.selectPosition
+    #@+node:ekr.20031218072017.2997: *5* c.selectPosition (** add trace)
     def selectPosition(self, p, **kwargs):
         """
         Select a new position, redrawing the screen *only* if we must
         change chapters.
         """
+        trace = True # For # 2167.
         if kwargs:
             print('c.selectPosition: all keyword args are ignored', g.callers())
         c = self
@@ -3850,6 +3851,15 @@ class Commands:
                 if c.positionExists(p, bunch.p):
                     break
                 else:
+                    if trace:
+                        command_name = c.command_name if c.inCommand else 'None'
+                        print('')
+                        print('pop hoist stack! callers:', g.callers())
+                        g.printObj(c.hoistStack, tag='c.hoistStack before pop')
+                        print(f"c.command_name: {command_name}")
+                        print('lossage')
+                        for i, data in enumerate(reversed(g.app.lossage)):
+                            print(f"{i:>2} {data!r}")
                     bunch = c.hoistStack.pop()
         c.frame.tree.select(p)
         c.setCurrentPosition(p)
