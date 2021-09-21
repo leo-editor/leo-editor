@@ -128,25 +128,25 @@
 <v t="ekr.20210509083811.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191729.1"><vh>@data:@auto ../test/external_files/at-auto-line-number-test.py</vh>
-<v t="ekr.20210911192209.1"><vh>@gnxs</vh></v>
+<v t="ekr.20210921153639.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191730.1"><vh>@data:@auto ../test/external_files/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20210911192209.2"><vh>@gnxs</vh></v>
+<v t="ekr.20210921153639.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191730.3"><vh>@data:@auto ../test/external_files/at-auto-section-ref-test.py</vh>
-<v t="ekr.20210911192209.3"><vh>@gnxs</vh></v>
+<v t="ekr.20210921153639.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.1"><vh>@data:@auto ../test/external_files/at-auto-test.py</vh>
-<v t="ekr.20210911192209.4"><vh>@gnxs</vh></v>
+<v t="ekr.20210921153639.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.3"><vh>@data:@auto ../test/external_files/at-auto-unit-test.py</vh>
-<v t="ekr.20210911192209.5"><vh>@gnxs</vh></v>
+<v t="ekr.20210921153639.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.5"><vh>@data:@auto-org ../test/external_files/at-auto-org-line-number-test.org</vh>
-<v t="ekr.20210911192209.6"><vh>@gnxs</vh></v>
+<v t="ekr.20210921153639.6"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.7"><vh>@data:@auto-otl ../test/external_files/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20210911192209.7"><vh>@gnxs</vh></v>
+<v t="ekr.20210921153639.7"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
@@ -677,44 +677,12 @@
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
-<v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
-<v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
-<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
-<v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
-</v>
-<v t="ekr.20210912064205.1"><vh>in unittests/core</vh>
-<v t="ekr.20210901170451.1"><vh>@file ../unittests/core/test_leoApp.py</vh></v>
-<v t="ekr.20210902073413.1"><vh>@file ../unittests/core/test_leoAst.py</vh></v>
-<v t="ekr.20210901172411.1"><vh>@file ../unittests/core/test_leoAtFile.py</vh></v>
-<v t="ekr.20210903153138.1"><vh>@file ../unittests/core/test_leoBridge.py</vh></v>
-<v t="ekr.20210903162431.1"><vh>@file ../unittests/core/test_leoCommands.py</vh></v>
-<v t="ekr.20210905151702.1"><vh>@file ../unittests/core/test_leoColorizer.py</vh></v>
-<v t="ekr.20210910073303.1"><vh>@file ../unittests/core/test_leoConfig.py</vh></v>
-<v t="ekr.20210911052754.1"><vh>@file ../unittests/core/test_leoExternalFiles.py</vh></v>
-<v t="ekr.20210910065135.1"><vh>@file ../unittests/core/test_leoFileCommands.py</vh></v>
-<v t="ekr.20210829124658.1"><vh>@file ../unittests/core/test_leoFind.py</vh></v>
-<v t="ekr.20210903161742.1"><vh>@file ../unittests/core/test_leoFrame.py</vh></v>
-<v t="ekr.20210902164946.1"><vh>@file ../unittests/core/test_leoGlobals.py</vh></v>
-<v t="ekr.20210904064440.2"><vh>@file ../unittests/core/test_leoImport.py</vh></v>
-<v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
-<v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
-<v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
-<v t="ekr.20210902055206.1"><vh>@file ../unittests/core/test_leoRst.py</vh></v>
-<v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
-<v t="ekr.20210902092024.1"><vh>@file ../unittests/core/test_leoShadow.py</vh></v>
-<v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
-<v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
-</v>
-<v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
-<v t="ekr.20210907081548.1"><vh>@file ../unittests/test_plugins.py</vh></v>
-<v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
-</v>
 <v t="ekr.20210911191231.1"><vh>External files test</vh>
-<v t="ekr.20190113120734.1"><vh>@asis ../test/external_files/at-asis-test.py</vh>
+<v t="ekr.20190113120734.1"><vh>@@@asis ../test/external_files/at-asis-test.py</vh>
 <v t="ekr.20190113120734.2"><vh>spam</vh></v>
 <v t="ekr.20190113120734.3"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20200205065723.1"><vh>@asis ../test/external_files/at-asis-test2.txt</vh>
+<v t="ekr.20200205065723.1"><vh>@@@asis ../test/external_files/at-asis-test2.txt</vh>
 <v t="ekr.20200205065723.2"><vh>spam</vh></v>
 <v t="ekr.20200205065723.3"><vh>@@eggs</vh></v>
 </v>
@@ -748,6 +716,38 @@
 <v t="ekr.20100731163237.5782"><vh>@thin ../test/external_files/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin ../test/external_files/at-thin-test.py</vh></v>
 </v>
+</v>
+<v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
+<v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
+<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
+<v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
+</v>
+<v t="ekr.20210912064205.1"><vh>in unittests/core</vh>
+<v t="ekr.20210901170451.1"><vh>@file ../unittests/core/test_leoApp.py</vh></v>
+<v t="ekr.20210902073413.1"><vh>@file ../unittests/core/test_leoAst.py</vh></v>
+<v t="ekr.20210901172411.1"><vh>@file ../unittests/core/test_leoAtFile.py</vh></v>
+<v t="ekr.20210903153138.1"><vh>@file ../unittests/core/test_leoBridge.py</vh></v>
+<v t="ekr.20210903162431.1"><vh>@file ../unittests/core/test_leoCommands.py</vh></v>
+<v t="ekr.20210905151702.1"><vh>@file ../unittests/core/test_leoColorizer.py</vh></v>
+<v t="ekr.20210910073303.1"><vh>@file ../unittests/core/test_leoConfig.py</vh></v>
+<v t="ekr.20210911052754.1"><vh>@file ../unittests/core/test_leoExternalFiles.py</vh></v>
+<v t="ekr.20210910065135.1"><vh>@file ../unittests/core/test_leoFileCommands.py</vh></v>
+<v t="ekr.20210829124658.1"><vh>@file ../unittests/core/test_leoFind.py</vh></v>
+<v t="ekr.20210903161742.1"><vh>@file ../unittests/core/test_leoFrame.py</vh></v>
+<v t="ekr.20210902164946.1"><vh>@file ../unittests/core/test_leoGlobals.py</vh></v>
+<v t="ekr.20210904064440.2"><vh>@file ../unittests/core/test_leoImport.py</vh></v>
+<v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
+<v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
+<v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
+<v t="ekr.20210902055206.1"><vh>@file ../unittests/core/test_leoRst.py</vh></v>
+<v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
+<v t="ekr.20210902092024.1"><vh>@file ../unittests/core/test_leoShadow.py</vh></v>
+<v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
+<v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
+</v>
+<v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
+<v t="ekr.20210907081548.1"><vh>@file ../unittests/test_plugins.py</vh></v>
+<v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
@@ -1856,12 +1856,12 @@ unl: Declarations (leo_cloud_server.py)
 </t>
 <t tx="ekr.20210911191729.1">gnx: ekr.20190113123439.5
 </t>
-<t tx="ekr.20210911192209.1">gnx: ekr.20210911191226.3
+<t tx="ekr.20210921153639.1">gnx: ekr.20210911191226.3
 unl: at_auto_child (at-auto-line-number-test.py)
 </t>
 <t tx="ekr.20210911191730.1">gnx: ekr.20190113123439.7
 </t>
-<t tx="ekr.20210911192209.2">gnx: ekr.20210911191226.4
+<t tx="ekr.20210921153639.2">gnx: ekr.20210911191226.4
 unl: !Declarations
 gnx: ekr.20210911191226.5
 unl: section 1
@@ -1870,19 +1870,19 @@ unl: section 2
 </t>
 <t tx="ekr.20210911191730.3">gnx: ekr.20190113123439.11
 </t>
-<t tx="ekr.20210911192209.3">gnx: ekr.20210911191226.7
+<t tx="ekr.20210921153639.3">gnx: ekr.20210911191226.7
 unl: Declarations (at-auto-section-ref-test.py)
 </t>
 <t tx="ekr.20210911191731.1">gnx: ekr.20190113121550.1
 </t>
-<t tx="ekr.20210911192209.4">gnx: ekr.20210911191226.8
+<t tx="ekr.20210921153639.4">gnx: ekr.20210911191226.8
 unl: spam (at-auto-test.py)
 gnx: ekr.20210911191226.9
 unl: eggs (at-auto-test.py)
 </t>
 <t tx="ekr.20210911191731.3">gnx: ekr.20190113123439.16
 </t>
-<t tx="ekr.20210911192209.5">gnx: ekr.20210911191226.10
+<t tx="ekr.20210921153639.5">gnx: ekr.20210911191226.10
 unl: class class1
 gnx: ekr.20210911191226.11
 unl: class class1--&gt;class1_method1
@@ -1897,14 +1897,14 @@ unl: class class2--&gt;class2_method2
 </t>
 <t tx="ekr.20210911191731.5">gnx: ekr.20190113123635.2
 </t>
-<t tx="ekr.20210911192209.6">gnx: ekr.20210911191226.16
+<t tx="ekr.20210921153639.6">gnx: ekr.20210911191226.16
 unl: section 1
 gnx: ekr.20210911191226.17
 unl: section 2
 </t>
 <t tx="ekr.20210911191731.7">gnx: ekr.20190113123635.5
 </t>
-<t tx="ekr.20210911192209.7">gnx: ekr.20210911191226.18
+<t tx="ekr.20210921153639.7">gnx: ekr.20210911191226.18
 unl: First line.
 gnx: ekr.20210911191226.19
 unl: section 1
@@ -2715,7 +2715,7 @@ The full license can be found in 'license.txt'.
 <t tx="ekr.20190418161712.1">class PyzoInterface:
     """
     A class representing the singleton running instance of pyzo.
-    
+
     Instantiated in the top-level init() function.
     """
 
@@ -2750,14 +2750,14 @@ import pyzo
 
 def init(): # pyzo_file_browser.py
     """Return True if this plugin can be loaded."""
-    
+
     def oops(message):
         global init_warning_given
         if not init_warning_given:
             init_warning_given = True
             print('%s %s' % (__name__, message))
         return False
-        
+
     if g.app.gui.guiName() != "qt":
         return oops('requires Qt gui')
      if not getattr(g.app, 'dock'):
@@ -3150,9 +3150,6 @@ from .eveventhandler import Event
 <t tx="ekr.20180225010850.1"></t>
 <t tx="ekr.20210710031237.1"></t>
 <t tx="ekr.20080730161153.8"></t>
-<t tx="ekr.20201202144529.1"></t>
-<t tx="ekr.20210912064148.1"></t>
-<t tx="ekr.20210912064205.1"></t>
 <t tx="ekr.20210911191231.1"></t>
 <t tx="ekr.20190113120734.1">
 </t>
@@ -3214,6 +3211,9 @@ from .eveventhandler import Event
 </t>
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
+<t tx="ekr.20201202144529.1"></t>
+<t tx="ekr.20210912064148.1"></t>
+<t tx="ekr.20210912064205.1"></t>
 <t tx="ekr.20090802181029.5988"></t>
 </tnodes>
 </leo_file>
