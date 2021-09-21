@@ -515,8 +515,6 @@ def babelExec(event):
                 s = w.getSelectedText()
             else:
                 s = p.b
-            # Remove extra leading whitespace so the user may execute indented code.
-            s = leoG.removeExtraLws(s, c.tab_width)
             s = extractExecutableString(c, p, s, language)
             script = composeScript(c, p, s,
                         forcePythonSentinels=forcePythonSentinels,
