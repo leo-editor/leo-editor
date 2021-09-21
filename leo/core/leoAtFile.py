@@ -2237,8 +2237,9 @@ class AtFile:
         if at.sentinels or hasattr(at, 'force_sentinels'):
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            # #2194.  Put two blanks spaces, so black won't change the sentinel!
-            at.os('  ')
+            # #2194. The following would follow the black convention,
+            #        but doing so is a dubious idea.
+                # at.os('  ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
             #   double all '@' signs except the first.
@@ -3611,10 +3612,11 @@ class FastAtRead:
                     continue
                 # Doc lines start with start_delim + one blank.
                 # #1496: Retire the @doc convention.
-                tail = line[len(delim_start) + 1 :]
+                ### tail = line[len(delim_start) + 1 :]
+                tail = line.lstrip()[len(delim_start):]
                 if g.shortFileName(path) == 'leoBeautify.py':
                     print('@doc line:', repr(line))
-                    print('@doc tail:  ', repr(tail))
+                    print('@doc tail: ', repr(tail))
                 if tail.strip():
                     body.append(tail)
                 else:
