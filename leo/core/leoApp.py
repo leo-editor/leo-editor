@@ -176,7 +176,7 @@ class LeoApp:
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Most of these are defined in initApp.
         self.backgroundProcessManager = None  # Singleton BackgroundProcessManager.
-        self.commander_cacher =  None  # Singleton CommanderCacher instance.
+        self.commander_cacher = None  # Singleton CommanderCacher instance.
         self.commander_db = None  # Singleton db, managed by g.app.commander_cacher.
         self.config = None  # Singleton leoConfig instance.
         self.db = None  # Singleton global db, managed by g.app.global_cacher.
@@ -269,7 +269,7 @@ class LeoApp:
         self.suppressImportChecks = False  # True: suppress importCommands.check.
         self.unitTestGui = None  # To override the gui in external unit tests.
         # Created in LeoMenu.createMenuEntries for a unit test.
-        self.unitTestMenusDict = {} # keys are command names. values are sets of strokes.
+        self.unitTestMenusDict = {}  # keys are command names. values are sets of strokes.
         #@-<< LeoApp: unit testing ivars >>
         # Define all global data.
         self.init_at_auto_names()
