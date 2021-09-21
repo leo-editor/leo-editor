@@ -13,7 +13,7 @@ CythonTarget = py_importer.PythonTarget
 #@+node:ekr.20200619141201.2: ** class Cython_Importer(Importer)
 class Cython_Importer(py_importer.Py_Importer):
     '''A class to store and update scanning state.'''
-    
+
     starts_pattern = re.compile(r'\s*(class|def|cdef|cpdef)\s+')
     # Matches lines that apparently start a class or def.
 

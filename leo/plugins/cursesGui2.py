@@ -17,7 +17,7 @@ The ``--gui=curses`` command-line option enables this plugin.
 
 - This is beta-level code. Be prepared to recover from data loss. Testing
   on files under git control gives you diffs and easy reverts.
-  
+
 - There are many limitations: see http://leoeditor.com/console-gui.html
 
 Please report any problem here:
@@ -213,7 +213,7 @@ class LeoLogTextfield (npyscreen.Textfield):
     """
 
     def __init__(self, *args, **kwargs):
-    
+
         self.leo_parent = None  # Injected later.
         super().__init__(*args, **kwargs)
         self.set_handlers()
@@ -608,7 +608,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.cursor_position = max(0, len(s)-1)
     #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
     def h_cursor_left(self, input):
-        
+
         # self.value is a LeoTreeData.
         # native: content is a position.
         content = self.value.content
@@ -1009,7 +1009,7 @@ class StringFindTabManager:
         # Next, set the ivar.
         if ivar:
             setattr(fc, ivar, True)
-       
+
     #@+node:ekr.20171128051435.8: *4* sftm.toggle_checkbox
     #@@nobeautify
 
@@ -1773,7 +1773,7 @@ class LeoCursesGui(leoGui.LeoGui):
             g.printList(sorted(aList))
     #@+node:ekr.20170522005855.1: *4* CGui.event_generate
     def event_generate(self, c, char, shortcut, w):
-        
+
         k = c.k
         event = KeyEvent(
             c=c,
@@ -1876,19 +1876,19 @@ class LeoCursesGui(leoGui.LeoGui):
             if trace: g.trace('NO CHANGE', i, w.__class__.__name__)
             return
         if trace: g.trace('-----', i, w.__class__.__name__)
-        
+
         # Select the widget for editing.
         form.editw = i
 
         if 0:
             # Inject 'leo-set-focus' into form.how_exited_handers
-            
+
             def switch_focus_callback(form=form, i=i, w=w):
                 g.trace(i, w.__class__.__name__)
                 g.trace(g.callers(verbose=True))
                 w.display()
                 form.display()
-            
+
             form.how_exited_handers[how] = switch_focus_callback
         if 1:
             # Clear editing for the editw widget:
@@ -1897,7 +1897,7 @@ class LeoCursesGui(leoGui.LeoGui):
             if hasattr(w, 'editing'):
                 w.editing = False
             w.how_exited = how
-        if 1: 
+        if 1:
             # Clear editing for all widgets.
             for i, w1 in enumerate(form._widgets__):
                 # if trace: g.trace('CLEAR',  w.__class__.__name__)
@@ -1913,7 +1913,7 @@ class LeoCursesGui(leoGui.LeoGui):
                         w2.editing = False
                     # w2.how_exited = how
                     w2.display()
-                    
+
         # Start editing the widget.
         w.editing = True
         w.display()
@@ -2057,7 +2057,7 @@ class LeoCursesGui(leoGui.LeoGui):
         box.name = 'Mini-buffer: %s' % s.strip()
         box.update()
         g.app.gui.curses_form.display()
-       
+
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
         c = event.get('c')
@@ -2541,7 +2541,7 @@ class CoreTree (leoFrame.LeoTree):
 
     def onHeadChanged(self, p, s=None, undoType='Typing'):
         '''
-        Officially change a headline.   
+        Officially change a headline.
         This is c.frame.tree.onHeadChanged.
         '''
         trace = False
@@ -2681,7 +2681,7 @@ class CoreStatusLine:
         self.enabled = False
         self.parentFrame = parentFrame
         self.textWidget = None
-        # The official ivars. 
+        # The official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None
         c.frame.statusText = None
@@ -3492,7 +3492,7 @@ class LeoMLTree(npyscreen.MLTree):
             self.cursor_line += 1
         self.display()
         self.edit_headline()
-        
+
     #@+node:ekr.20170506045346.1: *4* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170523112839.1: *5* LeoMLTree.handle_mouse_event
@@ -4286,7 +4286,7 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
         super().__init__(c, name)
         self.trace = False # For tracing in base class.
         self.widget = w
-        
+
     def isEnabled(self):
         return True
 
@@ -4297,7 +4297,7 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
 
     def enable(self, *args, **kwargs):
         pass
-        
+
     def setFocus(self):
         pass
     #@+node:ekr.20171129204736.1: *4* StatusLineWrapper.redirectors
@@ -4314,7 +4314,7 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
             s = s[i+1:]
         self.widget.value = s
         self.widget.display()
-        
+
     def update(self, *args, **kwargs):
         self.widget.update()
     #@-others

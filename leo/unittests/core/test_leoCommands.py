@@ -107,10 +107,10 @@ class TestCommands(LeoUnitTest):
     def test_all_menus_execute_the_proper_command(self):
         """
         We want to ensure that when masterMenuHandler does:
-        
+
             event = g.app.gui.create_key_event(c,binding=stroke,w=w)
             return k.masterKeyHandler(event)
-        
+
         that the effect will be to call commandName, where commandName
         is the arg passed to masterMenuHandler.
 

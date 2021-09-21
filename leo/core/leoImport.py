@@ -1208,7 +1208,7 @@ class LeoImportCommands:
         self.scannerUnitTest(p, s, ext='.py')
 
     def rstUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.rst') 
+        self.scannerUnitTest(p, s, ext='.rst')
 
     def textUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.txt')

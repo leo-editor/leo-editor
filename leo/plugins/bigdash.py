@@ -345,7 +345,7 @@ class GlobalSearch:
 
         ss = str(qs)
         hitparas = []
-        
+
         def em(l):
             hitparas.append(l)
 

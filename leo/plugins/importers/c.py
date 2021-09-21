@@ -10,7 +10,7 @@ Target = linescanner.Target
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
-    
+
     #@+others
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
     def __init__(self, importCommands, **kwargs):

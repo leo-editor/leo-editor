@@ -71,9 +71,9 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:peckj.20150428142729.3: ** class MyInterpreter
 if QtWidgets:
-    
+
     class MyInterpreter(QtWidgets.QWidget):
-    
+
         def __init__(self, parent, c):
             super().__init__(parent)
             hBox = QtWidgets.QHBoxLayout()
@@ -104,7 +104,7 @@ class InteractiveInterpreter(code.InteractiveInterpreter):
     #@-others
 #@+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
-    
+
     class PyInterp(QtWidgets.QTextEdit):
         #@+others
         #@+node:peckj.20150428142729.9: *3* PyInterp.__init__
@@ -148,7 +148,7 @@ if QtWidgets:
                 self.write(msg)
         #@+node:peckj.20150428142729.12: *3* PyInterp.insert_marker
         def insert_marker(self):
-            
+
             # line = '... ' if self.multiLine else '>>> '
             line = '... ' if self.indent > 0 else '>>> '
             self.insertPlainText(line + ' '*self.indent)
@@ -293,14 +293,14 @@ if QtWidgets:
             except Exception:
                 g.es_exception()
 
-            
+
         #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter & helpers
         def doEnter(self, event):
             '''Handle the <return> key.'''
             #
             # Binding for functions.
             interp = self.interpreter
-            
+
             #@+others # Helper function
             #@+node:ekr.20190619185252.1: *5* function: compute_indent
             def compute_indent(line):

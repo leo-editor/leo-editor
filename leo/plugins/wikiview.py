@@ -117,7 +117,7 @@ class WikiView:
         # apply hiding for initial load (`after-create-leo-frame` from module level
         # init() / onCreate())
         self.hide(self.select, {'c': c})
-        
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)

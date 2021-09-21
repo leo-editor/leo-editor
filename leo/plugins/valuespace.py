@@ -135,7 +135,7 @@ try:
     import yaml
 except ImportError:
     yaml = None
-    
+
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 from leo.external.stringlist import SList

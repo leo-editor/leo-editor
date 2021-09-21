@@ -462,7 +462,7 @@ if docutils:
         output = None
             # Final translated form of `document`.
         #@-<< class Writer declarations >>
-    
+
         # def __init__(self):
             # super().__init__()
 

@@ -167,9 +167,9 @@ class LeoFind:
     def init_ivars_from_settings(self, settings):
         """
         Initialize all ivars from settings, including required defaults.
-        
+
         This should be called from the do_ methods as follows:
-            
+
             self.init_ivars_from_settings(settings)
             if not self.check_args('find-next'):
                 return <appropriate error indication>
@@ -207,12 +207,12 @@ class LeoFind:
     def batch_change(self, root, replacements, settings=None):
         """
         Support batch change scripts.
-        
+
         replacement: a list of tuples (find_string, change_string).
         settings: a dict or g.Bunch containing find/change settings.
-        
+
         Example:
-            
+
             h = '@file src/ekr/coreFind.py'
             root = g.findNodeAnywhere(c, h)
             assert root
@@ -329,7 +329,7 @@ class LeoFind:
     def do_change_then_find(self, settings):
         """
         Do the change-then-find command from settings.
-        
+
         This is a stand-alone method for unit testing.
         """
         p = self.c.p
@@ -369,7 +369,7 @@ class LeoFind:
     def do_find_marked(self, flatten):
         """
         Helper for clone-find-marked commands.
-        
+
         This is a stand-alone method for unit testing.
         """
         c = self.c
@@ -511,7 +511,7 @@ class LeoFind:
     def _fd_helper(self, settings, word, def_flag, strict):
         """
         Find the definition of the class, def or var under the cursor.
-        
+
         return p, pos, newpos for unit tests.
         """
         c, find, ftm = self.c, self, self.ftm
@@ -665,9 +665,9 @@ class LeoFind:
     def do_find_next(self, settings):
         """
         Find the next instance of self.find_text.
-        
+
         Return True (for vim-mode) if a match was found.
-        
+
         """
         c, p = self.c, self.c.p
         #
@@ -1043,7 +1043,7 @@ class LeoFind:
     def _change_all_search_and_replace(self, s):
         """
         Search s for self.find_text and replace with self.change_text.
-        
+
         Return (found, new text)
         """
         if sys.platform.lower().startswith('win'):
@@ -1150,7 +1150,7 @@ class LeoFind:
     def replace_all_helper(self, s):
         """
         Search s for self.find_text and replace with self.change_text.
-        
+
         Return (found, new text)
         """
         if sys.platform.lower().startswith('win'):
@@ -1304,7 +1304,7 @@ class LeoFind:
         Do the clone-all-find commands from settings.
 
         Return the count of found nodes.
-        
+
         This is a stand-alone method for unit testing.
         """
         self.init_ivars_from_settings(settings)
@@ -1359,9 +1359,9 @@ class LeoFind:
     def do_clone_find_all_flattened(self, settings):
         """
         Do the clone-find-all-flattened command from the settings.
-        
+
         Return the count of found nodes.
-        
+
         This is a stand-alone method for unit testing.
         """
         self.init_ivars_from_settings(settings)
@@ -1452,7 +1452,7 @@ class LeoFind:
         """
         Create a summary node containing descriptions of all matches of the
         search string.
-        
+
         Typing tab converts this to the change-all command.
         """
         self.ftm.clear_focus()
@@ -1552,17 +1552,17 @@ class LeoFind:
     def _find_all_helper(self, after, data, p, undoType):
         """Handle the find-all command from p to after."""
         c, log, u = self.c, self.c.frame.log, self.c.undoer
-        
+
         def put_link(line, line_number, p):  # pragma: no cover  # #2023
             """Put a link to the given line at the given line_number in p.h."""
-            
+
             if g.unitTesting:
                 return
             unl = p.get_UNL(with_proto=True, with_count=True)
             if self.in_headline:
                 line_number = 1
             log.put(line.strip()+'\n', nodeLink=f"{unl},{line_number}")
-            
+
         seen = [] # List of (vnode, pos).
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
@@ -1747,7 +1747,7 @@ class LeoFind:
     def start_search(self, event):  # pragma: no cover (interactive)
         """
         The default binding of Ctrl-F.
-        
+
         Also contains default state-machine entries for find/change commands.
         """
         w = self.c.frame.body.wrapper
@@ -1796,7 +1796,7 @@ class LeoFind:
     def start_search_escape1(self, event=None):  # pragma: no cover
         """
         Common escape handler for use by find commands.
-        
+
         Prompt for a change pattern.
         """
         k = self.k
@@ -1905,7 +1905,7 @@ class LeoFind:
     def _cf_helper(self, settings, flatten):  # Caller has  checked the settings.
         """
         The common part of the clone-find commands.
-        
+
         Return the number of found nodes.
         """
         c, u = self.c, self.c.undoer
@@ -2082,7 +2082,7 @@ class LeoFind:
     def find_next_match(self, p):
         """
         Resume the search where it left off.
-        
+
         Return (p, pos, newpos).
         """
         c = self.c
@@ -2238,7 +2238,7 @@ class LeoFind:
 
         Return the highest index in the string where substring sub is found,
         such that sub is contained within s[start,end].
-        
+
         Optional arguments start and end are interpreted as in slice notation.
 
         Return (-1, -1) on failure.
@@ -2334,7 +2334,7 @@ class LeoFind:
     def make_regex_subs(self, change_text, groups):
         """
         Substitute group[i-1] for \\i strings in change_text.
-        
+
         Groups is a tuple of strings, one for every matched group.
         """
 

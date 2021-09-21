@@ -23,7 +23,7 @@ To open a Freewin window, select a node in your outline and issue
 the minibuffer command ``z-open-freewin``.
 
 The window that opens will display an editor pane that contains the
-text of the node.  The text can be edited in the window.  If the 
+text of the node.  The text can be edited in the window.  If the
 text is edited in the outline instead, the changes will show in the
 Freewin pane.
 
@@ -33,7 +33,7 @@ They will be visible in the outline when the original node is
 selected again.
 
 A given Freewin window will be synchronized with the node
-that was selected when the Freewin window was opened, and 
+that was selected when the Freewin window was opened, and
 will only display that node.  It will remain synchronized even if the node has been moved to a new position in its outline.
 
 .. Note:: A Freewin window will close if the underlying node is removed. This will not change the body of the underlying node.
@@ -107,24 +107,24 @@ Freewin has two settings:
 
 1. ``@string fw-render-pane = nav-view``
 
-If present with this value, the rendered view will allow the <CNTL>-F7/F9 keys to work as they do in the Editor view.  The rendered view will not be able to display all the features that a full rendered view can. 
+If present with this value, the rendered view will allow the <CNTL>-F7/F9 keys to work as they do in the Editor view.  The rendered view will not be able to display all the features that a full rendered view can.
 
 2. ``@bool fw-copy-html = False``
 
-   Change to `True` to copy the rendered RsT to the clipboard. 
+   Change to `True` to copy the rendered RsT to the clipboard.
 #@+node:tom.20210614171220.1: *3* Stylesheets and Dark-themed Appearance
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The appearance of the editing and rendering view is determined
-by stylesheets. Simple default stylesheets are built into the 
+by stylesheets. Simple default stylesheets are built into the
 plugin for the editing view.
 
 For styling the Restructured Text rendering view (When the default "View 1" is in use) and for customized editing view stylesheets, the plugin looks in the user's `.leo/css directory`.
 
 The plugin attempts to determine whether the Leo theme in use
 is a dark theme or not.  If it is, a dark-themed stylesheet
-will be used if it is found.  The "dark" determination is based 
+will be used if it is found.  The "dark" determination is based
 on the ``@color_theme_is_dark`` setting in the Leo theme file.
 #@+node:tom.20210604181134.1: *4* Styling the Editor View
 Styling the Editor View
@@ -169,7 +169,7 @@ user's ``.leo/css`` directory then the plugin will use the default values given 
 Styling the RsT View
 ~~~~~~~~~~~~~~~~~~~~~
 
-The following on applies when the default rendereing view, 
+The following on applies when the default rendereing view,
 called "View 1" above, is being used.
 
 The RsT view can be styled by extending or replacing
@@ -183,7 +183,7 @@ For information on creating a customized css stylesheet, see
 As a starting point, the light and dark RsT stylesheets used
 by the Viewrendered3 plugin could be used.  They can be found
 in the Leo install directory in the ``leo\plugins\viewrendered3``
-directory.  There are also a number of docutil stylesheets to be 
+directory.  There are also a number of docutil stylesheets to be
 found with an Internet search.
 
 The VR3 stylesheets must be renamed for the Freewin plugin to
@@ -202,8 +202,8 @@ The dark-themed stylesheet must be named ``freewin_rst_dark.css``.
 No Stylesheet
 --------------
 
-If no stylesheet exists for the Restructured Text view, the 
-default Docutils stylesheet will be used for either light or dark 
+If no stylesheet exists for the Restructured Text view, the
+default Docutils stylesheet will be used for either light or dark
 Leo themes.
 #@-others
 
@@ -365,11 +365,11 @@ EDITOR_STYLESHEET_DARK = f'''QTextEdit {{
     font-size: {EDITOR_FONT_SIZE};
     }}'''
 
-RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR_LIGHT}; 
+RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR_LIGHT};
     background: {BG_COLOR_LIGHT};
     font-size: {EDITOR_FONT_SIZE};'''
 
-RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK}; 
+RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
     font-size: {EDITOR_FONT_SIZE};'''
 
@@ -383,12 +383,12 @@ RST_STYLESHEET_DARK = '''body {
   line-height:120%;
   margin: 8px 0;
   margin-left: 7px;
-  margin-right: 7px;  
+  margin-right: 7px;
   }
-  
+
   h1 {text-align: center; margin-top: 7px; margin-bottom: 12px;}
   a {color: lightblue; text-decoration: none}
-  
+
   table {margin-top: 10px;}
 
   th {
@@ -400,15 +400,15 @@ RST_STYLESHEET_DARK = '''body {
     padding-right: 6px; padding-left: 2px;
     padding: 2px;
   }
-  
+
   th.docinfo-name {
     text-align: right;
   }
-  
+
   td {
     padding-left: 10px;
   }
-  
+
   div.admonition, div.note {
     margin: 2em;
     border: 2px solid;
@@ -418,7 +418,7 @@ RST_STYLESHEET_DARK = '''body {
     color: #ededed;
     border-color: #839496;
   }
-  
+
   div.note p.admonition-title {
     color: #2aa198;
     font-weight: bold;
@@ -436,14 +436,14 @@ RST_STYLESHEET_LIGHT = '''body {
   margin-left: 7px;
   margin-right: 7px;
   }
-  
+
   h1 {text-align: center; margin-top: 7px; margin-bottom: 12px;}
   a {color: darkblue; text-decoration: none}
-  
+
   table {
     margin-top: 10px;
   }
-  
+
   th {
     color: #093947;
     background: #b0ddee;
@@ -453,11 +453,11 @@ RST_STYLESHEET_LIGHT = '''body {
     padding-right: 6px; padding-left: 2px;
     padding: 2px;
   }
-  
+
   td {
     padding-left: 10px;
   }
-  
+
   th.docinfo-name {
     text-align: right;
   }
@@ -472,7 +472,7 @@ RST_STYLESHEET_LIGHT = '''body {
     color: #586e75;
     border-color: #657b83;
   }
-  
+
   p.admonition-title {
     color: #2aa198;
     font-weight: bold;
@@ -516,7 +516,7 @@ def open_z_window(event):
 #@+node:tom.20210625145842.1: ** getGnx
 def getGnx(line):
     """Find and return a gnx in a line of text, or None.
-    
+
     The gnx may be enclosed in parens or brackets.
     """
 
@@ -526,12 +526,12 @@ def getGnx(line):
 #@+node:tom.20210625145905.1: ** getLine
 def getLine(text_edit):
     """Return line of text at cursor position.
-    
-    Cursor may not be visible, but its location 
-    will be at the last mouse click.  If a block 
-    is selected, then the last line of the block 
+
+    Cursor may not be visible, but its location
+    will be at the last mouse click.  If a block
+    is selected, then the last line of the block
     is returned.
-    
+
     ARGUMENT
     text_edit -- a QTextEdit instance
 
@@ -549,14 +549,14 @@ def getLine(text_edit):
 #@+node:tom.20210625161018.1: ** gotoHostGnx
 def gotoHostGnx(c, target):
     """Change host node selection to target gnx.
-    
+
     This will not change the node displayed by the
     invoking window.
-    
+
     ARGUMENTS
     c -- the Leo commander of the outline hosting our window.
     target -- the gnx to be selected in the host, as a string.
-    
+
     RETURNS
     True if target was found, else False
     """
@@ -744,11 +744,11 @@ class ZEditorWin(QtWidgets.QMainWindow):
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
         """Update host node if this card's text has changed.
-        
+
            Otherwise if the host node's text has changed, update
            the card's text with the host's changed text.
            Render as plain text or RsT.
-           
+
            If the host node does not exist any more, delete ourself.
         """
         if self.closing:
@@ -775,8 +775,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.p.b = self.current_text
             self.doc.setModified(False)
 
-        # If the current position in the outline is our own node, 
-        # then synchronize the text if it's changed in 
+        # If the current position in the outline is our own node,
+        # then synchronize the text if it's changed in
         # the host outline.
         elif self.c.p.v == self.v:
             doc = self.host_editor.document()
@@ -813,10 +813,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
         """Take action on keypresses.
 
         A method of this name receives keystrokes for most or all
-        QObject-descended objects. Currently, checks only for 
+        QObject-descended objects. Currently, checks only for
         <CONTROL-F7>, <CONTROL-F9>, <CONTROL-EQUALS> and
-        <CONTROL-MINUS> events for zooming or unzooming the rendering 
-        pane.    
+        <CONTROL-MINUS> events for zooming or unzooming the rendering
+        pane.
         """
         w = self.browser if self.render_kind == BROWSER else self.editor
 

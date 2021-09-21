@@ -145,7 +145,7 @@ class OpmlController:
         self.topVnode = None
         self.generated_gnxs = {} # Keys are gnx's (strings).  Values are vnodes.
         self.reloadSettings()
-        
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
@@ -451,12 +451,12 @@ class PutToOPML:
     def putOPMLHeader(self):
         '''
         Put the OPML header, including attributes for globals, prefs and  find settings.
-        
+
         An OPML processor may ignore all the head sub-elements.
-        
+
         The windowXXX elements define the position and size of the display
         window.
-        
+
         If the outline is opened inside another outline then the processor must
         ignore the window elements.
         '''

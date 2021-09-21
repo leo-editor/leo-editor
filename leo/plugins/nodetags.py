@@ -127,13 +127,13 @@ def show_all_tags(event):
         print('nodetags plugin not enabled')
 #@+node:peckj.20140804103733.9246: ** class TagController
 class TagController:
-    
+
     TAG_LIST_KEY = '__node_tags'
 
     #@+others
     #@+node:peckj.20140804103733.9262: *3* tag_c.__init__
     def __init__(self, c):
-        
+
         self.c = c
         self.taglist = []
         self.initialize_taglist()
@@ -178,7 +178,7 @@ class TagController:
         else:
             if not g.unitTesting:
                 print(f"no tags in {c.shortFileName()}")
-     
+
     #@+node:peckj.20140804103733.9267: *4* tag_c.update_taglist
     def update_taglist(self, tag):
         ''' ensures the outline's taglist is consistent with the state of the nodes in the outline '''
@@ -368,7 +368,7 @@ if QtWidgets:
         #@+node:peckj.20140804194839.6569: *6* tag_w.callback_factory
         def callback_factory(self, tag):
             c = self.c
-            
+
             def callback(event):
                 p = c.p
                 tc = c.theTagController

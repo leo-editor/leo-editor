@@ -90,12 +90,12 @@ pattern = re.compile(r'[0-9]+\.[0-9]+(\.[0-9]+)?((b|rc)[0-9]+)?')
 def is_valid_version(version):
     """"
     Return True if version has the form '5.7b2', 'v4.3', etc.
-    
+
     See PEP 440: https://www.python.org/dev/peps/pep-0440/
-    
+
     For Leo, valid versions shall have the form: `N1.N2(.N3)?(bN|rcN)?`
     where N is any integer.
-    
+
     In particular, neither alternative spellings nor alpha releases are valid.
     """
     m = pattern.match(version)
@@ -112,7 +112,7 @@ def print_exception():
 def test_is_valid_version():
     """
     A unit test for is_valid_version.
-    
+
     However, `python -m setup` won't work :-)
     """
     table = (

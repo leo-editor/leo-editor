@@ -127,7 +127,7 @@ class TitleText(widget.Widget):
 
     #@+node:ekr.20170428084208.388: *3* TitleText.edit
     def edit(self):
-        
+
         # g.trace('===== (TitleText)')
         self.editing=True
         self.display()

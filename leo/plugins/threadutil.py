@@ -187,7 +187,7 @@ class RRunner(QtCore.QThread):
 
     #@+node:ekr.20121126095734.12426: *3* run
     def run(self):
-        
+
         try:
             self.res = self.f()
         except Exception:

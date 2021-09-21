@@ -14,7 +14,7 @@ except ImportError:
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
 class Import_IPYNB:
     '''A class to import .ipynb files.'''
-    
+
     def __init__(self, c=None, importCommands=None, **kwargs):
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.
@@ -88,7 +88,7 @@ class Import_IPYNB:
         Indent md nodes in self.root.children().
         <h1> nodes and non-md nodes stay where they are,
         <h2> nodes become children of <h1> nodes, etc.
-        
+
         Similarly for indentation based on '#' headline markup.
         '''
         def to_int(n):

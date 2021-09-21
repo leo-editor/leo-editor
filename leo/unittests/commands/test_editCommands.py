@@ -821,28 +821,28 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.30: *5* clean-lines
     def test_clean_lines(self):
         """Test case for clean-lines"""
-        before_b = """\
-    # Should remove all trailing whitespace.
+        before_b = textwrap.dedent("""\
+            # Should remove all trailing whitespace.
 
-    a = 2   
-        
-        b = 3
-        c  = 4  
-    d = 5
-    e = 6  
-    x
-    """
-        after_b = """\
-    # Should remove all trailing whitespace.
+            a = 2
 
-    a = 2
+                b = 3
+                c  = 4
+            d = 5
+            e = 6
+            x
+            """)
+        after_b = textwrap.dedent("""\
+            # Should remove all trailing whitespace.
 
-        b = 3
-        c  = 4
-    d = 5
-    e = 6
-    x
-    """
+            a = 2
+
+                b = 3
+                c  = 4
+            d = 5
+            e = 6
+            x
+            """)
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1190,7 +1190,7 @@ class TestEditCommands(LeoUnitTest):
             line b
     line c
     last non-blank line
-     
+
     """
         after_b = """\
     first line
@@ -1199,7 +1199,7 @@ class TestEditCommands(LeoUnitTest):
             line b
     line c
     last non-blank line
-     
+
     """
         self.run_test(
             before_b=before_b,
@@ -1486,7 +1486,7 @@ class TestEditCommands(LeoUnitTest):
         before_b = """\
     first line
     line 1
-        line a   
+        line a
             line b
     line c
     last line
@@ -1494,7 +1494,7 @@ class TestEditCommands(LeoUnitTest):
         after_b = """\
     first line
     line 1
-        line a   
+        line a
             line b
     line c
     last line
@@ -1512,7 +1512,7 @@ class TestEditCommands(LeoUnitTest):
         before_b = """\
     first line
     line 1
-        line a   
+        line a
             line b
     line c
     last line
@@ -1520,7 +1520,7 @@ class TestEditCommands(LeoUnitTest):
         after_b = """\
     first line
     line 1
-        line a   
+        line a
             line b
     line c
     last line
@@ -1538,7 +1538,7 @@ class TestEditCommands(LeoUnitTest):
         before_b = """\
     first line
     line 1
-        line a   
+        line a
             line b
     line c
     last line
@@ -1546,7 +1546,7 @@ class TestEditCommands(LeoUnitTest):
         after_b = """\
     first line
     line 1
-        line a   
+        line a
             line b
     line c
     last line
@@ -2156,7 +2156,7 @@ class TestEditCommands(LeoUnitTest):
         before_b = """\
     line 1
     # The next line contains two trailing blanks.
-    line 3  
+    line 3
     line 4
     """
         after_b = """\
@@ -2356,7 +2356,7 @@ class TestEditCommands(LeoUnitTest):
         c
         """
         print 1
-        
+
         print 2
     '''
         after_b = '''\
@@ -2367,7 +2367,7 @@ class TestEditCommands(LeoUnitTest):
         c
         print 1
         """
-        
+
         print 2
     '''
         self.run_test(
@@ -2690,13 +2690,13 @@ class TestEditCommands(LeoUnitTest):
     This paragraph leads of this test.  It is the "lead"
     paragraph.
 
-      1. This is item 
+      1. This is item
          number 1.  It is the first item in the list.
 
-      2. This is item 
+      2. This is item
          number 2.  It is the second item in the list.
 
-      3. This is item 
+      3. This is item
          number 3.  It is the third item in the list.
 
     This paragraph ends the test.  It is the "final"
@@ -2706,13 +2706,13 @@ class TestEditCommands(LeoUnitTest):
     This paragraph leads of this test. It is
     the "lead" paragraph.
 
-      1. This is item 
+      1. This is item
          number 1.  It is the first item in the list.
 
-      2. This is item 
+      2. This is item
          number 2.  It is the second item in the list.
 
-      3. This is item 
+      3. This is item
          number 3.  It is the third item in the list.
 
     This paragraph ends the test.  It is the "final"
@@ -2736,10 +2736,10 @@ class TestEditCommands(LeoUnitTest):
       1. This is item number 1. It is the
          first item in the list.
 
-      2. This is item 
+      2. This is item
          number 2.  It is the second item in the list.
 
-      3. This is item 
+      3. This is item
          number 3.  It is the third item in the list.
 
     This paragraph ends the test.  It is the "final"
@@ -2752,10 +2752,10 @@ class TestEditCommands(LeoUnitTest):
       1. This is item number 1. It is the
          first item in the list.
 
-      2. This is item 
+      2. This is item
          number 2.  It is the second item in the list.
 
-      3. This is item 
+      3. This is item
          number 3.  It is the third item in the list.
 
     This paragraph ends the test.  It is the "final"
@@ -2779,10 +2779,10 @@ class TestEditCommands(LeoUnitTest):
       1. This is item number 1. It is the
          first item in the list.
 
-      2. This is item 
+      2. This is item
          number 2.  It is the second item in the list.
 
-      3. This is item 
+      3. This is item
          number 3.  It is the third item in the list.
 
     This paragraph ends the test.  It is the "final"
@@ -2798,7 +2798,7 @@ class TestEditCommands(LeoUnitTest):
       2. This is item number 2. It is the
          second item in the list.
 
-      3. This is item 
+      3. This is item
          number 3.  It is the third item in the list.
 
     This paragraph ends the test.  It is the "final"
@@ -2825,7 +2825,7 @@ class TestEditCommands(LeoUnitTest):
       2. This is item number 2. It is the
          second item in the list.
 
-      3. This is item 
+      3. This is item
          number 3.  It is the third item in the list.
 
     This paragraph ends the test.  It is the "final"
@@ -3308,11 +3308,11 @@ class TestEditCommands(LeoUnitTest):
     def test_reformat_paragraph_simple_hanging_indent_3(self):
         """Test case for reformat-paragraph simple hanging indent 3"""
         before_b = """\
-    Honor this line that 
-      has a hanging indentation, 
+    Honor this line that
+      has a hanging indentation,
       please.  Hanging
        indentation is valuable
-        for lists of all kinds.  But 
+        for lists of all kinds.  But
         it is tricky to get right.
 
     Next Paragraph.
@@ -4330,7 +4330,7 @@ class TestEditCommands(LeoUnitTest):
         s = textwrap.dedent("""\
             Paragraph 1.
                 line 2.
-            
+
             Paragraph 2.
             line 2, paragraph 2
     """)

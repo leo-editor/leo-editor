@@ -48,24 +48,24 @@ class TestUndo(LeoUnitTest):
         c = self.c
         before = textwrap.dedent("""\
             @language python
-            
+
             def addCommentTest():
-            
+
                 if 1:
                     a = 2
                     b = 3
-            
+
                 pass
     """)
         after = textwrap.dedent("""\
             @language python
-            
+
             def addCommentTest():
-            
+
                 # if 1:
                     # a = 2
                     # b = 3
-            
+
                 pass
     """)
         i = before.find('if 1')
@@ -77,7 +77,7 @@ class TestUndo(LeoUnitTest):
         c = self.c
         before = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
                 line 2
                   line 3
@@ -85,7 +85,7 @@ class TestUndo(LeoUnitTest):
     """)
         after = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
             	line 2
             	  line 3
@@ -99,7 +99,7 @@ class TestUndo(LeoUnitTest):
         c = self.c
         before = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
             	line 2
             	  line 3
@@ -107,7 +107,7 @@ class TestUndo(LeoUnitTest):
     """)
         after = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
                 line 2
                   line 3
@@ -121,7 +121,7 @@ class TestUndo(LeoUnitTest):
         c = self.c
         before = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
                 line 2
                   line 3
@@ -129,7 +129,7 @@ class TestUndo(LeoUnitTest):
     """)
         after = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
             	line 2
             	  line 3
@@ -143,7 +143,7 @@ class TestUndo(LeoUnitTest):
         c = self.c
         before = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
             	line 2
             	  line 3
@@ -151,7 +151,7 @@ class TestUndo(LeoUnitTest):
     """)
         after = textwrap.dedent("""\
             @tabwidth -4
-            
+
             line 1
                 line 2
                   line 3
@@ -184,24 +184,24 @@ class TestUndo(LeoUnitTest):
         c = self.c
         before = textwrap.dedent("""\
             @language python
-            
+
             def deleteCommentTest():
-            
+
             #     if 1:
             #         a = 2
             #         b = 3
-            
+
                 pass
     """)
         after = textwrap.dedent("""\
             @language python
-            
+
             def deleteCommentTest():
-            
+
                 if 1:
                     a = 2
                     b = 3
-            
+
                 pass
     """)
         i = before.find('if 1')
@@ -213,32 +213,32 @@ class TestUndo(LeoUnitTest):
         c = self.c
         before = textwrap.dedent("""\
             @language python
-            
+
             def deleteCommentTest():
-            
+
             #     if 1:
             #         a = 2
             #         b = 3
-            
+
                 # if 1:
                     # a = 2
                     # b = 3
-            
+
                 pass
     """)
         after = textwrap.dedent("""\
             @language python
-            
+
             def deleteCommentTest():
-            
+
                 if 1:
                     a = 2
                     b = 3
-            
+
                 if 1:
                     a = 2
                     b = 3
-            
+
                 pass
     """)
         i = before.find('if 1')
@@ -341,7 +341,7 @@ class TestUndo(LeoUnitTest):
         original = p.insertAfter()
         original_s = original.b = textwrap.dedent("""\
             @tabwidth -4
-        
+
             line 1
                 line 2
                   line 3

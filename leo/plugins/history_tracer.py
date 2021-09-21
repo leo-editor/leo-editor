@@ -5,26 +5,26 @@
 """This plugin cooperates with leo-ver-serv utilty.
 
    To install leo-ver-serv visit https://crates.io/crates/leo-ver-serv
-   
+
    In idle time, whenever user has no activity in last 5 seconds,
    this plugin will send the snapshot of Leo outline to the local
    leo-ver-serv server and it will record snapshot in sqlite3 database
    named after the Leo file by adding '.history' to file name. For example
    if you edit file /tmp/a.leo, history will be recorded in the file
    /tmp/a.leo.history.
-   
+
    leo-ver-serv will also serve a small web application for displaying
    outline and allows user to browse all recorded versions of the file.
-   
+
    leo-ver-serv requires as its first argument a filename of a file
    containing absolute paths to the Leo files that are tracked. A
    suitable value for this argument is ~/.leo/.leoRecentFiles.txt
-   
+
    The second argument for leo-ver-serv is a port number. The same port
    number must be in your settings.
 
    @int history-tracer-port=8087
-   
+
    Author: vitalije(at)kviziracija.net
 """
 

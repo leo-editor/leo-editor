@@ -908,7 +908,7 @@ class ExecHandler:
 
         if not g.app.config.getBool("http-allow-remote-exec"):
             return None  # fail deliberately
-            
+
         c = g.app and g.app.log and g.app.log.c
         if c and config.enable is None:
             if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):

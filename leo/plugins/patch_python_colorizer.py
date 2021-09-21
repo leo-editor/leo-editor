@@ -9,7 +9,7 @@ assert g
 #@+others
 #@+node:ekr.20180119164528.6: ** init
 def init ():
-        
+
     ok = g.app.gui.guiName() in ('qt','qttabs')
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
@@ -17,13 +17,13 @@ def init ():
     return ok
 #@+node:ekr.20180119164528.7: ** onCreate
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if c:
         patch_colorizer(c)
 #@+node:ekr.20180119171526.1: ** patch_colorizer
 def patch_colorizer(c):
-    
+
     colorizer = c.frame.body.colorizer
     mode = colorizer.modes.get('python_main')
     d = mode.get('rulesDict')

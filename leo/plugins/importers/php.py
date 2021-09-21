@@ -48,7 +48,7 @@ class Php_Importer(Importer):
                 '\\':   [('len+1', '\\', None),],
                 '"':    [('len', '"',    context == '"'),],
                 "'":    [('len', "'",    context == "'"),],
-                
+
             }
             if block1 and block2:
                 add_key(d, block2[0], ('len', block2, True))  # #1717.

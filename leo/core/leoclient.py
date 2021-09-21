@@ -95,7 +95,7 @@ def _get_action_list():
         ("!shut_down", {}),
     ]
     tail_names = [name for (name, package) in tail]
-    
+
     # Add all remaining methods to the middle.
     tests = inspect.getmembers(server, inspect.ismethod)
     test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
@@ -108,7 +108,7 @@ def _get_action_list():
         all_names = sorted([name for (name, package) in all_tests])
         g.printObj(all_names, tag='all_names')
     return all_tests
-    
+
 #@+node:ekr.20210206093130.1: ** function: _show_response
 def _show_response(n, d):
     global n_known_response_times
@@ -195,7 +195,7 @@ async def client_main_loop(timeout):
                             g.print_exception()
                         break
                     _show_response(n, d)
-                    # This loop invariant guarantees we receive messages in order. 
+                    # This loop invariant guarantees we receive messages in order.
                     is_async = "async" in d
                     n2 = d.get("id")
                     assert is_async or n == n2, (action, n, d)
