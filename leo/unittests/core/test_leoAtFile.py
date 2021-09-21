@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-#  @+leo-ver=5-thin
-#  @+node:ekr.20210901172411.1: * @file ../unittests/core/test_leoAtFile.py
-#  @@first
+#@+leo-ver=5-thin
+#@+node:ekr.20210901172411.1: * @file ../unittests/core/test_leoAtFile.py
+#@@first
 """Tests of leoAtFile.py"""
 import os
 import tempfile
@@ -11,12 +11,12 @@ from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
 import leo.core.leoFileCommands as leoFileCommands
 
-#  @+others
-#  @+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
+#@+others
+#@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
 class TestAtFile(LeoUnitTest):
     """Test cases for leoApp.py"""
-    #  @+others
-    #  @+node:ekr.20200204095726.1: *3*  TestAtFile.bridge
+    #@+others
+    #@+node:ekr.20200204095726.1: *3*  TestAtFile.bridge
     def bridge(self):
         """Return an instance of Leo's bridge."""
         return leoBridge.controller(gui='nullGui',
@@ -25,7 +25,7 @@ class TestAtFile(LeoUnitTest):
             silent=True,
             verbose=False,
         )
-    #  @+node:ekr.20210901140645.13: *3* TestAtFile.test_at_checkPythonSyntax
+    #@+node:ekr.20210901140645.13: *3* TestAtFile.test_at_checkPythonSyntax
     def test_at_checkPythonSyntax(self):
         c, p = self.c, self.c.p
         at = c.atFileCommands
@@ -46,7 +46,7 @@ class TestAtFile(LeoUnitTest):
 
         if not g.unitTesting:  # A hand test of at.syntaxError
             at.checkPythonSyntax(p, s2)
-    #  @+node:ekr.20210920165831.1: *3* TestAtFile.test_at_doc_part
+    #@+node:ekr.20210920165831.1: *3* TestAtFile.test_at_doc_part
     def test_at_doc_part(self):
         
         # From leoBeautify.py.
@@ -69,7 +69,7 @@ class TestAtFile(LeoUnitTest):
                 j += 1
         """)
         assert s
-    #  @+node:ekr.20210905052021.19: *3* TestAtFile.test_at_directiveKind4
+    #@+node:ekr.20210905052021.19: *3* TestAtFile.test_at_directiveKind4
     def test_at_directiveKind4(self):
         c = self.c
         at = c.atFileCommands
@@ -97,7 +97,7 @@ class TestAtFile(LeoUnitTest):
         for s, i, expected in table:
             result = at.directiveKind4(s, i)
             self.assertEqual(result, expected, msg=f"i: {i}, s: {s!r}")
-    #  @+node:ekr.20210905052021.20: *3* TestAtFile.test_at_directiveKind4_new
+    #@+node:ekr.20210905052021.20: *3* TestAtFile.test_at_directiveKind4_new
     def test_at_directiveKind4_new(self):
         c = self.c
         at = c.atFileCommands
@@ -117,7 +117,7 @@ class TestAtFile(LeoUnitTest):
         for expected, s in table:
             result = at.directiveKind4(s, 0)
             self.assertEqual(expected, result, msg=repr(s))
-    #  @+node:ekr.20210905052021.21: *3* TestAtFile.test_at_get_setPathUa
+    #@+node:ekr.20210905052021.21: *3* TestAtFile.test_at_get_setPathUa
     def test_at_get_setPathUa(self):
         c = self.c
         p = c.p
@@ -133,7 +133,7 @@ class TestAtFile(LeoUnitTest):
         )
         for kind, val in table:
             self.assertEqual(val, 'abc', msg=kind)
-    #  @+node:ekr.20210905052021.23: *3* TestAtFile.test_at_parseLeoSentinel
+    #@+node:ekr.20210905052021.23: *3* TestAtFile.test_at_parseLeoSentinel
     def test_at_parseLeoSentinel(self):
         c = self.c
         at = c.atFileCommands  # self is a dummy argument.
@@ -159,7 +159,7 @@ class TestAtFile(LeoUnitTest):
                 self.assertEqual(at.encoding, encoding, msg=repr(s))
         finally:
             at.encoding = 'utf-8'
-    #  @+node:ekr.20210905052021.24: *3* TestAtFile.test_at_remove
+    #@+node:ekr.20210905052021.24: *3* TestAtFile.test_at_remove
     def test_at_remove(self):
         c = self.c
         at = c.atFileCommands
@@ -179,7 +179,7 @@ class TestAtFile(LeoUnitTest):
         assert exists(path)
         assert at.remove(path)
         assert not exists(path)
-    #  @+node:ekr.20210905052021.25: *3* TestAtFile.test_at_replaceFile_different_contents
+    #@+node:ekr.20210905052021.25: *3* TestAtFile.test_at_replaceFile_different_contents
     def test_at_replaceFile_different_contents(self):
         c = self.c
         at = c.atFileCommands
@@ -197,7 +197,7 @@ class TestAtFile(LeoUnitTest):
         finally:
             f.close()
             os.unlink(f.name)
-    #  @+node:ekr.20210905052021.26: *3* TestAtFile.test_at_replaceFile_no_target_file
+    #@+node:ekr.20210905052021.26: *3* TestAtFile.test_at_replaceFile_no_target_file
     def test_at_replaceFile_no_target_file(self):
         c = self.c
         at = c.atFileCommands
@@ -216,7 +216,7 @@ class TestAtFile(LeoUnitTest):
         finally:
             f.close()
             os.unlink(f.name)
-    #  @+node:ekr.20210905052021.27: *3* TestAtFile.test_at_replaceFile_same_contents
+    #@+node:ekr.20210905052021.27: *3* TestAtFile.test_at_replaceFile_same_contents
     def test_at_replaceFile_same_contents(self):
         c = self.c
         at = c.atFileCommands
@@ -236,7 +236,7 @@ class TestAtFile(LeoUnitTest):
         finally:
             f.close()
             os.unlink(f.name)
-    #  @+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
+    #@+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
         c = self.c
         d = c.atFileCommands.scanAllDirectives(c.p)
@@ -244,12 +244,12 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(d.get('language'), 'python')
         self.assertEqual(d.get('tabwidth'), -4)
         self.assertEqual(d.get('pagewidth'), 132)
-    #  @+node:ekr.20210905052021.29: *3* TestAtFile.test_at_scanAllDirectives_minimal_
+    #@+node:ekr.20210905052021.29: *3* TestAtFile.test_at_scanAllDirectives_minimal_
     def test_at_scanAllDirectives_minimal_(self):
         c = self.c
         d = c.atFileCommands.scanAllDirectives(c.p)
         assert d
-    #  @+node:ekr.20210901140645.14: *3* TestAtFile.test_at_tabNannyNode
+    #@+node:ekr.20210901140645.14: *3* TestAtFile.test_at_tabNannyNode
     def test_at_tabNannyNode(self):
         c, p = self.c, self.c.p
         at = c.atFileCommands
@@ -271,7 +271,7 @@ class TestAtFile(LeoUnitTest):
             at.tabNannyNode(p, body=s2)
         except IndentationError:
             pass
-    #  @+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
+    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
     def test_bug_1469(self):
         # Test #1469: saves renaming an external file
         # Create a new outline with @file node and save it
@@ -299,7 +299,7 @@ class TestAtFile(LeoUnitTest):
             c = bridge.openLeoFile(c.fileName())
             p1 = c.rootPosition()
             self.assertEqual(p1.h, "@file 1_renamed")
-    #  @+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
+    #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
     def test_bug_1889(self):
         """
         Test #1889: Honor ~ in ancestor @path nodes.
@@ -316,7 +316,7 @@ class TestAtFile(LeoUnitTest):
             child.b = '@language python\n# test #1889'
             path = g.fullPath(c, child)
             assert '~' not in path, repr(path)
-    #  @+node:ekr.20210905052021.32: *3* TestAtFile.test_fast_readWithElementTree
+    #@+node:ekr.20210905052021.32: *3* TestAtFile.test_fast_readWithElementTree
     def test_fast_readWithElementTree(self):
         # Test the translation table and associated logic.
         c = self.c
@@ -325,6 +325,6 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(len(s), 4)
         s = s.translate(table)
         self.assertEqual(len(s), 2)
-    #  @-others
-#  @-others
-#  @-leo
+    #@-others
+#@-others
+#@-leo
