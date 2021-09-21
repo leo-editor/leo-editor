@@ -123,7 +123,7 @@ def blacken_files_diff(event):
         path = g.fullPath(c, root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f"&black --skip-string-normalization --diff {path}")
+            g.execute_shell_commands(f"&python -m black --skip-string-normalization --diff {path}")
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
