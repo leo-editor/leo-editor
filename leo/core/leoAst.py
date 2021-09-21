@@ -1369,13 +1369,12 @@ class TokenOrderGenerator:
         - Create two-way links between T and self.node.
         - Advance by updating self.px to point to T.
         """
-        trace = False
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        if trace: g.trace(
-            f"px: {self.px:2} "
-            f"node: {node.__class__.__name__:<10} "
-            f"kind: {kind:>10}: val: {val!r}")
+        # g.trace(
+            # f"px: {self.px:2} "
+            # f"node: {node.__class__.__name__:<10} "
+            # f"kind: {kind:>10}: val: {val!r}")
         #
         # Step one: Look for token T.
         old_px = px = self.px + 1
@@ -2526,9 +2525,9 @@ class TokenOrderTraverser:
         node, stack = tree, [0]
         seen = set()
         while node and stack:
-            if False: g.trace(
-                f"{node.node_index:>3} "
-                f"{node.__class__.__name__:<12} {stack}")
+            # g.trace(
+                # f"{node.node_index:>3} "
+                # f"{node.__class__.__name__:<12} {stack}")
             # Visit the node.
             assert node.node_index not in seen, node.node_index
             seen.add(node.node_index)
@@ -3599,7 +3598,8 @@ class Fstringify(TokenOrderTraverser):
             print('')
             return
         lt_s = tokens_to_string(lt_token_list)
-        if trace: g.trace('lt_s:', lt_s)
+        if trace:
+            g.trace('lt_s:', lt_s)
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
         if trace:
