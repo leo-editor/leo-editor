@@ -424,7 +424,7 @@ class textTree(leoFrame.LeoTree):
     #@+node:ekr.20150107090324.62: *3* begin/endUpdate & redraw/now
     def redraw(self, p=None, scroll=True, forceDraw=False):
         self.text_draw_tree()
-        
+
     redraw_now = redraw
 
     # def redraw_now(self, p=None, scroll=True, forceDraw=False):

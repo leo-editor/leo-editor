@@ -193,7 +193,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.188: *3* _FormBase.exit_editing
     def exit_editing(self, *args, **keywords):
-        
+
         trace = False and not g.unitTesting
         self.editing = False
         try:
@@ -262,7 +262,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.193: *3* _FormBase.DISPLAY
     def DISPLAY(self):
-        
+
         # g.trace('===== (_FormBase)', self.display)
         self.curses_pad.redrawwin()
         self.erase()

@@ -21,9 +21,9 @@ from leo.core import leoApp
 def create_app(gui_name='null'):
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
-    
+
     This method is expensive (0.5 sec) only the first time it is called.
-    
+
     Thereafter, recreating g.app, g.app.gui, and new commands is fast.
     """
     trace = False
@@ -70,7 +70,7 @@ def create_app(gui_name='null'):
     c.config.bindingsDict = bindings_d
     assert g.unitTesting is True  # Defensive.
     t4 = time.process_time()
-    # Trace times. This trace happens only once:    
+    # Trace times. This trace happens only once:
     #     imports: 0.016
     #         gui: 0.000
     #   commander: 0.469
@@ -86,7 +86,7 @@ def create_app(gui_name='null'):
 class LeoUnitTest(unittest.TestCase):
     """
     The base class for all unit tests in Leo.
-    
+
     Contains setUp/tearDown methods and various utilites.
     """
     #@+others

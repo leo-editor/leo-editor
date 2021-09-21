@@ -33,7 +33,7 @@ class FormNewEditLoop:
 
     #@+node:ekr.20170428084207.317: *3* FormNewEditLoop.edit_loop
     def edit_loop(self):
-        
+
         # g.trace('===== (FormNewEditLoop)')
         self.editing = True
         self.display()

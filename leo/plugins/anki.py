@@ -67,10 +67,10 @@ def anki_warn(deck, front, back):
     # AnkiConnect will anyway throw an error, warn user now?
     useful_msg = 'No %s specified for this card. Please create a child node to @anki called @anki %s and populate with a %s name'
     if deck is None :
-        g.es(useful_msg % ("deck", "deck", "deck")) 
+        g.es(useful_msg % ("deck", "deck", "deck"))
         return
-    if front is None: 
-        g.es(useful_msg % ("front", "front", "front")) 
+    if front is None:
+        g.es(useful_msg % ("front", "front", "front"))
         return
     if back is None:
         g.es(useful_msg % ("back", "back", "back"))
@@ -86,7 +86,7 @@ def anki_deck_check(deck):
 
 def anki_act_on_node(c, p, event):
     h = p.h
-    
+
     if not h.strip().startswith('@anki'):
         raise leoPlugins.TryNext
 
@@ -97,7 +97,7 @@ def anki_act_on_node(c, p, event):
             if parent.h.strip().startswith('@anki'):
                 # parent found
                 p = parent
-        
+
     # we are at root, ready to process inputs
     # now find the deck
     # is this card update or new card?
@@ -109,20 +109,20 @@ def anki_act_on_node(c, p, event):
     tag = None
     for child in p.children():
         if child.h.strip() == '@anki deck':
-            deck = child.b 
+            deck = child.b
 
         elif child.h.strip() == '@anki front':
             front = child.b
-        
+
         elif child.h.strip() == '@anki back':
             back = child.b
-        
+
         elif child.h.strip() == '@anki id':
             card_id = int(child.b)
 
         elif child.h.strip() == '@anki tag':
             tag = child.b
-            
+
     # new card to be added
     if card_id is None:
         anki_warn(deck, front, back)
@@ -130,36 +130,36 @@ def anki_act_on_node(c, p, event):
         # front, back, deck all available
         # check if deck needs to be created
         anki_deck_check(deck)
- 
+
         result = _invoke('addNote', note={
-            'deckName': deck, 
-            'modelName' : 'Basic', 
+            'deckName': deck,
+            'modelName' : 'Basic',
             'fields': {
-                'Front' : front, 
+                'Front' : front,
                 'Back' : back
             },
             'tags' : tag.split(",")
         })
         # result id needs to be stored for future updates
-        card_id_node = p.insertAsLastChild() 
+        card_id_node = p.insertAsLastChild()
         card_id_node.h = '@anki id'
         card_id_node.b = str(result)
 
     # updating existing card
     else:
         anki_warn(deck, front, back)
-        
+
         # front, back, deck all available
         # deck also will be present
         result = _invoke('updateNoteFields', note={
-            'deckName': deck, 
-            'modelName' : 'Basic', 
-            'id' : int(card_id), 
+            'deckName': deck,
+            'modelName' : 'Basic',
+            'id' : int(card_id),
             'fields': {
-                'Front' : front, 
+                'Front' : front,
                 'Back' : back
             },
             'tags' : tag.split(",")
         })
-        
+
 #@-leo

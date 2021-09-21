@@ -101,7 +101,7 @@ class backlinkController:
         # already missed initial 'open2' because of after-create-leo-frame, so
         self.loadLinksInt()
         self.updateTabInt()
-        
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
@@ -239,14 +239,14 @@ class backlinkController:
 
         if dir_ == 'url':
             self.linkUrl()
-        
+
         elif not self.linkMark or not self.c.positionExists(self.linkMark):
             self.showMessage('Link mark not specified or no longer valid', color='red')
             return
 
         else: # dir_ in ['from', 'to', 'undirected']
             p = self.linkMark
-            
+
             if newChild:
                 p = self.linkMark.insertAsLastChild()
                 p.h = self.c.p.h

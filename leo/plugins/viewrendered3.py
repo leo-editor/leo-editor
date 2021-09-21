@@ -6,7 +6,7 @@ r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
 #@@language rest
-Creates a window for live rendering of reSTructuredText, 
+Creates a window for live rendering of reSTructuredText,
 Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
@@ -45,14 +45,14 @@ the plugin can:
        node, the display can be frozen (no changes will be displayed) if
        necessary to avoid excessive delay in re-rendering, or visual anomalies.
     #. The default rendering language for a node can be selected to by one of
-       "RsT", "MD", "Asciidoc", or "TEXT".  This setting applies when the node 
+       "RsT", "MD", "Asciidoc", or "TEXT".  This setting applies when the node
        or subtree has no @rst or @md headline.
     #. Display a node's headline text as the overall heading for the rendering.
        However, if the first line of a node exactly equals the headline text
        (not counting a directive like "@rst"), only one copy of that heading
        will be displayed.
 
-A number of other special types of nodes can be rendered (see the 
+A number of other special types of nodes can be rendered (see the
 section *Special Renderings*)
 
 @setting nodes in an @settings tree can modify the behavior of the plugin.
@@ -88,7 +88,7 @@ Limitations and Quirks
        executed with a Leo environment the includes the standard Leo
        variables c, g, and c.p.
 
-    #. All code blocks in a node or subtree must contain the same code language 
+    #. All code blocks in a node or subtree must contain the same code language
        or they cannot be executed.
 
     #. Non-Python code can currently only be executed in RsT trees.
@@ -129,8 +129,8 @@ Settings and Configuration
 Settings
 ---------
 
-Settings are put into nodes with the headlines ``@setting ...``.  
-They must be placed into an ``@settings`` tree, preferably 
+Settings are put into nodes with the headlines ``@setting ...``.
+They must be placed into an ``@settings`` tree, preferably
 in the myLeoSettings file.
 
 All settings are of type @string unless shown as ``@bool``
@@ -291,14 +291,14 @@ Commands
 viewrendered3-specific commands all start with a "vr3-" prefix.  There is
 rarely a reason to invoke any of them, except two:
 
-    1. ``vr3-toggle``, which shows or hides the VR3 pane. 
+    1. ``vr3-toggle``, which shows or hides the VR3 pane.
     This is best bound to a hot key (see `Hot Key`_).
 
     2.``vr3-open-markup-in-editor`` exports the generated markup
     to temporary file and opens it in a text editor. The editor
     is one specified by the setting ``@string vr3-ext-editor``,
     the setting ``@string external-editor``, by the environmental
-    variable ``EDITOR`` or ``LEO-EDITOR``, or is the default 
+    variable ``EDITOR`` or ``LEO-EDITOR``, or is the default
     editor chosen by Leo.
 
 
@@ -380,7 +380,7 @@ Rendering reStructuredText
 The VR3 plugin will render a node using RsT if its headline, or the headline of
 a parent, starts with ``@rst``. The type of rendering is called its "kind". If
 no kind is known, then RsT rendering will be used unless the ``vr3-default-kind``
-setting is set to another allowed value.  The default kind can also be changed 
+setting is set to another allowed value.  The default kind can also be changed
 using the ``Default Kind`` menu.
 
 **Note**: reStructuredText errors and warnings will appear in red in the
@@ -421,7 +421,7 @@ the language instead::
 .. note::
     No space is allowed between the fence characters and the language.
 
-As with RsT rendering, do not mix multiple structured languages in a single 
+As with RsT rendering, do not mix multiple structured languages in a single
 node or subtree.
 
 #@+node:TomP.20200820170225.1: *4* Rendering Asciidoc
@@ -429,17 +429,17 @@ Rendering Asciidoc
 ------------------
 
 The VR3 plugin will render a node using Asciidoc if
-an Asciidoc or Asciidoc3 processor has been installed and the node type 
+an Asciidoc or Asciidoc3 processor has been installed and the node type
 is ``@asciidoc`` or if the node starts with ``@language asciidoc``.
 
 If a Python Asciidoc processor is used (as opposed to Asciidoc3),
-the asciidoc processor must be in a directory directory pointed 
+the asciidoc processor must be in a directory directory pointed
 to by the system setting named ``vr3-asciidoc-path``.  As an
 alternative, VR3 will use an executable processor named ``asciidoc``
 if it is on the system path.
 
-It is also possible to use the Ruby ``asciidoctor.rb`` program as an external 
-processor.  This will render the Asciidoc much faster than the Python 
+It is also possible to use the Ruby ``asciidoctor.rb`` program as an external
+processor.  This will render the Asciidoc much faster than the Python
 ``asciidoc`` module.
 
 .. note:: The Asciidoc processors are quite slow at rendering
@@ -462,15 +462,15 @@ The asciidoc processor must be one of:
 
     4. Other external asciidoc processors may work if they can be
        launched from the system path (either directly or by
-       an external batch file), but they will need to have the same 
+       an external batch file), but they will need to have the same
        command line parameters as 1. or 2. above.
 
-Asciidoc can be imported into VR3 instead of being run as an external file 
+Asciidoc can be imported into VR3 instead of being run as an external file
 by specifying its folder location in the ``@vr3-asciidoc-path`` setting.
 This will only work for ``asciidoc`` from the source stated in 1. above.
 This *may* provide faster rendering.
 
-If both ``asciidoc`` and ``asciidoc3`` are found, then which one will 
+If both ``asciidoc`` and ``asciidoc3`` are found, then which one will
 be used can be set by the setting
 
     ``@bool vr3-prefer-asciidoc3``
@@ -483,7 +483,7 @@ AsciiDoctor
 
 Installing the ``asciidoctor`` Ruby Program
 ===========================================
-First install the Ruby code environment.  It is not necessary to install 
+First install the Ruby code environment.  It is not necessary to install
 the entire development system. A minimal install will be enough.
 Next, run the following commands in a terminal or Windows console::
 
@@ -507,9 +507,9 @@ You can use another program of the same name as long as it accepts the same comm
 
 Asciidoc Dialects
 =================
-Asciidoc dialects vary somewhat.  The dialect used by the 
-asciidoc processors described above does not use the 
-syntactical form ``[.xxx]``, e.g., ``[.big.]``.  Instead, 
+Asciidoc dialects vary somewhat.  The dialect used by the
+asciidoc processors described above does not use the
+syntactical form ``[.xxx]``, e.g., ``[.big.]``.  Instead,
 the leading period must be omitted: ``[big]``. There may be
 other differences.
 
@@ -526,7 +526,7 @@ Code Execution
 
 Code that occurs inside one or more code blocks can be executed.
 Execution is initiated when the "Execute" button on the
-VR3 toolbar is pressed.  Output from the processor to stdout and 
+VR3 toolbar is pressed.  Output from the processor to stdout and
 stderr is displayed under the node (or last node of a subtree).
 
 A node may contain multiple code blocks, but they can only successfully
@@ -625,10 +625,10 @@ relative to Leo's load directory.
 
       Linux:   ``file:///home/a_notebook.ipynb``
 
-- ``@movie`` plays a file as a movie. @movie also works for music files. 
-  The path to the file must be on the first line of the body of the node. 
-  Media can be started or paused using the *vr3-pause-play-movie* command.  
-  Movies might not render in the current version, depending in video 
+- ``@movie`` plays a file as a movie. @movie also works for music files.
+  The path to the file must be on the first line of the body of the node.
+  Media can be started or paused using the *vr3-pause-play-movie* command.
+  Movies might not render in the current version, depending in video
   type and installed codecs.
 
 - ``@networkx`` is non-functional at present.  It is intended to
@@ -845,7 +845,7 @@ ZOOM_FACTOR = 1.1
 
 MD_STYLESHEET_APPEND = '''pre {
    font-size: 110%;
-   border: 1px solid gray; 
+   border: 1px solid gray;
    border-radius: .7em; padding: 1em;
    background-color: #fff8f8
 }
@@ -930,17 +930,17 @@ layouts = {}
 #@+node:TomP.20200508124457.1: ** find_exe()
 def find_exe(exename):
     """Locate an executable and return its path.
-    
+
     Works for Windows and Linux.  Works whether or not a virtual
     environment is in effect.
-    
+
     Finds executables that are in:
         - the Python Scripts directory;
         - the system path.
-        
+
     ARGUMENT
     exename -- the name of the executable file to find.
-    
+
     RETURNS
     the full path to the executable as a string, or None.
     Returns None if the found executable is not marked as executable.
@@ -1122,7 +1122,7 @@ def viewrendered(event):
         vr3.adjust_layout('open')
 
     c.bodyWantsFocusNow()
-    
+
     return vr3
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
 @g.command('vr3-hide')
@@ -1330,9 +1330,9 @@ def shrink_view(event):
 @g.command('vr3-open-markup-in-editor')
 def markup_to_editor(event):
     """Send VR3's markup to an external editor.
-    
+
     This is to make it easier to understand the markup, in case it
-    isn't what was expected.  There is currently no way to 
+    isn't what was expected.  There is currently no way to
     write the text back from the editor into VR3.
     """
     vr3 = getVr3(event)
@@ -1458,7 +1458,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc3_internal_ok = True
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
-        
+
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -1520,7 +1520,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if self.md_math_output and self.mathjax_url:
             self.md_header = fr'''
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">        
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <head xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
@@ -1783,7 +1783,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # NOTE - for the stylesheet url we need to use forward slashes no matter
         # what OS is being used.  Apparently, the g.os_path methods do this.
         vr_style_dir = g.os_path_join(LEO_PLUGINS_DIR, 'viewrendered3')
-     
+
         # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
         # If so, check if it exists.
         use_default = not self.rst_stylesheet
@@ -2034,18 +2034,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200825083904.1: *5* vr3.process_asciidoc_nodes
     def process_asciidoc_nodes(self, node_list, s=''):
         """Convert content of Leo nodes, or a string, to Asciidoc.
-        
+
         If the input contains Python code and self.execute_flag is True,
         execute the code and capture stdout and stderr output.
         Return the Asciidoc output with any execution results
         appended in a literal block.
-        
+
         This method uses a rudimentary state machine.
-        
+
         ARGUMENTS
         node_list -- a list of Leo nodes to process.
         s -- a string.  The node_list must be empty.
-        
+
         RETURNS
         a string containing the Asciidoc and execution results.
         """
@@ -2899,14 +2899,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20210218232648.1: *6* ext_execute_code
     def ext_execute_code(self, lang, code):
         """Execute code using an external processor.
-        
+
         The path to the processor will have been stored in
         the exepath dictionary.
-        
+
         ARGUMENTS
         lang -- a string representing the code language; e.g. 'javascript'.
         code -- a string containing the code to be run.
-        
+
         RETURNS
         a tuple (result.stdout, result.stderr) with any console output from
         the external processor.
@@ -3067,7 +3067,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@+<< handle at-image >>
             #@+node:TomP.20200416153716.1: *7* << handle at-image >>
             # Handle @image and @param directives.
-            # param format: space separated words, stored in self.params 
+            # param format: space separated words, stored in self.params
             # as a list of the words.
 
             if not _in_code_block:
@@ -3224,15 +3224,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20210621144739.1: *5* vr3.make_title_from_headline
     def make_title_from_headline(self, p, h):
         """From node title, return title with over- and underline- strings.
-        
+
            Symbol is chosen based on the indent level of the node.
            Note that might differe from p.h because of, e.g.,
            directive removal.
-           
+
            ARGUMENTS
            p -- the node position whose indent level is to be used.
            h -- the headline string to be processed.
-           
+
            RETURNS
            a string
         """
@@ -3243,7 +3243,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@@language python
     def make_rst_headline(self, p, s):
         """Turn node's title into a headline and add to front of text.
-        
+
         If the headline text (without directives and leading whitespace)
         equals the first line of the body text, don't insert a title.
 
@@ -4051,7 +4051,7 @@ class StateMachine:
 
         # When we encounter a new @language line, the next state might be either
         # State.BASE or State.AT_LANG_CODE, so we have to compute which it will be.
-        (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): 
+        (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER):
                     (Action.new_chunk, State.TO_BE_COMPUTED),
 
         (State.BASE, Marker.IMAGE_MARKER):          (Action.add_image, State.BASE),

@@ -38,9 +38,9 @@ class TestImporter(LeoUnitTest):
             [owner]
             name=John Doe
             organization=Acme Widgets Inc.
-        
+
             ; [ not a section ]
-        
+
             [database]
             server=192.0.2.62
                 ; use IP address
@@ -61,11 +61,11 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             class cTestClass1 {
-        
+
                 int foo (int a) {
                     a = 2 ;
                 }
-        
+
                 char bar (float c) {
                     ;
                 }
@@ -90,14 +90,14 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             class cTestClass1 {
-        
+
                 int foo (int a) {
             // an underindented line.
                     a = 2 ;
                 }
-        
+
                 // This should go with the next function.
-        
+
                 char bar (float c) {
                     ;
                 }
@@ -129,7 +129,7 @@ class TestImporter(LeoUnitTest):
             {
                 assert(false);
             }
-        
+
             bool
             aaa::bbb::dothat
                 (
@@ -164,12 +164,12 @@ class TestImporter(LeoUnitTest):
             {
                 assert(false);
             }
-        
+
             bool
             aaa::bbb::dothat
                 (
                 xyz *b
-                ) 
+                )
             {
                 return true;
             } //  <---------------------problem
@@ -412,15 +412,15 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent('''\
             from libc.math cimport pow
-        
+
             cdef double square_and_add (double x):
                 """Compute x^2 + x as double.
-        
+
                 This is a cdef function that can be called from within
                 a Cython program, but not from Python.
                 """
                 return pow(x, 2.0) + x
-        
+
             cpdef print_result (double x):
                 """This is a cpdef function that can be called from Python."""
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
@@ -482,10 +482,10 @@ class TestImporter(LeoUnitTest):
             ;;; comment
             ;;; continue
             ;;;
-        
+
             (defun abc (a b)
                (+ 1 2 3))
-        
+
             ; comm
             (defun cde (a b)
                (+ 1 2 3))
@@ -561,7 +561,7 @@ class TestImporter(LeoUnitTest):
                         </td>
                         </tr>
                         </tbody>
-                    </table>	
+                    </table>
                     </td>
                     </tr>
                 </table>
@@ -632,10 +632,10 @@ class TestImporter(LeoUnitTest):
         <td width="550">
         <table cellspacing="0" cellpadding="0" width="600" border="0">
             <td class="blutopgrabot" height="28"></td>
-        
+
             <!-- The indentation of this element causes the problem. -->
             <table>
-        
+
         <!--
         <div align="center">
         <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
@@ -679,18 +679,18 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             <body>
-        
+
             <!-- OOPS: the div and p elements not properly nested.-->
             <!-- OOPS: this table got generated twice. -->
-        
+
             <p id="P1">
             <div id="D666">Paragraph</p> <!-- P1 -->
             <p id="P2">
-        
+
             <TABLE id="T666"></TABLE></p> <!-- P2 -->
             </div>
             </p> <!-- orphan -->
-        
+
             </body>
         """)
         table = (
@@ -716,9 +716,9 @@ class TestImporter(LeoUnitTest):
             <link id="L2">
             <link id="L3" />
             <link id='L4' />
-        
+
             <title>TITLE</title>
-        
+
         <!-- oops: missing tags. -->
         '''
         table = (
@@ -741,9 +741,9 @@ class TestImporter(LeoUnitTest):
             <link id="L2">
             <link id="L3" />
             <link id='L4' />
-        
+
             <title>TITLE</title>
-        
+
         </head>
         </html>
         '''
@@ -766,38 +766,38 @@ class TestImporter(LeoUnitTest):
             from browser import document as doc
             from browser import html
             import header
-        
+
             qs_lang,language = header.show()
-        
+
             doc["content"].html = doc["content_%s" %language].html
-        
+
             if qs_lang:
                 doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
-        
+
             def ch_lang(ev):
                 sel = ev.target
                 new_lang = sel.options[sel.selectedIndex].value
                 doc.location.href = 'index.html?lang=%s' %new_lang
-        
+
             for elt in doc[html.SELECT]:
                 if elt.id.startswith('change_lang_'):
                     doc[elt.id].bind('change',ch_lang)
             </script>
-        
+
             <script type="text/python3">
             """Code for the clock"""
-        
+
             import time
             import math
             import datetime
-        
+
             from browser import document as doc
             import browser.timer
-        
+
             sin,cos = math.sin,math.cos
             width,height = 250,250 # canvas dimensions
             ray = 100 # clock ray
-        
+
             def needle(angle,r1,r2,color="#000000"):
                 # draw a needle at specified angle in specified color
                 # r1 and r2 are percentages of clock ray
@@ -810,17 +810,17 @@ class TestImporter(LeoUnitTest):
                 ctx.moveTo(x1,y1)
                 ctx.lineTo(x2,y2)
                 ctx.stroke()
-        
+
             def set_clock():
                 # erase clock
                 ctx.beginPath()
                 ctx.fillStyle = "#FFF"
                 ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
                 ctx.fill()
-            
+
                 # redraw hours
                 show_hours()
-        
+
                 # print day
                 now = datetime.datetime.now()
                 day = now.day
@@ -829,8 +829,8 @@ class TestImporter(LeoUnitTest):
                 ctx.textBaseline = "middle"
                 ctx.fillStyle="#FFF"
                 ctx.fillText(day,width*0.7,height*0.5)
-        
-                # draw needles for hour, minute, seconds    
+
+                # draw needles for hour, minute, seconds
                 ctx.lineWidth = 3
                 hour = now.hour%12 + now.minute/60
                 angle = hour*2*math.pi/12 - math.pi/2
@@ -842,7 +842,7 @@ class TestImporter(LeoUnitTest):
                 second = now.second+now.microsecond/1000000
                 angle = second*2*math.pi/60 - math.pi/2
                 needle(angle,0.05,0.85,"#FF0000") # in red
-            
+
             def show_hours():
                 ctx.beginPath()
                 ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
@@ -859,7 +859,7 @@ class TestImporter(LeoUnitTest):
                 # cell for day
                 ctx.fillStyle = "#000"
                 ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
-        
+
             canvas = doc["clock"]
             # draw clock border
             if hasattr(canvas,'getContext'):
@@ -868,7 +868,7 @@ class TestImporter(LeoUnitTest):
                 ctx.lineWidth = 10
                 ctx.arc(width/2,height/2,ray,0,2*math.pi)
                 ctx.stroke()
-            
+
                 for i in range(60):
                     ctx.lineWidth = 1
                     if i%5 == 0:
@@ -887,7 +887,7 @@ class TestImporter(LeoUnitTest):
             else:
                 doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
             </script>
-        
+
             <title>Brython</title>
             <link rel="stylesheet" href="Brython_files/doc_brython.css">
             </head>
@@ -914,7 +914,7 @@ class TestImporter(LeoUnitTest):
             /**
              * Indicates the caller's authority to perform lifecycle operations on
              */
-        
+
             public final class AdminPermission extends BasicPermission
             {
                 /**
@@ -945,42 +945,42 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             /*
              * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
-             * 
+             *
              * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
-             * 
+             *
              * This program and the accompanying materials are made available under the
-             * terms of the Eclipse Public License v1.0 which accompanies this 
+             * terms of the Eclipse Public License v1.0 which accompanies this
              * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
              */
-        
+
             package org.osgi.framework;
-        
+
             /**
              * A Framework exception used to indicate that a bundle lifecycle problem
              * occurred.
-             * 
+             *
              * <p>
              * <code>BundleException</code> object is created by the Framework to denote
              * an exception condition in the lifecycle of a bundle.
              * <code>BundleException</code>s should not be created by bundle developers.
-             * 
+             *
              * <p>
              * This exception is updated to conform to the general purpose exception
              * chaining mechanism.
-             * 
+             *
              * @version $Revision: 1.247 $
              */
-        
+
             public class BundleException extends Exception {
                 static final long	serialVersionUID	= 3571095144220455665L;
                 /**
                  * Nested exception.
                  */
                 private Throwable	cause;
-        
+
                 /**
                  * Creates a <code>BundleException</code> that wraps another exception.
-                 * 
+                 *
                  * @param msg The associated message.
                  * @param cause The cause of this exception.
                  */
@@ -1052,7 +1052,7 @@ class TestImporter(LeoUnitTest):
             {
                 if(/["\\\\\\x00-\\x1f]/.test(this))
                     return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-        
+
                 return '"' + this + '"';
             };
         """)
@@ -1081,14 +1081,14 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             var c3 = (function () {
                 "use strict";
-        
+
                 // Globals
                 var c3 = { version: "0.0.1"   };
-        
+
                 c3.someFunction = function () {
                     console.log("Just a demo...");
                 };
-        
+
                 return c3;
             }());
         """)
@@ -1098,13 +1098,13 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             var express = require('express');
-        
+
             var app = express.createServer(express.logger());
-        
+
             app.get('/', function(request, response) {
             response.send('Hello World!');
             });
-        
+
             var port = process.env.PORT || 5000;
             app.listen(port, function() {
             console.log("Listening on " + port);
@@ -1116,11 +1116,11 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
-        
+
             //=============================================================================
             // rpg_core.js v1.3.0
             //=============================================================================
-        
+
             //-----------------------------------------------------------------------------
             /**
              * This is not a class, but contains some methods that will be added to the
@@ -1131,7 +1131,7 @@ class TestImporter(LeoUnitTest):
             function JsExtensions() {
                 throw new Error('This is not a class');
             }
-        
+
             /**
              * Returns a number whose value is limited to the given range.
              *
@@ -1423,14 +1423,14 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             unit Unit1;
-        
+
             interface
-        
+
             uses
             Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
             Forms,
             Dialogs;
-        
+
             type
             TForm1 = class(TForm)
             procedure FormCreate(Sender: TObject);
@@ -1439,14 +1439,14 @@ class TestImporter(LeoUnitTest):
             public
             { Public declarations }
             end;
-        
+
             var
             Form1: TForm1;
-        
+
             implementation
-        
+
             {$R *.dfm}
-        
+
             procedure TForm1.FormCreate(Sender: TObject);
             var
             x,y: double;
@@ -1454,7 +1454,7 @@ class TestImporter(LeoUnitTest):
             x:= 4;
             Y := x/2;
             end;
-        
+
             end. // interface
         """)
         table = (
@@ -1478,24 +1478,24 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             #!/usr/bin/perl
-        
+
             # Function definition
             sub Hello{
                print "Hello, World!\n";
             }
-        
+
             sub Test{
                print "Test!\n";
             }
             "\N{LATIN SMALL LIGATURE FI}" =~ /fi/i;
-        
+
             $bar = "foo";
             if ($bar =~ /foo/){
                print "Second time is matching\n";
             }else{
                print "Second time is not matching\n";
             }
-        
+
             # Function call
             Hello();
         """)
@@ -1505,17 +1505,17 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             #!/usr/bin/perl
-                  
+
             sub Test{
                print "Test!\n";
             }
-        
+
             =begin comment
             sub World {
                 print "This is not a funtion!"
             }
             =cut
-        
+
             # Function definition
             sub Hello{
                print "Hello, World!\n";
@@ -1527,14 +1527,14 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             #!/usr/bin/perl
-        
+
             # This would print with a line break in the middle
             print "Hello
-        
+
             sub World {
                 print "This is not a funtion!"
             }
-        
+
             world\n";
         """)
         c.importCommands.perlUnitTest(c.p, s=s)
@@ -1547,19 +1547,19 @@ class TestImporter(LeoUnitTest):
         # ('len',   '/',     '/',       '',       0,       0,       0),
         s = textwrap.dedent("""\
             #!/usr/bin/perl
-        
+
             sub test1 {
                 s = /{/g;
             }
-        
+
             sub test2 {
                 s = m//{/;
             }
-        
+
             sub test3 {
                 s = s///{/;
             }
-        
+
             sub test4 {
                 s = tr///{/;
             }
@@ -1571,19 +1571,19 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             #!/usr/bin/perl
-        
+
             sub test1 {
                 s = /}/g;
             }
-        
+
             sub test2 {
                 s = m//}/;
             }
-        
+
             sub test3 {
                 s = s///}/;
             }
-        
+
             sub test4 {
                 s = tr///}/;
             }
@@ -1609,16 +1609,16 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             <?php
-        
+
             $type = 'cc';
             $obj = new $type; // outputs "hi!"
-        
+
             class cc {
                 function __construct() {
                     echo 'hi!';
                 }
             }
-        
+
             ?>
         """)
         c.importCommands.phpUnitTest(c.p, s=s)
@@ -1627,7 +1627,7 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             <?php
-        
+
             if (expr) {
                 class cc {
                     // version 1
@@ -1637,7 +1637,7 @@ class TestImporter(LeoUnitTest):
                     // version 2
                 }
             }
-        
+
             ?>
         """)
         c.importCommands.phpUnitTest(c.p, s=s)
@@ -1653,11 +1653,11 @@ class TestImporter(LeoUnitTest):
                     for( $i=0, $n=count($args); $i<$n; $i++ )
                         $this->add($args[$i]);
                 }
-        
+
                 public function __get( /*string*/ $name = null ) {
                     return $this->self[$name];
                 }
-        
+
                 public function add( /*string*/ $name = null, /*int*/ $enum = null ) {
                     if( isset($enum) )
                         $this->self[$name] = $enum;
@@ -1665,14 +1665,14 @@ class TestImporter(LeoUnitTest):
                         $this->self[$name] = end($this->self) + 1;
                 }
             }
-        
+
             class DefinedEnum extends Enum {
                 public function __construct( /*array*/ $itms ) {
                     foreach( $itms as $name => $enum )
                         $this->add($name, $enum);
                 }
             }
-        
+
             class FlagsEnum extends Enum {
                 public function __construct( /*...*/ ) {
                     $args = func_get_args();
@@ -1789,7 +1789,7 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             class testClass1 # no colon
                 pass
-        
+
             def spam():
                 pass
         """)
@@ -1838,7 +1838,7 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent('''\
             import sys
-        
+
             if sys.version_info[0] >= 3:
                 exec_ = eval('exec')
             else:
@@ -1853,9 +1853,9 @@ class TestImporter(LeoUnitTest):
                     elif _locs_ is None:
                         _locs_ = _globs_
                     exec("""exec _code_ in _globs_, _locs_""")
-        
+
             def make_parser():
-        
+
                 parser = argparse.ArgumentParser(
                     description="""Raster calcs. with GDAL.
                     The first --grid defines the projection, extent, cell size, and origin
@@ -1922,16 +1922,16 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent('''
             """
             sheet_stats.py - report column stats for spreadsheets
-        
+
             requires openpyxl and numpy
-        
+
             Terry N. Brown, terrynbrown@gmail.com, Fri Dec 16 13:20:47 2016
             2016-12-26 Henry Helgen added average, variance, standard deviation,
                                     coefficient of variation to output
             2016-12-23 Henry Helgen updated to Python 3.5 syntax including print() and
                                     writer = csv.writer(open(opt.output, 'w', newline=''))
             """
-        
+
             import csv
             import argparse
             import glob
@@ -1941,13 +1941,13 @@ class TestImporter(LeoUnitTest):
             from collections import namedtuple
             from math import sqrt, isnan
             NAN = float('NAN')
-        
+
             from openpyxl import load_workbook
-        
+
             PYTHON_2 = sys.version_info[0] < 3
             if not PYTHON_2:
                 unicode = str
-        
+
             class AttrDict(dict):
                 """allow d.attr instead of d['attr']
                 http://stackoverflow.com/a/14620633
@@ -1955,7 +1955,7 @@ class TestImporter(LeoUnitTest):
                 def __init__(self, *args, **kwargs):
                     super(AttrDict, self).__init__(*args, **kwargs)
                     self.__dict__ = self
-        
+
             FIELDS = [  # fields in outout table
                 'file', 'field', 'n', 'blank', 'bad', 'min', 'max', 'mean', 'std',
                 'sum', 'sumsq', 'variance', 'coefvar'
@@ -1968,43 +1968,43 @@ class TestImporter(LeoUnitTest):
                     description="""Report column stats for spreadsheets""",
                     formatter_class=argparse.ArgumentDefaultsHelpFormatter
                 )
-        
+
                 parser.add_argument('files', type=str, nargs='+',
                     help="Files to process, '*' patterns expanded."
                 )
-        
+
                 required_named = parser.add_argument_group('required named arguments')
-        
+
                 required_named.add_argument("--output",
                     help="Path to .csv file for output, will be overwritten",
                     metavar='FILE'
                 )
-        
+
                 return parser
-        
+
             def get_options(args=None):
                 """
                 get_options - use argparse to parse args, and return a
                 argparse.Namespace, possibly with some changes / expansions /
                 validatations.
-        
+
                 Client code should call this method with args as per sys.argv[1:],
                 rather than calling make_parser() directly.
-        
+
                 :param [str] args: arguments to parse
                 :return: options with modifications / validations
                 :rtype: argparse.Namespace
                 """
                 opt = make_parser().parse_args(args)
-        
+
                 # modifications / validations go here
-        
+
                 if not opt.output:
                     print("No --output supplied")
                     exit(10)
-        
+
                 return opt
-        
+
             def get_aggregate(psumsqn, psumn, pcountn):
                 """
                 get_aggregate - compute mean, variance, standard deviation,
@@ -2012,52 +2012,52 @@ class TestImporter(LeoUnitTest):
                 numpy.mean, numpy.var, numpy.std since the sum, sumsq, and count are
                 available when the function is called. It avoids an extra pass
                 through the list.
-        
+
                 # note pcountn means the full list n,  not a sample n - 1
-        
+
                 :param sum of squares, sum, count
                 :return: a tuple of floats mean, variance, standard deviation, coefficient of variation
                 """
-        
+
                 Agg = namedtuple("Agg", "mean variance std coefvar")
-        
+
                 # validate inputs check for count == 0
                 if pcountn == 0:
                     result = Agg(NAN, NAN, NAN, NAN)
                 else:
-        
+
                     mean = psumn / pcountn # mean
-        
+
                     # compute variance from sum squared without knowing mean while summing
                     variance = (psumsqn - (psumn * psumn) / pcountn ) / pcountn
-        
+
                     #compute standard deviation
                     if variance < 0:
                         std = NAN
                     else:
                         std = sqrt(variance)
-        
+
                     # compute coefficient of variation
                     if mean == 0:
                         coefvar = NAN
                     else:
                         coefvar = std / mean
-        
+
                     result = Agg(mean, variance, std, coefvar)
-        
+
                 return result
-        
-        
+
+
             def proc_file(filepath):
                 """
                 proc_file - process one .xlsx file
-        
+
                 :param str filepath: path to file
                 :return: list of lists, rows of info. as expected in main()
                 """
-        
+
                 print(filepath)
-        
+
                 # get the first sheet
                 book = load_workbook(filename=filepath, read_only=True)
                 sheets = book.get_sheet_names()
@@ -2066,12 +2066,12 @@ class TestImporter(LeoUnitTest):
                 row0 = next(row_source)
                 # get field names from the first row
                 fields = [i.value for i in row0]
-        
+
                 data = {
                     'filepath': filepath,
                     'fields': {field:AttrDict({f:0 for f in FIELDS}) for field in fields}
                 }
-        
+
                 for field in fields:
                     # init. mins/maxs with invalid value for later calc.
                     data['fields'][field].update(dict(
@@ -2080,10 +2080,10 @@ class TestImporter(LeoUnitTest):
                         field=field,
                         file=filepath,
                     ))
-        
+
                 rows = 0
                 for row in row_source:
-        
+
                     if rows % 1000 == 0:  # feedback every 1000 rows
                         print(rows)
                         # Much cleaner to exit by creating a file called "STOP" in the
@@ -2091,9 +2091,9 @@ class TestImporter(LeoUnitTest):
                         # multiprocessing.  Save time by checking only every 1000 rows.
                         if os.path.exists("STOP"):
                             return
-        
+
                     rows += 1
-        
+
                     for cell_n, cell in enumerate(row):
                         d = data['fields'][fields[cell_n]]
                         if cell.value is None or unicode(cell.value).strip() == '':
@@ -2116,38 +2116,38 @@ class TestImporter(LeoUnitTest):
                                     d.max = max(d.max, x)
                             except ValueError:
                                 d.bad += 1
-        
+
                 assert sum(d.n+d.blank+d.bad for d in data['fields'].values()) == rows * len(fields)
-        
+
                 # compute the derived values
                 for field in data['fields']:
                     d = data['fields'][field]
                     d.update(get_aggregate(d.sumsq, d.sum, d.n)._asdict().items())
-        
+
                 return data
             def get_answers(opt=None, **kwargs):
                 """get_answers - process files
-        
+
                 :param argparse.Namespace opt: options
                 :return: list of answers from proc_file
                 """
-        
+
                 if opt is None:  # API call rather than command line
                     opt = type("opt", (), kwargs)
-        
+
                 # pass filenames through glob() to expand "2017_*.xlsx" etc.
                 files = []
                 for filepath in opt.files:
                     files.extend(glob.glob(filepath))
-        
+
                 # create a pool of processors
                 pool = multiprocessing.Pool(multiprocessing.cpu_count()-1)
-        
+
                 # process file list with processor pool
                 return pool.map(proc_file, files)
             def get_table_rows(answers):
                 """get_table_rows - generator - convert get_answers() output to table format
-        
+
                 :param list answers: output from get_answers()
                 :return: list of rows suitable for csv.writer
                 """
@@ -2159,23 +2159,23 @@ class TestImporter(LeoUnitTest):
                             yield [unicode(col).encode('utf-8') for col in row]
                         else:
                             yield row
-        
+
             def main():
                 """main() - when invoked directly"""
                 opt = get_options()
-        
+
                 # csv.writer does its own EOL handling,
                 # see https://docs.python.org/3/library/csv.html#csv.reader
                 if PYTHON_2:
                     output = open(opt.output, 'wb')
                 else:
                     output = open(opt.output, 'w', newline='')
-        
+
                 with output as out:
                     writer = csv.writer(out)
                     for row in get_table_rows(get_answers(opt)):
                         writer.writerow(row)
-        
+
             if __name__ == '__main__':
                 main()
         ''')
@@ -2237,15 +2237,15 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             import sys
-        
+
             class Foo():
                 pass
-            
+
             a = 2
-        
+
             def main(self):
                 pass
-        
+
             if __name__ == '__main__':
                 main()
         """)
@@ -2279,10 +2279,10 @@ class TestImporter(LeoUnitTest):
             cd /tmp
             ls"""
                 file('/tmp/script', 'w').write(s)
-        
+
             class bar:
                 pass
-        
+
             foo()
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s)
@@ -2292,7 +2292,7 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             import foo
             import bar
-        
+
             class A(object):
                 pass
             class B(foo):
@@ -2346,7 +2346,7 @@ class TestImporter(LeoUnitTest):
             NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
                   's': 'http://www.w3.org/2000/svg',
                   'xlink' : 'http://www.w3.org/1999/xlink'}
-        
+
             tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
         """)
         table = (
@@ -2397,7 +2397,7 @@ class TestImporter(LeoUnitTest):
                 @cherrypy.expose
                 def index(self):
                     return "Hello world!"
-                
+
                 @cmd('abc')
                 def abc(self):
                     return "abc"
@@ -2417,29 +2417,29 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent('''\
             """
             A PyQt "task launcher" for quick access to python scripts.
-        
+
             Buttons to click to make working in Windows less unproductive.
-        
+
             e.g. a button to move the current window to top or bottom half
             of screen, because Windows-Up / Windows-Down doesn't do that.
             Or quote the text on the clipboard properly, because Outlook
             can't do that.
-        
+
             terrynbrown@gmail.com, 2016-12-23
             """
-        
+
             import sys
             import time
             from PyQt4 import QtGui, QtCore, Qt
             from PyQt4.QtCore import Qt as QtConst
-        
+
             COMMANDS = []
-        
+
             class Draggable(QtGui.QWidget):
                 def __init__(self, *args, **kwargs):
                     """__init__
                     """
-        
+
                     QtGui.QWidget.__init__(self, *args, **kwargs)
                     # self.setMouseTracking(True)
                     self.offset = None
@@ -2448,50 +2448,50 @@ class TestImporter(LeoUnitTest):
                     layout.addItem(QtGui.QSpacerItem(15, 5))
                     layout.setSpacing(0)
                     layout.setContentsMargins(0, 0, 0, 0)
-        
+
                 def mousePressEvent(self, event):
                     self.offset = event.pos()
-        
+
                 def mouseMoveEvent(self, event):
                     x=event.globalX()
                     y=event.globalY()
                     x_w = self.offset.x()
                     y_w = self.offset.y()
                     self.parent().move(x-x_w, y-y_w)
-        
+
             def command(name):
                 def makebutton(function):
                     COMMANDS.append((name, function))
                     return function
                 return makebutton
-        
+
             @command("Exit")
             def exit_():
                 exit()
-        
+
             def main():
-        
+
                 app = Qt.QApplication(sys.argv)
-        
+
                 main = QtGui.QMainWindow(None,
                    # QtConst.CustomizeWindowHint  |
                    QtConst.FramelessWindowHint #  |
                    # QtConst.WindowCloseButtonHint
                 )
-        
+
                 main.resize(800,16)
                 main.move(40,40)
                 mainwidj = Draggable()
-        
+
                 for name, function in COMMANDS:
                     button = QtGui.QPushButton(name)
                     button.clicked.connect(function)
                     mainwidj.layout().addWidget(button)
-        
+
                 main.setCentralWidget(mainwidj)
                 main.show()
                 app.exec_()
-        
+
             if __name__ == '__main__':
                 main()
         ''')
@@ -2558,17 +2558,17 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             class test:
-        
+
                 def importFilesCommand (self,files=None,treeType=None,
                     perfectImport=True,testing=False,verbose=False):
                         # Not a command.  It must *not* have an event arg.
-        
+
                     c = self.c
                     if c == None: return
                     p = c.currentPosition()
-        
+
                 # Used by paste logic.
-        
+
                 def convertMoreStringToOutlineAfter (self,s,firstVnode):
                     s = string.replace(s,"\\r","")
                     strings = string.split(s,"\\n")
@@ -2599,9 +2599,9 @@ class TestImporter(LeoUnitTest):
             class test:
                 def spam(b):
                     pass
-        
+
                 # Used by paste logic.
-        
+
                 def foo(a):
                     pass
         """)
@@ -2636,7 +2636,7 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             import leo.core.leoGlobals as g
-        
+
             a = 3
         """)
         c.importCommands.pythonUnitTest(c.p, s=s)
@@ -2687,7 +2687,7 @@ class TestImporter(LeoUnitTest):
                     if what == 'doctitle':
                         return ELE('base', href=self.params['/BASE/'])
                     return None
-        
+
                 def imagePath(self, sppdat):
                     """return path to images and list of images for *species*"""
                     path = 'MNMammals/imglib/Mammalia'
@@ -2699,7 +2699,7 @@ class TestImporter(LeoUnitTest):
                     lst = [os.path.split(i)[1] for i in glob.glob(imglib)]
                     lst.sort()
                     return path, lst
-        
+
             class mainPages(mammalProviderBase):
                 """provide content for pages in 'main' folder"""
                 __parent = mammalProviderBase
@@ -2741,7 +2741,7 @@ class TestImporter(LeoUnitTest):
                 '''A class implementing all of Leo's import/export code.'''
                 def createOutline(self, fileName, parent, s=None, ext=None):
                     '''Create an outline by importing a file or string.'''
-        
+
                 def dispatch(self, ext, p):
                     '''Return the correct scanner function for p, an @auto node.'''
                     # Match the @auto type first, then the file extension.
@@ -2753,7 +2753,7 @@ class TestImporter(LeoUnitTest):
                         aClass = d.get(key)
                         if aClass and g.match_word(p.h, 0, key):
                             if trace: g.trace('found', aClass.__name__)
-        
+
                             def scanner_for_at_auto_cb(parent, s, prepass=False):
                                 try:
                                     scanner = aClass(importCommands=self)
@@ -2762,7 +2762,7 @@ class TestImporter(LeoUnitTest):
                                     g.es_print('Exception running', aClass.__name__)
                                     g.es_exception()
                                     return None
-        
+
                             if trace: g.trace('found', p.h)
                             return scanner_for_at_auto_cb
                     if trace: g.trace('not found', p.h, sorted(d.keys()))
@@ -2771,7 +2771,7 @@ class TestImporter(LeoUnitTest):
                     '''A factory returning a scanner function for the given file extension.'''
                     aClass = self.classDispatchDict.get(ext)
                     if aClass:
-        
+
                         def scanner_for_ext_cb(parent, s, prepass=False):
                             try:
                                 scanner = aClass(importCommands=self)
@@ -2780,13 +2780,13 @@ class TestImporter(LeoUnitTest):
                                 g.es_print('Exception running', aClass.__name__)
                                 g.es_exception()
                                 return None
-        
+
                         return scanner_for_ext_cb
                     else:
                         return None
                 def get_import_filename(self, fileName, parent):
                     '''Return the absolute path of the file and set .default_directory.'''
-        
+
                 def init_import(self, ext, fileName, s):
                     '''Init ivars & vars for imports.'''
         """)
@@ -2828,15 +2828,15 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent('''\
             class ItasException(Exception):
-        
+
                 pass
-        
+
             def gpRun(gp, cmd, args, log = None):
-        
+
                 """Wrapper for making calls to the geoprocessor and reporting errors"""
-        
+
                 if log:
-        
+
                     log('gp: %s: %s\\n' % (cmd, str(args)))
         ''')
         c.importCommands.pythonUnitTest(c.p, s=s)
@@ -2845,7 +2845,7 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             class emptyClass: pass
-        
+
             def followingDef():
                 pass
         """)
@@ -2855,7 +2855,7 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             class emptyClass: pass # comment
-        
+
             def followingDef(): # comment
                 pass
         """)
@@ -2867,12 +2867,12 @@ class TestImporter(LeoUnitTest):
             class aClass:
                 def def1(self):
                     pass
-        
+
                 if False or g.unitTesting:
-        
+
                     def pr(*args,**keys): # reportMismatch test
                         g.es_print(color='blue',*args,**keys)
-        
+
                     pr('input...')
         """)
         c.importCommands.pythonUnitTest(c.p, s=s)
@@ -2883,14 +2883,14 @@ class TestImporter(LeoUnitTest):
             class aClass:
                 def def1(self):
                     pass
-        
+
                 if False or g.unitTesting:
-        
+
                     def pr(*args,**keys): # reportMismatch test
                         g.es_print(color='blue',*args,**keys)
-        
+
                     pr('input...')
-        
+
                 def def2(self):
                     pass
         """)
@@ -2967,7 +2967,7 @@ class TestImporter(LeoUnitTest):
                 #
                     b = 3
                     # This comment is part of the present function.
-        
+
                 def empty(self):
                     pass
         """)
@@ -3032,8 +3032,8 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent("""\
             class aClass: # trailing comment
-        
-        
+
+
                 def def1(self):             # trailing comment
                     pass
         """)
@@ -3053,7 +3053,7 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             def foo():
                 pass
-        
+
             def bar():
                 pass
         """)
@@ -3062,13 +3062,13 @@ class TestImporter(LeoUnitTest):
     def test_python_underindent_method(self):
         c = self.c
         s = textwrap.dedent('''\
-            class emptyClass: 
-        
+            class emptyClass:
+
                 def spam():
                     """docstring line 1
             under-indented docstring line"""
                     pass
-        
+
             def followingDef(): # comment
                 pass
         ''')
@@ -3094,13 +3094,13 @@ class TestImporter(LeoUnitTest):
         c = self.c
         s = textwrap.dedent('''\
             def foo():
-        
+
                 error("""line1
             line2.
             """)
-        
+
                 a = 5
-        
+
             def bar():
                 pass
         ''')
@@ -3117,24 +3117,24 @@ class TestImporter(LeoUnitTest):
 
             """Generic output formatting.
             """
-        
+
             import sys
-        
-        
+
+
             AS_IS = None
-        
-        
+
+
             class NullFormatter:
                 """A formatter which does nothing.
-        
+
                 If the writer parameter is omitted, a NullWriter instance is created.
                 No methods of the writer are called by NullFormatter instances.
-        
+
                 Implementations should inherit from this class if implementing a writer
                 interface but don't need to inherit any implementation.
-        
+
                 """
-        
+
                 def __init__(self, writer=None):
                     if writer is None:
                         writer = NullWriter()
@@ -3156,22 +3156,22 @@ class TestImporter(LeoUnitTest):
                 def push_style(self, *styles): pass
                 def pop_style(self, n=1): pass
                 def assert_line_data(self, flag=1): pass
-        
-        
+
+
             class AbstractFormatter:
                 """The standard formatter.
-        
+
                 This implementation has demonstrated wide applicability to many writers,
                 and may be used directly in most circumstances.  It has been used to
                 implement a full-featured World Wide Web browser.
-        
+
                 """
-        
+
                 #  Space handling policy:  blank spaces at the boundary between elements
                 #  are handled by the outermost context.  "Literal" data is not checked
                 #  to determine context, so spaces in literal data are handled directly
                 #  in all circumstances.
-        
+
                 def __init__(self, writer):
                     self.writer = writer            # Output device
                     self.align = None               # Current alignment
@@ -3186,7 +3186,7 @@ class TestImporter(LeoUnitTest):
                     self.parskip = 0                # Skipped space between paragraphs?
                     self.hard_break = 1             # Have a hard break
                     self.have_label = 0
-        
+
                 def end_paragraph(self, blankline):
                     if not self.hard_break:
                         self.writer.send_line_break()
@@ -3197,21 +3197,21 @@ class TestImporter(LeoUnitTest):
                         self.have_label = 0
                     self.hard_break = self.nospace = self.para_end = 1
                     self.softspace = 0
-        
+
                 def add_line_break(self):
                     if not (self.hard_break or self.para_end):
                         self.writer.send_line_break()
                         self.have_label = self.parskip = 0
                     self.hard_break = self.nospace = 1
                     self.softspace = 0
-        
+
                 def add_hor_rule(self, *args, **kw):
                     if not self.hard_break:
                         self.writer.send_line_break()
                     self.writer.send_hor_rule(*args, **kw)
                     self.hard_break = self.nospace = 1
                     self.have_label = self.para_end = self.softspace = self.parskip = 0
-        
+
                 def add_label_data(self, format, counter, blankline = None):
                     if self.have_label or not self.hard_break:
                         self.writer.send_line_break()
@@ -3223,7 +3223,7 @@ class TestImporter(LeoUnitTest):
                         self.writer.send_label_data(format)
                     self.nospace = self.have_label = self.hard_break = self.para_end = 1
                     self.softspace = self.parskip = 0
-        
+
                 def format_counter(self, format, counter):
                     label = ''
                     for c in format:
@@ -3238,7 +3238,7 @@ class TestImporter(LeoUnitTest):
                         else:
                             label = label + c
                     return label
-        
+
                 def format_letter(self, case, counter):
                     label = ''
                     while counter > 0:
@@ -3249,7 +3249,7 @@ class TestImporter(LeoUnitTest):
                         s = chr(ord(case) + x)
                         label = s + label
                     return label
-        
+
                 def format_roman(self, case, counter):
                     ones = ['i', 'x', 'c', 'm']
                     fives = ['v', 'l', 'd']
@@ -3273,7 +3273,7 @@ class TestImporter(LeoUnitTest):
                     if case == 'I':
                         return label.upper()
                     return label
-        
+
                 def add_flowing_data(self, data):
                     if not data: return
                     # The following looks a bit convoluted but is a great improvement over
@@ -3295,7 +3295,7 @@ class TestImporter(LeoUnitTest):
                                       self.parskip = self.have_label = 0
                     self.softspace = postspace
                     self.writer.send_flowing_data(data)
-        
+
                 def add_literal_data(self, data):
                     if not data: return
                     if self.softspace:
@@ -3304,14 +3304,14 @@ class TestImporter(LeoUnitTest):
                     self.nospace = self.para_end = self.softspace = \
                                    self.parskip = self.have_label = 0
                     self.writer.send_literal_data(data)
-        
+
                 def flush_softspace(self):
                     if self.softspace:
                         self.hard_break = self.para_end = self.parskip = \
                                           self.have_label = self.softspace = 0
                         self.nospace = 1
                         self.writer.send_flowing_data(' ')
-        
+
                 def push_alignment(self, align):
                     if align and align != self.align:
                         self.writer.new_alignment(align)
@@ -3319,7 +3319,7 @@ class TestImporter(LeoUnitTest):
                         self.align_stack.append(align)
                     else:
                         self.align_stack.append(self.align)
-        
+
                 def pop_alignment(self):
                     if self.align_stack:
                         del self.align_stack[-1]
@@ -3329,7 +3329,7 @@ class TestImporter(LeoUnitTest):
                     else:
                         self.align = None
                         self.writer.new_alignment(None)
-        
+
                 def push_font(self, (size, i, b, tt)):
                     if self.softspace:
                         self.hard_break = self.para_end = self.softspace = 0
@@ -3344,7 +3344,7 @@ class TestImporter(LeoUnitTest):
                     font = (size, i, b, tt)
                     self.font_stack.append(font)
                     self.writer.new_font(font)
-        
+
                 def pop_font(self):
                     if self.font_stack:
                         del self.font_stack[-1]
@@ -3353,14 +3353,14 @@ class TestImporter(LeoUnitTest):
                     else:
                         font = None
                     self.writer.new_font(font)
-        
+
                 def push_margin(self, margin):
                     self.margin_stack.append(margin)
                     fstack = filter(None, self.margin_stack)
                     if not margin and fstack:
                         margin = fstack[-1]
                     self.writer.new_margin(margin, len(fstack))
-        
+
                 def pop_margin(self):
                     if self.margin_stack:
                         del self.margin_stack[-1]
@@ -3370,11 +3370,11 @@ class TestImporter(LeoUnitTest):
                     else:
                         margin = None
                     self.writer.new_margin(margin, len(fstack))
-        
+
                 def set_spacing(self, spacing):
                     self.spacing = spacing
                     self.writer.new_spacing(spacing)
-        
+
                 def push_style(self, *styles):
                     if self.softspace:
                         self.hard_break = self.para_end = self.softspace = 0
@@ -3383,23 +3383,23 @@ class TestImporter(LeoUnitTest):
                     for style in styles:
                         self.style_stack.append(style)
                     self.writer.new_styles(tuple(self.style_stack))
-        
+
                 def pop_style(self, n=1):
                     del self.style_stack[-n:]
                     self.writer.new_styles(tuple(self.style_stack))
-        
+
                 def assert_line_data(self, flag=1):
                     self.nospace = self.hard_break = not flag
                     self.para_end = self.parskip = self.have_label = 0
-        
-        
+
+
             class NullWriter:
                 """Minimal writer interface to use in testing & inheritance.
-        
+
                 A writer which only provides the interface definition; no actions are
                 taken on any methods.  This should be the base class for all writers
                 which do not need to inherit any implementation methods.
-        
+
                 """
                 def __init__(self): pass
                 def flush(self): pass
@@ -3414,86 +3414,86 @@ class TestImporter(LeoUnitTest):
                 def send_label_data(self, data): pass
                 def send_flowing_data(self, data): pass
                 def send_literal_data(self, data): pass
-        
-        
+
+
             class AbstractWriter(NullWriter):
                 """A writer which can be used in debugging formatters, but not much else.
-        
+
                 Each method simply announces itself by printing its name and
                 arguments on standard output.
-        
+
                 """
-        
+
                 def new_alignment(self, align):
                     print "new_alignment(%s)" % `align`
-        
+
                 def new_font(self, font):
                     print "new_font(%s)" % `font`
-        
+
                 def new_margin(self, margin, level):
                     print "new_margin(%s, %d)" % (`margin`, level)
-        
+
                 def new_spacing(self, spacing):
                     print "new_spacing(%s)" % `spacing`
-        
+
                 def new_styles(self, styles):
                     print "new_styles(%s)" % `styles`
-        
+
                 def send_paragraph(self, blankline):
                     print "send_paragraph(%s)" % `blankline`
-        
+
                 def send_line_break(self):
                     print "send_line_break()"
-        
+
                 def send_hor_rule(self, *args, **kw):
                     print "send_hor_rule()"
-        
+
                 def send_label_data(self, data):
                     print "send_label_data(%s)" % `data`
-        
+
                 def send_flowing_data(self, data):
                     print "send_flowing_data(%s)" % `data`
-        
+
                 def send_literal_data(self, data):
                     print "send_literal_data(%s)" % `data`
-        
-        
+
+
             class DumbWriter(NullWriter):
                 """Simple writer class which writes output on the file object passed in
                 as the file parameter or, if file is omitted, on standard output.  The
                 output is simply word-wrapped to the number of columns specified by
                 the maxcol parameter.  This class is suitable for reflowing a sequence
                 of paragraphs.
-        
+
                 """
-        
+
                 def __init__(self, file=None, maxcol=72):
                     self.file = file or sys.stdout
                     self.maxcol = maxcol
                     NullWriter.__init__(self)
                     self.reset()
-        
+
                 def reset(self):
                     self.col = 0
                     self.atbreak = 0
-        
+
                 def send_paragraph(self, blankline):
                     self.file.write('\n'*blankline)
                     self.col = 0
                     self.atbreak = 0
-        
+
                 def send_line_break(self):
                     self.file.write('\n')
                     self.col = 0
                     self.atbreak = 0
-        
+
                 def send_hor_rule(self, *args, **kw):
                     self.file.write('\n')
                     self.file.write('-'*self.maxcol)
                     self.file.write('\n')
                     self.col = 0
                     self.atbreak = 0
-        
+
                 def send_literal_data(self, data):
                     self.file.write(data)
                     i = data.rfind('\n')
@@ -3503,7 +3503,7 @@ class TestImporter(LeoUnitTest):
                     data = data.expandtabs()
                     self.col = self.col + len(data)
                     self.atbreak = 0
-        
+
                 def send_flowing_data(self, data):
                     if not data: return
                     atbreak = self.atbreak or data[0].isspace()
@@ -3523,8 +3523,8 @@ class TestImporter(LeoUnitTest):
                         atbreak = 1
                     self.col = col
                     self.atbreak = data[-1].isspace()
-        
-        
+
+
             def test(file = None):
                 w = DumbWriter()
                 f = AbstractFormatter(w)
@@ -3543,8 +3543,8 @@ class TestImporter(LeoUnitTest):
                     else:
                         f.add_flowing_data(line)
                 f.end_paragraph(0)
-        
-        
+
+
             if __name__ == '__main__':
                 test()
         ''')
@@ -3594,13 +3594,13 @@ class TestImporter(LeoUnitTest):
                 }
             }
             var greeter = new Sayings.Greeter("world");
-        
+
             var button = document.createElement('button')
             button.innerText = "Say Hello"
             button.onclick = function() {
                 alert(greeter.greet())
             }
-        
+
             document.body.appendChild(button)
         ''')
 
@@ -3686,23 +3686,23 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             #Top
             The top section
-            
+
             ##Section 1
             section 1, line 1
             section 1, line 2
-            
+
             ##Section 2
             section 2, line 1
-            
+
             ###Section 2.1
             section 2.1, line 1
-            
+
             ####Section 2.1.1
             section 2.2.1 line 1
             The next section is empty. It must not be deleted.
-            
+
             ###Section 2.2
-            
+
             ##Section 3
             Section 3, line 1
     """)
@@ -3732,35 +3732,35 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             Top
             ====
-            
+
             The top section
-            
+
             Section 1
             ---------
-            
+
             section 1, line 1
             -- Not an underline
             secttion 1, line 2
-            
+
             Section 2
             ---------
-            
+
             section 2, line 1
-            
+
             ###Section 2.1
-            
+
             section 2.1, line 1
-            
+
             ####Section 2.1.1
-            
+
             section 2.2.1 line 1
-            
+
             ###Section 2.2
             section 2.2, line 1.
-            
+
             Section 3
             ---------
-            
+
             section 3, line 1
     """)
         c.importCommands.markdownUnitTest(c.p, s=s)
@@ -3791,17 +3791,17 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             Decl line.
             #Header
-        
+
             After header text
-        
+
             ##Subheader
-        
+
             Not an underline
-        
+
             ----------------
-        
+
             After subheader text
-        
+
             #Last header: no text
         """)
         table = (
@@ -3825,20 +3825,20 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             Decl line.
             #Header
-        
+
             After header text
-        
+
             ##Subheader
-        
+
             Not an underline
-        
+
             ----------------
-        
+
             This *should* be a section
             ==========================
-        
+
             After subheader text
-        
+
             #Last header: no text
         """)
         table = (
@@ -3866,7 +3866,7 @@ class TestImporter(LeoUnitTest):
         s = textwrap.dedent("""\
             Decl line.
             #Header
-        
+
             `​``python
             loads.init = {
                 Chloride: 11.5,
@@ -3900,43 +3900,43 @@ class TestImporter(LeoUnitTest):
 
         s = textwrap.dedent("""\
             .. toc
-        
+
             ====
             top
             ====
-        
+
             The top section
-        
+
             section 1
             ---------
-        
+
             section 1, line 1
             --
             section 1, line 2
-        
+
             section 2
             ---------
-        
+
             section 2, line 1
-        
+
             section 2.1
             ~~~~~~~~~~~
-        
+
             section 2.1, line 1
-        
+
             section 2.1.1
             .............
-        
+
             section 2.2.1 line 1
-        
+
             section 3
             ---------
-        
+
             section 3, line 1
-        
+
             section 3.1.1
             .............
-        
+
             section 3.1.1, line 1
         """)
         table = (
@@ -3969,13 +3969,13 @@ class TestImporter(LeoUnitTest):
 
         s = textwrap.dedent("""\
             .. toc
-        
+
             .. The section name contains trailing whitespace.
-        
+
             =======
-            Chapter 
+            Chapter
             =======
-        
+
             The top chapter.
         """)
         table = (
@@ -4001,42 +4001,42 @@ class TestImporter(LeoUnitTest):
 
         s = textwrap.dedent("""\
             .. toc
-        
+
             top
             ====
-        
+
             The top section
-        
+
             section 1
             ---------
-        
+
             section 1, line 1
             --
             section 1, line 2
-        
+
             section 2
             ---------
-        
+
             section 2, line 1
-        
+
             section 2.1
             ~~~~~~~~~~~
-        
+
             section 2.1, line 1
-        
+
             section 2.1.1
             .............
-        
+
             section 2.2.1 line 1
-        
+
             section 3
             ---------
-        
+
             section 3, line 1
-        
+
             section 3.1.1
             .............
-        
+
             section 3.1.1, line 1
         """)
         table = (
@@ -4069,10 +4069,10 @@ class TestImporter(LeoUnitTest):
 
         s = textwrap.dedent("""\
             .. toc
-        
+
             top
             -------------
-        
+
             The top section
         """)
         table = (
@@ -4098,11 +4098,11 @@ class TestImporter(LeoUnitTest):
 
         s = textwrap.dedent("""\
             .. toc
-        
+
             ======
             top
             ======
-        
+
             The top section
         """)
         table = (
@@ -4128,13 +4128,13 @@ class TestImporter(LeoUnitTest):
 
         s = textwrap.dedent("""\
             .. toc
-        
+
             .. The section name contains trailing whitespace.
-        
+
             ======
-            top 
+            top
             ======
-        
+
             The top section.
         """)
         table = (
@@ -4164,17 +4164,17 @@ class TestImporter(LeoUnitTest):
             #########
             Chapter 1
             #########
-        
+
             It was a dark and stormy night.
 
             section 1
             +++++++++
-        
+
             Sec 1.
 
             section 2
             +++++++++
-        
+
             Sec 2.
         """)
         table = (

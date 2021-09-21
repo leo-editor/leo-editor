@@ -194,7 +194,7 @@ class leoscreen_Controller:
         self.popups = []  # store references to popup windows
         self.stack_frame = 0
             # used by jump to error commands, 0 = innermost frame
-        
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)

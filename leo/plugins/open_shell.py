@@ -71,7 +71,7 @@ class pluginController:
         c.frame.menu.createMenuItemsFromTable("Extensions", table)
     #@+node:EKR.20040517080049.7: *3* _getpath (open_shell.py)
     def _getpath (self, p):
-        
+
         c = self.c
         path = g.fullPath(c, p)  # #1914
         # Use os.path.normpath to give system separators.

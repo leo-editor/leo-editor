@@ -125,11 +125,11 @@ class TestCmdr:
     #@+node:bob.20180116154657.1: *3* __init__()
     def __init__(self, cmdrT, fdR):
         """ Initialize Test Globals
-        
+
         Arguments:
             cmdrT:  Commander for Leo-Editor file containing the tests
             fdR:    File descriptor for results files
-        
+
         Returns:
             None
         """

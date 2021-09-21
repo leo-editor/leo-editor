@@ -20,9 +20,9 @@ def leo_excepthook(typ, val, tb):
     for line in lines:
         print(line.rstrip())
     print('')
-        
+
 sys.excepthook = leo_excepthook
-#  
+#
 # Partial fix for #541.
 # See https://stackoverflow.com/questions/24835155/
 if sys.executable.endswith("pythonw.exe"):
@@ -52,7 +52,7 @@ except Exception as e:
 def profile_leo():
     """
     Gather and print statistics about Leo.
-    
+
     @ To gather statistics, do the following in a console window:
 
     python profileLeo.py <list of .leo files> > profile.txt

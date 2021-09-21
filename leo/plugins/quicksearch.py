@@ -418,7 +418,7 @@ class QuickSearchController:
         w.itemActivated.connect(self.onActivated)
         w.itemPressed.connect(self.onSelectItem)
         w.currentItemChanged.connect(self.onSelectItem)
-        
+
     #@+node:ville.20121120225024.3636: *3* freeze
     def freeze(self, val = True):
         self.frozen = val

@@ -169,7 +169,7 @@ class AttributeGetter:
         raise NotImplementedError
 #@+node:tbrown.20091103080354.1402: ** class AttributeGetterUA
 class AttributeGetterUA(AttributeGetter):
-    
+
     # def __init__(self, c):
         # super().__init__(c)
 
@@ -289,7 +289,7 @@ class AttributeGetterUA(AttributeGetter):
 AttributeGetter.register(AttributeGetterUA)
 #@+node:tbrown.20091103080354.1420: ** class AttributeGetterAt
 class AttributeGetterAt(AttributeGetter):
-    
+
     # def __init__(self, c):
         # super().__init__(c)
 
@@ -552,7 +552,7 @@ class attrib_edit_Controller:
             self.holder = QtWidgets.QHBoxLayout()
             self.parent.setLayout(self.holder)
             c.frame.log.createTab('Attribs', widget = self.parent)
-            
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)

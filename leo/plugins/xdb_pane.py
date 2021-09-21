@@ -37,7 +37,7 @@ if g.app.gui.guiName() == "qt":
 
     class XdbPane(QtWidgets.QWidget):
         '''Create the contents of the Debug pane.'''
-        
+
         def __init__(self, c):
             self.c = c
             super().__init__()
@@ -86,7 +86,7 @@ if g.app.gui.guiName() == "qt":
             layout.addLayout(vlayout)
         #@+node:ekr.20181005054101.1: *4* create_input_area
         def create_input_area(self, layout):
-            
+
             # Create the Label
             label = QtWidgets.QLabel()
             label.setText('Debugger command:')
@@ -101,7 +101,7 @@ if g.app.gui.guiName() == "qt":
             layout.addLayout(layout2)
         #@+node:ekr.20181006154605.1: *4* create_output_area
         def create_output_area(self, layout):
-            
+
             # Create the Label
             label = QtWidgets.QLabel()
             label.setText('Debugger outpuit:')
@@ -124,13 +124,13 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181005042637.1: *3* debug_*
         def debug_break(self, checked):
             self.c.k.simulateCommand('db-b')
-            
+
         def debug_continue(self, checked):
             self.c.k.simulateCommand('db-c')
-            
+
         def debug_help(self, checked):
             self.c.k.simulateCommand('db-h')
-            
+
         def debug_input(self):
             xdb = getattr(g.app, 'xdb', None)
             if xdb:
@@ -138,25 +138,25 @@ if g.app.gui.guiName() == "qt":
                 xdb.qc.put(command)
             else:
                 print('xdb not active')
-                
+
         def debug_list(self, checked):
             self.c.k.simulateCommand('db-l')
 
         def debug_next(self, checked):
             self.c.k.simulateCommand('db-n')
-            
+
         def debug_quit(self, *args):
             self.c.k.simulateCommand('db-q')
-            
+
         def debug_return(self, *args):
             self.c.k.simulateCommand('db-r')
-            
+
         def debug_step(self, *args):
             self.c.k.simulateCommand('db-s')
-            
+
         def debug_where(self, *args):
             self.c.k.simulateCommand('db-w')
-            
+
         def debug_xdb(self, *args):
             self.c.k.simulateCommand('xdb')
         #@+node:ekr.20181006161938.1: *3* write & clear
@@ -165,7 +165,7 @@ if g.app.gui.guiName() == "qt":
             w = self.output_area
             if w:
                 w.setPlainText('')
-            
+
         def write(self, s):
             '''Write the line s to the output area, or print it.'''
             w = self.output_area

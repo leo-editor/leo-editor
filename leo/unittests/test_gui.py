@@ -13,7 +13,7 @@ from leo.core.leoQt import QtCore
 #@+node:ekr.20210910084607.2: ** class TestNullGui(LeoUnitTest)
 class TestNullGui(LeoUnitTest):
     """Test cases for gui base classes."""
-    
+
     # Note: the default setUpClass creates a null gui.
     #@+others
     #@+node:ekr.20210909194336.23: *3* TestNullGui.test_null_gui_ctors_for_all_dialogs
@@ -32,7 +32,7 @@ class TestNullGui(LeoUnitTest):
 #@+node:ekr.20210912064439.1: ** class TestQtGui(LeoUnitTest)
 class TestQtGui(LeoUnitTest):
     """Test cases for gui base classes."""
-    
+
     #@+others
     #@+node:ekr.20210912143315.1: *3*  TestQtGui.setUpClass
     # Override LeoUnitTest setUpClass.
@@ -63,10 +63,10 @@ class TestQtGui(LeoUnitTest):
 
         def test_do_nothing1(self):
             time.sleep(0.1)
-            
+
         def test_do_nothing2(self):
             time.sleep(0.1)
-            
+
         def test_do_nothing3(self):
             time.sleep(0.1)
     #@+node:ekr.20210912064439.2: *3* TestQtGui.test_qt_ctors_for_all_dialogs

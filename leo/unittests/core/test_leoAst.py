@@ -60,7 +60,7 @@ def compare_asts(ast1, ast2):
 def _compare_asts(node1, node2):
     """
     Compare both nodes, and recursively compare their children.
-    
+
     See also: http://stackoverflow.com/questions/3312989/
     """
     # Compare the nodes themselves.
@@ -130,7 +130,7 @@ def get_time():
 class BaseTest(unittest.TestCase):
     """
     The base class of all tests of leoAst.py.
-    
+
     This class contains only helpers.
     """
 
@@ -216,7 +216,7 @@ class BaseTest(unittest.TestCase):
     def make_tokens(self, contents):
         """
         BaseTest.make_tokens.
-        
+
         Make tokens from contents.
         """
         t1 = get_time()
@@ -230,7 +230,7 @@ class BaseTest(unittest.TestCase):
     def make_tree(self, contents):
         """
         BaseTest.make_tree.
-        
+
         Return the parse tree for the given contents string.
         """
         t1 = get_time()
@@ -242,7 +242,7 @@ class BaseTest(unittest.TestCase):
     def balance_tokens(self, tokens):
         """
         BastTest.balance_tokens.
-        
+
         Insert links between corresponding paren tokens.
         """
         t1 = get_time()
@@ -255,7 +255,7 @@ class BaseTest(unittest.TestCase):
     def create_links(self, tokens, tree, filename='unit test'):
         """
         BaseTest.create_links.
-        
+
         Insert two-way links between the tokens and ast tree.
         """
         tog = self.tog
@@ -325,7 +325,7 @@ class BaseTest(unittest.TestCase):
     def dump_times(self):
         """
         Show all calculated times.
-        
+
         Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
         """
         for key in sorted(self.times):
@@ -347,10 +347,10 @@ class BaseTest(unittest.TestCase):
 class Optional_TestFiles(BaseTest):
     """
     Tests for the TokenOrderGenerator class that act on files.
-    
+
     These are optional tests. They take a long time and are not needed
     for 100% coverage.
-    
+
     All of these tests failed at one time.
     """
     #@+others
@@ -785,7 +785,7 @@ class TestFstringify(BaseTest):
 class TestOrange(BaseTest):
     """
     Tests for the Orange class.
-    
+
     **Important**: All unit tests assume that black_mode is False.
                    That is, unit tests assume that no blank lines
                    are ever inserted or deleted.
@@ -1513,11 +1513,11 @@ class TestOrange(BaseTest):
         line_length = 40  # For testing.
         contents = """\
     #@@nobeautify
-        
+
     def addOptionsToParser(self, parser, trace_m):
-        
+
         add = parser.add_option
-        
+
         def add_bool(option, help, dest=None):
             add(option, action='store_true', dest=dest, help=help)
 
@@ -1528,12 +1528,12 @@ class TestOrange(BaseTest):
         # Multiple bool values.
         add('-v', '--version', action='store_true',
             help='print version number and exit')
-            
+
     # From leoAtFile.py
     noDirective     =  1 # not an at-directive.
     allDirective    =  2 # at-all (4.2)
     docDirective    =  3 # @doc.
-            
+
     #@@beautify
     """
         contents, tokens, tree = self.make_data(contents)
@@ -1564,11 +1564,11 @@ class TestOrange(BaseTest):
         line_length = 40  # For testing.
         contents = """\
     #pragma: no beautify
-        
+
     def addOptionsToParser(self, parser, trace_m):
-        
+
         add = parser.add_option
-        
+
         def add_bool(option, help, dest=None):
             add(option, action='store_true', dest=dest, help=help)
 
@@ -1580,7 +1580,7 @@ class TestOrange(BaseTest):
         # Multiple bool values.
         add('-v', '--version', action='store_true',
             help='print version number and exit')
-            
+
     # pragma: beautify
     """
         contents, tokens, tree = self.make_data(contents)
@@ -1608,10 +1608,10 @@ class TestReassignTokens(BaseTest):
 class TestTOG(BaseTest):
     """
     Tests for the TokenOrderGenerator class.
-    
+
     These tests call BaseTest.make_data, which creates the two-way links
     between tokens and the parse tree.
-    
+
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
 
@@ -1629,7 +1629,7 @@ class TestTOG(BaseTest):
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210914161519.1: *5* test_bug_2171
     def test_bug_2171(self):
-        
+
         contents = "'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) )"
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210318213133.1: *5* test_full_grammar
@@ -1682,7 +1682,7 @@ class TestTOG(BaseTest):
 
         """
         https://docs.python.org/3/whatsnew/3.8.html#other-language-changes
-        
+
         Generalized iterable unpacking in yield and return statements no longer
         requires enclosing parentheses. This brings the yield and return syntax
         into better agreement with normal assignment syntax.
@@ -1715,14 +1715,14 @@ class TestTOG(BaseTest):
         contents = """\
     class TestClass1:
         pass
-        
+
     def decorator():
         pass
 
     @decorator
     class TestClass2:
         pass
-        
+
     @decorator
     class TestClass(base1, base2):
         pass
@@ -2396,7 +2396,7 @@ class TestTokens(BaseTest):
     def show_asttokens_script(self):
         """
         A script showing how asttokens can *easily* do the following:
-        - Inject parent/child links into ast nodes. 
+        - Inject parent/child links into ast nodes.
         - Inject many-to-many links between tokens and ast nodes.
         """
         # pylint: disable=import-error,reimported

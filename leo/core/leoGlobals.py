@@ -7697,7 +7697,7 @@ def run_unit_test_in_separate_process(command):
 def run_unit_tests(tests=None, verbose=False):
     """
     Run the unit tests given by the "tests" string.
-    
+
     Run *all* unit tests if "tests" is not given.
     """
     leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')

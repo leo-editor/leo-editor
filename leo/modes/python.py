@@ -284,7 +284,7 @@ python_main_keywords_dict = {
     "unicode": "keyword2",
     "vars": "keyword2",
     "while": "keyword1",
-    "with": "keyword1", # Fix bug 1174532: Python mode file missing 'with' keyword 
+    "with": "keyword1", # Fix bug 1174532: Python mode file missing 'with' keyword
     "xrange": "keyword2",
     "yield": "keyword1",
     "zip": "keyword2",
@@ -393,9 +393,9 @@ def python_rule19(colorer, s, i):
 
 def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
-    
+
 url = False
-    
+
 if url:
     h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
     f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
@@ -403,7 +403,7 @@ if url:
     def python_rule_h_url(colorer, s, i):
         return colorer.match_seq_regexp (s,i,kind="keyword",regexp=h_url_regex,
             at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
-        
+
     def python_rule_f_url(colorer,s,i):
         return colorer.match_seq_regexp (s,i,kind="keyword",regexp=f_url_regex,
             at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
@@ -411,10 +411,10 @@ else:
     # Always fail.
     def python_rule_h_url(colorer, s, i):
         return 0
-        
+
     def python_rule_f_url(colorer,s,i):
         return 0
-    
+
 # Rules dict for python_main ruleset.
 rulesDict1 = {
     "!": [python_rule6,],

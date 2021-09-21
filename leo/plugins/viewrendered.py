@@ -127,7 +127,7 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
     The headline should start with @image.
     All other characters in the headline are ignored.
-    
+
     The first line of the body should be the full path to the image file.
     All other lines are ignored.
 
@@ -137,11 +137,11 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
   The contents of the @jupyter node can be either a url to the notebook or
   the actual JSON notebook itself.
-  
+
   Use file:// urls for local files. Some examples:
-      
+
       Windows: file:///c:/Test/a_notebook.ipynb
-      
+
       Linux:   file:///home/a_notebook.ipynb
 
 - ``@movie`` plays the file as a movie.  @movie also works for music files.
@@ -154,7 +154,7 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
   the contents of body pane is taken to be an svg image.
-  
+
 Relative file names
 ===================
 
@@ -255,7 +255,7 @@ try:
     from jinja2 import Template
 except ImportError:
     Template = None
-# 
+#
 # Markdown.
 try:
     # pylint: disable=import-error
@@ -1058,7 +1058,7 @@ if QtWidgets: # NOQA
             # Read the output file and return it.
             with open(o_path, 'r') as f:
                 return f.read()
-          
+
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
@@ -1295,7 +1295,7 @@ if QtWidgets: # NOQA
                 vw = vp.videoWidget()
                 vw.setObjectName('video-renderer')
                 # Embed the widgets
-            
+
                 def delete_callback():
                     if pc.vp:
                         pc.vp.stop()
@@ -1318,7 +1318,7 @@ if QtWidgets: # NOQA
         def update_pandoc(self, s, keywords):
             '''
             Update an @pandoc in the vr pane.
-            
+
             There is no such thing as @language pandoc,
             so only @pandoc nodes trigger this code.
             '''
@@ -1509,10 +1509,10 @@ if QtWidgets: # NOQA
                 for newp in p.parents():
                     if newp.h.strip() == '@jinja inputs':
                         oldp, p = p, newp
-                        _, p = find_root(p) 
+                        _, p = find_root(p)
                         return oldp, p
                 return None, None
-                
+
             # if on jinja node's children, find the parent
             if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
                 # not at @jinja, find from parents
@@ -1520,10 +1520,10 @@ if QtWidgets: # NOQA
 
             elif h.startswith('@jinja variable'):
                 # not at @jinja, first find @jinja inputs, then @jinja
-                oldp, p = find_inputs(p) 
+                oldp, p = find_inputs(p)
 
             def untangle(c,p):
-            
+
                 return g.getScript(c,p,
                     useSelectedText=False,
                     useSentinels=False)
@@ -1550,11 +1550,11 @@ if QtWidgets: # NOQA
             w.setPlainText(out)
             p.b = out
             c.redraw(p)
-            
+
             # focus back on entry node
             if oldp:
                 c.redraw(oldp)
-            
+
         #@+node:ekr.20110320120020.14479: *4* vr.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
@@ -1562,7 +1562,7 @@ if QtWidgets: # NOQA
             pc = self
             if hasattr(QtSvg, "QSvgWidget"):  # #2134
                 QSvgWidget = QtSvg.QSvgWidget
-            else: 
+            else:
                 try:
                     from PyQt6 import QtSvgWidgets
                     QSvgWidget = QtSvgWidgets.QSvgWidget
@@ -1624,7 +1624,7 @@ if QtWidgets: # NOQA
                 # Instantiate a new QTextBrowser.
                 # Allow non-ctrl clicks to open url's.
                 w = QtWidgets.QTextBrowser()
-                
+
                 def contextMenuCallback(point):
                     """LeoQtTree: Callback for customContextMenuRequested events."""
                     # #1286.
@@ -1649,7 +1649,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            
+
             def get_language(p):
                 """
                 Return the language in effect at position p.

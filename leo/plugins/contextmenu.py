@@ -112,7 +112,7 @@ def install_handlers():
 #@+node:tom.20210717164029.1: ** getEditor
 def getEditor(c):
     """Return system's best guess editor quoted.
-    
+
     RETURNS
     A tuple (editor_path, editor_name_minus_extension)
     """
@@ -214,7 +214,7 @@ def deletenodes_rclick(c,p,menu):
 #@+node:ville.20090701110830.10215: *3* editnode_rclick
 def editnode_rclick(c,p,menu):
     """Provide "edit in EDITOR" context menu item.
-    
+
     Opens file or node in external editor."""
 
 
@@ -283,7 +283,7 @@ def openwith_rclick(c, p, menu):
     #@+node:ekr.20140613141207.17667: *4* function: openfolder_rclick_cb
 
     def openfolder_rclick_cb():
-        
+
         if g.os_path_exists(path):
             g.os_startfile(path)
         else:
