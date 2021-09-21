@@ -47,7 +47,7 @@ class JS_Importer(Importer):
             #
             # Must follow delete_all_empty_nodes.
             self.remove_organizer_nodes(parent)
-            # 
+            #
             # Remove up to 5 more levels of @others.
             for i in range(5):
                 if self.remove_singleton_at_others(parent):
@@ -138,7 +138,7 @@ class JS_Importer(Importer):
         '''
         Update the scan state at the *end* of the line.
         Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
-        
+
         This code uses JsLex to scan the tokens, which scans strings and regexs properly.
 
         This code also handles *partial* tokens: tokens continued from the
@@ -331,7 +331,7 @@ class Tok:
     """A specification for a token class."""
 
     num = 0
-    
+
     def __init__(self, name, regex, next=None):
         self.id = Tok.num
         Tok.num += 1
@@ -403,7 +403,7 @@ class JsLexer(Lexer):
     This doesn't properly handle non-Ascii characters in the Javascript source.
 
     """
-    
+
     #@+<< constants >>
     #@+node:ekr.20200131190707.1: *4* << constants >> (JsLexer)
 
@@ -462,7 +462,7 @@ class JsLexer(Lexer):
                             )
                             """, next='div'),
         Tok("punct",        literals("""
-                                >>>= === !== >>> <<= >>= <= >= == != << >> && 
+                                >>>= === !== >>> <<= >>= <= >= == != << >> &&
                                 || += -= *= %= &= |= ^=
                                 """), next="reg"),
         Tok("punct",        literals("++ -- ) ]"), next='div'),
@@ -521,7 +521,7 @@ class TestJSImporter(unittest.TestCase):
     #@+others
     #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments
     def test_get_trailing_comments(self):
-        
+
         table = (
             # Test 1
             ( """\
@@ -534,7 +534,7 @@ class TestJSImporter(unittest.TestCase):
     /* comment 1
      * comment 2
      */""", 3),
-     
+
             # Test 3
             ("""\
     head
@@ -559,7 +559,7 @@ class TestJSImporter(unittest.TestCase):
             assert tail == expected_lines , (repr(tail), repr(expected_lines))
     #@+node:ekr.20200202104932.1: *3* test_JsLex
     def test_JsLex(self):
-        
+
         table = (
             ('id', ('f_', '$', 'A1', 'abc')),
             ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
@@ -572,7 +572,7 @@ class TestJSImporter(unittest.TestCase):
                 for name, tok in JsLexer().lex(contents):
                     assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
                     # print(f"{kind!s:10} {tok!r:10}")
-                        
+
     #@+node:ekr.20200203051839.1: *3* test_starts_block
     def test_starts_block(self):
 

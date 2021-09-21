@@ -9,7 +9,7 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
-    
+
     #@+<< define non-function patterns >>
     #@+node:ekr.20200817090227.1: *3* << define non-function patterns >>
     non_function_patterns = (
@@ -70,7 +70,7 @@ class TS_Importer(Importer):
     #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names
     def add_class_names(self, p):
         '''Add class names to headlines for all descendant nodes.'''
-        return 
+        return
     #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
@@ -128,7 +128,7 @@ class TS_Importer(Importer):
             tail_s = all_s[i + len(comment_s):]
             if tail_s.strip():
                 continue  # Not a trailing comment.
-            head_lines = g.splitLines(head_s) 
+            head_lines = g.splitLines(head_s)
             comment_lines = g.splitLines(comment_s + tail_s)
             self.set_lines(p, head_lines)
             self.prepend_lines(next, comment_lines)

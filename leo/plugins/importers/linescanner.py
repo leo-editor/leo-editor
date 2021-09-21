@@ -165,7 +165,7 @@ class Importer:
         self.add_file_context = getBool("add-file-context-to-headlines")
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-       
+
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
 
@@ -580,12 +580,12 @@ class Importer:
     #@+node:ekr.20161119130337.1: *5* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        
+
         def underflow(n):
             g.trace(n)
             g.trace(new_state)
             g.printList(stack)
-            
+
         # assert len(stack) > 1 # Fail on entry.
         if len(stack) <= 1:
             return underflow(0)
@@ -756,7 +756,7 @@ class Importer:
             h = self.clean_headline(p.h, p=p)
             if h and h != p.h:
                 p.h = h
-        
+
     #@+node:ekr.20161110130157.1: *5* i.clean_all_nodes
     def clean_all_nodes(self, parent):
         '''Clean the nodes in parent's tree, in a language-dependent way.'''

@@ -110,7 +110,7 @@ class CtagsController:
     #@+others
     #@+node:ekr.20110307092028.14161: *3* ctags.__init__
     def __init__ (self,c):
-        
+
         # Init ivars.
         self.active = False
         self.body_widget = c.frame.body.widget

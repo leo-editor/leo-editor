@@ -135,7 +135,7 @@ class NodeDiffController:
         c.k.registerCommand('diff-subtree', self.run_diff_on_subtree)
         c.k.registerCommand('diff-saved', self.run_diff_on_saved)
         c.k.registerCommand('diff-vcs', self.run_diff_on_vcs)
-        
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)

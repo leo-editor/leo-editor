@@ -136,7 +136,7 @@ class WaxOff:
     def get_next_arg(self, s, i):
         """
         Scan the next argument, retaining initializers, stripped of annotations.
-        
+
         Return (arg, i):
         - arg: The next argument.
         - i:   The index of the character after arg.
@@ -167,7 +167,7 @@ class WaxOff:
             j += 1
         i = self.skip_ws(s, j)
         return f"{name}={initializer}", i
-        
+
     #@+node:ekr.20210709102722.1: ** wax_off.main
     def main(self):
         """The main line of the wax_off script."""
@@ -180,7 +180,7 @@ class WaxOff:
     #@+node:ekr.20210709055018.1: ** wax_off.scan_options
     def scan_options(self):
         """Run commands specified by sys.argv."""
-        
+
         def dir_path(s):
             if os.path.isdir(s):
                 return s
@@ -235,14 +235,14 @@ class WaxOff:
         if not self.files:
             print('No input files')
             sys.exit(1)
-                
+
     #@+node:ekr.20210709052929.4: ** wax_off.skip_to_outer_delim & helpers
     def skip_to_outer_delim(self, s, i, delims):
         """
         Skip to next *outer*, ignoring inner delimis contained in strings, etc.
-        
+
         It is valid to reach the end of s before seeing the expected delim.
-        
+
         Return i, the character after the delim, or len(s) if the delim has not been seen.
         """
         assert i < len(s), i
@@ -321,7 +321,7 @@ class WaxOff:
             assert progress < i, (i, repr(s[i:]))
         return ', '.join(args)
     #@-others
-    
+
 if __name__ == '__main__':
     WaxOff().main()
 #@-leo

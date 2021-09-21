@@ -21,7 +21,7 @@ def init():
 
     # def trace(*args, **kwargs):
         # print('g.trace', ', '.join(args))
-    
+
 # g = G()
 #@+node:ekr.20181110170220.1: ** class LeoBody
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
@@ -30,7 +30,7 @@ flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 
 class LeoBody(flx.Widget):
-    
+
     """ A CodeEditor widget based on Ace.
     """
 
@@ -56,7 +56,7 @@ class LeoBody(flx.Widget):
         self.ace.resize()
 #@+node:ekr.20181104174357.1: ** class LeoGui (can't instantiate)
 class LeoGui (flx.PyComponent):
-    
+
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''
 
@@ -75,7 +75,7 @@ class LeoGui (flx.PyComponent):
                 # # This calls sys.exit(0)
         # print('calling sys.exit(0)')
         # sys.exit(0)
-        
+
 #@+node:ekr.20181110170235.1: ** class LeoLog
 class LeoLog(flx.Widget):
 
@@ -102,7 +102,7 @@ class LeoLog(flx.Widget):
         self.ace.resize()
 #@+node:ekr.20181110170304.1: ** class LeoMainWindow
 class LeoMainWindow(flx.Widget):
-    
+
     def init(self):
         with flx.VBox():
             with flx.HBox(flex=1):
@@ -133,7 +133,7 @@ class LeoTree(flx.Widget):
         color: #afa;
     }
     '''
-    
+
     #@+others
     #@+node:ekr.20181110170328.2: *3* tree.init
     def init(self):
@@ -148,7 +148,7 @@ class LeoTree(flx.Widget):
                                     flx.TreeItem(title='A', text='more info on A')
                                     flx.TreeItem(title='B', text='more info on B')
 
-        
+
     #@+node:ekr.20181110170328.3: *3* tree.on_event
     @flx.reaction(
         'tree.children**.checked',

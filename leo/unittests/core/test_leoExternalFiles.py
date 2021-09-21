@@ -25,7 +25,7 @@ class TestExternalFiles(LeoUnitTest):
     def test_on_idle(self):
         """
         A minimal test of the on_idle and all its helpers.
-        
+
         More detail tests would be difficult.
         """
         efc = g.app.externalFilesController

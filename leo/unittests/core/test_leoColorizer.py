@@ -24,16 +24,16 @@ class TestColorizer(LeoUnitTest):
     def test__comment_after_language_plain(self):
         text = textwrap.dedent("""\
             @comment # /* */
-            
+
             This is plain text.
-            
+
             # This is a comment.
-            
+
             More plain text.
-            
+
             /* A block comment
             continues */
-            
+
             More plain text.
         """)
         self.color('plain', text)
@@ -130,7 +130,7 @@ class TestColorizer(LeoUnitTest):
             join
             keycode, keyDown, keyUp
             LEFT, LN10, LN2, LOG10E, LOG2E, lastChild, lastIndexOf, length, load, loaded, loadMovie, loadMovieNum, loadVariables, loadVariablesNum, localToGlobal, log
-            MAX_VALUE, MIN_VALUE, max, maxscroll, mbchr, mblength, mbord, mbsubstring, min, 
+            MAX_VALUE, MIN_VALUE, max, maxscroll, mbchr, mblength, mbord, mbsubstring, min,
             NEGATIVE_INFINITY, NaN, newline, nextFrame, nextScene, nextSibling, nodeName, nodeType, nodeValue
             on, onClipEvent, onClose, onConnect, onData, onLoad, onXML, ord
             PGDN, PGUP, PI, POSITIVE_INFINITY, parentNode, parseFloat, parseInt, parseXML, play, pop, pow, press, prevFrame, previousSibling, prevScene, print, printAsBitmap, printAsBitmapNum, printNum, push
@@ -161,12 +161,12 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_C(self):
         text = textwrap.dedent("""\
             @comment /* */
-            
+
             @
             @c
-            
-            #define WIPEOUT 0 /* 
-                               * Causes database card number & flags to be set to zero. 
+
+            #define WIPEOUT 0 /*
+                               * Causes database card number & flags to be set to zero.
                                * This is so I don't need an infinite supply of cards!
                                */
             // Not colored (because of @language /* */)
@@ -183,32 +183,32 @@ class TestColorizer(LeoUnitTest):
         text = textwrap.dedent("""\
             @ comment
             @c
-            
+
             /* block
             comment */
-            
+
             // test
-            
+
             id // not a keyword
-            
-            abstract as 
-            base bool break byte 
-            case catch char checked class const continue 
-            decimal default delegate do double 
-            else enum event explicit extern 
-            false finally fixed float for foreach 
-            get goto 
-            if implicit in int interface internal is 
-            lock long 
-            namespace new null 
-            object operator out override 
-            params partial private protected public 
-            readonly ref return 
-            sbyte sealed set short sizeof stackalloc 
-            static string struct switch 
-            this throw true try typeof 
-            uint ulong unchecked unsafe ushort using 
-            value virtual void volatile 
+
+            abstract as
+            base bool break byte
+            case catch char checked class const continue
+            decimal default delegate do double
+            else enum event explicit extern
+            false finally fixed float for foreach
+            get goto
+            if implicit in int interface internal is
+            lock long
+            namespace new null
+            object operator out override
+            params partial private protected public
+            readonly ref return
+            sbyte sealed set short sizeof stackalloc
+            static string struct switch
+            this throw true try typeof
+            uint ulong unchecked unsafe ushort using
+            value virtual void volatile
             where while
             yield
     """)
@@ -217,7 +217,7 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_css(self):
         text = textwrap.dedent("""\
             /* New in 4.2. */
-            
+
             /*html tags*/
             address, applet, area, a, base, basefont,
             big, blockquote, body, br, b, caption, center,
@@ -259,7 +259,7 @@ class TestColorizer(LeoUnitTest):
             auto, thin, medium, thick, left, right, none, both,
             none, dotted, dashed, solid, double, groove, ridge, inset, outset,
             /*display rules*/
-            display, white-space, 
+            display, white-space,
             min-width, max-width, min-height, max-height,
             outline-color, outline-style, outline-width,
             /*display values*/
@@ -290,7 +290,7 @@ class TestColorizer(LeoUnitTest):
         text = textwrap.dedent(r"""\\\
             % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
             % The following should not be colorized: class,if,else.
-            
+
             @* this is a _cweb_ comment.  Code is written in \c.
             "strings" should not be colorized.
             It should be colored in \LaTeX mode.
@@ -299,14 +299,14 @@ class TestColorizer(LeoUnitTest):
             < < section ref > >
             < < missing ref > >
             @c
-            
+
             and this is C code. // It is colored in \LaTeX mode by default.
             /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
-            
+
             // Section refs are valid in code too, of course.
             < < section ref > >
             < < missing ref > >
-            
+
             \LaTeX and \c should not be colored.
             if else, while, do // C keywords.
     """)
@@ -317,10 +317,10 @@ class TestColorizer(LeoUnitTest):
             by cdef cimport cpdef ctypedef enum except?
             extern gil include nogil property public
             readonly struct union DEF IF ELIF ELSE
-                                
+
             NULL bint char dict double float int list
             long object Py_ssize_t short size_t void
-            
+
             try:
                 pass
             except Exception:
@@ -331,23 +331,23 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_elisp(self):
         text = textwrap.dedent("""\
             ; Maybe...
-            error princ 
-            
+            error princ
+
             ; More typical of other lisps...
             and apply
             car cdr cons cond
-            defconst defun defvar 
+            defconst defun defvar
             eq equal eval
             gt ge
-            if 
+            if
             let le lt
-            mapcar 
-            ne nil 
-            or not 
-            prog progn 
-            set setq 
-            t type-of 
-            unless 
+            mapcar
+            ne nil
+            or not
+            prog progn
+            set setq
+            t type-of
+            unless
             when while
     """)
         self.color('elisp', text)
@@ -355,7 +355,7 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_erlang(self):
         text = textwrap.dedent("""\
             halt()
-            
+
             -module()
     """)
         self.color('erlang', text)
@@ -363,7 +363,7 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_forth(self):
         text = textwrap.dedent(r"""\\\
             \ tiny demo of Leo forth syntax colouring
-            
+
             : some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
                label: y  \ blue label:
                asm[ s" some string" type ]asm cr
@@ -375,20 +375,20 @@ class TestColorizer(LeoUnitTest):
                tty" abc "
                lcd2" abc "
                until
-            
+
             @ test
             @c
-            
+
             { abc }
-            
+
             a b @ c
-            
+
             asm[ abc ]asm
-            
+
             .( ab ) \ a string
-            
+
             : foo [ .s ] ;
-            
+
                [ a b c
                x y z]
             ;
@@ -416,21 +416,21 @@ class TestColorizer(LeoUnitTest):
             </HEAD>
             <!-- Last Modified: May 12, 2002 -->
             <BODY BGCOLOR="#fffbdc">
-            
+
             <H1 ALIGN=CENTER><a NAME="top"></a><IMG SRC="Blank.gif" width=
-            "32" height="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"><IMG SRC="leo.gif" 
+            "32" height="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"><IMG SRC="leo.gif"
             WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"><a href="leo_TOC.html#top"><IMG SRC=
             "arrow_rt.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"></a> &nbsp;</H1>
-            
+
             <H1 ALIGN=CENTER> Leo's Home Page</H1>
-            
+
             <p align="center"><a href="http://www.python.org/"><img border="0" src="PythonPowered.gif" width="110" height="44"> </a> <A HREF="http://sourceforge.net/"><IMG SRC="http://sourceforge.net/sflogo.php?group_id=3458&type=1" NATURALSIZEFLAG="0" ALT="SourceForge Logo"></A>&nbsp;&nbsp;&nbsp;
             <A HREF="http://sourceforge.net/project/?group_id=3458">Leo at SourceForge</A>&nbsp;&nbsp;
             <a href="icons.html"><img border="0" src="LeoCodeGray.gif" width="77" height="42"></a>&nbsp;&nbsp;
             <a href="icons.html"><img border="0" src="LeoProse.gif" width="81" height="42"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-            
+
             <H3><A NAME="anchor127554"></A>Summary</H3>
-            
+
             <UL>
               <LI>Leo is a <i> programmer's editor</i>  and a flexible <i>browser</i> for
                 projects, programs, classes or data. Leo clarifies design, coding, debugging, testing
@@ -457,9 +457,9 @@ class TestColorizer(LeoUnitTest):
               <LI>Leo is <a href="http://www.opensource.org/"> <i> Open Software</i></a>, distributed under
                 the <a href="http://www.python.org/doc/Copyright.html"> Python License</a>.
             </UL>
-            
+
             <H3>More Information and downloads</H3>
-            
+
             <ul>
               <LI>An excellent <a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm">online
                 tutorial</a> and <A HREF="http://www.jserv.com/jk_orr/xml/leo.htm">Leo resource
@@ -476,23 +476,23 @@ class TestColorizer(LeoUnitTest):
                 in.</li>
               <li><a href="icons.html">Icons</a> for bragging about Leo.</li>
             </ul>
-            
+
             <a href="http://sourceforge.net/project/showfiles.php?group_id=3458">Download
                 Leo</a> from <A HREF="http://sourceforge.net/project/?group_id=3458">Leo's SourceForge
             site</A>.
-            
+
             <P ALIGN=left>Leo's author is <A HREF="http://personalpages.tds.net/~edream/index.html">Edward
               K. Ream</A> email: <A HREF="mailto:edream@tds.net">edream@tds.net</A> voice: (608) 231-0766
-            
+
             <HR ALIGN=LEFT>
-            
+
             <p align="center">
-            
+
             <IMG SRC="Blank.gif" ALIGN="left" NATURALSIZEFLAG=
             "3" width="34" height="34"><IMG SRC="leo.gif" ALIGN="left" NATURALSIZEFLAG=
             "3" width="32" height="32"><a HREF="leo_TOC.html"><IMG SRC="arrow_rt.gif" WIDTH="32"
             HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3">
-            
+
             </BODY>
             </HTML>
     """)
@@ -511,15 +511,15 @@ class TestColorizer(LeoUnitTest):
         text = textwrap.dedent('''\
             @ doc part
             @c
-            
+
             @language java /* Colored by match_leo_keyword: tag = leoKeyword. */
-            
+
             @whatever /* Colored by java match_following rule: tag = keyword4. */
-            
+
             /** A javadoc: tag = comment3 */
-            
+
             /** <!-- comment --> tag = comment1. */
-            
+
             /** @see tag = label */
     ''')
         self.color('java', text)
@@ -527,24 +527,24 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_LaTex(self):
         text = textwrap.dedent(r"""\\\
             % This is a \LaTeX mode comment.
-            
+
             This is a test of \LaTeX mode.
-            
+
             @ blah blah blah
             @c
-            
+
             \c and \LaTeX are latex keywords.
-            
+
             This is a keyword \% not the start of a comment.
-            
+
             More keywords: \@ and \( and \) and \{ and \}
-            
+
             The following should be colored:
-            
+
             \documentclass{report}
-            
+
             The following 2-letter words should be colored, regardless of what follows:
-            
+
             \(\)\{\}\@
             \(abc\)abc\{abc\}abc\@abc
     """)
@@ -553,23 +553,23 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_lisp(self):
         text = textwrap.dedent("""\
             ; Maybe...
-            error princ 
-            
+            error princ
+
             ; More typical of other lisps...
             and apply
             car cdr cons cond
-            defconst defun defvar 
+            defconst defun defvar
             eq equal eval
             gt ge
-            if 
+            if
             let le lt
-            mapcar 
-            ne nil 
-            or not 
-            prog progn 
-            set setq 
-            t type-of 
-            unless 
+            mapcar
+            ne nil
+            or not
+            prog progn
+            set setq
+            t type-of
+            unless
             when while
     """)
         self.color('lisp', text)
@@ -580,8 +580,8 @@ class TestColorizer(LeoUnitTest):
                 -(void) init;
                 -(void) showMessage;
             @end
-            
-            @implementation Application 
+
+            @implementation Application
                 -(id) init {
                     if (self = [super init]) {
                         NSLog(@"Init ok");
@@ -593,13 +593,13 @@ class TestColorizer(LeoUnitTest):
                     NSLog(@"Hello there");
                 }
             @end
-            
+
             @"Hello there"
-            
+
             ,@interface
             , @interface
             the @interface
-            
+
             // By the way, I have noticed that such kind of words in doxygen block
             // are highlighted properly, but they are labels here, not keywords1 as in my case.
             /**
@@ -612,19 +612,19 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_perl(self):
         text = textwrap.dedent("""\
             # From a perl tutorial.
-            
+
             print 'Hello world.';		# Print a message
-            
+
             $a = $b;	# Assign $b to $a
-            
+
             @food  = ("apples", "pears", "eels");
-            
+
             $grub = pop(@food);	# Now $grub = "eels"
-            
+
             $#food
-            
+
             @lines = <INFO>;
-            
+
             #!/usr/local/bin/perl
             print "Password? ";		# Ask for input
             $a = <STDIN>;			# Get input
@@ -635,26 +635,26 @@ class TestColorizer(LeoUnitTest):
                 $a = <STDIN>;		# Get input again
                 chop $a;			# Chop off newline again
             }
-            
+
             if ($sentence =~ /under/)
             {
                 print "We're talking about rugby\\n";
             }
-            
+
             $sentence =~ s/london/London/
-            
+
             $_ = "Capes:Geoff::Shot putter:::Big Avenue";
             @personal = split(/:/);
-            
+
             foreach $age (values %ages)
             {
                 print "Somebody is $age\\n";
             }
-            
+
             &mysubroutine;		# Call the subroutine
             &mysubroutine($_);	# Call it with a parameter
             &mysubroutine(1+2, $_);	# Call it with two parameters
-            
+
             sub inside
             {
                 local($a, $b);			# Make local variables
@@ -672,7 +672,7 @@ class TestColorizer(LeoUnitTest):
             @ doc
             This is a doc part.
             @c
-            
+
             and or
             array
             array()
@@ -1070,10 +1070,10 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_python_xml_jEdit_(self):
         text = textwrap.dedent(r"""\\\
             <?xml version="1.0"?>
-            
+
             <!DOCTYPE MODE SYSTEM "xmode.dtd">
             < < remarks > >
-            
+
             <MODE>
                 <PROPS>
                     <PROPERTY NAME="indentPrevLine" VALUE="\s*.{3,}:\s*(#.*)?" />
@@ -1103,7 +1103,7 @@ class TestColorizer(LeoUnitTest):
         text = textwrap.dedent('''\
             """This creates a free-floating copy of v's tree for undo.
             The copied trees must use different tnodes than the original."""
-            
+
             def copyTree(self,root):
                 c = self
                 # Create the root VNode.
@@ -1123,11 +1123,11 @@ class TestColorizer(LeoUnitTest):
     #@+node:ekr.20210905170507.27: *3* TestColorizer.test_colorizer_r
     def test_colorizer_r(self):
         text = textwrap.dedent("""\
-            x <- rnorm(10) 
-            
-            vv <- function(z) return(z) 
-            
-            def python_funct(uu): 
+            x <- rnorm(10)
+
+            vv <- function(z) return(z)
+
+            def python_funct(uu):
             return uu
     """)
         self.color('r', text)
@@ -1136,7 +1136,7 @@ class TestColorizer(LeoUnitTest):
         text = textwrap.dedent("""\
             ' New in 4.2.
             ' a comment.
-            
+
             $APPTYPE,$DEFINE,$ELSE,$ENDIF,$ESCAPECHARS,$IFDEF,$IFNDEF,
             $INCLUDE,$MACRO,$OPTIMIZE,$OPTION,$RESOURCE,$TYPECHECK,$UNDEF,
             ABS,ACOS,ALIAS,AND,AS,ASC,ASIN,ATAN,ATN,BIN$,BIND,BYTE,
@@ -1169,68 +1169,68 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_Rebol(self):
         text = textwrap.dedent("""\
         ; a comment
-        about abs absolute add alert alias all alter and and~ any append arccosine arcsine arctangent array ask at  
-        back bind boot-prefs break browse build-port build-tag  
-        call caret-to-offset catch center-face change change-dir charset checksum choose clean-path clear clear-fields close comment complement compose compress confirm continue-post context copy cosine create-request crypt cvs-date cvs-version  
-        debase decode-cgi decode-url decompress deflag-face dehex delete demo desktop detab dh-compute-key dh-generate-key dh-make-key difference dirize disarm dispatch divide do do-boot do-events do-face do-face-alt does dsa-generate-key dsa-make-key dsa-make-signature dsa-verify-signature  
-        echo editor either else emailer enbase entab exclude exit exp extract 
-        fifth find find-key-face find-window flag-face first flash focus for forall foreach forever form forskip fourth free func function  
-        get get-modes get-net-info get-style  
-        halt has head help hide hide-popup  
-        if import-email in inform input insert insert-event-func intersect 
-        join 
-        last launch launch-thru layout license list-dir load load-image load-prefs load-thru log-10 log-2 log-e loop lowercase  
-        make make-dir make-face max maximum maximum-of min minimum minimum-of mold multiply  
-        negate net-error next not now  
-        offset-to-caret open open-events or or~ 
-        parse parse-email-addrs parse-header parse-header-date parse-xml path-thru pick poke power prin print probe protect protect-system  
-        q query quit  
-        random read read-io read-net read-thru reboot recycle reduce reform rejoin remainder remold remove remove-event-func rename repeat repend replace request request-color request-date request-download request-file request-list request-pass request-text resend return reverse rsa-encrypt rsa-generate-key rsa-make-key 
-        save save-prefs save-user scroll-para second secure select send send-and-check set set-modes set-font set-net set-para set-style set-user set-user-name show show-popup sine size-text skip sort source split-path square-root stylize subtract switch  
-        tail tangent textinfo third throw throw-on-error to to-binary to-bitset to-block to-char to-date to-decimal to-email to-event to-file to-get-word to-hash to-hex to-idate to-image to-integer to-issue to-list to-lit-path to-lit-word to-local-file to-logic to-money to-none to-pair to-paren to-path to-rebol-file to-refinement to-set-path to-set-word to-string to-tag to-time to-tuple to-url to-word trace trim try  
-        unfocus union unique uninstall unprotect unset until unview update upgrade uppercase usage use  
-        vbug view view-install view-prefs  
-        wait what what-dir while write write-io  
-        xor xor~  
-        action! any-block! any-function! any-string! any-type! any-word!  
-        binary! bitset! block!  
-        char!  
-        datatype! date! decimal! 
-        email! error! event!  
-        file! function!  
-        get-word!  
-        hash!  
-        image! integer! issue!  
-        library! list! lit-path! lit-word! logic!  
-        money!  
-        native! none! number!  
-        object! op!  
-        pair! paren! path! port!  
-        refinement! routine!  
-        series! set-path! set-word! string! struct! symbol!  
-        tag! time! tuple!  
-        unset! url!  
-        word!  
-        any-block? any-function? any-string? any-type? any-word?  
-        binary? bitset? block?  
-        char? connected? crypt-strength? 
-        datatype? date? decimal? dir?  
+        about abs absolute add alert alias all alter and and~ any append arccosine arcsine arctangent array ask at
+        back bind boot-prefs break browse build-port build-tag
+        call caret-to-offset catch center-face change change-dir charset checksum choose clean-path clear clear-fields close comment complement compose compress confirm continue-post context copy cosine create-request crypt cvs-date cvs-version
+        debase decode-cgi decode-url decompress deflag-face dehex delete demo desktop detab dh-compute-key dh-generate-key dh-make-key difference dirize disarm dispatch divide do do-boot do-events do-face do-face-alt does dsa-generate-key dsa-make-key dsa-make-signature dsa-verify-signature
+        echo editor either else emailer enbase entab exclude exit exp extract
+        fifth find find-key-face find-window flag-face first flash focus for forall foreach forever form forskip fourth free func function
+        get get-modes get-net-info get-style
+        halt has head help hide hide-popup
+        if import-email in inform input insert insert-event-func intersect
+        join
+        last launch launch-thru layout license list-dir load load-image load-prefs load-thru log-10 log-2 log-e loop lowercase
+        make make-dir make-face max maximum maximum-of min minimum minimum-of mold multiply
+        negate net-error next not now
+        offset-to-caret open open-events or or~
+        parse parse-email-addrs parse-header parse-header-date parse-xml path-thru pick poke power prin print probe protect protect-system
+        q query quit
+        random read read-io read-net read-thru reboot recycle reduce reform rejoin remainder remold remove remove-event-func rename repeat repend replace request request-color request-date request-download request-file request-list request-pass request-text resend return reverse rsa-encrypt rsa-generate-key rsa-make-key
+        save save-prefs save-user scroll-para second secure select send send-and-check set set-modes set-font set-net set-para set-style set-user set-user-name show show-popup sine size-text skip sort source split-path square-root stylize subtract switch
+        tail tangent textinfo third throw throw-on-error to to-binary to-bitset to-block to-char to-date to-decimal to-email to-event to-file to-get-word to-hash to-hex to-idate to-image to-integer to-issue to-list to-lit-path to-lit-word to-local-file to-logic to-money to-none to-pair to-paren to-path to-rebol-file to-refinement to-set-path to-set-word to-string to-tag to-time to-tuple to-url to-word trace trim try
+        unfocus union unique uninstall unprotect unset until unview update upgrade uppercase usage use
+        vbug view view-install view-prefs
+        wait what what-dir while write write-io
+        xor xor~
+        action! any-block! any-function! any-string! any-type! any-word!
+        binary! bitset! block!
+        char!
+        datatype! date! decimal!
+        email! error! event!
+        file! function!
+        get-word!
+        hash!
+        image! integer! issue!
+        library! list! lit-path! lit-word! logic!
+        money!
+        native! none! number!
+        object! op!
+        pair! paren! path! port!
+        refinement! routine!
+        series! set-path! set-word! string! struct! symbol!
+        tag! time! tuple!
+        unset! url!
+        word!
+        any-block? any-function? any-string? any-type? any-word?
+        binary? bitset? block?
+        char? connected? crypt-strength?
+        datatype? date? decimal? dir?
         email? empty? equal? error? even? event? exists? exists-key?
-        file? flag-face? found? function?  
-        get-word? greater-or-equal? greater?  
-        hash? head?  
-        image? in-window? index? info? input? inside? integer? issue?  
-        length? lesser-or-equal? lesser? library? link-app? link? list? lit-path? lit-word? logic?  
-        modified? money?  
-        native? negative? none? not-equal? number?  
-        object? odd? offset? op? outside?  
-        pair? paren? path? port? positive?  
-        refinement? routine?  
-        same? screen-offset? script? series? set-path? set-word? size? span? strict-equal? strict-not-equal? string? struct?  
-        tag? tail? time? tuple? type?  
-        unset? url?  
-        value? view? 
-        within? word?  
+        file? flag-face? found? function?
+        get-word? greater-or-equal? greater?
+        hash? head?
+        image? in-window? index? info? input? inside? integer? issue?
+        length? lesser-or-equal? lesser? library? link-app? link? list? lit-path? lit-word? logic?
+        modified? money?
+        native? negative? none? not-equal? number?
+        object? odd? offset? op? outside?
+        pair? paren? path? port? positive?
+        refinement? routine?
+        same? screen-offset? script? series? set-path? set-word? size? span? strict-equal? strict-not-equal? string? struct?
+        tag? tail? time? tuple? type?
+        unset? url?
+        value? view?
+        within? word?
         zero?
     """)
         self.color('rebol', text)
@@ -1248,56 +1248,56 @@ class TestColorizer(LeoUnitTest):
             write_intermediate_file = False
             verbose=True
             @c
-            
+
             . Links used in this document...
-            
+
             .. _`Pmw`:                  http://pmw.sourceforge.net/
             .. _run:                    `Running Leo`_
-            
+
             .. WARNING: image targets may not have upper case letters!
-            
+
             .. |back| image:: arrow_lt.gif
                 :target: FAQ.html
-            
+
             .. |leo| image:: leo.gif
                 :target: front.html
-            
+
             .. |next| image:: arrow_rt.gif
                 :target: intro.html
-            
+
             |back| |leo| |next|
-            
+
             ###########################
             Chapter 1: Installing Leo
             ###########################
-            
+
             This chapter tells how to install and run Leo.
-            
+
             **Important**:
-            
+
             If you have *any* problems installing Leo,
             please ask for help on Leo's help forum:
-            
+
             .. contents::
-            
+
             **Windows**
                 If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
                 You can also use a batch file.
                 Put the following .bat file in c:\\Windows::
-            
+
                     cd c:\prog\LeoCVS\leo
                     c:\python22\python c:\prog\LeoCVS\leo\leo.py %1
-            
+
             -   Download the latest version of Leo from `Leo's download page`_.
-            
+
             -   In Windows 2K or XP, go to ``Start->Settings->Control panel``, open the ``Folder Options`` tab.
-            
+
                 **Warning**: When building Tcl on Linux, do **not** specify
                 "--enable-threads".
                 Only use Tcl with the default "threads not enabled" case.
-            
+
             -------------
-            
+
             |back| |leo| |next|
     """)
         self.color('rest', text)
@@ -1305,7 +1305,7 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_scala(self):
         text = textwrap.dedent("""\
             /* A comment */
-            
+
             object HelloWorld {
                 def main(args: Array[String]) {
                   println("Hello, world!")
@@ -1317,7 +1317,7 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_shell(self):
         text = textwrap.dedent("""\
             # New in 4.2.
-            
+
             # comment
             $# not a comment
             break
@@ -1330,7 +1330,7 @@ class TestColorizer(LeoUnitTest):
             then
             until
             while,
-            
+
             cd,chdir,eval,exec,
             exit,kill,newgrp,pwd,read,readonly,
             shift,test,trap,ulimit,
@@ -1352,7 +1352,7 @@ class TestColorizer(LeoUnitTest):
             then
             until
             while,
-            
+
             cd,chdir,eval,exec,
             exit,kill,newgrp,pwd,read,readonly,
             shift,test,trap,ulimit,
@@ -1363,20 +1363,20 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_tex_xml_jEdit_(self):
         text = textwrap.dedent("""\
             <!-- ekr uses the MARK_FOLLOWING to mark _anything_ after \\ -->
-            
+
             <?xml version="1.0"?>
-            
+
             <!DOCTYPE MODE SYSTEM "xmode.dtd">
-            
+
             <MODE>
                 <PROPS>
                     <PROPERTY NAME="lineComment" VALUE="%" />
                 </PROPS>
-            
+
                 <RULES>
                     < < general rules > >
                 </RULES>
-            
+
                 <RULES SET="MATH" DEFAULT="MARKUP">
                     < < math rules > >
                 </RULES>
@@ -1388,11 +1388,11 @@ class TestColorizer(LeoUnitTest):
         # both color_markup & add_directives plugins must be enabled.
         text = textwrap.dedent('''\
             @markup wiki
-            
+
             """ text~~red:some text~~more text"""
-            
+
             """ text~~#ee0ff:some text~~more text"""
-            
+
             if 1 and 2:
                 pass
     ''')

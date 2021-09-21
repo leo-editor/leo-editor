@@ -3,26 +3,26 @@
 """This plugin adds few commands for those who use Leo for writing
    markdown documentation with code samples taken from real source
    files.
-   
+
    md-write-files command scans outline for nodes whose headline is
                   like `md:<filename>`, and for each node it generates
                   output file adding extension .md.
                   The output is written relative to the @path in effect
                   for the given md node.
-                  
+
                   headlines of descendant nodes are written as headlines
                   of the appropriate level.
-                  
+
                   Any line which startswith `LEO:<some gnx>` will be
                   replaced with the lines of node with given gnx indented
                   as much as LEO:<gnx> line was indented.
-    
+
     md-copy-leo-gnx command puts in clipboard marker of the currently selected
                   node. This marker can be pasted in the documentation where
                   source code example should be.
-    
+
     md-sync-transformations command updates body of all @transform-node nodes.
-    
+
         transformations can be defined in nodes with headline like:
             @transformer <name>
         body (and possibly subtree), should be script which has predefined
@@ -30,7 +30,7 @@
         transformed and out is file like object where transformer script
         can write its output. This synchronization is done before save
         automatically.
-    
+
     Author: vitalije(at)kviziracija.net
 """
 import io
@@ -131,7 +131,7 @@ def sync_transformations(event):
             h = v.h
             if h.startswith('@transformer '):
                 name = h.partition(' ')[2].strip()
-                trscripts[name] = g.getScript(c, p.copy(), 
+                trscripts[name] = g.getScript(c, p.copy(),
                     useSentinels=False, forcePythonSentinels=True)
                 p.moveToNodeAfterTree()
             elif h.startswith('@transform-node '):

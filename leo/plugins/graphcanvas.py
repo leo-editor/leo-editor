@@ -198,7 +198,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
         super().__init__(*args)
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent (graphcanvas.py)
     def wheelEvent(self, event):
-        
+
         if int(event.modifiers() & KeyboardModifier.ControlModifier):
 
             scale = 1.+0.1*(event.delta() / 120)
@@ -664,7 +664,7 @@ class graphcanvasController:
             # self.loadLinksInt()
         self.initIvars()
         self.reloadSettings()
-        
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)

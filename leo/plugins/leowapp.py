@@ -26,23 +26,23 @@ from leo.core import leoGui
 #@+<< config >>
 #@+node:ekr.20181029070405.1: ** << config >>
 class Config:
-    
+
     # ip = g.app.config.getString("leowapp-ip") or '127.0.0.1'
     # port = g.app.config.getInt("leowapp-port") or 8100
     # timeout = g.app.config.getInt("leowapp-timeout") or 0
     # if timeout > 0: timeout = timeout / 1000.0
-    
+
     ip = '127.0.0.1'
     port = 5678
     # port = 8100
     timeout = 0
 
 # Create a singleton instance.
-# The initial values probably should not be changed. 
+# The initial values probably should not be changed.
 config = Config()
 #@-<< config >>
 # browser_encoding = 'utf-8'
-    # To do: query browser: var x = document.characterSet; 
+    # To do: query browser: var x = document.characterSet;
 #@+others
 #@+node:ekr.20181030103048.2: ** escape
 def escape(s):
@@ -77,7 +77,7 @@ class BrowserGui(leoGui.NullGui):
         return self.message(attr)
     #@+node:ekr.20181031162620.1: *3* bg.__init__
     def __init__(self):
-        
+
         g.trace('===== (BrowserGui)')
         leoGui.NullGui.__init__(self, guiName='browser')
         self.styleSheetManagerClass = g.NullObject

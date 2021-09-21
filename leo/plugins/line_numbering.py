@@ -6,7 +6,7 @@ This plugin makes line numbers in gutter (if used), to represent
    first of ancestor nodes with heading at-(file,clean,...), or first
    of ancestor nodes which was marked as root for line numbering  using
    command 'toggle-line-numbering-root'.
-   
+
    Author: vitalije(at)kviziracija.net
 """
 

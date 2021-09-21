@@ -57,7 +57,7 @@ process for each one.
 import os
 import time
 #
-# Third-party imports.   
+# Third-party imports.
 try:
     from Crypto.Cipher import AES
     from Crypto.Hash import MD5, SHA
@@ -624,11 +624,11 @@ class Tabula(QMainWindow):
         def do_tile():
             self.mdi.setViewMode(QMdiArea.SubWindowView)
             self.mdi.tileSubWindows()
-        
+
         def do_cascade():
             self.mdi.setViewMode(QMdiArea.SubWindowView)
             self.mdi.cascadeSubWindows()
-            
+
         def do_un_tab():
             if self.mdi.viewMode() == QMdiArea.SubWindowView:
                 self.mdi.setViewMode(QMdiArea.TabbedView)
@@ -653,7 +653,7 @@ class Tabula(QMainWindow):
         def do_edit_h():
             p, w = self.get_current_pos()
             new, r = QInputDialog.getText(None,
-                "Edit headline", "", 
+                "Edit headline", "",
                 QLineEdit.Normal, p.h)
             if not r:
                 return
@@ -726,7 +726,7 @@ class Tabula(QMainWindow):
 
     #@+node:ekr.20101114061906.5441: *4* save_states
     def save_states(self):
-        
+
         self.update_notes()
 
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
@@ -740,7 +740,7 @@ class Tabula(QMainWindow):
             self.c.db['tabulanotes'] = geoms
     #@+node:ekr.20180822134952.1: *4* update_nodes (new)
     def update_notes(self):
-        
+
         # #940: update self.notes. Ensure note n still exists.
         visible = []
         for (gnx, n) in self.notes.items():

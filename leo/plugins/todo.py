@@ -140,7 +140,7 @@ if g.app.gui.guiName() == "qt":
             self.menu = QtWidgets.QMenu()
             self.populateMenu(self.menu, o)
             u.butMenu.setMenu(self.menu)
-            
+
             u.butHelp.clicked.connect(lambda checked: o.showHelp())
             u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
             u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
@@ -233,7 +233,7 @@ if g.app.gui.guiName() == "qt":
 
             if self.owner.c.config.getBool("todo-compact-interface"):
                 self.UI.frmDetails.setVisible(False)
-            
+
             self.UI.butNext.clicked.connect(
                 lambda checked: self.owner.c.selectVisNext())
             self.UI.butNextTodo.clicked.connect(
@@ -377,7 +377,7 @@ class todoController:
     def patch_1591(self):
         """
         A workaround for #1591.
-        
+
         Add labels and tooltips for all buttons.
         """
         # Patch the buttons only if the pyqt version is greater than 5.12.

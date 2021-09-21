@@ -29,7 +29,7 @@ class ActionForm(fmForm.Form):
 
     #@+node:ekr.20170428084207.126: *3* ActionForm.edit
     def edit(self):
-        
+
         # g.trace('===== (ActionForm)')
         # Add ok and cancel buttons. Will remove later
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx

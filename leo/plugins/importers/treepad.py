@@ -10,11 +10,11 @@ class TreePad_Scanner():
 
     def __init__(self, importCommands, **kwargs):
         self.c = importCommands.c
-        
+
     #@+others
     #@+node:ekr.20180201204402.2: *3* treepad.add_node
     def add_node(self, article, level, title):
-        
+
         assert level >= 0, level
         if level == 0:
             # Special case: use the @auto node.

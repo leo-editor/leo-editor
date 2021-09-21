@@ -526,10 +526,10 @@ class FlowLayout(QtWidgets.QLayout):
 
     #@+node:ekr.20140917180536.17904: *3* expandingDirections (override)
     def expandingDirections(self):
-        
+
         """
         Override of QLayout.expandingDirections.
-        
+
         Returns whether this layout can make use of more space than sizeHint().
         A value of Qt::Vertical or Qt::Horizontal means that it wants to grow in only one dimension,
         whereas Qt::Vertical | Qt::Horizontal means that it wants to grow in both dimensions.
@@ -607,7 +607,7 @@ class FlowLayout(QtWidgets.QLayout):
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
-    
+
     ModMap = {
         KeyboardModifier.NoModifier: 'None',
         KeyboardModifier.AltModifier: 'Alt',

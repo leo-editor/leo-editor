@@ -126,7 +126,7 @@ def init():
 #@+node:tbrown.20091128094521.15047: ** attachToCommander
 # defer binding event until c exists
 def attachToCommander(t,k):
-    
+
     # pylint: disable=simplifiable-if-statement
     c = k.get('c')
     event = c.config.getString('active-path-event') or "headdclick1"

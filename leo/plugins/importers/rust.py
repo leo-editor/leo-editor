@@ -20,7 +20,7 @@ class Rust_Importer(Importer):
             state_class = Rust_ScanState,
         )
         self.headline = None
-      
+
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
     arg_pat = re.compile(r'(\(.*?\))')
@@ -72,7 +72,7 @@ class Rust_Importer(Importer):
     def promote_last_lines(self, parent):
         '''
         Move trailing comment and macro lines to the start of the next node.
-        
+
         For now, @others anywhere in a node prevents all moves.
         '''
         for p in parent.subtree():

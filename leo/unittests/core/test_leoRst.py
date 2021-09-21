@@ -38,7 +38,7 @@ class TestRst(LeoUnitTest):
             #####
             Title
             #####
-            
+
             This is test.html
 
             """)
@@ -50,13 +50,13 @@ class TestRst(LeoUnitTest):
             .. rst3: filename: {fn}
 
             .. _http-node-marker-1:
-            
+
             #####
             Title
             #####
-            
+
             This is test.html
-            
+
             This is the body of the section.
 
     """)
@@ -105,9 +105,9 @@ class TestRst(LeoUnitTest):
             .. rst3: filename: {fn}
 
             .. _http-node-marker-1:
-            
+
             Test of unicode characters: ÀǋϢﻙ
-            
+
             End of test.
 
     """)
@@ -132,11 +132,11 @@ class TestRst(LeoUnitTest):
         # Insert the body texts.  Overindent to eliminate @verbatim sentinels.
         root.b = textwrap.dedent("""\
             @language rest
-            
+
             #####
             Title
             #####
-           
+
             This is test.html
         """)
         child.b = textwrap.dedent("""\
@@ -148,22 +148,22 @@ class TestRst(LeoUnitTest):
         # Define the expected output.
         expected = textwrap.dedent(f"""\
             .. rst3: filename: {fn}
-            
+
             .. _http-node-marker-1:
-                
+
             @language rest
-            
+
             #####
             Title
             #####
-            
+
             This is test.html
-            
+
             .. _http-node-marker-2:
-            
+
             section
             +++++++
-            
+
             @ This is a doc part
             it has two lines.
             @c

@@ -1648,16 +1648,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 class ConvertAtTests:
     """
     A class that converts @test nodes to proper unit tests.
-    
+
     Subclasses specialize the convert method.
-    
+
     These scripts know nothing about the unit tests they create. They just
     pass the data from the old tests to the new tests using args in the
     run_test method.
     """
-    
+
     class_name = "TestXXX"  # Later, change headlines with search/replace!
-    
+
     #@+others
     #@+node:ekr.20201130075024.2: *4* ConvertAtTests.body
     def body(self, after_p, after_sel, before_p, before_sel, command_name):
@@ -1723,7 +1723,7 @@ class ConvertAtTests:
         """
         Convert p, an @test node, creating a new node as the last child of
         target.
-        
+
         May be overridden in subclasses.
         """
         # Calculate the headline and body text.

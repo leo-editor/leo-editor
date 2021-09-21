@@ -2,7 +2,7 @@
 #@+node:danr7.20061010105952.1: * @file ../plugins/word_count.py
 #@+<< docstring >>
 #@+node:danr7.20061010105952.2: ** << docstring >>
-''' 
+'''
 
 Word Count plugin by Dan Rahmel
 
@@ -15,7 +15,7 @@ activate the command.
 '''
 #@-<< docstring >>
 
-# 
+#
 
 from leo.core import leoGlobals as g
 

@@ -8,13 +8,13 @@ def init():
         return False
     g.registerHandler('after-create-leo-frame', onCreate)
     return True
-    
+
 def onCreate(tag, keys):
     c = keys.get('c')
     if c and c.rstCommands:
         c.rstCommands.register_body_filter(body_filter)
         c.rstCommands.register_headline_filter(headline_filter)
-        
+
 def has_cloned_parent(c, p):
     """Return True if p has a cloned parent within the @rst tree."""
     root = c.rstCommands.root
@@ -24,11 +24,11 @@ def has_cloned_parent(c, p):
             return True
         p.moveToParent()
     return False
-        
+
 def body_filter(c, p):
     # print(f"p.b: {len(p.b):<3} {p.h}")
     return '' if has_cloned_parent(c, p) else p.b
-    
+
 def headline_filter(c, p):
     # print(f"p.h: {len(p.h):<3} {p.h}")
     return '' if has_cloned_parent(c, p) else p.h

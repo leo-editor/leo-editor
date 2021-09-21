@@ -97,7 +97,7 @@ You can specify the following options in myLeoSettings.leo.  See the node:
 
     @int scripting-max-button-size = 18
     The maximum length of button names: longer names are truncated.
-    
+
 Shortcuts for script buttons
 ----------------------------
 
@@ -113,7 +113,7 @@ You can bind key shortcuts to @button and @command nodes as follows:
 
     Creates a new minibuffer command and binds shortcut to it. As with @buffer
     nodes, the name of the command is the cleaned name of the headline.
-    
+
 Binding arguments to script buttons with @args
 ----------------------------------------------
 
@@ -142,11 +142,11 @@ eval
 
 Evaluates the selected text, if any, and remember the result in c.vs, a global namespace.
 For example::
-    
+
     a = 10
-    
+
 sets:
-    
+
     c.vs['a'] = 10
 
 This command prints the result of the last expression or assignment in the log pane
@@ -166,14 +166,14 @@ To replace 7*365 with 2555, do the following::
     eval
     delete 7*365
     do eval-last
-    
+
 eval-replace
 ------------
 
 Evaluates the expression and replaces it with the computed value.
 For example, the example above can be done as follows::
 
-    
+
     select 7*367
     eval-replace
 
@@ -368,7 +368,7 @@ class AtButtonCallback:
             )
     #@+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
     def find_script(self):
-        
+
         gnx = self.gnx
         # First, search self.c for the gnx.
         for p in self.c.all_positions():
@@ -696,7 +696,7 @@ class ScriptingController:
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and select the specified node.
         Return c,p of the found node.
-        
+
         Called only from a callback in QtIconBarClass.setCommandForButton.
         '''
         if not gnx: g.trace('can not happen: no gnx')
@@ -737,11 +737,11 @@ class ScriptingController:
         '''
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
-        
+
         Important: Common @button and @command scripts now *do* update
         dynamically provided that myLeoSettings.leo is open. Otherwise the
         callback executes the static script.
-        
+
         See https://github.com/leo-editor/leo-editor/issues/171
         '''
         c = self.c
@@ -815,11 +815,11 @@ class ScriptingController:
     def createCommonCommand(self, p, script):
         '''
         Handle a single @command node.
-        
+
         Important: Common @button and @command scripts now *do* update
         dynamically provided that myLeoSettings.leo is open. Otherwise the
         callback executes the static script.
-        
+
         See https://github.com/leo-editor/leo-editor/issues/171
         '''
         c = self.c
@@ -931,7 +931,7 @@ class ScriptingController:
                 self.handleAtRclickNode(rc.position)
         for rc in rclicks:
             handlerc(rc)
-        
+
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
     def handleAtScriptNode(self, p):
         '''Handle @script nodes.'''
@@ -1117,7 +1117,7 @@ class ScriptingController:
 
                 def registerAllCommandsCallback(event=None, func=func):
                     func()
-        
+
                 # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                 # Minibuffer commands created by mod_scripting.py have no docstrings.
                 registerAllCommandsCallback.__doc__ = func.__doc__

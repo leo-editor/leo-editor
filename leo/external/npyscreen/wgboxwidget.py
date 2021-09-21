@@ -171,7 +171,7 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.514: *3* BoxTitle.edit
     def edit(self):
-        
+
         # g.trace('===== (BoxTitle:%s) entry_widget: %s' % (
             # self.__class__.__name__, self.entry_widget.__class__.__name__))
         self.editing=True

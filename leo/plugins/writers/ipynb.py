@@ -11,7 +11,7 @@ import leo.plugins.writers.basewriter as basewriter
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
 class Export_IPYNB(basewriter.BaseWriter):
     '''A class to export outlines to .ipynb files.'''
-    
+
     def __init__(self, c):
         '''Ctor for Import_IPYNB class.'''
         super().__init__(c)
@@ -79,7 +79,7 @@ class Export_IPYNB(basewriter.BaseWriter):
     def clean_headline(self, s):
         '''
         Return a cleaned version of a headline.
-        
+
         Used to clean section names and the [ ] part of markdown links.
         '''
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
@@ -174,12 +174,12 @@ class Export_IPYNB(basewriter.BaseWriter):
 
     def update_cell_body(self, cell, meta, p):
         '''Create a new body text, depending on kind.'''
-        
+
         def clean(lines):
             lines = [z for z in lines if not g.isDirective(z)]
             s = ''.join(lines).strip() + '\n'
             return g.splitLines(s)
-            
+
         kind = self.cell_type(p)
         lines = g.splitLines(p.b)
         level = p.level() - self.root.level()
@@ -220,7 +220,7 @@ class Export_IPYNB(basewriter.BaseWriter):
                 if cell.get(prop) is not None:
                     del cell [prop]
         return kind
-       
+
     #@-others
 #@-others
 writer_dict = {
