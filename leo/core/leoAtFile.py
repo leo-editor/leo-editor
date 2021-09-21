@@ -3612,11 +3612,12 @@ class FastAtRead:
                     continue
                 # Doc lines start with start_delim + one blank.
                 # #1496: Retire the @doc convention.
-                ### tail = line[len(delim_start) + 1 :]
+                # #2194: Strip lws.
                 tail = line.lstrip()[len(delim_start) + 1:]
-                if g.shortFileName(path) == 'leoBeautify.py':
-                    print('@doc line:', repr(line))
-                    print('@doc tail: ', repr(tail))
+                ###
+                    # if g.shortFileName(path) == 'leoBeautify.py':
+                        # print('@doc line:', repr(line))
+                        # print('@doc tail: ', repr(tail))
                 if tail.strip():
                     body.append(tail)
                 else:
