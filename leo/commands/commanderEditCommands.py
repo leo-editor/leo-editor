@@ -897,9 +897,9 @@ def find_bound_paragraph(c):
         else:
             head_lines.append(s)
     if started:
-        head = g.joinLines(head_lines)
+        head = ''.join(head_lines)
         tail_lines = para_lines[i:] if ended else []
-        tail = g.joinLines(tail_lines)
+        tail = ''.join(tail_lines)
         return head, result, tail  # string, list, string
     return None, None, None
 #@+node:ekr.20171123135625.45: *3* function: rp_get_args

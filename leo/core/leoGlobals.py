@@ -4542,22 +4542,15 @@ def see_more_lines(s: str, ins, n=4):
             i, j = g.getLine(s, ins)
             ins = j
     return max(0, min(ins, len(s)))
-#@+node:ekr.20031218072017.3195: *3* g.splitLines & g.joinLines
+#@+node:ekr.20031218072017.3195: *3* g.splitLines
 def splitLines(s: str):
-    """Split s into lines, preserving the number of lines and
-    the endings of all lines, including the last line."""
-    # g.stat()
-    if s:
-        return s.splitlines(True)
-            # This is a Python string function!
-    return []
+    """
+    Split s into lines, preserving the number of lines and
+    the endings of all lines, including the last line.
+    """
+    return s.splitlines(True) if s else []  # This is a Python string function!
 
 splitlines = splitLines
-
-def joinLines(aList):
-    return ''.join(aList)
-
-joinlines = joinLines
 #@+node:ekr.20031218072017.3158: *3* g.Scanners: calling scanError
 #@+at These scanners all call g.scanError() directly or indirectly, so they
 # will call g.es if they find an error. g.scanError() also bumps
