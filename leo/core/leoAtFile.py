@@ -2237,6 +2237,9 @@ class AtFile:
         if at.sentinels or hasattr(at, 'force_sentinels'):
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
+            # #2194. The following would follow the black convention,
+            #        but doing so is a dubious idea.
+                # at.os('  ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
             #   double all '@' signs except the first.
@@ -2823,8 +2826,7 @@ class AtFile:
         self.error(message)
         g.es_exception()
     #@+node:ekr.20050104131929: *4* at.file operations...
-    #@+at The difference, if any, between these methods and the corresponding g.utils_x
-    # functions is that these methods may call self.error.
+    # Error checking versions of corresponding functions in Python's os module.
     #@+node:ekr.20050104131820: *5* at.chmod
     def chmod(self, fileName, mode):
         # Do _not_ call self.error here.
@@ -3429,9 +3431,9 @@ class FastAtRead:
             #@+node:ekr.20180602103135.16: *4* << handle end of @doc & @code parts >>
             if in_doc:
                 # When delim_end exists the doc block:
-                # - begins with the opening delim, alonw on its own line
+                # - begins with the opening delim, alone on its own line
                 # - ends with the closing delim, alone on its own line.
-                # Both of these lines should be skipped
+                # Both of these lines should be skipped.
                 #
                 # #1496: Retire the @doc convention.
                 #        An empty line is no longer a sentinel.
@@ -3609,8 +3611,9 @@ class FastAtRead:
                     body.append(line)
                     continue
                 # Doc lines start with start_delim + one blank.
-                # #1496: Retire the @doc convention:
-                tail = line[len(delim_start) + 1 :]
+                # #1496: Retire the @doc convention.
+                # #2194: Strip lws.
+                tail = line.lstrip()[len(delim_start) + 1:]
                 if tail.strip():
                     body.append(tail)
                 else:

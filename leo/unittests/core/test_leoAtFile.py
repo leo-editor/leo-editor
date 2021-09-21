@@ -46,6 +46,29 @@ class TestAtFile(LeoUnitTest):
 
         if not g.unitTesting:  # A hand test of at.syntaxError
             at.checkPythonSyntax(p, s2)
+    #@+node:ekr.20210920165831.1: *3* TestAtFile.test_at_doc_part
+    def test_at_doc_part(self):
+        
+        # From leoBeautify.py.
+        # The following text *does* survive round-tripping.
+        # However, the actual text in leoBeautify.py
+        # (In the @doc part of the node cpp.tokenize & helper) does *not* survive.
+        s = textwrap.dedent("""\
+            @ The following could be added to the 'else' clause::
+            # Accumulate everything else.
+            while (
+                j < n and
+                not s[j].isspace() and
+                not s[j].isalpha() and
+                not s[j] in '"\'_@' and
+                    # start of strings, identifiers, and single-character tokens.
+                not g.match(s,j,'//') and
+                not g.match(s,j,'/*') and
+                not g.match(s,j,'-->')
+            ):
+                j += 1
+        """)
+        assert s
     #@+node:ekr.20210905052021.19: *3* TestAtFile.test_at_directiveKind4
     def test_at_directiveKind4(self):
         c = self.c

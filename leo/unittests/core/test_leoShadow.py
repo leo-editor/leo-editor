@@ -694,7 +694,7 @@ class TestAtShadow(LeoUnitTest):
             at-others
             node 1 line 1
             at-verbatim
-            #at- should be handled by verbatim
+            #  at- should be handled by verbatim
             node 1 line 2
             node 2 line 1
             node 2 line 2
@@ -712,7 +712,7 @@ class TestAtShadow(LeoUnitTest):
             at-others
             node 1 line 1
             at-verbatim
-            #at- should be handled by verbatim
+            #  at- should be handled by verbatim
             line 1 line 3
             node 2 line 1
             node 2 line 2
@@ -742,7 +742,7 @@ class TestAtShadow(LeoUnitTest):
             at-others
             node 1 line 1
             at-verbatim
-            #at- should be handled by verbatim
+            #  at- should be handled by verbatim
             node 2 line 1
             node 2 line 2
         """).replace('at-', '@')
@@ -768,7 +768,7 @@ class TestAtShadow(LeoUnitTest):
             at-others
             node 1 line 1
             at-verbatim
-            #at- should be handled by verbatim
+            #  at- should be handled by verbatim
             node 2 line 2
         """).replace('at-', '@')
         # Create the 'new' node.
