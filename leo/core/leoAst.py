@@ -158,6 +158,7 @@ import io
 import os
 import re
 import sys
+import textwrap
 import tokenize
 import traceback
 from typing import List, Optional
@@ -373,7 +374,10 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200702102239.1: *3* function: main (leoAst.py)
     def main():
         """Run commands specified by sys.argv."""
-        parser = argparse.ArgumentParser()
+        description = textwrap.dedent("""\
+            leo-editor/leo/unittests/core/test_leoAst.py contains unit tests (100% coverage).
+        """)
+        parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
         group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
         add = group.add_argument
