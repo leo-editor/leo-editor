@@ -2836,15 +2836,15 @@ class LoadManager:
         d = {
             'gui': lm.doGuiOption(options),
             'load_type': lm.doLoadTypeOption(options),
-            'screenshot_fn': lm.doScreenShotOption(options),
             # --screen-shot=fn
+            'screenshot_fn': lm.doScreenShotOption(options),
             'script': script,
-            'select': options.select and options.select.strip('"'),
             # --select=headline
-            'theme_path': options.theme,
+            'select': options.select and options.select.strip('"'),
             # --theme=name
-            'version': options.version,
+            'theme_path': options.theme,
             # --version: print the version and exit.
+            'version': options.version,
             'windowFlag': script and options.script_window,
             'windowSize': lm.doWindowSizeOption(options),
             'windowSpot': lm.doWindowSpotOption(options),
