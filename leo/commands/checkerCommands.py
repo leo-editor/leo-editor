@@ -659,12 +659,6 @@ class PylintCommand:
             link_pattern=self.link_pattern,
             link_root=p,
         )
-
-        # Old code: Invoke g.run_pylint.
-            # args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
-            # # When shell is True, it's recommended to pass a string, not a sequence.
-            # command = '%s -c "from leo.core import leoGlobals as g; g.run_pylint(%s)"' % (
-                # sys.executable, ','.join(args))
     #@-others
 #@-others
 #@@language python

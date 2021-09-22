@@ -242,9 +242,9 @@ class BackgroundProcessManager:
         Don't set self.data unless we start the process!
         """
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
-        g.trace('self.pid', repr(self.pid))
         if self.pid:
             # A process is already active.  Add a new callback.
+            g.es_print(f'queue {kind}: {g.shortFileName(fn)}')
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
@@ -263,7 +263,7 @@ class BackgroundProcessManager:
             # Start the process immediately.
             self.data = data
             self.kind = kind
-            self.put_log(f'{kind}: {g.shortFileName(fn)}\n')
+            g.es_print(f'start {kind}: {g.shortFileName(fn)}')
             self.pid = subprocess.Popen(
                 command,
                 shell=shell,
