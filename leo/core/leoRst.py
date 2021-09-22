@@ -314,7 +314,8 @@ class RstCommands:
         element.
         """
         i = s.find('<title></title>')
-        if i == -1: return s
+        if i == -1:
+            return s
         m = re.search(r'<h1>([^<]*)</h1>', s)
         if not m:
             m = re.search(r'<h1><[^>]+>([^<]*)</a></h1>', s)
@@ -397,7 +398,8 @@ class RstCommands:
                 ('.s5', 's5'),
                 ('.odt', 'odt'),
             ):
-                if ext2 == ext: break
+                if ext2 == ext:
+                    break
             else:
                 g.error(f"unknown docutils extension: {ext}")
                 return None
@@ -468,7 +470,8 @@ class RstCommands:
         d = {}
         while s:
             s = s.strip()
-            if not s.startswith('--'): break
+            if not s.startswith('--'):
+                break
             s = s[2:].strip()
             eq = s.find('=')
             cm = s.find(',')
@@ -486,7 +489,8 @@ class RstCommands:
                 s = s[eq + 1 :].strip()
                 if s.startswith('['):  # [...]
                     rb = s.find(']')
-                    if rb == -1: break  # Bad argument.
+                    if rb == -1:
+                        break  # Bad argument.
                     val = s[: rb + 1]
                     s = s[rb + 1 :].strip()
                     if s.startswith(','):
