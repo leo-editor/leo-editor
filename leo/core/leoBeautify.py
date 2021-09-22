@@ -146,7 +146,8 @@ def fstringify_files(event):
             print(g.shortFileName(filename))
             changed = leoAst.Fstringify().fstringify_file(filename)
             changed_s = 'changed' if changed else 'unchanged'
-            if changed: n_changed += 1
+            if changed:
+                n_changed += 1
             g.es_print(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
             print('')
