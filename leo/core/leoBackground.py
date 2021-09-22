@@ -112,9 +112,12 @@ class BackgroundProcessManager:
         """End the present process."""
         # Send the output to the log.
         # print('BPM.end:')
+        n = self.data.number_of_lines
         for s in self.pid.stdout:
+            n += 1
             self.put_log(s)
-        g.es_print('printed', self.data.number_of_lines, 'lines')
+        if n > 0:
+            g.es_print(f"printed {n}{g.plural(n)} lines")
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -126,7 +129,6 @@ class BackgroundProcessManager:
         """The previous process has finished. Start the next one."""
         if self.process_queue:
             self.data = self.process_queue.pop(0)
-            g.es_print(f'start {self.data.kind}: {g.shortFileName(self.data.fn)}')
             self.data.callback()
         else:
             g.es_print(f"{self.data.kind} finished")
@@ -248,11 +250,12 @@ class BackgroundProcessManager:
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
         if self.pid:
             # A process is already active.  Add a new callback.
-            g.es_print(f'queue {kind}: {g.shortFileName(fn)}')
+            # This trace is annoying.
+                # g.es_print(f'queue {kind}: {g.shortFileName(fn)}')
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
-                g.es_print(f'start {kind}: {g.shortFileName(data.fn)}\n')
+                g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -267,7 +270,7 @@ class BackgroundProcessManager:
             # Start the process immediately.
             self.data = data
             self.kind = kind
-            g.es_print(f'start {kind}: {g.shortFileName(fn)}')
+            g.es_print(f'{kind}: {g.shortFileName(fn)}')
             self.pid = subprocess.Popen(
                 command,
                 shell=shell,
