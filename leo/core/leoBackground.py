@@ -97,7 +97,9 @@ class BackgroundProcessManager:
         """Check the running process, and switch if necessary."""
         if self.pid:
             if self.pid.poll() is None:
-                pass
+                # Unblock the process by reading immediately.
+                for s in self.pid.stdout:
+                    self.put_log(s)
             else:
                 self.end()  # End this process.
                 self.start_next()  # Start the next process.
@@ -107,6 +109,7 @@ class BackgroundProcessManager:
     def end(self):
         """End the present process."""
         # Send the output to the log.
+        # print('BPM.end:')
         for s in self.pid.stdout:
             self.put_log(s)
         # Terminate the process properly.
@@ -239,6 +242,7 @@ class BackgroundProcessManager:
         Don't set self.data unless we start the process!
         """
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
+        g.trace('self.pid', repr(self.pid))
         if self.pid:
             # A process is already active.  Add a new callback.
 
