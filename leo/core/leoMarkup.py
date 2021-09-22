@@ -353,7 +353,8 @@ class MarkupCommands:
         command_dir = g.os_path_finalize(
             self.sphinx_command_dir or os.path.dirname(i_path))
         if os.path.exists(command_dir):
-            if trace: g.trace(f"\nos.chdir: {command_dir!r}")
+            if trace:
+                g.trace(f"\nos.chdir: {command_dir!r}")
             os.chdir(command_dir)
         else:
             g.error(f"command directory not found: {command_dir!r}")
@@ -362,7 +363,8 @@ class MarkupCommands:
         # If a default command exists, just call it.
         # The user is responsible for making everything work.
         if self.sphinx_default_command:
-            if trace: g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
+            if trace:
+                g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
             g.execute_shell_commands(self.sphinx_default_command)
             return
         # Compute the input directory.
@@ -381,7 +383,8 @@ class MarkupCommands:
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
         command = f"sphinx-build {input_dir} {output_dir} {i_path}"
-        if trace: g.trace(f"\ncommand: {command!r}\n")
+        if trace:
+            g.trace(f"\ncommand: {command!r}\n")
         g.execute_shell_commands(command)
     #@+node:ekr.20190515070742.24: *3* markup.write_root & helpers
     def write_root(self, root):
