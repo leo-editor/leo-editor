@@ -108,7 +108,8 @@ class ParserBaseClass:
     def computeModeName(self, name):
         s = name.strip().lower()
         j = s.find(' ')
-        if j > -1: s = s[:j]
+        if j > -1:
+            s = s[:j]
         if s.endswith('mode'):
             s = s[:-4].strip()
         if s.endswith('-'):
@@ -190,7 +191,9 @@ class ParserBaseClass:
     #@+node:ekr.20080312071248.6: *4* pbc.doCommands
     def doCommands(self, p, kind, name, val):
         """Handle an @commands tree."""
-        aList = []; c = self.c; tag = '@command'
+        c = self.c
+        aList = []
+        tag = '@command'
         seen = []
         after = p.nodeAfterTree()
         while p and p != after:
@@ -264,8 +267,10 @@ class ParserBaseClass:
         aList, lines = [], g.splitLines(s)
         for s in lines:
             i = s.find('#')
-            if i > -1: s = s[:i] + '\n'  # 2011/09/29: must add newline back in.
-            if s.strip(): aList.append(s.lstrip())
+            if i > -1:
+                s = s[:i] + '\n'  # 2011/09/29: must add newline back in.
+            if s.strip():
+                aList.append(s.lstrip())
         s = ''.join(aList)
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
@@ -430,7 +435,8 @@ class ParserBaseClass:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
     #@+node:tbrown.20080514180046.9: *5* pbc.getName
     def getName(self, val, val2=None):
-        if val2 and val2.strip(): val = val2
+        if val2 and val2.strip():
+            val = val2
         val = val.split('\n', 1)[0]
         for i in "*.-& \t\n":
             val = val.replace(i, '')
@@ -635,7 +641,8 @@ class ParserBaseClass:
     def doShortcuts(self, p, kind, junk_name, junk_val, s=None):
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
-        if s is None: s = p.b
+        if s is None:
+            s = p.b
         fn = d.name()
         for line in g.splitLines(s):
             line = line.strip()
@@ -707,7 +714,8 @@ class ParserBaseClass:
     #@+node:ekr.20041213082558.2: *5* pbc.parseFontLine
     def parseFontLine(self, line, d):
         s = line.strip()
-        if not s: return
+        if not s:
+            return
         try:
             s = str(s)
         except UnicodeError:
@@ -772,7 +780,8 @@ class ParserBaseClass:
     #@+node:ekr.20070411101643.4: *5* pbc.parseOpenWithLine
     def parseOpenWithLine(self, line, d):
         s = line.strip()
-        if not s: return
+        if not s:
+            return
         i = g.skip_ws(s, 0)
         if g.match(s, i, '#'):
             return
@@ -816,7 +825,8 @@ class ParserBaseClass:
         # c = self.c
         s = s.replace('\x7f', '')
             # Can happen on MacOS. Very weird.
-        name = val = nextMode = None; nextMode = 'none'
+        name = val = nextMode = None
+        nextMode = 'none'
         i = g.skip_ws(s, 0)
         if g.match(s, i, '-->'):  # New in 4.4.1 b1: allow mode-entry commands.
             j = g.skip_ws(s, i + 3)
@@ -844,7 +854,8 @@ class ParserBaseClass:
             j = g.skip_ws(s, i + 1)
             i = g.skip_id(s, j)
             pane = s[j:i]
-            if not pane.strip(): pane = 'all'
+            if not pane.strip():
+                pane = 'all'
         else: pane = 'all'
         i = g.skip_ws(s, i)
         if g.match(s, i, '='):
@@ -1791,12 +1802,13 @@ class LocalConfigManager:
         for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(tag.lower()):
                 if setting.kind == 'color':
-                    if trace: g.trace(
-                        'FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
+                    if trace:
+                        g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
                 return tag.rstrip('.leo')
         theme_path = g.app.loadManager.theme_path
         if theme_path and g.shortFileName(theme_path.lower()) in path:
-            if trace: g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
+            if trace:
+                g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
             return "theme_file"
         # g.trace('NOT FOUND', repr(theme_path), repr(path))
         if path == 'register-command' or path.find('mode') > -1:
@@ -1867,7 +1879,8 @@ class LocalConfigManager:
         """
         tag = 'c.config.getValFromDict'
         gs = d.get(g.app.config.munge(setting))
-        if not gs: return None, False
+        if not gs:
+            return None, False
         assert isinstance(gs, g.GeneralSetting), repr(gs)
         val = gs.val
         isNone = val in ('None', 'none', '')
@@ -2144,7 +2157,8 @@ class LocalConfigManager:
         d = self.settingsDict
         if d:
             junk, found = self.getValFromDict(d, setting, kind)
-            if found: return True
+            if found:
+                return True
         return False
     #@+node:ekr.20070418073400: *3* c.config.printSettings
     def printSettings(self):
@@ -2214,11 +2228,13 @@ class LocalConfigManager:
         p = self.findSettingsPosition(setting)
         if not p:
             c = c.openMyLeoSettings()
-            if not c: return
+            if not c:
+                return
             p = c.config.findSettingsPosition(setting)
         if not p:
             root = c.config.settingsRoot()
-            if not root: return
+            if not root:
+                return
             p = c.config.findSettingsPosition(setting)
             if not p:
                 p = root.insertAsLastChild()
@@ -2280,9 +2296,11 @@ def parseFont(b):
     settings_name = None
     for line in g.splitLines(b):
         line = line.strip()
-        if line.startswith('#'): continue
+        if line.startswith('#'):
+            continue
         i = line.find('=')
-        if i < 0: continue
+        if i < 0:
+            continue
         name = line[:i].strip()
         if name.endswith('_family'):
             family = line[i + 1 :].strip()
