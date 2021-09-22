@@ -72,6 +72,7 @@ class BackgroundProcessManager:
             self.kind = kind
             self.link_pattern = None
             self.link_root = link_root
+            self.number_of_lines = 0
             self.shell = shell
             #
             # Check and compile the link pattern.
@@ -99,6 +100,7 @@ class BackgroundProcessManager:
             if self.pid.poll() is None:
                 # Unblock the process by reading immediately.
                 for s in self.pid.stdout:
+                    self.data.number_of_lines += 1
                     self.put_log(s)
             else:
                 self.end()  # End this process.
@@ -112,6 +114,7 @@ class BackgroundProcessManager:
         # print('BPM.end:')
         for s in self.pid.stdout:
             self.put_log(s)
+        g.es_print('printed', self.data.number_of_lines, 'lines')
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -123,9 +126,10 @@ class BackgroundProcessManager:
         """The previous process has finished. Start the next one."""
         if self.process_queue:
             self.data = self.process_queue.pop(0)
+            g.es_print(f'start {self.data.kind}: {g.shortFileName(self.data.fn)}')
             self.data.callback()
         else:
-            self.put_log(f"{self.data.kind} finished")
+            g.es_print(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
@@ -248,7 +252,7 @@ class BackgroundProcessManager:
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
-                self.put_log(f'{kind}: {g.shortFileName(data.fn)}\n')
+                g.es_print(f'start {kind}: {g.shortFileName(data.fn)}\n')
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
