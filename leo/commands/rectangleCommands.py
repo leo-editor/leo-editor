@@ -70,7 +70,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         # Return if any part of the selection contains something other than whitespace.
         for r in range(r1, r3 + 1):
             s = w.get(f"{r}.{r2}", f"{r}.{r4}")
-            if s.strip(): return
+            if s.strip():
+                return
         # Change the text.
         for r in range(r1, r3 + 1):
             w.delete(f"{r}.{r2}", f"{r}.{r4}")
@@ -197,7 +198,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         n = 0
         for r in range(r1, r3 + 1):
-            if n >= len(killRect): break
+            if n >= len(killRect):
+                break
             w.delete(f"{r}.{r2}", f"{r}.{r4}")
             w.insert(f"{r}.{r2}", killRect[n])
             n += 1

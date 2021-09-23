@@ -277,10 +277,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             filetypes = [("Leo files", "*.leo"), ("All files", "*"),]
             fileName = g.app.gui.runOpenFileDialog(c,
                 title="Compare .leo Files", filetypes=filetypes, defaultextension='.leo')
-            if not fileName: return
+            if not fileName:
+                return
             # Read the file into the hidden commander.
             c2 = g.createHiddenCommander(fileName)
-            if not c2: return
+            if not c2:
+                return
         # Compute the inserted, deleted and changed dicts.
         d1 = self.createFileDict(c1)
         d2 = self.createFileDict(c2)
@@ -467,13 +469,17 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         """Creates a node and puts the diff between 2 files into it."""
         c = self.c
         fn = self.getReadableTextFile()
-        if not fn: return
+        if not fn:
+            return
         fn2 = self.getReadableTextFile()
-        if not fn2: return
+        if not fn2:
+            return
         s1, e = g.readFileIntoString(fn)
-        if s1 is None: return
+        if s1 is None:
+            return
         s2, e = g.readFileIntoString(fn2)
-        if s2 is None: return
+        if s2 is None:
+            return
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
         aList = difflib.ndiff(lines1, lines2)
         p = c.p.insertAfter()
@@ -814,7 +820,8 @@ class GitDiffController:
                 # Clearer w/o f-strings.
                 rev1=f"HEAD@{{{n1}}}",
                 rev2=f"HEAD@{{{n2}}}")
-            if ok: return
+            if ok:
+                return
             n1, n2 = n1 + 1, n2 + 1
         if not ok:
             g.es_print('no changed readable files from HEAD@{1}..HEAD@{5}')

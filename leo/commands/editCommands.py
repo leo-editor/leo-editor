@@ -999,7 +999,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             fromVnode = [dict(i) for i in p.v.u.get('icons', [])]
             for i in fromVnode: i['on'] = 'VNode'
         return fromVnode
-    #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
+    #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers WRONG
     def setIconList(self, p, l, setDirty=True):
         """Set list of icons for position p to l"""
         current = self.getIconList(p)
@@ -3243,7 +3243,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = 1
         chars = 0
         for z in txt:
-            if z == '\n': lines += 1
+            if z == '\n':
+                lines += 1
             else: chars += 1
         k.setLabelGrey(
             f"Region has {lines} lines, "
@@ -3441,7 +3442,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             tree.scrollDelegate('down-line')
         elif hasattr(tree.canvas, 'leo_treeBar'):
             a, b = tree.canvas.leo_treeBar.get()
-            if b < 1.0: tree.canvas.yview_scroll(1, "unit")
+            if b < 1.0:
+                tree.canvas.yview_scroll(1, "unit")
 
     @cmd('scroll-outline-down-page')
     def scrollOutlineDownPage(self, event=None):
@@ -3451,7 +3453,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             tree.scrollDelegate('down-page')
         elif hasattr(tree.canvas, 'leo_treeBar'):
             a, b = tree.canvas.leo_treeBar.get()
-            if b < 1.0: tree.canvas.yview_scroll(1, "page")
+            if b < 1.0:
+                tree.canvas.yview_scroll(1, "page")
 
     @cmd('scroll-outline-up-line')
     def scrollOutlineUpLine(self, event=None):
@@ -3461,7 +3464,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             tree.scrollDelegate('up-line')
         elif hasattr(tree.canvas, 'leo_treeBar'):
             a, b = tree.canvas.leo_treeBar.get()
-            if a > 0.0: tree.canvas.yview_scroll(-1, "unit")
+            if a > 0.0:
+                tree.canvas.yview_scroll(-1, "unit")
 
     @cmd('scroll-outline-up-page')
     def scrollOutlineUpPage(self, event=None):
@@ -3471,7 +3475,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             tree.scrollDelegate('up-page')
         elif hasattr(tree.canvas, 'leo_treeBar'):
             a, b = tree.canvas.leo_treeBar.get()
-            if a > 0.0: tree.canvas.yview_scroll(-1, "page")
+            if a > 0.0:
+                tree.canvas.yview_scroll(-1, "page")
     #@+node:ekr.20150514063305.338: *4* ec.scrollOutlineLeftRight
     @cmd('scroll-outline-left')
     def scrollOutlineLeft(self, event=None):
@@ -3623,7 +3628,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, junk = g.getLine(s, sel1)
             junk, j = g.getLine(s, sel2)
             s2 = s[i:j]
-            if not s2.endswith('\n'): s2 = s2 + '\n'
+            if not s2.endswith('\n'):
+                s2 = s2 + '\n'
             aList = g.splitLines(s2)
 
             def lower(s):
@@ -3705,7 +3711,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 fields.append(f[0])
             else:
                 i = int(which)
-                if len(f) < i: return
+                if len(f) < i:
+                    return
                 i = i - 1
                 fields.append(f[i])
         nz = sorted(zip(fields, txt))
@@ -3753,12 +3760,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         transposes into ‘BAR, FOO’.
         """
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         self.beginCommand(w, undoType='transpose-words')
         s = w.getAllText()
         i1, j1 = self.extendToWord(event, select=False)
         s1 = s[i1:j1]
-        if i1 > j1: i1, j1 = j1, i1
+        if i1 > j1:
+            i1, j1 = j1, i1
         # Search for the next word.
         k = j1 + 1
         while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
