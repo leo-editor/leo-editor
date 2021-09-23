@@ -117,7 +117,7 @@ class BackgroundProcessManager:
             n += 1
             self.put_log(s)
         if n > 0:
-            g.es_print(f"printed {n}{g.plural(n)} lines")
+            g.es_print(f"printed {n} line{g.plural(n)}")
         # Terminate the process properly.
         try:
             self.pid.kill()
