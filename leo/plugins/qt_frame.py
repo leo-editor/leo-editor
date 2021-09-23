@@ -1222,6 +1222,53 @@ class FindTabManager:
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
             w.toggle()
+    #@+node:ekr.20210923060904.1: *3* ftm.init_widgets_from_dict (new)
+    def set_widgets_from_dict(self, d):
+        """Set all settings from d."""
+        # Similar to ftm.init_widgets, which has already been called.
+        c = self.c
+        find = c.findCommands
+        # Set find text.
+        find_text = d.get('find_text')
+        self.set_find_text(find_text)
+        find.find_text = find_text
+        # Set change text.
+        change_text = d.get('change_text')
+        self.set_change_text(change_text)
+        find.change_text = change_text
+        # Check boxes...
+        table1 = (
+            ('ignore_case', self.check_box_ignore_case),
+            ('mark_changes', self.check_box_mark_changes),
+            ('mark_finds', self.check_box_mark_finds),
+            ('pattern_match', self.check_box_regexp),
+            ('search_body', self.check_box_search_body),
+            ('search_headline', self.check_box_search_headline),
+            ('whole_word', self.check_box_whole_word),
+        )
+        for setting_name, w in table1:
+            val = d.get(setting_name, False)
+            # The setting name is also the name of the LeoFind ivar.
+            assert hasattr(find, setting_name), setting_name
+            setattr(find, setting_name, val)
+            w.setChecked(val)
+        # Radio buttons...
+        table2 = (
+            ('node_only', 'node_only', self.radio_button_node_only),
+            ('entire_outline', None, self.radio_button_entire_outline),
+            ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
+        )
+        for setting_name, ivar, w in table2:
+            val = d.get(setting_name, False)
+            # The setting name is also the name of the LeoFind ivar.
+            if ivar is not None:
+                assert hasattr(find, setting_name), setting_name
+                setattr(find, setting_name, val)
+                w.setChecked(val)
+        # Ensure one radio button is set.
+        if not find.node_only and not find.suboutline_only:
+            w = self.radio_button_entire_outline
+            w.setChecked(val)
     #@+node:ekr.20210312120503.1: *3* ftm.set_body_and_headline_checkbox
     def set_body_and_headline_checkbox(self):
         """Return the search-body and search-headline checkboxes to their defaults."""

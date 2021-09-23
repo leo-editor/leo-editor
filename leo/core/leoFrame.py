@@ -349,7 +349,8 @@ class LeoBody:
         c = self.c
         w = c.frame.body.wapper
         d = self.editorWrappers
-        if len(list(d.keys())) == 1: return
+        if len(list(d.keys())) == 1:
+            return
         name = w.leo_name
         del d[name]
         self.pb.delete(name)
@@ -580,7 +581,8 @@ class LeoBody:
         w = body.wrapper
         s = w.getAllText()
         i, j = w.getSelectionRange()
-        if i == j: j = i + 1
+        if i == j:
+            j = i + 1
         before = s[0:i]
         sel = s[i:j]
         after = s[j:]
@@ -753,14 +755,18 @@ class LeoFrame:
         verticalFlag = s is None or (s != "h" and s != "horizontal")
         if verticalFlag:
             r = c.config.getRatio("initial-vertical-ratio")
-            if r is None or r < 0.0 or r > 1.0: r = 0.5
+            if r is None or r < 0.0 or r > 1.0:
+                r = 0.5
             r2 = c.config.getRatio("initial-vertical-secondary-ratio")
-            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+            if r2 is None or r2 < 0.0 or r2 > 1.0:
+                r2 = 0.8
         else:
             r = c.config.getRatio("initial-horizontal-ratio")
-            if r is None or r < 0.0 or r > 1.0: r = 0.3
+            if r is None or r < 0.0 or r > 1.0:
+                r = 0.3
             r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
-            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+            if r2 is None or r2 < 0.0 or r2 > 1.0:
+                r2 = 0.8
         return verticalFlag, r, r2
     #@+node:ekr.20031218072017.3690: *4* LeoFrame.longFileName & shortFileName
     def longFileName(self):
@@ -864,10 +870,12 @@ class LeoFrame:
         return self.iconBar.getNewFrame()
 
     def hideIconBar(self):
-        if self.iconBar: self.iconBar.hide()
+        if self.iconBar:
+            self.iconBar.hide()
 
     def showIconBar(self):
-        if self.iconBar: self.iconBar.show()
+        if self.iconBar:
+            self.iconBar.show()
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
     def createStatusLine(self):
         if not self.statusLine:
@@ -875,13 +883,16 @@ class LeoFrame:
         return self.statusLine
 
     def clearStatusLine(self):
-        if self.statusLine: self.statusLine.clear()
+        if self.statusLine:
+            self.statusLine.clear()
 
     def disableStatusLine(self, background=None):
-        if self.statusLine: self.statusLine.disable(background)
+        if self.statusLine:
+            self.statusLine.disable(background)
 
     def enableStatusLine(self, background="white"):
-        if self.statusLine: self.statusLine.enable(background)
+        if self.statusLine:
+            self.statusLine.enable(background)
 
     def getStatusLine(self):
         return self.statusLine
@@ -889,10 +900,12 @@ class LeoFrame:
     getStatusObject = getStatusLine
 
     def putStatusLine(self, s, bg=None, fg=None):
-        if self.statusLine: self.statusLine.put(s, bg, fg)
+        if self.statusLine:
+            self.statusLine.put(s, bg, fg)
 
     def setFocusStatusLine(self):
-        if self.statusLine: self.statusLine.setFocus()
+        if self.statusLine:
+            self.statusLine.setFocus()
 
     def statusLineIsEnabled(self):
         if self.statusLine:
@@ -900,7 +913,8 @@ class LeoFrame:
         return False
 
     def updateStatusLine(self):
-        if self.statusLine: self.statusLine.update()
+        if self.statusLine:
+            self.statusLine.update()
     #@+node:ekr.20070130115927.4: *4* LeoFrame.Cut/Copy/Paste
     #@+node:ekr.20070130115927.5: *5* LeoFrame.copyText
     @frame_cmd('copy-text')
