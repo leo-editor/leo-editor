@@ -245,7 +245,8 @@ class GoToCommands:
         Find the closest ancestor @<file> node, except @all nodes and @edit nodes.
         return root, fileName.
         """
-        c = self.c; p1 = p.copy()
+        c = self.c
+        p1 = p.copy()
         # First look for ancestor @file node.
         for p in p.self_and_parents(copy=False):
             if not p.isAtEditNode() and not p.isAtAllNode():

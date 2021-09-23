@@ -997,7 +997,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         fromVnode = []
         if hasattr(p.v, 'unknownAttributes'):
             fromVnode = [dict(i) for i in p.v.u.get('icons', [])]
-            for i in fromVnode: i['on'] = 'VNode'
+            for i in fromVnode:
+                i['on'] = 'VNode'
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
     def setIconList(self, p, l, setDirty=True):
