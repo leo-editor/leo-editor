@@ -1954,6 +1954,7 @@ class QTextEditWrapper(QTextMixin):
         return i, row, col
     #@-others
 #@-others
+
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

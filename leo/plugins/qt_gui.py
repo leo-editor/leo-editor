@@ -322,7 +322,8 @@ class LeoQtGui(leoGui.LeoGui):
             """
 
             def __init__(self, parent=None, init=None, step_min=None):
-                if step_min is None: step_min = {}
+                if step_min is None:
+                    step_min = {}
                 self.step_min = step_min
                 if init:
                     super().__init__(init, parent)
@@ -344,7 +345,8 @@ class LeoQtGui(leoGui.LeoGui):
                 init=None,
                 step_min=None
             ):
-                if step_min is None: step_min = {}
+                if step_min is None:
+                    step_min = {}
                 super().__init__(parent)
                 layout = QtWidgets.QVBoxLayout()
                 self.setLayout(layout)
@@ -359,7 +361,8 @@ class LeoQtGui(leoGui.LeoGui):
 
         if g.unitTesting:
             return None
-        if step_min is None: step_min = {}
+        if step_min is None:
+            step_min = {}
         b = Calendar
         if not init:
             init = datetime.datetime.now()
@@ -440,14 +443,15 @@ class LeoQtGui(leoGui.LeoGui):
     def runAskOkDialog(self, c, title, message=None, text="Ok"):
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
-            return None
+            return
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             d.setStyleSheet(stylesheet)
         d.setWindowTitle(title)
-        if message: d.setText(message)
+        if message:
+            d.setText(message)
         d.setIcon(Information.Information)
         d.addButton(text, ButtonRole.YesRole)
         try:
@@ -667,7 +671,8 @@ class LeoQtGui(leoGui.LeoGui):
             #@-<< no c error>>
         else:
             retval = send()
-            if retval: return retval
+            if retval:
+                return retval
             #@+<< load viewrendered plugin >>
             #@+node:ekr.20110605121601.18505: *5* << load viewrendered plugin >>
             pc = g.app.pluginsController
@@ -682,7 +687,8 @@ class LeoQtGui(leoGui.LeoGui):
                     vr.onCreate('tag', {'c': c})
             #@-<< load viewrendered plugin >>
             retval = send()
-            if retval: return retval
+            if retval:
+                return retval
             #@+<< no dialog error >>
             #@+node:ekr.20110605121601.18506: *5* << no dialog error >>
             g.es_print_error(
@@ -778,10 +784,12 @@ class LeoQtGui(leoGui.LeoGui):
             # c.idle_focus_handler can't do this.
             if w and w_name in ('log-widget', 'richTextEdit', 'treeWidget'):
                 # Restore focus **only** to body or tree
-                if trace: g.trace('==>', w_name)
+                if trace:
+                    g.trace('==>', w_name)
                 c.widgetWantsFocusNow(w)
             else:
-                if trace: g.trace(repr(w_name), '==> BODY')
+                if trace:
+                    g.trace(repr(w_name), '==> BODY')
                 c.bodyWantsFocusNow()
         # Cause problems elsewhere.
             # if c.exists and self.deactivated_name:
@@ -843,7 +851,8 @@ class LeoQtGui(leoGui.LeoGui):
         if w and not raw and isinstance(w, qt_text.LeoQTextBrowser):
             has_w = getattr(w, 'leo_wrapper', None)
             if has_w:
-                if trace: g.trace(w)
+                if trace:
+                    g.trace(w)
             elif c:
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the LeoQtBody.
@@ -883,7 +892,8 @@ class LeoQtGui(leoGui.LeoGui):
             size = int(size)
         except Exception:
             size = 0
-        if size < 1: size = defaultSize
+        if size < 1:
+            size = defaultSize
         d = {
             'black': Weight.Black,
             'bold': Weight.Bold,
@@ -1010,10 +1020,12 @@ class LeoQtGui(leoGui.LeoGui):
         for base_dir in table:
             path = join(base_dir, name)
             if exists(path):
-                if trace: g.trace(f"Found {name} in {base_dir}")
+                if trace:
+                    g.trace(f"Found {name} in {base_dir}")
                 return path
             # if trace: g.trace(name, 'not in', base_dir)
-        if trace: g.trace('not found:', name)
+        if trace:
+            g.trace('not found:', name)
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     @functools.lru_cache(maxsize=128)
@@ -1080,8 +1092,10 @@ class LeoQtGui(leoGui.LeoGui):
         Create a script button for the script in node p.
         The button's text defaults to p.headString."""
         k = c.k
-        if p and not buttonText: buttonText = p.h.strip()
-        if not buttonText: buttonText = 'Unnamed Script Button'
+        if p and not buttonText:
+            buttonText = p.h.strip()
+        if not buttonText:
+            buttonText = 'Unnamed Script Button'
         #@+<< create the button b >>
         #@+node:ekr.20110605121601.18529: *4* << create the button b >>
         iconBar = c.frame.getIconBarObject()
@@ -1090,7 +1104,8 @@ class LeoQtGui(leoGui.LeoGui):
         #@+<< define the callbacks for b >>
         #@+node:ekr.20110605121601.18530: *4* << define the callbacks for b >>
         def deleteButtonCallback(event=None, b=b, c=c):
-            if b: b.pack_forget()
+            if b:
+                b.pack_forget()
             c.bodyWantsFocus()
 
         def executeScriptCallback(event=None,
@@ -1771,7 +1786,8 @@ class StyleSheetManager:
         """
         aList1 = self.get_data('qt-gui-plugin-style-sheet')
         aList2 = self.get_data('qt-gui-user-style-sheet')
-        if aList2: aList1.extend(aList2)
+        if aList2:
+            aList1.extend(aList2)
         sheet = ''.join(aList1)
         sheet = self.expand_css_constants(sheet)
         return sheet
@@ -1787,7 +1803,8 @@ class StyleSheetManager:
         if g.app.loadedThemes:
             return
         c = self.c
-        if top is None: top = c.frame.top
+        if top is None:
+            top = c.frame.top
         selectors = ['qt-gui-plugin-style-sheet']
         if all:
             selectors.append('qt-gui-user-style-sheet')
@@ -1809,7 +1826,8 @@ class StyleSheetManager:
             # store *before* expanding, so later expansions get new zoom
             c.active_stylesheet = sheet
             sheet = self.expand_css_constants(sheet)
-            if not sheet: sheet = self.default_style_sheet()
+            if not sheet:
+                sheet = self.default_style_sheet()
             if w is None:
                 w = self.get_master_widget(top)
             w.setStyleSheet(sheet)
@@ -2037,12 +2055,14 @@ class StyleSheetManager:
             if url.startswith(':/'):
                 url = url[2:]
             elif g.os_path_isabs(url):
-                if trace: g.trace('ABS:', url)
+                if trace:
+                    g.trace('ABS:', url)
                 continue
             for directory in directories:
                 path = join(directory, url)
                 if g.os_path_exists(path):
-                    if trace: g.trace(f"{url:35} ==> {path}")
+                    if trace:
+                        g.trace(f"{url:35} ==> {path}")
                     old = mo.group(0)
                     new = f"url({path})"
                     replacements.append((old, new),)
