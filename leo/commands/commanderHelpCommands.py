@@ -64,7 +64,8 @@ def leoDocumentation(self, event=None):
     # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es("not found:", name)
 #@+node:ekr.20090628075121.5994: *3* c_help.leoQuickStart
 @g.commander_command('open-quickstart-leo')
@@ -76,7 +77,8 @@ def leoQuickStart(self, event=None):
     # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es("not found:", name)
 #@+node:ekr.20131028155339.17096: *3* c_help.openCheatSheet
 @g.commander_command('open-cheat-sheet-leo')
@@ -108,7 +110,8 @@ def openDesktopIntegration(self, event=None):
     # only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es('not found:', fileName)
 #@+node:ekr.20161025090405.1: *3* c_help.openLeoDist
 @g.commander_command('open-leo-dist-leo')
@@ -120,7 +123,8 @@ def openLeoDist(self, event=None):
     fileName = g.os_path_finalize_join(g.app.loadDir, "..", "dist", name)
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es("not found:", name)
 #@+node:ekr.20151225193723.1: *3* c_help.openLeoPy
 @g.commander_command('open-leo-py-leo')
@@ -134,7 +138,8 @@ def openLeoPy(self, event=None):
         # Only call g.openWithFileName if the file exists.
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
-            if c2: return
+            if c2:
+                return
     g.es('not found:', ', '.join(names))
 #@+node:ekr.20201013105418.1: *3* c_help.openLeoPyRef
 @g.commander_command('open-leo-py-ref-leo')
@@ -159,7 +164,8 @@ def openLeoScripts(self, event=None):
     # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es('not found:', fileName)
 #@+node:ekr.20031218072017.2943: *3* c_help.openLeoSettings & openMyLeoSettings & helper
 @g.commander_command('open-leo-settings')

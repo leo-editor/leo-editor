@@ -304,14 +304,16 @@ class To_Python:
             return
         i = 0
         j = self.is_section_def(aList[i])
-        if j > 0: aList[i:j] = list("@c ")
+        if j > 0:
+            aList[i:j] = list("@c ")
         while i < len(aList):
             if self.is_string_or_comment(aList, i):
                 i = self.skip_string_or_comment(aList, i)
             elif self.match(aList, i, "\n"):
                 i += 1
                 j = self.is_section_def(aList[i])
-                if j > i: aList[i:j] = list("@c ")
+                if j > i:
+                    aList[i:j] = list("@c ")
             else: i += 1
     #@+node:ekr.20150514063305.150: *5* safe_replace
     def safe_replace(self, aList, findString, changeString):
@@ -719,9 +721,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             args = self.massageFunctionArgs(args)
             body = self.massageFunctionBody(body)
             result = []
-            if head: result.extend(head)
-            if args: result.extend(args)
-            if body: result.extend(body)
+            if head:
+                result.extend(head)
+            if args:
+                result.extend(args)
+            if body:
+                result.extend(body)
             aList[prevSemi:k] = result
             return prevSemi + len(result)
         #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
@@ -816,7 +821,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = self.skip_ws_and_nl(body, j)
                         if self.is_string_or_comment(body, j):
                             j = self.skip_string_or_comment(body, j)
-                        if k == j: break
+                        if k == j:
+                            break
                         assert k < j
                     if self.match(body, j, '{'):
                         k = j
@@ -1473,9 +1479,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)
                 result = []
-                if head: result.extend(head)
-                if args: result.extend(args)
-                if body: result.extend(body)
+                if head:
+                    result.extend(head)
+                if args:
+                    result.extend(args)
+                if body:
+                    result.extend(body)
                 aList[prevSemi:k] = result
                 return prevSemi + len(result)
             #@+node:ekr.20150514063305.186: *7* massageFunctionArgs
@@ -1570,7 +1579,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             j = self.skip_ws_and_nl(body, j)
                             if self.is_string_or_comment(body, j):
                                 j = self.skip_string_or_comment(body, j)
-                            if k == j: break
+                            if k == j:
+                                break
                             assert k < j
                         if self.match(body, j, '{'):
                             k = j

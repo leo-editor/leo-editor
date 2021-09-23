@@ -424,7 +424,8 @@ def contractParent(self, event=None):
     c.endEditing()
     p = c.p
     parent = p.parent()
-    if not parent: return
+    if not parent:
+        return
     parent.contract()
     c.redraw_after_contract(p=parent)
 #@+node:ekr.20031218072017.2903: *3* c_oc.expandAllHeadlines
@@ -445,7 +446,8 @@ def expandAllHeadlines(self, event=None):
 def expandAllSubheads(self, event=None):
     """Expand all children of the presently selected node."""
     c = self; p = c.p
-    if not p: return
+    if not p:
+        return
     child = p.firstChild()
     c.expandSubtree(p)
     while child:
@@ -553,7 +555,8 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     """Contract all nodes in the outline."""
     c = self
     level = 1
-    if p: c.selectPosition(p)  # 2013/12/25
+    if p:
+        c.selectPosition(p)  # 2013/12/25
     root = c.p
     for p in c.all_unique_positions():
         p.v.expandedPositions = []
@@ -590,7 +593,8 @@ def fullCheckOutline(self, event=None):
 def findNextClone(self, event=None):
     """Select the next cloned node."""
     c = self; p = c.p; cc = c.chapterController
-    if not p: return
+    if not p:
+        return
     if p.isCloned():
         p.moveToThreadNext()
     flag = False
@@ -741,7 +745,8 @@ def goToNextClone(self, event=None):
 def goToNextDirtyHeadline(self, event=None):
     """Select the node that is marked as changed."""
     c = self; p = c.p
-    if not p: return
+    if not p:
+        return
     p.moveToThreadNext()
     wrapped = False
     while 1:
@@ -754,14 +759,16 @@ def goToNextDirtyHeadline(self, event=None):
         else:
             wrapped = True
             p = c.rootPosition()
-    if not p: g.blue('done')
+    if not p:
+        g.blue('done')
     c.treeSelectHelper(p)  # Sets focus.
 #@+node:ekr.20031218072017.2918: *3* c_oc.goToNextMarkedHeadline
 @g.commander_command('goto-next-marked')
 def goToNextMarkedHeadline(self, event=None):
     """Select the next marked node."""
     c = self; p = c.p
-    if not p: return
+    if not p:
+        return
     p.moveToThreadNext()
     wrapped = False
     while 1:
@@ -774,7 +781,8 @@ def goToNextMarkedHeadline(self, event=None):
         else:
             wrapped = True
             p = c.rootPosition()
-    if not p: g.blue('done')
+    if not p:
+        g.blue('done')
     c.treeSelectHelper(p)  # Sets focus.
 #@+node:ekr.20031218072017.2919: *3* c_oc.goToNextSibling
 @g.commander_command('goto-next-sibling')
@@ -793,7 +801,8 @@ def goToParent(self, event=None):
 def goToPrevMarkedHeadline(self, event=None):
     """Select the next marked node."""
     c = self; p = c.p
-    if not p: return
+    if not p:
+        return
     p.moveToThreadBack()
     wrapped = False
     while 1:
@@ -806,7 +815,8 @@ def goToPrevMarkedHeadline(self, event=None):
         else:
             wrapped = True
             p = c.rootPosition()
-    if not p: g.blue('done')
+    if not p:
+        g.blue('done')
     c.treeSelectHelper(p)  # Sets focus.
 #@+node:ekr.20031218072017.2921: *3* c_oc.goToPrevSibling
 @g.commander_command('goto-prev-sibling')
@@ -819,7 +829,8 @@ def goToPrevSibling(self, event=None):
 def selectThreadBack(self, event=None):
     """Select the node preceding the selected node in outline order."""
     c = self; p = c.p
-    if not p: return
+    if not p:
+        return
     p.moveToThreadBack()
     c.treeSelectHelper(p)
 #@+node:ekr.20031218072017.2994: *3* c_oc.selectThreadNext
@@ -827,7 +838,8 @@ def selectThreadBack(self, event=None):
 def selectThreadNext(self, event=None):
     """Select the node following the selected node in outline order."""
     c = self; p = c.p
-    if not p: return
+    if not p:
+        return
     p.moveToThreadNext()
     c.treeSelectHelper(p)
 #@+node:ekr.20031218072017.2995: *3* c_oc.selectVisBack
@@ -871,8 +883,10 @@ def dehoist(self, event=None):
         return
     bunch = c.hoistStack.pop()
     p = bunch.p
-    if bunch.expanded: p.expand()
-    else: p.contract()
+    if not p:
+        p.expand()
+    else:
+        p.contract()
     c.setCurrentPosition(p)
     c.redraw()
     c.frame.clearStatusLine()
@@ -974,7 +988,8 @@ def cloneToLastNode(self, event=None):
     Do *not* change the selected node.
     """
     c, p, u = self, self.p, self.undoer
-    if not p: return
+    if not p:
+        return
     prev = p.copy()
     undoData = c.undoer.beforeCloneNode(p)
     c.endEditing()  # Capture any changes to the headline.
@@ -994,18 +1009,25 @@ def deleteOutline(self, event=None, op_name="Delete Node"):
     """Deletes the selected outline."""
     c, u = self, self.undoer
     p = c.p
-    if not p: return
+    if not p:
+        return
     c.endEditing()  # Make sure we capture the headline for Undo.
     if False:  # c.config.getBool('select-next-after-delete'):
         # #721: Optionally select next node after delete.
-        if p.hasVisNext(c): newNode = p.visNext(c)
-        elif p.hasParent(): newNode = p.parent()
-        else: newNode = p.back()  # _not_ p.visBack(): we are at the top level.
+        if p.hasVisNext(c):
+            newNode = p.visNext(c)
+        elif p.hasParent():
+            newNode = p.parent()
+        else:
+            newNode = p.back()  # _not_ p.visBack(): we are at the top level.
     else:
         # Legacy: select previous node if possible.
-        if p.hasVisBack(c): newNode = p.visBack(c)
-        else: newNode = p.next()  # _not_ p.visNext(): we are at the top level.
-    if not newNode: return
+        if p.hasVisBack(c):
+            newNode = p.visBack(c)
+        else:
+            newNode = p.next()  # _not_ p.visNext(): we are at the top level.
+    if not newNode:
+        return
     undoData = u.beforeDeleteNode(p)
     p.setDirty()
     p.doDelete(newNode)
@@ -1307,7 +1329,8 @@ def markChangedRoots(self, event=None):
 def markHeadline(self, event=None):
     """Toggle the mark of the selected node."""
     c = self; u = c.undoer; p = c.p
-    if not p: return
+    if not p:
+        return
     c.endEditing()
     undoType = 'Unmark' if p.isMarked() else 'Mark'
     bunch = u.beforeMark(p, undoType)
@@ -1326,7 +1349,8 @@ def markSubheads(self, event=None):
     """Mark all children of the selected node as changed."""
     c = self; u = c.undoer; undoType = 'Mark Subheads'
     current = c.p
-    if not current: return
+    if not current:
+        return
     c.endEditing()
     u.beforeChangeGroup(current, undoType)
     for p in current.children():
@@ -1344,7 +1368,8 @@ def unmarkAll(self, event=None):
     """Unmark all nodes in the entire outline."""
     c = self; u = c.undoer; undoType = 'Unmark All'
     current = c.p
-    if not current: return
+    if not current:
+        return
     c.endEditing()
     u.beforeChangeGroup(current, undoType)
     changed = False
@@ -1412,7 +1437,8 @@ def moveOutlineDown(self, event=None):
     if not p:
         return
     if not c.canMoveOutlineDown():
-        if c.hoistStack: cantMoveMessage(c)
+        if c.hoistStack:
+            cantMoveMessage(c)
         c.treeFocusHelper()
         return
     parent = p.parent()
@@ -1420,7 +1446,8 @@ def moveOutlineDown(self, event=None):
     while next and p.isAncestorOf(next):
         next = next.visNext(c)
     if not next:
-        if c.hoistStack: cantMoveMessage(c)
+        if c.hoistStack:
+            cantMoveMessage(c)
         c.treeFocusHelper()
         return
     c.endEditing()
@@ -1459,9 +1486,11 @@ def moveOutlineDown(self, event=None):
 def moveOutlineLeft(self, event=None):
     """Move the selected node left if possible."""
     c = self; u = c.undoer; p = c.p
-    if not p: return
+    if not p:
+        return
     if not c.canMoveOutlineLeft():
-        if c.hoistStack: cantMoveMessage(c)
+        if c.hoistStack:
+            cantMoveMessage(c)
         c.treeFocusHelper()
         return
     if not p.hasParent():
@@ -1485,9 +1514,11 @@ def moveOutlineLeft(self, event=None):
 def moveOutlineRight(self, event=None):
     """Move the selected node right if possible."""
     c = self; u = c.undoer; p = c.p
-    if not p: return
+    if not p:
+        return
     if not c.canMoveOutlineRight():  # 11/4/03: Support for hoist.
-        if c.hoistStack: cantMoveMessage(c)
+        if c.hoistStack:
+            cantMoveMessage(c)
         c.treeFocusHelper()
         return
     back = p.back()
@@ -1515,7 +1546,8 @@ def moveOutlineUp(self, event=None):
     if not p:
         return
     if not c.canMoveOutlineUp():  # Support for hoist.
-        if c.hoistStack: cantMoveMessage(c)
+        if c.hoistStack:
+            cantMoveMessage(c)
         c.treeFocusHelper()
         return
     back = p.visBack(c)
@@ -1615,8 +1647,10 @@ def sortSiblings(self, event=None,
 ):
     """Sort the siblings of a node."""
     c = self; u = c.undoer
-    if not p: p = c.p
-    if not p: return
+    if not p:
+        p = c.p
+    if not p:
+        return
     c.endEditing()
     undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
     parent_v = p._parentVnode()

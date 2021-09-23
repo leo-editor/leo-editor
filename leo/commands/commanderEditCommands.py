@@ -118,7 +118,8 @@ def convertAllBlanks(self, event=None):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
                 s = g.computeLeadingWhitespace(
                     w, abs(tabWidth)) + line[i:]  # use positive width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
             if changed:
                 count += 1
@@ -159,7 +160,8 @@ def convertAllTabs(self, event=None):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
                 s = g.computeLeadingWhitespace(
                     w, -abs(tabWidth)) + line[i:]  # use negative width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
             if changed:
                 count += 1
@@ -238,7 +240,8 @@ def convertTabs(self, event=None):
         i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
         s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]
             # use negative width.
-        if s != line: changed = True
+        if s != line:
+            changed = True
         result.append(s)
     if not changed:
         return False
@@ -528,13 +531,15 @@ def extractDef(c, s):
         try:
             pat = re.compile(pat)
             m = pat.search(s)
-            if m: return m.group(1)
+            if m:
+                return m.group(1)
         except Exception:
             g.es_print('bad regex in @data extract-patterns', color='blue')
             g.es_print(pat)
     for pat in extractDef_patterns:
         m = pat.search(s)
-        if m: return m.group(1)
+        if m:
+            return m.group(1)
     return ''
 #@+node:ekr.20171123135625.26: *3* def extractDef_find
 def extractDef_find(c, lines):
@@ -1092,11 +1097,12 @@ def showInvisiblesHelper(c, val):
     colorizer.highlighter.showInvisibles = val
     # It is much easier to change the menu name here than in the menu updater.
     menu = frame.menu.getMenu("Edit")
-    index = frame.menu.getMenuLabel(menu,
-        'Hide Invisibles' if val else 'Show Invisibles')
+    index = frame.menu.getMenuLabel(menu, 'Hide Invisibles' if val else 'Show Invisibles')
     if index is None:
-        if val: frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
-        else: frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
+        if val:
+            frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
+        else:
+            frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
     # #240: Set the status bits here.
     if hasattr(frame.body, 'set_invisibles'):
         frame.body.set_invisibles(c)
@@ -1115,8 +1121,10 @@ def toggleAngleBrackets(self, event=None):
     lt = "<<"
     rt = ">>"
     if s[0:2] == lt or s[-2:] == rt:
-        if s[0:2] == "<<": s = s[2:]
-        if s[-2:] == ">>": s = s[:-2]
+        if s[0:2] == "<<":
+            s = s[2:]
+        if s[-2:] == ">>":
+            s = s[:-2]
         s = s.strip()
     else:
         s = g.angleBrackets(' ' + s + ' ')
