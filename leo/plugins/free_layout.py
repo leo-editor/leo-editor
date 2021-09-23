@@ -157,7 +157,8 @@ class FreeLayoutController:
         """
         # Careful: we could be unit testing.
         top_splitter = self.get_top_splitter()
-        if not top_splitter: return
+        if not top_splitter:
+            return
         c = self.c
         layout = top_splitter.get_saveable_layout()
         nd = g.findNodeAnywhere(c, "@data free-layout-layout")
