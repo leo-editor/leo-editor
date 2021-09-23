@@ -103,54 +103,6 @@ class TestCommands(LeoUnitTest):
             expected = ('event',)
             message = f"no event arg for command {key}, func: {name}, args: {args}"
             assert arg0 in expected or arg1 in expected, message
-    #@+node:ekr.20210901140645.3: *3* TestCommands.test_all_menus_execute_the_proper_command
-    def test_all_menus_execute_the_proper_command(self):
-        """
-        We want to ensure that when masterMenuHandler does:
-
-            event = g.app.gui.create_key_event(c,binding=stroke,w=w)
-            return k.masterKeyHandler(event)
-
-        that the effect will be to call commandName, where commandName
-        is the arg passed to masterMenuHandler.
-
-        createMenuEntries creates the association of stroke to commandName.
-        """
-        trace = False  # False: the unit test can fail.
-        c, p = self.c, self.c.p
-        k = c.k
-        d = g.app.unitTestMenusDict
-        d2 = k.bindingsDict
-        d2name = 'k.bindingsDict'
-        commandNames = list(d.keys())
-        commandNames.sort()
-        exclude_strokes = ('Alt+F4', 'Ctrl+q', 'Ctrl+Shift+Tab',)
-        for name in commandNames:
-            assert name in c.commandsDict, 'unexpected command name: %s' % (
-                repr(name))
-            aSet = d.get(name)
-            aList = list(aSet)
-            aList.sort()
-            for z in exclude_strokes:
-                if z in aList:
-                    aList.remove(z)
-            for stroke in aList:
-                aList2 = d2.get(stroke)
-                assert aList2, 'stroke %s not in %s' % (
-                    repr(stroke), d2name)
-                for b in aList2:
-                    if b.commandName == name:
-                        break
-                else:
-                    if trace:
-                        inverseBindingDict = k.computeInverseBindingDict()
-                        print('%s: stroke %s not bound to %s in %s' % (
-                            p.h, repr(stroke), repr(name), d2name))
-                        print('%s: inverseBindingDict.get(%s): %s' % (
-                            p.h, name, inverseBindingDict.get(name)))
-                    else:
-                        assert False, 'stroke %s not bound to %s in %s' % (
-                            repr(stroke), repr(name), d2name)
     #@+node:ekr.20210906075242.2: *3* TestCommands.test_c_alert
     def test_c_alert(self):
         c = self.c

@@ -359,18 +359,7 @@ class LeoApp:
         #@-<< LeoApp: scripting ivars >>
         #@+<< LeoApp: unit testing ivars >>
         #@+node:ekr.20161028040330.1: *5* << LeoApp: unit testing ivars >>
-        self.isExternalUnitTest = False
-            # True: we are running a unit test externally.
-        self.runningAllUnitTests = False
-            # True: we are running all unit tests (Only for local tests).
-        self.suppressImportChecks = False
-            # Used only in basescanner.py
-            # True: suppress importCommands.check
-        self.unitTestGui = None
-            # A way to override the gui in external unit tests.
-        self.unitTestMenusDict = {}
-            # Created in LeoMenu.createMenuEntries for a unit test.
-            # keys are command names. values are sets of strokes.
+        self.suppressImportChecks = False  # True: suppress importCommands.check
         #@-<< LeoApp: unit testing ivars >>
         # Define all global data.
         self.init_at_auto_names()
