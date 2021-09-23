@@ -57,7 +57,6 @@ def main():
     if bridge.isOpen():
         g = bridge.globals()
         g.app.silentMode = options.silent
-        g.app.isExternalUnitTest = True
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', options.path)
         c = bridge.openLeoFile(path)
         if g_trace:
