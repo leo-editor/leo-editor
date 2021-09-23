@@ -999,11 +999,11 @@ class EditCommandsClass(BaseEditCommandsClass):
             fromVnode = [dict(i) for i in p.v.u.get('icons', [])]
             for i in fromVnode: i['on'] = 'VNode'
         return fromVnode
-    #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers WRONG
+    #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
     def setIconList(self, p, l, setDirty=True):
         """Set list of icons for position p to l"""
         current = self.getIconList(p)
-        if subl:
+        if not l and not current:
             return  # nothing to do
         lHash = ''.join([self.dHash(i) for i in l])
         cHash = ''.join([self.dHash(i) for i in current])
