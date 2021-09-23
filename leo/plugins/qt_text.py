@@ -150,7 +150,7 @@ class QTextMixin:
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
         w = self
-        c = self.c; p = c.p
+        c, p = self.c, self.c.p
         tree = c.frame.tree
         if w.changingText:
             return
@@ -211,10 +211,12 @@ class QTextMixin:
     def delete(self, i, j=None):
         """QTextMixin"""
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         # This allows subclasses to use this base class method.
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         s = self.getAllText()
         self.setAllText(s[:i] + s[j:])
         # Bug fix: Significant in external tests.
@@ -288,7 +290,8 @@ class QTextMixin:
         v = self.c.p.v  # Always accurate.
         v.insertSpot = w.getInsertPoint()
         i, j = w.getSelectionRange()
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
@@ -395,7 +398,8 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18129: *4* qlew.setInsertPoint
     def setInsertPoint(self, i, s=None):
         """QHeadlineWrapper."""
-        if not self.check(): return
+        if not self.check():
+            return
         w = self.widget
         if s is None:
             s = w.text()
@@ -405,9 +409,11 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         """QHeadlineWrapper."""
-        if not self.check(): return
+        if not self.check():
+            return
         w = self.widget
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         if s is None:
             s = w.text()
         n = len(s)
@@ -609,7 +615,8 @@ if QtWidgets:
                 """Called when user hits tab on an item in the QListWidget."""
                 c = self.leo_c
                 w = c.k.autoCompleter.w or c.frame.body.wrapper  # 2014/09/19
-                if w is None: return
+                if w is None:
+                    return
                 # Replace the tail of the prefix with the completion.
                 prefix = c.k.autoCompleter.get_autocompleter_prefix()
                 parts = prefix.split('.')
@@ -902,7 +909,8 @@ if QtWidgets:
         def setYScrollPosition(self, pos):
             """Set the position of the vertical scrollbar."""
             w = self
-            if pos is None: pos = 0
+            if pos is None:
+                pos = 0
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
@@ -916,7 +924,8 @@ if QtWidgets:
             )
             for val, s in table:
                 if button == val:
-                    kind = s; break
+                    kind = s
+                    break
             else:
                 kind = f"unknown: {repr(button)}"
             return kind
@@ -1295,7 +1304,8 @@ class QScintillaWrapper(QTextMixin):
         """Delete s[i:j]"""
         w = self.widget
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         self.setSelectionRange(i, j)
         try:
@@ -1340,9 +1350,10 @@ class QScintillaWrapper(QTextMixin):
                     w.setFocus()
             #@-others
             # Numbered color names don't work in Ubuntu 8.10, so...
-
-            if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
-            if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
+            if bg and bg[-1].isdigit() and bg[0] != '#':
+                bg = bg[:-1]
+            if fg and fg[-1].isdigit() and fg[0] != '#':
+                fg = fg[:-1]
             # w = self.widget # A QsciScintilla widget.
             self.flashCount = flashes
             self.flashIndex1 = self.getInsertPoint()
@@ -1376,7 +1387,8 @@ class QScintillaWrapper(QTextMixin):
         w = self.widget
         i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
         j = int(w.SendScintilla(w.SCI_GETANCHOR))
-        if sort and i > j: i, j = j, i
+        if sort and i > j:
+            i, j = j, i
         return i, j
     #@+node:ekr.20140901062324.18599: *4* qsciw.getX/YScrollPosition (to do)
     def getXScrollPosition(self):
@@ -1421,12 +1433,18 @@ class QScintillaWrapper(QTextMixin):
             lineSpacing = w.fontMetrics().lineSpacing()
             n = h / lineSpacing
             n = max(2, n - 3)
-            if kind == 'down-half-page': delta = n / 2
-            elif kind == 'down-line': delta = 1
-            elif kind == 'down-page': delta = n
-            elif kind == 'up-half-page': delta = -n / 2
-            elif kind == 'up-line': delta = -1
-            elif kind == 'up-page': delta = -n
+            if kind == 'down-half-page':
+                delta = n / 2
+            elif kind == 'down-line':
+                delta = 1
+            elif kind == 'down-page':
+                delta = n
+            elif kind == 'up-half-page':
+                delta = -n / 2
+            elif kind == 'up-line':
+                delta = -1
+            elif kind == 'up-page':
+                delta = -n
             else:
                 delta = 0
                 g.trace('bad kind:', kind)
@@ -1554,9 +1572,11 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         w = self.widget
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -1777,12 +1797,18 @@ class QTextEditWrapper(QTextMixin):
         lineSpacing = w.fontMetrics().lineSpacing()
         n = h / lineSpacing
         n = max(2, n - 3)
-        if kind == 'down-half-page': delta = n / 2
-        elif kind == 'down-line': delta = 1
-        elif kind == 'down-page': delta = n
-        elif kind == 'up-half-page': delta = -n / 2
-        elif kind == 'up-line': delta = -1
-        elif kind == 'up-page': delta = -n
+        if kind == 'down-half-page':
+            delta = n / 2
+        elif kind == 'down-line':
+            delta = 1
+        elif kind == 'down-page':
+            delta = n
+        elif kind == 'up-half-page':
+            delta = -n / 2
+        elif kind == 'up-line':
+            delta = -1
+        elif kind == 'up-page':
+            delta = -n
         else:
             delta = 0
             g.trace('bad kind:', kind)
@@ -1870,7 +1896,8 @@ class QTextEditWrapper(QTextMixin):
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v  # Always accurate.
         v.insertSpot = ins
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
