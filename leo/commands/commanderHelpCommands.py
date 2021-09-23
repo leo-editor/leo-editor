@@ -28,7 +28,8 @@ def about(self, event=None):
 @g.commander_command('edit-setting')
 def editOneSetting(self, event=None):
     """Opens correct dialog for selected setting type"""
-    c = self; p = c.p; func = None
+    c, p = self, self.c.p
+    func = None
     if p.h.startswith('@font'):
         func = c.commandsDict.get('show-fonts')
     elif p.h.startswith('@color '):
@@ -72,7 +73,8 @@ def leoDocumentation(self, event=None):
 @g.commander_command('leo-quickstart-leo')
 def leoQuickStart(self, event=None):
     """Open quickstart.leo in a new Leo window."""
-    c = self; name = "quickstart.leo"
+    c = self
+    name = "quickstart.leo"
     fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
     # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):

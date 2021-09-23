@@ -736,7 +736,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             result = ['(']
             lastWord = []
             if self.class_name:
-                for item in list("self,"): result.append(item)  #can put extra comma
+                for item in list("self,"):
+                    result.append(item)  #can put extra comma
             i = 1
             while i < len(args):
                 i = self.skip_ws_and_nl(args, i)
@@ -1494,7 +1495,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 result = ['(']
                 lastWord = []
                 if self.class_name:
-                    for item in list("self,"): result.append(item)  #can put extra comma
+                    for item in list("self,"):
+                        result.append(item)  #can put extra comma
                 i = 1
                 while i < len(args):
                     i = self.skip_ws_and_nl(args, i)
