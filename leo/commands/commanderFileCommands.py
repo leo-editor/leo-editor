@@ -485,7 +485,7 @@ def saveAs(self, event=None, fileName=None):
     kwarg: a file name, for use by file-save-as-zipped,
     file-save-as-unzipped and scripts using Leo's bridge.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
@@ -549,7 +549,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
 
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
@@ -812,7 +812,7 @@ def weave(self, event=None):
 @g.commander_command('read-at-auto-nodes')
 def readAtAutoNodes(self, event=None):
     """Read all @auto nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     c.init_error_dialogs()
     undoData = u.beforeChangeTree(p)
@@ -824,7 +824,7 @@ def readAtAutoNodes(self, event=None):
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self, event=None):
     """Read all @file nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     # c.init_error_dialogs() # Done in at.readAll.
     undoData = u.beforeChangeTree(p)
@@ -836,7 +836,7 @@ def readAtFileNodes(self, event=None):
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self, event=None):
     """Read all @shadow nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     c.init_error_dialogs()
     undoData = u.beforeChangeTree(p)
@@ -900,7 +900,7 @@ def writeFileFromNode(self, event=None):
     If node starts with @read-file-into-node, use the full path name in the headline.
     Otherwise, prompt for a file name.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     c.endEditing()
     h = p.h.rstrip()
     s = p.b
