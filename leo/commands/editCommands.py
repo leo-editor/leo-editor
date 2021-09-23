@@ -378,6 +378,31 @@ class EditCommandsClass(BaseEditCommandsClass):
             else:
                 p.h = time
             c.redrawAndEdit(p, selectAll=True)
+    #@+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
+    @cmd('capitalize-headline')
+    def capitalizeHeadline(self, event=None):
+        """Capitalize all words in the headline of the selected node."""
+        frame = self
+        c, p, u = frame.c, self.c.p, self.c.undoer
+
+        if g.app.batchMode:
+            c.notValidInBatchMode("Capitalize Headline")
+            return
+
+        h = p.h
+        undoType='capitalize-headline'
+        undoData = u.beforeChangeNodeContents(p)
+
+        words = [w.capitalize() for w in h.split()]
+        capitalized = ' '.join(words)
+        changed = capitalized != h
+        if changed:
+            p.h = capitalized
+            c.setChanged()
+            p.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData)
+            c.redraw()
+
     #@+node:tbrown.20151118134307.1: *3* ec.path_for_p
     def path_for_p(self, c, p):
         """path_for_p - return the filesystem path (directory) containing

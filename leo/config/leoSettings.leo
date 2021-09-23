@@ -1127,6 +1127,7 @@
 <v t="ekr.20131213135427.22265"><vh>@item spell-&amp;ignore</vh></v>
 </v>
 <v t="ekr.20131213135427.21904"><vh>@menu &amp;Edit Headline</vh>
+<v t="tom.20210922141748.1"><vh>@item &amp;capitalize-headline</vh></v>
 <v t="ekr.20131213135427.21905"><vh>@item edit-&amp;headline</vh></v>
 <v t="ekr.20131213135427.21906"><vh>@item &amp;end-edit-headline</vh></v>
 <v t="ekr.20131213135427.21908"><vh>@item insert-headline-&amp;time</vh></v>
@@ -12300,6 +12301,7 @@ AltControlShift hoist
 
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
+<t tx="tom.20210922141748.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
