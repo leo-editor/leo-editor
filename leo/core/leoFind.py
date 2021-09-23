@@ -210,6 +210,7 @@ class LeoFind:
 
         replacement: a list of tuples (find_string, change_string).
         settings: a dict or g.Bunch containing find/change settings.
+                  See find._init_from_dict for a list of valid settings.
 
         Example:
 
@@ -221,7 +222,7 @@ class LeoFind:
                 ('clone_find_all_flattened', 'do_clone_find_all_flattened'),
             )
             settings = dict(suboutline_only=True)
-            count = c.findCommands.batch_change(c, root, replacements, settings)
+            count = c.findCommands.batch_change(root, replacements, settings)
             if count:
                 c.save()
         """
