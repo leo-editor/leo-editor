@@ -378,30 +378,41 @@ class NullGui(LeoGui):
     def set_focus(self, commander, widget):
         self.focusWidget = widget
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
-    def alert(self, c, message): pass
+    def alert(self, c, message):
+        pass
 
-    def attachLeoIcon(self, window): pass
+    def attachLeoIcon(self, window):
+        pass
 
-    def destroySelf(self): pass
+    def destroySelf(self):
+        pass
 
-    def finishCreate(self): pass
+    def finishCreate(self):
+        pass
 
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return g.app.config.defaultFont
 
-    def getIconImage(self, name): return None
+    def getIconImage(self, name):
+        return None
 
-    def getImageImage(self, name): return None
+    def getImageImage(self, name):
+        return None
 
-    def getTreeImage(self, c, path): return None
+    def getTreeImage(self, c, path):
+        return None
 
-    def get_window_info(self, window): return 600, 500, 20, 20
+    def get_window_info(self, window):
+        return 600, 500, 20, 20
 
-    def onActivateEvent(self, *args, **keys): pass
+    def onActivateEvent(self, *args, **keys):
+        pass
 
-    def onDeactivateEvent(self, *args, **keys): pass
+    def onDeactivateEvent(self, *args, **keys):
+        pass
 
-    def set_top_geometry(self, w, h, x, y): pass
+    def set_top_geometry(self, w, h, x, y):
+        pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
         return True  # Must be True for unit tests.

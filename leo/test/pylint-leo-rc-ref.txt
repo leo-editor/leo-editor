@@ -34,7 +34,7 @@ load-plugins=
 [MESSAGES CONTROL]
 
 # Enable the message, report, category or checker with the given id(s).
-enable=
+# enable=
 
 # Disable the message, report, category or checker with the given id(s).
 disable=
@@ -43,8 +43,8 @@ disable=
     # 
         design,import,similarities, # Make work.
 
-        format,  # Will be enabled in the ekr-clean branch.
-        multiple-statements,  # Will be enabled in the ekr-clean branch.
+        # format,  # Enabled for 6.5
+        # multiple-statements,  # Enabled for 6.5.
         
         arguments-renamed, # cursesGui2.py
         assignment-from-no-return, # Causes problems when base class return None.
@@ -80,6 +80,7 @@ disable=
         redefined-outer-name,
         redefined-variable-type,
         too-few-public-methods,
+        trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
         unnecessary-pass, # Can be pedantic in some situations.
         unused-argument,
@@ -113,7 +114,6 @@ disable=
         # singleton-comparison,
         # superfluous-parens,
         # trailing-comma-tuple,
-        # trailing-whitespace,
         # unsupported-assignment-operation,
         # unsupported-delete-operation,
         # unsubscriptable-object,

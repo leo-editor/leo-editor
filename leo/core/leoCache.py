@@ -85,7 +85,7 @@ class CommanderCacher:
         db['aku ankka'] = [1, 2, 313]
         db['paths/nest/ok/keyname'] = [1, (5, 46)]
         db.uncache()  # frees memory, causes re-reads later
-        if 0: print(db.keys())
+        # print(db.keys())
         db.clear()
         return True
     #@+node:ekr.20100210163813.5747: *3* cacher.save
@@ -646,7 +646,8 @@ class SqlitePickleShare:
     #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
     def reset_protocol_in_values(self):
         PROTOCOLKEY = '__cache_pickle_protocol__'
-        if self.get(PROTOCOLKEY, 3) == 2: return
+        if self.get(PROTOCOLKEY, 3) == 2:
+            return
         #@+others
         #@+node:vitalije.20170818115606.1: *4* viewrendered special case
         import json

@@ -108,7 +108,8 @@ class ShadowController:
     #@+node:ekr.20080710082231.19: *4* x.makeShadowDirectory
     def makeShadowDirectory(self, fn):
         """Make a shadow directory for the **public** fn."""
-        x = self; path = x.shadowDirName(fn)
+        x = self
+        path = x.shadowDirName(fn)
         if not g.os_path_exists(path):
             # Force the creation of the directories.
             g.makeAllNonExistentDirectories(path)
@@ -161,7 +162,8 @@ class ShadowController:
 
     def shadowPathName(self, filename):
         """Return the full path name of filename, resolved using c.fileName()"""
-        x = self; c = x.c
+        x = self
+        c = x.c
         baseDir = x.baseDirName()
         fileDir = g.os_path_dirname(filename)
         # 2011/01/26: bogomil: redirect shadow dir
@@ -366,16 +368,19 @@ class ShadowController:
         x = self
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
-            if x.trace: print(f"put {repr(x.verbatim_line)}")
+            if x.trace:
+                print(f"put {repr(x.verbatim_line)}")
         x.results.append(line)
-        if x.trace: print(f"put {line!r}")
+        if x.trace:
+            print(f"put {line!r}")
     #@+node:ekr.20150209044257.8: *5* x.put_sentinels
     def put_sentinels(self, i):
         """Put all the sentinels to the results"""
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i]
-            if x.trace: g.trace(f"{i:3} {sentinels}")
+            if x.trace:
+                g.trace(f"{i:3} {sentinels}")
             x.results.extend(sentinels)
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
@@ -472,7 +477,8 @@ class ShadowController:
     def markerFromFileName(self, filename):
         """Return the sentinel delimiter comment to be used for filename."""
         x = self
-        if not filename: return None
+        if not filename:
+            return None
         root, ext = g.os_path_splitext(filename)
         if ext == '.tmp':
             root, ext = os.path.splitext(root)

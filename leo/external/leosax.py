@@ -87,7 +87,7 @@ class LeoNode:
         """iterate this node and all its descendants in a flat list,
         useful for finding things and building an UNL based view"""
         if self.parent != self:
-            yield(self)
+            yield self
         for i in self.children:
             for j in i.flat():
                 yield j

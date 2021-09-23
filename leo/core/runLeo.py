@@ -26,7 +26,7 @@ sys.excepthook = leo_excepthook
 # Partial fix for #541.
 # See https://stackoverflow.com/questions/24835155/
 if sys.executable.endswith("pythonw.exe"):
-    sys.stdout = open(os.devnull, "w");
+    sys.stdout = open(os.devnull, "w")
     sys.stderr = open(
         os.path.join(os.getenv("TEMP", default=""),  # #1557.
         "stderr-" + os.path.basename(sys.argv[0])),

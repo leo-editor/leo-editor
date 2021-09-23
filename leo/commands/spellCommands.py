@@ -39,7 +39,8 @@ class BaseSpellWrapper:
             f.close()
             # Blanks lines cause troubles.
             s2 = s.replace(b'\r', b'').replace(b'\n\n', b'\n')
-            if s2.startswith(b'\n'): s2 = s2[1:]
+            if s2.startswith(b'\n'):
+                s2 = s2[1:]
             if s != s2:
                 g.es_print('cleaning', fn)
                 f = open(fn, mode='wb')
@@ -368,7 +369,8 @@ class EnchantWrapper(BaseSpellWrapper):
             f.close()
             # Blanks lines cause troubles.
             s2 = s.replace(b'\r', b'').replace(b'\n\n', b'\n')
-            if s2.startswith(b'\n'): s2 = s2[1:]
+            if s2.startswith(b'\n'):
+                s2 = s2[1:]
             if s != s2:
                 g.es_print('cleaning', fn)
                 f = open(fn, mode='wb')
@@ -733,7 +735,8 @@ class SpellTabHandler:
             else:
                 start, end = oldSel = w.getSelectionRange()
             if start is not None:
-                if start > end: start, end = end, start
+                if start > end:
+                    start, end = end, start
                 w.delete(start, end)
                 w.insert(start, selection)
                 w.setSelectionRange(start, start + len(selection))

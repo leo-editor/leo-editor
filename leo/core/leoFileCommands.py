@@ -915,7 +915,7 @@ class FileCommands:
     #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
     def initNewDb(self, conn):
         """ Initializes tables and returns None"""
-        fc = self; c = self.c
+        c, fc = self.c, self
         v = leoNodes.VNode(context=c)
         c.hiddenRootNode.children = [v]
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
@@ -959,7 +959,7 @@ class FileCommands:
     #@+node:vitalije.20170831144643.1: *5* fc.updateFromRefFile
     def updateFromRefFile(self):
         """Updates public part of outline from the specified file."""
-        fc = self; c = self.c
+        c, fc = self.c, self
         #@+others
         #@+node:vitalije.20170831144827.2: *6* function: get_ref_filename
         def get_ref_filename():
@@ -977,7 +977,8 @@ class FileCommands:
             for v in c.hiddenRootNode.children:
                 if v.h == PRIVAREA:
                     pub = False
-                if pub: continue
+                if pub:
+                    continue
                 yield v
         #@+node:vitalije.20170831144827.6: *6* function: pub_gnxes
         def sub_gnxes(children):
@@ -1242,7 +1243,7 @@ class FileCommands:
         self.c.nodeConflictFileName = None  # 2010/01/05
     #@+node:ekr.20100124110832.6212: *5* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
-        fc = self; c = fc.c
+        c = self.c
         aList = [z for z in c.all_positions() if z.isDirty()]
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
@@ -1315,7 +1316,7 @@ class FileCommands:
                 if v:
                     v.unknownAttributes = resultDict[key]
                     v._p_changed = True
-        marks = {}; expanded = {}
+        expanded, marks = {}, {}
         for gnx in self.descendentExpandedList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
@@ -1324,7 +1325,8 @@ class FileCommands:
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
-            if v: marks[v] = v
+            if v:
+                marks[v] = v
         if marks or expanded:
             for p in c.all_unique_positions():
                 if marks.get(p.v):
@@ -1345,7 +1347,8 @@ class FileCommands:
             str_pos = c.db.get('current_position')
         if str_pos is None:
             d = root.v.u
-            if d: str_pos = d.get('str_leo_pos')
+            if d:
+                str_pos = d.get('str_leo_pos')
         if str_pos is not None:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
@@ -1851,14 +1854,17 @@ class FileCommands:
         #
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
-        pDict = {}; aList = []
+        aList = []
+        pDict = {}
         for p2 in p.self_and_subtree(copy=False):
             if hasattr(p2.v, "unknownAttributes"):
                 aList.append((p2.copy(), p2.v),)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)
         # Create aList of pairs (v,d) where d contains only pickleable entries.
-        if aList: aList = self.createUaList(aList)
-        if not aList: return ''
+        if aList:
+            aList = self.createUaList(aList)
+        if not aList:
+            return ''
         # Create d, an enclosing dict to hold all the inner dicts.
         d = {}
         for v, d2 in aList:
@@ -2068,8 +2074,10 @@ class FileCommands:
                 p.moveToFirstChild()
                 while 1:
                     fc.putVnode(p, isIgnore)
-                    if p.hasNext(): p.moveToNext()
-                    else: break
+                    if p.hasNext():
+                        p.moveToNext()
+                    else:
+                        break
                 p.moveToParent()  # Restore p in the caller.
                 fc.put('</v>\n')
             else:

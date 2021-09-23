@@ -115,7 +115,8 @@ class InternalIPKernel:
         trace = 'ipython' in g.app.debug
         for console in self.consoles:
             # console is a process returned by the Python subprocess module.
-            if trace: g.trace('kill', console)
+            if trace:
+                g.trace('kill', console)
             # #1677: neither console.kill nor console.kill works!
             # console.terminate()
             console.kill()
@@ -144,7 +145,8 @@ class InternalIPKernel:
             console = connect_qtconsole()
                 # ipykernel.connect.connect_qtconsole
             if console:
-                if trace: g.trace('console:', console)
+                if trace:
+                    g.trace('console:', console)
                 self.consoles.append(console)
             else:
                 self.put_warning('new_qt_console: no console!')

@@ -1171,7 +1171,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         s = k.arg.strip()
         if not s:
-            return
+            return ''
         old = sys.stdout
         try:
             sys.stdout = io.StringIO()

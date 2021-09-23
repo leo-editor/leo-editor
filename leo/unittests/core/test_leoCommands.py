@@ -255,6 +255,7 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210906075242.11: *3* TestCommands.test_c_hoist_followed_by_goto_first_node
     def test_c_hoist_followed_by_goto_first_node(self):
         c = self.c
+        self.skipTest('not ready yet')  # #2167
         # Create the @settings and @chapter nodes.
         settings = c.rootPosition().insertAfter()
         settings.h = '@settings'

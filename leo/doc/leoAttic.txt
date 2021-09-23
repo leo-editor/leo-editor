@@ -17922,6 +17922,33 @@ def test_minibuffer_find_commands(self):
         # This is not a full test.  We must use keyboardQuit here!
         c.k.simulateCommand(command)
         c.k.keyboardQuit(None)
+#@+node:ekr.20031218072017.3632: ** go (leoCompare.py) no longer used
+def go():
+    compare = LeoCompare(
+        commands=None,
+        appendOutput=True,
+        ignoreBlankLines=True,
+        ignoreFirstLine1=False,
+        ignoreFirstLine2=False,
+        ignoreInteriorWhitespace=False,
+        ignoreLeadingWhitespace=True,
+        ignoreSentinelLines=False,
+        limitCount=9,  # Zero means don't stop.
+        limitToExtension=".py",  # For directory compares.
+        makeWhitespaceVisible=True,
+        printBothMatches=False,
+        printMatches=False,
+        printMismatches=True,
+        printTrailingMismatches=False,
+        outputFileName=None)
+    if 1:  # Compare all files in Tangle test directories
+        path1 = "c:\\prog\\test\\tangleTest\\"
+        path2 = "c:\\prog\\test\\tangleTestCB\\"
+        compare.compare_directories(path1, path2)
+    else:  # Compare two files.
+        name1 = "c:\\prog\\test\\compare1.txt"
+        name2 = "c:\\prog\\test\\compare2.txt"
+        compare.compare_files(name1, name2)
 #@-all
 #@@nosearch
 #@-leo

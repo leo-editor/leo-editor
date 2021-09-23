@@ -216,7 +216,8 @@ class LeoMenu:
         return True if this method handles the menu.
         """
         c = self.c
-        if table is None: table = []
+        if table is None:
+            table = []
         name2 = name.replace('&', '').replace(' ', '').lower()
         if name2 == 'plugins':
             # Create the plugins menu using a hook.
@@ -237,7 +238,8 @@ class LeoMenu:
     # Returns True if text in the outline or body text is selected.
 
     def hasSelection(self):
-        c = self.c; w = c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         if c.frame.body:
             first, last = w.getSelectionRange()
             return first != last
@@ -265,8 +267,10 @@ class LeoMenu:
         This method shows the shortcut in the menu, but **never** binds any shortcuts.
         """
         c = self.c
-        if g.unitTesting: return
-        if not menu: return
+        if g.unitTesting:
+            return
+        if not menu:
+            return
         self.traceMenuTable(table)
         for data in table:
             label, command, done = self.getMenuEntryInfo(data, menu)
@@ -363,7 +367,8 @@ class LeoMenu:
             # A single string is both the label and the command.
             s = data
             removeHyphens = s and s[0] == '*'
-            if removeHyphens: s = s[1:]
+            if removeHyphens:
+                s = s[1:]
             label = self.capitalizeMinibufferMenuName(s, removeHyphens)
             command = s.replace('&', '').lower()
             if label == '-':
@@ -389,7 +394,8 @@ class LeoMenu:
     def traceMenuTable(self, table):
 
         trace = False and not g.unitTesting
-        if not trace: return
+        if not trace:
+            return
         format = '%40s %s'
         g.trace('*' * 40)
         for data in table:
@@ -461,7 +467,8 @@ class LeoMenu:
             'kind':     the method used to open the file, such as subprocess.Popen.
         """
         k = self.c.k
-        if not table: return
+        if not table:
+            return
         g.app.openWithTable = table  # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
@@ -507,7 +514,8 @@ class LeoMenu:
         'shortcut': optional menu shortcut.
         """
         c = self.c
-        if g.unitTesting: return
+        if g.unitTesting:
+            return
         for d in table:
             label = d.get('name')
             args = d.get('args', [])

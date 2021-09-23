@@ -47,7 +47,8 @@ def addComments(self, event=None):
     if c.hasAmbiguousLanguage(p):
         language = c.getLanguageAtCursor(p, language)
     d1, d2, d3 = g.set_delims_from_language(language)
-    d2 = d2 or ''; d3 = d3 or ''
+    d2 = d2 or ''
+    d3 = d3 or ''
     if d1:
         openDelim, closeDelim = d1 + ' ', ''
     else:
@@ -87,7 +88,8 @@ def addComments(self, event=None):
 @g.commander_command('set-colors')
 def colorPanel(self, event=None):
     """Open the color dialog."""
-    c = self; frame = c.frame
+    c = self
+    frame = c.frame
     if not frame.colorPanel:
         frame.colorPanel = g.app.gui.createColorPanel(c)
     frame.colorPanel.bringToFront()
@@ -95,7 +97,8 @@ def colorPanel(self, event=None):
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self, event=None):
     """Convert all blanks to tabs in the selected outline."""
-    c = self; u = c.undoer; undoType = 'Convert All Blanks'
+    c, u = self, self.undoer
+    undoType = 'Convert All Blanks'
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
@@ -111,14 +114,16 @@ def convertAllBlanks(self, event=None):
             if changed:
                 count += 1
         else:
-            changed = False; result = []
+            changed = False
+            result = []
             text = p.v.b
             lines = text.split('\n')
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
                 s = g.computeLeadingWhitespace(
                     w, abs(tabWidth)) + line[i:]  # use positive width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
             if changed:
                 count += 1
@@ -135,7 +140,9 @@ def convertAllBlanks(self, event=None):
 @g.commander_command('convert-all-tabs')
 def convertAllTabs(self, event=None):
     """Convert all tabs to blanks in the selected outline."""
-    c = self; u = c.undoer; undoType = 'Convert All Tabs'
+    c = self
+    u = c.undoer
+    undoType = 'Convert All Tabs'
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
@@ -159,7 +166,8 @@ def convertAllTabs(self, event=None):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
                 s = g.computeLeadingWhitespace(
                     w, -abs(tabWidth)) + line[i:]  # use negative width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
             if changed:
                 count += 1
@@ -238,7 +246,8 @@ def convertTabs(self, event=None):
         i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
         s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]
             # use negative width.
-        if s != line: changed = True
+        if s != line:
+            changed = True
         result.append(s)
     if not changed:
         return False
@@ -528,13 +537,15 @@ def extractDef(c, s):
         try:
             pat = re.compile(pat)
             m = pat.search(s)
-            if m: return m.group(1)
+            if m:
+                return m.group(1)
         except Exception:
             g.es_print('bad regex in @data extract-patterns', color='blue')
             g.es_print(pat)
     for pat in extractDef_patterns:
         m = pat.search(s)
-        if m: return m.group(1)
+        if m:
+            return m.group(1)
     return ''
 #@+node:ekr.20171123135625.26: *3* def extractDef_find
 def extractDef_find(c, lines):
@@ -625,7 +636,8 @@ def findMatchingBracket(self, event=None):
 @g.commander_command('set-font')
 def fontPanel(self, event=None):
     """Open the font dialog."""
-    c = self; frame = c.frame
+    c = self
+    frame = c.frame
     if not frame.fontPanel:
         frame.fontPanel = g.app.gui.createFontPanel(c)
     frame.fontPanel.bringToFront()
@@ -728,8 +740,9 @@ def indentBody(self, event=None):
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
     """Insert a time/date stamp at the cursor."""
-    c = self; undoType = 'Insert Body Time'
+    c = self
     w = c.frame.body.wrapper
+    undoType = 'Insert Body Time'
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
@@ -1092,11 +1105,12 @@ def showInvisiblesHelper(c, val):
     colorizer.highlighter.showInvisibles = val
     # It is much easier to change the menu name here than in the menu updater.
     menu = frame.menu.getMenu("Edit")
-    index = frame.menu.getMenuLabel(menu,
-        'Hide Invisibles' if val else 'Show Invisibles')
+    index = frame.menu.getMenuLabel(menu, 'Hide Invisibles' if val else 'Show Invisibles')
     if index is None:
-        if val: frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
-        else: frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
+        if val:
+            frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
+        else:
+            frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
     # #240: Set the status bits here.
     if hasattr(frame.body, 'set_invisibles'):
         frame.body.set_invisibles(c)
@@ -1105,7 +1119,7 @@ def showInvisiblesHelper(c, val):
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(self, event=None):
     """Add or remove double angle brackets from the headline of the selected node."""
-    c = self; p = c.p
+    c, p = self, self.p
     if g.app.batchMode:
         c.notValidInBatchMode("Toggle Angle Brackets")
         return
@@ -1115,8 +1129,10 @@ def toggleAngleBrackets(self, event=None):
     lt = "<<"
     rt = ">>"
     if s[0:2] == lt or s[-2:] == rt:
-        if s[0:2] == "<<": s = s[2:]
-        if s[-2:] == ">>": s = s[:-2]
+        if s[0:2] == "<<":
+            s = s[2:]
+        if s[-2:] == ">>":
+            s = s[:-2]
         s = s.strip()
     else:
         s = g.angleBrackets(' ' + s + ' ')

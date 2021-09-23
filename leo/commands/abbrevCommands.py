@@ -241,11 +241,13 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
         if not w:
-            if trace and verbose: g.trace('no w')
+            if trace and verbose:
+                g.trace('no w')
             return False
         ch = self.get_ch(event, stroke, w)
         if not ch:
-            if trace and verbose: g.trace('no ch')
+            if trace and verbose:
+                g.trace('no ch')
             return False
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
@@ -261,10 +263,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # Do not call c.endEditing here.
                 break
         else:
-            if trace and verbose: g.trace(f"No prefix in {s!r}")
+            if trace and verbose:
+                g.trace(f"No prefix in {s!r}")
             return False
         c.abbrev_subst_env['_abr'] = word
-        if trace: g.trace(f"Found {word!r} = {val!r}")
+        if trace:
+            g.trace(f"Found {word!r} = {val!r}")
         if tag == 'tree':
             self.root = p.copy()
             self.last_hit = p.copy()
@@ -333,7 +337,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         for p in old_p.self_and_subtree():
             # Search for the next place-holder.
             val, do_placeholder = self.make_script_substitutions(0, 0, p.b)
-            if not do_placeholder: p.b = val
+            if not do_placeholder:
+                p.b = val
         # Now search for all place-holders.
         for p in old_p.subtree():
             if self.find_place_holder(p, do_placeholder):
@@ -430,7 +435,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             finally:
                 self.expanding = False
             x = c.abbrev_subst_env.get('x')
-            if x is None: x = ''
+            if x is None:
+                x = ''
             val = f"{prefix}{x}{rest}"
             # Save the selection range.
             w = c.frame.body.wrapper
@@ -562,8 +568,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def get_ch(self, event, stroke, w):
         """Get the ch from the stroke."""
         ch = g.checkUnicode(event and event.char or '')
-        if self.expanding: return None
-        if w.hasSelection(): return None
+        if self.expanding:
+            return None
+        if w.hasSelection():
+            return None
         assert g.isStrokeOrNone(stroke), stroke
         if stroke in ('BackSpace', 'Delete'):
             return None
@@ -607,14 +615,17 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """
         c, p = self.c, self.c.p
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         s = w.getAllText()
         ins = ins1 = w.getInsertPoint()
-        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+            ins1 -= 1
         i, j = g.getWord(s, ins1)
         word = w.get(i, j)
         aList = self.getDynamicList(w, word)
-        if not aList: return
+        if not aList:
+            return
         # Bug fix: remove s itself, otherwise we can not extend beyond it.
         if word in aList and len(aList) > 1:
             aList.remove(word)
@@ -642,7 +653,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
         s = w.getAllText()
         ins = ins1 = w.getInsertPoint()
-        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+            ins1 -= 1
         i, j = g.getWord(s, ins1)
         w.setInsertPoint(j)
             # This allows the cursor to be placed anywhere in the word.
@@ -660,7 +672,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
         self.w = w
-        if prefix is None: prefix = ''
+        if prefix is None:
+            prefix = ''
         prefix2 = 'dabbrev-expand: '
         c.frame.log.deleteTab('Completion')
         g.es('', '\n'.join(aList or []), tabName='Completion')
@@ -682,7 +695,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             ypos = w.getYScrollPosition()
             b = c.undoer.beforeChangeNodeContents(p)
             ins = ins1 = w.getInsertPoint()
-            if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+            if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+                ins1 -= 1
             i, j = g.getWord(s, ins1)
             # word = s[i: j]
             s = s[:i] + k.arg + s[j:]
@@ -716,7 +730,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Do *not* strip ws so the user can specify ws.
             name = data[0].replace('\\t', '\t').replace('\\n', '\n')
             val = '='.join(data[1:])
-            if val.endswith('\n'): val = val[:-1]
+            if val.endswith('\n'):
+                val = val[:-1]
             val = self.n_regex.sub('\n', val).replace('\\\\n', '\\n')
             old, tag = d.get(name, (None, None),)
             if old and old != val and not g.unitTesting:
