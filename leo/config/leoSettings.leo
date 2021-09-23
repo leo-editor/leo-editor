@@ -1150,6 +1150,7 @@
 </v>
 <v t="ekr.20180403104751.1"><vh>@menu &amp;Capitalize Text</vh>
 <v t="ekr.20131213135427.22273"><vh>@item &amp;capitalize-word</vh></v>
+<v t="tom.20210922192621.1"><vh>@item Capitalize-&amp;words-or-selection</vh></v>
 <v t="ekr.20131213135427.22277"><vh>@item d&amp;owncase-region</vh></v>
 <v t="ekr.20131213135427.22274"><vh>@item &amp;downcase-word</vh></v>
 <v t="ekr.20131213135427.22278"><vh>@item u&amp;pcase-region</vh></v>
@@ -12302,6 +12303,7 @@ AltControlShift hoist
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="tom.20210922141748.1"></t>
+<t tx="tom.20210922192621.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
