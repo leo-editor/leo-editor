@@ -257,7 +257,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.4**
 
-- Support for leoInteg: "Leo in vs-code".
+- Support for [leoInteg](https://github.com/boltex/leointeg#-leo-for-vs-code): "Leo in vs-code".
   - Add leoserver.py, stand-alone server for Leo.
   - Add support for .leojs, a json outline format.
 - Support for Qt6.
