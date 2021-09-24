@@ -2038,6 +2038,7 @@ class LeoFind:
             pass
             g.trace('   p.h:', repr(p.h))
             g.trace('work_s:', repr(self.work_s))
+            g.trace(' gui_s:', repr(gui_w.getAllText()))
             ### WRONG
             ### p.h = self.work_s  # #2172
         else:
