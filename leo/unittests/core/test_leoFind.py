@@ -303,6 +303,32 @@ class TestFind(LeoUnitTest):
         self.assertEqual(p.h, 'Root')
         s = p.b[pos:newpos]
         self.assertEqual(s, settings.find_text)
+    #@+node:ekr.20210924032146.1: *4* TestFind.change-then-find (headline)
+    def test_change_then_find_in_headline(self):
+        # Test #2220:
+        # https://github.com/leo-editor/leo-editor/issues/2220
+        # Let block.
+        settings, c, x = self.settings, self.c, self.x
+        # Set up the search.
+        settings.find_text = 'Test'
+        settings.change_text = 'XX'
+        # Create the tree.
+        test_p = self.c.rootPosition().insertAfter()
+        test_p.h = 'Test1 Test2 Test3'
+        after_p = test_p.insertAfter()
+        after_p.h = 'After'
+        # Find test_p.
+        p, pos, newpos = x.do_find_next(settings)
+        self.assertEqual(p, test_p)
+        w = c.edit_widget(p)
+        self.assertEqual(test_p.h, w.getAllText())
+        self.assertEqual(w.getSelectionRange(), (pos, newpos))
+        # Do change-then-find.
+        ok = x.do_change_then_find(settings)
+        self.assertTrue(ok)
+        p = c.p
+        self.assertEqual(p, test_p)
+        self.assertEqual(p.h, 'XX1 Test2 Test3')
     #@+node:ekr.20210216094444.1: *4* TestFind.find-prev
     def test_find_prev(self):
         c, settings, x = self.c, self.settings, self.x
