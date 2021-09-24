@@ -17,7 +17,7 @@ def init():
     return True
 #@+node:ekr.20051016161205.1: ** onCreate (testRegisterCommand.py)
 def hello_command (event):
-        g.es_print('Hello from %s' % (g.shortFileName(__file__)), color='purple')
+    g.es_print('Hello from %s' % (g.shortFileName(__file__)), color='purple')
 
 def onCreate(tag,keys):
     c = keys.get('c')

@@ -44,7 +44,7 @@ def createExportMenu (tag,keywords):
         command = lambda c = c: export_rtf(c))
 #@+node:danr7.20060902083957.3: ** export_rtf
 def export_rtf( c ):
-
+    # pylint: disable=line-too-long
     # Get user preferences from INI file
     fileName = g.os_path_join(g.app.loadDir,"..","plugins","leo_to_rtf.ini")
     config = ConfigParser.ConfigParser()

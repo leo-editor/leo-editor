@@ -151,7 +151,7 @@ class InteractPSQL(Interact):
                 dat = self.leftover + proc.read_nonblocking(size=10240,timeout=1)
                 self.leftover = ''
                 #X print dat
-                if not(dat.endswith('\n')):
+                if not dat.endswith('\n'):
                     if '\n' in dat:
                         dat, self.leftover = dat.rsplit('\n',1)
                     else:
@@ -255,7 +255,7 @@ class InteractBASH(Interact):
                 dat = self.leftover + proc.read_nonblocking(size=10240,timeout=1)
                 self.leftover = ''
                 #X print dat
-                if not(dat.endswith('\n')):
+                if not dat.endswith('\n'):
                     if '\n' in dat:
                         dat, self.leftover = dat.rsplit('\n',1)
                     else:

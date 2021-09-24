@@ -1404,7 +1404,7 @@ class LeoQtGui(leoGui.LeoGui):
         from PyQt5.QtTest import QSignalSpy
         assert QSignalSpy
     elif isQt6:
-        # pylint: disable=c-extension-no-member
+        # pylint: disable=c-extension-no-member,no-name-in-module
         import PyQt6.QtTest as QtTest
         # mypy complains about assigning to a type.
         QSignalSpy = QtTest.QSignalSpy  # type:ignore
