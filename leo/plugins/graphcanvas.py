@@ -992,6 +992,7 @@ class graphcanvasController:
         blc = getattr(self.c, 'backlinkController')
         if not blc:
             return
+        # pylint: disable=superfluous-parens
         if not (event.modifiers() & KeyboardModifier.ControlModifier):
             return
         if linkItem in self.link:

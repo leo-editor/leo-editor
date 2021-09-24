@@ -166,7 +166,7 @@ class Php_Importer(Importer):
         '''
         #@-<< skip_heredoc docstrig >>
         j = i
-        assert(g.match(s, i, "<<<"))
+        assert g.match(s, i, "<<<")
         m = re.match(r"\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
         if m is None:
             i += 3

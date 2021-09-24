@@ -5,7 +5,8 @@
 
 - Download instructions here: https://apps.ankiweb.net/#linux
 
-- Once Anki installed, install the AnkiConnect extension: https://ankiweb.net/shared/info/2055492159
+- Once Anki installed, install the AnkiConnect extension:
+  https://ankiweb.net/shared/info/2055492159
 
 - This plugin pushes the @anki nodes to AnkiConnect for later usage as flash cards.
 
@@ -25,7 +26,9 @@ Create headline like this:
 
 - [OPTIONAL] `@anki tag` contains the tags for the card, comma separated
 
-Select any of these nodes (@anki, @anki front, @anki back), do `alt-x act-on-node`. This pushes the card to AnkiConnect. If any errors happen, a child to `@anki` called `@anki error` is populated with the relevant error details.
+Select any of these nodes (@anki, @anki front, @anki back), do `alt-x
+act-on-node`. This pushes the card to AnkiConnect. If any errors happen, a child
+to `@anki` called `@anki error` is populated with the relevant error details.
 '''
 
 import leo.core.leoGlobals as g
@@ -65,7 +68,11 @@ def _invoke(action, **params):
 
 def anki_warn(deck, front, back):
     # AnkiConnect will anyway throw an error, warn user now?
-    useful_msg = 'No %s specified for this card. Please create a child node to @anki called @anki %s and populate with a %s name'
+    useful_msg = (
+        'No %s specified for this card. '
+        'Please create a child node to @anki called @anki %s '
+        'and populate with a %s name'
+    )
     if deck is None :
         g.es(useful_msg % ("deck", "deck", "deck"))
         return
@@ -75,7 +82,6 @@ def anki_warn(deck, front, back):
     if back is None:
         g.es(useful_msg % ("back", "back", "back"))
         return
-
 
 def anki_deck_check(deck):
     result = _invoke('deckNames')

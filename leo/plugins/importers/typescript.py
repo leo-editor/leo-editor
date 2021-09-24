@@ -165,7 +165,7 @@ class TS_Importer(Importer):
                 return False
         # #1617: Chained calls look like functions, but aren't.
         for pattern in self.non_function_patterns:
-             if pattern.match(line) is not None:
+            if pattern.match(line) is not None:
                 return False
         for group_n, pattern in self.function_patterns:
             if pattern.match(line) is not None:

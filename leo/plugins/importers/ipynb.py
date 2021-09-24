@@ -139,7 +139,7 @@ class Import_IPYNB:
             # # Always put @language directives in top-level imported nodes.
             if cell.get('cell_type') == 'markdown':
                 if level < 2 or language not in ('md', 'markdown'):
-                   p.b = '@language md\n@wrap\n\n%s' % p.b
+                    p.b = '@language md\n@wrap\n\n%s' % p.b
             else:
                 if level < 2 or language != 'python':
                     p.b = '@language python\n\n%s' % p.b
