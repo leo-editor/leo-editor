@@ -82,7 +82,7 @@ class chapterHoist:
         statusLine = "Hoist %s" % h
 
         def hoistButtonCallback (event=None,self=self,c=c,p=p.copy()):
-            while (c.canDehoist()):
+            while c.canDehoist():
                 c.dehoist()
             c.selectPosition(p)
             c.hoist()
