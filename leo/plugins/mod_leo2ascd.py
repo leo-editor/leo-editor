@@ -88,7 +88,7 @@ def GetAscFilename(c,p):
         containsAscFileDirective = patternAscDirectiveFile.match(line)
         if containsAscFileDirective:
             ascFileName = containsAscFileDirective.group(1)
-            if (ascFileName is not None):
+            if ascFileName is not None:
                 base = os.path.split(c.mFileName)[0]  # linux or windows
                 if (((base[0]=="/") and (ascFileName[0] != "/")) or
                    ((base[1]==":") and (ascFileName[1] != ":"))):
@@ -343,7 +343,7 @@ class   _AssignUniqueConstantValue:
     #@+node:ekr.20101110094152.5829: *3* Next
     def Next(self):
         self.UniqueInternalValue += 1
-        return(self.UniqueInternalValue)
+        return self.UniqueInternalValue
     #@-others
 
 CV = _AssignUniqueConstantValue()

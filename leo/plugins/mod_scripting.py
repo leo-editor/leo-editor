@@ -209,8 +209,9 @@ For example::
     2020-12-15 21:46:34.403814
     # <<<
 
-eval-block inserts the separators, blocks can be re-run by placing the cursor in them and doing eval-block, and the cursor is placed in the next block, so you can go back up, change something, then quickly
-re-execute everything.
+eval-block inserts the separators, blocks can be re-run by placing the cursor in
+them and doing eval-block, and the cursor is placed in the next block, so you
+can go back up, change something, then quickly re-execute everything.
 
 Acknowledgements
 ----------------
@@ -891,7 +892,7 @@ class ScriptingController:
         """Handle @plugin nodes."""
         tag = "@plugin"
         h = p.h
-        assert(g.match(h, 0, tag))
+        assert g.match(h, 0, tag)
         # Get the name of the module.
         moduleOrFileName = h[len(tag):].strip()
         if not self.atPluginNodes:
@@ -937,7 +938,7 @@ class ScriptingController:
         '''Handle @script nodes.'''
         c = self.c
         tag = "@script"
-        assert(g.match(p.h, 0, tag))
+        assert g.match(p.h, 0, tag)
         name = p.h[len(tag):].strip()
         args = self.getArgs(p)
         if self.atScriptNodes:

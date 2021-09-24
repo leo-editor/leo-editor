@@ -1097,7 +1097,7 @@ if QtWidgets: # NOQA
             if pc.must_change_widget(BaseTextWidget):
                 w = self.create_base_text_widget()
                 pc.embed_widget(w)
-                assert(w == pc.w)
+                assert w == pc.w
             else:
                 w = pc.w
             if isQt5:
@@ -1140,7 +1140,7 @@ if QtWidgets: # NOQA
             if pc.must_change_widget(BaseTextWidget):
                 w = self.create_base_text_widget()
                 pc.embed_widget(w)
-                assert(w == pc.w)
+                assert w == pc.w
             else:
                 w = pc.w
             s = self.get_jupyter_source(c)
@@ -1192,7 +1192,7 @@ if QtWidgets: # NOQA
             if pc.must_change_widget(BaseTextWidget):
                 w = self.create_base_text_widget()
                 pc.embed_widget(w)
-                assert(w == pc.w)
+                assert w == pc.w
             else:
                 w = pc.w
             w.hide() # This forces a proper update.
@@ -1535,11 +1535,15 @@ if QtWidgets: # NOQA
                     #print("template_path: ", template_path)
                 elif child.h == '@jinja inputs':
                     for template_var_node in child.children():
+                        # pylint: disable=line-too-long
                         template_data[template_var_node.h.replace('@jinja variable', '').strip()] = untangle(c, template_var_node).strip()
                     #print("template_data: ", template_data)
 
             if not template_path:
-                g.es("No template_path given. Your @jinja node should contain a child node 'template' with the path to the template (relative or absolute)")
+                g.es(
+                    "No template_path given. "
+                    "Your @jinja node should contain a child node 'template' "
+                    "with the path to the template (relative or absolute)")
                 return
 
             #print "act"
@@ -1559,6 +1563,7 @@ if QtWidgets: # NOQA
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
         def update_svg(self, s, keywords):
+            # pylint: disable=no-name-in-module
             pc = self
             if hasattr(QtSvg, "QSvgWidget"):  # #2134
                 QSvgWidget = QtSvg.QSvgWidget
@@ -1575,7 +1580,7 @@ if QtWidgets: # NOQA
             if pc.must_change_widget(QSvgWidget):
                 w = QSvgWidget()
                 pc.embed_widget(w)
-                assert(w == pc.w)
+                assert w == pc.w
             else:
                 w = pc.w
             if s.strip().startswith('<'):
@@ -1644,7 +1649,7 @@ if QtWidgets: # NOQA
                 w.anchorClicked.connect(handleClick)
                 w.setOpenLinks(False)
                 pc.embed_widget(w) # Creates w.wrapper
-                assert(w == pc.w)
+                assert w == pc.w
             return pc.w
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
