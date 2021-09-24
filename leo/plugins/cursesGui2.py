@@ -860,7 +860,7 @@ class StringFindTabManager:
     def __init__(self, c):
         '''Ctor for the StringFindTabManager class.'''
         self.c = c
-        assert(c.findCommands)
+        assert c.findCommands
         c.findCommands.minibuffer_mode = True
         self.entry_focus = None # The widget that had focus before find-pane entered.
         # Find/change text boxes.
@@ -2787,11 +2787,11 @@ class LeoBody (npyscreen.MultiLineEditable):
         return None
     #@+node:ekr.20170526114452.2: *5* LeoBody.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
-       '''From MultiLineEditable.h_edit_cursor_line_value'''
-       self.set_box_name('Body Pane (Editing)')
-       continue_line = self.edit_cursor_line_value()
-       if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
-           self._continue_editing()
+        '''From MultiLineEditable.h_edit_cursor_line_value'''
+        self.set_box_name('Body Pane (Editing)')
+        continue_line = self.edit_cursor_line_value()
+        if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
+            self._continue_editing()
     #@+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
     def delete_line_value(self, ch_i=None):
 
@@ -3002,11 +3002,11 @@ class LeoLog (npyscreen.MultiLineEditable):
 
     #@+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
-       '''From MultiLineEditable.h_edit_cursor_line_value'''
-       self.set_box_name('Log Pane (Editing)')
-       continue_line = self.edit_cursor_line_value()
-       if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
-           self._continue_editing()
+        '''From MultiLineEditable.h_edit_cursor_line_value'''
+        self.set_box_name('Log Pane (Editing)')
+        continue_line = self.edit_cursor_line_value()
+        if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
+            self._continue_editing()
     #@+node:ekr.20170604113733.2: *5* LeoLog.h_exit_down
     def h_exit_down(self, ch_i):
         """Called when user leaves the widget to the next widget"""
@@ -3823,7 +3823,7 @@ class LeoMLTree(npyscreen.MLTree):
             i += 1
         # Do the last line
         line = self._my_widgets[-1]
-        if (len(self.values) <= i + 1):
+        if len(self.values) <= i + 1:
             self._print_line(line, i)
             line.update(clear=False)
         elif len((self._my_widgets) * self._contained_widget_height) < self.height:
@@ -4143,7 +4143,7 @@ class TextMixin:
         v.insertSpot = self.getInsertPoint()
         i, j = self.getSelectionRange()
         if i > j: i, j = j, i
-        assert(i <= j)
+        assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = self.getYScrollPosition()

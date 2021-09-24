@@ -69,6 +69,7 @@ from leo.core import leoGlobals as g
 #@+node:timo.20050215183130: ** <<define templates dict>>
 #@@nobeautify
 
+# pylint: disable=line-too-long
 templates = {
     '@article':         'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
     '@book':            'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',

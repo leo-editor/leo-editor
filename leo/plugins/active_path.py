@@ -259,7 +259,7 @@ def getPath(c, p):
 
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
-    if (not isDirNode(p)):  # add file name
+    if not isDirNode(p):  # add file name
         h = p.h.split(None, 1)
         if h[0].startswith('@') and len(h) == 2:
             path = os.path.join(path, h[1])

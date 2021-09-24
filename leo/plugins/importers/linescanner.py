@@ -24,7 +24,8 @@ Just run the importer;; abbreviation!
 
 To make the importer importer;; functional you must:
 
-1. Copy it from leoSettings (@settings-->Abbreviations-->@outline-data tree-abbreviations) to the corresponding location in myLeoSettings.leo.
+1. Copy it from leoSettings (@settings-->Abbreviations-->@outline-data tree-abbreviations)
+   to the corresponding location in myLeoSettings.leo.
 
 2. Make sure @bool scripting-abbreviations is True in myLeoSettings.leo.
 
