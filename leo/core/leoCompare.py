@@ -76,7 +76,8 @@ class BaseLeoCompare:
         if self.outputFileName:
             self.openOutputFile()
         ok = self.outputFileName is None or self.outputFile
-        if not ok: return None
+        if not ok:
+            return None
         # Create files and files2, the lists of files to be compared.
         files1 = []
         files2 = []
@@ -95,7 +96,7 @@ class BaseLeoCompare:
             else:
                 files2.append(f)
         # Compare the files and set the yes, no and missing lists.
-        yes = []; no = []; missing1 = []; missing2 = []
+        missing1, missing2, no, yes = [], [], [], []
         for f1 in files1:
             head, f2 = g.os_path_split(f1)
             if f2 in files2:
@@ -103,8 +104,10 @@ class BaseLeoCompare:
                     name1 = g.os_path_join(dir1, f1)
                     name2 = g.os_path_join(dir2, f2)
                     val = filecmp.cmp(name1, name2, 0)
-                    if val: yes.append(f1)
-                    else: no.append(f1)
+                    if val:
+                        yes.append(f1)
+                    else:
+                        no.append(f1)
                 except Exception:
                     self.show("exception in filecmp.cmp")
                     g.es_exception()
@@ -162,10 +165,13 @@ class BaseLeoCompare:
             self.show("exception comparing files")
             g.es_exception()
         try:
-            if f1: f1.close()
-            if f2: f2.close()
+            if f1:
+                f1.close()
+            if f2:
+                f2.close()
             if self.outputFile:
-                self.outputFile.close(); self.outputFile = None
+                self.outputFile.close()
+                self.outputFile = None
         except Exception:
             self.show("exception closing files")
             g.es_exception()
@@ -189,7 +195,10 @@ class BaseLeoCompare:
     #@+node:ekr.20031218072017.3638: *3* compare_open_files
     def compare_open_files(self, f1, f2, name1, name2):
         # self.show("compare_open_files")
-        lines1 = 0; lines2 = 0; mismatches = 0; printTrailing = True
+        lines1 = 0
+        lines2 = 0
+        mismatches = 0
+        printTrailing = True
         sentinelComment1 = sentinelComment2 = None
         if self.openOutputFile():
             self.show("1: " + name1)
@@ -199,49 +208,66 @@ class BaseLeoCompare:
         #@+<< handle opening lines >>
         #@+node:ekr.20031218072017.3639: *4* << handle opening lines >>
         if self.ignoreSentinelLines:
-            s1 = g.readlineForceUnixNewline(f1); lines1 += 1
-            s2 = g.readlineForceUnixNewline(f2); lines2 += 1
+            s1 = g.readlineForceUnixNewline(f1)
+            lines1 += 1
+            s2 = g.readlineForceUnixNewline(f2)
+            lines2 += 1
             # Note: isLeoHeader may return None.
             sentinelComment1 = self.isLeoHeader(s1)
             sentinelComment2 = self.isLeoHeader(s2)
-            if not sentinelComment1: self.show("no @+leo line for " + name1)
-            if not sentinelComment2: self.show("no @+leo line for " + name2)
+            if not sentinelComment1:
+                self.show("no @+leo line for " + name1)
+            if not sentinelComment2:
+                self.show("no @+leo line for " + name2)
         if self.ignoreFirstLine1:
             if s1 is None:
-                g.readlineForceUnixNewline(f1); lines1 += 1
+                g.readlineForceUnixNewline(f1)
+                lines1 += 1
             s1 = None
         if self.ignoreFirstLine2:
             if s2 is None:
-                g.readlineForceUnixNewline(f2); lines2 += 1
+                g.readlineForceUnixNewline(f2)
+                lines2 += 1
             s2 = None
         #@-<< handle opening lines >>
         while 1:
             if s1 is None:
-                s1 = g.readlineForceUnixNewline(f1); lines1 += 1
+                s1 = g.readlineForceUnixNewline(f1)
+                lines1 += 1
             if s2 is None:
-                s2 = g.readlineForceUnixNewline(f2); lines2 += 1
+                s2 = g.readlineForceUnixNewline(f2)
+                lines2 += 1
             #@+<< ignore blank lines and/or sentinels >>
             #@+node:ekr.20031218072017.3640: *4* << ignore blank lines and/or sentinels >>
             # Completely empty strings denotes end-of-file.
             if s1:
                 if self.ignoreBlankLines and s1.isspace():
-                    s1 = None; continue
+                    s1 = None
+                    continue
                 if self.ignoreSentinelLines and sentinelComment1 and self.isSentinel(
                     s1, sentinelComment1):
-                    s1 = None; continue
+                    s1 = None
+                    continue
             if s2:
                 if self.ignoreBlankLines and s2.isspace():
-                    s2 = None; continue
+                    s2 = None
+                    continue
                 if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(
                     s2, sentinelComment2):
-                    s2 = None; continue
+                    s2 = None
+                    continue
             #@-<< ignore blank lines and/or sentinels >>
-            n1 = len(s1); n2 = len(s2)
-            if n1 == 0 and n2 != 0: self.show("1.eof***:")
-            if n2 == 0 and n1 != 0: self.show("2.eof***:")
-            if n1 == 0 or n2 == 0: break
+            n1 = len(s1)
+            n2 = len(s2)
+            if n1 == 0 and n2 != 0:
+                self.show("1.eof***:")
+            if n2 == 0 and n1 != 0:
+                self.show("2.eof***:")
+            if n1 == 0 or n2 == 0:
+                break
             match = self.compare_lines(s1, s2)
-            if not match: mismatches += 1
+            if not match:
+                mismatches += 1
             #@+<< print matches and/or mismatches >>
             #@+node:ekr.20031218072017.3641: *4* << print matches and/or mismatches >>
             if self.limitCount == 0 or mismatches <= self.limitCount:
@@ -283,13 +309,10 @@ class BaseLeoCompare:
     #@+node:ekr.20031218072017.3644: *3* compare.filecmp
     def filecmp(self, f1, f2):
         val = filecmp.cmp(f1, f2)
-        if 1:
-            if val: self.show("equal")
-            else: self.show("*** not equal")
+        if val:
+            self.show("equal")
         else:
-            self.show("filecmp.cmp returns:")
-            if val: self.show(str(val) + " (equal)")
-            else: self.show(str(val) + " (not equal)")
+            self.show("*** not equal")
         return val
     #@+node:ekr.20031218072017.3645: *3* compare.utils...
     #@+node:ekr.20031218072017.3646: *4* compare.doOpen
@@ -302,22 +325,22 @@ class BaseLeoCompare:
             return None
     #@+node:ekr.20031218072017.3647: *4* compare.dump
     def dump(self, tag, s):
-        compare = self; out = tag
+        compare = self
+        out = tag
         for ch in s[:-1]:  # don't print the newline
             if compare.makeWhitespaceVisible:
                 if ch == '\t':
-                    out += "["; out += "t"; out += "]"
+                    out += "["
+                    out += "t"
+                    out += "]"
                 elif ch == ' ':
-                    out += "["; out += " "; out += "]"
-                else: out += ch
-            else:
-                if 1:
+                    out += "["
+                    out += " "
+                    out += "]"
+                else:
                     out += ch
-                else:  # I don't know why I thought this was a good idea ;-)
-                    if ch == '\t' or ch == ' ':
-                        out += ' '
-                    else:
-                        out += ch
+            else:
+                out += ch
         self.show(out)
     #@+node:ekr.20031218072017.3648: *4* compare.dumpToEndOfFile
     def dumpToEndOfFile(self, tag, f, s, line, printTrailing):
@@ -670,33 +693,6 @@ def diff_leo_files_helper(event, title, visible):
         CompareLeoOutlines(c).diff_list_of_files(paths, visible=visible)
     elif len(paths) == 1:
         g.es_print('Please pick two or more .leo files')
-#@+node:ekr.20031218072017.3632: *3* go
-def go():
-    compare = LeoCompare(
-        commands=None,
-        appendOutput=True,
-        ignoreBlankLines=True,
-        ignoreFirstLine1=False,
-        ignoreFirstLine2=False,
-        ignoreInteriorWhitespace=False,
-        ignoreLeadingWhitespace=True,
-        ignoreSentinelLines=False,
-        limitCount=9,  # Zero means don't stop.
-        limitToExtension=".py",  # For directory compares.
-        makeWhitespaceVisible=True,
-        printBothMatches=False,
-        printMatches=False,
-        printMismatches=True,
-        printTrailingMismatches=False,
-        outputFileName=None)
-    if 1:  # Compare all files in Tangle test directories
-        path1 = "c:\\prog\\test\\tangleTest\\"
-        path2 = "c:\\prog\\test\\tangleTestCB\\"
-        compare.compare_directories(path1, path2)
-    else:  # Compare two files.
-        name1 = "c:\\prog\\test\\compare1.txt"
-        name2 = "c:\\prog\\test\\compare2.txt"
-        compare.compare_files(name1, name2)
 #@-others
 #@@language python
 #@@tabwidth -4

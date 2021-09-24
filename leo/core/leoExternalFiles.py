@@ -281,7 +281,8 @@ class ExternalFilesController:
         """Return the file extension to be used in the temp file."""
         if ext:
             for ch in ("'", '"'):
-                if ext.startswith(ch): ext = ext.strip(ch)
+                if ext.startswith(ch):
+                    ext = ext.strip(ch)
         if not ext:
             # if node is part of @<file> tree, get ext from file name
             for p2 in p.self_and_parents(copy=False):
@@ -321,8 +322,10 @@ class ExternalFilesController:
                 # Found the nearest ancestor @<file> node.
                 found = True
                 base, ext2 = g.os_path_splitext(h)
-                if p2 == p: h = base
-                if ext2: ext = ext2
+                if p2 == p:
+                    h = base
+                if ext2:
+                    ext = ext2
             ancestors.append(g.sanitize_filename(h))
         # The base directory is <tempdir>/Leo<id(v)>.
         ancestors.append("Leo" + str(id(p.v)))
@@ -420,7 +423,8 @@ class ExternalFilesController:
             elif kind == 'os.spawnl':
                 filename = g.os_path_basename(arg)
                 command = f"os.spawnl({arg},{filename},{fn})"
-                if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
+                if not testing:
+                    os.spawnl(os.P_NOWAIT, arg, filename, fn)
             elif kind == 'os.spawnv':
                 filename = os.path.basename(arg_tuple[0])
                 vtuple = arg_tuple[1:]
@@ -445,10 +449,12 @@ class ExternalFilesController:
                 # c.openWith(data=[func,None,None])
                 # func will be called with one arg, the filename
                 command = f"{kind}({fn})"
-                if not testing: kind(fn)
+                if not testing:
+                    kind(fn)
             else:
                 command = 'bad command:' + str(kind)
-                if not testing: g.trace(command)
+                if not testing:
+                    g.trace(command)
             return command  # for unit testing.
         except Exception:
             g.es('exception executing open-with command:', command)

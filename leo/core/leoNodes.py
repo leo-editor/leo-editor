@@ -251,10 +251,12 @@ class Position:
     def __gt__(self, other):
         """Return True if self appears after other in outline order."""
         stack1, stack2 = self.stack, other.stack
-        n1, n2 = len(stack1), len(stack2); n = min(n1, n2)
+        n1, n2 = len(stack1), len(stack2)
+        n = min(n1, n2)
         # Compare the common part of the stacks.
         for item1, item2 in zip(stack1, stack2):
-            v1, x1 = item1; v2, x2 = item2
+            v1, x1 = item1
+            v2, x2 = item2
             if x1 > x2:
                 return True
             if x1 < x2:
@@ -264,11 +266,13 @@ class Position:
             x1, x2 = self._childIndex, other._childIndex
             return x1 > x2
         if n1 < n2:
-            x1 = self._childIndex; v2, x2 = other.stack[n]
+            x1 = self._childIndex
+            v2, x2 = other.stack[n]
             return x1 > x2
         # n1 > n2
         # 2011/07/28: Bug fix suggested by SegundoBob.
-        x1 = other._childIndex; v2, x2 = self.stack[n]
+        x1 = other._childIndex
+        v2, x2 = self.stack[n]
         return x2 >= x1
     #@+node:ekr.20040117173448: *4* p.__nonzero__ & __bool__
     def __bool__(self):
@@ -354,7 +358,8 @@ class Position:
     #@+node:ekr.20040315023430.1: *4* p.convertTreeToString
     def convertTreeToString(self):
         """Convert a positions  suboutline to a string in MORE format."""
-        p = self; level1 = p.level()
+        p = self
+        level1 = p.level()
         array = []
         for p in p.self_and_subtree(copy=False):
             array.append(p.moreHead(level1) + '\n')
@@ -388,7 +393,8 @@ class Position:
         """Returns the body string in MORE format.
 
         Inserts a backslash before any leading plus, minus or backslash."""
-        p = self; array = []
+        p = self
+        array = []
         lines = p.b.split('\n')
         for s in lines:
             i = g.skip_ws(s, 0)
@@ -854,8 +860,10 @@ class Position:
     #@+node:ekr.20080416161551.193: *5* hasThreadNext (the only complex hasX method)
     def hasThreadNext(self):
         p = self
-        if not p.v: return False
-        if p.hasChildren() or p.hasNext(): return True
+        if not p.v:
+            return False
+        if p.hasChildren() or p.hasNext():
+            return True
         n = len(p.stack) - 1
         while n >= 0:
             v, childIndex = p.stack[n]
@@ -1125,7 +1133,8 @@ class Position:
     #@+node:ekr.20080416161551.217: *4* p._unlink
     def _unlink(self):
         """Unlink the receiver p from the tree."""
-        p = self; n = p._childIndex
+        p = self
+        n = p._childIndex
         parent_v = p._parentVnode()
             # returns None if p.v is None
         child = p.v
@@ -1150,7 +1159,8 @@ class Position:
             g.trace('parent_v.children[n]', parent_v.children[n])
             g.trace('child', child)
             g.trace('** callers:', g.callers())
-            if g.unitTesting: assert False, 'children[%s] != p.v'
+            if g.unitTesting:
+                assert False, 'children[%s] != p.v'
         else:
             g.trace(
                 f"**can not happen: bad child index: {n}, "
@@ -1221,7 +1231,8 @@ class Position:
     #@+node:ekr.20080416161551.204: *4* p.moveToNext
     def moveToNext(self):
         """Move a position to its next sibling."""
-        p = self; n = p._childIndex
+        p = self
+        n = p._childIndex
         parent_v = p._parentVnode()
             # Returns None if p.v is None.
         if p and not p.v:
@@ -1500,7 +1511,8 @@ class Position:
 
         Returns the newly created position.
         """
-        p = self; context = p.v.context
+        p = self
+        context = p.v.context
         p2 = self.copy()
         p2.v = VNode(context=context)
         p2.v.iconVal = 0
@@ -1524,7 +1536,8 @@ class Position:
 
         Returns the newly created position.
         """
-        p = self; context = p.v.context
+        p = self
+        context = p.v.context
         p2 = self.copy()
         p2.v = VNode(context=context)
         p2.v.iconVal = 0
@@ -1644,7 +1657,8 @@ class Position:
         # Recursively validate all the children.
         for child in p.children():
             r = child.validateOutlineWithParent(p)
-            if not r: result = False
+            if not r:
+                result = False
         return result
     #@+node:ekr.20090128083459.74: *3* p.Properties
     #@+node:ekr.20090128083459.75: *4* p.b property
@@ -2425,11 +2439,16 @@ class VNode:
         g.childrenModifiedSet.add(self)
     #@+node:ekr.20031218072017.3385: *4* v.computeIcon & setIcon
     def computeIcon(self):
-        val = 0; v = self
-        if v.hasBody(): val += 1
-        if v.isMarked(): val += 2
-        if v.isCloned(): val += 4
-        if v.isDirty(): val += 8
+        v = self
+        val = 0
+        if v.hasBody():
+            val += 1
+        if v.isMarked():
+            val += 2
+        if v.isCloned():
+            val += 4
+        if v.isDirty():
+            val += 8
         return val
 
     def setIcon(self):
@@ -2450,14 +2469,17 @@ class VNode:
         body = self.context.frame.body
         w = body.wrapper
         # Fix bug 981849: incorrect body content shown.
-        if ins is None: ins = 0
+        if ins is None:
+            ins = 0
         # This is very expensive for large text.
-        if traceTime: t1 = time.time()
+        if traceTime:
+            t1 = time.time()
         if hasattr(body.wrapper, 'setInsertPoint'):
             w.setInsertPoint(ins)
         if traceTime:
             delta_t = time.time() - t1
-            if delta_t > 0.1: g.trace(f"{delta_t:2.3f} sec")
+            if delta_t > 0.1:
+                g.trace(f"{delta_t:2.3f} sec")
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
         if spot is not None:
@@ -2467,7 +2489,8 @@ class VNode:
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self):
 
-        v = self; c = v.context
+        v = self
+        c = v.context
         w = c.frame.body
         if not w:
             return

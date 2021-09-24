@@ -72,6 +72,7 @@ class BackgroundProcessManager:
             self.kind = kind
             self.link_pattern = None
             self.link_root = link_root
+            self.number_of_lines = 0
             self.shell = shell
             #
             # Check and compile the link pattern.
@@ -97,7 +98,10 @@ class BackgroundProcessManager:
         """Check the running process, and switch if necessary."""
         if self.pid:
             if self.pid.poll() is None:
-                pass
+                # Unblock the process by reading immediately.
+                for s in self.pid.stdout:
+                    self.data.number_of_lines += 1
+                    self.put_log(s)
             else:
                 self.end()  # End this process.
                 self.start_next()  # Start the next process.
@@ -107,8 +111,13 @@ class BackgroundProcessManager:
     def end(self):
         """End the present process."""
         # Send the output to the log.
+        # print('BPM.end:')
+        n = self.data.number_of_lines
         for s in self.pid.stdout:
+            n += 1
             self.put_log(s)
+        if n > 0:
+            g.es_print(f"printed {n} line{g.plural(n)}")
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -122,7 +131,7 @@ class BackgroundProcessManager:
             self.data = self.process_queue.pop(0)
             self.data.callback()
         else:
-            self.put_log(f"{self.data.kind} finished")
+            g.es_print(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
@@ -241,10 +250,12 @@ class BackgroundProcessManager:
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
         if self.pid:
             # A process is already active.  Add a new callback.
+            # This trace is annoying.
+                # g.es_print(f'queue {kind}: {g.shortFileName(fn)}')
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
-                self.put_log(f'{kind}: {g.shortFileName(data.fn)}\n')
+                g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -259,7 +270,7 @@ class BackgroundProcessManager:
             # Start the process immediately.
             self.data = data
             self.kind = kind
-            self.put_log(f'{kind}: {g.shortFileName(fn)}\n')
+            g.es_print(f'{kind}: {g.shortFileName(fn)}')
             self.pid = subprocess.Popen(
                 command,
                 shell=shell,

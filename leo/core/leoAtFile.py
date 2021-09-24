@@ -351,8 +351,8 @@ class AtFile:
         """Remove p's tnodeList."""
         v = p.v
         if hasattr(v, "tnodeList"):
-            if False:  # Not an error, but a useful trace.
-                g.blue("deleting tnodeList for " + repr(v))
+            # Not an error, but a useful trace.
+                # g.blue("deleting tnodeList for " + repr(v))
             delattr(v, "tnodeList")
             v._p_changed = True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
@@ -376,7 +376,8 @@ class AtFile:
     #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
         """Create a 'Resurrected Nodes' node as the last top-level node."""
-        at = self; c = at.c; tag = 'Resurrected Nodes'
+        c = self.c
+        tag = 'Resurrected Nodes'
         # Find the last top-level node.
         last = c.rootPosition()
         while last.hasNext():
@@ -416,7 +417,8 @@ class AtFile:
     #@+node:ekr.20100224050618.11547: *6* at.isFileLike
     def isFileLike(self, s):
         """Return True if s has file-like sentinels."""
-        at = self; tag = "@+leo"
+        at = self
+        tag = "@+leo"
         s = g.checkUnicode(s)
         i = s.find(tag)
         if i == -1:
@@ -565,15 +567,18 @@ class AtFile:
         at.rememberReadPath(fn, p)
         # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None: return
+        if s is None:
+            return
         encoding = 'utf-8' if e is None else e
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
         head = ''
         ext = ext.lower()
-        if ext in ('.html', '.htm'): head = '@language html\n'
-        elif ext in ('.txt', '.text'): head = '@nocolor\n'
+        if ext in ('.html', '.htm'):
+            head = '@language html\n'
+        elif ext in ('.txt', '.text'):
+            head = '@nocolor\n'
         else:
             language = ic.languageForExtension(ext)
             if language and language != 'unknown_language':
@@ -593,7 +598,8 @@ class AtFile:
         at.rememberReadPath(fn, p)
         # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None: return
+        if s is None:
+            return
         encoding = 'utf-8' if e is None else e
         # Delete all children.
         while p.hasChildren():
@@ -672,7 +678,8 @@ class AtFile:
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn, p):
 
-        at = self; c = at.c; x = c.shadowController
+        at, c = self, self.c
+        x = c.shadowController
         if not fn == p.atShadowFileNodeName():
             at.error(
                 f"can not happen: fn: {fn} != atShadowNodeName: "
@@ -938,7 +945,7 @@ class AtFile:
     @cmd('write-at-auto-nodes')
     def writeAtAutoNodes(self, event=None):
         '''Write all @auto nodes in the selected outline.'''
-        at = self; c = at.c
+        at, c = self, self.c
         c.init_error_dialogs()
         at.writeAtAutoNodesHelper(writeDirtyOnly=False)
         c.raise_error_dialogs(kind='write')
@@ -946,15 +953,16 @@ class AtFile:
     @cmd('write-dirty-at-auto-nodes')
     def writeDirtyAtAutoNodes(self, event=None):
         '''Write all dirty @auto nodes in the selected outline.'''
-        at = self; c = at.c
+        at, c = self, self.c
         c.init_error_dialogs()
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
         """Write @auto nodes in the selected outline"""
-        at = self; c = at.c
-        p = c.p; after = p.nodeAfterTree()
+        at, c = self, self.c
+        p = c.p
+        after = p.nodeAfterTree()
         found = False
         while p and p != after:
             if (
@@ -980,7 +988,7 @@ class AtFile:
     @cmd('write-at-shadow-nodes')
     def writeAtShadowNodes(self, event=None):
         '''Write all @shadow nodes in the selected outline.'''
-        at = self; c = at.c
+        at, c = self, self.c
         c.init_error_dialogs()
         val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
         c.raise_error_dialogs(kind='write')
@@ -989,7 +997,7 @@ class AtFile:
     @cmd('write-dirty-at-shadow-nodes')
     def writeDirtyAtShadowNodes(self, event=None):
         '''Write all dirty @shadow nodes in the selected outline.'''
-        at = self; c = at.c
+        at, c = self, self.c
         c.init_error_dialogs()
         val = at.writeAtShadowNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
@@ -997,8 +1005,9 @@ class AtFile:
     #@+node:ekr.20190109153627.13: *7* at.writeAtShadowNodesHelper
     def writeAtShadowNodesHelper(self, writeDirtyOnly=True):
         """Write @shadow nodes in the selected outline"""
-        at = self; c = at.c
-        p = c.p; after = p.nodeAfterTree()
+        at, c = self, self.c
+        p = c.p
+        after = p.nodeAfterTree()
         found = False
         while p and p != after:
             if (
@@ -1606,7 +1615,8 @@ class AtFile:
         c = at.c
         junk, ext = g.os_path_splitext(fn)
         if ext:
-            if ext.startswith('.'): ext = ext[1:]
+            if ext.startswith('.'):
+                ext = ext[1:]
             language = g.app.extension_dict.get(ext)
             if language:
                 c.target_language = language
@@ -2528,7 +2538,8 @@ class AtFile:
         These lines are converted to @verbatim lines,
         so the read logic simply ignores lines preceding the @+leo sentinel.
         """
-        at = self; tag = "@first"
+        at = self
+        tag = "@first"
         i = 0
         while g.match(s, i, tag):
             i += len(tag)
@@ -2537,7 +2548,8 @@ class AtFile:
             i = g.skip_to_end_of_line(s, i)
             # Write @first line, whether empty or not
             line = s[j:i]
-            at.os(line); at.onl()
+            at.os(line)
+            at.onl()
             i = g.skip_nl(s, i)
     #@+node:ekr.20050506090955: *5* at.putAtLastLines
     def putAtLastLines(self, s):
@@ -2546,21 +2558,25 @@ class AtFile:
         These lines are converted to @verbatim lines,
         so the read logic simply ignores lines following the @-leo sentinel.
         """
-        at = self; tag = "@last"
+        at = self
+        tag = "@last"
         # Use g.splitLines to preserve trailing newlines.
         lines = g.splitLines(s)
-        n = len(lines); j = k = n - 1
+        n = len(lines)
+        j = k = n - 1
         # Scan backwards for @last directives.
         while j >= 0:
             line = lines[j]
-            if g.match(line, 0, tag): j -= 1
+            if g.match(line, 0, tag):
+                j -= 1
             elif not line.strip():
                 j -= 1
             else: break
         # Write the @last lines.
         for line in lines[j + 1 : k + 1]:
             if g.match(line, 0, tag):
-                i = len(tag); i = g.skip_ws(line, i)
+                i = len(tag)
+                i = g.skip_ws(line, i)
                 at.os(line[i:])
     #@+node:ekr.20041005105605.206: *5* at.putDirective & helper
     def putDirective(self, s, i, p):
@@ -2638,8 +2654,10 @@ class AtFile:
             n2, s2 = self.parseUnderindentTag(s)
             if n2 >= n:
                 return
-            if n > 0: n -= n2
-            else: n += n2
+            if n > 0:
+                n -= n2
+            else:
+                n += n2
         if n > 0:
             w = self.tab_width
             if w > 1:
@@ -2810,8 +2828,7 @@ class AtFile:
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):
         at = self
-        if True:  # args:
-            at.printError(*args)
+        at.printError(*args)
         at.errors += 1
 
     def printError(self, *args):
@@ -3029,7 +3046,8 @@ class AtFile:
             return False
         if not g.os_path_exists(fn):
             # No danger of overwriting fn.
-            if trace: g.trace('Return False: does not exist:', sfn)
+            if trace:
+                g.trace('Return False: does not exist:', sfn)
             return False
         # #1347: Prompt if the external file is newer.
         if efc:
@@ -3039,7 +3057,8 @@ class AtFile:
                 # so do *not* check its timestamp.
                 pass
             elif efc.has_changed(fn):
-                if trace: g.trace('Return True: changed:', sfn)
+                if trace:
+                    g.trace('Return True: changed:', sfn)
                 return True
         if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst
@@ -3051,7 +3070,8 @@ class AtFile:
                     and p.h in d.get(k, set())
                 ):
                     d[fn] = d[k]
-                    if trace: g.trace('Return False: in p.v.at_read:', sfn)
+                    if trace:
+                        g.trace('Return False: in p.v.at_read:', sfn)
                     return False
             aSet = d.get(fn, set())
             if trace:

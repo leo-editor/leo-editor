@@ -611,7 +611,8 @@ class VimCommands:
         """Common code for beginning insert mode."""
         self.do_trace()
         # c = self.c
-        if not w: w = self.w
+        if not w:
+            w = self.w
         self.state = 'insert'
         self.command_i = w.getInsertPoint() if i is None else i
         self.command_w = w
@@ -645,7 +646,8 @@ class VimCommands:
         s = w.getAllText()
         i1 = self.command_i
         i2 = w.getInsertPoint()
-        if i1 > i2: i1, i2 = i2, i1
+        if i1 > i2:
+            i1, i2 = i2, i1
         s2 = s[i1:i2]
         if self.n1 > 1:
             s3 = s2 * (self.n1 - 1)
@@ -1080,7 +1082,8 @@ class VimCommands:
                 while i >= 0:
                     if s[i] == self.ch:
                         match_i, n = i, n - 1
-                        if n == 0: break
+                        if n == 0:
+                            break
                     elif s[i] == '\n' and not self.cross_lines:
                         break
                     i -= 1
@@ -1113,7 +1116,8 @@ class VimCommands:
                 while i < len(s):
                     if s[i] == self.ch:
                         match_i, n = i, n - 1
-                        if n == 0: break
+                        if n == 0:
+                            break
                     elif s[i] == '\n' and not self.cross_lines:
                         break
                     i += 1
@@ -1514,7 +1518,8 @@ class VimCommands:
                 while i < len(s):
                     if s[i] == self.ch:
                         match_i, n = i, n - 1
-                        if n == 0: break
+                        if n == 0:
+                            break
                     elif s[i] == '\n' and not self.cross_lines:
                         break
                     i += 1
@@ -1550,7 +1555,8 @@ class VimCommands:
                 while i >= 0:
                     if s[i] == self.ch:
                         match_i, n = i, n - 1
-                        if n == 0: break
+                        if n == 0:
+                            break
                     elif s[i] == '\n' and not self.cross_lines:
                         break
                     i -= 1
@@ -2227,7 +2233,8 @@ class VimCommands:
             self.state = 'insert'
             w = self.w
             if self.is_text_wrapper(w) and self.test_for_insert_escape(w):
-                if self.trace_flag: g.trace('*** abort ***', w)
+                if self.trace_flag:
+                    g.trace('*** abort ***', w)
                 return
             # Special case for arrow keys.
             if self.stroke in self.arrow_d:
@@ -2375,12 +2382,18 @@ class VimCommands:
     def on_same_line(self, s, i1, i2):
         """Return True if i1 and i2 are on the same line."""
         # Ensure that i1 <= i2 and that i1 and i2 are in range.
-        if i1 > i2: i1, i2 = i2, i1
-        if i1 < 0: i1 = 0
-        if i1 >= len(s): i1 = len(s) - 1
-        if i2 < 0: i2 = 0
-        if i2 >= len(s): i2 = len(s) - 1
-        if s[i2] == '\n': i2 = max(0, i2 - 1)
+        if i1 > i2:
+            i1, i2 = i2, i1
+        if i1 < 0:
+            i1 = 0
+        if i1 >= len(s):
+            i1 = len(s) - 1
+        if i2 < 0:
+            i2 = 0
+        if i2 >= len(s):
+            i2 = len(s) - 1
+        if s[i2] == '\n':
+            i2 = max(0, i2 - 1)
         return s[i1:i2].count('\n') == 0
     #@+node:ekr.20140802225657.18022: *4* vc.oops
     def oops(self, message):
@@ -2490,7 +2503,8 @@ class VimCommands:
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(self, s, i):
         """Return the index of the first character on the line containing s[i]"""
-        if i >= len(s): i = len(s)
+        if i >= len(s):
+            i = len(s)
         while i > 0 and s[i - 1] != '\n':
             i -= 1
         return i

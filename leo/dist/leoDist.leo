@@ -2055,10 +2055,8 @@ print leo/core/.gitattributes
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
 </t>
-<t tx="ekr.20210815103531.1">From leo-editor folder:
-
-**build**
-
+<t tx="ekr.20210815103531.1">**build**
+git checkout 6.5
 python -m build
 
 **upload**
@@ -2075,9 +2073,9 @@ password:  EKR: Copy contents ofleo_pypi_token.txt
 
 **install**
 
-python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.4b3
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.5b1
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.4b3
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.5b1
 
 **uninstall after testint**
 

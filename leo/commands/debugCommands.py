@@ -28,7 +28,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
         python = sys.executable
         script = g.getScript(c, p)
         winpdb = self.findDebugger()
-        if not winpdb: return
+        if not winpdb:
+            return
         #check for doctest examples
         try:
             import doctest

@@ -56,7 +56,8 @@ class FreeMindImporter:
         attrib_text = element.attrib.get('text', '').strip()
         tag = element.tag if isinstance(element.tag, str) else ''
         text = element.text or ''
-        if not tag: text = text.strip()
+        if not tag:
+            text = text.strip()
         p.h = attrib_text or tag or 'Comment'
         p.b = text if text.strip() else ''
         for child in element:
@@ -354,7 +355,8 @@ class LeoImportCommands:
         Output code parts as is.
         """
         c = self.c
-        if not v or not c: return ""
+        if not v or not c:
+            return ""
         startInCode = not c.config.at_root_bodies_start_in_doc_mode
         nl = self.output_newline
         docstart = nl + "@ " if self.webType == "cweb" else nl + "@" + nl
@@ -400,7 +402,8 @@ class LeoImportCommands:
         theType = self.webType
         while i < len(s):
             progress = j = i  # We should be at the start of a line here.
-            i = g.skip_nl(s, i); i = g.skip_ws(s, i)
+            i = g.skip_nl(s, i)
+            i = g.skip_ws(s, i)
             if self.isDocStart(s, i):
                 return i, result
             if (g.match_word(s, i, "@doc") or
@@ -416,7 +419,8 @@ class LeoImportCommands:
                 return i, result
             # Copy the entire line, escaping '@' and
             # Converting @others to < < @ others > >
-            i = g.skip_line(s, j); line = s[j:i]
+            i = g.skip_line(s, j)
+            line = s[j:i]
             if theType == "cweb":
                 line = line.replace("@", "@@")
             else:
@@ -478,9 +482,11 @@ class LeoImportCommands:
         theFile.close()
     #@+node:ekr.20031218072017.1148: *4* ic.outlineToWeb
     def outlineToWeb(self, fileName, webType):
-        c = self.c; nl = self.output_newline
+        c = self.c
+        nl = self.output_newline
         current = c.p
-        if not current: return
+        if not current:
+            return
         self.setEncoding()
         self.webType = webType
         try:
@@ -512,7 +518,8 @@ class LeoImportCommands:
             s, e = g.readFileIntoString(fileName, self.encoding)
             if s is None:
                 return None
-            if e: self.encoding = e
+            if e:
+                self.encoding = e
             #@+<< set delims from the header line >>
             #@+node:ekr.20031218072017.3302: *5* << set delims from the header line >>
             # Skip any non @+leo lines.
@@ -521,10 +528,12 @@ class LeoImportCommands:
                 i = g.skip_line(s, i)
             # Get the comment delims from the @+leo sentinel line.
             at = self.c.atFileCommands
-            j = g.skip_line(s, i); line = s[i:j]
+            j = g.skip_line(s, i)
+            line = s[i:j]
             valid, junk, start_delim, end_delim, junk = at.parseLeoSentinel(line)
             if not valid:
-                if not toString: g.es("invalid @+leo sentinel in", fileName)
+                if not toString:
+                    g.es("invalid @+leo sentinel in", fileName)
                 return None
             if end_delim:
                 line_delim = None
@@ -561,7 +570,8 @@ class LeoImportCommands:
     def removeSentinelLines(self, s, line_delim, start_delim, unused_end_delim):
         """Properly remove all sentinle lines in s."""
         delim = (line_delim or start_delim or '') + '@'
-        verbatim = delim + 'verbatim'; verbatimFlag = False
+        verbatim = delim + 'verbatim'
+        verbatimFlag = False
         result = []
         for line in g.splitLines(s):
             i = g.skip_ws(line, 0)
@@ -575,9 +585,10 @@ class LeoImportCommands:
         return ''.join(result)
     #@+node:ekr.20031218072017.1464: *4* ic.weave
     def weave(self, filename):
-        c = self.c; nl = self.output_newline
-        p = c.p
-        if not p: return
+        p = self.c.p
+        nl = self.output_newline
+        if not p:
+            return
         self.setEncoding()
         try:
             with open(filename, 'w', encoding=self.encoding) as f:
@@ -585,14 +596,18 @@ class LeoImportCommands:
                     s = p.b
                     s2 = s.strip()
                     if s2:
-                        f.write("-" * 60); f.write(nl)
+                        f.write("-" * 60)
+                        f.write(nl)
                         #@+<< write the context of p to f >>
                         #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >> (weave)
                         # write the headlines of p, p's parent and p's grandparent.
-                        context = []; p2 = p.copy(); i = 0
+                        context = []
+                        p2 = p.copy()
+                        i = 0
                         while i < 3:
                             i += 1
-                            if not p2: break
+                            if not p2:
+                                break
                             context.append(p2.h)
                             p2.moveToParent()
                         context.reverse()
@@ -603,7 +618,8 @@ class LeoImportCommands:
                             f.write(line)
                             f.write(nl)
                         #@-<< write the context of p to f >>
-                        f.write("-" * 60); f.write(nl)
+                        f.write("-" * 60)
+                        f.write(nl)
                         f.write(s.rstrip() + nl)
         except Exception:
             g.es("exception opening:", filename)
@@ -687,7 +703,8 @@ class LeoImportCommands:
         """
         junk, self.fileName = g.os_path_split(fileName)
         self.methodName, self.fileType = g.os_path_splitext(self.fileName)
-        if not ext: ext = self.fileType
+        if not ext:
+            ext = self.fileType
         ext = ext.lower()
         if not s:
             # Set the kind for error messages in readFileIntoString.
@@ -701,11 +718,14 @@ class LeoImportCommands:
     def scanUnknownFileType(self, s, p, ext):
         """Scan the text of an unknown file type."""
         body = ''
-        if ext in ('.html', '.htm'): body += '@language html\n'
-        elif ext in ('.txt', '.text'): body += '@nocolor\n'
+        if ext in ('.html', '.htm'):
+            body += '@language html\n'
+        elif ext in ('.txt', '.text'):
+            body += '@nocolor\n'
         else:
             language = self.languageForExtension(ext)
-            if language: body += f"@language {language}\n"
+            if language:
+                body += f"@language {language}\n"
         self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
             p.clearDirty()
@@ -714,7 +734,8 @@ class LeoImportCommands:
     def languageForExtension(self, ext):
         """Return the language corresponding to the extension ext."""
         unknown = 'unknown_language'
-        if ext.startswith('.'): ext = ext[1:]
+        if ext.startswith('.'):
+            ext = ext[1:]
         if ext:
             z = g.app.extra_extension_dict.get(ext)
             if z not in (None, 'none', 'None'):
@@ -729,8 +750,8 @@ class LeoImportCommands:
         return language
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes(self):
-        c = self.c
-        p = c.p; after = p.nodeAfterTree()
+        c, p = self.c, self.c.p
+        after = p.nodeAfterTree()
         found = False
         while p and p != after:
             if p.isAtAutoNode():
@@ -766,7 +787,8 @@ class LeoImportCommands:
             fileName = fileName.replace('\\', '/')  # 2011/10/09.
             g.setGlobalOpenDir(fileName)
             isThin = at.scanHeaderForThin(fileName)
-            if command: undoData = u.beforeInsertNode(parent)
+            if command:
+                undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
                 # Create @file node, not a deprecated @thin node.
@@ -777,10 +799,12 @@ class LeoImportCommands:
                 at.read(p)
             p.contract()
             p.setDirty()  # 2011/10/09: tell why the file is dirty!
-            if command: u.afterInsertNode(p, command, undoData)
+            if command:
+                u.afterInsertNode(p, command, undoData)
         current.expand()
         c.setChanged()
-        if command: u.afterChangeGroup(p, command)
+        if command:
+            u.afterChangeGroup(p, command)
         c.redraw(current)
         return p
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
@@ -839,9 +863,11 @@ class LeoImportCommands:
         MindMapImporter(self.c).import_files(files)
     #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
     def importWebCommand(self, files, webType):
-        c = self.c; current = c.p
-        if current is None: return
-        if not files: return
+        c, current = self.c, self.c.p
+        if current is None:
+            return
+        if not files:
+            return
         self.tab_width = c.getTabWidth(current)  # New in 4.3.
         self.webType = webType
         for fileName in files:
@@ -853,7 +879,8 @@ class LeoImportCommands:
         c.redraw(current)
     #@+node:ekr.20031218072017.3225: *5* createOutlineFromWeb
     def createOutlineFromWeb(self, path, parent):
-        c = self.c; u = c.undoer
+        c = self.c
+        u = c.undoer
         junk, fileName = g.os_path_split(path)
         undoData = u.beforeInsertNode(parent)
         # Create the top-level headline.
@@ -873,7 +900,9 @@ class LeoImportCommands:
         name = None
         while i < k:
             if g.is_c_id(s[i]):
-                j = i; i = g.skip_c_id(s, i); name = s[j:i]
+                j = i
+                i = g.skip_c_id(s, i)
+                name = s[j:i]
             elif s[i] == '(':
                 if name:
                     return name
@@ -898,13 +927,15 @@ class LeoImportCommands:
                 i = g.skip_ws_and_nl(s, i)
                 # Allow constructs such as @ @c, or @ @<.
                 if self.isDocStart(s, i):
-                    i += 2; i = g.skip_ws(s, i)
+                    i += 2
+                    i = g.skip_ws(s, i)
                 if g.match(s, i, "@d") or g.match(s, i, "@f"):
                     # Look for a macro name.
                     directive = s[i : i + 2]
                     i = g.skip_ws(s, i + 2)  # skip the @d or @f
                     if i < len(s) and g.is_c_id(s[i]):
-                        j = i; g.skip_c_id(s, i)
+                        j = i
+                        g.skip_c_id(s, i)
                         return s[j:i]
                     return directive
                 if g.match(s, i, "@c") or g.match(s, i, "@p"):
@@ -914,7 +945,8 @@ class LeoImportCommands:
                 if g.match(s, i, "@<"):
                     # Look for a section def.
                     # A small bug: the section def must end on this line.
-                    j = i; k = g.find_on_line(s, i, "@>")
+                    j = i
+                    k = g.find_on_line(s, i, "@>")
                     if k > -1 and (g.match(s, k + 2, "+=") or g.match(s, k + 2, "=")):
                         return s[j : k + 2]  # return the section ref.
                 i = g.skip_line(s, i)
@@ -945,22 +977,30 @@ class LeoImportCommands:
         lb = "@<" if theType == "cweb" else "<<"
         rb = "@>" if theType == "cweb" else ">>"
         s, e = g.readFileIntoString(fileName)
-        if s is None: return
+        if s is None:
+            return
         #@+<< Create a symbol table of all section names >>
         #@+node:ekr.20031218072017.3232: *6* << Create a symbol table of all section names >>
-        i = 0; self.web_st = []
+        i = 0
+        self.web_st = []
         while i < len(s):
             progress = i
             i = g.skip_ws_and_nl(s, i)
             if self.isDocStart(s, i):
-                if theType == "cweb": i += 2
-                else: i = g.skip_line(s, i)
+                if theType == "cweb":
+                    i += 2
+                else:
+                    i = g.skip_line(s, i)
             elif theType == "cweb" and g.match(s, i, "@@"):
                 i += 2
             elif g.match(s, i, lb):
-                i += 2; j = i; k = g.find_on_line(s, j, rb)
-                if k > -1: self.cstEnter(s[j:k])
-            else: i += 1
+                i += 2
+                j = i
+                k = g.find_on_line(s, j, rb)
+                if k > -1:
+                    self.cstEnter(s[j:k])
+            else:
+                i += 1
             assert i > progress
         #@-<< Create a symbol table of all section names >>
         #@+<< Create nodes for limbo text and the root section >>
@@ -1000,13 +1040,16 @@ class LeoImportCommands:
                     while i < len(s):
                         progress = i
                         i = g.skip_ws_and_nl(s, i)
-                        if self.isModuleStart(s, i): break
-                        else: i = g.skip_line(s, i)
+                        if self.isModuleStart(s, i):
+                            break
+                        else:
+                            i = g.skip_line(s, i)
                         assert i > progress
                 #@+<< Handle cweb @d, @f, @c and @p directives >>
                 #@+node:ekr.20031218072017.3235: *7* << Handle cweb @d, @f, @c and @p directives >>
                 if g.match(s, i, "@d") or g.match(s, i, "@f"):
-                    i += 2; i = g.skip_line(s, i)
+                    i += 2
+                    i = g.skip_line(s, i)
                     # Place all @d and @f directives in the same node.
                     while i < len(s):
                         progress = i
@@ -1034,12 +1077,15 @@ class LeoImportCommands:
                 #@-<< Handle cweb @d, @f, @c and @p directives >>
             else:
                 assert self.isDocStart(s, i)
-                start = i; i = g.skip_line(s, i)
+                start = i
+                i = g.skip_line(s, i)
                 while i < len(s):
                     progress = i
                     i = g.skip_ws_and_nl(s, i)
-                    if self.isDocStart(s, i): break
-                    else: i = g.skip_line(s, i)
+                    if self.isDocStart(s, i):
+                        break
+                    else:
+                        i = g.skip_line(s, i)
                     assert i > progress
             body = s[start:i]
             body = self.massageWebBody(body)
@@ -1070,7 +1116,8 @@ class LeoImportCommands:
     def cstEnter(self, s):
         # Don't enter names that end in "..."
         s = s.rstrip()
-        if s.endswith("..."): return
+        if s.endswith("..."):
+            return
         # Put the section name in the symbol table, retaining capitalization.
         lower = self.cstCanonicalize(s, True)  # do lower
         upper = self.cstCanonicalize(s, False)  # don't lower.
@@ -1084,18 +1131,21 @@ class LeoImportCommands:
     def cstLookup(self, target):
         # Do nothing if the ... convention is not used.
         target = target.strip()
-        if not target.endswith("..."): return target
+        if not target.endswith("..."):
+            return target
         # Canonicalize the target name, and remove the trailing "..."
         ctarget = target[:-3]
         ctarget = self.cstCanonicalize(ctarget).strip()
-        found = False; result = target
+        found = False
+        result = target
         for s in self.web_st:
             cs = self.cstCanonicalize(s)
             if cs[: len(ctarget)] == ctarget:
                 if found:
                     g.es('', f"****** {target}", 'is also a prefix of', s)
                 else:
-                    found = True; result = s
+                    found = True
+                    result = s
                     # g.es("replacing",target,"with",s)
         return result
     #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
@@ -1104,7 +1154,8 @@ class LeoImportCommands:
         Parse p.b as source code, creating a tree of descendant nodes.
         This is essentially an import of p.b.
         """
-        if not p: return
+        if not p:
+            return
         c, ic = self.c, self
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
@@ -1249,7 +1300,7 @@ class LeoImportCommands:
             d2 = g.app.atAutoDict
             for z in d2:
                 if d2.get(z) == aClass:
-                        return z
+                    return z
         return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
@@ -1326,16 +1377,21 @@ class LeoImportCommands:
                 # Scan to end of the doc part.
                 if g.match(s, i, "@ %def"):
                     # Don't remove the newline following %def
-                    i = g.skip_line(s, i); start = end = i
+                    i = g.skip_line(s, i)
+                    start = end = i
                 else:
-                    start = end = i; i += 2
+                    start = end = i
+                    i += 2
                 while i < len(s):
                     progress2 = i
                     i = g.skip_ws_and_nl(s, i)
                     if self.isModuleStart(s, i) or g.match(s, i, lb):
-                        end = i; break
-                    elif theType == "cweb": i += 1
-                    else: i = g.skip_to_end_of_line(s, i)
+                        end = i
+                        break
+                    elif theType == "cweb":
+                        i += 1
+                    else:
+                        i = g.skip_to_end_of_line(s, i)
                     assert i > progress2
                 # Remove newlines from start to end.
                 doc = s[start:end]
@@ -1358,7 +1414,9 @@ class LeoImportCommands:
         while i < len(s):
             progress = i
             if g.match(s, i, lb):
-                i += 2; j = i; k = g.find_on_line(s, j, rb)
+                i += 2
+                j = i
+                k = g.find_on_line(s, j, rb)
                 if k > -1:
                     name = s[j:k]
                     name2 = self.cstLookup(name)
@@ -1537,7 +1595,8 @@ class MORE_Importer:
                 c.redraw(p)
     #@+node:ekr.20161006101347.1: *3* MORE.import_file
     def import_file(self, fileName):  # Not a command, so no event arg.
-        c = self.c; u = c.undoer
+        c = self.c
+        u = c.undoer
         ic = c.importCommands
         if not c.p:
             return None
@@ -1570,10 +1629,13 @@ class MORE_Importer:
     #@+node:ekr.20031218072017.3215: *3* MORE.import_lines
     def import_lines(self, strings, first_p):
         c = self.c
-        if not strings: return None
-        if not self.check_lines(strings): return None
+        if not strings:
+            return None
+        if not self.check_lines(strings):
+            return None
         firstLevel, junk = self.headlineLevel(strings[0])
-        lastLevel = -1; theRoot = last_p = None
+        lastLevel = -1
+        theRoot = last_p = None
         index = 0
         while index < len(strings):
             progress = index
@@ -1649,7 +1711,8 @@ class MORE_Importer:
     #@+node:ekr.20031218072017.3222: *3* MORE.headlineLevel
     def headlineLevel(self, s):
         """return the headline level of s,or -1 if the string is not a MORE headline."""
-        level = 0; i = 0
+        level = 0
+        i = 0
         while i < len(s) and s[i] in ' \t':  # 2016/10/06: allow blanks or tabs.
             level += 1
             i += 1
@@ -1665,9 +1728,11 @@ class MORE_Importer:
 
     def check_lines(self, strings):
 
-        if not strings: return False
+        if not strings:
+            return False
         level1, plusFlag = self.headlineLevel(strings[0])
-        if level1 == -1: return False
+        if level1 == -1:
+            return False
         # Check the level of all headlines.
         lastLevel = level1
         for s in strings:
@@ -1951,8 +2016,10 @@ class TabImporter:
         blanks, tabs = 0, 0
         for s in lines:
             lws = self.lws(s)
-            if '\t' in lws: tabs += 1
-            if ' ' in lws: blanks += 1
+            if '\t' in lws:
+                tabs += 1
+            if ' ' in lws:
+                blanks += 1
         if tabs and blanks:
             if warn:
                 g.es_print('intermixed leading blanks and tabs.')
@@ -2022,7 +2089,8 @@ class TabImporter:
             last = root if root else c.lastTopLevel()
                 # For unit testing.
             self.root = last.insertAfter()
-            if fn: self.root.h = fn
+            if fn:
+                self.root.h = fn
         lines = g.splitLines(s1)
         self.stack = []
         # Redo the checks in case we are called from a script.
@@ -2280,9 +2348,11 @@ class ToDoTask:
                 tag = m.group(1)
                 # Add the tag.
                 if tag in aList:
-                    if trace: g.trace('Duplicate tag:', tag)
+                    if trace:
+                        g.trace('Duplicate tag:', tag)
                 else:
-                    if trace: g.trace(f"Add {kind} tag: {tag!s}")
+                    if trace:
+                        g.trace(f"Add {kind} tag: {tag!s}")
                     aList.append(tag)
                 # Remove the tag from the task.
                 s = re.sub(pat, "", s)

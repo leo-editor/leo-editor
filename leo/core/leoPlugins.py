@@ -408,7 +408,8 @@ class LeoPluginsController:
         d = self.loadedModulesFilesDict
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)
-        data = []; n = 4
+        data = []
+        n = 4
         for moduleName in d:
             fileName = d.get(moduleName)
             n = max(n, len(moduleName))
@@ -445,7 +446,8 @@ class LeoPluginsController:
                 g.es_print(*args, **keys)
 
         s = g.app.config.getEnabledPlugins()
-        if not s: return
+        if not s:
+            return
         if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
             if 0:
                 s2 = f"@enabled-plugins found in {g.app.config.enabledPluginsFileName}"
@@ -617,10 +619,9 @@ class LeoPluginsController:
             moduleName = self.loadingModuleNameStack[-1]
         except IndexError:
             moduleName = '<no module>'
-        if 0:
-            if g.unitTesting: g.pr('')
-            g.pr(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
-        if g.unitTesting: return
+        # print(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
+        if g.unitTesting:
+            return
         if tag in self.handlers:
             g.es(f"*** Two exclusive handlers for '{tag}'")
         else:
@@ -641,9 +642,7 @@ class LeoPluginsController:
             moduleName = self.loadingModuleNameStack[-1]
         except IndexError:
             moduleName = '<no module>'
-        if 0:
-            if g.unitTesting: g.pr('')
-            g.pr(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
+        # print(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
         items = self.handlers.get(tag, [])
         functions = [z.fn for z in items]
         if fn not in functions:  # Vitalije

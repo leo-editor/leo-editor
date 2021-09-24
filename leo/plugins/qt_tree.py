@@ -561,7 +561,8 @@ class LeoQtTree(leoFrame.LeoTree):
         # Draw all top-level nodes and their visible descendants.
         if c.hoistStack:
             bunch = c.hoistStack[-1]
-            p = bunch.p; h = p.h
+            p = bunch.p
+            h = p.h
             if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
                 p = p.firstChild()
                 while p:
@@ -723,7 +724,8 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.busy:
             return
         c = self.c
-        if not p: p = c.p
+        if not p:
+            p = c.p
         if not g.doHook("icondclick1", c=c, p=p, event=event):
             self.endEditLabel()
             self.OnIconDoubleClick(p)  # Call the method in the base class.
@@ -1200,7 +1202,8 @@ class LeoQtTree(leoFrame.LeoTree):
         Scroll a QTreeWidget up or down or right or left.
         kind is in ('down-line','down-page','up-line','up-page', 'right', 'left')
         """
-        c = self.c; w = self.treeWidget
+        c = self.c
+        w = self.treeWidget
         if kind in ('left', 'right'):
             hScroll = w.horizontalScrollBar()
             if kind == 'right':
@@ -1213,12 +1216,18 @@ class LeoQtTree(leoFrame.LeoTree):
             h = w.size().height()
             lineSpacing = w.fontMetrics().lineSpacing()
             n = h / lineSpacing
-            if kind == 'down-half-page': delta = n / 2
-            elif kind == 'down-line': delta = 1
-            elif kind == 'down-page': delta = n
-            elif kind == 'up-half-page': delta = -n / 2
-            elif kind == 'up-line': delta = -1
-            elif kind == 'up-page': delta = -n
+            if kind == 'down-half-page':
+                delta = n / 2
+            elif kind == 'down-line':
+                delta = 1
+            elif kind == 'down-page':
+                delta = n
+            elif kind == 'up-half-page':
+                delta = -n / 2
+            elif kind == 'up-line':
+                delta = -1
+            elif kind == 'up-page':
+                delta = -n
             else:
                 delta = 0
                 g.trace('bad kind:', kind)
@@ -1357,7 +1366,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17913: *4* qtree.setItemForCurrentPosition
     def setItemForCurrentPosition(self):
         """Select the item for c.p"""
-        c = self.c; p = c.currentPosition()
+        p = self.c.p
         if self.busy:
             return None
         if not p:

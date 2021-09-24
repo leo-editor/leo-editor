@@ -853,7 +853,8 @@ class NestedSplitter(QtWidgets.QSplitter):
             sizes = psp.sizes()
             [a, b] = self.sizes()
             s = sizes[i]
-            s1 = a * s / (a + b); s2 = b * s / (a + b)
+            s1 = a * s / (a + b)
+            s2 = b * s / (a + b)
             sizes[i : i + 1] = [s1, s2]
             prev = self.widget(0)
             next = self.widget(1)
@@ -871,7 +872,8 @@ class NestedSplitter(QtWidgets.QSplitter):
             orientation = self.other_orientation[self.orientation()]
             prev = self.widget(index - 1)
             next = self.widget(index)
-            if None in (prev, next): return
+            if None in (prev, next):
+                return
             sizes = self.sizes()
             s1, s2 = sizes[index - 1 : index + 1]
             sizes[index - 1 : index + 1] = [s1 + s2]

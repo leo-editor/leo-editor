@@ -473,11 +473,13 @@ class Commands:
         if g.unitTesting:
             return
         if keys.get('c') != c:
-            if trace: g.trace('no c')
+            if trace:
+                g.trace('no c')
             return
         self.idle_focus_count += 1
         if c.in_qt_dialog:
-            if trace and trace_in_dialog: g.trace('in_qt_dialog')
+            if trace and trace_in_dialog:
+                g.trace('in_qt_dialog')
             return
         w = g.app.gui.get_focus(at_idle=True)
         if g.app.gui.active:
@@ -781,10 +783,12 @@ class Commands:
         else:
             p = None
         d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
-        if define_name: d['__name__'] = define_name
+        if define_name:
+            d['__name__'] = define_name
         d['script_args'] = args or []
         d['script_gnx'] = g.app.scriptDict.get('script_gnx')
-        if namespace: d.update(namespace)
+        if namespace:
+            d.update(namespace)
         #
         # A kludge: reset c.inCommand here to handle the case where we *never* return.
         # (This can happen when there are multiple event loops.)
@@ -1044,7 +1048,7 @@ class Commands:
     #@+node:ekr.20070615070925.1: *5* c.firstVisible
     def firstVisible(self):
         """Move to the first visible node of the present chapter or hoist."""
-        c = self; p = c.p
+        c, p = self, self.p
         while 1:
             back = p.visBack(c)
             if back and back.isVisible(c):
@@ -1104,7 +1108,8 @@ class Commands:
         This method is called during idle time, so not generating positions
         here fixes a major leak.
         """
-        c = self; current = c._currentPosition
+        c = self
+        current = c._currentPosition
         return current and current.hasNext()
     #@+node:ekr.20040803112450: *6* c.isCurrentPosition
     def isCurrentPosition(self, p):
@@ -1140,7 +1145,7 @@ class Commands:
     #@+node:ekr.20031218072017.4146: *5* c.lastVisible
     def lastVisible(self):
         """Move to the last visible node of the present chapter or hoist."""
-        c = self; p = c.p
+        c, p = self, self.p
         while 1:
             next = p.visNext(c)
             if next and next.isVisible(c):
@@ -1160,16 +1165,19 @@ class Commands:
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
-        if not p or not p.v: return False
+        if not p or not p.v:
+            return False
 
         rstack = root.stack + [(root.v, root._childIndex)] if root else []
         pstack = p.stack + [(p.v, p._childIndex)]
 
-        if len(rstack) > len(pstack): return False
+        if len(rstack) > len(pstack):
+            return False
 
         par = self.hiddenRootNode
         for j, x in enumerate(pstack):
-            if j < len(rstack) and x != rstack[j]: return False
+            if j < len(rstack) and x != rstack[j]:
+                return False
             v, i = x
             if i >= len(par.children) or v is not par.children[i]:
                 return False
@@ -1225,7 +1233,8 @@ class Commands:
         Return the topmost visible node.
         This is affected by chapters and hoists.
         """
-        c = self; cc = c.chapterController
+        c = self
+        cc = c.chapterController
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             p = bunch.p
@@ -1719,7 +1728,9 @@ class Commands:
     #@+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
     def checkAllPythonCode(self, event=None, ignoreAtIgnore=True):
         """Check all nodes in the selected tree for syntax and tab errors."""
-        c = self; count = 0; result = "ok"
+        c = self
+        count = 0
+        result = "ok"
         for p in c.all_unique_positions():
             count += 1
             if not g.unitTesting:
@@ -1754,7 +1765,9 @@ class Commands:
         checkOnSave=False
     ):
         """Check the selected tree for syntax and tab errors."""
-        c = self; count = 0; result = "ok"
+        c = self
+        count = 0
+        result = "ok"
         if not g.unitTesting:
             g.es("checking Python code   ")
         for p in c.p.self_and_subtree():
@@ -2415,7 +2428,8 @@ class Commands:
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
         stroke = event.stroke
-        if trace: g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
+        if trace:
+            g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
         if not stroke:
             return
         #
@@ -2762,9 +2776,11 @@ class Commands:
         """
         c = self
         s, e = g.readFileIntoString(fn)
-        if s is None: return
+        if s is None:
+            return
         head, ext = g.os_path_splitext(fn)
-        if ext.startswith('.'): ext = ext[1:]
+        if ext.startswith('.'):
+            ext = ext[1:]
         language = g.app.extension_dict.get(ext)
         if language:
             prefix = f"@color\n@language {language}\n\n"
@@ -2776,7 +2792,8 @@ class Commands:
         p2.h = f"@edit {fn}"
         p2.b = prefix + s
         w = c.frame.body.wrapper
-        if w: w.setInsertPoint(0)
+        if w:
+            w.setInsertPoint(0)
         c.redraw()
         c.recolor()
     #@+node:ekr.20110530124245.18248: *4* c.looksLikeDerivedFile
@@ -2997,7 +3014,9 @@ class Commands:
     #@+node:ekr.20031218072017.2945: *4* c.Dragging
     #@+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
     def dragToNthChildOf(self, p, parent, n):
-        c = self; u = c.undoer; undoType = 'Drag'
+        c = self
+        u = c.undoer
+        undoType = 'Drag'
         current = c.p
         if not c.checkDrag(p, parent):
             return
@@ -3014,7 +3033,9 @@ class Commands:
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2353: *5* c.dragAfter
     def dragAfter(self, p, after):
-        c = self; u = self.undoer; undoType = 'Drag'
+        c = self
+        u = self.undoer
+        undoType = 'Drag'
         current = c.p
         if not c.checkDrag(p, after):
             return
@@ -3031,7 +3052,9 @@ class Commands:
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
     def dragCloneToNthChildOf(self, p, parent, n):
-        c = self; u = c.undoer; undoType = 'Clone Drag'
+        c = self
+        u = c.undoer
+        undoType = 'Clone Drag'
         current = c.p
         clone = p.clone()  # Creates clone & dependents, does not set undo.
         if (
@@ -3052,7 +3075,9 @@ class Commands:
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
     def dragCloneAfter(self, p, after):
-        c = self; u = c.undoer; undoType = 'Clone Drag'
+        c = self
+        u = c.undoer
+        undoType = 'Clone Drag'
         current = c.p
         clone = p.clone()  # Creates clone.  Does not set undo.
         if c.checkDrag(
@@ -3074,14 +3099,12 @@ class Commands:
     def beginUpdate(self):
         """Deprecated: does nothing."""
         g.trace('***** c.beginUpdate is deprecated', g.callers())
-        if g.app.unitTesting:
-            assert False
+        assert not g.unitTesting
 
     def endUpdate(self, flag=True):
         """Request a redraw of the screen if flag is True."""
         g.trace('***** c.endUpdate is deprecated', g.callers())
-        if g.app.unitTesting:
-            assert False
+        assert not g.unitTesting
         c = self
         if flag:
             c.requestRedrawFlag = True
@@ -3287,11 +3310,13 @@ class Commands:
         """
         if not event or not event.char or not event.char.isalnum():
             return
-        c = self; p = c.p; p1 = p.copy()
+        c, p = self, self.p
+        p1 = p.copy()
         invisible = c.config.getBool('invisible-outline-navigation')
         ch = event.char if event else ''
         allFlag = ch.isupper() and invisible  # all is a global (!?)
-        if not invisible: ch = ch.lower()
+        if not invisible:
+            ch = ch.lower()
         found = False
         extend = self.navQuickKey()
         attempts = (True, False) if extend else (False,)
@@ -3305,11 +3330,14 @@ class Commands:
                 if not p:
                     p = c.rootPosition()
                 if p == p1:  # Never try to match the same position.
-                    found = False; break
+                    found = False
+                    break
                 newPrefix = c.navHelper(p, ch, extend2)
                 if newPrefix:
-                    found = True; break
-            if found: break
+                    found = True
+                    break
+            if found:
+                break
         if found:
             c.selectPosition(p)
             c.redraw_after_select(p)
@@ -3336,7 +3364,8 @@ class Commands:
         return time.time() - c.navTime < deltaTime
     #@+node:ekr.20061002095711: *6* c.navHelper
     def navHelper(self, p, ch, extend):
-        c = self; h = p.h.lower()
+        c = self
+        h = p.h.lower()
         if extend:
             prefix = c.navPrefix + ch
             return h.startswith(prefix.lower()) and prefix
@@ -3443,7 +3472,8 @@ class Commands:
                 g.trace('(c)', name)
             g.app.gui.set_focus(c, w)
         else:
-            if trace: g.trace('(c) no w')
+            if trace:
+                g.trace('(c) no w')
         c.requestedFocusWidget = None
     #@+node:ekr.20080514131122.10: *5* c.invalidateFocus (do nothing)
     def invalidateFocus(self):
@@ -3473,11 +3503,13 @@ class Commands:
             c.bodyWantsFocus()
     #@+node:ekr.20080514131122.18: *5* c.xWantsFocus
     def bodyWantsFocus(self):
-        c = self; body = c.frame.body
+        c = self
+        body = c.frame.body
         c.request_focus(body and body.wrapper)
 
     def logWantsFocus(self):
-        c = self; log = c.frame.log
+        c = self
+        log = c.frame.log
         c.request_focus(log and log.logCtrl)
 
     def minibufferWantsFocus(self):
@@ -3485,11 +3517,13 @@ class Commands:
         c.request_focus(c.miniBufferWidget)
 
     def treeWantsFocus(self):
-        c = self; tree = c.frame.tree
+        c = self
+        tree = c.frame.tree
         c.request_focus(tree and tree.canvas)
 
     def widgetWantsFocus(self, w):
-        c = self; c.request_focus(w)
+        c = self
+        c.request_focus(w)
     #@+node:ekr.20080514131122.19: *5* c.xWantsFocusNow
     # widgetWantsFocusNow does an automatic update.
 
@@ -3502,11 +3536,11 @@ class Commands:
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self):
-        c = self; body = c.frame.body
+        c, body = self, self.frame.body
         c.widgetWantsFocusNow(body and body.wrapper)
 
     def logWantsFocusNow(self):
-        c = self; log = c.frame.log
+        c, log = self, self.frame.log
         c.widgetWantsFocusNow(log and log.logCtrl)
 
     def minibufferWantsFocusNow(self):
@@ -3514,7 +3548,7 @@ class Commands:
         c.widgetWantsFocusNow(c.miniBufferWidget)
 
     def treeWantsFocusNow(self):
-        c = self; tree = c.frame.tree
+        c, tree = self, self.frame.tree
         c.widgetWantsFocusNow(tree and tree.canvas)
     #@+node:ekr.20031218072017.2955: *4* c.Menus
     #@+node:ekr.20080610085158.2: *5* c.add_command
@@ -3529,7 +3563,8 @@ class Commands:
             def add_commandCallback(c=c, command=command):
                 val = command()
                 # Careful: func may destroy c.
-                if c.exists: c.outerUpdate()
+                if c.exists:
+                    c.outerUpdate()
                 return val
 
             keys['command'] = add_commandCallback
@@ -3555,7 +3590,7 @@ class Commands:
         return False
     #@+node:ekr.20031218072017.2957: *6* c.canContractAllSubheads
     def canContractAllSubheads(self):
-        c = self; current = c.p
+        current = self.p
         for p in current.subtree():
             if p != current and p.isExpanded():
                 return True
@@ -3566,14 +3601,14 @@ class Commands:
         return c.p.parent()
     #@+node:ekr.20031218072017.2959: *6* c.canContractSubheads
     def canContractSubheads(self):
-        c = self; current = c.p
+        current = self.p
         for child in current.children():
             if child.isExpanded():
                 return True
         return False
     #@+node:ekr.20031218072017.2960: *6* c.canCutOutline & canDeleteHeadline
     def canDeleteHeadline(self):
-        c = self; p = c.p
+        c, p = self, self.p
         if c.hoistStack:
             bunch = c.hoistStack[0]
             if p == bunch.p:
@@ -3602,7 +3637,7 @@ class Commands:
         return False
     #@+node:ekr.20031218072017.2964: *6* c.canExpandSubheads
     def canExpandSubheads(self):
-        c = self; current = c.p
+        current = self.p
         for p in current.children():
             if p != current and not p.isExpanded():
                 return True
@@ -3689,7 +3724,7 @@ class Commands:
         return p and p.hasBack()
     #@+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp
     def canMoveOutlineUp(self):
-        c = self; current = c.p
+        c, current = self, self.p
         visBack = current and current.visBack(c)
         if not visBack:
             return False
@@ -3716,19 +3751,19 @@ class Commands:
         return p and p.hasChildren()
     #@+node:ekr.20031218072017.2977: *6* c.canSelect....
     def canSelectThreadBack(self):
-        c = self; p = c.p
+        p = self.p
         return p.hasThreadBack()
 
     def canSelectThreadNext(self):
-        c = self; p = c.p
+        p = self.p
         return p.hasThreadNext()
 
     def canSelectVisBack(self):
-        c = self; p = c.p
+        c, p = self, self.p
         return p.visBack(c)
 
     def canSelectVisNext(self):
-        c = self; p = c.p
+        c, p = self, self.p
         return p.visNext(c)
     #@+node:ekr.20031218072017.2978: *6* c.canShiftBodyLeft/Right
     def canShiftBodyLeft(self) -> bool:
@@ -3739,11 +3774,11 @@ class Commands:
     canShiftBodyRight = canShiftBodyLeft
     #@+node:ekr.20031218072017.2979: *6* c.canSortChildren, canSortSiblings
     def canSortChildren(self) -> bool:
-        c = self; p = c.p
+        p = self.p
         return p and p.hasChildren()
 
     def canSortSiblings(self) -> bool:
-        c = self; p = c.p
+        p = self.p
         return p and (p.hasNext() or p.hasBack())
     #@+node:ekr.20031218072017.2980: *6* c.canUndo & canRedo
     def canUndo(self) -> bool:
@@ -3763,14 +3798,14 @@ class Commands:
     #@+node:ekr.20040323172420: *6* Slow routines: no longer used
     #@+node:ekr.20031218072017.2966: *7* c.canGoToNextDirtyHeadline (slow)
     def canGoToNextDirtyHeadline(self):
-        c = self; current = c.p
+        c, current = self, self.p
         for p in c.all_unique_positions():
             if p != current and p.isDirty():
                 return True
         return False
     #@+node:ekr.20031218072017.2967: *7* c.canGoToNextMarkedHeadline (slow)
     def canGoToNextMarkedHeadline(self):
-        c = self; current = c.p
+        c, current = self, self.p
         for p in c.all_unique_positions():
             if p != current and p.isMarked():
                 return True
@@ -3892,7 +3927,8 @@ class Commands:
     #@+node:ekr.20070226113916: *5* c.treeSelectHelper
     def treeSelectHelper(self, p):
         c = self
-        if not p: p = c.p
+        if not p:
+            p = c.p
         if p:
             # Do not call expandAllAncestors here.
             c.selectPosition(p)
@@ -4181,7 +4217,8 @@ class Commands:
                     d[p.v] = aList2
             except ValueError:
                 ok = False
-            if not ok: break
+            if not ok:
+                break
         return ok, d
     #@+node:ekr.20210626151932.1: *5* newHeadline
     #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)

@@ -50,8 +50,10 @@ class IdleTimeManager:
 
     def on_idle(self, timer):
         """IdleTimeManager: Run all idle-time callbacks."""
-        if not g.app: return
-        if g.app.killed: return
+        if not g.app:
+            return
+        if g.app.killed:
+            return
         if not g.app.pluginsController:
             g.trace('No g.app.pluginsController', g.callers())
             timer.stop()
@@ -357,18 +359,7 @@ class LeoApp:
         #@-<< LeoApp: scripting ivars >>
         #@+<< LeoApp: unit testing ivars >>
         #@+node:ekr.20161028040330.1: *5* << LeoApp: unit testing ivars >>
-        self.isExternalUnitTest = False
-            # True: we are running a unit test externally.
-        self.runningAllUnitTests = False
-            # True: we are running all unit tests (Only for local tests).
-        self.suppressImportChecks = False
-            # Used only in basescanner.py
-            # True: suppress importCommands.check
-        self.unitTestGui = None
-            # A way to override the gui in external unit tests.
-        self.unitTestMenusDict = {}
-            # Created in LeoMenu.createMenuEntries for a unit test.
-            # keys are command names. values are sets of strokes.
+        self.suppressImportChecks = False  # True: suppress importCommands.check
         #@-<< LeoApp: unit testing ivars >>
         # Define all global data.
         self.init_at_auto_names()
@@ -1339,7 +1330,8 @@ class LeoApp:
             c.promptingForClose = True
             veto = frame.promptForSave()
             c.promptingForClose = False
-            if veto: return False
+            if veto:
+                return False
         g.app.setLog(None)  # no log until we reactive a window.
         g.doHook("close-frame", c=c)
         #
@@ -1906,7 +1898,8 @@ class LoadManager:
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path:
             # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
-            if trace: g.trace('--theme:', path)
+            if trace:
+                g.trace('--theme:', path)
             return path
         #
         # Step 2: look for the @string theme-name setting in the first loaded file.
@@ -1927,7 +1920,8 @@ class LoadManager:
                     path = resolve(setting, tag=tag)
                     if path:
                         # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
-                        if trace: g.trace("First loaded file", theme_c.shortFileName(), path)
+                        if trace:
+                            g.trace("First loaded file", theme_c.shortFileName(), path)
                         return path
         #
         # Step 3: use the @string theme-name setting in myLeoSettings.leo.
@@ -1935,7 +1929,8 @@ class LoadManager:
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
         path = resolve(setting, tag=tag)
-        if trace: g.trace("myLeoSettings.leo", path)
+        if trace:
+            g.trace("myLeoSettings.leo", path)
         return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
@@ -2092,8 +2087,10 @@ class LoadManager:
         Both old_d and new_d remain unchanged.
         """
         lm = self
-        if not old_d: return new_d
-        if not new_d: return old_d
+        if not old_d:
+            return new_d
+        if not new_d:
+            return old_d
         bi_list = new_d.get(g.app.trace_setting)
         if bi_list:
             # This code executed only if g.app.trace_setting exists.
@@ -2287,7 +2284,8 @@ class LoadManager:
                 # Set global vars
                 g.app.theme_directory = g.os_path_dirname(lm.theme_path)
                     # Used by the StyleSheetManager.
-                if trace: g.trace('g.app.theme_directory', g.app.theme_directory)
+                if trace:
+                    g.trace('g.app.theme_directory', g.app.theme_directory)
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:
@@ -2300,7 +2298,8 @@ class LoadManager:
             for key in sorted(list(d.keys())):
                 gs = d.get(key)
                 print(f"{key:35} {g.shortFileName(gs.path):17} {gs.val}")
-            if d: print('')
+            if d:
+                print('')
         else:
             # print(d)
             print(f"{d.name} {len(d.d.keys())}")
@@ -2312,7 +2311,8 @@ class LoadManager:
                 val = d.get(key)
                 # print('%20s %s' % (key,val.dump()))
                 print(f"{key:35} {[z.stroke for z in val]}")
-            if d: print('')
+            if d:
+                print('')
         else:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
@@ -3025,8 +3025,10 @@ class LoadManager:
                 # Tracing will lead to unbounded recursion unless
                 # sys.stderr has been redirected on the command line.
                 app = g.app
-                if not app or app.killed: return
-                if app.gui and app.gui.consoleOnly: return
+                if not app or app.killed:
+                    return
+                if app.gui and app.gui.consoleOnly:
+                    return
                 log = app.log
                 # Compute the effective args.
                 d = {
@@ -3155,7 +3157,8 @@ class LoadManager:
             # The log is not set properly here.
             ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
                 # Call c.fileCommands.openLeoFile to read the .leo file.
-            if not ok: return None
+            if not ok:
+                return None
         else:
             # Create a wrapper .leo file if:
             # a) fn is a .leo file that does not exist or
@@ -3208,10 +3211,13 @@ class LoadManager:
         c.initAfterLoad()
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if c.chapterController: c.chapterController.finishCreate()
-        if k: k.setDefaultInputState()
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        if k:
+            k.setDefaultInputState()
         c.initialFocusHelper()
-        if k: k.showStateAndMode()
+        if k:
+            k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()
             # #181: Honor focus requests.
@@ -3244,7 +3250,8 @@ class LoadManager:
             if p and p.hasBack():
                 p.back().doDelete()
                 p = c.rootPosition()
-            if not p: return None
+            if not p:
+                return None
         else:
             # Create an @<file> node.
             p = c.rootPosition()
@@ -3306,11 +3313,13 @@ class LoadManager:
         # lm = self
         try:
             theFile = zipfile.ZipFile(fn, 'r')
-            if not theFile: return None
+            if not theFile:
+                return None
             # Read the file into an StringIO file.
             aList = theFile.namelist()
             name = aList and len(aList) == 1 and aList[0]
-            if not name: return None
+            if not name:
+                return None
             s = theFile.read(name)
             s2 = g.toUnicode(s, 'utf-8')
             return StringIO(s2)
@@ -3440,7 +3449,8 @@ class RecentFilesManager:
     #@+node:ekr.20120225072226.10297: *3* rf.clearRecentFiles
     def clearRecentFiles(self, c):
         """Clear the recent files list, then add the present file."""
-        rf = self; u = c.undoer; menu = c.frame.menu
+        rf = self
+        menu, u = c.frame.menu, c.undoer
         bunch = u.beforeClearRecentFiles()
         recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
         menu.deleteRecentFilesMenuItems(recentFilesMenu)
@@ -3449,8 +3459,7 @@ class RecentFilesManager:
             rf.createRecentFilesMenuItems(frame.c)
         u.afterClearRecentFiles(bunch)
         # Write the file immediately.
-        rf.writeRecentFilesFile(c, force=True)
-            # Force the write message.
+        rf.writeRecentFilesFile(c, force=True)  # Force the write message.
     #@+node:ekr.20120225072226.10301: *3* rf.createRecentFilesMenuItems
     def createRecentFilesMenuItems(self, c):
         rf = self
@@ -3551,7 +3560,8 @@ class RecentFilesManager:
                 path = g.os_path_realpath(g.os_path_finalize(path))
             if path and path not in seen:
                 ok = rf.readRecentFilesFile(path)
-                if ok: seen.append(path)
+                if ok:
+                    seen.append(path)
         if not seen and rf.write_recent_files_as_needed:
             rf.createRecentFiles()
     #@+node:ekr.20061010121944: *4* rf.createRecentFiles
@@ -3626,7 +3636,8 @@ class RecentFilesManager:
     def updateRecentFiles(self, fileName):
         """Create the RecentFiles menu.  May be called with Null fileName."""
         rf = self
-        if g.unitTesting: return
+        if g.unitTesting:
+            return
 
         def munge(name):
             return g.os_path_finalize(name or '').lower()
@@ -3657,7 +3668,7 @@ class RecentFilesManager:
         Write content of "edit_headline" node as recentFiles and recreates
         menues.
         """
-        rf = self; p = c.p
+        p, rf = c.p, self
         p = g.findNodeAnywhere(c, self.edit_headline)
         if p:
             files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
@@ -3738,7 +3749,8 @@ class RecentFilesManager:
         except Exception:
             g.error('unexpected exception writing', fileName)
             g.es_exception()
-            if g.unitTesting: raise
+            if g.unitTesting:
+                raise
         return False
     #@-others
 #@+node:ekr.20150514125218.1: ** Top-level-commands

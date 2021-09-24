@@ -389,7 +389,8 @@ class LeoQtEventFilter(QtCore.QObject):
             g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
-        if g.unitTesting: return
+        if g.unitTesting:
+            return
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         exclude_names = ('tree', 'log', 'body', 'minibuffer')
         traceActivate = True
@@ -513,8 +514,10 @@ class LeoQtEventFilter(QtCore.QObject):
                     obj.objectName() if hasattr(obj, 'objectName')
                     else f"id: {id(obj)}, {obj.__class__.__name__}"
                 )
-                if traceKey: g.trace(
-                    f"{kind:-25} {self.tag:-25} in-state: {repr(c.k and c.k.inState()):5} obj: {tag}")
+                if traceKey:
+                    g.trace(
+                        f"{kind:-25} {self.tag:-25} "
+                        f"in-state: {repr(c.k and c.k.inState()):5} obj: {tag}")
                 return
         if eventType not in ignore:
             tag = (
@@ -603,7 +606,8 @@ class LeoQtEventFilter(QtCore.QObject):
         if verbose:  # Too verbose for --trace-events.
             for d in (ignore_d, focus_d, line_edit_ignore_d, none_ignore_d):
                 t = d.get(et)
-                if t: break
+                if t:
+                    break
             else:
                 t = et
             g.trace(f"{t:20} {w.__class__}")

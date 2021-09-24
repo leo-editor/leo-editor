@@ -256,7 +256,8 @@ class ChapterController:
             chapterName, binding = m.group(1), m.group(3)
             if chapterName:
                 chapterName = self.sanitize(chapterName)
-            if binding: binding = binding.strip()
+            if binding:
+                binding = binding.strip()
         else:
             chapterName = binding = None
         return chapterName, binding

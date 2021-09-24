@@ -84,7 +84,8 @@ def restartLeo(self, event=None):
     g.app.finishQuit()
     # 7. Restart, restoring the original command line.
     args = ['-c'] + [z for z in lm.old_argv]
-    if trace: g.trace('restarting with args', args)
+    if trace:
+        g.trace('restarting with args', args)
     sys.stdout.flush()
     sys.stderr.flush()
     os.execv(sys.executable, args)
@@ -340,11 +341,13 @@ def refreshFromDisk(self, event=None):
     word = p.h[0:i]
     if word == '@auto':
         # This includes @auto-*
-        if shouldDelete: p.v._deleteAllChildren()
+        if shouldDelete:
+            p.v._deleteAllChildren()
         # Fix #451: refresh-from-disk selects wrong node.
         p = at.readOneAtAutoNode(p)
     elif word in ('@thin', '@file'):
-        if shouldDelete: p.v._deleteAllChildren()
+        if shouldDelete:
+            p.v._deleteAllChildren()
         at.read(p)
     elif word == '@clean':
         # Wishlist 148: use @auto parser if the node is empty.
@@ -482,11 +485,12 @@ def saveAs(self, event=None, fileName=None):
     kwarg: a file name, for use by file-save-as-zipped,
     file-save-as-unzipped and scripts using Leo's bridge.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
-    if inBody: p.saveCursorAndScroll()
+    if inBody:
+        p.saveCursorAndScroll()
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
@@ -545,7 +549,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
 
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
@@ -808,7 +812,7 @@ def weave(self, event=None):
 @g.commander_command('read-at-auto-nodes')
 def readAtAutoNodes(self, event=None):
     """Read all @auto nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     c.init_error_dialogs()
     undoData = u.beforeChangeTree(p)
@@ -820,7 +824,7 @@ def readAtAutoNodes(self, event=None):
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self, event=None):
     """Read all @file nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     # c.init_error_dialogs() # Done in at.readAll.
     undoData = u.beforeChangeTree(p)
@@ -832,7 +836,7 @@ def readAtFileNodes(self, event=None):
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self, event=None):
     """Read all @shadow nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     c.init_error_dialogs()
     undoData = u.beforeChangeTree(p)
@@ -852,7 +856,8 @@ def readFileIntoNode(self, event=None):
         title="Read File Into Node",
         filetypes=filetypes,
         defaultextension=None)
-    if not fileName: return
+    if not fileName:
+        return
     s, e = g.readFileIntoString(fileName)
     if s is None:
         return
@@ -895,7 +900,7 @@ def writeFileFromNode(self, event=None):
     If node starts with @read-file-into-node, use the full path name in the headline.
     Otherwise, prompt for a file name.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     c.endEditing()
     h = p.h.rstrip()
     s = p.b
@@ -1043,7 +1048,8 @@ def setReferenceFile(self, event=None):
             title="Select reference Leo file",
             filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
-    if not fileName: return
+    if not fileName:
+        return
     c.fileCommands.setReferenceFile(fileName)
 #@+node:ekr.20031218072017.2841: ** Tangle
 #@+node:ekr.20031218072017.2842: *3* c_file.tangleAll

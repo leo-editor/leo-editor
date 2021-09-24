@@ -17922,6 +17922,85 @@ def test_minibuffer_find_commands(self):
         # This is not a full test.  We must use keyboardQuit here!
         c.k.simulateCommand(command)
         c.k.keyboardQuit(None)
+#@+node:ekr.20210923171931.1: *3* OLD: TestCommands.test_all_menus_execute_the_proper_command
+def test_all_menus_execute_the_proper_command(self):
+    """
+    Check that when masterMenuHandler does:
+
+        event = g.app.gui.create_key_event(c,binding=stroke,w=w)
+        return k.masterKeyHandler(event)
+
+    that the effect will be to call commandName, where commandName
+    is the arg passed to masterMenuHandler.
+
+    createMenuEntries creates the association of stroke to commandName.
+    """
+    
+    trace = False  # False: the unit test can fail.
+    c, p = self.c, self.c.p
+    k = c.k
+    d = g.app.unitTestMenusDict
+    assert not d
+    self.fail('test')
+    ### g.printObj(d, tag=g.app.unitTestMenusDict)
+    d2 = k.bindingsDict
+    d2name = 'k.bindingsDict'
+    commandNames = list(d.keys())
+    commandNames.sort()
+    exclude_strokes = ('Alt+F4', 'Ctrl+q', 'Ctrl+Shift+Tab',)
+    for name in commandNames:
+        assert name in c.commandsDict, 'unexpected command name: %s' % (
+            repr(name))
+        aSet = d.get(name)
+        aList = list(aSet)
+        aList.sort()
+        for z in exclude_strokes:
+            if z in aList:
+                aList.remove(z)
+        for stroke in aList:
+            aList2 = d2.get(stroke)
+            assert aList2, 'stroke %s not in %s' % (
+                repr(stroke), d2name)
+            for b in aList2:
+                if b.commandName == name:
+                    break
+            else:
+                if trace:
+                    inverseBindingDict = k.computeInverseBindingDict()
+                    print('%s: stroke %s not bound to %s in %s' % (
+                        p.h, repr(stroke), repr(name), d2name))
+                    print('%s: inverseBindingDict.get(%s): %s' % (
+                        p.h, name, inverseBindingDict.get(name)))
+                else:
+                    assert False, 'stroke %s not bound to %s in %s' % (
+                        repr(stroke), repr(name), d2name)
+#@+node:ekr.20031218072017.3632: ** go (leoCompare.py) no longer used
+def go():
+    compare = LeoCompare(
+        commands=None,
+        appendOutput=True,
+        ignoreBlankLines=True,
+        ignoreFirstLine1=False,
+        ignoreFirstLine2=False,
+        ignoreInteriorWhitespace=False,
+        ignoreLeadingWhitespace=True,
+        ignoreSentinelLines=False,
+        limitCount=9,  # Zero means don't stop.
+        limitToExtension=".py",  # For directory compares.
+        makeWhitespaceVisible=True,
+        printBothMatches=False,
+        printMatches=False,
+        printMismatches=True,
+        printTrailingMismatches=False,
+        outputFileName=None)
+    if 1:  # Compare all files in Tangle test directories
+        path1 = "c:\\prog\\test\\tangleTest\\"
+        path2 = "c:\\prog\\test\\tangleTestCB\\"
+        compare.compare_directories(path1, path2)
+    else:  # Compare two files.
+        name1 = "c:\\prog\\test\\compare1.txt"
+        name2 = "c:\\prog\\test\\compare2.txt"
+        compare.compare_files(name1, name2)
 #@-all
 #@@nosearch
 #@-leo

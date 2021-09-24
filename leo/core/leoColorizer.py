@@ -817,8 +817,10 @@ class BaseJEditColorizer(BaseColorizer):
         )
         for key, default in aList:
             val = d.get(key, default)
-            if val in ('true', 'True'): val = True
-            if val in ('false', 'False'): val = False
+            if val in ('true', 'True'):
+                val = True
+            if val in ('false', 'False'):
+                val = False
             setattr(self, key, val)
     #@+node:ekr.20110605121601.18585: *4* bjc.initModeFromBunch
     def initModeFromBunch(self, bunch):
@@ -1461,7 +1463,8 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:tbrown.20170707150713.1: *5* jedit.match_tabs
     def match_trailing_ws(self, s, i):
         """match trailing whitespace"""
-        j = i; n = len(s)
+        j = i
+        n = len(s)
         while j < n and s[j] in ' \t':
             j += 1
         if j > i and j == n:
@@ -1572,9 +1575,12 @@ class JEditColorizer(BaseJEditColorizer):
         delegate='', exclude_match=False
     ):
         """Succeed if the regular expression regex matches s[i:]."""
-        if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0  # 7/5/2008
+        if at_line_start and i != 0 and s[i - 1] != '\n':
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            return 0  # 7/5/2008
         n = self.match_regexp_helper(s, i, regexp)
         if n > 0:
             j = len(s)
@@ -1604,7 +1610,8 @@ class JEditColorizer(BaseJEditColorizer):
         if i > 0 and s[i - 1] in self.word_chars:
             return 0
         # Get the word as quickly as possible.
-        j = i; n = len(s)
+        j = i
+        n = len(s)
         chars = self.word_chars
         # A kludge just for Haskell:
         if self.language in ('haskell', 'clojure'):
@@ -1624,7 +1631,8 @@ class JEditColorizer(BaseJEditColorizer):
                 g.callers(),
             )
             return 0
-        if self.ignore_case: word = word.lower()
+        if self.ignore_case:
+            word = word.lower()
         kind = self.keywordsDict.get(word)
         if kind:
             self.colorRangeWithTag(s, i, j, kind)
@@ -1661,12 +1669,19 @@ class JEditColorizer(BaseJEditColorizer):
         exclude_match=False
     ):
         """Succeed if s[i:] matches pattern."""
-        if not self.allow_mark_prev: return 0
-        if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0  # 7/5/2008
-        if at_word_start and i + len(
-            pattern) + 1 < len(s) and s[i + len(pattern)] in self.word_chars:
+        if not self.allow_mark_prev:
+            return 0
+        if at_line_start and i != 0 and s[i - 1] != '\n':
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            return 0  # 7/5/2008
+        if (
+            at_word_start
+            and i + len(pattern) + 1 < len(s)
+            and s[i + len(pattern)] in self.word_chars
+        ):
             return 0
         if g.match(s, i, pattern):
             j = i + len(pattern)
@@ -1723,7 +1738,8 @@ class JEditColorizer(BaseJEditColorizer):
         """
         try:
             flags = re.MULTILINE
-            if self.ignore_case: flags |= re.IGNORECASE
+            if self.ignore_case:
+                flags |= re.IGNORECASE
             re_obj = re.compile(pattern, flags)
         except Exception:
             # Do not call g.es here!
@@ -1770,9 +1786,12 @@ class JEditColorizer(BaseJEditColorizer):
         delegate=''
     ):
         """Succeed if the regular expression regexp matches at s[i:]."""
-        if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0
+        if at_line_start and i != 0 and s[i - 1] != '\n':
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            return 0
         n = self.match_regexp_helper(s, i, regexp)
         j = i + n
         assert j - i == n
@@ -1817,7 +1836,8 @@ class JEditColorizer(BaseJEditColorizer):
                 if dots:
                     kind = 'dots' + kind
                 # A match
-                i2 = i + len(begin); j2 = j + len(end)
+                i2 = i + len(begin)
+                j2 = j + len(end)
                 if delegate:
                     self.colorRangeWithTag(
                         s, i, i2, kind, delegate=None, exclude_match=exclude_match)
@@ -1871,9 +1891,11 @@ class JEditColorizer(BaseJEditColorizer):
                 return -1
             if esc and not no_escape:
                 # Only an odd number of escapes is a 'real' escape.
-                escapes = 0; k = 1
+                escapes = 0
+                k = 1
                 while j - k >= 0 and s[j - k] == esc:
-                    escapes += 1; k += 1
+                    escapes += 1
+                    k += 1
                 if (escapes % 2) == 1:
                     assert s[j - 1] == esc
                     i += 1  # 2013/08/26: just advance past the *one* escaped character.
@@ -1936,23 +1958,32 @@ class JEditColorizer(BaseJEditColorizer):
         Succeed if s[i:] starts with 'begin' (a regular expression) and
         contains a following 'end'.
         """
-        if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0  # 7/5/2008
-        if at_word_start and i + len(
-            begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
+        if at_line_start and i != 0 and s[i - 1] != '\n':
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            return 0  # 7/5/2008
+        if (
+            at_word_start
+            and i + len(begin) + 1 < len(s)
+            and s[i + len(begin)] in self.word_chars
+        ):
             return 0  # 7/5/2008
         n = self.match_regexp_helper(s, i, begin)
         # We may have to allow $n here, in which case we must use a regex object?
         if n > 0:
             j = i + n
             j2 = s.find(end, j)
-            if j2 == -1: return 0
+            if j2 == -1:
+                return 0
             if self.escape and not no_escape:
                 # Only an odd number of escapes is a 'real' escape.
-                escapes = 0; k = 1
+                escapes = 0
+                k = 1
                 while j - k >= 0 and s[j - k] == self.escape:
-                    escapes += 1; k += 1
+                    escapes += 1
+                    k += 1
                 if (escapes % 2) == 1:
                     # An escaped end **aborts the entire match**:
                     # there is no way to 'restart' the regex.
@@ -2012,12 +2043,19 @@ class JEditColorizer(BaseJEditColorizer):
         exclude_match=False
     ):
         """Succeed if s[i:] matches pattern."""
-        if not self.allow_mark_prev: return 0
-        if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0
-        if at_word_start and i + len(
-            word) + 1 < len(s) and s[i + len(word)] in self.word_chars:
+        if not self.allow_mark_prev:
+            return 0
+        if at_line_start and i != 0 and s[i - 1] != '\n':
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            return 0
+        if (
+            at_word_start
+            and i + len(word) + 1 < len(s)
+            and s[i + len(word)] in self.word_chars
+        ):
             j = i
         if not g.match(s, i, word):
             return 0
@@ -2172,7 +2210,8 @@ class JEditColorizer(BaseJEditColorizer):
             # setTag does most tracing.
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
-            if trace: g.trace('not in color state')
+            if trace:
+                g.trace('not in color state')
             return
         self.delegate_name = delegate
         if delegate:

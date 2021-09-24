@@ -1027,13 +1027,15 @@ class KeyStroke:
     #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
     def toGuiChar(self):
         """Replace special chars by the actual gui char."""
-        # pylint: disable=undefined-loop-variable
-        # looks like a pylint bug
         s = self.s.lower()
-        if s in ('\n', 'return'): s = '\n'
-        elif s in ('\t', 'tab'): s = '\t'
-        elif s in ('\b', 'backspace'): s = '\b'
-        elif s in ('.', 'period'): s = '.'
+        if s in ('\n', 'return'):
+            s = '\n'
+        elif s in ('\t', 'tab'):
+            s = '\t'
+        elif s in ('\b', 'backspace'):
+            s = '\b'
+        elif s in ('.', 'period'):
+            s = '.'
         return s
     #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar
     def toInsertableChar(self):
@@ -1526,7 +1528,9 @@ class PosList(list):
         Return a new PosList containing all positions
         in self that match the given pattern.
         """
-        c = self.c; aList = []
+        c = self.c
+        
+        aList = []
         if regex:
             for p in self:
                 if re.match(pat, p.h):
@@ -1796,8 +1800,10 @@ class SherlockTracer:
         locals_ = frame.f_locals
         name = code.co_name
         n = code.co_argcount
-        if code.co_flags & 4: n = n + 1
-        if code.co_flags & 8: n = n + 1
+        if code.co_flags & 4:
+            n = n + 1
+        if code.co_flags & 8:
+            n = n + 1
         result = []
         for i in range(n):
             name = code.co_varnames[i]
@@ -2006,7 +2012,8 @@ class SherlockTracer:
         #
         # Legacy code.
         enabled = False
-        if patterns is None: patterns = self.patterns
+        if patterns is None:
+            patterns = self.patterns
         for pattern in patterns:
             try:
                 if pattern.startswith('+:'):
@@ -2030,7 +2037,8 @@ class SherlockTracer:
     def print_stats(self, patterns=None):
         """Print all accumulated statisitics."""
         print('\nSherlock statistics...')
-        if not patterns: patterns = ['+.*', '+:.*',]
+        if not patterns:
+            patterns = ['+.*', '+:.*',]
         for fn in sorted(self.stats.keys()):
             d = self.stats.get(fn)
             if self.fn_is_enabled(fn, patterns):
@@ -2168,8 +2176,10 @@ class Tracer:
         self.verbose = verbose  # True: print returns as well as calls.
     #@+node:ekr.20080531075119.3: *4* computeName
     def computeName(self, frame):
-        if not frame: return ''
-        code = frame.f_code; result = []
+        if not frame:
+            return ''
+        code = frame.f_code
+        result = []
         module = inspect.getmodule(code)
         if module:
             module_name = module.__name__
@@ -2183,7 +2193,8 @@ class Tracer:
         try:
             # This can fail during startup.
             self_obj = frame.f_locals.get('self')
-            if self_obj: result.append(self_obj.__class__.__name__)
+            if self_obj:
+                result.append(self_obj.__class__.__name__)
         except Exception:
             pass
         result.append(code.co_name)
@@ -2278,11 +2289,15 @@ class NullObject:
         if isinstance(ivars, str):
             ivars = [ivars]
         tracing_vars [id(self)] = ivars or []
-    def __call__(self, *args, **keys): return self
-    def __repr__(self): return "NullObject"
-    def __str__(self): return "NullObject"
+    def __call__(self, *args, **keys):
+        return self
+    def __repr__(self):
+        return "NullObject"
+    def __str__(self):
+        return "NullObject"
     # Attribute access...
-    def __delattr__(self, attr): return None
+    def __delattr__(self, attr):
+        return None
     def __getattr__(self, attr):
         if attr in tracing_vars.get(id(self), []):
             return getattr(self, attr, None)
@@ -2291,14 +2306,21 @@ class NullObject:
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
     # Container methods..
-    def __bool__(self) -> bool: return False
-    def __contains__(self, item) -> bool: return False
-    def __getitem__(self, key): raise KeyError
-    def __setitem__(self, key, val) -> None: pass
-    def __iter__(self): return self
-    def __len__(self) -> int: return 0
+    def __bool__(self) -> bool:
+        return False
+    def __contains__(self, item) -> bool:
+        return False
+    def __getitem__(self, key):
+        raise KeyError
+    def __setitem__(self, key, val) -> None:
+        pass
+    def __iter__(self):
+        return self
+    def __len__(self) -> int:
+        return 0
     # Iteration methods:
-    def __next__(self) -> None: raise StopIteration
+    def __next__(self) -> None:
+        raise StopIteration
 
 
 class TracingNullObject:
@@ -2852,12 +2874,19 @@ def oldDump(s: str):
     out = ""
     for i in s:
         if i == '\n':
-            out += "["; out += "n"; out += "]"
+            out += "["
+            out += "n"
+            out += "]"
         if i == '\t':
-            out += "["; out += "t"; out += "]"
+            out += "["
+            out += "t"
+            out += "]"
         elif i == ' ':
-            out += "["; out += " "; out += "]"
-        else: out += i
+            out += "["
+            out += " "
+            out += "]"
+        else:
+            out += i
     return out
 #@+node:ekr.20210904114446.1: *4* g.dump_tree & g.tree_to_string
 def dump_tree(c, dump_body=False, msg=None):
@@ -2950,7 +2979,8 @@ def getIvarsDict(obj: Any):
     return d
 
 def checkUnchangedIvars(obj: Any, d, exceptions=None):
-    if not exceptions: exceptions = []
+    if not exceptions:
+        exceptions = []
     ok = True
     for key in d:
         if key not in exceptions:
@@ -3320,16 +3350,19 @@ def findTabWidthDirectives(c: Cmdr, p: Pos):
     w = None
     # 2009/10/02: no need for copy arg to iter
     for p in p.self_and_parents(copy=False):
-        if w: break
+        if w:
+            break
         for s in p.h, p.b:
-            if w: break
+            if w:
+                break
             anIter = g_tabwidth_pat.finditer(s)
             for m in anIter:
                 word = m.group(0)
                 i = m.start(0)
                 j = g.skip_ws(s, i + len(word))
                 junk, w = g.skip_long(s, j)
-                if w == 0: w = None
+                if w == 0:
+                    w = None
     return w
 #@+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
 def findFirstValidAtLanguageDirective(p: Pos):
@@ -3425,7 +3458,8 @@ def get_directives_dict(p: Pos, root=None):
         for m in anIter:
             word = m.group(1).strip()
             i = m.start(1)
-            if word in d: continue
+            if word in d:
+                continue
             j = i + len(word)
             if j < len(s) and s[j] not in ' \t\n':
                 continue
@@ -3527,18 +3561,25 @@ def getOutputNewline(c: Cmdr=None, name=None):
     - Use c.config.output_newline if c given,
     - Otherwise use g.app.config.output_newline.
     """
-    if name: s = name
-    elif c: s = c.config.output_newline
-    else: s = app.config.output_newline
-    if not s: s = ''
+    if name:
+        s = name
+    elif c:
+        s = c.config.output_newline
+    else:
+        s = app.config.output_newline
+    if not s:
+        s = ''
     s = s.lower()
-    # pylint: disable=undefined-loop-variable
-    # looks like a pylint bug
-    if s in ("nl", "lf"): s = '\n'
-    elif s == "cr": s = '\r'
-    elif s == "platform": s = os.linesep  # 12/2/03: emakital
-    elif s == "crlf": s = "\r\n"
-    else: s = '\n'  # Default for erroneous values.
+    if s in ("nl", "lf"):
+        s = '\n'
+    elif s == "cr":
+        s = '\r'
+    elif s == "platform":
+        s = os.linesep  # 12/2/03: emakital
+    elif s == "crlf":
+        s = "\r\n"
+    else:
+        s = '\n'  # Default for erroneous values.
     assert isinstance(s, str), repr(s)
     return s
 #@+node:ekr.20200521075143.1: *3* g.inAtNosearch
@@ -3736,12 +3777,14 @@ def set_delims_from_string(s: str):
     i = 0
     if g.match_word(s, i, tag):
         i += len(tag)
-    count = 0; delims = ['', '', '']
+    count = 0
+    delims = ['', '', '']
     while count < 3 and i < len(s):
         i = j = g.skip_ws(s, i)
         while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s, i):
             i += 1
-        if j == i: break
+        if j == i:
+            break
         delims[count] = s[j:i] or ''
         count += 1
     # 'rr 09/25/02
@@ -3783,7 +3826,8 @@ def set_language(s: str, i: int, issue_errors_flag=False):
         i += len(tag)
     # Get the argument.
     i = g.skip_ws(s, i)
-    j = i; i = g.skip_c_id(s, i)
+    j = i
+    i = g.skip_c_id(s, i)
     # Allow tcl/tk.
     arg = s[j:i].lower()
     if app.language_delims_dict.get(arg):
@@ -3999,7 +4043,8 @@ def guessExternalEditor(c: Cmdr=None):
         os.environ.get("EDITOR") or
         g.app.db and g.app.db.get("LEO_EDITOR") or
         c and c.config.getString('external-editor'))
-    if editor: return editor
+    if editor:
+        return editor
     # fallbacks
     platform = sys.platform.lower()
     if platform.startswith('win'):
@@ -4128,13 +4173,16 @@ def readFileIntoString(fileName,
     - None, which typically means 'utf-8'.
     """
     if not fileName:
-        if verbose: g.trace('no fileName arg given')
+        if verbose:
+            g.trace('no fileName arg given')
         return None, None
     if g.os_path_isdir(fileName):
-        if verbose: g.trace('not a file:', fileName)
+        if verbose:
+            g.trace('not a file:', fileName)
         return None, None
     if not g.os_path_exists(fileName):
-        if verbose: g.error('file not found:', fileName)
+        if verbose:
+            g.error('file not found:', fileName)
         return None, None
     try:
         e = None
@@ -4563,7 +4611,9 @@ splitlines = splitLines
 
 def skip_block_comment(s: str, i: int):
     assert g.match(s, i, "/*")
-    j = i; i += 2; n = len(s)
+    j = i
+    i += 2
+    n = len(s)
     k = s.find("*/", i)
     if k == -1:
         g.scanError("Run on block comment: " + s[j:i])
@@ -4583,11 +4633,13 @@ def skip_braces(s: str, i: int):
     """
     # start = g.get_line(s,i)
     assert g.match(s, i, '{')
-    level = 0; n = len(s)
+    level = 0
+    n = len(s)
     while i < n:
         c = s[i]
         if c == '{':
-            level += 1; i += 1
+            level += 1
+            i += 1
         elif c == '}':
             level -= 1
             if level <= 0:
@@ -4616,20 +4668,27 @@ def skip_parens(s: str, i: int):
 
     If no matching is found i is set to len(s).
     """
-    level = 0; n = len(s)
+    level = 0
+    n = len(s)
     assert g.match(s, i, '('), repr(s[i])
     while i < n:
         c = s[i]
         if c == '(':
-            level += 1; i += 1
+            level += 1
+            i += 1
         elif c == ')':
             level -= 1
-            if level <= 0: return i
+            if level <= 0:
+                return i
             i += 1
-        elif c == '\'' or c == '"': i = g.skip_string(s, i)
-        elif g.match(s, i, "//"): i = g.skip_to_end_of_line(s, i)
-        elif g.match(s, i, "/*"): i = g.skip_block_comment(s, i)
-        else: i += 1
+        elif c == '\'' or c == '"':
+            i = g.skip_string(s, i)
+        elif g.match(s, i, "//"):
+            i = g.skip_to_end_of_line(s, i)
+        elif g.match(s, i, "/*"):
+            i = g.skip_block_comment(s, i)
+        else:
+            i += 1
     return i
 #@+node:ekr.20031218072017.3163: *4* g.skip_pascal_begin_end
 def skip_pascal_begin_end(s: str, i: int):
@@ -4639,7 +4698,8 @@ def skip_pascal_begin_end(s: str, i: int):
     The end keyword matches begin, case, class, record, and try.
     """
     assert g.match_c_word(s, i, "begin")
-    level = 1; i = g.skip_c_id(s, i)  # Skip the opening begin.
+    level = 1
+    i = g.skip_c_id(s, i)  # Skip the opening begin.
     while i < len(s):
         ch = s[i]
         if ch == '{':
@@ -4656,7 +4716,9 @@ def skip_pascal_begin_end(s: str, i: int):
                 return i
             i = g.skip_c_id(s, i)
         elif g.is_c_id(ch):
-            j = i; i = g.skip_c_id(s, i); name = s[j:i]
+            j = i
+            i = g.skip_c_id(s, i)
+            name = s[j:i]
             if name in ["begin", "case", "class", "record", "try"]:
                 level += 1
         else:
@@ -4674,8 +4736,10 @@ def skip_pascal_block_comment(s: str, i: int):
     return len(s)
 #@+node:ekr.20031218072017.3165: *4* g.skip_pascal_string
 def skip_pascal_string(s: str, i: int):
-    j = i; delim = s[i]; i += 1
-    assert(delim == '"' or delim == '\'')
+    j = i
+    delim = s[i]
+    i += 1
+    assert delim == '"' or delim == '\''
     while i < len(s):
         if s[i] == delim:
             return i + 1
@@ -4771,14 +4835,20 @@ def skip_pp_part(s: str, i: int):
             delta += delta1
         elif g.match_word(s, i, "#else") or g.match_word(s, i, "#endif"):
             return i, delta
-        elif c == '\'' or c == '"': i = g.skip_string(s, i)
+        elif c == '\'' or c == '"':
+            i = g.skip_string(s, i)
         elif c == '{':
-            delta += 1; i += 1
+            delta += 1
+            i += 1
         elif c == '}':
-            delta -= 1; i += 1
-        elif g.match(s, i, "//"): i = g.skip_line(s, i)
-        elif g.match(s, i, "/*"): i = g.skip_block_comment(s, i)
-        else: i += 1
+            delta -= 1
+            i += 1
+        elif g.match(s, i, "//"):
+            i = g.skip_line(s, i)
+        elif g.match(s, i, "/*"):
+            i = g.skip_block_comment(s, i)
+        else:
+            i += 1
     return i, delta
 #@+node:ekr.20031218072017.3171: *4* g.skip_to_semicolon
 # Skips to the next semicolon that is not in a comment or a string.
@@ -4831,7 +4901,8 @@ def find_line_start(s: str, i: int):
 #@+node:ekr.20031218072017.3176: *4* g.find_on_line
 def find_on_line(s: str, i: int, pattern):
     j = s.find('\n', i)
-    if j == -1: j = len(s)
+    if j == -1:
+        j = len(s)
     k = s.find(pattern, i, j)
     return k
 #@+node:ekr.20031218072017.3179: *4* g.g.is_special
@@ -4933,7 +5004,8 @@ def skip_id(s: str, i: int, chars=None):
 def skip_line(s: str, i: int):
     if i >= len(s):
         return len(s)
-    if i < 0: i = 0
+    if i < 0:
+        i = 0
     i = s.find('\n', i)
     if i == -1:
         return len(s)
@@ -4942,7 +5014,8 @@ def skip_line(s: str, i: int):
 def skip_to_end_of_line(s: str, i: int):
     if i >= len(s):
         return len(s)
-    if i < 0: i = 0
+    if i < 0:
+        i = 0
     i = s.find('\n', i)
     if i == -1:
         return len(s)
@@ -5555,7 +5628,8 @@ def idleTimeHookHandler(timer):
 def cantImport(moduleName, pluginName=None, verbose=True):
     """Print a "Can't Import" message and return None."""
     s = f"Can not import {moduleName}"
-    if pluginName: s = s + f" from {pluginName}"
+    if pluginName:
+        s = s + f" from {pluginName}"
     if not g.app or not g.app.gui:
         print(s)
     elif g.unitTesting:
@@ -5599,7 +5673,8 @@ def convertPythonIndexToRowCol(s: str, i: int):
 #@+node:ekr.20050315071727: *4* g.convertRowColToPythonIndex
 def convertRowColToPythonIndex(s: str, row, col, lines=None):
     """Convert zero-based row/col indices into a python index into string s."""
-    if row < 0: return 0
+    if row < 0:
+        return 0
     if lines is None:
         lines = g.splitLines(s)
     if row >= len(lines):
@@ -5613,8 +5688,10 @@ def convertRowColToPythonIndex(s: str, row, col, lines=None):
 #@+node:ekr.20061031102333.2: *4* g.getWord & getLine
 def getWord(s: str, i: int):
     """Return i,j such that s[i:j] is the word surrounding s[i]."""
-    if i >= len(s): i = len(s) - 1
-    if i < 0: i = 0
+    if i >= len(s):
+        i = len(s) - 1
+    if i < 0:
+        i = 0
     # Scan backwards.
     while 0 <= i < len(s) and g.isWordChar(s[i]):
         i -= 1
@@ -5631,15 +5708,21 @@ def getLine(s: str, i: int):
     s[i] is a newline only if the line is empty.
     s[j] is a newline unless there is no trailing newline.
     """
-    if i > len(s): i = len(s) - 1
-    if i < 0: i = 0
+    if i > len(s):
+        i = len(s) - 1
+    if i < 0:
+        i = 0
     # A newline *ends* the line, so look to the left of a newline.
     j = s.rfind('\n', 0, i)
-    if j == -1: j = 0
-    else: j += 1
+    if j == -1:
+        j = 0
+    else:
+        j += 1
     k = s.find('\n', i)
-    if k == -1: k = len(s)
-    else: k = k + 1
+    if k == -1:
+        k = len(s)
+    else:
+        k = k + 1
     return j, k
 #@+node:ekr.20111114151846.9847: *4* g.toPythonIndex
 def toPythonIndex(s: str, index):
@@ -5679,7 +5762,8 @@ def flatten_list(obj: Any):
         trailing = obj.get('trailing') or ''
         aList = obj.get('aList') or []
         for i, item in enumerate(aList):
-            if leading: yield leading
+            if leading:
+                yield leading
             for s in flatten_list(item):
                 if indent and s.startswith('\n'):
                     yield '\n' + indent + s[1:]
@@ -5687,7 +5771,8 @@ def flatten_list(obj: Any):
                     yield s
             if sep and i < len(aList) - 1:  # type:ignore
                 yield sep
-            if trailing: yield trailing
+            if trailing:
+                yield trailing
     elif isinstance(obj, (list, tuple)):
         for obj2 in obj:
             for s in flatten_list(obj2):
@@ -5813,7 +5898,8 @@ def unCamel(s: str):
     word: List[str] = []
     for ch in s:
         if ch.isalpha() and ch.isupper():
-            if word: result.append(''.join(word))
+            if word:
+                result.append(''.join(word))
             word = [ch]
         elif ch.isalpha():
             word.append(ch)
@@ -6096,8 +6182,9 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
         i = 0
         while i < len(s):
             assert len(line) <= outputLineWidth  # DTHEIN 18-JAN-2004
-            j = g.skip_ws(s, i)  # ;   ws = s[i:j]
-            k = g.skip_non_ws(s, j); word = s[j:k]
+            j = g.skip_ws(s, i)
+            k = g.skip_non_ws(s, j)
+            word = s[j:k]
             assert k > i
             i = k
             # DTHEIN 18-JAN-2004: wrap at exactly the text width,
@@ -6108,7 +6195,8 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                 space = ' ' * sentenceSpacingWidth
             else:
                 space = ' '
-            if line and wordLen > 0: wordLen += len(space)
+            if line and wordLen > 0:
+                wordLen += len(space)
             if wordLen + len(line) <= outputLineWidth:
                 if wordLen > 0:
                     #@+<< place blank and word on the present line >>
@@ -6142,7 +6230,8 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
 #@+node:ekr.20031218072017.3200: *4* g.get_leading_ws
 def get_leading_ws(s: str):
     """Returns the leading whitespace of 's'."""
-    i = 0; n = len(s)
+    i = 0
+    n = len(s)
     while i < n and s[i] in (' ', '\t'):
         i += 1
     return s[0:i]
@@ -6173,7 +6262,8 @@ def removeBlankLines(s: str):
 #@+node:ekr.20091229075924.6235: *4* g.removeLeadingBlankLines
 def removeLeadingBlankLines(s: str):
     lines = g.splitLines(s)
-    result = []; remove = True
+    result = []
+    remove = True
     for line in lines:
         if remove and not line.strip():
             pass
@@ -6185,15 +6275,20 @@ def removeLeadingBlankLines(s: str):
 # Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
 
 def removeLeadingWhitespace(s: str, first_ws, tab_width):
-    j = 0; ws = 0; first_ws = abs(first_ws)
+    j = 0
+    ws = 0
+    first_ws = abs(first_ws)
     for ch in s:
         if ws >= first_ws:
             break
         elif ch == ' ':
-            j += 1; ws += 1
+            j += 1
+            ws += 1
         elif ch == '\t':
-            j += 1; ws += (abs(tab_width) - (ws % abs(tab_width)))
-        else: break
+            j += 1
+            ws += (abs(tab_width) - (ws % abs(tab_width)))
+        else:
+            break
     if j > 0:
         s = s[j:]
     return s
@@ -6226,7 +6321,8 @@ def skip_leading_ws_with_indent(s: str, i: int, tab_width):
 
     - i points after the whitespace
     - indent is the width of the whitespace, assuming tab_width wide tabs."""
-    count = 0; n = len(s)
+    count = 0
+    n = len(s)
     while i < n:
         ch = s[i]
         if ch == ' ':
@@ -6257,7 +6353,8 @@ def doKeywordArgs(keys, d=None):
     Return a result dict that is a copy of the keys dict
     with missing items replaced by defaults in d dict.
     """
-    if d is None: d = {}
+    if d is None:
+        d = {}
     result = {}
     for key, default_val in d.items():
         isBool = default_val in (True, False)
@@ -6344,8 +6441,10 @@ def es(*args, **keys):
         log.put(s, color=color, tabName=tabName, nodeLink=d['nodeLink'])
         # Count the number of *trailing* newlines.
         for ch in s:
-            if ch == '\n': log.newlines += 1
-            else: log.newlines = 0
+            if ch == '\n':
+                log.newlines += 1
+            else:
+                log.newlines = 0
     else:
         app.logWaiting.append((s, color, newline, d),)
 
@@ -6559,8 +6658,10 @@ def prettyPrintType(obj: Any):
         return 'method'
     # Fall back to a hack.
     t = str(type(obj))  # type:ignore
-    if t.startswith("<type '"): t = t[7:]
-    if t.endswith("'>"): t = t[:-2]
+    if t.startswith("<type '"):
+        t = t[7:]
+    if t.endswith("'>"):
+        t = t[:-2]
     return t
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name, window):
@@ -6631,8 +6732,10 @@ def trace(*args, **keys):
     # Pad the caller name.
     if align != 0 and len(name) < abs(align):
         pad = ' ' * (abs(align) - len(name))
-        if align > 0: name = name + pad
-        else: name = pad + name
+        if align > 0:
+            name = name + pad
+        else:
+            name = pad + name
     # Munge *args into s.
     result = [name] if name else []
     #
@@ -6689,7 +6792,8 @@ def translateArgs(args, d):
         else:
             pass  # The arg is an untranslated string.
         if arg:
-            if result and spaces: result.append(' ')
+            if result and spaces:
+                result.append(' ')
             result.append(arg)
     return ''.join(result)
 #@+node:ekr.20060810095921: *3* g.translateString & tr
@@ -6722,14 +6826,16 @@ def actualColor(color):
     if color is None:
         # Prefer text_foreground_color'
         color2 = c.config.getColor('log-text-foreground-color')
-        if color2: return color2
+        if color2:
+            return color2
         # Fall back to log_black_color.
         color2 = c.config.getColor('log-black-color')
         return color2 or 'black'
     if color == 'black':
         # Prefer log_black_color.
         color2 = c.config.getColor('log-black-color')
-        if color2: return color2
+        if color2:
+            return color2
         # Fall back to log_text_foreground_color.
         color2 = c.config.getColor('log-text-foreground-color')
         return color2 or 'black'
@@ -6740,18 +6846,23 @@ def actualColor(color):
 
 def CheckVersion(s1, s2, condition=">=", stringCompare=None, delimiter='.', trace=False):
     # CheckVersion is called early in the startup process.
-    vals1 = [g.CheckVersionToInt(s) for s in s1.split(delimiter)]; n1 = len(vals1)
-    vals2 = [g.CheckVersionToInt(s) for s in s2.split(delimiter)]; n2 = len(vals2)
+    vals1 = [g.CheckVersionToInt(s) for s in s1.split(delimiter)]
+    n1 = len(vals1)
+    vals2 = [g.CheckVersionToInt(s) for s in s2.split(delimiter)]
+    n2 = len(vals2)
     n = max(n1, n2)
-    if n1 < n: vals1.extend([0 for i in range(n - n1)])
-    if n2 < n: vals2.extend([0 for i in range(n - n2)])
+    if n1 < n:
+        vals1.extend([0 for i in range(n - n1)])
+    if n2 < n:
+        vals2.extend([0 for i in range(n - n2)])
     for cond, val in (
         ('==', vals1 == vals2), ('!=', vals1 != vals2),
         ('<', vals1 < vals2), ('<=', vals1 <= vals2),
         ('>', vals1 > vals2), ('>=', vals1 >= vals2),
     ):
         if condition == cond:
-            result = val; break
+            result = val
+            break
     else:
         raise EnvironmentError(
             "condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
@@ -6763,8 +6874,10 @@ def CheckVersionToInt(s: str):
     except ValueError:
         aList = []
         for ch in s:
-            if ch.isdigit(): aList.append(ch)
-            else: break
+            if ch.isdigit():
+                aList.append(ch)
+            else:
+                break
         if aList:
             s = ''.join(aList)
             return int(s)
@@ -6821,7 +6934,8 @@ def init_zodb(pathToZodbStorage, verbose=True):
     """
     global init_zodb_db, init_zodb_failed, init_zodb_import_failed
     db = init_zodb_db.get(pathToZodbStorage)
-    if db: return db
+    if db:
+        return db
     if init_zodb_import_failed:
         return None
     failed = init_zodb_failed.get(pathToZodbStorage)
@@ -7207,7 +7321,8 @@ def os_startfile(fname):
             ree = io.open(wre.name, 'rb', buffering=0)
         except IOError:
             g.trace(f"error opening temp file for {fname!r}")
-            if ree: ree.close()
+            if ree:
+                ree.close()
             return
         try:
             subPopen = subprocess.Popen(['xdg-open', fname], stderr=wre, shell=False)
@@ -7228,7 +7343,8 @@ def os_startfile(fname):
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c: Cmdr, root=None, useHeadlines=False):
     """Creates a list describing a node and all its descendents"""
-    if not root: root = c.rootPosition()
+    if not root:
+        root = c.rootPosition()
     v = root
     if useHeadlines:
         aList = [(v.numberOfChildren(), v.headString()),]
@@ -7337,21 +7453,24 @@ def execute_shell_commands(commands, trace=False):
         commands = [commands]
     for command in commands:
         wait = not command.startswith('&')
-        if trace: g.trace(command)
+        if trace:
+            g.trace(command)
         if command.startswith('&'):
             command = command[1:].strip()
         proc = subprocess.Popen(command, shell=True)
         if wait:
             proc.communicate()
         else:
-            if trace: print('Start:', proc)
+            if trace:
+                print('Start:', proc)
             # #1489: call proc.poll at idle time.
 
             def proc_poller(timer, proc=proc):
                 val = proc.poll()
                 if val is not None:
                     # This trace can be disruptive.
-                    if trace: print('  End:', proc, val)
+                    if trace:
+                        print('  End:', proc, val)
                     timer.stop()
 
             g.IdleTime(proc_poller, delay=0).start()
@@ -7430,7 +7549,8 @@ def computeCommands(c: Cmdr, commands, command_setting, trace=False):
     return commands
 #@+node:ekr.20050503112513.7: *3* g.executeFile
 def executeFile(filename, options=''):
-    if not os.access(filename, os.R_OK): return
+    if not os.access(filename, os.R_OK):
+        return
     fdir, fname = g.os_path_split(filename)
     # New in Leo 4.10: alway use subprocess.
 
@@ -7443,7 +7563,8 @@ def executeFile(filename, options=''):
         return p.wait(), stdo, stde
 
     rc, so, se = subprocess_wrapper(f"{sys.executable} {fname} {options}")
-    if rc: g.pr('return code', rc)
+    if rc:
+        g.pr('return code', rc)
     g.pr(so, se)
 #@+node:ekr.20040321065415: *3* g.find*Node*
 #@+others
@@ -7520,7 +7641,8 @@ def getScript(c: Cmdr, p: Pos,
     p is not the current node or if there is no text selection.
     """
     w = c.frame.body.wrapper
-    if not p: p = c.p
+    if not p:
+        p = c.p
     try:
         if g.app.inBridge:
             s = p.b
@@ -7752,7 +7874,8 @@ def getUrlFromNode(p: Pos):
     1. Use the headline if it contains a valid url.
     2. Otherwise, look *only* at the first line of the body.
     """
-    if not p: return None
+    if not p:
+        return None
     c = p.v.context
     assert c
     table = [p.h, g.splitLines(p.b)[0] if p.b else '']
