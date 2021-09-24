@@ -2023,9 +2023,9 @@ class LeoFind:
         new_ins = start if self.reverse else start + len(change_text)
         if start != end:
             gui_w.delete(start, end)
-            self.work_s = self.work_s[:start] + self.work_s[start + end :]
         gui_w.insert(start, change_text)
         gui_w.setInsertPoint(new_ins)
+        self.work_s = gui_w.getAllText()  # #2220.
         self.work_sel = (new_ins, new_ins, new_ins)
         # Update the selection for the next match.
         gui_w.setSelectionRange(start, start + len(change_text))
@@ -2034,15 +2034,16 @@ class LeoFind:
         if self.mark_changes:  # pragma: no cover
             p.setMarked()
             p.setDirty()
-        if self.in_headline:  # pragma: no cover
-            pass
-            g.trace('   p.h:', repr(p.h))
-            g.trace('work_s:', repr(self.work_s))
-            g.trace(' gui_s:', repr(gui_w.getAllText()))
-            ### WRONG
-            ### p.h = self.work_s  # #2172
+        if self.in_headline:
+            # #2220: Let onHeadChanged handle undo, etc.
+            c.frame.tree.onHeadChanged(p, undoType='Change Headline')
+            # gui_w will change after a redraw.
+            gui_w = c.edit_widget(p)
+            if gui_w:
+                # find-next and find-prev work regardless of insert point.
+                gui_w.setSelectionRange(start, start+len(change_text))
         else:
-            c.frame.body.onBodyChanged('Change', oldSel=oldSel)
+            c.frame.body.onBodyChanged('Change Body', oldSel=oldSel)
         c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
     #@+node:ekr.20210110073117.31: *4* find.check_args
@@ -2511,11 +2512,11 @@ class LeoFind:
             c.expandOnlyAncestorsOfNode(p=p)
         if self.in_headline:
             c.endEditing()
-            selection = pos, newpos, insert
-            c.redrawAndEdit(p,
-                selection=selection,
-                keepMinibuffer=True)
-            w = c.edit_widget(p)
+            c.redraw(p)
+            c.frame.tree.editLabel(p)
+            w = c.edit_widget(p)  # #2220
+            if w:
+                w.setSelectionRange(pos, newpos, insert) # #2220
         else:
             # Tricky code.  Do not change without careful thought.
             w = c.frame.body.wrapper
