@@ -3095,22 +3095,6 @@ class Commands:
         c.redraw(p)
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *4* c.Drawing
-    #@+node:ekr.20080514131122.7: *5* c.begin/endUpdate
-    def beginUpdate(self):
-        """Deprecated: does nothing."""
-        g.trace('***** c.beginUpdate is deprecated', g.callers())
-        assert not g.unitTesting
-
-    def endUpdate(self, flag=True):
-        """Request a redraw of the screen if flag is True."""
-        g.trace('***** c.endUpdate is deprecated', g.callers())
-        assert not g.unitTesting
-        c = self
-        if flag:
-            c.requestRedrawFlag = True
-
-    BeginUpdate = beginUpdate  # Compatibility with old scripts
-    EndUpdate = endUpdate  # Compatibility with old scripts
     #@+node:ekr.20080514131122.8: *5* c.bringToFront
     def bringToFront(self, c2=None, set_focus=True):
         c = self

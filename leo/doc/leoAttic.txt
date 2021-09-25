@@ -18001,6 +18001,22 @@ def go():
         name1 = "c:\\prog\\test\\compare1.txt"
         name2 = "c:\\prog\\test\\compare2.txt"
         compare.compare_files(name1, name2)
+#@+node:ekr.20080514131122.7: ** c.begin/endUpdate
+def beginUpdate(self):
+    """Deprecated: does nothing."""
+    g.trace('***** c.beginUpdate is deprecated', g.callers())
+    assert not g.unitTesting
+
+def endUpdate(self, flag=True):
+    """Request a redraw of the screen if flag is True."""
+    g.trace('***** c.endUpdate is deprecated', g.callers())
+    assert not g.unitTesting
+    c = self
+    if flag:
+        c.requestRedrawFlag = True
+
+BeginUpdate = beginUpdate  # Compatibility with old scripts
+EndUpdate = endUpdate  # Compatibility with old scripts
 #@-all
 #@@nosearch
 #@-leo
