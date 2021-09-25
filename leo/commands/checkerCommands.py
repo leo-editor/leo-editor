@@ -149,7 +149,7 @@ def find_missing_docstrings(event):
                         g.es_print('')
                         g.es_print(root.h)
                     print(line)
-                    g.es_clickable_link(c, p, i+1, line)  # *Local* index.
+                    g.es_clickable_link(c, p, i + 1, line)  # *Local* index.
                     break
     g.es_print('')
     g.es_print(
@@ -253,7 +253,7 @@ class MypyCommand:
     def __init__(self, c):
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.link_limit  = None  # Set in check_file.
+        self.link_limit = None  # Set in check_file.
         self.unknown_path_names = []
         # Settings.
         self.args = c.config.getData('mypy-arguments') or []
@@ -276,7 +276,7 @@ class MypyCommand:
         c = self.c
         # Init.
         c.frame.log.clearLog()
-        link_pattern=re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
+        link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
         # Change working directory.
         directory = os.path.dirname(fn)
         os.chdir(directory)
@@ -299,7 +299,7 @@ class MypyCommand:
         for i, s in enumerate(lines):
             # Print the shortened form of s *without* changing s.
             if s.lower().startswith(s_head):
-                print(f"{i:<3}", s[len(s_head):].rstrip())
+                print(f"{i:<3}", s[len(s_head) :].rstrip())
             else:
                 print(f"{i:<3}", s.rstrip())
             # Create links only up to the link limit.
@@ -323,7 +323,7 @@ class MypyCommand:
             if link_root:
                 unl = link_root.get_UNL(with_proto=True, with_count=True)
                 if s.lower().startswith(s_head):
-                    s = s[len(s_head):]  # Do *not* strip the line!
+                    s = s[len(s_head) :]  # Do *not* strip the line!
                 c.frame.log.put(s, nodeLink=f"{unl},{-line_number}")
             elif path not in self.unknown_path_names:
                 self.unknown_path_names.append(path)

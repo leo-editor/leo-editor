@@ -16,7 +16,7 @@ def init():
 def trace_tags(tag, keywords):
     global tagCount
     brief = True
-    tagCount += 1 # Always count the hook.
+    tagCount += 1  # Always count the hook.
     # List of hooks to suppress.
     if tag in (
         'bodykey1', 'bodykey2', 'dragging1', 'dragging2',
@@ -43,7 +43,7 @@ def trace_tags(tag, keywords):
         g.pr(tagCount, tag, keywords.get('fileName'))
     elif brief:
         g.pr(tagCount, tag)
-    else: # Verbose
+    else:  # Verbose
         keys = list(keywords.items())
         keys.sort()
         for key, value in keys:

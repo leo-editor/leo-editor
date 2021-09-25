@@ -1701,7 +1701,7 @@ class ConvertAtTests:
         """Make p.h suitable as a function.name."""
         h = p.h
         if h.startswith('@test'):
-            h = h[len('@test'):]
+            h = h[len('@test') :]
         h = h.strip()
         result = []
         for ch in h:
@@ -1740,7 +1740,7 @@ class ConvertAtTests:
         """
         # Calculate the headline and body text.
         test_name = f"test_{self.clean_headline(p)}"
-        body = textwrap.indent(p.b, ' '*4).rstrip()
+        body = textwrap.indent(p.b, ' ' * 4).rstrip()
         # Create the new node.
         test_node = target.insertAsLastChild()
         test_node.h = f"{self.class_name}.{test_name}"
@@ -1771,7 +1771,7 @@ class ConvertColorizerTests(ConvertAtTests):
     #@+node:ekr.20210905151425.2: *4* ConvertColorizerTests.convert_node
     def convert_node(self, c, p, target):
         """Convert one @test node, creating a new node."""
-        indent = ' '*4
+        indent = ' ' * 4
         # Create the new node.
         test_node = target.insertAsLastChild()
         # Set the headline.
@@ -1801,7 +1801,7 @@ class ConvertColorizerTests(ConvertAtTests):
                 return
         # Default:
         # Compute the tail.
-        body = textwrap.indent(p.b, ' '*4).rstrip()
+        body = textwrap.indent(p.b, ' ' * 4).rstrip()
         result.append(f"{body}\n")
         # Set the body text!
         test_node.b = ''.join(result)
@@ -1833,7 +1833,7 @@ class ConvertEditCommandsTests(ConvertAtTests):
         new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
     #@-others
 #@+node:ekr.20210908062600.1: *3* class ConvertShadowTests (ConvertAtTests)
-class ConvertShadowTests (ConvertAtTests):
+class ConvertShadowTests(ConvertAtTests):
     """Convert @test nodes for @shadow commands."""
     #@+others
     #@+node:ekr.20210908062651.1: *4* ConvertShadowTests.convert_node
@@ -1845,7 +1845,7 @@ class ConvertShadowTests (ConvertAtTests):
         new_p = g.findNodeInChildren(c, p, 'new')
         assert new_p, p.h
         # Create the new node and init the headline.
-        indent = ' '*4
+        indent = ' ' * 4
         test_node = target.insertAsLastChild()
         test_name = f"test_{self.clean_headline(p)}"
         test_node.h = f"{self.class_name}.{test_name}"
@@ -1906,7 +1906,7 @@ class ConvertUndoTests(ConvertAtTests):
             super().convert_node(c, p, target)
             return
         # Create the new node.
-        indent = ' '*4
+        indent = ' ' * 4
         test_node = target.insertAsLastChild()
         # Set the headline.
         test_name = f"test_{self.clean_headline(p)}"

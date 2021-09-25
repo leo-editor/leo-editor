@@ -83,7 +83,7 @@ def onMenu(tag, keywords):
                 ("Reformat Paragraph", "Reformater &Paragraphe"),
                 ("Indent", "&Indenter"),
                 ("Unindent", "Dé&sindenter"),
-                ("Match Brackets", "&Vérifier Parité des Signes"), #  <({["), #EKR
+                ("Match Brackets", "&Vérifier Parité des Signes"),  #  <({["), #EKR
             ("Edit Headline...", "Éditer &Entête..."),
                 ("Edit Headline", "&Modifier l'Entête"),
                 ("End Edit Headline", "Modification &Terminée"),

@@ -1529,7 +1529,7 @@ class PosList(list):
         in self that match the given pattern.
         """
         c = self.c
-        
+
         aList = []
         if regex:
             for p in self:
@@ -3802,7 +3802,7 @@ def set_delims_from_string(s: str):
                     g.warning(f"'{delims[i]}' delimiter is invalid")
                     return None, None, None
                 try:
-                    delims[i] = binascii.unhexlify(delims[i][3:]) # type:ignore
+                    delims[i] = binascii.unhexlify(delims[i][3:])  # type:ignore
                     delims[i] = g.toUnicode(delims[i])
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")

@@ -156,7 +156,7 @@ try:
     #see rllicense.txt for license details
     # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
     from reportlab.lib.styles import StyleSheet1, ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER # , TA_LEFT, TA_RIGHT, TA_JUSTIFY
+    from reportlab.lib.enums import TA_CENTER  # , TA_LEFT, TA_RIGHT, TA_JUSTIFY
     from reportlab.lib import colors
 except ImportError:
     print('leo_pdf.py: can not import reportlab.lib styles info')
@@ -169,7 +169,7 @@ StringIO = io.StringIO
 #@+others
 #@+node:ekr.20140920145803.17996: ** top-level functions
 #@+node:ekr.20090704103932.5178: *3* init
-def init ():
+def init():
     '''
     This file may be distributed in Leo's plugin folder, but this file is NOT
     a Leo plugin!
@@ -208,10 +208,10 @@ def getStyleSheet():
                                   spaceBefore=6))
     stylesheet.add(ParagraphStyle(name='Italic',
                                   parent=stylesheet['BodyText'],
-                                  fontName = 'Times-Italic'))
+                                  fontName='Times-Italic'))
     stylesheet.add(ParagraphStyle(name='Heading1',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-Bold',
+                                  fontName='Times-Bold',
                                   fontSize=20,
                                   leading=20,
                                   spaceBefore=10,
@@ -219,7 +219,7 @@ def getStyleSheet():
                    alias='h1')
     stylesheet.add(ParagraphStyle(name='Heading2',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-Bold',
+                                  fontName='Times-Bold',
                                   fontSize=18,
                                   leading=18,
                                   spaceBefore=10,
@@ -227,7 +227,7 @@ def getStyleSheet():
                    alias='h2')
     stylesheet.add(ParagraphStyle(name='Heading3',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-BoldItalic',
+                                  fontName='Times-BoldItalic',
                                   fontSize=16,
                                   leading=16,
                                   spaceBefore=10,
@@ -235,7 +235,7 @@ def getStyleSheet():
                    alias='h3')
     stylesheet.add(ParagraphStyle(name='Heading4',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-BoldItalic',
+                                  fontName='Times-BoldItalic',
                                   fontsize=14,
                                   leading=14,
                                   spaceBefore=8,
@@ -243,7 +243,7 @@ def getStyleSheet():
                    alias='h4')
     stylesheet.add(ParagraphStyle(name='Heading5',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-BoldItalic',
+                                  fontName='Times-BoldItalic',
                                   fontsize=13,
                                   leading=13,
                                   spaceBefore=8,
@@ -251,7 +251,7 @@ def getStyleSheet():
                    alias='h5')
     stylesheet.add(ParagraphStyle(name='Heading6',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-BoldItalic',
+                                  fontName='Times-BoldItalic',
                                   fontsize=12,
                                   leading=12,
                                   spaceBefore=8,
@@ -259,7 +259,7 @@ def getStyleSheet():
                    alias='h6')
     stylesheet.add(ParagraphStyle(name='Title',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-Bold',
+                                  fontName='Times-Bold',
                                   fontSize=22,
                                   leading=22,
                                   spaceAfter=8,
@@ -268,7 +268,7 @@ def getStyleSheet():
                    alias='title')
     stylesheet.add(ParagraphStyle(name='Subtitle',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-Bold',
+                                  fontName='Times-Bold',
                                   fontSize=20,
                                   leading=20,
                                   spaceAfter=6,
@@ -277,17 +277,17 @@ def getStyleSheet():
                    alias='subtitle')
     stylesheet.add(ParagraphStyle(name='TopicTitle',
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-Bold',
+                                  fontName='Times-Bold',
                                   fontSize=18,
                                   leading=14,
                                   spaceAfter=6,
                                   ),
                    alias='topic-title')
     for i in range(0, 15):
-        indent = 18*i
+        indent = 18 * i
         stylesheet.add(ParagraphStyle(name='TopicItem%s' % i,
                                   parent=stylesheet['Normal'],
-                                  fontName = 'Times-Roman',
+                                  fontName='Times-Roman',
                                   fontSize=12,
                                   leftIndent=indent,
                                   spaceBefore=0,
@@ -355,16 +355,16 @@ def getStyleSheet():
                                   ))
     return stylesheet
 #@+node:ekr.20111106070228.12430: *3* get_language
-def get_language (doctree):
+def get_language(doctree):
     '''A wrapper for changing docutils get_language method.'''
 
     class Reporter:
-        def warning(self,s):
-            g.es_print('Reporter.warning',s)
+        def warning(self, s):
+            g.es_print('Reporter.warning', s)
 
     try:
         reporter = Reporter()
-        language = docutils.languages.get_language(doctree.settings.language_code,reporter)
+        language = docutils.languages.get_language(doctree.settings.language_code, reporter)
     except TypeError:
         language = docutils.languages.get_language(doctree.settings.language_code)
 
@@ -393,8 +393,8 @@ class Bunch:
 
     Especially useful for representing a collection of related variables."""
 
-    def __init__(self,**keywords):
-        self.__dict__.update (keywords)
+    def __init__(self, **keywords):
+        self.__dict__.update(keywords)
 
     def __repr__(self):
         return self.toString()
@@ -407,31 +407,31 @@ class Bunch:
 
     def toString(self):
         tag = self.__dict__.get('tag')
-        entries = ["%s: %s" % (key,str(self.__dict__.get(key)))
+        entries = ["%s: %s" % (key, str(self.__dict__.get(key)))
             for key in self.ivars() if key != 'tag']
         if tag:
-            return "Bunch(tag=%s)...\n%s\n" % (tag,'\n'.join(entries))
+            return "Bunch(tag=%s)...\n%s\n" % (tag, '\n'.join(entries))
         return "Bunch...\n%s\n" % '\n'.join(entries)
 
     # Used by new undo code.
-    def __setitem__ (self,key,value):
+    def __setitem__(self, key, value):
         '''Support aBunch[key] = val'''
-        return operator.setitem(self.__dict__,key,value)
+        return operator.setitem(self.__dict__, key, value)
 
-    def __getitem__ (self,key):
+    def __getitem__(self, key):
         '''Support aBunch[key]'''
-        return operator.getitem(self.__dict__,key)
+        return operator.getitem(self.__dict__, key)
 
-    def get (self,key,theDefault=None):
-        return self.__dict__.get(key,theDefault)
+    def get(self, key, theDefault=None):
+        return self.__dict__.get(key, theDefault)
 
 bunch = Bunch
 #@+node:ekr.20090704103932.5181: ** class Writer (docutils.writers.Writer)
 if docutils:
-    class Writer (docutils.writers.Writer):
+    class Writer(docutils.writers.Writer):
         #@+<< class Writer declarations >>
         #@+node:ekr.20090704103932.5182: *3* << class Writer declarations >>
-        supported = ('pdf','rlpdf')
+        supported = ('pdf', 'rlpdf')
             # Formats this writer supports.
 
         settings_spec = (
@@ -439,19 +439,19 @@ if docutils:
             None,
             (
                 # EKR: added this entry.
-            (   'Specify a stylesheet URL, used verbatim.  Overrides '
+            ('Specify a stylesheet URL, used verbatim.  Overrides '
                 '--stylesheet-path.  Either --stylesheet or --stylesheet-path '
                 'must be specified.',
                 ['--stylesheet'],
                 {'metavar': '<URL>', 'overrides': 'stylesheet_path'}),
 
-            (   'Specify a stylesheet file, relative to the current working '
+            ('Specify a stylesheet file, relative to the current working '
                 'directory.  The path is adjusted relative to the output HTML '
                 'file.  Overrides --stylesheet.',
                 ['--stylesheet-path'],
                 {'metavar': '<file>', 'overrides': 'stylesheet'}),
 
-            (   'Format for footnote references: one of "superscript" or '
+            ('Format for footnote references: one of "superscript" or '
                 '"brackets".  Default is "brackets".',
                 ['--footnote-references'],
                 {'choices': ['superscript', 'brackets'], 'default': 'brackets',
@@ -468,7 +468,7 @@ if docutils:
 
         #@+others
         #@+node:ekr.20090704103932.5184: *3* createParagraphsFromIntermediateFile
-        def createParagraphsFromIntermediateFile (self,s,story,visitor):
+        def createParagraphsFromIntermediateFile(self, s, story, visitor):
 
             if not reportlab:
                 return ''
@@ -477,10 +477,10 @@ if docutils:
                 pagesize=reportlab.lib.pagesizes.A4)
             #
             # The 'real' code is doc.build(story)
-            visitor.buildFromIntermediateFile(s,story,visitor)
+            visitor.buildFromIntermediateFile(s, story, visitor)
             return out.getvalue()
         #@+node:ekr.20090704103932.5185: *3* createPDF_usingPlatypus
-        def createPDF_usingPlatypus (self,story):
+        def createPDF_usingPlatypus(self, story):
 
             if not reportlab:
                 return ''
@@ -499,14 +499,14 @@ if docutils:
 
             '''Do final translation of self.document into self.output.'''
 
-            if 1: # Production code.
-                visitor = PDFTranslator(self,self.document)
-            else: # Use intermediate file, and dummy pdf translator.
+            if 1:  # Production code.
+                visitor = PDFTranslator(self, self.document)
+            else:  # Use intermediate file, and dummy pdf translator.
                 # We can modify the intermediate file by hand to test proposed code generation.
                 try:
                     filename = 'intermediateFile.txt'
                     s = open(filename).read()
-                    visitor = dummyPDFTranslator(self,self.document,s)
+                    visitor = dummyPDFTranslator(self, self.document, s)
                 except IOError:
                     return
             #
@@ -519,18 +519,18 @@ if docutils:
             # Solve the newline problem by brute force.
             self.output = b'\n'.join(self.output.splitlines(False))
             #self.output = self.output.replace(b'\r\n',b'\n')
-            if 0: # This is the actual .pdf output returned from doc.build(story)
+            if 0:  # This is the actual .pdf output returned from doc.build(story)
                 # doc is a Platypus (and this reportlab) document.
-                g.trace('output','*'*40)
+                g.trace('output', '*' * 40)
                 lines = g.splitLines(self.output)
                 g.printList(lines)
         #@-others
 #@+node:ekr.20090704103932.5188: ** class dummyPDFTranslator (docutils.nodes.NodeVisitor)
 if docutils:
-    class dummyPDFTranslator (docutils.nodes.NodeVisitor):
+    class dummyPDFTranslator(docutils.nodes.NodeVisitor):
         #@+others
         #@+node:ekr.20090704103932.5189: *3*    __init__ (dummyPDFTranslator)
-        def __init__(self, writer,doctree,contents):
+        def __init__(self, writer, doctree, contents):
 
             self.writer = writer
             self.contents = contents
@@ -539,7 +539,7 @@ if docutils:
             self.settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
-            super().__init__(doctree) # Init the base class.
+            super().__init__(doctree)  # Init the base class.
             self.language = get_language(doctree)
                 # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
         #@+node:ekr.20090704103932.5190: *3* as_what
@@ -569,28 +569,28 @@ if docutils:
 
             pass
         #@+node:ekr.20090704103932.5193: *3* buildFromIntermediateFile
-        def buildFromIntermediateFile (self):
+        def buildFromIntermediateFile(self):
 
             'Synthesize calls to reportlab.platypus.para.Paragraph from an intermediate file.'
 
             lines = g.splitLines(self.contents)
-            para = [] # The lines of the next paragraph.
+            para = []  # The lines of the next paragraph.
 
             for line in lines:
                 if line:
                     if line.startswith('createParagraph:'):
-                        style = line[len('createParagraph:'):].strip()
+                        style = line[len('createParagraph:') :].strip()
                         if para:
-                            self.putParaFromIntermediateFile(para,style)
+                            self.putParaFromIntermediateFile(para, style)
                             para = []
                     elif line.startswith('starttag:') or line.startswith('..'):
                         pass
                     else:
                         para.append(line)
             if para:
-                self.putParaFromIntermediateFile(para,style)
+                self.putParaFromIntermediateFile(para, style)
         #@+node:ekr.20090704103932.5194: *3* putParaFromIntermediateFile
-        def putParaFromIntermediateFile (self,lines,style):
+        def putParaFromIntermediateFile(self, lines, style):
 
             if not reportlab:
                 return
@@ -601,35 +601,35 @@ if docutils:
             style = self.styleSheet.get(style)
 
             self.story.append(
-                reportlab.platypus.para.Paragraph (
+                reportlab.platypus.para.Paragraph(
                     self.encode(text), style,
-                    bulletText = bulletText,
-                    context = self.styleSheet))
+                    bulletText=bulletText,
+                    context=self.styleSheet))
         #@-others
 #@+node:ekr.20090704103932.5195: ** class PDFTranslator (docutils.nodes.NodeVisitor)
-if docutils: # NOQA
+if docutils:  # NOQA
 
-    class PDFTranslator (docutils.nodes.NodeVisitor):
+    class PDFTranslator(docutils.nodes.NodeVisitor):
         #@+others
         #@+node:ekr.20090704103932.5196: *3* __init__ (PDFTranslator)
-        def __init__(self, writer,doctree):
+        def __init__(self, writer, doctree):
 
             self.writer = writer
             self.settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
-            super().__init__(doctree) # Init the base class.
+            super().__init__(doctree)  # Init the base class.
             self.language = get_language(doctree)
                 # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
             self.in_docinfo = False
-            self.head = [] # Set only by meta() method.
-            self.body = [] # The body text being accumulated.
+            self.head = []  # Set only by meta() method.
+            self.body = []  # The body text being accumulated.
             self.foot = []
             self.sectionlevel = 0
             self.context = []
             self.story = []
-            self.bulletText = '•' # Bullet: U+2022
-            if 0: # no longer used.
+            self.bulletText = '•'  # Bullet: U+2022
+            if 0:  # no longer used.
                 self.topic_class = ''
                 self.bulletlevel = 0
         #@+node:ekr.20090704103932.5197: *3* Complex
@@ -641,23 +641,23 @@ if docutils: # NOQA
         #     - The proper key is 'ids', not 'id'
         #@@c
 
-        def visit_footnote_reference (self,node):
+        def visit_footnote_reference(self, node):
 
             '''Generate code for a footnote reference.'''
 
             # self.dumpNode(node,tag='footnote-ref-node')
 
-            markup = [] # The terminating markup to be supplied by depart_footnote_reference.
-            a = node.attributes # EKR.
+            markup = []  # The terminating markup to be supplied by depart_footnote_reference.
+            a = node.attributes  # EKR.
             if self.settings.footnote_backlinks and a.get('ids'):
                 self.body.append(
-                    self.starttag(node,'setLink','',destination=a['ids']))
+                    self.starttag(node, 'setLink', '', destination=a['ids']))
                 markup.append('</setLink>')
 
-            if   node.hasattr('refid'):
-                href = a ['refid']
+            if node.hasattr('refid'):
+                href = a['refid']
             elif node.hasattr('refname'):
-                href = self.document.nameids [a ['refname']]
+                href = self.document.nameids[a['refname']]
             else:
                 href = ''
             format = self.settings.footnote_references
@@ -667,14 +667,14 @@ if docutils: # NOQA
             elif format == 'superscript':
                 suffix = '<super>'
                 markup.append('</super>')
-            else: # shouldn't happen
+            else:  # shouldn't happen
                 suffix = None
             if suffix:
                 self.body.append(
-                    self.starttag(node,'link',suffix,destination=href))
+                    self.starttag(node, 'link', suffix, destination=href))
                 markup.append('</link>')
             markup.reverse()
-            self.push(kind='footnote-ref',markup=markup)
+            self.push(kind='footnote-ref', markup=markup)
         #@+node:ekr.20090704103932.5201: *6* depart_footnote_reference
         def depart_footnote_reference(self, node):
 
@@ -685,7 +685,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5202: *5* footnote & helpers
         def visit_footnote(self, node):
 
-            self.push(kind='footnotes',context=[])
+            self.push(kind='footnotes', context=[])
 
             self.footnote_backrefs(node)
 
@@ -701,7 +701,7 @@ if docutils: # NOQA
         # Warning: this does not work for auto-numbered footnotes.
         #@@c
 
-        def footnote_backrefs (self,node):
+        def footnote_backrefs(self, node):
 
             '''Create b.link and b.setLink for visit/depart_label.'''
 
@@ -709,11 +709,11 @@ if docutils: # NOQA
 
             b = self.peek('footnotes')
             a = node.attributes
-            backrefs = a.get('backrefs',[]) # EKR.
+            backrefs = a.get('backrefs', [])  # EKR.
 
             # Set b.setLink.
             b.setLink = self.starttag(
-                {},'setLink','',destination=a['ids']) # EKR.
+                {}, 'setLink', '', destination=a['ids'])  # EKR.
 
             # Set b.links.
             b.links = []
@@ -721,7 +721,7 @@ if docutils: # NOQA
                 for backref in backrefs:
                     b.links.append(
                         self.starttag(
-                            {},'link',suffix='',destination=backref))
+                            {}, 'link', suffix='', destination=backref))
         #@+node:ekr.20090704103932.5204: *6* footnote_backrefs_depart
         def footnote_backrefs_depart(self, node):
 
@@ -752,32 +752,32 @@ if docutils: # NOQA
                 self.body.append('   ')
         #@+node:ekr.20090704103932.5206: *4* reference...
         #@+node:ekr.20090704103932.5207: *5* visit_reference
-        def visit_reference (self,node):
+        def visit_reference(self, node):
 
             markup = []
             caller = 'visit_reference'
             if 'refuri' in node:
-                href = node ['refuri']
+                href = node['refuri']
                 self.body.append(
-                    self.starttag(node,'a',suffix='',href=href,caller=caller))
+                    self.starttag(node, 'a', suffix='', href=href, caller=caller))
                 markup.append('</a>')
             else:
                 # if node.has_key('id'):
                 if 'id' in node:
                     self.body.append(
-                        self.starttag({},'setLink','',
-                            destination=node['id'],caller=caller))
+                        self.starttag({}, 'setLink', '',
+                            destination=node['id'], caller=caller))
                     markup.append('</setLink>')
                 # if node.has_key('refid'):
                 if 'refid' in node:
-                    href = node ['refid']
+                    href = node['refid']
                 # elif node.has_key('refname'):
                 elif 'refname' in node:
-                    href = self.document.nameids [node ['refname']]
+                    href = self.document.nameids[node['refname']]
                 self.body.append(
-                    self.starttag(node,'link','',destination=href,caller=caller))
+                    self.starttag(node, 'link', '', destination=href, caller=caller))
                 markup.append('</link>')
-            self.push(kind='a',markup=markup)
+            self.push(kind='a', markup=markup)
         #@+node:ekr.20090704103932.5208: *5* depart_reference
         def depart_reference(self, node):
 
@@ -786,32 +786,32 @@ if docutils: # NOQA
             for s in b.markup:
                 self.body.append(s)
         #@+node:ekr.20090704103932.5209: *4* target
-        def visit_target (self,node):
+        def visit_target(self, node):
 
             if not (
                 'refuri' in node or 'refid' in node or 'refname' in node
             ):
                 href = ''
                 if 'id' in node:
-                    href = node ['id']
+                    href = node['id']
                 elif 'name' in node:
-                    href = node ['name']
+                    href = node['name']
                 self.body.append("%s%s" % (
-                    self.starttag(node,'setLink',suffix='',
-                        destination=href,caller='visit_targtet'),
+                    self.starttag(node, 'setLink', suffix='',
+                        destination=href, caller='visit_targtet'),
                     '</setLink>'))
             raise docutils.nodes.SkipNode
 
-        def depart_target (self,node):
+        def depart_target(self, node):
             pass
         #@+node:ekr.20090704103932.5210: *4* title
         #@+node:ekr.20090704103932.5211: *5* visit_title
-        def visit_title (self,node):
+        def visit_title(self, node):
 
-            caller='visit_title'
+            caller = 'visit_title'
             start = len(self.body)
             markup = []
-            isTopic = isinstance(node.parent,docutils.nodes.topic)
+            isTopic = isinstance(node.parent, docutils.nodes.topic)
             isTitle = self.sectionlevel == 0
 
             # Set the style.
@@ -824,23 +824,23 @@ if docutils: # NOQA
 
             # The old code was equivalent to: if style != 'title'.
             if 0:
-                self.dumpNode(node.parent,tag='node.parent')
-                self.dumpNode(node,tag='node')
+                self.dumpNode(node.parent, tag='node.parent')
+                self.dumpNode(node, tag='node')
             # Bug fix: 8/21/05: changed 'id' to 'ids'.
             if node.parent.hasattr('ids'):
                 self.body.append(
-                self.starttag({},'setLink','',
-                    destination=node.parent['ids'],caller=caller))
+                self.starttag({}, 'setLink', '',
+                    destination=node.parent['ids'], caller=caller))
                 markup.append('</setLink>')
             if node.hasattr('refid'):
                 self.body.append(
-                self.starttag({},'setLink','',
-                    destination=node['refid'],caller=caller))
+                self.starttag({}, 'setLink', '',
+                    destination=node['refid'], caller=caller))
                 markup.append('</setLink>')
 
-            self.push(kind='title',markup=markup,start=start,style=style)
+            self.push(kind='title', markup=markup, start=start, style=style)
         #@+node:ekr.20090704103932.5212: *5* depart_title
-        def depart_title (self,node):
+        def depart_title(self, node):
 
             b = self.pop('title')
 
@@ -852,30 +852,30 @@ if docutils: # NOQA
             except AttributeError:
                 style = 'Normal'
 
-            self.putTail(b.start,style)
+            self.putTail(b.start, style)
         #@+node:ekr.20090704103932.5213: *3* Helpers
         #@+node:ekr.20090704103932.5214: *4*  starttag
         # The suffix is always '\n' except for a cant-happen situation.
 
-        def starttag (self,node,tagname,suffix='\n',caller='',**attributes):
+        def starttag(self, node, tagname, suffix='\n', caller='', **attributes):
 
             atts = {}
-            for (name,value) in attributes.items():
-                atts [name.lower()] = value
-            for att in ('class',): # append to node attribute
+            for (name, value) in attributes.items():
+                atts[name.lower()] = value
+            for att in ('class',):  # append to node attribute
                 if att in node:
                     if att in atts:
-                        atts [att] = node [att] + ' ' + atts [att]
-            for att in ('id',): # node attribute overrides
+                        atts[att] = node[att] + ' ' + atts[att]
+            for att in ('id',):  # node attribute overrides
                 if att in node:
-                    atts [att] = node [att]
+                    atts[att] = node[att]
 
             attlist = atts.items()
             attlist.sort()
             parts = [tagname]
             # Convert the attributes in attlist to a single string.
             for name, value in attlist:
-                if value is None: # boolean attribute
+                if value is None:  # boolean attribute
                     parts.append(name.lower().strip())
                 elif g.isList(value):
                     values = [str(v) for v in value]
@@ -884,16 +884,16 @@ if docutils: # NOQA
                         name.lower(), self.encode(val)))
                 else:
                     parts.append('%s="%s"' % (
-                        name.lower(),self.encode(str(value).strip())))
+                        name.lower(), self.encode(str(value).strip())))
 
-            val = '<%s>%s' % (' '.join(parts),suffix)
+            val = '<%s>%s' % (' '.join(parts), suffix)
             return val
         #@+node:ekr.20090704103932.5215: *4* as_what
         def as_what(self):
 
             return self.story
         #@+node:ekr.20090704103932.5216: *4* createParagraph
-        def createParagraph (self,text,style='Normal',bulletText=None):
+        def createParagraph(self, text, style='Normal', bulletText=None):
 
             if not reportlab:
                 return
@@ -903,20 +903,20 @@ if docutils: # NOQA
                 style = 'Normal'
             style = self.styleSheet.get(style)
             try:
-                s = reportlab.platypus.para.Paragraph (
+                s = reportlab.platypus.para.Paragraph(
                     text,
                     style,
-                    bulletText = bulletText,
-                    context = self.styleSheet,
+                    bulletText=bulletText,
+                    context=self.styleSheet,
                 )
                 self.story.append(s)
             except Exception:
-                g.es_print('\nreportlab error...\n',color='orange')
+                g.es_print('\nreportlab error...\n', color='orange')
                 g.print_exception(full=False)
                 g.es_exception(full=False)
                 print(repr(text))
         #@+node:ekr.20090704103932.5217: *4* dumpContext
-        def dumpContext (self):
+        def dumpContext(self):
 
             if self.context:
 
@@ -925,10 +925,10 @@ if docutils: # NOQA
 
                 i = 0
                 for bunch in self.context:
-                    print('%2d %s' % (i,bunch))
+                    print('%2d %s' % (i, bunch))
                     i += 1
         #@+node:ekr.20090704103932.5218: *4* dumpNode
-        def dumpNode (self,node,tag=''):
+        def dumpNode(self, node, tag=''):
 
             #@+<< define keys to be printed >>
             #@+node:ekr.20090704103932.5219: *5* << define keys to be printed >>
@@ -951,7 +951,7 @@ if docutils: # NOQA
                 'id_start'
                 'ids'  # keys are sectinon names, values are section objects or reference objects.
                 'indirect_targets'
-                'nameids' # This might be what we want: keys are section names, values are munged names.
+                'nameids'  # This might be what we want: keys are section names, values are munged names.
                 #'nametypes'
                 #'parse_messages'
                 #'rawsource'
@@ -976,15 +976,15 @@ if docutils: # NOQA
             nkeys = list(d.keys())
             nkeys.sort()
 
-            g.pr('\n','-' * 30)
+            g.pr('\n', '-' * 30)
             g.pr('dump of node %s\n' % ('(%s)' % tag if tag else ''))
 
-            g.pr('class',node.__class__)
+            g.pr('class', node.__class__)
 
             for nkey in nkeys:
                 if nkey in keys:
                     val = d.get(nkey)
-                    g.pr(nkey,':',g.toString(val,indent='\t'))
+                    g.pr(nkey, ':', g.toString(val, indent='\t'))
 
             g.pr('\ndone', '-' * 25)
         #@+node:ekr.20090704103932.5220: *4* encode (PDFTranslator) (No longer used)
@@ -994,11 +994,11 @@ if docutils: # NOQA
                 text = text.encode('utf-8')
             return text
         #@+node:ekr.20111107181638.9742: *4* escape (PDFTranslator)
-        def escape (self,s):
+        def escape(self, s):
 
-            return s.replace('<','&lt').replace('>','&gt')
+            return s.replace('<', '&lt').replace('>', '&gt')
         #@+node:ekr.20090704103932.5221: *4* inContext
-        def inContext (self,kind):
+        def inContext(self, kind):
 
             '''Return the most recent bunch having the indicated kind, or None.'''
 
@@ -1012,25 +1012,25 @@ if docutils: # NOQA
 
             return None
         #@+node:ekr.20090704103932.5222: *4* pdfMunge
-        def pdfMunge (self,s):
+        def pdfMunge(self, s):
 
             '''Duplicate the munging done (somewhere in docutils) of section names.
 
             This allows us to use the nameids attribute in the document element.'''
 
-            s = s.lower.replace('\t',' ')
+            s = s.lower.replace('\t', ' ')
 
-            while s != s.replace('  ',' '):
-                s = s.replace('  ',' ')
+            while s != s.replace('  ', ' '):
+                s = s.replace('  ', ' ')
 
-            return s.replace(' ','-')
+            return s.replace(' ', '-')
         #@+node:ekr.20090704103932.5223: *4* push, pop, peek
-        def push (self,**keys):
+        def push(self, **keys):
 
             bunch = Bunch(**keys)
             self.context.append(bunch)
 
-        def pop (self,kind):
+        def pop(self, kind):
 
             bunch = self.context.pop()
             assert bunch.kind == kind,\
@@ -1038,7 +1038,7 @@ if docutils: # NOQA
                     kind, bunch.kind)
             return bunch
 
-        def peek (self,kind):
+        def peek(self, kind):
 
             bunch = self.context[-1]
             assert bunch.kind == kind,\
@@ -1046,18 +1046,18 @@ if docutils: # NOQA
                     kind, bunch.kind)
             return bunch
         #@+node:ekr.20090704103932.5224: *4* putHead & putTail
-        def putHead (self,start,style='Normal',bulletText=None):
+        def putHead(self, start, style='Normal', bulletText=None):
 
             self.createParagraph(self.body[:start],
-                style=style,bulletText=bulletText)
+                style=style, bulletText=bulletText)
 
             self.body = self.body[start:]
 
 
-        def putTail (self,start,style='Normal',bulletText=None):
+        def putTail(self, start, style='Normal', bulletText=None):
 
             self.createParagraph(self.body[start:],
-                style=style,bulletText=bulletText)
+                style=style, bulletText=bulletText)
 
             self.body = self.body[:start]
         #@+node:ekr.20090704103932.5225: *3* Simple...
@@ -1269,7 +1269,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5260: *4* bullet_list
         def visit_bullet_list(self, node):
 
-            self.push(kind='ul',start=len(self.body))
+            self.push(kind='ul', start=len(self.body))
 
             # At present self.bulletText is a constant.
             self.body.append('<ul bulletText="%s">' % self.bulletText)
@@ -1289,7 +1289,7 @@ if docutils: # NOQA
 
             self.body.append('</dt>')
             self.body.append(
-                self.starttag(node,'dd',caller='visit_destination'))
+                self.starttag(node, 'dd', caller='visit_destination'))
 
         def depart_definition(self, node):
 
@@ -1298,7 +1298,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5262: *4* definition_list
         def visit_definition_list(self, node):
 
-            self.push(kind='dl',start=len(self.body))
+            self.push(kind='dl', start=len(self.body))
 
             self.body.append(self.starttag(node, 'dl'))
 
@@ -1351,7 +1351,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5269: *5* docinfo
         def visit_docinfo(self, node):
 
-            self.push(kind='docinfo',start=len(self.body))
+            self.push(kind='docinfo', start=len(self.body))
             self.in_docinfo = True
 
         def depart_docinfo(self, node):
@@ -1414,7 +1414,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5276: *4* enumerated_list
         def visit_enumerated_list(self, node):
 
-            self.push(kind='ol',start=len(self.body))
+            self.push(kind='ol', start=len(self.body))
 
             self.body.append('<ol>')
 
@@ -1429,7 +1429,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5277: *4* field_list
         def visit_field_list(self, node):
 
-            self.push(kind='<para>',start=len(self.body))
+            self.push(kind='<para>', start=len(self.body))
 
         def depart_field_list(self, node):
 
@@ -1453,7 +1453,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5279: *4* option_list
         def visit_option_list(self, node):
 
-            self.push(kind='option-list',start=len(self.body))
+            self.push(kind='option-list', start=len(self.body))
 
         def depart_option_list(self, node):
 
@@ -1464,7 +1464,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5280: *4* paragraph...
         def visit_paragraph(self, node):
 
-            self.push(kind='p',start=len(self.body))
+            self.push(kind='p', start=len(self.body))
 
         def depart_paragraph(self, node):
 
@@ -1488,7 +1488,7 @@ if docutils: # NOQA
         #@+node:ekr.20090704103932.5282: *4* subtitle
         def visit_subtitle(self, node):
 
-            self.push(kind='subtitle',start=len(self.body))
+            self.push(kind='subtitle', start=len(self.body))
 
         def depart_subtitle(self, node):
 
@@ -1499,37 +1499,37 @@ if docutils: # NOQA
             except AttributeError:
                 style = 'Normal'
 
-            self.putTail(b.start,style)
+            self.putTail(b.start, style)
         #@+node:ekr.20090704103932.5283: *4* term
-        def visit_term (self,node):
+        def visit_term(self, node):
 
             self.push(kind='dt')
 
             self.body.append(
-                self.starttag(node,'dt',suffix='',caller='visit_term'))
+                self.starttag(node, 'dt', suffix='', caller='visit_term'))
 
-        def depart_term (self,node):
+        def depart_term(self, node):
 
             self.pop('dt')
         #@+node:ekr.20090704103932.5284: *4* Text...
-        def visit_Text (self,node):
+        def visit_Text(self, node):
 
             self.push(kind='#text')
 
             self.body.append(node.astext())
 
-        def depart_Text (self,node):
+        def depart_Text(self, node):
 
             self.pop('#text')
         #@+node:ekr.20090704103932.5285: *4* topic
-        def visit_topic (self,node):
+        def visit_topic(self, node):
 
             if node.hasattr('id'):
-                self.push(kind='topic-id',markup='</setLink>')
-                self.body.append(self.starttag({},'setLink',
-                    suffix='',destination=node['id'],caller='visit_topic'))
+                self.push(kind='topic-id', markup='</setLink>')
+                self.body.append(self.starttag({}, 'setLink',
+                    suffix='', destination=node['id'], caller='visit_topic'))
 
-        def depart_topic (self,node):
+        def depart_topic(self, node):
 
             if node.hasattr('id'):
                 b = self.pop('topic-id')
@@ -1564,7 +1564,7 @@ if docutils: # NOQA
             if reportlab:
                 self.story.append(
                     reportlab.platypus.Preformatted(
-                        node.astext(),self.styleSheet.get('Code')))
+                        node.astext(), self.styleSheet.get('Code')))
 
             raise docutils.nodes.SkipNode
 

@@ -14,9 +14,9 @@ class Org_Importer(Importer):
         '''Org_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'plain', # A reasonable @language
-            state_class = None,
-            strict = False,
+            language='plain',  # A reasonable @language
+            state_class=None,
+            strict=False,
         )
         self.tc = self.load_nodetags()
 
@@ -37,7 +37,7 @@ class Org_Importer(Importer):
             if m:
                 i = m.start()
                 # head = s[:i].strip()
-                tail = s[i+1:-1].strip()
+                tail = s[i + 1 : -1].strip()
                 tags = tail.split(':')
                 for tag in tags:
                     self.tc.add_tag(p, tag)
@@ -58,8 +58,8 @@ class Org_Importer(Importer):
                 level = len(m.group(1))
                 self.parents = self.parents[:level]
                 self.find_parent(
-                    level = level,
-                    h = m.group(2))
+                    level=level,
+                    h=m.group(2))
             else:
                 p = self.parents[-1]
                 self.add_line(p, line)
@@ -72,13 +72,13 @@ class Org_Importer(Importer):
         assert level >= 0
         n = level - len(self.parents)
         while level >= len(self.parents):
-            headline = h if n == 0  else 'placeholder'
+            headline = h if n == 0 else 'placeholder'
             # This works, but there is no way perfect import will pass the result.
             n -= 1
             child = self.create_child_node(
-                parent = self.parents[-1],
-                body = None,
-                headline = headline,
+                parent=self.parents[-1],
+                body=None,
+                headline=headline,
             )
             self.parents.append(child)
         return self.parents[level]

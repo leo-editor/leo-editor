@@ -17,7 +17,7 @@ class Py_Importer(Importer):
         super().__init__(
             importCommands,
             language=language,
-            state_class = Python_ScanState,
+            state_class=Python_ScanState,
             strict=True,
         )
         self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
@@ -26,7 +26,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
-        if p: # Called from clean_all_headlines:
+        if p:  # Called from clean_all_headlines:
             return self.get_decorator(p) + p.h
         # Handle defs.
         m = re.match(r'\s*def\s+(\w+)', s)
@@ -117,7 +117,7 @@ class Py_Importer(Importer):
             if self.skip > 0:
                 self.skip -= 1
             elif self.starts_decorator(i, lines, new_state):
-                pass # Sets self.skip and self.decorator_lines.
+                pass  # Sets self.skip and self.decorator_lines.
             elif self.starts_block(i, lines, new_state, prev_state, stack):
                 first = False
                 self.tail_p = None
@@ -155,18 +155,18 @@ class Py_Importer(Importer):
     def cut_stack(self, new_state, stack, append=False):
         '''Cut back the stack until stack[-1] matches new_state.'''
         # pylint: disable=arguments-differ
-        assert len(stack) > 1 # Fail on entry.
+        assert len(stack) > 1  # Fail on entry.
         while stack:
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
-                assert len(stack) > 1, stack # <
+                assert len(stack) > 1, stack  # <
                 stack.pop()
             elif top_state.level() == new_state.level():
-                assert len(stack) > 1, stack # ==
+                assert len(stack) > 1, stack  # ==
                 if append:
-                    pass # Append line to the previous node.
+                    pass  # Append line to the previous node.
                 else:
-                    stack.pop() # Create a new node.
+                    stack.pop()  # Create a new node.
                 break
             else:
                 # This happens often in valid Python programs.
@@ -174,7 +174,7 @@ class Py_Importer(Importer):
         # Restore the guard entry if necessary.
         if len(stack) == 1:
             stack.append(stack[-1])
-        assert len(stack) > 1 # Fail on exit.
+        assert len(stack) > 1  # Fail on exit.
     #@+node:ekr.20161116173901.1: *4* py_i.end_block
     def end_block(self, i, lines, new_state, prev_state, stack):
         '''
@@ -231,7 +231,7 @@ class Py_Importer(Importer):
         if not target.at_others_flag:
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
-            self.add_line(parent,ref)
+            self.add_line(parent, ref)
         return h
     #@+node:ekr.20161116034633.7: *4* py_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
@@ -307,7 +307,7 @@ class Py_Importer(Importer):
             # Fix #360: allow multiline matches
             # Carefully skip all lines until a class/def.
             self.decorator_lines = [line]
-            for i, line in enumerate(lines[i+1:]):
+            for i, line in enumerate(lines[i + 1 :]):
                 new_state = self.scan_line(line, prev_state)
                 m = self.starts_pattern.match(line)
                 if m:
@@ -399,7 +399,7 @@ class Py_Importer(Importer):
         if not last or last.h == 'Declarations':
             return
         if last.parent() != parent:
-            return # The indentation would be wrong.
+            return  # The indentation would be wrong.
         lines = self.get_lines(last)
         prev_state = self.state_class()
         if_pattern = re.compile(r'^\s*if\b')
@@ -420,8 +420,8 @@ class Py_Importer(Importer):
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         '''
-        pattern = self.escape_pattern # A compiled regex pattern
-        for p in parent.children(): # 2018/05/24.
+        pattern = self.escape_pattern  # A compiled regex pattern
+        for p in parent.children():  # 2018/05/24.
             lines = self.get_lines(p)
             tail = []
             while lines:
@@ -435,7 +435,7 @@ class Py_Importer(Importer):
                     except ValueError:
                         break
                     if n == abs(self.tab_width):
-                        new_line = line[len(m.group(0)):]
+                        new_line = line[len(m.group(0)) :]
                         tail.append(new_line)
                     else:
                         g.trace('unexpected unindent value', n)
@@ -471,7 +471,7 @@ class Python_ScanState:
     #@+node:ekr.20161114152246.1: *3* py_state.__repr__
     def __repr__(self):
         '''Py_State.__repr__'''
-        return 'PyState: %7r indent: %2s {%s} (%s) [%s] bs-nl: %s'  % (
+        return 'PyState: %7r indent: %2s {%s} (%s) [%s] bs-nl: %s' % (
             self.context, self.indent,
             self.curlies, self.parens, self.squares,
             int(self.bs_nl))
@@ -517,7 +517,7 @@ class PythonTarget:
         '''Target ctor.'''
         self.at_others_flag = False
             # True: @others has been generated for this target.
-        self.kind = 'None' # in ('None', 'class', 'def')
+        self.kind = 'None'  # in ('None', 'class', 'def')
         self.p = p
         self.state = state
 

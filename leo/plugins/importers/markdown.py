@@ -13,9 +13,9 @@ class Markdown_Importer(Importer):
     def __init__(self, importCommands, **kwargs):
         '''Markdown_Importer.__init__'''
         super().__init__(importCommands,
-            language = 'md',
-            state_class = None,
-            strict = False,
+            language='md',
+            state_class=None,
+            strict=False,
         )
         self.underline_dict = {}
 
@@ -37,7 +37,7 @@ class Markdown_Importer(Importer):
             if skip > 0:
                 skip -= 1
             elif not in_code and self.lookahead_underline(i, lines):
-                level = 1 if lines[i+1].startswith('=') else 2
+                level = 1 if lines[i + 1].startswith('=') else 2
                 self.make_node(level, line)
                 skip = 1
             elif not in_code and name:
@@ -63,23 +63,23 @@ class Markdown_Importer(Importer):
         while level < len(self.stack):
             self.stack.pop()
         top = self.stack[-1]
-        if 1: # Experimental fix for #877.
+        if 1:  # Experimental fix for #877.
             if level > len(self.stack):
                 print('')
                 g.trace('Unexpected markdown level for: %s' % h)
                 print('')
             while level > len(self.stack):
                 child = self.create_child_node(
-                    parent = top,
-                    body = None,
-                    headline = 'INSERTED NODE'
+                    parent=top,
+                    body=None,
+                    headline='INSERTED NODE'
                 )
                 self.stack.append(child)
         assert level == len(self.stack), (level, len(self.stack))
         child = self.create_child_node(
-            parent = top,
-            body = None,
-            headline = h, # Leave the headline alone
+            parent=top,
+            body=None,
+            headline=h,  # Leave the headline alone
         )
         self.stack.append(child)
         assert self.stack
@@ -121,7 +121,7 @@ class Markdown_Importer(Importer):
         '''True if lines[i:i+1] form an underlined line.'''
         if i + 1 < len(lines):
             line0 = lines[i]
-            line1 = lines[i+1]
+            line1 = lines[i + 1]
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
             return not ch0 and not line0.isspace() and ch1 and len(line1) >= 4
@@ -132,9 +132,9 @@ class Markdown_Importer(Importer):
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
         child = self.create_child_node(
-            parent = self.stack[-1],
-            body = line,
-            headline = '!Declarations',
+            parent=self.stack[-1],
+            body=line,
+            headline='!Declarations',
         )
         self.stack.append(child)
     #@+node:ekr.20161125095217.1: *4* md_i.make_node

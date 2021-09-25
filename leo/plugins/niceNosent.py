@@ -12,17 +12,17 @@ adds a newline before class and functions in the derived file.
 import os
 from leo.core import leoGlobals as g
 
-NSPACES = ' '*4
+NSPACES = ' ' * 4
 nosentNodes = []
 
 #@+others
 #@+node:ekr.20050917082031: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting
     if ok:
-        g.registerHandler("save1",onPreSave)
-        g.registerHandler("save2",onPostSave)
+        g.registerHandler("save1", onPreSave)
+        g.registerHandler("save2", onPostSave)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20040331151007.1: ** onPreSave
@@ -52,7 +52,7 @@ def onPostSave(tag=None, keywords=None):
             g.red("node %s found" % p.h)
             # Use os.path.normpath to give system separators.
             fname = os.path.normpath(g.fullPath(c, p))  # #1914.
-            f = open(fname,"r")
+            f = open(fname, "r")
             lines = f.readlines()
             f.close()
             #@+<< add a newline before def or class >>
@@ -61,7 +61,7 @@ def onPostSave(tag=None, keywords=None):
                 ls = s.lstrip()
                 if ls.startswith("def ") or ls.startswith("class "):
                     try:
-                        if lines[i-1].strip() != "":
+                        if lines[i - 1].strip() != "":
                             lines[i] = "\n" + lines[i]
                     except IndexError:
                         pass
@@ -69,8 +69,8 @@ def onPostSave(tag=None, keywords=None):
             #@+<< replace tabs with spaces >>
             #@+node:ekr.20040331151007.4: *3* << replace tabs with spaces >>
             s = ''.join(lines)
-            fh = open(fname,"w")
-            fh.write(s.replace("\t",NSPACES))
+            fh = open(fname, "w")
+            fh.write(s.replace("\t", NSPACES))
             fh.close()
             #@-<< replace tabs with spaces >>
     nosentNodes = []

@@ -31,23 +31,23 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20040828105233.1: ** onMenu
-def onMenu (tag,keywords):
+def onMenu(tag, keywords):
 
     c = keywords.get("c")
     table = (
         #@+others
         #@+node:ekr.20040828105233.2: *3* file menu
-        ("File","File文件"),
-            ("New","新建"),
-            ("Open...","打开"),
-            ("Open With...","用程序打开..."),
-            ("Close","关闭"),
-            ("Save","保存"),
-            ("Save As","另存为..."),
-            ("Save To","另存到..."),
-            ("Revert To Saved","恢复到保存的文件"),
-            ("Recent Files...","最近访问的文件..."),
-                ("Clear Recent Files","清除最近访问文件列表"),
+        ("File", "File文件"),
+            ("New", "新建"),
+            ("Open...", "打开"),
+            ("Open With...", "用程序打开..."),
+            ("Close", "关闭"),
+            ("Save", "保存"),
+            ("Save As", "另存为..."),
+            ("Save To", "另存到..."),
+            ("Revert To Saved", "恢复到保存的文件"),
+            ("Recent Files...", "最近访问的文件..."),
+                ("Clear Recent Files", "清除最近访问文件列表"),
             ("Read/Write...", "读取/写入..."),
                 ("Read Outline Only", "只读取大纲"),
                 ("Read @file Nodes", "读取 @file 结点"),
@@ -81,12 +81,12 @@ def onMenu (tag,keywords):
                 ("Weave", "导出为 Weave 格式 (Listing)"),
                 ("Export all to AsciiDoc", "全部导出为 AsciiDoc 文件"),
                 ("Export current tree to AsciiDoc", "将当前树导出为 AsciiDoc 文件"),
-            ("Exit","退出"),
+            ("Exit", "退出"),
         #@+node:ekr.20040828105233.3: *3* edit menu
-        ("Edit","Edit编辑"),
-            ("Undo Typing","撤销键入"),
-            ("Undo Cut Node","撤销剪切结点"),
-            ("Redo Typing","重做键入"),
+        ("Edit", "Edit编辑"),
+            ("Undo Typing", "撤销键入"),
+            ("Undo Cut Node", "撤销剪切结点"),
+            ("Redo Typing", "重做键入"),
             ("Can't Undo", "无法撤销"),
             ("Can't Redo", "无法重做"),
             ("Cut", "剪切"),
@@ -106,7 +106,7 @@ def onMenu (tag,keywords):
                 ("Reformat Paragraph", "重新格式化段落"),
                 ("Indent", "增加缩进"),
                 ("Unindent", "减少缩进"),
-                ("Match Brackets", "括号匹配"), #  <({["), #EKR
+                ("Match Brackets", "括号匹配"),  #  <({["), #EKR
             ("Edit Headline...", "编辑标题..."),
                 ("Edit Headline", "编辑标题"),
                 ("End Edit Headline", "结束编辑标题"),

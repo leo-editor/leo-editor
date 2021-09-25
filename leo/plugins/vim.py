@@ -145,7 +145,7 @@ locationMessageGiven = False
 #@+node:ekr.20050226184624: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.unitTesting # Don't conflict with xemacs plugin.
+    ok = not g.unitTesting  # Don't conflict with xemacs plugin.
     if ok:
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
@@ -259,7 +259,7 @@ class VimCommander:
         # Don't do this: it prevents efc from reopening paths.
             # efc = g.app.externalFilesController
             # if efc: efc.forget_path(path)
-        if 0: # Dubious.
+        if 0:  # Dubious.
             if g.os_path_exists(path):
                 os.remove(path)
         cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:bd " + path + "<CR>'"
@@ -284,10 +284,10 @@ class VimCommander:
         # Common arguments.
         tab_arg = "-tab" if self.uses_tab else ""
         remote_arg = "--remote" + tab_arg + "-silent"
-        args = [self.vim_exe, "--servername", "LEO", remote_arg] # No cursor arg.
+        args = [self.vim_exe, "--servername", "LEO", remote_arg]  # No cursor arg.
         if self.entire_file:
             # vim-open-file
-            args.append('+0') # Go to first line of the file. This is an Ex command.
+            args.append('+0')  # Go to first line of the file. This is an Ex command.
             assert root.isAnyAtFileNode(), root
             # Use os.path.normpath to give system separators.
             fn = os.path.normpath(g.fullPath(c, root))  # #1914.

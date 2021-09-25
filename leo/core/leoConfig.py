@@ -477,7 +477,7 @@ class ParserBaseClass:
 
         c = self.c
         p = p.copy()
-        aList: List[Any] = []   # This entire logic is mysterious, and likely buggy.
+        aList: List[Any] = []  # This entire logic is mysterious, and likely buggy.
         after = p.nodeAfterTree()
         while p and p != after:
             self.debug_count += 1
@@ -490,7 +490,7 @@ class ParserBaseClass:
                         if name2 == name:
                             self.error(f"Replacing previous @menu {name}")
                             break
-                    aList2: List[Any] = []   ### Huh?
+                    aList2: List[Any] = []  ### Huh?
                     kind = f"{'@menu'} {name}"
                     self.doItems(p, aList2)
                     aList.append((kind, aList2, None),)

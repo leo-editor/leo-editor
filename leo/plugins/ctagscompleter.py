@@ -49,7 +49,7 @@ tagLines = []
 #@+others
 #@+node:ekr.20110307092028.14155: ** Top-level functions
 #@+node:ville.20090317180704.11: *3* init (ctagscompleter.py)
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     global tagLines
     if g.app.gui.guiName() != "qt":
@@ -58,12 +58,12 @@ def init ():
     if not tagLines:
         print('ctagscompleter: can not read ~/.leo/tags')
         return False
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 
 #@+node:ville.20090317180704.12: *3* onCreate (ctagscompleter.py)
-def onCreate (tag, keys):
+def onCreate(tag, keys):
     '''Register the ctags-complete command for the newly-created commander.'''
     c = keys.get('c')
     if c:
@@ -109,7 +109,7 @@ class CtagsController:
 
     #@+others
     #@+node:ekr.20110307092028.14161: *3* ctags.__init__
-    def __init__ (self,c):
+    def __init__(self, c):
 
         # Init ivars.
         self.active = False
@@ -121,7 +121,7 @@ class CtagsController:
         # Patch the body's event filter.
         self.ev_filter = c.frame.body.wrapper.ev_filter
     #@+node:ekr.20091015185801.5243: *3* ctags.complete
-    def complete(self,event):
+    def complete(self, event):
         '''Find all completions.'''
         # c = self.c
         cpl, w = self.completer, self.body_widget
@@ -134,24 +134,24 @@ class CtagsController:
         cpl.setCompletionPrefix(prefix)
         cpl.complete()
     #@+node:ekr.20110307141357.14195: *3* ctags.end
-    def end (self,completion=''):
+    def end(self, completion=''):
 
         w = self.body_widget
         cpl = self.completer
         if not completion:
             completion = cpl.currentCompletion()
         if completion:
-            cmpl = completion.split(None,1)[0]
+            cmpl = completion.split(None, 1)[0]
             prefix = cpl.completionPrefix()
             tc = w.textCursor()
             extra = len(cmpl) - len(prefix)
             tc.movePosition(tc.Left)
             tc.movePosition(tc.EndOfWord)
-            tc.insertText(cmpl[-extra:])
+            tc.insertText(cmpl[-extra :])
             w.setTextCursor(tc)
         self.kill()
     #@+node:ekr.20110307141357.14198: *3* ctags.kill
-    def kill (self):
+    def kill(self):
 
         # Delete the completer.
         self.completer.deleteLater()
@@ -170,26 +170,26 @@ class CtagsController:
         desc = [z[0] for z in hits]
         return sorted(list(set(desc)))
     #@+node:ekr.20110307092028.14159: *3* ctags.onKey
-    def onKey (self,event,stroke):
+    def onKey(self, event, stroke):
 
         stroke = stroke.lower()
         g.trace(repr(stroke))
-        if stroke in ('space','return'):
-            event.accept() # Doesn't work.
+        if stroke in ('space', 'return'):
+            event.accept()  # Doesn't work.
             self.end()
-        elif stroke in ('escape','ctrl+g'):
+        elif stroke in ('escape', 'ctrl+g'):
             self.kill()
-        elif stroke in ('up','down'):
-            event.ignore() # Does work.
+        elif stroke in ('up', 'down'):
+            event.ignore()  # Does work.
         else:
             self.complete(event)
     #@+node:ekr.20110307092028.14157: *3* ctags.start (ctags-complete)
-    def start (self,event):
+    def start(self, event):
         '''Initialize.'''
         c = self.c
         #
         # Create the callback to insert the selected completion.
-        def completion_callback(completion,self=self):
+        def completion_callback(completion, self=self):
             self.end(completion)
         #
         # Create the completer.

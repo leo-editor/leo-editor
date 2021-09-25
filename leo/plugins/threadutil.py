@@ -13,7 +13,7 @@ from leo.core.leoQt import isQt6, QtCore, QtWidgets
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
-log = None # log = logging.getLogger("out")
+log = None  # log = logging.getLogger("out")
 #@+others
 #@+node:ekr.20140911023403.17845: **  top-level
 #@+node:ekr.20121126095734.12432: *3* async_syscmd
@@ -43,12 +43,12 @@ def init():
     return True
 #@+node:ekr.20121126095734.12431: *3* later
 def later(f):
-    QtCore.QTimer.singleShot(0,f)
+    QtCore.QTimer.singleShot(0, f)
 
 #@+node:ekr.20140910173844.17825: *3* leo_echo_cb
 def leo_echo_cb(out, err, code, ent):
     arg = ent['arg']
-    g.es("> " + arg[0] + " " + repr(arg[1:])    )
+    g.es("> " + arg[0] + " " + repr(arg[1:]))
     if out:
         g.es(out)
     if err:
@@ -96,7 +96,7 @@ class NowOrLater:
     #@+others
     #@+node:ekr.20121126095734.12434: *3* __init__
 
-    def __init__(self, worker, gran = 1.0):
+    def __init__(self, worker, gran=1.0):
         """ worker takes list of tasks, does something for it """
 
         self.w = worker
@@ -106,7 +106,7 @@ class NowOrLater:
         self.scheduled = False
 
     #@+node:ekr.20121126095734.12435: *3* add
-    def add(self,task):
+    def add(self, task):
         now = time.time()
         self.l.append(task)
         # if last called one sec ago, call now
@@ -135,7 +135,7 @@ class NowOrLater:
         else:
             if not self.scheduled:
                 #print "later"
-                QtCore.QTimer.singleShot(self.granularity * 1000,callit)
+                QtCore.QTimer.singleShot(self.granularity * 1000, callit)
                 self.scheduled = True
             else:
                 pass
@@ -151,7 +151,7 @@ class Repeater(QtCore.QThread):
 
     #@+others
     #@+node:ekr.20121126095734.12428: *3* __init__
-    def __init__(self, f, parent = None):
+    def __init__(self, f, parent=None):
 
         super().__init__(parent)
         self.f = f
@@ -180,7 +180,7 @@ class Repeater(QtCore.QThread):
 class RRunner(QtCore.QThread):
     #@+others
     #@+node:ekr.20121126095734.12425: *3* __init__
-    def __init__(self, f, parent = None):
+    def __init__(self, f, parent=None):
 
         super().__init__(parent)
         self.f = f
@@ -209,17 +209,17 @@ class SysProcessRunner:
         self.default_cb = None
 
 
-    def add(self, argv, key = "", cb = None):
+    def add(self, argv, key="", cb=None):
         """ argv = [program, arg1, ...] """
         ent = {
-            'arg' : argv,
-            'cb' : cb
+            'arg': argv,
+            'cb': cb
         }
         self.q.setdefault(key, deque()).append(ent)
         self.sched()
 
     def sched(self):
-        for k,q in self.q.items():
+        for k, q in self.q.items():
             if q and k not in self.cur:
                 ent = q.popleft()
                 self.cur[k] = ent
@@ -250,7 +250,7 @@ class ThreadQueue:
         '''Ctor for ThreadQueue class.'''
         self.threads = []
     #@+node:ekr.20121126095734.12421: *3* add
-    def add(self,r):
+    def add(self, r):
         empty = not self.threads
         self.threads.append(r)
         r.finished.connect(self.pop)
@@ -280,11 +280,11 @@ class UnitWorker(QtCore.QThread):
 
 
     #@+node:ekr.20121126095734.12438: *3* set_worker
-    def set_worker(self,f):
+    def set_worker(self, f):
         self.worker = f
 
     #@+node:ekr.20121126095734.12439: *3* set_output_f
-    def set_output_f(self,f):
+    def set_output_f(self, f):
         self.output_f = f
 
     #@+node:ekr.20121126095734.12440: *3* set_input

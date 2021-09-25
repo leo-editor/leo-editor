@@ -117,7 +117,7 @@ class Recorder:
             painter.end()
 
         if not filename:
-            filename = "/tmp/image%04d.bmp"%self.frame
+            filename = "/tmp/image%04d.bmp" % self.frame
             # save .bmp in video mode because .png is too slow
 
         pm.save(filename)
@@ -143,7 +143,7 @@ class Recorder:
         """Stop recording"""
         # self.timer.stop()
         mean = sum(self.times) / float(len(self.times))
-        print("\nMean seconds: %0.3f = %0.3f fps" % (mean, 1./mean))
+        print("\nMean seconds: %0.3f = %0.3f fps" % (mean, 1. / mean))
         self.times = []
     #@-others
 
@@ -172,11 +172,11 @@ def screen_capture_now(kwargs=None):
         os.makedirs(dirname)
     filename = g.os_path_join(
         dirname,
-        time.strftime('%Y-%m-%dT%H-%M-%S')+'.png'
+        time.strftime('%Y-%m-%dT%H-%M-%S') + '.png'
     )
     g._recorder.grab_frame(filename=filename)
     # *only* print, don't want output messing up log view in screen shots
-    print("Screenshot: %s"%filename)
+    print("Screenshot: %s" % filename)
 #@+node:tbrown.20130419143128.29679: ** screen_capture_5sec
 @g.command('screen-capture-5sec')
 def screen_capture_5sec(kwargs):

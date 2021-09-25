@@ -82,7 +82,7 @@ class backlinkController:
     """Display and edit links in leo trees"""
     #@+others
     #@+node:ekr.20090616105756.3943: *3* __init__ & reloadSettings (backlinkController)
-    def __init__ (self,c):
+    def __init__(self, c):
         '''Ctor for backlinkController class.'''
         self.c = c
         self.c.backlinkController = self
@@ -138,10 +138,10 @@ class backlinkController:
     def deleteLink(self, on, to, type_):
         """delete a link from 'on' to 'to' of type 'type_'"""
 
-        vid = on.gnx #X unknownAttributes['_bklnk']['id']
+        vid = on.gnx  #X unknownAttributes['_bklnk']['id']
         links = on.unknownAttributes['_bklnk']['links']
 
-        for n,link in enumerate(links):
+        for n, link in enumerate(links):
 
             on.setDirty()
             self.c.setChanged()
@@ -154,7 +154,7 @@ class backlinkController:
                     type_ = 'D'
                 elif type_ == 'D':
                     type_ = 'S'
-                for n,link in enumerate(links):
+                for n, link in enumerate(links):
                     if type_ == link[0] and link[1] == vid:
                         del links[n]
                         break
@@ -195,7 +195,7 @@ class backlinkController:
             url.lower().startswith('file://') and url.find('-->') > -1 or
             url.startswith('#')
         ):
-            our_unl = 'unl://'+self.c.p.get_UNL(with_index=False)
+            our_unl = 'unl://' + self.c.p.get_UNL(with_index=False)
             # don't use .get_UNL(with_proto=True), that
             # unecessarily does ' ' -> %20 conversion
             new_c = g.handleUnl(url, self.c)
@@ -245,7 +245,7 @@ class backlinkController:
             self.showMessage('Link mark not specified or no longer valid', color='red')
             return
 
-        else: # dir_ in ['from', 'to', 'undirected']
+        else:  # dir_ in ['from', 'to', 'undirected']
             p = self.linkMark
 
             if newChild:
@@ -280,12 +280,12 @@ class backlinkController:
         if type_ == 'directed':
             linkType = 'S'
 
-        v0.u['_bklnk']['links'].append( (linkType, v1.gnx) )
+        v0.u['_bklnk']['links'].append((linkType, v1.gnx))
 
         if type_ == 'directed':
             linkType = 'D'
 
-        v1.u['_bklnk']['links'].append( (linkType, v0.gnx) )
+        v1.u['_bklnk']['links'].append((linkType, v0.gnx))
 
         self.updateTabInt()
 
@@ -302,7 +302,7 @@ class backlinkController:
         """UI informs us that link number 'selected' (zero based) was clicked"""
 
         if selected >= len(self.dests):  # URL link
-            url = self.c.p.v.u['_bklnk']['urls'][selected-len(self.dests)]
+            url = self.c.p.v.u['_bklnk']['urls'][selected - len(self.dests)]
             if self.deleteMode:
                 self.c.p.v.u['_bklnk']['urls'].remove(url)
                 self.updateTabInt()
@@ -448,7 +448,7 @@ class backlinkController:
                         if i[1] == vnode
                 ]:
                     # we are not in the other's list
-                    direc = {'U':'U', 'S':'D', 'D':'S'}[link[0]]
+                    direc = {'U': 'U', 'S': 'D', 'D': 'S'}[link[0]]
                     other.u['_bklnk']['links'].append((direc, vnode))
 
                 newlinks.append((link[0], link[1]))
@@ -502,7 +502,7 @@ class backlinkController:
         g.es("Search wrapped")
         c.selectPosition(c.vnode2position(hits[0][0]))
     #@+node:ekr.20090616105756.3962: *3* positionExistsSomewhere
-    def positionExistsSomewhere(self,p,root=None):
+    def positionExistsSomewhere(self, p, root=None):
         """A local copy of c.positionExists so that when the
         failure to check p._childIndex bug is fixed, that fixing
         doesn't make backlink.py search more of the tree than it
@@ -530,7 +530,7 @@ class backlinkController:
 
         return False
     #@+node:ekr.20090616105756.3963: *3* showLinksLog
-    def showLinksLog(self,tag,k):
+    def showLinksLog(self, tag, k):
 
         # deprecated
         if k['c'] != self.c:
@@ -561,20 +561,20 @@ class backlinkController:
             if dests:
                 g.es("- link info -")
                 for i in dests:
-                    g.es("%s %s" %({'S':'->','D':'<-','U':'--'}[i[0]],
+                    g.es("%s %s" % ({'S': '->', 'D': '<-', 'U': '--'}[i[0]],
                         i[1].h))
     #@+node:ekr.20090616105756.3964: *3* showMenu
-    def showMenu(self,tag,k):
+    def showMenu(self, tag, k):
 
         if k['c'] != self.c:
-            return # not our problem
+            return  # not our problem
         p = k['p']
         self.c.selectPosition(p)
         v = p.v
         c = self.c
 
         # Create the menu.
-        menu = Tk.Menu(None,tearoff=0,takefocus=0)
+        menu = Tk.Menu(None, tearoff=0, takefocus=0)
 
         commands = [
             (True, 'Mark as link source', self.markSrc),
@@ -599,34 +599,34 @@ class backlinkController:
                     i += 1
                     dests.append((linkType, otherP))
             if dests:
-                smenu = Tk.Menu(menu,tearoff=0,takefocus=1)
+                smenu = Tk.Menu(menu, tearoff=0, takefocus=1)
                 for i in dests:
 
-                    def goThere(where = i[1]):
+                    def goThere(where=i[1]):
                         c.selectPosition(where)
-                        
+
                     c.add_command(menu,
-                        label={'S':'->','D':'<-','U':'--'}[i[0]] + i[1].h,
-                        underline=0,command=goThere)
+                        label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
+                        underline=0, command=goThere)
                     def delLink(on=v,
                         to=i[1].v.unknownAttributes['_bklnk']['id'],
-                        type_=i[0]): self.deleteLink(on,to,type_)
+                        type_=i[0]): self.deleteLink(on, to, type_)
                     c.add_command(smenu,
-                        label={'S':'->','D':'<-','U':'--'}[i[0]] + i[1].h,
-                        underline=0,command=delLink)
-                menu.add_cascade(label='Delete link', menu=smenu,underline=1)
+                        label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
+                        underline=0, command=delLink)
+                menu.add_cascade(label='Delete link', menu=smenu, underline=1)
                 menu.add_separator()
 
         for command in commands:
             available, text, com = command
             if not available:
                 continue
-            c.add_command(menu,label=text,
-                underline=0,command=com)
+            c.add_command(menu, label=text,
+                underline=0, command=com)
         #
         # Show the menu.
         event = k['event']
-        g.app.gui.postPopupMenu(self.c, menu, event.x_root,event.y_root)
+        g.app.gui.postPopupMenu(self.c, menu, event.x_root, event.y_root)
     #@+node:ekr.20090616105756.3965: *3* showMessage
     def showMessage(self, msg, optional=False, color='black'):
         """Show the message, but don't overwrite earlier important
@@ -647,7 +647,7 @@ class backlinkController:
         self.linkMark = self.c.p.copy()
         self.c.selectPosition(p)
     #@+node:ekr.20090616105756.3967: *3* updateTab (backlink.py)
-    def updateTab(self,tag,k):
+    def updateTab(self, tag, k):
         """called by leo select position hook"""
         if k['c'] != self.c:
             return  # not our problem
@@ -673,7 +673,7 @@ class backlinkController:
             links = v.u['_bklnk']['links']
             dests = []
             self.dests = dests
-            for data in links[:]: # Must use a copy.
+            for data in links[:]:  # Must use a copy.
                 linkType, other = data
                 try:
                     otherV = self.vnode[other]
@@ -690,10 +690,10 @@ class backlinkController:
                 # pylint: disable=cell-var-from-loop
                 for i in dests:
 
-                    if i[1] is None: # destination node is deleted
+                    if i[1] is None:  # destination node is deleted
                         continue
 
-                    def goThere(where = i[1]):
+                    def goThere(where=i[1]):
                         c.selectPosition(where)
 
                     name = i[1].h
@@ -711,7 +711,7 @@ class backlinkController:
                         else:
                             nl -= 1
                             name += ' < ' + nl_txt
-                    txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + name
+                    txt = {'S': '->', 'D': '<-', 'U': '--'}[i[0]] + ' ' + name
                     texts.append(txt)
             urls = []
             for url in v.u['_bklnk'].get('urls', []):
@@ -730,7 +730,7 @@ class backlinkController:
         self.ui.loadList(texts)
 
     #@+node:ekr.20090616105756.3969: *3* vnodePosition
-    def vnodePosition(self,v):
+    def vnodePosition(self, v):
         """Return a position for vnode v, if there is one"""
         return self.c.vnode2position(v)
     #@-others
@@ -746,7 +746,7 @@ if g.app.gui.guiName() == "qt":
             super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
             form_class, base_class = uic.loadUiType(uiPath)
-            self.owner.c.frame.log.createTab('Links', widget = self)
+            self.owner.c.frame.log.createTab('Links', widget=self)
             self.UI = form_class()
             self.UI.setupUi(self)
             u = self.UI
@@ -757,7 +757,7 @@ if g.app.gui.guiName() == "qt":
             u.linkBtn.clicked.connect(self.linkClicked)
             u.rescanBtn.clicked.connect(o.loadLinksInt)
             u.dirLeftBtn.clicked.connect(self.dirClicked)
-            u.dirRightBtn.clicked.connect( self.dirClicked)
+            u.dirRightBtn.clicked.connect(self.dirClicked)
             u.linkList.itemClicked.connect(self.listClicked)
             u.deleteBtn.stateChanged.connect(o.deleteSet)
             u.nextBtn.clicked.connect(o.nextLink)
@@ -834,7 +834,7 @@ if g.app.gui.guiName() == "tkinter":
             w = c.frame.log.frameDict['Links']
             f = Tk.Frame(w)
             scrollbar = Tk.Scrollbar(f, orient=Tk.VERTICAL)
-            self.listbox = Tk.Listbox(f, height=4,yscrollcommand=scrollbar.set)
+            self.listbox = Tk.Listbox(f, height=4, yscrollcommand=scrollbar.set)
             scrollbar.config(command=self.listbox.yview)
             scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
             self.listbox.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=True)
@@ -879,13 +879,13 @@ if g.app.gui.guiName() == "tkinter":
             else:
                 self.deleteButton.configure(state=Tk.DISABLED)
         #@+node:ekr.20140920145803.17978: *3* showMessage
-        def showMessage(self, msg, color='black',optional=False):
+        def showMessage(self, msg, color='black', optional=False):
             """Show the message using whatever u.i. is available"""
-            self.message.configure(text = msg, fg=color)
+            self.message.configure(text=msg, fg=color)
         #@+node:ekr.20140920145803.17979: *3* tkListClicked
         def tkListClicked(self, event):
 
-            selected = self.listbox.curselection() # list of selected indexes
+            selected = self.listbox.curselection()  # list of selected indexes
             if not selected:
                 return  # click on empty list of unlinked node
             selected = int(selected[0])  # not some fancy smancy Tk value
@@ -895,7 +895,7 @@ if g.app.gui.guiName() == "tkinter":
 
             self.owner.deleteSet(self.delete.get())
         #@+node:ekr.20140920145803.17981: *3* updateTkTab
-        def updateTkTab(self,tag,k):
+        def updateTkTab(self, tag, k):
             # deprecated
             if k['c'] != self.c:
                 return  # not our problem
@@ -907,12 +907,12 @@ if g.app.gui.guiName() == "tkinter":
             c = self.c
             p = c.p
             v = p.v
-            self.listbox.delete(0,Tk.END)
+            self.listbox.delete(0, Tk.END)
             self.messageUsed = False
             self.delete.set(0)
             self.deleteButton.configure(state=Tk.DISABLED)
             self.showMessage('', optional=True)
-            if hasattr(v,'unknownAttributes') and '_bklnk' in v.unknownAttributes:
+            if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
                 i = 0
                 links = v.unknownAttributes['_bklnk']['links']
                 dests = []
@@ -930,22 +930,22 @@ if g.app.gui.guiName() == "tkinter":
                     self.deleteButton.configure(state=Tk.NORMAL)
                     self.showMessage('Click a link to follow it', optional=True)
                     for i in dests:
-                        
-                        def goThere(where = i[1]):
+
+                        def goThere(where=i[1]):
                             c.selectPosition(where)
-                    
-                        txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
+
+                        txt = {'S': '->', 'D': '<-', 'U': '--'}[i[0]] + ' ' + i[1].h
                         self.listbox.insert(Tk.END, txt)
                         def delLink(on=v,
                             to=i[1].v.gnx,
-                            type_=i[0]): self.deleteLink(on,to,type_)
+                            type_=i[0]): self.deleteLink(on, to, type_)
                     self.dests = dests
         #@-others
 #@+node:ekr.20140920145803.17995: ** top-level
 #@+node:ekr.20090616105756.3940: *3* init
 warning_given = False
 
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     global warning_given
     if g.app.gui.guiName() == 'nullGui':
@@ -955,11 +955,11 @@ def init ():
             warning_given = True
             print('backlink.py: Qt6 support not ready yet.')
         return False
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20090616105756.3941: *3* onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c:

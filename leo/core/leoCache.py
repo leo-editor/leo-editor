@@ -690,7 +690,7 @@ def dump_cache(db, tag):
         print('db is None!')
         return
     # Create a dict, sorted by file prefixes.
-    d: Dict[str, Any]= {}
+    d: Dict[str, Any] = {}
     for key in db.keys():
         key = key[0]
         val = db.get(key)

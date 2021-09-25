@@ -17,7 +17,7 @@ class JSON_Scanner:
         importCommands,
         language='json',
         alternate_language=None,
-        **kwargs
+        ** kwargs
     ):
         '''The ctor for the JSON_Scanner class.'''
         self.c = c = importCommands.c
@@ -67,7 +67,7 @@ class JSON_Scanner:
                 # else:
                     # c.clearChanged()
         else:
-            parent.setDirty() # setDescendentsDirty=False)
+            parent.setDirty()  # setDescendentsDirty=False)
             c.setChanged()
         return ok
     #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences
@@ -94,7 +94,7 @@ class JSON_Scanner:
         # Do a quick check for mixed leading tabs/blanks.
         blanks = tabs = 0
         for line in g.splitLines(s):
-            lws = line[0: g.skip_ws(line, 0)]
+            lws = line[0 : g.skip_ws(line, 0)]
             blanks += lws.count(' ')
             tabs += lws.count('\t')
         ok = blanks == 0 or tabs == 0
@@ -110,16 +110,16 @@ class JSON_Scanner:
         lines = g.splitLines(s)
         result = []
         tab_width = self.tab_width
-        if tab_width < 0: # Convert tabs to blanks.
+        if tab_width < 0:  # Convert tabs to blanks.
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:] # Use negative width.
+                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]  # Use negative width.
                 if s != line:
                     changed = True
                 result.append(s)
-        elif tab_width > 0: # Convert blanks to tabs.
+        elif tab_width > 0:  # Convert blanks to tabs.
             for line in lines:
-                s = g.optimizeLeadingWhitespace(line, abs(tab_width)) # Use positive width.
+                s = g.optimizeLeadingWhitespace(line, abs(tab_width))  # Use positive width.
                 if s != line:
                     changed = True
                 result.append(s)

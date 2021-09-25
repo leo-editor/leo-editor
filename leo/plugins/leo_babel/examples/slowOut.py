@@ -11,7 +11,7 @@ import time
 
 for idx in range(1, 6):
     print('stdout {0}'.format(idx))
-    sys.stdout.flush()      # This is necessary.  Otherwise the output is buffered till program termination.
+    sys.stdout.flush()  # This is necessary.  Otherwise the output is buffered till program termination.
     if idx in [2, 4]:
         sys.stderr.write('stderr {0}\n'.format(idx))
         sys.stderr.flush()  # This is necessary when stderr is redirected to a file.

@@ -114,7 +114,7 @@ class Commands:
         self.outlineToNowebDefaultFileName: str = "noweb.nw"
             # For Outline To Noweb dialog.
         # For hoist/dehoist commands.
-        self.hoistStack: List[Any]= []  # Really, a list of g.Bunches, but mypy complains.
+        self.hoistStack: List[Any] = []  # Really, a list of g.Bunches, but mypy complains.
             # Stack of nodes to be root of drawn tree.
             # Affects drawing routines and find commands.
         # For outline navigation.
@@ -590,7 +590,7 @@ class Commands:
         else:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
     #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
-    @cmd ('execute-general-script')
+    @cmd('execute-general-script')
     def execute_general_script_command(self, event=None):
         """
         Execute c.p and all its descendants as a script.
@@ -2376,7 +2376,7 @@ class Commands:
         # Get the script.
         script = g.getScript(c, root,
             useSelectedText=False,
-            forcePythonSentinels=False, # language=='python',
+            forcePythonSentinels=False,  # language=='python',
             useSentinels=True,
         )
         # Create a temp file if root is not an @<file> node.
@@ -3867,7 +3867,7 @@ class Commands:
         Select a new position, redrawing the screen *only* if we must
         change chapters.
         """
-        trace = True # For # 2167.
+        trace = True  # For # 2167.
         if kwargs:
             print('c.selectPosition: all keyword args are ignored', g.callers())
         c = self

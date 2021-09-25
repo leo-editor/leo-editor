@@ -15,7 +15,7 @@ from leo.core import leoGlobals as g
 #@@tabwidth -4
 #@+others
 #@+node:ekr.20130808211520.15895: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('new', new_hook)
     g.registerHandler('create-node', create_node_hook)

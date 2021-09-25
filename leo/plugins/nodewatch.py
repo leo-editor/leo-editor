@@ -106,20 +106,20 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:peckj.20131101132841.6448: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
         #g.registerHandler(('new','open2'),onCreate)
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
-        g.es('nodewatch.py not loaded',color='red')
+        g.es('nodewatch.py not loaded', color='red')
     return ok
 #@+node:peckj.20131101132841.6449: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c:
@@ -133,20 +133,20 @@ class NodewatchController:
     #@+node:peckj.20131101132841.6452: *3* __init__
     def __init__(self, c):
         self.c = c
-        self.watchlists = {} # a dictionary, with key = Category, value = list of (idx,vnode) tuples
+        self.watchlists = {}  # a dictionary, with key = Category, value = list of (idx,vnode) tuples
         c.theNodewatchController = self
         self.ui = LeoNodewatchWidget(c)
         c.frame.log.createTab('Nodewatch', widget=self.ui)
     #@+node:peckj.20131101132841.6453: *3* add
     def add(self, key, values):
         ''' add a list of vnodes ('values') to the nodewatch category 'key' '''
-        self.watchlists[key]=list(enumerate(values))
+        self.watchlists[key] = list(enumerate(values))
     #@-others
 #@+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget
 class LeoNodewatchWidget(QtWidgets.QWidget):
     #@+others
     #@+node:peckj.20131101132841.6454: *3* __init__
-    def __init__(self,c,parent=None):
+    def __init__(self, c, parent=None):
         super().__init__(parent)
         self.c = c
         self.initUI()
@@ -167,14 +167,14 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         # verticalLayout_2: contains
         # verticalLayout
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
-        self.verticalLayout_2.setContentsMargins(0,1,0,1)
+        self.verticalLayout_2.setContentsMargins(0, 1, 0, 1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
 
         # horizontalLayout: contains
         # "Refresh" button
         # comboBox
         self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(0,0,0,0)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
 
         # verticalLayout: contains
@@ -189,8 +189,8 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         self.horizontalLayout.addWidget(self.comboBox)
         self.pushButton = QtWidgets.QPushButton("Refresh", self)
         self.pushButton.setObjectName("pushButton")
-        self.pushButton.setMinimumSize(50,24)
-        self.pushButton.setMaximumSize(50,24)
+        self.pushButton.setMinimumSize(50, 24)
+        self.pushButton.setMaximumSize(50, 24)
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.listWidget = QtWidgets.QListWidget(self)
@@ -239,7 +239,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         self.label.clear()
         self.label.setText("Total: %s items" % count)
     #@+node:peckj.20131101132841.6458: *4* update_all
-    def update_all(self,event=None):
+    def update_all(self, event=None):
         ''' updates the nodewatch GUI by running all valid @nodewatch nodes '''
         key = str(self.comboBox.currentText())
         self.update_combobox()

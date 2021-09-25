@@ -14,7 +14,7 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ville.20090804155017.7594: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     return True
 #@+node:ville.20090804155017.12332: ** os.path shortcuts
@@ -39,7 +39,7 @@ _finalized_cache = {}
 _finalized_join_cache = {}
 _expanduser_cache = {}
 
-def os_path_finalize_cached (path,**keys):
+def os_path_finalize_cached(path, **keys):
     res = _finalized_cache.get(path)
     if res:
         return res
@@ -47,7 +47,7 @@ def os_path_finalize_cached (path,**keys):
     _finalized_cache[path] = res
     return res
 
-def os_path_finalize_join_cached (*args,**keys):
+def os_path_finalize_join_cached(*args, **keys):
     res = _finalized_join_cache.get(args)
     if res:
         #print "cache hit", args
@@ -57,7 +57,7 @@ def os_path_finalize_join_cached (*args,**keys):
     _finalized_join_cache[args] = res
     return res
 
-def os_path_expanduser_cached(path, encoding = None):
+def os_path_expanduser_cached(path, encoding=None):
     res = _expanduser_cache.get(path)
     if res:
         #print "cache hit", path

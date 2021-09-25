@@ -37,7 +37,7 @@ from leo.core.leoPlugins import BaseLeoPlugin
 
 #@+others
 #@+node:ekr.20070119094733.5: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler('after-create-leo-frame', DT)
     g.plugin_signon(__name__)
@@ -105,11 +105,11 @@ class DT(BaseLeoPlugin):
         import copy
 
         # build globals dictionary
-        globals = {'c':copy.copy(self.c), 'g':g}
+        globals = {'c': copy.copy(self.c), 'g': g}
 
         # run doctest on temporary file
-        failures, tests = doctest.testfile(tempfilename, module_relative = False,
-                            optionflags = doctest.ELLIPSIS, globs = globals)
+        failures, tests = doctest.testfile(tempfilename, module_relative=False,
+                            optionflags=doctest.ELLIPSIS, globs=globals)
 
         #@+<<report summary of results>>
         #@+node:ekr.20070119094733.10: *4* <<report summary of results>>

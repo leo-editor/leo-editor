@@ -105,7 +105,7 @@ class LeoNode:
             write('%s="%s" ' % (name, value))
         write("/>\n")
     #@+node:ekr.20101110092416.5721: *3* nthChild
-    def nthChild (self, n):
+    def nthChild(self, n):
         return self.children[n]
     #@-others
 #@+node:ekr.20101110092416.5722: ** class leo_file
@@ -157,7 +157,7 @@ class leo_file(LeoNode):
     def gen_vnodes(self, file):
         if debug:
             global allvnodes, vnode_stack
-            allvnodes = {file:None}
+            allvnodes = {file: None}
             vnode_stack = []
         for child in self.children:
             child.gen_vnodes(file)
@@ -200,7 +200,7 @@ class leo_node(LeoNode, node_with_parent):
         super().__init__()
         leo_node.count += 1
         self.nr = leo_node.count
-        self.headline =  headline
+        self.headline = headline
         self.body = body
     #@+node:ekr.20101110092416.5753: *3* bodyString
     def bodyString(self, body):
@@ -234,7 +234,7 @@ class leo_node(LeoNode, node_with_parent):
             global vnode_count
             attributes.append(('model_node_number', repr(vnode_count)))
             vnode_count += 1
-            allvnodes[self]=None
+            allvnodes[self] = None
         self.mark_with_attributes(file, "v", attributes, self.gen_vnodes1)
         if debug:
             del allvnodes[self]

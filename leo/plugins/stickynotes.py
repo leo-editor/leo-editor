@@ -95,7 +95,7 @@ def decorate_window(c, w):
         # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == 'qt'
     if ok:
@@ -225,7 +225,7 @@ if encOK:
                 return
         else:
             decoded = v.b
-        nf = mknote(c,p, focusin=focusin, focusout=focusout)
+        nf = mknote(c, p, focusin=focusin, focusout=focusout)
         nf.setPlainText(decoded)
         if rekey:
             g.es("Key updated, data decoded with new key shown in window")
@@ -252,7 +252,7 @@ if encOK:
 
     def sn_encode(s):
         s1 = s.encode('utf8')
-        pad = b' '*(16-len(s1)%16)
+        pad = b' ' * (16 - len(s1) % 16)
         txta = get_AES().encrypt(s1 + pad)
         txt = base64.b64encode(txta)
         txt = str(txt, 'utf-8')
@@ -261,7 +261,7 @@ if encOK:
 
     @g.command('stickynoteenckey')
     def sn_getenckey(dummy=None):
-        txt,ok = QInputDialog.getText(None,
+        txt, ok = QInputDialog.getText(None,
             'Enter key',
             'Enter key.\nData lost if key is lost.\nSee docs. for key upgrade notes.',
         )
@@ -315,10 +315,10 @@ class TextEditSearch(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
         layout.setSpacing(0)
-        layout.setContentsMargins(0,0,0,0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.textedit)
         hlayout = QtWidgets.QHBoxLayout()
-        hlayout.setContentsMargins(0,0,0,0)
+        hlayout.setContentsMargins(0, 0, 0, 0)
         hlayout.addWidget(QtWidgets.QLabel("Find:"))
         hlayout.addWidget(self.searchbox)
         layout.addLayout(hlayout)
@@ -338,16 +338,16 @@ class TextEditSearch(QtWidgets.QWidget):
 #@+node:ville.20091008210853.7616: ** class FocusingPlainTextEdit
 class FocusingPlaintextEdit(TextEditSearch):
 
-    def __init__(self, focusin, focusout, closed = None, parent = None):
+    def __init__(self, focusin, focusout, closed=None, parent=None):
         self.focusin = focusin
         self.focusout = focusout
         self.closed = closed
         super().__init__(parent)
 
-    def focusOutEvent (self, event):
+    def focusOutEvent(self, event):
         self.focusout()
 
-    def focusInEvent (self, event):
+    def focusInEvent(self, event):
         self.focusin()
 
     def closeEvent(self, event):
@@ -366,10 +366,10 @@ class SimpleRichText(QTextEdit):
         self.focusout = focusout
         self.createActions()
 
-    def focusOutEvent ( self, event ):
+    def focusOutEvent(self, event):
         self.focusout()
 
-    def focusInEvent ( self, event ):
+    def focusInEvent(self, event):
         self.focusin()
 
 
@@ -470,7 +470,7 @@ def get_workbook():
             return co
     return None
 #@+node:ville.20100703194946.5587: *3* mknote
-def mknote(c,p, parent=None, focusin=None, focusout=None):
+def mknote(c, p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """
     # pylint: disable=function-redefined
     # focusin and focusout are redefined elsewhere.
@@ -502,7 +502,7 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
     def closeevent():
         pass
 
-    nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent = parent)
+    nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent=parent)
     decorate_window(c, nf)
     nf.dirty = False
     nf.resize(600, 300)
@@ -533,7 +533,7 @@ def tabula_show(c):
 @g.command('tabula')
 def tabula_f(event):
     """ Show "tabula" - a MDI window with stickynotes that remember their status """
-    c= event['c']
+    c = event['c']
     t = tabula_show(c)
     p = c.p
     t.add_note(p)
@@ -543,16 +543,16 @@ def tabula_f(event):
 @g.command('tabula-show')
 def tabula_show_f(event):
     '''Show the`Tabula` sticky note dock window, without adding the current node.'''
-    c= event['c']
+    c = event['c']
 
     tabula_show(c)
 #@+node:ville.20100704125228.5592: *3* @g.command('tabula-marked')
 @g.command('tabula-marked')
 def tabula_marked_f(event):
     """ Create tabula from all marked nodes """
-    c= event['c']
+    c = event['c']
 
-    t=tabula_show(c)
+    t = tabula_show(c)
 
     for p in c.all_unique_positions():
         if p.isMarked():
@@ -562,9 +562,9 @@ def tabula_marked_f(event):
 @g.command('tabula-subtree')
 def tabula_subtree_f(event):
     """ Create tabula from all nodes in subtree """
-    c= event['c']
+    c = event['c']
 
-    t=tabula_show(c)
+    t = tabula_show(c)
 
     for p in c.p.self_and_subtree():
         t.add_note(p)
@@ -589,7 +589,7 @@ class Tabula(QMainWindow):
 
         QTimer.singleShot(0, delayed_load)
         self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
-        g.registerHandler("end1",self.on_quit)
+        g.registerHandler("end1", self.on_quit)
     #@+node:ekr.20101114061906.5443: *4* add_note
     def add_note(self, p):
 
@@ -598,7 +598,7 @@ class Tabula(QMainWindow):
             n = self.notes[gnx]
             n.show()
             return n
-        n = mknote(self.c, p, parent = self.mdi)
+        n = mknote(self.c, p, parent=self.mdi)
         sw = self.mdi.addSubWindow(n)
         # pylint: disable=maybe-no-member
         # Qt.WA_DeleteOnClose does exist.
@@ -610,10 +610,10 @@ class Tabula(QMainWindow):
         n.show()
         return n
     #@+node:ekr.20101114061906.5442: *4* closeEvent (Tabula)
-    def closeEvent(self,event):
+    def closeEvent(self, event):
 
         self.save_states()
-        event.accept() # EKR: doesn't help: we don't get the event.
+        event.accept()  # EKR: doesn't help: we don't get the event.
     #@+node:ekr.20101114061906.5444: *4* create_actions (has all toolbar commands!)
     def create_actions(self):
 
@@ -699,7 +699,7 @@ class Tabula(QMainWindow):
             n = self.add_note(ncache[gnx])
             n.parent().restoreGeometry(geom)
     #@+node:ekr.20101114061906.5446: *4* on_quit
-    def on_quit(self,tag, kw):
+    def on_quit(self, tag, kw):
 
         # saving when hidden nukes all
 
@@ -718,7 +718,7 @@ class Tabula(QMainWindow):
         active = [gnx for (gnx, n) in self.notes.items() if n.parent() == cur]
         if not active:
             g.trace("no node")
-            return None,None
+            return None, None
         tgt = active[0]
 
         p = next(p for p in self.c.all_unique_positions() if p.gnx == tgt)
@@ -730,7 +730,7 @@ class Tabula(QMainWindow):
         self.update_notes()
 
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
-        geoms = dict (
+        geoms = dict(
             (gnx, n.parent().saveGeometry())
                 for (gnx, n) in self.notes.items() if n.isVisible())
 
@@ -749,7 +749,7 @@ class Tabula(QMainWindow):
                     visible.append(gnx)
             except RuntimeError:
                 pass
-        self.notes = dict (
+        self.notes = dict(
             (gnx, n) for (gnx, n) in self.notes.items()
                 if gnx in visible
         )

@@ -1277,7 +1277,7 @@ class LeoImportCommands:
         self.scannerUnitTest(p, s, ext='.xml')
 
     def defaultImporterUnitTest(self, p, s):
-        self.scannerUnitTest( p, s, ext='.xxx')
+        self.scannerUnitTest(p, s, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
     def scannerUnitTest(self, p, s, ext):
         """

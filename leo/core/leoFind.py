@@ -1562,9 +1562,9 @@ class LeoFind:
             unl = p.get_UNL(with_proto=True, with_count=True)
             if self.in_headline:
                 line_number = 1
-            log.put(line.strip()+'\n', nodeLink=f"{unl},{line_number}")
+            log.put(line.strip() + '\n', nodeLink=f"{unl},{line_number}")
 
-        seen = [] # List of (vnode, pos).
+        seen = []  # List of (vnode, pos).
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
@@ -2046,7 +2046,7 @@ class LeoFind:
             gui_w = c.edit_widget(p)
             if gui_w:
                 # find-next and find-prev work regardless of insert point.
-                gui_w.setSelectionRange(start, start+len(change_text))
+                gui_w.setSelectionRange(start, start + len(change_text))
         else:
             c.frame.body.onBodyChanged('Change Body', oldSel=oldSel)
         c.frame.tree.updateIcon(p)  # redraw only the icon.
@@ -2500,7 +2500,7 @@ class LeoFind:
             c.frame.tree.editLabel(p)
             w = c.edit_widget(p)  # #2220
             if w:
-                w.setSelectionRange(pos, newpos, insert) # #2220
+                w.setSelectionRange(pos, newpos, insert)  # #2220
         else:
             # Tricky code.  Do not change without careful thought.
             w = c.frame.body.wrapper

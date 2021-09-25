@@ -14,7 +14,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:ville.20090614224528.8139: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
     if ok:
@@ -35,10 +35,10 @@ def auto_walk(c, directory, parent=None, isroot=True):
 
     RELATIVE_PATHS = False
     patterns_to_ignore = ['*.pyc', '*.leo', '*.gif', '*.png', '*.jpg', '*.json']
-    patterns_to_import = ['*.py','*.c', '*.cpp']
+    patterns_to_import = ['*.py', '*.c', '*.cpp']
     match = lambda s: any(fnmatch(s, p) for p in patterns_to_ignore)
 
-    is_ignorable = lambda s: any([ s.startswith('.'), match(s) ])
+    is_ignorable = lambda s: any([s.startswith('.'), match(s)])
 
     p = c.currentPosition()
 
@@ -76,18 +76,18 @@ def auto_walk(c, directory, parent=None, isroot=True):
             child = node.insertAsLastChild()
             child.initHeadString(headline)
             child.initBodyString(body)
-            auto_walk(c,path, parent=child, isroot=False)
+            auto_walk(c, path, parent=child, isroot=False)
 
 @g.command('project-wizard')
 def project_wizard(event):
     """ Launch project wizard """
     import os
     c = event['c']
-    table = [("All files","*"),
-        ("Python files","*.py"),]
+    table = [("All files", "*"),
+        ("Python files", "*.py"),]
 
     fname = g.app.gui.runOpenFileDialog(c,
-        title = "Open",filetypes = table,defaultextension = ".leo")
+        title="Open", filetypes=table, defaultextension=".leo")
 
     pth = os.path.dirname(os.path.abspath(fname))
 
@@ -101,7 +101,7 @@ def project_wizard(event):
 
 #project_wizard()
 #@+node:ville.20090910010217.5230: ** context menu import
-def rclick_path_importfile(c,p,menu):
+def rclick_path_importfile(c, p, menu):
     if not p.h.startswith('@path'):
         return
 
@@ -109,17 +109,17 @@ def rclick_path_importfile(c,p,menu):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         table = [
-            ("All files","*"),
-            ("Python files","*.py"),
+            ("All files", "*"),
+            ("Python files", "*.py"),
         ]
         # This is incomplete: files is not used.
         # files = g.app.gui.runOpenFileDialog(c,
         g.app.gui.runOpenFileDialog(c,
-            title = "Import files",
-            filetypes = table,
-            defaultextension = '.notused',
+            title="Import files",
+            filetypes=table,
+            defaultextension='.notused',
             multiple=True)
-        print("import files from",path)
+        print("import files from", path)
 
     action = menu.addAction("Import files")
     # action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)

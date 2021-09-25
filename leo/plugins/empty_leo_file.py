@@ -32,14 +32,14 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:EKR.20040517080049.3: ** onOpen
-def onOpen (tag,keywords):
+def onOpen(tag, keywords):
 
     file_name = keywords.get('fileName')
 
-    if file_name and os.path.getsize(file_name)==0:
+    if file_name and os.path.getsize(file_name) == 0:
         # Rewrite the file before really opening it.
         g.es("rewriting empty .leo file: %s" % (file_name))
-        file = open(file_name,'w')
+        file = open(file_name, 'w')
         file.write(empty_leo_file)
         file.flush()
         file.close()

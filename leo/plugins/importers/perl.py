@@ -14,8 +14,8 @@ class Perl_Importer(Importer):
         '''The ctor for the Perl_ImportController class.'''
         super().__init__(
             importCommands,
-            language = 'perl',
-            state_class = Perl_ScanState,
+            language='perl',
+            state_class=Perl_ScanState,
         )
 
     #@+others
@@ -41,7 +41,7 @@ class Perl_Importer(Importer):
                         if tail:
                             self.set_lines(p, lines)
                             self.prepend_lines(next, reversed(tail))
-                else: # Alter p.b directly.
+                else:  # Alter p.b directly.
                     lines = g.splitLines(p.b)
                     if lines:
                         while lines and lines[-1].strip().startswith('#'):
