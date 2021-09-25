@@ -325,13 +325,35 @@ class LeoFind:
         """
         Support interactive find.
 
+        c.findCommands.interactive_search_helper starts an interactive search with
+        the given settings. The settings argument may be either a g.Bunch or a
+        dict.
 
-        Example:
+        Example 1, settings is a g.Bunch:
 
-            settings = dict(suboutline_only=True)
-            count = c.findCommands.batch_change(root, replacements, settings)
-            if count:
-                c.save()
+            c.findCommands.interactive_search_helper(
+                root = c.p,
+                settings = g.Bunch(
+                    find_text = '^(def )',
+                    change_text = '\1',
+                    pattern_match=True,
+                    search_headline=False,
+                    whole_word=False,
+                )
+            )
+            
+        Example 2, settings is a python dict:
+            
+            c.findCommands.interactive_search_helper(
+                root = c.p,
+                settings = {
+                    'find_text': '^(def )',
+                    'change_text': '\1',
+                    'pattern_match': True,
+                    'search_headline': False,
+                    'whole_word': False,
+                }
+            )
         """
         #@-<< docstring: find.interactive_search >>
         # Merge settings into default settings.
