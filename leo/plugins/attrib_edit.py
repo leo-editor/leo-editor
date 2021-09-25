@@ -590,7 +590,8 @@ class attrib_edit_Controller:
     def updateEditor(self,tag,k):
         """update edit panel when new node selected"""
 
-        if k['c'] != self.c: return  # not our problem
+        if k['c'] != self.c:
+            return  # not our problem
 
         self.updateEditorInt()
     #@+node:tbrown.20091028100922.1493: *3* updateEditorInt
