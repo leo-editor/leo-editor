@@ -10,7 +10,7 @@ import copy
 import itertools
 import time
 import re
-from typing import Dict, List, Optional, Tuple # Any, Callable, Generator, Sequence, Union
+from typing import Dict, List, Optional, Tuple  # Any, Callable, Generator, Sequence, Union
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 from leo.core.leoCommands import Commands as Cmdr
@@ -205,8 +205,8 @@ class Position:
         # EKR: The following fields are deprecated,
         #      as are the PosList class, c.find_h and c.find_b.
         #
-        'matchiter', # for c.find_b and quicksearch.py.
-        'mo', # for c.find_h
+        'matchiter',  # for c.find_b and quicksearch.py.
+        'mo',  # for c.find_h
     ]
 
     #@+others

@@ -23,7 +23,7 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ville.20110125222411.10540: ** init
-def init ():
+def init():
     g.plugin_signon(__name__)
     return True
 #@+node:ville.20110125222411.10546: ** mail_refresh & helpers
@@ -73,7 +73,7 @@ def emit_message(c, parent, root, message):
         payload = part.get_payload()
         subject = g.toUnicode(message.get('subject'))
         from_ = g.toUnicode(message.get('from'))
-        if parent and subject.lower().startswith ('re:'):
+        if parent and subject.lower().startswith('re:'):
             p = parent.insertAsLastChild()
         else:
             p = parent = root.insertAsLastChild()

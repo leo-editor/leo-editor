@@ -127,7 +127,7 @@ class Demo:
             'g': g,
             'p': c.p,
             # Qt namespaces.
-            'Qt': QtCore.Qt, # Useful, and tricky to get right.
+            'Qt': QtCore.Qt,  # Useful, and tricky to get right.
             'QtCore': QtCore,
             'QtGui': QtGui,
             'QtWidgets': QtWidgets,
@@ -151,7 +151,7 @@ class Demo:
         if name in self.namespace:
             g.trace('redefining', name)
             g.printDict(self.namespace)
-        self.namespace [name] = object_
+        self.namespace[name] = object_
         return object_
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
@@ -222,7 +222,7 @@ class Demo:
 
     prev_command = prev
     #@+node:ekr.20170208094834.1: *4* demo.retain
-    def retain (self, w):
+    def retain(self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
         self.retained_widgets.append(w)
     #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
@@ -312,7 +312,7 @@ class Demo:
             result.extend(self.parse_script_string(s, delim))
         return result
     #@+node:ekr.20170207080029.1: *5* demo.parse_script_string
-    def parse_script_string (self, script_string, delim):
+    def parse_script_string(self, script_string, delim):
         '''
         script_string is single string, representing a list of script strings
         separated by lines that start with delim.
@@ -340,8 +340,10 @@ class Demo:
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
     def key_wait(self, speed=None, n1=None, n2=None):
         '''Wait for an interval between n1 and n2, in seconds.'''
-        if n1 is None: n1 = self.n1
-        if n2 is None: n2 = self.n2
+        if n1 is None:
+            n1 = self.n1
+        if n2 is None:
+            n2 = self.n2
         if n1 > 0 and n2 > 0:
             n = random.uniform(n1, n2)
         else:
@@ -434,7 +436,7 @@ class Demo:
             c.undoer.afterChangeNodeContents(p, undoType, undoData)
         for ch in s:
             p.h = p.h + ch
-            tree.repaint() # *not* tree.update.
+            tree.repaint()  # *not* tree.update.
             self.key_wait(speed=speed)
             event = self.new_key_event(ch, w)
             c.k.masterKeyHandler(event)
@@ -448,7 +450,7 @@ class Demo:
         self.key_wait(speed=speed)
         event = self.new_key_event(ch, w)
         k.masterKeyHandler(event)
-        w.repaint() # Make the character visible immediately.
+        w.repaint()  # Make the character visible immediately.
     #@+node:ekr.20170128213103.23: *4* demo.keys (demo.py)
     def keys(self, s, undo=False):
         '''
@@ -581,7 +583,8 @@ class Demo:
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
-        m = self; c = m.c
+        m = self
+        c = m.c
         d = {
             None: c.frame.body.widget,
             'all': c.frame.top,
@@ -643,8 +646,8 @@ class Demo:
         g_p = w.parent().geometry()
         g_w = w.geometry()
         w.updateGeometry()
-        x = g_p.width()/2 - g_w.width()/2
-        y = g_p.height()/2
+        x = g_p.width() / 2 - g_w.width() / 2
+        y = g_p.height() / 2
         w.move(x, y)
 
     def center_horizontally(self, w, y):
@@ -652,12 +655,12 @@ class Demo:
         g_p = w.parent().geometry()
         g_w = w.geometry()
         w.updateGeometry()
-        x = g_p.width()/2 - g_w.width()/2
+        x = g_p.width() / 2 - g_w.width() / 2
         w.move(x, y)
 
     def center_vertically(self, w, x):
         '''Center w vertically in its parent, setting its x position.'''
-        y = w.parent().geometry().height()/2
+        y = w.parent().geometry().height() / 2
         w.move(x, y)
     #@+node:ekr.20170206142602.1: *5* demo.set_x/y & helper
     def set_x(self, w, x):
@@ -686,7 +689,7 @@ class Demo:
     def get_ratios(self):
         '''Return the two pane ratios.'''
         f = self.c.frame
-        return  f.ratio,  f.secondary_ratio
+        return f.ratio, f.secondary_ratio
 
     def set_ratios(self, ratio1, ratio2):
         '''Set the two pane ratios.'''
@@ -712,12 +715,12 @@ class Demo:
         w = self.c.frame.top
         while w.parent():
             w = w.parent()
-        w.resize(1264, 682) # Important.
-        w.move(200, 200) # Arbitrary.
+        w.resize(1264, 682)  # Important.
+        w.move(200, 200)  # Arbitrary.
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes & helpers
 #@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
-class Label (QtWidgets.QLabel):
+class Label(QtWidgets.QLabel):
     '''A class for user-defined callouts in demo.py.'''
 
     def __init__(self, text,
@@ -790,7 +793,7 @@ class Callout(Label):
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
-class Image (QtWidgets.QLabel):
+class Image(QtWidgets.QLabel):
 
     def __init__(self, fn,
         pane=None, magnification=None, position=None, size=None):
@@ -821,7 +824,7 @@ class Image (QtWidgets.QLabel):
             else:
                 r = pixmap.size()
                 h, w = r.height(), r.width()
-            size = h*magnification, w*magnification
+            size = h * magnification, w * magnification
         if size:
             try:
                 h, w = size
@@ -838,7 +841,7 @@ class Image (QtWidgets.QLabel):
         widget.setPixmap(pixmap)
     #@-others
 #@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
-class Text (QtWidgets.QPlainTextEdit):
+class Text(QtWidgets.QPlainTextEdit):
 
     def __init__(self, text,
         font=None, pane=None, position=None, size=None, stylesheet=None
@@ -903,8 +906,9 @@ def Head(arrow, label, headline, offset=None):
         if p:
             x, y, w, h = demo.headline_geometry(p)
             class_ = Arrow if arrow else Callout
-            if not offset: offset = w-10
-            class_(label, pane='tree', position=(x+offset, y))
+            if not offset:
+                offset = w - 10
+            class_(label, pane='tree', position=(x + offset, y))
         else:
             print('not found', p.h)
 #@-others

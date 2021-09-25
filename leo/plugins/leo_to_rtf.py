@@ -27,38 +27,39 @@ from leo.core import leoGlobals as g
 def init():
     '''Return True if the plugin has loaded successfully.'''
     # Ok for unit testing: creates menu.
-    g.registerHandler("create-optional-menus",createExportMenu)
+    g.registerHandler("create-optional-menus", createExportMenu)
     g.plugin_signon(__name__)
     return True
 #@+node:danr7.20060902083957.2: ** createExportMenu (leo_to_rtf)
-def createExportMenu (tag,keywords):
+def createExportMenu(tag, keywords):
 
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
 
     # Insert leoToRTF in #3 position of the File > Export menu.
-    c.frame.menu.insert('Export...',3,
-        label = 'Outline to Microsoft RTF',
-        command = lambda c = c: export_rtf(c))
+    c.frame.menu.insert('Export...', 3,
+        label='Outline to Microsoft RTF',
+        command=lambda c=c: export_rtf(c))
 #@+node:danr7.20060902083957.3: ** export_rtf
-def export_rtf( c ):
+def export_rtf(c):
     # pylint: disable=line-too-long
     # Get user preferences from INI file
-    fileName = g.os_path_join(g.app.loadDir,"..","plugins","leo_to_rtf.ini")
+    fileName = g.os_path_join(g.app.loadDir, "..", "plugins", "leo_to_rtf.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
-    flagIgnoreFiles =  config.get("Main", "flagIgnoreFiles") == "Yes"
+    flagIgnoreFiles = config.get("Main", "flagIgnoreFiles") == "Yes"
     flagJustHeadlines = config.get("Main", "flagJustHeadlines") == "Yes"
     # Prompt for the file name.
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile = c.mFileName+'.rtf',
+        initialfile=c.mFileName + '.rtf',
         title="Export to RTF",
         filetypes=[("RTF files", "*.rtf")],
         defaultextension=".rtf")
     if fileName:
-        f=open(fileName, 'w')
+        f = open(fileName, 'w')
     else:
         return
     # Write RTF header information
@@ -72,11 +73,11 @@ def export_rtf( c ):
 
     f.write("{\\listlevel\\levelnfc0\\levelnfcn0\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0\n")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698703\\\'02\\\'00.;}\n\n")
-    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li720\\jclisttab\\tx720 }") # NOQA
+    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li720\\jclisttab\\tx720 }")  # NOQA
 
     f.write("{\\listlevel\\levelnfc4\\levelnfcn4\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698713\\\'02\\\'01.;} {\\levelnumbers\\\'01;}")
-    f.write("\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li1440\\jclisttab\\tx1440 }") # NOQA
+    f.write("\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li1440\\jclisttab\\tx1440 }")  # NOQA
 
     f.write("{\\listlevel\\levelnfc2\\levelnfcn2\\leveljc2\\leveljcn2\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698715\\\'02\\\'02.;} {\\levelnumbers\\\'01;}")
@@ -115,28 +116,28 @@ def export_rtf( c ):
     levelHeader = "\\pard \\ql \\fi-360\\ri0\\widctlpar\\jclisttab\\faauto\\ls1\\adjustright\\rin0\\itap0"
     myLevel = -1
     for p in c.all_positions():
-        curLevel = p.level() + 1    # Store current level so method doesn't have to be called again
+        curLevel = p.level() + 1  # Store current level so method doesn't have to be called again
         if curLevel != myLevel:
             if myLevel != -1:
                 f.write("}")
                     # If this is not the 1st level written, close the last before begin
-            levelIndent = str(720*curLevel)
+            levelIndent = str(720 * curLevel)
                 # Generate the pixel indent for the current level
             f.write(levelHeader)
                 # Output the generic RTF level info
-            f.write("\\li" + levelIndent + "\\tx" + levelIndent + "\\ilvl" + str(curLevel-1) + "\\lin" + levelIndent)
+            f.write("\\li" + levelIndent + "\\tx" + levelIndent + "\\ilvl" + str(curLevel - 1) + "\\lin" + levelIndent)
             f.write("{")
         myLevel = curLevel
         myHeadline = p.h
         # Check if node is an @file and ignore if configured to
         if not (myHeadline[:5] == "@file" and flagIgnoreFiles):
             # Write headline with correct # of tabs for indentation
-            myOutput = myHeadline +"\\par "
-            myOutput = myOutput.encode( "utf-8" )
+            myOutput = myHeadline + "\\par "
+            myOutput = myOutput.encode("utf-8")
             f.write(myOutput)
             # If including outline body text, convert it to RTF usable format
             if not flagJustHeadlines:
-                myBody = p.b.encode( "utf-8" )
+                myBody = p.b.encode("utf-8")
                 myBody = myBody.rstrip().rstrip("\n")
                 f.write(myBody + "\\par ")
     # Write final level close
@@ -145,7 +146,7 @@ def export_rtf( c ):
     f.write("}")
     # Close file
     f.close()
-    g.es(" Leo -> RTF completed.",color="turquoise4")
+    g.es(" Leo -> RTF completed.", color="turquoise4")
 #@-others
 #@@language python
 #@@tabwidth -4

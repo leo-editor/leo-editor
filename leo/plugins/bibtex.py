@@ -130,10 +130,11 @@ def onHeadKey(tag, keywords):
     # c = keywords.get("c")
     # To do: check for duplicate keys here.
     p = keywords.get("p")
-    if not p: return
+    if not p:
+        return
     h = p.h.strip()
     i = h.find(' ')
-    kind = h[: i]
+    kind = h[:i]
     if kind in templates.keys() and not p.b.strip():
         # Fix bug 142: plugin overwrites body text.
         # Iterate on p2, not p!
@@ -183,14 +184,14 @@ def readBibTexFileIntoTree(c, fn, p):
         # aList is a list of tuples (h,b).
     s = '\n' + ''.join([z.lstrip() for z in g.splitLines(s)])
     for line in s.split('\n@')[1:]:
-        kind, rest = line[: 6], line[7:].strip()
+        kind, rest = line[:6], line[7:].strip()
         if kind == 'string':
-            strings.append(rest[: -1] + '\n')
+            strings.append(rest[:-1] + '\n')
         else:
             i = min(line.find(','), line.find('\n'))
-            h = '@' + line[: i]
+            h = '@' + line[:i]
             h = h.replace('{', ' ').replace('(', ' ').replace('\n', '')
-            b = line[i + 1:].rstrip().lstrip('\n')[: -1]
+            b = line[i + 1 :].rstrip().lstrip('\n')[:-1]
             entries.append((h, b),)
     if strings:
         h, b = '@string', ''.join(strings)
@@ -212,15 +213,15 @@ def writeTreeAsBibTex(c, fn, root):
                 for z in g.splitLines(p.b) if z.strip()])
         else:
             i = h.find(' ')
-            kind, rest = h[: i].lower(), h[i + 1:].rstrip()
+            kind, rest = h[:i].lower(), h[i + 1 :].rstrip()
             if kind in entrytypes:
                 entries.append('%s{%s,\n%s}\n\n' % (kind, rest, p.b.rstrip()))
     if strings or entries:
         g.es('writing:', fn)
-        encoding=g.getEncodingAt(root)
+        encoding = g.getEncodingAt(root)
         with open(fn, 'wb') as f:
             s = ''.join(strings + entries)
-            f.write(g.toEncodedString(s,encoding=encoding))
+            f.write(g.toEncodedString(s, encoding=encoding))
 #@-others
 #@@language python
 #@@tabwidth -4

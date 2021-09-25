@@ -26,16 +26,17 @@ def init():
     # Fix https://bugs.launchpad.net/leo-editor/+bug/1335310
     return True
 #@+node:ekr.20140920173002.17960: ** onSelect
-def onSelect (tag,keywords):
+def onSelect(tag, keywords):
     c = keywords.get('c') or keywords.get('new_c')
-    if not c: return
+    if not c:
+        return
     v = keywords.get("new_v")
     h = v.h
-    if g.match_word(h,0,"@folder"):
-        sync_node_to_folder(c,v,h[8:])
+    if g.match_word(h, 0, "@folder"):
+        sync_node_to_folder(c, v, h[8:])
 
 #@+node:edream.110203113231.875: ** sync_node_to_folder
-def sync_node_to_folder(c,parent,d):
+def sync_node_to_folder(c, parent, d):
 
     oldlist = {}
     newlist = []
@@ -61,7 +62,7 @@ def sync_node_to_folder(c,parent,d):
         v.setMarked()
     #warn for orphan oldlist
     if oldlist:
-        g.es('missing: '+','.join(oldlist.keys()))
+        g.es('missing: ' + ','.join(oldlist.keys()))
 #@-others
 #@@language python
 #@@tabwidth -4

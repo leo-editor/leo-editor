@@ -57,7 +57,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("after-create-leo-frame", on_create)
     g.plugin_signon(__name__)
-    return True # OK for unit testing.
+    return True  # OK for unit testing.
 #@+node:gfunch.20041207100416.5: ** class DateNodes
 class DateNodes:
     """Main DateNodes class"""
@@ -139,9 +139,9 @@ class DateNodes:
             ):
                 continue
             self._insert_day_node(
-                parent = month_node,
-                date = day_date,
-                day_fmt = day_fmt)
+                parent=month_node,
+                date=day_date,
+                day_fmt=day_fmt)
         return month_node
     #@+node:gfunch.20041207100416.12: *3* _insert_year_node
     def _insert_year_node(self,
@@ -159,15 +159,15 @@ class DateNodes:
         for month in range(1, 13):
             month_date = datetime.date(year, month, day)
             self._insert_month_node(
-                parent = year_node,
-                date = month_date,
-                day_fmt = day_fmt,
-                month_fmt = month_fmt,
-                omit_saturdays = omit_saturdays,
-                omit_sundays = omit_sundays)
+                parent=year_node,
+                date=month_date,
+                day_fmt=day_fmt,
+                month_fmt=month_fmt,
+                omit_saturdays=omit_saturdays,
+                omit_sundays=omit_sundays)
         return year_node
     #@+node:gfunch.20041208074734: *3* insert_day_node
-    def insert_day_node(self, event = None):
+    def insert_day_node(self, event=None):
 
         c = self.c
         today = datetime.date.today()
@@ -176,7 +176,7 @@ class DateNodes:
         c.selectPosition(day_node)
         c.redraw()
     #@+node:dcb.20060806183928: *3* insert_month_node
-    def insert_month_node(self, event = None):
+    def insert_month_node(self, event=None):
 
         c = self.c
         today = datetime.date.today()
@@ -192,7 +192,7 @@ class DateNodes:
 
 
     #@+node:dcb.20060806184117: *3* insert_year_node
-    def insert_year_node(self, event = None):
+    def insert_year_node(self, event=None):
 
         c = self.c
         today = datetime.date.today()
@@ -215,7 +215,7 @@ def on_create(tag, keywords):
         return
 
     # Rewrite to eliminate a pylint complaint.
-    if hasattr(c,'theDateNodesController'):
+    if hasattr(c, 'theDateNodesController'):
         return
 
     # establish a class instance

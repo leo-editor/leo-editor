@@ -62,7 +62,7 @@ To make a button to toggle the editor on and off, use::
 import time
 from urllib.parse import unquote
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -79,7 +79,7 @@ def init():
     name = g.app.gui.guiName()
     ok = name == 'qt'
     if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.registerHandler('select3', at_rich_check)
         g.plugin_signon(__name__)
     elif name != 'nullGui':
@@ -111,7 +111,7 @@ if QtWidgets:
             # make widget containing QWebView
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setSpacing(0)
-            self.layout().setContentsMargins(0,0,0,0)
+            self.layout().setContentsMargins(0, 0, 0, 0)
             # enable inspector, if this really is QtWebKit
             if real_webkit:
                 QtWebKit.QWebSettings.globalSettings().setAttribute(
@@ -161,7 +161,7 @@ if QtWidgets:
 
             # replace textarea with CKEditor, with or without config.
             if self.config:
-                data = data.replace('[CONFIG]', ', '+self.config)
+                data = data.replace('[CONFIG]', ', ' + self.config)
             else:
                 data = data.replace('[CONFIG]', '')
 
@@ -176,7 +176,7 @@ if QtWidgets:
                 if g.os_path_isdir(nodepath):  # append if it's a directory
                     path = nodepath
 
-            self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path+"/"))
+            self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path + "/"))
         #@+node:tbrown.20130813134319.7228: *3* unselect_node
         def unselect_node(self, tag, kwargs):
 
@@ -188,7 +188,7 @@ if QtWidgets:
             ele = frame.findFirstElement("#initial")
             text = str(ele.toPlainText()).strip()
             if text == '[empty]':
-                return None # no edit
+                return None  # no edit
             frame.evaluateJavaScript('save_final();')
             ele = frame.findFirstElement("#final")
             for attempt in range(10):  # wait for up to 1 second
@@ -245,7 +245,7 @@ class CKEPaneProvider:
                 splitter.register_provider(self)
 
     def ns_provides(self):
-        return[('Rich text CKE editor', self.ns_id)]
+        return [('Rich text CKE editor', self.ns_id)]
 
     def ns_provide(self, id_):
         if id_ == self.ns_id:
@@ -258,7 +258,7 @@ class CKEPaneProvider:
         # providers of the same service
         return self.ns_id
 #@+node:tbrown.20130813134319.14339: ** onCreate
-def onCreate (tag,key):
+def onCreate(tag, key):
 
     c = key.get('c')
 

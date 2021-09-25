@@ -12,14 +12,14 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20051016161205: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20051016161205.1: ** onCreate (testRegisterCommand.py)
-def hello_command (event):
+def hello_command(event):
     g.es_print('Hello from %s' % (g.shortFileName(__file__)), color='purple')
 
-def onCreate(tag,keys):
+def onCreate(tag, keys):
     c = keys.get('c')
     if c:
         c.keyHandler.registerCommand('print-hello', hello_command)
@@ -28,7 +28,7 @@ def onCreate(tag,keys):
 # This is the recommended way of registering commands.
 
 @g.command('print-hello2')
-def hello_command2 (event):
+def hello_command2(event):
     g.es_print('Hello 2 from %s' % (g.shortFileName(__file__)), color='red')
 #@-others
 #@-leo

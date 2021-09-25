@@ -390,7 +390,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
 
         h = p.h
-        undoType='capitalize-headline'
+        undoType = 'capitalize-headline'
         undoData = u.beforeChangeNodeContents(p)
 
         words = [w.capitalize() for w in h.split()]

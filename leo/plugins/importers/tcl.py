@@ -20,9 +20,9 @@ class Tcl_Importer(Importer):
         '''Tcl_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'tcl',
-            state_class = Tcl_ScanState,
-            strict = False,
+            language='tcl',
+            state_class=Tcl_ScanState,
+            strict=False,
         )
 
     #@+others
@@ -77,7 +77,7 @@ class Tcl_ScanState:
     #@+node:ekr.20170615160228.1: *3* tcl_state.in_context
     def in_context(self):
         '''True if in a special context.'''
-        return self.context # or self.curlies > 0
+        return self.context  # or self.curlies > 0
 
     #@+node:ekr.20170615153639.8: *3* tcl_state.level
     def level(self):

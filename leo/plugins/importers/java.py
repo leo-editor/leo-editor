@@ -16,9 +16,9 @@ class Java_Importer(Importer):
         '''Java_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'java',
-            state_class = Java_ScanState,
-            strict = False,
+            language='java',
+            state_class=Java_ScanState,
+            strict=False,
         )
 
     # Used in multiple methods.
@@ -54,7 +54,7 @@ class Java_Importer(Importer):
     #@+node:ekr.20161205042019.3: *3* java_i.match_start_patterns
     # Define patterns that can start a block
     java_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (java_types_list))
-    java_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (java_types_list))
+    java_func_pattern = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (java_types_list))
 
     def match_start_patterns(self, line):
         '''
@@ -79,7 +79,8 @@ class Java_Importer(Importer):
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
-        if self.headline: h = self.headline
+        if self.headline:
+            h = self.headline
         if new_state.level() > prev_state.level():
             child = self.create_child_node(target.p, line, h)
         else:
@@ -90,7 +91,7 @@ class Java_Importer(Importer):
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         # Add all additional lines of the signature.
-        skip = self.skip # Don't change the ivar!
+        skip = self.skip  # Don't change the ivar!
         while skip > 0:
             skip -= 1
             i += 1

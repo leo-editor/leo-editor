@@ -13,9 +13,9 @@ class Dart_Importer(Importer):
         '''Dart_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'dart',
-            state_class = Dart_ScanState,
-            strict = False,
+            language='dart',
+            state_class=Dart_ScanState,
+            strict=False,
         )
 
     #@+others

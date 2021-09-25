@@ -157,11 +157,11 @@ from leo.plugins.attrib_edit import ListDialog
 #@+node:tbrown.20100226095909.12781: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:tbrown.20100226095909.12782: ** onCreate
-def onCreate (tag,key):
+def onCreate(tag, key):
     """Bind an instance of leoscreen_Controller to c"""
     c = key.get('c')
 
@@ -173,7 +173,7 @@ class leoscreen_Controller:
 
     #@+others
     #@+node:tbrown.20100226095909.12784: *3* __init__& reloadSettings (leoscreen_Controller)
-    def __init__ (self, c):
+    def __init__(self, c):
         """set up vars., prepare temporary file"""
         self.c = c
         c.leo_screen = self
@@ -221,7 +221,7 @@ class leoscreen_Controller:
 
         cmd.extend([
             '-X', 'eval',
-            'msgwait 0',    # avoid waiting for message display
+            'msgwait 0',  # avoid waiting for message display
         ])
         cmd.extend(cmds)
 
@@ -252,10 +252,10 @@ class leoscreen_Controller:
             self.old_output = self.output
         self.output = []  # forget previous output (mostly)
 
-        open(self.tmpfile,'w').write(txt)
+        open(self.tmpfile, 'w').write(txt)
 
         self.screen_cmd([
-            'readbuf "%s"'%self.tmpfile,
+            'readbuf "%s"' % self.tmpfile,
             'paste .',
         ])
     #@+node:tbrown.20100421115534.21602: *3* insert_line
@@ -268,13 +268,13 @@ class leoscreen_Controller:
         editor = c.frame.body.wrapper
 
         insert_point = editor.getInsertPoint()
-        editor.insert(insert_point, self.get_line_prefix+line+'\n')
+        editor.insert(insert_point, self.get_line_prefix + line + '\n')
         editor.setInsertPoint(insert_point)
         c.setChanged()
     #@+node:tbrown.20100528205637.5725: *3* _get_output
     def _get_output(self):
         """grab some output"""
-        self.screen_cmd(['hardcopy -h "%s"'%self.tmpfile])
+        self.screen_cmd(['hardcopy -h "%s"' % self.tmpfile])
         # seems new output file isn't visible to the process
         # without this call
         cmd = ['ls', self.tmpfile]
@@ -309,11 +309,11 @@ class leoscreen_Controller:
         if not c:
             c = self.c
         self.output = None  # trick get_line into getting output
-        self.get_line()     # updates self.output, ignore returned line
+        self.get_line()  # updates self.output, ignore returned line
         sm = difflib.SequenceMatcher(None, self.old_output, self.output)
-        x = sm.find_longest_match(0, len(self.old_output)-1, 0, len(self.output)-1)
+        x = sm.find_longest_match(0, len(self.old_output) - 1, 0, len(self.output) - 1)
         ans = self.output[:]
-        del ans[x.b:x.b+x.size]
+        del ans[x.b : x.b + x.size]
         return '\n'.join(ans[:self.first_line])
     #@+node:tbrown.20100502155649.5599: *3* get_note
     def get_note(self, c=None):
@@ -362,7 +362,7 @@ class leoscreen_Controller:
     #@+node:tbrown.20100502155649.5605: *3* show_note
     def show_note(self):
         if stickynotes:
-            stickynotes.stickynote_f({'c':self.c})
+            stickynotes.stickynote_f({'c': self.c})
         else:
             g.es('stickynotes not available')
 
@@ -371,7 +371,7 @@ class leoscreen_Controller:
         """get the prefix for insertions from get_line"""
 
         x = g.app.gui.runAskOkCancelStringDialog(
-            self.c,'Prefix for text loading' ,'Prefix for text loading')
+            self.c, 'Prefix for text loading', 'Prefix for text loading')
 
         if x is not None:
             self.get_line_prefix = x
@@ -386,7 +386,7 @@ class leoscreen_Controller:
         out, err = proc.communicate()
         out = out.decode('utf-8')
 
-        screens = [[('CURRENT: ' if i == self.use_screen else '')+i, False, i]
+        screens = [[('CURRENT: ' if i == self.use_screen else '') + i, False, i]
                    for i in out.split('\n') if i.startswith('\t')]
 
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
@@ -443,11 +443,11 @@ def cmd_run_text(event):
     b = w.getAllText()
     i = w.getInsertPoint()
     try:
-        j = b[i:].index('\n')+i+1
-        w.setSelectionRange(i,j)
+        j = b[i:].index('\n') + i + 1
+        w.setSelectionRange(i, j)
     except ValueError:  # no more \n in text
-        w.setSelectionRange(i,i)
-    c.leo_screen.run_text(txt,c)
+        w.setSelectionRange(i, i)
+    c.leo_screen.run_text(txt, c)
 #@+node:tbrown.20120905091352.20333: ** cmd_run_all_text (leoscreen_Controller)
 @g.command('leoscreen-run-all-text')
 def cmd_run_all_text(event, move=True):
@@ -456,7 +456,7 @@ def cmd_run_all_text(event, move=True):
     txt = c.p.b
     if txt[-1] != '\n':
         txt += '\n'
-    c.leo_screen.run_text(txt,c)
+    c.leo_screen.run_text(txt, c)
     if move:
         c.selectThreadNext()
     c.redraw()
@@ -527,7 +527,7 @@ def jump_to_error_internal(c):
         match = regex.match(i)
         if match:
             if skipped == c.leo_screen.stack_frame:
-                g.es("Line %s in %s"%(match.group(2), match.group(1)))
+                g.es("Line %s in %s" % (match.group(2), match.group(1)))
                 filename = g.os_path_basename(match.group(1))
                 for p in c.all_unique_positions():
                     if p.h.startswith('@') and p.h.endswith(filename):
@@ -538,7 +538,7 @@ def jump_to_error_internal(c):
                 break
             skipped += 1
     else:
-        g.es("%d error frames found in console content"%skipped)
+        g.es("%d error frames found in console content" % skipped)
 #@+node:tbrown.20150805095656.1: ** cmd_select_screen
 @g.command('leoscreen-select-screen')
 def cmd_select_screen(event):

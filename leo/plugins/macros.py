@@ -68,14 +68,14 @@ import re
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20070302121133: ** init
-def init ():
+def init():
     '''Return True if this plugin loaded correctly.'''
     # Ok for unit testing: adds command to Outline menu.
-    g.registerHandler( ('new','menu2') ,onCreate)
+    g.registerHandler(('new', 'menu2'), onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20040916091520.1: ** onCreate
-def onCreate(tag,keywords):
+def onCreate(tag, keywords):
     '''Create the per-commander instance of ParamClass.'''
     c = keywords.get("c")
     if c:
@@ -85,14 +85,14 @@ class ParamClass:
 
     #@+others
     #@+node:ekr.20040916091520.3: *3* __init__
-    def __init__ (self,c):
+    def __init__(self, c):
         '''Ctor for ParamClass.'''
         self.c = c
         self.pattern = g.angleBrackets(r'\s*\w*?\s*\(\s*([^,]*?,)\s*?(\w+)\s*\)\s*') + '$'
         self.regex = re.compile(self.pattern)
-        self.addMenu() # Now gui-independent.
+        self.addMenu()  # Now gui-independent.
     #@+node:ekr.20040916084945.1: *3* parameterize
-    def parameterize (self,event=None):
+    def parameterize(self, event=None):
 
         c = self.c
         w = c.frame.body.wrapper
@@ -103,7 +103,7 @@ class ParamClass:
         sr = s = w.getAllText()
         sr = sr.split('\n')
         i = w.getInsertPoint()
-        row,col = g.convertPythonIndexToRowCol(s,i)
+        row, col = g.convertPythonIndexToRowCol(s, i)
         sr = sr[row]
         sr = sr[:col]
         sr = sr.rstrip()
@@ -111,16 +111,16 @@ class ParamClass:
         if not match:
             g.es("no match")
             return
-        sr = sr [match.start(): match.end()]
+        sr = sr[match.start() : match.end()]
         for child in c.p.children():
             if child.h == sr:
                 return
-        pieces = sr.split('(',1)
-        searchline = pieces [0] + ">>"
+        pieces = sr.split('(', 1)
+        searchline = pieces[0] + ">>"
         # EKR: added rstrip().
-        pieces [1] = pieces [1].rstrip().rstrip('>')
-        pieces [1] = pieces [1].rstrip().rstrip(')')
-        sections = pieces [1].split(',')
+        pieces[1] = pieces[1].rstrip().rstrip('>')
+        pieces[1] = pieces[1].rstrip().rstrip(')')
+        sections = pieces[1].split(',')
         node = None
         for child in params.children():
             if child.matchHeadline(searchline):
@@ -132,24 +132,24 @@ class ParamClass:
         for i, section in enumerate(sections):
             p = c.p.insertAsNthChild(i)
             p.b = section
-            p.h = g.angleBrackets(str(i+1)+"$")
+            p.h = g.angleBrackets(str(i + 1) + "$")
         c.redraw()
     #@+node:ekr.20040916084945.2: *3* findParameters
-    def findParameters (self,p):
+    def findParameters(self, p):
         '''Find the parameterized nodes in p's parents..'''
         tag = "parameterized nodes"
         for parent in p.parents():
             for sib in parent.self_and_siblings():
                 if sib.h.lower() == tag:
                     return sib
-        g.es('not found',tag)
+        g.es('not found', tag)
         return None
     #@+node:ekr.20040916084945.3: *3* addMenu
     def addMenu(self):
         '''Add a submenu in the outline menu.'''
         c = self.c
         table = (
-            ("Parameterize Section Reference",None,self.parameterize),
+            ("Parameterize Section Reference", None, self.parameterize),
         )
         c.frame.menu.createMenuItemsFromTable("Outline", table)
     #@-others

@@ -94,22 +94,23 @@ from leo.external import leosax
 
 #@+others
 #@+node:peckj.20140113131037.5795: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
-        g.registerHandler(('new','open2'),onCreate)
+        g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     else:
         g.es('Error loading plugin nodediff.py', color='red')
     return ok
 #@+node:peckj.20140113131037.5796: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     theNodeDiffController = NodeDiffController(c)
     c.theNodeDiffController = theNodeDiffController
@@ -167,9 +168,12 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
-            if l.startswith('?'): color='grey'
+            if l.startswith('+'):
+                color = 'forestgreen'
+            if l.startswith('-'):
+                color = 'red'
+            if l.startswith('?'):
+                color = 'grey'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -184,9 +188,12 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
-            if l.startswith('?'): color='grey'
+            if l.startswith('+'):
+                color = 'forestgreen'
+            if l.startswith('-'):
+                color = 'red'
+            if l.startswith('?'):
+                color = 'grey'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -201,8 +208,10 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
+            if l.startswith('+'):
+                color = 'forestgreen'
+            if l.startswith('-'):
+                color = 'red'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -281,7 +290,7 @@ class NodeDiffController:
         path = dir_
         while not mode:
             for vcs in 'git', 'bzr':
-                if g.os_path_exists(g.os_path_join(path, '.'+vcs)):
+                if g.os_path_exists(g.os_path_join(path, '.' + vcs)):
                     mode = vcs
                     break
             else:
@@ -291,7 +300,7 @@ class NodeDiffController:
                 relative_path[0:0] = [subpath]
 
         if not mode:
-            g.es("No supported VCS found in '%s'"%dir_)
+            g.es("No supported VCS found in '%s'" % dir_)
             return
 
         gnx = c.p.gnx
@@ -301,7 +310,7 @@ class NodeDiffController:
                 'git',
                 '--work-tree=%s' % path,
                 'show',
-                'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) ),
+                'HEAD:%s' % g.os_path_join(* (relative_path + [filename])),
             ]
 
         if mode == 'bzr':

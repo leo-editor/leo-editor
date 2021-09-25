@@ -14,9 +14,9 @@ class Pascal_Importer(Importer):
         '''Pascal_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'pascal',
-            state_class = Pascal_ScanState,
-            strict = False,
+            language='pascal',
+            state_class=Pascal_ScanState,
+            strict=False,
         )
 
     #@+others
@@ -99,7 +99,8 @@ class Pascal_Importer(Importer):
         line = lines[i]
         for pattern in self.pascal_pattern_table:
             m = pattern.match(line)
-            if m: return True
+            if m:
+                return True
         return False
     #@-others
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
@@ -124,7 +125,7 @@ class Pascal_ScanState:
     #@+node:ekr.20161126171035.7: *3* pascal_state.level
     def level(self):
         '''Pascal_ScanState.level.'''
-        return 0 # Not used
+        return 0  # Not used
 
     #@+node:ekr.20161126171035.8: *3* pascal_state.update
     def update(self, data):

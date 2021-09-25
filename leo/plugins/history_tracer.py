@@ -89,7 +89,8 @@ def save_snapshot(c):
     data = snap(c)
     x = data.split('\n', 2)[2]
     y = c.user_dict.get('last_snapshot_data')
-    if x == y:return False
+    if x == y:
+        return False
     c.user_dict['last_snapshot_data'] = x
     def pf():
         t1 = time.perf_counter()

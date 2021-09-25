@@ -42,7 +42,7 @@ try:
 except ImportError:
     ok = False
 
-def init ():
+def init():
     ''' Return True if plugin has loaded successfully.'''
     if ok:
         g.plugin_signon(__name__)
@@ -73,7 +73,7 @@ def anki_warn(deck, front, back):
         'Please create a child node to @anki called @anki %s '
         'and populate with a %s name'
     )
-    if deck is None :
+    if deck is None:
         g.es(useful_msg % ("deck", "deck", "deck"))
         return
     if front is None:
@@ -139,12 +139,12 @@ def anki_act_on_node(c, p, event):
 
         result = _invoke('addNote', note={
             'deckName': deck,
-            'modelName' : 'Basic',
+            'modelName': 'Basic',
             'fields': {
-                'Front' : front,
-                'Back' : back
+                'Front': front,
+                'Back': back
             },
-            'tags' : tag.split(",")
+            'tags': tag.split(",")
         })
         # result id needs to be stored for future updates
         card_id_node = p.insertAsLastChild()
@@ -159,13 +159,13 @@ def anki_act_on_node(c, p, event):
         # deck also will be present
         result = _invoke('updateNoteFields', note={
             'deckName': deck,
-            'modelName' : 'Basic',
-            'id' : int(card_id),
+            'modelName': 'Basic',
+            'id': int(card_id),
             'fields': {
-                'Front' : front,
-                'Back' : back
+                'Front': front,
+                'Back': back
             },
-            'tags' : tag.split(",")
+            'tags': tag.split(",")
         })
 
 #@-leo

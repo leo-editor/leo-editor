@@ -33,14 +33,14 @@ Example client::
 #@+<< imports >>
 #@+node:ekr.20160519045636.1: ** << imports >> (leoremote.py)
 import os
-import socket # For a test of its capabilities.
+import socket  # For a test of its capabilities.
 import tempfile
 from leo.external import lproto
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
 #@+node:ville.20091009202416.10045: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = True
     if ok:
@@ -58,12 +58,12 @@ def leoserv_start(event):
     def dispatch_script(msg, ses):
         # print("leoremote.py: dispatch script", msg)
         fd, pth = tempfile.mkstemp(suffix='.py')
-        f = os.fdopen(fd,"w")
+        f = os.fdopen(fd, "w")
         f.write(msg)
         f.close()
         # first run
         if 'pydict' not in ses:
-            ses['pydict'] = {'g' : g }
+            ses['pydict'] = {'g': g}
         # print("run file",pth)
         d = ses['pydict']
         g.exec_file(pth, d)
@@ -71,14 +71,14 @@ def leoserv_start(event):
 
     lps.set_receiver(dispatch_script)
     # EKR: 2011/10/12
-    if hasattr(socket,'AF_UNIX'):
+    if hasattr(socket, 'AF_UNIX'):
         uniqid = 'leoserv-%d' % os.getpid()
     else:
-        uniqid = '172.16.0.0',1
+        uniqid = '172.16.0.0', 1
     lps.listen(uniqid)
     fullpath = lps.srv.fullServerName()
     socket_file = os.path.expanduser('~/.leo/leoserv_sockname')
-    open(socket_file,'w').write(fullpath)
+    open(socket_file, 'w').write(fullpath)
     print('leoremote.py: file:   %s' % socket_file)
     print('leoremote.py: server: %s' % fullpath)
 #@+node:ville.20091009211846.10039: ** script execution
@@ -86,7 +86,7 @@ def run_remote_script(fname):
 
     # c and p are ambiguous for remote script
     print("rrs")
-    d = {'g': g }
+    d = {'g': g}
     g.exec_file(fname, d)
 #@-others
 #@@language python

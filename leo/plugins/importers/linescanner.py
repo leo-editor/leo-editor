@@ -94,12 +94,12 @@ class Importer:
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self,
         importCommands,
-        gen_refs=False, # True: generate section references,
-        language=None, # For @language directive.
-        name=None, # The kind of importer, usually the same as language
-        state_class=None, # For i.scan_line
+        gen_refs=False,  # True: generate section references,
+        language=None,  # For @language directive.
+        name=None,  # The kind of importer, usually the same as language
+        state_class=None,  # For i.scan_line
         strict=False,
-        **kwargs
+        ** kwargs
     ):
         '''
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
@@ -123,14 +123,14 @@ class Importer:
         # Set from ivars...
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
-        self.tree_type = ic.treeType if c else None # '@root', '@file', etc.
+        self.tree_type = ic.treeType if c else None  # '@root', '@file', etc.
         #
         # Constants...
         if ic:
             data = g.set_delims_from_language(self.name)
             self.single_comment, self.block1, self.block2 = data
         else:
-            self.single_comment, self.block1, self.block2 = '//', '/*', '*/' # Javascript.
+            self.single_comment, self.block1, self.block2 = '//', '/*', '*/'  # Javascript.
         if ic:
             self.escape = c.atFileCommands.underindentEscapeString
             self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
@@ -138,7 +138,7 @@ class Importer:
             self.escape_pattern = re.compile(self.escape_string)
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
-        self.tab_width = 0 # Must be set in run, using self.root.
+        self.tab_width = 0  # Must be set in run, using self.root.
         self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (self.single_comment or ''))
         #
         # Settings...
@@ -147,11 +147,11 @@ class Importer:
         # State vars.
         self.errors = 0
         if ic:
-            ic.errors = 0 # Required.
+            ic.errors = 0  # Required.
         self.parse_body = False
         self.refs_dict = {}
             # Keys are headlines. Values are disambiguating number.
-        self.skip = 0 # A skip count for x.gen_lines & its helpers.
+        self.skip = 0  # A skip count for x.gen_lines & its helpers.
         self.ws_error = False
         self.root = None
 
@@ -312,7 +312,7 @@ class Importer:
                         new_context = ''
                         break
                     else:
-                        pass # Ignore this match.
+                        pass  # Ignore this match.
         elif aList:
             # Not in context.
             for data in aList:
@@ -335,7 +335,7 @@ class Importer:
         #
         # No match: stay in present state. All deltas are zero.
         new_context = context
-        return new_context, i+1, 0, 0, 0, False
+        return new_context, i + 1, 0, 0, 0, False
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s, prev_state):
         '''
@@ -357,8 +357,8 @@ class Importer:
         d = {
             'indent': self.get_int_lws(s),
             'is_ws_line': self.is_ws_line(s),
-            'prev':prev_state,
-            's':s,
+            'prev': prev_state,
+            's': s,
         }
         new_state = self.state_class(d)
         i = 0
@@ -391,18 +391,18 @@ class Importer:
             assert bunch.line is not None
             line = bunch.line
             ctx = getattr(bunch, 'ctx', None)
-            if ctx: # Test one transition.
+            if ctx:  # Test one transition.
                 ctx_in, ctx_out = ctx
-                prev_state =  State()
+                prev_state = State()
                 prev_state.context = ctx_in
                 new_state = self.scan_line(line, prev_state)
                 new_context = new_state.context
                 assert new_context == ctx_out, (
                     'FAIL1:\nline: %r\ncontext: %r new_context: %r ctx_out: %r\n%s\n%s' % (
                         line, ctx_in, new_context, ctx_out, prev_state, new_state))
-            else: # Test all transitions.
+            else:  # Test all transitions.
                 for context in contexts:
-                    prev_state =  State()
+                    prev_state = State()
                     prev_state.context = context
                     new_state = self.scan_line(line, prev_state)
                     assert new_state.context == context, (
@@ -423,7 +423,7 @@ class Importer:
         self.parse_body = parse_body
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
-        ws_ok = self.check_blanks_and_tabs(s) # Only issues warnings.
+        ws_ok = self.check_blanks_and_tabs(s)  # Only issues warnings.
         # Regularize leading whitespace
         if not ws_ok:
             s = self.regularize_whitespace(s)
@@ -433,7 +433,7 @@ class Importer:
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
         if parse_body:
-            ok = self.errors == 0 # Work around problems with directives.
+            ok = self.errors == 0  # Work around problems with directives.
         else:
             ok = self.errors == 0 and self.check(s, parent)
         # Insert an @ignore directive if there were any serious problems.
@@ -459,8 +459,8 @@ class Importer:
         fn = g.shortFileName(self.root.h)
         lines = g.splitLines(s)
         count, result, tab_width = 0, [], self.tab_width
-        self.ws_error = False # 2016/11/23
-        if tab_width < 0: # Convert tabs to blanks.
+        self.ws_error = False  # 2016/11/23
+        if tab_width < 0:  # Convert tabs to blanks.
             for n, line in enumerate(lines):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
                 s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]
@@ -468,7 +468,7 @@ class Importer:
                 if s != line:
                     count += 1
                 result.append(s)
-        elif tab_width > 0: # Convert blanks to tabs.
+        elif tab_width > 0:  # Convert blanks to tabs.
             for n, line in enumerate(lines):
                 s = g.optimizeLeadingWhitespace(line, abs(tab_width))
                     # Use positive width.
@@ -476,13 +476,13 @@ class Importer:
                     count += 1
                 result.append(s)
         if count:
-            self.ws_error = True # A flag to check.
+            self.ws_error = True  # A flag to check.
             if not g.unitTesting:
                 # g.es_print('Warning: Intermixed tabs and blanks in', fn)
                 # g.es_print('Perfect import test will ignoring leading whitespace.')
                 g.es('changed leading %s to %s in %s line%s in %s' % (
                     kind2, kind, count, g.plural(count), fn))
-            if g.unitTesting: # Sets flag for unit tests.
+            if g.unitTesting:  # Sets flag for unit tests.
                 self.report('changed %s lines' % count)
         return ''.join(result)
     #@+node:ekr.20161111024447.1: *5* i.generate_nodes
@@ -637,7 +637,7 @@ class Importer:
             # Fix #441: Make sure all section refs are unique.
             d = self.refs_dict
             n = d.get(h, 0)
-            d [h] = n + 1
+            d[h] = n + 1
             if n > 0:
                 h = '%s: %s' % (n, h)
             headline = g.angleBrackets(' %s ' % h)
@@ -654,7 +654,7 @@ class Importer:
                 # Don't generate another @others in this target.
             headline = h
         if ref:
-            self.add_line(parent,ref)
+            self.add_line(parent, ref)
         return headline
     #@+node:ekr.20161108160409.6: *5* i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
@@ -662,7 +662,7 @@ class Importer:
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
         line = lines[i]
-        target=stack[-1]
+        target = stack[-1]
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
@@ -718,14 +718,14 @@ class Importer:
         Called only when @bool add-context-to-headlines is True.
         '''
         if g.unitTesting:
-            return # Don't changes the expected headlines.
+            return  # Don't changes the expected headlines.
         after, fn, class_name = None, None, None
         for p in p.self_and_subtree():
             # Part 1: update the status.
             m = self.file_pattern.match(p.h)
             if m:
                 prefix = m.group(1)
-                fn = g.shortFileName(p.h[len(prefix):].strip())
+                fn = g.shortFileName(p.h[len(prefix) :].strip())
                 after, class_name = None, None
                 continue
             if p.h.startswith('@path '):
@@ -801,7 +801,7 @@ class Importer:
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         '''
-        pattern = self.escape_pattern # A compiled regex pattern
+        pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
             lines = self.get_lines(p)
             tail = []
@@ -816,13 +816,13 @@ class Importer:
                     except ValueError:
                         break
                     if n == abs(self.tab_width):
-                        new_line = line[len(m.group(0)):]
+                        new_line = line[len(m.group(0)) :]
                         tail.append(new_line)
                     else:
                         g.trace('unexpected unindent value', n)
                         g.trace(line)
                         # Fix #652 by restoring the line.
-                        new_line = line[len(m.group(0)):].lstrip()
+                        new_line = line[len(m.group(0)) :].lstrip()
                         lines.append(new_line)
                         break
                 else:
@@ -903,7 +903,7 @@ class Importer:
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
-        if 0: # An excellent trace for debugging.
+        if 0:  # An excellent trace for debugging.
             g.trace(c.shortFileName())
             g.printObj(lines1, tag='lines1')
             g.printObj(lines2, tag='lines2')
@@ -920,8 +920,8 @@ class Importer:
         # Forgive trailing whitespace problems in the last line.
         # This is not the same as clean_last_lines.
         if lines1 and lines2 and lines1 != lines2:
-            lines1[-1] = lines1[-1].rstrip()+'\n'
-            lines2[-1] = lines2[-1].rstrip()+'\n'
+            lines1[-1] = lines1[-1].rstrip() + '\n'
+            lines2[-1] = lines2[-1].rstrip() + '\n'
         # self.trace_lines(lines1, lines2, parent)
         ok = lines1 == lines2
         if not ok and not self.strict:
@@ -947,9 +947,9 @@ class Importer:
     def context_lines(self, aList, i, n=2):
         '''Return a list containing the n lines of surrounding context of aList[i].'''
         result = []
-        aList1 = aList[max(0, i-n):i]
-        aList2 = aList[i+1:i+n+1]
-        result.extend(['  %4s %r\n' % (i + 1 - len(aList1) + j, g.truncate(s,60))
+        aList1 = aList[max(0, i - n) : i]
+        aList2 = aList[i + 1 : i + n + 1]
+        result.extend(['  %4s %r\n' % (i + 1 - len(aList1) + j, g.truncate(s, 60))
             for j, s in enumerate(aList1)])
         result.append('* %4s %r\n' % (i + 1, g.truncate(aList[i], 60)))
         result.extend(['  %4s %r\n' % (i + 2 + j, g.truncate(s, 60))
@@ -966,7 +966,7 @@ class Importer:
         for i in range(min(n1, n2)):
             line1, line2 = lines1[i], lines2[i]
             if line1 != line2:
-                print('first mismatched line: %s' % (i+1))
+                print('first mismatched line: %s' % (i + 1))
                 print('s1...')
                 print(''.join(self.context_lines(lines1, i)))
                 print('s2...')
@@ -1003,10 +1003,10 @@ class Importer:
         '''Show both s1 and s2.'''
         print('===== s1: %s' % parent.h)
         for i, s in enumerate(lines1):
-            g.pr('%3s %r' % (i+1, s))
+            g.pr('%3s %r' % (i + 1, s))
         print('===== s2')
         for i, s in enumerate(lines2):
-            g.pr('%3s %r' % (i+1, s))
+            g.pr('%3s %r' % (i + 1, s))
     #@+node:ekr.20161108131153.6: *5* i.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''
@@ -1051,7 +1051,7 @@ class Importer:
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
-        return s[i:i+len(pattern)] == pattern
+        return s[i : i + len(pattern)] == pattern
     #@+node:ekr.20161108131153.18: *4* i.Messages
     def error(self, s):
         '''Issue an error and cause a unit test to fail.'''
@@ -1124,13 +1124,13 @@ class Importer:
     def undent(self, p):
         '''Remove maximal leading whitespace from the start of all lines.'''
         if self.is_rst:
-            return p.b # Never unindent rst code.
+            return p.b  # Never unindent rst code.
         lines = self.get_lines(p)
         ws = self.common_lws(lines)
         result = []
         for s in lines:
             if s.startswith(ws):
-                result.append(s[len(ws):])
+                result.append(s[len(ws) :])
             elif s.isspace():
                 # Never change blank lines.
                 result.append(s)
@@ -1155,7 +1155,7 @@ class Importer:
                 elif lws.startswith(lws2):
                     lws = lws2
                 else:
-                    lws = '' # Nothing in common.
+                    lws = ''  # Nothing in common.
                     break
         return lws
     #@+node:ekr.20161109072221.1: *4* i.undent_body_lines & helper
@@ -1166,7 +1166,7 @@ class Importer:
         '''
         s = ''.join(lines)
         if self.is_rst:
-            return s # Never unindent rst code.
+            return s  # Never unindent rst code.
         # Calculate the amount to be removed from each line.
         undent_val = self.get_leading_indent(lines, 0, ignoreComments=ignoreComments)
         if undent_val == 0:
@@ -1181,7 +1181,7 @@ class Importer:
         Strict languages: prepend the underindent escape for underindented lines.
         '''
         if self.is_rst:
-            return s # Never unindent rst code.
+            return s  # Never unindent rst code.
         result = []
         for line in g.splitlines(s):
             lws_s = self.get_str_lws(line)
@@ -1191,7 +1191,7 @@ class Importer:
                 # End the underindent count with a period to
                 # protect against lines that start with a digit!
                 result.append("%s%s.%s" % (
-                    self.escape, undent_val-lws, line.lstrip()))
+                    self.escape, undent_val - lws, line.lstrip()))
             else:
                 s = g.removeLeadingWhitespace(line, undent_val, self.tab_width)
                 result.append(s)
@@ -1209,7 +1209,7 @@ class ScanState:
         if d:
             indent = d.get('indent')
             prev = d.get('prev')
-            self.indent = indent # NOT prev.indent
+            self.indent = indent  # NOT prev.indent
             self.bs_nl = prev.bs_nl
             self.context = prev.context
             self.curlies = prev.curlies

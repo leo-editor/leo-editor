@@ -19,9 +19,9 @@ class Rst_Importer(Importer):
     def __init__(self, importCommands, **kwargs):
         '''Rst_Importer.__init__'''
         super().__init__(importCommands,
-            language = 'rest',
-            state_class = Rst_ScanState,
-            strict = False,
+            language='rest',
+            state_class=Rst_ScanState,
+            strict=False,
         )
 
     #@+others
@@ -49,10 +49,10 @@ class Rst_Importer(Importer):
                 skip -= 1
             elif self.is_lookahead_overline(i, lines):
                 level = self.ch_level(line[0])
-                self.make_node(level, lines[i+1])
+                self.make_node(level, lines[i + 1])
                 skip = 2
             elif self.is_lookahead_underline(i, lines):
-                level = self.ch_level(lines[i+1][0])
+                level = self.ch_level(lines[i + 1][0])
                 self.make_node(level, line)
                 skip = 1
             elif i == 0:
@@ -75,17 +75,17 @@ class Rst_Importer(Importer):
         while level > len(self.stack):
             top = self.stack[-1]
             child = self.create_child_node(
-                parent = top,
-                body = None,
-                headline = 'placeholder',
+                parent=top,
+                body=None,
+                headline='placeholder',
             )
             self.stack.append(child)
         # Create the desired node.
         top = self.stack[-1]
         child = self.create_child_node(
-            parent = top,
-            body = None,
-            headline = h, # Leave the headline alone
+            parent=top,
+            body=None,
+            headline=h,  # Leave the headline alone
         )
         self.stack.append(child)
         return self.stack[level]
@@ -94,8 +94,8 @@ class Rst_Importer(Importer):
         '''True if lines[i:i+2] form an overlined/underlined line.'''
         if i + 2 < len(lines):
             line0 = lines[i]
-            line1 = lines[i+1]
-            line2 = lines[i+2]
+            line1 = lines[i + 1]
+            line2 = lines[i + 2]
             ch0 = self.is_underline(line0, extra='#')
             ch1 = self.is_underline(line1)
             ch2 = self.is_underline(line2, extra='#')
@@ -112,7 +112,7 @@ class Rst_Importer(Importer):
         '''True if lines[i:i+1] form an underlined line.'''
         if i + 1 < len(lines):
             line0 = lines[i]
-            line1 = lines[i+1]
+            line1 = lines[i + 1]
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
             return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1)
@@ -123,7 +123,8 @@ class Rst_Importer(Importer):
         if line.isspace():
             return None
         chars = underlines
-        if extra: chars = chars + extra
+        if extra:
+            chars = chars + extra
         ch1 = line[0]
         if ch1 not in chars:
             return None
@@ -138,9 +139,9 @@ class Rst_Importer(Importer):
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
         child = self.create_child_node(
-            parent = self.stack[-1],
-            body = None,
-            headline = headline,
+            parent=self.stack[-1],
+            body=None,
+            headline=headline,
         )
         self.stack.append(child)
         return child
@@ -152,7 +153,7 @@ class Rst_Importer(Importer):
     rst_seen = {}
         # Fix # 430. Per RagBlufThim.
         # Was {'#': 1,}
-    rst_level = 0 # A trick.
+    rst_level = 0  # A trick.
 
     def ch_level(self, ch):
         '''Return the underlining level associated with ch.'''
@@ -206,7 +207,7 @@ class Rst_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    '@auto': ['@auto-rst',], # Fix #392: @auto-rst file.txt: -rst ignored on read
+    '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read
     'class': Rst_Importer,
     'extensions': ['.rst', '.rest'],
 }

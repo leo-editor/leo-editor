@@ -36,50 +36,50 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20100128073941.5379: ** init (startfile.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = hasattr(os,"startfile")
+    ok = hasattr(os, "startfile")
         # Ok for unit testing, but may be icondclick1 conflicts.
     if ok:
         # Register the handlers...
-        g.registerHandler("icondclick1",onIconDoubleClick)
+        g.registerHandler("icondclick1", onIconDoubleClick)
         g.plugin_signon(__name__)
     else:
         g.es_print('The startfile.py plugin requires os.startfile (Windows)')
     return ok
 #@+node:ekr.20040828103325.3: ** onIconDoubleClick
-def onIconDoubleClick(tag,keywords):
+def onIconDoubleClick(tag, keywords):
 
     p = keywords.get("p")
     c = keywords.get("c")
     if c and p:
         h = p.h.strip()
-        if h and h[0]!='@':
-            start_file(c,p)
+        if h and h[0] != '@':
+            start_file(c, p)
 #@+node:ekr.20040828103325.4: ** start_file
-def start_file(c,p):
+def start_file(c, p):
 
     # Set the base directory by searching for @folder directives in ancestors.
     h = p.h.strip()
-    thisdir = os.path.abspath(os.curdir) # remember the current dir
-    basedir = thisdir[:] # use current dir as default.
-    parent = p.parent() # start with parent
-    while parent: # stop when no more parent found
+    thisdir = os.path.abspath(os.curdir)  # remember the current dir
+    basedir = thisdir[:]  # use current dir as default.
+    parent = p.parent()  # start with parent
+    while parent:  # stop when no more parent found
         p = parent.h.strip()
-        if g.match_word(p,0,'@folder'):
-            basedir = p[8:] # take rest of headline as pathname
-            break # we found the closest @folder
+        if g.match_word(p, 0, '@folder'):
+            basedir = p[8:]  # take rest of headline as pathname
+            break  # we found the closest @folder
         else:
-            parent = parent.parent() # try the parent of the parent
-    fname = os.path.join(basedir,h) # join path and filename
+            parent = parent.parent()  # try the parent of the parent
+    fname = os.path.join(basedir, h)  # join path and filename
     startdir, filename = os.path.split(fname)
     try:
         os.chdir(startdir)
         dirfound = 1
     except Exception:
-        g.es(startdir+' - folder not found')
+        g.es(startdir + ' - folder not found')
         dirfound = 0
 
     if dirfound:
-        fullpath = g.os_path_join(startdir,filename)
+        fullpath = g.os_path_join(startdir, filename)
         fullpath = g.os_path_abspath(fullpath)
         if g.os_path_exists(filename):
             try:
@@ -89,11 +89,11 @@ def start_file(c,p):
                 os.startfile(filename)
                     # This may not work for all file types.
             except Exception:
-                g.es(filename+' - file not found in '+startdir)
+                g.es(filename + ' - file not found in ' + startdir)
                 g.es_exception()
         else:
-            g.warning('%s not found in %s' % (filename,startdir))
-    os.chdir(thisdir) # restore the original current dir.
+            g.warning('%s not found in %s' % (filename, startdir))
+    os.chdir(thisdir)  # restore the original current dir.
 #@-others
 #@@language python
 #@@tabwidth -4

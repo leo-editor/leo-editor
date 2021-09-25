@@ -15,9 +15,9 @@ class Elisp_Importer(Importer):
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'lisp',
-            state_class = Elisp_ScanState,
-            strict = False,
+            language='lisp',
+            state_class=Elisp_ScanState,
+            strict=False,
         )
 
     #@+others
@@ -81,7 +81,7 @@ class Elisp_Importer(Importer):
     def trace_status(self, line, new_state, prev_state, stack, top):
         '''Print everything important in the i.gen_lines loop.'''
         if line.isspace() or line.strip().startswith(';'):
-            return # for elisp
+            return  # for elisp
         print('')
         try:
             g.trace('===== %r' % line)

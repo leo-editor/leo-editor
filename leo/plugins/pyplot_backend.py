@@ -112,7 +112,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
             layout.addWidget(self.statusbar_label)
             # pylint: disable=no-member
             if isQt5 or isQt6:
-                pass # The status bar doesn't work yet.
+                pass  # The status bar doesn't work yet.
             else:
                 self.toolbar.message.connect(self._show_message)
 

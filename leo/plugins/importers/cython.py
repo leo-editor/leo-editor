@@ -24,14 +24,14 @@ class Cython_Importer(py_importer.Py_Importer):
         super().__init__(
             importCommands,
             language='cython',
-            state_class = Cython_ScanState,
+            state_class=Cython_ScanState,
             strict=True,
         )
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
     #@+node:ekr.20200619141201.3: *3* cy_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
-        if p: # Called from clean_all_headlines:
+        if p:  # Called from clean_all_headlines:
             return self.get_decorator(p) + p.h
         # Handle def, cdef, cpdef.
         m = re.match(r'\s*(cpdef|cdef|def)\s+(\w+)', s)

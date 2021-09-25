@@ -29,14 +29,14 @@ def markup_inline(c, kind='unknown'):
     p = c.p
 
     delim = {
-        'bold': ('**','**'),
-        'italic': ('*','*'),
-        'underline': (':ul:`','`'),
+        'bold': ('**', '**'),
+        'italic': ('*', '*'),
+        'underline': (':ul:`', '`'),
     }[kind]
 
     if c.frame.body.bodyCtrl.hasSelection():
         c.user_dict['markup_inline']['last'] = 'close'
-        i,j = c.frame.body.bodyCtrl.getSelectionRange()
+        i, j = c.frame.body.bodyCtrl.getSelectionRange()
         txt = c.frame.body.bodyCtrl.getAllText()
         p.b = "".join([
             txt[:i],
@@ -46,7 +46,7 @@ def markup_inline(c, kind='unknown'):
             txt[j:],
         ])
         c.frame.body.bodyCtrl.setAllText(p.b)
-        c.frame.body.bodyCtrl.setInsertPoint(j+len(delim[0])+len(delim[1]))
+        c.frame.body.bodyCtrl.setInsertPoint(j + len(delim[0]) + len(delim[1]))
     else:
         i = c.frame.body.bodyCtrl.getInsertPoint()
         txt = c.frame.body.bodyCtrl.getAllText()
@@ -62,7 +62,7 @@ def markup_inline(c, kind='unknown'):
             txt[i:]
         ])
         c.frame.body.bodyCtrl.setAllText(p.b)
-        c.frame.body.bodyCtrl.setInsertPoint(i+len(delim))
+        c.frame.body.bodyCtrl.setInsertPoint(i + len(delim))
     c.setChanged()
     p.setDirty(True)
     c.redraw()

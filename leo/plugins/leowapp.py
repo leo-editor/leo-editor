@@ -66,7 +66,7 @@ def init():
 class BrowserGui(leoGui.NullGui):
     #@+others
     #@+node:ekr.20181031160042.1: *3* bg.__getattr__
-    def __getattr__ (self, attr):
+    def __getattr__(self, attr):
         '''Handle an missing attribute.'''
         if attr in (
             'frameFactory',
@@ -87,7 +87,7 @@ class BrowserGui(leoGui.NullGui):
 
         return leoFrame.NullFrame(c, title='NullFrame', gui=self)
     #@+node:ekr.20181101025053.1: *3* bg.message
-    def message (self, func):
+    def message(self, func):
         '''
         Send a message to the framework.
         '''
@@ -100,7 +100,7 @@ class BrowserGui(leoGui.NullGui):
             print('LeoWapp running: %s...' % g.shortFileName(fileName))
         else:
             print('LeoWapp running...')
-        if 0: # Run all unit tests.
+        if 0:  # Run all unit tests.
             path = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'test', 'unittest.leo')
             c = g.openWithFileName(path, gui=self)

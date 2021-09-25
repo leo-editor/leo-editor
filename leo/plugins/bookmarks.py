@@ -232,7 +232,7 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     # temporary until double-click is bindable in user settings
     if g.app.config.getBool('bookmarks-grab-dblclick', default=False):
-        g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k))
+        g.registerHandler('headdclick1', lambda t, k: cmd_open_bookmark(k))
     g.plugin_signon(__name__)
     return True
 
@@ -247,7 +247,8 @@ def onCreate(tag, keys):
 @g.command('bookmarks-open-bookmark')
 def cmd_open_bookmark(event):
     c = event.get('c')
-    if not c: return
+    if not c:
+        return
     p = c.p
     bookmark = False
     for nd in p.parents():
@@ -262,12 +263,13 @@ def cmd_open_bookmark(event):
 @g.command('bookmarks-open-node')
 def cmd_open_node(event):
     c = event.get('c')
-    if not c: return
+    if not c:
+        return
     p = c.p
     url = g.getUrlFromNode(p)
     if url:
         # No need to handle url hooks here.
-        g.handleUrl(url,c=c,p=p)
+        g.handleUrl(url, c=c, p=p)
 
 #@+node:tbrown.20110712100955.39215: ** bookmarks-show
 @g.command('bookmarks-show')
@@ -505,7 +507,7 @@ class FlowLayout(QtWidgets.QLayout):
     #@+node:ekr.20140917180536.17900: *3* insertWidget
     def insertWidget(self, index, item):
         x = QtWidgets.QWidgetItem(item)
-        assert x # for pyflakes
+        assert x  # for pyflakes
         # item.setParent(x)
         # self.itemList.insert(index, x)
 
@@ -651,7 +653,7 @@ class BookMarkDisplay:
         self.w.setObjectName('show_bookmarks')
         self.w.setMinimumSize(10, 10)
         self.w.setLayout(QtWidgets.QVBoxLayout())
-        self.w.layout().setContentsMargins(0,0,0,0)
+        self.w.layout().setContentsMargins(0, 0, 0, 0)
         self.current_list = self.get_list()
         self.show_list(self.current_list)
         g.registerHandler('select1', self.update)
@@ -785,7 +787,7 @@ class BookMarkDisplay:
         act.triggered.connect(follow)
         menu.addAction(act)
 
-        point = event.position().toPoint() if isQt6 else event.pos()   # Qt6 documentation is wrong.
+        point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
         menu.exec_(global_point)
     #@+node:tbnorth.20160830110146.1: *3* context_menu
@@ -811,16 +813,16 @@ class BookMarkDisplay:
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
-        point = event.position().toPoint() if isQt6 else event.pos()   # Qt6 documentation is wrong.
+        point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
         global_point = menu.mapToGlobal(point)
         menu.exec_(global_point)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
-        text = g.toEncodedString(text,'utf-8')
+        text = g.toEncodedString(text, 'utf-8')
         x = hashlib.md5(text).hexdigest()[-6:]
-        add = int('bb',16) if not dark else int('33',16)
-        x = tuple(int(x[2*i:2*i+2], 16)//4+add for i in range(3))
+        add = int('bb', 16) if not dark else int('33', 16)
+        x = tuple(int(x[2 * i : 2 * i + 2], 16) // 4 + add for i in range(3))
         x = '%02x%02x%02x' % x
         return x
     #@+node:tbrown.20131227100801.23856: *3* find_node
@@ -876,7 +878,8 @@ class BookMarkDisplay:
 
         def recurse_bm(node, result, ancestors=None):
 
-            if ancestors is None: ancestors = []
+            if ancestors is None:
+                ancestors = []
 
             for p in node.children():
 
@@ -900,7 +903,7 @@ class BookMarkDisplay:
                 if levels == 0:  # non-hierarchical
                     recurse_bm(p, result)
                 else:
-                    recurse_bm(p, children, ancestors=ancestors+[bm])
+                    recurse_bm(p, children, ancestors=ancestors + [bm])
 
         recurse_bm(p, result)
 
@@ -918,7 +921,7 @@ class BookMarkDisplay:
         c = p.v.context  # just in case it's not self.c
         if self.v.context == c:
             # local
-            return "#"+p.get_UNL(with_file=False, with_proto=False)
+            return "#" + p.get_UNL(with_file=False, with_proto=False)
         # not local
         return p.get_UNL(with_file=True, with_proto=True)
 
@@ -954,7 +957,7 @@ class BookMarkDisplay:
             # pylint: disable=undefined-variable
             top.mouseReleaseEvent = (lambda event, links=links, row_parent=row_parent:
                 self.background_clicked(event, links, row_parent))
-            top.setMinimumSize(10,10)  # so there's something to click when empty
+            top.setMinimumSize(10, 10)  # so there's something to click when empty
             size_policy = QtWidgets.QSizePolicy(Policy.Expanding, Policy.Expanding)
             size_policy.setHorizontalStretch(1)
             size_policy.setVerticalStretch(1)
@@ -1029,7 +1032,7 @@ class BookMarkDisplay:
                 self.levels < self.w.layout().count()
             ):
                 # hide last line, of children, if none are current
-                self.w.layout().takeAt(self.w.layout().count()-1).widget().deleteLater()
+                self.w.layout().takeAt(self.w.layout().count() - 1).widget().deleteLater()
 
             while self.w.layout().count() > self.levels:
 
@@ -1068,8 +1071,10 @@ class BookMarkDisplay:
         c = bm.v.context
         p = c.vnode2position(bm.v)
         u = c.undoer
-        if p.hasVisBack(c): newNode = p.visBack(c)
-        else: newNode = p.next()
+        if p.hasVisBack(c):
+            newNode = p.visBack(c)
+        else:
+            newNode = p.next()
         p.setAllAncestorAtFileNodesDirty()
 
         undoData = u.beforeDeleteNode(p)
@@ -1103,8 +1108,8 @@ class BookMarkDisplay:
 
         txt = g.app.gui.runAskOkCancelStringDialog(
             self.c,
-            "Rename "+bm.head,
-            "New name for "+bm.head,
+            "Rename " + bm.head,
+            "New name for " + bm.head,
             default=default
         )
 
@@ -1158,7 +1163,7 @@ class BookMarkDisplayProvider:
 
     #@+node:tbrown.20110712121053.19748: *3* ns_provides
     def ns_provides(self):
-        return[('Bookmarks', '_leo_bookmarks_show')]
+        return [('Bookmarks', '_leo_bookmarks_show')]
 
     #@+node:tbrown.20110712121053.19749: *3* ns_provide
     def ns_provide(self, id_):
@@ -1185,18 +1190,18 @@ class BookMarkDisplayProvider:
                         other_c = c
                     if other_c != c:
                         # don't use c.bringToFront(), it breaks --minimize
-                        if hasattr(g.app.gui,'frameFactory'):
+                        if hasattr(g.app.gui, 'frameFactory'):
                             factory = g.app.gui.frameFactory
-                            if factory and hasattr(factory,'setTabForCommander'):
+                            if factory and hasattr(factory, 'setTabForCommander'):
                                 factory.setTabForCommander(c)
 
-                        g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'"%file_)
+                        g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'" % file_)
 
                     ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
                     if ok:
                         v = other_p.v
                     else:
-                        g.es("Couldn't find '%s'"%gnx)
+                        g.es("Couldn't find '%s'" % gnx)
 
             if v is None:
                 v = c.p.v

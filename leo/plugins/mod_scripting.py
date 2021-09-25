@@ -277,11 +277,11 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
                     break
         for rc in rclicks:
             build_rclick_tree(rc.position, rc.children, top_level=False)
-    else: # recursive mode below top level
+    else:  # recursive mode below top level
         if not command_p:
             return []
         if command_p.b.strip():
-            return [] # sub menus can't have body text
+            return []  # sub menus can't have body text
         for child in command_p.children():
             # pylint: disable=no-member
             rc = RClick(position=child.copy(), children=[])
@@ -401,7 +401,7 @@ class ScriptingController:
         getBool = c.config.getBool
         self.scanned = False
         kind = c.config.getString('debugger-kind') or 'idle'
-        self.buttonsDict = {} # Keys are buttons, values are button names (strings).
+        self.buttonsDict = {}  # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
         self.atButtonNodes = getBool('scripting-at-button-nodes')
             # True: adds a button for every @button node.
@@ -419,7 +419,8 @@ class ScriptingController:
             g.issueSecurityWarning('@bool scripting-at-script-nodes')
             # Restore the value in myLeoSettings.leo
             val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
-            if val is None: val = False
+            if val is None:
+                val = False
             g.es('Restoring value to', val, color='red')
             self.atScriptNodes = val
         self.createDebugButton = getBool('scripting-create-debug-button')
@@ -441,7 +442,9 @@ class ScriptingController:
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
     def addScriptButtonCommand(self, event=None):
         '''Called when the user presses the 'script-button' button or executes the script-button command.'''
-        c = self.c; p = c.p; h = p.h
+        c = self.c
+        p = c.p
+        h = p.h
         buttonText = self.getButtonText(h)
         shortcut = self.getShortcut(h)
         statusLine = "Run Script: %s" % buttonText
@@ -452,7 +455,8 @@ class ScriptingController:
     #@+node:ekr.20060522105937.1: *4* sc.runDebugScriptCommand
     def runDebugScriptCommand(self, event=None):
         '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
-        c = self.c; p = c.p
+        c = self.c
+        p = c.p
         script = g.getScript(c, p, useSelectedText=True, useSentinels=False)
         if script:
             #@+<< set debugging if debugger is active >>
@@ -475,9 +479,7 @@ class ScriptingController:
                 #@+<< create leoScriptModule >>
                 #@+node:ekr.20060524073716: *5* << create leoScriptModule >> (mod_scripting.py)
                 target = g.os_path_join(g.app.loadDir, 'leoScriptModule.py')
-                f = None
-                try:
-                    f = open(target, 'w')
+                with open(target, 'w') as f:
                     f.write('# A module holding the script to be debugged.\n')
                     if self.debuggerKind == 'idle':
                         # This works, but uses the lame pdb debugger.
@@ -495,18 +497,16 @@ class ScriptingController:
                     f.write('p = c.p\n')
                     f.write('# Actual script starts here.\n')
                     f.write(script + '\n')
-                finally:
-                    if f: f.close()
                 #@-<< create leoScriptModule >>
                 # pylint: disable=no-name-in-module
                 g.app.scriptDict['c'] = c
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
-                    del sys.modules['leoScriptModule'] # Essential.
+                    del sys.modules['leoScriptModule']  # Essential.
                 # pylint: disable=import-error
                     # This *will* exist.
                 from leo.core import leoScriptModule
-                assert leoScriptModule # for pyflakes.
+                assert leoScriptModule  # for pyflakes.
             else:
                 g.error('No debugger active')
         c.bodyWantsFocus()
@@ -525,7 +525,7 @@ class ScriptingController:
         '''Scan for @button, @rclick, @command, @plugin and @script nodes.'''
         c = self.c
         if self.scanned:
-            return # Defensive.
+            return  # Defensive.
         self.scanned = True
         #
         # First, create standard buttons.
@@ -603,8 +603,8 @@ class ScriptingController:
         )
         self.iconBar.setCommandForButton(
             button=b,
-            command=cb, # This encapsulates the script.
-            command_p=p and p.copy(), # This does exist.
+            command=cb,  # This encapsulates the script.
+            command_p=p and p.copy(),  # This does exist.
             controller=self,
             gnx=p and p.gnx,
             script=None,
@@ -700,14 +700,15 @@ class ScriptingController:
 
         Called only from a callback in QtIconBarClass.setCommandForButton.
         '''
-        if not gnx: g.trace('can not happen: no gnx')
+        if not gnx:
+            g.trace('can not happen: no gnx')
         # First, look in commander c.
         for p2 in c.all_positions():
             if p2.gnx == gnx:
                 return c, p2
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
         for f in (c.openMyLeoSettings, c.openLeoSettings):
-            c2 = f() # Open the settings file.
+            c2 = f()  # Open the settings file.
             if c2:
                 for p2 in c2.all_positions():
                     if p2.gnx == gnx:
@@ -717,7 +718,7 @@ class ScriptingController:
         if g.app.qt_use_tabs:
             c.frame.top.leo_master.select(c)
                 # c.frame.top.leo_master is a LeoTabbedTopLevel.
-        return None, None # 2017/02/02.
+        return None, None  # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
     # Important: common @button and @command nodes do **not** update dynamically!
     #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
@@ -785,10 +786,10 @@ class ScriptingController:
         # Now patch the button.
         self.iconBar.setCommandForButton(
             button=b,
-            command=cb, # This encapsulates the script.
-            command_p=p and p.copy(), # tag:#567
+            command=cb,  # This encapsulates the script.
+            command_p=p and p.copy(),  # tag:#567
             controller=self,
-            gnx=gnx, # For the find-button function.
+            gnx=gnx,  # For the find-button function.
             script=script,
         )
         self.handleRclicks(rclicks)
@@ -831,14 +832,14 @@ class ScriptingController:
             c=c,
             controller=self,
             docstring=g.getDocString(p.b).strip(),
-            gnx=p.v.gnx, # Used to search myLeoSettings.leo if it is open.
-            script=script, # Fallback when myLeoSettings.leo is not open.
+            gnx=p.v.gnx,  # Used to search myLeoSettings.leo if it is open.
+            script=script,  # Fallback when myLeoSettings.leo is not open.
         )
         self.registerAllCommands(
             args=args,
             func=commonCommandCallback,
             h=p.h,
-            pane='button', # Fix bug 416: use 'button', NOT 'command', and NOT 'all'
+            pane='button',  # Fix bug 416: use 'button', NOT 'command', and NOT 'all'
             source_c=p.v.context,
             tag='global @command',
         )
@@ -868,7 +869,8 @@ class ScriptingController:
     def handleAtCommandNode(self, p):
         '''Handle @command name [@key[=]shortcut].'''
         c = self.c
-        if not p.h.strip(): return
+        if not p.h.strip():
+            return
         args = self.getArgs(p)
 
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):
@@ -883,7 +885,7 @@ class ScriptingController:
             args=args,
             func=atCommandCallback,
             h=p.h,
-            pane='button', # Fix # 416.
+            pane='button',  # Fix # 416.
             source_c=p.v.context,
             tag='local @command')
         g.app.config.atLocalCommandsList.append(p.copy())
@@ -894,7 +896,7 @@ class ScriptingController:
         h = p.h
         assert g.match(h, 0, tag)
         # Get the name of the module.
-        moduleOrFileName = h[len(tag):].strip()
+        moduleOrFileName = h[len(tag) :].strip()
         if not self.atPluginNodes:
             g.warning("disabled @plugin: %s" % (moduleOrFileName))
         # elif theFile in g.app.loadedPlugins:
@@ -939,7 +941,7 @@ class ScriptingController:
         c = self.c
         tag = "@script"
         assert g.match(p.h, 0, tag)
-        name = p.h[len(tag):].strip()
+        name = p.h[len(tag) :].strip()
         args = self.getArgs(p)
         if self.atScriptNodes:
             g.blue("executing script %s" % (name))
@@ -987,17 +989,17 @@ class ScriptingController:
         '''
         # #1121: Don't lowercase anything.
         if minimal:
-            return s.replace(' ','-').strip('-')
+            return s.replace(' ', '-').strip('-')
         for tag in ('@key', '@args', '@color',):
             i = s.find(tag)
             if i > -1:
                 j = s.find('@', i + 1)
                 if i < j:
-                    s = s[: i] + s[j:]
+                    s = s[:i] + s[j:]
                 else:
-                    s = s[: i]
+                    s = s[:i]
                 s = s.strip()
-        return s.replace(' ','-').strip('-')
+        return s.replace(' ', '-').strip('-')
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
     def createBalloon(self, w, label):
         'Create a balloon for a widget.'
@@ -1025,13 +1027,15 @@ class ScriptingController:
         if i > -1:
             j = g.skip_ws(h, i + len(tag))
             # 2011/10/16: Make '=' sign optional.
-            if g.match(h, j, '='): j += 1
+            if g.match(h, j, '='):
+                j += 1
             if 0:
-                s = h[j + 1:].strip()
-            else: # new logic 1/3/2014 Jake Peck
+                s = h[j + 1 :].strip()
+            else:  # new logic 1/3/2014 Jake Peck
                 k = h.find('@', j + 1)
-                if k == -1: k = len(h)
-                s = h[j: k].strip()
+                if k == -1:
+                    k = len(h)
+                s = h[j:k].strip()
             args = s.split(',')
             args = [z.strip() for z in args]
         # if args: g.trace(args)
@@ -1041,15 +1045,15 @@ class ScriptingController:
         '''Returns the button text found in the given headline string'''
         tag = "@button"
         if g.match_word(h, 0, tag):
-            h = h[len(tag):].strip()
+            h = h[len(tag) :].strip()
         for tag in ('@key', '@args', '@color',):
             i = h.find(tag)
             if i > -1:
                 j = h.find('@', i + 1)
                 if i < j:
-                    h = h[: i] + h[j + 1:]
+                    h = h[:i] + h[j + 1 :]
                 else:
-                    h = h[: i]
+                    h = h[:i]
                 h = h.strip()
         buttonText = h
         # fullButtonText = buttonText
@@ -1062,10 +1066,12 @@ class ScriptingController:
         i = h.find(tag)
         if i > -1:
             j = g.skip_ws(h, i + len(tag))
-            if g.match(h, j, '='): j += 1
+            if g.match(h, j, '='):
+                j += 1
             k = h.find('@', j + 1)
-            if k == -1: k = len(h)
-            color = h[j: k].strip()
+            if k == -1:
+                k = len(h)
+            color = h[j:k].strip()
         return color
     #@+node:ekr.20060328125248.16: *4* sc.getShortcut
     def getShortcut(self, h):
@@ -1074,13 +1080,15 @@ class ScriptingController:
         i = h.find('@key')
         if i > -1:
             j = g.skip_ws(h, i + len('@key'))
-            if g.match(h, j, '='): j += 1
+            if g.match(h, j, '='):
+                j += 1
             if 0:
                 shortcut = h[j:].strip()
-            else: # new logic 1/3/2014 Jake Peck
+            else:  # new logic 1/3/2014 Jake Peck
                 k = h.find('@', j + 1)
-                if k == -1: k = len(h)
-                shortcut = h[j: k].strip()
+                if k == -1:
+                    k = len(h)
+                shortcut = h[j:k].strip()
         return shortcut
     #@+node:ekr.20150402042350.1: *4* sc.getScript
     def getScript(self, p):
@@ -1113,7 +1121,7 @@ class ScriptingController:
         # include '@rclick-' in list of tags
         for prefix in ('@button-', '@command-', '@rclick-'):
             if commandName.startswith(prefix):
-                commandName2 = commandName[len(prefix):].strip()
+                commandName2 = commandName[len(prefix) :].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
                 def registerAllCommandsCallback(event=None, func=func):
@@ -1125,7 +1133,8 @@ class ScriptingController:
                 # Make sure we never redefine an existing commandName.
                 if commandName2 in c.commandsDict:
                     # A warning here would be annoying.
-                    if trace: g.trace('Already in commandsDict: %r' % commandName2)
+                    if trace:
+                        g.trace('Already in commandsDict: %r' % commandName2)
                 else:
                     k.registerCommand(
                         commandName=commandName2,
@@ -1149,7 +1158,7 @@ class ScriptingController:
             b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
         except Exception:
             # g.es_exception()
-            pass # Might not be a valid color.
+            pass  # Might not be a valid color.
     #@+node:ekr.20061015125212: *4* sc.truncateButtonText
     def truncateButtonText(self, s):
         # 2011/10/16: Remove @button here only.
@@ -1160,9 +1169,9 @@ class ScriptingController:
             i += 6
         s = s[i:]
         if self.maxButtonSize > 10:
-            s = s[: self.maxButtonSize]
+            s = s[:self.maxButtonSize]
             if s.endswith('-'):
-                s = s[: -1]
+                s = s[:-1]
         s = s.strip('-')
         return s.strip()
     #@-others
@@ -1178,7 +1187,7 @@ class EvalController:
         self.answers = []
         self.c = c
         self.d: Dict[str, Any] = {}
-        self.globals_d: Dict[str, Any] = {'c':c, 'g':g, 'p':c.p}
+        self.globals_d: Dict[str, Any] = {'c': c, 'g': g, 'p': c.p}
         self.locals_d: Dict[str, Any] = {}
         self.legacy = c.config.getBool('legacy-eval', default=True)
         if g.app.ipk:
@@ -1272,12 +1281,12 @@ class EvalController:
             if current:
                 old_log = c.frame.log.logCtrl.getAllText()
                 self.eval_text(source)
-                new_log = c.frame.log.logCtrl.getAllText()[len(old_log):]
+                new_log = c.frame.log.logCtrl.getAllText()[len(old_log) :]
                 lines.append(new_log.strip())
                 if not self.legacy:
                     if self.last_result:
                         lines.append(self.last_result)
-                pos = len('\n'.join(lines))+7
+                pos = len('\n'.join(lines)) + 7
                 current_seen = True
             else:
                 lines.append(output)
@@ -1295,7 +1304,7 @@ class EvalController:
         Inserted as a string, so ``"1\n2\n3\n4"`` will cover four lines and
         insert no quotes, for ``repr()`` style insertion use ``last-pretty``.
         """
-        c  = self.c
+        c = self.c
         if c != event.get('c'):
             return
         if self.legacy:
@@ -1307,8 +1316,8 @@ class EvalController:
                 text = str(self.last_result)
         w = c.frame.body.wrapper
         i = w.getInsertPoint()
-        w.insert(i, text+'\n')
-        w.setInsertPoint(i+len(text)+1)
+        w.insert(i, text + '\n')
+        w.setInsertPoint(i + len(text) + 1)
         c.setChanged()
     #@+node:ekr.20180328085426.6: *4* eval-last-pretty
     @eval_cmd("eval-last-pretty")
@@ -1319,7 +1328,7 @@ class EvalController:
         Formatted by ``pprint.pformat()``, so ``"1\n2\n3\n4"`` will appear as
         '``"1\n2\n3\n4"``', see all ``last``.
         """
-        c  = self.c
+        c = self.c
         if c != event.get('c'):
             return
         if self.legacy:
@@ -1327,7 +1336,7 @@ class EvalController:
         else:
             text = self.last_result
         if text:
-            text=pprint.pformat(text)
+            text = pprint.pformat(text)
             self.eval_last(event, text=text)
     #@+node:ekr.20180328085426.4: *4* eval-replace
     @eval_cmd("eval-replace")
@@ -1353,11 +1362,11 @@ class EvalController:
             return
         s = pprint.pformat(last)
         i, j = w.getSelectionRange()
-        new_text = c.p.b[:i]+s+c.p.b[j:]
+        new_text = c.p.b[:i] + s + c.p.b[j:]
         bunch = c.undoer.beforeChangeNodeContents(c.p)
         w.setAllText(new_text)
         c.p.b = new_text
-        w.setInsertPoint(i+len(s))
+        w.setInsertPoint(i + len(s))
         c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
         c.setChanged()
     #@+node:ekr.20180328151652.1: *3* eval.Helpers
@@ -1385,7 +1394,7 @@ class EvalController:
             exec(s, self.globals_d, self.locals_d)
             for key in self.locals_d:
                 val = self.locals_d.get(key)
-                self.globals_d [key] = val
+                self.globals_d[key] = val
                 self.answers.append((key, val),)
             if len(self.answers) == 1:
                 key, val = self.answers[0]
@@ -1399,11 +1408,11 @@ class EvalController:
 
         # pylint: disable=eval-used
         c = self.c
-        leo_globals = {'c':c, 'g':g, 'p':c.p}
+        leo_globals = {'c': c, 'g': g, 'p': c.p}
         all_done, ans = False, None
         try:
             # Execute all but the last 'block'
-            exec('\n'.join(blocks[:-1]), leo_globals, c.vs) # Compatible with Python 3.x.
+            exec('\n'.join(blocks[:-1]), leo_globals, c.vs)  # Compatible with Python 3.x.
             all_done = False
         except SyntaxError:
             # Splitting the last block caused syntax error
@@ -1469,7 +1478,7 @@ class EvalController:
             txt = str(ans)
             lines = txt.split('\n')
             if len(lines) > 10:
-                txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
+                txt = '\n'.join(lines[:5] + ['<snip>'] + lines[-5:])
             if len(txt) > 500:
                 txt = txt[:500] + ' <truncated>'
             g.es(txt)
@@ -1506,12 +1515,12 @@ class EvalController:
             lines.append("# <<<")
         while lines:
             line = lines.pop(0)
-            chrs += len(line)+1
+            chrs += len(line) + 1
             if line.startswith("# >>>"):
                 reading = 'output'
                 continue
             if line.startswith("# <<<"):
-                current = seeking_current and (chrs >= pos+1)
+                current = seeking_current and (chrs >= pos + 1)
                 if current:
                     seeking_current = False
                 yield current, '\n'.join(block['source']), '\n'.join(block['output'])
@@ -1551,7 +1560,8 @@ class EvalController:
             w.setSelectionRange(i, j)
         else:
             if not body.endswith('\n'):
-                if i >= len(p.b): i2 += 1
+                if i >= len(p.b):
+                    i2 += 1
                 p.b = p.b + '\n'
             ins = min(len(p.b), i2)
             w.setSelectionRange(i1, ins, insert=ins, s=p.b)

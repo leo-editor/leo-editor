@@ -55,7 +55,7 @@ class LeoBody(flx.Widget):
     def __on_size(self, *events):
         self.ace.resize()
 #@+node:ekr.20181104174357.1: ** class LeoGui (can't instantiate)
-class LeoGui (flx.PyComponent):
+class LeoGui(flx.PyComponent):
 
     def runMainLoop(self):
         '''The main loop for the flexx gui.'''

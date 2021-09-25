@@ -71,7 +71,7 @@ def exec_string_cmd(cmd):
 
     return f
 #@+node:dan.20090203174248.30: ** init (mime.py)
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting
     if ok:

@@ -8,15 +8,15 @@ from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20180119164528.6: ** init
-def init ():
+def init():
 
-    ok = g.app.gui.guiName() in ('qt','qttabs')
+    ok = g.app.gui.guiName() in ('qt', 'qttabs')
     if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__file__)
     return ok
 #@+node:ekr.20180119164528.7: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if c:
@@ -39,7 +39,7 @@ def python_rule_global(colorer, s, i):
     pattern = re.compile(r'\b(G[A-Z0-9_]*)')
     self = colorer
     kind = 'keyword1'
-    for m in re.finditer(pattern,s):
+    for m in re.finditer(pattern, s):
         if m.start() == i:
             j = i + len(m.group(0))
             self.colorRangeWithTag(s, i, j, kind, delegate=None)

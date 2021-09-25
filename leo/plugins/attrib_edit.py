@@ -117,11 +117,11 @@ def init():
     if g.app.gui.guiName() != "qt":
         print('attrib_edit.py plugin not loading because gui is not Qt')
         return False
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:tbrown.20091009210724.10976: ** onCreate
-def onCreate (tag,key):
+def onCreate(tag, key):
 
     c = key.get('c')
 
@@ -185,7 +185,7 @@ class AttributeGetterUA(AttributeGetter):
         for k in d:
             if isinstance(d[k], dict):
                 if k not in ('_edit', '_view'):
-                    self.recSearch(d[k], path+[k], ans)
+                    self.recSearch(d[k], path + [k], ans)
                 else:
                     # k == '_edit' or '_view'
                     for ek in d[k]:
@@ -194,11 +194,11 @@ class AttributeGetterUA(AttributeGetter):
                             type_ = self.typeMap[ek]
                             for ekt in d[k][ek]:
                                 ans.append((self,
-                                    ekt, d[k][ek][ekt], tuple(path+['_edit',ek,ekt]),
+                                    ekt, d[k][ek][ekt], tuple(path + ['_edit', ek, ekt]),
                                     type_, k != '_edit'))
                         else:
                             ans.append((self,
-                                ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
+                                ek, d[k][ek], tuple(path + ['_edit', ek]), str, k != '_edit'))
     #@+node:tbrown.20091103080354.1410: *3* getAttribs
     def getAttribs(self, v):
         """Return a list of tuples describing editable uAs.
@@ -255,7 +255,7 @@ class AttributeGetterUA(AttributeGetter):
     #@+node:tbrown.20091103080354.1432: *3* createAttrib
     def createAttrib(self, v, gui_parent=None):
 
-        path,ok = QtWidgets.QInputDialog.getText(gui_parent,
+        path, ok = QtWidgets.QInputDialog.getText(gui_parent,
             "Enter attribute path",
             "Enter path to attribute (space separated words)")
 
@@ -268,7 +268,7 @@ class AttributeGetterUA(AttributeGetter):
         type_ = '_edit'
 
         if '|' in ns[-1]:
-            nslist = [ ns[:-1] + [i.strip()] for i in ns[-1].split('|') ]
+            nslist = [ns[:-1] + [i.strip()] for i in ns[-1].split('|')]
         else:
             nslist = [ns]
 
@@ -283,7 +283,7 @@ class AttributeGetterUA(AttributeGetter):
     #@+node:tbrown.20091103080354.1433: *3* longDescrip
     def longDescrip(self, path):
 
-        return '.'.join([j for j in path if j not in ('_edit','_view')])
+        return '.'.join([j for j in path if j not in ('_edit', '_view')])
     #@-others
 
 AttributeGetter.register(AttributeGetterUA)
@@ -320,7 +320,7 @@ class AttributeGetterAt(AttributeGetter):
                     continue
                 if len(words) == 1:
                     words.append('')
-                ans.append( (self, words[0], words[1], words[0], str, False) )
+                ans.append((self, words[0], words[1], words[0], str, False))
         return ans
     #@+node:tbrown.20091103080354.6237: *3* setAttrib
     def setAttrib(self, v, path, value):
@@ -372,7 +372,7 @@ class AttributeGetterColon(AttributeGetter):
     def getAttribs(self, v):
 
         ans = []
-        parts = v.b.split('\n',100)
+        parts = v.b.split('\n', 100)
 
         for i in parts[:99]:
             if not i or i[0].isspace():
@@ -381,15 +381,15 @@ class AttributeGetterColon(AttributeGetter):
             if words and words[0] and words[0][-1] == ':':
                 if len(words) == 1:
                     words.append('')
-                ans.append( (self, words[0][:-1], words[1], words[0][:-1], str, False) )
+                ans.append((self, words[0][:-1], words[1], words[0][:-1], str, False))
 
         return ans
     #@+node:tbrown.20091103080354.6246: *3* setAttrib
     def setAttrib(self, v, path, value):
 
-        parts = v.b.split('\n',100)
+        parts = v.b.split('\n', 100)
 
-        for n,i in enumerate(parts[:99]):
+        for n, i in enumerate(parts[:99]):
             words = i.split(None, 1)
             if words and words[0] and words[0][-1] == ':' and words[0][:-1] == path:
                 parts[n] = "%s: %s" % (path, value)
@@ -400,9 +400,9 @@ class AttributeGetterColon(AttributeGetter):
     #@+node:tbrown.20091103080354.6248: *3* delAttrib
     def delAttrib(self, v, path):
 
-        parts = v.b.split('\n',100)
+        parts = v.b.split('\n', 100)
 
-        for n,i in enumerate(parts[:99]):
+        for n, i in enumerate(parts[:99]):
             words = i.split(None, 1)
             if words and words[0] and words[0][-1] == ':' and words[0][:-1] == path:
                 del parts[n]
@@ -460,7 +460,7 @@ class ListDialog(QtWidgets.QDialog):
     #@+node:tbrown.20091028131637.1359: *3* writeBack
     def writeBack(self, event=None):
 
-        for n,i in enumerate(self.buttons):
+        for n, i in enumerate(self.buttons):
             self.entries[n][1] = (i.isChecked())
         self.accept()
     #@-others
@@ -524,7 +524,7 @@ class attrib_edit_Controller:
 
     #@+others
     #@+node:tbrown.20091009210724.10981: *3* __init__ & reloadSettings (attrib_edit_Controller)
-    def __init__ (self, c):
+    def __init__(self, c):
 
         self.c = c
         c.attribEditor = self
@@ -551,7 +551,7 @@ class attrib_edit_Controller:
             self.parent = QtWidgets.QFrame()
             self.holder = QtWidgets.QHBoxLayout()
             self.parent.setLayout(self.holder)
-            c.frame.log.createTab('Attribs', widget = self.parent)
+            c.frame.log.createTab('Attribs', widget=self.parent)
 
     def reloadSettings(self):
         c = self.c
@@ -560,7 +560,7 @@ class attrib_edit_Controller:
         self.getsetters = []
         for i in AttributeGetter.implementations:
             s = i(c)
-            self.getsetters.append([s, (s.name() in active) ])
+            self.getsetters.append([s, (s.name() in active)])
         if not active:
             self.getsetters[0][1] = True  # turn on the first one
     #@+node:tbrown.20091009210724.10983: *3* __del__
@@ -587,10 +587,11 @@ class attrib_edit_Controller:
         pnl.setAutoFillBackground(True)
         w.addWidget(pnl)
     #@+node:tbrown.20091009210724.11047: *3* updateEditor
-    def updateEditor(self,tag,k):
+    def updateEditor(self, tag, k):
         """update edit panel when new node selected"""
 
-        if k['c'] != self.c: return  # not our problem
+        if k['c'] != self.c:
+            return  # not our problem
 
         self.updateEditorInt()
     #@+node:tbrown.20091028100922.1493: *3* updateEditorInt
@@ -633,7 +634,7 @@ class attrib_edit_Controller:
                         # else:
                             # ans.append((ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
     #@+node:tbrown.20091103080354.1406: *3* getAttribs
-    def getAttribs(self, v = None):
+    def getAttribs(self, v=None):
         """Return a list of tuples describing editable uAs.
 
         (class, name, value, path, type, readonly)
@@ -662,7 +663,7 @@ class attrib_edit_Controller:
 
 
         for ns in ans:
-            self.attrPaths.add( (ns[0], ns[1], ns[3]) )  # class, name, path
+            self.attrPaths.add((ns[0], ns[1], ns[3]))  # class, name, path
 
         return ans
     #@+node:tbrown.20091029101116.1413: *3* addAttrib
@@ -704,7 +705,7 @@ class attrib_edit_Controller:
     #@+node:tbrown.20091028131637.1358: *3* manageAttrib
     def manageAttrib(self):
 
-        attribs = [(i[0],i[1],i[3]) for i in self.getAttribs()]
+        attribs = [(i[0], i[1], i[3]) for i in self.getAttribs()]
         dat = []
         for attr in self.attrPaths:
             txt = attr[0].longDescrip(attr[2])
@@ -724,8 +725,8 @@ class attrib_edit_Controller:
         for i in dat:
             if i[2] in attribs and not i[1]:
                 res = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question,
-                    "Really delete attributes?","Really delete attributes?",
-                    QtWidgets.QMessageBox.Ok|QtWidgets.QMessageBox.Cancel, self.parent)
+                    "Really delete attributes?", "Really delete attributes?",
+                    QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel, self.parent)
                 if res.exec_() == QtWidgets.QMessageBox.Cancel:
                     return
                 break
@@ -743,7 +744,7 @@ class attrib_edit_Controller:
     #@+node:tbrown.20091103080354.1415: *3* manageModes
     def manageModes(self):
 
-        modes = [ [i[0].name(), i[1]] for i in self.getsetters ]
+        modes = [[i[0].name(), i[1]] for i in self.getsetters]
 
         res = ListDialog(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)",
@@ -753,7 +754,7 @@ class attrib_edit_Controller:
         if res.result() == DialogCode.Rejected:
             return
 
-        for n,i in enumerate(modes):
+        for n, i in enumerate(modes):
             self.getsetters[n][1] = i[1]
 
         self.updateEditorInt()

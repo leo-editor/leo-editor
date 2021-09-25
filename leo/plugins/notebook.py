@@ -17,15 +17,15 @@ controllers = {}
 
 #@+others
 #@+node:ville.20120604212857.4219: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
 #@+node:ville.20120604212857.4231: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
     '''notebook.py onCreate'''
     global controllers
     c = keys.get('c')
@@ -33,7 +33,7 @@ def onCreate (tag, keys):
         h = c.hash()
         nb = controllers.get(h)
         if not nb:
-            controllers [h] = NbController(c)
+            controllers[h] = NbController(c)
 #@+node:ville.20120604212857.4227: ** class ModelWrapper
 class ModelWrapper:
     #@+others
@@ -42,7 +42,7 @@ class ModelWrapper:
         '''Ctor for ModelWrapper class.'''
         self.rolenames = rn = {}
         self.roleids = ri = {}
-        for n,f in enumerate(fieldlist):
+        for n, f in enumerate(fieldlist):
             rid = n + 100
             rn[rid] = f
             ri[f] = rid
@@ -55,7 +55,7 @@ class ModelWrapper:
     def mkitem(self, d):
         """ dict with field->value """
         si = QtGui.QStandardItem()
-        for k,v in d.items():
+        for k, v in d.items():
             rid = self.roleids[k]
             si.setData(v, rid)
         return si
@@ -109,24 +109,25 @@ class NbController:
         for p in self.c.all_positions():
             self.addNode(p)
     #@+node:ville.20120604212857.4240: *3* add_subtree
-    def add_subtree(self,pos):
+    def add_subtree(self, pos):
         self.mw.model.clear()
         for p in pos.self_and_subtree():
             self.addNode(p)
 
     #@+node:ville.20120604212857.4238: *3* addNode
     def addNode(self, p, styling=None):
-        if styling is None: styling = {}
+        if styling is None:
+            styling = {}
         v = p.v
         d = {
-            "h" : v.h,
-            "b" : v.b,
-            "gnx" : v.gnx,
-            "level" : p.level(),
+            "h": v.h,
+            "b": v.b,
+            "gnx": v.gnx,
+            "level": p.level(),
         }
         d.update(styling)
         self.gnxcache[v.gnx] = v
-        si = self.mw.mkitem(d )
+        si = self.mw.mkitem(d)
         self.mw.model.appendRow(si)
     #@-others
 #@-others

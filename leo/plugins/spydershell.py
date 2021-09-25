@@ -19,7 +19,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:ville.20090815203828.5239: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     return g.app.gui.guiName() == 'qt'
 #@+node:ville.20090815203828.5240: ** Leo commands

@@ -125,7 +125,7 @@ class Import_IPYNB:
                 n = meta and meta.get('leo_level')
                 n = to_int(n)
             else:
-                p.b = ''.join(lines[:found] + lines[found+1:])
+                p.b = ''.join(lines[:found] + lines[found + 1 :])
             assert p.level() == root_level + 1, (p.level(), p.h)
             stack = self.move_node(n, p, stack)
             p.moveToNodeAfterTree()
@@ -165,19 +165,19 @@ class Import_IPYNB:
         if val and val.strip():
             cell_p.b = val.strip() + '\n'
                 # add_markup will add directives later.
-        del cell ['source']
+        del cell['source']
         self.set_ua(cell_p, 'cell', cell)
     #@+node:ekr.20160412101537.13: *4* ipynb.do_prefix
     def do_prefix(self, d):
         '''Handle everything except the 'cells' attribute.'''
         if d:
             # Expand the root if requested.
-            if 1: # The @auto logic defeats this, but this is correct.
+            if 1:  # The @auto logic defeats this, but this is correct.
                 meta = d.get('metadata')
                 collapsed = meta and meta.get('collapsed')
                 if collapsed is not None and not collapsed:
                     self.root.v.expand()
-            self.cells = d.get('cells',[])
+            self.cells = d.get('cells', [])
             if self.cells:
                 del d['cells']
             self.set_ua(self.root, 'prefix', d)
@@ -268,13 +268,13 @@ class Import_IPYNB:
         '''Set p.v.u'''
         d = p.v.u
         d2 = d.get('ipynb') or {}
-        d2 [key] = val
-        d ['ipynb'] = d2
+        d2[key] = val
+        d['ipynb'] = d2
         p.v.u = d
     #@-others
 #@-others
 importer_dict = {
-    '@auto': [], # '@auto-jupyter', '@auto-ipynb',],
+    '@auto': [],  # '@auto-jupyter', '@auto-ipynb',],
     'class': Import_IPYNB,
     'extensions': ['.ipynb',],
 }

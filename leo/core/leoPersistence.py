@@ -243,7 +243,7 @@ class PersistenceDataController:
         if p:
             return p
         p = self.at_persistence.insertAsLastChild()
-        if not p: # #2103
+        if not p:  # #2103
             return None
         p.h = '@data:' + root.h
         p.b = self.at_data_body(root)

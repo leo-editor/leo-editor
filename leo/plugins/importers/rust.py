@@ -16,8 +16,8 @@ class Rust_Importer(Importer):
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'rust',
-            state_class = Rust_ScanState,
+            language='rust',
+            state_class=Rust_ScanState,
         )
         self.headline = None
 
@@ -116,7 +116,7 @@ class Rust_Importer(Importer):
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         # Add all additional lines of the signature.
-        skip = self.skip # Don't change the ivar!
+        skip = self.skip  # Don't change the ivar!
         while skip > 0:
             skip -= 1
             i += 1

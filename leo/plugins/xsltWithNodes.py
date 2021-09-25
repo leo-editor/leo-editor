@@ -31,7 +31,7 @@ try:
     from Ft.Xml import InputSource
     from Ft.Xml.Xslt.Processor import Processor
 except ImportError:
-    g.cantImport("Ft",__name__)
+    g.cantImport("Ft", __name__)
     Ft = None
 # Abbreviation.
 StringIO = io.StringIO
@@ -59,7 +59,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = Ft
     if ok:
-        g.registerHandler(('menu2',"new"),addMenu)
+        g.registerHandler(('menu2', "new"), addMenu)
         g.plugin_signon(__name__)
     return ok
 #@+node:mork.20041025115037: ** xslt elements
@@ -75,7 +75,7 @@ xslt = {
 'comment': "<xsl:comment> </xsl:comment>",
 'copy': "<xsl:copy> </xsl:copy>",
 'copy-of': "<xsl:copy-of select='' />",
-'decimal-format' : "<xsl:decimal-format   />",
+'decimal-format': "<xsl:decimal-format   />",
 'element': "<xsl:element name='' > </xsl:element>",
 'fallback': "<xsl:fallback> </xsl:fallback>",
 'for-each': "<xsl:for-each select='' >  </xsl:for-each>",
@@ -106,48 +106,51 @@ xslt = {
 #@+node:mork.20041010095202: ** setStyleNode
 stylenodes = weakref.WeakKeyDictionary()
 
-def setStyleNode( c ):
+def setStyleNode(c):
     '''this command sets what the current style node is'''
     position = c.p
-    stylenodes[ c ] = position
+    stylenodes[c] = position
 
 
 #@+node:mork.20041010095202.1: ** processDocumentNode
-def processDocumentNode( c ):
+def processDocumentNode(c):
     '''this executes the stylesheet node against the current node'''
     try:
-        if not styleNodeSelected( c ): return
+        if not styleNodeSelected(c):
+            return
         proc = Processor()
-        stylenode = stylenodes[ c ]
+        stylenode = stylenodes[c]
         pos = c.p
-        c.selectPosition( stylenode )
-        sIO = getString( c )
-        mdom1 = minidom.parseString( sIO )
-        sIO = str( mdom1.toxml() )
-        hstring = str( stylenode.h )
-        if hstring == "": hstring = "no headline"
-        stylesource = InputSource.DefaultFactory.fromString( sIO, uri = hstring)
-        proc.appendStylesheet( stylesource )
-        c.selectPosition( pos )
+        c.selectPosition(stylenode)
+        sIO = getString(c)
+        mdom1 = minidom.parseString(sIO)
+        sIO = str(mdom1.toxml())
+        hstring = str(stylenode.h)
+        if hstring == "":
+            hstring = "no headline"
+        stylesource = InputSource.DefaultFactory.fromString(sIO, uri=hstring)
+        proc.appendStylesheet(stylesource)
+        c.selectPosition(pos)
         xmlnode = pos.v
-        xIO = getString( c )
-        mdom2 = minidom.parseString( xIO )
-        xIO = str( mdom2.toxml())
-        xhead = str( xmlnode.headString )
-        if xhead == "": xhead = "no headline"
-        xmlsource = InputSource.DefaultFactory.fromString( xIO, uri = xhead )
-        result = proc.run( xmlsource )
-        nhline = "xsl:transform of " + str( xmlnode.headString )
-        p2 = pos.insertAfter() # tnode )
+        xIO = getString(c)
+        mdom2 = minidom.parseString(xIO)
+        xIO = str(mdom2.toxml())
+        xhead = str(xmlnode.headString)
+        if xhead == "":
+            xhead = "no headline"
+        xmlsource = InputSource.DefaultFactory.fromString(xIO, uri=xhead)
+        result = proc.run(xmlsource)
+        nhline = "xsl:transform of " + str(xmlnode.headString)
+        p2 = pos.insertAfter()  # tnode )
         p2.setBodyString(result)
         p2.setHeadString(nhline)
         c.redraw()
 
     except Exception as x:
-        g.es( 'exception ' + str( x ))
+        g.es('exception ' + str(x))
     c.redraw()
 #@+node:mork.20041025121608: ** addXSLTNode
-def addXSLTNode (c):
+def addXSLTNode(c):
     '''creates a node and inserts some xslt boilerplate'''
     pos = c.p
 
@@ -159,17 +162,17 @@ def addXSLTNode (c):
 <xsl:transform xmlns:xsl="http:///www.w3.org/1999/XSL/Transform" version="1.0">
 </xsl:transform>'''
 
-    p2 = pos.insertAfter() # tnode)
+    p2 = pos.insertAfter()  # tnode)
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
     c.redraw()
 #@+node:mork.20041010110121: ** addXSLTElement
-def addXSLTElement( c , element):
+def addXSLTElement(c, element):
     '''adds some xslt to the text node'''
     w = c.frame.body.wrapper
-    w.insert( 'insert', element )
+    w.insert('insert', element)
 #@+node:mork.20041025113021: ** getString (xsltWithNodes.py)
-def getString (c):
+def getString(c):
     '''
     This def turns a node into a string using Leo's file-nosent write logic.
     '''
@@ -179,21 +182,21 @@ def getString (c):
     at.writeOpenFile(c.p, sentinels=False)
     return cleanString(at.stringOutput)
 #@+node:mork.20041025120706: ** doMinidomTest
-def doMinidomTest( c ):
+def doMinidomTest(c):
     '''
     This def performs a simple test on a node.
     Can the data be successfully parsed by minidom or not?
     Results are output to the log.
     '''
-    s = getString( c )
+    s = getString(c)
     try:
-        minidom.parseString( s )
+        minidom.parseString(s)
     except Exception as x:
         g.error("Minidom could not parse node because of:\n %s" % x)
         return
     g.blue("Minidom could parse the node")
 #@+node:mork.20041025090303: ** cleanString
-def cleanString( data ):
+def cleanString(data):
     '''This method cleans a string up for the processor.  It currently just removes
        leading and trailing whitespace'''
 
@@ -201,68 +204,70 @@ def cleanString( data ):
     return val
 
 #@+node:mork.20041010125444: ** jumpToStyleNode
-def jumpToStyleNode( c ):
+def jumpToStyleNode(c):
     '''Simple method that jumps us to the current XSLT node'''
-    if not styleNodeSelected( c ): return
-    pos = stylenodes[ c ]
-    c.selectPosition( pos )
+    if not styleNodeSelected(c):
+        return
+    pos = stylenodes[c]
+    c.selectPosition(pos)
     c.redraw()
 
 
 #@+node:mork.20041010125444.1: ** styleNodeSelected
-def styleNodeSelected( c ):
+def styleNodeSelected(c):
     '''Determines if a XSLT Style node has not been selected'''
     if c not in stylenodes:
-        g.es( "No Style Node selected" )
+        g.es("No Style Node selected")
         return False
     return True
 
 
 #@+node:mork.20041010100633: ** addMenu
-def addMenu( tag, keywords ):
+def addMenu(tag, keywords):
 
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')
-    if not c: return
+    if not c:
+        return
 
     mc = c.frame.menu
 
     # men = men.getMenu( 'Outline' )
     # xmen = Tk.Menu(men,tearoff = False)
-    xmen = mc.createNewMenu ('XSLT',"Outline")
+    xmen = mc.createNewMenu('XSLT', "Outline")
 
     c.add_command(xmen,
-        label = "Set Stylesheet Node",
-        command = lambda c = c : setStyleNode(c))
+        label="Set Stylesheet Node",
+        command=lambda c=c: setStyleNode(c))
     c.add_command(xmen,
-        label = "Jump To Style Node",
-        command = lambda c = c: jumpToStyleNode(c))
+        label="Jump To Style Node",
+        command=lambda c=c: jumpToStyleNode(c))
     c.add_command(xmen,
-        label = "Process Node with Stylesheet Node",
-        command = lambda c=c : processDocumentNode(c))
+        label="Process Node with Stylesheet Node",
+        command=lambda c=c: processDocumentNode(c))
     xmen.add_separator(xmen)
     c.add_command(xmen,
-        label = "Create Stylesheet Node",
-        command = lambda c = c : addXSLTNode(c))
+        label="Create Stylesheet Node",
+        command=lambda c=c: addXSLTNode(c))
 
     # elmen= Tk.Menu( xmen, tearoff = False )
     # xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
-    m2 = mc.createNewMenu ('Insert XSL Element','XSLT')
+    m2 = mc.createNewMenu('Insert XSL Element', 'XSLT')
 
     xsltkeys = list(xslt.keys())
     xsltkeys.sort()
     for z in xsltkeys:
         # pylint: disable=cell-var-from-loop
         c.add_command(m2,
-            label = z,
-            command = lambda c=c,element=xslt[ z ]: addXSLTElement(c,element))
+            label=z,
+            command=lambda c=c, element=xslt[z]: addXSLTElement(c, element))
 
     # men.add_cascade(menu = xmen, label = "XSLT-Node Commands")
-    m3 = mc.createNewMenu('XSLT-Node Commands','XSLT')
+    m3 = mc.createNewMenu('XSLT-Node Commands', 'XSLT')
     c.add_command(m3,
-        label = 'Test Node with Minidom',
-        command = lambda c=c: doMinidomTest(c))
+        label='Test Node with Minidom',
+        command=lambda c=c: doMinidomTest(c))
 #@+node:mork.20041025100716: ** examples/tests
 #@+at
 # table.leo contains the xml.  xslt is in the other node.

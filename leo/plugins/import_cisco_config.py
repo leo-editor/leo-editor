@@ -31,31 +31,33 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ekr.20050311102853.1: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     # This plugin is gui-independent.
-    g.registerHandler(('new','menu2'),create_import_cisco_menu)
+    g.registerHandler(('new', 'menu2'), create_import_cisco_menu)
     g.plugin_signon(__name__)
     return True
 #@+node:edream.110203113231.671: ** create_import_cisco_menu
-def create_import_cisco_menu (tag,keywords):
+def create_import_cisco_menu(tag, keywords):
 
     c = keywords.get('c')
-    if not c or not c.exists: return
+    if not c or not c.exists:
+        return
 
     importMenu = c.frame.menu.getMenu('import')
 
-    def importCiscoConfigCallback(event=None,c=c):
+    def importCiscoConfigCallback(event=None, c=c):
         importCiscoConfig(c)
 
     table = (
-        ("-",None,None),
-        ("Import C&isco Configuration","Shift+Ctrl+I",importCiscoConfigCallback))
+        ("-", None, None),
+        ("Import C&isco Configuration", "Shift+Ctrl+I", importCiscoConfigCallback))
     c.frame.menu.createMenuEntries(importMenu, table)
 #@+node:edream.110203113231.672: ** importCiscoConfig
 def importCiscoConfig(c):
 
-    if not c or not c.exists: return
+    if not c or not c.exists:
+        return
     current = c.p
     #@+<< open file >>
     #@+node:edream.110203113231.673: *3* << open file >>
@@ -64,7 +66,7 @@ def importCiscoConfig(c):
         # filetypes=[("All files", "*")]
         # )
 
-    name = g.app.gui.runOpenFileDialog (c,
+    name = g.app.gui.runOpenFileDialog(c,
         title="Import Cisco Configuration File",
         filetypes=[("All files", "*")],
         defaultextension='ini',
@@ -89,9 +91,9 @@ def importCiscoConfig(c):
 
     # define which additional child nodes will be created
     # these keywords must NOT be followed by indented blocks
-    customBlocks = ['aaa','ip as-path','ip prefix-list','ip route',
-                    'ip community-list','access-list','snmp-server','ntp',
-                    'boot','service','logging']
+    customBlocks = ['aaa', 'ip as-path', 'ip prefix-list', 'ip route',
+                    'ip community-list', 'access-list', 'snmp-server', 'ntp',
+                    'boot', 'service', 'logging']
     out = []
     blocks = {}
     children = []
@@ -99,7 +101,7 @@ def importCiscoConfig(c):
     i = 0
     skipToNextLine = 0
     # create level-0 and level-1 children
-    while i<(lines-1):
+    while i < (lines - 1):
         for customLine in customBlocks:
             if (linelist[i].startswith(customLine) or
                 linelist[i].startswith('no %s' % customLine)
@@ -121,7 +123,7 @@ def importCiscoConfig(c):
         if skipToNextLine:
             skipToNextLine = 0
         else:
-            if linelist[i+1].startswith(' '):
+            if linelist[i + 1].startswith(' '):
                 #@+<< process indented block >>
                 #@+node:edream.110203113231.675: *3* << process indented block >>
                 space = linelist[i].find(' ')
@@ -138,21 +140,21 @@ def importCiscoConfig(c):
 
                 value = [linelist[i]]
                 # loop through the indented lines
-                i = i+1
+                i = i + 1
                 try:
                     while linelist[i].startswith(' '):
                         value.append(linelist[i])
-                        i = i+1
+                        i = i + 1
                 except Exception:
                     # EOF
                     pass
-                i = i-1 # restore index
+                i = i - 1  # restore index
                 # now add the value to the dictionary
                 blocks[key].append(value)
                 #@-<< process indented block >>
             else:
                 out.append(linelist[i])
-        i=i+1
+        i = i + 1
     # process last line
     out.append(linelist[i])
 
@@ -162,8 +164,8 @@ def importCiscoConfig(c):
     outClean = []
     prev = ''
     for line in out:
-        if line=='!' and prev=='!':
-            pass # skip repeated comment lines
+        if line == '!' and prev == '!':
+            pass  # skip repeated comment lines
         else:
             outClean.append(line)
         prev = line

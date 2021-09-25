@@ -36,7 +36,7 @@ def InitInClass(tag, keywords):
             if '__init__' in p.headString():
                 cull.append(p.copy())
                 old = parent.bodyString().strip().split('\n')
-                new = '\n'.join(['    '+i if i.strip() else ''
+                new = '\n'.join(['    ' + i if i.strip() else ''
                     for i in p.bodyString().strip().split('\n')])
                 new = '\n%s\n' % new
 
@@ -45,7 +45,7 @@ def InitInClass(tag, keywords):
                     if i.strip() == '@others':
                         if parent.numberOfChildren() == 1:
                             del old[n]
-                        old.insert(n,new)
+                        old.insert(n, new)
                         old.append('')
                         break
                 else:

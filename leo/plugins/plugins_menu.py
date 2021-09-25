@@ -119,7 +119,8 @@ def addPluginMenuItem(p, c):
 def createPluginsMenu(tag, keywords):
     '''Create the plugins menu: calld from create-optional-menus hook.'''
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
     menu_name = keywords.get('menu_name', '&Plugins')
     pc = g.app.pluginsController
     lmd = pc.loadedModules

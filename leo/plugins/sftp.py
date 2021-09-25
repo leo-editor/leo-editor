@@ -113,22 +113,23 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:peckj.20140218144401.6039: ** init
-def init ():
+def init():
     # if g.app.gui is None:
     #    g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt') and paramiko is not None
     if ok:
-        g.registerHandler(('new','open2'),onCreate)
+        g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     else:
         g.es('Module \'paramiko\' not installed.  Plugin sftp.py not loaded.', color='red')
 
     return ok
 #@+node:peckj.20140218144401.6040: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     theSFTPController = SFTPController(c)
     c.theSFTPController = theSFTPController
@@ -137,7 +138,7 @@ class SFTPController:
 
     #@+others
     #@+node:peckj.20140218144401.6042: *3* __init__(SFTPController)
-    def __init__ (self,c):
+    def __init__(self, c):
 
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
@@ -172,7 +173,7 @@ class SFTPController:
         '''
         username = None
         port = None
-        headline = headline.split(' ',1)[1] # strip the @sftp bit
+        headline = headline.split(' ', 1)[1]  # strip the @sftp bit
         has_username = '@' in headline
         has_port = '!' in headline
         has_path = ':' in headline
@@ -185,18 +186,22 @@ class SFTPController:
             return None
         if has_port:
             try:
-                port = int(headline[headline.find('!')+1:headline.find(':')])
+                port = int(headline[headline.find('!') + 1 : headline.find(':')])
             except Exception:
                 self.log("ERROR parsing port.  Falling back to port 22.", color='red')
         if has_username:
-            username = headline.split('@',1)[0]
+            username = headline.split('@', 1)[0]
             if not username:
                 self.log("ERROR parsing username.  Falling back to leoID value.", color='red')
         hostname = headline.split(':')[0]
-        if has_port: hostname = hostname.split('!')[0]
-        if has_username: hostname = hostname.split('@')[1]
-        if not port: port = 22
-        if not username: username = g.app.leoID
+        if has_port:
+            hostname = hostname.split('!')[0]
+        if has_username:
+            hostname = hostname.split('@')[1]
+        if not port:
+            port = 22
+        if not username:
+            username = g.app.leoID
         return {'port': port, 'hostname': hostname, 'username': username, 'remotefile': remotefile}
     #@+node:peckj.20140218144401.6160: *4* get_password
     def get_password(self, username, hostname):
@@ -239,7 +244,7 @@ class SFTPController:
         # remotefile = params['remotefile']
         passwd = self.get_password(user, host)
         if passwd is None:
-            return (None,None)
+            return (None, None)
         t = paramiko.Transport((host, port))
         t.connect(username=user, password=passwd)
         hostkey = t.get_remote_server_key()
@@ -251,7 +256,7 @@ class SFTPController:
             if store:
                 self.set_hostkey(host, hostkey)
             else:
-                return (None,None) # abort
+                return (None, None)  # abort
         elif cached_hostkey != hostkey:
             store = self.confirm_hostkey(
                 'Hostkey does not match!',
@@ -260,9 +265,9 @@ class SFTPController:
             if store:
                 self.set_hostkey(host, hostkey)
             else:
-                return (None,None) # abort
+                return (None, None)  # abort
         sftp = paramiko.SFTPClient.from_transport(t)
-        return (t,sftp)
+        return (t, sftp)
     #@+node:peckj.20140218144401.6172: *3* commands
     #@+node:peckj.20140218144401.6173: *4* sftp_pull
     def sftp_pull(self, event=None, p=None):
