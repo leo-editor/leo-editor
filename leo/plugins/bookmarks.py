@@ -247,7 +247,8 @@ def onCreate(tag, keys):
 @g.command('bookmarks-open-bookmark')
 def cmd_open_bookmark(event):
     c = event.get('c')
-    if not c: return
+    if not c:
+        return
     p = c.p
     bookmark = False
     for nd in p.parents():
@@ -262,7 +263,8 @@ def cmd_open_bookmark(event):
 @g.command('bookmarks-open-node')
 def cmd_open_node(event):
     c = event.get('c')
-    if not c: return
+    if not c:
+        return
     p = c.p
     url = g.getUrlFromNode(p)
     if url:
@@ -876,7 +878,8 @@ class BookMarkDisplay:
 
         def recurse_bm(node, result, ancestors=None):
 
-            if ancestors is None: ancestors = []
+            if ancestors is None:
+                ancestors = []
 
             for p in node.children():
 
@@ -1068,8 +1071,10 @@ class BookMarkDisplay:
         c = bm.v.context
         p = c.vnode2position(bm.v)
         u = c.undoer
-        if p.hasVisBack(c): newNode = p.visBack(c)
-        else: newNode = p.next()
+        if p.hasVisBack(c):
+            newNode = p.visBack(c)
+        else:
+            newNode = p.next()
         p.setAllAncestorAtFileNodesDirty()
 
         undoData = u.beforeDeleteNode(p)

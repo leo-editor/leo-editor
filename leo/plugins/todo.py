@@ -552,7 +552,8 @@ class todoController:
         for which in iterations:
             if which == 'priority':
                 pri = self.getat(p.v, 'priority')
-                if pri: pri = int(pri)
+                if pri:
+                    pri = int(pri)
                 if pri in self.priorities:
                     com.appendImageDictToList(icons, g.os_path_join('cleo', self.priorities[pri]['icon']),
                         2, on='vnode', cleoIcon='1', where=self.icon_location)
@@ -586,7 +587,8 @@ class todoController:
     def close(self, tag, key):
         "unregister handlers on closing commander"
 
-        if self.c != key['c']: return  # not our problem
+        if self.c != key['c']:
+            return  # not our problem
 
         for i in self.handlers:
             g.unregisterHandler(i[0], i[1])
@@ -725,7 +727,8 @@ class todoController:
     #@+node:tbrown.20090119215428.26: *4* safe_del
     def safe_del(self, d, k):
         "delete a key from a dict. if present"
-        if k in d: del d[k]
+        if k in d:
+            del d[k]
     #@+node:tbrown.20090119215428.27: *3* drawing...
     #@+node:tbrown.20090119215428.28: *4* redraw
     def redraw(self):
@@ -765,7 +768,8 @@ class todoController:
             p = self.c.currentPosition()
         v = p.v
 
-        if val is None: return
+        if val is None:
+            return
 
         self.setat(v, 'progress', val)
     #@+node:tbrown.20090119215428.33: *4* set_time_req
@@ -794,8 +798,10 @@ class todoController:
             nd.h = re.sub(' <[^>]*>$', '', nd.headString())
             tr = self.getat(nd.v, 'time_req')
             pr = self.getat(nd.v, 'progress')
-            try: pr = float(pr)
-            except Exception: pr = ''
+            try:
+                pr = float(pr)
+            except Exception:
+                pr = ''
             if tr != '' or pr != '':
                 ans = ' <'
                 if tr != '':
@@ -803,7 +809,8 @@ class todoController:
                         ans += rnd(tr) + ' ' + self.time_name
                     else:
                         ans += '%s+%s=%s %s' % (rnd(pr/100.*tr), rnd((1-pr/100.)*tr), rnd(tr), self.time_name)
-                    if pr != '': ans += ', '
+                    if pr != '':
+                        ans += ', '
                 if pr != '':
                     ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
                 ans += '>'
@@ -828,12 +835,14 @@ class todoController:
             if time_totl is None:
                 time_totl = ans[0]
             else:
-                if ans[0] is not None: time_totl += ans[0]
+                if ans[0] is not None:
+                    time_totl += ans[0]
 
             if time_done is None:
                 time_done = ans[1]
             else:
-                if ans[1] is not None: time_done += ans[1]
+                if ans[1] is not None:
+                    time_done += ans[1]
 
         if time_totl is not None:  # some value returned
 
@@ -985,7 +994,8 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
         for p in p.children():
-            if self.getat(p.v, 'priority') != 9999: continue
+            if self.getat(p.v, 'priority') != 9999:
+                continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
     #@+node:tbrown.20130207095125.20463: *4* dueClear
@@ -1031,15 +1041,19 @@ class todoController:
             return True
 
         for nd in p.children():
-            if self.find_todo(nd, stage = 2): return True
+            if self.find_todo(nd, stage = 2):
+                return True
 
         if stage < 2 and p.getNext():
-            if self.find_todo(p.getNext(), stage = 1): return True
+            if self.find_todo(p.getNext(), stage = 1):
+                return True
 
         if stage < 2 and p.getParent() and p.getParent().getNext():
-            if self.find_todo(p.getParent().getNext(), stage = 1): return True
+            if self.find_todo(p.getParent().getNext(), stage = 1):
+                return True
 
-        if stage == 0: g.es("None found")
+        if stage == 0:
+            g.es("None found")
 
         return False
     #@+node:tbrown.20090119215428.43: *4* prikey

@@ -106,17 +106,22 @@ class JSON_Scanner:
         '''Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
         This is only called for strict languages.'''
-        changed = False; lines = g.splitLines(s); result = []; tab_width = self.tab_width
+        changed = False
+        lines = g.splitLines(s)
+        result = []
+        tab_width = self.tab_width
         if tab_width < 0: # Convert tabs to blanks.
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
                 s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:] # Use negative width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
         elif tab_width > 0: # Convert blanks to tabs.
             for line in lines:
                 s = g.optimizeLeadingWhitespace(line, abs(tab_width)) # Use positive width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
         if changed:
             action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'

@@ -109,7 +109,8 @@ def init ():
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     theNodeDiffController = NodeDiffController(c)
     c.theNodeDiffController = theNodeDiffController
@@ -167,9 +168,12 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
-            if l.startswith('?'): color='grey'
+            if l.startswith('+'):
+                color='forestgreen'
+            if l.startswith('-'):
+                color='red'
+            if l.startswith('?'):
+                color='grey'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -184,9 +188,12 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
-            if l.startswith('?'): color='grey'
+            if l.startswith('+'):
+                color='forestgreen'
+            if l.startswith('-'):
+                color='red'
+            if l.startswith('?'):
+                color='grey'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -201,8 +208,10 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
+            if l.startswith('+'):
+                color='forestgreen'
+            if l.startswith('-'):
+                color='red'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:

@@ -2,7 +2,7 @@
 #@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,multiple-statements
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>

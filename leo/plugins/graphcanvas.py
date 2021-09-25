@@ -85,7 +85,8 @@ def colorize_headlines_visitor(c,p, item):
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
     graphcanvasController(c)
     if hasattr(c, 'db') and c_db_key in c.db:
         gnx = c.db[c_db_key]
@@ -1183,7 +1184,8 @@ class graphcanvasController:
 
         # c.p is not valid while using the settings panel.
         new_p = keywords.get('new_p')
-        if not new_p: return
+        if not new_p:
+            return
 
         if new_p.h.startswith('@graph'):
             self.clear()

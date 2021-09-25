@@ -32,7 +32,8 @@ def init ():
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     # c not needed
 

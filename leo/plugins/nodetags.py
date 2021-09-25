@@ -392,7 +392,8 @@ if QtWidgets:
 
         #@+node:peckj.20140804114520.15207: *4* tag_w.update_list
         def update_list(self):
-            c = self.c; gnxDict = c.fileCommands.gnxDict
+            c = self.c
+            gnxDict = c.fileCommands.gnxDict
             key = str(self.comboBox.currentText()).strip()
             current_tags = self.tc.get_all_tags()
             if key not in current_tags and key not in self.custom_searches:
@@ -441,7 +442,8 @@ if QtWidgets:
             self.update_combobox()
             if key:
                 idx = self.comboBox.findText(key)
-                if idx == -1: idx = 0
+                if idx == -1:
+                    idx = 0
             else:
                 idx = 0
             self.comboBox.setCurrentIndex(idx)

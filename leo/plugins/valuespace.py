@@ -230,11 +230,10 @@ class ValueSpaceController:
             c.keyHandler.autoCompleter.namespaces.append(self.d)
     #@+node:ekr.20110408065137.14224: *3* create_tree
     def create_tree (self):
-
         '''The vs-create-tree command.'''
-
-        c = self.c ; p = c.p ; tag = 'valuespace'
-
+        c = self.c
+        p = c.p
+        tag = 'valuespace'
         # Create a 'valuespace' node if p's headline is not 'valuespace'.
         if p.h == tag:
             r = p

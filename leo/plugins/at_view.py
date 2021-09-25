@@ -38,7 +38,8 @@ def init():
 def onCreate(tag, keywords):
 
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
     myView = View(c)
 
     # Register the handlers...

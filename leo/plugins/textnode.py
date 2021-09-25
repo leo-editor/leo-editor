@@ -46,7 +46,8 @@ def on_icondclick(tag, keywords):
 #@+node:ajones.20070122160142.3: ** on_open
 def on_open(tag,keywords):
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
 
     for p in c.all_positions():
         h = p.h
@@ -56,7 +57,8 @@ def on_open(tag,keywords):
 #@+node:ajones.20070122161942: ** on_save
 def on_save(tag,keywords):
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
 
     for p in c.all_positions():
         h = p.h

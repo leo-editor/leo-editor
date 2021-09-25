@@ -33,7 +33,8 @@ class pluginController:
         g.app.gui.makeScriptButton(c, script=script, buttonText='Print c & p', bg='red')
     #@+node:ekr.20060621124649: *3* print_cp
     def print_cp(self, event=None):
-        c = self.c; p = c.p
+        c = self.c
+        p = c.p
         g.red('c: %s' % (c.fileName()))
         g.red('p: %s' % (p.h))
     #@-others

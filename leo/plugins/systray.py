@@ -81,7 +81,8 @@ class pluginController:
     def clickNext(self):
         c = self.c
         p = c.goNextVisitedNode()
-        if p: c.selectPosition(p)
+        if p:
+            c.selectPosition(p)
     #@-others
 #@-others
 #@-leo

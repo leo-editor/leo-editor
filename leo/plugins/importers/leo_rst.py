@@ -123,7 +123,8 @@ class Rst_Importer(Importer):
         if line.isspace():
             return None
         chars = underlines
-        if extra: chars = chars + extra
+        if extra:
+            chars = chars + extra
         ch1 = line[0]
         if ch1 not in chars:
             return None

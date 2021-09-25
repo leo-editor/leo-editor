@@ -19,7 +19,8 @@ def ekrCommand2(self, event=None):
 
 def onCreate(tag, keys):
     c = keys.get('c')
-    if c: g.trace(c.k)
+    if c:
+        g.trace(c.k)
 
 def onmenu2(tag, keys):
     c = keys.get('c')

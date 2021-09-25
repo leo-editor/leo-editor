@@ -419,7 +419,8 @@ class ScriptingController:
             g.issueSecurityWarning('@bool scripting-at-script-nodes')
             # Restore the value in myLeoSettings.leo
             val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
-            if val is None: val = False
+            if val is None:
+                val = False
             g.es('Restoring value to', val, color='red')
             self.atScriptNodes = val
         self.createDebugButton = getBool('scripting-create-debug-button')
@@ -441,7 +442,9 @@ class ScriptingController:
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
     def addScriptButtonCommand(self, event=None):
         '''Called when the user presses the 'script-button' button or executes the script-button command.'''
-        c = self.c; p = c.p; h = p.h
+        c = self.c
+        p = c.p
+        h = p.h
         buttonText = self.getButtonText(h)
         shortcut = self.getShortcut(h)
         statusLine = "Run Script: %s" % buttonText
@@ -452,7 +455,8 @@ class ScriptingController:
     #@+node:ekr.20060522105937.1: *4* sc.runDebugScriptCommand
     def runDebugScriptCommand(self, event=None):
         '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
-        c = self.c; p = c.p
+        c = self.c
+        p = c.p
         script = g.getScript(c, p, useSelectedText=True, useSentinels=False)
         if script:
             #@+<< set debugging if debugger is active >>
@@ -475,9 +479,7 @@ class ScriptingController:
                 #@+<< create leoScriptModule >>
                 #@+node:ekr.20060524073716: *5* << create leoScriptModule >> (mod_scripting.py)
                 target = g.os_path_join(g.app.loadDir, 'leoScriptModule.py')
-                f = None
-                try:
-                    f = open(target, 'w')
+                with open(target, 'w') as f:
                     f.write('# A module holding the script to be debugged.\n')
                     if self.debuggerKind == 'idle':
                         # This works, but uses the lame pdb debugger.
@@ -495,8 +497,6 @@ class ScriptingController:
                     f.write('p = c.p\n')
                     f.write('# Actual script starts here.\n')
                     f.write(script + '\n')
-                finally:
-                    if f: f.close()
                 #@-<< create leoScriptModule >>
                 # pylint: disable=no-name-in-module
                 g.app.scriptDict['c'] = c
@@ -700,7 +700,8 @@ class ScriptingController:
 
         Called only from a callback in QtIconBarClass.setCommandForButton.
         '''
-        if not gnx: g.trace('can not happen: no gnx')
+        if not gnx:
+            g.trace('can not happen: no gnx')
         # First, look in commander c.
         for p2 in c.all_positions():
             if p2.gnx == gnx:
@@ -868,7 +869,8 @@ class ScriptingController:
     def handleAtCommandNode(self, p):
         '''Handle @command name [@key[=]shortcut].'''
         c = self.c
-        if not p.h.strip(): return
+        if not p.h.strip():
+            return
         args = self.getArgs(p)
 
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):
@@ -1025,12 +1027,14 @@ class ScriptingController:
         if i > -1:
             j = g.skip_ws(h, i + len(tag))
             # 2011/10/16: Make '=' sign optional.
-            if g.match(h, j, '='): j += 1
+            if g.match(h, j, '='):
+                j += 1
             if 0:
                 s = h[j + 1:].strip()
             else: # new logic 1/3/2014 Jake Peck
                 k = h.find('@', j + 1)
-                if k == -1: k = len(h)
+                if k == -1:
+                    k = len(h)
                 s = h[j: k].strip()
             args = s.split(',')
             args = [z.strip() for z in args]
@@ -1062,9 +1066,11 @@ class ScriptingController:
         i = h.find(tag)
         if i > -1:
             j = g.skip_ws(h, i + len(tag))
-            if g.match(h, j, '='): j += 1
+            if g.match(h, j, '='):
+                j += 1
             k = h.find('@', j + 1)
-            if k == -1: k = len(h)
+            if k == -1:
+                k = len(h)
             color = h[j: k].strip()
         return color
     #@+node:ekr.20060328125248.16: *4* sc.getShortcut
@@ -1074,12 +1080,14 @@ class ScriptingController:
         i = h.find('@key')
         if i > -1:
             j = g.skip_ws(h, i + len('@key'))
-            if g.match(h, j, '='): j += 1
+            if g.match(h, j, '='):
+                j += 1
             if 0:
                 shortcut = h[j:].strip()
             else: # new logic 1/3/2014 Jake Peck
                 k = h.find('@', j + 1)
-                if k == -1: k = len(h)
+                if k == -1:
+                    k = len(h)
                 shortcut = h[j: k].strip()
         return shortcut
     #@+node:ekr.20150402042350.1: *4* sc.getScript
@@ -1125,7 +1133,8 @@ class ScriptingController:
                 # Make sure we never redefine an existing commandName.
                 if commandName2 in c.commandsDict:
                     # A warning here would be annoying.
-                    if trace: g.trace('Already in commandsDict: %r' % commandName2)
+                    if trace:
+                        g.trace('Already in commandsDict: %r' % commandName2)
                 else:
                     k.registerCommand(
                         commandName=commandName2,
@@ -1551,7 +1560,8 @@ class EvalController:
             w.setSelectionRange(i, j)
         else:
             if not body.endswith('\n'):
-                if i >= len(p.b): i2 += 1
+                if i >= len(p.b):
+                    i2 += 1
                 p.b = p.b + '\n'
             ins = min(len(p.b), i2)
             w.setSelectionRange(i1, ins, insert=ins, s=p.b)

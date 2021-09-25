@@ -414,7 +414,8 @@ class Leo_to_HTML:
     def doBodyElement(self, pp, level=None):
         """Append wrapped body string to output stream."""
 
-        if not self.include_body: return
+        if not self.include_body:
+            return
 
         self.xhtml.append(
             self.openBodyString +
@@ -494,7 +495,8 @@ class Leo_to_HTML:
                 s = configParser.get("Main", s)
             else:
                 s = ss
-            if not s: s = ''
+            if not s:
+                s = ''
             return s.strip()
 
         def flag(s):

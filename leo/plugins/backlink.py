@@ -169,7 +169,8 @@ class backlinkController:
         # gcc = getattr(self.c, 'graphcanvasController')
         try:
             gcc = self.c.graphcanvasController
-            if gcc: gcc.do_update()
+            if gcc:
+                gcc.do_update()
         except AttributeError:
             pass
     #@+node:ekr.20090616105756.3945: *3* deleteSet
@@ -291,7 +292,8 @@ class backlinkController:
         # gcc = getattr(self.c, 'graphcanvasController')
         try:
             gcc = self.c.graphcanvasController
-            if gcc: gcc.do_update()
+            if gcc:
+                gcc.do_update()
         except AttributeError:
             pass
 
@@ -507,8 +509,8 @@ class backlinkController:
         needs to"""
 
         # used by vnodePosition, not needed node there's c.vnode2position
-
-        c = self.c ; p = p.copy()
+        c = self.c
+        p = p.copy()
 
         # This code must be fast.
         if not root:
@@ -531,8 +533,8 @@ class backlinkController:
     def showLinksLog(self,tag,k):
 
         # deprecated
-
-        if k['c'] != self.c: return  # not our problem
+        if k['c'] != self.c:
+            return  # not our problem
 
         p = k['new_p']
         v = p.v
@@ -599,7 +601,10 @@ class backlinkController:
             if dests:
                 smenu = Tk.Menu(menu,tearoff=0,takefocus=1)
                 for i in dests:
-                    def goThere(where = i[1]): c.selectPosition(where)
+
+                    def goThere(where = i[1]):
+                        c.selectPosition(where)
+                        
                     c.add_command(menu,
                         label={'S':'->','D':'<-','U':'--'}[i[0]] + i[1].h,
                         underline=0,command=goThere)
@@ -644,7 +649,8 @@ class backlinkController:
     #@+node:ekr.20090616105756.3967: *3* updateTab (backlink.py)
     def updateTab(self,tag,k):
         """called by leo select position hook"""
-        if k['c'] != self.c: return  # not our problem
+        if k['c'] != self.c:
+            return  # not our problem
 
         self.updateTabInt()
     #@+node:ekr.20090616105756.3968: *3* updateTabInt
@@ -891,7 +897,8 @@ if g.app.gui.guiName() == "tkinter":
         #@+node:ekr.20140920145803.17981: *3* updateTkTab
         def updateTkTab(self,tag,k):
             # deprecated
-            if k['c'] != self.c: return  # not our problem
+            if k['c'] != self.c:
+                return  # not our problem
 
             self.updateTkTabInt()
         #@+node:ekr.20140920145803.17982: *3* updateTkTabInt
@@ -923,7 +930,10 @@ if g.app.gui.guiName() == "tkinter":
                     self.deleteButton.configure(state=Tk.NORMAL)
                     self.showMessage('Click a link to follow it', optional=True)
                     for i in dests:
-                        def goThere(where = i[1]): c.selectPosition(where)
+                        
+                        def goThere(where = i[1]):
+                            c.selectPosition(where)
+                    
                         txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
                         self.listbox.insert(Tk.END, txt)
                         def delLink(on=v,
@@ -952,7 +962,8 @@ def init ():
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     backlinkController(c)
 #@-others

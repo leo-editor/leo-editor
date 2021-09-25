@@ -99,7 +99,8 @@ class Pascal_Importer(Importer):
         line = lines[i]
         for pattern in self.pascal_pattern_table:
             m = pattern.match(line)
-            if m: return True
+            if m:
+                return True
         return False
     #@-others
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState

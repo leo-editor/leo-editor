@@ -194,12 +194,14 @@ class OpmlController:
     def handleVnodeAttributes(self, node, v):
         a = node.attributes.get('leo:a')
         if a:
-            # 'C' (clone) and 'D' bits are not used.
-            if 'M' in a: v.setMarked()
-            if 'E' in a: v.expand()
-            # if 'O' in a: v.setOrphan()
-            if 'T' in a: self.topVnode = v
-            if 'V' in a: self.currentVnode = v
+            if 'M' in a:
+                v.setMarked()
+            if 'E' in a:
+                v.expand()
+            if 'T' in a:
+                self.topVnode = v
+            if 'V' in a:
+                self.currentVnode = v
     #@+node:ekr.20060913220707: *3* oc.dumpTree
     def dumpTree(self, root, dummy=True):
         if not dummy:
@@ -478,7 +480,8 @@ class PutToOPML:
 
     #@+node:ekr.20060919172012.5: *3* putOPMLNodes
     def putOPMLNodes(self):
-        c = self.c; root = c.rootPosition()
+        c = self.c
+        root = c.rootPosition()
         self.put('\n<body>')
         for p in root.self_and_siblings_iter():
             self.putOPMLNode(p)
@@ -487,7 +490,8 @@ class PutToOPML:
     def putOPMLNode(self, p):
 
         indent = ''
-        body = p.bodyString() or ''; head = p.headString() or ''
+        body = p.bodyString() or ''
+        head = p.headString() or ''
         self.put(f'\n{indent}<outline')
         head_s = self.attributeEscape(head)
         self.put(f' text="{head_s}"')
@@ -540,9 +544,12 @@ class PutToOPML:
     def aAttributes(self, p):
         c = self.c
         attr = []
-        if p.isExpanded(): attr.append('E')
-        if p.isMarked(): attr.append('M')
-        if c.isCurrentPosition(p): attr.append('V')
+        if p.isExpanded():
+            attr.append('E')
+        if p.isMarked():
+            attr.append('M')
+        if c.isCurrentPosition(p):
+            attr.append('V')
         return ''.join(attr)
     #@+node:ekr.20060919172012.9: *4* tnodeListAttributes (Not used)
     # Based on fileCommands.putTnodeList.
@@ -753,7 +760,8 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
     def doHeadAttributes(self, attrs):
         ratio = 0.5
         for bunch in self.attrsToList(attrs):
-            name = bunch.name; val = bunch.val
+            name = bunch.name
+            val = bunch.val
             if name == 'leo:body_outline_ratio':
                 try:
                     ratio = float(val)
@@ -798,14 +806,22 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
     #@+node:ekr.20060922071010.1: *5* doGlobalWindowAttributes
     def doGlobalWindowAttributes(self, attrs):
         c = self.c
-        top = 50; left = 50; height = 500; width = 700 # Reasonable defaults.
+        top = 50
+        left = 50
+        height = 500
+        width = 700 # Reasonable defaults.
         try:
             for bunch in self.attrsToList(attrs):
-                name = bunch.name; val = bunch.val
-                if name == 'top': top = int(val)
-                elif name == 'left': left = int(val)
-                elif name == 'height': height = int(val)
-                elif name == 'width': width = int(val)
+                name = bunch.name
+                val = bunch.val
+                if name == 'top':
+                    top = int(val)
+                elif name == 'left':
+                    left = int(val)
+                elif name == 'height':
+                    height = int(val)
+                elif name == 'width':
+                    width = int(val)
         except ValueError:
             pass
         c.frame.setTopGeometry(width, height, left, top)

@@ -114,21 +114,16 @@ class IdleTime:
                 idleTimeObj._nexttime = nexttime
                 for idx, idleTimeObj2 in enumerate(cls.list_active):
                     if nexttime < idleTimeObj2._nexttime:
-                        #leoG.trace('Insert at {0}'.format(idx))
                         cls.list_active.insert(idx, idleTimeObj)
                         break
                 else:
-                    #leoG.trace('Append')
                     cls.list_active.append(idleTimeObj)
                 if itoLast != idleTimeObj:
                     itoLast = idleTimeObj
-                    #leoG.trace('Run {0} cls.list_active={1}'.format(id(idleTimeObj), [id(ent) for ent in cls.list_active]))
                 idleTimeObj._handler(idleTimeObj)
-                #leoG.trace('Handler return. cls.list_active={0}'.format([id(ent) for ent in cls.list_active]))
             else:
                 # Nothing to run yet
                 cls.list_active.insert(0, idleTimeObj)
-        #leoG.trace('Exiting cls.list_active={0}'.format([id(ent) for ent in cls.list_active]))
     #@-others
 #@+node:bob.20180206123613.16: ** main()
 def main():

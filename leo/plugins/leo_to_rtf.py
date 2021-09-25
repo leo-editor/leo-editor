@@ -36,7 +36,8 @@ def createExportMenu (tag,keywords):
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
 
     # Insert leoToRTF in #3 position of the File > Export menu.
     c.frame.menu.insert('Export...',3,

@@ -33,7 +33,8 @@ def onStart(tag, keywords):
 
 def newPut(self, s, color="black"):
     g.pr("newPut", s, newline=False)
-    if g.app.quitting > 0: return
+    if g.app.quitting > 0:
+        return
     s = s.upper()
     t = self.logCtrl
     if t:
@@ -45,7 +46,8 @@ def newPut(self, s, color="black"):
 
 def newPutNl(self):
     g.pr("newPutNl")
-    if g.app.quitting > 0: return
+    if g.app.quitting > 0:
+        return
     t = self.logCtrl
     if t:
         t.insert("end", "\n\n")

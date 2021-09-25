@@ -760,7 +760,8 @@ if QtWidgets: # NOQA
         def activate(self):
             '''Activate the vr-window.'''
             pc = self
-            if pc.active: return
+            if pc.active:
+                return
             pc.inited = True
             pc.active = True
             g.registerHandler('select2', pc.update)
@@ -941,7 +942,8 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
         def embed_widget(self, w, delete_callback=None):
             '''Embed widget w in the free_layout splitter.'''
-            pc = self; c = pc.c #X ; splitter = pc.splitter
+            pc = self
+            c = pc.c
             pc.w = w
             layout = self.layout()
             for i in range(layout.count()):
@@ -966,7 +968,8 @@ if QtWidgets: # NOQA
             '''Set the background color of the vr pane.'''
             if 0: # Do not do this! It interferes with themes.
                 pc = self
-                if not colorName: return
+                if not colorName:
+                    return
                 styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
                 if QtGui.QColor(colorName).isValid():
                     w.setStyleSheet(styleSheet)
@@ -1062,7 +1065,8 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
-            pc = self; c = pc.c
+            pc = self
+            c = pc.c
             force = keywords.get('force')
             if pc.gs and not force:
                 return
@@ -1217,7 +1221,9 @@ if QtWidgets: # NOQA
         #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
         def update_md(self, s, keywords):
             '''Update markdown text in the vr pane.'''
-            pc = self; c = pc.c; p = c.p
+            pc = self
+            c = pc.c
+            p = c.p
             s = s.strip().strip('"""').strip("'''").strip()
             isHtml = s.startswith('<') and not s.startswith('<<')
             # Do this regardless of whether we show the widget or not.

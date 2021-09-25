@@ -42,7 +42,8 @@ def onCreate (tag, keys):
     global controllers
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     h = c.hash()
 

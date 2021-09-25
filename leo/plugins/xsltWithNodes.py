@@ -116,7 +116,8 @@ def setStyleNode( c ):
 def processDocumentNode( c ):
     '''this executes the stylesheet node against the current node'''
     try:
-        if not styleNodeSelected( c ): return
+        if not styleNodeSelected( c ):
+            return
         proc = Processor()
         stylenode = stylenodes[ c ]
         pos = c.p
@@ -125,7 +126,8 @@ def processDocumentNode( c ):
         mdom1 = minidom.parseString( sIO )
         sIO = str( mdom1.toxml() )
         hstring = str( stylenode.h )
-        if hstring == "": hstring = "no headline"
+        if hstring == "":
+            hstring = "no headline"
         stylesource = InputSource.DefaultFactory.fromString( sIO, uri = hstring)
         proc.appendStylesheet( stylesource )
         c.selectPosition( pos )
@@ -134,7 +136,8 @@ def processDocumentNode( c ):
         mdom2 = minidom.parseString( xIO )
         xIO = str( mdom2.toxml())
         xhead = str( xmlnode.headString )
-        if xhead == "": xhead = "no headline"
+        if xhead == "":
+            xhead = "no headline"
         xmlsource = InputSource.DefaultFactory.fromString( xIO, uri = xhead )
         result = proc.run( xmlsource )
         nhline = "xsl:transform of " + str( xmlnode.headString )
@@ -203,7 +206,8 @@ def cleanString( data ):
 #@+node:mork.20041010125444: ** jumpToStyleNode
 def jumpToStyleNode( c ):
     '''Simple method that jumps us to the current XSLT node'''
-    if not styleNodeSelected( c ): return
+    if not styleNodeSelected( c ):
+        return
     pos = stylenodes[ c ]
     c.selectPosition( pos )
     c.redraw()
@@ -224,7 +228,8 @@ def addMenu( tag, keywords ):
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')
-    if not c: return
+    if not c:
+        return
 
     mc = c.frame.menu
 

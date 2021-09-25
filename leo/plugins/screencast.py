@@ -305,8 +305,10 @@ class ScreenCastController:
         '''
         c, m, p, u = self.c, self, self.c.p, self.c.undoer
         w = c.frame.body.wrapper.widget
-        if n1 is None: n1 = 0.02
-        if n2 is None: n2 = 0.095
+        if n1 is None:
+            n1 = 0.02
+        if n2 is None:
+            n2 = 0.095
         m.key_w = m.pane_widget('body')
         c.bodyWantsFocusNow()
         bunch = u.beforeChangeBody(p)
@@ -355,7 +357,8 @@ class ScreenCastController:
     #@+node:ekr.20120913110135.10581: *4* sc.command
     def command(self, command_name):
         '''Execute the command whose name is given and update the screen immediately.'''
-        m = self; c = m.c
+        m = self
+        c = m.c
         c.k.simulateCommand(command_name)
             # Named commands handle their own undo!
             # The undo handling in m.next should suffice.
@@ -363,7 +366,8 @@ class ScreenCastController:
         m.repaint('all')
     #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar
     def dismiss_menu_bar(self):
-        m = self; c = m.c
+        m = self
+        c = m.c
         # c.frame.menu.deactivateMenuBar()
         g.trace()
         menubar = c.frame.top.leo_menubar
@@ -396,7 +400,8 @@ class ScreenCastController:
     #@+node:ekr.20120913110135.10582: *4* sc.focus
     def focus(self, pane):
         '''Immediately set the focus to the given pane.'''
-        m = self; c = m.c
+        m = self
+        c = m.c
         d = {
             'body': c.bodyWantsFocus,
             'log': c.logWantsFocus,
@@ -414,10 +419,15 @@ class ScreenCastController:
         '''Simulate typing in the headline.
         n1 and n2 indicate the range of delays between keystrokes.
         '''
-        m = self; c = m.c; p = c.p; undoType = 'Typing'
+        m = self
+        c = m.c
+        p = c.p
+        undoType = 'Typing'
         tree = c.frame.tree
-        if n1 is None: n1 = 0.02
-        if n2 is None: n2 = 0.095
+        if n1 is None:
+            n1 = 0.02
+        if n2 is None:
+            n2 = 0.095
         p.h = ''
         c.editHeadline()
         w = tree.edit_widget(p)
@@ -470,7 +480,8 @@ class ScreenCastController:
     #@+node:ekr.20120921064434.10605: *4* sc.open_menu
     def open_menu(self, menu_name):
         '''Activate the indicated *top-level* menu.'''
-        m = self; c = m.c
+        m = self
+        c = m.c
         menu = c.frame.menu.getMenu(menu_name)
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
@@ -498,7 +509,9 @@ class ScreenCastController:
     #@+node:ekr.20120914074855.10722: *4* sc.quit
     def quit(self):
         '''Terminate the slide show.'''
-        m = self; c = m.c; k = c.k
+        m = self
+        c = m.c
+        k = c.k
         if m.quit_flag:
             return
         if not m.p1:
@@ -530,11 +543,14 @@ class ScreenCastController:
     #@+node:ekr.20120916062255.10593: *4* sc.single_key
     def single_key(self, ch, n1=None, n2=None, pane=None, w=None):
         '''Simulate typing a single key, properly saving and restoring m.k_state.'''
-        m = self; k = m.c.k
+        m = self
+        k = m.c.k
         w = w or m.pane_widget(pane or 'body')
         force = n1 is not None or n2 is not None
-        if force and n1 is None: n1 = 0.02
-        if force and n2 is None: n2 = 0.095
+        if force and n1 is None:
+            n1 = 0.02
+        if force and n2 is None:
+            n2 = 0.095
         try:
             if m.k_state.kind:
                 # old_state_kind = m.k_state.kind
@@ -557,7 +573,9 @@ class ScreenCastController:
     def next(self):
         '''Find the next screencast node and execute its script.
         Call m.quit if no more nodes remain.'''
-        m = self; c = m.c; k = c.k
+        m = self
+        c = m.c
+        k = c.k
         m.delete_widgets()
         # Restore k.state from m.k_state.
         if m.k_state.kind and m.k_state.kind != m.state_name:
@@ -596,7 +614,8 @@ class ScreenCastController:
     #@+node:ekr.20120918103526.10596: *5* sc.exec_node
     def exec_node(self, p):
         '''Execute the script in node p.'''
-        m = self; c = m.c
+        m = self
+        c = m.c
         assert p
         assert p.b
         d = {'c': c, 'g:': g, 'm': m, 'p': p}
@@ -632,7 +651,9 @@ class ScreenCastController:
 
         Important: p is not necessarily c.p!
         '''
-        m = self; c = m.c; k = c.k
+        m = self
+        c = m.c
+        k = c.k
         assert p
         # Reset Leo's state.
         k.keyboardQuit()
@@ -670,7 +691,9 @@ class ScreenCastController:
     #@+node:ekr.20120914074855.10715: *4* sc.state_handler
     def state_handler(self, event=None):
         '''Handle keys while in the "screencast" input state.'''
-        m = self; c = m.c; k = c.k
+        m = self
+        c = m.c
+        k = c.k
         state = k.getState(m.state_name)
         char = event.char if event else ''
         if m.ignore_keys:
@@ -732,7 +755,9 @@ class ScreenCastController:
     #@+node:ekr.20120916193057.10606: *3* sc.Utilities
     #@+node:ekr.20120916062255.10589: *4* sc.get_key_event
     def get_key_event(self, ch, w):
-        m = self; c = m.c; k = c.k
+        m = self
+        c = m.c
+        k = c.k
         m.key_w = w
         if len(ch) > 1:
             key = None
@@ -753,7 +778,8 @@ class ScreenCastController:
     #@+node:ekr.20120914133947.10579: *4* sc.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget.'''
-        m = self; c = m.c
+        m = self
+        c = m.c
         d = {
             'all': c.frame.top,
             'body': c.frame.body.wrapper.widget,
@@ -776,8 +802,10 @@ class ScreenCastController:
     def wait(self, n1=1, n2=0):
         '''Wait for an interval between n1 and n2.'''
         m = self
-        if n1 is None: n1 = 0
-        if n2 is None: n2 = 0
+        if n1 is None:
+            n1 = 0
+        if n2 is None:
+            n2 = 0
         if n1 > 0 and n2 > 0:
             n = random.uniform(n1, n2)
         else:

@@ -122,7 +122,8 @@ def init ():
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     theNodewatchController = NodewatchController(c)
     c.theNodewatchController = theNodewatchController
@@ -244,7 +245,8 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         self.update_combobox()
         if key:
             idx = self.comboBox.findText(key)
-            if idx == -1: idx = 0
+            if idx == -1:
+                idx = 0
         else:
             idx = 0
         self.comboBox.setCurrentIndex(idx)
