@@ -522,7 +522,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not s:
             return
 
-        undoType='capitalize-body-words'
+        undoType = 'capitalize-body-words'
         undoData = u.beforeChangeNodeContents(p)
 
         i, j = w.getSelectionRange()
@@ -535,7 +535,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             prefix = s[:i]
             suffix = s[j:]
 
-        # Thanks to 
+        # Thanks to
         # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
         def convert_to_uppercase(m):
             """Convert the second group to uppercase and join both group 1 & group 2"""
