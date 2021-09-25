@@ -96,14 +96,14 @@ KWARG_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*): (.*)")
 
 #@+others
 #@+node:ekr.20201012111338.3: ** init (leo_cloud.py)
-def init ():
-    g.registerHandler(('new','open2'), onCreate)
+def init():
+    g.registerHandler(('new', 'open2'), onCreate)
     g.registerHandler(('save1'), onSave)
     g.plugin_signon(__name__)
     return True
 
 #@+node:ekr.20201012111338.4: ** onCreate (leo_cloud.py)
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c:
@@ -214,7 +214,7 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
         Returns:
             object loaded from JSON
         """
-        filepath = os.path.join(self.basepath, lc_id+'.json')
+        filepath = os.path.join(self.basepath, lc_id + '.json')
         with open(filepath) as data:
             return json.load(data)
 
@@ -226,7 +226,7 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
             lc_id (str(?)): place to put it
             data (obj): data to store
         """
-        filepath = os.path.join(self.basepath, lc_id+'.json')
+        filepath = os.path.join(self.basepath, lc_id + '.json')
         with open(filepath, 'w') as out:
             return out.write(LeoCloud.to_json(data))
 
@@ -254,7 +254,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
         if not os.path.exists(self.local):
             os.makedirs((self.local))
         if not os.listdir(self.local):
-            self._run_git('git clone "%s" "%s"'% (self.remote, self.local))
+            self._run_git('git clone "%s" "%s"' % (self.remote, self.local))
         self._run_git('git -C "%s" pull' % self.local)
 
     #@+node:ekr.20201012111338.18: *3* LeoCloudIOGit(LeoCloudIOBase)._run_git
@@ -275,7 +275,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
 
         :returns: object loaded from JSON
         """
-        filepath = os.path.join(self.local, lc_id+'.json')
+        filepath = os.path.join(self.local, lc_id + '.json')
         with open(filepath) as data:
             return json.load(data)
 
@@ -287,10 +287,10 @@ class LeoCloudIOGit(LeoCloudIOBase):
             lc_id (str(?)): place to put it
             data (obj): data to store
         """
-        filepath = os.path.join(self.local, lc_id+'.json')
+        filepath = os.path.join(self.local, lc_id + '.json')
         with open(filepath, 'w') as out:
             out.write(LeoCloud.to_json(data))
-        self._run_git('git -C "%s" add "%s"' % (self.local, lc_id+'.json'))
+        self._run_git('git -C "%s" add "%s"' % (self.local, lc_id + '.json'))
         self._run_git('git -C "%s" commit -mupdates' % self.local)
         self._run_git('git -C "%s" push' % self.local)
 
@@ -306,7 +306,7 @@ class LeoCloud:
             c (context): Leo context    """
         self.c = c
         self.bg_finished = False  # used for background thread
-        self.bg_results = []      # results from background thread
+        self.bg_results = []  # results from background thread
 
         # we're here via open2 hook, but too soon to load from cloud,
         # so defer
@@ -507,7 +507,7 @@ class LeoCloud:
                     delta = datetime.now() - last_read
                     message = "%s\n%s, %sh:%sm:%ss ago" % (
                         message, last_read.strftime("%a %b %d %H:%M"),
-                        24*delta.days+int(delta.seconds / 3600),
+                        24 * delta.days + int(delta.seconds / 3600),
                         int(delta.seconds / 60) % 60,
                         delta.seconds % 60)
                 read = g.app.gui.runAskYesNoCancelDialog(self.c, "Read cloud data?",
@@ -658,7 +658,7 @@ class LeoCloud:
             return obj.isoformat()
         if isinstance(obj, set):
             return list(obj)
-        raise TypeError ("Type %s not serializable" % type(obj))
+        raise TypeError("Type %s not serializable" % type(obj))
 
     #@+node:ekr.20201012111338.38: *3* LeoCloud.to_json
     @staticmethod
@@ -674,7 +674,7 @@ class LeoCloud:
         return json.dumps(
             data,
             sort_keys=True,  # prevent unnecessary diffs
-            indent=0,        # make json readable on cloud web pages
+            indent=0,  # make json readable on cloud web pages
             default=LeoCloud._to_json_serial
         )
 

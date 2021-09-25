@@ -63,7 +63,7 @@ def md_write_files(event):
             if m:
                 v1 = c.fileCommands.gnxDict.get(m.group(2))
                 if not v1:
-                    g.es('gnx not found:[%s]'%m.group(2))
+                    g.es('gnx not found:[%s]' % m.group(2))
                 else:
                     for x in v1.b.splitlines(False):
                         yield m.group(1) + x
@@ -169,6 +169,6 @@ def sync_transformations(event):
         except Exception:
             g.es_exception(True, c)
     if count:
-        g.es('%d node(s) transformed'%count)
+        g.es('%d node(s) transformed' % count)
 #@-others
 #@-leo

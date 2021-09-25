@@ -41,9 +41,9 @@ class CText_Importer(Importer):
         '''Ctor for CoffeeScriptScanner class.'''
         super().__init__(
             importCommands,
-            language = 'ctext',
-            state_class = None,
-            strict = False
+            language='ctext',
+            state_class=None,
+            strict=False
         )
         self.fileType = importCommands.fileType
     #@+node:tbrown.20140801105909.47552: *3* ctext_i.write_lines

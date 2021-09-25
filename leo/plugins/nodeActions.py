@@ -213,7 +213,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     if not g.app.batchMode:
         g.blue("nodeActions: Init")
-    ok = not g.unitTesting # Dangerous for unit testing.
+    ok = not g.unitTesting  # Dangerous for unit testing.
     if ok:
         g.registerHandler("headdclick1", onIconDoubleClickNA)
         g.plugin_signon(__name__)
@@ -226,7 +226,7 @@ def onIconDoubleClickNA(tag, keywords):
     if not c or not p:
         return None
 
-    if doNodeAction(p,c):
+    if doNodeAction(p, c):
         return True
     return None
 #@+node:caminhante.20200802125556.1: ** nodeaction-act
@@ -236,7 +236,7 @@ def cmd_nodeaction_act(event):
     p = c.p
     if not c or not p:
         return None
-    if doNodeAction(p,c):
+    if doNodeAction(p, c):
         return True
     return None
 #@+node:TL.20080507213950.9: ** doNodeAction
@@ -254,16 +254,16 @@ def doNodeAction(pClicked, c):
     messageLevel = c.config.getInt('nodeActions-message-level')
 
     if messageLevel >= 1:
-        g.es( "nodeActions: triggered" )
+        g.es("nodeActions: triggered")
 
     #Save @file type nodes before running script if enabled
     saveAtFile = c.config.getBool('nodeActions-save-atFile-nodes')
     if messageLevel >= 4:
-        g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
+        g.blue("nA: Global nodeActions_save_atFile_nodes=", saveAtFile)
     #Find the "nodeActions" node
-    pNA = g.findNodeAnywhere(c,"nodeActions")
+    pNA = g.findNodeAnywhere(c, "nodeActions")
     if not pNA:
-        pNA = g.findNodeAnywhere(c,"NodeActions")
+        pNA = g.findNodeAnywhere(c, "NodeActions")
 
     if pNA:
         #Found "nodeActions" node
@@ -280,12 +280,12 @@ def doNodeAction(pClicked, c):
             if pClicked == pScript:
                 continue
 
-            pattern = pScript.h.strip()    #Pattern node's header
+            pattern = pScript.h.strip()  #Pattern node's header
             if messageLevel >= 4:
-                g.blue( "nA: Checking pattern '" + pattern)
+                g.blue("nA: Checking pattern '" + pattern)
 
             #if directives exist, parse them and set directive flags for later use
-            directiveExists = re.search(r" \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
+            directiveExists = re.search(r" \[[V>X],?[V>X]?,?[V>X]?]$", pattern)
             if directiveExists:
                 directives = directiveExists.group(0)
             else:
@@ -293,7 +293,7 @@ def doNodeAction(pClicked, c):
             #What directives exist?
             useRegEx = re.search("X", directives) is not None
             passEventInternal = re.search("V", directives) is not None
-            if not passEventExternal: #don't disable once enabled.
+            if not passEventExternal:  #don't disable once enabled.
                 passEventExternal = re.search(">", directives) is not None
             #Remove the directives from the end of the pattern (if they exist)
             pattern = re.sub(r" \[.*]$", "", pattern, 1)
@@ -305,15 +305,15 @@ def doNodeAction(pClicked, c):
 
             #if pattern begins with "@files" and clicked node is an @file type
             #node then replace "@files" in pattern with clicked node's @file type
-            patternBeginsWithAtFiles = re.search( "^@files ", pattern )
-            clickedAtFileTypeNode = False #assume @file type node not clicked
+            patternBeginsWithAtFiles = re.search("^@files ", pattern)
+            clickedAtFileTypeNode = False  #assume @file type node not clicked
             if patternBeginsWithAtFiles:
                 if pClicked.isAnyAtFileNode():
-                    clickedAtFileTypeNode = True #Tell "write @file type nodes" code
+                    clickedAtFileTypeNode = True  #Tell "write @file type nodes" code
                     #Replace "@files" in pattern with clicked node's @file type
-                    pattern = re.sub( "^@files", pNA.h.split(' ')[0], pattern)
+                    pattern = re.sub("^@files", pNA.h.split(' ')[0], pattern)
                     if messageLevel >= 4:
-                        g.blue( "nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
+                        g.blue("nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
 
             #Check for pattern match to clicked node's header
             if useRegEx:
@@ -322,10 +322,10 @@ def doNodeAction(pClicked, c):
                 match = fnmatch.fnmatchcase(hClicked, pattern)
             if match:
                 if messageLevel >= 1:
-                    g.blue( "nA: Matched pattern '" + patternOriginal + "'")
+                    g.blue("nA: Matched pattern '" + patternOriginal + "'")
                 if messageLevel >= 4:
-                    g.blue( "nA:    Directives: X=",useRegEx, "V=",passEventInternal,
-                          ">=",passEventExternal,)
+                    g.blue("nA:    Directives: X=", useRegEx, "V=", passEventInternal,
+                          ">=", passEventExternal,)
                 #if @file type node, save node to disk (if configured)
                 if clickedAtFileTypeNode:
                     if saveAtFile:
@@ -333,7 +333,7 @@ def doNodeAction(pClicked, c):
                         c.fileCommands.writeAtFileNodes()
                         c.redraw()
                         if messageLevel >= 3:
-                            g.blue( "nA:    Saved '" + hClicked + "'")
+                            g.blue("nA:    Saved '" + hClicked + "'")
                 # Run the script
                 applyNodeAction(pScript, pClicked, c)
                 # Indicate that at least one pattern was matched
@@ -349,23 +349,23 @@ def doNodeAction(pClicked, c):
         if not foundPattern:
             #no match to any pattern, always pass event to next plugin
             if messageLevel >= 1:
-                g.blue("nA: No patterns matched to """ + hClicked + '"')
-            return False #TL - Inform onIconDoubleClick that no action was taken
+                g.blue("nA: No patterns matched to " "" + hClicked + '"')
+            return False  #TL - Inform onIconDoubleClick that no action was taken
         if passEventExternal:
             #last matched pattern has directive to pass event to next plugin
             if messageLevel >= 2:
                 g.blue("nA: Event passed to next plugin")
-            return False #TL - Inform onIconDoubleClick to pass double-click event
+            return False  #TL - Inform onIconDoubleClick to pass double-click event
         #
         #last matched pattern did not have directive to pass event to plugin
         if messageLevel >= 2:
             g.blue("nA: Event not passed to next plugin")
-        return True #TL - Inform onIconDoubleClick to not pass double-click
+        return True  #TL - Inform onIconDoubleClick to not pass double-click
     #
     # nodeActions plugin enabled without a 'nodeActions' node
     if messageLevel >= 4:
-        g.blue("nA: The ""nodeActions"" node does not exist")
-    return False #TL - Inform onIconDoubleClick that no action was taken
+        g.blue("nA: The " "nodeActions" " node does not exist")
+    return False  #TL - Inform onIconDoubleClick that no action was taken
 #@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):
 
@@ -377,15 +377,15 @@ def applyNodeAction(pScript, pClicked, c):
         script += '\n'
         #Redirect output
         if c.config.redirect_execute_script_output_to_log_pane:
-            g.redirectStdout() # Redirect stdout
-            g.redirectStderr() # Redirect stderr
+            g.redirectStdout()  # Redirect stdout
+            g.redirectStderr()  # Redirect stderr
         try:
             namespace = {
-                'c':c, 'g':g,
+                'c': c, 'g': g,
                 'pClicked': pClicked,
-                'pScript' : pScript }
+                'pScript': pScript}
             # exec script in namespace
-            exec(script,namespace)
+            exec(script, namespace)
             #Unredirect output
             if c.config.redirect_execute_script_output_to_log_pane:
                 g.restoreStderr()
@@ -396,7 +396,7 @@ def applyNodeAction(pScript, pClicked, c):
                 g.restoreStderr()
                 g.restoreStdout()
             g.es("exception in NodeAction plugin")
-            g.es_exception(full=False,c=c)
+            g.es_exception(full=False, c=c)
 
         os.chdir(working_directory)
 #@-others

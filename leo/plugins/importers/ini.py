@@ -13,9 +13,9 @@ class Ini_Importer(Importer):
         '''Ini_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'ini',
-            state_class = None,
-            strict = False,
+            language='ini',
+            state_class=None,
+            strict=False,
         )
 
     #@+others
@@ -50,9 +50,9 @@ class Ini_Importer(Importer):
             self.add_line(self.root, '@others\n')
         # Create the new node.
         return self.create_child_node(
-            parent = self.root,
-            body = line,
-            headline = line.strip())
+            parent=self.root,
+            body=line,
+            headline=line.strip())
     #@-others
 #@-others
 importer_dict = {

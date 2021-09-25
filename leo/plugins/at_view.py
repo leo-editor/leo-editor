@@ -19,7 +19,7 @@ This plugin also accumulates the effect of all \@path nodes.
 #@-<< docstring >>
 
 from leo.core import leoGlobals as g
-path           = g.import_module('path')
+path = g.import_module('path')
 win32clipboard = g.import_module('win32clipboard')
 
 #@+others
@@ -29,7 +29,7 @@ def init():
     ok = path and win32clipboard
         # Ok for unit testing.
     if ok:
-        g.registerHandler("after-create-leo-frame",onCreate)
+        g.registerHandler("after-create-leo-frame", onCreate)
     elif not g.unitTesting:
         s = 'at_view plugin not loaded: win32Clipboard not present.'
         g.es_print(s)
@@ -53,12 +53,12 @@ class View:
 
     #@+others
     #@+node:ktenney.20041211072654.8: *3* __init__
-    def __init__ (self,c):
+    def __init__(self, c):
 
         self.c = c
 
     #@+node:ktenney.20041211072654.9: *3* icondclick2 (at_view.py)
-    def icondclick2 (self, tag, keywords):
+    def icondclick2(self, tag, keywords):
 
         self.current = self.c.p
         hs = self.current.h
@@ -123,7 +123,7 @@ class View:
         if not body[0] == clipboard:
             g.es('clipboard now holds %s' % clipboard)
             body.insert(0, clipboard)
-            c.setBodyText(self.current,divider.join(body))
+            c.setBodyText(self.current, divider.join(body))
     #@+node:ktenney.20041211072654.15: *3* strip
     def strip(self):
 
@@ -148,7 +148,7 @@ class View:
                     verbatim = True
                 elif not line.strip().startswith('#@'):
                     lines.append(line)
-            c.setBodyText(self.current,''.join(lines))
+            c.setBodyText(self.current, ''.join(lines))
         else:
             g.warning('path does not exist: %s' % (str(currentPath)))
     #@+node:ktenney.20041211072654.11: *3* getCurrentPath
@@ -174,15 +174,15 @@ class View:
 
         return currentPath.normpath()
     #@+node:ktenney.20041211072654.12: *3* getPathFragment
-    def getPathFragment (self,p):
+    def getPathFragment(self, p):
 
         """
         Return the path fragment if this node is a @path or @view or any @file node.
         """
         head = p.h
-        for s in ('@path','@view','@strip','@file','@thin','@nosent','@asis'):
+        for s in ('@path', '@view', '@strip', '@file', '@thin', '@nosent', '@asis'):
             if head.startswith(s):
-                fragment = head [head.find(' '):].strip()
+                fragment = head[head.find(' ') :].strip()
                 return fragment
         return ''
     #@+node:ktenney.20041211072654.13: *3* processFile
@@ -194,7 +194,7 @@ class View:
 
         g.trace(node)
 
-        self.c.setBodyText(node,''.join(path.lines()))
+        self.c.setBodyText(node, ''.join(path.lines()))
     #@+node:ktenney.20041211072654.14: *3* processDirectory
     def processDirectory(self, path, node):
 

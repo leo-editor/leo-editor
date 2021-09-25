@@ -26,7 +26,7 @@ from leo.core import leoGlobals as g
 #@+node:ajones.20070122160142.2: ** init (textnode.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    g.registerHandler(('new','open2'), on_open)
+    g.registerHandler(('new', 'open2'), on_open)
     g.registerHandler("save1", on_save)
     g.registerHandler("save2", on_open)
     g.registerHandler("icondclick1", on_icondclick)
@@ -37,36 +37,36 @@ def on_icondclick(tag, keywords):
     c = keywords['c']
     p = keywords['p']
     h = p.h
-    if g.match_word(h,0,"@text"):
+    if g.match_word(h, 0, "@text"):
         if p.b != "":
-            result = g.app.gui.runAskYesNoDialog(c, "Query", "Read from file "+h[6:]+"?")
+            result = g.app.gui.runAskYesNoDialog(c, "Query", "Read from file " + h[6:] + "?")
             if result == "no":
                 return
         readtextnode(c, p)
 #@+node:ajones.20070122160142.3: ** on_open
-def on_open(tag,keywords):
+def on_open(tag, keywords):
     c = keywords.get("c")
     if not c:
         return
 
     for p in c.all_positions():
         h = p.h
-        if g.match_word(h,0,"@text"):
+        if g.match_word(h, 0, "@text"):
             readtextnode(c, p)
     c.redraw()
 #@+node:ajones.20070122161942: ** on_save
-def on_save(tag,keywords):
+def on_save(tag, keywords):
     c = keywords.get("c")
     if not c:
         return
 
     for p in c.all_positions():
         h = p.h
-        if g.match_word(h,0,"@text") and p.isDirty():
+        if g.match_word(h, 0, "@text") and p.isDirty():
             savetextnode(c, p)
             p.b = ""
 #@+node:tbrown.20080128221824: ** getPath
-def getPath(c,p):
+def getPath(c, p):
     path = [i.h[6:] for i in p.self_and_parents()
             if i.h[:6] in ('@path ', '@text ')]
     path.append(g.getBaseDirectory(c))
@@ -75,9 +75,9 @@ def getPath(c,p):
 #@+node:ajones.20070122181914.1: ** readtextnode
 def readtextnode(c, p):
 
-    name = getPath(c,p)
+    name = getPath(c, p)
     try:
-        file = open(name,"rU")
+        file = open(name, "rU")
         g.es("..." + name)
         p.b = file.read()
         p.clearDirty()
@@ -89,9 +89,9 @@ def readtextnode(c, p):
         p.setDirty()
 #@+node:ajones.20070122185020: ** savetextnode
 def savetextnode(c, p):
-    name = getPath(c,p)
+    name = getPath(c, p)
     try:
-        file = open(name,"w")
+        file = open(name, "w")
         g.es("writing " + name)
         file.write(p.b)
         file.close()

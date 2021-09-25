@@ -3633,7 +3633,7 @@ class FastAtRead:
                 # Doc lines start with start_delim + one blank.
                 # #1496: Retire the @doc convention.
                 # #2194: Strip lws.
-                tail = line.lstrip()[len(delim_start) + 1:]
+                tail = line.lstrip()[len(delim_start) + 1 :]
                 if tail.strip():
                     body.append(tail)
                 else:

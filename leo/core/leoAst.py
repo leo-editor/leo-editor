@@ -2612,7 +2612,7 @@ class Orange:
             'tab_width',
         )
         # For mypy...
-        self.kind: str=''
+        self.kind: str = ''
         # Default settings...
         self.allow_joined_strings = False  # EKR's preference.
         self.max_join_line_length = 88

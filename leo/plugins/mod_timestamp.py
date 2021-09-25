@@ -15,11 +15,11 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     g.registerHandler("command1", timestamp)
     g.plugin_signon(__name__)
-    return True # OK for unit testing.
+    return True  # OK for unit testing.
 #@+node:edream.110203113231.728: ** timestamp
 def timestamp(tag=None, keywords=None):
 
-    cmd = keywords.get('label','save')
+    cmd = keywords.get('label', 'save')
 
     if cmd.startswith("save") or cmd.startswith("tangle"):
         g.es("%s: %s" % (cmd, time.ctime()))

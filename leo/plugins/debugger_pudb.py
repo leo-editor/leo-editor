@@ -15,7 +15,7 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ville.20090712141419.5253: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = pudb is not None
     if ok:

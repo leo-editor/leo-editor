@@ -18,9 +18,9 @@ class Xml_Importer(Importer):
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'xml',
-            state_class = Xml_ScanState,
-            strict = False,
+            language='xml',
+            state_class=Xml_ScanState,
+            strict=False,
         )
         self.tags_setting = tags_setting
         self.start_tags = self.add_tags()
@@ -65,7 +65,7 @@ class Xml_Importer(Importer):
             else:
                 context, i, tag_level = self.scan_out_context(i, s, tag_level)
             assert progress < i, (repr(s[i]), '***', repr(s))
-        d = {'context':context, 'tag_level':tag_level}
+        d = {'context': context, 'tag_level': tag_level}
         return Xml_ScanState(d)
     #@+node:ekr.20161122073937.1: *4* xml_i.scan_in_context
     def scan_in_context(self, context, i, s):
@@ -92,7 +92,7 @@ class Xml_Importer(Importer):
         '''
         context = ''
         if self.match(s, i, '"'):
-            context = '"' # Only double-quoted strings are xml/html strings.
+            context = '"'  # Only double-quoted strings are xml/html strings.
             i += 1
         elif self.match(s, i, '<!--'):
             context = '<!--'
@@ -203,7 +203,7 @@ class Xml_Importer(Importer):
         This is needed to handle embedded brython code properly.
         '''
         result, w = [], self.tab_width
-        indent = ' '*abs(w) if w < 0 else '\t'
+        indent = ' ' * abs(w) if w < 0 else '\t'
         for s in self.get_lines(p):
             ls = '\n' if s.isspace() else s.lstrip()
             if ls.startswith('@others'):

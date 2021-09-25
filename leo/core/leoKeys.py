@@ -2521,7 +2521,7 @@ class KeyHandlerClass:
             'Ctrl+Meta+Shift', 'Ctrl+Meta', 'Ctrl+Shift', 'Ctrl',  # Ctrl+Key: done by Ctrl.
             'Meta+Key', 'Meta+Shift', 'Meta',
             'Shift',
-            'F', # #1972
+            'F',  # #1972
             # Careful: longer prefixes must come before shorter prefixes.
         ):
             data2 = []
@@ -2866,8 +2866,8 @@ class KeyHandlerClass:
             # Interior masterBindingDicts: Keys are strokes; values are BindingInfo objects.
             d = k.masterBindingsDict
             d2 = d.get('all', {})
-            d2 [stroke] = bi
-            d ['all'] = d2
+            d2[stroke] = bi
+            d['all'] = d2
         assert g.isStroke(stroke), (commandName, stroke.__class__.__name__)
         shortcut = stroke.s
         shortcut = g.checkUnicode(shortcut)

@@ -218,7 +218,7 @@ You will find this stylesheet in the node @data
 #@+node:ekr.20120913110135.10590: ** << imports >>
 import random
 from leo.core import leoGlobals as g
-from leo.core import leoGui # for LeoKeyEvents.
+from leo.core import leoGui  # for LeoKeyEvents.
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import ScrollBarPolicy
 #
@@ -280,21 +280,21 @@ class ScreenCastController:
         self.commands = []
         self.command_index = 0
         self.log_color = 'black'
-        self.log_focus = True # True: writing to log sets focus to log.
-        self.ignore_keys = False # True: ignore keys in state_handler.
-        self.quit_flag = False # True if m.quit has been called.
-        self.k_state = g.bunch(kind=None, n=None, handler=None) # Saved k.state.
-        self.key_w = None # Saved widget for passed-along key handling.
-        self.n1 = 0.02 # default minimal typing delay.
-        self.n2 = 0.175 # default maximum typing delay.
-        self.p1 = None # The first slide of the show.
-        self.p = None # The present slide of the show.
-        self.speed = 1.0 # Amount to multiply wait times.
-        self.state_name = 'screencast' # The state name to enable m.state_handler.
-        self.node_stack = [] # For m.prev and m.undo.
-        self.text_flag = False # True: m.next shows body text instead of executing it.
-        self.user_dict = {} # For use by scripts.
-        self.widgets = [] # List of (popup) widgets created by this class.
+        self.log_focus = True  # True: writing to log sets focus to log.
+        self.ignore_keys = False  # True: ignore keys in state_handler.
+        self.quit_flag = False  # True if m.quit has been called.
+        self.k_state = g.bunch(kind=None, n=None, handler=None)  # Saved k.state.
+        self.key_w = None  # Saved widget for passed-along key handling.
+        self.n1 = 0.02  # default minimal typing delay.
+        self.n2 = 0.175  # default maximum typing delay.
+        self.p1 = None  # The first slide of the show.
+        self.p = None  # The present slide of the show.
+        self.speed = 1.0  # Amount to multiply wait times.
+        self.state_name = 'screencast'  # The state name to enable m.state_handler.
+        self.node_stack = []  # For m.prev and m.undo.
+        self.text_flag = False  # True: m.next shows body text instead of executing it.
+        self.user_dict = {}  # For use by scripts.
+        self.widgets = []  # List of (popup) widgets created by this class.
         # inject c.screenCastController
         c.screenCastController = self
     #@+node:ekr.20120916193057.10605: *3* sc.Entry points
@@ -320,7 +320,7 @@ class ScreenCastController:
             m.wait(n1, n2)
         c.redraw()
     #@+node:ekr.20120914133947.10578: *4* sc.caption and abbreviations: body, log, tree
-    def caption(self, s, pane): # To do: center option.
+    def caption(self, s, pane):  # To do: center option.
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         m = self
         parent = m.pane_widget(pane)
@@ -441,7 +441,7 @@ class ScreenCastController:
             m.key_w = w
             for ch in s:
                 p.h = p.h + ch
-                tree.repaint() # *not* tree.update.
+                tree.repaint()  # *not* tree.update.
                 m.wait(n1, n2)
                 event = m.get_key_event(ch, w)
                 c.k.masterKeyHandler(event)
@@ -486,7 +486,7 @@ class ScreenCastController:
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
-            if 0: # None of this works.
+            if 0:  # None of this works.
                 g.trace('repaint', c.frame.top)
                 c.frame.top.repaint()
                 g.trace('repaint', menu)
@@ -558,7 +558,7 @@ class ScreenCastController:
             else:
                 # old_state_kind = None
                 k.clearState()
-            w.repaint() # *not* tree.update.
+            w.repaint()  # *not* tree.update.
             m.wait(n1, n2)
             event = m.get_key_event(ch, w)
             k.masterKeyHandler(event)
@@ -590,7 +590,7 @@ class ScreenCastController:
                 p_next = m.p.threadNext()
                 p_old = m.p.copy()
                 if g.match_word(m.p.h, 0, '@text'):
-                    c.redraw(m.p) # Selects the node, thereby showing the body text.
+                    c.redraw(m.p)  # Selects the node, thereby showing the body text.
                 else:
                     m.exec_node(m.p)
                 # Save k.state in m.k_state.

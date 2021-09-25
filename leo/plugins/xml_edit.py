@@ -115,7 +115,7 @@ table = [
 ]
 
 # xml namespace mapping from prefix to full namespace
-NSMAP={}
+NSMAP = {}
 
 #@+node:tbrown.20110428102237.20325: ** append_element
 def append_element(xml_node, to_leo_node):
@@ -129,7 +129,7 @@ def append_element(xml_node, to_leo_node):
 
     elif isinstance(xml_node, etree._ProcessingInstruction):
         leo_node = to_leo_node.insertAsLastChild()
-        r = [xml_node.target]+xml_node.text.split()[:40]
+        r = [xml_node.target] + xml_node.text.split()[:40]
         leo_node.h = "? %s" % ' '.join(r)
         leo_node.b = xml_node.text
 
@@ -149,7 +149,7 @@ def append_element(xml_node, to_leo_node):
             leo_node.b = xml_node.text
 
         if xml_node.tail and xml_node.tail.strip():
-            leo_node.b += tail_sentinel+xml_node.tail
+            leo_node.b += tail_sentinel + xml_node.tail
 
         for k in sorted(xml_node.attrib.keys()):
             if uAxml not in leo_node.v.u:
@@ -163,14 +163,14 @@ def append_element(xml_node, to_leo_node):
             append_element(xml_child, leo_node)
 
 #@+node:tbrown.20110429155827.20762: ** cd_here
-def cd_here(c,p):
+def cd_here(c, p):
     """attempt to cd to the directory in effect at p according
     to Leo's @path concept
     """
     try:
         os.chdir(c.getNodePath(p))
     except Exception:
-        pass # well, at least we tried
+        pass  # well, at least we tried
 #@+node:tbrown.20110428102237.20327: ** get_element
 def get_element(leo_node):
     """recursively read from leo nodes and write into an Element tree
@@ -192,7 +192,7 @@ def get_element(leo_node):
             ele.set(make_tag(k), d[k])
 
     if tail_sentinel in leo_node.b:
-        ele.text,ele.tail = leo_node.b.split(tail_sentinel, 1)
+        ele.text, ele.tail = leo_node.b.split(tail_sentinel, 1)
     else:
         ele.text = leo_node.b
 
@@ -209,17 +209,17 @@ def get_tag(xml_node, attrib=None):
         name = attrib
     else:
         name = xml_node.tag
-    for k,v in xml_node.nsmap.items():
+    for k, v in xml_node.nsmap.items():
         NSMAP[k] = v
         x = "{%s}" % v
-        r = k+":" if k else ""
+        r = k + ":" if k else ""
         if name.startswith(x):
             name = name.replace(x, r)
             # don't break here, this loop also updates NSMAP for later
     return name
 
 #@+node:ekr.20110523130519.18190: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     return True
 #@+node:tbrown.20110428102237.20329: ** leo2xml
@@ -233,7 +233,7 @@ def leo2xml(event):
 
     ans = xml_for_subtree(p)
 
-    cd_here(c,p)
+    cd_here(c, p)
     file_name = g.app.gui.runSaveFileDialog(
             c, title="Open", filetypes=table, defaultextension=".xml")
     if not file_name:
@@ -260,7 +260,7 @@ def leo2xml2leo(event):
 
     nd = xml2leo({'c': c}, from_string=xml_)
 
-    nd.h = 'NEW '+oh
+    nd.h = 'NEW ' + oh
 
     c.selectPosition(nd)
     c.redraw()
@@ -272,7 +272,7 @@ def make_tag(tag):
         # 'xml:space' becomes '{http://www.w3.org/XML/1998/namespace}space'
         return tag
 
-    ns,tag = tag.split(':', 1)
+    ns, tag = tag.split(':', 1)
 
     return '{%s}%s' % (NSMAP[ns], tag)
 #@+node:tbrown.20110428102237.20326: ** xml2leo
@@ -288,7 +288,7 @@ def xml2leo(event, from_string=None):
         file_name = from_string
     else:
         parser_func = etree.parse
-        cd_here(c,p)
+        cd_here(c, p)
         file_name = g.app.gui.runOpenFileDialog(
                 c, title="Open", filetypes=table, defaultextension=".xml")
 
@@ -300,7 +300,7 @@ def xml2leo(event, from_string=None):
     except etree.XMLSyntaxError:
         xml_ = parser_func(file_name, parser=etree.HTMLParser())
     except Exception:
-        g.es("Failed to read '%s'"%file_name)
+        g.es("Failed to read '%s'" % file_name)
         raise
 
     if from_string:
@@ -331,7 +331,7 @@ def xml2leo(event, from_string=None):
     if NSMAP:
         for k in sorted(NSMAP):
             if k:
-                nd.b += "%s: %s\n" % (k,NSMAP[k])
+                nd.b += "%s: %s\n" % (k, NSMAP[k])
             else:
                 nd.b += "%s\n" % NSMAP[k]
     nd.b += xml_.docinfo.doctype + '\n'
@@ -373,7 +373,7 @@ def xml_for_subtree(nd):
     for ele in elements:
         ans.append(etree.tostring(ele, pretty_print=True))
 
-    ans = [g.toUnicode(z) for z in ans] # EKR: 2011/04/29
+    ans = [g.toUnicode(z) for z in ans]  # EKR: 2011/04/29
 
     return '\n'.join(ans)
 #@+node:tbrown.20110429140247.20760: ** xml_validate
@@ -401,7 +401,7 @@ def xml_validate(event):
         xml_ = xml_.split('\n', 1)[1]
 
     # set cwd so local .dtd files can be found
-    cd_here(c,p)
+    cd_here(c, p)
 
     # make xml indented because for some unknown reason pretty_print=True
     # in xml_for_subtree doesn't work
@@ -420,10 +420,10 @@ def xml_validate(event):
         g.es(str(xse))
 
         # seems XMLSyntaxError doesn't set lineno?  Get from message
-        lineno = int(str(xse).split()[-3].strip(','))-1
+        lineno = int(str(xse).split()[-3].strip(',')) - 1
         xml_text = xml_.split('\n')
-        for i in range(max(0, lineno-6), min(len(xml_text), lineno+3)):
-            g.es("%d%s %s"%(i, ':' if i != lineno else '*', xml_text[i]))
+        for i in range(max(0, lineno - 6), min(len(xml_text), lineno + 3)):
+            g.es("%d%s %s" % (i, ':' if i != lineno else '*', xml_text[i]))
 
 #@-others
 #@-leo

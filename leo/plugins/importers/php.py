@@ -14,9 +14,9 @@ class Php_Importer(Importer):
         '''Php_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'php',
-            state_class = Php_ScanState,
-            strict = False,
+            language='php',
+            state_class=Php_ScanState,
+            strict=False,
         )
         self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
         self.here_doc_target = None
@@ -92,7 +92,7 @@ class Php_Importer(Importer):
                 return '', i, 0, 0, 0, False
             # Skip the rest of the line
             return '', len(s), 0, 0, 0, False
-        ch = s[i] # For traces.
+        ch = s[i]  # For traces.
         aList = d.get(ch)
         if aList and context:
             # In context.
@@ -108,7 +108,7 @@ class Php_Importer(Importer):
                         new_context = ''
                         break
                     else:
-                        pass # Ignore this match.
+                        pass  # Ignore this match.
         elif aList:
             # Not in context.
             for data in aList:
@@ -123,11 +123,11 @@ class Php_Importer(Importer):
                 i = len(s)
             elif kind == 'len+1':
                 i += (len(pattern) + 1)
-            elif kind == '<<<': # Special flag for here docs.
-                new_context = context # here_doc_target is a another kind of context.
+            elif kind == '<<<':  # Special flag for here docs.
+                new_context = context  # here_doc_target is a another kind of context.
                 m = self.here_doc_pattern.match(s[i:])
                 if m:
-                    i = len(s) # Skip the rest of the line.
+                    i = len(s)  # Skip the rest of the line.
                     self.here_doc_target = '%s;' % m.group(1)
                 else:
                     i += 3
@@ -139,7 +139,7 @@ class Php_Importer(Importer):
         #
         # No match: stay in present state. All deltas are zero.
         new_context = context
-        return new_context, i+1, 0, 0, 0, False
+        return new_context, i + 1, 0, 0, 0, False
     #@+node:ekr.20161130044051.1: *3* php_i.skip_heredoc_string (not used)
     # EKR: This is Dave Hein's heredoc code from the old PHP scanner.
     # I have included it for reference in case heredoc problems arise.
@@ -173,12 +173,12 @@ class Php_Importer(Importer):
             return i
         # 14-SEP-2002 DTHEIN: needed to add \n to find word, not just string
         delim = m.group(1) + '\n'
-        i = g.skip_line(s, i) # 14-SEP-2002 DTHEIN: look after \n, not before
+        i = g.skip_line(s, i)  # 14-SEP-2002 DTHEIN: look after \n, not before
         n = len(s)
         while i < n and not g.match(s, i, delim):
-            i = g.skip_line(s, i) # 14-SEP-2002 DTHEIN: move past \n
+            i = g.skip_line(s, i)  # 14-SEP-2002 DTHEIN: move past \n
         if i >= n:
-            g.scanError("Run on string: " + s[j: i])
+            g.scanError("Run on string: " + s[j:i])
         elif g.match(s, i, delim):
             i += len(delim)
         return i

@@ -20,9 +20,9 @@ class Lua_Importer(Importer):
         '''Lua_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'lua',
-            state_class = Lua_ScanState,
-            strict = False,
+            language='lua',
+            state_class=Lua_ScanState,
+            strict=False,
         )
         self.start_stack = []
             # Contains entries for all constructs that end with 'end'.
@@ -35,7 +35,7 @@ class Lua_Importer(Importer):
         s = s.strip()
         for tag in ('local', 'function'):
             if s.startswith(tag):
-                s = s[len(tag):]
+                s = s[len(tag) :]
         i = s.find('(')
         if i > -1:
             s = s[:i]
@@ -43,13 +43,13 @@ class Lua_Importer(Importer):
     #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        assert len(stack) > 1 # Fail on entry.
+        assert len(stack) > 1  # Fail on entry.
             # function/end's are strictly nested, so this suffices.
         stack.pop()
         # Restore the guard entry if necessary.
         if len(stack) == 1:
             stack.append(stack[-1])
-        assert len(stack) > 1 # Fail on exit.
+        assert len(stack) > 1  # Fail on exit.
     #@+node:ekr.20170530040554.1: *3* lua_i.ends_block
     def ends_block(self, i, lines, new_state, prev_state, stack):
         '''True if line ends the block.'''
@@ -167,7 +167,7 @@ class Lua_Importer(Importer):
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
         line = lines[i]
-        target=stack[-1]
+        target = stack[-1]
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.

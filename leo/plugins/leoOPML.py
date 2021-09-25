@@ -83,7 +83,7 @@ from leo.core import leoPlugins
 StringIO = io.StringIO
 BytesIO = io.BytesIO
 #@-<< imports >>
-printElements = [] # ['all','outline','head','body',]
+printElements = []  # ['all','outline','head','body',]
     # For traces.
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level
@@ -143,7 +143,7 @@ class OpmlController:
         c.k.registerCommand('write-opml-file', self.writeOpmlCommand)
         self.currentVnode = None
         self.topVnode = None
-        self.generated_gnxs = {} # Keys are gnx's (strings).  Values are vnodes.
+        self.generated_gnxs = {}  # Keys are gnx's (strings).  Values are vnodes.
         self.reloadSettings()
 
     def reloadSettings(self):
@@ -217,7 +217,7 @@ class OpmlController:
         path = g.os_path_normpath(g.os_path_join(g.app.loadDir, fn))
         try:
             f = open(path, 'rb')
-            s = f.read() # type(s) is bytes for Python 3.x.
+            s = f.read()  # type(s) is bytes for Python 3.x.
             s = self.cleanSaxInputString(s)
         except IOError:
             return g.trace('can not open %s' % path)
@@ -231,7 +231,7 @@ class OpmlController:
             parser.setFeature(xml.sax.handler.feature_external_pes, 0)
             handler = SaxContentHandler(c, fn)
             parser.setContentHandler(handler)
-            parser.parse(theFile) # expat does not support parseString
+            parser.parse(theFile)  # expat does not support parseString
             sax_node = handler.getNode()
         except xml.sax.SAXParseException:
             g.error('error parsing', fn)
@@ -295,7 +295,7 @@ class OpmlController:
                 # c.atFileCommands.readAll(c.rootPosition())
         c.selectPosition(p)
         c.redraw()
-        return c # for testing.
+        return c  # for testing.
     #@+node:ekr.20060921153603: *4* oc.createTnodesDict
     def createTnodesDict(self):
         '''
@@ -384,7 +384,7 @@ class PutToOPML:
     def __init__(self, owner):
         self.c = owner.c
         self.leo_file_encoding = owner.leo_file_encoding
-        self.owner = owner # a leoFileCommands.FileCommand instance.
+        self.owner = owner  # a leoFileCommands.FileCommand instance.
         self.initConfig()
         self.putAll()
 
@@ -466,7 +466,7 @@ class PutToOPML:
             self.put('<head />')
             return
         c = self.c
-        indent = ' '*4
+        indent = ' ' * 4
         width, height, left, top = c.frame.get_window_info()
         bottom = str(top + height)
         right = str(left + width)
@@ -561,12 +561,12 @@ class PutToOPML:
             return None
         # Assign fileIndices.
         for v in p.v.tnodeList:
-            try: # Will fail for None or any pre 4.1 file index.
+            try:  # Will fail for None or any pre 4.1 file index.
                 theId, time, n = p.v.fileIndex
             except Exception:
                 g.trace("assigning gnx for ", p.v)
                 gnx = g.app.nodeIndices.getNewIndex(p.v)
-                p.v.setFileIndex(gnx) # Don't convert to string until the actual write.
+                p.v.setFileIndex(gnx)  # Don't convert to string until the actual write.
         s = ','.join([g.app.nodeIndices.tupleToString(v.fileIndex) for v in p.v.tnodeList])
         return s
     #@+node:tbrown.20061004094757: *4* uAAttributes
@@ -615,7 +615,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         self.level = 0
         self.node = None
         self.nodeStack = []
-        self.ratio = 0.5 # body-outline ratio.
+        self.ratio = 0.5  # body-outline ratio.
         self.rootNode = None
     #@+node:ekr.20060917185525: *4* define_disptatch_dict
     def define_dispatch_dict(self):
@@ -778,7 +778,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         if self.rootNode:
             parent = self.node
         else:
-            self.rootNode = parent = NodeClass() # The dummy parent node.
+            self.rootNode = parent = NodeClass()  # The dummy parent node.
             parent.headString = 'dummyNode'
         self.node = NodeClass()
         parent.children.append(self.node)
@@ -789,7 +789,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         node = self.node
         for bunch in self.attrsToList(attrs):
             name, val = bunch.name, bunch.val
-            if name == 'text': # Text is the 'official' opml attribute for headlines.
+            if name == 'text':  # Text is the 'official' opml attribute for headlines.
                 node.headString = val
             elif name in ('_note', 'leo:body'):
                 # Android outliner uses _note.
@@ -809,7 +809,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         top = 50
         left = 50
         height = 500
-        width = 700 # Reasonable defaults.
+        width = 700  # Reasonable defaults.
         try:
             for bunch in self.attrsToList(attrs):
                 name = bunch.name

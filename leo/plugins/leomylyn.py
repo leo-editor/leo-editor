@@ -13,7 +13,7 @@ Scoring is based on how much you edit the nodes.
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ville.20120503224623.3578: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
     g.plugin_signon(__name__)
@@ -31,7 +31,7 @@ class MylynController:
     #@+node:ekr.20160519050823.3: *3* add_score
     def add_score(self, v, points):
         cur = self.scoring.get(v, 0)
-        cur+=points
+        cur += points
         self.scoring[v] = cur
 
     #@+node:ekr.20160519050823.4: *3* children_hnd
@@ -42,7 +42,7 @@ class MylynController:
             self.add_score(v, 100)
 
     #@+node:ekr.20160519050823.5: *3* content_hnd
-    def content_hnd(self,tag, kw):
+    def content_hnd(self, tag, kw):
         print(tag, kw)
         ns = kw["nodes"]
         for v in ns:
@@ -56,7 +56,7 @@ class MylynController:
 
         @g.command("mylyn-scores")
         def mylyn_scores_f(*a):
-            for k,v in self.scoring.items():
+            for k, v in self.scoring.items():
                 g.es(str(k) + " " + str(v))
 
     #@-others

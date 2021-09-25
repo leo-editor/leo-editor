@@ -88,7 +88,7 @@ def open_in_emacs_helper(c, p):
                 # if efc: efc.forget_path(path)
             os.remove(path)
             os.system(emacs_cmd)
-        v.OpenWithOldBody = v.b # Remember the old contents
+        v.OpenWithOldBody = v.b  # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
         # data = "os.spawnl", emacs_cmd, None
         d = {'kind': 'os.spawnl', 'args': [emacs_cmd], 'ext': None}

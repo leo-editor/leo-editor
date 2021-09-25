@@ -18,8 +18,8 @@ class C_Importer(Importer):
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'c',
-            state_class = C_ScanState,
+            language='c',
+            state_class=C_ScanState,
         )
         self.headline = None
         # Fix #545 by supporting @data c_import_typedefs.
@@ -36,7 +36,7 @@ class C_Importer(Importer):
         self.c_type_names = '(%s)' % '|'.join(list(aSet))
         self.c_types_pattern = re.compile(self.c_type_names)
         self.c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.c_type_names))
-        self.c_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.c_type_names))
+        self.c_func_pattern = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.c_type_names))
         self.c_keywords = '(%s)' % '|'.join([
             'break', 'case', 'continue', 'default', 'do', 'else', 'enum',
             'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
@@ -130,7 +130,7 @@ class C_Importer(Importer):
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         # Add all additional lines of the signature.
-        skip = self.skip # Don't change the ivar!
+        skip = self.skip  # Don't change the ivar!
         while skip > 0:
             skip -= 1
             i += 1

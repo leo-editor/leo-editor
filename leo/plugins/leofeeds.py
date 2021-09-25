@@ -29,14 +29,14 @@ from leo.core import leoPlugins
 
 #@+others
 #@+node:ville.20110206142055.10644: ** init
-def init ():
+def init():
 
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
 
     return True
 #@+node:ville.20110206142055.10645: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c:
@@ -97,7 +97,7 @@ def emitfeed(url, p):
         if 'enclosures' in ent:
             for enc in ent.enclosures:
                 ec = chi(e)
-                ec.h = '@url Enclosure: ' +  enc.get('type','notype') + " " + enc.get('length','')
+                ec.h = '@url Enclosure: ' + enc.get('type', 'notype') + " " + enc.get('length', '')
                 ec.b = enc.get('href', '')
 
         full = chi(e)
@@ -105,7 +105,7 @@ def emitfeed(url, p):
         full.b = cnt
 
 
-def feeds_act_on_node(c,p,event):
+def feeds_act_on_node(c, p, event):
 
     sp = p.h.split(None, 1)
     if sp[0] not in ['@feed']:

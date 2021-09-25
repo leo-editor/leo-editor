@@ -46,7 +46,7 @@ get_input = input
 #@+others
 #@+node:ekr.20150107090324.4: ** init
 def init():
-    ok = not g.app.gui and not g.unitTesting # Not Ok for unit testing!
+    ok = not g.app.gui and not g.unitTesting  # Not Ok for unit testing!
     if ok:
         g.app.gui = textGui()
         g.app.root = g.app.gui.createRootWindow()
@@ -60,7 +60,7 @@ def init():
 def underline(s, idx):
     if idx < 0 or idx > len(s) - 1:
         return s
-    return s[: idx] + '&' + s[idx:]
+    return s[:idx] + '&' + s[idx:]
 #@+node:ekr.20150107090324.6: ** class textGui
 class textGui(leoGui.LeoGui):
     #@+others
@@ -82,7 +82,7 @@ class textGui(leoGui.LeoGui):
         return ret
     #@+node:ekr.20150107090324.10: *3* createRootWindow
     def createRootWindow(self):
-        pass # N/A
+        pass  # N/A
     #@+node:ekr.20150107090324.11: *3* destroySelf
     def destroySelf(self):
         self.killed = True
@@ -185,10 +185,10 @@ class TextFrame(leoFrame.LeoFrame):
         # c.setRootPosition(p) # New in 4.4.2.
     #@+node:ekr.20150107090324.24: *3* deiconify
     def deiconify(self):
-        pass # N/A
+        pass  # N/A
 
     def lift(self):
-        pass # N/A
+        pass  # N/A
     #@+node:ekr.20150107090324.25: *3* destroySelf
     def destroySelf(self):
         pass
@@ -203,7 +203,7 @@ class TextFrame(leoFrame.LeoFrame):
             c.chapterController = leoChapters.ChapterController(c)
         f.createFirstTreeNode()
         # (*after* setting self.log)
-        c.setLog() # writeWaitingLog hangs without this(!)
+        c.setLog()  # writeWaitingLog hangs without this(!)
         # So updateRecentFiles will update our menus.
         g.app.windowList.append(f)
     #@+node:ekr.20161118195504.1: *3* getFocus
@@ -211,13 +211,13 @@ class TextFrame(leoFrame.LeoFrame):
         return None
     #@+node:ekr.20150107090324.27: *3* setInitialWindowGeometry
     def setInitialWindowGeometry(self):
-        pass # N/A
+        pass  # N/A
     #@+node:ekr.20150107090324.28: *3* setMinibufferBindings
     def setMinibufferBindings(self):
         pass
 
     def setTopGeometry(self, w, h, x, y):
-        pass # N/A
+        pass  # N/A
     #@+node:ekr.20150107090324.29: *3* text_key
     def text_key(self):
         c = self.c
@@ -243,13 +243,13 @@ class TextFrame(leoFrame.LeoFrame):
         stroke = c.k.shortcutFromSetting(char)
         g.trace('char', repr(char), 'stroke', repr(stroke))
         e = leoTypingEvent(c, w, char, stroke)
-        k.masterKeyHandler(event=e) ## ,stroke=key)
+        k.masterKeyHandler(event=e)  ## ,stroke=key)
     #@+node:ekr.20150107090324.30: *3* update
     def update(self):
         pass
 
     def resizePanesToRatio(self, ratio, ratio2):
-        pass # N/A
+        pass  # N/A
     #@-others
 #@+node:ekr.20150107090324.31: ** class textBody
 class textBody(leoFrame.LeoBody):
@@ -271,7 +271,7 @@ class textBody(leoFrame.LeoBody):
     # TODO Tkinter onBodyChanged undo call and many others. =(
 
     def setEditorColors(self, bg, fg):
-        pass # N/A
+        pass  # N/A
 
     def createBindings(self, w=None):
         pass
@@ -411,7 +411,7 @@ class textLog(leoFrame.LeoLog):
         pass
 
     def setFontFromConfig(self):
-        pass # N/A
+        pass  # N/A
     #@+node:ekr.20150107090324.68: *3* finishCreate
     def finishCreate(self):
         pass
@@ -463,7 +463,7 @@ class textTree(leoFrame.LeoTree):
         # and something to do with undo?
     #@+node:ekr.20150107090324.66: *3* editLabel & edit_widget
     def editLabel(self, v, selectAll=False, selection=None):
-        pass # N/A?
+        pass  # N/A?
 
     def edit_widget(self, p):
         return None

@@ -17,9 +17,9 @@ class JS_Importer(Importer):
         # Init the base class.
         super().__init__(
             importCommands,
-            gen_refs = False, # Fix #639.
-            language = 'javascript',
-            state_class = JS_ScanState,
+            gen_refs=False,  # Fix #639.
+            language='javascript',
+            state_class=JS_ScanState,
         )
 
     #@+others
@@ -64,13 +64,13 @@ class JS_Importer(Importer):
             if p.numberOfChildren() == 1:
                 child = p.firstChild()
                 lines = self.get_lines(p)
-                matches = [i for i,s in enumerate(lines) if self.at_others.match(s)]
+                matches = [i for i, s in enumerate(lines) if self.at_others.match(s)]
                 if len(matches) == 1:
                     found = True
                     i = matches[0]
-                    lines = lines[:i] + self.get_lines(child) + lines[i+1:]
+                    lines = lines[:i] + self.get_lines(child) + lines[i + 1 :]
                     self.set_lines(p, lines)
-                    self.clear_lines(child) # Delete child later. Is this enough???
+                    self.clear_lines(child)  # Delete child later. Is this enough???
                     # g.trace('Clear', child.h)
         return found
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
@@ -84,7 +84,7 @@ class JS_Importer(Importer):
                 if p.h.lower() == 'organizer' and not self.get_lines(p):
                     p.promote()
                     p.doDelete()
-                    found = True # Restart the loop.
+                    found = True  # Restart the loop.
     #@+node:ekr.20200202071105.1: *4* js_i.clean_all_nodes
     def clean_all_nodes(self, parent):
         """Remove common leading whitespace from all nodes."""
@@ -129,7 +129,7 @@ class JS_Importer(Importer):
             elif s.startswith('//'):
                 head = lines[:i]
                 tail = [line]
-            elif s: # Clear any previous comments.
+            elif s:  # Clear any previous comments.
                 head = lines
                 tail = []
         return head, tail
@@ -353,7 +353,7 @@ class Lexer:
                 groupid = "t%d" % tok.id
                 self.toks[groupid] = tok
                 parts.append("(?P<%s>%s)" % (groupid, tok.regex))
-            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE|re.VERBOSE) # |re.UNICODE)
+            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE | re.VERBOSE)  # |re.UNICODE)
         self.state = first
 
     #@+node:ekr.20200131110322.9: *4* Lexer.lex
@@ -375,7 +375,7 @@ class Lexer:
                 tok = toks[name]
                 toktext = match.group(name)
                 start += len(toktext)
-                yield (tok.name, toktext)
+                yield(tok.name, toktext)
                 if tok.next:
                     state = tok.next
                     break
@@ -390,7 +390,7 @@ def literals(choices, prefix="", suffix=""):
     individually.
 
     """
-    return "|".join(prefix+re.escape(c)+suffix for c in choices.split())
+    return "|".join(prefix + re.escape(c) + suffix for c in choices.split())
 
 #@+node:ekr.20200131110322.10: *3* class JsLexer(Lexer)
 class JsLexer(Lexer):
@@ -422,10 +422,10 @@ class JsLexer(Lexer):
     # See https://stackoverflow.com/questions/6314614/match-any-unicode-letter
 
     both_before = [
-        Tok("comment",      r"/\*(.|\n)*?\*/"),
-        Tok("linecomment",  r"//.*?$"),
-        Tok("ws",           r"\s+"),
-        Tok("keyword",      literals("""
+        Tok("comment", r"/\*(.|\n)*?\*/"),
+        Tok("linecomment", r"//.*?$"),
+        Tok("ws", r"\s+"),
+        Tok("keyword", literals("""
                                 async await
                                 break case catch class const continue debugger
                                 default delete do else enum export extends
@@ -433,7 +433,7 @@ class JsLexer(Lexer):
                                 return super switch this throw try typeof var
                                 void while with
                                 """, suffix=r"\b"), next='reg'),
-        Tok("reserved",     literals("null true false", suffix=r"\b"), next='div'),
+        Tok("reserved", literals("null true false", suffix=r"\b"), next='div'),
         #
         # EKR: This would work if patterns were compiled with the re.UNICODE flag.
         #      However, \w is not the same as valid JS characters.
@@ -441,13 +441,13 @@ class JsLexer(Lexer):
         #
         # Tok("id",           r"""([\w$])([\w\d]*)""", next='div'),
         #
-        Tok("id",           r"""
+        Tok("id", r"""
                             ([a-zA-Z_$   ]|\\u[0-9a-fA-Z]{4})       # first char
                             ([a-zA-Z_$0-9]|\\u[0-9a-fA-F]{4})*      # rest chars
                             """, next='div'),
-        Tok("hnum",         r"0[xX][0-9a-fA-F]+", next='div'),
-        Tok("onum",         r"0[0-7]+"),
-        Tok("dnum",         r"""
+        Tok("hnum", r"0[xX][0-9a-fA-F]+", next='div'),
+        Tok("onum", r"0[0-7]+"),
+        Tok("dnum", r"""
                             (   (0|[1-9][0-9]*)         # DecimalIntegerLiteral
                                 \.                      # dot
                                 [0-9]*                  # DecimalDigits-opt
@@ -461,22 +461,22 @@ class JsLexer(Lexer):
                                 ([eE][-+]?[0-9]+)?      # ExponentPart-opt
                             )
                             """, next='div'),
-        Tok("punct",        literals("""
+        Tok("punct", literals("""
                                 >>>= === !== >>> <<= >>= <= >= == != << >> &&
                                 || += -= *= %= &= |= ^=
                                 """), next="reg"),
-        Tok("punct",        literals("++ -- ) ]"), next='div'),
-        Tok("punct",        literals("{ } ( [ . ; , < > + - * % & | ^ ! ~ ? : ="), next='reg'),
-        Tok("string",       r'"([^"\\]|(\\(.|\n)))*?"', next='div'),
-        Tok("string",       r"'([^'\\]|(\\(.|\n)))*?'", next='div'),
+        Tok("punct", literals("++ -- ) ]"), next='div'),
+        Tok("punct", literals("{ } ( [ . ; , < > + - * % & | ^ ! ~ ? : ="), next='reg'),
+        Tok("string", r'"([^"\\]|(\\(.|\n)))*?"', next='div'),
+        Tok("string", r"'([^'\\]|(\\(.|\n)))*?'", next='div'),
         ]
 
     both_after = [
-        Tok("other",        r"."),
+        Tok("other", r"."),
         ]
 
     states = {
-        'div': # slash will mean division
+        'div':  # slash will mean division
             both_before + [
             Tok("punct", literals("/= /"), next='reg'),
             ] + both_after,
@@ -524,7 +524,7 @@ class TestJSImporter(unittest.TestCase):
 
         table = (
             # Test 1
-            ( """\
+            ("""\
     head
     // tail""", 1),
 
@@ -541,22 +541,22 @@ class TestJSImporter(unittest.TestCase):
     /* comment 1
      * comment 2
      */
-    tail""", 0), # no tail
+    tail""", 0),  # no tail
 
             # Test 4
             ("""\
     head
     // comment
-    tail""", 0), # no tail
+    tail""", 0),  # no tail
 
-    ) # End table.
+    )  # End table.
         for s, expected_length in table:
             x = JS_Importer(None)
             s = textwrap.dedent(s)
             lines = g.splitLines(s)
             head, tail = x.get_trailing_comments(lines)
-            expected_lines = lines[-expected_length:] if expected_length else []
-            assert tail == expected_lines , (repr(tail), repr(expected_lines))
+            expected_lines = lines[-expected_length :] if expected_length else []
+            assert tail == expected_lines, (repr(tail), repr(expected_lines))
     #@+node:ekr.20200202104932.1: *3* test_JsLex
     def test_JsLex(self):
 
@@ -600,18 +600,18 @@ class TestJSImporter(unittest.TestCase):
 
         table = (
             # result        prev_context    s
-            ( (0, 0, '"'),  "",             r'"string'),
-            ( (0, 0, '/*'), "",             r'/* line 1'),
-            ( (0, 0, '/*'), "/*",           r'line 2'), # New.
-            ( (0, 0, ''),   "/*",           r'line 3 */'), # New.
-            ( (0, 0, ''),   "",             r'a + b // /*'),
-            ( (0, 1, ''),   "",             r'(function'),
-            ( (1, 1, ''),   "",             r'(function(a) {'),
-            ( (0, 0, ''),   "",             r'var x = /abc/'),
-            ( (0, 0, ''),   "",             r'var x = /a"c/'),
-            ( (0, 0, ''),   "",             r'var x = /a\//'),
-            ( (0, 0, ''),   "",             r'var x = /a\//'),
-            ( (0, 1, ''),   "",             r'var x = (0,'),
+            ((0, 0, '"'), "", r'"string'),
+            ((0, 0, '/*'), "", r'/* line 1'),
+            ((0, 0, '/*'), "/*", r'line 2'),  # New.
+            ((0, 0, ''), "/*", r'line 3 */'),  # New.
+            ((0, 0, ''), "", r'a + b // /*'),
+            ((0, 1, ''), "", r'(function'),
+            ((1, 1, ''), "", r'(function(a) {'),
+            ((0, 0, ''), "", r'var x = /abc/'),
+            ((0, 0, ''), "", r'var x = /a"c/'),
+            ((0, 0, ''), "", r'var x = /a\//'),
+            ((0, 0, ''), "", r'var x = /a\//'),
+            ((0, 1, ''), "", r'var x = (0,'),
         )
         for result, prev_context, s in table:
             importer = JS_Importer(None)

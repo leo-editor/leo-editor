@@ -62,7 +62,7 @@ class TreePad_Scanner():
         if self.i >= len(self.lines):
             return None
         self.i += 1
-        return self.lines[self.i-1]
+        return self.lines[self.i - 1]
     #@+node:ekr.20180201204402.5: *3* treepad.read_node
     END_RE = re.compile(r'^<end node> ([^ ]+)$')
 
@@ -102,7 +102,7 @@ class TreePad_Scanner():
             else:
                 c.clearChanged()
         else:
-            parent.setDirty() # setDescendentsDirty=False)
+            parent.setDirty()  # setDescendentsDirty=False)
             c.setChanged()
         return ok
     #@-others

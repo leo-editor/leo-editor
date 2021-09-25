@@ -22,7 +22,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports auto_colorize2_0.py >>
 #@+others
 #@+node:ekr.20170619151859.4: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
     '''auto_colorize onCreate handler.'''
     # pylint: disable=no-member
     # g.visit_tree_item does exist.
@@ -73,12 +73,12 @@ def init_dict(c):
     except Exception as e:
         g.es_error(e)
 #@+node:ekr.20170619151859.7: ** colorize
-def colorize(c,p, item):
+def colorize(c, p, item):
     """Colorize by reading "Headline Formats" node, or symbol in headline"""
     cs = str(c)
     font = item.font(0)
     try:
-        g.app.permanentScriptDict[cs  + 'formats']
+        g.app.permanentScriptDict[cs + 'formats']
     except Exception:
         g.app.permanentScriptDict[cs + 'formats'] = {}
     for k, f in g.app.permanentScriptDict[cs + 'formats'].items():

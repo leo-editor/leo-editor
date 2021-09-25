@@ -15,12 +15,12 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20170313021118.1: ** init (settings_finder.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 
 #@+node:ekr.20170313021152.1: ** onCreate (settings_finder.py)
-def onCreate (tag, key):
+def onCreate(tag, key):
 
     c = key.get('c')
     if c:
@@ -39,7 +39,7 @@ class SettingsFinder:
         :param controller c: outline to bind to
         """
         self.c = c
-        self.callbacks = {} # keep track of callbacks made already
+        self.callbacks = {}  # keep track of callbacks made already
     #@+others
     #@+node:tbrown.20150818161651.2: *3* sf._outline_data_build_tree
     @classmethod
@@ -66,7 +66,7 @@ class SettingsFinder:
         from xml.etree import ElementTree
         # FIXME, probably shouldn't be going @settings tree -> xml -> VNode tree,
         # but @settings tree -> VNode tree, xml + paste to use is cumbersome
-        body = {} # node ID to node mapping to fill in body text later
+        body = {}  # node ID to node mapping to fill in body text later
         top = VNode(self.c)
         dom = ElementTree.fromstring(xml)
         self._outline_data_build_tree(top, dom.find('vnodes').find('v'), body)
@@ -118,15 +118,15 @@ class SettingsFinder:
             # Fix #434: Potential bug in settings
         unl = unl.replace('%20', ' ').split("-->")
         tail = []
-        if which > 1: # copying parent or grandparent but select leaf later
-            tail = unl[-(which - 1):]
+        if which > 1:  # copying parent or grandparent but select leaf later
+            tail = unl[-(which - 1) :]
         unl = unl[: len(unl) + 1 - which]
         my_settings_c = self.c.openMyLeoSettings()
-        my_settings_c.save() # if it didn't exist before, save required
+        my_settings_c.save()  # if it didn't exist before, save required
         settings = g.findNodeAnywhere(my_settings_c, '@settings')
         c2 = g.app.loadManager.openSettingsFile(path)
         if not c2:
-            return '' # Fix 434.
+            return ''  # Fix 434.
         found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
 
         nd = settings.insertAsLastChild()
@@ -204,7 +204,7 @@ class SettingsFinder:
                 return
             which = int(which)
             if which > 1:
-                unl = self.copy_to_my_settings(unl, which-1)
+                unl = self.copy_to_my_settings(unl, which - 1)
         if unl:
             g.handleUnl(unl, c=self.c)
     #@+node:tbrown.20150818161651.7: *3* sf.get_command

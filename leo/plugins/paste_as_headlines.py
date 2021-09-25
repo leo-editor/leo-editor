@@ -26,9 +26,9 @@ def init():
     g.registerHandler("create-optional-menus",
         createPasteAsHeadlinesMenu)
     g.plugin_signon(__name__)
-    return True # Ok for unit testing: creates menu.
+    return True  # Ok for unit testing: creates menu.
 #@+node:danr7.20060912105041.5: ** createPasteAsHeadlinesMenu
-def createPasteAsHeadlinesMenu (tag,keywords):
+def createPasteAsHeadlinesMenu(tag, keywords):
 
     # pylint: disable=undefined-variable
     # c *is* defined.
@@ -43,13 +43,13 @@ def createPasteAsHeadlinesMenu (tag,keywords):
     amp_index = index_label.find("&")
 
     # Eliminate ampersand from menu item text
-    index_label = index_label.replace("&","")
+    index_label = index_label.replace("&", "")
 
     # Add 'Word Count...' to the bottom of the Edit menu.
-    c.frame.menu.insert('Edit',6,
-        label = index_label,
-        underline = amp_index,
-        command = lambda c = c: paste_as_headlines(c))
+    c.frame.menu.insert('Edit', 6,
+        label=index_label,
+        underline=amp_index,
+        command=lambda c=c: paste_as_headlines(c))
 #@+node:danr7.20060912105041.6: ** paste_as_headlines
 def paste_as_headlines(c):
     # g.es("Starting...")
@@ -59,22 +59,22 @@ def paste_as_headlines(c):
     clipList = clipText.split("\n")
     init_indent = len(clipList[0]) - len(clipList[0].lstrip())
     cur_pos = currentPos.copy()
-    ancestors = [(init_indent,cur_pos)]
+    ancestors = [(init_indent, cur_pos)]
     for tempHead in clipList:
         indent = len(tempHead) - len(tempHead.lstrip())
         tempHead = tempHead.strip()
         # Make sure list item has some content
         if tempHead:
             if indent > ancestors[-1][0]:
-                ancestors.append((indent,cur_pos))
+                ancestors.append((indent, cur_pos))
             else:
                 while init_indent <= indent < ancestors[-1][0]:
                     ancestors.pop()
             # cur_indent = indent
             insertNode = ancestors[-1][1].insertAsLastChild()
             cur_pos = insertNode.copy()
-            if len(tempHead)>50:
-                c.setHeadString(insertNode,tempHead[:50])
+            if len(tempHead) > 50:
+                c.setHeadString(insertNode, tempHead[:50])
                 insertNode.b = tempHead
             else:
                 insertNode.h = tempHead

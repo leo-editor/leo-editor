@@ -12,9 +12,9 @@ class Csharp_Importer(Importer):
         '''Csharp_Importer.__init__'''
         super().__init__(
             importCommands,
-            language = 'csharp',
-            state_class = Csharp_ScanState,
-            strict = False,
+            language='csharp',
+            state_class=Csharp_ScanState,
+            strict=False,
         )
 
     #@+others

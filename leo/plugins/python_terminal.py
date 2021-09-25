@@ -82,7 +82,7 @@ if QtWidgets:
             # this is how you pass in locals to the interpreter
             self.textEdit.initInterpreter(locals())
             hBox.addWidget(self.textEdit)
-            hBox.setContentsMargins(0,0,0,0)
+            hBox.setContentsMargins(0, 0, 0, 0)
             hBox.setSpacing(0)
 #@+node:peckj.20150428142729.6: ** class InteractiveInterpreter (code.InteractiveInterpreter)
 class InteractiveInterpreter(code.InteractiveInterpreter):
@@ -120,12 +120,12 @@ if QtWidgets:
             #
             # init ivars.
             self.indent = 0
-            self.refreshMarker = False # to change back to >>> from ...
+            self.refreshMarker = False  # to change back to >>> from ...
             # self.multiLine = False # code spans more than one line
             # self.command        = ''    # command to be ran
-            self.printBanner() # print sys info
-            self.insert_marker() # make the >>> or ... marker
-            self.history = [] # list of commands entered
+            self.printBanner()  # print sys info
+            self.insert_marker()  # make the >>> or ... marker
+            self.history = []  # list of commands entered
             self.historyIndex = -1
             self.interpreterLocals = {}
             self.c = c
@@ -151,7 +151,7 @@ if QtWidgets:
 
             # line = '... ' if self.multiLine else '>>> '
             line = '... ' if self.indent > 0 else '>>> '
-            self.insertPlainText(line + ' '*self.indent)
+            self.insertPlainText(line + ' ' * self.indent)
         #@+node:peckj.20150428142729.13: *3* PyInterp.initInterpreter
         def initInterpreter(self, interpreterLocals=None):
 
@@ -196,8 +196,8 @@ if QtWidgets:
         #@+node:peckj.20150428142729.18: *3* PyInterp.customCommands
         def customCommands(self, command):
 
-            if command == '!hist': # display history
-                self.append('') # move down one line
+            if command == '!hist':  # display history
+                self.append('')  # move down one line
                 # vars that are in the command are prefixed with ____CC and deleted
                 # once the command is done so they don't show up in dir()
                 backup = self.interpreterLocals.copy()
@@ -206,13 +206,13 @@ if QtWidgets:
                 for i, x in enumerate(history):
                     iSize = len(str(i))
                     delta = len(str(len(history))) - iSize
-                    line = line  = ' ' * delta + '%i: %s' % (i, x) + '\n'
+                    line = line = ' ' * delta + '%i: %s' % (i, x) + '\n'
                     self.write(line)
                 self.updateInterpreterLocals(backup)
                 self.insert_marker()
                 return True
 
-            if re.match(r'!hist\(\d+\)', command): # recall command from history
+            if re.match(r'!hist\(\d+\)', command):  # recall command from history
                 backup = self.interpreterLocals.copy()
                 history = self.history[:]
                 history.reverse()
@@ -226,13 +226,13 @@ if QtWidgets:
                 self.updateInterpreterLocals(backup)
                 return True
 
-            if re.match(r'(quit|exit)\(\)', command): # prevent quitting!
+            if re.match(r'(quit|exit)\(\)', command):  # prevent quitting!
                 self.append('')
                 self.write('Cannot quit() from an embedded console.\n')
                 self.insert_marker()
                 return True
 
-            if re.match(r'!clear', command): # clear the screen
+            if re.match(r'!clear', command):  # clear the screen
                 self.clear()
                 self.insert_marker()
                 return True
@@ -247,7 +247,7 @@ if QtWidgets:
                     completer = Completer(self.interpreter.locals)
                     suggestion = completer.complete(line, 0)
                     if suggestion is not None:
-                        self.insertPlainText(suggestion[len(line):])
+                        self.insertPlainText(suggestion[len(line) :])
                     return
                 if event.key() == Key.Key_Down:
                     if self.historyIndex == len(self.history):
@@ -275,9 +275,9 @@ if QtWidgets:
                     # set cursor to position 4 in current block. 4 because that's where
                     # the marker stops
                     blockLength = len(self.document().lastBlock().text()[4:])
-                    lineLength  = len(self.document().toPlainText())
+                    lineLength = len(self.document().toPlainText())
                     position = lineLength - blockLength
-                    textCursor  = self.textCursor()
+                    textCursor = self.textCursor()
                     textCursor.setPosition(position)
                     self.setTextCursor(textCursor)
                     return
@@ -343,7 +343,7 @@ if QtWidgets:
             #
             # Set cursor to end of line to avoid line splitting
             textCursor = self.textCursor()
-            position   = len(self.document().toPlainText())
+            position = len(self.document().toPlainText())
             textCursor.setPosition(position)
             self.setTextCursor(textCursor)
             lines = []
@@ -352,7 +352,7 @@ if QtWidgets:
             # Scan backward, looking for lines.
             while block:
                 line = g.toUnicode(block.text())
-                line = line.replace('\t',' '*4)
+                line = line.replace('\t', ' ' * 4)
                 block = block.previous()
                 if line.startswith('>>> '):
                     lines.insert(0, line[4:])
@@ -401,39 +401,39 @@ if QtWidgets:
         #@+node:peckj.20150428142729.20: *3* PyInterp.focusInEvent
         def focusInEvent(self, event=None):
             # set stdout+stderr properly
-            QtWidgets.QTextEdit.focusInEvent(self,event)
+            QtWidgets.QTextEdit.focusInEvent(self, event)
             sys.stdout = self
             sys.stderr = self
             self.ensureCursorVisible()
         #@+node:peckj.20150428142729.21: *3* PyInterp.focusOutEvent
         def focusOutEvent(self, event):
             # set stdout+stderr properly
-            QtWidgets.QTextEdit.focusOutEvent(self,event)
+            QtWidgets.QTextEdit.focusOutEvent(self, event)
             sys.stdout = g.user_dict['old_stdout']
             sys.stderr = g.user_dict['old_stderr']
         #@-others
 
 #@+node:peckj.20150428142633.4: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
         # g.registerHandler(('new','open2'),onCreate)
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
             # Fail: g.app.log does not exist.
         g.plugin_signon(__name__)
     else:
         g.es('Plugin %s not loaded.' % __name__, color='red')
     return ok
 #@+node:peckj.20150428142633.5: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
     '''python_terminal.py onCreate handler.'''
     c = keys.get('c')
     if c:
-        win = MyInterpreter(None,c)
-        c.frame.log.createTab('Python Console',widget=win)
+        win = MyInterpreter(None, c)
+        c.frame.log.createTab('Python Console', widget=win)
 #@-others
 
 

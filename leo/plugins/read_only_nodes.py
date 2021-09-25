@@ -73,15 +73,15 @@ insertOnTime = None
 insertOffTime = None
 #@+others
 #@+node:ekr.20050311092840: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting
         # Not Ok for unit testing.
     if ok:
-        g.registerHandler(('new','open2'), on_open)
+        g.registerHandler(('new', 'open2'), on_open)
         g.registerHandler("bodykey1", on_bodykey1)
         g.registerHandler("headkey2", on_headkey2)
-        if 0: # doesn't work: the cursor stops blinking.
+        if 0:  # doesn't work: the cursor stops blinking.
             g.registerHandler("select1", on_select1)
             g.registerHandler("select2", on_select2)
         g.plugin_signon(__name__)
@@ -122,7 +122,7 @@ class FTPurl:
             ftphost = parse[1]
         else:
             auth = parse[1][:authIndex]
-            ftphost = parse[1][authIndex+1:]
+            ftphost = parse[1][authIndex + 1 :]
         self.ftp = ftplib.FTP(ftphost)
         if auth is None:
             self.ftp.login()
@@ -132,7 +132,7 @@ class FTPurl:
             if pwdIndex == -1:
                 raise IOError("error reading %s: malformed ftp URL" % ftpURL)
             user = auth[:pwdIndex]
-            password = auth[pwdIndex+1:]
+            password = auth[pwdIndex + 1 :]
             self.ftp.login(user, password)
         self.path = parse[2][1:]
         self.filename = os.path.basename(self.path)
@@ -147,7 +147,7 @@ class FTPurl:
         return the list of files in the URL directory.
         """
         self.checkParams()
-        if self.filename=='' or self.path[-1]=='/':
+        if self.filename == '' or self.path[-1] == '/':
             return self.dir()
 
         try:
@@ -155,7 +155,7 @@ class FTPurl:
                 slist = []
                 self.ftp.retrlines('RETR %s' % self.path, slist.append)
                 s = '\n'.join(slist)
-            else: # mode='b': binary mode
+            else:  # mode='b': binary mode
                 file = StringIO()
                 self.ftp.retrbinary('RETR %s' % self.path, file.write)
                 s = file.getvalue()
@@ -191,7 +191,7 @@ class FTPurl:
             file = StringIO(s)
             if self.mode == '':  # mode='': ASCII mode
                 self.ftp.storlines('STOR %s' % self.path, file)
-            else: # mode='b': binary mode
+            else:  # mode='b': binary mode
                 self.ftp.storbinary('STOR %s' % self.path, file)
             file.close()
         except Exception:
@@ -199,11 +199,11 @@ class FTPurl:
             raise IOError(msg)
     #@+node:edream.110203113231.886: *3* Utilities
     #@+node:edream.110203113231.887: *4* seek
-    def seek(self,offset=0):
+    def seek(self, offset=0):
         self.currentLine = 0  # we don't support fancy seeking via FTP
     #@+node:edream.110203113231.888: *4* flush
     def flush(self):
-        pass # no fancy stuff here.
+        pass  # no fancy stuff here.
     #@+node:edream.110203113231.889: *4* dir
     def dir(self, path=None):
         """Issue a LIST command passing the specified argument and return output as a string."""
@@ -231,7 +231,7 @@ class FTPurl:
         return 'no such file' not in s.lower()
     #@+node:edream.110203113231.891: *4* checkParams
     def checkParams(self):
-        if self.mode not in ('','b'):
+        if self.mode not in ('', 'b'):
             raise IOError('invalid mode: %s' % self.mode)
         if not self.isConnectionOpen:
             raise IOError('ftp connection closed')
@@ -250,32 +250,32 @@ class FTPurl:
 # disabling the body text _permanently_ stops the cursor from blinking.
 
 def enable_body(body):
-    global insertOnTime,insertOffTime
+    global insertOnTime, insertOffTime
     if body.cget("state") == "disabled":
         try:
             g.es("enable")
-            g.pr(insertOffTime,insertOnTime)
+            g.pr(insertOffTime, insertOnTime)
             body.configure(state="normal")
-            body.configure(insertontime=insertOnTime,insertofftime=insertOffTime)
+            body.configure(insertontime=insertOnTime, insertofftime=insertOffTime)
         except Exception:
             g.es_exception()
 
 def disable_body(body):
-    global insertOnTime,insertOffTime
+    global insertOnTime, insertOffTime
     if body.cget("state") == "normal":
         try:
             g.es("disable")
             insertOnTime = body.cget("insertontime")
             insertOffTime = body.cget("insertofftime")
-            g.pr(insertOffTime,insertOnTime)
+            g.pr(insertOffTime, insertOnTime)
             body.configure(state="disabled")
         except Exception:
             g.es_exception()
 #@+node:edream.110203113231.894: ** insert_read_only_node (FTP version)
 # Sets p's body text from the file with the given name.
 # Returns True if the body text changed.
-def insert_read_only_node (c,p,name):
-    if name=="":
+def insert_read_only_node(c, p, name):
+    if name == "":
         name = g.app.gui.runOpenFileDialog(c,
             title="Open",
             filetypes=[("All files", "*")],
@@ -289,13 +289,13 @@ def insert_read_only_node (c,p,name):
         elif parse[0] == 'http':
             f = urlopen(name)  # HTTP URL
         else:
-            f = open(name,"r")  # local file
+            f = open(name, "r")  # local file
         g.es("..." + name)
         new = f.read()
         f.close()
-    except IOError: # as msg:
-        p.b = "" # Clear the body text.
-        return True # Mark the node as changed.
+    except IOError:  # as msg:
+        p.b = ""  # Clear the body text.
+        return True  # Mark the node as changed.
     else:
         ext = os.path.splitext(parse[2])[1]
         if ext.lower() in ['.htm', '.html']:
@@ -320,18 +320,18 @@ def insert_read_only_node (c,p,name):
             if numlinks > 0:
                 hyperlist = ['\n\n--Hyperlink list follows--']
                 for i in range(numlinks):
-                    hyperlist.append("\n[%d]: %s" % (i+1,hyperlinks[i])) # 3/26/03: was i.
+                    hyperlist.append("\n[%d]: %s" % (i + 1, hyperlinks[i]))  # 3/26/03: was i.
                 new = new + ''.join(hyperlist)
             #@-<< convert HTML to text >>
         previous = p.b
         p.b = new
         changed = (g.toUnicode(new) != g.toUnicode(previous))
         if changed and previous != "":
-            g.es("changed: %s" % name) # A real change.
+            g.es("changed: %s" % name)  # A real change.
         return changed
 #@+node:edream.110203113231.896: ** on_open
 #  scan the outline and process @read-only nodes.
-def on_open (tag,keywords):
+def on_open(tag, keywords):
 
     c = keywords.get("c")
     if not c:
@@ -341,8 +341,8 @@ def on_open (tag,keywords):
     g.blue("scanning for @read-only nodes...")
     while p:
         h = p.h
-        if g.match_word(h,0,"@read-only"):
-            changed = insert_read_only_node(c,p,h[11:])
+        if g.match_word(h, 0, "@read-only"):
+            changed = insert_read_only_node(c, p, h[11:])
             g.red("changing %s" % p.h)
             if changed:
                 if not p.isDirty():
@@ -354,50 +354,50 @@ def on_open (tag,keywords):
 #@+node:edream.110203113231.897: ** on_bodykey1
 # override the body key handler if we are in an @read-only node.
 
-def on_bodykey1 (tag,keywords):
+def on_bodykey1(tag, keywords):
 
     c = keywords.get("c")
     p = keywords.get("p")
-    if g.match_word(p.h,0,"@read-only"):
+    if g.match_word(p.h, 0, "@read-only"):
         # The following code causes problems with scrolling and syntax coloring.
         # Its advantage is that it makes clear that the text can't be changed,
         # but perhaps that is obvious anyway...
-        if 0: # Davide Salomoni requests that this code be eliminated.
+        if 0:  # Davide Salomoni requests that this code be eliminated.
             # An @read-only node: do not change its text.
             w = c.frame.body.wrapper
-            w.delete("1.0","end")
-            w.insert("1.0",p.b)
-        return 1 # Override the body key event handler.
+            w.delete("1.0", "end")
+            w.insert("1.0", p.b)
+        return 1  # Override the body key event handler.
     return None
 #@+node:edream.110203113231.898: ** on_headkey2
 # update the body text when we press enter
 
-def on_headkey2 (tag,keywords):
+def on_headkey2(tag, keywords):
 
     c = keywords.get("c")
     p = keywords.get("p")
     h = p.h
     ch = keywords.get("ch")
-    if ch in ('\n','\r') and g.match_word(h,0,"@read-only"):
+    if ch in ('\n', '\r') and g.match_word(h, 0, "@read-only"):
         # on-the-fly update of @read-only directives
-        changed = insert_read_only_node(c,p,h[11:])
+        changed = insert_read_only_node(c, p, h[11:])
         if changed:
             c.setChanged()
         else:
             c.clearChanged()
 #@+node:edream.110203113231.899: ** on_select1
-def on_select1 (tag,keywords):
+def on_select1(tag, keywords):
 
     # Doesn't work: the cursor doesn't start blinking.
     # Enable the body text so select will work properly.
     c = keywords.get("c")
     enable_body(c.frame.body)
 #@+node:edream.110203113231.900: ** on_select2
-def on_select2 (tag,keywords):
+def on_select2(tag, keywords):
 
     c = keywords.get("c")
 
-    if g.match_word(c.p.h,0,"@read-only"):
+    if g.match_word(c.p.h, 0, "@read-only"):
         disable_body(c.frame.body)
     else:
         enable_body(c.frame.body)

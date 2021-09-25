@@ -62,8 +62,8 @@ class TS_Importer(Importer):
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'typescript', # Case is important.
-            state_class = TS_ScanState,
+            language='typescript',  # Case is important.
+            state_class=TS_ScanState,
         )
 
     #@+others
@@ -125,7 +125,7 @@ class TS_Importer(Importer):
             comment_s = m.group(0)
             i = m.start()
             head_s = all_s[:i]
-            tail_s = all_s[i + len(comment_s):]
+            tail_s = all_s[i + len(comment_s) :]
             if tail_s.strip():
                 continue  # Not a trailing comment.
             head_lines = g.splitLines(head_s)
@@ -153,7 +153,7 @@ class TS_Importer(Importer):
                     i += 1
                 assert progress < i
 
-        return i-1
+        return i - 1
     #@+node:ekr.20180523170649.1: *3* ts_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''

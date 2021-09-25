@@ -236,7 +236,7 @@ BytesIO = io.BytesIO
 #@-<< imports >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>
-browser_encoding = 'utf-8' # To do: Can we query the browser for this?
+browser_encoding = 'utf-8'  # To do: Can we query the browser for this?
     # This encoding must match the character encoding used in your browser.
     # If it does not, non-ascii characters will look very strange.
 
@@ -296,10 +296,10 @@ def plugin_wrapper(tag, keywords):
 #@+node:bwmulder.20050326191345.1: *3* onFileOpen (not used) (mod_http.py)
 def onFileOpen(tag, keywords):
     c = keywords.get("new_c")
-    g.trace('c',repr(c))
+    g.trace('c', repr(c))
     wasactive = config.http_active
     getConfiguration(c)
-    if config.http_active and not wasactive: # Ok for unit testing:
+    if config.http_active and not wasactive:  # Ok for unit testing:
         Server('', config.http_port, RequestHandler)
         asyncore.read = a_read
         g.registerHandler("idle", plugin_wrapper)
@@ -343,7 +343,7 @@ def getData(setting):
     return s
 #@+node:bwmulder.20050326191345: ** class config
 class config:
-    enabled = None # True when security check re http-allow-remote-exec passes.
+    enabled = None  # True when security check re http-allow-remote-exec passes.
     http_active = False
     http_timeout = 0
     http_ip = '127.0.0.1'
@@ -358,7 +358,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         self._map = asyncore.socket_map
         self.socket = sock
         self.socket.setblocking(0)
-        self.closed = 1 # compatibility with SocketServer
+        self.closed = 1  # compatibility with SocketServer
         self.buffer = []
     #@+node:EKR.20040517080250.6: *3* write
     def write(self, data):
@@ -553,8 +553,8 @@ class leo_interface:
         getData('http_stylesheet'),
         getData('user_http_stylesheet'),
     ))
-        a = g.app # get the singleton application instance.
-        windows = a.windowList # get the list of all open frames.
+        a = g.app  # get the singleton application instance.
+        windows = a.windowList  # get the list of all open frames.
         for w in windows:
             shortfilename = w.shortFileName()
             f.write('<li><a href="%s">"file name: %s"</a></li>' % (
@@ -661,7 +661,7 @@ class leo_interface:
             node = node.parent()
         result.reverse()
         if result:
-            result2 = result[: -1]
+            result2 = result[:-1]
             if result2:
                 result2 = ' / '.join(result2)
                 f.write("<p>\n")
@@ -701,9 +701,9 @@ class LeoActions:
         if 'www.one-tab.com' in url.lower():
             one_tab_links = query.get('ln', [''])[0]
             one_tab_links = json.loads(one_tab_links)
-        c = None # outline for bookmarks
-        previous = None # previous bookmark for adding selections
-        parent = None # parent node for new bookmarks
+        c = None  # outline for bookmarks
+        previous = None  # previous bookmark for adding selections
+        parent = None  # parent node for new bookmarks
         using_root = False
         path = self.bookmark_unl
         if path:
@@ -729,17 +729,17 @@ class LeoActions:
             # another marking of the same page, just add selection
             self.add_bookmark_selection(
                 previous, query.get('selection', [''])[0])
-            c.selectPosition(previous) # required for body text redraw
+            c.selectPosition(previous)  # required for body text redraw
             c.redraw()
             f.write("""
     <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Selection added</p></body>"""         )
+    <p>Selection added</p></body>""")
             return f
         if '_form' in query:
             # got extra details, save to new node
             f.write("""
     <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Bookmark saved</p></body>"""         )
+    <p>Bookmark saved</p></body>""")
             if using_root:
                 nd = parent.insertAfter()
                 nd.moveToRoot(c.rootPosition())
@@ -768,7 +768,7 @@ class LeoActions:
                 query.get('description', [''])[0],
             )
             c.setChanged()
-            c.selectPosition(nd) # required for body text redraw
+            c.selectPosition(nd)  # required for body text redraw
             c.redraw()
             return f
         # send form to collect extra details
@@ -865,10 +865,10 @@ class LeoActions:
         elif len(tri_quotes) >= 2:
             # insert after the last balanced pair of tri quotes
             x = tri_quotes[len(tri_quotes) - len(tri_quotes) % 2 - 1] + 1
-            b[x: x] = insert
+            b[x:x] = insert
         else:
             # found Collected but no tri quotes
-            b[collected + 1: collected + 1] = insert
+            b[collected + 1 : collected + 1] = insert
         node.b = '\n'.join(b)
         node.setDirty()
     #@+node:tbrown.20111005093154.17683: *3* get_favicon
@@ -1098,9 +1098,9 @@ class RequestHandler(
          first value in the list"""
         res = {}
         for item in parsedQuery.keys():
-            value = parsedQuery[item] # a Python list
+            value = parsedQuery[item]  # a Python list
             if item.endswith("[]"):
-                res[item[: -2]] = value
+                res[item[:-2]] = value
             else:
                 res[item] = value[0] if value else ''
         return res
@@ -1124,7 +1124,7 @@ class RequestHandler(
         # if there is a Query String, decodes it in a QUERY dictionary
         self.path_without_qs, self.qs = self.path, ''
         if self.path.find('?') >= 0:
-            self.qs = self.path[self.path.find('?') + 1:]
+            self.qs = self.path[self.path.find('?') + 1 :]
             self.path_without_qs = self.path[: self.path.find('?')]
         self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))
         if self.command in ['GET', 'HEAD']:
@@ -1252,7 +1252,7 @@ def poll(timeout=0.0):
                 r.append(fd)
             if obj.writable():
                 w.append(fd)
-        if not sockets_to_close: # Set by writeable()
+        if not sockets_to_close:  # Set by writeable()
             break
         for s in sockets_to_close:
             s.close()
@@ -1264,12 +1264,12 @@ def poll(timeout=0.0):
         #@+node:EKR.20040517080250.41: *4* << try r, w, e = select.select >>
         try:
             r, w, e = select.select(r, w, e, timeout)
-        except select.error: # as err:
+        except select.error:  # as err:
             # if err[0] != EINTR:
                 # raise
             # else:
                 # return False
-            return False # EKR: EINTR is undefined.
+            return False  # EKR: EINTR is undefined.
         #@-<< try r, w, e = select.select >>
     for fd in r:
         #@+<< asyncore.read(map.get(fd)) >>

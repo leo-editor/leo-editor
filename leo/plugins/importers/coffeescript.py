@@ -16,10 +16,10 @@ class CS_Importer(Importer):
         '''Ctor for CoffeeScriptScanner class.'''
         super().__init__(
             importCommands,
-            language = 'coffeescript',
-            state_class = CS_ScanState,
+            language='coffeescript',
+            state_class=CS_ScanState,
                 # Not used: This class overrides i.scan_line.
-            strict = True
+            strict=True
         )
         self.errors = 0
         self.root = None
@@ -89,14 +89,14 @@ class CS_Importer(Importer):
     #@+node:ekr.20161118134555.3: *4* coffee_i.cut_stack (Same as Python)
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        assert len(stack) > 1 # Fail on entry.
+        assert len(stack) > 1  # Fail on entry.
         while stack:
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
-                assert len(stack) > 1, stack # <
+                assert len(stack) > 1, stack  # <
                 stack.pop()
             elif top_state.level() == new_state.level():
-                assert len(stack) > 1, stack # ==
+                assert len(stack) > 1, stack  # ==
                 stack.pop()
                 break
             else:
@@ -105,7 +105,7 @@ class CS_Importer(Importer):
         # Restore the guard entry if necessary.
         if len(stack) == 1:
             stack.append(stack[-1])
-        assert len(stack) > 1 # Fail on exit.
+        assert len(stack) > 1  # Fail on exit.
     #@+node:ekr.20161118134555.6: *4* coffee_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
@@ -164,7 +164,7 @@ class CS_Importer(Importer):
     #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines & helper (not ready)
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''
-        return # Not ready yet, and maybe never.
+        return  # Not ready yet, and maybe never.
         # pylint: disable=unreachable
         prev_lines = []
         last = None
@@ -179,7 +179,7 @@ class CS_Importer(Importer):
             lines = self.get_lines(parent)
             for i, s in enumerate(lines):
                 if s.strip().startswith('@others'):
-                    lines = lines[:i+1] + prev_lines + lines[i+2:]
+                    lines = lines[: i + 1] + prev_lines + lines[i + 2 :]
                     self.set_lines(parent, lines)
                     break
             else:
@@ -278,7 +278,7 @@ class CS_ScanState:
 #@-others
 importer_dict = {
     'class': CS_Importer,
-    'extensions': ['.coffee', ],
+    'extensions': ['.coffee',],
 }
 #@@language python
 #@@tabwidth -4

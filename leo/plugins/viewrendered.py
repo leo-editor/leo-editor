@@ -338,7 +338,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     global got_docutils
     if g.app.gui.guiName() != 'qt':
-        return False # #1248.
+        return False  # #1248.
     # if g.app.gui.guiName()
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
         if (
@@ -379,7 +379,7 @@ def onClose(tag, keys):
 #@+node:tbrown.20110629132207.8984: *3* vr.show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
-        return None # This just slows the unit tests.
+        return None  # This just slows the unit tests.
     c = kw.get('c')
     flags = kw.get('flags') or 'rst'
     vr = viewrendered(event=kw)
@@ -391,7 +391,7 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    vr.show_dock_or_pane() # #1332.
+    vr.show_dock_or_pane()  # #1332.
     vr.update(
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
@@ -425,7 +425,7 @@ def viewrendered(event):
         controllers[h] = vr = ViewRenderedController(c)
     # Add the pane to the splitter.
     layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
-    vr._ns_id = '_leo_viewrendered' # for free_layout load/save
+    vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
     vr.splitter = splitter = c.free_layout.get_top_splitter()
     if splitter:
         vr.store_layout('closed')
@@ -560,7 +560,7 @@ def toggle_rendering_pane(event):
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-        vr.hide() # So the toggle below will work.
+        vr.hide()  # So the toggle below will work.
     if vr.isHidden():
         show_rendering_pane(event)
     else:
@@ -672,7 +672,7 @@ class ViewRenderedProvider:
         return f"Viewrendered: {filename}"
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-if QtWidgets: # NOQA
+if QtWidgets:  # NOQA
 
     class ViewRenderedController(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
@@ -692,19 +692,19 @@ if QtWidgets: # NOQA
             self.graphics_class = QtWidgets.QGraphicsWidget
             self.pyplot_canvas = None
             self.pyplot_imported = False
-            self.gs = None # For @graphics-script: a QGraphicsScene
-            self.gv = None # For @graphics-script: a QGraphicsView
+            self.gs = None  # For @graphics-script: a QGraphicsScene
+            self.gv = None  # For @graphics-script: a QGraphicsView
             self.inited = False
-            self.length = 0 # The length of previous p.b.
+            self.length = 0  # The length of previous p.b.
             self.locked = False
             self.pyplot_active = False
-            self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
-            self.sizes = [] # Saved splitter sizes.
+            self.scrollbar_pos_dict = {}  # Keys are vnodes, values are positions.
+            self.sizes = []  # Saved splitter sizes.
             self.splitter = None
-            self.splitter_index = None # The index of the rendering pane in the splitter.
+            self.splitter_index = None  # The index of the rendering pane in the splitter.
             self.title = None
-            self.vp = None # The present video player.
-            self.w = None # The present widget in the rendering pane.
+            self.vp = None  # The present video player.
+            self.w = None  # The present widget in the rendering pane.
             # User settings.
             self.reloadSettings()
             self.node_changed = True
@@ -733,7 +733,7 @@ if QtWidgets: # NOQA
                 'rst': pc.update_rst,
                 'svg': pc.update_svg,
                 'plantuml': pc.update_plantuml,
-                'jinja' : pc.update_jinja,
+                'jinja': pc.update_jinja,
                 # 'url': pc.update_url,
                 # 'xml': pc.update_xml,
             }
@@ -887,7 +887,7 @@ if QtWidgets: # NOQA
                 # Suppress updates until we change nodes.
                 pc.node_changed = pc.gnx != p.v.gnx
                 pc.gnx = p.v.gnx
-                pc.length = len(p.b) # not s
+                pc.length = len(p.b)  # not s
                 #
                 # Remove Leo directives.
                 s = keywords.get('s') if 's' in keywords else p.b
@@ -906,7 +906,7 @@ if QtWidgets: # NOQA
                     # Do *not* try to render plain text.
                     w = pc.ensure_text_widget()
                     w.setPlainText(s)
-                    pc.show() # Must be last.
+                    pc.show()  # Must be last.
                     return
                 f = pc.dispatch_dict.get(kind)
                 if not f:
@@ -966,7 +966,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
         def setBackgroundColor(self, colorName, name, w):
             '''Set the background color of the vr pane.'''
-            if 0: # Do not do this! It interferes with themes.
+            if 0:  # Do not do this! It interferes with themes.
                 pc = self
                 if not colorName:
                     return
@@ -995,7 +995,7 @@ if QtWidgets: # NOQA
             if len(p.b) != pc.length:
                 if pc.get_kind(p) in ('html', 'pyplot'):
                     pc.length = len(p.b)
-                    return False # Only update explicitly.
+                    return False  # Only update explicitly.
                 return True
             # This trace would be called at idle time.
                 # g.trace('no change')
@@ -1013,11 +1013,11 @@ if QtWidgets: # NOQA
             if asciidoctor_exec or asciidoc3_exec:
                 try:
                     s2 = self.convert_to_asciidoctor(s)
-                    self.set_html(s2,w)
+                    self.set_html(s2, w)
                     return
                 except Exception:
                     g.es_exception()
-            self.update_rst(s,keywords)
+            self.update_rst(s, keywords)
         #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title
         def make_asciidoc_title(self, s):
             '''Generate an asciiidoc title for s.'''
@@ -1079,7 +1079,7 @@ if QtWidgets: # NOQA
                 # Create the widgets.
                 pc.gs = QtWidgets.QGraphicsScene(splitter)
                 pc.gv = QtWidgets.QGraphicsView(pc.gs)
-                w = pc.gv.viewport() # A QWidget
+                w = pc.gv.viewport()  # A QWidget
                 # Embed the widgets.
 
                 def delete_callback():
@@ -1105,7 +1105,7 @@ if QtWidgets: # NOQA
             else:
                 w = pc.w
             if isQt5:
-                w.hide() # This forces a proper update.
+                w.hide()  # This forces a proper update.
             w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
@@ -1149,7 +1149,7 @@ if QtWidgets: # NOQA
                 w = pc.w
             s = self.get_jupyter_source(c)
             if isQt5:
-                w.hide() # This forces a proper update.
+                w.hide()  # This forces a proper update.
             w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
@@ -1178,7 +1178,7 @@ if QtWidgets: # NOQA
                 e = HTMLExporter()
                 (s, junk_resources) = e.from_notebook_node(nb)
             except nbformat.reader.NotJSONError:
-                pass # Assume the result is html.
+                pass  # Assume the result is html.
             return s
         #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
         def update_latex(self, s, keywords):
@@ -1199,7 +1199,7 @@ if QtWidgets: # NOQA
                 assert w == pc.w
             else:
                 w = pc.w
-            w.hide() # This forces a proper update.
+            w.hide()  # This forces a proper update.
             s = self.create_latex_html(s)
             w.setHtml(s)
             w.show()
@@ -1238,10 +1238,10 @@ if QtWidgets: # NOQA
                 if force or language in ('rst', 'rest', 'markdown', 'md'):
                     if not isHtml:
                         s = self.convert_to_markdown(s)
-                self.set_html(s,w)
+                self.set_html(s, w)
             else:
                 # g.trace('markdown not available: using rst')
-                self.update_rst(s,keywords)
+                self.update_rst(s, keywords)
         #@+node:ekr.20160921134552.1: *5* convert_to_markdown
         def convert_to_markdown(self, s):
             '''Convert s to html using the markdown processor.'''
@@ -1290,8 +1290,8 @@ if QtWidgets: # NOQA
             # Create a fresh player.
             g.es_print('playing', path)
             if QtMultimedia:
-                url= QtCore.QUrl.fromLocalFile(path)
-                content= QtMultimedia.QMediaContent(url)
+                url = QtCore.QUrl.fromLocalFile(path)
+                content = QtMultimedia.QMediaContent(url)
                 pc.vp = vp = QtMultimedia.QMediaPlayer()
                 vp.setMedia(content)
                 # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
@@ -1318,7 +1318,7 @@ if QtWidgets: # NOQA
             '''Update a networkx graphic in the vr pane.'''
             pc = self
             w = pc.ensure_text_widget()
-            w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
+            w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
             pc.show()
         #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers
         def update_pandoc(self, s, keywords):
@@ -1337,11 +1337,11 @@ if QtWidgets: # NOQA
             if pandoc_exec:
                 try:
                     s2 = self.convert_to_pandoc(s)
-                    self.set_html(s2,w)
+                    self.set_html(s2, w)
                 except Exception:
                     g.es_exception()
                 return
-            self.update_rst(s,keywords)
+            self.update_rst(s, keywords)
         #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
         def convert_to_pandoc(self, s):
             '''Convert s to html using the asciidoctor or asciidoc processor.'''
@@ -1397,11 +1397,11 @@ if QtWidgets: # NOQA
                 else:
                     g.trace('===== MISSING: pyplot.backend')
             try:
-                import matplotlib # Make *sure* this is imported.
+                import matplotlib  # Make *sure* this is imported.
                 import matplotlib.pyplot as plt
                 import numpy as np
                 import matplotlib.animation as animation
-                plt.ion() # Automatically set interactive mode.
+                plt.ion()  # Automatically set interactive mode.
                 namespace = {
                     'animation': animation,
                     'matplotlib': matplotlib,
@@ -1425,7 +1425,7 @@ if QtWidgets: # NOQA
                 silent=False,
                 namespace=namespace,
                 raiseFlag=False,
-                runPyflakes=False, # Suppress warnings about pre-defined symbols.
+                runPyflakes=False,  # Suppress warnings about pre-defined symbols.
             )
             c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
@@ -1528,9 +1528,9 @@ if QtWidgets: # NOQA
                 # not at @jinja, first find @jinja inputs, then @jinja
                 oldp, p = find_inputs(p)
 
-            def untangle(c,p):
+            def untangle(c, p):
 
-                return g.getScript(c,p,
+                return g.getScript(c, p,
                     useSelectedText=False,
                     useSentinels=False)
 
@@ -1622,7 +1622,7 @@ if QtWidgets: # NOQA
                 pc.update_md(s, keywords)
             else:
                 # Do nothing.
-                g.trace('ignore',s)
+                g.trace('ignore', s)
                 w = pc.ensure_text_widget()
                 pc.show()
                 w.setPlainText('')
@@ -1654,7 +1654,7 @@ if QtWidgets: # NOQA
 
                 w.anchorClicked.connect(handleClick)
                 w.setOpenLinks(False)
-                pc.embed_widget(w) # Creates w.wrapper
+                pc.embed_widget(w)  # Creates w.wrapper
                 assert w == pc.w
             return pc.w
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
@@ -1670,7 +1670,7 @@ if QtWidgets: # NOQA
                 # First, look for headline directives.
                 if h.startswith('@'):
                     i = g.skip_id(h, 1, chars='-')
-                    word = h[1: i].lower().strip()
+                    word = h[1:i].lower().strip()
                     if word in self.dispatch_dict:
                         return word
                 # Look for @language directives.
@@ -1691,7 +1691,7 @@ if QtWidgets: # NOQA
         def get_fn(self, s, tag):
             pc = self
             c = pc.c
-            fn = s or c.p.h[len(tag):]
+            fn = s or c.p.h[len(tag) :]
             fn = fn.strip()
             # Similar to code in g.computeFileUrl
             if fn.startswith('~'):
@@ -1715,7 +1715,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110321005148.14536: *5* vr.get_url
         def get_url(self, s, tag):
             p = self.c.p
-            url = s or p.h[len(tag):]
+            url = s or p.h[len(tag) :]
             url = url.strip()
             return url
         #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
@@ -1729,7 +1729,7 @@ if QtWidgets: # NOQA
             for s in lines:
                 if s.startswith('@'):
                     i = g.skip_id(s, 1)
-                    word = s[1: i]
+                    word = s[1:i]
                     if word in g.globalDirectiveList:
                         continue
                 result.append(s)

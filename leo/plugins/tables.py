@@ -44,10 +44,10 @@ def onCreate(tag, keys):
     else:
         g.trace('can not create TableController')
 #@+node:ekr.20170217164903.1: ** class TableController
-class TableController :
+class TableController:
     '''A class to create and align tables.'''
 
-    def __init__ (self, c):
+    def __init__(self, c):
         '''Ctor for TableController class.'''
         self.c = c
         self.ec = c.editCommands
@@ -100,25 +100,25 @@ class TableController :
                 if i == i_row1:
                     if is_row or starts_row1:
                         if i1 is None:
-                            i1 = i2 = i # Selected line starts the table.
+                            i1 = i2 = i  # Selected line starts the table.
                         else:
-                            pass # Table head already found.
+                            pass  # Table head already found.
                     elif i1 is None:
                         return -1, s1, []
                     # Selected line ends the table.
                     return i_row1, s1, lines[i1:i]
                 if is_row:
                     if i1 is None:
-                        i1 = i2 = i # Row i starts the head.
+                        i1 = i2 = i  # Row i starts the head.
                     elif i > i_row1:
-                        i2 = i # Row i extends the tail
+                        i2 = i  # Row i extends the tail
                     else:
-                        pass # Table head already found.
+                        pass  # Table head already found.
                 else:
                     if i1 is None:
-                        pass # Table head not yet found.
+                        pass  # Table head not yet found.
                     elif i < i_row1:
-                        i1 = None # Forget previous tables.
+                        i1 = None  # Forget previous tables.
                         i2 = None
                     else:
                         # Selected line ends the table.
@@ -130,7 +130,7 @@ class TableController :
             if i1 is None or i2 is None:
                 return -1, s1, []
             # Last line ends the table.
-            return i_row1, s1, lines[i1:len(lines)]
+            return i_row1, s1, lines[i1 : len(lines)]
         return -1, s1, []
     #@+node:ekr.20170218075243.1: *3* table.insert_newline
     def insert_newline(self, event):
@@ -143,7 +143,7 @@ class TableController :
         else:
             self.put('\n', event)
     #@+node:ekr.20170218135553.1: *3* table.put
-    def put (self, ch, event):
+    def put(self, ch, event):
         '''
         Insert the given ch into w.
         ch must be valid as stroke.s

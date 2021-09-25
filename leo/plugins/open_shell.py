@@ -36,14 +36,14 @@ else:
 
 #@+others
 #@+node:ekr.20060107110126: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     # Ok for unit testing: creates a new menu.
     g.registerHandler("after-create-leo-frame", onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20060107110126.1: ** onCreate
-def onCreate (tag, keywords):
+def onCreate(tag, keywords):
 
     c = keywords.get('c')
     if c:
@@ -54,23 +54,23 @@ class pluginController:
 
     #@+others
     #@+node:ekr.20060107110126.3: *3* ctor
-    def __init__ (self,c):
+    def __init__(self, c):
 
         self.c = c
     #@+node:EKR.20040517080049.6: *3* load_menu
-    def load_menu (self):
+    def load_menu(self):
 
         c = self.c
         if sys.platform == "win32":
             table = (
-                ("&Open Console Window",None,self.launchCmd),
-                ("Open &Explorer",None,self.launchExplorer))
+                ("&Open Console Window", None, self.launchCmd),
+                ("Open &Explorer", None, self.launchExplorer))
         else:
-            table = (("Open &xterm",None,self.launchxTerm),)
-        c.frame.menu.createNewMenu("E&xtensions","top")
+            table = (("Open &xterm", None, self.launchxTerm),)
+        c.frame.menu.createNewMenu("E&xtensions", "top")
         c.frame.menu.createMenuItemsFromTable("Extensions", table)
     #@+node:EKR.20040517080049.7: *3* _getpath (open_shell.py)
-    def _getpath (self, p):
+    def _getpath(self, p):
 
         c = self.c
         path = g.fullPath(c, p)  # #1914
@@ -84,7 +84,7 @@ class pluginController:
         d = self._getpath(p)
         return d
     #@+node:EKR.20040517080049.9: *3* launchCmd
-    def launchCmd(self,event=None):
+    def launchCmd(self, event=None):
 
         global pathToCmd
 
@@ -92,15 +92,15 @@ class pluginController:
         myCmd = 'cd ' + d
         os.spawnl(os.P_NOWAIT, pathToCmd, '/k ', myCmd)
     #@+node:EKR.20040517080049.10: *3* launchExplorer
-    def launchExplorer(self,event=None):
+    def launchExplorer(self, event=None):
 
         global pathToExplorer
 
         d = self._getCurrentNodePath()
-        os.spawnl(os.P_NOWAIT,pathToExplorer, ' ', d)
+        os.spawnl(os.P_NOWAIT, pathToExplorer, ' ', d)
 
     #@+node:EKR.20040517080049.11: *3* launchxTerm
-    def launchxTerm(self,event=None):
+    def launchxTerm(self, event=None):
 
         d = self._getCurrentNodePath()
         curdir = os.getcwd()

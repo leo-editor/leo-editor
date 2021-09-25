@@ -23,13 +23,13 @@ from leo.core import leoPlugins
 #@-<< imports >>
 #@+others
 #@+node:ville.20090503124249.5: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ville.20090503124249.6: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if not c:
@@ -62,14 +62,14 @@ def parsenote(cont):
     title = tree.findtext('{http://beatniksoftware.com/tomboy}title')
     # EKR: I'm not sure that finditer is correct, but geiterator no longer exists.
     # body  = tree.getiterator('{http://beatniksoftware.com/tomboy}note-content')[0]
-    body  = tree.iterfind('{http://beatniksoftware.com/tomboy}note-content')[0]
+    body = tree.iterfind('{http://beatniksoftware.com/tomboy}note-content')[0]
     #b = "".join(el.text for el in body.getiterator())
     b = ET.tostring(body)
     b = strip_tags(b)
     #print "body",b
     return title, b
 
-def pos_for_gnx(c,gnx):
+def pos_for_gnx(c, gnx):
     #print "match",gnx
     for pos in c.all_positions():
         pos = pos.copy()
@@ -78,7 +78,7 @@ def pos_for_gnx(c,gnx):
             return pos.copy()
     return None
 
-def capturenotes(c,pos):
+def capturenotes(c, pos):
     import glob
     import os
     notes = glob.glob(os.path.expanduser('~/.tomboy/*.note'))
@@ -93,7 +93,7 @@ def capturenotes(c,pos):
         po = None
         if fname in old_nodes:
 
-            po = pos_for_gnx(c,old_nodes[fname])
+            po = pos_for_gnx(c, old_nodes[fname])
             if po is not None:
                 g.es('tomboy: Updating note "%s"' % title)
 
@@ -106,12 +106,12 @@ def capturenotes(c,pos):
         old_nodes[fname] = po.gnx
     c.db['tomboy_notes'] = old_nodes
 
-def tomboy_act_on_node(c,p,event):
+def tomboy_act_on_node(c, p, event):
     #print 'act', `p.h`
     if not p.h == 'tomboy':
         raise leoPlugins.TryNext
 
-    capturenotes(c,p)
+    capturenotes(c, p)
     c.redraw()
 
 def tomboy_install():
