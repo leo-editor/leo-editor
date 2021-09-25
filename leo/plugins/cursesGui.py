@@ -184,9 +184,11 @@ class TextFrame(leoFrame.LeoFrame):
         p._linkAsRoot()
         # c.setRootPosition(p) # New in 4.4.2.
     #@+node:ekr.20150107090324.24: *3* deiconify
-    def deiconify(self): pass # N/A
+    def deiconify(self):
+        pass # N/A
 
-    def lift(self): pass # N/A
+    def lift(self):
+        pass # N/A
     #@+node:ekr.20150107090324.25: *3* destroySelf
     def destroySelf(self):
         pass
@@ -208,7 +210,8 @@ class TextFrame(leoFrame.LeoFrame):
     def getFocus(self):
         return None
     #@+node:ekr.20150107090324.27: *3* setInitialWindowGeometry
-    def setInitialWindowGeometry(self): pass # N/A
+    def setInitialWindowGeometry(self):
+        pass # N/A
     #@+node:ekr.20150107090324.28: *3* setMinibufferBindings
     def setMinibufferBindings(self):
         pass
@@ -217,9 +220,12 @@ class TextFrame(leoFrame.LeoFrame):
         pass # N/A
     #@+node:ekr.20150107090324.29: *3* text_key
     def text_key(self):
-        c = self.c; k = c.k; w = self.body.bodyCtrl
+        c = self.c
+        k = c.k
+        w = self.body.bodyCtrl
         key = get_input('Keystroke > ')
-        if not key: return
+        if not key:
+            return
 
         class leoTypingEvent:
 
@@ -239,9 +245,11 @@ class TextFrame(leoFrame.LeoFrame):
         e = leoTypingEvent(c, w, char, stroke)
         k.masterKeyHandler(event=e) ## ,stroke=key)
     #@+node:ekr.20150107090324.30: *3* update
-    def update(self): pass
+    def update(self):
+        pass
 
-    def resizePanesToRatio(self, ratio, ratio2): pass # N/A
+    def resizePanesToRatio(self, ratio, ratio2):
+        pass # N/A
     #@-others
 #@+node:ekr.20150107090324.31: ** class textBody
 class textBody(leoFrame.LeoBody):
@@ -262,9 +270,11 @@ class textBody(leoFrame.LeoBody):
     #@+node:ekr.20150107090324.34: *3* setEditorColors
     # TODO Tkinter onBodyChanged undo call and many others. =(
 
-    def setEditorColors(self, bg, fg): pass # N/A
+    def setEditorColors(self, bg, fg):
+        pass # N/A
 
-    def createBindings(self, w=None): pass
+    def createBindings(self, w=None):
+        pass
     #@+node:ekr.20150107090324.35: *3* text_show
     def text_show(self):
         w = self.bodyCtrl
@@ -367,7 +377,8 @@ class textLeoMenu(leoMenu.LeoMenu):
             g.pr(len(last_menu.entries), ')', '[Prev]')
             which = get_input('Which menu entry? > ')
             which = which.strip()
-            if not which: continue
+            if not which:
+                continue
             try:
                 n = int(which)
             except ValueError:
@@ -396,9 +407,11 @@ class textLog(leoFrame.LeoLog):
     #@+node:ekr.20150107090324.58: *3* createControl
     # < < HACK Quiet, oops. >>
 
-    def createControl(self, parentFrame): pass
+    def createControl(self, parentFrame):
+        pass
 
-    def setFontFromConfig(self): pass # N/A
+    def setFontFromConfig(self):
+        pass # N/A
     #@+node:ekr.20150107090324.68: *3* finishCreate
     def finishCreate(self):
         pass
@@ -409,7 +422,8 @@ class textLog(leoFrame.LeoLog):
     def putnl(self, tabName='log'):
         g.pr('')
     #@+node:ekr.20150107090324.59: *3* setColorFromConfig
-    def setColorFromConfig(self): pass
+    def setColorFromConfig(self):
+        pass
     #@+node:ekr.20150107090324.55: *3* setTabBindings
     def setTabBindings(self, tabName):
         pass
