@@ -1460,7 +1460,10 @@ g.es_print('done')
 - twine upload dist/leo*.whl
 </t>
 <t tx="ekr.20180405171433.1">@language rest</t>
-<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
+- Run beautify-files.
+
+LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
@@ -1500,7 +1503,7 @@ LeoPyRef.leo:
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run all unit tests, on Windows and Linux.
-- Run pylint (EKR's ll -a script).
+- From leo-editor run `python -m pylint-leo`.
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
