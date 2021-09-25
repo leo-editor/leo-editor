@@ -2579,10 +2579,6 @@ class CoreTree(leoFrame.LeoTree):
                 g.trace('NO wrapper')
             return  # Startup.
         w = self.edit_widget(p)
-        if c.suppressHeadChanged:
-            if trace:
-                g.trace('c.suppressHeadChanged')
-            return
         if not w:
             if trace:
                 g.trace('****** no w for p: %s', repr(p))
