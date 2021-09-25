@@ -205,6 +205,8 @@ class LeoFind:
         self.reverse_find_defs = c.config.getBool('reverse-find-defs', default=False)
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self, root, replacements, settings=None):
+        #@+<< docstring: find.batch_change >>
+        #@+node:ekr.20210925161347.1: *4* << docstring: find.batch_change >>
         """
         Support batch change scripts.
 
@@ -226,6 +228,7 @@ class LeoFind:
             if count:
                 c.save()
         """
+        #@-<< docstring: find.batch_change >>
         try:
             self._init_from_dict(settings or {})
             count = 0
@@ -315,6 +318,59 @@ class LeoFind:
                 errors += 1
         if errors:  # pragma: no cover
             g.printObj(sorted(valid.keys()), tag='valid keys')
+    #@+node:ekr.20210925161148.1: *3* find.interactive_search_helper
+    def interactive_search_helper(self, root=None, settings=None):
+        #@+<< docstring: find.interactive_search >>
+        #@+node:ekr.20210925161451.1: *4* << docstring: find.interactive_search >>
+        """
+        Support interactive find.
+
+        c.findCommands.interactive_search_helper starts an interactive search with
+        the given settings. The settings argument may be either a g.Bunch or a
+        dict.
+
+        Example 1, settings is a g.Bunch:
+
+            c.findCommands.interactive_search_helper(
+                root = c.p,
+                settings = g.Bunch(
+                    find_text = '^(def )',
+                    change_text = '\1',
+                    pattern_match=True,
+                    search_headline=False,
+                    whole_word=False,
+                )
+            )
+            
+        Example 2, settings is a python dict:
+            
+            c.findCommands.interactive_search_helper(
+                root = c.p,
+                settings = {
+                    'find_text': '^(def )',
+                    'change_text': '\1',
+                    'pattern_match': True,
+                    'search_headline': False,
+                    'whole_word': False,
+                }
+            )
+        """
+        #@-<< docstring: find.interactive_search >>
+        # Merge settings into default settings.
+        c = self.c
+        d = self.default_settings()  # A g.bunch
+        if settings:
+            # Settings can be a dict or a g.Bunch.
+            # g.Bunch has no update method.
+            for key in settings.keys():
+                d [key] = settings [key]  
+        self.ftm.set_widgets_from_dict(d)  # So the *next* find-next will work.
+        self.show_find_options_in_status_area()
+        if not self.check_args('find-next'):
+            return
+        if root:
+            c.selectPosition(root)
+        self.do_find_next(d)
     #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
     #@+node:ekr.20031218072017.3062: *4* find.change-then-find & helper
     @cmd('replace-then-find')
