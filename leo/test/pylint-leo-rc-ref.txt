@@ -43,8 +43,7 @@ disable=
     # 
         design,import,similarities, # Make work.
 
-        # format,  # Allow bad-indentation check!
-        multiple-statements,  # Enable only for core files.
+        # format,  # Allow bad-indentation and other checks.
         
         arguments-renamed, # cursesGui2.py
         assignment-from-no-return, # Causes problems when base class return None.
