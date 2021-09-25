@@ -511,6 +511,44 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.insert(i, word2)
             w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand(changed=changed, setLabel=True)
+    #@+node:tom.20210922171731.1: *4* ec.capitalizeWords & selection
+    @cmd('capitalize-words-or-selection')
+    def capitalizeWords(self, event=None):
+        """Capitalize Entire Body Or Selection."""
+        frame = self
+        c, p, u = frame.c, self.c.p, self.c.undoer
+        w = frame.editWidget(event)
+        s = w.getAllText()
+        if not s:
+            return
+
+        undoType='capitalize-body-words'
+        undoData = u.beforeChangeNodeContents(p)
+
+        i, j = w.getSelectionRange()
+        if i == j:
+            sel = ''
+        else:
+            sel = s[i:j]
+        text = sel or s
+        if sel:
+            prefix = s[:i]
+            suffix = s[j:]
+
+        # Thanks to 
+        # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
+        def convert_to_uppercase(m):
+            """Convert the second group to uppercase and join both group 1 & group 2"""
+            return m.group(1) + m.group(2).upper()
+
+        capitalized = re.sub("(^|\s)(\S)", convert_to_uppercase, text)
+
+        if capitalized != text:
+            p.b = prefix + capitalized + suffix if sel else capitalized
+            c.setChanged()
+            p.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData)
+            c.redraw()
     #@+node:ekr.20150514063305.195: *3* ec: clicks and focus
     #@+node:ekr.20150514063305.196: *4* ec.activate-x-menu & activateMenu
     @cmd('activate-cmds-menu')
