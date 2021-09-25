@@ -1246,7 +1246,7 @@ def poll(timeout=0.0):
     if not map:
         return False
     while 1:
-        r = []; w = []; e = []
+        e, r, w = [], [], []
         for fd, obj in map.items():
             if obj.readable():
                 r.append(fd)

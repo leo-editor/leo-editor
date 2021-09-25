@@ -69,7 +69,8 @@ def CodeChunk(text, width=72):
 def CreateAscMenu(tag,keywords):
     """Create the Outline to AsciiDoc menu item in the Export menu."""
     c = keywords.get('c')
-    if not c: return
+    if not c:
+        return
     exportMenu = c.frame.menu.getMenu('export')
     table = (
         ("-", None, None),

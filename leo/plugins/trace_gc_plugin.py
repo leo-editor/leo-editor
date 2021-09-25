@@ -30,7 +30,8 @@ def printIdleGC(tag, keywords):
     if g.app.killed:
         return
     if tag == "idle":
-        global gcCount; gcCount += 1
+        global gcCount
+        gcCount += 1
         if (gcCount % 20) == 0:
             g.printGc()
     else:

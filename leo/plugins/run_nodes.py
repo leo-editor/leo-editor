@@ -87,7 +87,8 @@ def OnBodyKey(tag,keywords):
     global RunNode,In
 
     c=keywords.get('c')
-    if not c or not c.exists: return
+    if not c or not c.exists:
+        return
     p=c.p
     h=p.h
     ch=keywords.get("ch")
@@ -108,7 +109,8 @@ def OnIconDoubleClick(tag,keywords):
     global RunNode,RunList,OwnIdleHook,ExitCode
 
     c=keywords.get('c')
-    if not c or not c.exists: return
+    if not c or not c.exists:
+        return
     p = c.p
     h = p.h
     if g.match_word(h,0,"@run"):
@@ -251,7 +253,8 @@ def OpenProcess(p):
     global In,OutThread,ErrThread,ExitCode
 
     command = p.h[4:].strip() # Remove @run
-    if not command: return
+    if not command:
+        return
     #@+<< set the working directory or return >>
     #@+node:ekr.20040910094754: *3* << set the working directory or return >>
     args = command.split(' ')

@@ -66,7 +66,8 @@ class controller:
 
         # fr - Modifier pour adapter à votre environnement
         # en - Change it to select the starting browsing directory
-        c = self.c ; startdir = "/home/"
+        c = self.c
+        startdir = "/home/"
 
         if language == 'french':
             titledialog = "Choisir le répertoire..."
@@ -100,7 +101,8 @@ class controller:
             return compteurglobal
 
         head,tail = g.os_path_split(dir)
-        c = self.c ; current = c.p
+        c = self.c
+        current = c.p
         try:
             #ici, on liste le contenu du répertoire
             body=""

@@ -14,7 +14,8 @@ def init():
     return ok
 #@+node:edream.110203113231.739: ** trace_tags (trace_tags.py)
 def trace_tags(tag, keywords):
-    global tagCount; brief = True
+    global tagCount
+    brief = True
     tagCount += 1 # Always count the hook.
     # List of hooks to suppress.
     if tag in (

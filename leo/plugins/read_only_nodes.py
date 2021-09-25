@@ -334,7 +334,8 @@ def insert_read_only_node (c,p,name):
 def on_open (tag,keywords):
 
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
 
     p = c.rootPosition()
     g.blue("scanning for @read-only nodes...")

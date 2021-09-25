@@ -662,9 +662,11 @@ if docutils: # NOQA
                 href = ''
             format = self.settings.footnote_references
             if format == 'brackets':
-                suffix = '[' ; markup.append(']')
+                suffix = '['
+                markup.append(']')
             elif format == 'superscript':
-                suffix = '<super>' ; markup.append('</super>')
+                suffix = '<super>'
+                markup.append('</super>')
             else: # shouldn't happen
                 suffix = None
             if suffix:
@@ -706,7 +708,8 @@ if docutils: # NOQA
             # self.dumpNode(node,tag='backrefs-node')
 
             b = self.peek('footnotes')
-            a = node.attributes ; backrefs = a.get('backrefs',[]) # EKR.
+            a = node.attributes
+            backrefs = a.get('backrefs',[]) # EKR.
 
             # Set b.setLink.
             b.setLink = self.starttag(
@@ -806,14 +809,18 @@ if docutils: # NOQA
         def visit_title (self,node):
 
             caller='visit_title'
-            start = len(self.body) ; markup = []
+            start = len(self.body)
+            markup = []
             isTopic = isinstance(node.parent,docutils.nodes.topic)
             isTitle = self.sectionlevel == 0
 
             # Set the style.
-            if isTopic:   style = 'topic-title'
-            elif isTitle: style = 'title'
-            else:         style = "h%s" % self.sectionlevel
+            if isTopic:
+                style = 'topic-title'
+            elif isTitle:
+                style = 'title'
+            else:
+                style = "h%s" % self.sectionlevel
 
             # The old code was equivalent to: if style != 'title'.
             if 0:
@@ -863,7 +870,8 @@ if docutils: # NOQA
                 if att in node:
                     atts [att] = node [att]
 
-            attlist = atts.items() ; attlist.sort()
+            attlist = atts.items()
+            attlist.sort()
             parts = [tagname]
             # Convert the attributes in attlist to a single string.
             for name, value in attlist:

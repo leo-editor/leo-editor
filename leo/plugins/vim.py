@@ -147,13 +147,10 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting # Don't conflict with xemacs plugin.
     if ok:
-        # print ('vim.py enabled')
-        # Register the handlers...
-        # event = 'open2'
-        # g.registerHandler(event,on_open_window)
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
-        if 0: os.system(_vim_cmd)
+        if 0:
+            os.system(_vim_cmd)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20150326150910.1: ** g.command('vim-open-file')
@@ -209,11 +206,13 @@ class VimCommander:
         path = self.find_path_for_node(root)
         if path and self.should_open_old_file(path, root):
             cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:e " + path + "<CR>'"
-            if self.trace: g.trace('os.system(%s)' % cmd)
+            if self.trace:
+                g.trace('os.system(%s)' % cmd)
             os.system(cmd)
         else:
             # Open a new temp file.
-            if path: self.forget_path(path)
+            if path:
+                self.forget_path(path)
             self.open_file(root)
     #@+node:ekr.20150326183613.1: *4* vim.check_args & helper
     def check_args(self):

@@ -199,7 +199,8 @@ def matchlines(b, miter):
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     install_qt_quicksearch_tab(c)
 
@@ -435,12 +436,14 @@ class QuickSearchController:
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-            if self.addItem(it, (p, None)):return lineMatchHits
+            if self.addItem(it, (p, None)):
+                return lineMatchHits
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 lineMatchHits += 1
                 it = QtWidgets.QListWidgetItem("    "+ml, self.lw)
-                if self.addItem(it, (p,pos)):return lineMatchHits
+                if self.addItem(it, (p,pos)):
+                    return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
     def addParentMatches(self, parent_list):
@@ -455,19 +458,22 @@ class QuickSearchController:
             f = it.font()
             f.setItalic(True)
             it.setFont(f)
-            if self.addItem(it, (parent_key, None)): return lineMatchHits
+            if self.addItem(it, (parent_key, None)):
+                return lineMatchHits
             for p in parent_value:
                 it = QtWidgets.QListWidgetItem("    "+p.h, self.lw)
                 f = it.font()
                 f.setBold(True)
                 it.setFont(f)
-                if self.addItem(it, (p, None)):return lineMatchHits
+                if self.addItem(it, (p, None)):
+                    return lineMatchHits
                 if hasattr(p,"matchiter"): #p might be not have body matches
                     ms = matchlines(p.b, p.matchiter)
                     for ml, pos in ms:
                         lineMatchHits += 1
                         it = QtWidgets.QListWidgetItem("    "+"    "+ml, self.lw)
-                        if self.addItem(it, (p, pos)):return lineMatchHits
+                        if self.addItem(it, (p, pos)):
+                            return lineMatchHits
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
@@ -484,7 +490,8 @@ class QuickSearchController:
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-            if self.addItem(it, (p, None)): return
+            if self.addItem(it, (p, None)):
+                return
     #@+node:ekr.20111015194452.15691: *3* clear
     def clear(self):
 
@@ -559,7 +566,8 @@ class QuickSearchController:
             node = self.c.p
             while not found and not hitBase:
                 h = node.h
-                if h: h=h.split()[0]
+                if h:
+                    h=h.split()[0]
                 if h in self.fileDirectives:
                     found = True
                 else:
@@ -574,7 +582,8 @@ class QuickSearchController:
             node = self.c.p
             while not found and not hitBase:
                 h = node.h
-                if h: h=h.split()[0]
+                if h:
+                    h=h.split()[0]
                 if h == "@chapter":
                     found = True
                 else:

@@ -340,8 +340,10 @@ class Demo:
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
     def key_wait(self, speed=None, n1=None, n2=None):
         '''Wait for an interval between n1 and n2, in seconds.'''
-        if n1 is None: n1 = self.n1
-        if n2 is None: n2 = self.n2
+        if n1 is None:
+            n1 = self.n1
+        if n2 is None:
+            n2 = self.n2
         if n1 > 0 and n2 > 0:
             n = random.uniform(n1, n2)
         else:
@@ -581,7 +583,8 @@ class Demo:
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
-        m = self; c = m.c
+        m = self
+        c = m.c
         d = {
             None: c.frame.body.widget,
             'all': c.frame.top,
@@ -903,7 +906,8 @@ def Head(arrow, label, headline, offset=None):
         if p:
             x, y, w, h = demo.headline_geometry(p)
             class_ = Arrow if arrow else Callout
-            if not offset: offset = w-10
+            if not offset:
+                offset = w-10
             class_(label, pane='tree', position=(x+offset, y))
         else:
             print('not found', p.h)

@@ -48,8 +48,8 @@ class pluginController:
 
     #@+node:ekr.20110110105526.5471: *3* upload
     def upload (self,event=None):
-        c = self.c ; p = c.p
-
+        c = self.c
+        p = c.p
         g.es("upload started")
         p = g.findTopLevelNode(c, '@data ftp')
         if p:

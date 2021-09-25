@@ -20,7 +20,8 @@ def addPluginDirectives (tag,keywords):
     global directives
 
     for s in directives:
-        if s.startswith('@'): s = s[1:]
+        if s.startswith('@'):
+            s = s[1:]
         if s not in g.globalDirectiveList:
             g.globalDirectiveList.append(s)
 #@-others

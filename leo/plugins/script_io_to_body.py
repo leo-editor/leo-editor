@@ -53,7 +53,8 @@ def newExecuteScript (self,
     define_name='__main__',silent=False
 ):
 
-    c = self ; log = c.frame.log
+    c = self
+    log = c.frame.log
     redirect(c)
 
     # Use silent to suppress 'end of script message'

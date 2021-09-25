@@ -61,7 +61,8 @@ def toggleLineNumberingOff(event):
 #@+node:vitalije.20170727204246.1: ** onSelect
 def onSelect (tag, keys):
     c = keys.get('c')
-    if not c.hash(): return
+    if not c.hash():
+        return
     ok = c.config.getBool('use-gutter', default=False)
     ok = ok and not c.user_dict.get(LNOFF, False)
     if ok:
@@ -118,7 +119,8 @@ def renumber(c):
 REQUESTS = {}
 def request_update(c):
     h = c.hash()
-    if REQUESTS.get(h):return
+    if REQUESTS.get(h):
+        return
     REQUESTS[h] = True
     QtCore.QTimer.singleShot(200, lambda:renumber(c))
 
@@ -221,7 +223,8 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
                     flines = []
                     for x in vlines(p1):
                         n += 1
-                        if is_verbatim(x): n+=1
+                        if is_verbatim(x):
+                            n+=1
                         flines.append(n)
                     flines.append(n+1)
                 else:
@@ -243,11 +246,13 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             return (0, n-st) if delim_st else (0, n-st)
         #@+node:vitalije.20170726193933.1: *4* doc part
         if doc_pattern.match(line):
-            if delim_st: return 0, 1
+            if delim_st:
+                return 0, 1
             return 0, 0
         #@+node:vitalije.20170726193941.1: *4* code part
         if code_pattern.match(line):
-            if delim_st: return 0, 1
+            if delim_st:
+                return 0, 1
             return 0, 0
         #@-others
         # if we get here it is an ordinary line

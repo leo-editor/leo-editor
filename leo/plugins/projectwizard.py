@@ -42,7 +42,8 @@ def auto_walk(c, directory, parent=None, isroot=True):
 
     p = c.currentPosition()
 
-    if not RELATIVE_PATHS: directory = abspath(directory)
+    if not RELATIVE_PATHS:
+        directory = abspath(directory)
     if isroot:
         p.h = "@path %s" % normpath(directory)
     for name in listdir(directory):

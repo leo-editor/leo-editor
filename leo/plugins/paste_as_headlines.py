@@ -33,7 +33,8 @@ def createPasteAsHeadlinesMenu (tag,keywords):
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
 
     # Use code to find index number of menu shortcut
     index_label = 'Pa&ste as Headlines'

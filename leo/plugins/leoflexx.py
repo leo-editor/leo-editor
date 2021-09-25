@@ -161,7 +161,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         return g.NullObject()
 
     def setFocus(self):
-        if 0: print(self.tag, 'setFocus')
+        # print(self.tag, 'setFocus')
         self.flx_wrapper().set_focus()
 
     # No need to override getters.
@@ -210,7 +210,7 @@ class API_Wrapper (leoFrame.StringTextWrapper):
         c = self.c
         tag = 'py.body.setter'
         if self.name == 'body':
-            if 0: print('%s: %s' % (tag, len(self.s)))
+            # print('%s: %s' % (tag, len(self.s)))
             c.p.v.setBodyString(self.s)
                 # p.b = self.s will cause an unbounded recursion.
         if 0:
@@ -466,9 +466,9 @@ class LeoBrowserApp(flx.PyComponent):
     @flx.action
     def set_body_text(self):
         c = self.c
+        # Using the wrapper sets the text *and* the insert point and selection range.
         c.frame.body.wrapper.setAllText(c.p.b)
-        if 0: print('app.set_body_text', len(c.p.b), c.p.h)
-            # Using the wrapper sets the text *and* the insert point and selection range.
+        # print('app.set_body_text', len(c.p.b), c.p.h)
 
     @flx.action
     def set_status(self):
@@ -498,7 +498,8 @@ class LeoBrowserApp(flx.PyComponent):
         #
         # Be careful: c.frame.redraw can be called before app.finish_create.
         if not w or not w.tree:
-            if trace: print(tag, 'no w.tree')
+            if trace:
+                print(tag, 'no w.tree')
             return
         #
         # Profile times when all nodes are expanded.
@@ -520,7 +521,8 @@ class LeoBrowserApp(flx.PyComponent):
             # The redraw instructions are not used.
         #
         # Do not call c.setChanged() here.
-        if trace: print('app.redraw: %5.3f sec.' % (time.process_time()-t1))
+        if trace:
+            print('app.redraw: %5.3f sec.' % (time.process_time()-t1))
         #
         # Move to the next redraw generation.
         self.old_flattened_outline = new_flattened_outline
@@ -617,7 +619,8 @@ class LeoBrowserApp(flx.PyComponent):
         '''
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
-        if 0: print('make_dict_for_position: %s%s' % ('  '*p.level(), p.v.h))
+        if 0:
+            print('make_dict_for_position: %s%s' % ('  '*p.level(), p.v.h))
                 # A superb trace. There are similar traces in:
                 # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
                 # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
@@ -885,8 +888,8 @@ class LeoBrowserApp(flx.PyComponent):
     @flx.action
     def select_tree_using_ap(self, ap):
         '''A helper action, called from flx_tree.on_selected_event.'''
-        tag = 'py.app.select_tree_using_ap'
-        if 0: print(tag, ap ['headline'])
+        # tag = 'py.app.select_tree_using_ap'
+        # print(tag, ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates dict)
@@ -1277,7 +1280,7 @@ class LeoBrowserGui(leoGui.NullGui):
     #@+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
         w = self.focusWidget
-        if 0: print('%s: get_focus: %r' % (self.tag, w.tag))
+        # print('%s: get_focus: %r' % (self.tag, w.tag))
         return w
 
     def set_focus(self, commander, widget):
@@ -1301,7 +1304,7 @@ class LeoBrowserGui(leoGui.NullGui):
             self.focusWidget = widget
         elif isinstance(widget, API_Wrapper):
             # This does sometimes get executed.
-            if 0: print('gui.set_focus: redirect AceWrapper to LeoBrowserBody')
+            # print('gui.set_focus: redirect AceWrapper to LeoBrowserBody')
             assert isinstance(c.frame.body, LeoBrowserBody), repr(c.frame.body)
             assert widget.name == 'body', repr(widget.name)
             c.frame.body.wrapper.setFocus()
@@ -1648,8 +1651,9 @@ class LeoBrowserTree(leoFrame.NullTree):
         self.select_lockout = True
         self.new_p = p.copy()
         old_p = self.root.c.p
-        if trace: print('\n%30s: %4s %s ==> %s %s ' % (
-            tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
+        if trace:
+            print('\n%30s: %4s %s ==> %s %s ' % (
+                tag, len(old_p.v._bodyString), old_p.h, len(p.v._bodyString), p.h))
         #
         # Schdule JS side to:
         # 1. Update *old* p.b from flx.body.
@@ -1679,7 +1683,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
         '''This is c.frame.tree.redraw!'''
-        if 0: print(self.tag, '(c.frame.tree) redraw')
+        # print(self.tag, '(c.frame.tree) redraw')
         self.root.redraw(p)
     #@+node:ekr.20181120063844.1: *4* tree.setFocus
     def setFocus(self):
@@ -1749,7 +1753,8 @@ class JS_Editor(flx.Widget):
         down =  '%s %r' % (self.name, ev)
         if down != self.last_down:
             self.last_down = down
-            if trace: print('     jse.key_down:', down)
+            if trace:
+                print('     jse.key_down:', down)
         if self.should_be_leo_key(ev):
             e.preventDefault()
         return ev
@@ -1761,13 +1766,15 @@ class JS_Editor(flx.Widget):
             # Enable key downs.
         ev = self._create_key_event(e)
         if self.ignore_up:
-            if trace: print('IGNORE jse.key_up: %s %r' % (self.name, ev))
+            if trace:
+                print('IGNORE jse.key_up: %s %r' % (self.name, ev))
             e.preventDefault()
             return ev
         self.ignore_up = True
             # Ignore all further key ups, until the next key down
         should_be_leo = bool(self.should_be_leo_key(ev))
-        if trace: print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
+        if trace:
+            print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
         if should_be_leo:
             e.preventDefault()
             ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
@@ -1809,7 +1816,8 @@ class JS_Editor(flx.Widget):
         #
         # The widget handles F-keys.
         if not mods and key.startswith('F'):
-            if trace: print('%s: %r %r return: false' % (tag, mods, key))
+            if trace:
+                print('%s: %r %r return: false' % (tag, mods, key))
             return False
         mods2 = mods
         if 'Shift' in mods2:
@@ -1818,11 +1826,13 @@ class JS_Editor(flx.Widget):
         # Send only Ctrl-Arrow keys to body.
         if mods2 == ['Ctrl'] and key in ('RtArrow', 'LtArrow', 'UpArrow', 'DownArrow'):
             # This never fires: Neither editor widget emis Ctrl/Arrow keys or Alt-Arrow keys.
-            if trace: print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
+            if trace:
+                print(tag, 'Arrow key: send to to body', repr(mods), repr(key))
             return False
         #
         # Leo should handle all other modified keys.
-        if trace: print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
+        if trace:
+            print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
         return mods2
     #@+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
@@ -1841,7 +1851,7 @@ class JS_Editor(flx.Widget):
     def get_ins(self):
         d = self.editor.selection.getCursor()
         row, col = d ['row'], d['column']
-        if 0: print('%s: get_ins: row: %s col: %s' % (self.tag, row, col))
+        # print('%s: get_ins: row: %s col: %s' % (self.tag, row, col))
         return row, col
 
     def get_sel(self):
@@ -1855,23 +1865,24 @@ class JS_Editor(flx.Widget):
             print('%s: get_sel: NO SELECTION' % self.tag)
             i = self.get_ins()
             row1 = col1 = row2 = col2 = i
-        if 0: print('%s: get_sel: (%s, %s) to (%s, %s)' % (self.tag, row1, col1, row2, col2))
+        # print('%s: get_sel: (%s, %s) to (%s, %s)' % (self.tag, row1, col1, row2, col2))
         return row1, col1, row2, col2
 
     def get_text(self):
         editor = self.editor
         s = editor.getValue()
-        if 0: print('%s: get_text: %s' % (self.tag, len(s)))
+        # print('%s: get_text: %s' % (self.tag, len(s)))
         return s
     #@+node:ekr.20181128061524.1: *4* jse.text setters
     @flx.action
     def insert(self, s):
-        if 0: print(self.tag, 'insert', repr(s))
+        # print(self.tag, 'insert', repr(s))
         self.editor.insert(s)
 
     @flx.action
     def select_all_text(self):
-        if 'select' in g.app.debug: print(self.tag, 'select_all_text')
+        if 'select' in g.app.debug:
+            print(self.tag, 'select_all_text')
 
     @flx.action
     def set_insert_point(self, insert, sel):
@@ -1891,7 +1902,7 @@ class JS_Editor(flx.Widget):
     @flx.action
     def set_text(self, s):
         '''Set the entire text'''
-        if 0: print('%s.set_text: len(s): %s' % (self.tag, len(s)))
+        # print('%s.set_text: len(s): %s' % (self.tag, len(s)))
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
@@ -2291,7 +2302,8 @@ class LeoFlexxTree(flx.Widget):
         #
         # Clear all tree items.
         for item in items:
-            if trace: print('  %r %s' % (item, item.text))
+            if trace:
+                print('  %r %s' % (item, item.text))
             item.dispose()
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
@@ -2318,7 +2330,8 @@ class LeoFlexxTree(flx.Widget):
             print('%s: %s direct children' % (tag, len(items)))
         for item in items:
             tree_item = self.create_item_with_parent(item, self.tree)
-            if trace: print('  %r %s' % (tree_item, item['headline']))
+            if trace:
+                print('  %r %s' % (tree_item, item['headline']))
         #
         # Select c.p.
         self.select_ap(redraw_dict['c.p'])
@@ -2344,7 +2357,8 @@ class LeoFlexxTree(flx.Widget):
         #
         # Children are *not* necessarily sent, so set the populated 'bit' only if they are.
         if item['children']:
-            if trace: print(tag, '**populated**', ap['headline'])
+            if trace:
+                print(tag, '**populated**', ap['headline'])
             self.populated_items_dict[key] = True
         if hasattr(parent, 'leo_children'):
             # print(tag, parent.leo_ap['headline'], ap['headline'])
@@ -2417,7 +2431,8 @@ class LeoFlexxTree(flx.Widget):
                 tree_item = ev.source
                 ap = tree_item.leo_ap
                 if ap['expanded']:
-                    if 0: print('flx.tree.on_tree_event: already expanded', ap['headline'])
+                    if 0:
+                        print('flx.tree.on_tree_event: already expanded', ap['headline'])
                 else:
                     ap['expanded'] = True
                     self.start_populating_children(ap, tree_item)
@@ -2444,7 +2459,7 @@ class LeoFlexxTree(flx.Widget):
         assert parent
         assert parent_ap == parent.leo_ap
             # The expansion bit may have changed?
-        if 0: print('flx.tree.populate_children: parent: %r %s children' % (parent, len(children)))
+        # print('flx.tree.populate_children: parent: %r %s children' % (parent, len(children)))
         for child_ap in children:
             self.create_item_with_parent(child_ap, parent)
         self.populating_tree_item = False
@@ -2482,15 +2497,15 @@ class LeoFlexxTree(flx.Widget):
         '''
         parent_ap = d ['parent_ap']
         children = d ['items']
-        if 0: print('flx.tree.receive_children: %s children' % (len(children)))
+        # print('flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
     #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
         mods, key = ev['modifiers'], ev['key']
-        f_key = not mods and key.startswith('F')
-        if 0: print('flx.tree.key_press: %r preventDefault: %s', (ev, not f_key))
+        # f_key = not mods and key.startswith('F')
+        # print('flx.tree.key_press: %r preventDefault: %s', (ev, not f_key))
         # Use default action for F-Keys.
         if not mods and key.startswith('F'):
             return ev
@@ -2504,7 +2519,7 @@ class LeoFlexxTree(flx.Widget):
 
     @flx.reaction('tree.key_press')
     def on_key_press(self, *events):
-        if 0: print('flx.tree.on_key_press')
+        # print('flx.tree.on_key_press')
         for ev in events:
             self.root.do_key(ev, 'tree')
     #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
@@ -2556,7 +2571,7 @@ class LeoFlexxTree(flx.Widget):
         for ev in events:
             if ev.new_value: # A selection event.
                 ap = ev.source.leo_ap
-                if 0: print('on_selected_event: select:', ap['headline'])
+                # print('on_selected_event: select:', ap['headline'])
                 self.select_ap(ap)
                     # Selects the corresponding LeoTreeItem.
                 self.set_ap(ap)

@@ -82,7 +82,8 @@ def is_subnodesOK(v):
     while child:
         s=child.h
         ok=s[0:len(OKFLAG)]==OKFLAG
-        if not ok:break
+        if not ok:
+            break
         child=child.next()
     return ok
 #@+node:ekr.20040205071616.7: ** onRclick
@@ -95,7 +96,8 @@ def onRclick(tag,keywords):
 #@+node:ekr.20040205071616.8: ** insertOKcmd
 def insertOKcmd(self,event=None):
 
-    c=self; v=c.currentVnode()
+    c=self
+    v=c.currentVnode()
 
     if is_subnodesOK(v) :
         setHeadOK(c,v)

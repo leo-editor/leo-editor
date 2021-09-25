@@ -307,7 +307,8 @@ def sync_node_to_folder(c,parent,d,updateOnly=False, recurse=False):
             openDir(c,parent,d)
             return True
 
-    if updateOnly: return False
+    if updateOnly:
+        return False
 
     if os.path.isfile(d) and isFileNode(parent):
         openFile(c,parent,d)

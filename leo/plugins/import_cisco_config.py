@@ -41,7 +41,8 @@ def init ():
 def create_import_cisco_menu (tag,keywords):
 
     c = keywords.get('c')
-    if not c or not c.exists: return
+    if not c or not c.exists:
+        return
 
     importMenu = c.frame.menu.getMenu('import')
 
@@ -55,7 +56,8 @@ def create_import_cisco_menu (tag,keywords):
 #@+node:edream.110203113231.672: ** importCiscoConfig
 def importCiscoConfig(c):
 
-    if not c or not c.exists: return
+    if not c or not c.exists:
+        return
     current = c.p
     #@+<< open file >>
     #@+node:edream.110203113231.673: *3* << open file >>

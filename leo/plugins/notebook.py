@@ -116,7 +116,8 @@ class NbController:
 
     #@+node:ville.20120604212857.4238: *3* addNode
     def addNode(self, p, styling=None):
-        if styling is None: styling = {}
+        if styling is None:
+            styling = {}
         v = p.v
         d = {
             "h" : v.h,

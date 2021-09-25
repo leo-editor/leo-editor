@@ -19,8 +19,9 @@ to the first element.
 
 """
 #@-<< docstring >>
-debug = False
+import pdb
 # Define globals
+debug = False
 vnode_count = 0
 if debug:
     allvnodes = {
@@ -28,8 +29,6 @@ if debug:
     }
     vnode_count = 0
     vnode_stack = []
-#@@language python
-#@@tabwidth -4
 #@+others
 #@+node:ekr.20101110092416.5699: ** escape
 def escape(s):
@@ -230,7 +229,7 @@ class leo_node(LeoNode, node_with_parent):
                 x.reverse()
                 for i in x:
                     print(i.headline)
-                import pdb; pdb.set_trace()
+                pdb.set_trace()
                 return
             global vnode_count
             attributes.append(('model_node_number', repr(vnode_count)))
@@ -302,11 +301,13 @@ def leotree():
     f = leo_file()
     return f
 #@-others
-
 if __name__ == "__main__":
     import sys
     f = leotree()
     r = leo_node("Some headline", "some Body")
     f.add_child(r)
     f.gen(sys.stdout)
+
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -39,8 +39,8 @@ def init():
 #@+node:ekr.20060831165845.5: ** onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
-    if not c: return
-    slideshowController(c)
+    if c:
+        slideshowController(c)
 #@+node:ekr.20060831165845.6: ** class slideshowController
 class slideshowController:
     #@+others
@@ -53,7 +53,8 @@ class slideshowController:
         self.createCommands()
     #@+node:ekr.20060831171016: *3* createCommands (slideshowController)
     def createCommands(self):
-        c = self.c; k = c.k
+        c = self.c
+        k = c.k
         for commandName, func in (
             ('next-slide-command', self.nextSlide),
             ('next-slide-show-command', self.nextSlideShow),
@@ -81,7 +82,8 @@ class slideshowController:
         return False
     #@+node:ekr.20060831171016.5: *3* nextSlide
     def nextSlide(self, event=None):
-        c = self.c; p = c.p
+        c = self.c
+        p = c.p
         if p == self.slide:
             p = self.slide.threadNext()
             oldSlide = self.slide
@@ -131,7 +133,8 @@ class slideshowController:
         g.es('At start of last slide show')
     #@+node:ekr.20060831171016.4: *3* prevSlide
     def prevSlide(self, event=None):
-        c = self.c; p = c.p
+        c = self.c
+        p = c.p
         if self.ignored(p):
             p = p.threadBack()
         else:
@@ -184,7 +187,8 @@ class slideshowController:
     #@+node:ekr.20060901145257: *3* select
     def select(self, p):
         '''Make p the present slide, and set self.slide and maybe self.slideShowRoot.'''
-        c = self.c; h = p.h.strip()
+        c = self.c
+        h = p.h.strip()
         w = c.frame.body.wrapper
         g.es('%s' % h)
         #c.expandAllAncestors(p)

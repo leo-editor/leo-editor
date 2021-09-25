@@ -28,7 +28,8 @@ def init():
 #@+node:ekr.20140920173002.17960: ** onSelect
 def onSelect (tag,keywords):
     c = keywords.get('c') or keywords.get('new_c')
-    if not c: return
+    if not c:
+        return
     v = keywords.get("new_v")
     h = v.h
     if g.match_word(h,0,"@folder"):

@@ -130,7 +130,8 @@ def onHeadKey(tag, keywords):
     # c = keywords.get("c")
     # To do: check for duplicate keys here.
     p = keywords.get("p")
-    if not p: return
+    if not p:
+        return
     h = p.h.strip()
     i = h.find(' ')
     kind = h[: i]

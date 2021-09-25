@@ -118,7 +118,8 @@ class C_Importer(Importer):
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
-        if self.headline: h = self.headline
+        if self.headline:
+            h = self.headline
         if new_state.level() > prev_state.level():
             child = self.create_child_node(target.p, line, h)
         else:

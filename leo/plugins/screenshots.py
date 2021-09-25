@@ -543,7 +543,8 @@ class ScreenShotController:
         after = p.nodeAfterTree()
         p = p.firstChild()
         while p and p != after:
-            if g.app.commandInterruptFlag: return
+            if g.app.commandInterruptFlag:
+                return
             if sc.match(p, '@slide'):
                 sc.run(p)
                 p.moveToNodeAfterTree()
@@ -595,24 +596,31 @@ class ScreenShotController:
         sc = self
         # Compute essential nodes & values.
         sc.slideshow_node = sc.find_slideshow_node(p)
-        if not sc.slideshow_node: return False
+        if not sc.slideshow_node:
+            return False
         sc.slide_node = p = sc.find_slide_node(p)
-        if not p: return False
+        if not p:
+            return False
         sc.slide_number = n = sc.get_slide_number(p)
-        if n < 0: return False
+        if n < 0:
+            return False
         # Do nothing if p.b is empty.  This is a good flag.
-        if not p.b.strip(): return False
+        if not p.b.strip():
+            return False
         # Set the verbose flag.
         sc.verbose = sc.get_verbose_flag()
         # Compute essential paths.
         sc.sphinx_path = sc.get_sphinx_path()
-        if not sc.sphinx_path: return False
+        if not sc.sphinx_path:
+            return False
         sc.slideshow_path = sc.get_slideshow_path()
         sc.slide_base_name = sc.get_slide_base_name()
         sc.working_fn = sc.get_working_fn()
-        if not sc.working_fn: return False
+        if not sc.working_fn:
+            return False
         sc.screenshot_fn = sc.get_screenshot_fn()
-        if not sc.screenshot_fn: return False
+        if not sc.screenshot_fn:
+            return False
         # Find optional nodes, all relative to the slide node.
         sc.callouts = sc.get_callouts(p)
         sc.markers = sc.get_markers(p)
@@ -638,16 +646,19 @@ class ScreenShotController:
     #@+node:ekr.20100908110845.5534: *4* getElementsWithAttrib
     def getElementsWithAttrib(self, e, attr_name, aList=None):
         sc = self
-        if aList is None: aList = []
+        if aList is None:
+            aList = []
         val = e.attrib.get(attr_name)
-        if val: aList.append(e)
+        if val:
+            aList.append(e)
         for child in e.getchildren():
             sc.getElementsWithAttrib(child, attr_name, aList)
         return aList
     #@+node:ekr.20100908110845.5535: *4* getElementsWithAttribList (not used)
     def getElementsWithAttribList(self, e, attr_names, aList=None):
         sc = self
-        if aList is None: aList = []
+        if aList is None:
+            aList = []
         for z in attr_names:
             if not e.attrib.get(z):
                 break
@@ -698,7 +709,8 @@ class ScreenShotController:
     #@+node:ekr.20100915074635.5652: *5* find_slide_node
     def find_slide_node(self, p):
         '''Return the @slide node at or near p.'''
-        sc = self; p1 = p.copy()
+        sc = self
+        p1 = p.copy()
         if sc.match(p, '@slide'):
             return p
         # Look up the tree.
@@ -773,7 +785,8 @@ class ScreenShotController:
         The default is 'slide-%03d.png' % (sc.slide_number)
         '''
         # Look for any @output nodes in p's children.
-        sc = self; tag = '@output'
+        sc = self
+        tag = '@output'
         for child in p.children():
             h = child.h
             if g.match_word(h, 0, tag):
@@ -836,7 +849,8 @@ class ScreenShotController:
         This path will contain the slides directory, and the following files:
         'conf.py','Leo4-80-border.jpg','Makefile','make.bat',
         '''
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         sphinx_path = sc.get_option('sphinx_path')
         if sphinx_path:
             if g.os_path_isabs(sphinx_path):
@@ -884,7 +898,8 @@ class ScreenShotController:
         screenshots. If a relative path is given, it will resolved relative to
         the directory containing the .leo file.
         '''
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         tag = '@wink_path'
         for p in sc.slideshow_node.children():
             if sc.match(p, tag):
@@ -918,7 +933,8 @@ class ScreenShotController:
         for child in p.children():
             if g.match_word(child.h, 0, '@callout'):
                 callout = sc.get_callout(child)
-                if callout: aList.append(callout)
+                if callout:
+                    aList.append(callout)
         return aList
     #@+node:ekr.20100909121239.6096: *6* get_callout
     def get_callout(self, p):
@@ -947,7 +963,8 @@ class ScreenShotController:
                 g.match_word(child.h, 0, '@markers')
             ):
                 callout = sc.get_marker(child)
-                if callout: aList.extend(callout)
+                if callout:
+                    aList.extend(callout)
         return aList
     #@+node:ekr.20100909121239.6097: *6* get_marker
     def get_marker(self, p):
@@ -971,7 +988,8 @@ class ScreenShotController:
                 h = child.h
                 if g.match_word(h, 0, tag):
                     val = h[len(tag):].strip()
-                    if val.startswith('='): val = val[1:].strip()
+                    if val.startswith('='):
+                        val = val[1:].strip()
                     if val:
                         if isPath:
                             val = sc.finalize(val)
@@ -1143,7 +1161,8 @@ class ScreenShotController:
     #@+node:ekr.20101008112639.5625: *4* make_at_url_node_for_built_slide
     def make_at_url_node_for_built_slide(self):
         '''Create an @url node for built slide.'''
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         p = sc.slide_node
         h = '@url built slide'
         if not sc.find_node(p, h):
@@ -1158,7 +1177,8 @@ class ScreenShotController:
     #@+node:ekr.20101008112639.5631: *4* make_at_url_node_for_output_file
     def make_at_url_node_for_output_file(self):
         '''Create an @url node for the final output file.'''
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         p = sc.slide_node
         h = '@url final output file'
         if not sc.find_node(p, h):
@@ -1169,7 +1189,8 @@ class ScreenShotController:
     #@+node:ekr.20101008112639.5627: *4* make_at_url_node_for_screenshot
     def make_at_url_node_for_screenshot(self):
         '''Create an @url node for the screenshot file.'''
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         p = sc.slide_node
         h = '@url screenshot'
         if not sc.find_node(p, h):
@@ -1180,7 +1201,8 @@ class ScreenShotController:
     #@+node:ekr.20101008112639.5624: *4* make_at_url_node_for_working_file
     def make_at_url_node_for_working_file(self):
         '''Create an @url node for the working file.'''
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         p = sc.slide_node
         h = '@url working file'
         if not sc.find_node(p, h):
@@ -1227,7 +1249,8 @@ class ScreenShotController:
         toc_body = textwrap.dedent(s)
         #@-<< define toc_body >>
         fn = sc.finalize('leo_toc.html.txt')
-        if g.os_path_exists(fn): return
+        if g.os_path_exists(fn):
+            return
         try:
             f = open(fn, 'w')
             f.write(toc_body)
@@ -1251,7 +1274,8 @@ class ScreenShotController:
         # proc.communicate() # Wait for Inkscape to terminate.
     #@+node:ekr.20101021065622.5633: *4* remove_built_slide_node
     def remove_built_slide_node(self, p):
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         changed = 0
         for child in p.children():
             if g.match_word(child.h, 0, '@url built slide'):
@@ -1287,7 +1311,8 @@ class ScreenShotController:
         '''
         sc = self
         # c = sc.c
-        if not sc.init(p): return
+        if not sc.init(p):
+            return
         # Make directories and copy the sphinx build files into them.
         sc.make_all_directories()
         sc.copy_files()
@@ -1458,7 +1483,8 @@ class ScreenShotController:
         '''Create the template dom object.'''
         sc = self
         template = sc.get_template()
-        if not template: return None
+        if not template:
+            return None
         root = template.getroot()
         ids_d = sc.getIds(root)
         parents_d = sc.getParents(root)
@@ -1616,11 +1642,14 @@ class ScreenShotController:
         stdout, stderr = proc.communicate() # Wait for Inkscape to terminate.
         s = str(stdout).strip()
         # Necessary for Python 3k.
-        if s.startswith("b'"): s = s[2:]
-        if s.endswith("'"): s = s[: -1]
+        if s.startswith("b'"):
+            s = s[2:]
+        if s.endswith("'"):
+            s = s[: -1]
         aList = s.replace('\\r', '').replace('\\n', '\n').split('\n')
         for line in aList:
-            if not line.strip(): continue
+            if not line.strip():
+                continue
             id_, x, y, w, h = line.split(',')
             for part in ('x', x), ('y', y), ('width', w), ('height', h):
                 hsh2 = fn + id_ + part[0]
@@ -1635,7 +1664,8 @@ class ScreenShotController:
         fn = sc.working_fn
         outfile = open(fn, 'w')
         template.write(outfile)
-        if sc.verbose: g.note('wrote: ', g.shortFileName(fn))
+        if sc.verbose:
+            g.note('wrote: ', g.shortFileName(fn))
         outfile.close()
     #@+node:ekr.20100909121239.6117: *4* take_screen_shot & helpers
     def take_screen_shot(self):
@@ -1659,7 +1689,8 @@ class ScreenShotController:
         Create an ouline containing all children of sc.screenshot_tree.
         Do not copy @slide nodes or @slideshow nodes.
         '''
-        sc = self; fn = sc.finalize('screenshot-setup.leo')
+        sc = self
+        fn = sc.finalize('screenshot-setup.leo')
         c = g.app.newCommander(fn)
 
         def isSlide(p):
@@ -1703,7 +1734,8 @@ class ScreenShotController:
         # in a subprocess.
         if 0:
             cb = g.app.gui.qtApp.clipboard()
-            if cb: cb.clear(cb.Clipboard) # Does not work anyway.
+            if cb:
+                cb.clear(cb.Clipboard) # Does not work anyway.
         ok = sc.open_screenshot_app(fn)
         if ok and sc.pause_flag:
             ok = sc.save_clipboard_to_screenshot_file()
@@ -1713,7 +1745,8 @@ class ScreenShotController:
         '''Open the screenshot app.
         Return True if the app exists and can be opened.'''
         verbose = False
-        sc = self; c = sc.c
+        sc = self
+        c = sc.c
         launch = g.os_path_finalize_join(g.app.loadDir,
             '..', '..', 'launchLeo.py')
         python = sys.executable
@@ -1755,7 +1788,8 @@ class ScreenShotController:
     #@+node:ekr.20101113193341.5447: *3* sc.meld & helpers
     def meld(self, p):
         sc = self
-        if not sc.init(p): return
+        if not sc.init(p):
+            return
         if not sc.wink_path:
             g.error('No @wink_path node')
             return
@@ -1810,7 +1844,8 @@ class ScreenShotController:
         tag = '@url final output file'
         for child in p.children():
             if sc.match(child, tag):
-                p2 = child; break
+                p2 = child
+                break
         else:
             p2 = p.insertAsLastChild()
             p2.h = tag
@@ -1821,7 +1856,8 @@ class ScreenShotController:
     def add_image_directive(self, p=None, slide_number=None):
         '''Add an image directive in p if it is not there.'''
         sc = self
-        if not p: p = sc.slide_node
+        if not p:
+            p = sc.slide_node
         if slide_number:
             s = '.. image:: slide-%03d.png' % (slide_number)
         else:

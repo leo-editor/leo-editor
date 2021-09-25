@@ -48,7 +48,8 @@ def addMenu( tag, keywords ):
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')
-    if not c: return
+    if not c:
+        return
     mc = c.frame.menu
     m = mc.createNewMenu ('Produce',parentName="outline",before=None)
     c.add_command(m,
@@ -140,11 +141,13 @@ def runList(c,aList):
                 while 1:
                     txt = g.toUnicode(fo.read())
                     f.write(txt)
-                    if txt == '': break
+                    if txt == '':
+                        break
                 while 1:
                     txt = g.toUnicode(fe.read())
                     f.write(txt)
-                    if txt == '': break
+                    if txt == '':
+                        break
                 fi.close()
                 fo.close()
                 fe.close()
