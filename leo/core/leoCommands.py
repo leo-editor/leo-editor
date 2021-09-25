@@ -154,8 +154,6 @@ class Commands:
             # True: we are loading a file: disables c.setChanged()
         self.promptingForClose = False
             # True: lock out additional closing dialogs.
-        self.suppressHeadChanged = False
-            # True: prevent setting c.changed when switching chapters.
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False

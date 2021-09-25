@@ -1392,9 +1392,6 @@ class LeoTree:
         Set the old undo text to the previous revert point.
         """
         c, u, w = self.c, self.c.undoer, self.edit_widget(p)
-        if c.suppressHeadChanged:
-            g.trace('suppressHeadChanged')
-            return
         if not w:
             g.trace('no w')
             return
