@@ -2077,6 +2077,11 @@ python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6
 
 python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.5b1
 
+**test**
+
+cd ~  # Anywhere except leo-editor folder!
+python -m leo.core.runLeo
+
 **uninstall after testint**
 
 python -m pip uninstall leo</t>
