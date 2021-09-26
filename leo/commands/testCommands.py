@@ -192,16 +192,21 @@ def test_checker_commands(event=None):
 def test_colorizer(event=None):
     """Run all unit tests for leoColorizer.py."""
     g.run_unit_tests('leo.unittests.core.test_leoColorizer.TestColorizer')
-#@+node:ekr.20210910074026.1: *3* test-config
-@g.command('test-config')
-def test_config(event=None):
-    """Run all unit tests for leoConfig.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoConfig.TestConfig')
 #@+node:ekr.20210907103024.18: *3* test-commands
 @g.command('test-commands')
 def test_commands(event=None):
     """Run all unit tests for leoCommands.py."""
     g.run_unit_tests('leo.unittests.core.test_leoCommands')
+#@+node:ekr.20210910074026.1: *3* test-config
+@g.command('test-config')
+def test_config(event=None):
+    """Run all unit tests for leoConfig.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoConfig.TestConfig')
+#@+node:ekr.20210926051147.1: *3* test-doctests
+@g.command('test-doctests')
+def test_doctests(event=None):
+    """Run all doctests in Leo."""
+    g.run_unit_tests('leo.unittests.test_doctests')
 #@+node:ekr.20210907103024.19: *3* test-edit-commands
 @g.command('test-edit-commands')
 def test_edit_commands(event=None):
@@ -212,16 +217,16 @@ def test_edit_commands(event=None):
 def test_external_files(event=None):
     """Run all unit tests for leoExternalFiles.py."""
     g.run_unit_tests('leo.unittests.core.test_leoExternalFiles')
-#@+node:ekr.20210907103024.21: *3* test-find
-@g.command('test-find')
-def test_find(event=None):
-    """Run all unit tests for leoFind.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoFind.TestFind')
 #@+node:ekr.20210910065945.1: *3* test-file-commands
 @g.command('test-file-commands')
 def test_file_commands(event=None):
     """Run all unit tests for leoFileCommands.py."""
     g.run_unit_tests('leo.unittests.core.test_leoFileCommands.TestFileCommands')
+#@+node:ekr.20210907103024.21: *3* test-find
+@g.command('test-find')
+def test_find(event=None):
+    """Run all unit tests for leoFind.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFind.TestFind')
 #@+node:ekr.20210907103024.22: *3* test-frame
 @g.command('test-frame')
 def test_frame(event=None):
@@ -232,12 +237,6 @@ def test_frame(event=None):
 def test_globals(event=None):
     """Run all unit tests for leoGlobals.py."""
     g.run_unit_tests('leo.unittests.core.test_leoGlobals.TestGlobals')
-#@+node:ekr.20210910085337.1: *3* test_gui
-@g.command('test-gui')
-def test_gui(event=None):
-    """Run all gui-related unit tests."""
-    g.run_unit_tests('leo.unittests.test_gui.TestNullGui')
-    g.run_unit_tests('leo.unittests.test_gui.TestQtGui')
 #@+node:ekr.20210907103024.24: *3* test-import
 @g.command('test-import')
 def test_import(event=None):
@@ -309,6 +308,12 @@ def test_undo(event=None):
 def test_vim(event=None):
     """Run all unit tests for leoVim.py."""
     g.run_unit_tests('leo.unittests.core.test_leoVim.TestVim')
+#@+node:ekr.20210910085337.1: *3* test_gui
+@g.command('test-gui')
+def test_gui(event=None):
+    """Run all gui-related unit tests."""
+    g.run_unit_tests('leo.unittests.test_gui.TestNullGui')
+    g.run_unit_tests('leo.unittests.test_gui.TestQtGui')
 #@-others
 #@@language python
 #@@tabwidth -4

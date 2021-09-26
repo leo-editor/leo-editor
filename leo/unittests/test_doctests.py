@@ -5,10 +5,17 @@
 """Run all doctests in Leo's core."""
 import doctest
 import unittest
+from leo.core import leoGlobals as g
+### import leo.plugins as plugins
+import leo
 
 
-class TestDoctests(unittest.TestCase):  # Not a subclass of leoTest2.LeoUnitTest.
+class TestDocTests(unittest.TestCase):  # Not a subclass of leoTest2.LeoUnitTest.
 
     def test_all_doctests(self):
         print('\n\n===== test_all_doctests\n\n')
+        finder = doctest.DocTestFinder()
+        g.printObj(finder.find(leo))
+
+        ## leo.plugins.importers.javascript
 #@-leo
