@@ -1978,6 +1978,30 @@ class TestEditCommands(LeoUnitTest):
             after_sel=("2.0", "2.0"),
             command_name="insert-newline",
         )
+    #@+node:ekr.20210926144000.1: *5* insert-newline-bug-2230
+    def test_insert_newline_bug_2230(self):
+        """Test case for insert-newline"""
+        before_b = textwrap.dedent("""\
+    #@@language python
+    def spam():
+        if 1:  # test
+    # after line
+    """)
+        # There are 8 spaces in the line after "if 1:..."
+        after_b = textwrap.dedent("""\
+    #@@language python
+    def spam():
+        if 1:  # test
+            
+    # after line
+    """)
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("3.18", "3.18"),
+            after_sel=("4.8", "4.8"),
+            command_name="insert-newline",
+        )
     #@+node:ekr.20201130090918.72: *5* insert-parentheses
     def test_insert_parentheses(self):
         """Test case for insert-parentheses"""
