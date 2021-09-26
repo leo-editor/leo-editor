@@ -14,7 +14,7 @@ Provides the *PyQt6* spellings of Qt modules, classes, enums and constants:
 import leo.core.leoGlobals as g
 #
 # Set defaults.
-isQt6 = isQt5 = isQt4 = False  # Retain isQt4 for legacy programs.
+isQt6 = isQt5 = False
 #
 # Make *sure* this module always imports the following symbols.
 Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None

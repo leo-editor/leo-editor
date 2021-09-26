@@ -381,9 +381,7 @@ class todoController:
         Add labels and tooltips for all buttons.
         """
         # Patch the buttons only if the pyqt version is greater than 5.12.
-        from leo.core.leoQt import isQt4, qt_version
-        if isQt4:
-            return
+        from leo.core.leoQt import qt_version
         size = QtCore.QSize(16, 16)
         qt_version = [int(z) for z in qt_version.split('.')]
         if qt_version[1] <= 12:
