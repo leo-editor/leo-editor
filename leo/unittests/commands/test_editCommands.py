@@ -832,17 +832,11 @@ class TestEditCommands(LeoUnitTest):
             e = 6
             x
             """)
-        after_b = textwrap.dedent("""\
-            # Should remove all trailing whitespace.
-
-            a = 2
-
-                b = 3
-                c  = 4
-            d = 5
-            e = 6
-            x
-            """)
+        after_b = before_b
+        # Add some trailing ws to before_b
+        i = 1 + before_b.find('3')
+        before_b = before_b[:i] + '  ' + before_b[i:]
+        self.assertNotEqual(before_b, after_b)
         self.run_test(
             before_b=before_b,
             after_b=after_b,
