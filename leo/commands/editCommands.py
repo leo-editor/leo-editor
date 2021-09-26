@@ -1952,7 +1952,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.updateAutoIndent(p, w)
         w.seeInsertPoint()
     #@+node:ekr.20150514063305.275: *5* ec.updateAutoIndent
-    trailing_colon_pat = re.compile(r'^.*:\s#.*$')
+    trailing_colon_pat = re.compile(r'^.*:\s*?#.*$')  # #2230
 
     def updateAutoIndent(self, p, w):
         """Handle auto indentation."""
