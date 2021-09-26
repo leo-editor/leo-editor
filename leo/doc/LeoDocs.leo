@@ -11271,7 +11271,6 @@ To install Python, see http://python.org.
 
 **PyQt**: `PyQt`_ provides Leo's widgets:
 
-* Download PyQt4 from http://www.riverbankcomputing.com/software/pyqt/download.
 * Download PyQt5 from http://www.riverbankcomputing.com/software/pyqt/download5.
 
 **Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.6 or later.
@@ -11868,7 +11867,7 @@ run-all-unit-tests-externally = Alt-5
 </t>
 <t tx="ekr.20111115063523.13619">The following puts up a test window when run as a Leo script::
 
-    from PyQt4 import QtGui
+    from PyQt5 import QtGui
     w = QtGui.QWidget()
     w.resize(250, 150)
     w.move(300, 300)
@@ -13516,7 +13515,7 @@ Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value for C in x
 
 The following script won't work as intended:
 
-    from PyQt4 import QtGui
+    from PyQt5 import QtGui
     w = QtGui.QWidget()
     w.resize(250, 150)
     w.move(300, 300)
@@ -17363,14 +17362,13 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`Missing files when installing Leo from PyPI using "pip install leo"`: https://github.com/leo-editor/leo-editor/issues/603
 .. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
-.. _`PyQt4`:      http://www.riverbankcomputing.com/software/pyqt/download
 .. _`PyQt5`:      http://www.riverbankcomputing.com/software/pyqt/download5
 .. _`Sphinx`:     http://www.sphinx-doc.org/en/stable/
 
 Leo's minimal dependencies are:
 
 * `Python`_ 3.6 or later.
-* `PyQt4`_ or `PyQt5`_.
+* `PyQt5`_.
 * `PyQtWebEngine`
 
 The following packages are optional, but recommended:
