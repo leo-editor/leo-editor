@@ -541,7 +541,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             """Convert the second group to uppercase and join both group 1 & group 2"""
             return m.group(1) + m.group(2).upper()
 
-        capitalized = re.sub("(^|\s)(\S)", convert_to_uppercase, text)
+        capitalized = re.sub(r"(^|\s)(\S)", convert_to_uppercase, text)
 
         if capitalized != text:
             p.b = prefix + capitalized + suffix if sel else capitalized
