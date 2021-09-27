@@ -3011,6 +3011,7 @@ def pdb(message=''):
             pass
     if message:
         print(message)
+    # pylint: disable=forgotten-debug-statement
     pdb.set_trace()
 #@+node:ekr.20041224080039: *4* g.dictToString
 def dictToString(d, indent='', tag=None):
