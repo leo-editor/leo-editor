@@ -228,6 +228,8 @@ class TestCommands(LeoUnitTest):
         c.selectPosition(aaa)
         assert not c.hoistStack
         c.hoist()
+        # The de-hoist happens in c.expandOnlyAncestorsOfNode, the call to c.selectPosition.
+        g.app.debug.append('pdb')
         c.goToFirstNode()
         assert not c.hoistStack  # The hoist stack must be cleared to show the first node.
         self.assertEqual(c.p, c.rootPosition())
