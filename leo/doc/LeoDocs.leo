@@ -2418,6 +2418,7 @@
 </v>
 <v t="ekr.20210921103230.1"></v>
 <v t="ekr.20210921102613.1"></v>
+<v t="ekr.20210405104422.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -30937,7 +30938,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.4**
 
-- Support for leoInteg: "Leo in vs-code".
+- Support for [leoInteg](https://github.com/boltex/leointeg#-leo-for-vs-code): "Leo in vs-code".
   - Add leoserver.py, stand-alone server for Leo.
   - Add support for .leojs, a json outline format.
 - Support for Qt6.
