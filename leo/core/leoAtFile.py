@@ -3643,15 +3643,17 @@ class FastAtRead:
             #@+<< Last 3. handle remaining @ lines >>
             #@+node:ekr.20180602103135.17: *4* << Last 3. handle remaining @ lines >>
             # Handle an apparent sentinel line.
-            # This *can* happen, as the result of the git-diff command.
+            # This *can* happen after the git-diff or refresh-from-disk commands.
             #
             # This assert verifies the short-circuit test.
             assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
             #
-            # This trace is less important, but interesting.
+            # #2213: *Do* insert the line, with a warning.
             g.trace(
-                f"{g.shortFileName(self.path)}: ignoring unexpected line: {line.strip()!r}")
-            # body.append(line)
+                f"{g.shortFileName(self.path)}: "
+                f"warning: inserting unexpected line: {line.rstrip()!r}"
+            )
+            body.append(line)
             #@-<< Last 3. handle remaining @ lines >>
         else:
             # No @-leo sentinel
