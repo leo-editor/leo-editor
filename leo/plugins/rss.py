@@ -206,7 +206,10 @@ class RSSController:
             return
         # grab config settings
         sort_newest_first = c.config.getBool('rss-sort-newest-first', default=True)
-        body_format = c.config.getData('rss-body-format') or ['@url <link>', '\\n', '<title>', '<date>', '\\n', '<summary>']
+        body_format = (
+            c.config.getData('rss-body-format')
+            or ['@url <link>', '\\n', '<title>', '<date>', '\\n', '<summary>']
+        )
         body_format = "\n".join(body_format)
         body_format = body_format.replace('\\n', '')
         headline_format = c.config.getString('rss-headline-format') or '[<date>] <title>'
