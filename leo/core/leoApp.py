@@ -2812,8 +2812,8 @@ class LoadManager:
             'script': script,
             'select': args.select and args.select.strip('"'),
                 # --select=headline
-            'theme_path': args.theme, # --theme=name
-            'version': args.version, # --version: print the version and exit.
+            'theme_path': args.theme,  # --theme=name
+            'version': args.version,  # --version: print the version and exit.
             'windowFlag': script and args.script_window,
             'windowSize': lm.doWindowSizeOption(args),
             'windowSpot': lm.doWindowSpotOption(args),

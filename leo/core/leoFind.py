@@ -363,7 +363,7 @@ class LeoFind:
             # Settings can be a dict or a g.Bunch.
             # g.Bunch has no update method.
             for key in settings.keys():
-                d [key] = settings [key]  
+                d[key] = settings[key]
         self.ftm.set_widgets_from_dict(d)  # So the *next* find-next will work.
         self.show_find_options_in_status_area()
         if not self.check_args('find-next'):
