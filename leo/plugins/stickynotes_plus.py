@@ -518,7 +518,15 @@ class notetextedit(QTextEdit):
         # I am stripping the http
         print("Paste")
         text = source.text()
-        if len(text.split()) == 1 and (text.startswith('http://') or 'www' in text or '.com' in text or '.html' in text):
+        if (
+            len(text.split()) == 1
+            and (
+                text.startswith('http://')
+                or 'www' in text
+                or '.com' in text
+                or '.html' in text
+            )
+        ):
             if text.startswith('http://'):
                 text = '<a href="{0}">{1}</a> '.format(text, text[7:])
             else:
