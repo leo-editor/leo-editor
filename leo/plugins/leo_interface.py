@@ -19,7 +19,7 @@ to the first element.
 
 """
 #@-<< docstring >>
-import pdb
+# import pdb
 # Define globals
 debug = False
 vnode_count = 0
@@ -229,7 +229,7 @@ class leo_node(LeoNode, node_with_parent):
                 x.reverse()
                 for i in x:
                     print(i.headline)
-                pdb.set_trace()
+                # pdb.set_trace()
                 return
             global vnode_count
             attributes.append(('model_node_number', repr(vnode_count)))
