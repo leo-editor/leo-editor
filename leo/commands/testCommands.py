@@ -83,7 +83,7 @@ def cover_config(event=None):
 #@+node:ekr.20210907103024.6: *3* cover-edit-commands
 @g.command('cover-edit-commands')
 def cover_edit_commands(event=None):
-    """Run all coverage tests for leoEditCommands.py."""    
+    """Run all coverage tests for leoEditCommands.py."""
     g.run_coverage_tests('leo.commands.editCommands', 'leo/unittests/commands/test_editCommands.py')
 #@+node:ekr.20210911072153.12: *3* cover-external-files
 @g.command('cover-external-files')

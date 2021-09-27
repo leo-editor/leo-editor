@@ -2014,7 +2014,7 @@ Public announcements, after creating a package.
    **Paste source-forge or leo-editor announcement**.
 
   - Check it by visiting the archive:
-  https://mail.python.org/pipermail/python-announce-list/
+    https://mail.python.org/archives/list/python-announce-list@python.org/
   
 - Register Leo at https://pypi.python.org/pypi/leo
 
