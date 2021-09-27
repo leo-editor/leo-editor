@@ -5749,7 +5749,6 @@ def toPythonIndex(s: str, index):
     return 0
 #@+node:ekr.20150722051946.1: *3* g.List composition (deprecated)
 # These functions are deprecated.
-# The LeoTidy class in leoBeautify.py shows a much better way.
 #@+node:ekr.20150722051946.2: *4* g.flatten_list
 def flatten_list(obj: Any):
     """A generator yielding a flattened (concatenated) version of obj."""
