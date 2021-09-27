@@ -1175,6 +1175,8 @@ class MatchBrackets:
         bracket, but index_of_bracket_char will definitely be a bracket.
         """
         expanded: Union[bool, str] = False
+        left = max(0, min(left, len(s)))  # #2240
+        right = max(0, min(right, len(s)))  # #2240
         orig_left = left
         orig_right = right
         while (
@@ -1411,7 +1413,7 @@ class MatchBrackets:
         """The driver for the MatchBrackets class.
 
         With no selected range: find the nearest bracket and select from
-        it to it's match, moving cursor to mathc.
+        it to it's match, moving cursor to match.
 
         With selected range: the first time, move cursor back to other end of
         range. The second time, select enclosing range.

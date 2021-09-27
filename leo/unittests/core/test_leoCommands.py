@@ -177,11 +177,20 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
     def test_c_findMatchingBracket(self):
         c, w = self.c, self.c.frame.body.wrapper
-        c.p.b = '(abc)'
-        c.findMatchingBracket(event=None)
-        i, j = w.getSelectionRange()
-        assert i < j, 'i: %s j: %s' % (i, j)
-
+        s = '(abc)'
+        c.p.b = s
+        table = (
+            (-1, -1),
+            (len(s), len(s)),
+            (0, 0),
+            (1, 1),
+        )
+        for i, j in table:
+            w.setSelectionRange(-1, len(s))
+            c.findMatchingBracket(event=None)
+            i2, j2 = w.getSelectionRange()
+            self.assertTrue(i2 < j2, msg=f"i: {i}, j: {j}")
+            
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
         c = self.c
