@@ -554,7 +554,7 @@ def expandNodeOrGoToFirstChild(self, event=None):
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
     """Contract all nodes in the outline."""
     c = self
-    if 'pdb' in g.app.debug: g.pdb()  ###
+    if 'pdb' in g.app.debug: g.pdb()  ### # pylint: disable=multiple-statements
     level = 1
     if p:
         c.selectPosition(p)  # 2013/12/25
