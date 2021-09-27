@@ -3855,15 +3855,17 @@ def main():  # pragma: no cover (tested in client)
 
     # Start the server.
     loop = asyncio.get_event_loop()
-    try:
-        server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
-    except OSError as e:
-        print(e)
-        print("Trying with IPv4 Family", flush=True)
-        server = websockets.serve(ws_handler, wsHost, wsPort, family=socket.AF_INET)  # pylint: disable=no-member
 
     try:
-        realtime_server = loop.run_until_complete(server)
+        try:
+            server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
+            realtime_server = loop.run_until_complete(server)
+        except OSError as e:
+            print(e)
+            print("Trying with IPv4 Family", flush=True)
+            server = websockets.serve(ws_handler, wsHost, wsPort, family=socket.AF_INET)  # pylint: disable=no-member
+            realtime_server = loop.run_until_complete(server)
+
         signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
         if wsPersist:
             signon = signon + "Persistent server\n"
