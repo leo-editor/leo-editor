@@ -52,10 +52,13 @@ disable=
         broad-except, # except Exception is justified if followed by g.es_exception.
         c-extension-no-member,  # Too many errors re pyQt6.
         condition-evals-to-constant,
+        consider-iterating-dictionary,
         consider-using-from-import,
+        consider-using-f-string,  # complains about regex's!
         consider-using-in,
         consider-using-dict-comprehension,
         consider-using-dict-items,
+        consider-using-fstring,
         consider-using-max-builtin,
         consider-using-set-comprehension,
         consider-using-ternary,
@@ -82,11 +85,14 @@ disable=
         trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
         unnecessary-pass, # Can be pedantic in some situations.
+        unspecified-encoding,  # Huh?
         unused-argument,
-        using-constant-test,
-        use-maxsplit-arg, # What is this??
         unused-private-member, # too many false positives.
         unused-variable, # way too many false positives, esp. tuple unpacking.
+        use-dict-literal,
+        use-list-literal,
+        use-maxsplit-arg, # What is this??
+        using-constant-test,
     #
     # Good warnings. Don't suppress these.
     #

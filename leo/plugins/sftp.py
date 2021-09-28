@@ -259,9 +259,10 @@ class SFTPController:
                 return (None, None)  # abort
         elif cached_hostkey != hostkey:
             store = self.confirm_hostkey(
-                'Hostkey does not match!',
-                'The remote host \'%s\' provided a key that does not match the stored key. ' +
-                ' This could indicate a man-in-the-middle attack.  Continue anyway?' % host)
+                'Hostkey does not match!\n',
+                f"The remote host {host!r} provided a key that does not match the stored key.\n"
+                'This could indicate a man-in-the-middle attack.  Continue anyway?'
+            )
             if store:
                 self.set_hostkey(host, hostkey)
             else:
