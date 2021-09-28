@@ -1502,8 +1502,8 @@ LeoPyRef.leo:
 - Copy leo/doc/html/index.html to web (FileZilla)
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
-- Run all unit tests, on Windows and Linux.
-- From leo-editor run `python -m pylint-leo`.
+- Run all unit tests.
+- Run pylint on all files.
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
