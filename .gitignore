@@ -10,6 +10,7 @@ __pycache__/
 # Other programs
 leoProfile
 leo/.vscode/
+.vscode/
 
 # PyInstaller folders.
 /build/
