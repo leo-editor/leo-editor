@@ -19,8 +19,8 @@ except Exception:
     mypy_api = None
 try:
     import flake8
-    from flake8 import engine, main
-except Exception:  # May not be ImportError.
+    # #2248: Import only flake8.
+except ImportError:
     flake8 = None  # type:ignore
 try:
     import mypy
