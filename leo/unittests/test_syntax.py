@@ -22,6 +22,9 @@ class TestSyntax(LeoUnitTest):
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
         except SyntaxError:
+            print('')
+            g.trace(f"Syntax error in {fileName}")
+            print('')
             raise
         except Exception:
             g.trace("unexpected error in:", fileName)
@@ -29,7 +32,7 @@ class TestSyntax(LeoUnitTest):
     #@+node:ekr.20210901140645.21: *4* TestSyntax.test_syntax_of_all_files
     def test_syntax_of_all_files(self):
         skip_tuples = (
-            ('extensions', 'asciidoc.py'),
+            ('extensions', 'asciidoc.py', 'scriptFile.py'), ###
         )
         join = g.os_path_finalize_join
         skip_list = [join(g.app.loadDir, '..', a, b) for a, b in skip_tuples]
