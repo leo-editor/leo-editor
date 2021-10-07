@@ -391,9 +391,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 scroll = w.getYScrollPosition()
             ### oldSel = w.getSelectionRange()
             w.setAllText(new_s)
+            p.v.b = new_s  ###
             ### c.frame.body.onBodyChanged(undoType='find-place-holder', oldSel=oldSel)
             u.afterChangeBody(p, 'find-place-holder', bunch)  ###
-            c.p.b = new_s
             if switch:
                 c.redraw()
             w.setSelectionRange(i, j, insert=j)
