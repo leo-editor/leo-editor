@@ -19,8 +19,8 @@ except Exception:
     mypy_api = None
 try:
     import flake8
-    from flake8 import engine, main
-except Exception:  # May not be ImportError.
+    # #2248: Import only flake8.
+except ImportError:
     flake8 = None  # type:ignore
 try:
     import mypy
@@ -156,22 +156,27 @@ def find_missing_docstrings(event):
         f"found {count} missing docstring{g.plural(count)} "
         f"in {files} file{g.plural(files)} "
         f"in {time.process_time() - t1:5.2f} sec.")
-#@+node:ekr.20160517133001.1: *3* flake8 command
-@g.command('flake8')
+#@+node:ekr.20160517133001.1: *3* flake8-files command
+@g.command('flake8-files')
 def flake8_command(event):
     """
     Run flake8 on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
     """
-    c = event.get('c')
-    if not c:
+    tag = 'flake8-files'
+    if not flake8:
+        g.es_print(f"{tag} can not import flake8")
         return
-    if c.isChanged():
-        c.save()
-    if flake8:
-        Flake8Command(c).run()
-    else:
-        g.es_print('can not import flake8')
+    c = event.get('c')
+    if not c or not c.p:
+        return
+    for root in g.findRootsWithPredicate(c, c.p):
+        path = g.fullPath(c, root)
+        if path and os.path.exists(path):
+            g.es_print(f"{tag}: {path}")
+            g.execute_shell_commands(f"&python -m flake8 {path}")
+        else:
+            g.es_print(f"{tag}: file not found:{path}")
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
@@ -349,94 +354,6 @@ class MypyCommand:
             sys.path.append(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         self.check_all(roots)
-    #@-others
-#@+node:ekr.20160517133049.1: ** class Flake8Command
-class Flake8Command:
-    """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
-
-    def __init__(self, c, quiet=False):
-        """ctor for Flake8Command class."""
-        self.c = c
-        self.quiet = quiet
-        self.seen = []  # List of checked paths.
-    #@+others
-    #@+node:ekr.20160517133049.2: *3* flake8.check_all
-    def check_all(self, paths):
-        """Run flake8 on all paths."""
-        config_file = self.get_flake8_config()
-        if config_file:
-            style = engine.get_style_guide(parse_argv=False, config_file=config_file)
-            report = style.check_files(paths=paths)
-            # Set statistics here, instead of from the command line.
-            options = style.options
-            options.statistics = True
-            options.total_errors = True
-            # options.benchmark = True
-            main.print_report(report, style)
-    #@+node:ekr.20160517133049.3: *3* flake8.find
-    def find(self, p):
-        """Return True and add p's path to self.seen if p is a Python @<file> node."""
-        c = self.c
-        fn = p.anyAtFileNodeName()
-        found = fn and fn.endswith('.py')
-        if found:
-            path = g.fullPath(c, p)  # #1914.
-            self.seen.append(path)
-        return found
-    #@+node:ekr.20160517133049.4: *3* flake8.get_flake8_config
-    def get_flake8_config(self):
-        """Return the path to the pylint configuration file."""
-        join = g.os_path_finalize_join
-        dir_table = (
-            g.app.homeDir,
-            join(g.app.homeDir, '.leo'),
-            join(g.app.loadDir, '..', '..', 'leo', 'test'),
-        )
-        for base in ('flake8', 'flake8.txt'):
-            for path in dir_table:
-                fn = g.os_path_abspath(join(path, base))
-                if g.os_path_exists(fn):
-                    return fn
-        if not g.unitTesting:
-            table_s = '\n'.join(dir_table)
-            g.es_print(f"no flake8 configuration file found in\n{table_s}")
-        return None
-    #@+node:ekr.20160517133049.5: *3* flake8.run
-    def run(self, p=None):
-        """Run flake8 on all Python @<file> nodes in c.p's tree."""
-        if not flake8:
-            g.es_print('flake8 is not installed')
-            return
-        c = self.c
-        root = p or c.p
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
-        # Run flake8 on all Python @<file> nodes in root's tree.
-        t1 = time.time()
-        found = False
-        for p in root.self_and_subtree():
-            found |= self.find(p)
-        # Look up the tree if no @<file> nodes were found.
-        if not found:
-            for p in root.parents():
-                if self.find(p):
-                    found = True
-                    break
-        # If still not found, expand the search if root is a clone.
-        if not found:
-            isCloned = any(p.isCloned() for p in root.self_and_parents())
-            if isCloned:
-                for p in c.all_positions():
-                    if p.isAnyAtFileNode():
-                        isAncestor = any(z.v == root.v for z in p.self_and_subtree())
-                        if isAncestor and self.find(p):
-                            break
-        paths = list(set(self.seen))
-        if paths:
-            self.check_all(paths)
-        g.es_print(f"flake8: {len(paths)} file{g.plural(paths)} in {g.timeSince(t1)}")
     #@-others
 #@+node:ekr.20160516072613.2: ** class PyflakesCommand
 class PyflakesCommand:
