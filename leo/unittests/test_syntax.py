@@ -22,24 +22,22 @@ class TestSyntax(LeoUnitTest):
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
         except SyntaxError:
-            print('')
-            g.trace(f"Syntax error in {fileName}")
-            print('')
-            raise
+            raise SyntaxError(fileName)
         except Exception:
             g.trace("unexpected error in:", fileName)
             raise
     #@+node:ekr.20210901140645.21: *4* TestSyntax.test_syntax_of_all_files
     def test_syntax_of_all_files(self):
         skip_tuples = (
-            ('extensions', 'asciidoc.py', 'scriptFile.py'), ###
+            ('extensions', 'asciidoc.py'),
+            ('test', 'scriptFile.py'),
         )
         join = g.os_path_finalize_join
         skip_list = [join(g.app.loadDir, '..', a, b) for a, b in skip_tuples]
         n = 0
         for theDir in ('core', 'external', 'extensions', 'plugins', 'scripts', 'test'):
             path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
-            assert g.os_path_exists(path), path
+            self.assertTrue(g.os_path_exists(path), msg=path)
             aList = glob.glob(g.os_path_join(path, '*.py'))
             if g.isWindows:
                 aList = [z.replace('\\', '/') for z in aList]
@@ -50,7 +48,7 @@ class TestSyntax(LeoUnitTest):
                     n += 1
                     fn = g.shortFileName(z)
                     s, e = g.readFileIntoString(z)
-                    assert self.check_syntax(fn, s)
+                    self.assertTrue(self.check_syntax(fn, s), msg=fn)
     #@+node:ekr.20210901140645.22: *4* TestSyntax.test_syntax_of_setup_py
     def test_syntax_of_setup_py(self):
         fn = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
