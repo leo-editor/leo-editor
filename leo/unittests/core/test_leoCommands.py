@@ -227,13 +227,21 @@ class TestCommands(LeoUnitTest):
         assert not c.hoistStack
         c.selectPosition(aaa)
         assert not c.hoistStack
-        c.hoist()
+       
         # The de-hoist happens in c.expandOnlyAncestorsOfNode, the call to c.selectPosition.
-        g.app.debug.append('pdb')
-        c.goToFirstNode()
-        assert not c.hoistStack  # The hoist stack must be cleared to show the first node.
-        self.assertEqual(c.p, c.rootPosition())
-        assert c.p.isVisible(c)
+        if 0:
+            ### g.app.debug.append('pdb')  ###
+            g.app.test_commands = self
+        if 1:
+            c.hoist()
+            c.goToFirstVisibleNode()
+            self.assertEqual(c.p, aaa)
+        else:
+            c.hoist()
+            c.goToFirstNode()
+            assert not c.hoistStack  # The hoist stack must be cleared to show the first node.
+            self.assertEqual(c.p, c.rootPosition())
+            assert c.p.isVisible(c)
     #@+node:ekr.20210906075242.12: *3* TestCommands.test_c_hoist_with_no_children
     def test_c_hoist_with_no_children(self):
         c = self.c

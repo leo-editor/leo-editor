@@ -3,8 +3,8 @@
 #@+node:ekr.20210902073413.1: * @file ../unittests/core/test_leoAst.py
 #@@first
 """Tests of leoAst.py"""
-#@+<< imports >>
-#@+node:ekr.20210902074548.1: ** << imports >>
+#@+<< leoAst imports >>
+#@+node:ekr.20210902074548.1: ** << leoAst imports >>
 import ast
 import os
 import sys
@@ -36,7 +36,7 @@ from leo.core.leoAst import Token, TokenOrderGenerator, TokenOrderTraverser
 from leo.core.leoAst import get_encoding_directive, read_file, strip_BOM
 from leo.core.leoAst import make_tokens, parse_ast, tokens_to_string
 from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree, _op_names
-#@-<< imports >>
+#@-<< leoAst imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
 #@+others

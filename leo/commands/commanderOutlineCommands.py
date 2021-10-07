@@ -549,13 +549,15 @@ def expandNodeOrGoToFirstChild(self, event=None):
             c.redraw_after_expand(p.firstChild())
         else:
             c.expandNode()
-#@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
+#@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode (** calls g.pdb)
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
     """Contract all nodes in the outline."""
     c = self
-    if 'pdb' in g.app.debug: g.pdb()  ### # pylint: disable=multiple-statements
     level = 1
+    if False and 'pdb' in g.app.debug:
+        g.app.test_commands.dump_tree()
+        ### g.pdb()  ####
     if p:
         c.selectPosition(p)  # 2013/12/25
     root = c.p

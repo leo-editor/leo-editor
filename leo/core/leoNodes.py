@@ -905,7 +905,7 @@ class Position:
     def isRoot(self):
         p = self
         return not p.hasParent() and not p.hasBack()
-    #@+node:ekr.20080416161551.196: *4* p.isVisible (slow)
+    #@+node:ekr.20080416161551.196: *4* p.isVisible
     def isVisible(self, c):
         """Return True if p is visible in c's outline."""
         p = self
@@ -919,7 +919,7 @@ class Position:
                     return False
             return True
 
-        if c.hoistStack:
+        if c.hoistStack:  # Chapters are a form of hoist.
             root = c.hoistStack[-1].p
             if p == root:
                 # #12.
