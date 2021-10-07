@@ -365,7 +365,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         """
-        c = self.c
+        c, u = self.c, self.c.undoer
         # Do #438: Search for placeholder in headline.
         s = p.h
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
@@ -383,14 +383,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if i is None:
                 return False
             w = c.frame.body.wrapper
+            bunch = u.beforeChangeBody(c.p)  ###
             switch = p != c.p
             if switch:
                 c.selectPosition(p)
             else:
                 scroll = w.getYScrollPosition()
-            oldSel = w.getSelectionRange()
+            ### oldSel = w.getSelectionRange()
             w.setAllText(new_s)
-            c.frame.body.onBodyChanged(undoType='find-place-holder', oldSel=oldSel)
+            ### c.frame.body.onBodyChanged(undoType='find-place-holder', oldSel=oldSel)
+            u.afterChangeBody(p, 'find-place-holder', bunch)  ###
             c.p.b = new_s
             if switch:
                 c.redraw()
