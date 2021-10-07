@@ -156,7 +156,7 @@ def find_missing_docstrings(event):
         f"found {count} missing docstring{g.plural(count)} "
         f"in {files} file{g.plural(files)} "
         f"in {time.process_time() - t1:5.2f} sec.")
-#@+node:ekr.20160517133001.1: *3* flake8 command
+#@+node:ekr.20160517133001.1: *3* flake8-files command
 @g.command('flake8-files')
 def flake8_command(event):
     """
