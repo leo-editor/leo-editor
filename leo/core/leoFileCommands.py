@@ -319,7 +319,7 @@ class FastRead:
                     v.parents.append(parent_v)
                     # The body overrides any previous body text.
                     body = g.toUnicode(gnx2body.get(gnx) or '')
-                    assert g.isUnicode(body), body.__class__.__name__
+                    assert isinstance(body, str), body.__class__.__name__
                     v._bodyString = body
                 else:
                     #@+<< Make a new vnode, linked to the parent >>
@@ -329,7 +329,7 @@ class FastRead:
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                     body = g.toUnicode(gnx2body.get(gnx) or '')
-                    assert g.isUnicode(body), body.__class__.__name__
+                    assert isinstance(body, str), body.__class__.__name__
                     v._bodyString = body
                     v._headString = 'PLACE HOLDER'
                     #@-<< Make a new vnode, linked to the parent >>

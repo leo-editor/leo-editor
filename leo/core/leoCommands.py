@@ -1150,16 +1150,6 @@ class Commands:
                 p = next
             else: break
         return p
-    #@+node:ekr.20040311094927: *5* c.nullPosition
-    def nullPosition(self):
-        """
-        New in Leo 5.5: Return None.
-        Using empty positions masks problems in program logic.
-
-        In fact, there are no longer any calls to this method in Leo's core.
-        """
-        g.trace('This method is deprecated. Instead, just use None.')
-        # pylint complains if we return None.
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -2047,32 +2037,6 @@ class Commands:
                 word = s[i:j]
                 languages.add(word)
         return len(list(languages)) > 1
-    #@+node:ekr.20080922124033.5: *4* c.os_path_finalize and c.os_path_finalize_join (deprecated)
-    deprecated_messages: List[str] = []
-
-    def os_path_finalize(self, path, **keys):
-        """
-        c.os_path_finalize is deprecated.
-        It no longer evaluates path expressions.
-        """
-        callers = g.callers(2)
-        if callers not in self.deprecated_messages:
-            self.deprecated_messages.append(callers)
-            g.es_print(
-                f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers}")
-        return g.os_path_finalize(path)  # mypy.
-
-    def os_path_finalize_join(self, *args, **keys):
-        """
-        c.os_path_finalize_join is deprecated.
-        It no longer evaluates path expressions.
-        """
-        callers = g.callers(2)
-        if callers not in self.deprecated_messages:
-            self.deprecated_messages.append(callers)
-            g.es_print(
-                f"\nc.os_path_finalize_join is deprecated. called from: {callers}")
-        return g.os_path_finalize_join(*args, **keys)
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
 
