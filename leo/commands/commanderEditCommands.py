@@ -1214,17 +1214,21 @@ def insertMarkdownTOC(self, event=None):
 #@+node:ekr.20180410074238.1: *3* insert_toc
 def insert_toc(c, kind):
     """Insert a table of contents at the cursor."""
-    undoType = f"Insert {kind.capitalize()} TOC"
+    p, u = c.p, c.undoer
     w = c.frame.body.wrapper
+    undoType = f"Insert {kind.capitalize()} TOC"
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)  ###
+    ###oldSel = w.getSelectionRange()
     w.deleteTextSelection()
     s = make_toc(c, kind=kind, root=c.p)
     i = w.getInsertPoint()
     w.insert(i, s)
-    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    ###c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    p.v.b = w.getAllText()
+    u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20180410054926.1: *3* make_toc
 def make_toc(c, kind, root):
     """Return the toc for root.b as a list of lines."""
