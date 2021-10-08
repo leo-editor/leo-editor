@@ -690,43 +690,6 @@ class LeoBody:
         sel = g.checkUnicode(s[i:j])
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
-    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
-    def onBodyChanged(self, undoType, oldSel=None):
-        """
-        Update Leo after the body has been changed.
-
-        This method is deprecated. New Leo commands and scripts should
-        call u.before/afterChangeBody instead.
-        """
-        p, u, w = self.c.p, self.c.undoer, self.wrapper
-        #
-        # Shortcut.
-        newText = w.getAllText()
-        if p.b == newText:
-            return
-        #
-        # Init data.
-        newSel = w.getSelectionRange()
-        newInsert = w.getInsertPoint()
-        #
-        # The "Before" snapshot.
-        #
-        # #1743: Restore oldSel for u.beforeChangeBody
-        if oldSel and newSel and oldSel != newSel:
-            i, j = oldSel
-            w.setSelectionRange(i, j, insert=j)
-        bunch = u.beforeChangeBody(p)
-        #
-        # #1743: Restore newSel if necessary.
-        if oldSel and newSel and oldSel != newSel:
-            i, j = newSel
-            w.setSelectionRange(i, j, insert=newInsert)
-        #
-        # Careful. Don't redraw unless necessary.
-        p.v.b = newText  # p.b would cause a redraw.
-        #
-        # "after" snapshot.
-        u.afterChangeBody(p, undoType, bunch)
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:
@@ -1011,13 +974,12 @@ class LeoFrame:
     @frame_cmd('cut-text')
     def cutText(self, event=None):
         """Invoked from the mini-buffer and from shortcuts."""
-        f = self
-        c = f.c
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
         if not w or not g.isTextWrapper(w):
             return
+        bunch = u.beforeChangeBody(p)
         name = c.widget_name(w)
-        oldSel = w.getSelectionRange()
         oldText = w.getAllText()
         i, j = w.getSelectionRange()
         # Update the widget and set the clipboard text.
@@ -1034,15 +996,13 @@ class LeoFrame:
             w.see(i)  # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            c.frame.body.onBodyChanged('Cut', oldSel=oldSel)
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Cut', bunch)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
-            # p.initHeadString(s)
             s = w.getAllText()
-            # 2011/11/14: Not used at present.
-            # width = f.tree.headWidth(p=None,s=s)
-            # w.setWidth(width)
-        else: pass
+        else:
+            pass
 
     OnCutFromMenu = cutText
     #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
@@ -1052,14 +1012,15 @@ class LeoFrame:
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
-        c = self.c
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             return
+        bunch = u.beforeChangeBody(p)
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
-        i, j = oldSel = w.getSelectionRange()
+        i, j = w.getSelectionRange()
             # Returns insert point if no selection.
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
@@ -1090,17 +1051,12 @@ class LeoFrame:
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Paste', bunch)
         elif singleLine:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):
                 s = s[:-1]
-            # 2011/11/14: headline width methods do nothing at present.
-            # if wname.startswith('head'):
-                # The headline is not officially changed yet.
-                # p.initHeadString(s)
-                # width = f.tree.headWidth(p=None,s=s)
-                # w.setWidth(width)
         else:
             pass
         # Never scroll horizontally.

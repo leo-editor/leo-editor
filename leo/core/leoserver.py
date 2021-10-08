@@ -2712,7 +2712,7 @@ class LeoServer:
             'find-def',
             'find-long-lines',
             'find-missing-docstrings',
-            'flake8',
+            'flake8-files',
             'flatten-outline',
             'flatten-outline-to-node',
             'flatten-script',

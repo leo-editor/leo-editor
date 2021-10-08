@@ -3911,11 +3911,13 @@ class TestEditCommands(LeoUnitTest):
         # ac.make_script_substitutions(i,j,val)
         # ac.find_place_holder(child,True)
         new_s, i, j = ac.next_place(child.b, offset=0)
+        self.assertEqual(p.b, new_s)
         self.assertEqual(i, 34)
         self.assertEqual(j, 40)
         new_s2, i, j = ac.next_place(new_s, offset=40)
         self.assertEqual(i, 54)
         self.assertEqual(j, 58)
+        
     #@+node:ekr.20210905064816.3: *4* TestEditCommands.test_addAbbrevHelper
     def test_addAbbrevHelper(self):
         c = self.c
