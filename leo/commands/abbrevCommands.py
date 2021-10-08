@@ -412,12 +412,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i, j, val):
         """Make scripting substitutions in node p."""
-        c = self.c
+        c, u, w = self.c, self.c.undoer, self.c.frame.body.wrapper
         if not c.abbrev_subst_start:
             return val, False
         # Nothing to undo.
         if c.abbrev_subst_start not in val:
             return val, False
+        # The *before* snapshot.
+        bunch = u.beforeChangeBody(c.p)
         # Perform all scripting substitutions.
         self.save_ins = None
         self.save_sel = None
@@ -441,7 +443,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 x = ''
             val = f"{prefix}{x}{rest}"
             # Save the selection range.
-            w = c.frame.body.wrapper
+            ### w = c.frame.body.wrapper
             self.save_ins = w.getInsertPoint()
             self.save_sel = w.getSelectionRange()
         if val == "__NEXT_PLACEHOLDER":
@@ -451,8 +453,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             do_placeholder = True
         else:
             do_placeholder = False
-            oldSel = i, j
-            c.frame.body.onBodyChanged(undoType='make-script-substitution', oldSel=oldSel)
+            ####### Set w text and p.b.s ##########
+            c.p.v.b = w.getAllText()
+            ### oldSel = i, j
+            ### c.frame.body.onBodyChanged(undoType='make-script-substitution', oldSel=oldSel)
+            u.afterChangeBody(c.p, 'make-script-substitution', bunch)  ###
         return val, do_placeholder
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
     def make_script_substitutions_in_headline(self, p):
@@ -543,8 +548,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w, i, j, s):
         """Replace w[i:j] by s."""
+        p, u = self.c.p, self.c.undoer
         w_name = g.app.gui.widget_name(w)
-        c = self.c
+        bunch = u.beforeChangeBody(p)  ###
         if i == j:
             abbrev = ''
         else:
@@ -556,8 +562,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             pass  # Don't set p.h here!
         else:
             # Fix part of #438. Don't leave the headline.
-            oldSel = j, j
-            c.frame.body.onBodyChanged('Abbreviation', oldSel=oldSel)
+            ### oldSel = j, j
+            ### c.frame.body.onBodyChanged('Abbreviation', oldSel=oldSel)
+            new_s = w.getAllText() ###
+            g.trace(new_s)
+            p.v.b = new_s  ###
+            u.afterChangeBody(p, 'Abbreviation', bunch)  ###
         # Adjust self.save_sel & self.save_ins
         if s is not None and self.save_sel is not None:
             # pylint: disable=unpacking-non-sequence
