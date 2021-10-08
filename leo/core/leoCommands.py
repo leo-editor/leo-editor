@@ -3849,7 +3849,7 @@ class Commands:
         Select a new position, redrawing the screen *only* if we must
         change chapters.
         """
-        trace = 'pdb' in g.app.debug  # For # 2167.
+        trace = False  # For # 2167.
         if kwargs:
             print('c.selectPosition: all keyword args are ignored', g.callers())
         c = self

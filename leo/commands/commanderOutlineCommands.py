@@ -555,9 +555,6 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     """Contract all nodes in the outline."""
     c = self
     level = 1
-    if False and 'pdb' in g.app.debug:
-        g.app.test_commands.dump_tree()
-        ### g.pdb()  ####
     if p:
         c.selectPosition(p)  # 2013/12/25
     root = c.p
