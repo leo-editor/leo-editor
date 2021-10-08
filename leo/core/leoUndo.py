@@ -1039,9 +1039,7 @@ class Undoer:
         #@+<< set newBead if we can't share the previous bead >>
         #@+node:ekr.20050125220613: *6* << set newBead if we can't share the previous bead >>
         # Set newBead to True if undo_type is not 'Typing' so that commands that
-        # get treated like typing (by onBodyChanged) don't get lumped
-        # with 'real' typing.
-        #@@c
+        # get treated like typing don't get lumped with 'real' typing.
         if (
             not old_d or not old_p or
             old_p.v != p.v or

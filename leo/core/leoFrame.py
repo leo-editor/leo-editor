@@ -690,43 +690,6 @@ class LeoBody:
         sel = g.checkUnicode(s[i:j])
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
-    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
-    def onBodyChanged(self, undoType, oldSel=None):
-        """
-        Update Leo after the body has been changed.
-
-        This method is deprecated. New Leo commands and scripts should
-        call u.before/afterChangeBody instead.
-        """
-        p, u, w = self.c.p, self.c.undoer, self.wrapper
-        #
-        # Shortcut.
-        newText = w.getAllText()
-        if p.b == newText:
-            return
-        #
-        # Init data.
-        newSel = w.getSelectionRange()
-        newInsert = w.getInsertPoint()
-        #
-        # The "Before" snapshot.
-        #
-        # #1743: Restore oldSel for u.beforeChangeBody
-        if oldSel and newSel and oldSel != newSel:
-            i, j = oldSel
-            w.setSelectionRange(i, j, insert=j)
-        bunch = u.beforeChangeBody(p)
-        #
-        # #1743: Restore newSel if necessary.
-        if oldSel and newSel and oldSel != newSel:
-            i, j = newSel
-            w.setSelectionRange(i, j, insert=newInsert)
-        #
-        # Careful. Don't redraw unless necessary.
-        p.v.b = newText  # p.b would cause a redraw.
-        #
-        # "after" snapshot.
-        u.afterChangeBody(p, undoType, bunch)
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:
