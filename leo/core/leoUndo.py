@@ -217,11 +217,11 @@ class Undoer:
     def setIvarsFromBunch(self, bunch):
         u = self
         u.clearOptionalIvars()
-        if 0:  # Debugging.
-            g.pr('-' * 40)
+        if False and not g.unitTesting:  # Debugging.
+            print('-' * 40)
             for key in list(bunch.keys()):
                 g.trace(f"{key:20} {bunch.get(key)!r}")
-            g.pr('-' * 20)
+            print('-' * 20)
         if g.unitTesting:  # #1694: An ever-present unit test.
             val = bunch.get('oldMarked')
             assert val in (True, False), f"{val!r} {g.callers()!s}"
@@ -1994,7 +1994,7 @@ class Undoer:
         if c.p != u.p:
             c.selectPosition(u.p)
         u.p.setDirty()
-        self.undoRedoText(
+        u.undoRedoText(
             u.p, u.leading, u.trailing,
             u.oldMiddleLines, u.newMiddleLines,
             u.oldNewlines, u.newNewlines,

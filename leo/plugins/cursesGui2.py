@@ -2357,13 +2357,13 @@ class CoreFrame(leoFrame.LeoFrame):
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         '''
         trace = False and not g.unitTesting
-        c = self.c
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
         if not isinstance(w, leoFrame.StringTextWrapper):
             g.trace('not a StringTextWrapper', repr(w))
             return
         wname = c.widget_name(w)
-        i, j = oldSel = w.getSelectionRange()
+        i, j = w.getSelectionRange()
             # Returns insert point if no selection.
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
@@ -2379,7 +2379,10 @@ class CoreFrame(leoFrame.LeoFrame):
             w.delete(i, j)
         w.insert(i, s)
         if wname.startswith('body'):
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
+            ### c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
+            bunch = u.beforeChangeBody(p)
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Paste', bunch)  ###
         elif wname.startswith('head'):
             c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.

@@ -740,18 +740,21 @@ def indentBody(self, event=None):
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
     """Insert a time/date stamp at the cursor."""
-    c = self
+    c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
     undoType = 'Insert Body Time'
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)  ###
+    ### oldSel = w.getSelectionRange()
     w.deleteTextSelection()
     s = self.getTime(body=True)
     i = w.getInsertPoint()
     w.insert(i, s)
-    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    ### c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    p.v.b = w.getAllText()
+    u.afterChangeBody(p, undoType, bunch)  ###
 #@+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(self, event=None):

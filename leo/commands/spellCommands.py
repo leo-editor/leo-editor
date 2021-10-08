@@ -722,25 +722,27 @@ class SpellTabHandler:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
-        c = self.c
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = c.frame.body.wrapper
         selection = self.tab.getSuggestion()
         if selection:
+            bunch = u.beforeChangeBody(p)  ###
             # Use getattr to keep pylint happy.
             i = getattr(self.tab, 'change_i', None)
             j = getattr(self.tab, 'change_j', None)
             if i is not None:
                 start, end = i, j
-                oldSel = start, end
             else:
-                start, end = oldSel = w.getSelectionRange()
+                start, end = w.getSelectionRange()
             if start is not None:
                 if start > end:
                     start, end = end, start
                 w.delete(start, end)
                 w.insert(start, selection)
                 w.setSelectionRange(start, start + len(selection))
-                c.frame.body.onBodyChanged("Change", oldSel=oldSel)
+                p.v.b = w.getAllText()  ###
+                ### c.frame.body.onBodyChanged("Change", oldSel=oldSel)
+                u.afterChangeBody(p, 'Change', bunch)  ###
                 c.invalidateFocus()
                 c.bodyWantsFocus()
                 return True

@@ -1208,14 +1208,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         indentation point then applicable is used. If no indentation point is
         applicable even then whitespace equivalent to a single tab is inserted.
         """
-        c = self.c
+        p, u = self.c.p, self.c.undoer
         undoType = 'indent-relative'
         w = self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
         s = w.getAllText()
         ins = w.getInsertPoint()
-        oldSel = w.getSelectionRange()
+        ### oldSel = w.getSelectionRange()
         # Find the previous non-blank line
         i, j = g.getLine(s, ins)
         while 1:
@@ -1227,6 +1227,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 break
         self.beginCommand(w, undoType=undoType)
         try:
+            bunch = u.beforeChangeBody(p)  ###
+            assert bunch.p
             k = g.skip_ws(s, i)
             ws = s[i:k]
             i2, j2 = g.getLine(s, ins)
@@ -1235,7 +1237,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.delete(i2, j2)
             w.insert(i2, line)
             w.setInsertPoint(i2 + len(ws))
-            c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+            p.v.b = w.getAllText()
+            ### c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+            u.afterChangeBody(p, undoType, bunch)  ###
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* ec: info
