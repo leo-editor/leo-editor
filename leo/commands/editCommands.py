@@ -1227,7 +1227,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.beginCommand(w, undoType=undoType)
         try:
             bunch = u.beforeChangeBody(p)
-            assert bunch.p
             k = g.skip_ws(s, i)
             ws = s[i:k]
             i2, j2 = g.getLine(s, ins)
