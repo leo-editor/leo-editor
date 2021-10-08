@@ -107,14 +107,18 @@ def insertOKcmd(self, event=None):
 #@+node:ekr.20040205071616.9: ** insertUser
 def insertUser(self, event=None):
     """Handle the Insert User command."""
-    c = self
+    c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
-    oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)  ###
+    ### oldSel = w.getSelectionRange()
     w.deleteTextSelection()  # Works if nothing is selected.
     stamp = mnstamp()
     i = w.getInsertPoint()
     w.insert(i, stamp)
-    c.frame.body.onBodyChanged('insert-user', oldSel=oldSel)
+    ### c.frame.body.onBodyChanged('insert-user', oldSel=oldSel)
+    p.v.b = w.getAllText()
+    u.afterChangeBody(p, 'insert-user', bunch)
+
 #@+node:ekr.20040205071616.10: ** create_UserMenu (mnplugins.py)
 def create_UserMenu(tag, keywords):
 
