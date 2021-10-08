@@ -1053,14 +1053,15 @@ class LeoFrame:
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
-        c = self.c
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             return
+        bunch = u.beforeChangeBody(p)  ###
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
-        i, j = oldSel = w.getSelectionRange()
+        i, j = w.getSelectionRange()
             # Returns insert point if no selection.
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
@@ -1091,17 +1092,13 @@ class LeoFrame:
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
+            ### c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
+            p.v.b = w.getAllText()  ###
+            u.afterChangeBody(p, 'Paste', bunch)  ###
         elif singleLine:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):
                 s = s[:-1]
-            # 2011/11/14: headline width methods do nothing at present.
-            # if wname.startswith('head'):
-                # The headline is not officially changed yet.
-                # p.initHeadString(s)
-                # width = f.tree.headWidth(p=None,s=s)
-                # w.setWidth(width)
         else:
             pass
         # Never scroll horizontally.
