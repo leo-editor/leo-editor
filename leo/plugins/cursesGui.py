@@ -268,8 +268,6 @@ class textBody(leoFrame.LeoBody):
     def bind(self, bindStroke, callback):
         pass
     #@+node:ekr.20150107090324.34: *3* setEditorColors
-    # TODO Tkinter onBodyChanged undo call and many others. =(
-
     def setEditorColors(self, bg, fg):
         pass  # N/A
 

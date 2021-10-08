@@ -217,11 +217,11 @@ class Undoer:
     def setIvarsFromBunch(self, bunch):
         u = self
         u.clearOptionalIvars()
-        if 0:  # Debugging.
-            g.pr('-' * 40)
+        if False and not g.unitTesting:  # Debugging.
+            print('-' * 40)
             for key in list(bunch.keys()):
                 g.trace(f"{key:20} {bunch.get(key)!r}")
-            g.pr('-' * 20)
+            print('-' * 20)
         if g.unitTesting:  # #1694: An ever-present unit test.
             val = bunch.get('oldMarked')
             assert val in (True, False), f"{val!r} {g.callers()!s}"
@@ -1039,9 +1039,7 @@ class Undoer:
         #@+<< set newBead if we can't share the previous bead >>
         #@+node:ekr.20050125220613: *6* << set newBead if we can't share the previous bead >>
         # Set newBead to True if undo_type is not 'Typing' so that commands that
-        # get treated like typing (by onBodyChanged) don't get lumped
-        # with 'real' typing.
-        #@@c
+        # get treated like typing don't get lumped with 'real' typing.
         if (
             not old_d or not old_p or
             old_p.v != p.v or
@@ -1994,7 +1992,7 @@ class Undoer:
         if c.p != u.p:
             c.selectPosition(u.p)
         u.p.setDirty()
-        self.undoRedoText(
+        u.undoRedoText(
             u.p, u.leading, u.trailing,
             u.oldMiddleLines, u.newMiddleLines,
             u.oldNewlines, u.newNewlines,

@@ -740,18 +740,19 @@ def indentBody(self, event=None):
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
     """Insert a time/date stamp at the cursor."""
-    c = self
+    c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
     undoType = 'Insert Body Time'
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()
     s = self.getTime(body=True)
     i = w.getInsertPoint()
     w.insert(i, s)
-    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    p.v.b = w.getAllText()
+    u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(self, event=None):
@@ -1166,13 +1167,15 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
 #@+node:ekr.20171123135625.50: *3* function: unreformat
 def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
-    body, w = c.frame.body, c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
     ins = max(len(head), len(head) + len(result) - 1)
+    bunch = u.beforeChangeBody(p)
     w.setAllText(s)  # Destroys coloring.
     changed = original != s
     if changed:
-        body.onBodyChanged(undoType, oldSel=oldSel)
+        p.v.b = w.getAllText()
+        u.afterChangeBody(p, undoType, bunch)
     # Advance to the next paragraph.
     ins += 1  # Move past the selection.
     while ins < len(s):
@@ -1208,17 +1211,19 @@ def insertMarkdownTOC(self, event=None):
 #@+node:ekr.20180410074238.1: *3* insert_toc
 def insert_toc(c, kind):
     """Insert a table of contents at the cursor."""
-    undoType = f"Insert {kind.capitalize()} TOC"
+    p, u = c.p, c.undoer
     w = c.frame.body.wrapper
+    undoType = f"Insert {kind.capitalize()} TOC"
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()
     s = make_toc(c, kind=kind, root=c.p)
     i = w.getInsertPoint()
     w.insert(i, s)
-    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    p.v.b = w.getAllText()
+    u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20180410054926.1: *3* make_toc
 def make_toc(c, kind, root):
     """Return the toc for root.b as a list of lines."""

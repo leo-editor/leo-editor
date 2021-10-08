@@ -45,15 +45,17 @@ class BaseEditCommandsClass:
         """
         k, p, u = self.c.k, self.c.p, self.c.undoer
         w = self.editWidget(event=None)
-        b = self.undoData
-        if b and b.name.startswith('body') and changed:
+        bunch = self.undoData
+        if bunch and bunch.name.startswith('body') and changed:
             newText = w.getAllText()
-            if b.undoType.capitalize() == 'Typing':
-                u.doTyping(p, 'Typing', oldText=b.oldText, newText=newText, oldSel=b.oldSel)
+            if bunch.undoType.capitalize() == 'Typing':
+                u.doTyping(p, 'Typing',
+                    oldText=bunch.oldText,
+                    newText=newText,
+                    oldSel=bunch.oldSel)
             else:
                 p.v.b = newText  # p.b would cause a redraw.
-                u.afterChangeBody(p, b.undoType, b.undoer_bunch)
-
+                u.afterChangeBody(p, bunch.undoType, bunch.undoer_bunch)
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

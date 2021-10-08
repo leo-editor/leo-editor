@@ -35,12 +35,16 @@ def onCreate(tag, keys):
 # Same as frame.put except sends output to the end of the body text.
 def newPut(self, s, *args, **keys):
 
+    p, u = self.c.p, self.c.undoer
     body = self.frame.body
     w = body.wrapper
     if w:
+        bunch = u.beforeChangeBody(p)
         w.insert("end", s)
-        body.onBodyChanged('put-to-body-text')
-    # else: g.pr(s,newline=False)
+        ### body.onBodyChanged('put-to-body-text')
+        p.v.b = w.getAllText()
+        u.afterChangeBody(p, 'put-to-body-text', bunch)
+
 
 # Same as frame.putnl except sends output to the end of the body text.
 def newPutNl(self, s, *args, **keys):
