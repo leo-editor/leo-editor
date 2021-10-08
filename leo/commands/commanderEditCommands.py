@@ -1169,13 +1169,16 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
 #@+node:ekr.20171123135625.50: *3* function: unreformat
 def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
-    body, w = c.frame.body, c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
     ins = max(len(head), len(head) + len(result) - 1)
+    bunch = u.beforeChangeBody(p)  ###
     w.setAllText(s)  # Destroys coloring.
     changed = original != s
     if changed:
-        body.onBodyChanged(undoType, oldSel=oldSel)
+        ### body.onBodyChanged(undoType, oldSel=oldSel)
+        p.v.b = w.getAllText()
+        u.afterChangeBody(p, undoType, bunch)  ###
     # Advance to the next paragraph.
     ins += 1  # Move past the selection.
     while ins < len(s):
