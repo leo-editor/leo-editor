@@ -2072,7 +2072,7 @@ class LeoFind:
         if start == end:  # pragma: no cover
             g.es("no text selected")
             return False
-        bunch = u.beforeChangeBody(p)  ###
+        bunch = u.beforeChangeBody(p)
         start, end = oldSel
         change_text = self.change_text
         # Perform regex substitutions of \1, \2, ...\9 in the change text.
@@ -2105,9 +2105,8 @@ class LeoFind:
                 # find-next and find-prev work regardless of insert point.
                 gui_w.setSelectionRange(start, start + len(change_text))
         else:
-            ### c.frame.body.onBodyChanged('Change Body', oldSel=oldSel)
             p.v.b = gui_w.getAllText()
-            u.afterChangeBody(p, 'Change Body', bunch)  ###
+            u.afterChangeBody(p, 'Change Body', bunch)
         c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
     #@+node:ekr.20210110073117.31: *4* find.check_args

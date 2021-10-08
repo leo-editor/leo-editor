@@ -1012,14 +1012,11 @@ class LeoFrame:
     def cutText(self, event=None):
         """Invoked from the mini-buffer and from shortcuts."""
         c, p, u = self.c, self.c.p, self.c.undoer
-        ### f = self
-        ### c = f.c
         w = event and event.widget
         if not w or not g.isTextWrapper(w):
             return
-        bunch = u.beforeChangeBody(p)  ###
+        bunch = u.beforeChangeBody(p)
         name = c.widget_name(w)
-        ### oldSel = w.getSelectionRange()
         oldText = w.getAllText()
         i, j = w.getSelectionRange()
         # Update the widget and set the clipboard text.
@@ -1036,9 +1033,8 @@ class LeoFrame:
             w.see(i)  # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            ### c.frame.body.onBodyChanged('Cut', oldSel=oldSel)
-            p.v.b = w.getAllText()  ###
-            u.afterChangeBody(p, 'Cut', bunch)  ###
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Cut', bunch)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
             s = w.getAllText()
@@ -1058,7 +1054,7 @@ class LeoFrame:
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             return
-        bunch = u.beforeChangeBody(p)  ###
+        bunch = u.beforeChangeBody(p)
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
         i, j = w.getSelectionRange()
@@ -1092,9 +1088,8 @@ class LeoFrame:
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            ### c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
-            p.v.b = w.getAllText()  ###
-            u.afterChangeBody(p, 'Paste', bunch)  ###
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Paste', bunch)
         elif singleLine:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):

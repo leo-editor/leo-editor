@@ -1215,7 +1215,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             return  # pragma: no cover (defensive)
         s = w.getAllText()
         ins = w.getInsertPoint()
-        ### oldSel = w.getSelectionRange()
         # Find the previous non-blank line
         i, j = g.getLine(s, ins)
         while 1:
@@ -1227,7 +1226,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 break
         self.beginCommand(w, undoType=undoType)
         try:
-            bunch = u.beforeChangeBody(p)  ###
+            bunch = u.beforeChangeBody(p)
             assert bunch.p
             k = g.skip_ws(s, i)
             ws = s[i:k]
@@ -1238,8 +1237,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.insert(i2, line)
             w.setInsertPoint(i2 + len(ws))
             p.v.b = w.getAllText()
-            ### c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
-            u.afterChangeBody(p, undoType, bunch)  ###
+            u.afterChangeBody(p, undoType, bunch)
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* ec: info

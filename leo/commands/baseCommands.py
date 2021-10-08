@@ -54,10 +54,8 @@ class BaseEditCommandsClass:
                     newText=newText,
                     oldSel=bunch.oldSel)
             else:
-                ### bunch = u.beforeChangeBody(p)  ###
                 p.v.b = newText  # p.b would cause a redraw.
-                ### u.afterChangeBody(p, b.undoType, b.undoer_bunch)
-                u.afterChangeBody(p, bunch.undoType, bunch.undoer_bunch)  ###
+                u.afterChangeBody(p, bunch.undoType, bunch.undoer_bunch)
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

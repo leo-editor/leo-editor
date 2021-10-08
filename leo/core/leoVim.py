@@ -2406,16 +2406,12 @@ class VimCommands:
         w = self.command_w or self.w
         name = c.widget_name(w)
         if w and name.startswith('body'):
-            bunch = u.beforeChangeBody(p)  ###
+            bunch = u.beforeChangeBody(p)
             # Similar to selfInsertCommand.
-            ### oldSel = self.old_sel or w.getSelectionRange()
             newText = w.getAllText()
             if c.p.b != newText:
-                # To do: set undoType to the command spelling?
-                # undoType = ''.join(self.command_list) or 'Typing'
-                ### c.frame.body.onBodyChanged(undoType='vc-save-body', oldSel=oldSel)
-                p.v.b = newText  ###
-                u.afterChangeBody(p, 'vc-save-body', bunch)  ###
+                p.v.b = newText
+                u.afterChangeBody(p, 'vc-save-body', bunch)
     #@+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(self, kind=None, w=None, activeFlag=None):
         """

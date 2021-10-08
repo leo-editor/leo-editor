@@ -726,7 +726,7 @@ class SpellTabHandler:
         w = c.frame.body.wrapper
         selection = self.tab.getSuggestion()
         if selection:
-            bunch = u.beforeChangeBody(p)  ###
+            bunch = u.beforeChangeBody(p)
             # Use getattr to keep pylint happy.
             i = getattr(self.tab, 'change_i', None)
             j = getattr(self.tab, 'change_j', None)
@@ -740,9 +740,8 @@ class SpellTabHandler:
                 w.delete(start, end)
                 w.insert(start, selection)
                 w.setSelectionRange(start, start + len(selection))
-                p.v.b = w.getAllText()  ###
-                ### c.frame.body.onBodyChanged("Change", oldSel=oldSel)
-                u.afterChangeBody(p, 'Change', bunch)  ###
+                p.v.b = w.getAllText()
+                u.afterChangeBody(p, 'Change', bunch)
                 c.invalidateFocus()
                 c.bodyWantsFocus()
                 return True

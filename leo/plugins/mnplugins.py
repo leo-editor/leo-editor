@@ -109,13 +109,11 @@ def insertUser(self, event=None):
     """Handle the Insert User command."""
     c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
-    bunch = u.beforeChangeBody(p)  ###
-    ### oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()  # Works if nothing is selected.
     stamp = mnstamp()
     i = w.getInsertPoint()
     w.insert(i, stamp)
-    ### c.frame.body.onBodyChanged('insert-user', oldSel=oldSel)
     p.v.b = w.getAllText()
     u.afterChangeBody(p, 'insert-user', bunch)
 

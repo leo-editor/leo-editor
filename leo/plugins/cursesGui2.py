@@ -2362,6 +2362,7 @@ class CoreFrame(leoFrame.LeoFrame):
         if not isinstance(w, leoFrame.StringTextWrapper):
             g.trace('not a StringTextWrapper', repr(w))
             return
+        bunch = u.beforeChangeBody(p)
         wname = c.widget_name(w)
         i, j = w.getSelectionRange()
             # Returns insert point if no selection.
@@ -2379,10 +2380,8 @@ class CoreFrame(leoFrame.LeoFrame):
             w.delete(i, j)
         w.insert(i, s)
         if wname.startswith('body'):
-            ### c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
-            bunch = u.beforeChangeBody(p)
             p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Paste', bunch)  ###
+            u.afterChangeBody(p, 'Paste', bunch)
         elif wname.startswith('head'):
             c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.

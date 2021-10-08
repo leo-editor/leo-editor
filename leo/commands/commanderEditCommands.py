@@ -746,15 +746,13 @@ def insertBodyTime(self, event=None):
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    bunch = u.beforeChangeBody(p)  ###
-    ### oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()
     s = self.getTime(body=True)
     i = w.getInsertPoint()
     w.insert(i, s)
-    ### c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
     p.v.b = w.getAllText()
-    u.afterChangeBody(p, undoType, bunch)  ###
+    u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(self, event=None):
@@ -1172,13 +1170,12 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
     ins = max(len(head), len(head) + len(result) - 1)
-    bunch = u.beforeChangeBody(p)  ###
+    bunch = u.beforeChangeBody(p)
     w.setAllText(s)  # Destroys coloring.
     changed = original != s
     if changed:
-        ### body.onBodyChanged(undoType, oldSel=oldSel)
         p.v.b = w.getAllText()
-        u.afterChangeBody(p, undoType, bunch)  ###
+        u.afterChangeBody(p, undoType, bunch)
     # Advance to the next paragraph.
     ins += 1  # Move past the selection.
     while ins < len(s):
@@ -1220,13 +1217,11 @@ def insert_toc(c, kind):
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    bunch = u.beforeChangeBody(p)  ###
-    ###oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()
     s = make_toc(c, kind=kind, root=c.p)
     i = w.getInsertPoint()
     w.insert(i, s)
-    ###c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
     p.v.b = w.getAllText()
     u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20180410054926.1: *3* make_toc
