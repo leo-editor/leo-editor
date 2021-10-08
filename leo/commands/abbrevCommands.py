@@ -565,7 +565,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             ### oldSel = j, j
             ### c.frame.body.onBodyChanged('Abbreviation', oldSel=oldSel)
             new_s = w.getAllText() ###
-            g.trace(new_s)
             p.v.b = new_s  ###
             u.afterChangeBody(p, 'Abbreviation', bunch)  ###
         # Adjust self.save_sel & self.save_ins
