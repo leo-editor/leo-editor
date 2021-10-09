@@ -319,9 +319,7 @@ class LeoBody:
     def updateSyntaxColorer(self, p):
         return self.colorizer.updateSyntaxColorer(p.copy())
 
-    def recolor(self, p, **kwargs):
-        if 'incremental' in kwargs:
-            print('c.recolor: incremental keyword is deprecated', g.callers(1))
+    def recolor(self, p):
         self.c.recolor()
 
     recolor_now = recolor

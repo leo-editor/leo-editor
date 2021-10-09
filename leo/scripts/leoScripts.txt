@@ -1142,7 +1142,6 @@ def do_Attribute(self, node):
         node.attr) # Don't visit node.attr: it is always a string.
 #@+node:ekr.20160123185308.27: *6* f.Bytes
 def do_Bytes(self, node): # Python 3.x only.
-    assert g.isPython3
     return str(node.s)
 #@+node:ekr.20160123185308.28: *6* f.Call & f.keyword
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -5646,10 +5645,7 @@ import leo.core.leoTest as leoTest
 import types
 
 def isClass(obj):
-    if g.isPython3:
-        return isinstance(obj,type)
-    else:
-        return type(obj) == types.ClassType
+    return isinstance(obj,type)
 
 specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
 
@@ -5768,841 +5764,6 @@ for z in sorted(set(aList)):
     print(z)
     
 print('done')
-#@+node:ekr.20150416062014.1: ** Executing foreign and external scripts
-# This includes executing body text in other languages than Python.
-#@+node:ekr.20080221113205: *3* @@button print g.es stats
-@first # -*- coding: utf-8 -*-
-
-# To do: put list of to-be-translated strings in a doc part.
-
-<< docstring >>
-<< version history >>
-
-class controllerClass:
-    @others
-
-x = controllerClass(c,p)
-x.main()
-#@+node:ekr.20080221113205.1: *4* << docstring >>
-'''
-This script discovers all g.es statements and the unbound variables in
-those statements in a single pass over the selected outline. It then puts
-the decls followed by the statements in the body text of the
-@scan_g.es_results node.
-
-Thus, after this script, you can **execute** the body text of the
-@scan_g.es_results node. In particular, assuming that g.translateString
-converts all translated text to upper case, it is easy to tell which
-strings have been translated.
-'''
-#@+node:ekr.20080221113205.2: *4* << version history >>
-@nocolor
-@
-
-2008/2/19 EKR: Initial 2-pass version.
-2008/2/20 EKR:
-- Convert to single-pass using decls and statements arrays.
-- Add 'tabName' to list of keyword arguments.
-- Fixed various bugs.
-2008/2/20 EKR 2:
-- Generate g.es statements to inicate beginnings of files.
-  This allows us to execute all generated statements at once.
-- Convert between '.' and '__' as needed to avoid using real ivars.
-2008/2/21 EKR:
-- Added mungeString.
-- Rewrote mungeStatements, scanParens and scanIdChain.
-These changes now properly handle all arguments.
-2008/2/21 EKR 2:
-- Added stringize and related logic.
-- Added setToBeTranslated to put list of to-be-translated strings into leading docstring.
-#@+node:ekr.20080221113205.3: *4*  ctor
-def __init__ (self,c,p):
-
-    self.c = c
-    self.p = p
-
-    self.decls = {}
-    self.keywordArgs = ('color','newline','tabName',)
-    self.nodeName = '@scan_g.es_results'
-    self.statements = []
-    self.printStatements = ('g.es','g.es_print',)
-    self.suppressTranslation = False # True: keyword arg to g.es seen.
-    self.toBeTranslated = []
-    self.traceFlag = False
-
-    self.root = g.findNodeAnywhere(c,self.nodeName)
-#@+node:ekr.20080221113205.4: *4* error & trace
-def error (self,s):
-
-    self.statements.append('***error: %s' % s)
-
-def trace(self,s):
-
-    if self.traceFlag:
-        self.statements.append(s)
-#@+node:ekr.20080221113205.5: *4* main
-def main (self):
-
-    '''The main line.'''
-
-    c = self.c
-    self.scan()
-    self.mungeStatements()
-    keys = self.decls.keys()
-    keys.sort()
-    # This is such a great hack :-)
-    decls = ["%s = '%s'" % (self.mungeString(z),self.stringize(z,delim="'")) for z in keys]
-
-    # Put to-be-translated.
-    results = ['@ To be translated...',]
-    self.toBeTranslated.sort()
-    results.extend(self.toBeTranslated)
-    results.extend(['@c',])
-    # Put decls.
-    results.extend(['# Decls...',])
-    results.extend(["color='red'","newline=True","tabName='Log'"])
-    results.extend(decls)
-    # Put statements
-    results.extend(["g.app.translateToUpperCase=True",])
-    results.extend(self.statements)
-    results.extend(["g.app.translateToUpperCase=False",])
-
-    results = '\n'.join(results)
-
-    # Put the results in the root node, or print them.
-    if self.root:
-        c.setBodyString(self.root,results)
-        c.selectPosition(self.root)
-        c.redraw()
-    else:
-        print 'node not found',self.rootName
-        print results
-
-    g.es('done')
-#@+node:ekr.20080221113205.6: *4* munging...
-#@+node:ekr.20080221113205.7: *5* mungeString
-def mungeString (self,s):
-
-    '''Convert string s so that it is a valid Python name.'''
-
-    s = s.strip()
-    # s = s.replace('@','_AT_')
-    # s = s.replace('<','_LT_')
-    # s = s.replace('>','_GT_')
-    s = s.replace(',','_COMMA_')
-    s = s.replace('.','_DOT_')
-    s = s.replace('()','_PARENS_')
-    s = s.replace('(','_LP_')
-    s = s.replace(')','_RP_')
-    s = s.replace('"','_DQ_')
-    s = s.replace("'",'_SQ_')
-    s = ''.join([g.choose(z == '_' or z.isalnum(),z,'_') for z in s])
-    return s
-#@+node:ekr.20080221113205.8: *5* mungeHeadline
-def mungeHeadline (self,s):
-
-    s = s.strip()
-    s = s.replace('<<','< <')
-    s = s.replace('>>','> >')
-    return s
-#@+node:ekr.20080221113205.9: *5* mungeStatements
-def mungeStatements (self):
-
-    '''Convert a references to an known id chain by the corresponding decl.'''
-
-    keys = self.decls.keys()
-    for tag in self.printStatements:
-        if tag in keys: keys.remove(tag)
-
-    results = []
-    for s in self.statements:
-        i = 0 ; inner_result = []
-        while i < len(s):
-            progress = i
-            for key in keys:
-                if g.match_word(s,i,key):
-                    inner_result.append(self.mungeString(key))
-                    i += len(key)
-                    break
-            else:
-                inner_result.append(s[i])
-            i = max(i,progress+1)
-        new_statement = ''.join(inner_result)
-        if new_statement != s:
-            # Add the original lines as comments.
-            for z in g.splitLines(s):
-                results.append ('# %s' % (z.rstrip()))
-        results.append(new_statement) # Add the munged line.
-
-    self.statements = results
-
-#@+node:ekr.20080221113205.10: *5* stringize
-def stringize (self,s,delim):
-
-    s = s.strip()
-    s = s.replace(delim,'\\%s' % (delim))
-    return s
-#@+node:ekr.20080221113205.11: *4* scan & helpers
-def scan(self):
-
-
-    for p in self.p.self_and_subtree():
-
-        self.scanNode(p)
-#@+node:ekr.20080221113205.12: *5* scanIdChain
-def scanIdChain (self,s,i,outer):
-
-    assert g.is_c_id(s[i])
-    start = i 
-
-    while i < len(s):
-        progress = i
-        # Skip a.b.c...
-        if not g.is_c_id(s[i]): break
-        i = g.skip_id(s,i,chars='.')
-        i = g.skip_ws(s,i)
-        word = s[start:i].strip()
-        if outer and g.match(s,i,'=') and word in (self.keywordArgs):
-            # g.trace('***','=',word)
-            self.suppressTranslation = True
-        # Only a paren is valid now.
-        if not g.match(s,i,'('): break
-        # We shall munge the entire paren expression.
-        i = g.skip_matching_python_parens(s,i)
-        if g.match(s,i,')'): i += 1
-        # Only a dot is valid now.
-        if not g.match(s,i,'.'): break
-        i += 1
-        assert i > progress
-
-    self.setDecl(s[start:i])
-    return i
-#@+node:ekr.20080221113205.13: *5* scanNode
-def scanNode(self,p):
-
-    tags = ('g.es','g.es_print',)
-    s,h = p.b, p.h
-    print_h = True
-
-    if h.startswith('@thin'):
-        << insert statements highlighting the @thin node >>
-
-    i = 0
-    while i < len(s):
-        progress = i
-        for tag in tags:
-            if g.match_word(s,i,tag):
-                start = i ; i += len(tag)
-                self.suppressTranslation = False
-                i = g.skip_ws(s,i)
-                if g.match(s,i,'('):
-                    << Insert a comment containing the headline >>
-                    i = self.scanParens(s,i,outer=True)
-                    statement = s[start:i]
-                    self.statements.append(statement)
-                break
-        i = max(i,progress+1)
-#@+node:ekr.20080221113205.14: *6* << insert statements highlighting the @thin node >>
-self.statements.append('# ---- %s' % (h))
-self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))
-#@+node:ekr.20080221113205.15: *6* << Insert a comment containing the headline >>
-if print_h:
-    print_h = False
-    if not h.startswith('@thin'):
-        self.statements.append('# -- node %s' % (self.mungeHeadline(h)))
-#@+node:ekr.20080221113205.16: *5* scanParens
-def scanParens(self,s,i,outer):
-
-    '''Scan a parenthesized list of args.'''
-
-    assert g.match(s,i,'(')
-    j = g.skip_matching_python_parens(s,i)
-    if j == -1:
-        self.error('**incomplete paren at: %s' % s[i:])
-        return i+1 # Just skip the paren
-
-    assert g.match(s,j,')')
-    n = 1
-    while i < j:
-        progress = i ; ch = s[i]
-
-        if ch in ("'",'"',):
-            i = self.scanStringArg(s,i,n,outer)
-            n += 1
-
-        elif g.is_c_id(ch):
-            i = self.scanIdChain(s,i,outer)
-            n += 1
-
-        i = max(i,progress+1)
-
-    return j + 1 # return the character after the paren.
-#@+node:ekr.20080221113205.17: *5* scanStringArg
-def scanStringArg(self,s,i,n,outer):
-
-    '''Skip a string, and possible %'''
-
-    j = g.skip_python_string(s,i)
-    if j <= i: return i
-
-    # g.trace(n,s[i:j])
-
-    if outer:
-        self.setToBeTranslated(s[i:j],n)
-
-    i = g.skip_ws(s,j)
-    if not g.match(s,i,'%'):
-        return i
-
-    # Handle what follows the '%'
-    i = g.skip_ws(s,i+1)
-
-    if g.match(s,i,'('):
-        i = self.scanParens(s,i,outer=False)
-    elif i < len(s) and g.is_c_id(s[i]):
-        i = self.scanIdChain(s,i,outer)
-
-    return i
-#@+node:ekr.20080221113205.18: *4* setDecl
-def setDecl (self,s):
-
-    s = s.strip()
-
-    if s in ('c','g','p','len','str','repr','and','or','not','is',):
-        return # Don't need a binding for these.
-
-    if s in ('color','newline','tabName',):
-        return # Special binding will be used for these.
-
-    if s.isdigit():
-        return # Don't bind integers.
-
-    self.decls[s] = True
-#@+node:ekr.20080221113205.19: *4* setToBeTranslated
-def setToBeTranslated (self,s,n):
-
-
-    s = s.strip()
-
-    if s.startswith('"') or s.startswith("'"):
-        s = s[1:]
-    if s.endswith('"') or s.endswith("'"):
-        s = s[:-1]
-
-    s = s.strip()
-
-    # Suppress translation when a keyword is seen, regardless of position.
-    if s in self.keywordArgs:
-        self.suppressTranslation = True
-
-    if self.suppressTranslation:
-        # g.trace('not added',s)
-        return
-
-    if (n % 2) == 1 and s not in self.toBeTranslated:
-        self.toBeTranslated.append(s)
-#@+node:maphew.20130607222534.1739: *3* @@button Run Elevated
-''' An experimental leo button which executes the currently selected node as a
-python script after invoking User Account Control (UAC).
-
-You could easily bork all your data or even your computer with this: it runs
-code with admin privileges, no sanity checking, and very limited feedback. By
-default tracebacks etc. are silently swallowed. The only feedback you'll get is
-what you explicitly add, and only to gui widgets or files on disk at that, as
-Windows has probably hidden the console window.
-
-    1. Copy and paste the full text from below into any Leo outline pane 
-    2. save and reopen the workbook to create the button 
-    3. navigate to a node and push the [run-elevated] button, but for heavens
-        sake be careful!
-    
-Limitations: 
-    - if Leo was started with pythonw.exe instead of python.exe there
-    is zero feedback for syntax errors etc. 
-    - the node script must not have any doublequotes -- "
-    - there may be length limitations, likely about 8k characters
-'''
-@others
-#@+node:maphew.20130608014320.1743: *4* imports
-import os
-import sys
-#@+node:maphew.20130608014320.1744: *4* Leo preparation
-g.es('Run-elevated on:', p.h)
-
-# -i : ask python interpreter to stay open when done, to see messages
-# -c : pass body of current node to python as command line script
-params = r'-ic "{}" '.format(p.b)
-# g.es(params)
-#@+node:maphew.20130608014320.1745: *4* UAC Elevation
-import ctypes
-import tempfile
-
-hwnd = 0                # parent window
-lpOperation = 'runas'   # force elevated UAC prompt
-lpFile = sys.executable # path to python
-lpFile = lpFile.replace('pythonw.exe', 'python.exe') # force console python, only way to see messages
-lpParameters = params   # arguments to pass to python
-lpDirectory = tempfile.gettempdir() # working dir
-nShowCmd = 1            # window visibility, must be 1 for Leo.
-
-print(lpFile, lpParameters)
-g.es(lpFile, lpParameters)
-retcode = ctypes.windll.shell32.ShellExecuteA(hwnd, lpOperation, lpFile, lpParameters, lpDirectory, nShowCmd)
-msg = 'Exit code: {0} - {1}'.format(retcode, ctypes.FormatError(retcode))
-print(msg)
-g.es(msg)
-
-@
-Full command executed when script is complete will resemble:
-
-C:\Python27\python.exe -ic "import \ntestfile = 'foo'\n...\n#end of file"
-#@+node:maphew.20130608014320.1742: *4* Resources
-# adapted from:
-
-# @url http://blog.pythonaro.com/2011/09/python-wmi-services-and-uac.html
-# @url http://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
-# @url http://pypeelf.googlecode.com/svn/branches/third-party/winappdbg-1.3/winappdbg/win32/shell32.py
-
-# Launching Applications (ShellExecute, ShellExecuteEx, SHELLEXECUTEINFO)
-# @url http://msdn.microsoft.com/en-us/library/windows/desktop/bb776886%28v=vs.85%29.aspx
-#@+node:ekr.20050225161940: *3* Execute @test, @suite or file
-@
-
-To run the script:
-
-1. Make the 'Exec File' node a script button.
-
-2. Select either the @test node or the @thin node.
-
-(You must change @@thin to @thin for this to work.)
-
-3. Hit the Exec File button.
-#@+node:ekr.20050225161940.1: *4* @test __name__
-assert __name__ == '__builtin__', '__name__ is %s' % __name__
-#@+node:ekr.20050225162123: *4* @@thin executeFileTest.py
-@language python
-@tabwidth -4
-
-print __name__
-#print 'hi'
-
-assert __name__ == '__main__', '__name__ is %s' % __name__
-#@+node:ekr.20050225161940.2: *4* Exec File
-<< docstring >>
-<< imports >>
-
-@others
-
-doatest()
-#@+node:ekr.20050225161940.3: *5* << docstring >>
-"""this script will run python from Leo with @file somefile.py
-using the py2.4 (2.3 compatible) subprocess module
-to verify and code correct in the quickest possible manner.
-unittests or other w/stdout stderr redirected to log.
-wimped out for the moment on making it virtual.
-
-If the presently selected node is an @test or @suite node this script runs them,
-otherwise the script expects the node to a valid @file node that has been
-written to disk and updated.
-
-less complicated and thus more advanced unittesting:
-py.test, similar to unittest as far as adding support.
-and @test and @suite, many examples in test.leo
-and my own dutest in dyna_menu with redirection to log
-which calls leoTest.py on @test and @suite nodes 
-otherwise for doctesting w/o needing an @file written.
-
-good overview, see Recent Posts:
-http://agiletesting.blogspot.com
-http://agiletesting.blogspot.com/2005/01/
-Python unit testing part 3: the py.test tool and library 
-python-unit-testing-part-2-doctest part-1 unittest
-
-tested win9x Leo4.3a2 py2.4 2.3
-tested but little and probably not completely.
-if it works once its done, right?
-make an @button or add to a menu or plugin
-
-Note: 
-you may see some extraneous traceback 
-vrs run outside Leo, can't be helped.
-
-Warning: this may run arbitrary code.
-no warranty expressed or implied!
-"""
-#@+node:ekr.20050225171553: *5* << imports >>
-import leoTest
-
-try:
-    import subprocess # Exists only in Python 2.4.
-except ImportError:
-    subprocess = None
-
-import os
-import StringIO
-import sys
-import unittest
-#@+node:ekr.20050225161940.5: *5* getAtFileName
-def getAtFileName():
-
-    '''Return the full path from any kind of @file node and applicable @path directives.'''
-
-    # should return cwd, cd to files path
-    # script should return cwd after run
-
-    fname = p.anyAtFileNodeName()
-    if fname:
-        d = c.scanAllDirectives()
-        path = d.get("path")
-        fname = g.os_path_abspath(g.os_path_normpath(g.os_path_join(path, fname)))
-
-    return fname
-#@+node:ekr.20050225161940.6: *5* doatest
-def doatest():
-
-    _sosav = sys.__stdout__
-    _sesav = sys.__stderr__
-    sys.stdout = sys.__stdout__ = g.fileLikeObject()
-    sys.stderr = sys.__stderr__ = g.fileLikeObject()
-
-    h = p.h
-    if h.startswith('@suite') or h.startswith('@test'):
-        leoTest.doTests(all= False,verbosity=2)
-    else: # Try to run an @file unittest.
-        name = getAtFileName()
-        if name:
-            g.executeFile(name,'-v')
-        else:
-            g.es('Expecting @test, @suite or any @file node',color='blue')
-
-    oo = sys.stdout.get()
-    oe = sys.stderr.get()
-    sys.stdout.close()
-    sys.stderr.close()
-    sys.stdout = sys.__stdout__ = _sosav
-    sys.stderr = sys.__stderr__ = _sesav
-    lines = g.splitLines(oo + oe)
-    empty = True
-    for line in lines:
-        if line.rstrip():
-            empty = False
-    if lines and not empty:
-        g.es('Output from test...',color='blue')
-        for line in lines:
-            g.es(line.rstrip())
-    g.es('Test done',color='blue')
-
-    c.frame.putStatusLine(' fini ', color= 'DodgerBlue')
-#@+node:ekr.20120527100809.12771: *3* Prototype: jinja @command nodes
-#@+node:ekr.20120527100809.12797: *4* jinja test
-@others
-#@+node:ekr.20120527100809.12798: *5* node 1
-Hello again, {{ name }}.
-
-Your rank is {{rank}} and your tag number is {{serial_number}}.
-#@+node:ekr.20120527100809.12804: *4* @common jinja code
-def run(fn,h,d):
-    '''Write the template in node with headline h
-    using data in dict d to the file whose name is fn.
-    '''
-    from jinja2 import Template
-    p = g.findNodeAnywhere(c,h)
-    if p:
-        s = g.getScript(c,p,useSelectedText=False,useSentinels=False)
-        s = Template(s).render(d)
-        g.trace(s)
-    else:
-        g.trace('not found',h)
-#@+node:ekr.20120527100809.12805: *4* write jinja (prototype of @command node)
-exec(g.findTestScript(c,'@common jinja code'))
-d = {'name':'Fred','rank':'colonel','serial_number':'3.14159'}
-run('fn','jinja test',d)
-#@+node:ekr.20060227124153: *3* Run a Lua program
-# http://sourceforge.net/forum/message.php?msg_id=3581176
-# By: e
-
-"""
-run lua program
-work alike for perl too
-
-edit in path to lua if required
-make a script button
-
-
-no fallback for no subprocess
-download from eff.bot.org 
-if you are on python <2.4
-
-added option to pipe script to stdin
-
-todo:
-if your os can fork, use a fork.
-"""
-
-import subprocess as sub
-from dynacommon import stripSentinels
-import sys
-
-if sys.platform[:3] == 'win':
-    ex = 'c:/UTIL/lua.exe'
-else:
-    ex = '/usr/bin/lua'
-
-script = g.getScript(c, p, forcePythonSentinels= False)
-#print script
-
-source = stripSentinels(script)
-#print source
-
-def run_cmd(cmdlst, tostdin=None):
-    ps = sub.Popen(cmdlst, 
-        universal_newlines= True,
-        stdout= sub.PIPE, stderr= sub.PIPE,
-        stdin= sub.PIPE)
-    (outstd, outerr) = ps.communicate(tostdin)
-    return (ps.wait(), outstd, outerr)
-
-# send complete script on stdin
-# many comandline programs have this same option.
-ret,sto,sde = run_cmd([ex, '-'], source)
-
-if not ret:
-    print sto
-if sde: print sde
-#@+node:maphew.20130608014320.1741: *3* Run Elevated test
-import os, sys
-testfile = 'c:/windows/__delete_this_file__'
-f = open(testfile,'w')
-f.write('this is a dummy file for Leo run-elevated button script, please get rid of it\n')
-f.close()
-
-print('Look for {} and remove it. If it does not exist, the test has failed'.format(testfile))
-os.startfile('c:/windows')
-#@+node:ekr.20110518140548.19090: *3* Run Leo scripts with various Python interpreters
-#@+node:ekr.20110518140548.19104: *4* Description
-@language rest
-@wrap
-
-This code contributed by Kent Tenney.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b8e8fbf6d97fa9f2/a4537fafaf2442ba
-
-I've had endless problems with interpreter versioning, leading me create the Runwith class. It writes a file to disk, makes it executable, runs it, captures exitcode, err and output, removes the files, provides reports.
-
-This provides complete decoupling from Leo.
-
-I have run-bash and run-python buttons in Leo which run the node contents as shell or python.
-
-I'm liking it a lot.
-
-I'm currently extending it to provide command line sugar:
-
-$ rw ln -s /home/ktenney/work/src/project/bin/myscript
-/home/ktenney/bin --makelink.sh--
-
-The "rw" script executes the command, and creates the script makelink.sh
-
-The following is Outline -> Copy Node version of the Runwith class
-
-It does some data gathering which probably don't apply: hashes of the code,
-hostname, timestamps. These get stored in json.
-#@+node:ekr.20110518140548.19105: *4* class Runwith
-class Runwith(object):
-   """Generate and manage scripts.
-
-   >>> import getatdata
-
-   """
-   import tempfile
-   import os
-   import platform
-   import json
-   import md5
-   import time
-   import subprocess
-   @others
-#@+node:ekr.20110518140548.19106: *5* __init__
-def __init__(self, interpreter, code,
-            cleanup=True, autorun=True,
-            ):
-   """Init a Runwith object, will run ``code`` using ``interpreter``
-
-   >>> import getatdata
-   >>> rw = getatdata.Runwith('/bin/bash', 'ls -la /tmp')
-   >>> rw.get_runfile()
-   '/tmp/...
-
-   >>> rw.get_runfile('/tmp/listing')
-   '/tmp/listing'
-
-   """
-
-   self.interpreter = interpreter
-   self.code = code
-   self._normalize_code()
-   self.cleanup = cleanup
-   self.fbase = self.tempfile.mktemp()
-   self.runfile = self.fbase + '.run'
-   self.outfile = self.fbase + '.out'
-   self.errfile = self.fbase + '.err'
-   self.jsonfile = self.fbase + '.json'
-   self.fileset = [self.outfile, self.errfile, self.runfile, self.jsonfile]
-   self.hostname = platform.node()
-   if autorun:
-       self.run()
-
-#@+node:ekr.20110518140548.19107: *5* _prepare_run
-def _prepare_run(self):
-   """
-   """
-
-   self.hashbang = "#!" + self.interpreter
-   contents = self.hashbang + "\n" + self.code + "\n"
-   with file(self.runfile, 'w') as f:
-       f.write(self.hashbang + '\n' + self.code + '\n')
-       f.close()
-       self.os.chmod(self.runfile, 0500)
-#@+node:ekr.20110518140548.19108: *5* _prepare_jsonfile
-def _prepare_jsonfile(self):
-   """
-   """
-
-   with file(self.jsonfile, 'w') as f:
-       f.write(self.json_data)
-#@+node:ekr.20110518140548.19109: *5* _normalize_code
-def _normalize_code(self):
-   """Normalize the spacing in a command line.
-
-   We don't want whitespace variations to result in different hashes for
-   the same command.
-   """
-
-   # don't try to normalize scripts
-   fixed_code = self.code.strip()
-   if '\n' in fixed_code:
-       self.multiline = True
-
-   else:
-       self.multiline = False
-       # normalize the command line
-       chunks = self.code.split()
-       fixed_code = ' '.join(chunks)
-
-   self.code = fixed_code
-
-   code_hash_obj = self.md5.md5(fixed_code)
-   self.codehash = code_hash_obj.hexdigest()
-#@+node:ekr.20110518140548.19110: *5* run
-def run(self):
-   """Do it.
-
-   """
-
-   #create output files for writing
-   outfile = file(self.outfile, 'w')
-   errfile = file(self.errfile, 'w')
-   self._prepare_run()
-   self.begintime = self.time.time()
-   self.exitcode = self.subprocess.Popen(self.runfile, shell=True,
-                             stdout=outfile, stderr=errfile).wait()
-   self.endtime = self.time.time()
-   outfile = file(self.outfile)
-   errfile = file(self.errfile)
-   self.out = outfile.read()
-   self.err = errfile.read()
-   outfile.close()
-   errfile.close()
-   self._report()
-   if self.cleanup:
-       self._cleanup()
-#@+node:ekr.20110518140548.19111: *5* _report
-def _report(self):
-   """
-   """
-
-   rundict = {'exitcode':self.exitcode,
-              'stdout':self.out, 'stderr':self.err}
-   rundict['code'] = self.code
-   rundict['hashbang'] = self.hashbang
-   rundict['hostname'] = self.hostname
-   rundict['codehash'] = self.codehash
-   humantime = self.time.ctime(self.endtime)
-   timestamps = {'begintime':self.begintime, 'endtime':self.endtime,
-                 'humantime':humantime}
-   rundict['timestamps'] = timestamps
-
-   self.rundict = rundict
-   self.json_data = self.json.dumps(rundict)
-
-#@+node:ekr.20110518140548.19112: *5* _cleanup
-def _cleanup(self):
-   """Remove files.
-
-   """
-
-   for f in self.fileset:
-       if os.path.exists(f):
-           os.remove(f)
-#@+node:ekr.20110518140548.19113: *5* get_runfile
-def get_runfile(self, fname=None):
-   """Create the executable and return it's filename.
-   """
-
-   if fname is not None:
-       self.runfile = fname
-
-   if fname is not self.runfile:
-       self._prepare_run()
-
-   return self.runfile
-
-
-
-#@+node:ekr.20110518140548.19114: *5* get_jsonfile
-def get_jsonfile(self, fname='codehash'):
-   """Create the json file and return it's filename.
-   """
-
-   if fname is not None:
-       if fname is 'codehash':
-           # name according to the code and run timestamp
-           hash = self.codehash
-           ts = str(self.rundict['timestamps']['begintime'])
-           jsonfile = hash + "-" + ts + ".json"
-
-       else:
-           # use the tempfile name
-           jsonfile = fname
-
-   dest_dir = self.os.path.dirname(self.fbase)
-   self.jsonfile = os.path.join(dest_dir, jsonfile)
-   self._prepare_jsonfile()
-   return self.jsonfile
-
-
-
-#@+node:ekr.20051025070722.1: *3* Running tcl scripts from the body pane
-@language tcltk
-#@+node:ekr.20051024223801: *4* run tcl
-# To use this script, you must make this a script button, either with the
-# 'Script Button' button or by making this an @button node.
-
-# Executes body text of selected node as a tcl script.
-# For more information, see http://wiki.tcl.tk/6878
-
-# This statement allows you to organize your scripts using noweb markup.
-s = g.getScript(c,p,forcePythonSentinels=False)
-g.es(g.app.root.tk.eval(s))
-#@+node:ekr.20051024223801.1: *4* My first tcl script
-# This is a comment
-set x 50
-return [expr $x*10]
-#@+node:ekr.20051025115413: *4* My second tcl scrip, organized with noweb markup
-@others
-#@+node:ekr.20051025115413.1: *5* the actual script
-# This is a comment
-set x 50 +
-return [expr $x*10]
 #@+node:ekr.20150416102234.1: ** Finding & reporting
 #@+node:ekr.20120328102352.6945: *3* @@button create specialized find buttons
 @language python
@@ -7670,7 +6831,7 @@ x = g.app.nodeIndices
 result = []
 for v in c.all_unique_nodes():
     gnx = v.fileIndex
-    assert g.isUnicode(gnx),gnx
+    assert isinstance(gnx, str),gnx
     d [gnx] = v
     result.append('%s %s' % (gnx,v))
 print('%s v.fileIndex\'s...' % len(result))
@@ -11215,7 +10376,7 @@ if exp_only != 'cancel':
 topLevel = p.level()
 fileName = "exported.hjt"
 nl = "\n"
-mode = g.choose(c.config.output_newline=="platform",'w','wb')
+mode = 'w' if c.config.output_newline=="platform" else 'wb'
 try:
     theFile = open(fileName,mode)
     theFile.write("<hj-Treepad version 2.7>" + nl)
@@ -11381,20 +10542,15 @@ def createLastChildOf (p,headline):
 #@+node:ekr.20110916103731.2461: *4* importDir
 def importDir (theDir,types,recursive,root,level=0):
 
-    # g.es("theDir: " + theDir,color="blue")
-
     dirs,files = computeFiles(theDir,recursive)
-    if not dirs and not files: return
-    
-    path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+    if not dirs and not files:
+        return
+    path_part = theDir if level==0 else g.os_path_basename(theDir)
     root = createLastChildOf(root,'@path %s' % (path_part))
     c.selectPosition(root)
-    
     for fn in files:
         p2 = createLastChildOf(root,'@auto %s' % (
             g.shortFileName(fn)))
-            
-    # dirs.sort()
     for theDir in sorted(dirs):
         importDir(theDir,types,recursive,root,level+1)
 #@+node:ekr.20110916103731.2460: *4* importFiles (top-level)
@@ -12918,7 +12074,7 @@ def createChild (parent,body,line):
     i = h.find('(')
     if i > -1:
         func = h [: i].strip()
-    h2 = g.choose(func,func,h)
+    h2 = func or h
     p.setHeadString(h2)
     p.setTnodeText(''.join(body))
 
@@ -14391,16 +13547,10 @@ def cleanSaxInputString(s):
     badchars.remove('\n')
     flatten = ''.join(badchars)
     pad = ' ' * len(flatten)
-    # pylint: disable=no-member
-    # Class 'str' has no 'maketrans' member
-    if g.isPython3:
-        flatten = bytes(flatten, 'utf-8')
-        pad = bytes(pad, 'utf-8')
-        transtable = bytes.maketrans(flatten, pad)
-    else:
-        transtable = string.maketrans(flatten, pad)
+    flatten = bytes(flatten, 'utf-8')
+    pad = bytes(pad, 'utf-8')
+    transtable = bytes.maketrans(flatten, pad)
     return s.translate(transtable)
-# for i in range(32): print i,repr(chr(i))
 #@+node:ekr.20060824111500.115: *5* parse_jEdit_file
 def parse_jEdit_file(inputFileName,language):
 
@@ -14459,13 +13609,9 @@ def munge(s):
     '''Munge a mode name so that it is a valid python id.'''
 
     valid = string.ascii_letters + string.digits + '_'
-    return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
+    return ''.join([ch.lower() if ch in valid else '_' for ch in s])
 #@+node:ekr.20160319081141.1: *5* main
 def main():
-    
-    if not g.isPython3:
-        g.es_print('Python 3 is now required for this script.')
-        return
     for path1 in files:
         if path1 in errors:
             print(f"skipping {path1}")
@@ -14595,11 +13741,13 @@ def putAttributes (self):
         self.put('# Attributes dict for %s ruleset.\n' % (prefix))
         for key,default in data:
             val = ruleset.attributes.get(key,default)
-            if default == True: val = g.choose(val,'true','false')
+            if default == True:
+                val = 'true' if val else 'false'
             elif default == None:
-                if val and val.lower() == 'false': val = ''
-                else: val = g.choose(val,val,'')
-            # if val: g.trace(key,repr(val))
+                if val and val.lower() == 'false':
+                    val = ''
+                else:
+                    val = val or ''
             d [key] = val
         self.putDict('%s_attributes_dict' % (prefix),d)
         dd [ prefix ] = '%s_attributes_dict' % (prefix)
@@ -14610,7 +13758,7 @@ def putAttributes (self):
 def putDict (self,name,theDict,escape=True):
 
     esc = self.escapeString
-    esc2 = g.choose(escape,self.escapeString,lambda a: a)
+    esc2 = self.escapeString if escape else lambda a: a
     keys = list(set((theDict.keys())))
     keys = sorted([g.toUnicode(z) for z in keys if z])
     s = ''.join([
@@ -14646,10 +13794,7 @@ def putImportDict (self):
             if rule.name == 'import':
                 delegate = rule.getStrAttrib('delegate').lower()
                 if delegate:
-                    i = delegate.find('::')
-                    delegate_name = g.choose(i==-1,
-                        '%s::%s' % (prefix,delegate), # Can indeed happen.
-                        '%s' % (delegate))
+                    delegate_name = delegate if '::' in delegate else f"{prefix}::{delegate}"
                     theList = d.get(prefix,[])
                     if delegate_name not in theList:
                         theList.append(delegate_name)
@@ -14697,21 +13842,18 @@ def putKeywordsData (self):
 def putList (self,name,theList,escape=True,lineCount=0):
 
     def comma(i):
-        return ',' # return g.choose(i==len(theList)-1,'',',')
+        return ','
     def nl(i):
         return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
     def tab(i,n):
-        # return g.choose(i == 0 or nl(i-1) != ' ','\t','')
-        return g.choose(i > 0 and nl(i-1) != ' ','\t','')
+        return '\t' if i > 0 and nl(i-1) != ' ' else ''
     esc = g.choose(escape,self.escapeString,lambda a:a)
 
     result = []
     n = len(theList)
     for i in range(n):
         result.append('%s%s%s%s' % (tab(i,n),esc(theList[i]),comma(i),nl(i)))
-
     vals = ''.join(result)
-    # if n > 1: vals = '\n' + vals
     self.put('%s = [%s]\n\n' % (name,vals))
 #@+node:ekr.20060824111500.128: *6* putModeProperties
 def putModeProperties (self,language):
@@ -15122,7 +14264,7 @@ def doAttribute (self,name,val):
     name = str(name.lower())
 
     if name in self.boolAttrs:
-        val = g.choose(val.lower()=='true',True,False)
+        val = True if val.lower() == 'true' else False
     else:
         val = str(val) # Do NOT lower this value!
 
@@ -15318,7 +14460,7 @@ __repr__ = __str__
 def getBoolAttrib(self,name):
     d = self.attributes
     val = d.get(name)
-    return g.choose(val,'True','False')
+    return 'True' if val else 'False'
 
 def getIntAttrib(self,name):
     d = self.attributes

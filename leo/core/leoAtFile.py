@@ -2694,7 +2694,7 @@ class AtFile:
             timestamp = ''
         #
         # Adjust the contents.
-        assert g.isUnicode(contents), g.callers()
+        assert isinstance(contents, str), g.callers()
         if at.output_newline != '\n':
             contents = contents.replace('\r', '').replace('\n', at.output_newline)
         #
@@ -2759,8 +2759,8 @@ class AtFile:
     #@+node:ekr.20190114061452.27: *6* at.compareIgnoringBlankLines
     def compareIgnoringBlankLines(self, s1, s2):
         """Compare two strings, ignoring blank lines."""
-        assert g.isUnicode(s1), g.callers()
-        assert g.isUnicode(s2), g.callers()
+        assert isinstance(s1, str), g.callers()
+        assert isinstance(s2, str), g.callers()
         if s1 == s2:
             return True
         s1 = g.removeBlankLines(s1)
@@ -2769,8 +2769,8 @@ class AtFile:
     #@+node:ekr.20190114061452.28: *6* at.compareIgnoringLineEndings
     def compareIgnoringLineEndings(self, s1, s2):
         """Compare two strings, ignoring line endings."""
-        assert g.isUnicode(s1), (repr(s1), g.callers())
-        assert g.isUnicode(s2), (repr(s2), g.callers())
+        assert isinstance(s1, str), (repr(s1), g.callers())
+        assert isinstance(s2, str), (repr(s2), g.callers())
         if s1 == s2:
             return True
         # Wrong: equivalent to ignoreBlankLines!
