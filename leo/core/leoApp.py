@@ -2515,8 +2515,6 @@ class LoadManager:
         """ Scan options, set directories and read settings."""
         lm = self
         lm.computeStandardDirectories()
-        lm.adjustSysPath()
-            # A do-nothing.
         # Scan the options as early as possible.
         lm.options = options = lm.scanOptions(fileName, pymacs)
             # also sets lm.files.
