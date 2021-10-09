@@ -1653,7 +1653,6 @@ def do_Attribute(self, node):
         node.attr) # Don't visit node.attr: it is always a string.
 </t>
 <t tx="ekr.20160123185308.27">def do_Bytes(self, node): # Python 3.x only.
-    assert g.isPython3
     return str(node.s)
 </t>
 <t tx="ekr.20160123185308.28"># Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)

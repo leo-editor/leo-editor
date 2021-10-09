@@ -1142,7 +1142,6 @@ def do_Attribute(self, node):
         node.attr) # Don't visit node.attr: it is always a string.
 #@+node:ekr.20160123185308.27: *6* f.Bytes
 def do_Bytes(self, node): # Python 3.x only.
-    assert g.isPython3
     return str(node.s)
 #@+node:ekr.20160123185308.28: *6* f.Call & f.keyword
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -5646,10 +5645,7 @@ import leo.core.leoTest as leoTest
 import types
 
 def isClass(obj):
-    if g.isPython3:
-        return isinstance(obj,type)
-    else:
-        return type(obj) == types.ClassType
+    return isinstance(obj,type)
 
 specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
 
@@ -7670,7 +7666,7 @@ x = g.app.nodeIndices
 result = []
 for v in c.all_unique_nodes():
     gnx = v.fileIndex
-    assert g.isUnicode(gnx),gnx
+    assert isinstance(gnx, str),gnx
     d [gnx] = v
     result.append('%s %s' % (gnx,v))
 print('%s v.fileIndex\'s...' % len(result))
@@ -14391,16 +14387,10 @@ def cleanSaxInputString(s):
     badchars.remove('\n')
     flatten = ''.join(badchars)
     pad = ' ' * len(flatten)
-    # pylint: disable=no-member
-    # Class 'str' has no 'maketrans' member
-    if g.isPython3:
-        flatten = bytes(flatten, 'utf-8')
-        pad = bytes(pad, 'utf-8')
-        transtable = bytes.maketrans(flatten, pad)
-    else:
-        transtable = string.maketrans(flatten, pad)
+    flatten = bytes(flatten, 'utf-8')
+    pad = bytes(pad, 'utf-8')
+    transtable = bytes.maketrans(flatten, pad)
     return s.translate(transtable)
-# for i in range(32): print i,repr(chr(i))
 #@+node:ekr.20060824111500.115: *5* parse_jEdit_file
 def parse_jEdit_file(inputFileName,language):
 
@@ -14462,10 +14452,6 @@ def munge(s):
     return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
 #@+node:ekr.20160319081141.1: *5* main
 def main():
-    
-    if not g.isPython3:
-        g.es_print('Python 3 is now required for this script.')
-        return
     for path1 in files:
         if path1 in errors:
             print(f"skipping {path1}")
