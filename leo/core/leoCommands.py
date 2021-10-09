@@ -3117,13 +3117,9 @@ class Commands:
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
     #@+node:ekr.20080514131122.13: *5* c.recolor
-    def recolor(self, **kwargs):
+    def recolor(self, p=None):
         # Support QScintillaColorizer.colorize.
         c = self
-        p = kwargs.get('p')
-        for name in ('incremental', 'interruptable'):
-            if name in kwargs:
-                print(f'c.recolor_now: "{name}" keyword arg is deprecated')
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             colorizer.colorize(p or c.p)
