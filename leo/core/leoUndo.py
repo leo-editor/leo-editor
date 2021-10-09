@@ -485,7 +485,7 @@ class Undoer:
             u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
-    #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents (deprecated)
+    #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents
     def afterChangeNodeContents(self, p, command, bunch):
         """Create an undo node using d created by beforeChangeNode."""
         u = self
@@ -798,7 +798,7 @@ class Undoer:
         return bunch
 
     beforeChangeHead = beforeChangeHeadline
-    #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents (deprecated)
+    #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
     def beforeChangeNodeContents(self, p):
         """Return data that gets passed to afterChangeNode."""
         c, u = self.c, self
