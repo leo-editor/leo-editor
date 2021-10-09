@@ -2711,14 +2711,6 @@ class LoadManager:
                 g.app.createNullGuiWithScript(script=script)
         else:
             g.app.createDefaultGui()
-    #@+node:ekr.20120219154958.10480: *5* LM.adjustSysPath
-    def adjustSysPath(self):
-        """
-        Adjust sys.path to enable imports as usual with Leo.
-
-        This method is no longer needed:
-        """
-        pass
     #@+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
     def getDefaultFile(self):
         # Get the name of the workbook.
