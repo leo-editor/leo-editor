@@ -535,7 +535,8 @@ class LeoMenu:
         # The first parameter must be event, and it must default to None.
 
         def openWithMenuCallback(event=None, self=self, d=d):
-            return self.c.openWith(d=d)
+            d1 = d.copy() if d else {}
+            return self.c.openWith(d=d1)
 
         return openWithMenuCallback
     #@+node:tbrown.20080509212202.7: *4* LeoMenu.deleteRecentFilesMenuItems
