@@ -3803,7 +3803,7 @@ class Commands:
         # Update the focus immediately.
         if not keepMinibuffer:
             c.outerUpdate()
-    #@+node:ekr.20031218072017.2997: *5* c.selectPosition (** add trace)
+    #@+node:ekr.20031218072017.2997: *5* c.selectPosition (trace of unexpected de-hoists)
     def selectPosition(self, p, **kwargs):
         """
         Select a new position, redrawing the screen *only* if we must
