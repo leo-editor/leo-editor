@@ -1272,20 +1272,19 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.248: *4* ec.viewLossage
     @cmd('view-lossage')
     def viewLossage(self, event):
-        """Put the Emacs-lossage in the minibuffer label."""
-        g.es('lossage...')
-        # #1933: Data are LossageData objects.
-        #        Let repr do the work.
+        """Print recent keystrokes."""
+        print('Recent keystrokes...')
+        # #1933: Use repr to show LossageData objects.
         for i, data in enumerate(reversed(g.app.lossage)):
             print(f"{i:>2} {data!r}")
-
-
-        #k = self.c.k
-        # aList = g.app.lossage
-        # aList.reverse()
-        # for data in aList:
-            # ch, stroke = data
-            # g.es('', k.prettyPrintKey(stroke))
+    #@+node:ekr.20211010131039.1: *4* ec.viewRecentCommands
+    @cmd('view-recent-commands')
+    def viewRecentCommands(self, event):
+        """Print recently-executed commands."""
+        c = self.c
+        print('Recently-executed commands...')
+        for i, command in enumerate(reversed(c.recent_commands_list)):
+            print(f"{i:>2} {command}")
     #@+node:ekr.20150514063305.249: *4* ec.whatLine
     @cmd('what-line')
     def whatLine(self, event):
