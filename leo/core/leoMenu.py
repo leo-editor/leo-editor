@@ -531,7 +531,7 @@ class LeoMenu:
                     command=callback,
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d):
+    def defineOpenWithMenuCallback(self, d=None):
         # The first parameter must be event, and it must default to None.
 
         def openWithMenuCallback(event=None, self=self, d=d):
