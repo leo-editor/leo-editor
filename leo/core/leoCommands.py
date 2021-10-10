@@ -120,6 +120,7 @@ class Commands:
         # For outline navigation.
         self.navPrefix: str = ''  # Must always be a string.
         self.navTime: Optional[float] = None
+        self.recent_commands_list: List[str] = []  # List of command names.
         self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
@@ -2179,6 +2180,10 @@ class Commands:
             # g.error('ignoring command: already executing a command.')
             return None
         g.app.commandInterruptFlag = False
+        # #2256: Update the list of recent commands.
+        if len(c.recent_commands_list) > 99:
+            c.recent_commands_list.pop()
+        c.recent_commands_list.insert(0, command_name)
         if not g.doHook("command1", c=c, p=p, label=command_name):
             try:
                 c.inCommand = True
