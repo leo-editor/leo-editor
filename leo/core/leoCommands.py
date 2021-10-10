@@ -3814,7 +3814,7 @@ class Commands:
         Select a new position, redrawing the screen *only* if we must
         change chapters.
         """
-        trace = True  # For # 2167.
+        trace = False  # For # 2167.
         if kwargs:
             print('c.selectPosition: all keyword args are ignored', g.callers())
         c = self
@@ -3832,17 +3832,18 @@ class Commands:
                 bunch = c.hoistStack[-1]
                 if c.positionExists(p, bunch.p):
                     break
-                else:
-                    if trace:
-                        command_name = c.command_name if c.inCommand else 'None'
-                        print('')
-                        print('pop hoist stack! callers:', g.callers())
-                        g.printObj(c.hoistStack, tag='c.hoistStack before pop')
-                        print(f"c.command_name: {command_name}")
-                        print('lossage')
-                        for i, data in enumerate(reversed(g.app.lossage)):
-                            print(f"{i:>2} {data!r}")
-                    bunch = c.hoistStack.pop()
+                if trace:
+                    # #2167: Give detailed trace.
+                    print('')
+                    print('pop hoist stack! callers:', g.callers())
+                    g.printObj(c.hoistStack, tag='c.hoistStack before pop')
+                    print('Recent keystrokes')
+                    for i, data in enumerate(reversed(g.app.lossage)):
+                        print(f"{i:>2} {data!r}")
+                    print('Recently-executed commands...')
+                    for i, command in enumerate(reversed(c.recent_commands_list)):
+                        print(f"{i:>2} {command}")
+                c.hoistStack.pop()
         c.frame.tree.select(p)
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!

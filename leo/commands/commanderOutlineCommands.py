@@ -642,7 +642,12 @@ def goPrevVisitedNode(self, event=None):
 #@+node:ekr.20031218072017.2914: *3* c_oc.goToFirstNode
 @g.commander_command('goto-first-node')
 def goToFirstNode(self, event=None):
-    """Select the first node of the entire outline."""
+    """
+    Select the first node of the entire outline.
+    
+    But (#2167), go to the first node of a chapter or hoist
+    if Leo is hoisted or within a chapter.
+    """
     c = self
     p = c.rootPosition()
     c.expandOnlyAncestorsOfNode(p=p)
