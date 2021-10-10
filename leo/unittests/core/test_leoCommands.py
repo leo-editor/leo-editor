@@ -459,29 +459,6 @@ class TestCommands(LeoUnitTest):
             self.skipTest('no externalFilesController')
         s = efc.compute_temp_file_path(c, p, '.py')
         assert s.endswith('.py')
-    #@+node:ekr.20210906075242.26: *3* TestCommands.test_g_isCallable
-    def test_g_isCallable(self):
-        c = self.c
-
-        def spam():
-            pass
-
-        lam = lambda a: None
-
-        class aCallable:
-            def __call__(self):
-                pass
-
-        c = aCallable()
-        table = (
-            ('abc', False),
-            (spam, True),
-            (lam, True),
-            (c, True)
-        )
-        for obj, val in table:
-            val2 = g.isCallable(obj)
-            self.assertEqual(val, val2, msg=repr(obj))
     #@+node:ekr.20210901140645.27: *3* TestCommands.test_koi8_r_encoding
     def test_koi8_r_encoding(self):
         c, p = self.c, self.c.p

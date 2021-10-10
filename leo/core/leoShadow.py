@@ -402,10 +402,10 @@ class ShadowController:
         if 0:
             g.trace(f"\nprivate lines...{old_private_file}")
             for s in old_private_lines:
-                g.trace(type(s), g.isUnicode(s), repr(s))
+                g.trace(type(s), isinstance(s, str), repr(s))
             g.trace(f"\npublic lines...{old_public_file}")
             for s in old_public_lines:
-                g.trace(type(s), g.isUnicode(s), repr(s))
+                g.trace(type(s), isinstance(s, str), repr(s))
         marker = x.markerFromFileLines(old_private_lines, old_private_file)
         new_private_lines = x.propagate_changed_lines(
             old_public_lines, old_private_lines, marker)

@@ -1051,40 +1051,6 @@ def setReferenceFile(self, event=None):
     if not fileName:
         return
     c.fileCommands.setReferenceFile(fileName)
-#@+node:ekr.20031218072017.2841: ** Tangle
-#@+node:ekr.20031218072017.2842: *3* c_file.tangleAll
-@g.commander_command('tangle-all')
-def tangleAll(self, event=None):
-    """
-    Tangle all @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.tangleAll()
-#@+node:ekr.20031218072017.2843: *3* c_file.tangleMarked
-@g.commander_command('tangle-marked')
-def tangleMarked(self, event=None):
-    """
-    Tangle all marked @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.tangleMarked()
-#@+node:ekr.20031218072017.2844: *3* c_file.tangle
-@g.commander_command('tangle')
-def tangle(self, event=None):
-    """
-    Tangle all @root nodes in the selected outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.tangle()
 #@+node:ekr.20180312043352.1: ** Themes
 #@+node:ekr.20180312043352.2: *3* c_file.open_theme_file
 @g.commander_command('open-theme-file')
@@ -1115,41 +1081,5 @@ def open_theme_file(self, event):
     command = f'"{g.sys.executable}" "{g.app.loadDir}/runLeo.py" "{fn}"'
     g.execute_shell_commands(command)
     os.chdir(leo_dir)
-#@+node:ekr.20031218072017.2845: ** Untangle
-#@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
-@g.commander_command('untangle-all')
-def untangleAll(self, event=None):
-    """
-    Untangle all @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.untangleAll()
-    c.undoer.clearUndoState()
-#@+node:ekr.20031218072017.2847: *3* c_file.untangleMarked
-@g.commander_command('untangle-marked')
-def untangleMarked(self, event=None):
-    """
-    Untangle all marked @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.untangleMarked()
-    c.undoer.clearUndoState()
-#@+node:ekr.20031218072017.2848: *3* c_file.untangle
-@g.commander_command('untangle')
-def untangle(self, event=None):
-    """Untangle all @root nodes in the selected outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.untangle()
-    c.undoer.clearUndoState()
 #@-others
 #@-leo

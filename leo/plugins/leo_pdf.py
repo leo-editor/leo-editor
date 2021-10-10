@@ -548,16 +548,10 @@ if docutils:
             return self.story
         #@+node:ekr.20090704103932.5191: *3* encode (dummyPDFTranslator)
         def encode(self, text):
-
             """Encode special characters in `text` & return."""
-
-            # if type(text) is types.UnicodeType:
-            if g.isUnicode(text):
-                # text = text.replace('\u2020',' ')
-                # text = text.replace('\xa0', ' ')
+            if isinstance(text, str):
                 text = text.encode('utf-8')
             return text
-
         #@+node:ekr.20090704103932.5192: *3* visit/depart_document
         def visit_document(self, node):
 
@@ -877,7 +871,7 @@ if docutils:  # NOQA
             for name, value in attlist:
                 if value is None:  # boolean attribute
                     parts.append(name.lower().strip())
-                elif g.isList(value):
+                elif isinstance(value, list):
                     values = [str(v) for v in value]
                     val = ' '.join(values).strip()
                     parts.append('%s="%s"' % (
@@ -990,7 +984,7 @@ if docutils:  # NOQA
         #@+node:ekr.20090704103932.5220: *4* encode (PDFTranslator) (No longer used)
         def encode(self, text):
             """Encode special characters in `text` & return."""
-            if g.isUnicode(text):
+            if isinstance(text, str):
                 text = text.encode('utf-8')
             return text
         #@+node:ekr.20111107181638.9742: *4* escape (PDFTranslator)

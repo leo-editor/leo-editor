@@ -136,30 +136,6 @@ cmd_instance_dict = {
 #@+<< define g.decorators >>
 #@+node:ekr.20150508165324.1: ** << define g.Decorators >>
 #@+others
-#@+node:ekr.20170219173203.1: *3* g.callback (deprecated, decorator)
-def callback(func: Callable) -> Any:
-    """
-    A global decorator that protects Leo against crashes in callbacks.
-
-    This decorator is NOT NEEDED because runLeo.py overrides sys.excepthook.
-
-    The OLD, DEPRECATED, way.
-
-        @g.callback
-        def a_callback(...):
-            c = event.get('c')
-            ...
-    """
-
-    def callback_wrapper(*args, **keys):  # type:ignore
-        """Callback for the @g.callback decorator."""
-        try:
-            return func(*args, **keys)
-        except Exception:
-            g.es_exception()
-            return None
-
-    return callback_wrapper
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
 def check_cmd_instance_dict(c: Cmdr, g) -> None:
     """
@@ -574,61 +550,6 @@ class EmergencyDialog:
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
     #@-others
-#@+node:ekr.20040331083824.1: *3* class g.FileLikeObject (Deprecated)
-class FileLikeObject:
-    """
-    This class is deprecated: use io.StringIO(initial_value='', newline='\n')
-
-    Define a file-like object for redirecting writes to a string.
-
-    The caller is responsible for handling newlines correctly.
-    """
-    #@+others
-    #@+node:ekr.20050404151753: *4*  ctor (g.FileLikeObject)
-    def __init__(self, encoding='utf-8', fromString=None) -> None:
-
-        # New in 4.2.1: allow the file to be inited from string s.
-        self.encoding = encoding or 'utf-8'
-        if fromString:
-            self.list = g.splitLines(fromString)  # Must preserve newlines!
-        else:
-            self.list = []
-        self.ptr = 0
-    # In CStringIO the buffer is read-only if the initial value (fromString) is non-empty.
-    #@+node:ekr.20050404151753.1: *4* clear (g.FileLikeObject)
-    def clear(self) -> None:
-        self.list = []
-    #@+node:ekr.20050404151753.2: *4* close (g.FileLikeObject)
-    def close(self) -> None:
-        pass
-        # The StringIo version free's the memory buffer.
-    #@+node:ekr.20050404151753.3: *4* flush (g.FileLikeObject)
-    def flush(self) -> None:
-        pass
-    #@+node:ekr.20050404151753.4: *4* get & getvalue & read (g.FileLikeObject)
-    def get(self) -> str:
-        return ''.join(self.list)
-
-    getvalue = get  # for compatibility with StringIo
-    read = get  # for use by sax.
-    #@+node:ekr.20050404151753.5: *4* readline (g.FileLikeObject)
-    def readline(self):
-        """Read the next line using at.list and at.ptr."""
-        if self.ptr < len(self.list):
-            line = self.list[self.ptr]
-            self.ptr += 1
-            return line
-        return ''
-    #@+node:ekr.20050404151753.6: *4* write (g.FileLikeObject)
-    def write(self, s):
-        if s:
-            if isinstance(s, bytes):
-                s = g.toUnicode(s, self.encoding)
-            self.list.append(s)
-    #@-others
-
-fileLikeObject = FileLikeObject
-    # For compatibility.
 #@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
 # Important: The startup code uses this class,
 # so it is convenient to define it in leoGlobals.py.
@@ -2774,16 +2695,6 @@ class LinterTable():
     #@-others
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
-#@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)
-def alert(message, c: Cmdr=None):
-    """Raise an alert.
-
-    This method is deprecated: use c.alert instead.
-    """
-    # The unit tests just tests the args.
-    if not g.unitTesting:
-        g.es(message)
-        g.app.gui.alert(c, message)
 #@+node:ekr.20180415144534.1: *4* g.assert_is
 def assert_is(obj: Any, list_or_class, warn=True):
 
@@ -3273,7 +3184,7 @@ def printStats(event=None, name=None):
                 g.app.statsLockout = False
     """
     if name:
-        if not isString(name):
+        if not isinstance(name, str):
             name = repr(name)
     else:
         name = g._callerName(n=2)  # Get caller name 2 levels back.
@@ -3290,7 +3201,7 @@ def stat(name=None):
     """
     d = g.app.statsDict
     if name:
-        if not isString(name):
+        if not isinstance(name, str):
             name = repr(name)
     else:
         name = g._callerName(n=2)  # Get caller name 2 levels back.
@@ -4303,7 +4214,7 @@ def splitLongFileName(fn, limit=40):
 def writeFile(contents, encoding, fileName):
     """Create a file with the given contents."""
     try:
-        if g.isUnicode(contents):
+        if isinstance(contents, str):
             contents = g.toEncodedString(contents, encoding=encoding)
         # 'wb' preserves line endings.
         with open(fileName, 'wb') as f:
@@ -5750,75 +5661,6 @@ def toPythonIndex(s: str, index):
         return i
     g.trace(f"bad string index: {index}")
     return 0
-#@+node:ekr.20150722051946.1: *3* g.List composition (deprecated)
-# These functions are deprecated.
-#@+node:ekr.20150722051946.2: *4* g.flatten_list
-def flatten_list(obj: Any):
-    """A generator yielding a flattened (concatenated) version of obj."""
-    # pylint: disable=no-else-return
-    if isinstance(obj, dict) and obj.get('_join_list'):
-        # join_list created obj, and ensured that all args are strings.
-        indent = obj.get('indent') or ''
-        leading = obj.get('leading') or ''
-        sep = obj.get('sep') or ''
-        trailing = obj.get('trailing') or ''
-        aList = obj.get('aList') or []
-        for i, item in enumerate(aList):
-            if leading:
-                yield leading
-            for s in flatten_list(item):
-                if indent and s.startswith('\n'):
-                    yield '\n' + indent + s[1:]
-                else:
-                    yield s
-            if sep and i < len(aList) - 1:  # type:ignore
-                yield sep
-            if trailing:
-                yield trailing
-    elif isinstance(obj, (list, tuple)):
-        for obj2 in obj:
-            for s in flatten_list(obj2):
-                yield s
-    elif obj:
-        if isinstance(obj, str):
-            yield obj
-        else:
-            yield repr(obj)  # Not likely to be useful.
-    else:
-        pass  # Allow None and empty containers.
-#@+node:ekr.20150722051946.3: *4* g.join_list
-def join_list(aList, indent='', leading='', sep='', trailing=''):
-    """
-    Create a dict representing the concatenation of the
-    strings in aList, formatted per the keyword args.
-    See the HTMLReportTraverser class for many examples.
-    """
-    if not aList:
-        return None
-    # These asserts are reasonable.
-    assert isinstance(indent, str), indent
-    assert isinstance(leading, str), leading
-    assert isinstance(sep, str), sep
-    assert isinstance(trailing, str), trailing
-    if indent or leading or sep or trailing:
-        return {
-            '_join_list': True,  # Indicate that join_list created this dict.
-            'aList': aList,
-            'indent': indent, 'leading': leading, 'sep': sep, 'trailing': trailing,
-        }
-    return aList
-#@+node:ekr.20150722051946.4: *4* g.list_to_string
-def list_to_string(obj: Any):
-    """
-    Convert obj (a list of lists) to a single string.
-
-    This function stresses the gc; it will usually be better to
-    work with the much smaller strings generated by flatten_list.
-
-    Use this function only in special circumstances, for example,
-    when it is known that the resulting string will be small.
-    """
-    return ''.join([z for z in flatten_list(obj)])
 #@+node:ekr.20140526144610.17601: *3* g.Strings
 #@+node:ekr.20190503145501.1: *4* g.isascii
 def isascii(s: str):
@@ -5980,29 +5822,6 @@ def getPythonEncodingFromString(s: str):
                 if e and g.isValidEncoding(e):
                     encoding = e
     return encoding
-#@+node:ekr.20160229070349.2: *4* g.isBytes (deprecated)
-def isBytes(s: str):
-    """Return True if s is a bytes type."""
-    return isinstance(s, bytes)
-#@+node:ekr.20160229070349.3: *4* g.isCallable (deprecated)
-def isCallable(obj: Any):
-    return hasattr(obj, '__call__')
-#@+node:ekr.20160229070429.1: *4* g.isInt (deprecated)
-def isInt(obj: Any):
-    """Return True if obj is an int or a long."""
-    return isinstance(obj, int)
-#@+node:ekr.20161223082445.1: *4* g.isList (deprecated)
-def isList(s: str):
-    """Return True if s is a list."""
-    return isinstance(s, list)
-#@+node:ekr.20160229070349.5: *4* g.isString (deprecated)
-def isString(s: str):
-    """Return True if s is any string, but not bytes."""
-    return isinstance(s, str)
-#@+node:ekr.20160229070349.6: *4* g.isUnicode (deprecated)
-def isUnicode(s: str):
-    """Return True if s is a unicode string."""
-    return isinstance(s, str)
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding):
     """Return True if the encooding is valid."""
@@ -6056,7 +5875,7 @@ def stripBOM(s: str):
 #@+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString(s: str, encoding='utf-8', reportErrors=False):
     """Convert unicode string to an encoded string."""
-    if not g.isUnicode(s):
+    if not isinstance(s, str):
         return s
     if not encoding:
         encoding = 'utf-8'
@@ -6101,16 +5920,6 @@ def toUnicode(s: Any, encoding: Optional[str]=None, reportErrors: bool=False) ->
         g.es_exception()
         g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
         g.trace(g.callers())
-    return s
-#@+node:ekr.20091206161352.6232: *4* g.u (deprecated)
-def u(s: str):
-    """
-    Return s, converted to unicode from Qt widgets.
-
-    Deprecated. QString does not exist on Python 3.
-
-    No calls to g.u exist in Leo's core or official plugins.
-    """
     return s
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
@@ -6744,7 +6553,7 @@ def trace(*args, **keys):
     # Put leading newlines into the prefix.
     if isinstance(args, tuple):
         args = list(args)  # type:ignore
-    if args and isString(args[0]):
+    if args and isinstance(args[0], str):
         prefix = ''
         while args[0].startswith('\n'):
             prefix += '\n'
@@ -6752,9 +6561,9 @@ def trace(*args, **keys):
     else:
         prefix = ''
     for arg in args:
-        if isString(arg):
+        if isinstance(arg, str):
             pass
-        elif isBytes(arg):
+        elif isinstance(arg, bytes):
             arg = toUnicode(arg)
         else:
             arg = repr(arg)
@@ -6787,7 +6596,7 @@ def translateArgs(args, d):
         if isinstance(arg, str):
             arg = toUnicode(arg, console_encoding)
         # Now translate.
-        if not isString(arg):
+        if not isinstance(arg, str):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = translateString(arg)
@@ -6884,14 +6693,6 @@ def CheckVersionToInt(s: str):
             s = ''.join(aList)
             return int(s)
         return 0
-#@+node:ekr.20031218072017.3147: *3* g.choose (deprecated)
-# This can and should be replaced by Python's ternary operator.
-
-def choose(cond, a, b):  # warning: evaluates all arguments
-    """(Deprecated) simulate `a if cond else b`."""
-    if cond:
-        return a
-    return b
 #@+node:ekr.20111103205308.9657: *3* g.cls
 @command('cls')
 def cls(event=None):
@@ -7085,25 +6886,6 @@ def os_path_exists(path: str):
         g.trace('NULL in', repr(path), g.callers())
         path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     return os.path.exists(path)
-#@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper (deprecated)
-deprecated_messages = []
-
-def os_path_expandExpression(s: str, **keys):
-    """
-    Expand all {{anExpression}} in c's context.
-
-    Deprecated: use c.expand_path_expression(s) instead.
-    """
-
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c', g.callers())
-        return s
-    callers = g.callers(2)
-    if callers not in deprecated_messages:
-        deprecated_messages.append(callers)
-        g.es_print(f"\nos_path_expandExpression is deprecated. called from: {callers}")
-    return c.expand_path_expression(s)
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path: str):
     """wrap os.path.expanduser"""
@@ -7847,7 +7629,7 @@ def computeFileUrl(fn, c: Cmdr=None, p: Pos=None):
         path = url[i:]
         path = g.os_path_expanduser(path)
         # #1338: This is way too dangerous, and a serious security violation.
-            # path = g.os_path_expandExpression(path, c=c)
+            # path = c.os_path_expandExpression(path)
         path = g.os_path_finalize(path)
         url = url[:i] + path
     else:
@@ -7860,7 +7642,7 @@ def computeFileUrl(fn, c: Cmdr=None, p: Pos=None):
         else:
             path = url
         # #1338: This is way too dangerous, and a serious security violation.
-            # path = g.os_path_expandExpression(path, c=c)
+            # path = c.os_path_expandExpression(path)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)

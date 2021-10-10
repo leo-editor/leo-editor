@@ -2263,9 +2263,6 @@ class VNode:
             return self._bodyString
         g.internalError(f"body not unicode: {self._bodyString!r}")
         return g.toUnicode(self._bodyString)
-
-    getBody = bodyString
-        # Deprecated, but here for compatibility.
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild
     def firstChild(self):

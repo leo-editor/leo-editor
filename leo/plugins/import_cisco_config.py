@@ -177,8 +177,7 @@ def importCiscoConfig(c):
         key = child.h.split('<<'
             )[1].split('>>')[0].strip()
         if key in blocks:
-            # if type(blocks[key][0]) == type(''):
-            if g.isString(blocks[key][0]):
+            if isinstance(blocks[key][0], str):
                 # it's a string, no sub-children, so just print the text
                 child.b = '\n'.join(blocks[key])
             else:
