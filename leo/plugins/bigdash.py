@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120309073748.9872: * @file ../plugins/bigdash.py
 #@@first
-'''
+"""
 Global search window
 
 Use the global-search command to show this window.
@@ -10,7 +10,7 @@ Use the global-search command to show this window.
 To restore the original appearance of the window, type help.
 
 Requires the whoosh library ('easy_install whoosh') to do full text searches.
-'''
+"""
 # By VMV.
 # Stand-alone version by EKR.
 #@+<<  notes >>
@@ -73,7 +73,7 @@ def global_search_f(event):
         g.app._global_search.show()
 #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # Fix #1114: Don't require QtWebKitWidgets here.
         # if not QtWebKitWidgets:
             # return False
@@ -153,7 +153,7 @@ class BigDash:
         self.link_handler = lh
     #@+node:ekr.20140919160020.17914: *3* show_help
     def show_help(self):
-        '''Show the contents of the help panel.'''
+        """Show the contents of the help panel."""
         if whoosh:
             s = """
     <h12>Dashboard</h2>
@@ -192,7 +192,7 @@ class GlobalSearch:
     #@+others
     #@+node:ekr.20140919160020.17898: *3* __init__(GlobalSearch)
     def __init__(self):
-        '''Ctor for GlobalSearch class.'''
+        """Ctor for GlobalSearch class."""
         self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
             # A default: will be overridden by the global-search command.
         self.bd = BigDash()
@@ -372,7 +372,7 @@ class GlobalSearch:
         self.bd.set_link_handler(self.do_link)
     #@+node:ekr.20140919160020.17900: *3* do_stats
     def do_stats(self, tgt, qs):
-        '''Show statistics.'''
+        """Show statistics."""
         if qs == "stats":
             s = self.fts.statistics()
             docs = s['documents']
@@ -402,7 +402,7 @@ class GlobalSearch:
             g.recursiveUNLSearch(segs, c)
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
-        '''Show the global search window.'''
+        """Show the global search window."""
         self.bd.w.show()
     #@-others
 #@+node:ekr.20140919160020.17920: ** class LeoConnector
@@ -415,7 +415,7 @@ class LeoFts:
     #@+others
     #@+node:ekr.20140920041848.17940: *3* fts.__init__
     def __init__(self, gnxcache, idx_dir):
-        '''Ctor for LeoFts class (bigdash.py)'''
+        """Ctor for LeoFts class (bigdash.py)"""
         self.gnxcache = gnxcache
         self.idx_dir = idx_dir
         self.ix = self.open_index(idx_dir)
@@ -534,7 +534,7 @@ class GnxCache:
     #@+others
     #@+node:ekr.20140920041848.17934: *3* __init__
     def __init__(self):
-        '''Ctor for GnxCashe class (bigdash.py)'''
+        """Ctor for GnxCashe class (bigdash.py)"""
         self.clear()
     #@+node:ekr.20140919160020.17918: *3* all_positions_global
     def all_positions_global(self):

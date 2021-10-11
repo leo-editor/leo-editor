@@ -38,7 +38,7 @@ from leo.core.leoPlugins import BaseLeoPlugin
 #@+others
 #@+node:ekr.20070119094733.5: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', DT)
     g.plugin_signon(__name__)
     return True

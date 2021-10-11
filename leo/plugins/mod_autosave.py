@@ -26,7 +26,7 @@ gDict = {}  # Keys are commanders, values are settings dicts.
 #@+others
 #@+node:ekr.20060108123141.2: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
         # Don't want autosave after unit testing.
     if ok:

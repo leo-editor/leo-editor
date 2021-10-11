@@ -3,7 +3,7 @@
 #@+<< docstring >>
 #@+node:ekr.20050226114732: ** << docstring >>
 #@@language rest
-r''' Allows Leo to write a file to multiple locations.
+r""" Allows Leo to write a file to multiple locations.
 
 This plugin acts as a post-write mechanism, a file must be written to the
 file system for it to work. At this point it is not a replacement for @path or an
@@ -43,7 +43,7 @@ The @multiprefix stays in effect for the entire tree until reset with another
 @multiprefix directive. @multipath is cumulative, in that for each @multipath in
 an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>
@@ -61,7 +61,7 @@ original_precheck = None
 #@+others
 #@+node:ekr.20050226115130.1: ** init & helpers (multifile.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     global original_precheck
     #
     # Append to the module list, not to the g.copy.
@@ -107,7 +107,7 @@ def insertDirectoryString(c):
         #w.update_idletasks()
 #@+node:mork.20041018204908.3: ** decorated_precheck
 def decorated_precheck(self, fileName, root):
-    '''Call at.precheck, then add fileName to the global files list.'''
+    """Call at.precheck, then add fileName to the global files list."""
     #
     # Call the original method.
     global files
@@ -142,9 +142,9 @@ def stop(tag, keywords):
 #@+node:mork.20041018204908.5: ** scanForMultiPath
 def scanForMultiPath(c):
 
-    '''Return a dictionary whose keys are fileNames and whose values are
+    """Return a dictionary whose keys are fileNames and whose values are
     lists of paths to which the fileName is to be written.
-    New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements.'''
+    New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements."""
 
     global multiprefix, multipath
     d, sep = {}, ';'

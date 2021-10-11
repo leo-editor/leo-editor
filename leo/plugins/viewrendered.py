@@ -2,7 +2,7 @@
 #@+node:tbrown.20100318101414.5990: * @file ../plugins/viewrendered.py
 #@+<< vr docstring >>
 #@+node:tbrown.20100318101414.5991: ** << vr docstring >>
-'''
+"""
 
 Creates a window for *live* rendering of reSTructuredText, markdown text,
 images, movies, sounds, rst, html, jupyter notebooks, etc.
@@ -194,7 +194,7 @@ plugins.
 
 Jacob Peck added markdown support to this plugin.
 
-'''
+"""
 #@-<< vr docstring >>
 #@+<< to do >>
 #@+node:ekr.20140924060835.19485: ** << to do >> (vr)
@@ -335,7 +335,7 @@ def decorate_window(w):
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     global got_docutils
     if g.app.gui.guiName() != 'qt':
         return False  # #1248.
@@ -358,7 +358,7 @@ def init():
     return True
 #@+node:ekr.20180825025924.1: *3* vr.isVisible
 def isVisible():
-    '''Return True if the VR pane is visible.'''
+    """Return True if the VR pane is visible."""
 #@+node:ekr.20110317024548.14376: *3* vr.onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -407,7 +407,7 @@ def split_last_sizes(sizes):
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
 def preview(event):
-    '''A synonym for the vr-toggle command.'''
+    """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
 #@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
@@ -441,7 +441,7 @@ def viewrendered(event):
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event):
-    '''Contract the rendering pane.'''
+    """Contract the rendering pane."""
     if g.app.gui.guiName() != 'qt':
         return
     c = event.get('c')
@@ -454,7 +454,7 @@ def contract_rendering_pane(event):
 #@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
 def expand_rendering_pane(event):
-    '''Expand the rendering pane.'''
+    """Expand the rendering pane."""
     if g.app.gui.guiName() != 'qt':
         return
     c = event.get('c')
@@ -467,7 +467,7 @@ def expand_rendering_pane(event):
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
-    '''Close the rendering pane.'''
+    """Close the rendering pane."""
     global controllers, layouts
     if g.app.gui.guiName() != 'qt':
         return
@@ -501,7 +501,7 @@ close_rendering_pane = hide_rendering_pane
 #@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
 def lock_rendering_pane(event):
-    '''Lock the rendering pane.'''
+    """Lock the rendering pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -516,7 +516,7 @@ def lock_rendering_pane(event):
 #@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
 def pause_play_movie(event):
-    '''Pause or play a movie in the rendering pane.'''
+    """Pause or play a movie in the rendering pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -534,7 +534,7 @@ def pause_play_movie(event):
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event):
-    '''Show the rendering pane.'''
+    """Show the rendering pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -548,7 +548,7 @@ def show_rendering_pane(event):
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
-    '''Toggle the rendering pane.'''
+    """Toggle the rendering pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -568,7 +568,7 @@ def toggle_rendering_pane(event):
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
-    '''Pause or play a movie in the rendering pane.'''
+    """Pause or play a movie in the rendering pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -583,7 +583,7 @@ def unlock_rendering_pane(event):
 #@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
 @g.command('vr-update')
 def update_rendering_pane(event):
-    '''Update the rendering pane'''
+    """Update the rendering pane"""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -675,11 +675,11 @@ class ViewRenderedProvider:
 if QtWidgets:  # NOQA
 
     class ViewRenderedController(QtWidgets.QWidget):
-        '''A class to control rendering in a rendering pane.'''
+        """A class to control rendering in a rendering pane."""
         #@+others
         #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
         def __init__(self, c, parent=None):
-            '''Ctor for ViewRenderedController class.'''
+            """Ctor for ViewRenderedController class."""
             self.c = c
             # Create the widget.
             super().__init__(parent)
@@ -749,7 +749,7 @@ if QtWidgets:  # NOQA
 
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
-            '''Create the VR pane or dock.'''
+            """Create the VR pane or dock."""
             if g.unitTesting:
                 return
             # Create the inner contents.
@@ -758,7 +758,7 @@ if QtWidgets:  # NOQA
             self.layout().setContentsMargins(0, 0, 0, 0)
         #@+node:ekr.20110317080650.14381: *3* vr.activate
         def activate(self):
-            '''Activate the vr-window.'''
+            """Activate the vr-window."""
             pc = self
             if pc.active:
                 return
@@ -779,7 +779,7 @@ if QtWidgets:  # NOQA
                 splitter.load_layout(c, loo)
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
-            '''Close the vr window.'''
+            """Close the vr window."""
             self.deactivate()
         #@+node:ekr.20130413061407.10363: *3* vr.contract & expand
         def contract(self):
@@ -803,7 +803,7 @@ if QtWidgets:  # NOQA
                 splitter.setSizes(sizes)
         #@+node:ekr.20110317080650.14382: *3* vr.deactivate
         def deactivate(self):
-            '''Deactivate the vr window.'''
+            """Deactivate the vr window."""
             pc = self
             # Never disable the idle-time hook: other plugins may need it.
             g.unregisterHandler('select2', pc.update)
@@ -811,17 +811,17 @@ if QtWidgets:  # NOQA
             pc.active = False
         #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
         def lock(self):
-            '''Lock the vr pane.'''
+            """Lock the vr pane."""
             g.note('rendering pane locked')
             self.locked = True
 
         def unlock(self):
-            '''Unlock the vr pane.'''
+            """Unlock the vr pane."""
             g.note('rendering pane unlocked')
             self.locked = False
         #@+node:ekr.20160921071239.1: *3* vr.set_html
         def set_html(self, s, w):
-            '''Set text in w to s, preserving scroll position.'''
+            """Set text in w to s, preserving scroll position."""
             pc = self
             p = pc.c.p
             sb = w.verticalScrollBar()
@@ -867,7 +867,7 @@ if QtWidgets:  # NOQA
             c.db['viewrendered_default_layouts'] = layouts[h]
         #@+node:ekr.20110319143920.14466: *3* vr.underline
         def underline(self, s):
-            '''Generate rST underlining for s.'''
+            """Generate rST underlining for s."""
             ch = '#'
             n = max(4, len(g.toEncodedString(s, reportErrors=False)))
             # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
@@ -876,7 +876,7 @@ if QtWidgets:  # NOQA
         # Must have this signature: called by leoPlugins.callTagHandler.
 
         def update(self, tag, keywords):
-            '''Update the vr pane. Called at idle time.'''
+            """Update the vr pane. Called at idle time."""
             pc = self
             p = pc.c.p
             # #1256.
@@ -926,7 +926,7 @@ if QtWidgets:  # NOQA
                         pc.deactivate()
         #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
         def create_base_text_widget(self):
-            '''Create a QWebView or a QTextBrowser.'''
+            """Create a QWebView or a QTextBrowser."""
             c = self.c
             w = BaseTextWidget()
             n = c.config.getInt('qweb-view-font-size')
@@ -941,7 +941,7 @@ if QtWidgets:  # NOQA
             return w
         #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
         def embed_widget(self, w, delete_callback=None):
-            '''Embed widget w in the free_layout splitter.'''
+            """Embed widget w in the free_layout splitter."""
             pc = self
             c = pc.c
             pc.w = w
@@ -965,7 +965,7 @@ if QtWidgets:  # NOQA
                 w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
         #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
         def setBackgroundColor(self, colorName, name, w):
-            '''Set the background color of the vr pane.'''
+            """Set the background color of the vr pane."""
             if 0:  # Do not do this! It interferes with themes.
                 pc = self
                 if not colorName:
@@ -978,7 +978,7 @@ if QtWidgets:  # NOQA
                     g.warning('invalid body background color: %s' % (colorName))
         #@+node:ekr.20110320120020.14476: *4* vr.must_update
         def must_update(self, keywords):
-            '''Return True if we must update the rendering pane.'''
+            """Return True if we must update the rendering pane."""
             pc = self
             c, p = pc.c, pc.c.p
             if g.unitTesting:
@@ -1002,7 +1002,7 @@ if QtWidgets:  # NOQA
             return False
         #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
         def update_asciidoc(self, s, keywords):
-            '''Update asciidoc in the vr pane.'''
+            """Update asciidoc in the vr pane."""
             global asciidoctor_exec, asciidoc3_exec
             pc = self
             # Do this regardless of whether we show the widget or not.
@@ -1020,12 +1020,12 @@ if QtWidgets:  # NOQA
             self.update_rst(s, keywords)
         #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title
         def make_asciidoc_title(self, s):
-            '''Generate an asciiidoc title for s.'''
+            """Generate an asciiidoc title for s."""
             line = '#' * (min(4, len(s)))
             return f"{line}\n{s}\n{line}\n\n"
         #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
         def convert_to_asciidoctor(self, s):
-            '''Convert s to html using the asciidoctor or asciidoc processor.'''
+            """Convert s to html using the asciidoctor or asciidoc processor."""
             pc = self
             c, p = pc.c, pc.c.p
             path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1064,7 +1064,7 @@ if QtWidgets:  # NOQA
 
         #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
-            '''Update the graphics script in the vr pane.'''
+            """Update the graphics script in the vr pane."""
             pc = self
             c = pc.c
             force = keywords.get('force')
@@ -1095,7 +1095,7 @@ if QtWidgets:  # NOQA
         update_html_count = 0
 
         def update_html(self, s, keywords):
-            '''Update html in the vr pane.'''
+            """Update html in the vr pane."""
             pc = self
             c = pc.c
             if pc.must_change_widget(BaseTextWidget):
@@ -1111,7 +1111,7 @@ if QtWidgets:  # NOQA
             c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14482: *4* vr.update_image
         def update_image(self, s, keywords):
-            '''Update an image in the vr pane.'''
+            """Update an image in the vr pane."""
             pc = self
             if not s.strip():
                 return
@@ -1138,7 +1138,7 @@ if QtWidgets:  # NOQA
         update_jupyter_count = 0
 
         def update_jupyter(self, s, keywords):
-            '''Update @jupyter node in the vr pane.'''
+            """Update @jupyter node in the vr pane."""
             pc = self
             c = pc.c
             if pc.must_change_widget(BaseTextWidget):
@@ -1155,7 +1155,7 @@ if QtWidgets:  # NOQA
             c.bodyWantsFocusNow()
         #@+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
         def get_jupyter_source(self, c):
-            '''Return the html for the @jupyer node.'''
+            """Return the html for the @jupyer node."""
             body = c.p.b.lstrip()
             if body.startswith('<'):
                 # Assume the body is html.
@@ -1182,7 +1182,7 @@ if QtWidgets:  # NOQA
             return s
         #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
         def update_latex(self, s, keywords):
-            '''Update latex in the vr pane.'''
+            """Update latex in the vr pane."""
             import sys
             pc = self
             c = pc.c
@@ -1206,7 +1206,7 @@ if QtWidgets:  # NOQA
             c.bodyWantsFocusNow()
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
-            '''Create an html page embedding the latex code s.'''
+            """Create an html page embedding the latex code s."""
             # pylint: disable=deprecated-method
             try:
                 import html
@@ -1220,7 +1220,7 @@ if QtWidgets:  # NOQA
             return template
         #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
         def update_md(self, s, keywords):
-            '''Update markdown text in the vr pane.'''
+            """Update markdown text in the vr pane."""
             pc = self
             c = pc.c
             p = c.p
@@ -1244,7 +1244,7 @@ if QtWidgets:  # NOQA
                 self.update_rst(s, keywords)
         #@+node:ekr.20160921134552.1: *5* convert_to_markdown
         def convert_to_markdown(self, s):
-            '''Convert s to html using the markdown processor.'''
+            """Convert s to html using the markdown processor."""
             pc = self
             c, p = pc.c, pc.c.p
             path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1269,7 +1269,7 @@ if QtWidgets:  # NOQA
         movie_warning = False
 
         def update_movie(self, s, keywords):
-            '''Update a movie in the vr pane.'''
+            """Update a movie in the vr pane."""
             pc = self
             ok, path = pc.get_fn(s, '@movie')
             if not ok:
@@ -1315,19 +1315,19 @@ if QtWidgets:  # NOQA
                 vp.play()
         #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
         def update_networkx(self, s, keywords):
-            '''Update a networkx graphic in the vr pane.'''
+            """Update a networkx graphic in the vr pane."""
             pc = self
             w = pc.ensure_text_widget()
             w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
             pc.show()
         #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers
         def update_pandoc(self, s, keywords):
-            '''
+            """
             Update an @pandoc in the vr pane.
 
             There is no such thing as @language pandoc,
             so only @pandoc nodes trigger this code.
-            '''
+            """
             global pandoc_exec
             pc = self
             w = pc.ensure_text_widget()
@@ -1344,7 +1344,7 @@ if QtWidgets:  # NOQA
             self.update_rst(s, keywords)
         #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
         def convert_to_pandoc(self, s):
-            '''Convert s to html using the asciidoctor or asciidoc processor.'''
+            """Convert s to html using the asciidoctor or asciidoc processor."""
             pc = self
             c, p = pc.c, pc.c.p
             path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1381,7 +1381,7 @@ if QtWidgets:  # NOQA
                 return f.read()
         #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
         def update_pyplot(self, s, keywords):
-            '''Get the pyplot script at c.p.b and show it.'''
+            """Get the pyplot script at c.p.b and show it."""
             c = self.c
             if not self.pyplot_imported:
                 self.pyplot_imported = True
@@ -1430,7 +1430,7 @@ if QtWidgets:  # NOQA
             c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
         def update_rst(self, s, keywords):
-            '''Update rst in the vr pane.'''
+            """Update rst in the vr pane."""
             pc = self
             s = s.strip().strip('"""').strip("'''").strip()
             isHtml = s.startswith('<') and not s.startswith('<<')
@@ -1454,7 +1454,7 @@ if QtWidgets:  # NOQA
                 w.setPlainText(s)
         #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
         def convert_to_html(self, s):
-            '''Convert s to html using docutils.'''
+            """Convert s to html using docutils."""
             c, p = self.c, self.c.p
             # Update the current path.
             path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1629,7 +1629,7 @@ if QtWidgets:  # NOQA
         #@+node:ekr.20110322031455.5765: *4* vr.utils for update helpers...
         #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
         def ensure_text_widget(self):
-            '''Swap a text widget into the rendering pane if necessary.'''
+            """Swap a text widget into the rendering pane if necessary."""
             c, pc = self.c, self
             if pc.must_change_widget(QtWidgets.QTextBrowser):
                 # Instantiate a new QTextBrowser.
@@ -1659,7 +1659,7 @@ if QtWidgets:  # NOQA
             return pc.w
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
-            '''Return the proper rendering kind for node p.'''
+            """Return the proper rendering kind for node p."""
 
             def get_language(p):
                 """

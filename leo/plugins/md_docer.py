@@ -38,7 +38,7 @@ import re
 from leo.core import leoGlobals as g
 pat = re.compile(r'^(\s*)LEOGNX:(.+)$')
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('save1', beforeSave)
     g.plugin_signon(__name__)
     return True
@@ -46,8 +46,8 @@ def init():
 #@+node:vitalije.20180804174131.1: ** md_write_files
 @g.command('md-write-files')
 def md_write_files(event):
-    '''writes all md nodes. A md node is node whose headline
-       starts with 'md:' followed by file name.'''
+    """writes all md nodes. A md node is node whose headline
+       starts with 'md:' followed by file name."""
     c = event.get('c')
     #@+others
     #@+node:vitalije.20180804180150.1: *3* hl
@@ -104,7 +104,7 @@ def md_write_files(event):
 #@+node:vitalije.20180804180928.1: ** md_copy_leo_gnx
 @g.command('md-copy-leo-gnx')
 def md_copy_leo_gnx(event):
-    '''Puts on clipboard `LEOGNX:<gnx of currently selected node>`.'''
+    """Puts on clipboard `LEOGNX:<gnx of currently selected node>`."""
     c = event.get('c')
     g.app.gui.replaceClipboardWith('LEOGNX:' + c.p.gnx)
 #@+node:vitalije.20180805114033.1: ** beforeSave

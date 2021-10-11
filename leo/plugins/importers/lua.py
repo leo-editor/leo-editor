@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170530024520.2: * @file ../plugins/importers/lua.py
-'''
+"""
 The @auto importer for the lua language.
 
 Created 2017/05/30 by the `importer;;` abbreviation.
-'''
+"""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -14,10 +14,10 @@ delete_blank_lines = True
 #@+others
 #@+node:ekr.20170530024520.3: ** class Lua_Importer
 class Lua_Importer(Importer):
-    '''The importer for the lua lanuage.'''
+    """The importer for the lua lanuage."""
 
     def __init__(self, importCommands, **kwargs):
-        '''Lua_Importer.__init__'''
+        """Lua_Importer.__init__"""
         super().__init__(
             importCommands,
             language='lua',
@@ -31,7 +31,7 @@ class Lua_Importer(Importer):
     #@+others
     #@+node:ekr.20170530024520.5: *3* lua_i.clean_headline
     def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         s = s.strip()
         for tag in ('local', 'function'):
             if s.startswith(tag):
@@ -42,7 +42,7 @@ class Lua_Importer(Importer):
         return s.strip()
     #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
     def cut_stack(self, new_state, stack):
-        '''Cut back the stack until stack[-1] matches new_state.'''
+        """Cut back the stack until stack[-1] matches new_state."""
         assert len(stack) > 1  # Fail on entry.
             # function/end's are strictly nested, so this suffices.
         stack.pop()
@@ -52,7 +52,7 @@ class Lua_Importer(Importer):
         assert len(stack) > 1  # Fail on exit.
     #@+node:ekr.20170530040554.1: *3* lua_i.ends_block
     def ends_block(self, i, lines, new_state, prev_state, stack):
-        '''True if line ends the block.'''
+        """True if line ends the block."""
         # pylint: disable=arguments-differ
         if prev_state.context:
             return False
@@ -66,10 +66,10 @@ class Lua_Importer(Importer):
         return False
     #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
     def gen_lines(self, s, parent):
-        '''
+        """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
-        '''
+        """
         tail_p = None
         self.tail_lines = []
         prev_state = self.state_class()
@@ -111,7 +111,7 @@ class Lua_Importer(Importer):
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''The scan dict for the lua language.'''
+        """The scan dict for the lua language."""
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert comment
 
@@ -163,7 +163,7 @@ class Lua_Importer(Importer):
         return d
     #@+node:ekr.20170531052302.1: *3* lua_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
-        '''Create a child node and update the stack.'''
+        """Create a child node and update the stack."""
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
         line = lines[i]
@@ -184,7 +184,7 @@ class Lua_Importer(Importer):
     function_pattern2 = re.compile(r'(local\s+)?function')
 
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
 
         def end(line):
             # Buggy: 'end' could appear in a string or comment.
@@ -216,7 +216,7 @@ class Lua_Importer(Importer):
     #@-others
 #@+node:ekr.20170530024520.7: ** class Lua_ScanState
 class Lua_ScanState:
-    '''A class representing the state of the lua line-oriented scan.'''
+    """A class representing the state of the lua line-oriented scan."""
 
     def __init__(self, d=None):
         if d:
@@ -232,17 +232,17 @@ class Lua_ScanState:
     #@+others
     #@+node:ekr.20170530024520.8: *3* lua_state.level
     def level(self):
-        '''Lua_ScanState.level.'''
+        """Lua_ScanState.level."""
         return 0
             # Never used.
     #@+node:ekr.20170530024520.9: *3* lua_state.update
     def update(self, data):
-        '''
+        """
         Lua_ScanState.update
 
         Update the state using the 6-tuple returned by v2_scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context

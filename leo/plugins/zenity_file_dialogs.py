@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110095202.5882: * @file ../plugins/zenity_file_dialogs.py
-''' Replaces the tk file dialogs on Linux with external
+""" Replaces the tk file dialogs on Linux with external
 calls to the zenity gtk dialog package.
 
 This plugin is more a proof of concept demo than
@@ -10,7 +10,7 @@ filters and starting folders can not be specified.
 Despite this, some Linux users might prefer it to the
 tk dialogs.
 
-'''
+"""
 import subprocess
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
@@ -27,7 +27,7 @@ def testForZenity():
     return not ret
 #@+node:ekr.20101110095557.5888: ** init
 def init ():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.unitTesting:
         return False
     ok = testForZenity()

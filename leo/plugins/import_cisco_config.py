@@ -2,7 +2,7 @@
 #@+node:edream.110203113231.669: * @file ../plugins/import_cisco_config.py
 #@+<< docstring >>
 #@+node:ekr.20050912180321: ** << docstring >>
-''' Allows the user to import Cisco configuration files.
+""" Allows the user to import Cisco configuration files.
 
 Adds the "File:Import:Import Cisco Configuration" menu item. The plugin will:
 
@@ -25,14 +25,14 @@ Adds the "File:Import:Import Cisco Configuration" menu item. The plugin will:
 
 All created sections are alphabetically ordered.
 
-'''
+"""
 #@-<< docstring >>
 from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ekr.20050311102853.1: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # This plugin is gui-independent.
     g.registerHandler(('new', 'menu2'), create_import_cisco_menu)
     g.plugin_signon(__name__)

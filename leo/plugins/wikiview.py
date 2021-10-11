@@ -52,7 +52,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20141101114322.4: ** init
 def init():
-    '''Return True if this plugin should be enabled.'''
+    """Return True if this plugin should be enabled."""
     if g.unitTesting:
         return False
     g.registerHandler('after-create-leo-frame', onCreate)
@@ -66,7 +66,7 @@ def onCreate(tag, keys):
 #@+node:tbrown.20141101114322.6: ** wikiview-toggle
 @g.command('wikiview-toggle')
 def cmd_toggle(event):
-    '''wikiview: toggle active flag'''
+    """wikiview: toggle active flag"""
     c = event.get('c')
     c._wikiview.active = not c._wikiview.active
     if  c._wikiview.active:
@@ -78,13 +78,13 @@ def cmd_toggle(event):
 #@+node:tbrown.20141101114322.7: ** wikiview-hide-all
 @g.command('wikiview-hide-all')
 def cmd_hide_all(event):
-    '''wikiview: re-apply hiding.'''
+    """wikiview: re-apply hiding."""
     c = event.get('c')
     c._wikiview.hide(c._wikiview.select, {'c': c}, force=True)
 #@+node:tbrown.20141101114322.8: ** wikiview-show-all
 @g.command('wikiview-show-all')
 def cmd_show_all(event):
-    '''wikiview: undo hiding'''
+    """wikiview: undo hiding"""
     c = event.get('c')
     c._wikiview.unhide(all=True)
 #@+node:tbrown.20141101114322.9: ** class WikiView
@@ -94,7 +94,7 @@ class WikiView:
     #@+others
     #@+node:tbrown.20141101114322.10: *3* __init__ & reloadSettings (WikiView)
     def __init__(self, c):
-        '''Ctor for WikiView class.'''
+        """Ctor for WikiView class."""
         self.c = c
         c._wikiview = self
         leadins, self.urlpats = self.parse_options()
@@ -125,7 +125,7 @@ class WikiView:
             # This setting is True by default, so the redundancy is harmless.
     #@+node:ekr.20170205071315.1: *3* parse_options & helper
     def parse_options(self):
-        '''Return leadins, patterns from @data wikiview-link-patterns'''
+        """Return leadins, patterns from @data wikiview-link-patterns"""
         c = self.c
         # unl://leoSettings.leo#@settings-->Plugins-->wikiview plugin
         data = c.config.getData('wikiview-link-patterns')
@@ -142,12 +142,12 @@ class WikiView:
     leadin_pattern = re.compile(r'(\\b)?(\()*(.)')
 
     def get_leadin(self, s):
-        '''Return the leadin of the given pattern s, or None if there is an error.'''
+        """Return the leadin of the given pattern s, or None if there is an error."""
         m = self.leadin_pattern.match(s)
         return m and m.group(3)
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
-        '''Hide all wikiview tags. Now done in the colorizer.'''
+        """Hide all wikiview tags. Now done in the colorizer."""
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return

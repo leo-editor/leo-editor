@@ -2,7 +2,7 @@
 #@+node:EKR.20040517075715.12: * @file ../plugins/xemacs.py
 #@+<< docstring >>
 #@+node:ekr.20101112195628.5434: ** << docstring >> (xemacs.py)
-''' Allows you to edit nodes in emacs/xemacs.
+""" Allows you to edit nodes in emacs/xemacs.
 
 Provides the emacs-open-node command which passes the body
 text of the node to emacs.
@@ -10,7 +10,7 @@ text of the node to emacs.
 You may edit the node in the emacs buffer and changes will
 appear in Leo.
 
-'''
+"""
 #@-<< docstring >>
 
 # Initial version: http://www.cs.mu.oz.au/~markn/leo/external_editors.leo
@@ -45,7 +45,7 @@ else:
 #@+others
 #@+node:ekr.20050218023308: ** xemacs.init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         g.plugin_signon(__name__)

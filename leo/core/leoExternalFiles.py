@@ -10,10 +10,10 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile:
-    '''A class holding all data about an external file.'''
+    """A class holding all data about an external file."""
 
     def __init__(self, c, ext, p, path, time):
-        '''Ctor for ExternalFile class.'''
+        """Ctor for ExternalFile class."""
         self.c = c
         self.ext = ext
         self.p = p and p.copy()
@@ -32,7 +32,7 @@ class ExternalFile:
         return g.shortFilename(self.path)
     #@+node:ekr.20161011174800.1: *3* ef.exists
     def exists(self):
-        '''Return True if the external file still exists.'''
+        """Return True if the external file still exists."""
         return g.os_path_exists(self.path)
     #@-others
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController

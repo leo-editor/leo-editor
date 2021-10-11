@@ -2,7 +2,7 @@
 #@+node:peckj.20140804114520.9427: * @file ../plugins/nodetags.py
 #@+<< docstring >>
 #@+node:peckj.20140804103733.9242: ** << docstring >>
-'''Provides node tagging capabilities to Leo
+"""Provides node tagging capabilities to Leo
 
 By Jacob M. Peck
 
@@ -92,7 +92,7 @@ however, due to searching capabilities, may *not* be used to tag (or search for)
 nodes with tags containing the special search characters, `&|-^`. The UI also
 cannot search for tags of zero-length, and it automatically removes surrounding
 whitespace (calling .strip()).
-'''
+"""
 #@-<< docstring >>
 import re
 from leo.core import leoGlobals as g
@@ -155,7 +155,7 @@ class TagController:
     #@+node:peckj.20140804103733.9264: *3* tag_c.outline-level
     #@+node:peckj.20140804103733.9268: *4* tag_c.get_all_tags
     def get_all_tags(self):
-        ''' return a list of all tags in the outline '''
+        """ return a list of all tags in the outline """
         return self.taglist
     #@+node:ekr.20201030095446.1: *4* tag_c.show_all_tags
     def show_all_tags(self):
@@ -181,7 +181,7 @@ class TagController:
 
     #@+node:peckj.20140804103733.9267: *4* tag_c.update_taglist
     def update_taglist(self, tag):
-        ''' ensures the outline's taglist is consistent with the state of the nodes in the outline '''
+        """ ensures the outline's taglist is consistent with the state of the nodes in the outline """
         if tag not in self.taglist:
             self.taglist.append(tag)
         nodelist = self.get_tagged_nodes(tag)
@@ -191,7 +191,7 @@ class TagController:
             self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* tag_c.get_tagged_nodes
     def get_tagged_nodes(self, tag):
-        ''' return a list of *positions* of nodes containing the tag, with * as a wildcard '''
+        """ return a list of *positions* of nodes containing the tag, with * as a wildcard """
         nodelist = []
         # replace * with .* for regex compatibility
         tag = tag.replace('*', '.*')
@@ -214,14 +214,14 @@ class TagController:
     #@+node:peckj.20140804103733.9265: *3* tag_c.individual nodes
     #@+node:peckj.20140804103733.9259: *4* tag_c.get_tags
     def get_tags(self, p):
-        ''' returns a list of tags applied to position p.'''
+        """ returns a list of tags applied to position p."""
         if p:
             tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
             return list(tags)
         return []
     #@+node:peckj.20140804103733.9260: *4* tag_c.add_tag
     def add_tag(self, p, tag):
-        ''' adds 'tag' to the taglist of v '''
+        """ adds 'tag' to the taglist of v """
         # cast to set() incase JSON storage (leo_cloud plugin) converted to list
         tags = set(p.v.u.get(self.TAG_LIST_KEY, set([])))
         tags.add(tag)
@@ -230,7 +230,7 @@ class TagController:
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* tag_c.remove_tag
     def remove_tag(self, p, tag):
-        ''' removes 'tag' from the taglist of position p. '''
+        """ removes 'tag' from the taglist of position p. """
         v = p.v
         tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
             # in case JSON storage (leo_cloud plugin) converted to list.
@@ -264,7 +264,7 @@ if QtWidgets:
             g.registerHandler('command2', self.command2_hook)
         #@+node:peckj.20140804114520.15202: *4* tag_w.initUI
         def initUI(self):
-            '''create GUI components.'''
+            """create GUI components."""
             self.setObjectName("LeoTagWidget")
             #
             # verticalLayout_2: contains
@@ -327,7 +327,7 @@ if QtWidgets:
             QtCore.QMetaObject.connectSlotsByName(self)
         #@+node:peckj.20140804114520.15203: *4* tag_w.registerCallbacks
         def registerCallbacks(self):
-            '''Connect events to widgets.'''
+            """Connect events to widgets."""
             self.listWidget.itemSelectionChanged.connect(self.item_selected)
             self.listWidget.itemClicked.connect(self.item_selected)
             self.comboBox.currentIndexChanged.connect(self.update_list)
@@ -437,7 +437,7 @@ if QtWidgets:
             self.label.setText("Total: %s nodes" % count)
         #@+node:peckj.20140804114520.15208: *4* tag_w.update_all
         def update_all(self):
-            ''' updates the tag GUI '''
+            """ updates the tag GUI """
             key = str(self.comboBox.currentText())
             self.update_combobox()
             if key:

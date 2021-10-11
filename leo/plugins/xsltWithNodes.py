@@ -56,7 +56,7 @@ StringIO = io.StringIO
 #@+others
 #@+node:ekr.20050226120104.1: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = Ft
     if ok:
         g.registerHandler(('menu2', "new"), addMenu)
@@ -107,14 +107,14 @@ xslt = {
 stylenodes = weakref.WeakKeyDictionary()
 
 def setStyleNode(c):
-    '''this command sets what the current style node is'''
+    """this command sets what the current style node is"""
     position = c.p
     stylenodes[c] = position
 
 
 #@+node:mork.20041010095202.1: ** processDocumentNode
 def processDocumentNode(c):
-    '''this executes the stylesheet node against the current node'''
+    """this executes the stylesheet node against the current node"""
     try:
         if not styleNodeSelected(c):
             return
@@ -151,7 +151,7 @@ def processDocumentNode(c):
     c.redraw()
 #@+node:mork.20041025121608: ** addXSLTNode
 def addXSLTNode(c):
-    '''creates a node and inserts some xslt boilerplate'''
+    """creates a node and inserts some xslt boilerplate"""
     pos = c.p
 
     #body = '''<?xml version="1.0"?>'''
@@ -168,14 +168,14 @@ def addXSLTNode(c):
     c.redraw()
 #@+node:mork.20041010110121: ** addXSLTElement
 def addXSLTElement(c, element):
-    '''adds some xslt to the text node'''
+    """adds some xslt to the text node"""
     w = c.frame.body.wrapper
     w.insert('insert', element)
 #@+node:mork.20041025113021: ** getString (xsltWithNodes.py)
 def getString(c):
-    '''
+    """
     This def turns a node into a string using Leo's file-nosent write logic.
-    '''
+    """
     at = c.atFileCommands
     # EKR: 2017/04/10: needs testing.
     at.toString = True
@@ -183,11 +183,11 @@ def getString(c):
     return cleanString(at.stringOutput)
 #@+node:mork.20041025120706: ** doMinidomTest
 def doMinidomTest(c):
-    '''
+    """
     This def performs a simple test on a node.
     Can the data be successfully parsed by minidom or not?
     Results are output to the log.
-    '''
+    """
     s = getString(c)
     try:
         minidom.parseString(s)
@@ -197,15 +197,15 @@ def doMinidomTest(c):
     g.blue("Minidom could parse the node")
 #@+node:mork.20041025090303: ** cleanString
 def cleanString(data):
-    '''This method cleans a string up for the processor.  It currently just removes
-       leading and trailing whitespace'''
+    """This method cleans a string up for the processor.  It currently just removes
+       leading and trailing whitespace"""
 
     val = data.strip()
     return val
 
 #@+node:mork.20041010125444: ** jumpToStyleNode
 def jumpToStyleNode(c):
-    '''Simple method that jumps us to the current XSLT node'''
+    """Simple method that jumps us to the current XSLT node"""
     if not styleNodeSelected(c):
         return
     pos = stylenodes[c]
@@ -215,7 +215,7 @@ def jumpToStyleNode(c):
 
 #@+node:mork.20041010125444.1: ** styleNodeSelected
 def styleNodeSelected(c):
-    '''Determines if a XSLT Style node has not been selected'''
+    """Determines if a XSLT Style node has not been selected"""
     if c not in stylenodes:
         g.es("No Style Node selected")
         return False
@@ -279,7 +279,7 @@ def addMenu(tag, keywords):
 
 # pylint: disable=pointless-string-statement
 
-r'''
+r"""
 #@+others
 #@+node:ekr.20140906065955.18786: *3* table.leo
 #@@path /boboo/leo-4.2-final/plugins
@@ -561,7 +561,7 @@ class CSVVisualizer:
 </xsl:template>
 </xsl:transform>
 #@-others
-'''
+"""
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180201203240.2: * @file ../plugins/importers/treepad.py
-'''The @auto importer for the TreePad file format.'''
+"""The @auto importer for the TreePad file format."""
 import re
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20180201203240.3: ** class TreePad_Scanner
 class TreePad_Scanner():
-    '''The importer for the TreePad file format.'''
+    """The importer for the TreePad file format."""
 
     def __init__(self, importCommands, **kwargs):
         self.c = importCommands.c
@@ -32,7 +32,7 @@ class TreePad_Scanner():
         return p
     #@+node:ekr.20180201204402.3: *3* treepad.expect
     def expect(self, expected, line=None, prefix=False):
-        '''Read the next line if it isn't given, and check it.'''
+        """Read the next line if it isn't given, and check it."""
         if line is None:
             line = self.read_line().strip()
         match = line.startswith(expected) if prefix else line == expected
@@ -41,7 +41,7 @@ class TreePad_Scanner():
             g.trace('     got: %r' % line)
     #@+node:ekr.20180201204402.4: *3* treepad.read_file
     def read_file(self, s, root):
-        '''Read the entire file, producing the Leo outline.'''
+        """Read the entire file, producing the Leo outline."""
         try:
             # Init ivars for self.read_lines.
             self.lines = g.splitLines(s)
@@ -58,7 +58,7 @@ class TreePad_Scanner():
             return False
     #@+node:ekr.20180201210026.1: *3* treepad.read_line
     def read_line(self):
-        '''Return the next line from self.lines, or None.'''
+        """Return the next line from self.lines, or None."""
         if self.i >= len(self.lines):
             return None
         self.i += 1
@@ -90,7 +90,7 @@ class TreePad_Scanner():
         return self.add_node(article, level, title)
     #@+node:ekr.20180201204000.1: *3* treepad.run (entry)
     def run(self, s, parent, parse_body=False):
-        '''The common top-level code for all scanners.'''
+        """The common top-level code for all scanners."""
         c = self.c
         changed = c.isChanged()
         ok = self.read_file(s, parent)

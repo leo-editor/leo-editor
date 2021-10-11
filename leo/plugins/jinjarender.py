@@ -2,7 +2,7 @@
 #@+node:ville.20110409151021.5699: * @file ../plugins/jinjarender.py
 #@+<< docstring >>
 #@+node:ville.20110409151021.5700: ** << docstring >>
-''' Render @jinja nodes.
+""" Render @jinja nodes.
 
 - sudo apt-get install python-jinja2
 
@@ -17,7 +17,7 @@ template is expanded and content is written to the file.
 
 Requires "valuespace" plugin. Fetches vars from valuespace.
 
-'''
+"""
 #@-<< docstring >>
 
 # By Ville M. Vainio.
@@ -37,7 +37,7 @@ from leo.core import leoPlugins
 #@+others
 #@+node:ville.20110409151021.5703: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = bool(Template)
     if ok:
         g.plugin_signon(__name__)

@@ -24,7 +24,7 @@ except ImportError:
 #@+others
 #@+node:ekr.20050311165238: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = client is not None  # Ok for unit test: just uses Plugins menu.
     if ok:
         # No hooks, we just use the cmd_Export to trigger an export
@@ -102,7 +102,7 @@ def writeNodeAndTree(c, word, header_style, level,
 #@+node:EKR.20040517075715.19: ** word-export-export
 @g.command('word-export-export')
 def cmd_Export(event):
-    '''Export the current node to Word'''
+    """Export the current node to Word"""
     c = event.get('c')
     try:
         word = getWordConnection()

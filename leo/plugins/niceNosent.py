@@ -18,7 +18,7 @@ nosentNodes = []
 #@+others
 #@+node:ekr.20050917082031: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         g.registerHandler("save1", onPreSave)

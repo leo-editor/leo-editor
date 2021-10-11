@@ -2,7 +2,7 @@
 #@+node:ville.20090314215508.4: * @file ../plugins/quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
-'''
+"""
 Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
 
 Quicksearch searches node headlines only, *not* body text
@@ -73,7 +73,7 @@ This plugin defines the following commands that can be bound to keys:
 - marked-list:
   List all marked nodes.
 
-'''
+"""
 #@-<< docstring >>
 # Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
@@ -101,7 +101,7 @@ def dumpfocus():
     print("Focus: " + f)
 #@+node:ville.20090314215508.8: *3* init (quicksearch.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
@@ -234,10 +234,10 @@ def show_unittest_failures(event):
     c.k.simulateCommand('focus-to-nav')
 #@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict (OrderedDict)
 class OrderedDefaultDict(OrderedDict):
-    '''
+    """
     Credit:  http://stackoverflow.com/questions/4126348/
     how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
-    '''
+    """
     def __init__(self, *args, **kwargs):
         if not args:
             self.default_factory = None

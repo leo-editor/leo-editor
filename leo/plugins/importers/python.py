@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18149: * @file ../plugins/importers/python.py
-'''The new, line-based, @auto importer for Python.'''
+"""The new, line-based, @auto importer for Python."""
 # Legacy version of this file is in the attic.
 import re
 from leo.core import leoGlobals as g
@@ -10,10 +10,10 @@ Target = linescanner.Target
 #@+others
 #@+node:ekr.20161029103615.1: ** class Py_Importer(Importer)
 class Py_Importer(Importer):
-    '''A class to store and update scanning state.'''
+    """A class to store and update scanning state."""
 
     def __init__(self, importCommands, language='python', **kwargs):
-        '''Py_Importer.ctor.'''
+        """Py_Importer.ctor."""
         super().__init__(
             importCommands,
             language=language,
@@ -25,7 +25,7 @@ class Py_Importer(Importer):
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
     def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         if p:  # Called from clean_all_headlines:
             return self.get_decorator(p) + p.h
         # Handle defs.
@@ -54,11 +54,11 @@ class Py_Importer(Importer):
         return ''
     #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
     def find_class(self, parent):
-        '''
+        """
         Find the start and end of a class/def in a node.
 
         Return (kind, i, j), where kind in (None, 'class', 'def')
-        '''
+        """
         # Called from Leo's core to implement two minor commands.
         prev_state = Python_ScanState()
         target = Target(parent, prev_state)
@@ -75,12 +75,12 @@ class Py_Importer(Importer):
         return None, -1, -1
     #@+node:ekr.20161205052712.1: *4* py_i.skip_block
     def skip_block(self, i, index, lines, prev_state, stack):
-        '''
+        """
         Find the end of a class/def starting at index
         on line i of lines.
 
         Return (kind, i, j), where kind in (None, 'class', 'def')
-        .'''
+        ."""
         index1 = index
         line = lines[i]
         kind = 'class' if line.strip().startswith('class') else 'def'
@@ -98,10 +98,10 @@ class Py_Importer(Importer):
         return None, -1, -1
     #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & overrides
     def gen_lines(self, s, parent):
-        '''
+        """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
-        '''
+        """
         self.tail_p = None
         prev_state = self.state_class()
         target = PythonTarget(parent, prev_state)
@@ -147,13 +147,13 @@ class Py_Importer(Importer):
 
     #@+node:ekr.20161220171728.1: *4* py_i.common_lws
     def common_lws(self, lines):
-        '''Return the lws (a string) common to all lines.'''
+        """Return the lws (a string) common to all lines."""
         return self.get_str_lws(lines[0]) if lines else ''
             # We must unindent the class/def line fully.
             # It would be wrong to examine the indentation of other lines.
     #@+node:ekr.20161116034633.2: *4* py_i.cut_stack
     def cut_stack(self, new_state, stack, append=False):
-        '''Cut back the stack until stack[-1] matches new_state.'''
+        """Cut back the stack until stack[-1] matches new_state."""
         # pylint: disable=arguments-differ
         assert len(stack) > 1  # Fail on entry.
         while stack:
@@ -177,12 +177,12 @@ class Py_Importer(Importer):
         assert len(stack) > 1  # Fail on exit.
     #@+node:ekr.20161116173901.1: *4* py_i.end_block
     def end_block(self, i, lines, new_state, prev_state, stack):
-        '''
+        """
         Handle a line that terminates the previous class/def. The line is
         neither a class/def line, and we are not in a multi-line token.
 
         Skip all lines that are at the same level as the class/def.
-        '''
+        """
         # pylint: disable=arguments-differ
         top = stack[-1]
         assert new_state.indent < top.state.indent, (
@@ -212,7 +212,7 @@ class Py_Importer(Importer):
         return top.p
     #@+node:ekr.20161220073836.1: *4* py_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends the block.'''
+        """True if line ends the block."""
         # Comparing new_state against prev_state does not work for python.
         if self.is_ws_line(line) or prev_state.in_context():
             return False
@@ -221,11 +221,11 @@ class Py_Importer(Importer):
         return new_state.level() < top.state.level()
     #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
     def gen_ref(self, line, parent, target):
-        '''
+        """
         Generate the at-others and a flag telling this method whether a previous
         #@+others
         #@-others
-        '''
+        """
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line, p=None)
         if not target.at_others_flag:
@@ -235,7 +235,7 @@ class Py_Importer(Importer):
         return h
     #@+node:ekr.20161116034633.7: *4* py_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
-        '''Create a child node and update the stack.'''
+        """Create a child node and update the stack."""
         assert not prev_state.in_context(), prev_state
         line = lines[i]
         top = stack[-1]
@@ -262,7 +262,7 @@ class Py_Importer(Importer):
         # Matches lines that apparently start a class or def.
 
     def starts_block(self, i, lines, new_state, prev_state, stack):
-        '''True if the line startswith class or def outside any context.'''
+        """True if the line startswith class or def outside any context."""
         # pylint: disable=arguments-differ
         if prev_state.in_context():
             return False
@@ -289,12 +289,12 @@ class Py_Importer(Importer):
     decorator_pattern = re.compile(r'^\s*@\s*(\w+)')
 
     def starts_decorator(self, i, lines, prev_state):
-        '''
+        """
         True if the line looks like a decorator outside any context.
 
         Puts the entire decorator into the self.decorator_lines list,
         and sets self.skip so that the next line to be handled is a class/def line.
-        '''
+        """
         assert self.skip == 0
         if prev_state.context:
             # Only test for docstrings, not [{(.
@@ -325,10 +325,10 @@ class Py_Importer(Importer):
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''
+        """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
-        '''
+        """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, key, data):
@@ -382,10 +382,10 @@ class Py_Importer(Importer):
     #@+node:ekr.20180524173510.1: *3* py_i: post_pass
     #@+node:ekr.20170617125213.1: *4* py_i.clean_all_headlines
     def clean_all_headlines(self, parent):
-        '''
+        """
         Clean all headlines in parent's tree by calling the language-specific
         clean_headline method.
-        '''
+        """
         for p in parent.subtree():
             # Important: i.gen_ref does not know p when it calls
             # self.clean_headline.
@@ -394,7 +394,7 @@ class Py_Importer(Importer):
                 p.h = h
     #@+node:ekr.20161222123105.1: *4* py_i.promote_last_lines
     def promote_last_lines(self, parent):
-        '''python_i.promote_last_lines.'''
+        """python_i.promote_last_lines."""
         last = parent.lastNode()
         if not last or last.h == 'Declarations':
             return
@@ -415,11 +415,11 @@ class Py_Importer(Importer):
                 prev_state = new_state
     #@+node:ekr.20161222112801.1: *4* py_i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
-        '''
+        """
         Promote all trailing underindent lines to the node's parent node,
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
-        '''
+        """
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.children():  # 2018/05/24.
             lines = self.get_lines(p)
@@ -449,10 +449,10 @@ class Py_Importer(Importer):
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
-    '''A class representing the state of the python line-oriented scan.'''
+    """A class representing the state of the python line-oriented scan."""
 
     def __init__(self, d=None):
-        '''Python_ScanState ctor.'''
+        """Python_ScanState ctor."""
         if d:
             indent = d.get('indent')
             prev = d.get('prev')
@@ -470,7 +470,7 @@ class Python_ScanState:
     #@+others
     #@+node:ekr.20161114152246.1: *3* py_state.__repr__
     def __repr__(self):
-        '''Py_State.__repr__'''
+        """Py_State.__repr__"""
         return 'PyState: %7r indent: %2s {%s} (%s) [%s] bs-nl: %s' % (
             self.context, self.indent,
             self.curlies, self.parens, self.squares,
@@ -479,11 +479,11 @@ class Python_ScanState:
     __str__ = __repr__
     #@+node:ekr.20161119115700.1: *3* py_state.level
     def level(self):
-        '''Python_ScanState.level.'''
+        """Python_ScanState.level."""
         return self.indent
     #@+node:ekr.20161116035849.1: *3* py_state.in_context
     def in_context(self):
-        '''True if in a special context.'''
+        """True if in a special context."""
         return (
             self.context or
             self.curlies > 0 or
@@ -493,10 +493,10 @@ class Python_ScanState:
         )
     #@+node:ekr.20161119042358.1: *3* py_state.update
     def update(self, data):
-        '''
+        """
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.bs_nl = bs_nl
         self.context = context
@@ -508,13 +508,13 @@ class Python_ScanState:
     #@-others
 #@+node:ekr.20161231131831.1: ** class PythonTarget
 class PythonTarget:
-    '''
+    """
     A class describing a target node p.
     state is used to cut back the stack.
-    '''
+    """
 
     def __init__(self, p, state):
-        '''Target ctor.'''
+        """Target ctor."""
         self.at_others_flag = False
             # True: @others has been generated for this target.
         self.kind = 'None'  # in ('None', 'class', 'def')

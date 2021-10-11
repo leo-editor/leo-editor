@@ -14,7 +14,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:ekr.20170313021118.1: ** init (settings_finder.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True

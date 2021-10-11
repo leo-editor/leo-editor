@@ -15,7 +15,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20101101135104.15789: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.tree_popup_handlers.append(bzr_qcommands)
     return True
 #@+node:ekr.20140918072425.17927: ** bzr_qcommands

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110125103904.12504: * @file ../plugins/gitarchive.py
-''' Store snapshots of outline in git.'''
+""" Store snapshots of outline in git."""
 
 import codecs
 import hashlib
@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ville.20110121075405.6323: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.plugin_signon(__name__)
     return True
 #@+node:ville.20110121191106.6335: ** contfile

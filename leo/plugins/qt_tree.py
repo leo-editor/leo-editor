@@ -324,10 +324,10 @@ class LeoQtTree(leoFrame.LeoTree):
         #@+others
         #@+node:vitalije.20200329153544.1: *7* sorted_icons
         def sorted_icons(p):
-            '''
+            """
             Returns a list of icon filenames for this node.
             The list is sorted to owner the 'where' key of image dicts.
-            '''
+            """
             icons = c.editCommands.getIconList(p)
             a = [x['file'] for x in icons if x['where'] == 'beforeIcon']
             a.append(iconName)
@@ -887,9 +887,9 @@ class LeoQtTree(leoFrame.LeoTree):
 
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
     def icon_filenames_for_node(self, p, val):
-        '''Prepares and returns a list of icon filenames
+        """Prepares and returns a list of icon filenames
            related to this node.
-        '''
+        """
         nicon = f'box{val:02d}.png'
         fnames = self.nodeIconsDict.get(p.gnx)
         if not fnames:

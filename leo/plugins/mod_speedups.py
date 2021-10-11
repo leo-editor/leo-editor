@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110094759.5843: * @file ../plugins/mod_speedups.py
-''' Experimental speedups
+""" Experimental speedups
 
 Various optimizations. Use at your own risk.
 
 If stuff breaks, disable this plugin before reporting bugs.
 
-'''
+"""
 
 # By VMV.
 import os.path
@@ -15,7 +15,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ville.20090804155017.7594: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     return True
 #@+node:ville.20090804155017.12332: ** os.path shortcuts
 g.os_path_basename = os.path.basename

@@ -2,7 +2,7 @@
 #@+node:tbrown.20080613095157.2: * @file ../plugins/active_path.py
 #@+<< docstring >>
 #@+node:tbrown.20080613095157.3: ** << docstring >> (active_path)
-r'''Synchronizes \@path nodes with folders.
+r"""Synchronizes \@path nodes with folders.
 
 If a node is named '\@path *<path_to_folder>*', the content (file and folder
 names) of the folder and the children of that node will synchronized whenever
@@ -98,7 +98,7 @@ active_path is a rewrite of the at_directory plugin to use \@path directives
 (which influence \@auto and other \@file type directives), and to handle
 sub-folders more automatically.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20140612210500.17669: ** << imports >>
@@ -116,7 +116,7 @@ testing = False
 #@+others
 #@+node:tbrown.20091128094521.15048: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', attachToCommander)
     g.act_on_node.add(active_path_act_on_node, priority=90)
     g.plugin_signon(__name__)
@@ -163,7 +163,7 @@ def attachToCommander(t, k):
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
 #@+node:tbrown.20091128094521.15042: ** popup_entry (active_path)
 def popup_entry(c, p, menu):
-    '''Populate the Path submenu of the popup.'''
+    """Populate the Path submenu of the popup."""
     pathmenu = menu.addMenu("Path")
     d = g.global_commands_dict
     for key in d:

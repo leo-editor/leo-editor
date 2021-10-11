@@ -2,7 +2,7 @@
 #@+node:tbrown.20091029123555.5319: * @file ../plugins/attrib_edit.py
 #@+<< docstring >>
 #@+node:tbrown.20091009210724.10972: ** << docstring >>
-r''' Edits user attributes in a Qt frame.
+r""" Edits user attributes in a Qt frame.
 
 This plugin creates a frame for editing attributes similar to::
 
@@ -99,7 +99,7 @@ plugins. Here are some points of interest:
   attribute list each plugin could address this, with unordered
   presentation in the absence of the client plugin.
 
-'''
+"""
 #@-<< docstring >>
 # Written by TNB.
 
@@ -113,7 +113,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui.guiName() != "qt":
         print('attrib_edit.py plugin not loading because gui is not Qt')
         return False
@@ -520,7 +520,7 @@ class editWatcher:
 #@+node:tbrown.20091009210724.10979: ** class attrib_edit_Controller
 class attrib_edit_Controller:
 
-    '''A per-commander class that manages attribute editing.'''
+    """A per-commander class that manages attribute editing."""
 
     #@+others
     #@+node:tbrown.20091009210724.10981: *3* __init__ & reloadSettings (attrib_edit_Controller)

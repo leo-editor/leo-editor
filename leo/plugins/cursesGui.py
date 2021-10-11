@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150107090324.1: * @file ../plugins/cursesGui.py
-'''A minimal text-oriented gui.'''
+"""A minimal text-oriented gui."""
 #@+at
 # Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
 # are labeled: # undoc: where the AttributeError comes from other implementations
@@ -97,7 +97,7 @@ class textGui(leoGui.LeoGui):
         pass
     #@+node:ekr.20150107090324.13: *3* isTextWidget
     def isTextWidget(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and isinstance(w, leoFrame.StringTextWrapper)
     #@+node:ekr.20150107090324.14: *3* oops
     def oops(self):

@@ -2,7 +2,7 @@
 #@+node:danr7.20060902083957: * @file ../plugins/leo_to_rtf.py
 #@+<< docstring >>
 #@+node:danr7.20060902085340: ** << docstring >> (leo_to_rtf.py)
-r''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file
+r""" Outputs a Leo outline as a numbered list to an RTF file. The RTF file
 can be loaded into Microsoft Word and formatted as a proper outline.
 
 This plug-in loads installs an "Outline to Microsoft RTF" menu item in your
@@ -15,7 +15,7 @@ the rtf_export.ini file in your Leo\plugins folder.
 The default export path is also stored in the INI file. By default, it's
 set to c:\ so you may need to modify it depending on your system.
 
-'''
+"""
 #@-<< docstring >>
 
 # leoToRTF 1.0 plugin by Dan Rahmel
@@ -25,7 +25,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20100128073941.5373: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # Ok for unit testing: creates menu.
     g.registerHandler("create-optional-menus", createExportMenu)
     g.plugin_signon(__name__)

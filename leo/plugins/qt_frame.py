@@ -37,7 +37,7 @@ from leo.plugins.nested_splitter import NestedSplitter
 @g.command('contract-body-pane')
 @g.command('expand-outline-pane')
 def contractBodyPane(event):
-    '''Contract the body pane. Expand the outline/log splitter.'''
+    """Contract the body pane. Expand the outline/log splitter."""
     c = event.get('c')
     if not c:
         return
@@ -49,7 +49,7 @@ expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
 @g.command('contract-log-pane')
 def contractLogPane(event):
-    '''Contract the log pane. Expand the outline pane.'''
+    """Contract the log pane. Expand the outline pane."""
     c = event.get('c')
     if not c:
         return
@@ -60,7 +60,7 @@ def contractLogPane(event):
 @g.command('contract-outline-pane')
 @g.command('expand-body-pane')
 def contractOutlinePane(event):
-    '''Contract the outline pane. Expand the body pane.'''
+    """Contract the outline pane. Expand the body pane."""
     c = event.get('c')
     if not c:
         return
@@ -72,7 +72,7 @@ expandBodyPane = contractOutlinePane
 #@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
 @g.command('expand-log-pane')
 def expandLogPane(event):
-    '''Expand the log pane. Contract the outline pane.'''
+    """Expand the log pane. Contract the outline pane."""
     c = event.get('c')
     if not c:
         return
@@ -82,7 +82,7 @@ def expandLogPane(event):
 #@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
 @g.command('hide-body-pane')
 def hideBodyPane(event):
-    '''Hide the body pane. Fully expand the outline/log splitter.'''
+    """Hide the body pane. Fully expand the outline/log splitter."""
     c = event.get('c')
     if not c:
         return
@@ -90,7 +90,7 @@ def hideBodyPane(event):
 #@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
 @g.command('hide-log-pane')
 def hideLogPane(event):
-    '''Hide the log pane. Fully expand the outline pane.'''
+    """Hide the log pane. Fully expand the outline pane."""
     c = event.get('c')
     if not c:
         return
@@ -98,7 +98,7 @@ def hideLogPane(event):
 #@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
 @g.command('hide-outline-pane')
 def hideOutlinePane(event):
-    '''Hide the outline/log splitter. Fully expand the body pane.'''
+    """Hide the outline/log splitter. Fully expand the body pane."""
     c = event.get('c')
     if not c:
         return

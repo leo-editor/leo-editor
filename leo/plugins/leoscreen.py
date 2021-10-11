@@ -2,7 +2,7 @@
 #@+node:tbrown.20100226095909.12777: * @file ../plugins/leoscreen.py
 #@+<< docstring >>
 #@+node:tbrown.20100226095909.12778: ** << docstring >>
-'''Allows interaction with shell apps via screen.
+"""Allows interaction with shell apps via screen.
 
 status: daily-use py2.7 Wed Aug  5 09:30:38 2015
 
@@ -133,7 +133,7 @@ Leo.
 with the same stdout as the target screen, vs. a different stdout. Although
 stdout is ignored, Popen() needs to ensure it's not just inherited.
 
-'''
+"""
 #@-<< docstring >>
 
 # By TNB.
@@ -156,7 +156,7 @@ from leo.plugins.attrib_edit import ListDialog
 #@+others
 #@+node:tbrown.20100226095909.12781: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
@@ -169,7 +169,7 @@ def onCreate(tag, key):
 #@+node:tbrown.20100226095909.12783: ** class leoscreen_Controller
 class leoscreen_Controller:
 
-    '''A per-commander class that manages screen interaction.'''
+    """A per-commander class that manages screen interaction."""
 
     #@+others
     #@+node:tbrown.20100226095909.12784: *3* __init__& reloadSettings (leoscreen_Controller)

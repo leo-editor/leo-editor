@@ -12,7 +12,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20100128073941.5374: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("command1", timestamp)
     g.plugin_signon(__name__)
     return True  # OK for unit testing.

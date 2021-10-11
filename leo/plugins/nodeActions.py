@@ -210,7 +210,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:TL.20080507213950.7: ** init (nodeActions.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if not g.app.batchMode:
         g.blue("nodeActions: Init")
     ok = not g.unitTesting  # Dangerous for unit testing.

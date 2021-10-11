@@ -16,7 +16,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+others
 #@+node:ekr.20210327072030.1: ** class TestRst (LeoUnitTest)
 class TestRst(LeoUnitTest):
-    '''A class to run rst-related unit tests.'''
+    """A class to run rst-related unit tests."""
 
     def setUp(self):
         super().setUp()

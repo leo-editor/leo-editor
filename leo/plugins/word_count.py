@@ -2,7 +2,7 @@
 #@+node:danr7.20061010105952.1: * @file ../plugins/word_count.py
 #@+<< docstring >>
 #@+node:danr7.20061010105952.2: ** << docstring >>
-'''
+"""
 
 Word Count plugin by Dan Rahmel
 
@@ -12,7 +12,7 @@ Counts characters, words, lines, and paragraphs in the body pane.
 It adds a "Word Count..." option to the bottom of the Edit menu that will
 activate the command.
 
-'''
+"""
 #@-<< docstring >>
 
 #
@@ -22,7 +22,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20070301062245: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = True  # Ok for unit testing: creates menu.
     g.registerHandler("create-optional-menus", createWordCountMenu)
     g.plugin_signon(__name__)

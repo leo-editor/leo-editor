@@ -9,7 +9,7 @@ directives = ("markup",)  # A tuple with one string.
 #@+others
 #@+node:ekr.20070725103420: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("start1", addPluginDirectives)
     return True
 #@+node:edream.110203113231.742: ** addPluginDirectives

@@ -14,7 +14,7 @@ class IdleTime:
     handler takes a single argument, the IdleTime instance::
 
         def handler(timer):
-            '''IdleTime handler.  timer is an IdleTime instance.'''
+            \"""IdleTime handler.  timer is an IdleTime instance.\"""
             delta_t = timer.time-timer.starting_time
             g.trace(timer.count,timer.c.shortFileName(),'%2.4f' % (delta_t))
             if timer.count >= 5:

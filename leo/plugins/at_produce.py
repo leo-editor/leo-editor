@@ -2,7 +2,7 @@
 #@+node:ekr.20040915085351: * @file ../plugins/at_produce.py
 #@+<< docstring >>
 #@+node:ekr.20050311110307: ** << docstring >>
-''' Executes commands in nodes whose body text starts with @produce.
+""" Executes commands in nodes whose body text starts with @produce.
 
 WARNING: trying to execute a non-existent command will hang Leo.
 
@@ -25,7 +25,7 @@ Any output, including error messages, should be there.
 This plugin is not intended as a replacement for make or Ant, but as a
 simple substitute when that machinery is overkill.
 
-'''
+"""
 #@-<< docstring >>
 
 # 2014/09/21: EKR
@@ -44,7 +44,7 @@ pr = '@' + 'produce'
 #@+others
 #@+node:ekr.20040915085351.7: ** addMenu (no longer used)
 def addMenu(tag, keywords):
-    '''Produce two new entries at the end of the Outlines menu.'''
+    """Produce two new entries at the end of the Outlines menu."""
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')
@@ -72,17 +72,17 @@ def produce_selected_f(event):
         run(c, all=False)
 #@+node:ekr.20050311110629.1: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # g.registerHandler(('new','menu2'),addMenu)
     g.globalDirectiveList.append('produce')
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20040915085351.5: ** run & helpers
 def run(c, all):
-    '''
+    """
     Run all @produce nodes in a separate thread.
     Report progress via a timer in *this* thread.
-    '''
+    """
     aList = getList(c, all)
     g.app.at_produce_command = None
     def thread_target():
@@ -101,11 +101,11 @@ def run(c, all):
     timer.start()
 #@+node:ekr.20040915085351.2: *3* getList
 def getList(c, all):
-    '''
+    """
     Return a list of all @produce lines in body texts in an outline.
     all = True:  scan c's entire outline.
     all = False: scan c.p and its descendants.
-    '''
+    """
     aList = []
     iter_ = c.all_positions if all else c.p.self_and_subtree
     for p in iter_():
@@ -115,10 +115,10 @@ def getList(c, all):
     return aList
 #@+node:ekr.20040915085351.6: *3* runList
 def runList(c, aList):
-    '''
+    """
     Run all commands in aList (in a separate thread).
     Do not change Leo's outline in this thread!
-    '''
+    """
     f = open('produce.log', 'w+')
     PIPE = subprocess.PIPE
     try:
@@ -158,7 +158,7 @@ def runList(c, aList):
         f.close()
 #@+node:ekr.20140920173002.17966: *3* timer_callback_helper
 def timer_callback_helper(c, t, timer):
-    '''All drawing must be done in the main thread.'''
+    """All drawing must be done in the main thread."""
     if t.isAlive():
         c._at_produce_count += 1
         if (c._at_produce_count % c._at_produce_max) == 0:

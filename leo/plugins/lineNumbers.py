@@ -2,12 +2,12 @@
 #@+node:ekr.20040419105219: * @file ../plugins/lineNumbers.py
 #@+<< docstring >>
 #@+node:ekr.20101112180523.5423: ** << docstring >>
-''' Adds #line directives in perl and perlpod programs.
+""" Adds #line directives in perl and perlpod programs.
 
 Over-rides two methods in leoAtFile.py to write #line directives after node
 sentinels. This allows compilers to give locations of errors in relation to the
 node name rather than the filename. Currently supports only perl and perlpod.
-'''
+"""
 #@-<< docstring >>
 
 # Use and distribute under the same terms as Leo.
@@ -23,7 +23,7 @@ from leo.core import leoAtFile
 linere = re.compile("^#line 1 \".*\"$")
 
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting  # Not safe for unit testing.  Changes core class.
     if ok:
         #@+<< override write methods >>

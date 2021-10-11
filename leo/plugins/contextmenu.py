@@ -2,7 +2,7 @@
 #@+node:ekr.20090701111504.5294: * @file ../plugins/contextmenu.py
 #@+<< docstring >>
 #@+node:ville.20090630210947.5460: ** << docstring >> (contextmenu.py)
-''' Defines various useful actions for context menus (Qt only).
+""" Defines various useful actions for context menus (Qt only).
 
 Examples are:
 
@@ -18,7 +18,7 @@ Here's an example on how to implement your own context menu items
 in your plugins::
 
     def nextclone_rclick(c,p, menu):
-        """ Go to next clone """
+        \""" Go to next clone\"""
 
         # only show the item if you are on a clone
         # this is what makes this "context sensitive"
@@ -38,7 +38,7 @@ And call this in your plugin *once*::
 
     g.tree_popup_handlers.append(nextclone_rclick)
 
-'''
+"""
 #@-<< docstring >>
 # Original version by Ville M. Vainio.
 
@@ -82,7 +82,7 @@ def context_menu_open(event):
 #@+node:ekr.20200304124723.1: ** startup
 #@+node:ville.20090630210947.5463: *3*  init (contextmenu.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     global inited
     if g.app.gui.guiName() != "qt":
         return False
@@ -355,7 +355,7 @@ def refresh_rclick(c, p, menu):
         action.triggered.connect(refresh_rclick_cb)
 #@+node:ekr.20140724211116.19258: *3* pylint_rclick
 def pylint_rclick(c, p, menu):
-    '''Run pylint on the selected node.'''
+    """Run pylint on the selected node."""
     action = menu.addAction("Run Pylint")
 
     def pylint_rclick_cb(aBool):

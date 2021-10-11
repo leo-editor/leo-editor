@@ -2,7 +2,7 @@
 #@+node:ajones.20070122160142: * @file ../plugins/textnode.py
 #@+<< docstring >>
 #@+node:ajones.20070122160142.1: ** << docstring >> (textnode.py)
-''' Supports @text nodes for reading and writing external files.
+""" Supports @text nodes for reading and writing external files.
 
 This plugin has been superceded by @edit nodes.
 
@@ -14,7 +14,7 @@ are filled with the contents of the text files on disk. To refresh the
 contents of an @text node, execute the double-click-icon-box command on the
 node.
 
-'''
+"""
 #@-<< docstring >>
 
 # Terry Brown: support for @path ancestors and uses universal newline mode for opening.
@@ -25,7 +25,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ajones.20070122160142.2: ** init (textnode.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler(('new', 'open2'), on_open)
     g.registerHandler("save1", on_save)
     g.registerHandler("save2", on_open)

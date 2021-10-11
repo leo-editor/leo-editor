@@ -54,7 +54,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:bobjack.20080615065747.2: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("after-create-leo-frame", on_create)
     g.plugin_signon(__name__)
     return True  # OK for unit testing.

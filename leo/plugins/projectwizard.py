@@ -1,11 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090622063842.5264: * @file ../plugins/projectwizard.py
-''' Creates a wizard that creates @auto nodes.
+""" Creates a wizard that creates @auto nodes.
 
 Opens a file dialog and recursively creates @auto & @path nodes from the path
 where the selected file is (the selected file itself doesn't matter.)
 
-'''
+"""
 # Written by VMV.
 from leo.core import leoGlobals as g
 #
@@ -15,7 +15,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:ville.20090614224528.8139: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.plugin_signon(__name__)

@@ -2,7 +2,7 @@
 #@+node:peckj.20131130132659.5964: * @file ../plugins/nodewatch.py
 #@+<< docstring >>
 #@+node:peckj.20131101132841.6445: ** << docstring >>
-'''
+"""
 Provides a GUI in the Log pane (tab name 'Nodewatch') that lists node headlines.
 The nodes that show up in this GUI are scriptable on a per-outline basis, with
 @nodewatch nodes.
@@ -94,7 +94,7 @@ nodewatch-refresh
 Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 (same as clicking the refresh button in the nodewatch GUI).
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20131101132841.6447: ** << imports >>
@@ -107,7 +107,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:peckj.20131101132841.6448: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
@@ -139,7 +139,7 @@ class NodewatchController:
         c.frame.log.createTab('Nodewatch', widget=self.ui)
     #@+node:peckj.20131101132841.6453: *3* add
     def add(self, key, values):
-        ''' add a list of vnodes ('values') to the nodewatch category 'key' '''
+        """ add a list of vnodes ('values') to the nodewatch category 'key' """
         self.watchlists[key] = list(enumerate(values))
     #@-others
 #@+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget
@@ -240,7 +240,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         self.label.setText("Total: %s items" % count)
     #@+node:peckj.20131101132841.6458: *4* update_all
     def update_all(self, event=None):
-        ''' updates the nodewatch GUI by running all valid @nodewatch nodes '''
+        """ updates the nodewatch GUI by running all valid @nodewatch nodes """
         key = str(self.comboBox.currentText())
         self.update_combobox()
         if key:
@@ -254,7 +254,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
     #@+node:peckj.20131104093045.6578: *3* helpers
     #@+node:peckj.20131104093045.6579: *4* get_valid_nodewatch_nodes
     def get_valid_nodewatch_nodes(self):
-        ''' returns a list of valid vnodes '''
+        """ returns a list of valid vnodes """
         nodes = []
         for node in self.c.all_unique_nodes():
             if node.h.startswith('@nodewatch'):

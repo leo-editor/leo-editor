@@ -2,7 +2,7 @@
 #@+node:ekr.20040910070811.1: * @file ../plugins/run_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912181956: ** << docstring >> (run_nodes.py)
-r''' Runs a program and interface Leo through its input/output/error streams.
+r""" Runs a program and interface Leo through its input/output/error streams.
 
 The double-click-icon-box command on a node whose headlines is @run 'cmd args' will execute
 the command. There are several other features, including @arg and @input nodes.
@@ -33,7 +33,7 @@ they will be launched successively. (Unless one returned an exit code other
 than 0, then it will stop there)
 
 By Alexis Gendron Paquette. Please send comments to the Leo forums.
-'''
+"""
 #@-<< docstring >>
 
 # At present, this plugin is *broken*.
@@ -73,7 +73,7 @@ OwnIdleHook = False
 #@+others
 #@+node:ekr.20060108160737: ** init (run_nodes.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("bodykey2", OnBodyKey)
     g.registerHandler("icondclick2", OnIconDoubleClick)
     g.registerHandler("end1", OnQuit)
@@ -190,7 +190,7 @@ class readingThread(threading.Thread):
     #@+node:ekr.20040910070811.7: *3* run
     def run(self):
 
-        '''Called automatically when the thread is created.'''
+        """Called automatically when the thread is created."""
 
         global Encoding
 

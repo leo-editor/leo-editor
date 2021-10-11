@@ -2,7 +2,7 @@
 #@+node:ekr.20040916084945: * @file ../plugins/macros.py
 #@+<< docstring >>
 #@+node:ekr.20061102090532: ** << docstring >>
-r''' Creates new nodes containing parameterized section reference.
+r""" Creates new nodes containing parameterized section reference.
 
 .. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117
 
@@ -61,7 +61,7 @@ Go to Outline Menu and select Parameterize Section Reference command.
 
 It's a lot easier to use than to explain!
 
-'''
+"""
 #@-<< docstring >>
 # BobS & EKR.
 import re
@@ -69,14 +69,14 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20070302121133: ** init
 def init():
-    '''Return True if this plugin loaded correctly.'''
+    """Return True if this plugin loaded correctly."""
     # Ok for unit testing: adds command to Outline menu.
     g.registerHandler(('new', 'menu2'), onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag, keywords):
-    '''Create the per-commander instance of ParamClass.'''
+    """Create the per-commander instance of ParamClass."""
     c = keywords.get("c")
     if c:
         ParamClass(c)
@@ -86,7 +86,7 @@ class ParamClass:
     #@+others
     #@+node:ekr.20040916091520.3: *3* __init__
     def __init__(self, c):
-        '''Ctor for ParamClass.'''
+        """Ctor for ParamClass."""
         self.c = c
         self.pattern = g.angleBrackets(r'\s*\w*?\s*\(\s*([^,]*?,)\s*?(\w+)\s*\)\s*') + '$'
         self.regex = re.compile(self.pattern)
@@ -136,7 +136,7 @@ class ParamClass:
         c.redraw()
     #@+node:ekr.20040916084945.2: *3* findParameters
     def findParameters(self, p):
-        '''Find the parameterized nodes in p's parents..'''
+        """Find the parameterized nodes in p's parents.."""
         tag = "parameterized nodes"
         for parent in p.parents():
             for sib in parent.self_and_siblings():
@@ -146,7 +146,7 @@ class ParamClass:
         return None
     #@+node:ekr.20040916084945.3: *3* addMenu
     def addMenu(self):
-        '''Add a submenu in the outline menu.'''
+        """Add a submenu in the outline menu."""
         c = self.c
         table = (
             ("Parameterize Section Reference", None, self.parameterize),

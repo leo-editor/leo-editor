@@ -2,7 +2,7 @@
 #@+node:ville.20091009202416.10040: * @file ../plugins/leoremote.py
 #@+<< docstring >>
 #@+node:ville.20091009202416.10041: ** << docstring >> (leoremote.py)
-''' Remote control for Leo.
+""" Remote control for Leo.
 
     NOTE: as of 2015-07-29 the http://localhostL:8130/_/exec/ mode of
     the mod_http plug-in is intended to replace this module's functionality.
@@ -20,15 +20,15 @@ Example client::
     addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
     print("will connect to",addr)
     pc  = lproto.LProtoClient(addr)
-    pc.send("""
+    pc.send(\"""
         g.es("hello world from remote")
         c = g.app.commanders()[0]
-    """)
+    \""")
 
     # note how c persists between calls
-    pc.send("""c.k.simulateCommand('stickynote')""")
+    pc.send('''c.k.simulateCommand('stickynote')''')
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20160519045636.1: ** << imports >> (leoremote.py)
@@ -41,7 +41,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ville.20091009202416.10045: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = True
     if ok:
         #g.registerHandler('start2',onStart2)

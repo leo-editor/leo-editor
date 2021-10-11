@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160412101901.1: * @file ../plugins/writers/ipynb.py
-'''The @auto write code for jupyter (.ipynb) files.'''
+"""The @auto write code for jupyter (.ipynb) files."""
 import json
 import re
 import sys
@@ -10,10 +10,10 @@ import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
 class Export_IPYNB(basewriter.BaseWriter):
-    '''A class to export outlines to .ipynb files.'''
+    """A class to export outlines to .ipynb files."""
 
     def __init__(self, c):
-        '''Ctor for Import_IPYNB class.'''
+        """Ctor for Import_IPYNB class."""
         super().__init__(c)
         self.c = c
             # Commander of present outline.
@@ -24,10 +24,10 @@ class Export_IPYNB(basewriter.BaseWriter):
     #@+node:ekr.20160412114852.1: *3*  ipy_w.Entries
     #@+node:ekr.20160412101845.4: *4* ipy_w.export_outline
     def export_outline(self, root, fn=None):
-        '''
+        """
         Entry point for export-jupyter-notebook
         Export the given .ipynb file.
-        '''
+        """
         self.root = root
         if not fn:
             fn = self.get_file_name()
@@ -51,10 +51,10 @@ class Export_IPYNB(basewriter.BaseWriter):
         return True
     #@+node:ekr.20160412114239.1: *4* ipy_w.write: @auto entry
     def write(self, root):
-        '''
+        """
         Export_IPYNB: entry point for @auto writes.
         Signature must match signature of BaseWriter.write().
-        '''
+        """
         if not root:
             g.trace('can not happen: no root')
             return False
@@ -71,22 +71,22 @@ class Export_IPYNB(basewriter.BaseWriter):
         return True
     #@+node:ekr.20180409081735.1: *3* ipy_w.cell_type
     def cell_type(self, p):
-        '''Return the Jupyter cell type of p.b, honoring ancestor directives.'''
+        """Return the Jupyter cell type of p.b, honoring ancestor directives."""
         c = self.c
         language = g.getLanguageAtPosition(c, p)
         return 'code' if language == 'python' else 'markdown'
     #@+node:ekr.20180410045324.1: *3* ipy_w.clean_headline
     def clean_headline(self, s):
-        '''
+        """
         Return a cleaned version of a headline.
 
         Used to clean section names and the [ ] part of markdown links.
-        '''
+        """
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
         return ''.join(aList).rstrip('-').strip()
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
-        '''Convert the notebook to a string.'''
+        """Convert the notebook to a string."""
         # Do *not* catch exceptions here.
         s = json.dumps(nb,
             sort_keys=True,
@@ -94,7 +94,7 @@ class Export_IPYNB(basewriter.BaseWriter):
         return g.toUnicode(s)
     #@+node:ekr.20160412101845.21: *3* ipy_w.default_metadata
     def default_metadata(self):
-        '''Return the default top-level metadata.'''
+        """Return the default top-level metadata."""
         n1, n2 = sys.version_info[0], sys.version_info[1]
         version = n1
         long_version = '%s.%s' % (n1, n2)
@@ -123,7 +123,7 @@ class Export_IPYNB(basewriter.BaseWriter):
         }
     #@+node:ekr.20180408103729.1: *3* ipy_w.get_file_name
     def get_file_name(self):
-        '''Open a dialog to write a Jupyter (.ipynb) file.'''
+        """Open a dialog to write a Jupyter (.ipynb) file."""
         c = self.c
         fn = g.app.gui.runSaveFileDialog(
             c,
@@ -139,7 +139,7 @@ class Export_IPYNB(basewriter.BaseWriter):
         return fn
     #@+node:ekr.20180407193222.1: *3* ipy_w.get_ua
     def get_ua(self, p, key=None):
-        '''Return the ipynb uA. If key is given, return the inner dict.'''
+        """Return the ipynb uA. If key is given, return the inner dict."""
         d = p.v.u.get('ipynb')
         if not d:
             return {}
@@ -148,7 +148,7 @@ class Export_IPYNB(basewriter.BaseWriter):
         return d
     #@+node:ekr.20180407191219.1: *3* ipy_w.make_notebook
     def make_notebook(self):
-        '''Create a JSON notebook'''
+        """Create a JSON notebook"""
         root = self.root
         nb = self.get_ua(root, key='prefix') or self.default_metadata()
         # Write the expansion status of the root.
@@ -160,7 +160,7 @@ class Export_IPYNB(basewriter.BaseWriter):
         return nb
     #@+node:ekr.20180407195341.1: *3* ipy_w.put_body & helpers
     def put_body(self, p):
-        '''Put the body text of p, as an element of dict d.'''
+        """Put the body text of p, as an element of dict d."""
         cell = self.get_ua(p, 'cell') or {}
         meta = cell.get('metadata') or {}
         self.update_cell_properties(cell, meta, p)
@@ -173,7 +173,7 @@ class Export_IPYNB(basewriter.BaseWriter):
     pat2 = re.compile(r'^\s*([#]+)')
 
     def update_cell_body(self, cell, meta, p):
-        '''Create a new body text, depending on kind.'''
+        """Create a new body text, depending on kind."""
 
         def clean(lines):
             lines = [z for z in lines if not g.isDirective(z)]
@@ -199,7 +199,7 @@ class Export_IPYNB(basewriter.BaseWriter):
         cell ['source'] = lines
     #@+node:ekr.20180409120454.1: *4* ipy_w.update_cell_properties
     def update_cell_properties(self, cell, meta, p):
-        '''Update cell properties.'''
+        """Update cell properties."""
         # Update the metadata.
         meta ['leo_headline'] = p.h
         meta ['collapsed'] = not p.isExpanded()

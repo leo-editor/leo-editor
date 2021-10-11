@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130808211520.15893: * @file ../plugins/timestamp.py
-'''If this plugin is enabled, the following node attributes will be managed:
+"""If this plugin is enabled, the following node attributes will be managed:
     - str_ctime: creation time
     - str_mtime: time node was last modified
     - str_atime: time node contents were last viewed
-'''
+"""
 
 # By Kent Tenney
 
@@ -16,7 +16,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20130808211520.15895: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('new', new_hook)
     g.registerHandler('create-node', create_node_hook)
     g.registerHandler('select1', select1_hook)
@@ -24,8 +24,8 @@ def init():
     return True
 #@+node:ekr.20130808211520.15896: ** get_timestamp_now
 def get_timestamp_now():
-    '''Use standard Unix timestamps
-    '''
+    """Use standard Unix timestamps
+    """
 
     # local time as a time struct
     now = time.localtime()
@@ -36,9 +36,9 @@ def get_timestamp_now():
 
 #@+node:ekr.20130808211520.15897: ** new_hook
 def new_hook(tag, keywords):
-    '''Hooked to <new> event, fired when a Leo file is created,
+    """Hooked to <new> event, fired when a Leo file is created,
     which the create_node_hook doesn't handle.
-    '''
+    """
 
     c = keywords['c']
     root = c.rootPosition()
@@ -48,8 +48,8 @@ def new_hook(tag, keywords):
 
 #@+node:ekr.20130808211520.15898: ** create_node_hook
 def create_node_hook(tag, keywords):
-    '''Hooked to <create-node> = set all 3 timestamps to now
-    '''
+    """Hooked to <create-node> = set all 3 timestamps to now
+    """
 
     timestamp = get_timestamp_now()
     d = keywords['p'].v.u
@@ -57,9 +57,9 @@ def create_node_hook(tag, keywords):
 
 #@+node:ekr.20130808211520.15899: ** select1_hook
 def select1_hook(tag, keywords):
-    '''Hooked to select1, which fires when focus changes
+    """Hooked to select1, which fires when focus changes
     Always sets str_atime to now, sets str_mtime if node body has changed
-    '''
+    """
 
     prev = keywords['old_p'].v
     current = keywords['new_p'].v

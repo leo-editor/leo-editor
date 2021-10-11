@@ -2,7 +2,7 @@
 #@+node:peckj.20140811080604.9496: * @file ../plugins/sftp.py
 #@+<< docstring >>
 #@+node:peckj.20140218144401.6036: ** << docstring >>
-'''@edit-like functionality for remote files over SFTP
+"""@edit-like functionality for remote files over SFTP
 
 By Jacob M. Peck
 
@@ -91,7 +91,7 @@ sftp-forget-credentials
 Makes sftp.py forget your entered passwords. Only available if `@bool
 sftp-cache-credentials = True`.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20140218144401.6038: ** << imports >>
@@ -162,7 +162,7 @@ class SFTPController:
             g.es('sftp.py:', s)
     #@+node:peckj.20140218144401.6159: *4* get_params
     def get_params(self, headline):
-        ''' headline in the format:
+        """ headline in the format:
         @sftp username@hostname!port:path/to/remote/file
         or
         @sftp username@hostname:path/to/remote/file
@@ -170,7 +170,7 @@ class SFTPController:
         @sftp hostname!port:path/to/remote/file
         or
         @sftp hostname:path/to/remote/file
-        '''
+        """
         username = None
         port = None
         headline = headline.split(' ', 1)[1]  # strip the @sftp bit

@@ -41,7 +41,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20130419143128.29676: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.unitTesting:
         return False
     ok = g.app.gui.guiName() == 'qt'
@@ -63,7 +63,7 @@ class Recorder:
     #@+others
     #@+node:tbrown.20130419143128.29670: *3* __init__
     def __init__(self):
-        '''Ctor for Recorder class.'''
+        """Ctor for Recorder class."""
         self.recording = False
         self.frame = 0
         self.pointer_pmap = self.make_pointer()

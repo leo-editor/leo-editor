@@ -2,11 +2,11 @@
 #@+node:ekr.20100103093121.5339: * @file ../plugins/stickynotes_plus.py
 #@+<< docstring >>
 #@+node:ekr.20100103100944.5389: ** << docstring >>
-''' Adds simple "sticky notes" feature (popout editors) for Qt gui.
+""" Adds simple "sticky notes" feature (popout editors) for Qt gui.
 
 alt-x stickynote to pop out current node as a note.
 
-'''
+"""
 #@-<< docstring >>
 # Disable Qt warnings.
 #@+<< imports >>
@@ -67,7 +67,7 @@ def decorate_window(w):
 
 #@+node:ekr.20100103100944.5393: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = markdown is not None and g.app.gui.guiName() == "qt"
         # Markdown fails on Python 3k at present.
     if ok:

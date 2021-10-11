@@ -235,7 +235,7 @@ from leo.core import leoGui
 #@+others
 #@+node:ekr.20210228135810.1: ** cmd decorator
 def eval_cmd(name):
-    '''Command decorator for the EvalController class.'''
+    """Command decorator for the EvalController class."""
     return g.new_cmd_decorator(name, ['c', 'evalController',])
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
@@ -290,7 +290,7 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     return rclicks
 #@+node:ekr.20060328125248.4: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     # This plugin is now gui-independent.
@@ -317,11 +317,11 @@ def onCreate(tag, keys):
         c.evalController = EvalController(c)
 #@+node:ekr.20141031053508.7: ** class AtButtonCallback
 class AtButtonCallback:
-    '''A class whose __call__ method is a callback for @button nodes.'''
+    """A class whose __call__ method is a callback for @button nodes."""
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self, controller, b, c, buttonText, docstring, gnx, script):
-        '''AtButtonCallback.__init__.'''
+        """AtButtonCallback.__init__."""
         self.b = b
             # A QButton.
         self.buttonText = buttonText
@@ -340,24 +340,24 @@ class AtButtonCallback:
             # The docstring for this callback for g.getDocStringForFunction.
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event=None):
-        '''AtButtonCallbgack.__call__. The callback for @button nodes.'''
+        """AtButtonCallbgack.__call__. The callback for @button nodes."""
         self.execute_script()
     #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
     def __repr__(self):
-        '''AtButtonCallback.__repr__.'''
+        """AtButtonCallback.__repr__."""
         c = self.c
         return 'AtButtonCallback %s gnx: %s len(script) %s' % (
             c.shortFileName(), self.gnx, len(self.script or ''))
     #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
     def __getattr__(self, attr):
-        '''AtButtonCallback.__getattr__. Implement __name__.'''
+        """AtButtonCallback.__getattr__. Implement __name__."""
         if attr == '__name__':
             return 'AtButtonCallback: %s' % self.gnx
         raise AttributeError
             # Returning None is not correct.
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
-        '''Execute the script associated with this button.'''
+        """Execute the script associated with this button."""
         script = self.find_script()
         if script:
             self.controller.executeScriptFromButton(
@@ -392,7 +392,7 @@ class AtButtonCallback:
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
 class ScriptingController:
-    '''A class defining scripting commands.'''
+    """A class defining scripting commands."""
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor
     def __init__(self, c, iconBar=None):
@@ -441,7 +441,7 @@ class ScriptingController:
     #@+node:ekr.20150401113822.1: *3* sc.Callbacks
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
     def addScriptButtonCommand(self, event=None):
-        '''Called when the user presses the 'script-button' button or executes the script-button command.'''
+        """Called when the user presses the 'script-button' button or executes the script-button command."""
         c = self.c
         p = c.p
         h = p.h
@@ -454,7 +454,7 @@ class ScriptingController:
         c.bodyWantsFocus()
     #@+node:ekr.20060522105937.1: *4* sc.runDebugScriptCommand
     def runDebugScriptCommand(self, event=None):
-        '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
+        """Called when user presses the 'debug-script' button or executes the debug-script command."""
         c = self.c
         p = c.p
         script = g.getScript(c, p, useSelectedText=True, useSentinels=False)
@@ -512,7 +512,7 @@ class ScriptingController:
         c.bodyWantsFocus()
     #@+node:ekr.20060328125248.21: *4* sc.runScriptCommand
     def runScriptCommand(self, event=None):
-        '''Called when user presses the 'run-script' button or executes the run-script command.'''
+        """Called when user presses the 'run-script' button or executes the run-script command."""
         c, p = self.c, self.c.p
         args = self.getArgs(p)
         g.app.scriptDict = {'script_gnx': p.gnx}
@@ -522,7 +522,7 @@ class ScriptingController:
             c.bodyWantsFocus()
     #@+node:ekr.20060328125248.8: *3* sc.createAllButtons
     def createAllButtons(self):
-        '''Scan for @button, @rclick, @command, @plugin and @script nodes.'''
+        """Scan for @button, @rclick, @command, @plugin and @script nodes."""
         c = self.c
         if self.scanned:
             return  # Defensive.
@@ -572,7 +572,7 @@ class ScriptingController:
         kind='at-button',
         verbose=True,
     ):
-        '''Create a button for a local @button node.'''
+        """Create a button for a local @button node."""
         c = self.c
         buttonText = self.cleanButtonText(h, minimal=True)
         args = self.getArgs(p)
@@ -621,7 +621,7 @@ class ScriptingController:
         return b
     #@+node:ekr.20060328125248.17: *3* sc.createIconButton (creates all buttons)
     def createIconButton(self, args, text, command, statusLine, bg=None, kind=None):
-        '''
+        """
         Create one icon button.
         This method creates all scripting icon buttons.
 
@@ -630,7 +630,7 @@ class ScriptingController:
         - Registers command with the shortcut.
         - Creates x amd delete-x-button commands, where x is the cleaned button name.
         - Binds a right-click in the button to a callback that deletes the button.
-        '''
+        """
         c = self.c
         # Create the button and add it to the buttons dict.
         commandName = self.cleanButtonText(text)
@@ -672,7 +672,7 @@ class ScriptingController:
         return b
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
     def executeScriptFromButton(self, b, buttonText, p, script, script_gnx=None):
-        '''Execute an @button script in p.b or script.'''
+        """Execute an @button script in p.b or script."""
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
@@ -693,13 +693,13 @@ class ScriptingController:
             # c.bodyWantsFocus()
     #@+node:ekr.20130912061655.11294: *3* sc.open_gnx
     def open_gnx(self, c, gnx):
-        '''
+        """
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and select the specified node.
         Return c,p of the found node.
 
         Called only from a callback in QtIconBarClass.setCommandForButton.
-        '''
+        """
         if not gnx:
             g.trace('can not happen: no gnx')
         # First, look in commander c.
@@ -723,7 +723,7 @@ class ScriptingController:
     # Important: common @button and @command nodes do **not** update dynamically!
     #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
     def createCommonButtons(self):
-        '''Handle all global @button nodes.'''
+        """Handle all global @button nodes."""
         c = self.c
         buttons = c.config.getButtons() or []
         for z in buttons:
@@ -736,7 +736,7 @@ class ScriptingController:
                 self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
     def createCommonButton(self, p, script, rclicks=None):
-        '''
+        """
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
 
@@ -745,7 +745,7 @@ class ScriptingController:
         callback executes the static script.
 
         See https://github.com/leo-editor/leo-editor/issues/171
-        '''
+        """
         c = self.c
         gnx = p.gnx
         args = self.getArgs(p)
@@ -803,7 +803,7 @@ class ScriptingController:
             tag='@button')
     #@+node:ekr.20080312071248.2: *4* sc.createCommonCommands
     def createCommonCommands(self):
-        '''Handle all global @command nodes.'''
+        """Handle all global @command nodes."""
         c = self.c
         aList = c.config.getCommands() or []
         for z in aList:
@@ -815,7 +815,7 @@ class ScriptingController:
                 self.createCommonCommand(p, script)
     #@+node:ekr.20150401130818.1: *4* sc.createCommonCommand (common @command)
     def createCommonCommand(self, p, script):
-        '''
+        """
         Handle a single @command node.
 
         Important: Common @button and @command scripts now *do* update
@@ -823,7 +823,7 @@ class ScriptingController:
         callback executes the static script.
 
         See https://github.com/leo-editor/leo-editor/issues/171
-        '''
+        """
         c = self.c
         args = self.getArgs(p)
         commonCommandCallback = AtButtonCallback(
@@ -846,7 +846,7 @@ class ScriptingController:
     #@+node:ekr.20150401130313.1: *3* sc.Scripts, individual
     #@+node:ekr.20060328125248.12: *4* sc.handleAtButtonNode @button
     def handleAtButtonNode(self, p):
-        '''
+        """
         Create a button in the icon area for an @button node.
 
         An optional @key=shortcut defines a shortcut that is bound to the button's script.
@@ -855,7 +855,7 @@ class ScriptingController:
 
         An optional @color=colorname defines a color for the button's background.  It does
         not appear in the status line nor the button name.
-        '''
+        """
         h = p.h
         shortcut = self.getShortcut(h)
         docstring = g.getDocString(p.b).strip()
@@ -867,7 +867,7 @@ class ScriptingController:
         self.createLocalAtButtonHelper(p, h, statusLine, verbose=False)
     #@+node:ekr.20060328125248.10: *4* sc.handleAtCommandNode @command
     def handleAtCommandNode(self, p):
-        '''Handle @command name [@key[=]shortcut].'''
+        """Handle @command name [@key[=]shortcut]."""
         c = self.c
         if not p.h.strip():
             return
@@ -906,7 +906,7 @@ class ScriptingController:
             g.loadOnePlugin(moduleOrFileName)
     #@+node:peckj.20131113130420.6851: *4* sc.handleAtRclickNode @rclick
     def handleAtRclickNode(self, p):
-        '''Handle @rclick name [@key[=]shortcut].'''
+        """Handle @rclick name [@key[=]shortcut]."""
         c = self.c
         if not p.h.strip():
             return
@@ -937,7 +937,7 @@ class ScriptingController:
 
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
     def handleAtScriptNode(self, p):
-        '''Handle @script nodes.'''
+        """Handle @script nodes."""
         c = self.c
         tag = "@script"
         assert g.match(p.h, 0, tag)
@@ -954,7 +954,7 @@ class ScriptingController:
     #@+node:ekr.20150401125747.1: *3* sc.Standard buttons
     #@+node:ekr.20060522105937: *4* sc.createDebugIconButton 'debug-script'
     def createDebugIconButton(self):
-        '''Create the 'debug-script' button and the debug-script command.'''
+        """Create the 'debug-script' button and the debug-script command."""
         self.createIconButton(
             args=None,
             text='debug-script',
@@ -963,7 +963,7 @@ class ScriptingController:
             kind='debug-script')
     #@+node:ekr.20060328125248.20: *4* sc.createRunScriptIconButton 'run-script'
     def createRunScriptIconButton(self):
-        '''Create the 'run-script' button and the run-script command.'''
+        """Create the 'run-script' button and the run-script command."""
         self.createIconButton(
             args=None,
             text='run-script',
@@ -973,7 +973,7 @@ class ScriptingController:
         )
     #@+node:ekr.20060328125248.22: *4* sc.createScriptButtonIconButton 'script-button'
     def createScriptButtonIconButton(self):
-        '''Create the 'script-button' button and the script-button command.'''
+        """Create the 'script-button' button and the script-button command."""
         self.createIconButton(
             args=None,
             text='script-button',
@@ -983,10 +983,10 @@ class ScriptingController:
     #@+node:ekr.20061014075212: *3* sc.Utils
     #@+node:ekr.20060929135558: *4* sc.cleanButtonText
     def cleanButtonText(self, s, minimal=False):
-        '''
+        """
         Clean the text following @button or @command so
         that it is a valid name of a minibuffer command.
-        '''
+        """
         # #1121: Don't lowercase anything.
         if minimal:
             return s.replace(' ', '-').strip('-')
@@ -1018,7 +1018,7 @@ class ScriptingController:
             self.c.bodyWantsFocus()
     #@+node:ekr.20080813064908.4: *4* sc.getArgs
     def getArgs(self, p):
-        '''Return the list of @args field of p.h.'''
+        """Return the list of @args field of p.h."""
         args: List[str] = []
         if not p:
             return args
@@ -1042,7 +1042,7 @@ class ScriptingController:
         return args
     #@+node:ekr.20060328125248.15: *4* sc.getButtonText
     def getButtonText(self, h):
-        '''Returns the button text found in the given headline string'''
+        """Returns the button text found in the given headline string"""
         tag = "@button"
         if g.match_word(h, 0, tag):
             h = h[len(tag) :].strip()
@@ -1060,7 +1060,7 @@ class ScriptingController:
         return buttonText
     #@+node:peckj.20140103101946.10404: *4* sc.getColor
     def getColor(self, h):
-        '''Returns the background color from the given headline string'''
+        """Returns the background color from the given headline string"""
         color = None
         tag = '@color'
         i = h.find(tag)
@@ -1075,7 +1075,7 @@ class ScriptingController:
         return color
     #@+node:ekr.20060328125248.16: *4* sc.getShortcut
     def getShortcut(self, h):
-        '''Return the keyboard shortcut from the given headline string'''
+        """Return the keyboard shortcut from the given headline string"""
         shortcut = None
         i = h.find('@key')
         if i > -1:
@@ -1092,7 +1092,7 @@ class ScriptingController:
         return shortcut
     #@+node:ekr.20150402042350.1: *4* sc.getScript
     def getScript(self, p):
-        '''Return the script composed from p and its descendants.'''
+        """Return the script composed from p and its descendants."""
         return (
             g.getScript(self.c, p,
                 useSelectedText=False,
@@ -1101,7 +1101,7 @@ class ScriptingController:
             ))
     #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
     def registerAllCommands(self, args, func, h, pane, source_c=None, tag=None):
-        '''Register @button <name> and @rclick <name> and <name>'''
+        """Register @button <name> and @rclick <name> and <name>"""
         c, k = self.c, self.c.k
         trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
@@ -1144,7 +1144,7 @@ class ScriptingController:
                     )
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
-        '''Set the background color of Qt button b to bg.'''
+        """Set the background color of Qt button b to bg."""
         if not bg:
             return
         if not bg.startswith('#'):
@@ -1179,11 +1179,11 @@ class ScriptingController:
 scriptingController = ScriptingController
 #@+node:ekr.20180328085038.1: ** class EvalController
 class EvalController:
-    '''A class defining all eval-* commands.'''
+    """A class defining all eval-* commands."""
     #@+others
     #@+node:ekr.20180328130835.1: *3* eval.Birth
     def __init__(self, c):
-        '''Ctor for EvalController class.'''
+        """Ctor for EvalController class."""
         self.answers = []
         self.c = c
         self.d: Dict[str, Any] = {}
@@ -1245,7 +1245,7 @@ class EvalController:
     def eval_block(self, event):
         #@+<< eval-block docstring >>
         #@+node:ekr.20180328100415.1: *5* << eval-block docstring >>
-        '''
+        """
         In the body, "# >>>" marks the end of a code block, and "# <<<" marks
         the end of an output block.  E.g.::
 
@@ -1267,7 +1267,7 @@ class EvalController:
         because ``eval-block`` will add them as needed.  So just type the
         first code block and run ``eval-block``.
 
-        '''
+        """
         #@-<< eval-block docstring >>
         c = self.c
         if c != event.get('c'):
@@ -1372,7 +1372,7 @@ class EvalController:
     #@+node:ekr.20180328151652.1: *3* eval.Helpers
     #@+node:ekr.20180328090830.1: *4* eval.eval_text & helpers
     def eval_text(self, s):
-        '''Evaluate string s.'''
+        """Evaluate string s."""
         s = textwrap.dedent(s)
         if not s.strip():
             return None
@@ -1454,7 +1454,7 @@ class EvalController:
                 g.restoreStdout()
     #@+node:ekr.20180328132748.1: *5* eval.show_answers
     def show_answers(self):
-        ''' Show all new values computed by do_exec.'''
+        """ Show all new values computed by do_exec."""
         if len(self.answers) > 1:
             g.es('')
         for answer in self.answers:

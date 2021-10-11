@@ -2,7 +2,8 @@
 #@+node:EKR.20040517080049.4: * @file ../plugins/open_shell.py
 #@+<< docstring >>
 #@+node:ekr.20050111112200: ** << docstring >>
-''' Creates an 'Extensions' menu containing two commands:
+"""
+Creates an 'Extensions' menu containing two commands:
 Open Console Window and Open Explorer.
 
 The Open Console Window command opens xterm on Linux.
@@ -17,7 +18,7 @@ Current limitations:
 - Not tested on Mac OS X ...
 - On Linux, xterm must be in your path.
 
-'''
+"""
 #@-<< docstring >>
 
 # Written by Ed Taekema.  Modified by EKR
@@ -37,7 +38,7 @@ else:
 #@+others
 #@+node:ekr.20060107110126: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # Ok for unit testing: creates a new menu.
     g.registerHandler("after-create-leo-frame", onCreate)
     g.plugin_signon(__name__)

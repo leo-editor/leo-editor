@@ -1937,7 +1937,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     # pc.deactivate()
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
-        '''Embed widget w in the free_layout splitter.'''
+        """Embed widget w in the free_layout splitter."""
         pc = self; c = pc.c #X ; splitter = pc.splitter
         pc.w = w
         layout = self.layout()
@@ -1980,7 +1980,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # g.warning('invalid body background color: %s' % (colorName))
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
-        '''Return True if we must update the rendering pane.'''
+        """Return True if we must update the rendering pane."""
         _must_update = False
         pc = self
         c, p = pc.c, pc.c.p

@@ -2,7 +2,7 @@
 #@+node:ekr.20100103093121.5329: * @file ../plugins/stickynotes.py
 #@+<< docstring >>
 #@+node:vivainio2.20091008133028.5821: ** << docstring >>
-''' Adds simple "sticky notes" feature (popout editors) for Qt gui.
+""" Adds simple "sticky notes" feature (popout editors) for Qt gui.
 
 Adds the following (``Alt-X``) commands:
 
@@ -50,7 +50,7 @@ The decoded data should appear in the popoup window, if not, close the Leo
 file **without saving**.  If you have multiple encoded nodes, repeat this
 process for each one.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:vivainio2.20091008133028.5823: ** << imports >> (stickynotes.py)
@@ -96,7 +96,7 @@ def decorate_window(c, w):
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.plugin_signon(__name__)
@@ -542,7 +542,7 @@ def tabula_f(event):
 #@+node:ville.20100704010850.5588: *3* @g.command('tabula-show')
 @g.command('tabula-show')
 def tabula_show_f(event):
-    '''Show the`Tabula` sticky note dock window, without adding the current node.'''
+    """Show the`Tabula` sticky note dock window, without adding the current node."""
     c = event['c']
 
     tabula_show(c)

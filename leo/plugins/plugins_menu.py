@@ -2,7 +2,7 @@
 #@+node:EKR.20040517080555.2: * @file ../plugins/plugins_menu.py
 #@+<< docstring >>
 #@+node:ekr.20050101090207.9: ** << docstring >>
-''' Creates a Plugins menu and adds all actives plugins to it.
+""" Creates a Plugins menu and adds all actives plugins to it.
 
 Selecting these menu items will bring up a short **About Plugin** dialog
 with the details of the plugin. In some circumstances a submenu will be created
@@ -50,7 +50,7 @@ __plugin_priority__
     To change the order select a number outside the range 0-200 since this range
     is used internally for sorting alphabetically. Properties and INI files.
 
-'''
+"""
 #@-<< docstring >>
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
 # To do: add Revert button to each dialog.
@@ -117,7 +117,7 @@ def addPluginMenuItem(p, c):
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
 def createPluginsMenu(tag, keywords):
-    '''Create the plugins menu: calld from create-optional-menus hook.'''
+    """Create the plugins menu: calld from create-optional-menus hook."""
     c = keywords.get("c")
     if not c:
         return
@@ -166,7 +166,7 @@ def add_menu_from_settings(c):
                 return
 #@+node:ekr.20070302175530: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.unitTesting:
         return False
     if not g.app.gui:
@@ -256,10 +256,10 @@ class PlugIn:
             self.hastoplevel = False
     #@+node:EKR.20040517080555.7: *4* create_menu (Plugin)
     def create_menu(self):
-        '''
+        """
         Add items in the main menu for each decorated command in this plugin.
         The g.command decorator sets func.is_command & func.command_name.
-        '''
+        """
         self.othercmds = {}
         for item in self.mod.__dict__.keys():
             func = self.mod.__dict__[item]

@@ -31,7 +31,7 @@ OKFLAG = 'OK '  # Space required.
 #@+others
 #@+node:ekr.20100128091412.5381: ** init (mnplugins.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("start1", onStart)
     g.registerHandler("create-optional-menus", create_UserMenu)
     g.registerHandler("iconrclick2", onRclick)

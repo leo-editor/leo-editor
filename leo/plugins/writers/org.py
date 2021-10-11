@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18079: * @file ../plugins/writers/org.py
-'''The @auto write code for Emacs org-mode (.org) files.'''
+"""The @auto write code for Emacs org-mode (.org) files."""
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20140726091031.18155: ** class OrgModeWriter
 class OrgModeWriter(basewriter.BaseWriter):
-    '''The writer class for .org files.'''
+    """The writer class for .org files."""
 
     def __init__(self,c):
         super().__init__(c)
@@ -15,10 +15,10 @@ class OrgModeWriter(basewriter.BaseWriter):
     #@+others
     #@+node:ekr.20171121020009.1: *3* orgw.load_nodetags
     def load_nodetags(self):
-        '''
+        """
         Load the nodetags.py plugin if necessary.
         Return c.theTagController.
-        '''
+        """
         c = self.c
         if not getattr(c, 'theTagController', None):
             g.app.pluginsController.loadOnePlugin('nodetags.py', verbose=False)
@@ -39,7 +39,7 @@ class OrgModeWriter(basewriter.BaseWriter):
         return True
     #@+node:ekr.20171230050625.1: *3* orgw.write_root
     def write_root(self, root):
-        '''Write the root @auto-org node.'''
+        """Write the root @auto-org node."""
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
         for s in lines:
             self.put(s)

@@ -1,13 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18073: * @file ../plugins/writers/markdown.py
-'''The @auto write code for markdown.'''
+"""The @auto write code for markdown."""
 # pylint: disable=unused-import
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20140726091031.18075: ** class MarkdownWriter
 class MarkdownWriter(basewriter.BaseWriter):
-    '''The writer class for markdown files.'''
+    """The writer class for markdown files."""
     # def __init__(self,c):
         # super().__init__(c)
     #@+others
@@ -32,13 +32,13 @@ class MarkdownWriter(basewriter.BaseWriter):
         return True
     #@+node:ekr.20141110223158.20: *3* mdw.write_headline
     def write_headline(self, p):
-        '''
+        """
         Write or skip the headline.
 
         New in Leo 5.5: Always write '#' sections.
         This will cause perfect import to fail.
         The alternatives are much worse.
-        '''
+        """
         level = p.level() - self.root.level()
         assert level > 0, p.h
         kind = p.h and p.h[0]
@@ -51,7 +51,7 @@ class MarkdownWriter(basewriter.BaseWriter):
             self.put('%s %s' % ('#'*level, p.h))
     #@+node:ekr.20171230170642.1: *3* mdw.write_root
     def write_root(self, root):
-        '''Write the root @auto-org node.'''
+        """Write the root @auto-org node."""
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
         for s in lines:
             self.put(s)

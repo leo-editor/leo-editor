@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180202053206.1: * @file ../plugins/writers/treepad.py
-'''The @auto write code for TreePad (.hjt) files.'''
+"""The @auto write code for TreePad (.hjt) files."""
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20180202053206.2: ** class TreePad_Writer
 class TreePad_Writer(basewriter.BaseWriter):
-    '''The writer class for TreePad (.hjt) files.'''
+    """The writer class for TreePad (.hjt) files."""
     # No ctor.
     #@+others
     #@+node:ekr.20180202053206.3: *3* treepad_w.write

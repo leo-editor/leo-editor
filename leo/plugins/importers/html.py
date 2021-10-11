@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18138: * @file ../plugins/importers/html.py
-'''The @auto importer for HTML.'''
+"""The @auto importer for HTML."""
 from leo.plugins.importers import xml
 Xml_Importer = xml.Xml_Importer
 #@+others
@@ -8,7 +8,7 @@ Xml_Importer = xml.Xml_Importer
 class Html_Importer(Xml_Importer):
 
     def __init__(self, importCommands, **kwargs):
-        '''Html_Importer.__init__'''
+        """Html_Importer.__init__"""
         super().__init__(importCommands,
             tags_setting='import_html_tags')
         self.name = 'html'

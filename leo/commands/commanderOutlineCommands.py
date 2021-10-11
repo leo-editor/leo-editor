@@ -168,32 +168,32 @@ def pasteAsTemplate(self, event=None):
     #@+others
     #@+node:vitalije.20200529112224.1: *4* skip_root
     def skip_root(v):
-        '''
+        """
         generates v nodes in the outline order
         but skips a subtree of the node with root_gnx
-        '''
+        """
         if v.gnx != root_gnx:
             yield v
             for ch in v.children:
                 yield from skip_root(ch)
     #@+node:vitalije.20200529112459.1: *4* translate_gnx
     def translate_gnx(gnx):
-        '''
+        """
         allocates a new gnx for all nodes that
         are not found outside copied tree
-        '''
+        """
         if gnx in outside:
             return gnx
         return g.app.nodeIndices.computeNewIndex()
     #@+node:vitalije.20200529115141.1: *4* viter
     def viter(parent_gnx, xv):
-        '''
+        """
         iterates <v> nodes generating tuples:
 
             (parent_gnx, child_gnx, headline, body)
 
         skipping the descendants of already seen nodes.
-        '''
+        """
         chgnx = xv.attrib.get('t')
         b = bodies[chgnx]
         gnx = translation.get(chgnx)
@@ -209,19 +209,19 @@ def pasteAsTemplate(self, event=None):
     #@+node:vitalije.20200529114857.1: *4* getv
     gnx2v = c.fileCommands.gnxDict
     def getv(gnx):
-        '''
+        """
         returns a pair (vnode, is_new) for the given gnx.
         if node doesn't exist, creates a new one.
-        '''
+        """
         v = gnx2v.get(gnx)
         if v is None:
             return leoNodes.VNode(c, gnx), True
         return v, False
     #@+node:vitalije.20200529115539.1: *4* do_paste
     def do_paste(vpar, index):
-        '''
+        """
         pastes a new node as a child of vpar at given index
-        '''
+        """
         vpargnx = vpar.gnx
         # the first node is inserted at the given index
         # and the rest are just appended at parents children

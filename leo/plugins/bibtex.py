@@ -4,7 +4,7 @@
 #@+node:ekr.20050912175750: ** << docstring >>
 #@@nocolor-node
 #@@wrap
-r''' Creates a BibTex file from an  '@bibtex <filename>' tree.
+r""" Creates a BibTex file from an  '@bibtex <filename>' tree.
 
 Nodes of the form '@<x> key' create entries in the file.
 
@@ -60,7 +60,7 @@ in the headline. Double-clicking it will read the file and parse it into a
 @bibtex tree. No syntax checks are made: the file is expected to be a valid
 BibTeX file.
 
-'''
+"""
 #@-<< docstring >>
 from leo.core import leoGlobals as g
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
@@ -108,7 +108,7 @@ entrytypes.append('@string')
 #@+others
 #@+node:ekr.20100128073941.5370: ** init (bibtex.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         # Register the handlers...
@@ -171,7 +171,7 @@ def onIconDoubleClick(tag, keywords):
             readBibTexFileIntoTree(c, fn, p)
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
 def readBibTexFileIntoTree(c, fn, p):
-    '''Import a BibTeX file into a @bibtex tree.'''
+    """Import a BibTeX file into a @bibtex tree."""
     root = p.copy()
     g.es('reading:', fn)
     s = g.readFileIntoEncodedString(fn)

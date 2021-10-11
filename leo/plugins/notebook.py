@@ -1,11 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ville.20120604212857.4215: * @file ../plugins/notebook.py
-''' QML Notebook
+""" QML Notebook
 
 Edit several nodes at once, in a pannable "notebook" view.
 
 Use <Alt-x>nb-<tab> to see the list of commands.
-'''
+"""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtDeclarative, QtGui
 #
@@ -18,7 +18,7 @@ controllers = {}
 #@+others
 #@+node:ville.20120604212857.4219: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
@@ -26,7 +26,7 @@ def init():
     return ok
 #@+node:ville.20120604212857.4231: ** onCreate
 def onCreate(tag, keys):
-    '''notebook.py onCreate'''
+    """notebook.py onCreate"""
     global controllers
     c = keys.get('c')
     if c:
@@ -39,7 +39,7 @@ class ModelWrapper:
     #@+others
     #@+node:ville.20120604212857.4228: *3* __init__
     def __init__(self, fieldlist):
-        '''Ctor for ModelWrapper class.'''
+        """Ctor for ModelWrapper class."""
         self.rolenames = rn = {}
         self.roleids = ri = {}
         for n, f in enumerate(fieldlist):
@@ -65,7 +65,7 @@ class NbController:
     #@+others
     #@+node:ville.20120604212857.4241: *3* __init__
     def __init__(self, c):
-        '''Ctor for NbController class.'''
+        """Ctor for NbController class."""
         self.c = c
         self.gnxcache = {}
         self.mw = ModelWrapper(["h", "b", "gnx", "level", "style"])

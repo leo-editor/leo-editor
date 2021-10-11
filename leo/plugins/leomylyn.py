@@ -1,20 +1,20 @@
 #@+leo-ver=5-thin
 #@+node:ville.20120503224623.3574: * @file ../plugins/leomylyn.py
-''' Provides an experience like Mylyn:http://en.wikipedia.org/wiki/Mylyn for Leo.
+""" Provides an experience like Mylyn:http://en.wikipedia.org/wiki/Mylyn for Leo.
 
 It "scores" the nodes based on how interesting they probably are for you,
 allowing you to focus on your "working set".
 
 Scoring is based on how much you edit the nodes.
 
-'''
+"""
 
 # By VMV.
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ville.20120503224623.3578: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     g.plugin_signon(__name__)
     g._mylyn = ctr = MylynController()

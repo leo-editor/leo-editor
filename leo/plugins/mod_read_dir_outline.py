@@ -5,7 +5,7 @@
 
 #@+<< docstring >>
 #@+node:ekr.20050301084207: ** << docstring >>
-'''
+"""
 Allows Leo to read a complete directory tree into a Leo outline. Converts
 directories into headlines and puts the list of file names into bodies.
 
@@ -19,7 +19,7 @@ Feedback on this plugin can be sent to::
     Frédéric Momméja
     <frederic [point] mommeja [at] laposte [point] net>
 
-'''
+"""
 #@-<< docstring >>
 
 #@@language python
@@ -33,7 +33,7 @@ language = 'english'  # Anything except 'french' uses english.
 #@+others
 #@+node:ekr.20050301083306.4: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # This plugin is now gui independent.
     g.registerHandler(("new2", "menu2"), onCreate)
     g.plugin_signon(__name__)

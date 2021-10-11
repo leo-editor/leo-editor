@@ -12,7 +12,7 @@ It is used for testing Leo's plugin loading logic.
 a = # This is the syntax error
 
 def init ():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     return True
 #@+node:ekr.20161014155650.1: ** Structured vr docstring
 # Alas, this DOES NOT WORK because comment delimiters are python delims, not rST delims.

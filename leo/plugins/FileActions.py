@@ -68,7 +68,7 @@ file_directives = [
 #@+others
 #@+node:ekr.20060108162524: ** init (FileActions.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting  # Dangerous for unit testing.
     if ok:
         g.registerHandler("icondclick1", onIconDoubleClick)
