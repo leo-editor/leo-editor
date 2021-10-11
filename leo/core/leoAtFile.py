@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150323150718.1: * @file leoAtFile.py
 #@@first
-    # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile.py)
@@ -40,8 +39,7 @@ class AtFile:
     miscDirective   =  8 # All other directives
     rawDirective    =  9 # @raw
     endRawDirective = 10 # @end_raw
-    startVerbatim   = 11 # @verbatim
-        # Not a real directive. Used to issue warnings.
+    startVerbatim   = 11 # @verbatim  Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
@@ -3196,41 +3194,24 @@ class FastAtRead:
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
         #
         # Simple vars...
-        afterref = False
-            # A special verbatim line follows @afterref.
-        clone_v = None
-            # The root of the clone tree.
-            # When not None, we are scanning a clone and all it's descendants.
-        delim_start, delim_end = delims
-            # The start/end delims.
-        doc_skip = (delim_start + '\n', delim_end + '\n')
-            # To handle doc parts.
-        first_i = 0
-            # Index into first array.
-        in_doc = False
-            # True: in @doc parts.
-        in_raw = False
-            # True: @raw seen.
-        is_cweb = delim_start == '@q@' and delim_end == '@>'
-            # True: cweb hack in effect.
-        indent = 0
-            # The current indentation.
-        level_stack = []
-            # Entries are (vnode, in_clone_tree)
-        n_last_lines = 0
-            # The number of @@last directives seen.
-        root_seen = False
-            # False: The next +@node sentinel denotes the root, regardless of gnx.
-            # Needed to handle #1065 so reads will not create spurious child nodes.
-        sentinel = delim_start + '@'
-            # Faster than a regex!
-        stack = []
-            # Entries are (gnx, indent, body)
-            # Updated when at+others, at+<section>, or at+all is seen.
-        verbline = delim_start + '@verbatim' + delim_end + '\n'
-            # The spelling of at-verbatim sentinel
-        verbatim = False
-            # True: the next line must be added without change.
+        afterref = False  # A special verbatim line follows @afterref.
+        clone_v = None  # The root of the clone tree.
+        delim_start, delim_end = delims  # The start/end delims.
+        doc_skip = (delim_start + '\n', delim_end + '\n')  # To handle doc parts.
+        first_i = 0  # Index into first array.
+        in_doc = False  # True: in @doc parts.
+        in_raw = False  # True: @raw seen.
+        is_cweb = delim_start == '@q@' and delim_end == '@>'  # True: cweb hack in effect.
+        indent = 0  # The current indentation.
+        level_stack = []  # Entries are (vnode, in_clone_tree)
+        n_last_lines = 0  # The number of @@last directives seen.
+        # #1065 so reads will not create spurious child nodes.
+        root_seen = False  # False: The next +@node sentinel denotes the root, regardless of gnx.
+        sentinel = delim_start + '@'  # Faster than a regex!
+        # The stack is updated when at+others, at+<section>, or at+all is seen.
+        stack = []  # Entries are (gnx, indent, body)
+        verbline = delim_start + '@verbatim' + delim_end + '\n'  # The spelling of at-verbatim sentinel
+        verbatim = False  # True: the next line must be added without change.
         #
         # Init the data for the root node.
         #
@@ -3239,35 +3220,28 @@ class FastAtRead:
         # Init the parent vnode for testing.
         #
         if self.test:
-            root_gnx = gnx = 'root-gnx'
-                # The node that we are reading.
-                # start with the gnx for the @file node.
-            gnx_head = '<hidden top vnode>'
-                # The headline of the root node.
+            # Start with the gnx for the @file node.
+            root_gnx = gnx = 'root-gnx'  # The node that we are reading.
+            gnx_head = '<hidden top vnode>'  # The headline of the root node.
             context = None
             parent_v = self.VNode(context=context, gnx=gnx)
-            parent_v._headString = gnx_head
-                # Corresponds to the @files node itself.
+            parent_v._headString = gnx_head  # Corresponds to the @files node itself.
         else:
             # Production.
             root_gnx = gnx = self.root.gnx
             context = self.c
             parent_v = self.root.v
-        root_v = parent_v
-            # Does not change.
+        root_v = parent_v  # Does not change.
         level_stack.append((root_v, False),)
         #
         # Init the gnx dict last.
         #
-        gnx2vnode = self.gnx2vnode
-            # Keys are gnx's, values are vnodes.
-        gnx2body = {}
-            # Keys are gnxs, values are list of body lines.
-        gnx2vnode[gnx] = parent_v
-            # Add gnx to the keys
+        gnx2vnode = self.gnx2vnode  # Keys are gnx's, values are vnodes.
+        gnx2body = {}  # Keys are gnxs, values are list of body lines.
+        gnx2vnode[gnx] = parent_v  # Add gnx to the keys
+        # Add gnx to the keys.
+        # Body is the list of lines presently being accumulated.
         gnx2body[gnx] = body = first_lines
-            # Add gnx to the keys.
-            # Body is the list of lines presently being accumulated.
         #
         # get the patterns.
         data = self.get_patterns(delims)

@@ -177,10 +177,9 @@ class Lua_Importer(Importer):
             self.tail_lines = []
         stack.append(Target(child, new_state))
     #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
+    # Buggy: this could appear in a string or comment.
+    # The function must be an "outer" function, without indentation.
     function_pattern = re.compile(r'^(local\s+)?function')
-        # Buggy: this could appear in a string or comment.
-        # The function must be an "outer" function, without indentation.
-
     function_pattern2 = re.compile(r'(local\s+)?function')
 
     def starts_block(self, i, lines, new_state, prev_state):

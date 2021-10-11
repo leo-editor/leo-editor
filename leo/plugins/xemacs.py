@@ -37,7 +37,6 @@ elif sys.platform.startswith("linux"):
             _emacs_cmd = path
             break
     if not _emacs_cmd:
-        # print >> sys.stderr, "Unable to locate a usable version of *Emacs"
         print("Unable to locate a usable version of *Emacs")
 else:
     _emacs_cmd = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"

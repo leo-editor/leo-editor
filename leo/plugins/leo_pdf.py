@@ -431,14 +431,14 @@ if docutils:
     class Writer(docutils.writers.Writer):
         #@+<< class Writer declarations >>
         #@+node:ekr.20090704103932.5182: *3* << class Writer declarations >>
+        # Formats this writer supports.
         supported = ('pdf', 'rlpdf')
-            # Formats this writer supports.
 
         settings_spec = (
             'PDF-Specific Options',
             None,
             (
-                # EKR: added this entry.
+            # EKR: added this entry.
             ('Specify a stylesheet URL, used verbatim.  Overrides '
                 '--stylesheet-path.  Either --stylesheet or --stylesheet-path '
                 'must be specified.',
@@ -459,8 +459,7 @@ if docutils:
             )
         )
 
-        output = None
-            # Final translated form of `document`.
+        output = None  # Final translated form of `document`.
         #@-<< class Writer declarations >>
 
         # def __init__(self):

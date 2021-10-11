@@ -696,7 +696,7 @@ if 1:  # pragma: no cover
     # https://docs.python.org/3/library/ast.html
 
     _op_names = {
-                # Binary operators.
+        # Binary operators.
         'Add': '+',
         'BitAnd': '&',
         'BitOr': '|',
@@ -710,10 +710,10 @@ if 1:  # pragma: no cover
         'Pow': '**',
         'RShift': '>>',
         'Sub': '-',
-                # Boolean operators.
+        # Boolean operators.
         'And': ' and ',
         'Or': ' or ',
-                # Comparison operators
+        # Comparison operators
         'Eq': '==',
         'Gt': '>',
         'GtE': '>=',
@@ -724,14 +724,14 @@ if 1:  # pragma: no cover
         'LtE': '<=',
         'NotEq': '!=',
         'NotIn': ' not in ',
-                # Context operators.
+        # Context operators.
         'AugLoad': '<AugLoad>',
         'AugStore': '<AugStore>',
         'Del': '<Del>',
         'Load': '<Load>',
         'Param': '<Param>',
         'Store': '<Store>',
-                # Unary operators.
+        # Unary operators.
         'Invert': '~',
         'Not': ' not ',
         'UAdd': '+',

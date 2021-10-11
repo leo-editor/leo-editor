@@ -22,9 +22,9 @@ class Org_Importer(Importer):
 
     #@+others
     #@+node:ekr.20171120084611.2: *3* org_i.clean_headline
+    # Recognize :tag: syntax only at the end of headlines.
+    # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
     tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
-        # Recognize :tag: syntax only at the end of headlines.
-        # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
 
     def clean_headline(self, s, p=None):
         """
@@ -44,8 +44,8 @@ class Org_Importer(Importer):
         return s
 
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
+    # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
-        # #1037: eat only one space.
 
     def gen_lines(self, s, parent):
         """Node generator for org mode."""

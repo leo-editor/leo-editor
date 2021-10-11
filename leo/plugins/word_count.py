@@ -15,8 +15,6 @@ activate the command.
 """
 #@-<< docstring >>
 
-#
-
 from leo.core import leoGlobals as g
 
 #@+others

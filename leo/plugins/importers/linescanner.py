@@ -708,8 +708,8 @@ class Importer:
         # This probably should be the last sub-pass.
         self.delete_all_empty_nodes(parent)
     #@+node:ekr.20180524130023.1: *5* i.add_class_names
+    # Note: this method is never called for @clean trees.
     file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
-        # Note: this method is never called for @clean trees.
 
     def add_class_names(self, p):
         """

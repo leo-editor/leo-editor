@@ -78,17 +78,12 @@ def emitfeed(url, p):
     r = p.insertAsLastChild()
     r.h = d.channel.title
     for ent in d.entries:
-        #print "Entry"
-        #pprint.pprint(ent)
         e = chi(r)
         try:
             cnt = ent.content[0].value
         except AttributeError:
             cnt = ent['summary']
-
         e.b = strip_tags(cnt)
-
-        #e.b = str(ent)
         e.h = ent.title
         for li in ent.links:
             lnk = chi(e)
@@ -99,11 +94,9 @@ def emitfeed(url, p):
                 ec = chi(e)
                 ec.h = '@url Enclosure: ' + enc.get('type', 'notype') + " " + enc.get('length', '')
                 ec.b = enc.get('href', '')
-
         full = chi(e)
         full.h = "orig"
         full.b = cnt
-
 
 def feeds_act_on_node(c, p, event):
 
@@ -117,9 +110,7 @@ def feeds_act_on_node(c, p, event):
 def feeds_install():
     g.act_on_node.add(feeds_act_on_node, 99)
 
-
-
-#emitfeed("http://feedparser.org/docs/examples/atom10.xml", p)
-#c.redraw()
+# emitfeed("http://feedparser.org/docs/examples/atom10.xml", p)
+# c.redraw()
 #@-others
 #@-leo

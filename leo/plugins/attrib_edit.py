@@ -169,10 +169,6 @@ class AttributeGetter:
         raise NotImplementedError
 #@+node:tbrown.20091103080354.1402: ** class AttributeGetterUA
 class AttributeGetterUA(AttributeGetter):
-
-    # def __init__(self, c):
-        # super().__init__(c)
-
     #@+others
     #@+node:tbrown.20091103080354.1409: *3* recSearch
     def recSearch(self, d, path, ans):
@@ -289,10 +285,6 @@ class AttributeGetterUA(AttributeGetter):
 AttributeGetter.register(AttributeGetterUA)
 #@+node:tbrown.20091103080354.1420: ** class AttributeGetterAt
 class AttributeGetterAt(AttributeGetter):
-
-    # def __init__(self, c):
-        # super().__init__(c)
-
     #@+others
     #@+node:tbrown.20091103080354.1422: *3* getAttribs
     def getAttribs(self, v):
@@ -365,8 +357,6 @@ class AttributeGetterAt(AttributeGetter):
 AttributeGetter.register(AttributeGetterAt)
 #@+node:tbrown.20091103080354.1427: ** class AttributeGetterColon
 class AttributeGetterColon(AttributeGetter):
-    # def __init__(self, c):
-        # super().__init__(c)
     #@+others
     #@+node:tbrown.20091103080354.1428: *3* getAttribs
     def getAttribs(self, v):

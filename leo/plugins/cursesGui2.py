@@ -1154,30 +1154,6 @@ class KeyHandler:
         "/": "slash",
         " ": "space",
         "_": "underscore",
-        # Curses.
-        # Qt
-            # # Part 2: special Qt translations.
-            # 'Backspace': 'BackSpace',
-            # 'Backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
-            # 'Esc': 'Escape',
-            # 'Del': 'Delete',
-            # 'Ins': 'Insert', # was 'Return',
-            # # Comment these out to pass the key to the QTextWidget.
-            # # Use these to enable Leo's page-up/down commands.
-            # 'PgDown': 'Next',
-            # 'PgUp': 'Prior',
-            # # New entries.  These simplify code.
-            # 'Down': 'Down', 'Left': 'Left', 'Right': 'Right', 'Up': 'Up',
-            # 'End': 'End',
-            # 'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4', 'F5': 'F5',
-            # 'F6': 'F6', 'F7': 'F7', 'F8': 'F8', 'F9': 'F9',
-            # 'F10': 'F10', 'F11': 'F11', 'F12': 'F12',
-            # 'Home': 'Home',
-            # # 'Insert':'Insert',
-            # 'Return': 'Return',
-            # 'Tab': 'Tab',
-            # # 'Tab':'\t', # A hack for QLineEdit.
-            # # Unused: Break, Caps_Lock,Linefeed,Num_lock
     }
 
     def char_to_tk_name(self, ch):
@@ -3283,9 +3259,6 @@ class LeoMLTree(npyscreen.MLTree):
     # pylint: disable=used-before-assignment
     _contained_widgets = LeoTreeLine
     continuation_line = "- more -"  # value of contination line.
-
-    # def __init__ (self, *args, **kwargs):
-        # super(LeoMLTree, self).__init__(*args, **kwargs)
 
     # Note: The startup sequence sets leo_c and the value property/ivar.
 
