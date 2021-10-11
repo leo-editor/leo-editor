@@ -261,7 +261,7 @@ class FreeLayoutController:
         # EKR: Create commands that will load each layout.
         if d:
             for name in sorted(d.keys()):
-                
+
                 # pylint: disable=cell-var-from-loop
 
                 def func(event):

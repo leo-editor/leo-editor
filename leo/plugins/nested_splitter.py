@@ -129,7 +129,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         x = pos.x()
         y = pos.y()
         rect = QtCore.QRect(x - 5, y - 5, x + 5, y + 5)
-        if hasattr(action, 'parentWidget'): # 2021/07/17.
+        if hasattr(action, 'parentWidget'):  # 2021/07/17.
             parent = action.parentWidget()
         else:
             return

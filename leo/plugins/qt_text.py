@@ -12,7 +12,7 @@ from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
 
 QColor = QtGui.QColor
-FullWidthSelection = 0x06000 # works for both Qt5 and Qt6
+FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
@@ -764,14 +764,14 @@ if QtWidgets:
             a QColor object for the background color
             """
             if not fg:
-                fg = 'black' # QTextEdit default
-                bg = 'white' # QTextEdit default
+                fg = 'black'  # QTextEdit default
+                bg = 'white'  # QTextEdit default
             if fg == 'black':
-                bg = 'white' # QTextEdit default
+                bg = 'white'  # QTextEdit default
             else:
                 fg_color = QColor(fg)
                 h, s, v, a = fg_color.getHsv()
-                if v < 128: # dark foreground
+                if v < 128:  # dark foreground
                     bg = 'white'
                 else:
                     bg = 'black'
@@ -1628,7 +1628,7 @@ class QTextEditWrapper(QTextMixin):
             if self.flashFg:
                 extra.format.setForeground(QtGui.QColor(self.flashFg))
             self.extraSelList = last_selections[:]
-            self.extraSelList.append(extra) # must be last
+            self.extraSelList.append(extra)  # must be last
             w.setExtraSelections(self.extraSelList)
             self.flashCount -= 1
             after(removeFlashCallback)

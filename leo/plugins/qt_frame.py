@@ -944,7 +944,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     'set-find-suboutline-only',
                     # #2041 & # 2094 (Leo 6.4): Support Alt-x.
                     'full-command',
-                    'keyboard-quit', # Might as well :-)
+                    'keyboard-quit',  # Might as well :-)
                 )
                 for cmd_name in table:
                     stroke = c.k.getStrokeForCommandName(cmd_name)
@@ -2265,7 +2265,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         g.clearAllIvars(c.tangleCommands)
         g.clearAllIvars(c.undoer)
         g.clearAllIvars(c)
-        
+
     #@+node:ekr.20110605121601.18256: *5* qtFrame.destroySelf
     def destroySelf(self):
         # Remember these: we are about to destroy all of our ivars!
@@ -3744,7 +3744,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
 class LeoQTreeWidget(QtWidgets.QTreeWidget):
-    
+
     # To do: Generate @auto or @file nodes when appropriate.
 
     def __init__(self, c, parent):
@@ -3760,11 +3760,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         return f"LeoQTreeWidget: {id(self)}"
 
     __str__ = __repr__
-    
+
 
     def dragMoveEvent(self, ev):  # Called during drags.
         pass
-        
+
     #@+others
     #@+node:ekr.20111022222228.16980: *3* LeoQTreeWidget: Event handlers
     #@+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper
@@ -4006,7 +4006,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 s = g.toUnicode(b)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
-        nodeLink=p.get_UNL(with_proto=True, with_count=True)
+        nodeLink = p.get_UNL(with_proto=True, with_count=True)
         g.es_print(f"not found: {fn}", nodeLink=nodeLink)
         return False
     #@+node:ekr.20110605121601.18371: *7* LeoQTreeWidget.doFileUrlHelper & helper

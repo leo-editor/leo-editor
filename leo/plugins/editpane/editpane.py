@@ -444,7 +444,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 menu.addAction(act)
 
         button = self.control_menu_button
-        point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
+        point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
     #@+node:tbrown.20171028115438.28: *3* mode_menu
@@ -463,7 +463,7 @@ class LeoEditPane(QtWidgets.QWidget):
             menu.addAction(act)
 
         button = self.btn_mode
-        point = button.position().toPoint() if isQt6 else button.pos()   # Qt6 documentation is wrong.
+        point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
 

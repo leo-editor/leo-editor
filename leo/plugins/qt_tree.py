@@ -356,7 +356,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
             # 's' is string when 'cmd' is recognised
             # and is None otherwise
-            if isinstance(s,str):
+            if isinstance(s, str):
                 # Save the operation
                 replacement = lambda item, s: item.setText(0, s)
                 # ... and apply it

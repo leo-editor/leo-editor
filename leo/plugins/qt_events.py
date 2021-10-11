@@ -57,7 +57,7 @@ class LossageData:
         self.text = text
         self.toString = toString
 
-    def __repr__ (self):
+    def __repr__(self):
         return (
             f"keynum: {self.keynum:>7x} "
             f"binding: {self.binding}"
@@ -332,12 +332,12 @@ class LeoQtEventFilter(QtCore.QObject):
         #          The values are the same in Qt4, Qt5, Qt6.
         keynum = event.key()
         if keynum in (
-            0x01000020, # Key_Shift
-            0x01000021, # Key_Control
-            0x01000022, # Key_Meta
-            0x01000023, # Key_Alt
-            0x01001103, # Key_AltGr
-            0x01000024, # Key_CapsLock
+            0x01000020,  # Key_Shift
+            0x01000021,  # Key_Control
+            0x01000022,  # Key_Meta
+            0x01000023,  # Key_Alt
+            0x01001103,  # Key_AltGr
+            0x01000024,  # Key_CapsLock
         ):
             # Disallow bare modifiers.
             return keynum, text, toString, ch
