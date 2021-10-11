@@ -86,17 +86,9 @@ warning_given = False
 def init():
     """Return True if the plugin has loaded successfully."""
     global warning_given
-    ok = 'qt' in g.app.gui.guiName()
+    ok = 'qt' in g.app.gui.guiName()  # #2197.
     if not ok:
         return False
-    ###
-        # if g.app.gui.guiName() == 'nullGui':
-            # return False
-        # if isQt6:
-            # if not warning_given:
-                # warning_given = True
-                # print('backlink.py: Qt6 support not ready yet.')
-            # return False
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
@@ -768,7 +760,7 @@ class backlinkQtUI(QtWidgets.QWidget):
         fg = QtGui.QColor(color)
         pal = QtGui.QPalette(ui.label.palette())
         if isQt6:
-             pal.setColor(pal.ColorRole.Window, fg)
+             pal.setColor(pal.ColorRole.Window, fg)  # #2197
         else:
             pal.setColor(QtGui.QPalette.WindowText, fg)
         ui.label.setPalette(pal)
