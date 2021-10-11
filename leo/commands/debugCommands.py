@@ -67,7 +67,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         )
         for debugger in debuggers:
             if debugger:
-                debugger = c.os_path_finalize(debugger)
+                debugger = g.os_path_finalize(debugger)
                 if g.os_path_exists(debugger):
                     return debugger
                 g.warning('debugger does not exist:', debugger)
