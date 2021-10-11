@@ -41,14 +41,11 @@ def newPut(self, s, *args, **keys):
     if w:
         bunch = u.beforeChangeBody(p)
         w.insert("end", s)
-        ### body.onBodyChanged('put-to-body-text')
         p.v.b = w.getAllText()
         u.afterChangeBody(p, 'put-to-body-text', bunch)
 
-
 # Same as frame.putnl except sends output to the end of the body text.
 def newPutNl(self, s, *args, **keys):
-
     newPut(self, '\n')
 #@+node:ekr.20071212091008.1: ** newExecuteScript & helpers
 def newExecuteScript(self,

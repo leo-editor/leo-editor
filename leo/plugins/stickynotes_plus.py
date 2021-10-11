@@ -542,16 +542,8 @@ class notetextedit(QTextEdit):
         doc = ''
         block = self.document().begin()  # block is like a para; text fragment is sequence of same char format
         while block.isValid():
-            #print "block=",block.text()
             if block.blockFormat().nonBreakableLines():
                 doc += '    ' + block.text() + '\n'
-            #elif block.textList():
-                #textList = block.textList()
-                #print block.textList().count()
-                #print block.textList().itemText(block)
-                #print block.textList().itemNumber(block)
-                #print block.textList().item(block.textList().itemNumber(block)).text()
-                #doc += textList.itemText(block) + ' ' + textList.item(textList.itemNumber(block)).text() + '\n\n'
             else:
                 if block.textList():
                     doc += '  ' + block.textList().itemText(block) + ' '
@@ -564,8 +556,7 @@ class notetextedit(QTextEdit):
                         # pylint: disable=no-member
                         # EKR: I'm not sure whether this warning is valid.
                         # I'm going to kill it because this is an experimental plugin.
-                        text = Qt.escape(fragment.text())
-                            # turns chars like < into entities &lt;
+                        text = Qt.escape(fragment.text())  # turns chars like < into entities &lt;
                         font_size = char_format.font().pointSize()
                         # a fragment can only be an anchor, italics or bold
                         if char_format.isAnchor():
@@ -581,15 +572,12 @@ class notetextedit(QTextEdit):
                                 text = '##{0}'.format(text)
                             else:
                                 text = '###{0}'.format(text)
-                        elif char_format.fontFixedPitch():  #or format.fontFamily=='courier':
+                        elif char_format.fontFixedPitch():
                             text = "`%1`".arg(text)
                         elif char_format.fontItalic():
                             text = "*%1*".arg(text)
                         elif char_format.fontWeight() > QFont.Normal:
-                            #font-weight:600; same as for an H1;
-                            #H1 font-size:xx-large; H1 20; H2 15 H3 12
                             text = "**%1**".arg(text)
-
                         para += text
                     iterator += 1
                 doc += para + '\n\n'

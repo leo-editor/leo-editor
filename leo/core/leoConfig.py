@@ -490,7 +490,7 @@ class ParserBaseClass:
                         if name2 == name:
                             self.error(f"Replacing previous @menu {name}")
                             break
-                    aList2: List[Any] = []  ### Huh?
+                    aList2: List[Any] = []  # Huh?
                     kind = f"{'@menu'} {name}"
                     self.doItems(p, aList2)
                     aList.append((kind, aList2, None),)
@@ -524,9 +524,9 @@ class ParserBaseClass:
                             # Only the first body line is significant.
                             # This allows following comment lines.
                         if tag == '@menu':
-                            aList2: List[Any] = []  ### Huh?
+                            aList2: List[Any] = []  # Huh?
                             kind = f"{tag} {itemName}"
-                            self.doItems(p, aList2)  ### Huh?
+                            self.doItems(p, aList2)  # Huh?
                             aList.append((kind, aList2, body),)
                                 # #848: Body was None.
                             p.moveToNodeAfterTree()
