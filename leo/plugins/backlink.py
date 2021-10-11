@@ -34,7 +34,9 @@ where the extra information is the name of the linked node's parent.
 #@-<< docstring >>
 #@+<< notes >>
 #@+node:ekr.20140920145803.17983: ** << notes >>
-# Notes
+#@@language rest
+#@@wrap
+#@+at
 #
 # Backlink will store all its stuff in v.unknownAttributes['_bklnk']
 #
@@ -45,7 +47,7 @@ where the extra information is the name of the linked node's parent.
 # load cycle.  Before a save and load cycle it will link to whichever
 # vnode originally held the id
 #
-# TODO
+# **TODO**
 #
 # - provide API
 #
@@ -54,29 +56,58 @@ where the extra information is the name of the linked node's parent.
 # - store attributes for link start/whole-link/end (name, weight)
 #
 # - restore dropped links (cut / paste or undo)?
-
+#
 # UI class signatures, main class signature
 #
 # UI classes must have (i.e. owner will call):
-#     - __init__(owner)
-#     - showMessage(txt, color=['black'|'red'])
-#     - enableDelete(bool) (also unchecks delete checkbox)
-#     - loadList(listOfStrings)
+# - __init__(owner)
+# - showMessage(txt, color=['black'|'red'])
+# - enableDelete(bool) (also unchecks delete checkbox)
+# - loadList(listOfStrings)
+#
 # UI classes should call the following on owner:
-#     - markSrc()
-#     - markDst()
-#     - linkSrc()
-#     - linkDst()
-#     - linkUnd()
-#     - loadLinksInt()
-#     - deleteSet(bool)
-#     - linkClicked(n) (zero based)
+# - markSrc()
+# - markDst()
+# - linkSrc()
+# - linkDst()
+# - linkUnd()
+# - loadLinksInt()
+# - deleteSet(bool)
+# - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, Qt, QtGui, QtWidgets, uic
-Tk = None
+from leo.core.leoQt import QtGui, QtWidgets, uic
 #@+others
+#@+node:ekr.20140920145803.17995: ** top-level
+#@+node:ekr.20090616105756.3940: *3* init
+warning_given = False
+
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    global warning_given
+    ok = 'qt' in g.app.gui.guiName()
+    if not ok:
+        return False
+    ###
+        # if g.app.gui.guiName() == 'nullGui':
+            # return False
+        # if isQt6:
+            # if not warning_given:
+                # warning_given = True
+                # print('backlink.py: Qt6 support not ready yet.')
+            # return False
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+    return True
+#@+node:ekr.20090616105756.3941: *3* onCreate
+def onCreate(tag, keys):
+
+    c = keys.get('c')
+    if not c:
+        return
+
+    backlinkController(c)
 #@+node:ekr.20090616105756.3942: ** class backlinkController
 class backlinkController:
     """Display and edit links in leo trees"""
@@ -89,13 +120,7 @@ class backlinkController:
         self.initIvars()
         self.reloadSettings()
         self.fixIDs(c)
-        if Tk:
-            self.ui = backlinkTkUI(self)
-        elif Qt:
-            self.ui = backlinkQtUI(self)
-        else:
-            # Fix part of #509. Ignore missing attributes.
-            self.ui = g.NullObject()
+        self.ui = backlinkQtUI(self)
         g.registerHandler('select3', self.updateTab)
         g.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
@@ -563,70 +588,6 @@ class backlinkController:
                 for i in dests:
                     g.es("%s %s" % ({'S': '->', 'D': '<-', 'U': '--'}[i[0]],
                         i[1].h))
-    #@+node:ekr.20090616105756.3964: *3* showMenu
-    def showMenu(self, tag, k):
-
-        if k['c'] != self.c:
-            return  # not our problem
-        p = k['p']
-        self.c.selectPosition(p)
-        v = p.v
-        c = self.c
-
-        # Create the menu.
-        menu = Tk.Menu(None, tearoff=0, takefocus=0)
-
-        commands = [
-            (True, 'Mark as link source', self.markSrc),
-            (True, 'Mark as link dest.', self.markDst),
-            (True, 'Link to source', self.linkSrc),
-            (True, 'Link to dest.', self.linkDst),
-            (True, 'Undirected link', self.linkUnd),
-            (True, 'Rescan links', self.loadLinksInt),
-        ]
-        if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
-            i = 0
-            links = v.unknownAttributes['_bklnk']['links']
-            dests = []
-            while i < len(links):
-                linkType, other = links[i]
-                otherV = self.vnode[other]
-                otherP = self.vnodePosition(otherV)
-                if not self.c.positionExists(otherP):
-                    g.es('Deleting lost link')
-                    del links[i]
-                else:
-                    i += 1
-                    dests.append((linkType, otherP))
-            if dests:
-                smenu = Tk.Menu(menu, tearoff=0, takefocus=1)
-                for i in dests:
-
-                    def goThere(where=i[1]):
-                        c.selectPosition(where)
-
-                    c.add_command(menu,
-                        label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
-                        underline=0, command=goThere)
-                    def delLink(on=v,
-                        to=i[1].v.unknownAttributes['_bklnk']['id'],
-                        type_=i[0]): self.deleteLink(on, to, type_)
-                    c.add_command(smenu,
-                        label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
-                        underline=0, command=delLink)
-                menu.add_cascade(label='Delete link', menu=smenu, underline=1)
-                menu.add_separator()
-
-        for command in commands:
-            available, text, com = command
-            if not available:
-                continue
-            c.add_command(menu, label=text,
-                underline=0, command=com)
-        #
-        # Show the menu.
-        event = k['event']
-        g.app.gui.postPopupMenu(self.c, menu, event.x_root, event.y_root)
     #@+node:ekr.20090616105756.3965: *3* showMessage
     def showMessage(self, msg, optional=False, color='black'):
         """Show the message, but don't overwrite earlier important
@@ -735,237 +696,85 @@ class backlinkController:
         return self.c.vnode2position(v)
     #@-others
 #@+node:ekr.20090616105756.3939: ** class backlinkQtUI
-if g.app.gui.guiName() == "qt":
+class backlinkQtUI(QtWidgets.QWidget):
+    #@+others
+    #@+node:ekr.20140920145803.17987: *3* __init__
+    def __init__(self, owner):
+        '''Ctor for backlinkQtUI class.'''
+        self.owner = owner
+        super().__init__()
+        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
+        form_class, base_class = uic.loadUiType(uiPath)
+        self.owner.c.frame.log.createTab('Links', widget=self)
+        self.UI = form_class()
+        self.UI.setupUi(self)
+        u = self.UI
+        o = self.owner
+        # Compatible with PyQt5
+        u.markBtn.clicked.connect(o.mark)
+        u.swapBtn.clicked.connect(o.swap)
+        u.linkBtn.clicked.connect(self.linkClicked)
+        u.rescanBtn.clicked.connect(o.loadLinksInt)
+        u.dirLeftBtn.clicked.connect(self.dirClicked)
+        u.dirRightBtn.clicked.connect(self.dirClicked)
+        u.linkList.itemClicked.connect(self.listClicked)
+        u.deleteBtn.stateChanged.connect(o.deleteSet)
+        u.nextBtn.clicked.connect(o.nextLink)
+    #@+node:ekr.20140920145803.17988: *3* dirClicked
+    def dirClicked(self):
 
-    class backlinkQtUI(QtWidgets.QWidget):
-        #@+others
-        #@+node:ekr.20140920145803.17987: *3* __init__
-        def __init__(self, owner):
-            '''Ctor for backlinkQtUI class.'''
-            self.owner = owner
-            super().__init__()
-            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
-            form_class, base_class = uic.loadUiType(uiPath)
-            self.owner.c.frame.log.createTab('Links', widget=self)
-            self.UI = form_class()
-            self.UI.setupUi(self)
-            u = self.UI
-            o = self.owner
-            # Compatible with PyQt5
-            u.markBtn.clicked.connect(o.mark)
-            u.swapBtn.clicked.connect(o.swap)
-            u.linkBtn.clicked.connect(self.linkClicked)
-            u.rescanBtn.clicked.connect(o.loadLinksInt)
-            u.dirLeftBtn.clicked.connect(self.dirClicked)
-            u.dirRightBtn.clicked.connect(self.dirClicked)
-            u.linkList.itemClicked.connect(self.listClicked)
-            u.deleteBtn.stateChanged.connect(o.deleteSet)
-            u.nextBtn.clicked.connect(o.nextLink)
-        #@+node:ekr.20140920145803.17988: *3* dirClicked
-        def dirClicked(self):
+        if self.UI.dirLeftBtn.text() == "from":
+            self.UI.dirLeftBtn.setText("to")
+            self.UI.dirRightBtn.setText("from")
+        else:
+            self.UI.dirLeftBtn.setText("from")
+            self.UI.dirRightBtn.setText("to")
+    #@+node:ekr.20140920145803.17989: *3* listClicked
+    def listClicked(self):
 
-            if self.UI.dirLeftBtn.text() == "from":
-                self.UI.dirLeftBtn.setText("to")
-                self.UI.dirRightBtn.setText("from")
+        self.owner.linkClicked(self.UI.linkList.currentRow())
+    #@+node:ekr.20140920145803.17990: *3* linkClicked
+    def linkClicked(self):
+
+        if self.UI.whatSel.currentText() == "mark, undirected":
+            self.owner.linkAction('undirected')
+            return
+
+        if self.UI.whatSel.currentText() == "URL / UNL":
+            self.owner.linkAction('url')
+            return
+
+        newChild = self.UI.whatSel.currentText() == "new child of mark"
+        if self.UI.dirLeftBtn.text() == "from":
+            self.owner.linkAction('from', newChild=newChild)
+        else:
+            self.owner.linkAction('to', newChild=newChild)
+    #@+node:ekr.20140920145803.17991: *3* loadList
+    def loadList(self, lst):
+        self.UI.linkList.clear()
+        for item in lst:
+            if isinstance(item, (tuple, list)):
+                list_item = QtWidgets.QListWidgetItem(item[0])
+                list_item.setToolTip(item[1])
+                self.UI.linkList.addItem(list_item)
             else:
-                self.UI.dirLeftBtn.setText("from")
-                self.UI.dirRightBtn.setText("to")
-        #@+node:ekr.20140920145803.17989: *3* listClicked
-        def listClicked(self):
-
-            self.owner.linkClicked(self.UI.linkList.currentRow())
-        #@+node:ekr.20140920145803.17990: *3* linkClicked
-        def linkClicked(self):
-
-            if self.UI.whatSel.currentText() == "mark, undirected":
-                self.owner.linkAction('undirected')
-                return
-
-            if self.UI.whatSel.currentText() == "URL / UNL":
-                self.owner.linkAction('url')
-                return
-
-            newChild = self.UI.whatSel.currentText() == "new child of mark"
-            if self.UI.dirLeftBtn.text() == "from":
-                self.owner.linkAction('from', newChild=newChild)
-            else:
-                self.owner.linkAction('to', newChild=newChild)
-        #@+node:ekr.20140920145803.17991: *3* loadList
-        def loadList(self, lst):
-            self.UI.linkList.clear()
-            for item in lst:
-                if isinstance(item, (tuple, list)):
-                    list_item = QtWidgets.QListWidgetItem(item[0])
-                    list_item.setToolTip(item[1])
-                    self.UI.linkList.addItem(list_item)
-                else:
-                    self.UI.linkList.addItem(item)
-        #@+node:ekr.20140920145803.17992: *3* showMessage
-        def showMessage(self, msg, color='black'):
-            '''Show the message in the label area.'''
-            try:
-                fg = QtGui.QColor(color)
-            except Exception:
-                fg = QtGui.QColor('black')
-            pal = QtGui.QPalette(self.UI.label.palette())
-            pal.setColor(QtGui.QPalette.WindowText, fg)
-            self.UI.label.setPalette(pal)
-            self.UI.label.setText(msg)
-        #@+node:ekr.20140920145803.17993: *3* enableDelete
-        def enableDelete(self, enable):
-            self.UI.deleteBtn.setChecked(False)
-            self.UI.deleteBtn.setEnabled(enable)
-        #@-others
-#@+node:ekr.20140920145803.17994: ** class backlinkTkUI
-if g.app.gui.guiName() == "tkinter":
-
-    Tk = g.import_module('tkinter')
-
-    class backlinkTkUI:
-        # pylint: disable=no-member
-        # This is old code.
-        #@+others
-        #@+node:ekr.20140920145803.17975: *3* __init__
-        def __init__(self, owner):
-            '''Ctor for backlinkTkUI class.'''
-            self.owner = owner
-            self.c = c = self.owner.c
-            c.frame.log.createTab('Links', createText=False)
-            w = c.frame.log.frameDict['Links']
-            f = Tk.Frame(w)
-            scrollbar = Tk.Scrollbar(f, orient=Tk.VERTICAL)
-            self.listbox = Tk.Listbox(f, height=4, yscrollcommand=scrollbar.set)
-            scrollbar.config(command=self.listbox.yview)
-            scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
-            self.listbox.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=True)
-            f.pack(side=Tk.TOP, fill=Tk.BOTH, expand=True)
-            self.listbox.bind("<ButtonRelease-1>", self.tkListClicked)
-            commands = [
-                ('Mark source', self.owner.markSrc),
-                ('Mark  dest.', self.owner.markDst),
-                ('Link source', self.owner.linkSrc),
-                ('Link dest.', self.owner.linkDst),
-                ('Undirected link', self.owner.linkUnd),
-                ('Rescan links', self.owner.loadLinksInt),
-            ]
-            comms = iter(commands)
-            for i in range(3):
-                f = Tk.Frame(w)
-                for j in range(2):
-                    txt, com = comms.next()
-                    b = Tk.Button(f, text=txt, width=10,
-                        height=1, command=com)
-                    b.pack(side=Tk.LEFT, fill=Tk.BOTH)
-                f.pack(side=Tk.TOP, fill=Tk.BOTH)
-            f = Tk.Frame(w)
-            self.message = Tk.Label(f, text='no msg.')
-            self.message.pack(side=Tk.LEFT)
-            self.delete = Tk.IntVar()
-            self.deleteButton = Tk.Checkbutton(f,
-                text='Delete link', variable=self.delete,
-                command=self.tkDeleteClicked)
-            self.deleteButton.pack(side=Tk.RIGHT)
-            f.pack(side=Tk.TOP, fill=Tk.BOTH)
-        #@+node:ekr.20140920145803.17976: *3* loadList
-        def loadList(self, lst):
-            self.listbox.delete(0, Tk.END)
-            for i in lst:
-                self.listbox.insert(Tk.END, i)
-        #@+node:ekr.20140920145803.17977: *3* enableDelete
-        def enableDelete(self, enable):
-            self.delete.set(0)
-            if enable:
-                self.deleteButton.configure(state=Tk.NORMAL)
-            else:
-                self.deleteButton.configure(state=Tk.DISABLED)
-        #@+node:ekr.20140920145803.17978: *3* showMessage
-        def showMessage(self, msg, color='black', optional=False):
-            """Show the message using whatever u.i. is available"""
-            self.message.configure(text=msg, fg=color)
-        #@+node:ekr.20140920145803.17979: *3* tkListClicked
-        def tkListClicked(self, event):
-
-            selected = self.listbox.curselection()  # list of selected indexes
-            if not selected:
-                return  # click on empty list of unlinked node
-            selected = int(selected[0])  # not some fancy smancy Tk value
-            self.owner.linkClicked(selected)
-        #@+node:ekr.20140920145803.17980: *3* tkDeleteClicked
-        def tkDeleteClicked(self):
-
-            self.owner.deleteSet(self.delete.get())
-        #@+node:ekr.20140920145803.17981: *3* updateTkTab
-        def updateTkTab(self, tag, k):
-            # deprecated
-            if k['c'] != self.c:
-                return  # not our problem
-
-            self.updateTkTabInt()
-        #@+node:ekr.20140920145803.17982: *3* updateTkTabInt
-        def updateTkTabInt(self):
-            # deprecated
-            c = self.c
-            p = c.p
-            v = p.v
-            self.listbox.delete(0, Tk.END)
-            self.messageUsed = False
-            self.delete.set(0)
-            self.deleteButton.configure(state=Tk.DISABLED)
-            self.showMessage('', optional=True)
-            if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
-                i = 0
-                links = v.unknownAttributes['_bklnk']['links']
-                dests = []
-                while i < len(links):
-                    linkType, other = links[i]
-                    otherV = self.vnode[other]
-                    otherP = self.vnodePosition(otherV)
-                    if not self.c.positionExists(otherP):
-                        self.showMessage('Lost link(s) deleted', color='red')
-                        del links[i]
-                    else:
-                        i += 1
-                        dests.append((linkType, otherP))
-                if dests:
-                    self.deleteButton.configure(state=Tk.NORMAL)
-                    self.showMessage('Click a link to follow it', optional=True)
-                    for i in dests:
-
-                        def goThere(where=i[1]):
-                            c.selectPosition(where)
-
-                        txt = {'S': '->', 'D': '<-', 'U': '--'}[i[0]] + ' ' + i[1].h
-                        self.listbox.insert(Tk.END, txt)
-                        def delLink(on=v,
-                            to=i[1].v.gnx,
-                            type_=i[0]): self.deleteLink(on, to, type_)
-                    self.dests = dests
-        #@-others
-#@+node:ekr.20140920145803.17995: ** top-level
-#@+node:ekr.20090616105756.3940: *3* init
-warning_given = False
-
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    global warning_given
-    if g.app.gui.guiName() == 'nullGui':
-        return False
-    if isQt6:
-        if not warning_given:
-            warning_given = True
-            print('backlink.py: Qt6 support not ready yet.')
-        return False
-    g.registerHandler('after-create-leo-frame', onCreate)
-    g.plugin_signon(__name__)
-    return True
-#@+node:ekr.20090616105756.3941: *3* onCreate
-def onCreate(tag, keys):
-
-    c = keys.get('c')
-    if not c:
-        return
-
-    backlinkController(c)
+                self.UI.linkList.addItem(item)
+    #@+node:ekr.20140920145803.17992: *3* showMessage
+    def showMessage(self, msg, color='black'):
+        '''Show the message in the label area.'''
+        try:
+            fg = QtGui.QColor(color)
+        except Exception:
+            fg = QtGui.QColor('black')
+        pal = QtGui.QPalette(self.UI.label.palette())
+        pal.setColor(QtGui.QPalette.WindowText, fg)
+        self.UI.label.setPalette(pal)
+        self.UI.label.setText(msg)
+    #@+node:ekr.20140920145803.17993: *3* enableDelete
+    def enableDelete(self, enable):
+        self.UI.deleteBtn.setChecked(False)
+        self.UI.deleteBtn.setEnabled(enable)
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
