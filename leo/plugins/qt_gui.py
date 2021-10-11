@@ -307,9 +307,9 @@ class LeoQtGui(leoGui.LeoGui):
 
         E.g. (5 minute increments in minute field):
 
-            print g.app.gui.runAskDateTimeDialog(c, 'When?',
-              message="When is it?",
-              step_min={QtWidgets.QDateTimeEdit.MinuteSection: 5})
+            g.app.gui.runAskDateTimeDialog(c, 'When?',
+                message="When is it?",
+                step_min={QtWidgets.QDateTimeEdit.MinuteSection: 5})
 
         """
         #@+<< define date/time classes >>
