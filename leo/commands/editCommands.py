@@ -19,8 +19,8 @@ def cmd(name):
 #@+others
 #@+node:ekr.20180504180844.1: **  Top-level helper functions
 #@+node:ekr.20180504180247.2: *3* function: find_next_trace
+# Will not find in comments, which is fine.
 if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
-    # Will not find in comments, which is fine.
 
 skip_pat = re.compile(r'=.*in g.app.debug')
 
