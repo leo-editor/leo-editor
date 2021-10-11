@@ -4,9 +4,9 @@
 #@@first
 #@@language python
 #@@tabwidth -4
-'''
+"""
 A Stand-alone prototype for Leo using flexx.
-'''
+"""
 from flexx import flx
 from leo.core import leoGlobals as g
 assert g
@@ -58,7 +58,7 @@ class LeoBody(flx.Widget):
 class LeoGui(flx.PyComponent):
 
     def runMainLoop(self):
-        '''The main loop for the flexx gui.'''
+        """The main loop for the flexx gui."""
 
         # print('LeoFlex running...')
         # c = g.app.log.c

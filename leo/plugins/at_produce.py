@@ -44,7 +44,7 @@ pr = '@' + 'produce'
 #@+others
 #@+node:ekr.20040915085351.7: ** addMenu (no longer used)
 def addMenu(tag, keywords):
-    '''Produce two new entries at the end of the Outlines menu.'''
+    """Produce two new entries at the end of the Outlines menu."""
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')

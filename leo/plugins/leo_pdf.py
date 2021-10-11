@@ -415,11 +415,11 @@ class Bunch:
 
     # Used by new undo code.
     def __setitem__(self, key, value):
-        '''Support aBunch[key] = val'''
+        """Support aBunch[key] = val"""
         return operator.setitem(self.__dict__, key, value)
 
     def __getitem__(self, key):
-        '''Support aBunch[key]'''
+        """Support aBunch[key]"""
         return operator.getitem(self.__dict__, key)
 
     def get(self, key, theDefault=None):

@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180119164431.1: * @file ../plugins/patch_python_colorizer.py
-'''
+"""
 Shows how to patch python colorizer.
-'''
+"""
 import re
 from leo.core import leoGlobals as g
 assert g

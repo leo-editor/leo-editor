@@ -151,7 +151,7 @@ def processDocumentNode(c):
     c.redraw()
 #@+node:mork.20041025121608: ** addXSLTNode
 def addXSLTNode(c):
-    '''creates a node and inserts some xslt boilerplate'''
+    """creates a node and inserts some xslt boilerplate"""
     pos = c.p
 
     #body = '''<?xml version="1.0"?>'''
@@ -168,7 +168,7 @@ def addXSLTNode(c):
     c.redraw()
 #@+node:mork.20041010110121: ** addXSLTElement
 def addXSLTElement(c, element):
-    '''adds some xslt to the text node'''
+    """adds some xslt to the text node"""
     w = c.frame.body.wrapper
     w.insert('insert', element)
 #@+node:mork.20041025113021: ** getString (xsltWithNodes.py)

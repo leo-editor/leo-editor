@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ville.20090503124249.1: * @file ../plugins/tomboy_import.py
-''' Allows imports of notes created in Tomboy / gnote.
+""" Allows imports of notes created in Tomboy / gnote.
 
 Usage:
 
@@ -10,7 +10,7 @@ Usage:
 * The next time you do act-on-node, existing notes will be updated (they don't need to
   be under 'tomboy' node anymore) and new notes added.
 
-'''
+"""
 # By Ville M. Vainio
 
 #@+<< imports >>
@@ -24,7 +24,7 @@ from leo.core import leoPlugins
 #@+others
 #@+node:ville.20090503124249.5: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True

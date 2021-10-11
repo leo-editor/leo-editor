@@ -234,10 +234,10 @@ def show_unittest_failures(event):
     c.k.simulateCommand('focus-to-nav')
 #@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict (OrderedDict)
 class OrderedDefaultDict(OrderedDict):
-    '''
+    """
     Credit:  http://stackoverflow.com/questions/4126348/
     how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
-    '''
+    """
     def __init__(self, *args, **kwargs):
         if not args:
             self.default_factory = None

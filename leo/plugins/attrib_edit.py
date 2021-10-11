@@ -520,7 +520,7 @@ class editWatcher:
 #@+node:tbrown.20091009210724.10979: ** class attrib_edit_Controller
 class attrib_edit_Controller:
 
-    '''A per-commander class that manages attribute editing.'''
+    """A per-commander class that manages attribute editing."""
 
     #@+others
     #@+node:tbrown.20091009210724.10981: *3* __init__ & reloadSettings (attrib_edit_Controller)

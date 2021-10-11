@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160504083330.1: * @file ../plugins/writers/leo_json.py
-'''The @auto write code for .json files.'''
+"""The @auto write code for .json files."""
 #
 # This module must **not** be named json, to avoid conflicts with the json standard library.
 import copy
@@ -10,7 +10,7 @@ import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20160504083330.2: ** class JSON_Writer
 class JSON_Writer(basewriter.BaseWriter):
-    '''The writer class for .json files.'''
+    """The writer class for .json files."""
     # No ctor.
     #@+others
     #@+node:ekr.20160504083330.3: *3* json.write
@@ -33,7 +33,7 @@ class JSON_Writer(basewriter.BaseWriter):
         return True
     #@+node:ekr.20160504085408.1: *3* json.vnode_dict
     def vnode_dict(self, v):
-        '''Return a json dict for v.'''
+        """Return a json dict for v."""
         return {
             'gnx': v.gnx,
             'h': v.h, 'b': v.b,

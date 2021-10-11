@@ -6,7 +6,7 @@
 from leo.core import leoGlobals as g
 
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting  # Not for unit testing.
     if ok:
 

@@ -247,7 +247,7 @@ class ThreadQueue:
     #@+others
     #@+node:ekr.20121126095734.12420: *3* __init__
     def __init__(self):
-        '''Ctor for ThreadQueue class.'''
+        """Ctor for ThreadQueue class."""
         self.threads = []
     #@+node:ekr.20121126095734.12421: *3* add
     def add(self, r):

@@ -86,7 +86,7 @@ class ParamClass:
     #@+others
     #@+node:ekr.20040916091520.3: *3* __init__
     def __init__(self, c):
-        '''Ctor for ParamClass.'''
+        """Ctor for ParamClass."""
         self.c = c
         self.pattern = g.angleBrackets(r'\s*\w*?\s*\(\s*([^,]*?,)\s*?(\w+)\s*\)\s*') + '$'
         self.regex = re.compile(self.pattern)
@@ -146,7 +146,7 @@ class ParamClass:
         return None
     #@+node:ekr.20040916084945.3: *3* addMenu
     def addMenu(self):
-        '''Add a submenu in the outline menu.'''
+        """Add a submenu in the outline menu."""
         c = self.c
         table = (
             ("Parameterize Section Reference", None, self.parameterize),

@@ -94,7 +94,7 @@ class WikiView:
     #@+others
     #@+node:tbrown.20141101114322.10: *3* __init__ & reloadSettings (WikiView)
     def __init__(self, c):
-        '''Ctor for WikiView class.'''
+        """Ctor for WikiView class."""
         self.c = c
         c._wikiview = self
         leadins, self.urlpats = self.parse_options()

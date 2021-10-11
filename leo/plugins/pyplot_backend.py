@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160928073518.1: * @file ../plugins/pyplot_backend.py
-'''
+"""
     A helper for the viewrendered plugin.
     This is *NOT* a real plugin.
-'''
+"""
 #@+<< pyplot_backend imports >>
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 from leo.core import leoGlobals as g
@@ -29,7 +29,7 @@ except ImportError:
 #@+others
 #@+node:ekr.20160928073605.1: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.trace('pyplot_backend.py is not a plugin.')
     return False
 #@+node:ekr.20160928082006.1: ** Leo backend
@@ -72,7 +72,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         # pylint: disable=non-parent-init-called
 
     def __init__(self, canvas, num):
-        '''Ctor for the LeoFigureManagerQt class.'''
+        """Ctor for the LeoFigureManagerQt class."""
         self.c = c = g.app.log.c
         super().__init__(canvas, num)
         self.canvas = canvas

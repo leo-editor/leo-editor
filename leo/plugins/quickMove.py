@@ -344,7 +344,7 @@ class quickMove:
             g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton (quickMove.py)
     def addButton(self, which, type_="move", v=None, parent=None):
-        '''Add a button that creates a target for future moves.'''
+        """Add a button that creates a target for future moves."""
         c = self.c
         p = c.p
         if v is None:

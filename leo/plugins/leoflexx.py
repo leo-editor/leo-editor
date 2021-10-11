@@ -142,9 +142,9 @@ def suppress_unwanted_log_messages():
 #@+node:ekr.20181115071559.1: ** Py side: App & wrapper classes
 #@+node:ekr.20181127151027.1: *3* class API_Wrapper (StringTextWrapper)
 class API_Wrapper(leoFrame.StringTextWrapper):
-    '''
+    """
     A wrapper class that implements the high-level interface.
-    '''
+    """
 
     def __init__(self, c, name):
         assert name in ('body', 'log', 'minibuffer'), repr(name)
@@ -168,7 +168,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
     #@+others
     #@+node:ekr.20181128101421.1: *4* API_Wrapper.Selection Setters
     def finish_set_insert(self, tag):
-        '''Common helper for selection setters.'''
+        """Common helper for selection setters."""
         if 'select' in g.app.debug:
             tag = '%s.%s' % (self.tag, 'finish_set_insert')
             print('%30s: %s %r' % (tag, self.ins, self.sel))
@@ -206,7 +206,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
     #@@language python
 
     def finish_setter(self, tag):
-        '''The common setter code.'''
+        """The common setter code."""
         c = self.c
         tag = 'py.body.setter'
         if self.name == 'body':
@@ -244,9 +244,9 @@ class API_Wrapper(leoFrame.StringTextWrapper):
     #@-others
 #@+node:ekr.20181206153831.1: *3* class DummyFrame
 class DummyFrame(leoFrame.NullFrame):
-    '''
+    """
     A frame to keep Leo's core happy until we can call app.finish_create.
-    '''
+    """
 
     def __repr__(self):
         return 'DummyFrame: %r' % self.c.shortFileName()
@@ -257,13 +257,13 @@ class DummyFrame(leoFrame.NullFrame):
 # pscript never converts flx.PyComponents to JS.
 
 class LeoBrowserApp(flx.PyComponent):
-    '''
+    """
     The browser component of Leo in the browser.
 
     This is self.root for all flexx components.
 
     This is *not* g.app.
-    '''
+    """
 
     main_window = flx.ComponentProp(settable=True)
 
@@ -281,11 +281,11 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181124133513.1: *5* app.finish_create
     @flx.action
     def finish_create(self):
-        '''
+        """
         Initialize all ivars and widgets.
 
         Called after all flx.Widgets have been fully inited!
-        '''
+        """
         w = self.main_window
         self.c = c = g.app.log.c
         assert c
@@ -381,7 +381,7 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20190507110902.1: *4* app.action.cls
     @flx.action
     def cls(self):
-        '''Clear the console'''
+        """Clear the console"""
         g.cls()
     #@+node:ekr.20181117163223.1: *4* app.action.do_key
     # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
@@ -389,12 +389,12 @@ class LeoBrowserApp(flx.PyComponent):
 
     @flx.action
     def do_key(self, ev, ivar):
-        '''
+        """
         LeoBrowserApp.do_key: The central key handler.
 
         Will be called *in addition* to any inner key handlers,
         unless the inner key handler calls e.preventDefault()
-        '''
+        """
         if 'keys' in g.app.debug:
             g.trace(ev, ivar)
         c = self.c
@@ -458,7 +458,7 @@ class LeoBrowserApp(flx.PyComponent):
         g.printObj(obj, tag=tag)
 
     # def message(self, s):
-        # '''For testing.'''
+        # """For testing."""
         # print('app.message: %s' % s)
     #@+node:ekr.20181207080933.1: *4* app.action.set_body_text & set_status
     # These must be separate because they are called from the tree logic.
@@ -479,14 +479,14 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
     def redraw(self, p):
-        '''
+        """
         Send a **redraw list** to the tree.
 
         This is a recusive list lists of items (ap, gnx, headline) describing
         all and *only* the presently visible nodes in the tree.
 
         As a side effect, app.make_redraw_dict updates all internal dicts.
-        '''
+        """
         trace = 'drawing' in g.app.debug
         tag = 'py.app.redraw'
         c = self.c
@@ -531,7 +531,7 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181111095640.1: *5* app.action.send_children_to_tree
     @flx.action
     def send_children_to_tree(self, parent_ap):
-        '''
+        """
         Call w.tree.receive_children(d), where d is compatible with make_redraw_dict:
             {
                 'parent_ap': parent_ap,
@@ -540,7 +540,7 @@ class LeoBrowserApp(flx.PyComponent):
                         for p in for p in p.children()
                 ],
             }
-        '''
+        """
         p = self.ap_to_p(parent_ap)
         assert p, repr(parent_ap)
         if 0:
@@ -565,7 +565,7 @@ class LeoBrowserApp(flx.PyComponent):
         })
     #@+node:ekr.20181111203114.1: *5* app.ap_to_p
     def ap_to_p(self, ap):
-        '''Convert an archived position to a true Leo position.'''
+        """Convert an archived position to a true Leo position."""
         childIndex = ap['childIndex']
         v = self.gnx_to_vnode[ap['gnx']]
         stack = [
@@ -575,7 +575,7 @@ class LeoBrowserApp(flx.PyComponent):
         return leoNodes.position(v, childIndex, stack)
     #@+node:ekr.20181124071215.1: *5* app.dump_top_level
     def dump_top_level(self):
-        '''Dump the top-level nodes.'''
+        """Dump the top-level nodes."""
         if 0:
             c = self.c
             print('\napp.dump_top_level...')
@@ -588,12 +588,12 @@ class LeoBrowserApp(flx.PyComponent):
             print('')
     #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helper
     def make_redraw_dict(self, p=None):
-        '''
+        """
         Return a **recursive**, archivable, list of lists describing all the
         visible nodes of the tree.
 
         As a side effect, recreate gnx_to_vnode.
-        '''
+        """
         c = self.c
         p = p or c.p
         t1 = time.process_time()
@@ -613,10 +613,10 @@ class LeoBrowserApp(flx.PyComponent):
         return d
     #@+node:ekr.20181113044701.1: *6* app.make_dict_for_position
     def make_dict_for_position(self, p):
-        '''
+        """
         Recursively add a sublist for p and all its visible nodes.
         It is already known that p itself is visible.
-        '''
+        """
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if 0:
@@ -641,7 +641,7 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20190511091601.1: *4* app.Editing
     #@+node:ekr.20181129122147.1: *5* app.edit_headline & helper
     def edit_headline(self):
-        '''Simulate editing the headline in the minibuffer.'''
+        """Simulate editing the headline in the minibuffer."""
         w = self.root.main_window
         mb = w.minibuffer
         mb.set_text('Enter Headline: ')
@@ -651,7 +651,7 @@ class LeoBrowserApp(flx.PyComponent):
         print('app.edit_headline_completer')
     #@+node:ekr.20190512081356.1: *4* app.request_focus
     def request_focus(self, w):
-        '''Monkey-patched c.request_focus.'''
+        """Monkey-patched c.request_focus."""
         tag = 'py.app.request_focus'
         trace = 'focus' in g.app.debug
         if not w:
@@ -677,7 +677,7 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20190511091236.1: *4* app.Minibuffer
     #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
-        '''Start the execution of a minibuffer command.'''
+        """Start the execution of a minibuffer command."""
         # Called by app.do_command.
         c = self.c
         # New code: execute directly.
@@ -690,7 +690,7 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20190510133737.1: *5* app.action.complete_minibuffer_command
     @flx.action
     def complete_minibuffer_command(self, d):
-        '''Complete the minibuffer command using d.'''
+        """Complete the minibuffer command using d."""
         c = self.c
         k, w = c.k, c.frame.body.wrapper
         #
@@ -747,11 +747,11 @@ class LeoBrowserApp(flx.PyComponent):
     # These all monkey-patch the corresponding c.fileCommands methods.
     #@+node:ekr.20190511100908.1: *5* app.save_file
     def save_file(self, fileName):
-        '''
+        """
         Monkey-patched override of c.fileCommands.save.
 
         Sync p.b before calling the original method.
-        '''
+        """
         if not self.root.inited:
             return
         if 'select' in g.app.debug:
@@ -775,11 +775,11 @@ class LeoBrowserApp(flx.PyComponent):
         self.old_save_file(fn)
     #@+node:ekr.20190511102119.1: *5* app.save_file_as
     def save_file_as(self, fileName):
-        '''
+        """
         Monkey-patched override of c.fileCommands.saveAs.
 
         Sync p.b before calling the original method.
-        '''
+        """
         if not self.root.inited:
             return
         if 'select' in g.app.debug:
@@ -803,11 +803,11 @@ class LeoBrowserApp(flx.PyComponent):
         self.old_save_file_as(fn)
     #@+node:ekr.20190511102120.1: *5* app.save_file_to
     def save_file_to(self, fileName):
-        '''
+        """
         Monkey-patched override of c.fileCommands.saveTo.
 
         Sync p.b before calling the original method.
-        '''
+        """
         if not self.root.inited:
             return
         if 'select' in g.app.debug:
@@ -833,18 +833,18 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181216051109.1: *5* app.action.complete_select
     @flx.action
     def complete_select(self, d):
-        '''Complete the selection of the d['new_ap']'''
+        """Complete the selection of the d['new_ap']"""
         self.update_body_from_dict(d)
         self.c.frame.tree.complete_select(d)
             # tree.complete_select has direct ivars to tree ivars.
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
-        '''
+        """
         Select the position in Leo's core corresponding to the archived position.
 
         Nothing in the flx.tree needs to be updated.
-        '''
+        """
         assert ap, g.callers()
         c, w = self.c, self.main_window
         p = self.ap_to_p(ap)
@@ -858,18 +858,18 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20190506100026.1: *5* app.action.select_minibuffer
     @flx.action
     def select_minibuffer(self):
-        '''Select the minibuffer in response to user click.'''
+        """Select the minibuffer in response to user click."""
         c = self.c
         event = g.app.gui.create_key_event(c, w=c.frame.body.wrapper)
         c.k.fullCommand(event)
     #@+node:ekr.20181118061020.1: *5* app.action.select_p
     @flx.action
     def select_p(self, p):
-        '''
+        """
         Select the position in the tree.
 
         Called from LeoBrowserTree.select, so do *not* call c.frame.tree.select.
-        '''
+        """
         c = self.c
         w = self.main_window
         ap = self.p_to_ap(p)
@@ -887,16 +887,16 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20190510053112.1: *5* app.action.select_tree_using_ap
     @flx.action
     def select_tree_using_ap(self, ap):
-        '''A helper action, called from flx_tree.on_selected_event.'''
+        """A helper action, called from flx_tree.on_selected_event."""
         # tag = 'py.app.select_tree_using_ap'
         # print(tag, ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
     #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates dict)
     def p_to_ap(self, p):
-        '''
+        """
         Convert a true Leo position to a serializable archived position.
-        '''
+        """
         if not p.v:
             print('app.p_to_ap: no p.v: %r %s' % (p, g.callers()))
             assert False, g.callers()
@@ -921,11 +921,11 @@ class LeoBrowserApp(flx.PyComponent):
         }
     #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict & helper
     def update_body_from_dict(self, d):
-        '''
+        """
         Update the *old* p.b from d.
 
         Add 'ins_row/col', 'sel_row/col/1/2' keys.
-        '''
+        """
         tag = 'py.app.update_body_from_dict'
         p, v = self.c.p, self.c.p.v
         assert v, g.callers()
@@ -944,7 +944,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.update_body_from_dict_helper(d)
     #@+node:ekr.20190511094352.1: *6* app.update_body_from_dict_helper
     def update_body_from_dict_helper(self, d):
-        '''Update the body dict, without checks.'''
+        """Update the body dict, without checks."""
         c, v = self.c, self.c.p.v
         d_s = d['s']
         #
@@ -1018,7 +1018,7 @@ class LeoBrowserApp(flx.PyComponent):
         )
 
     def terminate_do_find(self):
-        '''Never called.'''
+        """Never called."""
     #@+node:ekr.20181210092900.1: *7* app.end_find
     def end_find(self, pattern):
         c = self.c
@@ -1084,7 +1084,7 @@ class LeoBrowserApp(flx.PyComponent):
         )
 
     def terminate_do_head(self, args, c, event):
-        '''never actually called.'''
+        """never actually called."""
     #@+node:ekr.20181210092817.1: *7* app.end_set_headline (leoflexx.py)
     def end_set_headline(self, h):
         c, k, p, u = self.c, self.c.k, self.c.p, self.c.undoer
@@ -1128,7 +1128,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     #@+node:ekr.20181126104843.1: *5* app.test_full_outline
     def test_full_outline(self, p):
-        '''Exercise the new diff-based redraw code on a fully-expanded outline.'''
+        """Exercise the new diff-based redraw code on a fully-expanded outline."""
         c = self.c
         p = p.copy()
         redrawer = self.fast_redrawer
@@ -1153,7 +1153,7 @@ class LeoBrowserApp(flx.PyComponent):
             # Does not do a redraw.
     #@+node:ekr.20181113180246.1: *5* app.test_round_trip_positions
     def test_round_trip_positions(self):
-        '''Test the round tripping of p_to_ap and ap_to_p.'''
+        """Test the round tripping of p_to_ap and ap_to_p."""
         c = self.c
         # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
         old_d = self.gnx_to_vnode.copy()
@@ -1193,7 +1193,7 @@ class LeoBrowserBody(leoFrame.NullBody):
 class LeoBrowserFrame(leoFrame.NullFrame):
 
     def __init__(self, c, title, gui):
-        '''Ctor for the LeoBrowserFrame class.'''
+        """Ctor for the LeoBrowserFrame class."""
         super().__init__(c, title, gui)
         assert self.c == c
         frame = self
@@ -1214,7 +1214,7 @@ class LeoBrowserFrame(leoFrame.NullFrame):
             # There is no need to implement its methods now.
 
     def finishCreate(self):
-        '''Override NullFrame.finishCreate.'''
+        """Override NullFrame.finishCreate."""
         # Do not call self.createFirstTreeNode.
 
     #@+others
@@ -1241,20 +1241,20 @@ class LeoBrowserGui(leoGui.NullGui):
         g.app.writeWaitingLog = self.writeWaitingLog1
 
     def insertKeyEvent(self, event, i):
-        '''Insert the key given by event in location i of widget event.w.'''
+        """Insert the key given by event in location i of widget event.w."""
         # Mysterious...
         assert False, g.callers()
 
     #@+others
     #@+node:ekr.20181206153033.1: *4* gui.createLeoFrame
     def createLeoFrame(self, c, title):
-        '''
+        """
         Override NullGui.createLeoFrame.
 
         We can't create a real flx.Frame until much later.
 
         We create a placeholder in g.app.windowList, for app.finish_create.
-        '''
+        """
         gui = self
         self.lastFrame = DummyFrame(c, title, gui)
         g.app.windowList.append(self.lastFrame)
@@ -1263,7 +1263,7 @@ class LeoBrowserGui(leoGui.NullGui):
         return self.lastFrame
     #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
     def isTextWrapper(self, w):
-        '''Return True if w is supposedly a text widget.'''
+        """Return True if w is supposedly a text widget."""
         # isinstance is much more pythonic than using getName.
         if isinstance(w, (
             LeoBrowserBody,
@@ -1312,10 +1312,10 @@ class LeoBrowserGui(leoGui.NullGui):
             print('gui.set_focus: unknown widget', repr(widget), g.callers(6))
     #@+node:ekr.20181206090210.1: *4* gui.writeWaitingLog1/2
     def writeWaitingLog1(self, c=None):
-        '''Monkey-patched do-nothing version of g.app.writeWaitingLog.'''
+        """Monkey-patched do-nothing version of g.app.writeWaitingLog."""
 
     def writeWaitingLog2(self, c=None):
-        '''Called from app.finish_create.'''
+        """Called from app.finish_create."""
         w = self.root.main_window
         #
         # Print the signon.
@@ -1341,7 +1341,7 @@ class LeoBrowserGui(leoGui.NullGui):
             # Essential when opening multiple files...
     #@+node:ekr.20181202083305.1: *4* gui.runMainLoop
     def runMainLoop(self):
-        '''Run the main loop from within Leo's core.'''
+        """Run the main loop from within Leo's core."""
         runtime = self.specific_browser or 'webruntime'
         flx.launch(LeoBrowserApp, runtime)
         flx.set_log_level('ERROR')  #  'INFO'
@@ -1396,7 +1396,7 @@ class LeoBrowserLog(leoFrame.NullLog):
     #@-others
 #@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(leoMenu.NullMenu):
-    '''Browser wrapper for menus.'''
+    """Browser wrapper for menus."""
 
     # def __init__(self, frame):
         # super().__init__(frame)
@@ -1408,7 +1408,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
 # Leo's core doesn't define a NullMinibuffer class.
 
 class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
-    '''Browser wrapper for minibuffer.'''
+    """Browser wrapper for minibuffer."""
 
     def __init__(self, c, frame):
         super().__init__(c, name='minibuffer')
@@ -1724,9 +1724,9 @@ class TracingNullObject:
 #@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
 #@+node:ekr.20181201125953.1: *3* class JS_Editor (flx.Widget)
 class JS_Editor(flx.Widget):
-    '''
+    """
     The base class for the body and log panes.
-    '''
+    """
 
     def init(self, name, flex=1):
         # pylint: disable=arguments-differ
@@ -1806,10 +1806,10 @@ class JS_Editor(flx.Widget):
                 self.root.do_key(ev, ivar)
     #@+node:ekr.20181201081444.1: *5* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
-        '''
+        """
         Return True if Leo should handle the key.
         Leo handles only modified keys, not F-keys or plain keys.
-        '''
+        """
         trace = False and 'keys' in g.app.debug
         tag = 'JSE.should_be_leo_key'
         key, mods = ev['key'], ev['modifiers']
@@ -1901,13 +1901,13 @@ class JS_Editor(flx.Widget):
 
     @flx.action
     def set_text(self, s):
-        '''Set the entire text'''
+        """Set the entire text"""
         # print('%s.set_text: len(s): %s' % (self.tag, len(s)))
         self.editor.setValue(s)
     #@-others
 #@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
 class LeoFlexxBody(JS_Editor):
-    '''A CodeEditor widget based on Ace.'''
+    """A CodeEditor widget based on Ace."""
 
     #@+<< body css >>
     #@+node:ekr.20181120055046.1: *4* << body css >>
@@ -1938,7 +1938,7 @@ class LeoFlexxBody(JS_Editor):
     #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_save_file
     @flx.action
     def sync_body_before_save_file(self, d):
-        '''Update p.b, etc. before executing calling c.fileCommands.save.'''
+        """Update p.b, etc. before executing calling c.fileCommands.save."""
         self.update_body_dict(d)
         if 'select' in g.app.debug:
             tag = 'flx.body.sync_body_before_save_file'
@@ -1947,7 +1947,7 @@ class LeoFlexxBody(JS_Editor):
     #@+node:ekr.20190511102428.1: *5* flx.body.action.sync_body_before_save_file_as
     @flx.action
     def sync_body_before_save_file_as(self, d):
-        '''Update p.b, etc. before executing calling c.fileCommands.saveAs.'''
+        """Update p.b, etc. before executing calling c.fileCommands.saveAs."""
         self.update_body_dict(d)
         if 'select' in g.app.debug:
             tag = 'flx.body.sync_body_before_save_file_as'
@@ -1956,7 +1956,7 @@ class LeoFlexxBody(JS_Editor):
     #@+node:ekr.20190511102429.1: *5* flx.body.action.sync_body_before_save_file_to
     @flx.action
     def sync_body_before_save_file_to(self, d):
-        '''Update p.b, etc. before executing calling c.fileCommands.saveTo.'''
+        """Update p.b, etc. before executing calling c.fileCommands.saveTo."""
         self.update_body_dict(d)
         if 'select' in g.app.debug:
             tag = 'flx.body.sync_body_before_save_file_to'
@@ -1965,12 +1965,12 @@ class LeoFlexxBody(JS_Editor):
     #@+node:ekr.20190510070009.1: *5* flx.body.action.sync_body_before_select
     @flx.action
     def sync_body_before_select(self, d):
-        '''
+        """
         Called by app.tree.select to update the *old* p.b, etc. before selecting a new node.
 
         d['old_ap']: The AP for the old node.
         d['new_ap']: The AP for the new node.
-        '''
+        """
         if 'select' in g.app.debug:
             tag = 'flx.body.sync_body_before_select'
             print('')
@@ -1983,11 +1983,11 @@ class LeoFlexxBody(JS_Editor):
 
     #@+node:ekr.20190510070010.1: *4* flx.body.update_body_dict
     def update_body_dict(self, d):
-        '''
+        """
         Add keys to d describing flx.body.
 
         This sets d.s & other keys from the *old* position.
-        '''
+        """
         #
         # Remember the body text.
         d['s'] = self.get_text()
@@ -2045,11 +2045,11 @@ class LeoFlexxLog(JS_Editor):
 #@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
 class LeoFlexxMainWindow(flx.Widget):
 
-    '''
+    """
     Leo's main window, that is, root.main_window.
 
     Each property is accessible as root.main_window.x.
-    '''
+    """
     body = flx.ComponentProp(settable=True)
     log = flx.ComponentProp(settable=True)
     minibuffer = flx.ComponentProp(settable=True)

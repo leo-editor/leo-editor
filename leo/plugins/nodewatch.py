@@ -139,7 +139,7 @@ class NodewatchController:
         c.frame.log.createTab('Nodewatch', widget=self.ui)
     #@+node:peckj.20131101132841.6453: *3* add
     def add(self, key, values):
-        ''' add a list of vnodes ('values') to the nodewatch category 'key' '''
+        """ add a list of vnodes ('values') to the nodewatch category 'key' """
         self.watchlists[key] = list(enumerate(values))
     #@-others
 #@+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget

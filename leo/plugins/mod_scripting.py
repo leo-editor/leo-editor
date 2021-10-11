@@ -317,11 +317,11 @@ def onCreate(tag, keys):
         c.evalController = EvalController(c)
 #@+node:ekr.20141031053508.7: ** class AtButtonCallback
 class AtButtonCallback:
-    '''A class whose __call__ method is a callback for @button nodes.'''
+    """A class whose __call__ method is a callback for @button nodes."""
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self, controller, b, c, buttonText, docstring, gnx, script):
-        '''AtButtonCallback.__init__.'''
+        """AtButtonCallback.__init__."""
         self.b = b
             # A QButton.
         self.buttonText = buttonText
@@ -340,24 +340,24 @@ class AtButtonCallback:
             # The docstring for this callback for g.getDocStringForFunction.
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event=None):
-        '''AtButtonCallbgack.__call__. The callback for @button nodes.'''
+        """AtButtonCallbgack.__call__. The callback for @button nodes."""
         self.execute_script()
     #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
     def __repr__(self):
-        '''AtButtonCallback.__repr__.'''
+        """AtButtonCallback.__repr__."""
         c = self.c
         return 'AtButtonCallback %s gnx: %s len(script) %s' % (
             c.shortFileName(), self.gnx, len(self.script or ''))
     #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
     def __getattr__(self, attr):
-        '''AtButtonCallback.__getattr__. Implement __name__.'''
+        """AtButtonCallback.__getattr__. Implement __name__."""
         if attr == '__name__':
             return 'AtButtonCallback: %s' % self.gnx
         raise AttributeError
             # Returning None is not correct.
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
-        '''Execute the script associated with this button.'''
+        """Execute the script associated with this button."""
         script = self.find_script()
         if script:
             self.controller.executeScriptFromButton(
@@ -1179,11 +1179,11 @@ class ScriptingController:
 scriptingController = ScriptingController
 #@+node:ekr.20180328085038.1: ** class EvalController
 class EvalController:
-    '''A class defining all eval-* commands.'''
+    """A class defining all eval-* commands."""
     #@+others
     #@+node:ekr.20180328130835.1: *3* eval.Birth
     def __init__(self, c):
-        '''Ctor for EvalController class.'''
+        """Ctor for EvalController class."""
         self.answers = []
         self.c = c
         self.d: Dict[str, Any] = {}
@@ -1245,7 +1245,7 @@ class EvalController:
     def eval_block(self, event):
         #@+<< eval-block docstring >>
         #@+node:ekr.20180328100415.1: *5* << eval-block docstring >>
-        '''
+        """
         In the body, "# >>>" marks the end of a code block, and "# <<<" marks
         the end of an output block.  E.g.::
 
@@ -1267,7 +1267,7 @@ class EvalController:
         because ``eval-block`` will add them as needed.  So just type the
         first code block and run ``eval-block``.
 
-        '''
+        """
         #@-<< eval-block docstring >>
         c = self.c
         if c != event.get('c'):
@@ -1372,7 +1372,7 @@ class EvalController:
     #@+node:ekr.20180328151652.1: *3* eval.Helpers
     #@+node:ekr.20180328090830.1: *4* eval.eval_text & helpers
     def eval_text(self, s):
-        '''Evaluate string s.'''
+        """Evaluate string s."""
         s = textwrap.dedent(s)
         if not s.strip():
             return None
@@ -1454,7 +1454,7 @@ class EvalController:
                 g.restoreStdout()
     #@+node:ekr.20180328132748.1: *5* eval.show_answers
     def show_answers(self):
-        ''' Show all new values computed by do_exec.'''
+        """ Show all new values computed by do_exec."""
         if len(self.answers) > 1:
             g.es('')
         for answer in self.answers:

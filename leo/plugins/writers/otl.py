@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18078: * @file ../plugins/writers/otl.py
-'''The @auto write code for vimoutline (.otl) files.'''
+"""The @auto write code for vimoutline (.otl) files."""
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20140726091031.18083: ** class OtlWriter
 class OtlWriter(basewriter.BaseWriter):
-    '''The writer class for .otl files.'''
+    """The writer class for .otl files."""
     # def __init__(self,c):
         # super().__init__(c)
     #@+others
@@ -27,7 +27,7 @@ class OtlWriter(basewriter.BaseWriter):
         return True
     #@+node:ekr.20171230163813.1: *3* otlw.write_root
     def write_root(self, root):
-        '''Write the root @auto-org node.'''
+        """Write the root @auto-org node."""
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
         for s in lines:
             self.put(s)

@@ -84,11 +84,11 @@ StringIO = io.StringIO
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer:
-    '''
+    """
     The new, unified, simplified, interface to Leo's importer code.
 
     Eventually, all importers will create use this class.
-    '''
+    """
 
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
@@ -101,9 +101,9 @@ class Importer:
         strict=False,
         ** kwargs
     ):
-        '''
+        """
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
-        '''
+        """
         # Copies of args...
         self.importCommands = ic = importCommands
         self.c = c = ic and ic.c
@@ -171,7 +171,7 @@ class Importer:
     # All code in passes 1 and 2 *must* use this API to change body text.
 
     def add_line(self, p, s):
-        '''Append the line s to p.v._import_lines.'''
+        """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
         # *Never* change p unexpectedly!
         assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
@@ -192,7 +192,7 @@ class Importer:
         return hasattr(p.v, '_import_lines')
 
     def inject_lines_ivar(self, p):
-        '''Inject _import_lines into p.v.'''
+        """Inject _import_lines into p.v."""
         # *Never* change p unexpectedly!
         assert not p.v._bodyString, (p and p.h, g.callers(10))
         p.v._import_lines = []
@@ -206,34 +206,34 @@ class Importer:
     # These can be overridden in subclasses.
     #@+node:ekr.20161108131153.8: *4* i.adjust_parent
     def adjust_parent(self, parent, headline):
-        '''Return the effective parent.
+        """Return the effective parent.
 
-        This is overridden by the RstScanner class.'''
+        This is overridden by the RstScanner class."""
         return parent
     #@+node:ekr.20161108131153.9: *4* i.clean_headline
     def clean_headline(self, s, p=None):
-        '''
+        """
         Return the cleaned version headline s.
         Will typically be overridden in subclasses.
-        '''
+        """
         return s.strip()
     #@+node:ekr.20161110173058.1: *4* i.clean_nodes
     def clean_nodes(self, parent):
-        '''
+        """
         Clean all nodes in parent's tree.
         Subclasses override this as desired.
         See perl_i.clean_nodes for an examplle.
-        '''
+        """
         pass
     #@+node:ekr.20161120022121.1: *3* i.Scanning & scan tables
     #@+node:ekr.20161128025508.1: *4* i.get_new_dict
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''
+        """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
-        '''
+        """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, pattern, data):
@@ -275,11 +275,11 @@ class Importer:
     cached_scan_tables = {}
 
     def get_table(self, context):
-        '''
+        """
         Return the state table for the given context.
 
         This method handles caching.  x.get_new_table returns the actual table.
-        '''
+        """
         key = '%s.%s' % (self.name, context)
             # Bug fix: must keep tables separate.
         table = self.cached_scan_tables.get(key)
@@ -290,10 +290,10 @@ class Importer:
         return table
     #@+node:ekr.20161128025444.1: *4* i.scan_dict
     def scan_dict(self, context, i, s, d):
-        '''
+        """
         i.scan_dict: Scan at position i of s with the give context and dict.
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-        '''
+        """
         found = False
         delta_c = delta_p = delta_s = 0
         ch = s[i]
@@ -338,7 +338,7 @@ class Importer:
         return new_context, i + 1, 0, 0, 0, False
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s, prev_state):
-        '''
+        """
         A generalized scan-line method.
 
         SCAN STATE PROTOCOL:
@@ -352,7 +352,7 @@ class Importer:
             def __init__(self, d)
 
         2. The state class must have an update method.
-        '''
+        """
         # This dict allows new data to be added without changing ScanState signatures.
         d = {
             'indent': self.get_int_lws(s),
@@ -372,7 +372,7 @@ class Importer:
         return new_state
     #@+node:ekr.20161114024119.1: *4* i.test_scan_state
     def test_scan_state(self, tests, State):
-        '''
+        """
         Test x.scan_line or i.scan_line.
 
         `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
@@ -383,7 +383,7 @@ class Importer:
             < < imp.reload importers.linescanner and importers.python > >
             importer = py.Py_Importer(c.importCommands)
             importer.test_scan_state(tests, Python_ScanState)
-        '''
+        """
         assert self.single_comment == '#', self.single_comment
         table = self.get_table(context='')
         contexts = self.all_contexts(table)
@@ -411,7 +411,7 @@ class Importer:
     #@+node:ekr.20161108165530.1: *3* i.The pipeline
     #@+node:ekr.20161108131153.10: *4* i.run (driver) & helers
     def run(self, s, parent, parse_body=False):
-        '''The common top-level code for all scanners.'''
+        """The common top-level code for all scanners."""
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():
@@ -450,10 +450,10 @@ class Importer:
         return ok
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
     def regularize_whitespace(self, s):
-        '''
+        """
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        '''
+        """
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
         fn = g.shortFileName(self.root.h)
@@ -487,9 +487,9 @@ class Importer:
         return ''.join(result)
     #@+node:ekr.20161111024447.1: *5* i.generate_nodes
     def generate_nodes(self, s, parent):
-        '''
+        """
         A three-stage pipeline to generate all imported nodes.
-        '''
+        """
         # Stage 1: generate nodes.
         # After this stage, the p.v._import_lines list contains p's future body text.
         self.gen_lines(s, parent)
@@ -506,7 +506,7 @@ class Importer:
         self.finish(parent)
     #@+node:ekr.20161108131153.11: *4* State 0: i.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines):
-        '''Check for intermixed blank & tabs.'''
+        """Check for intermixed blank & tabs."""
         # Do a quick check for mixed leading tabs/blanks.
         fn = g.shortFileName(self.root.h)
         w = self.tab_width
@@ -533,10 +533,10 @@ class Importer:
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     def gen_lines(self, s, parent):
-        '''
+        """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
-        '''
+        """
         trace = 'importers' in g.app.debug
         tail_p = None
         prev_state = self.state_class()
@@ -570,7 +570,7 @@ class Importer:
             prev_state = new_state
     #@+node:ekr.20161108160409.7: *5* i.create_child_node
     def create_child_node(self, parent, body, headline):
-        '''Create a child node of parent.'''
+        """Create a child node of parent."""
         child = parent.insertAsLastChild()
         self.inject_lines_ivar(child)
         if body:
@@ -580,7 +580,7 @@ class Importer:
         return child
     #@+node:ekr.20161119130337.1: *5* i.cut_stack
     def cut_stack(self, new_state, stack):
-        '''Cut back the stack until stack[-1] matches new_state.'''
+        """Cut back the stack until stack[-1] matches new_state."""
 
         def underflow(n):
             g.trace(n)
@@ -622,15 +622,15 @@ class Importer:
         return tail_p
     #@+node:ekr.20161127102339.1: *5* i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends the block.'''
+        """True if line ends the block."""
         # Comparing new_state against prev_state does not work for python.
         top = stack[-1]
         return new_state.level() < top.state.level()
     #@+node:ekr.20161108160409.8: *5* i.gen_ref
     def gen_ref(self, line, parent, target):
-        '''
+        """
         Generate the ref line. Return the headline.
-        '''
+        """
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line, p=None)
         if self.gen_refs:
@@ -658,7 +658,7 @@ class Importer:
         return headline
     #@+node:ekr.20161108160409.6: *5* i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
-        '''Create a child node and update the stack.'''
+        """Create a child node and update the stack."""
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
         line = lines[i]
@@ -670,11 +670,11 @@ class Importer:
         stack.append(Target(child, new_state))
     #@+node:ekr.20161119124217.1: *5* i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
         return new_state.level() > prev_state.level()
     #@+node:ekr.20161119162451.1: *5* i.trace_status
     def trace_status(self, line, new_state, prev_state, stack, top):
-        '''Print everything important in the i.gen_lines loop.'''
+        """Print everything important in the i.gen_lines loop."""
         print('')
         try:
             g.trace('===== %r' % line)
@@ -687,14 +687,14 @@ class Importer:
         g.printList(stack)
     #@+node:ekr.20161108131153.13: *4* Stage 2: i.post_pass & helpers
     def post_pass(self, parent):
-        '''
+        """
         Optional Stage 2 of the importer pipeline, consisting of zero or more
         substages. Each substage alters nodes in various ways.
 
         Subclasses may freely override this method, **provided** that all
         substages use the API for setting body text. Changing p.b directly will
         cause asserts to fail later in i.finish().
-        '''
+        """
         self.clean_all_headlines(parent)
         if self.add_context:
             self.add_class_names(parent)
@@ -712,11 +712,11 @@ class Importer:
         # Note: this method is never called for @clean trees.
 
     def add_class_names(self, p):
-        '''
+        """
         Add class names to headlines for all descendant nodes.
 
         Called only when @bool add-context-to-headlines is True.
-        '''
+        """
         if g.unitTesting:
             return  # Don't changes the expected headlines.
         after, fn, class_name = None, None, None
@@ -747,10 +747,10 @@ class Importer:
                     p.h += tag
     #@+node:ekr.20161110125940.1: *5* i.clean_all_headlines
     def clean_all_headlines(self, parent):
-        '''
+        """
         Clean all headlines in parent's tree by calling the language-specific
         clean_headline method.
-        '''
+        """
         for p in parent.subtree():
             # Note: i.gen_ref calls clean_headline without knowing p.
             # As a result, the first argument is required.
@@ -760,17 +760,17 @@ class Importer:
 
     #@+node:ekr.20161110130157.1: *5* i.clean_all_nodes
     def clean_all_nodes(self, parent):
-        '''Clean the nodes in parent's tree, in a language-dependent way.'''
+        """Clean the nodes in parent's tree, in a language-dependent way."""
         # i.clean_nodes does nothing.
         # Subclasses may override as desired.
         # See perl_i.clean_nodes for an example.
         self.clean_nodes(parent)
     #@+node:ekr.20161110130709.1: *5* i.delete_all_empty_nodes
     def delete_all_empty_nodes(self, parent):
-        '''
+        """
         Delete nodes consisting of nothing but whitespace.
         Move the whitespace to the preceding node.
-        '''
+        """
         c = self.c
         aList = []
         for p in parent.subtree():
@@ -793,14 +793,14 @@ class Importer:
                 # Suppress redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
-        '''A placeholder for python_i.promote_last_lines.'''
+        """A placeholder for python_i.promote_last_lines."""
     #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
-        '''
+        """
         Promote all trailing underindent lines to the node's parent node,
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
-        '''
+        """
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
             lines = self.get_lines(p)
@@ -835,7 +835,7 @@ class Importer:
                 self.extend_lines(parent, reversed(tail))
     #@+node:ekr.20161110130337.1: *5* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
-        '''Unindent all nodes in parent's tree.'''
+        """Unindent all nodes in parent's tree."""
         for p in parent.subtree():
             lines = self.get_lines(p)
             if all(z.isspace() for z in lines):
@@ -845,11 +845,11 @@ class Importer:
                 self.set_lines(p, self.undent(p))
     #@+node:ekr.20161111023249.1: *4* Stage 3: i.finish & helpers
     def finish(self, parent):
-        '''
+        """
         Stage 3 (the last) stage of the importer pipeline.
 
         Subclasses should never need to override this method.
-        '''
+        """
         # Put directives at the end, so as not to interfere with shebang lines, etc.
         self.add_root_directives(parent)
         #
@@ -857,7 +857,7 @@ class Importer:
         self.finalize_ivars(parent)
     #@+node:ekr.20161108160409.5: *5* i.add_root_directives
     def add_root_directives(self, parent):
-        '''Return the proper directives for the root node p.'''
+        """Return the proper directives for the root node p."""
         table = [
             '@language %s\n' % self.language,
             '@tabwidth %d\n' % self.tab_width,
@@ -876,10 +876,10 @@ class Importer:
             self.set_lines(parent, table)
     #@+node:ekr.20161110042020.1: *5* i.finalize_ivars
     def finalize_ivars(self, parent):
-        '''
+        """
         Update the body text of all nodes in parent's tree using the injected
         v._import_lines lists.
-        '''
+        """
         for p in parent.self_and_subtree():
             v = p.v
             # Make sure that no code in x.post_pass has mistakenly set p.b.
@@ -894,7 +894,7 @@ class Importer:
             delattr(v, '_import_lines')
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent):
-        '''True if perfect import checks pass.'''
+        """True if perfect import checks pass."""
         if g.app.suppressImportChecks:
             g.app.suppressImportChecks = False
             return True
@@ -935,17 +935,17 @@ class Importer:
         return ok
     #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines (not used)
     def clean_blank_lines(self, lines):
-        '''Remove all blanks and tabs in all blank lines.'''
+        """Remove all blanks and tabs in all blank lines."""
         return [self.lstrip_line(z) if z.isspace() else z for z in lines]
     #@+node:ekr.20161124030004.1: *5* i.clean_last_lines
     def clean_last_lines(self, lines):
-        '''Remove blank lines from the end of lines.'''
+        """Remove blank lines from the end of lines."""
         while lines and lines[-1].isspace():
             lines.pop()
         return lines
     #@+node:ekr.20170404035138.1: *5* i.context_lines
     def context_lines(self, aList, i, n=2):
-        '''Return a list containing the n lines of surrounding context of aList[i].'''
+        """Return a list containing the n lines of surrounding context of aList[i]."""
         result = []
         aList1 = aList[max(0, i - n) : i]
         aList2 = aList[i + 1 : i + n + 1]
@@ -957,7 +957,7 @@ class Importer:
         return result
     #@+node:ekr.20161123210716.1: *5* i.show_failure
     def show_failure(self, lines1, lines2, sfn):
-        '''Print the failing lines, with surrounding context.'''
+        """Print the failing lines, with surrounding context."""
         if not g.unitTesting:
             g.es('@auto failed:', sfn, color='red')
         n1, n2 = len(lines1), len(lines2)
@@ -978,21 +978,21 @@ class Importer:
             print('all common lines match')
     #@+node:ekr.20161108131153.5: *5* i.strip_*
     def lstrip_line(self, s):
-        '''Delete leading whitespace, *without* deleting the trailing newline!'''
+        """Delete leading whitespace, *without* deleting the trailing newline!"""
         # This fixes a major bug in strip_lws.
         assert s, g.callers()
         return '\n' if s.isspace() else s.lstrip()
 
     def strip_all(self, lines):
-        '''Strip blank lines and leading whitespace from all lines of s.'''
+        """Strip blank lines and leading whitespace from all lines of s."""
         return self.strip_lws(self.strip_blank_lines(lines))
 
     def strip_blank_lines(self, lines):
-        '''Strip all blank lines from s.'''
+        """Strip all blank lines from s."""
         return [z for z in lines if not z.isspace()]
 
     def strip_lws(self, lines):
-        '''Strip leading whitespace from all lines.'''
+        """Strip leading whitespace from all lines."""
         return [self.lstrip_line(z) for z in lines]
         # This also works, but I prefer the "extra" call to lstrip().
         # return ['\n' if z.isspace() else z.lstrip() for z in lines].
@@ -1000,7 +1000,7 @@ class Importer:
 
     #@+node:ekr.20161123210335.1: *5* i.trace_lines
     def trace_lines(self, lines1, lines2, parent):
-        '''Show both s1 and s2.'''
+        """Show both s1 and s2."""
         print('===== s1: %s' % parent.h)
         for i, s in enumerate(lines1):
             g.pr('%3s %r' % (i + 1, s))
@@ -1009,7 +1009,7 @@ class Importer:
             g.pr('%3s %r' % (i + 1, s))
     #@+node:ekr.20161108131153.6: *5* i.trial_write
     def trial_write(self):
-        '''Return the trial write for self.root.'''
+        """Return the trial write for self.root."""
         at = self.c.atFileCommands
         # Leo 5.6: Allow apparent section refs for *all* languages.
         ivar = 'allow_undefined_refs'
@@ -1023,11 +1023,11 @@ class Importer:
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
-        '''
+        """
         Return a list of all contexts contained in the third column of the given table.
 
         This is a support method for unit tests.
-        '''
+        """
         contexts = set()
         d = table
         for key in d:
@@ -1050,11 +1050,11 @@ class Importer:
             c.import_error_nodes.append(parent.h)
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):
-        '''Return True if the pattern matches at s[i:]'''
+        """Return True if the pattern matches at s[i:]"""
         return s[i : i + len(pattern)] == pattern
     #@+node:ekr.20161108131153.18: *4* i.Messages
     def error(self, s):
-        '''Issue an error and cause a unit test to fail.'''
+        """Issue an error and cause a unit test to fail."""
         self.errors += 1
         self.importCommands.errors += 1
 
@@ -1069,7 +1069,7 @@ class Importer:
             g.warning('Warning:', s)
     #@+node:ekr.20161109045619.1: *4* i.print_lines
     def print_lines(self, lines):
-        '''Print lines for debugging.'''
+        """Print lines for debugging."""
         print('[')
         for line in lines:
             print(repr(line))
@@ -1078,7 +1078,7 @@ class Importer:
     print_list = print_lines
     #@+node:ekr.20161125174423.1: *4* i.print_stack
     def print_stack(self, stack):
-        '''Print a stack of positions.'''
+        """Print a stack of positions."""
         g.printList([p.h for p in stack])
     #@+node:ekr.20161108131153.21: *4* i.underindented_comment/line
     def underindented_comment(self, line):
@@ -1095,15 +1095,15 @@ class Importer:
     #@+node:ekr.20161109045312.1: *3* i.Whitespace
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s):
-        '''Return the the lws (a number) of line s.'''
+        """Return the the lws (a number) of line s."""
         # Important: use self.tab_width, *not* c.tab_width.
         return g.computeLeadingWhitespaceWidth(s, self.tab_width)
     #@+node:ekr.20161109053143.1: *4* i.get_leading_indent
     def get_leading_indent(self, lines, i, ignoreComments=True):
-        '''
+        """
         Return the leading whitespace (an int) of the first significant line.
         Ignore blank and comment lines if ignoreComments is True
-        '''
+        """
         if ignoreComments:
             while i < len(lines):
                 if self.is_ws_line(lines[i]):
@@ -1113,16 +1113,16 @@ class Importer:
         return self.get_int_lws(lines[i]) if i < len(lines) else 0
     #@+node:ekr.20161108131153.17: *4* i.get_str_lws
     def get_str_lws(self, s):
-        '''Return the characters of the lws of s.'''
+        """Return the characters of the lws of s."""
         m = re.match(r'([ \t]*)', s)
         return m.group(0) if m else ''
     #@+node:ekr.20161109052011.1: *4* i.is_ws_line
     def is_ws_line(self, s):
-        '''Return True if s is nothing but whitespace and single-line comments.'''
+        """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):
-        '''Remove maximal leading whitespace from the start of all lines.'''
+        """Remove maximal leading whitespace from the start of all lines."""
         if self.is_rst:
             return p.b  # Never unindent rst code.
         lines = self.get_lines(p)
@@ -1143,7 +1143,7 @@ class Importer:
         return result
     #@+node:ekr.20161108131153.20: *5* i.common_lws
     def common_lws(self, lines):
-        '''Return the lws (a string) common to all lines.'''
+        """Return the lws (a string) common to all lines."""
         if not lines:
             return ''
         lws = self.get_str_lws(lines[0])
@@ -1160,10 +1160,10 @@ class Importer:
         return lws
     #@+node:ekr.20161109072221.1: *4* i.undent_body_lines & helper
     def undent_body_lines(self, lines, ignoreComments=True):
-        '''
+        """
         Remove the first line's leading indentation from all lines.
         Return the resulting string.
-        '''
+        """
         s = ''.join(lines)
         if self.is_rst:
             return s  # Never unindent rst code.
@@ -1175,11 +1175,11 @@ class Importer:
         return result
     #@+node:ekr.20161108180655.2: *5* i.undent_by
     def undent_by(self, s, undent_val):
-        '''
+        """
         Remove leading whitespace equivalent to undent_val from each line.
 
         Strict languages: prepend the underindent escape for underindented lines.
-        '''
+        """
         if self.is_rst:
             return s  # Never unindent rst code.
         result = []
@@ -1199,13 +1199,13 @@ class Importer:
     #@-others
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:
-    '''
+    """
     The base class for classes representing the state of the line-oriented
     scan.
-    '''
+    """
 
     def __init__(self, d=None):
-        '''ScanState ctor.'''
+        """ScanState ctor."""
         if d:
             indent = d.get('indent')
             prev = d.get('prev')
@@ -1223,19 +1223,19 @@ class ScanState:
     #@+others
     #@+node:ekr.20161118043146.1: *3* ScanState.__repr__
     def __repr__(self):
-        '''ScanState.__repr__'''
+        """ScanState.__repr__"""
         return 'ScanState context: %r curlies: %s' % (
             self.context, self.curlies)
     #@+node:ekr.20161119115215.1: *3* ScanState.level
     def level(self):
-        '''ScanState.level.'''
+        """ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118043530.1: *3* ScanState.update
     def update(self, data):
-        '''
+        """
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.bs_nl = bs_nl
         self.context = context

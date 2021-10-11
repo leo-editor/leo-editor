@@ -486,7 +486,7 @@ class FlowLayout(QtWidgets.QLayout):
     #@+others
     #@+node:ekr.20140917180536.17897: *3* __init__
     def __init__(self, parent=None, margin=0, spacing=-1):
-        '''Ctor for FlowLayout class.'''
+        """Ctor for FlowLayout class."""
         super().__init__(parent)
         if parent is not None:
             self.setMargin(margin)

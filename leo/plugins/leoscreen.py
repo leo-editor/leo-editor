@@ -169,7 +169,7 @@ def onCreate(tag, key):
 #@+node:tbrown.20100226095909.12783: ** class leoscreen_Controller
 class leoscreen_Controller:
 
-    '''A per-commander class that manages screen interaction.'''
+    """A per-commander class that manages screen interaction."""
 
     #@+others
     #@+node:tbrown.20100226095909.12784: *3* __init__& reloadSettings (leoscreen_Controller)
