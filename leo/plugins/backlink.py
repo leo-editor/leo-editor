@@ -760,7 +760,7 @@ class backlinkQtUI(QtWidgets.QWidget):
         fg = QtGui.QColor(color)
         pal = QtGui.QPalette(ui.label.palette())
         if isQt6:
-             pal.setColor(pal.ColorRole.Window, fg)  # #2197
+            pal.setColor(pal.ColorRole.Window, fg)  # #2197
         else:
             pal.setColor(QtGui.QPalette.WindowText, fg)
         ui.label.setPalette(pal)
