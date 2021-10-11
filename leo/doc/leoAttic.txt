@@ -6496,6 +6496,195 @@ def runMainLoop(self, fileName=None):
         c.debugCommands.runAllUnitTestsLocally()
     print('calling sys.exit(0)')
     sys.exit(0)
+#@+node:ekr.20211011021921.1: ** From backlink plugin
+#@+node:ekr.20140920145803.17994: *3* class backlinkTkUI
+if g.app.gui.guiName() == "tkinter":
+
+    Tk = g.import_module('tkinter')
+
+    class backlinkTkUI:
+        # pylint: disable=no-member
+        # This is old code.
+        @others
+#@+node:ekr.20140920145803.17975: *4* __init__
+def __init__(self, owner):
+    '''Ctor for backlinkTkUI class.'''
+    self.owner = owner
+    self.c = c = self.owner.c
+    c.frame.log.createTab('Links', createText=False)
+    w = c.frame.log.frameDict['Links']
+    f = Tk.Frame(w)
+    scrollbar = Tk.Scrollbar(f, orient=Tk.VERTICAL)
+    self.listbox = Tk.Listbox(f, height=4, yscrollcommand=scrollbar.set)
+    scrollbar.config(command=self.listbox.yview)
+    scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
+    self.listbox.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=True)
+    f.pack(side=Tk.TOP, fill=Tk.BOTH, expand=True)
+    self.listbox.bind("<ButtonRelease-1>", self.tkListClicked)
+    commands = [
+        ('Mark source', self.owner.markSrc),
+        ('Mark  dest.', self.owner.markDst),
+        ('Link source', self.owner.linkSrc),
+        ('Link dest.', self.owner.linkDst),
+        ('Undirected link', self.owner.linkUnd),
+        ('Rescan links', self.owner.loadLinksInt),
+    ]
+    comms = iter(commands)
+    for i in range(3):
+        f = Tk.Frame(w)
+        for j in range(2):
+            txt, com = comms.next()
+            b = Tk.Button(f, text=txt, width=10,
+                height=1, command=com)
+            b.pack(side=Tk.LEFT, fill=Tk.BOTH)
+        f.pack(side=Tk.TOP, fill=Tk.BOTH)
+    f = Tk.Frame(w)
+    self.message = Tk.Label(f, text='no msg.')
+    self.message.pack(side=Tk.LEFT)
+    self.delete = Tk.IntVar()
+    self.deleteButton = Tk.Checkbutton(f,
+        text='Delete link', variable=self.delete,
+        command=self.tkDeleteClicked)
+    self.deleteButton.pack(side=Tk.RIGHT)
+    f.pack(side=Tk.TOP, fill=Tk.BOTH)
+#@+node:ekr.20140920145803.17976: *4* loadList
+def loadList(self, lst):
+    self.listbox.delete(0, Tk.END)
+    for i in lst:
+        self.listbox.insert(Tk.END, i)
+#@+node:ekr.20140920145803.17977: *4* enableDelete
+def enableDelete(self, enable):
+    self.delete.set(0)
+    if enable:
+        self.deleteButton.configure(state=Tk.NORMAL)
+    else:
+        self.deleteButton.configure(state=Tk.DISABLED)
+#@+node:ekr.20140920145803.17978: *4* showMessage
+def showMessage(self, msg, color='black', optional=False):
+    """Show the message using whatever u.i. is available"""
+    self.message.configure(text=msg, fg=color)
+#@+node:ekr.20140920145803.17979: *4* tkListClicked
+def tkListClicked(self, event):
+
+    selected = self.listbox.curselection()  # list of selected indexes
+    if not selected:
+        return  # click on empty list of unlinked node
+    selected = int(selected[0])  # not some fancy smancy Tk value
+    self.owner.linkClicked(selected)
+#@+node:ekr.20140920145803.17980: *4* tkDeleteClicked
+def tkDeleteClicked(self):
+
+    self.owner.deleteSet(self.delete.get())
+#@+node:ekr.20140920145803.17981: *4* updateTkTab
+def updateTkTab(self, tag, k):
+    # deprecated
+    if k['c'] != self.c:
+        return  # not our problem
+
+    self.updateTkTabInt()
+#@+node:ekr.20140920145803.17982: *4* updateTkTabInt
+def updateTkTabInt(self):
+    # deprecated
+    c = self.c
+    p = c.p
+    v = p.v
+    self.listbox.delete(0, Tk.END)
+    self.messageUsed = False
+    self.delete.set(0)
+    self.deleteButton.configure(state=Tk.DISABLED)
+    self.showMessage('', optional=True)
+    if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
+        i = 0
+        links = v.unknownAttributes['_bklnk']['links']
+        dests = []
+        while i < len(links):
+            linkType, other = links[i]
+            otherV = self.vnode[other]
+            otherP = self.vnodePosition(otherV)
+            if not self.c.positionExists(otherP):
+                self.showMessage('Lost link(s) deleted', color='red')
+                del links[i]
+            else:
+                i += 1
+                dests.append((linkType, otherP))
+        if dests:
+            self.deleteButton.configure(state=Tk.NORMAL)
+            self.showMessage('Click a link to follow it', optional=True)
+            for i in dests:
+
+                def goThere(where=i[1]):
+                    c.selectPosition(where)
+
+                txt = {'S': '->', 'D': '<-', 'U': '--'}[i[0]] + ' ' + i[1].h
+                self.listbox.insert(Tk.END, txt)
+                def delLink(on=v,
+                    to=i[1].v.gnx,
+                    type_=i[0]): self.deleteLink(on, to, type_)
+            self.dests = dests
+#@+node:ekr.20090616105756.3964: *3* showMenu
+def showMenu(self, tag, k):
+
+    if k['c'] != self.c:
+        return  # not our problem
+    p = k['p']
+    self.c.selectPosition(p)
+    v = p.v
+    c = self.c
+
+    # Create the menu.
+    menu = Tk.Menu(None, tearoff=0, takefocus=0)
+
+    commands = [
+        (True, 'Mark as link source', self.markSrc),
+        (True, 'Mark as link dest.', self.markDst),
+        (True, 'Link to source', self.linkSrc),
+        (True, 'Link to dest.', self.linkDst),
+        (True, 'Undirected link', self.linkUnd),
+        (True, 'Rescan links', self.loadLinksInt),
+    ]
+    if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
+        i = 0
+        links = v.unknownAttributes['_bklnk']['links']
+        dests = []
+        while i < len(links):
+            linkType, other = links[i]
+            otherV = self.vnode[other]
+            otherP = self.vnodePosition(otherV)
+            if not self.c.positionExists(otherP):
+                g.es('Deleting lost link')
+                del links[i]
+            else:
+                i += 1
+                dests.append((linkType, otherP))
+        if dests:
+            smenu = Tk.Menu(menu, tearoff=0, takefocus=1)
+            for i in dests:
+
+                def goThere(where=i[1]):
+                    c.selectPosition(where)
+
+                c.add_command(menu,
+                    label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
+                    underline=0, command=goThere)
+                def delLink(on=v,
+                    to=i[1].v.unknownAttributes['_bklnk']['id'],
+                    type_=i[0]): self.deleteLink(on, to, type_)
+                c.add_command(smenu,
+                    label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
+                    underline=0, command=delLink)
+            menu.add_cascade(label='Delete link', menu=smenu, underline=1)
+            menu.add_separator()
+
+    for command in commands:
+        available, text, com = command
+        if not available:
+            continue
+        c.add_command(menu, label=text,
+            underline=0, command=com)
+    #
+    # Show the menu.
+    event = k['event']
+    g.app.gui.postPopupMenu(self.c, menu, event.x_root, event.y_root)
 #@-all
 #@@nosearch
 #@-leo
