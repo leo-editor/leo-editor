@@ -383,7 +383,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if i is None:
                 return False
             w = c.frame.body.wrapper
-            bunch = u.beforeChangeBody(c.p) 
+            bunch = u.beforeChangeBody(c.p)
             switch = p != c.p
             if switch:
                 c.selectPosition(p)

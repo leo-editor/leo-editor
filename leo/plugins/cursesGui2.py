@@ -2876,9 +2876,8 @@ class LeoBody(npyscreen.MultiLineEditable):
         trace = False and not g.unitTesting
         c = self.leo_c
         p, u, v = c.p, c.undoer, c.p.v
-        ### v = p.v
         undoType = 'update-body'
-        bunch = u.beforeChangeBody(p) ###
+        bunch = u.beforeChangeBody(p)
         i = self.cursor_line
         wrapper = c.frame.body.wrapper
         assert isinstance(wrapper, BodyWrapper), repr(wrapper)
@@ -2897,7 +2896,6 @@ class LeoBody(npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            ### self.onBodyChanged(undoType=undoType)
             u.afterChangeBody(p, undoType, bunch)
         elif i == len(lines):
             aList = head + [s]
@@ -2907,7 +2905,6 @@ class LeoBody(npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            ### self.onBodyChanged(undoType=undoType)
             u.afterChangeBody(p, undoType, bunch)
         else:
             g.trace('Can not happen', i, len(lines), repr(s))

@@ -714,7 +714,7 @@ class backlinkQtUI(QtWidgets.QWidget):
         u.nextBtn.clicked.connect(o.nextLink)
     #@+node:ekr.20140920145803.17988: *3* ui.dirClicked
     def dirClicked(self):
-        
+
         ui = self.UI
         if ui.dirLeftBtn.text() == "from":
             ui.dirLeftBtn.setText("to")
