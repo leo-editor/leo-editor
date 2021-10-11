@@ -17,7 +17,7 @@ def cmd(name):
 
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.104: ** debug.debug
+    #@+node:ekr.20150514063305.104: ** debug.debug & helper
     @cmd('debug')
     def invoke_debugger(self, event=None):
         """
@@ -54,24 +54,25 @@ class DebugCommandsClass(BaseEditCommandsClass):
         os.spawnv(os.P_NOWAIT, python, args)
     #@+node:ekr.20150514063305.105: *3* debug.findDebugger
     def findDebugger(self):
-        """Find the debugger using settings."""
+        """Find the winpdb debugger."""
         c = self.c
         pythonDir = g.os_path_dirname(sys.executable)
+        debugger_path = c.expand_path_expression(c.config.getString('debugger-path'))
         debuggers = (
             # #1431: only expand path expression in @string debugger-path.
-            c.expand_path_expression(c.config.getString('debugger-path')),
-            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'),
-                # winpdb 1.1.2 or newer.
-            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'),
-                # Older version.
+            debugger_path or '@string debugger-path',
+            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'),  # winpdb 1.1.2 or newer.
+            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'),  # Older version.
         )
         for debugger in debuggers:
             if debugger:
                 debugger = g.os_path_finalize(debugger)
                 if g.os_path_exists(debugger):
                     return debugger
-                g.warning('debugger does not exist:', debugger)
-        g.es('no debugger found.')
+                # g.es_print('debugger does not exist:', debugger)
+        g.es_print('winpdb not found in...')
+        for z in debuggers:
+            print(z)
         return None
     #@+node:ekr.20170713112849.1: ** debug.dump-node
     @cmd('dump-node')
