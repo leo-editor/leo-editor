@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150323150718.1: * @file leoAtFile.py
 #@@first
-    # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile.py)
@@ -40,8 +39,7 @@ class AtFile:
     miscDirective   =  8 # All other directives
     rawDirective    =  9 # @raw
     endRawDirective = 10 # @end_raw
-    startVerbatim   = 11 # @verbatim
-        # Not a real directive. Used to issue warnings.
+    startVerbatim   = 11 # @verbatim  Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
