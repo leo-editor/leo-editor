@@ -96,132 +96,75 @@ class LeoApp:
         """
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
-        self.batchMode = False
-            # True: run in batch mode.
-        self.debug = []
-            # A list of switches to be enabled.
-        self.diff = False
-            # True: run Leo in diff mode.
-        self.enablePlugins = True
-            # True: run start1 hook to load plugins. --no-plugins
-        self.failFast = False
-            # True: Use the failfast option in unit tests.
-        self.gui = None
-            # The gui class.
-        self.guiArgName = None
-            # The gui name given in --gui option.
-        self.ipython_inited = False
-            # True if leoIpython.py imports succeeded.
-        self.isTheme = False
-            # True: load files as theme files (ignore myLeoSettings.leo).
-        self.listen_to_log_flag = False
-            # True: execute listen-to-log command.
-        self.qt_use_tabs = False
-            # True: using qt gui: allow tabbed main window.
-        self.loaded_session = False
-            # Set by startup logic to True if no files specified on the command line.
-        self.silentMode = False
-            # True: no signon.
-        self.start_fullscreen = False
-            # For qt_frame plugin.
-        self.start_maximized = False
-            # For qt_frame plugin.
-        self.start_minimized = False
-            # For qt_frame plugin.
-        self.trace_binding = None
-            # The name of a binding to trace, or None.
-        self.trace_setting = None
-            # The name of a setting to trace, or None.
-        self.translateToUpperCase = False
-            # Never set to True.
-        self.useIpython = False
-            # True: add support for IPython.
-        self.use_psyco = False
-            # True: use psyco optimization.
-        self.use_splash_screen = True
-            # True: put up a splash screen.
+        self.batchMode = False  # True: run in batch mode.
+        self.debug = []  # A list of switches to be enabled.
+        self.diff = False  # True: run Leo in diff mode.
+        self.enablePlugins = True  # True: run start1 hook to load plugins. --no-plugins
+        self.failFast = False  # True: Use the failfast option in unit tests.
+        self.gui = None  # The gui class.
+        self.guiArgName = None  # The gui name given in --gui option.
+        self.ipython_inited = False  # True if leoIpython.py imports succeeded.
+        self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
+        self.listen_to_log_flag = False  # True: execute listen-to-log command.
+        self.qt_use_tabs = False  # True: using qt gui: allow tabbed main window.
+        self.loaded_session = False  # Set by startup logic to True if no files specified on the command line.
+        self.silentMode = False  # True: no signon.
+        self.start_fullscreen = False  # For qt_frame plugin.
+        self.start_maximized = False  # For qt_frame plugin.
+        self.start_minimized = False  # For qt_frame plugin.
+        self.trace_binding = None  # The name of a binding to trace, or None.
+        self.trace_setting = None  # The name of a setting to trace, or None.
+        self.translateToUpperCase = False  # Never set to True.
+        self.useIpython = False  # True: add support for IPython.
+        self.use_psyco = False  # True: use psyco optimization.
+        self.use_splash_screen = True  # True: put up a splash screen.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
-        self.count = 0
-            # General purpose debugging count.
-        self.debug_dict = {}
-            # For general use.
-        self.disable_redraw = False
-            # True: disable all redraws.
-        self.disableSave = False
-            # May be set by plugins.
-        self.idle_timers = []
-            # A list of IdleTime instances, so they persist.
-        self.log_listener = None
-            # The process created by the 'listen-for-log' command.
-        self.positions = 0
-            # The number of positions generated.
-        self.scanErrors = 0
-            # The number of errors seen by g.scanError.
-        self.structure_errors = 0
-            # Set by p.safeMoveToThreadNext.
-        self.statsDict = {}
-            # dict used by g.stat, g.clear_stats, g.print_stats.
-        self.statsLockout = False
-            # A lockout to prevent unbound recursion while gathering stats.
-        self.validate_outline = False
-            # True: enables c.validate_outline. (slow)
+        self.count = 0  # General purpose debugging count.
+        self.debug_dict = {}  # For general use.
+        self.disable_redraw = False  # True: disable all redraws.
+        self.disableSave = False  # May be set by plugins.
+        self.idle_timers = []  # A list of IdleTime instances, so they persist.
+        self.log_listener = None  # The process created by the 'listen-for-log' command.
+        self.positions = 0  # The number of positions generated.
+        self.scanErrors = 0  # The number of errors seen by g.scanError.
+        self.structure_errors = 0  # Set by p.safeMoveToThreadNext.
+        self.statsDict = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsLockout = False  # A lockout to prevent unbound recursion while gathering stats.
+        self.validate_outline = False  # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
         #@+<< LeoApp: error messages >>
         #@+node:ekr.20161028035902.1: *5* << LeoApp: error messages >>
-        self.menuWarningsGiven = False
-            # True: supress warnings in menu code.
-        self.unicodeErrorGiven = True
-            # True: suppres unicode tracebacks.
+        self.menuWarningsGiven = False  # True: supress warnings in menu code.
+        self.unicodeErrorGiven = True  # True: suppres unicode tracebacks.
         #@-<< LeoApp: error messages >>
         #@+<< LeoApp: global directories >>
         #@+node:ekr.20161028035924.1: *5* << LeoApp: global directories >>
-        self.extensionsDir = None
-            # The leo/extensions directory
-        self.globalConfigDir = None
-            # leo/config directory
-        self.globalOpenDir = None
-            # The directory last used to open a file.
-        self.homeDir = None
-            # The user's home directory.
-        self.homeLeoDir = None
-            # The user's home/.leo directory.
-        self.leoEditorDir = None
-            # The leo-editor directory.
-        self.loadDir = None
-            # The leo/core directory.
-        self.machineDir = None
-            # The machine-specific directory.
+        self.extensionsDir = None  # The leo/extensions directory
+        self.globalConfigDir = None  # leo/config directory
+        self.globalOpenDir = None  # The directory last used to open a file.
+        self.homeDir = None  # The user's home directory.
+        self.homeLeoDir = None  # The user's home/.leo directory.
+        self.leoEditorDir = None  # The leo-editor directory.
+        self.loadDir = None  # The leo/core directory.
+        self.machineDir = None  # The machine-specific directory.
+        self.theme_directory = None  # The directory from which the theme file was loaded, if any.
         #@-<< LeoApp: global directories >>
         #@+<< LeoApp: global data >>
         #@+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
-        self.atAutoNames = set()
-            # The set of all @auto spellings.
-        self.atFileNames = set()
-            # The set of all built-in @<file> spellings.
-
-        self.globalKillBuffer = []
-            # The global kill buffer.
-        self.globalRegisters = {}
-            # The global register list.
-        self.leoID = None
-            # The id part of gnx's.
-        self.loadedThemes = []
-            # List of loaded theme.leo files.
-            # This is used by the 'new' command.
-        self.lossage = []
-            # List of last 100 keystrokes.
-        self.paste_c = None
-            # The commander that pasted the last outline.
-        self.spellDict = None
-            # The singleton PyEnchant spell dict.
-        self.numberOfUntitledWindows = 0
-            # Number of opened untitled windows.
-        self.windowList = []
-            # Global list of all frames.
-        self.realMenuNameDict = {}
-            # Translations of menu names.
+        self.atAutoNames = set()  # The set of all @auto spellings.
+        self.atFileNames = set()  # The set of all built-in @<file> spellings.
+        self.globalKillBuffer = []  # The global kill buffer.
+        self.globalRegisters = {}  # The global register list.
+        self.leoID = None  # The id part of gnx's.
+        self.loadedThemes = []  # List of loaded theme.leo files.
+        self.lossage = []  # List of last 100 keystrokes.
+        self.paste_c = None  # The commander that pasted the last outline.
+        self.spellDict = None  # The singleton PyEnchant spell dict.
+        self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
+        self.windowList = []  # Global list of all frames.
+        self.realMenuNameDict = {}  # Translations of menu names.
         #@-<< LeoApp: global data >>
         #@+<< LeoApp: global controller/manager objects >>
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
@@ -274,35 +217,20 @@ class LeoApp:
         #@-<< LeoApp: global reader/writer data >>
         #@+<< LeoApp: global status vars >>
         #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>
-        self.already_open_files = []
-            # A list of file names that *might* be open in another
-            # copy of Leo.
-        self.dragging = False
-            # True: dragging.
-        self.inBridge = False
-            # True: running from leoBridge module.
-        self.inScript = False
-            # True: executing a script.
-        self.initing = True
-            # True: we are initiing the app.
-        self.initComplete = False
-            # True: late bindings are not allowed.
-        self.initStyleFlag = False
-            # True: setQtStyle called.
-        self.killed = False
-            # True: we are about to destroy the root window.
-        self.openingSettingsFile = False
-            # True, opening a settings file.
-        self.preReadFlag = False
-            # True: we are pre-reading a settings file.
-        self.quitting = False
-            # True: quitting.  Locks out some events.
-        self.quit_after_load = False
-            # True: quit immediately after loading.  For unit a unit test.
-        self.restarting = False
-            # True: restarting all of Leo. #1240.
-        self.reverting = False
-            # True: executing the revert command.
+        self.already_open_files = []  # A list of file names that *might* be open in another copy of Leo.
+        self.dragging = False  # True: dragging.
+        self.inBridge = False  # True: running from leoBridge module.
+        self.inScript = False  # True: executing a script.
+        self.initing = True  # True: we are initiing the app.
+        self.initComplete = False  # True: late bindings are not allowed.
+        self.initStyleFlag = False  # True: setQtStyle called.
+        self.killed = False  # True: we are about to destroy the root window.
+        self.openingSettingsFile = False  # True, opening a settings file.
+        self.preReadFlag = False  # True: we are pre-reading a settings file.
+        self.quitting = False  # True: quitting.  Locks out some events.
+        self.quit_after_load = False  # True: quit immediately after loading.  For unit a unit test.
+        self.restarting = False  # True: restarting all of Leo. #1240.
+        self.reverting = False  # True: executing the revert command.
         self.syntax_error_files = []
         #@-<< LeoApp: global status vars >>
         #@+<< LeoApp: the global log >>
@@ -322,13 +250,6 @@ class LeoApp:
         self.signon1 = ''
         self.signon2 = ''
         #@-<< LeoApp: the global log >>
-        #@+<< LeoApp: global theme data >>
-        #@+node:ekr.20180319152119.1: *5* << LeoApp: global theme data >>
-        self.theme_directory = None
-            # The directory from which the theme file was loaded, if any.
-            # Set only by LM.readGlobalSettingsFiles.
-            # Used by the StyleSheetManager class.
-        #@-<< LeoApp: global theme data >>
         #@+<< LeoApp: global types >>
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
         from leo.core import leoFrame
@@ -338,25 +259,15 @@ class LeoApp:
         #@-<< LeoApp: global types >>
         #@+<< LeoApp: plugins and event handlers >>
         #@+node:ekr.20161028040229.1: *5* << LeoApp: plugins and event handlers >>
-        self.hookError = False
-            # True: suppress further calls to hooks.
-            # g.doHook sets g.app.hookError on all exceptions.
-            # Scripts may reset g.app.hookError to try again.
-        self.hookFunction = None
-            # Application wide hook function.
-        self.idle_time_hooks_enabled = True
-            # True: idle-time hooks are enabled.
+        self.hookError = False  # True: suppress further calls to hooks.
+        self.hookFunction = None  # Application wide hook function.
+        self.idle_time_hooks_enabled = True  # True: idle-time hooks are enabled.
         #@-<< LeoApp: plugins and event handlers >>
         #@+<< LeoApp: scripting ivars >>
         #@+node:ekr.20161028040303.1: *5* << LeoApp: scripting ivars >>
-        self.searchDict = {}
-            # For communication between find/change scripts.
-        self.scriptDict = {}
-            # For use by scripts. Cleared before running each script.
-        self.scriptResult = None
-            # For use by leoPymacs.
-        self.permanentScriptDict = {}
-            # For use by scrips. Never cleared automatically.
+        self.scriptDict = {}  # For use by scripts. Cleared before running each script.
+        self.scriptResult = None  # For use by leoPymacs.
+        self.permanentScriptDict = {}  # For use by scripts. Never cleared automatically.
         #@-<< LeoApp: scripting ivars >>
         #@+<< LeoApp: unit testing ivars >>
         #@+node:ekr.20161028040330.1: *5* << LeoApp: unit testing ivars >>

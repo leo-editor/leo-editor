@@ -164,7 +164,7 @@ class Commands:
     def initFileIvars(self, fileName, relativeFileName):
         """Init file-related ivars of the commander."""
         self.changed = False
-            # True: the ouline has changed since the last save.
+            # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: List["leoNodes.Position"] = []
             # List of nodes for c.raise_error_dialogs.
         self.import_error_nodes: List["leoNodes.Position"] = []

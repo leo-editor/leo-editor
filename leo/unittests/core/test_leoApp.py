@@ -42,7 +42,8 @@ class TestApp(LeoUnitTest):
             'hookError', 'hookFunction',
             'numberOfUntitledWindows',
             'realMenuNameDict',
-            'searchDict', 'scriptDict',
+            # 'searchDict',
+            'scriptDict',
             'use_psyco',
         )
         for ivar in ivars:
