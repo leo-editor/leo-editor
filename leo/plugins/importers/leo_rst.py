@@ -150,9 +150,8 @@ class Rst_Importer(Importer):
         """Create a new node, with the given headline."""
         self.find_parent(level=level, h=headline)
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
+    # # 430, per RagBlufThim. Was {'#': 1,}
     rst_seen = {}
-        # Fix # 430. Per RagBlufThim.
-        # Was {'#': 1,}
     rst_level = 0  # A trick.
 
     def ch_level(self, ch):

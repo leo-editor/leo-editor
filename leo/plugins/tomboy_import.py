@@ -55,25 +55,19 @@ def strip_tags(cont):
     x.feed(cont)
     return x.get_fed_data()
 
-
 def parsenote(cont):
     tree = ET.parse(cont)
-    #ET.dump(tree)
     title = tree.findtext('{http://beatniksoftware.com/tomboy}title')
     # EKR: I'm not sure that finditer is correct, but geiterator no longer exists.
     # body  = tree.getiterator('{http://beatniksoftware.com/tomboy}note-content')[0]
     body = tree.iterfind('{http://beatniksoftware.com/tomboy}note-content')[0]
-    #b = "".join(el.text for el in body.getiterator())
     b = ET.tostring(body)
     b = strip_tags(b)
-    #print "body",b
     return title, b
 
 def pos_for_gnx(c, gnx):
-    #print "match",gnx
     for pos in c.all_positions():
         pos = pos.copy()
-        #print pos.gnx, pos.h
         if pos.gnx == gnx:
             return pos.copy()
     return None
@@ -107,7 +101,6 @@ def capturenotes(c, pos):
     c.db['tomboy_notes'] = old_nodes
 
 def tomboy_act_on_node(c, p, event):
-    #print 'act', `p.h`
     if not p.h == 'tomboy':
         raise leoPlugins.TryNext
 
@@ -116,10 +109,6 @@ def tomboy_act_on_node(c, p, event):
 
 def tomboy_install():
     g.act_on_node.add(tomboy_act_on_node, 99)
-
-#print "capturing"
-#capturenotes(p)
-#tomboy_install()
 #@-others
 #@@language python
 #@@tabwidth -4

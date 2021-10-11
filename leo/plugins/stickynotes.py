@@ -382,7 +382,6 @@ class SimpleRichText(QTextEdit):
         self.boldAct.setShortcut(self.tr("Ctrl+B"))
         self.boldAct.setStatusTip(self.tr("Make the text bold"))
         self.boldAct.triggered.connect(self.setBold)
-        # self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
         self.addAction(self.boldAct)
 
         boldFont = self.boldAct.font()
@@ -394,7 +393,6 @@ class SimpleRichText(QTextEdit):
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
         self.italicAct.triggered.connect(self.setItalic)
-        # self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
         self.addAction(self.italicAct)
 
     def setBold(self):
@@ -408,7 +406,6 @@ class SimpleRichText(QTextEdit):
 
     def setItalic(self):
         format = QTextCharFormat()
-        #format.setFontItalic(self.__italic.isChecked())
         format.setFontItalic(self.italicAct.isChecked())
         self.setFormat(format)
 
@@ -426,9 +423,6 @@ class SimpleRichText(QTextEdit):
 
     def italic(self):
         print("italic")
-
-
-
 #@+node:ekr.20160403065519.1: ** Utils
 #@+node:ville.20100707205336.5610: *3* create_subnode
 def create_subnode(c, heading):

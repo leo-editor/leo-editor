@@ -86,8 +86,8 @@ class Markdown_Importer(Importer):
         assert 0 <= level < len(self.stack), (level, len(self.stack))
         return self.stack[level]
     #@+node:ekr.20161202090722.1: *4* md_i.is_hash
+    # Allow any non-blank after the hashes.
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
-        # Allow any non-blank after the hashes.
 
     def is_hash(self, line):
         """

@@ -258,8 +258,8 @@ class Py_Importer(Importer):
         target.kind = 'class' if h.startswith('class') else 'def'
         stack.append(target)
     #@+node:ekr.20161116040557.1: *4* py_i.starts_block
+    # Matches lines that apparently start a class or def.
     starts_pattern = re.compile(r'\s*(class|def)\s+')
-        # Matches lines that apparently start a class or def.
 
     def starts_block(self, i, lines, new_state, prev_state, stack):
         """True if the line startswith class or def outside any context."""

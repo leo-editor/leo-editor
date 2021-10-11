@@ -3744,6 +3744,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
 class LeoQTreeWidget(QtWidgets.QTreeWidget):
+    
     # To do: Generate @auto or @file nodes when appropriate.
 
     def __init__(self, c, parent):
@@ -3759,10 +3760,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         return f"LeoQTreeWidget: {id(self)}"
 
     __str__ = __repr__
-    # This is called during drags.
+    
 
-    def dragMoveEvent(self, ev):
+    def dragMoveEvent(self, ev):  # Called during drags.
         pass
+        
     #@+others
     #@+node:ekr.20111022222228.16980: *3* LeoQTreeWidget: Event handlers
     #@+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper

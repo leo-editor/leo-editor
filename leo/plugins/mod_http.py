@@ -236,10 +236,10 @@ BytesIO = io.BytesIO
 #@-<< imports >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>
-browser_encoding = 'utf-8'  # To do: Can we query the browser for this?
-    # This encoding must match the character encoding used in your browser.
-    # If it does not, non-ascii characters will look very strange.
-
+# This encoding must match the character encoding used in your browser.
+# If it does not, non-ascii characters will look very strange.
+# To do: Can we query the browser for this?
+browser_encoding = 'utf-8'
 sockets_to_close = []
 #@-<< data >>
 #@+others
@@ -389,9 +389,9 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
     #@-others
 #@+node:EKR.20040517080250.20: ** class leo_interface
 class leo_interface:
+    # .path, .send_error, .send_response and .end_headers
+    # appear to be undefined.
     # pylint: disable=no-member
-        # .path, .send_error, .send_response and .end_headers
-        # appear to be undefined.
     #@+others
     #@+node:bwmulder.20050322224921: *3* send_head & helpers
     def send_head(self):

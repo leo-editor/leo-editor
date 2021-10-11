@@ -428,7 +428,6 @@ class textLog(leoFrame.LeoLog):
     #@-others
 #@+node:ekr.20150107090324.60: ** class textTree
 class textTree(leoFrame.LeoTree):
-    # undoc: k.makeAllBindings ; nullTree
     #@+others
     #@+node:ekr.20150107090324.61: *3* setBindings
     def setBindings(self):
