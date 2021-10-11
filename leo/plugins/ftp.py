@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110110105526.5463: * @file ../plugins/ftp.py
-'''Uploading of file by ftp.'''
+"""Uploading of file by ftp."""
 
 # 0.1 05.01.2011 by Ivanov Dmitriy.
 #@+<< ftp imports >>
@@ -18,7 +18,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:ekr.20110110105526.5467: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui.guiName() != "qt":
         print('ftp.py plugin not loading because gui is not Qt')
         return False

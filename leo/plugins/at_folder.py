@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.873: * @file ../plugins/at_folder.py
-r'''Synchronizes @folder nodes with folders.
+r"""Synchronizes @folder nodes with folders.
 
 If a node is named '\@folder *<path_to_folder>*', the content (filenames) of the
 folder and the children of that node will be sync. Whenever a new file is put
@@ -12,7 +12,7 @@ Moreover, I add another feature to allow you to group files(in leo) into
 children of another group. This will help when there are many files in that
 folder. You can logically group it in leo (or even clone it to many groups),
 while keep every files in a flat/single directory on your computer.
-'''
+"""
 
 import os
 from leo.core import leoGlobals as g
@@ -20,7 +20,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20140920173002.17961: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("select1", onSelect)
     g.plugin_signon(__name__)
     # Fix https://bugs.launchpad.net/leo-editor/+bug/1335310

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20091214233510.5347: * @file ../plugins/geotag.py
-''' Tags nodes with latitude and longitude. '''
+""" Tags nodes with latitude and longitude. """
 
 #@+<< imports >>
 #@+node:tbrown.20091214233510.5349: ** << imports >>
@@ -13,7 +13,7 @@ from leo.plugins.pygeotag import pygeotag
 #@+others
 #@+node:tbrown.20091214233510.5351: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if not hasattr(g, 'pygeotag'):
         try:
             g.pygeotag = pygeotag.PyGeoTag(synchronous=True)
@@ -36,7 +36,7 @@ def onQuit(tag, key):
 #@+node:tbrown.20091214233510.5353: ** class geotag_Controller
 class geotag_Controller:
 
-    '''A per-commander class that manages geotagging.'''
+    """A per-commander class that manages geotagging."""
 
     #@+others
     #@+node:tbrown.20091214233510.5354: *3* __init__

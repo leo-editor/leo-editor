@@ -1,15 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060621123339: * @file ../plugins/examples/print_cp.py
-'''
+"""
 A plugin showing how to convert an @button node to a plugin.
 
 This plugin registers the 'print-cp' minibuffer command.
-'''
+"""
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20060621123339.4: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')

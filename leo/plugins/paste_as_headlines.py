@@ -4,14 +4,14 @@
 #@@first
 #@+<< docstring >>
 #@+node:danr7.20060912105041.2: ** << docstring >>
-''' Creates new headlines from clipboard text.
+""" Creates new headlines from clipboard text.
 
 If the pasted text would be greater than 50 characters in length, the plugin
 truncates the headline to 50 characters and pastes the entire line into the body
 text of that node. Creates a "Paste as Headlines" option the Edit menu directly
 under the existing Paste option.
 
-'''
+"""
 #@-<< docstring >>
 # By Dan Rahmel.
 #@+<< imports >>

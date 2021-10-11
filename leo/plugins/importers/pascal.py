@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18147: * @file ../plugins/importers/pascal.py
-'''The @auto importer for the pascal language.'''
+"""The @auto importer for the pascal language."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -8,10 +8,10 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer
 class Pascal_Importer(Importer):
-    '''The importer for the pascal lanuage.'''
+    """The importer for the pascal lanuage."""
 
     def __init__(self, importCommands, **kwargs):
-        '''Pascal_Importer.__init__'''
+        """Pascal_Importer.__init__"""
         super().__init__(
             importCommands,
             language='pascal',
@@ -24,20 +24,20 @@ class Pascal_Importer(Importer):
     pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
 
     def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         m = self.pascal_clean_pattern.match(s)
         return '%s %s' % (m.group(1), m.group(2)) if m else s.strip()
 
     #@+node:ekr.20161127115120.1: *3* pascal_i.cut_stack
     def cut_stack(self, new_state, stack):
-        '''Cut back the stack until stack[-1] matches new_state.'''
+        """Cut back the stack until stack[-1] matches new_state."""
         # This underflow could happen as the result of extra 'end' statement in user code.
         if len(stack) > 1:
             stack.pop()
 
     #@+node:ekr.20161127104208.1: *3* pascal_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends a function or procedure.'''
+        """True if line ends a function or procedure."""
         if prev_state.context:
             return False
         ls = line.lstrip()
@@ -47,10 +47,10 @@ class Pascal_Importer(Importer):
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''
+        """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
-        '''
+        """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, key, data):
@@ -93,7 +93,7 @@ class Pascal_Importer(Importer):
     )
 
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the line starts a block.'''
+        """True if the line starts a block."""
         if prev_state.context:
             return False
         line = lines[i]
@@ -105,10 +105,10 @@ class Pascal_Importer(Importer):
     #@-others
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
 class Pascal_ScanState:
-    '''A class representing the state of the pascal line-oriented scan.'''
+    """A class representing the state of the pascal line-oriented scan."""
 
     def __init__(self, d=None):
-        '''Pascal_ScanState.__init__'''
+        """Pascal_ScanState.__init__"""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -116,7 +116,7 @@ class Pascal_ScanState:
             self.context = ''
 
     def __repr__(self):
-        '''Pascal_ScanState.__repr__'''
+        """Pascal_ScanState.__repr__"""
         return "Pascal_ScanState context: %r" % (self.context)
 
     __str__ = __repr__
@@ -124,17 +124,17 @@ class Pascal_ScanState:
     #@+others
     #@+node:ekr.20161126171035.7: *3* pascal_state.level
     def level(self):
-        '''Pascal_ScanState.level.'''
+        """Pascal_ScanState.level."""
         return 0  # Not used
 
     #@+node:ekr.20161126171035.8: *3* pascal_state.update
     def update(self, data):
-        '''
+        """
         Pascal_ScanState.update
 
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context

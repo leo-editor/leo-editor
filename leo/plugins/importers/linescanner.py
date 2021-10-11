@@ -2,7 +2,7 @@
 #@+node:ekr.20161108125620.1: * @file ../plugins/importers/linescanner.py
 #@+<< linescanner docstring >>
 #@+node:ekr.20161108125805.1: ** << linescanner docstring >>
-'''
+"""
 #@@language rest
 #@@wrap
 
@@ -72,7 +72,7 @@ Note: The generated tree contain ### comments showing where more work may
 be needed. I might remove the need for some of them, but there is no great
 need to do so.
 
-'''
+"""
 #@-<< linescanner docstring >>
 #@+<< linescanner imports >>
 #@+node:ekr.20161108130715.1: ** << linescanner imports >>

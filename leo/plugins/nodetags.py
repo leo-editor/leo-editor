@@ -2,7 +2,7 @@
 #@+node:peckj.20140804114520.9427: * @file ../plugins/nodetags.py
 #@+<< docstring >>
 #@+node:peckj.20140804103733.9242: ** << docstring >>
-'''Provides node tagging capabilities to Leo
+"""Provides node tagging capabilities to Leo
 
 By Jacob M. Peck
 
@@ -92,7 +92,7 @@ however, due to searching capabilities, may *not* be used to tag (or search for)
 nodes with tags containing the special search characters, `&|-^`. The UI also
 cannot search for tags of zero-length, and it automatically removes surrounding
 whitespace (calling .strip()).
-'''
+"""
 #@-<< docstring >>
 import re
 from leo.core import leoGlobals as g

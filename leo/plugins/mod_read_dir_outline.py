@@ -5,7 +5,7 @@
 
 #@+<< docstring >>
 #@+node:ekr.20050301084207: ** << docstring >>
-'''
+"""
 Allows Leo to read a complete directory tree into a Leo outline. Converts
 directories into headlines and puts the list of file names into bodies.
 
@@ -19,7 +19,7 @@ Feedback on this plugin can be sent to::
     Frédéric Momméja
     <frederic [point] mommeja [at] laposte [point] net>
 
-'''
+"""
 #@-<< docstring >>
 
 #@@language python

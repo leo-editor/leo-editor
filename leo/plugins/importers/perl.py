@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
-'''The @auto importer for Perl.'''
+"""The @auto importer for Perl."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -8,10 +8,10 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161027094537.13: ** class Perl_Importer
 class Perl_Importer(Importer):
-    '''A scanner for the perl language.'''
+    """A scanner for the perl language."""
 
     def __init__(self, importCommands, **kwargs):
-        '''The ctor for the Perl_ImportController class.'''
+        """The ctor for the Perl_ImportController class."""
         super().__init__(
             importCommands,
             language='perl',
@@ -21,12 +21,12 @@ class Perl_Importer(Importer):
     #@+others
     #@+node:ekr.20161027183713.1: *3* perl_i.clean_headline
     def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         m = re.match(r'sub\s+(\w+)', s)
         return 'sub ' + m.group(1) if m else s
     #@+node:ekr.20161027194956.1: *3* perl_i.clean_nodes
     def clean_nodes(self, parent):
-        '''Clean nodes as part of the perl post pass.'''
+        """Clean nodes as part of the perl post pass."""
         # Move trailing comments into following def nodes.
         for p in parent.subtree():
             next = p.threadNext()
@@ -51,10 +51,10 @@ class Perl_Importer(Importer):
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''
+        """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
-        '''
+        """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, key, data):
@@ -100,7 +100,7 @@ class Perl_Importer(Importer):
         return d
     #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
     def skip_regex(self, s, i, pattern):
-        '''look ahead for a regex /'''
+        """look ahead for a regex /"""
         assert self.match(s, i, pattern)
         i += len(pattern)
         while i < len(s) and s[i] in ' \t':
@@ -122,10 +122,10 @@ class Perl_Importer(Importer):
     #@-others
 #@+node:ekr.20161105095705.1: ** class Perl_ScanState
 class Perl_ScanState:
-    '''A class representing the state of the perl line-oriented scan.'''
+    """A class representing the state of the perl line-oriented scan."""
 
     def __init__(self, d=None):
-        '''Perl_ScanState ctor.'''
+        """Perl_ScanState ctor."""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -136,7 +136,7 @@ class Perl_ScanState:
             self.curlies = self.parens = 0
 
     def __repr__(self):
-        '''Perl_ScanState.__repr__'''
+        """Perl_ScanState.__repr__"""
         return 'Perl_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
 
@@ -145,14 +145,14 @@ class Perl_ScanState:
     #@+others
     #@+node:ekr.20161119115617.1: *3* perl_state.level
     def level(self):
-        '''Perl_ScanState.level.'''
+        """Perl_ScanState.level."""
         return (self.curlies, self.parens)
     #@+node:ekr.20161119050522.1: *3* perl_state.update
     def update(self, data):
-        '''
+        """
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context

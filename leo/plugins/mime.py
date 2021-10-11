@@ -2,7 +2,7 @@
 #@+node:dan.20090217132953.1: * @file ../plugins/mime.py
 #@+<< docstring >>
 #@+node:dan.20090203174248.27: ** << docstring >> (mime.py)
-r''' Opens files with their default platform program.
+r""" Opens files with their default platform program.
 
 The double-click-icon-box command on @mime nodes will attempt to open the
 named file as if opened from a file manager. \@path parent nodes are used
@@ -35,7 +35,7 @@ For other sys.platform's, add an elif case to the section "guess file
 association handler" and either define a default _mime_open_cmd string, where
 "%s" will be replaced with the filename, or define a function taking the
 filename string as its only argument and set as open_func.
-'''
+"""
 #@-<< docstring >>
 
 # By Dan White <etihwnad _at_ gmail _dot_ com>.

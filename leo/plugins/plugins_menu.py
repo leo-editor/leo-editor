@@ -2,7 +2,7 @@
 #@+node:EKR.20040517080555.2: * @file ../plugins/plugins_menu.py
 #@+<< docstring >>
 #@+node:ekr.20050101090207.9: ** << docstring >>
-''' Creates a Plugins menu and adds all actives plugins to it.
+""" Creates a Plugins menu and adds all actives plugins to it.
 
 Selecting these menu items will bring up a short **About Plugin** dialog
 with the details of the plugin. In some circumstances a submenu will be created
@@ -50,7 +50,7 @@ __plugin_priority__
     To change the order select a number outside the range 0-200 since this range
     is used internally for sorting alphabetically. Properties and INI files.
 
-'''
+"""
 #@-<< docstring >>
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
 # To do: add Revert button to each dialog.

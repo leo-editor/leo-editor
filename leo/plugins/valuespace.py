@@ -2,7 +2,7 @@
 #@+node:ville.20110403115003.10348: * @file ../plugins/valuespace.py
 #@+<< docstring >>
 #@+node:ville.20110403115003.10349: ** << docstring >>
-'''Supports Leo scripting using per-Leo-outline namespaces.
+"""Supports Leo scripting using per-Leo-outline namespaces.
 
 Commands
 ========
@@ -118,7 +118,7 @@ vars. In addition, *g.vs* is a dictionary whose keys are *c.hash()* and whose
 values are the namespaces for each commander. This allows communication between
 different namespaces, while keeping namespaces generally separate.
 
-'''
+"""
 
 # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
 #@-<< docstring >>

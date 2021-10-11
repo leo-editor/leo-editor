@@ -2,7 +2,7 @@
 #@+node:ville.20090314215508.4: * @file ../plugins/quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
-'''
+"""
 Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
 
 Quicksearch searches node headlines only, *not* body text
@@ -73,7 +73,7 @@ This plugin defines the following commands that can be bound to keys:
 - marked-list:
   List all marked nodes.
 
-'''
+"""
 #@-<< docstring >>
 # Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>

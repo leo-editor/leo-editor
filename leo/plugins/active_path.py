@@ -2,7 +2,7 @@
 #@+node:tbrown.20080613095157.2: * @file ../plugins/active_path.py
 #@+<< docstring >>
 #@+node:tbrown.20080613095157.3: ** << docstring >> (active_path)
-r'''Synchronizes \@path nodes with folders.
+r"""Synchronizes \@path nodes with folders.
 
 If a node is named '\@path *<path_to_folder>*', the content (file and folder
 names) of the folder and the children of that node will synchronized whenever
@@ -98,7 +98,7 @@ active_path is a rewrite of the at_directory plugin to use \@path directives
 (which influence \@auto and other \@file type directives), and to handle
 sub-folders more automatically.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20140612210500.17669: ** << imports >>

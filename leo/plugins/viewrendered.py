@@ -2,7 +2,7 @@
 #@+node:tbrown.20100318101414.5990: * @file ../plugins/viewrendered.py
 #@+<< vr docstring >>
 #@+node:tbrown.20100318101414.5991: ** << vr docstring >>
-'''
+"""
 
 Creates a window for *live* rendering of reSTructuredText, markdown text,
 images, movies, sounds, rst, html, jupyter notebooks, etc.
@@ -194,7 +194,7 @@ plugins.
 
 Jacob Peck added markdown support to this plugin.
 
-'''
+"""
 #@-<< vr docstring >>
 #@+<< to do >>
 #@+node:ekr.20140924060835.19485: ** << to do >> (vr)

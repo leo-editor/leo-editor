@@ -2,7 +2,7 @@
 #@+node:EKR.20040517075715.10: * @file ../plugins/vim.py
 #@+<< docstring >>
 #@+node:ekr.20050226184411: ** << docstring >>
-'''
+"""
 #@@language rest
 
 Enables two-way communication with gVim (recommended) or Vim.
@@ -39,7 +39,7 @@ Settings
 ``vim_plugin_uses_tab_feature``
     True: Leo will put the node or file in a Vim tab card.
 
-'''
+"""
 #@-<< docstring >>
 
 # Contributed by Andrea Galimberti.

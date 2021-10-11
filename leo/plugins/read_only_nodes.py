@@ -2,7 +2,7 @@
 #@+node:edream.110203113231.876: * @file ../plugins/read_only_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912052854: ** << docstring >>
-''' Creates and updates @read-only nodes.
+""" Creates and updates @read-only nodes.
 
 Here's my first attempt at customizing leo. I wanted to have the ability to
 import files in "read-only" mode, that is, in a mode where files could only
@@ -46,7 +46,7 @@ If FTP authentication (username/password) is required, it can be specified as fo
 For more details, see the doc string for the class FTPurl.
 
 Davide Salomoni
-'''
+"""
 #@-<< docstring >>
 
 # Contributed by Davide Salomoni <dsalomoni@yahoo.com>

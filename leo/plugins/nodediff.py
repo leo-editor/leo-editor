@@ -2,7 +2,7 @@
 #@+node:peckj.20140113150237.7083: * @file ../plugins/nodediff.py
 #@+<< docstring >>
 #@+node:peckj.20140113131037.5792: ** << docstring >>
-'''Provides commands to run text diffs on node bodies within Leo.
+"""Provides commands to run text diffs on node bodies within Leo.
 
 By Jacob M. Peck
 
@@ -77,7 +77,7 @@ positions as input::
     c.theNodeDiffController.run_ndiff()
     c.theNodeDiffController.run_unified_diff()
 
-'''
+"""
 #@-<< docstring >>
 
 # By JMP.

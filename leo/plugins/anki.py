@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210223152423.1: * @file ../plugins/anki.py
 #@@language python
-''' Push @anki nodes.
+""" Push @anki nodes.
 
 - Download instructions here: https://apps.ankiweb.net/#linux
 
@@ -29,7 +29,7 @@ Create headline like this:
 Select any of these nodes (@anki, @anki front, @anki back), do `alt-x
 act-on-node`. This pushes the card to AnkiConnect. If any errors happen, a child
 to `@anki` called `@anki error` is populated with the relevant error details.
-'''
+"""
 
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins
@@ -43,7 +43,7 @@ except ImportError:
     ok = False
 
 def init():
-    ''' Return True if plugin has loaded successfully.'''
+    """ Return True if plugin has loaded successfully."""
     if ok:
         g.plugin_signon(__name__)
         g.act_on_node.add(anki_act_on_node, 50)

@@ -2,7 +2,7 @@
 #@+node:ktenney.20041211072654.1: * @file ../plugins/at_view.py
 #@+<< docstring >>
 #@+node:ekr.20150411161126.1: ** << docstring >> (at_view.py)
-r''' Adds support for \@clip, \@view and \@strip nodes.
+r""" Adds support for \@clip, \@view and \@strip nodes.
 
 - Selecting a headline containing \@clip appends the contents of the clipboard to
   the end of the body pane.
@@ -15,7 +15,7 @@ r''' Adds support for \@clip, \@view and \@strip nodes.
   sentinels removed.
 
 This plugin also accumulates the effect of all \@path nodes.
-'''
+"""
 #@-<< docstring >>
 
 from leo.core import leoGlobals as g

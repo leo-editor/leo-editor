@@ -2,7 +2,7 @@
 #@+node:ville.20110206142055.10640: * @file ../plugins/leofeeds.py
 #@+<< docstring >>
 #@+node:ville.20110206142055.10641: ** << docstring >>
-'''
+"""
 Read feeds from rss / atom / whatever sources
 
 Usage: Create node with a headline like:
@@ -13,7 +13,7 @@ Usage: Create node with a headline like:
 
 Do alt-x act-on-node on that node to populate the subtree from the feed data. Requires "feedparser" python module
 
-'''
+"""
 #@-<< docstring >>
 # By Ville M. Vainio.
 #@+<< imports >>

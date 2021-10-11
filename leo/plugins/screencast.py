@@ -4,7 +4,7 @@
 #@+node:ekr.20120913110135.10589: ** << docstring >>
 #@@language rest
 
-r'''
+r"""
 
 Overview
 ========
@@ -212,7 +212,7 @@ You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20120913110135.10590: ** << imports >>

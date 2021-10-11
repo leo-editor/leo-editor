@@ -2,7 +2,7 @@
 #@+node:peckj.20131130132659.5964: * @file ../plugins/nodewatch.py
 #@+<< docstring >>
 #@+node:peckj.20131101132841.6445: ** << docstring >>
-'''
+"""
 Provides a GUI in the Log pane (tab name 'Nodewatch') that lists node headlines.
 The nodes that show up in this GUI are scriptable on a per-outline basis, with
 @nodewatch nodes.
@@ -94,7 +94,7 @@ nodewatch-refresh
 Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 (same as clicking the refresh button in the nodewatch GUI).
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20131101132841.6447: ** << imports >>

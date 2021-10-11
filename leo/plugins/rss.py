@@ -2,7 +2,7 @@
 #@+node:ekr.20131004162848.11444: * @file ../plugins/rss.py
 #@+<< docstring >>
 #@+node:peckj.20131002201824.5539: ** << docstring >>
-'''Adds primitive RSS reader functionality to Leo.
+"""Adds primitive RSS reader functionality to Leo.
 
 By Jacob M. Peck.
 
@@ -124,7 +124,7 @@ rss-clear-all-feed-histories
 
 Clears the viewed stories history of every `@feed` node in the current outline.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20131002201824.5541: ** << imports >>

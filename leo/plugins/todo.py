@@ -2,7 +2,7 @@
 #@+node:tbrown.20090119215428.2: * @file ../plugins/todo.py
 #@+<< docstring >>
 #@+node:tbrown.20090119215428.3: ** << docstring >> (todo.py)
-''' Provides to-do list and simple task management.
+""" Provides to-do list and simple task management.
 
 This plugin adds time required, progress and priority settings for nodes. With
 the @project tag a branch can display progress and time required with dynamic
@@ -54,7 +54,7 @@ todo_calendar_cols
   display `todo_calendar_n` months.
 
 
-'''
+"""
 
 
 #@-<< docstring >>

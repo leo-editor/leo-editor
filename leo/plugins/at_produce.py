@@ -2,7 +2,7 @@
 #@+node:ekr.20040915085351: * @file ../plugins/at_produce.py
 #@+<< docstring >>
 #@+node:ekr.20050311110307: ** << docstring >>
-''' Executes commands in nodes whose body text starts with @produce.
+""" Executes commands in nodes whose body text starts with @produce.
 
 WARNING: trying to execute a non-existent command will hang Leo.
 
@@ -25,7 +25,7 @@ Any output, including error messages, should be there.
 This plugin is not intended as a replacement for make or Ant, but as a
 simple substitute when that machinery is overkill.
 
-'''
+"""
 #@-<< docstring >>
 
 # 2014/09/21: EKR

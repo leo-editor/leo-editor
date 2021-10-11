@@ -2,7 +2,7 @@
 #@+node:ville.20110125222411.10536: * @file ../plugins/leomail.py
 #@+<< docstring >>
 #@+node:ekr.20170228181049.1: ** << docstring >>
-'''
+"""
 Sync local mailbox files over to Leo.
 
 Creates mail-refresh command, which can only be applied to @mbox nodes of the form:
@@ -12,7 +12,7 @@ Creates mail-refresh command, which can only be applied to @mbox nodes of the fo
 The command parses the .mbox file and creates a separate node for each thread.
 
 Replies to the original messages become children of that message.
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20110125222411.10539: ** << imports >>

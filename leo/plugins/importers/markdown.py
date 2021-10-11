@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140725190808.18066: * @file ../plugins/importers/markdown.py
-'''The @auto importer for the markdown language.'''
+"""The @auto importer for the markdown language."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -8,10 +8,10 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161124192050.2: ** class Markdown_Importer
 class Markdown_Importer(Importer):
-    '''The importer for the markdown lanuage.'''
+    """The importer for the markdown lanuage."""
 
     def __init__(self, importCommands, **kwargs):
-        '''Markdown_Importer.__init__'''
+        """Markdown_Importer.__init__"""
         super().__init__(importCommands,
             language='md',
             state_class=None,
@@ -22,7 +22,7 @@ class Markdown_Importer(Importer):
     #@+others
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
     def gen_lines(self, s, parent):
-        '''Node generator for markdown importer.'''
+        """Node generator for markdown importer."""
         if not s or s.isspace():
             return
         self.inject_lines_ivar(parent)
@@ -55,10 +55,10 @@ class Markdown_Importer(Importer):
                 self.add_line(top, line)
     #@+node:ekr.20161124193148.2: *4* md_i.find_parent
     def find_parent(self, level, h):
-        '''
+        """
         Return the parent at the indicated level, allocating
         place-holder nodes as necessary.
-        '''
+        """
         assert level >= 0
         while level < len(self.stack):
             self.stack.pop()
@@ -90,10 +90,10 @@ class Markdown_Importer(Importer):
         # Allow any non-blank after the hashes.
 
     def is_hash(self, line):
-        '''
+        """
         Return level, name if line is a hash section line.
         else return None, None.
-        '''
+        """
         m = self.md_hash_pattern.match(line)
         if m:
             level = len(m.group(1))
@@ -109,7 +109,7 @@ class Markdown_Importer(Importer):
     )
 
     def is_underline(self, line):
-        '''True if line is all '-' or '=' characters.'''
+        """True if line is all '-' or '=' characters."""
 
         for pattern in self.md_pattern_table:
             m = pattern.match(line)
@@ -118,7 +118,7 @@ class Markdown_Importer(Importer):
         return False
     #@+node:ekr.20161202085032.1: *4* md_i.lookahead_underline
     def lookahead_underline(self, i, lines):
-        '''True if lines[i:i+1] form an underlined line.'''
+        """True if lines[i:i+1] form an underlined line."""
         if i + 1 < len(lines):
             line0 = lines[i]
             line1 = lines[i + 1]
@@ -128,7 +128,7 @@ class Markdown_Importer(Importer):
         return False
     #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
     def make_decls_node(self, line):
-        '''Make a decls node.'''
+        """Make a decls node."""
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
         child = self.create_child_node(
@@ -139,18 +139,18 @@ class Markdown_Importer(Importer):
         self.stack.append(child)
     #@+node:ekr.20161125095217.1: *4* md_i.make_node
     def make_node(self, level, name):
-        '''Create a new node.'''
+        """Create a new node."""
         self.find_parent(level=level, h=name)
     #@+node:ekr.20161125225349.1: *3* md_i.post_pass
     def post_pass(self, parent):
-        '''A do-nothing post-pass for markdown.'''
+        """A do-nothing post-pass for markdown."""
     #@+node:ekr.20161202074507.1: *3* md_i.check
     def check(self, unused_s, parent):
-        '''
+        """
         A do-nothing perfect-import check for markdown.
         We don't want to prevent writer.markdown from converting
         all headlines to hashed sections.
-        '''
+        """
         return True
     #@-others
 #@-others

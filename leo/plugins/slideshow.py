@@ -2,7 +2,7 @@
 #@+node:ekr.20060831165821: * @file ../plugins/slideshow.py
 #@+<< docstring >>
 #@+node:ekr.20060831165845.1: ** << docstring >>
-''' Supports slideshows in Leo outlines.
+""" Supports slideshows in Leo outlines.
 
 This plugin defines four new commands:
 
@@ -18,7 +18,7 @@ Slides shows consist of a root @slideshow node with descendant @slide nodes.
 
 All these commands ignore @ignore trees.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20060831165845.3: ** << imports >>

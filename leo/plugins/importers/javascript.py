@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
-'''The @auto importer for JavaScript.'''
+"""The @auto importer for JavaScript."""
 import re
 import textwrap
 import unittest
@@ -13,7 +13,7 @@ Target = linescanner.Target
 class JS_Importer(Importer):
 
     def __init__(self, importCommands, force_at_others=False, **kwargs):
-        '''The ctor for the JS_ImportController class.'''
+        """The ctor for the JS_ImportController class."""
         # Init the base class.
         super().__init__(
             importCommands,
@@ -25,12 +25,12 @@ class JS_Importer(Importer):
     #@+others
     #@+node:ekr.20180123051226.1: *3* js_i.post_pass & helpers
     def post_pass(self, parent):
-        '''
+        """
         Optional Stage 2 of the javascript pipeline.
 
         All substages **must** use the API for setting body text. Changing
         p.b directly will cause asserts to fail later in i.finish().
-        '''
+        """
         self.clean_all_headlines(parent)
         self.remove_singleton_at_others(parent)
         self.clean_all_nodes(parent)
@@ -58,7 +58,7 @@ class JS_Importer(Importer):
     at_others = re.compile(r'^\s*@others\b')
 
     def remove_singleton_at_others(self, parent):
-        '''Replace @others by the body of a singleton child node.'''
+        """Replace @others by the body of a singleton child node."""
         found = False
         for p in parent.subtree():
             if p.numberOfChildren() == 1:
@@ -75,7 +75,7 @@ class JS_Importer(Importer):
         return found
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
-        '''Removed all organizer nodes created by i.delete_all_empty_nodes.'''
+        """Removed all organizer nodes created by i.delete_all_empty_nodes."""
         # Careful: Restart this loop whenever we find an organizer.
         found = True
         while found:
@@ -135,7 +135,7 @@ class JS_Importer(Importer):
         return head, tail
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line (rewritten)
     def scan_line(self, s, prev_state):
-        '''
+        """
         Update the scan state at the *end* of the line.
         Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
 
@@ -143,7 +143,7 @@ class JS_Importer(Importer):
 
         This code also handles *partial* tokens: tokens continued from the
         previous line or continued to the next line.
-        '''
+        """
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens
         # Scan tokens, updating context and counts.
@@ -188,7 +188,7 @@ class JS_Importer(Importer):
     ]
 
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
         if new_state.level() <= prev_state.level():
             return False
         # Remove strings and regexs from the line before applying the patterns.
@@ -204,7 +204,7 @@ class JS_Importer(Importer):
         return False
     #@+node:ekr.20200131193217.1: *3* js_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends the block.'''
+        """True if line ends the block."""
         # Comparing new_state against prev_state does not work for python.
         top = stack[-1]
         return new_state.level() < top.state.level()
@@ -239,7 +239,7 @@ class JS_Importer(Importer):
     ]
 
     def clean_headline(self, s, p=None, trace=False):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         # pylint: disable=arguments-differ
         s = s.strip()
         # Don't clean a headline twice.
@@ -279,10 +279,10 @@ class JS_Importer(Importer):
     #@-others
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
 class JS_ScanState:
-    '''A class representing the state of the javascript line-oriented scan.'''
+    """A class representing the state of the javascript line-oriented scan."""
 
     def __init__(self, d=None):
-        '''JS_ScanState ctor'''
+        """JS_ScanState ctor"""
         if d:
             # d is *different* from the dict created by i.scan_line.
             self.context = d.get('context')
@@ -293,7 +293,7 @@ class JS_ScanState:
             self.curlies = self.parens = 0
 
     def __repr__(self):
-        '''JS_ScanState.__repr__'''
+        """JS_ScanState.__repr__"""
         return 'JS_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
 
@@ -302,14 +302,14 @@ class JS_ScanState:
     #@+others
     #@+node:ekr.20161119115505.1: *3* js_state.level
     def level(self):
-        '''JS_ScanState.level.'''
+        """JS_ScanState.level."""
         return (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update
     def update(self, data):
-        '''
+        """
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context

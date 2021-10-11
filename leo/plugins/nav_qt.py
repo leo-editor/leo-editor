@@ -2,7 +2,7 @@
 #@+node:ville.20090518182905.5419: * @file ../plugins/nav_qt.py
 #@+<< docstring >>
 #@+node:ville.20090518182905.5420: ** << docstring >>
-'''Adds "Back" and "Forward" buttons (Qt only).
+"""Adds "Back" and "Forward" buttons (Qt only).
 
 Creates "back" and "forward" buttons on button bar. These navigate
 the node history.
@@ -14,7 +14,7 @@ Note it may be practical to put this plugin before mod_scripting.py in
 @enabled-plugins list. That way buttons "back" and "forward" will be placed on
 the left side of toolbar.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>

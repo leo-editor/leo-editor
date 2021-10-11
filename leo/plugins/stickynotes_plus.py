@@ -2,11 +2,11 @@
 #@+node:ekr.20100103093121.5339: * @file ../plugins/stickynotes_plus.py
 #@+<< docstring >>
 #@+node:ekr.20100103100944.5389: ** << docstring >>
-''' Adds simple "sticky notes" feature (popout editors) for Qt gui.
+""" Adds simple "sticky notes" feature (popout editors) for Qt gui.
 
 alt-x stickynote to pop out current node as a note.
 
-'''
+"""
 #@-<< docstring >>
 # Disable Qt warnings.
 #@+<< imports >>

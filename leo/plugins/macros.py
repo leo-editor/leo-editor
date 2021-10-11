@@ -2,7 +2,7 @@
 #@+node:ekr.20040916084945: * @file ../plugins/macros.py
 #@+<< docstring >>
 #@+node:ekr.20061102090532: ** << docstring >>
-r''' Creates new nodes containing parameterized section reference.
+r""" Creates new nodes containing parameterized section reference.
 
 .. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117
 
@@ -61,7 +61,7 @@ Go to Outline Menu and select Parameterize Section Reference command.
 
 It's a lot easier to use than to explain!
 
-'''
+"""
 #@-<< docstring >>
 # BobS & EKR.
 import re

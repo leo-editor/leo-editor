@@ -2,7 +2,7 @@
 #@+node:tbrown.20070322113635: * @file ../plugins/bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
-''' Manage bookmarks in a list, and show bookmarks in a pane.
+""" Manage bookmarks in a list, and show bookmarks in a pane.
 
 This plugin has two bookmark related functions.  It manages nodes that
 contain bookmarks, and can also display those nodes in a special
@@ -208,7 +208,7 @@ apples, and autos), because the top level ``aardvarks`` tab is both a bookmark
 and an organizer node. If you want it to be just and organizer node, alt-click
 it to edit the bookmark node itself, and delete the body text (UNL) there.
 
-'''
+"""
 
 #@-<< docstring >>
 # Written by Terry Brown.

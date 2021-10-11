@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18148: * @file ../plugins/importers/php.py
-'''The @auto importer for the php language.'''
+"""The @auto importer for the php language."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -8,10 +8,10 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161129213243.2: ** class Php_Importer
 class Php_Importer(Importer):
-    '''The importer for the php lanuage.'''
+    """The importer for the php lanuage."""
 
     def __init__(self, importCommands, **kwargs):
-        '''Php_Importer.__init__'''
+        """Php_Importer.__init__"""
         super().__init__(
             importCommands,
             language='php',
@@ -24,16 +24,16 @@ class Php_Importer(Importer):
     #@+others
     #@+node:ekr.20161129213243.4: *3* php_i.clean_headline
     def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         return s.rstrip('{').strip()
     #@+node:ekr.20161129213808.1: *3* php_i.get_new_dict
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''
+        """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
-        '''
+        """
         trace = 'importers' in g.app.debug
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
@@ -77,10 +77,10 @@ class Php_Importer(Importer):
         return d
     #@+node:ekr.20161129214803.1: *3* php_i.scan_dict (supports here docs)
     def scan_dict(self, context, i, s, d):
-        '''
+        """
         i.scan_dict: Scan at position i of s with the give context and dict.
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-        '''
+        """
         found = False
         delta_c = delta_p = delta_s = 0
         if self.here_doc_target:
@@ -151,7 +151,7 @@ class Php_Importer(Importer):
         #@+<< skip_heredoc docstrig >>
         #@+node:ekr.20161130044051.2: *4* << skip_heredoc docstrig >>
         #@@nocolor-node
-        '''
+        """
         08-SEP-2002 DTHEIN:  added function skip_heredoc_string
         A heredoc string in PHP looks like:
 
@@ -163,7 +163,7 @@ class Php_Importer(Importer):
 
         It begins with <<< plus a token (naming same as PHP variable names).
         It ends with the token on a line by itself (must start in first position.
-        '''
+        """
         #@-<< skip_heredoc docstrig >>
         j = i
         assert g.match(s, i, "<<<")
@@ -185,10 +185,10 @@ class Php_Importer(Importer):
     #@-others
 #@+node:ekr.20161129213243.6: ** class Php_ScanState
 class Php_ScanState:
-    '''A class representing the state of the php line-oriented scan.'''
+    """A class representing the state of the php line-oriented scan."""
 
     def __init__(self, d=None):
-        '''Php_ScanState.__init__'''
+        """Php_ScanState.__init__"""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -198,7 +198,7 @@ class Php_ScanState:
             self.curlies = 0
 
     def __repr__(self):
-        '''Php_ScanState.__repr__'''
+        """Php_ScanState.__repr__"""
         return "Php_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)
 
@@ -207,17 +207,17 @@ class Php_ScanState:
     #@+others
     #@+node:ekr.20161129213243.7: *3* php_state.level
     def level(self):
-        '''Php_ScanState.level.'''
+        """Php_ScanState.level."""
         return self.curlies
 
     #@+node:ekr.20161129213243.8: *3* php_state.update
     def update(self, data):
-        '''
+        """
         Php_ScanState.update
 
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         trace = 'importers' in g.app.debug
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         if trace:

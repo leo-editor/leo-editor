@@ -3,7 +3,7 @@
 #@+<< docstring >>
 #@+node:ekr.20050226114732: ** << docstring >>
 #@@language rest
-r''' Allows Leo to write a file to multiple locations.
+r""" Allows Leo to write a file to multiple locations.
 
 This plugin acts as a post-write mechanism, a file must be written to the
 file system for it to work. At this point it is not a replacement for @path or an
@@ -43,7 +43,7 @@ The @multiprefix stays in effect for the entire tree until reset with another
 @multiprefix directive. @multipath is cumulative, in that for each @multipath in
 an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>

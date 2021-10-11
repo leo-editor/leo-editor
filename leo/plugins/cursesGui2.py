@@ -849,11 +849,11 @@ def method_name(f):
     return repr(f)
 #@+node:ekr.20210228141208.1: **  decorators (curses2)
 def frame_cmd(name):
-    '''Command decorator for the LeoFrame class.'''
+    """Command decorator for the LeoFrame class."""
     return g.new_cmd_decorator(name, ['c', 'frame',])
 
 def log_cmd(name):
-    '''Command decorator for the c.frame.log class.'''
+    """Command decorator for the c.frame.log class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
 #@+node:ekr.20170524123950.1: ** Gui classes
 #@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
@@ -4030,11 +4030,11 @@ class LeoValues(npyscreen.TreeData):
 #@+others
 #@+node:ekr.20170511053143.1: *3*  class TextMixin
 class TextMixin:
-    '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
+    """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
     #@+others
     #@+node:ekr.20170511053143.2: *4* tm.ctor & helper
     def __init__(self, c=None):
-        '''Ctor for TextMixin class'''
+        """Ctor for TextMixin class"""
         self.c = c
         self.changingText = False
             # A lockout for onTextChanged.
@@ -4051,7 +4051,7 @@ class TextMixin:
             self.injectIvars(c)
     #@+node:ekr.20170511053143.3: *5* tm.injectIvars
     def injectIvars(self, name='1', parentFrame=None):
-        '''Inject standard leo ivars into the QTextEdit or QsciScintilla widget.'''
+        """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         p = self.c.currentPosition()
         if name == '1':
             self.leo_p = None  # Will be set when the second editor is created.
@@ -4073,7 +4073,7 @@ class TextMixin:
     # These call only wrapper methods.
     #@+node:ekr.20170511053143.13: *5* tm.appendText
     def appendText(self, s):
-        '''TextMixin'''
+        """TextMixin"""
         s2 = self.getAllText()
         self.setAllText(s2 + s)
         self.setInsertPoint(len(s2))
@@ -4086,7 +4086,7 @@ class TextMixin:
         g.app.gui.replaceClipboardWith('')
     #@+node:ekr.20170511053143.14: *5* tm.delete
     def delete(self, i, j=None):
-        '''TextMixin'''
+        """TextMixin"""
         i = self.toPythonIndex(i)
         if j is None:
             j = i + 1
@@ -4100,7 +4100,7 @@ class TextMixin:
         self.setSelectionRange(i, i, insert=i)
     #@+node:ekr.20170511053143.15: *5* tm.deleteTextSelection
     def deleteTextSelection(self):
-        '''TextMixin'''
+        """TextMixin"""
         i, j = self.getSelectionRange()
         self.delete(i, j)
     #@+node:ekr.20170511053143.9: *5* tm.Enable/disable
@@ -4111,7 +4111,7 @@ class TextMixin:
         self.enabled = enabled
     #@+node:ekr.20170511053143.16: *5* tm.get
     def get(self, i, j=None):
-        '''TextMixin'''
+        """TextMixin"""
         # 2012/04/12: fix the following two bugs by using the vanilla code:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
@@ -4121,15 +4121,15 @@ class TextMixin:
         return s[i:j]
     #@+node:ekr.20170511053143.17: *5* tm.getLastPosition & getLength
     def getLastPosition(self, s=None):
-        '''TextMixin'''
+        """TextMixin"""
         return len(self.getAllText()) if s is None else len(s)
 
     def getLength(self, s=None):
-        '''TextMixin'''
+        """TextMixin"""
         return len(self.getAllText()) if s is None else len(s)
     #@+node:ekr.20170511053143.18: *5* tm.getSelectedText
     def getSelectedText(self):
-        '''TextMixin'''
+        """TextMixin"""
         i, j = self.getSelectionRange()
         if i == j:
             return ''
@@ -4137,7 +4137,7 @@ class TextMixin:
         return s[i:j]
     #@+node:ekr.20170511053143.19: *5* tm.insert
     def insert(self, i, s):
-        '''TextMixin'''
+        """TextMixin"""
         s2 = self.getAllText()
         i = self.toPythonIndex(i)
         self.setAllText(s2[:i] + s + s2[i:])
@@ -4157,16 +4157,16 @@ class TextMixin:
         v.scrollBarSpot = self.getYScrollPosition()
     #@+node:ekr.20170511053143.20: *5* tm.seeInsertPoint
     def seeInsertPoint(self):
-        '''Ensure the insert point is visible.'''
+        """Ensure the insert point is visible."""
         self.see(self.getInsertPoint())
             # getInsertPoint defined in client classes.
     #@+node:ekr.20170511053143.21: *5* tm.selectAllText
     def selectAllText(self, s=None):
-        '''TextMixin.'''
+        """TextMixin."""
         self.setSelectionRange(0, self.getLength(s))
     #@+node:ekr.20170511053143.11: *5* tm.setFocus
     def setFocus(self):
-        '''TextMixin.setFocus'''
+        """TextMixin.setFocus"""
         g.app.gui.set_focus(self)
 
     #@+node:ekr.20170511053143.25: *5* tm.tag_configure
@@ -4190,14 +4190,14 @@ class TextMixin:
     tag_config = tag_configure
     #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
     def toPythonIndex(self, index, s=None):
-        '''TextMixin'''
+        """TextMixin"""
         if s is None:
             s = self.getAllText()
         i = g.toPythonIndex(s, index)
         return i
     #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):
-        '''TextMixin'''
+        """TextMixin"""
         s = self.getAllText()
         i = self.toPythonIndex(index)
         row, col = g.convertPythonIndexToRowCol(s, i)

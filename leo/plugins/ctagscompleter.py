@@ -2,7 +2,7 @@
 #@+node:ekr.20091118065749.5261: * @file ../plugins/ctagscompleter.py
 #@+<< docstring >>
 #@+node:ville.20090317180704.8: ** << docstring >>
-''' This plugin uses ctags to provide an autocompletion list.
+""" This plugin uses ctags to provide an autocompletion list.
 
 Requirements:
     - Exuberant Ctags:
@@ -23,7 +23,7 @@ is useless, but 'foo->ba' will work (provided you don't have 2000
 functions/methods starting with 'ba'. 'foo->' portion is ignored in completion
 search.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< ctagscompleter imports >>
 #@+node:ekr.20161223144720.1: ** << ctagscompleter imports >>

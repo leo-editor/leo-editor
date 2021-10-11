@@ -2,7 +2,7 @@
 #@+node:ekr.20100103093121.5329: * @file ../plugins/stickynotes.py
 #@+<< docstring >>
 #@+node:vivainio2.20091008133028.5821: ** << docstring >>
-''' Adds simple "sticky notes" feature (popout editors) for Qt gui.
+""" Adds simple "sticky notes" feature (popout editors) for Qt gui.
 
 Adds the following (``Alt-X``) commands:
 
@@ -50,7 +50,7 @@ The decoded data should appear in the popoup window, if not, close the Leo
 file **without saving**.  If you have multiple encoded nodes, repeat this
 process for each one.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:vivainio2.20091008133028.5823: ** << imports >> (stickynotes.py)

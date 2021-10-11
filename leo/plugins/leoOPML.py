@@ -4,7 +4,7 @@
 #@+node:ekr.20060904103412.1: ** << docstring >>
 #@@language rest
 
-r'''A plugin to read and write Leo outlines in .opml
+r"""A plugin to read and write Leo outlines in .opml
 (http://en.wikipedia.org/wiki/OPML) format.
 
 The OPML plugin creates two new commands that read and write Leo outlines in
@@ -67,7 +67,7 @@ opml, if that feature is implemented in the future.
 
 If True, when expanding as above, skip blank dict entries.
 
-'''
+"""
 #@-<< docstring >>
 # 2014/10/21: support Android outliner by treating _note attributes as body text.
 # To do: read/write uA's.
