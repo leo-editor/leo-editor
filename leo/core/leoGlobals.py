@@ -295,13 +295,14 @@ def new_cmd_decorator(name, ivars):
 #@-<< define g.decorators >>
 #@+<< define regex's >>
 #@+node:ekr.20200810093517.1: ** << define regex's >>
+# Regex used by this module, and in leoColorizer.py.
 g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
-    # Regex used by this module, and in leoColorizer.py.
 #
 # Patterns used only in this module...
+
+# This pattern excludes @encoding.whatever and @encoding(whatever)
+# It must allow @language python, @nocolor-node, etc.
 g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
-    # This pattern excludes @encoding.whatever and @encoding(whatever)
-    # It must allow @language python, @nocolor-node, etc.
 g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)

@@ -145,8 +145,8 @@ class BaseColorizer:
                 return False
         return True
     #@+node:ekr.20170127142001.8: *5* bjc.findColorDirectives
+    # Order is important: put longest matches first.
     color_directives_pat = re.compile(
-        # Order is important: put longest matches first.
         r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
         , re.MULTILINE)
 
@@ -2680,16 +2680,11 @@ class PygmentsColorizer(BaseJEditColorizer):
         """Call the base setTag to set the Qt format."""
         self.highlighter.setFormat(index, length, format)
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
-    format_dict: Dict[str, str] = {}
-        # Keys are repr(Token), values are formats.
-    lexers_dict: Dict[str, Callable] = {}
-        # Keys are language names, values are instantiated, patched lexers.
-    state_s_dict: Dict[str, int] = {}
-        # Keys are strings, values are ints.
-    state_n_dict: Dict[int, str] = {}  # For tracing only.
-        # Keys are ints, values are strings.
-    state_index = 1
-        # Index of state number to be allocated.
+    format_dict: Dict[str, str] = {}  # Keys are repr(Token), values are formats.
+    lexers_dict: Dict[str, Callable] = {}  # Keys are language names, values are instantiated, patched lexers.
+    state_s_dict: Dict[str, int] = {}  # Keys are strings, values are ints.
+    state_n_dict: Dict[int, str] = {}  # # Keys are ints, values are strings.
+    state_index = 1  # Index of state number to be allocated.
     tot_time = 0.0
 
     def mainLoop(self, s):
