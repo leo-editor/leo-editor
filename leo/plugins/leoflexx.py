@@ -12,7 +12,7 @@
 #@+node:ekr.20181122215342.1: ** << leoflexx: docstring >>
 #@@language md
 #@@wrap
-'''
+"""
 flexx.py: LeoWapp (Leo as a web browser), implemented using flexx:
 https://flexx.readthedocs.io/en/stable/
 
@@ -35,7 +35,7 @@ Install flexx: https://flexx.readthedocs.io/en/stable/start.html
 You should see the flexx (Tornado) server start up in the console.
 Something that looks like Leo should then appear in the browser. Everything
 you see is real, and most of it is "live".
-'''
+"""
 #@-<< leoflexx: docstring >>
 #@+<< leoflexx: imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
@@ -1609,7 +1609,7 @@ class LeoBrowserTree(leoFrame.NullTree):
     new_p = None
 
     def select(self, p):
-        '''
+        """
         Override LeoTree.select.
 
         Operations across the Python/JS divide do not happen immediately. As a result,
@@ -1630,7 +1630,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         - Schedule app.complete_select.
 
         Phase 3: PY side:
-        '''
+        """
         trace = 'select' in g.app.debug
         tag = 'py.tree.select'
         w = self.root.main_window
@@ -1642,7 +1642,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         if not self.root.inited:
             # Don't sync the body pane during startup.
             super().select(p)
-                # Call LeoTree.select.'''
+                # Call LeoTree.select
             self.root.select_p(p)
                 # Call app.select_position.
             return

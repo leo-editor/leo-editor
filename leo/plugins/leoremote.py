@@ -20,10 +20,10 @@ Example client::
     addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
     print("will connect to",addr)
     pc  = lproto.LProtoClient(addr)
-    pc.send('''
+    pc.send(\"""
         g.es("hello world from remote")
         c = g.app.commanders()[0]
-    ''')
+    \""")
 
     # note how c persists between calls
     pc.send('''c.k.simulateCommand('stickynote')''')

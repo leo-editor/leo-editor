@@ -18,7 +18,7 @@ Here's an example on how to implement your own context menu items
 in your plugins::
 
     def nextclone_rclick(c,p, menu):
-        """ Go to next clone """
+        \""" Go to next clone\"""
 
         # only show the item if you are on a clone
         # this is what makes this "context sensitive"
