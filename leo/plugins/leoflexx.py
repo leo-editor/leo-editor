@@ -82,7 +82,7 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181121091633.1: *3* dump_event
 def dump_event(ev):
-    '''Print a description of the event.'''
+    """Print a description of the event."""
     id_ = ev.source.title or ev.source.text
     kind = '' if ev.new_value else 'un-'
     s = kind + ev.type
@@ -90,18 +90,18 @@ def dump_event(ev):
     print('dump_event: ' + message)
 #@+node:ekr.20181121040857.1: *3* get_root
 def get_root():
-    '''
+    """
     Return the LeoBrowserApp instance.
 
     This is the same as self.root for any flx.Component.
-    '''
+    """
     root = flx.loop.get_active_component().root
         # Only called at startup, so this will never be None.
     assert isinstance(root, LeoBrowserApp), repr(root)
     return root
 #@+node:ekr.20181112165240.1: *3* info (deprecated)
 def info(s):
-    '''Send the string s to the flex logger, at level info.'''
+    """Send the string s to the flex logger, at level info."""
     if not isinstance(s, str):
         s = repr(s)
     flx.logger.info('Leo: ' + s)
@@ -112,12 +112,12 @@ def init():
     return flx
 #@+node:ekr.20181203151314.1: *3* make_editor_function
 def make_editor_function(name, node):
-    '''
+    """
     Instantiate the ace editor.
 
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
-    '''
+    """
     # pylint: disable=undefined-variable
         # window looks undefined.
     global window
@@ -132,10 +132,10 @@ def make_editor_function(name, node):
     return ace
 #@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
-    '''
+    """
     Suppress the "Automatically scrolling cursor into view" messages by
     *allowing* only important messages.
-    '''
+    """
     allowed = r'(Traceback|Critical|Error|Leo|Session|Starting|Stopping|Warning)'
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
@@ -1527,13 +1527,13 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         self.root.status_line.set_focus()
     #@+node:ekr.20181119042937.1: *4* status_line_wrapper.update
     def update(self, body_text='', insert_point=0):
-        '''
+        """
         Update the status line, based on the contents of the body.
 
         Called from LeoTree.select.
 
         Returns (lt_part, rt_part) for LeoBrowserApp.init.
-        '''
+        """
         # pylint: disable=arguments-differ
         if g.app.killed:
             return None
@@ -1572,7 +1572,7 @@ class LeoBrowserTree(leoFrame.NullTree):
 
     #@+node:ekr.20190508121417.1: *5* tree.complete_select
     def complete_select(self, d):
-        '''Complete the selection of the tree.'''
+        """Complete the selection of the tree."""
         trace = 'select' in g.app.debug
         tag = 'py.tree.complete_select'
         if not self.new_p:
@@ -1591,16 +1591,16 @@ class LeoBrowserTree(leoFrame.NullTree):
         #
         # Make everything official in Leo's core.
         super().select(p)
-            # Call LeoTree.select.'''
+            # Call LeoTree.select.
         self.root.select_p(p)
             # Call app.select_position.
     #@+node:ekr.20190508121510.1: *5* tree.endEditLabel
     def endEditLabel(self):
-        '''
+        """
         End editing.
 
         This must be a do-nothing, because app.end_set_headline takes its place.
-        '''
+        """
         # print(flx.tree.endEditLabel')
     #@+node:ekr.20190508121414.1: *5*  tree.select
     # The lockout ensures that old_p never changes during the selection process.
@@ -1673,7 +1673,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         self.select(p)
     #@+node:ekr.20190508121417.3: *5* tree.super_select
     def super_select(self, p):
-        '''Call only LeoTree.select.'''
+        """Call only LeoTree.select."""
         trace = 'select' in g.app.debug
         if trace:
             tag = 'py.tree.super_select'
@@ -1682,7 +1682,7 @@ class LeoBrowserTree(leoFrame.NullTree):
 
     #@+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
-        '''This is c.frame.tree.redraw!'''
+        """This is c.frame.tree.redraw!"""
         # print(self.tag, '(c.frame.tree) redraw')
         self.root.redraw(p)
     #@+node:ekr.20181120063844.1: *4* tree.setFocus
@@ -1694,7 +1694,7 @@ class LeoBrowserTree(leoFrame.NullTree):
 #@@nobeautify
 
 class TracingNullObject:
-    '''A tracing version of g.NullObject.'''
+    """A tracing version of g.NullObject."""
     def __init__(self, *args, **keys):
         pass
 
@@ -2142,7 +2142,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
     #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
     @flx.emitter
     def key_press(self, e):
-        '''Pass *all* keys except Enter and F12 to Leo's core.'''
+        """Pass *all* keys except Enter and F12 to Leo's core."""
         # Backspace is not emitted.
         ev = self._create_key_event(e)
         key, mods = ev['key'], ev['modifiers']
@@ -2163,16 +2163,16 @@ class LeoFlexxMiniBuffer(JS_Editor):
 
     @flx.reaction('key_press')
     def on_key_press(self, *events):
-        '''Pass *all* keys Leo's core.'''
+        """Pass *all* keys Leo's core."""
         for ev in events:
             # print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
             self.root.do_key(ev, 'minibufferWidget')
     #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
     def do_enter_key(self, key, mods):
-        '''
+        """
         Handle the enter key in the minibuffer.
         This will only be called if the user has entered the minibuffer via a click.
-        '''
+        """
         command = self.editor.getValue()
         if 'keys' in g.app.debug:
             print('mini.do_enter_key', repr(command))
@@ -2215,7 +2215,7 @@ class LeoFlexxStatusLine(flx.Widget):
     #@+node:ekr.20181120060950.1: *4* flx_status_line.Key handling
     @flx.emitter
     def key_press(self, e):
-        '''Allow only F-keys, Ctrl-C and Ctrl-S.'''
+        """Allow only F-keys, Ctrl-C and Ctrl-S."""
         ev = self._create_key_event(e)
         key, mods = ev['key'], ev['modifiers']
         print('flx.status_line:', repr(mods), repr(key))
@@ -2230,7 +2230,7 @@ class LeoFlexxStatusLine(flx.Widget):
 
     @flx.reaction('key_press')
     def on_key_press(self, *events):
-        '''Pass Ctrl-S to Leo.'''
+        """Pass Ctrl-S to Leo."""
         for ev in events:
             key, mods = ev['key'], ev['modifiers']
             if mods == ['Ctrl'] and key == 's':
@@ -2282,11 +2282,11 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181112163252.1: *5* flx_tree.action.clear_tree
     @flx.action
     def clear_tree(self):
-        '''
+        """
         Completely clear the tree, preparing to recreate it.
 
         Important: we do *not* clear self.tree itself!
-        '''
+        """
         trace = 'drawing' in g.app.debug
         tag = 'flx.tree.clear_tree'
         # pylint: disable=access-member-before-definition
@@ -2308,7 +2308,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, redraw_dict, redraw_instructions):
-        '''
+        """
         Clear the present tree and redraw using the **recursive** redraw_list.
         d has the form:
             {
@@ -2318,7 +2318,7 @@ class LeoFlexxTree(flx.Widget):
                         for p in c.rootPosition().self_and_siblings()
                 ],
             }
-        '''
+        """
         # This is called only from app.action.redraw.
         trace = 'drawing' in g.app.debug
         tag = 'redraw_with_dict'
@@ -2339,7 +2339,7 @@ class LeoFlexxTree(flx.Widget):
             # #1127: Remove references to deleted items.
     #@+node:ekr.20181124194248.1: *6* tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
-        '''Create a tree item for item and all its visible children.'''
+        """Create a tree item for item and all its visible children."""
         # pylint: disable=no-member
             # set_collapsed is in the base class.
         trace = 'drawing' in g.app.debug
@@ -2370,7 +2370,7 @@ class LeoFlexxTree(flx.Widget):
         return tree_item  # Debugging
     #@+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
     def ap_to_key(self, ap):
-        '''Produce a key for the given ap.'''
+        """Produce a key for the given ap."""
         self.assert_exists(ap)
         childIndex = ap['childIndex']
         gnx = ap['gnx']
@@ -2385,7 +2385,7 @@ class LeoFlexxTree(flx.Widget):
         return key
     #@+node:ekr.20181113085722.1: *5* flx_tree.dump_ap
     def dump_ap(self, ap, padding, tag):
-        '''Print an archived position fully.'''
+        """Print an archived position fully."""
         stack = ap['stack']
         if not padding:
             padding = ''
@@ -2448,13 +2448,13 @@ class LeoFlexxTree(flx.Widget):
     # This are not used, at present, but they may come back.
     #@+node:ekr.20181125051244.1: *5* flx_tree.populate_children
     def populate_children(self, children, parent_ap):
-        '''
+        """
         Populate the children of the given parent.
 
         self.populating_tree_item is the LeoFlexxTreeItem to be populated.
 
         children is a list of ap's.
-        '''
+        """
         parent = self.populating_tree_item
         assert parent
         assert parent_ap == parent.leo_ap
@@ -2465,11 +2465,11 @@ class LeoFlexxTree(flx.Widget):
         self.populating_tree_item = False
     #@+node:ekr.20181111011928.1: *5* flx_tree.start_populating_children
     def start_populating_children(self, parent_ap, parent_tree_item):
-        '''
+        """
         Populate the parent tree item with the children if necessary.
 
         app.send_children_to_tree should send an empty list
-        '''
+        """
         self.assert_exists(parent_ap)
         self.assert_exists(parent_tree_item)
         key = self.ap_to_key(parent_ap)
@@ -2485,7 +2485,7 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181110175222.1: *5* flx_tree.action.receive_children
     @flx.action
     def receive_children(self, d):
-        '''
+        """
         Populate the direct descendants of ap. d is compatible with make_redraw_dict:
             {
                 'parent_ap': parent_ap,
@@ -2494,7 +2494,7 @@ class LeoFlexxTree(flx.Widget):
                         for p in for p in p.children()
                 ],
             }
-        '''
+        """
         parent_ap = d['parent_ap']
         children = d['items']
         # print('flx.tree.receive_children: %s children' % (len(children)))
@@ -2526,18 +2526,18 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181123171958.1: *5* flx_tree.action.set_ap
     @flx.action
     def set_ap(self, ap):
-        '''self.selected_ap. Called from app.select_ap.'''
+        """self.selected_ap. Called from app.select_ap."""
         assert ap
         self.selected_ap = ap
         self.select_ap(self.selected_ap)
     #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
-        '''
+        """
         Select the tree item corresponding to the given ap.
 
         Called from the mutator, and also on_selected_event.
-        '''
+        """
         # print('flx.tree.select_ap', repr(ap), ap ['headline'])
         key = self.ap_to_key(ap)
         item = self.tree_items_dict.get(key)
@@ -2550,11 +2550,11 @@ class LeoFlexxTree(flx.Widget):
     #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
     @flx.reaction('tree.children**.selected')  # don't use mode="greedy" here!
     def on_selected_event(self, *events):
-        '''
+        """
         Update c.p and c.p.b when the user selects a new tree node.
 
         This also gets fired on *unselection* events, which causes problems.
-        '''
+        """
         #
         # Reselect the present ap if there are no selection events.
         # This ensures that clicking a headline twice has no effect.

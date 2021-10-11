@@ -101,7 +101,7 @@ def dumpfocus():
     print("Focus: " + f)
 #@+node:ville.20090314215508.8: *3* init (quicksearch.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)

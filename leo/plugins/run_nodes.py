@@ -73,7 +73,7 @@ OwnIdleHook = False
 #@+others
 #@+node:ekr.20060108160737: ** init (run_nodes.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("bodykey2", OnBodyKey)
     g.registerHandler("icondclick2", OnIconDoubleClick)
     g.registerHandler("end1", OnQuit)
@@ -190,7 +190,7 @@ class readingThread(threading.Thread):
     #@+node:ekr.20040910070811.7: *3* run
     def run(self):
 
-        '''Called automatically when the thread is created.'''
+        """Called automatically when the thread is created."""
 
         global Encoding
 

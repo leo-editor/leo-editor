@@ -89,7 +89,7 @@ printElements = []  # ['all','outline','head','body',]
 #@+node:ekr.20060904132527.9: ** Module level
 #@+node:ekr.20060904103412.4: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     leoPlugins.registerHandler(('open2', 'new'), onCreate)
     g.plugin_signon(__name__)
     return True

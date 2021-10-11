@@ -1247,13 +1247,13 @@ class ScanState:
     #@-others
 #@+node:ekr.20161108155158.1: ** class Target
 class Target:
-    '''
+    """
     A class describing a target node p.
     state is used to cut back the stack.
-    '''
+    """
 
     def __init__(self, p, state):
-        '''Target ctor.'''
+        """Target ctor."""
         self.at_others_flag = False
             # True: @others has been generated for this target.
         self.p = p

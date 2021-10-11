@@ -56,7 +56,7 @@ c_db_key = '_graph_canvas_gnx'
 #@+others
 #@+node:bob.20110119123023.7393: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui.guiName() != "qt":
         return False
     g.visit_tree_item.add(colorize_headlines_visitor)
@@ -67,7 +67,7 @@ def init():
     return True
 #@+node:bob.20110121094946.3410: ** colorize_headlines_visitor
 def colorize_headlines_visitor(c, p, item):
-    '''Item is a QTreeWidgetItem.'''
+    """Item is a QTreeWidgetItem."""
     if '_bklnk' in p.v.u:
         # f = item.font(0)
         # f.setItalic(True)

@@ -355,7 +355,7 @@ def refresh_rclick(c, p, menu):
         action.triggered.connect(refresh_rclick_cb)
 #@+node:ekr.20140724211116.19258: *3* pylint_rclick
 def pylint_rclick(c, p, menu):
-    '''Run pylint on the selected node.'''
+    """Run pylint on the selected node."""
     action = menu.addAction("Run Pylint")
 
     def pylint_rclick_cb(aBool):

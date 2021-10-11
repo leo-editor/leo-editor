@@ -33,7 +33,7 @@ language = 'english'  # Anything except 'french' uses english.
 #@+others
 #@+node:ekr.20050301083306.4: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # This plugin is now gui independent.
     g.registerHandler(("new2", "menu2"), onCreate)
     g.plugin_signon(__name__)

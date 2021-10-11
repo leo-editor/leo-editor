@@ -220,7 +220,7 @@ def get_tag(xml_node, attrib=None):
 
 #@+node:ekr.20110523130519.18190: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     return True
 #@+node:tbrown.20110428102237.20329: ** leo2xml
 @g.command('leo2xml')

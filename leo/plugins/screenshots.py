@@ -370,7 +370,7 @@ def make_slide_show_command(event=None):
 #@+node:ekr.20101113193341.5459: *3* g.command(meld-slides)
 @g.command('meld-slides')
 def meld_slides_command(event):
-    '''Meld Wink slides into an @slideshow folder.
+    """Meld Wink slides into an @slideshow folder.
 
     Copy screenshot files from the wink_dir to slideshow_dir, numbering
     the destination files to reflect "holes" created by @no-screenshot
@@ -379,7 +379,7 @@ def meld_slides_command(event):
     This script carefully checks that the number of screenshot files
     matches the number of screenshots referenced by the @slide nodes.
     No copying takes place if the numbers are not as expected.
-    '''
+    """
     c = event.get('c')
     if c:
         sc = ScreenShotController(c)
@@ -393,15 +393,15 @@ def slide_show_info_command(event):
         sc.slide_show_info_command(c.p)
 #@+node:ekr.20100908110845.5606: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = got_qt
     if ok:
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20100914090933.5770: *3* make_screen_shot
 def make_screen_shot(path):
-    '''Create a screenshot of the present Leo outline and save it to path.
-    This is a callback called from make_screen_shot in runLeo.py'''
+    """Create a screenshot of the present Leo outline and save it to path.
+    This is a callback called from make_screen_shot in runLeo.py"""
     app = g.app.gui.qtApp
     # pylint: disable=no-member
     if isQt5 or isQt6:

@@ -148,7 +148,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     if '_quickmove' not in g.app.db:
@@ -846,7 +846,7 @@ class quickMoveButton:
     #@+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
     def moveCurrentNodeToTarget(self, checked=False):
 
-        '''Move the current position to the last child of self.target.'''
+        """Move the current position to the last child of self.target."""
 
         c = self.c
         p = c.p

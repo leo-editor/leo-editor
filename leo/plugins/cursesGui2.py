@@ -858,12 +858,12 @@ def log_cmd(name):
 #@+node:ekr.20170524123950.1: ** Gui classes
 #@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
 class StringFindTabManager:
-    '''CursesGui.py: A string-based FindTabManager class.'''
+    """CursesGui.py: A string-based FindTabManager class."""
     # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
     #@+node:ekr.20171128051435.2: *4*  sftm.ctor
     def __init__(self, c):
-        '''Ctor for the StringFindTabManager class.'''
+        """Ctor for the StringFindTabManager class."""
         self.c = c
         assert c.findCommands
         c.findCommands.minibuffer_mode = True
@@ -921,17 +921,17 @@ class StringFindTabManager:
         pass
     #@+node:ekr.20171128051435.5: *4* sftm.set_ignore_case
     def set_ignore_case(self, aBool):
-        '''Set the ignore-case checkbox to the given value.'''
+        """Set the ignore-case checkbox to the given value."""
         c = self.c
         c.findCommands.ignore_case = aBool
         w = self.check_box_ignore_case
         w.setChecked(aBool)
     #@+node:ekr.20171128051435.6: *4* sftm.init_widgets
     def init_widgets(self):
-        '''
+        """
         Init widgets and ivars from c.config settings.
         Create callbacks that always keep the LeoFind ivars up to date.
-        '''
+        """
         c = self.c
         find = c.findCommands
         # Find/change text boxes.
@@ -995,7 +995,7 @@ class StringFindTabManager:
     #@@nobeautify
 
     def set_radio_button(self, name):
-        '''Set the value of the radio buttons'''
+        """Set the value of the radio buttons"""
         c = self.c
         fc = c.findCommands
         d = {
@@ -1019,7 +1019,7 @@ class StringFindTabManager:
     #@@nobeautify
 
     def toggle_checkbox(self,checkbox_name):
-        '''Toggle the value of the checkbox whose name is given.'''
+        """Toggle the value of the checkbox whose name is given."""
         c = self.c
         fc = c.findCommands
         if not fc:
@@ -2722,7 +2722,7 @@ class CoreStatusLine:
     #@-others
 #@+node:ekr.20170502093200.1: *3* class TopFrame
 class TopFrame:
-    '''A representation of c.frame.top.'''
+    """A representation of c.frame.top."""
 
     def __init__(self, c):
         self.c = c
@@ -2774,9 +2774,9 @@ class LeoBody(npyscreen.MultiLineEditable):
     #@+node:ekr.20170604183231.1: *4*  LeoBody handlers
     #@+node:ekr.20170526114040.4: *5* LeoBody.h_cursor_line_down
     def h_cursor_line_down(self, ch_i):
-        '''
+        """
         From MultiLine.h_cursor_line_down. Never exit.
-        '''
+        """
         # pylint: disable=access-member-before-definition
         #
         # Reset editing mode.
@@ -2792,7 +2792,7 @@ class LeoBody(npyscreen.MultiLineEditable):
                 self.start_display_at = self.cursor_line
     #@+node:ekr.20170526114040.5: *5* LeoBody.h_cursor_line_up
     def h_cursor_line_up(self, ch_i):
-        '''From MultiLine.h_cursor_line_up. Never exit here.'''
+        """From MultiLine.h_cursor_line_up. Never exit here."""
         # Reset editing mode.
         self.set_box_name('Body Pane')
         self.cursor_line = max(0, self.cursor_line - 1)
@@ -2819,7 +2819,7 @@ class LeoBody(npyscreen.MultiLineEditable):
         return None
     #@+node:ekr.20170526114452.2: *5* LeoBody.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
-        '''From MultiLineEditable.h_edit_cursor_line_value'''
+        """From MultiLineEditable.h_edit_cursor_line_value"""
         self.set_box_name('Body Pane (Editing)')
         continue_line = self.edit_cursor_line_value()
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
@@ -2835,10 +2835,10 @@ class LeoBody(npyscreen.MultiLineEditable):
             c.p.b = ''.join(self.values)
     #@+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
     def make_contained_widgets(self):
-        '''
+        """
         LeoBody.make_contained_widgets.
         Make widgets and inject the leo_parent ivar for later access to leo_c.
-        '''
+        """
         # pylint: disable=no-member
         trace_widgets = False
         self._my_widgets = []
@@ -2861,14 +2861,14 @@ class LeoBody(npyscreen.MultiLineEditable):
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name):
-        '''Update the title of the Form surrounding the Leo Body.'''
+        """Update the title of the Form surrounding the Leo Body."""
         box = self.leo_box
         box.name = name
         box.update()
     #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
     #@@nobeautify
     def set_handlers(self):
-        '''LeoBody.set_handlers.'''
+        """LeoBody.set_handlers."""
         # pylint: disable=no-member
         self.handlers = {
             # From InputHandler...
@@ -2893,9 +2893,9 @@ class LeoBody(npyscreen.MultiLineEditable):
         # self.dump_handlers()
     #@+node:ekr.20170606100707.1: *4* LeoBody.update_body (cursesGui2)
     def update_body(self, ins, s):
-        '''
+        """
         Update self.values and p.b and vnode ivars after the present line changes.
-        '''
+        """
         # pylint: disable=no-member,access-member-before-definition
         trace = False and not g.unitTesting
         c = self.leo_c
@@ -2965,9 +2965,9 @@ class LeoLog(npyscreen.MultiLineEditable):
     #@+node:ekr.20170604183417.1: *4*  LeoLog handlers
     #@+node:ekr.20170603103946.32: *5* LeoLog.h_cursor_line_down
     def h_cursor_line_down(self, ch_i):
-        '''
+        """
         From MultiLine.h_cursor_line_down. Never exit.
-        '''
+        """
         # pylint: disable=no-member,access-member-before-definition
         trace = False and not g.unitTesting
         self.set_box_name('Log Pane')
@@ -2987,13 +2987,13 @@ class LeoLog(npyscreen.MultiLineEditable):
                 n, self.start_display_at, self.cursor_line))
     #@+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
     def h_cursor_line_up(self, ch_i):
-        '''From MultiLine.h_cursor_line_up. Never exit here.'''
+        """From MultiLine.h_cursor_line_up. Never exit here."""
         self.set_box_name('Log Pane')
         self.cursor_line = max(0, self.cursor_line - 1)
 
     #@+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
-        '''From MultiLineEditable.h_edit_cursor_line_value'''
+        """From MultiLineEditable.h_edit_cursor_line_value"""
         self.set_box_name('Log Pane (Editing)')
         continue_line = self.edit_cursor_line_value()
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
@@ -3024,10 +3024,10 @@ class LeoLog(npyscreen.MultiLineEditable):
         return None
     #@+node:ekr.20170603103946.34: *4* LeoLog.make_contained_widgets
     def make_contained_widgets(self):
-        '''
+        """
         LeoLog.make_contained_widgets.
         Make widgets and inject the leo_parent ivar for later access to leo_c.
-        '''
+        """
         # pylint: disable=no-member
         trace = False
         trace_widgets = False
@@ -3052,13 +3052,13 @@ class LeoLog(npyscreen.MultiLineEditable):
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
     #@+node:ekr.20170604073322.1: *4* LeoLog.set_box_name
     def set_box_name(self, name):
-        '''Update the title of the Form surrounding the Leo Log.'''
+        """Update the title of the Form surrounding the Leo Log."""
         box = self.leo_box
         box.name = name
         box.update()
     #@+node:ekr.20170603103946.33: *4* LeoLog.set_handlers
     def set_handlers(self):
-        '''LeoLog.set_handlers.'''
+        """LeoLog.set_handlers."""
         # pylint: disable=no-member
         self.handlers = {
             # From InputHandler...
@@ -3085,7 +3085,7 @@ class LeoLog(npyscreen.MultiLineEditable):
         # dump_handlers(self)
     #@+node:ekr.20170708181422.1: *4* LeoLog.firstScroll
     def firstScroll(self):
-        '''Scroll the log pane so the last lines are in view.'''
+        """Scroll the log pane so the last lines are in view."""
         # Fix #508: Part 0.
         n = len(self.values)
         self.cursor_line = max(0, n - 2)
@@ -3397,7 +3397,7 @@ class LeoMLTree(npyscreen.MLTree):
         return True
     #@+node:ekr.20170523113530.1: *5* LeoMLTree.get_nth_visible_position
     def get_nth_visible_position(self, n):
-        '''Return the n'th visible position.'''
+        """Return the n'th visible position."""
         c = self.leo_c
         limit, junk = c.visLimit()
         p = limit.copy() if limit else c.rootPosition()
@@ -3411,10 +3411,10 @@ class LeoMLTree(npyscreen.MLTree):
         return None
     #@+node:ekr.20171128191134.1: *5* LeoMLTree.select_leo_node
     def select_leo_node(self, p):
-        '''
+        """
         Set .start_display_at and .cursor_line ivars to display node p, with 2
         lines of preceding context if possible.
-        '''
+        """
         trace = False and not g.unitTesting
         c = self.leo_c
         limit, junk = c.visLimit()
@@ -3442,11 +3442,11 @@ class LeoMLTree(npyscreen.MLTree):
         pass
     #@+node:ekr.20170506044733.2: *5* LeoMLTree.new_mltree_node
     def new_mltree_node(self):
-        '''
+        """
         Insert a new outline TreeData widget at the current line.
         As with Leo, insert as the first child of the current line if
         the current line is expanded. Otherwise insert after the current line.
-        '''
+        """
         trace = False
         trace_values = True
         node = self.values[self.cursor_line]
@@ -3467,7 +3467,7 @@ class LeoMLTree(npyscreen.MLTree):
         return node
     #@+node:ekr.20170506044733.5: *5* LeoMLTree.insert_line
     def insert_line(self):
-        '''Insert an MLTree line and mark c changed.'''
+        """Insert an MLTree line and mark c changed."""
         trace = False
         c = self.leo_c
         c.changed = True  # Just set the changed bit.
@@ -3497,7 +3497,7 @@ class LeoMLTree(npyscreen.MLTree):
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170523112839.1: *5* LeoMLTree.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
-        '''Called from InputHandler.h_exit_mouse.'''
+        """Called from InputHandler.h_exit_mouse."""
         # pylint: disable=no-member
         #
         # From MultiLine...
@@ -3581,7 +3581,7 @@ class LeoMLTree(npyscreen.MLTree):
             c.frame.tree.select(p)
     #@+node:ekr.20170506044733.10: *5* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch):
-        '''Called when the user types "h".'''
+        """Called when the user types "h"."""
         # Remember the starting headline, for CTree.onHeadChanged.
         self.edit_headline()
     #@+node:ekr.20170516055435.5: *5* LeoMLTree.h_expand_all
@@ -3742,7 +3742,7 @@ class LeoMLTree(npyscreen.MLTree):
 
     #@+node:ekr.20170513032502.1: *4* LeoMLTree.update & helpers
     def update(self, clear=True, forceInit=False):
-        '''Redraw the tree.'''
+        """Redraw the tree."""
         # This is a major refactoring of MultiLine.update.
         trace = False and not g.unitTesting
         c = self.leo_c
@@ -3765,7 +3765,7 @@ class LeoMLTree(npyscreen.MLTree):
             self._last_value = copy.copy(self.value)
     #@+node:ekr.20170513122253.1: *5* LeoMLTree._init_update
     def _init_update(self):
-        '''Put self.cursor_line and self.start_display_at in range.'''
+        """Put self.cursor_line and self.start_display_at in range."""
         # pylint: disable=access-member-before-definition,consider-using-max-builtin
         display_length = len(self._my_widgets)
         self.cursor_line = max(0, min(len(self.values) - 1, self.cursor_line))
@@ -3785,7 +3785,7 @@ class LeoMLTree(npyscreen.MLTree):
                     self.start_display_at = 0
     #@+node:ekr.20170513123010.1: *5* LeoMLTree._must_redraw
     def _must_redraw(self, clear):
-        '''Return a list of reasons why we must redraw.'''
+        """Return a list of reasons why we must redraw."""
         trace = False and not g.unitTesting
         table = (
             ('cache', not self._safe_to_display_cache or self.never_cache),
@@ -3806,7 +3806,7 @@ class LeoMLTree(npyscreen.MLTree):
         return reasons
     #@+node:ekr.20170513122427.1: *5* LeoMLTree._redraw & helpers
     def _redraw(self, clear):
-        '''Do the actual redraw.'''
+        """Do the actual redraw."""
         trace = False and not g.unitTesting
         # pylint: disable=no-member
         #
@@ -3855,7 +3855,7 @@ class LeoMLTree(npyscreen.MLTree):
         self._set_line_highlighting(line, i)
     #@+node:ekr.20170513102428.1: *6* LeoMLTree._put_continuation_line
     def _put_continuation_line(self):
-        '''Print the line indicating there are more lines left.'''
+        """Print the line indicating there are more lines left."""
         s = self.continuation_line
         x = self.relx
         y = self.rely + self.height - 1
@@ -3866,7 +3866,7 @@ class LeoMLTree(npyscreen.MLTree):
             self.parent.curses_pad.addstr(y, x, s)
     #@+node:ekr.20170513075423.1: *6* LeoMLTree._set_line_values
     def _set_line_values(self, line, i):
-        '''Set internal values of line using self.values[i] and self.values[i+1]'''
+        """Set internal values of line using self.values[i] and self.values[i+1]"""
         trace = False
         trace_ok = True
         trace_empty = True
@@ -4289,10 +4289,10 @@ class MiniBufferWrapper(leoFrame.StringTextWrapper):
         self.widget = w
 #@+node:ekr.20171129194610.1: *3* class StatusLineWrapper (leoFrame.StringTextWrapper)
 class StatusLineWrapper(leoFrame.StringTextWrapper):
-    '''A Wrapper class for the status line.'''
+    """A Wrapper class for the status line."""
 
     def __init__(self, c, name, w):
-        '''Ctor for StatusLineWrapper class'''
+        """Ctor for StatusLineWrapper class"""
         super().__init__(c, name)
         self.trace = False  # For tracing in base class.
         self.widget = w

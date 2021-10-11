@@ -107,7 +107,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:peckj.20131101132841.6448: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
@@ -240,7 +240,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         self.label.setText("Total: %s items" % count)
     #@+node:peckj.20131101132841.6458: *4* update_all
     def update_all(self, event=None):
-        ''' updates the nodewatch GUI by running all valid @nodewatch nodes '''
+        """ updates the nodewatch GUI by running all valid @nodewatch nodes """
         key = str(self.comboBox.currentText())
         self.update_combobox()
         if key:
@@ -254,7 +254,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
     #@+node:peckj.20131104093045.6578: *3* helpers
     #@+node:peckj.20131104093045.6579: *4* get_valid_nodewatch_nodes
     def get_valid_nodewatch_nodes(self):
-        ''' returns a list of valid vnodes '''
+        """ returns a list of valid vnodes """
         nodes = []
         for node in self.c.all_unique_nodes():
             if node.h.startswith('@nodewatch'):

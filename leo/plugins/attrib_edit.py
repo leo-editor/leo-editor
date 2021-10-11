@@ -113,7 +113,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui.guiName() != "qt":
         print('attrib_edit.py plugin not loading because gui is not Qt')
         return False

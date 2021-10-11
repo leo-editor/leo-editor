@@ -38,7 +38,7 @@ def escape(s):
     return s
 #@+node:ekr.20101112045055.60165: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     return True
 #@+node:ekr.20101110092416.5700: ** class node_with_parent
 class node_with_parent:

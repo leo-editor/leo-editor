@@ -73,7 +73,7 @@ real_webkit = QtWebKit and 'engine' not in g.os_path_basename(QtWebKit.__file__)
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init (richtext.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if not QtWebKit:
         return False
     name = g.app.gui.guiName()

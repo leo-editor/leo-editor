@@ -50,7 +50,7 @@ tagLines = []
 #@+node:ekr.20110307092028.14155: ** Top-level functions
 #@+node:ville.20090317180704.11: *3* init (ctagscompleter.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     global tagLines
     if g.app.gui.guiName() != "qt":
         return False
@@ -64,13 +64,13 @@ def init():
 
 #@+node:ville.20090317180704.12: *3* onCreate (ctagscompleter.py)
 def onCreate(tag, keys):
-    '''Register the ctags-complete command for the newly-created commander.'''
+    """Register the ctags-complete command for the newly-created commander."""
     c = keys.get('c')
     if c:
         c.k.registerCommand('ctags-complete', start)
 #@+node:ekr.20091015185801.5245: *3* read_tags_file
 def read_tags_file():
-    '''Return the lines of ~/.leo/tags or [] on error.'''
+    """Return the lines of ~/.leo/tags or [] on error."""
     tagsFileName = os.path.expanduser('~/.leo/tags')
     if not os.path.exists(tagsFileName):
         g.trace('not found:', repr(tagsFileName))
@@ -89,10 +89,10 @@ def read_tags_file():
         return []
 #@+node:ekr.20110307092028.14160: *3* start (ctags-complete)
 def start(event):
-    '''
+    """
     The ctags-complete command.
     Call cc.start() where cc is the CtagsController for event's commander.
-    '''
+    """
     global conrollers
     c = event.get('c')
     if not c:
@@ -122,7 +122,7 @@ class CtagsController:
         self.ev_filter = c.frame.body.wrapper.ev_filter
     #@+node:ekr.20091015185801.5243: *3* ctags.complete
     def complete(self, event):
-        '''Find all completions.'''
+        """Find all completions."""
         # c = self.c
         cpl, w = self.completer, self.body_widget
         tc = w.textCursor()
@@ -160,7 +160,7 @@ class CtagsController:
         self.ev_filter.ctagscompleter_active = False
     #@+node:ville.20090321223959.2: *3* ctags.lookup
     def lookup(self, prefix):
-        '''Return a list of all items starting with prefix.'''
+        """Return a list of all items starting with prefix."""
         global tagLines
         #
         # Find all lines with the given prefix.
@@ -185,7 +185,7 @@ class CtagsController:
             self.complete(event)
     #@+node:ekr.20110307092028.14157: *3* ctags.start (ctags-complete)
     def start(self, event):
-        '''Initialize.'''
+        """Initialize."""
         c = self.c
         #
         # Create the callback to insert the selected completion.

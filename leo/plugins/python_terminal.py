@@ -89,7 +89,7 @@ class InteractiveInterpreter(code.InteractiveInterpreter):
     #@+others
     #@+node:peckj.20150428142729.7: *3* InteractiveInterpreter.__init__
     def __init__(self, locals, c):
-        '''Ctor for InteractiveInterpreter class.'''
+        """Ctor for InteractiveInterpreter class."""
         self.c = c
         # inject g, c, p
         loc = locals
@@ -296,7 +296,7 @@ if QtWidgets:
 
         #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter & helpers
         def doEnter(self, event):
-            '''Handle the <return> key.'''
+            """Handle the <return> key."""
             #
             # Binding for functions.
             interp = self.interpreter
@@ -304,14 +304,14 @@ if QtWidgets:
             #@+others # Helper function
             #@+node:ekr.20190619185252.1: *5* function: compute_indent
             def compute_indent(line):
-                '''Return the indentation of a line.'''
+                """Return the indentation of a line."""
                 indent = len(line) - len(line.lstrip())
                 if line.endswith(':'):
                     indent += 4
                 return indent
             #@+node:ekr.20190619183908.1: *5* function: compile_lines
             def compile_lines(lines):
-                '''Compile one or more lines, returning the compiled code.'''
+                """Compile one or more lines, returning the compiled code."""
                 source = ''.join(lines)
                 try:
                     return code.compile_command(source)
@@ -322,7 +322,7 @@ if QtWidgets:
                 return None
             #@+node:ekr.20190619190805.1: *5* function: compile_and_run_lines
             def compile_and_run_lines(lines):
-                '''Compile and run code lines.  Return 1 if there are errors.'''
+                """Compile and run code lines.  Return 1 if there are errors."""
                 assert lines
                 the_code = compile_lines(lines)
                 if the_code:
@@ -330,7 +330,7 @@ if QtWidgets:
                 return None
             #@+node:ekr.20180525110907.1: *5* fucntion: run_code
             def run_code(the_code):
-                '''Execute the compiled code. Return True if all went well.'''
+                """Execute the compiled code. Return True if all went well."""
                 try:
                     interp.runcode(the_code)
                     return True
@@ -415,7 +415,7 @@ if QtWidgets:
 
 #@+node:peckj.20150428142633.4: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
@@ -429,7 +429,7 @@ def init():
     return ok
 #@+node:peckj.20150428142633.5: ** onCreate
 def onCreate(tag, keys):
-    '''python_terminal.py onCreate handler.'''
+    """python_terminal.py onCreate handler."""
     c = keys.get('c')
     if c:
         win = MyInterpreter(None, c)

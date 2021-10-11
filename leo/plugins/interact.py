@@ -52,7 +52,7 @@ except ImportError:
 #@+others
 #@+node:tbrown.20090603104805.4938: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
@@ -348,7 +348,7 @@ class InteractButton:
     #@+node:tbrown.20090603104805.4968: *3* run
     def run(self):
 
-        '''Move the current position to the last child of self.target.'''
+        """Move the current position to the last child of self.target."""
 
         c = self.c
         p = c.p

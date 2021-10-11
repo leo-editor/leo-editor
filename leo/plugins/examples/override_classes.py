@@ -9,7 +9,7 @@ from leo.core import leoFrame
 #@+others
 #@+node:ekr.20111104210837.9692: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
         # Not for unit testing: overrides core methods.
     if ok:

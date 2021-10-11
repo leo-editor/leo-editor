@@ -32,7 +32,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20060831165845.4: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler(('open2', 'new2'), onCreate)
     g.plugin_signon(__name__)
     return True
@@ -186,7 +186,7 @@ class slideshowController:
         g.es('At start of first slide show')
     #@+node:ekr.20060901145257: *3* select
     def select(self, p):
-        '''Make p the present slide, and set self.slide and maybe self.slideShowRoot.'''
+        """Make p the present slide, and set self.slide and maybe self.slideShowRoot."""
         c = self.c
         h = p.h.strip()
         w = c.frame.body.wrapper

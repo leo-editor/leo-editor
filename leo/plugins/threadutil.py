@@ -37,7 +37,7 @@ def enq_task(r):
 
 #@+node:ekr.20140910173844.17826: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.procs = SysProcessRunner()
     g.procs.default_cb = leo_echo_cb
     return True

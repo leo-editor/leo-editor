@@ -226,7 +226,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:ekr.20100128073941.5371: ** init (bookmarks.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.unitTesting:
         return False
     g.registerHandler('after-create-leo-frame', onCreate)

@@ -95,7 +95,7 @@ from leo.external import leosax
 #@+others
 #@+node:peckj.20140113131037.5795: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
@@ -223,7 +223,7 @@ class NodeDiffController:
     #@+node:peckj.20140113131037.5807: *4* run_diff_on_marked
     # for command 'diff-marked'
     def run_diff_on_marked(self, event=None):
-        '''Runs a diff on the marked nodes.  Will only work if exactly 2 marked nodes exist in the outline.'''
+        """Runs a diff on the marked nodes.  Will only work if exactly 2 marked nodes exist in the outline."""
         ns = self.get_marked()
         if ns is None:
             g.es('nodediff.py: Make sure that exactly two nodes are marked.', color='red')
@@ -232,7 +232,7 @@ class NodeDiffController:
     #@+node:peckj.20140113131037.5808: *4* run_diff_on_selected
     # for command 'diff-selected'
     def run_diff_on_selected(self, event=None):
-        '''Runs a diff on the selected nodes.  Will only work if exactly two nodes are selected.'''
+        """Runs a diff on the selected nodes.  Will only work if exactly two nodes are selected."""
         ns = self.get_selection()
         if ns is None:
             g.es('nodediff.py: Make sure that exactly two nodes are selected.', color='red')
@@ -241,10 +241,10 @@ class NodeDiffController:
     #@+node:peckj.20140113131037.5809: *4* run_diff_on_subtree
     # for command 'diff-subtree'
     def run_diff_on_subtree(self, event=None):
-        '''
+        """
         Runs a diff on the children of the currently selected node.
         Will only work if the node has exactly two children.
-        '''
+        """
         ns = self.get_subtree()
         if ns is None:
             g.es('nodediff.py: Make sure that the selected node has exactly two children.',

@@ -159,7 +159,7 @@ def colorize_headlines_visitor(c, p, item):
     raise leoPlugins.TryNext
 #@+node:ville.20110403115003.10352: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # vs_reset(None)
     global controllers
     # create global valuaspace controller for ipython
@@ -180,7 +180,7 @@ def onCreate(tag, key):
 #@+node:ville.20110403115003.10355: ** Commands
 #@+node:ville.20130127115643.3695: *3* get_vs
 def get_vs(c):
-    '''deal with singleton "ipython" controller'''
+    """deal with singleton "ipython" controller"""
     if g.app.ipk:
         vsc = controllers.get('ipython')
         if not vsc:
@@ -214,9 +214,9 @@ def vs_update(event):
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController:
 
-    '''A class supporting per-commander evaluation spaces
+    """A class supporting per-commander evaluation spaces
     containing @a, @r and @= nodes.
-    '''
+    """
 
     #@+others
     #@+node:ekr.20110408065137.14223: *3*  ctor
@@ -230,7 +230,7 @@ class ValueSpaceController:
             c.keyHandler.autoCompleter.namespaces.append(self.d)
     #@+node:ekr.20110408065137.14224: *3* create_tree
     def create_tree(self):
-        '''The vs-create-tree command.'''
+        """The vs-create-tree command."""
         c = self.c
         p = c.p
         tag = 'valuespace'
@@ -276,7 +276,7 @@ class ValueSpaceController:
     #@+node:ekr.20110408065137.14225: *3* reset
     def reset(self):
 
-        '''The vs-reset command.'''
+        """The vs-reset command."""
 
         # do not allow resetting the dict if using ipython
         if not g.app.ipk:
@@ -307,7 +307,7 @@ class ValueSpaceController:
     #@+node:ekr.20110408065137.14226: *3* update & helpers
     def update(self):
 
-        '''The vs-update command.'''
+        """The vs-update command."""
 
         # names are reversed, xxx TODO fix later
         self.render_phase()  # Pass 1
@@ -315,13 +315,13 @@ class ValueSpaceController:
         self.c.bodyWantsFocus()
     #@+node:ekr.20110407174428.5781: *4* render_phase (pass 1) & helpers
     def render_phase(self):
-        '''Update p's tree (or the entire tree) as follows:
+        """Update p's tree (or the entire tree) as follows:
 
         - Evaluate all @= nodes and assign them to variables
         - Evaluate the body of the *parent* nodes for all @a nodes.
         - Read in @vsi nodes and assign to variables
 
-        '''
+        """
 
         c = self.c
         self.d['c'] = c  # g.vs.c = c
@@ -361,8 +361,8 @@ class ValueSpaceController:
     #@+node:ekr.20110407174428.5777: *5* let & let_body
     def let(self, var, val):
 
-        '''Enter var into self.d with the given value.
-        Both var and val must be strings.'''
+        """Enter var into self.d with the given value.
+        Both var and val must be strings."""
 
         self.d['__vstemp'] = val
         if var.endswith('+'):
@@ -446,10 +446,10 @@ class ValueSpaceController:
             useSentinels=False)
     #@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) & helper
     def update_vs(self):
-        '''
+        """
         Evaluate @r <expr> nodes, puting the result in their body text.
         Output @vso nodes, based on file extension
-        '''
+        """
         c = self.c
         for p in c.all_unique_positions():
             h = p.h.strip()
@@ -483,7 +483,7 @@ class ValueSpaceController:
     #@+node:ekr.20110407174428.5784: *5* render_value
     def render_value(self, p, value):
 
-        '''Put the rendered value in p's body pane.'''
+        """Put the rendered value in p's body pane."""
 
         if isinstance(value, SList):
             p.b = value.n

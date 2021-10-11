@@ -32,7 +32,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20050311102853.1: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # This plugin is gui-independent.
     g.registerHandler(('new', 'menu2'), create_import_cisco_menu)
     g.plugin_signon(__name__)

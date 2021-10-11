@@ -38,7 +38,7 @@ else:
 #@+others
 #@+node:ekr.20060107110126: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # Ok for unit testing: creates a new menu.
     g.registerHandler("after-create-leo-frame", onCreate)
     g.plugin_signon(__name__)

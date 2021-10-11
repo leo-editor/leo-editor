@@ -80,7 +80,7 @@ NO_TIME = datetime.date(3000, 1, 1)
 #@+others
 #@+node:tbrown.20090119215428.6: ** init (todo.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     name = g.app.gui.guiName()
     if name != "qt":
         if name not in ('browser', 'curses', 'nullGui'):
@@ -306,7 +306,7 @@ if g.app.gui.guiName() == "qt":
 #@+node:tbrown.20090119215428.9: ** class todoController
 class todoController:
 
-    '''A per-commander class that manages tasks.'''
+    """A per-commander class that manages tasks."""
 
     #@+others
     #@+node:tbrown.20090119215428.10: *3* priority table
@@ -337,7 +337,7 @@ class todoController:
     _datetime_fields = _date_fields + _time_fields
     #@+node:tbrown.20090119215428.11: *3* __init__ & helpers (todoController)
     def __init__(self, c):
-        '''ctor for todoController class.'''
+        """ctor for todoController class."""
         self.c = c
         c.cleo = self
         self.donePriority = 100
@@ -600,7 +600,7 @@ class todoController:
     #@+node:tbrown.20090119215428.20: *4* delUD
     def delUD(self, node, udict="annotate"):
 
-        ''' Remove our dict from the node'''
+        """ Remove our dict from the node"""
 
         if (hasattr(node, "unknownAttributes") and
             udict in node.unknownAttributes
@@ -610,7 +610,7 @@ class todoController:
     #@+node:tbrown.20090119215428.21: *4* hasUD
     def hasUD(self, node, udict="annotate"):
 
-        ''' Return True if the node has an UD.'''
+        """ Return True if the node has an UD."""
 
         return (
             hasattr(node, "unknownAttributes") and

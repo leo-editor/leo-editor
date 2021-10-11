@@ -136,7 +136,7 @@ from leo.core import leoGlobals as g
 #@+node:bob.20080107154936: ** module level functions
 #@+node:bob.20080107154936.1: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler("create-optional-menus", createExportMenus)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)

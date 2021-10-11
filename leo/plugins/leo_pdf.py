@@ -170,13 +170,13 @@ StringIO = io.StringIO
 #@+node:ekr.20140920145803.17996: ** top-level functions
 #@+node:ekr.20090704103932.5178: *3* init
 def init():
-    '''
+    """
     This file may be distributed in Leo's plugin folder, but this file is NOT
     a Leo plugin!
 
     The init method returns False to tell Leo's plugin manager and unit tests to
     skip this file.
-    '''
+    """
     return False
 #@+node:ekr.20111103154150.9647: *3* getStyleSheet
 # Copied from stylesheet.py, from # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
@@ -356,7 +356,7 @@ def getStyleSheet():
     return stylesheet
 #@+node:ekr.20111106070228.12430: *3* get_language
 def get_language(doctree):
-    '''A wrapper for changing docutils get_language method.'''
+    """A wrapper for changing docutils get_language method."""
 
     class Reporter:
         def warning(self, s):
@@ -497,7 +497,7 @@ if docutils:
         #@+node:ekr.20090704103932.5187: *3* translate
         def translate(self):
 
-            '''Do final translation of self.document into self.output.'''
+            """Do final translation of self.document into self.output."""
 
             if 1:  # Production code.
                 visitor = PDFTranslator(self, self.document)
@@ -637,7 +637,7 @@ if docutils:  # NOQA
 
         def visit_footnote_reference(self, node):
 
-            '''Generate code for a footnote reference.'''
+            """Generate code for a footnote reference."""
 
             # self.dumpNode(node,tag='footnote-ref-node')
 
@@ -697,7 +697,7 @@ if docutils:  # NOQA
 
         def footnote_backrefs(self, node):
 
-            '''Create b.link and b.setLink for visit/depart_label.'''
+            """Create b.link and b.setLink for visit/depart_label."""
 
             # self.dumpNode(node,tag='backrefs-node')
 
@@ -994,7 +994,7 @@ if docutils:  # NOQA
         #@+node:ekr.20090704103932.5221: *4* inContext
         def inContext(self, kind):
 
-            '''Return the most recent bunch having the indicated kind, or None.'''
+            """Return the most recent bunch having the indicated kind, or None."""
 
             i = len(self.context) - 1
 
@@ -1008,9 +1008,9 @@ if docutils:  # NOQA
         #@+node:ekr.20090704103932.5222: *4* pdfMunge
         def pdfMunge(self, s):
 
-            '''Duplicate the munging done (somewhere in docutils) of section names.
+            """Duplicate the munging done (somewhere in docutils) of section names.
 
-            This allows us to use the nameids attribute in the document element.'''
+            This allows us to use the nameids attribute in the document element."""
 
             s = s.lower.replace('\t', ' ')
 

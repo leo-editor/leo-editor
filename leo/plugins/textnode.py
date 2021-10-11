@@ -25,7 +25,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ajones.20070122160142.2: ** init (textnode.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler(('new', 'open2'), on_open)
     g.registerHandler("save1", on_save)
     g.registerHandler("save2", on_open)

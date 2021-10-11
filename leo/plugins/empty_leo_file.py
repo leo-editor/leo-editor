@@ -25,7 +25,7 @@ empty_leo_file = """<?xml version="1.0" encoding="UTF-8"?>
 #@+others
 #@+node:ekr.20100128073941.5372: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         g.registerHandler("open1", onOpen)

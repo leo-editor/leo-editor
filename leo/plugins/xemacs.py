@@ -45,7 +45,7 @@ else:
 #@+others
 #@+node:ekr.20050218023308: ** xemacs.init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         g.plugin_signon(__name__)

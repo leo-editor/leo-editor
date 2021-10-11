@@ -67,7 +67,7 @@ class MLStripper(HTMLParser):
         return ''.join(self.fed)
 #@+node:ekr.20170228150717.1: *3* emit_message
 def emit_message(c, parent, root, message):
-    '''Create all the children of p.'''
+    """Create all the children of p."""
     for part in message.walk():
         part.get_content_maintype()
         payload = part.get_payload()

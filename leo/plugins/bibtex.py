@@ -108,7 +108,7 @@ entrytypes.append('@string')
 #@+others
 #@+node:ekr.20100128073941.5370: ** init (bibtex.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         # Register the handlers...
@@ -171,7 +171,7 @@ def onIconDoubleClick(tag, keywords):
             readBibTexFileIntoTree(c, fn, p)
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
 def readBibTexFileIntoTree(c, fn, p):
-    '''Import a BibTeX file into a @bibtex tree.'''
+    """Import a BibTeX file into a @bibtex tree."""
     root = p.copy()
     g.es('reading:', fn)
     s = g.readFileIntoEncodedString(fn)

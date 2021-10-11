@@ -116,7 +116,7 @@ testing = False
 #@+others
 #@+node:tbrown.20091128094521.15048: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', attachToCommander)
     g.act_on_node.add(active_path_act_on_node, priority=90)
     g.plugin_signon(__name__)
@@ -163,7 +163,7 @@ def attachToCommander(t, k):
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
 #@+node:tbrown.20091128094521.15042: ** popup_entry (active_path)
 def popup_entry(c, p, menu):
-    '''Populate the Path submenu of the popup.'''
+    """Populate the Path submenu of the popup."""
     pathmenu = menu.addMenu("Path")
     d = g.global_commands_dict
     for key in d:

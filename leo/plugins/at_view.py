@@ -25,7 +25,7 @@ win32clipboard = g.import_module('win32clipboard')
 #@+others
 #@+node:ekr.20111104210837.9693: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = path and win32clipboard
         # Ok for unit testing.
     if ok:
@@ -49,7 +49,7 @@ def onCreate(tag, keywords):
 #@+node:ktenney.20041211072654.7: ** class View
 class View:
 
-    '''A class to support @view, @strip and @clip nodes.'''
+    """A class to support @view, @strip and @clip nodes."""
 
     #@+others
     #@+node:ktenney.20041211072654.8: *3* __init__
@@ -82,12 +82,12 @@ class View:
             self.clip()
     #@+node:ktenney.20041211072654.10: *3* view
     def view(self):
-        '''
+        """
         Place the contents of a file in the body pane
 
         the file is either in the current headstring,
         or found by ascending the tree
-        '''
+        """
         # get a path object for this position
         currentPath = self.getCurrentPath()
         if currentPath.exists():
@@ -102,7 +102,7 @@ class View:
     #@+node:ktenney.20041212102137: *3* clip
     def clip(self):
 
-        '''Watch the clipboard, and copy new items to the body.'''
+        """Watch the clipboard, and copy new items to the body."""
 
         if not win32clipboard:
             return
@@ -127,7 +127,7 @@ class View:
     #@+node:ktenney.20041211072654.15: *3* strip
     def strip(self):
 
-        '''Display a file with all sentinel lines removed'''
+        """Display a file with all sentinel lines removed"""
 
         # get a path object for this position
         c = self.c

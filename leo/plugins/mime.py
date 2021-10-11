@@ -50,8 +50,8 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:dan.20090210183435.1: ** exec_full_cmd
 def exec_full_cmd(cmd):
-    '''Accept a command string including filename and return a function
-    which executes the command.'''
+    """Accept a command string including filename and return a function
+    which executes the command."""
 
     def f(fpath):
         return subprocess.Popen(cmd, shell=True)
@@ -59,8 +59,8 @@ def exec_full_cmd(cmd):
     return f
 #@+node:dan.20090210180636.27: ** exec_string_cmd
 def exec_string_cmd(cmd):
-    '''Accept a command string and return a function which opens executes the command,
-    replacing %s with the full file path.'''
+    """Accept a command string and return a function which opens executes the command,
+    replacing %s with the full file path."""
 
     if '%s' not in cmd:
         cmd = cmd + ' %s'
@@ -72,7 +72,7 @@ def exec_string_cmd(cmd):
     return f
 #@+node:dan.20090203174248.30: ** init (mime.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         # Open on double click
@@ -81,14 +81,14 @@ def init():
     return ok
 #@+node:dan.20090203174248.31: ** open_mimetype
 def open_mimetype(tag, keywords, val=None):
-    '''Simulate double-clicking on the filename in a file manager.  Order of
+    """Simulate double-clicking on the filename in a file manager.  Order of
     preference is:
 
         1) @string mime_open_cmd setting
         2) _mime_open_cmd, defined per sys.platform detection
         3) open_func(fpath), defined per sys.platform detection
         4) mailcap file for mimetype handling
-    '''
+    """
 
     global open_func
 

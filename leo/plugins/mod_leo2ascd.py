@@ -28,7 +28,7 @@ patternAscDirectiveSkipToggle = re.compile(r"^@ascskip\s*(\w+)+.*")
 #@+others
 #@+node:ekr.20140920145803.17999: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     leoPlugins.registerHandler(('new', 'menu2'), CreateAscMenu)
     g.plugin_signon(__name__)
     return True

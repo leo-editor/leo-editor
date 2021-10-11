@@ -10,7 +10,7 @@ gcCount = 0
 #@+others
 #@+node:ekr.20100128091412.5386: ** init (trace_gc_plugin)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting  # Not for unit testing.
     if ok:  # Register the handlers...
         if 1:  # Very effective.

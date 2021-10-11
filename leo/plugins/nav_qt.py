@@ -29,7 +29,7 @@ controllers = {}
 #@+others
 #@+node:ville.20090518182905.5423: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler(('new', 'open2'), onCreate)

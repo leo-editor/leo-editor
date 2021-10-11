@@ -41,7 +41,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ville.20091009202416.10045: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = True
     if ok:
         #g.registerHandler('start2',onStart2)

@@ -117,7 +117,7 @@ def addPluginMenuItem(p, c):
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
 def createPluginsMenu(tag, keywords):
-    '''Create the plugins menu: calld from create-optional-menus hook.'''
+    """Create the plugins menu: calld from create-optional-menus hook."""
     c = keywords.get("c")
     if not c:
         return
@@ -166,7 +166,7 @@ def add_menu_from_settings(c):
                 return
 #@+node:ekr.20070302175530: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if g.unitTesting:
         return False
     if not g.app.gui:
@@ -256,10 +256,10 @@ class PlugIn:
             self.hastoplevel = False
     #@+node:EKR.20040517080555.7: *4* create_menu (Plugin)
     def create_menu(self):
-        '''
+        """
         Add items in the main menu for each decorated command in this plugin.
         The g.command decorator sets func.is_command & func.command_name.
-        '''
+        """
         self.othercmds = {}
         for item in self.mod.__dict__.keys():
             func = self.mod.__dict__[item]

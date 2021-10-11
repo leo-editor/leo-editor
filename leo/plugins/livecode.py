@@ -29,7 +29,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 warning_given = False
 
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     global warning_given
     if g.unitTesting:
         return False

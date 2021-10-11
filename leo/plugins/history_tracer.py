@@ -50,7 +50,7 @@ idle_checker = None
 #@+others
 #@+node:vitalije.20190928154420.4: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler(['command1', 'command2'], c12_hook)

@@ -96,7 +96,7 @@ def decorate_window(c, w):
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.plugin_signon(__name__)

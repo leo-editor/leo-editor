@@ -69,14 +69,14 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20070302121133: ** init
 def init():
-    '''Return True if this plugin loaded correctly.'''
+    """Return True if this plugin loaded correctly."""
     # Ok for unit testing: adds command to Outline menu.
     g.registerHandler(('new', 'menu2'), onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20040916091520.1: ** onCreate
 def onCreate(tag, keywords):
-    '''Create the per-commander instance of ParamClass.'''
+    """Create the per-commander instance of ParamClass."""
     c = keywords.get("c")
     if c:
         ParamClass(c)
@@ -136,7 +136,7 @@ class ParamClass:
         c.redraw()
     #@+node:ekr.20040916084945.2: *3* findParameters
     def findParameters(self, p):
-        '''Find the parameterized nodes in p's parents..'''
+        """Find the parameterized nodes in p's parents.."""
         tag = "parameterized nodes"
         for parent in p.parents():
             for sib in parent.self_and_siblings():

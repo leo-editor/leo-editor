@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20111104210837.9688: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.unitTesting
         # Unpleasant for unit testing.
     if ok:

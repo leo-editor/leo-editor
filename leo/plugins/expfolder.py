@@ -35,7 +35,7 @@ textexts = []
 #@+others
 #@+node:ajones.20070122154835: ** init (expfolder.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.plugin_signon(__name__)
     g.registerHandler("icondclick1", on_icondclick)
     fileName = os.path.join(g.app.loadDir, "../", "plugins", "expfolder.ini")

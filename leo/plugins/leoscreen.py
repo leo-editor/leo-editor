@@ -156,7 +156,7 @@ from leo.plugins.attrib_edit import ListDialog
 #@+others
 #@+node:tbrown.20100226095909.12781: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True

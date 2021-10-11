@@ -7,7 +7,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20111104210837.9690: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
         # Not for unit testing: overrides core methods.
     if ok:
@@ -19,7 +19,7 @@ def init():
 # Python makes this is almost too easy :-)
 
 def onStart(tag, keywords):
-    '''redefine methods when Leo starts.'''
+    """redefine methods when Leo starts."""
     c = keywords.get('c')
     if c:
         log = c.frame.log

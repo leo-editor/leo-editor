@@ -10,7 +10,7 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20071025195133: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True

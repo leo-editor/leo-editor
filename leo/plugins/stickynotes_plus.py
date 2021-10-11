@@ -67,7 +67,7 @@ def decorate_window(w):
 
 #@+node:ekr.20100103100944.5393: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = markdown is not None and g.app.gui.guiName() == "qt"
         # Markdown fails on Python 3k at present.
     if ok:

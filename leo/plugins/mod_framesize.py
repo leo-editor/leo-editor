@@ -12,7 +12,7 @@ document)
 #@+others
 #@+node:ville.20090726125902.5293: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     from leo.core import leoGlobals as g
     from leo.plugins import qt_frame
     ok = g.app.gui.guiName() == "qt"

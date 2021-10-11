@@ -37,7 +37,7 @@ from leo.core import leoPlugins
 #@+others
 #@+node:ville.20110409151021.5703: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = bool(Template)
     if ok:
         g.plugin_signon(__name__)
