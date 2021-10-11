@@ -101,22 +101,15 @@ class Commands:
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self):
         """Init ivars used while executing a command."""
-        self.commandsDict: dict[str, Callable] = {}
-            # Keys are command names, values are functions.
-        self.disableCommandsMessage = ''
-            # The presence of this message disables all commands.
-        self.hookFunction: Optional[Callable] = None
-            # One of three places that g.doHook looks for hook functions.
-        self.ignoreChangedPaths = False
-            # True: disable path changed message in at.WriteAllHelper.
-        self.inCommand = False
-            # Interlocks to prevent premature closing of a window.
-        self.outlineToNowebDefaultFileName: str = "noweb.nw"
-            # For Outline To Noweb dialog.
+        self.commandsDict: dict[str, Callable] = {}  # Keys are command names, values are functions.
+        self.disableCommandsMessage = ''  # The presence of this message disables all commands.
+        self.hookFunction: Optional[Callable] = None  # One of three places that g.doHook looks for hook functions.
+        self.ignoreChangedPaths = False  # True: disable path changed message in at.WriteAllHelper.
+        self.inCommand = False  # Interlocks to prevent premature closing of a window.
+        self.outlineToNowebDefaultFileName: str = "noweb.nw"  # For Outline To Noweb dialog.
         # For hoist/dehoist commands.
-        self.hoistStack: List[Any] = []  # Really, a list of g.Bunches, but mypy complains.
-            # Stack of nodes to be root of drawn tree.
-            # Affects drawing routines and find commands.
+        # Affects drawing routines and find commands, but *not* generators.
+        self.hoistStack: List[Any] = []  # Stack of g.Bunches to be root of drawn tree.
         # For outline navigation.
         self.navPrefix: str = ''  # Must always be a string.
         self.navTime: Optional[float] = None
@@ -131,30 +124,21 @@ class Commands:
     #@+node:ekr.20120217070122.10471: *5* c.initDocumentIvars
     def initDocumentIvars(self):
         """Init per-document ivars."""
-        self.expansionLevel = 0
-            # The expansion level of this outline.
-        self.expansionNode = None
-            # The last node we expanded or contracted.
-        self.nodeConflictList = []
-            # List of nodes with conflicting read-time data.
-        self.nodeConflictFileName: Optional[str] = None
-            # The fileName for c.nodeConflictList.
-        self.user_dict = {}
-            # Non-persistent dictionary for free use by scripts and plugins.
+        self.expansionLevel = 0  # The expansion level of this outline.
+        self.expansionNode = None  # The last node we expanded or contracted.
+        self.nodeConflictList = []  # List of nodes with conflicting read-time data.
+        self.nodeConflictFileName: Optional[str] = None  # The fileName for c.nodeConflictList.
+        self.user_dict = {}  # Non-persistent dictionary for free use by scripts and plugins.
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self):
         """Init ivars relating to gui events."""
         self.configInited = False
         self.doubleClickFlag = False
-        self.exists = True
-            # Indicate that this class exists and has not been destroyed.
-            # Do this early in the startup process so we can call hooks.
-        self.in_qt_dialog = False
-            # True: in a qt dialog.
-        self.loading = False
-            # True: we are loading a file: disables c.setChanged()
-        self.promptingForClose = False
-            # True: lock out additional closing dialogs.
+        self.exists = True  # Indicate that this class exists and has not been destroyed.
+        self.in_qt_dialog = False  # True: in a qt dialog.
+        self.loading = False  # True: we are loading a file: disables c.setChanged()
+        self.promptingForClose = False  # True: lock out additional closing dialogs.
+        #
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False
@@ -163,25 +147,16 @@ class Commands:
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName, relativeFileName):
         """Init file-related ivars of the commander."""
-        self.changed = False
-            # True: the outline has changed since the last save.
-        self.ignored_at_file_nodes: List["leoNodes.Position"] = []
-            # List of nodes for c.raise_error_dialogs.
-        self.import_error_nodes: List["leoNodes.Position"] = []
-            # List of nodes for c.raise_error_dialogs.
-        self.last_dir = None
-            # The last used directory.
-        self.mFileName: str = fileName or ''
-            # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
-        self.mRelativeFileName = relativeFileName or ''
-            #
-        self.openDirectory: Optional[str] = None
-            #
-        self.orphan_at_file_nodes: List["leoNodes.Position"] = []
-            # List of orphaned nodes for c.raise_error_dialogs.
-        self.wrappedFileName: Optional[str] = None
-            # The name of the wrapped file, for wrapper commanders.
-            # Set by LM.initWrapperLeoFile
+        self.changed = False  # True: the outline has changed since the last save.
+        self.ignored_at_file_nodes: List["leoNodes.Position"] = []  # List of nodes for c.raise_error_dialogs.
+        self.import_error_nodes: List["leoNodes.Position"] = []  # List of nodes for c.raise_error_dialogs.
+        self.last_dir = None  # The last used directory.
+        self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+        self.mRelativeFileName = relativeFileName or ''  #
+        self.openDirectory: Optional[str] = None  #
+        self.orphan_at_file_nodes: List["leoNodes.Position"] = []  # List of orphaned nodes for c.raise_error_dialogs.
+        self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
+
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self):
         """Init Commander ivars corresponding to user options."""
@@ -200,9 +175,6 @@ class Commands:
         self.tangle_batch_flag = False
         self.target_language = "python"
         self.untangle_batch_flag = False
-        # self.use_body_focus_border = True
-        # self.use_focus_border = False
-            # Replaced by style-sheet entries.
         self.vim_mode = False
     #@+node:ekr.20120217070122.10468: *5* c.initObjectIvars
     def initObjectIvars(self):
