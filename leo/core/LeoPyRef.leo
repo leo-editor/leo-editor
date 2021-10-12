@@ -161,7 +161,7 @@
 <v t="ekr.20210118020530.1"><vh>new_name</vh></v>
 <v t="ekr.20210118021337.1"><vh>exists</vh></v>
 </v>
-<v t="ekr.20210829132319.1"><vh> script: cvt-tests</vh></v>
+<v t="ekr.20210829132319.1"><vh>script: cvt-tests</vh></v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20201208114843.1"><vh>script: diff-pr</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
@@ -303,7 +303,6 @@
 <v t="edream.110203113231.732"><vh>@file ../plugins/enable_gc.py</vh></v>
 <v t="edream.110203113231.734"><vh>@file ../plugins/quit_leo.py</vh></v>
 <v t="edream.110203113231.735"><vh>@file ../plugins/trace_gc_plugin.py</vh></v>
-<v t="edream.110203113231.736"><vh>@file ../plugins/trace_keys.py</vh></v>
 <v t="edream.110203113231.738"><vh>@file ../plugins/trace_tags.py</vh></v>
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
@@ -1036,9 +1035,7 @@ main(node_list = ['Startup', 'Notes', 'Code'])
 <t tx="ekr.20210113054702.1">import os
 print(f"\nos.curdir: {os.path.abspath(os.curdir)}")</t>
 <t tx="ekr.20211011090013.1">"""Find hanging comments."""
-# g.cls()
 import re
-### p = g.findTopLevelNode(c, '@file leoApp.py')
 pat = re.compile(r'^(\s*)(.*?)\n(\s*)(.*?)\n')
 
 # Find:  ^(\s*)(.*?)\n(\s*)(.*?)\n
@@ -1046,7 +1043,6 @@ pat = re.compile(r'^(\s*)(.*?)\n(\s*)(.*?)\n')
 # Repl: \1\2\n\1\4\n
     
 def predicate(p):
-    # g.trace(p.h)
     for m in pat.finditer(p.b):
         if (
             not m.group(2).startswith('def ')
@@ -1551,7 +1547,7 @@ if 0: # A more complex example, for the C language.
 
     def __repr__(self):
         """{{cap_name}}_ScanState.__repr__"""
-        ### Adjust these by hand.
+        # Adjust these by hand.
         return "{{cap_name}}_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)
 
@@ -1575,7 +1571,7 @@ if 0: # A more complex example, for the C language.
     # All ScanState classes must have a context ivar.
     self.context = context
     self.curlies += delta_c  
-    ### Update {{cap_name}}_ScanState ivars
+    # Update {{cap_name}}_ScanState ivars
     # self.bs_nl = bs_nl
     # self.parens += delta_p
     # self.squares += delta_s

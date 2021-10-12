@@ -1012,7 +1012,6 @@
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings</vh></v>
-<v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
@@ -9717,7 +9716,6 @@ QFrame#gutter {
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about Python errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
-<t tx="ekr.20151225094956.1">&amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>
 <t tx="ekr.20151225193848.1">leoP&amp;y.leo</t>
 <t tx="ekr.20160112111247.1"># Lines to be inserted at the start of each stub file.
