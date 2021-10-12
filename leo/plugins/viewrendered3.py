@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.45
+About Viewrendered3 V3.46
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -901,7 +901,7 @@ image_template = '''\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head></head>
 <body bgcolor="#fffbdc">
-<img src="%s">
+<img style="width:100%%" src="%s">
 </body>
 </html>
 '''
