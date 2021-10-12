@@ -2595,35 +2595,6 @@ class LinterTable():
         """Return list of all files in leo/modes"""
         pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
         return self.get_files(pattern)
-    #@+node:ekr.20160518074545.7: *4* ignores (not used!)
-    def ignores(self):
-        return (
-            '__init__', 'FileActions',
-            # 'UNL', # in plugins table.
-            'active_path', 'add_directives', 'attrib_edit',
-            'backlink', 'base64Packager', 'baseNativeTree', 'bibtex', 'bookmarks',
-            'codewisecompleter', 'colorize_headlines', 'contextmenu',
-            'ctagscompleter', 'cursesGui', 'datenodes', 'debugger_pudb',
-            'detect_urls', 'dtest', 'empty_leo_file', 'enable_gc', 'initinclass',
-            'leo_to_html', 'leo_interface', 'leo_pdf', 'leo_to_rtf',
-            'leoOPML', 'leoremote', 'lineNumbers',
-            'macros', 'mime', 'mod_autosave', 'mod_framesize', 'mod_leo2ascd',
-            # 'mod_scripting', # in plugins table.
-            'mod_speedups', 'mod_timestamp',
-            'nav_buttons', 'nav_qt', 'niceNosent', 'nodeActions', 'nodebar',
-            'open_shell', 'open_with', 'outline_export', 'quit_leo',
-            'paste_as_headlines', 'plugins_menu', 'pretty_print', 'projectwizard',
-            'qt_main', 'qt_quicksearch', 'qt_commands',
-            'quickMove', 'quicksearch', 'redirect_to_log', 'rClickBasePluginClasses',
-            'run_nodes',  # Changed thread.allocate_lock to threading.lock().acquire()
-            'rst3',
-            # 'scrolledmessage', # No longer exists.
-            'setHomeDirectory', 'slideshow', 'spydershell', 'startfile',
-            'testRegisterCommand', 'todo',
-            # 'toolbar', # in plugins table.
-            'trace_gc_plugin', 'trace_keys', 'trace_tags',
-            'vim', 'xemacs',
-        )
     #@+node:ekr.20160518074545.8: *4* plugins (LinterTable)
     def plugins(self):
         """Return a list of all important plugins."""
