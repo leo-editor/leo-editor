@@ -896,12 +896,9 @@ trace = False
 #@+<< define html templates >>
 #@+node:TomP.20191215195433.6: ** << define html templates >> (vr3)
 image_template = '''\
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head></head>
+<html>
 <body bgcolor="#fffbdc">
-<img style="width:100%%" src="%s">
+<img style="width: 100%%" src="%s">
 </body>
 </html>
 '''
@@ -2329,10 +2326,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Sensitive to leading blank lines.
 
         w = pc.ensure_web_widget()
-        pc.show()
-        # For file URLs, we need to give a base URL to the file system as the 2nd param.
-        # Otherwise the QT widget will not allow a file:/// location.
-        w.setHtml(template, QtCore.QUrl(path))
+        pc.set_html(template, w)
         w.show()
     #@+node:TomP.20191215195433.61: *4* vr3.update_jupyter & helper
     update_jupyter_count = 0
