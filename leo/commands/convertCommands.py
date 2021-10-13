@@ -1208,9 +1208,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c = self.c
         self.PythonToTypescript(c).convert(c.p)
         self.c.bodyWantsFocus()
-    #@+node:ekr.20211013080132.2: *4* class PythonToTypeScript
+    #@+node:ekr.20211013080132.2: *4* class PythonToTypescript
+    #@@nobeautify
     class PythonToTypescript:
-        
+
         def __init__(self, c):
             self.c = c
 
@@ -1228,10 +1229,66 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             parent.h = p.h
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
-        #@+node:ekr.20211013102209.1: *5* py2ts.convert_body (The hard part)
+        #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
+        def_pat =   re.compile(r'^(\s*)def ([\w_]+)\s*\(.*?\):')
+        if_pat =    re.compile(r'^(\s*)if\s*(.*?):')
+
+        # for_pat =   r'for\s*(.*?)'
+        # while_pat = r'while\s*(.*?)'
+        # all_pats =  fr'^\s*({def_pat}|{for_pat}|{if_pat}|{while_pat}):(.*?)$'
+
         def convert_body(self, p, target):
             """Convert p.b into target.b"""
-            # g.trace(p.h)
+            print('')
+            print(p.h)
+            i = 0
+            lines = g.splitLines(p.b)
+            patterns = (
+                (self.def_pat, self.do_def),
+                (self.if_pat, self.do_if),
+            )
+            while i < len(lines):  # lines changes in the loop.
+                progress = i
+                line = lines[i]
+                for (pattern, handler) in patterns:
+                    m = pattern.match(line)
+                    if m:
+                        i, lines = handler(i, lines, m, p)
+                    else:
+                        i += 1
+                    assert progress < i
+          
+        #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
+        def find_indented_block(self, i, lines, m, p):
+            lws = m.group(1)
+            ### s = lines[i]
+            ### lws = s[i: len(s)-len(s.lstrip())]
+            assert lws is not None
+            n1, n2 = g.getLine(p.b, i)
+            assert n1 < n2 <= len(p.b)
+            # print(n1, n2, repr(lws), repr(p.b[n1:n2]))
+            
+            # print(' '*6, lines[i].rstrip())
+        #@+node:ekr.20211013130041.1: *6* py2ts.do_def
+        def do_def(self, i, lines, m, p):
+            """
+            Handle a 'def' line and its indented block.
+            
+            Return the new i and the new lines.
+            """
+            print(repr(lines[i]))
+            self.find_indented_block(i, lines, m, p)
+            return i + 1, lines
+        #@+node:ekr.20211013131016.1: *6* py2ts.do_if
+        def do_if(self, i, lines, m, p):
+            """
+            Handle an 'if' line and its indented block.
+            
+            Return the new i and the new lines.
+            """
+            ### print(repr(lines[i]))
+            self.find_indented_block(i, lines, m, p)
+            return i + 1, lines
         #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.
