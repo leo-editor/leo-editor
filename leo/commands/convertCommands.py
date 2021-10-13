@@ -1239,7 +1239,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
-                (self.trailing_comment_pat, self.do_trailing_comment)
+                (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
             )
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, g.splitLines(p.b)
