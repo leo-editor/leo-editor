@@ -1254,9 +1254,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     m = pattern.match(line)
                     if m:
                         i, lines = handler(i, lines, m, p)
-                    else:
-                        i += 1
-                    assert progress < i
+                else:
+                    i += 1
+                assert progress < i
           
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
         def find_indented_block(self, i, lines, m, p):
@@ -1276,7 +1276,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             Return the new i and the new lines.
             """
-            print(repr(lines[i]))
+            g.trace(lines[i].rstrip())
             self.find_indented_block(i, lines, m, p)
             return i + 1, lines
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
@@ -1286,7 +1286,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             Return the new i and the new lines.
             """
-            ### print(repr(lines[i]))
+            g.trace(' ' + lines[i].rstrip())
             self.find_indented_block(i, lines, m, p)
             return i + 1, lines
         #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
