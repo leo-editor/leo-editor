@@ -170,11 +170,12 @@ def flake8_command(event):
     c = event.get('c')
     if not c or not c.p:
         return
+    python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
         path = g.fullPath(c, root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f"&python -m flake8 {path}")
+            g.execute_shell_commands(f'&"{python}" -m flake8 "{path}"')
         else:
             g.es_print(f"{tag}: file not found:{path}")
 #@+node:ekr.20161026092059.1: *3* kill-pylint
