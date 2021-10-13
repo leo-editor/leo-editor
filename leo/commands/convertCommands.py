@@ -1263,23 +1263,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())
-        #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
-        lws_pat = re.compile(r'^([ ]*)')
-
-        def find_indented_block(self, i, lines, m, p):
-            """Return j, the index of the line *after* the indented block."""
-            # Scan for the first line with the same or less indentation.
-            lws = m.group(1)
-            j = i + 1
-            while j < len(lines):
-                line = lines[j]
-                m2 = self.lws_pat.match(line)
-                lws2 = m2.group(1)
-                if line.strip() and len(lws2) <= len(lws):
-                    break
-                j += 1
-            return j
-
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
         comment_pat = re.compile(r'^([ ]*)#(.*?)\n')
 
@@ -1288,6 +1271,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, comment = m.group(1), m.group(2).strip()
             lines[i] = f"{lws}// {comment}\n"
             return i + 1  # Advance.
+        #@+node:ekr.20211013130041.1: *6* py2ts.do_def
+        def_pat = re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\((.*?)\):(.*?)\n')
+
+        def do_def(self, i, lines, m, p):
+            """Handle a 'def' line and its indented block."""
+            j = self.find_indented_block(i, lines, m, p)
+            lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}public {name} ({args}) {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ ]*)("""|\'\'\')(.*?)\n')
 
@@ -1308,17 +1302,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return i + 1  # Advance
                 i += 1
             return i
-        #@+node:ekr.20211013130041.1: *6* py2ts.do_def
-        def_pat = re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\((.*?)\):(.*?)\n')
-
-        def do_def(self, i, lines, m, p):
-            """Handle a 'def' line and its indented block."""
-            j = self.find_indented_block(i, lines, m, p)
-            lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
-            tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}public {name} ({args}) {{{tail_s}\n"
-            lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Rescan.
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
         for_pat = re.compile(r'^([ ]*)for[ ]+(.*?):(.*?)\n')
 
@@ -1364,6 +1347,23 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}while ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
+        #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
+        lws_pat = re.compile(r'^([ ]*)')
+
+        def find_indented_block(self, i, lines, m, p):
+            """Return j, the index of the line *after* the indented block."""
+            # Scan for the first line with the same or less indentation.
+            lws = m.group(1)
+            j = i + 1
+            while j < len(lines):
+                line = lines[j]
+                m2 = self.lws_pat.match(line)
+                lws2 = m2.group(1)
+                if line.strip() and len(lws2) <= len(lws):
+                    break
+                j += 1
+            return j
+
         #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.
