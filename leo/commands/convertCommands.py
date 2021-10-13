@@ -1295,7 +1295,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """Handle a stand-alone comment line."""
             lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
             tail = docstring.replace(delim,'').strip()
-            lines[i] = f"{lws}/// {docstring}\n"
+            lines[i] = f"{lws}/// {tail}\n"
             if delim in docstring:
                 return i + 1 # Advance.
             i += 1
