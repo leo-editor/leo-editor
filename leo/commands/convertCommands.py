@@ -1238,7 +1238,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
             )
-            # The loop can change lines, but lines are scanned only once.
+            # The loop may change lines, but each line is scanned only once.
             i, lines = 0, g.splitLines(p.b)
             old_lines = lines[:]
             while i < len(lines):
@@ -1255,22 +1255,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())
-                ### p.b = ''.join(lines)
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
         lws_pat = re.compile(r'^([ ]*)')
 
         def find_indented_block(self, i, lines, m, p):
             """Return j, the index of the line *after* the indented block."""
-            lws = m.group(1)
-            assert lws == '' or lws.isspace(), repr(lws)
-            n1, n2 = g.getLine(p.b, i)
-            assert n1 < n2 <= len(p.b)
             # Scan for the first line with the same or less indentation.
+            lws = m.group(1)
             j = i + 1
             while j < len(lines):
                 line = lines[j]
                 m2 = self.lws_pat.match(line)
-                assert m2
                 lws2 = m2.group(1)
                 if len(lws2) <= len(lws):
                     break
