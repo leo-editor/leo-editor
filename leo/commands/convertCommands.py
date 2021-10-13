@@ -1233,24 +1233,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_body(self, p, target):
             """Convert p.b into target.b"""
             patterns = (
+                (self.comment_pat, self.do_comment),
+                (self.docstring_pat, self.do_docstring),
                 (self.def_pat, self.do_def),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
+                (self.trailing_comment_pat, self.do_trailing_comment)
             )
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, g.splitLines(p.b)
             old_lines = lines[:]
             while i < len(lines):
+                progress = i
                 line = lines[i]
                 for (pattern, handler) in patterns:
                     m = pattern.match(line)
                     if m:
-                        handler(i, lines, m, p) # May change lines.
-                        i += 1
+                        i = handler(i, lines, m, p) # May change lines.
                         break
                 else:
                     i += 1
+                assert progress < i
             if lines != old_lines:
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
@@ -1267,68 +1271,95 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 line = lines[j]
                 m2 = self.lws_pat.match(line)
                 lws2 = m2.group(1)
-                if len(lws2) <= len(lws):
+                if line.strip() and len(lws2) <= len(lws):
                     break
                 j += 1
             return j
+
+        #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
+        comment_pat = re.compile(r'^([ ]*)#(.*?)\n')
+
+        def do_comment(self, i, lines, m, p):
+            """Handle a stand-alone comment line."""
+            lws, comment = m.group(1), m.group(2).strip()
+            lines[i] = f"{lws}// {comment}\n"
+            return i + 1  # Advance.
+        #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
+        docstring_pat = re.compile(r'^([ ]*)("""|\'\'\')(.*?)\n')
+
+        def do_docstring(self, i, lines, m, p):
+            """Handle a stand-alone comment line."""
+            lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
+            tail = docstring.replace(delim,'').strip()
+            lines[i] = f"{lws}/// {docstring}\n"
+            if delim in docstring:
+                return i + 1 # Advance.
+            i += 1
+            while i < len(lines):
+                line = lines[i]
+                # Buglet: ignores whatever might follow.
+                tail = line.replace(delim,'').strip()
+                lines[i] = f"{lws}/// {tail}\n"
+                if delim in line:
+                    return i + 1  # Advance
+                i += 1
+            return i
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\((.*?)\):(.*?)\n')
 
         def do_def(self, i, lines, m, p):
-            """
-            Handle a 'def' line and its indented block.
-            
-            Return the new i and the new lines.
-            """
+            """Handle a 'def' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
-            tail_s = f" # {tail}" if tail else ''
+            tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}function {name} ({args}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
         for_pat = re.compile(r'^([ ]*)for[ ]+(.*?):(.*?)\n')
 
         def do_for(self, i, lines, m, p):
-            """
-            Handle an 'for' line and its indented block.
-            
-            Return the new i and the new lines.
-            """
+            """Handle an 'for' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-            tail_s = f" # {tail}" if tail else ''
+            tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}for ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-
+            return i + 1  # Rescan.
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
         if_pat = re.compile(r'^([ ]*)if[ ]+(.*?):(.*?)\n')
 
         def do_if(self, i, lines, m, p):
-            """
-            Handle an 'if' line and its indented block.
-            
-            Return the new i and the new lines.
-            """
+            """Handle an 'if' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-            tail_s = f" # {tail}" if tail else ''
+            tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}if ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211013172540.1: *6* py2ts.do_trailing_comment
+        trailing_comment_pat = re.compile(r'^([ ]*)(.*?)#(.*?)\n')
+
+        def do_trailing_comment(self, i, lines, m, p):
+            """
+            Handle a trailing comment line.
+            
+            All other patterns have already been scanned on the line.
+            """
+            lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
+            lines[i] = f"{lws}{statement}  // {trailing_comment}\n"
+            return i + 1  # Advance.
         #@+node:ekr.20211013141809.1: *6* py2ts.do_while
         while_pat = re.compile(r'^([ ]*)while[ ]+(.*?):(.*?)\n')
 
         def do_while(self, i, lines, m, p):
-            """
-            Handle an 'while' line and its indented block.
-            
-            Return the new i and the new lines.
-            """
+            """Handle a 'while' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-            tail_s = f" # {tail}" if tail else ''
+            tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}while ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-
+            return i + 1  # Rescan.
         #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.

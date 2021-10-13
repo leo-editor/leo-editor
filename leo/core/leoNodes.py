@@ -28,10 +28,8 @@ class NodeIndices:
         """Ctor for NodeIndices class."""
         self.defaultId = id_
         self.lastIndex = 0
-        self.stack: List[Cmdr] = []
-            # A stack of open commanders.
-        self.timeString = ''
-            # Set by setTimeStamp.
+        self.stack: List[Cmdr] = []  # A stack of open commanders.
+        self.timeString = ''  # Set by setTimeStamp.
         self.userId = id_
         # Assign the initial timestamp.
         self.setTimeStamp()
