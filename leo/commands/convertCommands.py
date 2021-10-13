@@ -1231,7 +1231,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.convert_node(p, parent)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
         def convert_body(self, p, target):
-            """Convert p.b into target.b"""
+            """
+            Convert p.b into target.b.
+            
+            This is the heart of the algorithm.
+            """
             patterns = (
                 (self.comment_pat, self.do_comment),
                 (self.docstring_pat, self.do_docstring),
@@ -1312,7 +1316,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
             tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}function {name} ({args}) {{{tail_s}\n"
+            lines[i] = f"{lws}public {name} ({args}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
