@@ -1230,24 +1230,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
-        def_pat =   re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\(.*?\):')
-        for_pat =   re.compile(r'^([ ]*)for[ ]+(.*?):')
-        if_pat =    re.compile(r'^([ ]*)if[ ]+(.*?):')
-        while_pat = re.compile(r'^([ ]*)while[ ]+(.*?):')
-
         def convert_body(self, p, target):
             """Convert p.b into target.b"""
-            print('') ###
-            print(p.h)
             patterns = (
                 (self.def_pat, self.do_def),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
             )
-            i = 0
-            lines = g.splitLines(p.b)
             # The loop can change lines, but lines are scanned only once.
+            i, lines = 0, g.splitLines(p.b)
+            old_lines = lines[:]
             while i < len(lines):
                 line = lines[i]
                 for (pattern, handler) in patterns:
@@ -1258,10 +1251,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         break
                 else:
                     i += 1
+            if lines != old_lines:
+                print(f"\nchanged {p.h}:\n")
+                for z in lines:
+                    print(z.rstrip())
+                ### p.b = ''.join(lines)
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
         lws_pat = re.compile(r'^([ ]*)')
 
         def find_indented_block(self, i, lines, m, p):
+            """Return j, the index of the line *after* the indented block."""
             lws = m.group(1)
             assert lws == '' or lws.isspace(), repr(lws)
             n1, n2 = g.getLine(p.b, i)
@@ -1274,50 +1273,67 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 assert m2
                 lws2 = m2.group(1)
                 if len(lws2) <= len(lws):
-                    g.printObj(lines[i:j])
-                    return j, lines ### To do ???
+                    break
                 j += 1
-            return len(lines), lines
+            return j
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
+        def_pat = re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\((.*?)\):(.*?)\n')
+
         def do_def(self, i, lines, m, p):
             """
             Handle a 'def' line and its indented block.
             
             Return the new i and the new lines.
             """
-            print(f"{'def':>5}: {lines[i].rstrip()}")
-            self.find_indented_block(i, lines, m, p)
-            return i + 1, lines
+            j = self.find_indented_block(i, lines, m, p)
+            lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
+            tail_s = f" # {tail}" if tail else ''
+            lines[i] = f"{lws}function {name} ({args}) {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
+        for_pat = re.compile(r'^([ ]*)for[ ]+(.*?):(.*?)\n')
+
         def do_for(self, i, lines, m, p):
             """
             Handle an 'for' line and its indented block.
             
             Return the new i and the new lines.
             """
-            print(f"{'for':>5}: {lines[i].rstrip()}")
-            self.find_indented_block(i, lines, m, p)
-            return i + 1, lines
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" # {tail}" if tail else ''
+            lines[i] = f"{lws}for ({cond}) {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
+        if_pat = re.compile(r'^([ ]*)if[ ]+(.*?):(.*?)\n')
+
         def do_if(self, i, lines, m, p):
             """
             Handle an 'if' line and its indented block.
             
             Return the new i and the new lines.
             """
-            print(f"{'if':>5}: {lines[i].rstrip()}")
-            self.find_indented_block(i, lines, m, p)
-            return i + 1, lines
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" # {tail}" if tail else ''
+            lines[i] = f"{lws}if ({cond}) {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
         #@+node:ekr.20211013141809.1: *6* py2ts.do_while
+        while_pat = re.compile(r'^([ ]*)while[ ]+(.*?):(.*?)\n')
+
         def do_while(self, i, lines, m, p):
             """
             Handle an 'while' line and its indented block.
             
             Return the new i and the new lines.
             """
-            print(f"{'while':>5}: {lines[i].rstrip()}")
-            self.find_indented_block(i, lines, m, p)
-            return i + 1, lines
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" # {tail}" if tail else ''
+            lines[i] = f"{lws}while ({cond}) {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+
         #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.
