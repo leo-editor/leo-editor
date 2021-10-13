@@ -1230,12 +1230,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
-        def_pat =   re.compile(r'^(\s*)def ([\w_]+)\s*\(.*?\):')
-        if_pat =    re.compile(r'^(\s*)if\s*(.*?):')
-
-        # for_pat =   r'for\s*(.*?)'
-        # while_pat = r'while\s*(.*?)'
-        # all_pats =  fr'^\s*({def_pat}|{for_pat}|{if_pat}|{while_pat}):(.*?)$'
+        def_pat =   re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\(.*?\):')
+        for_pat =   re.compile(r'^([ ]*)for[ ]+(.*?):')
+        if_pat =    re.compile(r'^([ ]*)if[ ]+(.*?):')
+        while_pat = re.compile(r'^([ ]*)while[ ]+(.*?):')
 
         def convert_body(self, p, target):
             """Convert p.b into target.b"""
@@ -1245,7 +1243,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines = g.splitLines(p.b)
             patterns = (
                 (self.def_pat, self.do_def),
+                (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
+                (self.while_pat, self.do_while),
             )
             while i < len(lines):  # lines changes in the loop.
                 progress = i
@@ -1276,7 +1276,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             Return the new i and the new lines.
             """
-            g.trace(lines[i].rstrip())
+            print(f"{'def':>5}: {lines[i].rstrip()}")
+            self.find_indented_block(i, lines, m, p)
+            return i + 1, lines
+        #@+node:ekr.20211013141725.1: *6* py2ts.do_for
+        def do_for(self, i, lines, m, p):
+            """
+            Handle an 'for' line and its indented block.
+            
+            Return the new i and the new lines.
+            """
+            print(f"{'for':>5}: {lines[i].rstrip()}")
             self.find_indented_block(i, lines, m, p)
             return i + 1, lines
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
@@ -1286,7 +1296,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             Return the new i and the new lines.
             """
-            g.trace(' ' + lines[i].rstrip())
+            print(f"{'if':>5}: {lines[i].rstrip()}")
+            self.find_indented_block(i, lines, m, p)
+            return i + 1, lines
+        #@+node:ekr.20211013141809.1: *6* py2ts.do_while
+        def do_while(self, i, lines, m, p):
+            """
+            Handle an 'while' line and its indented block.
+            
+            Return the new i and the new lines.
+            """
+            print(f"{'while':>5}: {lines[i].rstrip()}")
             self.find_indented_block(i, lines, m, p)
             return i + 1, lines
         #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
