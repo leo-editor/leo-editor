@@ -1197,6 +1197,27 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c = self.c
         Python_To_Coffeescript_Adapter(c).main()
         c.bodyWantsFocus()
+    #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript (New)
+    @cmd('python-to-typescript')
+    def pythonToTypescriptCommand(self, event):
+        """
+        The python-to-typescript command converts c or c++ text to python text.
+        The conversion is not perfect, but it eliminates a lot of tedious
+        text manipulation.
+        """
+        self.PythonToTypescript(self.c).convert()
+        self.c.bodyWantsFocus()
+    #@+node:ekr.20211013080132.2: *4* class PythonToTypeScript
+    class PythonToTypescript:
+        
+        def __init__(self, c):
+            self.c = c
+
+        #@+others
+        #@+node:ekr.20211013081549.1: *5* py2ts.convert
+        def convert(self):
+            g.trace()
+        #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
     def tsToPy(self, event):
