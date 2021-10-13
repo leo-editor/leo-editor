@@ -1201,11 +1201,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     @cmd('python-to-typescript')
     def pythonToTypescriptCommand(self, event):
         """
-        The python-to-typescript command converts c or c++ text to python text.
-        The conversion is not perfect, but it eliminates a lot of tedious
-        text manipulation.
+        The python-to-typescript command converts python to typescript text.
+        The conversion is not perfect, but it eliminates a lot of tedious text
+        manipulation.
         """
-        self.PythonToTypescript(self.c).convert()
+        c = self.c
+        self.PythonToTypescript(c).convert(c.p)
         self.c.bodyWantsFocus()
     #@+node:ekr.20211013080132.2: *4* class PythonToTypeScript
     class PythonToTypescript:
@@ -1219,9 +1220,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """
             The main line.
             
-            Convert c.p and all descendents a a child of a new last top-level node.
+            Convert p and all descendents as a child of a new last top-level node.
             """
-            ### To do.
+            c = self.c
+            # Create the parent node.
+            parent = c.lastTopLevel().insertAfter()
+            parent.h = p.h
+            # Convert p, and recursively all nodes.
+            self.convert_node(p, parent)
+        #@+node:ekr.20211013102209.1: *5* py2ts.convert_body (The hard part)
+        def convert_body(self, p, target):
+            """Convert p.b into target.b"""
+            # g.trace(p.h)
+        #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
+        def convert_node(self, p, parent):
+            # Create a copy of p as the last child of parent.
+            target = parent.insertAsLastChild()
+            target.h = p.h
+            # Convert p.b int child.b
+            self.convert_body(p, target)
+            # Recursively create all descendants.
+            for child in p.children():
+                self.convert_node(child, target)
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
