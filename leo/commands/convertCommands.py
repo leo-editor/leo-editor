@@ -1237,28 +1237,27 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def convert_body(self, p, target):
             """Convert p.b into target.b"""
-            print('')
+            print('') ###
             print(p.h)
-            i = 0
-            lines = g.splitLines(p.b)
             patterns = (
-
                 (self.def_pat, self.do_def),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
             )
-            while i < len(lines):  # lines changes in the loop.
-                progress = i
+            i = 0
+            lines = g.splitLines(p.b)
+            # The loop can change lines, but lines are scanned only once.
+            while i < len(lines):
                 line = lines[i]
                 for (pattern, handler) in patterns:
                     m = pattern.match(line)
                     if m:
-                        i, lines = handler(i, lines, m, p)
+                        handler(i, lines, m, p) # May change lines.
+                        i += 1
+                        break
                 else:
                     i += 1
-                assert progress < i
-          
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
         lws_pat = re.compile(r'^([ ]*)')
 
@@ -1279,8 +1278,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return j, lines ### To do ???
                 j += 1
             return len(lines), lines
-                
-            # print(lines[i].rstrip())
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def do_def(self, i, lines, m, p):
             """
