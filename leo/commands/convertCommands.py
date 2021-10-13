@@ -1197,7 +1197,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c = self.c
         Python_To_Coffeescript_Adapter(c).main()
         c.bodyWantsFocus()
-    #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript (New)
+    #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
     def pythonToTypescriptCommand(self, event):
         """
@@ -1215,8 +1215,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         #@+others
         #@+node:ekr.20211013081549.1: *5* py2ts.convert
-        def convert(self):
-            g.trace()
+        def convert(self, p):
+            """
+            The main line.
+            
+            Convert c.p and all descendents a a child of a new last top-level node.
+            """
+            ### To do.
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
