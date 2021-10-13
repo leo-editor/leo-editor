@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
 """Leo's beautification classes."""
+
+import sys
 import os
 import time
 # Third-party tools.
@@ -97,11 +99,12 @@ def blacken_files(event):
     c = event.get('c')
     if not c or not c.p:
         return
+    python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
         path = g.fullPath(c, root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f"&python -m black --skip-string-normalization {path}")
+            g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization "{path}"')
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
@@ -119,11 +122,12 @@ def blacken_files_diff(event):
     c = event.get('c')
     if not c or not c.p:
         return
+    python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
         path = g.fullPath(c, root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f"&python -m black --skip-string-normalization --diff {path}")
+            g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization --diff "{path}"')
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
