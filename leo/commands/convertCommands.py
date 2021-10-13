@@ -1242,6 +1242,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             i = 0
             lines = g.splitLines(p.b)
             patterns = (
+
                 (self.def_pat, self.do_def),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
@@ -1259,16 +1260,27 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 assert progress < i
           
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
+        lws_pat = re.compile(r'^([ ]*)')
+
         def find_indented_block(self, i, lines, m, p):
             lws = m.group(1)
-            ### s = lines[i]
-            ### lws = s[i: len(s)-len(s.lstrip())]
-            assert lws is not None
+            assert lws == '' or lws.isspace(), repr(lws)
             n1, n2 = g.getLine(p.b, i)
             assert n1 < n2 <= len(p.b)
-            # print(n1, n2, repr(lws), repr(p.b[n1:n2]))
-            
-            # print(' '*6, lines[i].rstrip())
+            # Scan for the first line with the same or less indentation.
+            j = i + 1
+            while j < len(lines):
+                line = lines[j]
+                m2 = self.lws_pat.match(line)
+                assert m2
+                lws2 = m2.group(1)
+                if len(lws2) <= len(lws):
+                    g.printObj(lines[i:j])
+                    return j, lines ### To do ???
+                j += 1
+            return len(lines), lines
+                
+            # print(lines[i].rstrip())
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def do_def(self, i, lines, m, p):
             """
