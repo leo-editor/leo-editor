@@ -1237,7 +1237,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             This is the heart of the algorithm.
             """
             patterns = (
-                (self.comment_pat, self.do_comment),
+                (self.comment_pat, self.do_comment),  # Should be first.
                 (self.docstring_pat, self.do_docstring),
                 (self.def_pat, self.do_def),
                 (self.for_pat, self.do_for),
