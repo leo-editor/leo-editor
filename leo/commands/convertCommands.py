@@ -1335,7 +1335,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     lines[i] = f"{lws} *\n"
                 i += 1
             return i
-        #@+node:ekr.20211014030113.1: *6* py2ts.do_except (todo)
+        #@+node:ekr.20211014030113.1: *6* py2ts.do_except
         except_pat = re.compile(r'^([ \t]*)except(.*?):(.*?)\n')
 
         def do_except(self, i, lines, m, p):
@@ -1424,7 +1424,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}while ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
-        #@+node:ekr.20211014022554.1: *6* py2ts.do_with (todo)
+        #@+node:ekr.20211014022554.1: *6* py2ts.do_with
+        with_pat = re.compile(r'^([ \t]*)with(.*?):(.*?)\n')
+
+        def do_with(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, clause, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            clause_s = f" ({clause}) " if clause else ''
+            lines[i] = f"{lws}with{clause_s}{{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211013172540.1: *6* py2ts.do_trailing_comment
         trailing_comment_pat = re.compile(r'^([ \t]*)(.*?)#(.*?)\n')
 
