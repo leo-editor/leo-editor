@@ -327,9 +327,9 @@ class CPrettyPrinter:
     def indent(self, p, toList=False, giveWarnings=True):
         """Beautify a node with @language C in effect."""
         if not should_beautify(p):
-            return None
+            return [] if toList else ''  # #2271
         if not p.b:
-            return None
+            return [] if toList else ''  # #2271
         self.p = p.copy()
         aList = self.tokenize(p.b)
         assert ''.join(aList) == p.b
@@ -339,9 +339,7 @@ class CPrettyPrinter:
         self.result = []
         for s in aList:
             self.put_token(s)
-        if toList:
-            return self.result
-        return ''.join(self.result)
+        return self.result if toList else ''.join(self.result)
     #@+node:ekr.20110918225821.6815: *4* add_statement_braces
     def add_statement_braces(self, s, giveWarnings=False):
         p = self.p
