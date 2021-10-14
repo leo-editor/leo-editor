@@ -1237,7 +1237,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             This is the heart of the algorithm.
             """
-            trace = False and g.unitTesting
             patterns = (
                 (self.comment_pat, self.do_comment),  # Should be first.
                 (self.class_pat, self.do_class),
@@ -1251,6 +1250,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.if_pat, self.do_if),
                 (self.try_pat, self.do_try),
                 (self.while_pat, self.do_while),
+                (self.with_pat, self.do_with),
                 (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
             )
             # The loop may change lines, but each line is scanned only once.
@@ -1267,7 +1267,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     i += 1
                 assert progress < i
-            if trace and lines != old_lines:
+            if False and g.unitTesting and lines != old_lines:
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())
