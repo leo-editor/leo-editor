@@ -1274,7 +1274,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Always set target.b!
             target.b = ''.join(lines).replace('@language python', '@language typescript')
             # Munge target.h.
-            target.h = target.h.replace('__init__', 'constructor').replace('ctor', 'constructor')
+            target.h = target.h.replace('__init__', 'constructor')
         #@+node:ekr.20211014023141.1: *6* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
 
@@ -1304,17 +1304,19 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 name = 'constructor'
             tail_s = f" // {tail}" if tail else ''
             # Use void as a placeholder type.
-            lines[i] = f"{lws}public {name} ({args}): void {{{tail_s}\n"
+            lines[i] = f"{lws}public {name}({args}): void {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211014031722.1: *7* py2ts.do_args
         types_d = {
             # Use the typescript type conventions, not mypy conventions.
+            # Happily, typescript can infer types when inited.
             'c': 'Commands',
             'gnx': 'string',
             'i': 'number',
             'j': 'number',
             'k': 'number',
+            'n': 'number',
             'p': 'Position',
             's': 'string',
             'v': 'VNode',
@@ -1323,8 +1325,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_args(self, args):
             result = []
             for arg in (z.strip() for z in args.split(',')):
-                val = self.types_d.get(arg)
-                result.append(f"{arg}: {val}" if val else arg)
+                # Omit the self arg.
+                if arg != 'self':
+                    val = self.types_d.get(arg)
+                    result.append(f"{arg}: {val}" if val else arg)
             return ', '.join(result)
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ \t]*)("""|\'\'\')(.*?)\n')
