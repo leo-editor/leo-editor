@@ -1267,6 +1267,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     print(z.rstrip())
             # Always set target.b!
             target.b = ''.join(lines).replace('@language python', '@language typescript')
+            # Munge target.h.
+            target.h = target.h.replace('__init__', 'constructor')
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
         comment_pat = re.compile(r'^([ ]*)#(.*?)\n')
 
@@ -1282,6 +1284,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """Handle a 'def' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
+            if name == '__init__':
+                name = 'constructor'
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}public {name} ({args}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
@@ -1369,7 +1373,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def find_indented_block(self, i, lines, m, p):
             """Return j, the index of the line *after* the indented block."""
-            # Scan for the first line with the same or less indentation.
+            # Scan for the first non-empty line with the same or less indentation.
             lws = m.group(1)
             j = i + 1
             while j < len(lines):
