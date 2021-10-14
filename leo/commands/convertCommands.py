@@ -1243,6 +1243,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.docstring_pat, self.do_docstring),
                 (self.def_pat, self.do_def),
                 (self.elif_pat, self.do_elif),
+                (self.else_pat, self.do_else),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
@@ -1355,7 +1356,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for n in range(i + 1, j):
                 lines[n] = indent + lines[n]
             return i + 1  # Rescan.
-        #@+node:ekr.20211014022445.1: *6* py2ts.do_else (todo)
+        #@+node:ekr.20211014022445.1: *6* py2ts.do_else
+        else_pat = re.compile(r'^([ \t]*)else:(.*?)\n')
+
+        def do_else(self, i, lines, m, p):
+            """Handle an 'for' line and its indented block."""
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}else {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211014022453.1: *6* py2ts.do_finally (todo)
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
         if_pat = re.compile(r'^([ \t]*)if[ \t]+(.*?):(.*?)\n')
