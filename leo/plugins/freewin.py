@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Date: 1 Aug 2021
-:Version: 1.7
+:Version: 1.71
+:Date: 13 Oct 2021
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -209,7 +209,7 @@ Leo themes.
 
 #@-<< docstring >>
 """
-
+# This file hangs pylint.
 #@+<< imports >>
 #@+node:tom.20210527153415.1: ** << imports >>
 from os.path import exists, join as osp_join
@@ -324,27 +324,27 @@ instances = {}
 
 #@+others
 #@+node:tom.20210709130401.1: *3* Fonts and Text
-ENCODING='utf-8'
+ENCODING = 'utf-8'
 
 ZOOM_FACTOR = 1.1
 
-F7_KEY = 0x01000036 # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
+F7_KEY = 0x01000036  # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
 F9_KEY = 0x01000038
 KEY_S = 0x53
 
-GNXre = r'^(.+\.\d+\.\d+)' # For gnx at start of line
-GNX1re = r'.*[([\s](\w+\.\d+\.\d+)' # For gnx not at start of line
+GNXre = r'^(.+\.\d+\.\d+)'  # For gnx at start of line
+GNX1re = r'.*[([\s](\w+\.\d+\.\d+)'  # For gnx not at start of line
 
 GNX = re.compile(GNXre)
 GNX1 = re.compile(GNX1re)
 
-fs = EDITOR_FONT_SIZE.split('pt')[0]
+fs = EDITOR_FONT_SIZE.split('pt', 1)[0]
 qf = QFont(FONT_FAMILY[0], int(fs))
-qfont = QFontInfo(qf) # Uses actual font if different
+qfont = QFontInfo(qf)  # Uses actual font if different
 FM = QFontMetrics(qf)
 
-TABWIDTH = 36 # Best guess but may not alays be right.
-TAB2SPACES = 4 # Tab replacement when writing back to host node
+TABWIDTH = 36  # Best guess but may not alays be right.
+TAB2SPACES = 4  # Tab replacement when writing back to host node
 #@-others
 
 #@-<< declarations >>
@@ -493,8 +493,8 @@ RST_STYLESHEET_LIGHT = '''body {
 
 #@+others
 #@+node:ekr.20210617074439.1: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     return True
 #@+node:tom.20210527153848.1: ** z-commands
 @g.command('z-open-freewin')
@@ -595,7 +595,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         # The rendering pane can be either a QWebView or a QTextEdit
         # depending on the features desired
-        if not QWebView: # Until Qt6 has a QWebEngineView, force QTextEdit
+        if not QWebView:  # Until Qt6 has a QWebEngineView, force QTextEdit
             self.render_pane_type = NAV_VIEW
         if self.render_pane_type == NAV_VIEW:
             self.render_widget = QTextEdit
@@ -678,11 +678,11 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@-<<set up editor>>
         #@+<<set up render button>>
         #@+node:tom.20210602173354.1: *4* <<set up render button>>
-        self.render_button  = QPushButton("Rendered <--> Plain")
+        self.render_button = QPushButton("Rendered <--> Plain")
         self.render_button.clicked.connect(self.switch_and_render)
 
         b_style = RENDER_BTN_STYLESHEET_DARK if is_dark \
-                  else RENDER_BTN_STYLESHEET_LIGHT
+            else RENDER_BTN_STYLESHEET_LIGHT
         self.render_button.setStyleSheet(b_style)
         #@-<<set up render button>>
 
@@ -767,7 +767,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 self.teardown(tag)
                 return
 
-        if self.switching: return
+        if self.switching:
+            return
 
         if self.doc.isModified():
             self.current_text = self.doc.toPlainText()
@@ -805,7 +806,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.browser.deleteLater()
         self.stacked_widget.deleteLater()
         self.central_widget.deleteLater()
-        instances[id_] = None # Not sure if we need this
+        instances[id_] = None  # Not sure if we need this
         del instances[id_]
         self.deleteLater()
     #@+node:tom.20210619000302.1: *3* keyPressEvent
@@ -830,8 +831,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
             elif keyval == F7_KEY:
                 # Copy our gnx to clipboard.
                 copy2clip(self.p.v.gnx)
-            elif  self.render_pane_type == NAV_VIEW \
-                   or self.render_kind == EDITOR:
+            elif self.render_pane_type == NAV_VIEW \
+                    or self.render_kind == EDITOR:
                 # change host's selected node to new target
                 if keyval == F9_KEY:
                     gnx = getGnx(getLine(w))
@@ -891,12 +892,12 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         # Call docutils to get the html rendering.
         _html = ''
-        args = {'output_encoding': 'unicode', # return a string, not a byte array
+        args = {'output_encoding': 'unicode',  # return a string, not a byte array
                 'report_level' : RST_NO_WARNINGS,
                }
 
         if self.rst_stylesheet:
-            args['stylesheet_path'] = None # omit stylesheet, we will insert one
+            args['stylesheet_path'] = None  # omit stylesheet, we will insert one
 
         try:
             _html = publish_string(text, writer_name='html',
@@ -905,7 +906,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
                 _html = f'RsT error:\n{msg}\n\n{text}'
-
 
         # Insert stylesheet if our rendering view is a web browser widget
         if self.render_pane_type == BROWSER_VIEW:
