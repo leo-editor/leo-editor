@@ -51,7 +51,6 @@ class TestPythonToTypeScript(LeoUnitTest):
                 g.printObj(p.b, tag=p.h)
     #@+node:ekr.20211013085659.1: *3* test_py2ts.test_convert_position_class
     def test_convert_position_class(self):
-        g.cls() ###
         # Convert a copy of the Position class
         self.x.convert(self.p)
         # self.dump_tree(self.c.lastTopLevel())
