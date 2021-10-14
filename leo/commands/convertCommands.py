@@ -1203,6 +1203,18 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
         manipulation.
+        
+        To use, select any @<file> node and execute python-to-typescript. The
+        command creates (safe!) results in the last top-level node of the
+        outline.
+
+        The command attempts no type analysis. It uses "void" as the type of
+        all functions and methods. However, the script will annotate
+        function/method arguments:
+
+        @data python-to-typescript-types in leoSettings.leo contains a list of
+        key/value pairs. Keys are argument names (as used in Leo); values are
+        typescript type names.
         """
         c = self.c
         self.PythonToTypescript(c).convert(c.p)
@@ -1232,7 +1244,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """
             The main line.
             
-            Convert p and all descendents as a child of a new last top-level node.
+            Convert p and all descendants as a child of a new last top-level node.
             """
             c = self.c
             # Create the parent node.
