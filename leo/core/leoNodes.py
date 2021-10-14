@@ -28,10 +28,8 @@ class NodeIndices:
         """Ctor for NodeIndices class."""
         self.defaultId = id_
         self.lastIndex = 0
-        self.stack: List[Cmdr] = []
-            # A stack of open commanders.
-        self.timeString = ''
-            # Set by setTimeStamp.
+        self.stack: List[Cmdr] = []  # A stack of open commanders.
+        self.timeString = ''  # Set by setTimeStamp.
         self.userId = id_
         # Assign the initial timestamp.
         self.setTimeStamp()
@@ -2013,7 +2011,7 @@ class VNode:
     #@-<< VNode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
-    #@+node:ekr.20031218072017.3344: *4* v.__init
+    #@+node:ekr.20031218072017.3344: *4* v.__init__
     def __init__(self, context, gnx=None):
         """
         Ctor for the VNode class.

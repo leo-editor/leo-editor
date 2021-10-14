@@ -192,6 +192,12 @@ def test_checker_commands(event=None):
 def test_colorizer(event=None):
     """Run all unit tests for leoColorizer.py."""
     g.run_unit_tests('leo.unittests.core.test_leoColorizer.TestColorizer')
+#@+node:ekr.20211013080906.1: *3* test-convert
+@g.command('test-convert')
+def test_convert(event=None):
+    """Run all unit tests for leo/commands/leoConvertCommands.py."""
+    g.run_unit_tests('leo.unittests.commands.test_convertCommands')
+        #.TestPythonToTypeScript')
 #@+node:ekr.20210907103024.18: *3* test-commands
 @g.command('test-commands')
 def test_commands(event=None):

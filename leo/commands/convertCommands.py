@@ -1197,6 +1197,320 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c = self.c
         Python_To_Coffeescript_Adapter(c).main()
         c.bodyWantsFocus()
+    #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
+    @cmd('python-to-typescript')
+    def pythonToTypescriptCommand(self, event):
+        """
+        The python-to-typescript command converts python to typescript text.
+        The conversion is not perfect, but it eliminates a lot of tedious text
+        manipulation.
+        """
+        c = self.c
+        self.PythonToTypescript(c).convert(c.p)
+        self.c.bodyWantsFocus()
+    #@+node:ekr.20211013080132.2: *4* class PythonToTypescript
+    #@@nobeautify
+    class PythonToTypescript:
+
+        # Keys are argument names. Values are typescript types.
+        # Typescript can infer types of initialized kwargs.
+        types_d = {}
+
+        def __init__(self, c):
+            self.c = c
+            data = c.config.getData('python-to-typescript-types') or []
+            for line in data:
+                try:
+                    key, value = line.split(',')
+                    self.types_d [key.strip()] = value.strip()
+                except Exception:
+                    g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
+                    g.es_print(repr(line))
+
+        #@+others
+        #@+node:ekr.20211013081549.1: *5* py2ts.convert
+        def convert(self, p):
+            """
+            The main line.
+            
+            Convert p and all descendents as a child of a new last top-level node.
+            """
+            c = self.c
+            # Create the parent node.
+            parent = c.lastTopLevel().insertAfter()
+            parent.h = p.h.replace('@', 'converted ')
+            parent.b = '@language typescript\n'
+            # Convert p, and recursively all nodes.
+            self.convert_node(p, parent)
+        #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
+        patterns = []
+
+        def convert_body(self, p, target):
+            """
+            Convert p.b into target.b.
+            
+            This is the heart of the algorithm.
+            """
+            # Calculate this table only once.
+            if not self.patterns:
+                self.patterns = (
+                    (self.comment_pat, self.do_comment),  # Should be first.
+                    (self.docstring_pat, self.do_docstring),  # Should be second.
+                    (self.class_pat, self.do_class),
+                    (self.def_pat, self.do_def),
+                    (self.elif_pat, self.do_elif),
+                    (self.else_pat, self.do_else),
+                    (self.except_pat, self.do_except),
+                    (self.finally_pat, self.do_finally),
+                    (self.for_pat, self.do_for),
+                    (self.if_pat, self.do_if),
+                    (self.try_pat, self.do_try),
+                    (self.while_pat, self.do_while),
+                    (self.with_pat, self.do_with),
+                    (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
+                )
+            # The loop may change lines, but each line is scanned only once.
+            i, lines = 0, g.splitLines(p.b)
+            old_lines = lines[:]
+            while i < len(lines):
+                progress = i
+                line = lines[i]
+                for (pattern, handler) in self.patterns:
+                    m = pattern.match(line)
+                    if m:
+                        i = handler(i, lines, m, p) # May change lines.
+                        break
+                else:
+                    i += 1
+                assert progress < i
+            if False and g.unitTesting and lines != old_lines:
+                print(f"\nchanged {p.h}:\n")
+                for z in lines:
+                    print(z.rstrip())
+            # Always set target.b!
+            target.b = ''.join(lines).replace('@language python', '@language typescript')
+            # Munge target.h.
+            target.h = target.h.replace('__init__', 'constructor')
+        #@+node:ekr.20211014031722.1: *6* py2ts.do_args
+
+        def do_args(self, args):
+            """Add type annotations and remove the 'self' argument."""
+            result = []
+            for arg in (z.strip() for z in args.split(',')):
+                # Omit the self arg.
+                if arg != 'self':
+                    val = self.types_d.get(arg)
+                    result.append(f"{arg}: {val}" if val else arg)
+            return ', '.join(result)
+        #@+node:ekr.20211014023141.1: *6* py2ts.do_class
+        class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
+
+        def do_class(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}class{base} {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
+        comment_pat = re.compile(r'^([ \t]*)#(.*?)\n')
+
+        def do_comment(self, i, lines, m, p):
+            """Handle a stand-alone comment line."""
+            lws, comment = m.group(1), m.group(2).strip()
+            lines[i] = f"{lws}/* {comment} */\n"
+            return i + 1  # Advance.
+        #@+node:ekr.20211013130041.1: *6* py2ts.do_def
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
+
+        def do_def(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
+            args = self.do_args(args)
+            if name == '__init__':
+                name = 'constructor'
+            tail_s = f" // {tail}" if tail else ''
+            # Use void as a placeholder type.
+            lines[i] = f"{lws}public {name}({args}): void {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
+        docstring_pat = re.compile(r'^([ \t]*)("""|\'\'\')(.*?)\n')
+
+        def do_docstring(self, i, lines, m, p):
+            lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
+            tail = docstring.replace(delim,'').strip()
+            if delim in docstring:
+                lines[i] = f"{lws}/* {tail} */\n"
+                return i + 1 # Advance.
+            lines[i] = f"{lws}/** {tail}\n"
+            i += 1
+            while i < len(lines):
+                line = lines[i]
+                # Buglet: ignores whatever might follow.
+                tail = line.replace(delim,'').strip()
+                # pylint: disable=no-else-return
+                if delim in line:
+                    if tail:
+                        lines[i] = f"{lws} * {tail}\n"
+                        lines.insert(i + 1, f"{lws} */\n")
+                        return i + 2  # Advance.
+                    else:
+                        lines[i] = f"{lws} */\n"
+                        return i + 1  # Advance
+                elif tail:
+                    lines[i] = f"{lws} * {tail}\n"
+                else:
+                    lines[i] = f"{lws} *\n"
+                i += 1
+            return i
+        #@+node:ekr.20211014030113.1: *6* py2ts.do_except
+        except_pat = re.compile(r'^([ \t]*)except(.*?):(.*?)\n')
+
+        def do_except(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, error, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            error_s = f" ({error}) " if error else ''
+            lines[i] = f"{lws}except{error_s}{{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211013141725.1: *6* py2ts.do_for
+        for_pat = re.compile(r'^([ \t]*)for[ \t]+(.*?):(.*?)\n')
+
+        def do_for(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211014022432.1: *6* py2ts.do_elif
+        elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
+
+        def do_elif(self, i, lines, m, p):
+            indent = ' '*4
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
+            tail_s = f" // {tail}" if tail else ''
+            line1 = f"{lws}else {{\n"
+            line2 = f"{lws}{indent}if {cond_s} {{{tail_s}\n"
+            lines[i] = line1 + line2
+            tail1 = f"{indent}{lws}}}\n"
+            tail2 = f"{lws}}}\n"
+            lines.insert(j, tail1 + tail2)
+            # Indent the indented block.
+            for n in range(i + 1, j):
+                lines[n] = indent + lines[n]
+            return i + 1  # Rescan.
+        #@+node:ekr.20211014022445.1: *6* py2ts.do_else
+        else_pat = re.compile(r'^([ \t]*)else:(.*?)\n')
+
+        def do_else(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}else {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211014022453.1: *6* py2ts.do_finally
+        finally_pat = re.compile(r'^([ \t]*)finally:(.*?)\n')
+
+        def do_finally(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}finally {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211013131016.1: *6* py2ts.do_if
+        if_pat = re.compile(r'^([ \t]*)if[ \t]+(.*?):(.*?)\n')
+
+        def do_if(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211014022506.1: *6* py2ts.do_try
+        try_pat = re.compile(r'^([ \t]*)try:(.*?)\n')
+
+        def do_try(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}try {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211013141809.1: *6* py2ts.do_while
+        while_pat = re.compile(r'^([ \t]*)while[ \t]+(.*?):(.*?)\n')
+
+        def do_while(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211014022554.1: *6* py2ts.do_with
+        with_pat = re.compile(r'^([ \t]*)with(.*?):(.*?)\n')
+
+        def do_with(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, clause, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            clause_s = f" ({clause}) " if clause else ''
+            lines[i] = f"{lws}with{clause_s}{{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211013172540.1: *6* py2ts.do_trailing_comment
+        trailing_comment_pat = re.compile(r'^([ \t]*)(.*?)#(.*?)\n')
+
+        def do_trailing_comment(self, i, lines, m, p):
+            """
+            Handle a trailing comment line.
+            
+            All other patterns have already been scanned on the line.
+            """
+            lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
+            lines[i] = f"{lws}{statement}  /* {trailing_comment} */\n"
+            return i + 1  # Advance.
+        #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
+        lws_pat = re.compile(r'^([ \t]*)')
+
+        def find_indented_block(self, i, lines, m, p):
+            """Return j, the index of the line *after* the indented block."""
+            # Scan for the first non-empty line with the same or less indentation.
+            lws = m.group(1)
+            j = i + 1
+            while j < len(lines):
+                line = lines[j]
+                m2 = self.lws_pat.match(line)
+                lws2 = m2.group(1)
+                if line.strip() and len(lws2) <= len(lws):
+                    # Don't add a blank line at the end of a block.
+                    if j > 1 and not lines[j - 1].strip():
+                        j -= 1
+                    break
+                j += 1
+            return j
+
+        #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
+        def convert_node(self, p, parent):
+            # Create a copy of p as the last child of parent.
+            target = parent.insertAsLastChild()
+            target.h = p.h.replace('@', '')
+            # Convert p.b int child.b
+            self.convert_body(p, target)
+            # Recursively create all descendants.
+            for child in p.children():
+                self.convert_node(child, target)
+        #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
     def tsToPy(self, event):
