@@ -1245,6 +1245,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.def_pat, self.do_def),
                 (self.elif_pat, self.do_elif),
                 (self.else_pat, self.do_else),
+                (self.except_pat, self.do_except),
                 (self.finally_pat, self.do_finally),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
@@ -1335,6 +1336,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 1
             return i
         #@+node:ekr.20211014030113.1: *6* py2ts.do_except (todo)
+        except_pat = re.compile(r'^([ \t]*)except(.*?):(.*?)\n')
+
+        def do_except(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, error, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            error_s = f" ({error}) " if error else ''
+            lines[i] = f"{lws}except{error_s}{{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
         for_pat = re.compile(r'^([ \t]*)for[ \t]+(.*?):(.*?)\n')
 
