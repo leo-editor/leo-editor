@@ -1220,8 +1220,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.c = c
             data = c.config.getData('python-to-typescript-types') or []
             for line in data:
-                key, value = line.split(',')
-                self.types_d [key.strip()] = value.strip()
+                try:
+                    key, value = line.split(',')
+                    self.types_d [key.strip()] = value.strip()
+                except Exception:
+                    g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
+                    g.es_print(repr(line))
 
         #@+others
         #@+node:ekr.20211013081549.1: *5* py2ts.convert
