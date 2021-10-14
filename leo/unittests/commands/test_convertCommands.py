@@ -53,7 +53,6 @@ class TestPythonToTypeScript(LeoUnitTest):
     def test_convert_position_class(self):
         # Convert a copy of the Position class
         self.x.convert(self.p)
-        # self.dump_tree(self.c.lastTopLevel())
     #@-others
 #@-others
 
