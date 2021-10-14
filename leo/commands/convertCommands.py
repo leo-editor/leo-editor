@@ -1212,8 +1212,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@@nobeautify
     class PythonToTypescript:
 
+        # Keys are argument names. Values are typescript types.
+        # Typescript can infer types of initialized kwargs.
+        types_d = {}
+
         def __init__(self, c):
             self.c = c
+            data = c.config.getData('python-to-typescript-types') or []
+            for line in data:
+                key, value = line.split(',')
+                self.types_d [key.strip()] = value.strip()
 
         #@+others
         #@+node:ekr.20211013081549.1: *5* py2ts.convert
@@ -1231,35 +1239,39 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
+        patterns = []
+
         def convert_body(self, p, target):
             """
             Convert p.b into target.b.
             
             This is the heart of the algorithm.
             """
-            patterns = (
-                (self.comment_pat, self.do_comment),  # Should be first.
-                (self.class_pat, self.do_class),
-                (self.docstring_pat, self.do_docstring),
-                (self.def_pat, self.do_def),
-                (self.elif_pat, self.do_elif),
-                (self.else_pat, self.do_else),
-                (self.except_pat, self.do_except),
-                (self.finally_pat, self.do_finally),
-                (self.for_pat, self.do_for),
-                (self.if_pat, self.do_if),
-                (self.try_pat, self.do_try),
-                (self.while_pat, self.do_while),
-                (self.with_pat, self.do_with),
-                (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
-            )
+            # Calculate this table only once.
+            if not self.patterns:
+                self.patterns = (
+                    (self.comment_pat, self.do_comment),  # Should be first.
+                    (self.docstring_pat, self.do_docstring),  # Should be second.
+                    (self.class_pat, self.do_class),
+                    (self.def_pat, self.do_def),
+                    (self.elif_pat, self.do_elif),
+                    (self.else_pat, self.do_else),
+                    (self.except_pat, self.do_except),
+                    (self.finally_pat, self.do_finally),
+                    (self.for_pat, self.do_for),
+                    (self.if_pat, self.do_if),
+                    (self.try_pat, self.do_try),
+                    (self.while_pat, self.do_while),
+                    (self.with_pat, self.do_with),
+                    (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
+                )
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, g.splitLines(p.b)
             old_lines = lines[:]
             while i < len(lines):
                 progress = i
                 line = lines[i]
-                for (pattern, handler) in patterns:
+                for (pattern, handler) in self.patterns:
                     m = pattern.match(line)
                     if m:
                         i = handler(i, lines, m, p) # May change lines.
@@ -1275,6 +1287,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             target.b = ''.join(lines).replace('@language python', '@language typescript')
             # Munge target.h.
             target.h = target.h.replace('__init__', 'constructor')
+        #@+node:ekr.20211014031722.1: *6* py2ts.do_args
+
+        def do_args(self, args):
+            """Add type annotations and remove the 'self' argument."""
+            result = []
+            for arg in (z.strip() for z in args.split(',')):
+                # Omit the self arg.
+                if arg != 'self':
+                    val = self.types_d.get(arg)
+                    result.append(f"{arg}: {val}" if val else arg)
+            return ', '.join(result)
         #@+node:ekr.20211014023141.1: *6* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
 
@@ -1293,7 +1316,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, comment = m.group(1), m.group(2).strip()
             lines[i] = f"{lws}/* {comment} */\n"
             return i + 1  # Advance.
-        #@+node:ekr.20211013130041.1: *6* py2ts.do_def & helper
+        #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
 
         def do_def(self, i, lines, m, p):
@@ -1307,30 +1330,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}public {name}({args}): void {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
-        #@+node:ekr.20211014031722.1: *7* py2ts.do_args
-        types_d = {
-            # Use the typescript type conventions, not mypy conventions.
-            # Happily, typescript can infer types when inited.
-            'c': 'Commands',
-            'gnx': 'string',
-            'i': 'number',
-            'j': 'number',
-            'k': 'number',
-            'n': 'number',
-            'p': 'Position',
-            's': 'string',
-            'v': 'VNode',
-        }
-
-        def do_args(self, args):
-            """Add type annotations and remove the 'self' argument."""
-            result = []
-            for arg in (z.strip() for z in args.split(',')):
-                # Omit the self arg.
-                if arg != 'self':
-                    val = self.types_d.get(arg)
-                    result.append(f"{arg}: {val}" if val else arg)
-            return ', '.join(result)
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ \t]*)("""|\'\'\')(.*?)\n')
 

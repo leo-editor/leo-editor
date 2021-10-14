@@ -546,6 +546,7 @@
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20210530064911.1"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530064922.1"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20211014064402.1"><vh>@data python-to-typescript-types</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
@@ -11667,6 +11668,18 @@ Relative paths are resolved starting from the location of the file being checked
 <t tx="ekr.20210901110017.1">True: search for definitions starting from the last node of the ouline.</t>
 <t tx="ekr.20210914081311.1"></t>
 <t tx="ekr.20210914081428.1"></t>
+<t tx="ekr.20211014064402.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+c, Commands
+ch, character
+gnx, string
+d, dictionary
+i, number
+j, number
+k, number
+n, number
+p, Position
+s, string
+v, VNode</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
