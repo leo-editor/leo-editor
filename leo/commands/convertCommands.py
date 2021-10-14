@@ -1226,7 +1226,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             c = self.c
             # Create the parent node.
             parent = c.lastTopLevel().insertAfter()
-            parent.h = p.h
+            parent.h = p.h.replace('@', 'converted ')
+            parent.b = '@language typescript\n'
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
@@ -1260,16 +1261,18 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += 1
                 assert progress < i
             if lines != old_lines:
-                print(f"\nchanged {p.h}:\n")
-                for z in lines:
-                    print(z.rstrip())
+                if g.unitTesting:
+                    print(f"\nchanged {p.h}:\n")
+                    for z in lines:
+                        print(z.rstrip())
+                target.b = ''.join(lines).replace('@language python', '@language typescript')
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
         comment_pat = re.compile(r'^([ ]*)#(.*?)\n')
 
         def do_comment(self, i, lines, m, p):
             """Handle a stand-alone comment line."""
             lws, comment = m.group(1), m.group(2).strip()
-            lines[i] = f"{lws}// {comment}\n"
+            lines[i] = f"{lws}/* {comment} */\n"
             return i + 1  # Advance.
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\((.*?)\):(.*?)\n')
@@ -1287,19 +1290,31 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_docstring(self, i, lines, m, p):
             """Handle a stand-alone comment line."""
+            # if 'getNewIndex' in p.h:
+                # g.pdb()
             lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
             tail = docstring.replace(delim,'').strip()
-            lines[i] = f"{lws}/// {tail}\n"
             if delim in docstring:
+                lines[i] = f"{lws}/* {tail} */\n"
                 return i + 1 # Advance.
+            lines[i] = f"{lws}/** {tail}\n"
             i += 1
             while i < len(lines):
                 line = lines[i]
                 # Buglet: ignores whatever might follow.
                 tail = line.replace(delim,'').strip()
-                lines[i] = f"{lws}/// {tail}\n"
                 if delim in line:
-                    return i + 1  # Advance
+                    if tail:
+                        lines[i] = f"{lws} * {tail}\n"
+                        lines.insert(i + 1, f"{lws} */\n")
+                        return i + 2  # Advance.
+                    else:
+                        lines[i] = f"{lws} */\n"
+                        return i + 1  # Advance
+                elif tail:
+                    lines[i] = f"{lws} * {tail}\n"
+                else:
+                    lines[i] = f"{lws} *\n"
                 i += 1
             return i
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
@@ -1334,7 +1349,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             All other patterns have already been scanned on the line.
             """
             lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
-            lines[i] = f"{lws}{statement}  // {trailing_comment}\n"
+            lines[i] = f"{lws}{statement}  /* {trailing_comment} */\n"
             return i + 1  # Advance.
         #@+node:ekr.20211013141809.1: *6* py2ts.do_while
         while_pat = re.compile(r'^([ ]*)while[ ]+(.*?):(.*?)\n')
@@ -1368,7 +1383,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.
             target = parent.insertAsLastChild()
-            target.h = p.h
+            target.h = p.h.replace('@', '')
             # Convert p.b int child.b
             self.convert_body(p, target)
             # Recursively create all descendants.
