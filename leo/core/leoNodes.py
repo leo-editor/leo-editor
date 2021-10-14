@@ -2011,7 +2011,7 @@ class VNode:
     #@-<< VNode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
-    #@+node:ekr.20031218072017.3344: *4* v.__init
+    #@+node:ekr.20031218072017.3344: *4* v.__init__
     def __init__(self, context, gnx=None):
         """
         Ctor for the VNode class.
