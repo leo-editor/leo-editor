@@ -4,12 +4,8 @@
 #@@first
 """Tests of leo.commands.leoConvertCommands."""
 import os
-import re
-### import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
-assert re  ###
-assert g ###
 
 #@+others
 #@+node:ekr.20211013081200.1: ** class TestPythonToTypeScript(LeoUnitTest):
