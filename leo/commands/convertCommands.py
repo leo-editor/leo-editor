@@ -1242,6 +1242,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.comment_pat, self.do_comment),  # Should be first.
                 (self.docstring_pat, self.do_docstring),
                 (self.def_pat, self.do_def),
+                (self.elif_pat, self.do_elif),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
@@ -1268,9 +1269,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Always set target.b!
             target.b = ''.join(lines).replace('@language python', '@language typescript')
             # Munge target.h.
-            target.h = target.h.replace('__init__', 'constructor')
+            target.h = target.h.replace('__init__', 'constructor').replace('ctor', 'constructor')
+        #@+node:ekr.20211014023141.1: *6* py2ts.do_class (todo)
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
-        comment_pat = re.compile(r'^([ ]*)#(.*?)\n')
+        comment_pat = re.compile(r'^([ \t]*)#(.*?)\n')
 
         def do_comment(self, i, lines, m, p):
             """Handle a stand-alone comment line."""
@@ -1278,7 +1280,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}/* {comment} */\n"
             return i + 1  # Advance.
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
-        def_pat = re.compile(r'^([ ]*)def[ ]+([\w_]+)\s*\((.*?)\):(.*?)\n')
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
 
         def do_def(self, i, lines, m, p):
             """Handle a 'def' line and its indented block."""
@@ -1291,7 +1293,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
-        docstring_pat = re.compile(r'^([ ]*)("""|\'\'\')(.*?)\n')
+        docstring_pat = re.compile(r'^([ \t]*)("""|\'\'\')(.*?)\n')
 
         def do_docstring(self, i, lines, m, p):
             """Handle a stand-alone comment line."""
@@ -1324,7 +1326,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 1
             return i
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
-        for_pat = re.compile(r'^([ ]*)for[ ]+(.*?):(.*?)\n')
+        for_pat = re.compile(r'^([ \t]*)for[ \t]+(.*?):(.*?)\n')
 
         def do_for(self, i, lines, m, p):
             """Handle an 'for' line and its indented block."""
@@ -1334,8 +1336,29 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}for ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
+        #@+node:ekr.20211014022432.1: *6* py2ts.do_elif
+        elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
+
+        def do_elif(self, i, lines, m, p):
+            """Handle an 'elif' line and its indented block."""
+            indent = ' '*4
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            line1 = f"{lws}else {{\n"
+            line2 = f"{lws}{indent}if ({cond}) {{{tail_s}\n"
+            lines[i] = line1 + line2
+            tail1 = f"{indent}{lws}}}\n"
+            tail2 = f"{lws}}}\n"
+            lines.insert(j, tail1 + tail2)
+            # Indent the indented block.
+            for n in range(i + 1, j):
+                lines[n] = indent + lines[n]
+            return i + 1  # Rescan.
+        #@+node:ekr.20211014022445.1: *6* py2ts.do_else (todo)
+        #@+node:ekr.20211014022453.1: *6* py2ts.do_finally (todo)
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
-        if_pat = re.compile(r'^([ ]*)if[ ]+(.*?):(.*?)\n')
+        if_pat = re.compile(r'^([ \t]*)if[ \t]+(.*?):(.*?)\n')
 
         def do_if(self, i, lines, m, p):
             """Handle an 'if' line and its indented block."""
@@ -1345,8 +1368,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}if ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
+        #@+node:ekr.20211014022506.1: *6* py2ts.do_try (todo)
+        #@+node:ekr.20211013141809.1: *6* py2ts.do_while
+        while_pat = re.compile(r'^([ \t]*)while[ \t]+(.*?):(.*?)\n')
+
+        def do_while(self, i, lines, m, p):
+            """Handle a 'while' line and its indented block."""
+            j = self.find_indented_block(i, lines, m, p)
+            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}while ({cond}) {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
+        #@+node:ekr.20211014022554.1: *6* py2ts.do_with (todo)
         #@+node:ekr.20211013172540.1: *6* py2ts.do_trailing_comment
-        trailing_comment_pat = re.compile(r'^([ ]*)(.*?)#(.*?)\n')
+        trailing_comment_pat = re.compile(r'^([ \t]*)(.*?)#(.*?)\n')
 
         def do_trailing_comment(self, i, lines, m, p):
             """
@@ -1357,19 +1393,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
             lines[i] = f"{lws}{statement}  /* {trailing_comment} */\n"
             return i + 1  # Advance.
-        #@+node:ekr.20211013141809.1: *6* py2ts.do_while
-        while_pat = re.compile(r'^([ ]*)while[ ]+(.*?):(.*?)\n')
-
-        def do_while(self, i, lines, m, p):
-            """Handle a 'while' line and its indented block."""
-            j = self.find_indented_block(i, lines, m, p)
-            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-            tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}while ({cond}) {{{tail_s}\n"
-            lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Rescan.
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
-        lws_pat = re.compile(r'^([ ]*)')
+        lws_pat = re.compile(r'^([ \t]*)')
 
         def find_indented_block(self, i, lines, m, p):
             """Return j, the index of the line *after* the indented block."""
