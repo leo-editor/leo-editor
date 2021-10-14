@@ -1242,6 +1242,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             parent.b = '@language typescript\n'
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
+            c.redraw()
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
         patterns = []
 
