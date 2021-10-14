@@ -1245,6 +1245,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.def_pat, self.do_def),
                 (self.elif_pat, self.do_elif),
                 (self.else_pat, self.do_else),
+                (self.finally_pat, self.do_finally),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
                 (self.while_pat, self.do_while),
@@ -1276,7 +1277,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
 
         def do_class(self, i, lines, m, p):
-            """Handle an 'for' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             tail_s = f" // {tail}" if tail else ''
@@ -1295,7 +1295,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
 
         def do_def(self, i, lines, m, p):
-            """Handle a 'def' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
             if name == '__init__':
@@ -1308,9 +1307,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         docstring_pat = re.compile(r'^([ \t]*)("""|\'\'\')(.*?)\n')
 
         def do_docstring(self, i, lines, m, p):
-            """Handle a stand-alone comment line."""
-            # if 'getNewIndex' in p.h:
-                # g.pdb()
             lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
             tail = docstring.replace(delim,'').strip()
             if delim in docstring:
@@ -1341,7 +1337,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         for_pat = re.compile(r'^([ \t]*)for[ \t]+(.*?):(.*?)\n')
 
         def do_for(self, i, lines, m, p):
-            """Handle an 'for' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             tail_s = f" // {tail}" if tail else ''
@@ -1352,7 +1347,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
 
         def do_elif(self, i, lines, m, p):
-            """Handle an 'elif' line and its indented block."""
             indent = ' '*4
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
@@ -1371,19 +1365,26 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         else_pat = re.compile(r'^([ \t]*)else:(.*?)\n')
 
         def do_else(self, i, lines, m, p):
-            """Handle an 'for' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, tail = m.group(1), m.group(2).strip()
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}else {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
-        #@+node:ekr.20211014022453.1: *6* py2ts.do_finally (todo)
+        #@+node:ekr.20211014022453.1: *6* py2ts.do_finally
+        finally_pat = re.compile(r'^([ \t]*)finally:(.*?)\n')
+
+        def do_finally(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}finally {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
         if_pat = re.compile(r'^([ \t]*)if[ \t]+(.*?):(.*?)\n')
 
         def do_if(self, i, lines, m, p):
-            """Handle an 'if' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             tail_s = f" // {tail}" if tail else ''
@@ -1395,7 +1396,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         while_pat = re.compile(r'^([ \t]*)while[ \t]+(.*?):(.*?)\n')
 
         def do_while(self, i, lines, m, p):
-            """Handle a 'while' line and its indented block."""
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             tail_s = f" // {tail}" if tail else ''
