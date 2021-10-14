@@ -173,6 +173,10 @@
 <v t="ekr.20210630103405.1"><vh>script: restore gnxs in leoserver.py (simple version)</vh></v>
 <v t="ekr.20200222083959.1"><vh>script: start loggin</vh></v>
 <v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
+<v t="ekr.20211014103433.1"><vh>script: web-to-outline</vh>
+<v t="ekr.20211014112513.1"><vh>Handlers</vh></v>
+<v t="ekr.20211014120710.1"><vh>new_node</vh></v>
+</v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -2333,6 +2337,83 @@ while True:
     print(i)
     if i == 10:
         break
+</t>
+<t tx="ekr.20211014103433.1">"""Convert the TeX sources, assumed to be in ~/tex.web, to an outline."""
+g.cls()
+import os
+import re
+# Read
+path = os.path.expanduser('~/tex.web')
+with open(path) as f:
+    contents = f.read()
+# Create root.
+last = c.lastTopLevel()
+if last.h == 'tex.web':
+    last.doDelete()
+last = c.lastTopLevel()
+root = last.insertAfter()
+root.h = 'tex.web'
+root.b = '@language tex'
+prefix = root.insertAsLastChild()
+prefix.h = 'prefix'
+# Patterns
+at_star_pat = re.compile(r'^@\*(.*?)$')
+at_space_pat = re.compile(r'^@ (.*?)$')
+at_p_pat = re.compile(r'^@p (.*?)$')
+at_sec_pat = re.compile(r'^@&lt;(.*?)@&gt;=(.*?)$')
+@others  # Define handlers and helpers.
+table = (
+    (at_star_pat, do_at_star),
+    (at_space_pat, do_at_space),
+    (at_p_pat, do_p),
+    (at_sec_pat, do_sec),
+)
+count = 0
+parents = [('prefix', prefix)]  # Tuples: (kind, p)
+for i, s in enumerate(g.splitLines(contents)):
+    for pattern, helper in table:
+        m = pattern.match(s)
+        if m:
+            helper(i, m, s)  # m not used at present.
+            count += 1
+    else:
+        parent = parents[-1][1]
+        parent.b += s
+# Finish
+root.expand()
+c.redraw(root)
+print(f"done: {count} pattern{g.plural(count)}")</t>
+<t tx="ekr.20211014112513.1">def do_at_star(i, m, s):
+    global parents
+    print(s.rstrip())  # A good progress indicator.
+    parent = root.insertAsLastChild()
+    parent.h = s.strip()
+    parents = [('@*', parent)]  # Always prune the stack.
+
+def do_at_space(i, m, s):
+    new_node('@ ', s)
+    
+def do_p(i, m, s):
+    new_node('@p', s)
+
+def do_sec(i, m, s):
+    new_node('@&lt;', s)
+</t>
+<t tx="ekr.20211014120710.1">def new_node(kind, h):
+    """Create a new node as the last child of an '@*' node."""
+    global parents
+    kind = parents[-1][0]
+    if kind == '@*':
+        parent = parents[-1][1]
+    else:
+        # Prune the stack back to the '@*' entry.
+        parent_tuple = parents[0]
+        assert parent_tuple[0] == '@*', parents
+        parents = [parent_tuple]
+        parent = parent_tuple[1]
+    child = parent.insertAsLastChild()
+    child.h = h.strip()
+    parents.append(('@ ', child))
 </t>
 <t tx="EKR.20040430162943">@nosearch
 </t>
