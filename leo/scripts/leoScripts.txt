@@ -3383,7 +3383,11 @@ def ReST2Leo(input):
     nodes.processNodes()
     c.redraw()    
 #@+node:ekr.20211014123559.1: *3* script: web-to-outline
-"""Convert the TeX sources, assumed to be in ~/tex.web, to an outline."""
+"""
+Convert the TeX sources, assumed to be in ~/tex.web, to an outline.
+
+https://mirror.las.iastate.edu/tex-archive/systems/knuth/dist/tex/tex.web
+"""
 g.cls()
 import os
 import re
