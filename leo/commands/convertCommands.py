@@ -1248,6 +1248,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 (self.finally_pat, self.do_finally),
                 (self.for_pat, self.do_for),
                 (self.if_pat, self.do_if),
+                (self.try_pat, self.do_try),
                 (self.while_pat, self.do_while),
                 (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
             )
@@ -1333,6 +1334,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     lines[i] = f"{lws} *\n"
                 i += 1
             return i
+        #@+node:ekr.20211014030113.1: *6* py2ts.do_except (todo)
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
         for_pat = re.compile(r'^([ \t]*)for[ \t]+(.*?):(.*?)\n')
 
@@ -1391,7 +1393,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}if ({cond}) {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
-        #@+node:ekr.20211014022506.1: *6* py2ts.do_try (todo)
+        #@+node:ekr.20211014022506.1: *6* py2ts.do_try
+        try_pat = re.compile(r'^([ \t]*)try:(.*?)\n')
+
+        def do_try(self, i, lines, m, p):
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}try {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211013141809.1: *6* py2ts.do_while
         while_pat = re.compile(r'^([ \t]*)while[ \t]+(.*?):(.*?)\n')
 
