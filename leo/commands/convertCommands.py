@@ -1237,6 +1237,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             This is the heart of the algorithm.
             """
+            trace = False and g.unitTesting
             patterns = (
                 (self.comment_pat, self.do_comment),  # Should be first.
                 (self.docstring_pat, self.do_docstring),
@@ -1260,7 +1261,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     i += 1
                 assert progress < i
-            if g.unitTesting and lines != old_lines:
+            if trace and lines != old_lines:
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())
@@ -1303,6 +1304,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 line = lines[i]
                 # Buglet: ignores whatever might follow.
                 tail = line.replace(delim,'').strip()
+                # pylint: disable=no-else-return
                 if delim in line:
                     if tail:
                         lines[i] = f"{lws} * {tail}\n"
