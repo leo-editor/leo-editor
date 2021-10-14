@@ -1293,18 +1293,39 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, comment = m.group(1), m.group(2).strip()
             lines[i] = f"{lws}/* {comment} */\n"
             return i + 1  # Advance.
-        #@+node:ekr.20211013130041.1: *6* py2ts.do_def
+        #@+node:ekr.20211013130041.1: *6* py2ts.do_def & helper
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
 
         def do_def(self, i, lines, m, p):
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
+            args = self.do_args(args)
             if name == '__init__':
                 name = 'constructor'
             tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}public {name} ({args}) {{{tail_s}\n"
+            # Use void as a placeholder type.
+            lines[i] = f"{lws}public {name} ({args}): void {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
+        #@+node:ekr.20211014031722.1: *7* py2ts.do_args
+        types_d = {
+            # Use the typescript type conventions, not mypy conventions.
+            'c': 'Commands',
+            'gnx': 'string',
+            'i': 'number',
+            'j': 'number',
+            'k': 'number',
+            'p': 'Position',
+            's': 'string',
+            'v': 'VNode',
+        }
+
+        def do_args(self, args):
+            result = []
+            for arg in (z.strip() for z in args.split(',')):
+                val = self.types_d.get(arg)
+                result.append(f"{arg}: {val}" if val else arg)
+            return ', '.join(result)
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ \t]*)("""|\'\'\')(.*?)\n')
 
