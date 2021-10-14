@@ -1323,6 +1323,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         }
 
         def do_args(self, args):
+            """Add type annotations and remove the 'self' argument."""
             result = []
             for arg in (z.strip() for z in args.split(',')):
                 # Omit the self arg.
@@ -1377,8 +1378,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_for(self, i, lines, m, p):
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}for ({cond}) {{{tail_s}\n"
+            lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211014022432.1: *6* py2ts.do_elif
@@ -1388,9 +1390,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             indent = ' '*4
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
             line1 = f"{lws}else {{\n"
-            line2 = f"{lws}{indent}if ({cond}) {{{tail_s}\n"
+            line2 = f"{lws}{indent}if {cond_s} {{{tail_s}\n"
             lines[i] = line1 + line2
             tail1 = f"{indent}{lws}}}\n"
             tail2 = f"{lws}}}\n"
@@ -1425,8 +1428,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_if(self, i, lines, m, p):
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}if ({cond}) {{{tail_s}\n"
+            lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211014022506.1: *6* py2ts.do_try
@@ -1445,8 +1449,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_while(self, i, lines, m, p):
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}while ({cond}) {{{tail_s}\n"
+            lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211014022554.1: *6* py2ts.do_with
@@ -1485,6 +1490,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 m2 = self.lws_pat.match(line)
                 lws2 = m2.group(1)
                 if line.strip() and len(lws2) <= len(lws):
+                    # Don't add a blank line at the end of a block.
+                    if j > 1 and not lines[j - 1].strip():
+                        j -= 1
                     break
                 j += 1
             return j
