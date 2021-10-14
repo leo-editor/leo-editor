@@ -1260,12 +1260,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     i += 1
                 assert progress < i
-            if lines != old_lines:
-                if g.unitTesting:
-                    print(f"\nchanged {p.h}:\n")
-                    for z in lines:
-                        print(z.rstrip())
-                target.b = ''.join(lines).replace('@language python', '@language typescript')
+            if g.unitTesting and lines != old_lines:
+                print(f"\nchanged {p.h}:\n")
+                for z in lines:
+                    print(z.rstrip())
+            # Always set target.b!
+            target.b = ''.join(lines).replace('@language python', '@language typescript')
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
         comment_pat = re.compile(r'^([ ]*)#(.*?)\n')
 
