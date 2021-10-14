@@ -1240,6 +1240,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             trace = False and g.unitTesting
             patterns = (
                 (self.comment_pat, self.do_comment),  # Should be first.
+                (self.class_pat, self.do_class),
                 (self.docstring_pat, self.do_docstring),
                 (self.def_pat, self.do_def),
                 (self.elif_pat, self.do_elif),
@@ -1271,7 +1272,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             target.b = ''.join(lines).replace('@language python', '@language typescript')
             # Munge target.h.
             target.h = target.h.replace('__init__', 'constructor').replace('ctor', 'constructor')
-        #@+node:ekr.20211014023141.1: *6* py2ts.do_class (todo)
+        #@+node:ekr.20211014023141.1: *6* py2ts.do_class
+        class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
+
+        def do_class(self, i, lines, m, p):
+            """Handle an 'for' line and its indented block."""
+            j = self.find_indented_block(i, lines, m, p)
+            lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}class{base} {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1  # Rescan.
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
         comment_pat = re.compile(r'^([ \t]*)#(.*?)\n')
 
