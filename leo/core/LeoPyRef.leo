@@ -181,7 +181,6 @@
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
-<v t="ekr.20210718053938.1"><vh>--- git trial merge</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -2026,7 +2025,6 @@ def munge(s):
 ignore = [
     # Core...
     'format-code.py',       # Script.
-    'leoTangle.py',         # To be deleted.
     # External...
     'leoftsindex.py',       # User contributed.
     'sax2db.py',            # User contributed.
@@ -2338,7 +2336,12 @@ while True:
     if i == 10:
         break
 </t>
-<t tx="ekr.20211014103433.1">"""Convert the TeX sources, assumed to be in ~/tex.web, to an outline."""
+<t tx="ekr.20211014103433.1">"""
+Convert the TeX sources, assumed to be in ~/tex.web, to an outline.
+
+https://mirror.las.iastate.edu/tex-archive/systems/knuth/dist/tex/tex.web
+
+"""
 g.cls()
 import os
 import re
@@ -2416,16 +2419,6 @@ def do_sec(i, m, s):
     parents.append(('@ ', child))
 </t>
 <t tx="EKR.20040430162943">@nosearch
-</t>
-<t tx="ekr.20210718053938.1">$ git merge --no-commit --no-ff ekr-docs
-
-To examine the staged changes:
-
-$ git diff --cached
-
-Undo the merge, even if it is a fast-forward merge:
-
-$ git merge --abort
 </t>
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 
