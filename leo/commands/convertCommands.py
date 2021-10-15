@@ -1290,7 +1290,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 for (pattern, handler) in self.patterns:
                     m = pattern.match(line)
                     if m:
-                        i = handler(i, lines, m, p) # May change lines.
+                        i = handler(i, lines, m, p)  # May change lines.
                         break
                 else:
                     i += 1
@@ -1351,16 +1351,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_docstring(self, i, lines, m, p):
             lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
-            tail = docstring.replace(delim,'').strip()
+            tail = docstring.replace(delim, '').strip()
             if delim in docstring:
                 lines[i] = f"{lws}/* {tail} */\n"
-                return i + 1 # Advance.
+                return i + 1  # Advance.
             lines[i] = f"{lws}/** {tail}\n"
             i += 1
             while i < len(lines):
                 line = lines[i]
                 # Buglet: ignores whatever might follow.
-                tail = line.replace(delim,'').strip()
+                tail = line.replace(delim, '').strip()
                 # pylint: disable=no-else-return
                 if delim in line:
                     if tail:
@@ -1402,7 +1402,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
 
         def do_elif(self, i, lines, m, p):
-            indent = ' '*4
+            indent = ' ' * 4
             j = self.find_indented_block(i, lines, m, p)
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             cond_s = cond if cond.startswith('(') else f"({cond})"
