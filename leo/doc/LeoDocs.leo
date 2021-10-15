@@ -10,7 +10,7 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="rkeeney.20190823135126.4"><vh>@persistence</vh>
 <v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
-<v t="ekr.20210822061928.1"><vh>@gnxs</vh></v>
+<v t="ekr.20211015110050.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201013034546.1"><vh>@data:@auto-md importers.md </vh>
 <v t="ekr.20201013034546.2"><vh>@gnxs</vh></v>
@@ -1099,7 +1099,6 @@
 <v t="ekr.20150603120245.1"><vh>Enough is enough</vh></v>
 <v t="ekr.20150603120150.1"><vh>Summary of the beautifier</vh></v>
 </v>
-<v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
 </v>
@@ -11179,8 +11178,8 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | name = Leo: Leonine Editor with Outlines
 | logo = LEO-Leonine Editor Outliner-icon.png
 | developer = Edward K. Ream, et al.
-| latest_release_version = 6.4
-| latest_release_date = {{Start date and age|2021|7|19}}
+| latest_release_version = 6.5
+| latest_release_date = {{Start date and age|2021|10|15}}
 | size = ~9 MB
 | programming_language = [[Python (programming language)|Python]]
 | operating_system = [[Cross-platform]]
@@ -19368,21 +19367,6 @@ The following commands work much like the `Emacs cursor commands`_::
     previous-line
     previous-line-extend-selection
 </t>
-<t tx="ekr.20150318110552.86">The following commands support @test and @suite nodes.  These commands (and @test and @suite nodes themselves) are deprecated and will be removed in Leo 6.5.
-
-``run-all-unit-tests-externally``
-    Run all unit tests in a separate process.
-``run-all-unit-tests-locally``
-    Run all unit tests in this outline.
-``run-marked-unit-tests-externally``
-    Run all marked unit tests in a separate process.
-``run-marked-unit-tests-locally``
-    Run all marked unit tests in this outline.
-``run-selected-unit-tests-externally``
-    Run all unit tests in the selected tree in a separate process.
-``run-selected-unit-tests-locally``
-    Run all unit tests in the selected tree in this outline.
-</t>
 <t tx="ekr.20150318110552.87">::
 
     :!
@@ -19506,15 +19490,6 @@ toggle-idle-time-tracing
 .. Obscure minibuffer-related commands.
 context-menu-open
 menu-shortcut
-
-.. Deprecated tangle/untangle commands.
-.. These will never be removed.
-tangle
-tangle-all
-tangle-marked
-untangle
-untangle-all
-untangle-marked
 </t>
 <t tx="ekr.20150323103115.1">.. _`Emacs rectangle commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html
 
@@ -20227,7 +20202,7 @@ Acknowledgements: Working with Leo's community of Leo's developers and users has
 
 A successful software tool is one that was used to do something undreamed of by its author.' -- Stephen Johnson
 
-Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @test, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
+Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
 
 Edward K. Ream
 </t>
@@ -30995,57 +30970,6 @@ Imo, the wax_off script makes my make_stub_files project obsolete.</t>
 <t tx="ekr.20210717092635.918">https://github.com/leo-editor/leo-editor/issues/2005</t>
 <t tx="ekr.20210718082823.2">https://github.com/leo-editor/leo-editor/issues/2081</t>
 <t tx="ekr.20210802163908.31">https://github.com/leo-editor/leo-editor/issues/2103</t>
-<t tx="ekr.20210822061928.1">gnx: ekr.20191216061356.4
-unl: Leo's demo.py plugin
-gnx: ekr.20191216061356.5
-unl: Overview
-gnx: ekr.20191216061356.6
-unl: A simpler work flow
-gnx: ekr.20191216061356.7
-unl: Graphics classes &amp; helpers
-gnx: ekr.20191216061356.8
-unl: Using demo scripts
-gnx: ekr.20191216061356.9
-unl: Using demo scripts--&gt;Script trees and lists
-gnx: ekr.20191216061356.10
-unl: Using demo scripts--&gt;Predefined symbols
-gnx: ekr.20191216061356.11
-unl: Using demo scripts--&gt;Positioning graphics
-gnx: ekr.20191216061356.12
-unl: Using demo scripts--&gt;Deleting graphics
-gnx: ekr.20191216061356.13
-unl: Using demo scripts--&gt;Details
-gnx: ekr.20191216061356.14
-unl: Example scripts
-gnx: ekr.20191216061356.15
-unl: Example scripts--&gt;Top-level script
-gnx: ekr.20191216061356.16
-unl: Example scripts--&gt;Simulate typing
-gnx: ekr.20191216061356.17
-unl: Example scripts--&gt;Change the demo namespace
-gnx: ekr.20191216061356.18
-unl: Example scripts--&gt;Add graphics
-gnx: ekr.20191216061356.19
-unl: Example scripts--&gt;Switch focus
-gnx: ekr.20191216061356.20
-unl: Helper methods
-gnx: ekr.20191216061356.21
-unl: Helper methods--&gt;Ivars
-gnx: ekr.20191216061356.22
-unl: Helper methods--&gt;Menus
-gnx: ekr.20191216061356.23
-unl: Helper methods--&gt;Magnification and styling
-gnx: ekr.20191216061356.24
-unl: Helper methods--&gt;Simulated typing
-gnx: ekr.20191216061356.25
-unl: Helper methods--&gt;Startup, setup and teardown
-gnx: ekr.20191216061356.26
-unl: Helper methods--&gt;Window position and ratios
-gnx: ekr.20191216061356.27
-unl: Summary
-gnx: ekr.20191216061356.28
-unl: History and change log
-</t>
 <t tx="ekr.20210823181157.1">https://github.com/leo-editor/leo-editor/issues/2005
 https://github.com/leo-editor/leo-editor/issues/1973</t>
 <t tx="ekr.20210824081721.1"></t>
@@ -31143,6 +31067,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Add python-to-typescript and view-recent-commands.
 - Add c.findCommands.interactive_search_helper.
 - Leo now uses only traditional unit tests.
+  Remove support for @test and @suite.
+  Remove leoTest.py.
 - Many code-level cleanups.
 - 450+ pull requests.
 
@@ -31194,9 +31120,62 @@ are typescript type names.</t>
 <t tx="ekr.20210921103230.1">- Add python-to-typescript and view-recent-commands.
 - Add c.findCommands.interactive_search_helper.
 - Leo now uses only traditional unit tests.
+  Remove support for @test and @suite.
+  Remove leoTest.py.
 - Many code-level cleanups.</t>
 <t tx="ekr.20211014165743.1">- leoTest2.py create temporary Leo applications and outlines for unit tests.
 - Remove `@test`, `@suite`, unitTest.leo and leoTest.py.</t>
+<t tx="ekr.20211015110050.1">gnx: ekr.20191216061356.4
+unl: Leo's demo.py plugin
+gnx: ekr.20191216061356.5
+unl: Overview
+gnx: ekr.20191216061356.6
+unl: A simpler work flow
+gnx: ekr.20191216061356.7
+unl: Graphics classes &amp; helpers
+gnx: ekr.20191216061356.8
+unl: Using demo scripts
+gnx: ekr.20191216061356.9
+unl: Using demo scripts--&gt;Script trees and lists
+gnx: ekr.20191216061356.10
+unl: Using demo scripts--&gt;Predefined symbols
+gnx: ekr.20191216061356.11
+unl: Using demo scripts--&gt;Positioning graphics
+gnx: ekr.20191216061356.12
+unl: Using demo scripts--&gt;Deleting graphics
+gnx: ekr.20191216061356.13
+unl: Using demo scripts--&gt;Details
+gnx: ekr.20191216061356.14
+unl: Example scripts
+gnx: ekr.20191216061356.15
+unl: Example scripts--&gt;Top-level script
+gnx: ekr.20191216061356.16
+unl: Example scripts--&gt;Simulate typing
+gnx: ekr.20191216061356.17
+unl: Example scripts--&gt;Change the demo namespace
+gnx: ekr.20191216061356.18
+unl: Example scripts--&gt;Add graphics
+gnx: ekr.20191216061356.19
+unl: Example scripts--&gt;Switch focus
+gnx: ekr.20191216061356.20
+unl: Helper methods
+gnx: ekr.20191216061356.21
+unl: Helper methods--&gt;Ivars
+gnx: ekr.20191216061356.22
+unl: Helper methods--&gt;Menus
+gnx: ekr.20191216061356.23
+unl: Helper methods--&gt;Magnification and styling
+gnx: ekr.20191216061356.24
+unl: Helper methods--&gt;Simulated typing
+gnx: ekr.20191216061356.25
+unl: Helper methods--&gt;Startup, setup and teardown
+gnx: ekr.20191216061356.26
+unl: Helper methods--&gt;Window position and ratios
+gnx: ekr.20191216061356.27
+unl: Summary
+gnx: ekr.20191216061356.28
+unl: History and change log
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

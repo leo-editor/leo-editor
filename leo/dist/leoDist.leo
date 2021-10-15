@@ -1470,6 +1470,7 @@ g.es_print('done')
 
 LeoDocs.leo:
 - Make sure copyright dates are correct.
+- Update the version numbers in index.html.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
 - Update the release notes.
