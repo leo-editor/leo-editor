@@ -3386,6 +3386,12 @@
 </v>
 <v t="ekr.20210917085922.40"><vh>6.4: Settings &amp; command-line options</vh></v>
 </v>
+<v t="ekr.20211015090213.1"><vh>Leo 6.5: Remove @test, @suite. Clean code</vh>
+<v t="ekr.20211015090301.2"><vh>6.5: Commands</vh></v>
+<v t="ekr.20211015090301.3"><vh>6.5: Features</vh></v>
+<v t="ekr.20211015090301.4"><vh>6.5: Settings</vh></v>
+<v t="ekr.20211015090301.5"><vh>6.5: Testing</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -26401,5 +26407,65 @@ Add settings for highlighting the selected line:
 PR: https://github.com/leo-editor/leo-editor/pull/1948</t>
 <t tx="ekr.20210917085922.9">https://github.com/leo-editor/leo-editor/issues/2005
 https://github.com/leo-editor/leo-editor/issues/1973</t>
+<t tx="ekr.20211015090213.1">Leo http://leoeditor.com 6.5b1 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.5**
+
+- Add python-to-typescript and view-recent-commands.
+- Add c.findCommands.interactive_search_helper.
+- Leo now uses only traditional unit tests.
+- Many code-level cleanups.
+- 450+ pull requests.
+
+**6.5 Links**
+
+- [6.5 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.5)
+- [6.5 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.5)
+- [6.5 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.5+)
+- [6.5 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.5+label%3Aenhancement+)
+- [6.5 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.5+label%3Acode+)
+
+**General Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20211015090301.2">#2256: view-recent-commands
+https://github.com/leo-editor/leo-editor/issues/2256
+
+#2267: python-to-typescript
+https://github.com/leo-editor/leo-editor/issues/2267
+</t>
+<t tx="ekr.20211015090301.3">#1766: Use traditional unit tests
+https://github.com/leo-editor/leo-editor/issues/1766
+PR: https://github.com/leo-editor/leo-editor/pull/2159
+
+#2194: black-compatible sentinels
+https://github.com/leo-editor/leo-editor/issues/2194
+
+#2219: c.findCommands.interactive_search_helper
+https://github.com/leo-editor/leo-editor/issues/2219
+</t>
+<t tx="ekr.20211015090301.4">@data python-to-typescript-types
+
+A list of key/value pairs. Keys are argument names (as used in Leo); values
+are typescript type names.</t>
+<t tx="ekr.20211015090301.5">- leoTest2.py create temporary Leo applications and outlines for unit tests.
+- Remove `@test`, `@suite`, unitTest.leo and leoTest.py.</t>
 </tnodes>
 </leo_file>

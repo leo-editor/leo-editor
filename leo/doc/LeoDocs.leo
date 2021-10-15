@@ -31191,11 +31191,10 @@ https://github.com/leo-editor/leo-editor/issues/2219
 
 A list of key/value pairs. Keys are argument names (as used in Leo); values
 are typescript type names.</t>
-<t tx="ekr.20210921103230.1">Add support for Test Driven Design
-- leoTest2.py create temporary Leo applications and outlines for unit tests.
-- Remove `@test`, `@suite`, unitTest.leo and leoTest.py.
-
-Code cleanups.</t>
+<t tx="ekr.20210921103230.1">- Add python-to-typescript and view-recent-commands.
+- Add c.findCommands.interactive_search_helper.
+- Leo now uses only traditional unit tests.
+- Many code-level cleanups.</t>
 <t tx="ekr.20211014165743.1">- leoTest2.py create temporary Leo applications and outlines for unit tests.
 - Remove `@test`, `@suite`, unitTest.leo and leoTest.py.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the

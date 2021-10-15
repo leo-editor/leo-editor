@@ -231,7 +231,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.4
+Version: 6.5
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -250,26 +250,28 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.4 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.5b1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.4**
+**The highlights of Leo 6.5**
 
-- Support for [leoInteg](https://github.com/boltex/leointeg#-leo-for-vs-code): "Leo in vs-code".
-  - Add leoserver.py, stand-alone server for Leo.
-  - Add support for .leojs, a json outline format.
-- Support for Qt6.
-- The wax_off.py script converts function annotations to stub (.pyi) files.
-- Remove support for @root. Create a conversion script.
-- Simplify and generalize rst3 command.
-- Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
-- Add execute-general-script command and c.general_script_helper.
-- Several significant code-level changes.
-- Fixed 160+ issues and merged almost 400 Pull Requests.
+- Add python-to-typescript and view-recent-commands.
+- Add c.findCommands.interactive_search_helper.
+- Leo now uses only traditional unit tests.
+- Many code-level cleanups.
+- 450+ pull requests.
 
-**Links**
+**6.5 Links**
+
+- [6.5 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.5)
+- [6.5 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.5)
+- [6.5 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.5+)
+- [6.5 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.5+label%3Aenhancement+)
+- [6.5 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.5+label%3Acode+)
+
+**General Links**
 
 - Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)
@@ -282,6 +284,9 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617

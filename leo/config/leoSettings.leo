@@ -1150,7 +1150,6 @@
 </v>
 <v t="ekr.20180403104751.1"><vh>@menu &amp;Capitalize Text</vh>
 <v t="ekr.20131213135427.22273"><vh>@item &amp;capitalize-word</vh></v>
-<v t="tom.20210922192621.1"><vh>@item Capitalize-&amp;words-or-selection</vh></v>
 <v t="ekr.20131213135427.22277"><vh>@item d&amp;owncase-region</vh></v>
 <v t="ekr.20131213135427.22274"><vh>@item &amp;downcase-word</vh></v>
 <v t="ekr.20131213135427.22278"><vh>@item u&amp;pcase-region</vh></v>
@@ -1476,15 +1475,6 @@
 <v t="ekr.20131213135427.22127"><vh>@menu &amp;Invoke Debuggers</vh>
 <v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
 <v t="ekr.20131213135427.22129"><vh>@item pdb</vh></v>
-</v>
-<v t="ekr.20131213135427.22226"><vh>@menu &amp;Run Unit Tests</vh>
-<v t="ekr.20131213135427.22229"><vh>@item run-&amp;all-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22230"><vh>@item run-&amp;marked-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22231"><vh>@item run-&amp;selected-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22232"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22233"><vh>@item run-&amp;all-unit-tests-externally</vh></v>
-<v t="ekr.20131213135427.22234"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
-<v t="ekr.20131213135427.22235"><vh>@item run-&amp;selected-unit-tests-externally</vh></v>
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
@@ -2626,7 +2616,6 @@ Important: Once a .leo file is created the &lt;?xml..."&gt; line can only be cha
 <t tx="ekr.20041119042929.4"></t>
 <t tx="ekr.20041119042929.7"></t>
 <t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
-This setting is also used to encode files created by the Tangle commands.
 Default is UTF-8 (case not important).</t>
 <t tx="ekr.20041119044139"></t>
 <t tx="ekr.20041119050105.1">The change string (without the quotes unless quotes are part of the string).
@@ -3637,12 +3626,6 @@ dabbrev-expands             = Alt-slash
 edit-setting                = None
 execute-script              = Ctrl-B
 redo                        = Shift-Ctrl-Z
-run-all-unit-tests-externally       = None
-run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = None
-run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = None
-run-selected-unit-tests-locally     = None
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Alt-A
@@ -5783,14 +5766,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22212"></t>
 <t tx="ekr.20131213135427.22223"></t>
 <t tx="ekr.20131213135427.22225"></t>
-<t tx="ekr.20131213135427.22226"></t>
-<t tx="ekr.20131213135427.22229"></t>
-<t tx="ekr.20131213135427.22230"></t>
-<t tx="ekr.20131213135427.22231"></t>
-<t tx="ekr.20131213135427.22232"></t>
-<t tx="ekr.20131213135427.22233"></t>
-<t tx="ekr.20131213135427.22234"></t>
-<t tx="ekr.20131213135427.22235"></t>
 <t tx="ekr.20131213135427.22236"></t>
 <t tx="ekr.20131213135427.22237"></t>
 <t tx="ekr.20131213135427.22238"></t>
@@ -6175,9 +6150,6 @@ spell-ignore                    = None
 split-line                      = Alt-Ctrl-o
 suspend                         = None
 tabify                          = None
-tangle                          = None      
-tangle-all                      = None
-tangle-marked                   = None
 toggle-abbrev-mode              = None
 toggle-active-pane              = None      # Ctrl-T conflicts with swap-characters.
 toggle-angle-brackets           = None
@@ -6198,9 +6170,6 @@ unindent-region                 = None
 # universal-argument            = Ctrl-u
 unmark-all                      = None         # Alt-U: conflicts with upcase-word.
 untabify                        = None
-untangle                        = None         # Removed Shift-Ctrl-U: not useful enough
-untangle-all                    = None
-untangle-marked                 = None
 upcase-region                   = None
 upcase-word                     = Alt-u
 view-lossage                    = None
@@ -6589,12 +6558,6 @@ reverse-region                      = None
 reverse-sort-lines                  = None
 reverse-sort-lines-ignoring-case    = None
 revert                              = None
-run-all-unit-tests-externally       = None
-run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = None
-run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = None
-run-selected-unit-tests-locally     = None
 save-buffers-kill-leo               = None
 save-file                           = None
 save-file-as                        = None
@@ -6658,9 +6621,6 @@ suspend                             = None
 tab-cycle-next                      = None
 tab-cycle-previous                  = None
 tabify                              = None
-tangle                              = None
-tangle-all                          = None
-tangle-marked                       = None
 toggle-abbrev-mode                  = None
 toggle-active-pane                  = None
 toggle-angle-brackets               = None
@@ -6684,9 +6644,6 @@ unindent-region                     = None
 # universal-argument                  = None
 unmark-all                          = None
 untabify                            = None
-untangle                            = None
-untangle-all                        = None
-untangle-marked                     = None
 upcase-region                       = None
 upcase-word                         = None
 view-lossage                        = None
@@ -10312,13 +10269,6 @@ redo                        = Shift-Ctrl-Z
 dabbrev-completion  = Meta-Ctrl-slash
 dabbrev-expands     = Meta-slash
 
-run-all-unit-tests-externally       = None
-run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = None
-run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = None
-run-selected-unit-tests-locally     = None
-
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Meta-Shift-A
@@ -12314,7 +12264,6 @@ AltControlShift hoist
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="tom.20210922141748.1"></t>
-<t tx="tom.20210922192621.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
