@@ -1516,7 +1516,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.
             target = parent.insertAsLastChild()
-            target.h = p.h.replace('@', '')
+            target.h = p.h.replace('@file', '').replace('.py', '.ts')  # #2275.
             # Convert p.b int child.b
             self.convert_body(p, target)
             # Recursively create all descendants.

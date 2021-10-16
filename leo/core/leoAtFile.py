@@ -102,50 +102,27 @@ class AtFile:
     def initReadIvars(self, root, fileName):
         at = self
         at.initCommonIvars()
-        at.bom_encoding = None
-            # The encoding implied by any BOM (set by g.stripBOM)
-        at.cloneSibCount = 0
-            # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        at.correctedLines = 0
-            # For perfect import.
+        at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
+        at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+        at.correctedLines = 0  # For perfect import.
         at.docOut = []  # The doc part being accumulated.
         at.done = False  # True when @-leo seen.
-        at.endSentinelIndentStack = []
-            # Restored indentation for @-others and @-<< sentinels.
-            # Used only when readVersion5.
-        at.endSentinelStack = []
-            # Contains entries for +node sentinels only when not readVersion5
-        at.endSentinelLevelStack = []
-            # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
-            # Used only when readVersion5.
-        at.endSentinelNodeStack = []
-            # Used only when readVersion5.
         at.fromString = False
         at.importRootSeen = False
         at.indentStack = []
         at.lastLines = []  # The lines after @-leo
-        at.lastRefNode = None
-            # The previous reference node, for at.readAfterRef.
-            # No stack is needed because -<< sentinels restore at.v
-            # to the node needed by at.readAfterRef.
-        at.lastThinNode = None
-            # The last thin node at this level.
-            # Used by createThinChild4.
         at.leadingWs = ""
         at.lineNumber = 0  # New in Leo 4.4.8.
         at.out = None
         at.outStack = []
         at.read_i = 0
         at.read_lines = []
-        at.readVersion = ''
-            # New in Leo 4.8: "4" or "5" for new-style thin files.
-        at.readVersion5 = False
-            # synonym for at.readVersion >= '5'
+        at.readVersion = ''  # "5" for new-style thin files.
+        at.readVersion5 = False  # Synonym for at.readVersion >= '5'
         at.root = root
         at.rootSeen = False
         at.targetFileName = fileName  # For at.writeError only.
-        at.tnodeList = []
-            # Needed until old-style @file nodes are no longer supported.
+        at.tnodeList = []  # Needed until old-style @file nodes are no longer supported.
         at.tnodeListIndex = 0
         at.v = None
         at.vStack = []  # Stack of at.v values.
