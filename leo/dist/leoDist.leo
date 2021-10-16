@@ -2061,6 +2061,9 @@ include leo/doc/html/conf.py
 include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">**build**
+
+*** Delete old files in leo-editor/dist
+
 git checkout 6.5
 python -m build
 
