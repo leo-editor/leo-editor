@@ -2067,6 +2067,9 @@ include leo/doc/html/index.html
 git checkout 6.5
 python -m build
 
+*** Check leo-editor/dist: make sure file names are reasonable.
+    valid: 6.xb1, invalid: 6.x-b1
+
 **upload**
 
 python -m twine upload --repository testpypi dist/*
