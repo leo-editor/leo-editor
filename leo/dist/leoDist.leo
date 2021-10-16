@@ -2014,13 +2014,9 @@ Public announcements, after creating a package.
 
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-
-- Announce to Python-announce-list using email:
-   python-announce-list@python.org
-   **Paste source-forge or leo-editor announcement**.
-
-  - Check it by visiting the archive:
-    https://mail.python.org/archives/list/python-announce-list@python.org/
+   
+- Announce to comp.lang.python.announce:
+  https://groups.google.com/g/comp.lang.python.announce
   
 - Register Leo at https://pypi.python.org/pypi/leo
 
