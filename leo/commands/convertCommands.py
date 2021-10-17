@@ -1299,6 +1299,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())
+            # Run the post-pass
+            lines = self.post_pass(lines)
             # Always set target.b!
             target.b = ''.join(lines).replace('@language python', '@language typescript')
             # Munge target.h.
@@ -1520,6 +1522,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Recursively create all descendants.
             for child in p.children():
                 self.convert_node(child, target)
+        #@+node:ekr.20211016200908.1: *5* py2ts.post_pass
+        def post_pass(self, lines):
+
+            # First, remove any (converted) coding lines.
+            lines = [z for z in lines if z != '@first  // -*- coding: utf-8 -*-\n']
+            return lines
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
