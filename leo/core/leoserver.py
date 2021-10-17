@@ -602,6 +602,37 @@ class LeoServer:
             raise ServerError(f"{tag}: button {index!r} does not exist")
 
         return self._make_response()
+    #@+node:felix.20211016235830.1: *5* server.goto_script
+    def goto_script(self, param):  # pragma: no cover (no scripting controller)
+        """Goto the script this button originates."""
+        tag = 'goto_script'
+        index = param.get("index")
+        if not index:
+            raise ServerError(f"{tag}: no button index given")
+        d = self._check_button_command(tag)
+        # Some button keys are objects so we have to convert first
+        key = None
+        for i_key in d:
+            if str(i_key) == index:
+                key = i_key
+        if key:
+            try:
+                gnx = key.command.gnx
+                c = self._check_c()
+                for p in c.all_positions():
+                    if p.gnx == gnx:
+                        break
+                if p:
+                    assert c.positionExists(p)
+                    c.selectPosition(p)
+                else:
+                    raise ServerError(f"{tag}: not found {gnx}")
+            except Exception as e:
+                raise ServerError(f"{tag}: exception going to script of button {index!r}: {e}")
+        else:
+            raise ServerError(f"{tag}: button {index!r} does not exist")
+
+        return self._make_response()
     #@+node:felix.20210621233316.12: *4* server:file commands
     #@+node:felix.20210621233316.13: *5* server.open_file
     def open_file(self, param):
