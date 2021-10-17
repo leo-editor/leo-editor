@@ -1227,8 +1227,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         # Typescript can infer types of initialized kwargs.
         types_d = {}
 
-        def __init__(self, c):
+        def __init__(self, c, alias=None):
             self.c = c
+            self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
             for line in data:
                 try:
@@ -1282,7 +1283,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
                 )
             # The loop may change lines, but each line is scanned only once.
-            i, lines = 0, g.splitLines(p.b)
+            i, lines = 0, g.splitLines(self.pre_pass(p.b))
             old_lines = lines[:]
             while i < len(lines):
                 progress = i
@@ -1525,8 +1526,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211016214742.1: *5* py2ts.move_docstrings
-        def move_docstrings(self, lines):
+        class_or_def_pat = re.compile(r'^(\s*)(public|class)\s+([\w_]+)')
 
+        def move_docstrings(self, lines):
+            """Move docstrings before the preceding class or def line."""
             i = 0
             while i < len(lines):
                 m = self.class_or_def_pat.match(lines[i])
@@ -1559,19 +1562,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i = k + 1
             return lines
         #@+node:ekr.20211016200908.1: *5* py2ts.post_pass
-        class_or_def_pat = re.compile(r'^(\s*)(public|class)\s+([\w_]+)')
-
         def post_pass(self, lines):
 
-            # 1. Remove any (converted) coding lines.
-            lines = [z for z in lines if z != '@first  // -*- coding: utf-8 -*-\n']
-            
-            # 2. Convert 'self' to 'this' *everywhere*.
-            lines = [z.replace('self', 'this') for z in lines]
-            
-            # 3. Move docstrings in front of class and def (public) lines.
             lines = self.move_docstrings(lines)
             return lines
+        #@+node:ekr.20211017044939.1: *5* py2ts.pre_pass
+        def pre_pass(self, s):
+
+            # Remove the python encoding lines.
+            s = s.replace('@first # -*- coding: utf-8 -*-\n', '')
+            
+            # Replace 'self' by 'this' *everywhere*.
+            s = re.sub(r'\bself\b', 'this', s)
+            
+            # Comment out @cmd decorators.
+            s = re.sub(r"^@cmd(.*?)$", r'// @cmd\1\n', s, flags=re.MULTILINE)
+            
+            # Replace the alias for 'self' by 'this' *everywhere*.
+            if self.alias:
+                # Doesn't remove the definition of 'at' in 'at, c = self, self.c'.
+                s = re.sub(fr"\b{self.alias}\.", 'this.', s)
+                s = re.sub(fr"^\s*{self.alias}\s*=\s*this\s*\n", '', s, flags=re.MULTILINE)
+            return s
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
