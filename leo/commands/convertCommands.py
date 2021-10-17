@@ -1331,7 +1331,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_comment(self, i, lines, m, p):
             """Handle a stand-alone comment line."""
             lws, comment = m.group(1), m.group(2).strip()
-            lines[i] = f"{lws}/* {comment} */\n"
+            if comment:
+                lines[i] = f"{lws}// {comment}\n"
+            else:
+                lines[i] = '\n'
             return i + 1  # Advance.
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
@@ -1482,7 +1485,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             All other patterns have already been scanned on the line.
             """
             lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
-            lines[i] = f"{lws}{statement}  /* {trailing_comment} */\n"
+            lines[i] = f"{lws}{statement}  // {trailing_comment}\n"
             return i + 1  # Advance.
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
         lws_pat = re.compile(r'^([ \t]*)')
