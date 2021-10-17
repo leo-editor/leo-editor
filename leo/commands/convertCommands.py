@@ -1253,7 +1253,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             parent.b = '@language typescript\n'
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
-            c.redraw()
+            c.redraw(parent)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
         patterns = []
 
@@ -1320,8 +1320,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_class(self, i, lines, m, p):
             j = self.find_indented_block(i, lines, m, p)
             lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            base_s = f" {base} " if base else ''
             tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}class{base} {{{tail_s}\n"
+            lines[i] = f"{lws}class{base_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
