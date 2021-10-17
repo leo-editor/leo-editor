@@ -1313,7 +1313,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             result = []
             for arg in (z.strip() for z in args.split(',')):
                 # Omit the self arg.
-                if arg != 'self':
+                if arg != 'this':  # Already converted.
                     val = self.types_d.get(arg)
                     result.append(f"{arg}: {val}" if val else arg)
             return ', '.join(result)
