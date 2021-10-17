@@ -1403,21 +1403,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
 
         def do_elif(self, i, lines, m, p):
-            indent = ' ' * 4
-            j = self.find_indented_block(i, lines, m, p)
+
             lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
-            line1 = f"{lws}else {{\n"
-            line2 = f"{lws}{indent}if {cond_s} {{{tail_s}\n"
-            lines[i] = line1 + line2
-            tail1 = f"{indent}{lws}}}\n"
-            tail2 = f"{lws}}}\n"
-            lines.insert(j, tail1 + tail2)
-            # Indent the indented block.
-            for n in range(i + 1, j):
-                lines[n] = indent + lines[n]
-            return i + 1  # Rescan.
+            lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
+            return i + 1  # Advance
         #@+node:ekr.20211014022445.1: *6* py2ts.do_else
         else_pat = re.compile(r'^([ \t]*)else:(.*?)\n')
 
@@ -1427,7 +1418,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}else {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Rescan.
+            return i + 1  # Advance.
         #@+node:ekr.20211014022453.1: *6* py2ts.do_finally
         finally_pat = re.compile(r'^([ \t]*)finally:(.*?)\n')
 
