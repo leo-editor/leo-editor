@@ -619,6 +619,7 @@ class LeoServer:
             try:
                 gnx = key.command.gnx
                 c = self._check_c()
+                # pylint: disable=undefined-loop-variable
                 for p in c.all_positions():
                     if p.gnx == gnx:
                         break
