@@ -1360,8 +1360,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # even for single-line python docstrings.
             lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
             tail = docstring.replace(delim, '').strip()
-            tail_s = f"\n{lws} * {tail}" if tail else ''
-            lines[i] = f"{lws}/**{tail_s}\n"
+            ###tail_s = f"\n{lws} * {tail}" if tail else ''
+            ### lines[i] = f"{lws}/**{tail_s}\n"
+            lines[i] = f"{lws}/**\n"
+            if tail:
+                lines.insert(i + 1, f"{lws} * {tail}\n")
+                i += 1
             if delim in docstring:
                 lines.insert(i + 1, f"{lws} */\n")
                 return i + 2  # Advance.
@@ -1522,8 +1526,42 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Recursively create all descendants.
             for child in p.children():
                 self.convert_node(child, target)
-        #@+node:ekr.20211016200908.1: *5* py2ts.post_pass
+        #@+node:ekr.20211016214742.1: *5* py2ts.move_docstrings
+        def move_docstrings(self, lines):
 
+            i = 0
+            while i < len(lines):
+                m = self.class_or_def_pat.match(lines[i])
+                i += 1
+                if not m:
+                    continue
+                # Set j to the start of the docstring.
+                j = i
+                while j < len(lines):
+                    if lines[j].strip():
+                        break
+                    j += 1
+                if j >= len(lines):
+                    continue
+                if not lines[j].strip().startswith('/**'):
+                    continue
+                # Set k to the end of the docstring.
+                k = j
+                while k < len(lines) and '*/' not in lines[k]:
+                    k += 1
+                if k >= len(lines):
+                    g.printObj(lines[i-1:len(lines)-1], tag='OOPS')
+                    continue
+                # Remove 4 blanks from the docstrings.
+                for n in range(j, k + 1):
+                    if lines[n].startswith(' ' * 4):
+                        lines[n] = lines[n][4:]
+                # Rearrange the lines.
+                lines[i-1 : k + 1] = lines[j : k + 1] + [lines[i-1]]
+                i = k + 1
+            return lines
+        #@+node:ekr.20211016200908.1: *5* py2ts.post_pass
+        class_or_def_pat = re.compile(r'^(\s*)(public|class)\s+([\w_]+)')
 
         def post_pass(self, lines):
 
@@ -1532,7 +1570,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             # 2. Convert 'self' to 'this' *everywhere*.
             lines = [z.replace('self', 'this') for z in lines]
-
+            
+            # 3. Move docstrings in front of class and def (public) lines.
+            lines = self.move_docstrings(lines)
             return lines
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
