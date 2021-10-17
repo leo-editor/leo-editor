@@ -1294,6 +1294,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         i = handler(i, lines, m, p)  # May change lines.
                         break
                 else:
+                    self.do_semicolon(i, lines, p)
                     i += 1
                 assert progress < i
             if False and g.unitTesting and lines != old_lines:
@@ -1451,6 +1452,20 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
+        #@+node:ekr.20211017134103.1: *6* py2ts.do_semicolon
+        def do_semicolon(self, i, lines, p):
+            """
+            Insert a semicolon in lines[i] is appropriate.
+            
+            No other handler has matched, so we know that the line:
+            - Does not end in a comment.
+            - Is not part of a docstring.
+            """
+            # For now, use a maximal policy.
+            if self.ends_statement(i, lines):
+                lines[i] = f"{lines[i].rstrip()};\n"
+                
+
         #@+node:ekr.20211014022506.1: *6* py2ts.do_try
         try_pat = re.compile(r'^([ \t]*)try:(.*?)\n')
 
@@ -1493,7 +1508,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             All other patterns have already been scanned on the line.
             """
             lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
-            lines[i] = f"{lws}{statement}  // {trailing_comment}\n"
+            statement_s = f"{statement};" if self.ends_statement(i, lines) else statement
+            lines[i] = f"{lws}{statement_s}  // {trailing_comment}\n"
             return i + 1  # Advance.
         #@+node:ekr.20211013123001.1: *6* py2ts.find_indented_block
         lws_pat = re.compile(r'^([ \t]*)')
@@ -1525,6 +1541,38 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Recursively create all descendants.
             for child in p.children():
                 self.convert_node(child, target)
+        #@+node:ekr.20211017135603.1: *5* py2ts.ends_statement
+        def ends_statement(self, i, lines):
+            """
+            Return True if lines[i] ends a statement.
+            
+            If so, the line should end with a semicolon,
+            before any trailing comment, that is.
+            """
+            # https://stackoverflow.com/questions/38823062/
+            s = lines[i].strip()
+            next_line = lines[i + 1] if i + 1 < len(lines) else ''
+            # Return False for blank lines.
+            if not s:
+                return False
+            # Return False for Leo directives.
+            if s.startswith('@'):
+                return False
+            # Return False for section references.
+            i = s.find('<<')
+            j = s.find('>>')
+            if -1 < i < j:
+                return False
+            # Return False if this line ends in '{', '(', '['.
+            if s.endswith(('{', '(', '[')):
+                return False
+            # Return False if the next line starts with '{', '(', '['.
+            if next_line.lstrip().startswith(('[', '(', '[')):
+                return False
+            # Return False for '}' lines.
+            if s.startswith('}'):
+                return False
+            return True
         #@+node:ekr.20211016214742.1: *5* py2ts.move_docstrings
         class_or_def_pat = re.compile(r'^(\s*)(public|class)\s+([\w_]+)')
 
