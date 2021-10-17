@@ -1578,11 +1578,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Comment out @cmd decorators.
             s = re.sub(r"^@cmd(.*?)$", r'// @cmd\1\n', s, flags=re.MULTILINE)
             
-            # Replace the alias for 'self' by 'this' *everywhere*.
+            # Replace the alias for 'self' by 'this' *only* in specif contexts.
+            # Do *not* replace the alias everywhere: that could do great harm.
+            # Also, some aliases may no longer be needed, b
             if self.alias:
-                # Doesn't remove the definition of 'at' in 'at, c = self, self.c'.
                 s = re.sub(fr"\b{self.alias}\.", 'this.', s)
+                # Remove lines like `at = self`.
                 s = re.sub(fr"^\s*{self.alias}\s*=\s*this\s*\n", '', s, flags=re.MULTILINE)
+                # Remove lines like `at, c = self, self.c`.
+                s = re.sub(fr"^(\s*){self.alias}\s*,\s*c\s*=\s*this,\s*this.c\n", r'\1c = this.c\n', s,
+                    flags=re.MULTILINE)
+                # Remove lines like `at, p = self, self.p`.
+                s = re.sub(fr"^(\s*){self.alias}\s*,\s*p\s*=\s*this,\s*this.p\n", r'\1p = this.p\n', s,
+                    flags=re.MULTILINE)
+                # Do this last.
+                s = re.sub(fr"\b{self.alias},", 'this,', s)
             return s
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
