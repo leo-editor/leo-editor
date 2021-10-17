@@ -1334,7 +1334,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if comment:
                 lines[i] = f"{lws}// {comment}\n"
             else:
-                lines[i] = '\n'
+                lines[i] = '\n'  # Write blank line for an empty comment.
             return i + 1  # Advance.
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
@@ -1351,15 +1351,18 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
-        docstring_pat = re.compile(r'^([ \t]*)("""|\'\'\')(.*?)\n')
+        docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*?)\n')
 
         def do_docstring(self, i, lines, m, p):
+            # Always use the full multi-line typescript format,
+            # even for single-line python docstrings.
             lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
             tail = docstring.replace(delim, '').strip()
+            tail_s = f"\n{lws} * {tail}" if tail else ''
+            lines[i] = f"{lws}/**{tail_s}\n"
             if delim in docstring:
-                lines[i] = f"{lws}/* {tail} */\n"
-                return i + 1  # Advance.
-            lines[i] = f"{lws}/** {tail}\n"
+                lines.insert(i + 1, f"{lws} */\n")
+                return i + 2  # Advance.
             i += 1
             while i < len(lines):
                 line = lines[i]
