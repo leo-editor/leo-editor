@@ -626,8 +626,7 @@ class LeoServer:
                     assert c.positionExists(p)
                     c.selectPosition(p)
                 else:
-                    g.trace('not found', key.gnx)
-                    raise ServerError(f"{tag}: not found {key.gnx}")
+                    raise ServerError(f"{tag}: not found {gnx}")
             except Exception as e:
                 raise ServerError(f"{tag}: exception going to script of button {index!r}: {e}")
         else:
