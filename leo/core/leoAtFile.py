@@ -646,7 +646,7 @@ class AtFile:
         Return all lines of the @clean tree as if it were
         written as an @file node.
         """
-        at = self.c.atFileCommands
+        at = self
         result = at.atFileToString(root, sentinels=True)
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)

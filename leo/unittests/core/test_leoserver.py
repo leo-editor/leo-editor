@@ -86,6 +86,7 @@ class TestLeoServer(LeoUnitTest):
             'change_all', 'change_then_find',
             'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
             'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
+            'goto_script',
             'tag_children',
             # Other methods
             'delete_node', 'cut_node',  # dangerous.
