@@ -1360,8 +1360,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # even for single-line python docstrings.
             lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
             tail = docstring.replace(delim, '').strip()
-            ###tail_s = f"\n{lws} * {tail}" if tail else ''
-            ### lines[i] = f"{lws}/**{tail_s}\n"
             lines[i] = f"{lws}/**\n"
             if tail:
                 lines.insert(i + 1, f"{lws} * {tail}\n")
