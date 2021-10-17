@@ -1523,10 +1523,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211016200908.1: *5* py2ts.post_pass
+
+
         def post_pass(self, lines):
 
-            # First, remove any (converted) coding lines.
+            # 1. Remove any (converted) coding lines.
             lines = [z for z in lines if z != '@first  // -*- coding: utf-8 -*-\n']
+            
+            # 2. Convert 'self' to 'this' *everywhere*.
+            lines = [z.replace('self', 'this') for z in lines]
+
             return lines
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
