@@ -1248,15 +1248,20 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             Convert p and all descendants as a child of a new last top-level node.
             """
             c = self.c
-            # Create the parent node.
+            # Create the parent node. It will be deleted.
             parent = c.lastTopLevel().insertAfter()
-            parent.h = p.h.replace('@', 'converted ')
-            parent.b = '@language typescript\n'
-            # Convert p, and recursively all nodes.
-            self.convert_node(p, parent)
-            c.redraw(parent)
-            c.expandAllSubheads(parent)
-            c.treeWantsFocusNow()
+            # Convert p and all its descendants.
+            try:
+                self.convert_node(p, parent)
+                # Promote the translated node.
+                parent.promote()
+                parent.doDelete()
+                p = c.lastTopLevel()
+                c.redraw(p)
+                c.expandAllSubheads(p)
+                c.treeWantsFocusNow()
+            except Exception:
+                g.es_exception()
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
         patterns = []
 
@@ -1348,7 +1353,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i + 1  # Advance.
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
-        self_pat = re.compile(r'^.*?\bself\b')
+        this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
 
         def do_def(self, i, lines, m, p):
             j = self.find_indented_block(i, lines, m, p)
@@ -1359,7 +1364,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             tail_s = f" // {tail}" if tail else ''
             # Use void as a placeholder type.
             type_s = ' ' if name == 'constructor' else ': void '
-            function_s = ' ' if self.self_pat.match(lines[i]) else ' function '
+            function_s = ' ' if self.this_pat.match(lines[i]) else ' function '
             lines[i] = f"{lws}public{function_s}{name}({args}){type_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
@@ -1418,6 +1423,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
+            self.do_operators(i, lines, p)
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211017202104.1: *6* py2ts.do_import
@@ -1448,6 +1454,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
+            self.do_operators(i, lines, p)
             return i + 1  # Advance
         #@+node:ekr.20211014022445.1: *6* py2ts.do_else
         else_pat = re.compile(r'^([ \t]*)else:(.*?)\n')
@@ -1478,6 +1485,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
+            self.do_operators(i, lines, p)
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211017210122.1: *6* py2ts.do_operators
@@ -1486,8 +1494,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             table = (
                 ('True', 'true'),
                 ('False', 'false'),
+                ('None', 'none'),
+                ('default', 'default_val'),
                 ('and', '&&'),
                 ('or', '||'),
+                ('is not', '!='),
+                ('not', '!'),
+                ('assert', '// assert')
             )
             for a, b in table:
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
@@ -1530,6 +1543,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             cond_s = cond if cond.startswith('(') else f"({cond})"
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
+            self.do_operators(i, lines, p)
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211014022554.1: *6* py2ts.do_with
