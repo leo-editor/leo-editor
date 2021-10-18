@@ -1489,9 +1489,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for a, b in table:
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
         #@+node:ekr.20211018125503.1: *6* py2ts.do_section_ref
-        lt_s = '<<'
-        rt_s = '>>'
-        section_ref_pat = re.compile(fr"^[ \t]*{lt_s}.*?{rt_s}.*?$")
+        section_ref_pat = re.compile(r"^[ \t]*\<\<.*?\>\>.*?$")
 
         def do_section_ref(self, i, lines, m, p):
             # Don't change the line in any way!
