@@ -1327,6 +1327,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
 
         def do_class(self, i, lines, m, p):
+
             j = self.find_indented_block(i, lines, m, p)
             lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             base_s = f" {base} " if base else ''
@@ -1347,6 +1348,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i + 1  # Advance.
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
+        self_pat = re.compile(r'^.*?\bself\b')
 
         def do_def(self, i, lines, m, p):
             j = self.find_indented_block(i, lines, m, p)
@@ -1357,7 +1359,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             tail_s = f" // {tail}" if tail else ''
             # Use void as a placeholder type.
             type_s = ' ' if name == 'constructor' else ': void '
-            lines[i] = f"{lws}public {name}({args}){type_s}{{{tail_s}\n"
+            function_s = ' ' if self.self_pat.match(lines[i]) else ' function '
+            lines[i] = f"{lws}public{function_s}{name}({args}){type_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
