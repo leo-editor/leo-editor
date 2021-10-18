@@ -1277,6 +1277,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     (self.finally_pat, self.do_finally),
                     (self.for_pat, self.do_for),
                     (self.if_pat, self.do_if),
+                    (self.import_pat, self.do_import),
                     (self.try_pat, self.do_try),
                     (self.while_pat, self.do_while),
                     (self.with_pat, self.do_with),
@@ -1412,6 +1413,25 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
+        #@+node:ekr.20211017202104.1: *6* py2ts.do_import
+        import_s = r'^([ \t]*)import[ \t]+(.*?)\n'
+        import_from_s = r'^([ \t]*)from[ \t]+(.*?)[ \t]+import[ \t]+(.*?)\n'
+        import_pat = re.compile(fr"{import_s}|{import_from_s}")  # Used by main loop.
+        import1_pat = re.compile(import_s)
+        import2_pat = re.compile(import_from_s)
+
+        def do_import(self, i, lines, m, p):
+
+            line = lines[i]
+            m1 = self.import1_pat.match(line)
+            m2 = self.import2_pat.match(line)
+            if m1:
+                lws, import_list = m1.group(1), m1.group(2).strip()
+                lines[i] = f'{lws}import "{import_list}"\n'
+            else:
+                lws, module, import_list = m2.group(1), m2.group(2).strip(), m2.group(3).strip()
+                lines[i] = f'{lws}from "{module}" import {import_list}\n'
+            return i + 1  # Advance
         #@+node:ekr.20211014022432.1: *6* py2ts.do_elif
         elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
 
