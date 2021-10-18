@@ -1296,6 +1296,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         break
                 else:
                     self.do_semicolon(i, lines, p)
+                    self.do_operators(i, lines, p)
                     i += 1
                 assert progress < i
             if False and g.unitTesting and lines != old_lines:
@@ -1473,6 +1474,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
+        #@+node:ekr.20211017210122.1: *6* py2ts.do_operators
+        def do_operators(self, i, lines, p):
+
+            lines[i] = (
+                lines[i]
+                .replace(' and ', ' && ')
+                .replace(' and\n', ' &&\n')
+                .replace(' or ', ' || ')
+                .replace(' or\n', '||\n')
+            )
         #@+node:ekr.20211017134103.1: *6* py2ts.do_semicolon
         def do_semicolon(self, i, lines, p):
             """
@@ -1584,8 +1595,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             j = s.find('>>')
             if -1 < i < j:
                 return False
-            # Return False if this line ends in '{', '(', '['.
-            if s.endswith(('{', '(', '[')):
+            # Return False if this line ends in '{', '(', '[', ':'.
+            if s.endswith(('{', '(', '[', ':')):
                 return False
             # Return False if the next line starts with '{', '(', '['.
             if next_line.lstrip().startswith(('[', '(', '[')):
