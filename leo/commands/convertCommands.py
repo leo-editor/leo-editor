@@ -1477,13 +1477,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211017210122.1: *6* py2ts.do_operators
         def do_operators(self, i, lines, p):
 
-            lines[i] = (
-                lines[i]
-                .replace(' and ', ' && ')
-                .replace(' and\n', ' &&\n')
-                .replace(' or ', ' || ')
-                .replace(' or\n', '||\n')
+            table = (
+                ('True', 'true'),
+                ('False', 'false'),
+                ('and', '&&'),
+                ('or', '||'),
             )
+            for a, b in table:
+                lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
         #@+node:ekr.20211017134103.1: *6* py2ts.do_semicolon
         def do_semicolon(self, i, lines, p):
             """
