@@ -1340,6 +1340,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 ('and', '&&'),
                 ('or', '||'),
                 ('is not', '!='),
+                ('is', '=='),
                 ('not', '!'),
                 ('assert', '// assert'),
             )
@@ -1384,7 +1385,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if -1 < i < j:
                 return False
             # Return False if this line ends in '{', '(', '[', ':'.
-            if s.endswith(('{', '(', '[', ':', '||', '&&', '!')):
+            if s.endswith(('{', '(', '[', ':', '||', '&&', '!', ',')):
                 return False
             # Return False if the next line starts with '{', '(', '['.
             if next_line.lstrip().startswith(('[', '(', '[')):
