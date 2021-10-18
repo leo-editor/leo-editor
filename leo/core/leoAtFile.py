@@ -512,7 +512,7 @@ class AtFile:
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
-            # Do *not* select a postion here.
+            # Do *not* select a position here.
             # That would improperly expand nodes.
                 # c.selectPosition(p)
         except Exception:
