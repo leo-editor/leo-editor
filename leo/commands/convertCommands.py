@@ -1255,6 +1255,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Convert p, and recursively all nodes.
             self.convert_node(p, parent)
             c.redraw(parent)
+            c.expandAllSubheads(parent)
+            c.treeWantsFocusNow()
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body & helpers
         patterns = []
 
@@ -1269,6 +1271,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.patterns = (
                     (self.comment_pat, self.do_comment),  # Should be first.
                     (self.docstring_pat, self.do_docstring),  # Should be second.
+                    (self.section_ref_pat, self.do_section_ref),  # Should be third.
                     (self.class_pat, self.do_class),
                     (self.def_pat, self.do_def),
                     (self.elif_pat, self.do_elif),
@@ -1485,6 +1488,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             )
             for a, b in table:
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
+        #@+node:ekr.20211018125503.1: *6* py2ts.do_section_ref
+        lt_s = '<<'
+        rt_s = '>>'
+        section_ref_pat = re.compile(fr"^[ \t]*{lt_s}.*?{rt_s}.*?$")
+
+        def do_section_ref(self, i, lines, m, p):
+            # Don't change the line in any way!
+            return i + 1
         #@+node:ekr.20211017134103.1: *6* py2ts.do_semicolon
         def do_semicolon(self, i, lines, p):
             """
