@@ -1388,7 +1388,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if s.endswith(('{', '(', '[', ':', '||', '&&', '!', ',')):
                 return False
             # Return False if the next line starts with '{', '(', '['.
-            if next_line.lstrip().startswith(('[', '(', '[')):
+            if next_line.lstrip().startswith(('[', '(', '[', '&&', '||', '!')):
                 return False
             # Return False for '}' lines.
             if s.startswith('}'):
