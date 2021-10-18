@@ -1351,7 +1351,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 name = 'constructor'
             tail_s = f" // {tail}" if tail else ''
             # Use void as a placeholder type.
-            lines[i] = f"{lws}public {name}({args}): void {{{tail_s}\n"
+            type_s = ' ' if name == 'constructor' else ': void '
+            lines[i] = f"{lws}public {name}({args}){type_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Rescan.
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
