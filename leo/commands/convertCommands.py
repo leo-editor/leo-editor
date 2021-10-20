@@ -1271,13 +1271,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.
             target = parent.insertAsLastChild()
-            # #2275.
-            if p.h.startswith('@file'):
-                fn = p.h.replace('@file ', '').replace('.py', '.ts')
-                target.h = fr"@clean c:\leo.repo\leojs\src\core\{fn}"
-            else:
-                target.h = p.h
-            # Convert p.b int child.b
+            target.h = p.h  # The caller will rename this node.
+            # Convert p.b into child.b
             self.convert_body(p, target)
             # Recursively create all descendants.
             for child in p.children():
@@ -1509,16 +1504,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 .replace(self.kill_semicolons_flag, '\n')
             )
         #@+node:ekr.20211018154815.1: *5* py2ts: handlers
-        #@+node:ekr.20211014031722.1: *6* py2ts.do_args
-        def do_args(self, args):
-            """Add type annotations and remove the 'self' argument."""
-            result = []
-            for arg in (z.strip() for z in args.split(',')):
-                # Omit the self arg.
-                if arg != 'this':  # Already converted.
-                    val = self.types_d.get(arg)
-                    result.append(f"{arg}: {val}" if val else arg)
-            return ', '.join(result)
         #@+node:ekr.20211014023141.1: *6* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
 
@@ -1542,7 +1527,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             else:
                 lines[i] = '\n'  # Write blank line for an empty comment.
             return i + 1
-        #@+node:ekr.20211013130041.1: *6* py2ts.do_def
+        #@+node:ekr.20211013130041.1: *6* py2ts.do_def & helper
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
         this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
 
@@ -1560,6 +1545,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[i] = f"{lws}public{function_s}{name}({args}){type_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1
+        #@+node:ekr.20211014031722.1: *7* py2ts.do_args
+        def do_args(self, args):
+            """Add type annotations and remove the 'self' argument."""
+            result = []
+            for arg in (z.strip() for z in args.split(',')):
+                # Omit the self arg.
+                if arg != 'this':  # Already converted.
+                    val = self.types_d.get(arg)
+                    result.append(f"{arg}: {val}" if val else arg)
+            return ', '.join(result)
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*?)\n')
 
