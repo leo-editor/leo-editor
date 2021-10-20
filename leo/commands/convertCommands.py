@@ -1521,7 +1521,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}class{base_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211013165615.1: *6* py2ts.do_comment
         comment_pat = re.compile(r'^([ \t]*)#(.*?)\n')
 
@@ -1532,7 +1532,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}// {comment}\n"
             else:
                 lines[i] = '\n'  # Write blank line for an empty comment.
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211013130041.1: *6* py2ts.do_def
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
         this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
@@ -1550,7 +1550,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             function_s = ' ' if self.this_pat.match(lines[i]) else ' function '
             lines[i] = f"{lws}public{function_s}{name}({args}){type_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211013165952.1: *6* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*?)\n')
 
@@ -1569,7 +1569,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 1
             if delim in docstring:
                 lines.insert(i + 1, f"{lws} */\n")
-                return i + 2  # Advance.
+                return i + 2
             i += 1
             while i < len(lines):
                 line = lines[i]
@@ -1580,10 +1580,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if tail:
                         lines[i] = f"{lws} * {tail}\n"
                         lines.insert(i + 1, f"{lws} */\n")
-                        return i + 2  # Advance.
+                        return i + 2
                     else:
                         lines[i] = f"{lws} */\n"
-                        return i + 1  # Advance
+                        return i + 1
                 elif tail:
                     lines[i] = f"{lws} * {tail}\n"
                 else:
@@ -1601,7 +1601,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             error_s = f" ({error}) " if error else ''
             lines[i] = f"{lws}except{error_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
         ### for_pat = re.compile(r'^([ \t]*)for[ \t]+(.*?):(.*?)\n')
 
@@ -1659,7 +1659,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             else:
                 lws, module, import_list = m2.group(1), m2.group(2).strip(), m2.group(3).strip()
                 lines[i] = f'{lws}// from "{module}" import {import_list}\n'
-            return i + 1  # Advance
+            return i + 1
         #@+node:ekr.20211014022432.1: *6* py2ts.do_elif
         elif1_s = r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n'  # elif (cond):
         elif2_s = r'^([ \t]*)elif[ \t]*\((.*?)\n'      # elif (
@@ -1707,7 +1707,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}else {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211014022453.1: *6* py2ts.do_finally
         finally_pat = re.compile(r'^([ \t]*)finally:(.*?)\n')
 
@@ -1718,7 +1718,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}finally {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
         if1_s = r'^([ \t]*)if[ \t]+(.*?):(.*?)\n'  # if (cond):
         if2_s = r'^([ \t]*)if[ \t]*\((.*?)\n'      # if (
@@ -1771,20 +1771,46 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             tail_s = f" // {tail}" if tail else ''
             lines[i] = f"{lws}try {{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211013141809.1: *6* py2ts.do_while
-        while_pat = re.compile(r'^([ \t]*)while[ \t]+(.*?):(.*?)\n')
+        ### while_pat = re.compile(r'^([ \t]*)while[ \t]+(.*?):(.*?)\n')
+
+        while1_s = r'^([ \t]*)while[ \t]+(.*?):(.*?)\n'  # while (cond):
+        while2_s = r'^([ \t]*)while[ \t]*\((.*?)\n'      # while (
+
+        while1_pat = re.compile(while1_s)
+        while2_pat = re.compile(while2_s)
+        while_pat = re.compile(fr"{while1_s}|{while2_s}")  # Used by main loop.
 
         def do_while(self, i, lines, m, p):
 
-            j = self.find_indented_block(i, lines, m, p)
-            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-            cond_s = cond if cond.startswith('(') else f"({cond})"
-            tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
-            self.do_operators(i, lines, p)
-            lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            line = lines[i]
+            m1 = self.while1_pat.match(line)
+            m2 = self.while2_pat.match(line)
+            if m1:
+                j = self.find_indented_block(i, lines, m, p)
+                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+                cond_s = cond if cond.startswith('(') else f"({cond})"
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
+                self.do_operators(i, lines, p)
+                lines.insert(j, f"{lws}}}\n")
+                return i + 1
+            else:
+                j = self.find_indented_block(i, lines, m2, p)
+                # Generate the 'while' line.
+                lws, tail = m2.group(1), m2.group(2).strip()
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}while ({tail_s}\n"
+                # Tell do_semicolons that lines[i:j] are not statements.
+                self.kill_semicolons(lines, i, j)
+                # Assume line[j] closes the paren.  Insert '{'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
+                # Insert '}'
+                k = self.find_indented_block(j, lines, m2, p)
+                lines.insert(k, f"{lws}}}\n")
+                return i + 1
+
         #@+node:ekr.20211014022554.1: *6* py2ts.do_with
         with_pat = re.compile(r'^([ \t]*)with(.*?):(.*?)\n')
 
@@ -1796,7 +1822,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             clause_s = f" ({clause}) " if clause else ''
             lines[i] = f"{lws}with{clause_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            return i + 1
         #@+node:ekr.20211013172540.1: *6* py2ts.do_trailing_comment
         trailing_comment_pat = re.compile(r'^([ \t]*)(.*?)#(.*?)\n')
 
@@ -1809,7 +1835,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
             statement_s = f"{statement};" if self.ends_statement(i, lines) else statement
             lines[i] = f"{lws}{statement_s}  // {trailing_comment}\n"
-            return i + 1  # Advance.
+            return i + 1
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
