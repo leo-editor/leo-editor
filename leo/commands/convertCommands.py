@@ -1230,7 +1230,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         # Typescript can infer types of initialized kwargs.
         types_d = {}
 
-
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor
         def __init__(self, c, alias=None):
@@ -1337,7 +1336,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             table = (
                 ('True', 'true'),
                 ('False', 'false'),
-                ('None', 'none'),
+                # ('None', 'null'), # Done in post-pass.
                 ('default', 'default_val'),
                 ('and', '&&'),
                 ('or', '||'),
@@ -1486,10 +1485,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Remove lines like `at = self`.
                 s = re.sub(fr"^\s*{self.alias}\s*=\s*this\s*\n", '', s, flags=re.MULTILINE)
                 # Remove lines like `at, c = self, self.c`.
-                s = re.sub(fr"^(\s*){self.alias}\s*,\s*c\s*=\s*this,\s*this.c\n", r'\1c = this.c\n', s,
+                s = re.sub(fr"^(\s*){self.alias}\s*,\s*c\s*=\s*this,\s*this.c\n", r'\1const c = this.c\n', s,
                     flags=re.MULTILINE)
                 # Remove lines like `at, p = self, self.p`.
-                s = re.sub(fr"^(\s*){self.alias}\s*,\s*p\s*=\s*this,\s*this.p\n", r'\1p = this.p\n', s,
+                s = re.sub(fr"^(\s*){self.alias}\s*,\s*p\s*=\s*this,\s*this.p\n", r'\1const p = this.p\n', s,
                     flags=re.MULTILINE)
                 # Do this last.
                 s = re.sub(fr"\b{self.alias},", 'this,', s)
@@ -1498,11 +1497,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def post_pass(self, lines):
 
             lines = self.move_docstrings(lines)
-            return (
-                ''.join(lines)
+            s = (''.join(lines)
                 .replace('@language python', '@language typescript')
                 .replace(self.kill_semicolons_flag, '\n')
             )
+            return re.sub(r'\bNone\b', 'null', s)
         #@+node:ekr.20211018154815.1: *5* py2ts: handlers
         #@+node:ekr.20211014023141.1: *6* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
@@ -1603,7 +1602,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, error, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
             tail_s = f" // {tail}" if tail else ''
             error_s = f" ({error}) " if error else ''
-            lines[i] = f"{lws}except{error_s}{{{tail_s}\n"
+            lines[i] = f"{lws}catch{error_s}{{{tail_s}\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211013141725.1: *6* py2ts.do_for
