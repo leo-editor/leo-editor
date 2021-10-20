@@ -1223,6 +1223,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@@nobeautify
     class PythonToTypescript:
 
+        # The handlers are clear as they are.
+        # pylint: disable=no-else-return
+
         # Keys are argument names. Values are typescript types.
         # Typescript can infer types of initialized kwargs.
         types_d = {}
