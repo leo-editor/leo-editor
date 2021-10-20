@@ -1324,10 +1324,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     print(z.rstrip())
             # Run the post-pass
             target.b = self.post_pass(lines)
-            ###
-                # lines = self.post_pass(lines)
-                # # Always set target.b!
-                # target.b = ''.join(lines).replace('@language python', '@language typescript')
             # Munge target.h.
             target.h = target.h.replace('__init__', 'constructor')
         #@+node:ekr.20211017210122.1: *7* py2ts.do_operators
@@ -1422,11 +1418,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return j
 
         #@+node:ekr.20211020101415.1: *7* py2ts.kill_semicolons
-        kill_semicolons_flag = '  // **kill-semicolon**\n'
+        kill_semicolons_flag = '  // **kill-semicolon**\n'  # Must end with a newline.
 
         def kill_semicolons(self, lines, i, j):
             """
-            Tell a later call to do_semicolon that lines[i : j] should *not* end with a semicolon.
+            Tell later calls to do_semicolon that lines[i : j] should *not* end with a semicolon.
             """
             for n in range(i, j):
                 lines[n] = lines[n].rstrip() + self.kill_semicolons_flag
@@ -1503,11 +1499,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 .replace('@language python', '@language typescript')
                 .replace(self.kill_semicolons_flag, '\n')
             )
-            ###
-                # lines = self.post_pass(lines)
-                # # Always set target.b!
-                # target.b = ''.join(lines).replace('@language python', '@language typescript')
-                # return lines
         #@+node:ekr.20211018154815.1: *5* py2ts: handlers
         #@+node:ekr.20211014031722.1: *6* py2ts.do_args
         def do_args(self, args):
@@ -1703,16 +1694,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return i + 1
             else:
                 j = self.find_indented_block(i, lines, m2, p)
+                # Generate the 'if' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
                 tail_s = f" // {tail}" if tail else ''
                 lines[i] = f"{lws}if ({tail_s}\n"
                 # Tell do_semicolons that lines[i:j] are not statements.
                 self.kill_semicolons(lines, i, j)
                 # Assume line[j] closes the paren.  Insert '{'
-                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n' ### // if 1**\n'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
                 # Insert a (new) matching '}
                 k = self.find_indented_block(j, lines, m2, p)
-                lines.insert(k, f"{lws}}}\n") ### // if 2**\n")
+                lines.insert(k, f"{lws}}}\n")
                 return i + 1
         #@+node:ekr.20211018125503.1: *6* py2ts.do_section_ref
         section_ref_pat = re.compile(r"^[ \t]*\<\<.*?\>\>.*?$")
