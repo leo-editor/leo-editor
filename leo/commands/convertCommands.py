@@ -1485,7 +1485,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return s
         #@+node:ekr.20211018154815.1: *5* py2ts: handlers
         #@+node:ekr.20211014031722.1: *6* py2ts.do_args
-
         def do_args(self, args):
             """Add type annotations and remove the 'self' argument."""
             result = []
@@ -1612,12 +1611,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             line = lines[i]
             m1 = self.import1_pat.match(line)
             m2 = self.import2_pat.match(line)
+            # Comment out all imports.
             if m1:
                 lws, import_list = m1.group(1), m1.group(2).strip()
-                lines[i] = f'{lws}import "{import_list}"\n'
+                lines[i] = f'{lws}// import "{import_list}"\n'
             else:
                 lws, module, import_list = m2.group(1), m2.group(2).strip(), m2.group(3).strip()
-                lines[i] = f'{lws}from "{module}" import {import_list}\n'
+                lines[i] = f'{lws}// from "{module}" import {import_list}\n'
             return i + 1  # Advance
         #@+node:ekr.20211014022432.1: *6* py2ts.do_elif
         elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
@@ -1655,18 +1655,30 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1  # Advance.
         #@+node:ekr.20211013131016.1: *6* py2ts.do_if
-        if_pat = re.compile(r'^([ \t]*)if[ \t]+(.*?):(.*?)\n')
+        if1_s = r'^([ \t]*)if[ \t]+(.*?):(.*?)\n'  # if (cond):
+        if2_s = r'^([ \t]*)if[ \t]*\((.*?)\n'      # if (
+
+        if1_pat = re.compile(if1_s)
+        if2_pat = re.compile(if2_s)
+        if_pat = re.compile(fr"{if1_s}|{if2_s}")  # Used by main loop.
 
         def do_if(self, i, lines, m, p):
 
-            j = self.find_indented_block(i, lines, m, p)
-            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-            cond_s = cond if cond.startswith('(') else f"({cond})"
-            tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
-            self.do_operators(i, lines, p)
-            lines.insert(j, f"{lws}}}\n")
-            return i + 1  # Advance.
+            line = lines[i]
+            m1 = self.if1_pat.match(line)
+            m2 = self.if2_pat.match(line)
+            if m1:
+                j = self.find_indented_block(i, lines, m, p)
+                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+                cond_s = cond if cond.startswith('(') else f"({cond})"
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
+                self.do_operators(i, lines, p)
+                lines.insert(j, f"{lws}}}\n")
+                return i + 1  # Advance.
+            else:
+                assert m2, repr(line)
+                return i + 1
         #@+node:ekr.20211018125503.1: *6* py2ts.do_section_ref
         section_ref_pat = re.compile(r"^[ \t]*\<\<.*?\>\>.*?$")
 
