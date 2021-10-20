@@ -1230,6 +1230,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         # Typescript can infer types of initialized kwargs.
         types_d = {}
 
+
+        #@+others
+        #@+node:ekr.20211020162251.1: *5* py2ts.ctor
         def __init__(self, c, alias=None):
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
@@ -1241,8 +1244,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 except Exception:
                     g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
                     g.es_print(repr(line))
-
-        #@+others
         #@+node:ekr.20211018154858.1: *5* py2ts: main line
         #@+node:ekr.20211013081549.1: *6* py2ts.convert
         def convert(self, p):
@@ -1270,7 +1271,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_node(self, p, parent):
             # Create a copy of p as the last child of parent.
             target = parent.insertAsLastChild()
-            target.h = p.h.replace('@file', '').replace('.py', '.ts')  # #2275.
+            # #2275.
+            if p.h.startswith('@file'):
+                fn = p.h.replace('@file ', '').replace('.py', '.ts')
+                target.h = fr"@clean c:\leo.repo\leojs\src\core\{fn}"
+            else:
+                target.h = p.h
             # Convert p.b int child.b
             self.convert_body(p, target)
             # Recursively create all descendants.
