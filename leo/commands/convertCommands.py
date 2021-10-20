@@ -1323,9 +1323,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 for z in lines:
                     print(z.rstrip())
             # Run the post-pass
-            lines = self.post_pass(lines)
-            # Always set target.b!
-            target.b = ''.join(lines).replace('@language python', '@language typescript')
+            target.b = self.post_pass(lines)
+            ###
+                # lines = self.post_pass(lines)
+                # # Always set target.b!
+                # target.b = ''.join(lines).replace('@language python', '@language typescript')
             # Munge target.h.
             target.h = target.h.replace('__init__', 'constructor')
         #@+node:ekr.20211017210122.1: *7* py2ts.do_operators
@@ -1357,6 +1359,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             - Does not end in a comment.
             - Is not part of a docstring.
             """
+            # Honor the flag inserted by kill_semicolons.
+            flag = self.kill_semicolons_flag
+            if lines[i].endswith(flag):
+                lines[i] = lines[i].replace(flag, '\n')
+                return
             # For now, use a maximal policy.
             if self.ends_statement(i, lines):
                 lines[i] = f"{lines[i].rstrip()};\n"
@@ -1414,6 +1421,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 j += 1
             return j
 
+        #@+node:ekr.20211020101415.1: *7* py2ts.kill_semicolons
+        kill_semicolons_flag = '  // **kill-semicolon**\n'
+
+        def kill_semicolons(self, lines, i, j):
+            """
+            Tell a later call to do_semicolon that lines[i : j] should *not* end with a semicolon.
+            """
+            for n in range(i, j):
+                lines[n] = lines[n].rstrip() + self.kill_semicolons_flag
         #@+node:ekr.20211016214742.1: *7* py2ts.move_docstrings
         class_or_def_pat = re.compile(r'^(\s*)(public|class)\s+([\w_]+)')
 
@@ -1450,12 +1466,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i-1 : k + 1] = lines[j : k + 1] + [lines[i-1]]
                 i = k + 1
             return lines
-        #@+node:ekr.20211016200908.1: *7* py2ts.post_pass
-        def post_pass(self, lines):
-
-            lines = self.move_docstrings(lines)
-            return lines
-        #@+node:ekr.20211017044939.1: *7* py2ts.pre_pass
+        #@+node:ekr.20211017044939.1: *6* py2ts.pre_pass
         def pre_pass(self, s):
 
             # Remove the python encoding lines.
@@ -1483,6 +1494,20 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Do this last.
                 s = re.sub(fr"\b{self.alias},", 'this,', s)
             return s
+        #@+node:ekr.20211016200908.1: *6* py2ts.post_pass
+        def post_pass(self, lines):
+
+            lines = self.move_docstrings(lines)
+            return (
+                ''.join(lines)
+                .replace('@language python', '@language typescript')
+                .replace(self.kill_semicolons_flag, '\n')
+            )
+            ###
+                # lines = self.post_pass(lines)
+                # # Always set target.b!
+                # target.b = ''.join(lines).replace('@language python', '@language typescript')
+                # return lines
         #@+node:ekr.20211018154815.1: *5* py2ts: handlers
         #@+node:ekr.20211014031722.1: *6* py2ts.do_args
         def do_args(self, args):
@@ -1668,16 +1693,26 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             m1 = self.if1_pat.match(line)
             m2 = self.if2_pat.match(line)
             if m1:
-                j = self.find_indented_block(i, lines, m, p)
+                j = self.find_indented_block(i, lines, m1, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
                 tail_s = f" // {tail}" if tail else ''
                 lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
                 self.do_operators(i, lines, p)
                 lines.insert(j, f"{lws}}}\n")
-                return i + 1  # Advance.
+                return i + 1
             else:
-                assert m2, repr(line)
+                j = self.find_indented_block(i, lines, m2, p)
+                lws, tail = m2.group(1), m2.group(2).strip()
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}if ({tail_s}\n"
+                # Tell do_semicolons that lines[i:j] are not statements.
+                self.kill_semicolons(lines, i, j)
+                # Assume line[j] closes the paren.  Insert '{'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n' ### // if 1**\n'
+                # Insert a (new) matching '}
+                k = self.find_indented_block(j, lines, m2, p)
+                lines.insert(k, f"{lws}}}\n") ### // if 2**\n")
                 return i + 1
         #@+node:ekr.20211018125503.1: *6* py2ts.do_section_ref
         section_ref_pat = re.compile(r"^[ \t]*\<\<.*?\>\>.*?$")
