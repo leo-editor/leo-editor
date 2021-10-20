@@ -17663,15 +17663,17 @@ def stripLws(self,s):
 )
 
 #@+node:ekr.20071104221525.91: *5* new-elisp2py-output-
-#@+node:ekr.20211019173004.1: ** script: slide show
+#@+node:ekr.20211019220014.1: ** script: slide show
+g.cls()
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 print('isQt5:', isQt5)
 
-top, left, width, height = 50, 500, 2000, 1400  # Sizes when not full screen.
+delay = 60  # seconds
+top, left, width, height = 50, 200, 1000, 700  # Sizes when not full screen.
 
 @others
 
-sort_kind = 'size'  # 'date', 'name', 'random', or 'size'
+sort_kind = 'random'  # 'date', 'name', 'random', or 'size'
 
 if 1:  # Open a dialog, starting at cwd.
     path = QtWidgets.QFileDialog().getExistingDirectory()
@@ -17683,14 +17685,14 @@ if path:
         n = len(files_list)
         print(f"Found {n} picture{g.plural(n)}")
         w = Slides()
-        w.run(sort_kind)
+        w.run(delay=delay, sort_kind=sort_kind)
 print('done')
-#@+node:ekr.20211019173004.2: *3* get_files
+#@+node:ekr.20211019220014.2: *3* get_files
 def get_files(path):
     """Return all files in path, including all subdirectories."""
     import pathlib
     return [str(z) for z in pathlib.Path(path).rglob('*') if z.is_file()]
-#@+node:ekr.20211019173004.3: *3* class Slides
+#@+node:ekr.20211019220014.3: *3* class Slides
 class Slides(QtWidgets.QWidget):
     
     delay = 60  # seconds
@@ -17703,7 +17705,7 @@ class Slides(QtWidgets.QWidget):
     timer = QtCore.QBasicTimer()
     
     @others
-#@+node:ekr.20211019173004.4: *4* Slides.delete
+#@+node:ekr.20211019220014.4: *4* Slides.delete
 send_to_trash_warning_given = False
 
 def delete(self):
@@ -17728,7 +17730,7 @@ def delete(self):
         print(f"Deleted {file_name}")
         self.slide_number = max(0, self.slide_number - 1)
         self.next_slide()
-#@+node:ekr.20211019173004.5: *4* Slides.keyPressEvent
+#@+node:ekr.20211019220014.5: *4* Slides.keyPressEvent
 def keyPressEvent (self, event):
     
     i = event.key()
@@ -17761,7 +17763,7 @@ def keyPressEvent (self, event):
     else:
         g.trace(repr(s), i, repr(mods))
     
-#@+node:ekr.20211019173004.6: *4* Slides.make_widgets
+#@+node:ekr.20211019220014.6: *4* Slides.make_widgets
 def make_widgets(self):
     
     # Create the picture area.
@@ -17770,17 +17772,19 @@ def make_widgets(self):
     # Create the scroll area.
     self.scroll_area = area =QtWidgets.QScrollArea()
     area.setWidget(self.picture)
-    area.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+    AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
+    area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
     
     # Disable scrollbars.
-    area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-    area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+    ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
+    area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+    area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
     
     # Init the layout.
     layout = QtWidgets.QVBoxLayout()
     layout.addWidget(self.scroll_area)
     self.setLayout(layout)
-#@+node:ekr.20211019173004.7: *4* Slides.move_up/down/left/right
+#@+node:ekr.20211019220014.7: *4* Slides.move_up/down/left/right
 def move_down(self):
     self.scroll_area.scrollContentsBy(0, -100)
 
@@ -17792,25 +17796,27 @@ def move_right(self):
 
 def move_up(self):
     self.scroll_area.scrollContentsBy(0, 100)
-#@+node:ekr.20211019173004.8: *4* Slides.next_slide
+#@+node:ekr.20211019220014.8: *4* Slides.next_slide
 def next_slide(self):
     if self.slide_number + 1 < len(files_list):
         self.slide_number += 1  # Don't wrap.
     self.scale = 1.0
     self.show_slide()
-#@+node:ekr.20211019173004.9: *4* Slides.prev_slide
+#@+node:ekr.20211019220014.9: *4* Slides.prev_slide
 def prev_slide(self):
     if self.slide_number > 0: # Don't wrap.
         self.slide_number -= 1
     self.scale = 1.0
     self.show_slide()
-#@+node:ekr.20211019173004.10: *4* Slides.quit
+#@+node:ekr.20211019220014.10: *4* Slides.quit
 def quit(self):
     self.timer.stop()
     self.destroy()
-#@+node:ekr.20211019173004.11: *4* Slides.run
-def run(self, sort_kind='random'):
+#@+node:ekr.20211019220014.11: *4* Slides.run
+def run(self, delay=None, sort_kind='random'):
     w = self
+    if delay is not None:
+        self.delay = delay
     w.setStyleSheet('background: black')
     w.setGeometry(left, top, width, height)  # The non-full-screen sizes.
     w.make_widgets()
@@ -17819,7 +17825,7 @@ def run(self, sort_kind='random'):
     # w.showMaximized()
     self.sort(sort_kind)
     w.next_slide()  # show_slide resets the timer.
-#@+node:ekr.20211019173004.12: *4* Slides.show_help
+#@+node:ekr.20211019220014.12: *4* Slides.show_help
 def show_help(self):
     """Show the help message."""
     import textwrap
@@ -17837,7 +17843,7 @@ def show_help(self):
            left arrow scroll left
           right arrow scroll right
     '''))
-#@+node:ekr.20211019173004.13: *4* Slides.show_slide
+#@+node:ekr.20211019220014.13: *4* Slides.show_slide
 def show_slide(self):
     # Reset the timer.
     self.timer.stop()
@@ -17848,22 +17854,17 @@ def show_slide(self):
     self.setWindowTitle(file_name)
     # Display the picture.
     pixmap = QtGui.QPixmap(file_name)
-    if pixmap:
+    try:
+        TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
         image = pixmap.scaledToHeight(
             self.height() * self.scale,
-            QtCore.Qt.SmoothTransformation,
+            TransformationMode.SmoothTransformation,
         )
-        if image:
-            self.picture.setPixmap(image)
-            self.picture.adjustSize()
-        else:
-            g.trace('bad image', file_name)
-            self.next_slide()
-    else:
-        g.trace('bad pixmap', file_name)
+        self.picture.setPixmap(image)
+        self.picture.adjustSize()
+    except Exception:
         self.next_slide()
-    
-#@+node:ekr.20211019173004.14: *4* Slides.sort
+#@+node:ekr.20211019220014.14: *4* Slides.sort
 def sort(self, sort_kind):
     """sort files_list based on sort_kind."""
     import os
@@ -17883,20 +17884,23 @@ def sort(self, sort_kind):
         files_list.sort(key = os.path.getsize)
     else:
         g.trace(f"unknown sort kind: {sort_kind!r}")
-#@+node:ekr.20211019173004.15: *4* Slides.timerEvent
+#@+node:ekr.20211019220014.15: *4* Slides.timerEvent
 def timerEvent(self, e=None):
     self.next_slide()  # show_slide resets the timer.
-#@+node:ekr.20211019173004.16: *4* Slides.toggle_full_screen
+#@+node:ekr.20211019220014.16: *4* Slides.toggle_full_screen
 def toggle_full_screen(self):
     w = self
     if w.full_screen:
         w.full_screen = False
+        w.picture.adjustSize()
         w.showNormal()
     else:
         w.full_screen = True
-        w.setWindowState(QtCore.Qt.WindowFullScreen)
+        WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
+        w.setWindowState(WindowState.WindowFullScreen)
         w.picture.setGeometry(0, 0, w.width(), w.height())
-#@+node:ekr.20211019173004.17: *4* Slides.zoom_in & zoom_out
+        w.picture.adjustSize()
+#@+node:ekr.20211019220014.17: *4* Slides.zoom_in & zoom_out
 def zoom_in(self):
     self.scale = self.scale * 1.05
     self.show_slide()
