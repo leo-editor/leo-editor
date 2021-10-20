@@ -1636,18 +1636,42 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f'{lws}// from "{module}" import {import_list}\n'
             return i + 1  # Advance
         #@+node:ekr.20211014022432.1: *6* py2ts.do_elif
-        elif_pat = re.compile(r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n')
+        elif1_s = r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n'  # elif (cond):
+        elif2_s = r'^([ \t]*)elif[ \t]*\((.*?)\n'      # elif (
+
+        elif1_pat = re.compile(elif1_s)
+        elif2_pat = re.compile(elif2_s)
+        elif_pat = re.compile(fr"{elif1_s}|{elif2_s}")  # Used by main loop.
 
         def do_elif(self, i, lines, m, p):
 
-            j = self.find_indented_block(i, lines, m, p)
-            lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-            cond_s = cond if cond.startswith('(') else f"({cond})"
-            tail_s = f" // {tail}" if tail else ''
-            lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
-            lines.insert(j, f"{lws}}}\n")
-            self.do_operators(i, lines, p)
-            return i + 1  # Advance
+            line = lines[i]
+            m1 = self.elif1_pat.match(line)
+            m2 = self.elif2_pat.match(line)
+            if m1:
+                j = self.find_indented_block(i, lines, m, p)
+                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+                cond_s = cond if cond.startswith('(') else f"({cond})"
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
+                lines.insert(j, f"{lws}}}\n")
+                self.do_operators(i, lines, p)
+                return i + 1
+            else:
+                j = self.find_indented_block(i, lines, m2, p)
+                # Generate the 'else if' line.
+                lws, tail = m2.group(1), m2.group(2).strip()
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}else if ({tail_s}\n"
+                # Tell do_semicolons that lines[i:j] are not statements.
+                self.kill_semicolons(lines, i, j)
+                # Assume line[j] closes the paren.  Insert '{'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
+                # Insert '}'
+                k = self.find_indented_block(j, lines, m2, p)
+                lines.insert(k, f"{lws}}}\n")
+                return i + 1
+
         #@+node:ekr.20211014022445.1: *6* py2ts.do_else
         else_pat = re.compile(r'^([ \t]*)else:(.*?)\n')
 
@@ -1702,7 +1726,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.kill_semicolons(lines, i, j)
                 # Assume line[j] closes the paren.  Insert '{'
                 lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
-                # Insert a (new) matching '}
+                # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
                 return i + 1
