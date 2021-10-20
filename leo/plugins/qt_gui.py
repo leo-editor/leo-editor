@@ -533,7 +533,7 @@ class LeoQtGui(leoGui.LeoGui):
         # Creation order determines returned value.
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
         dialog.addButton('No', ButtonRole.NoRole)
-        dialog.addButton('Cancel', ButtonRole.RejectRole)
+        # dialog.addButton('Cancel', ButtonRole.RejectRole)
         if yes_all:
             dialog.addButton('Yes To All', ButtonRole.YesRole)
         if no_all:
