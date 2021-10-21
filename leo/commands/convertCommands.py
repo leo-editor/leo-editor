@@ -1288,9 +1288,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Calculate this table only once.
             if not self.patterns:
                 self.patterns = (
-                    (self.comment_pat, self.do_comment),  # Should be first.
-                    (self.docstring_pat, self.do_docstring),  # Should be second.
-                    (self.section_ref_pat, self.do_section_ref),  # Should be third.
+                    # Head: order matters.
+                    (self.comment_pat, self.do_comment),
+                    (self.docstring_pat, self.do_docstring),
+                    (self.section_ref_pat, self.do_section_ref),
+                    # Middle: order doesn't matter.
                     (self.class_pat, self.do_class),
                     (self.def_pat, self.do_def),
                     (self.elif_pat, self.do_elif),
@@ -1303,7 +1305,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     (self.try_pat, self.do_try),
                     (self.while_pat, self.do_while),
                     (self.with_pat, self.do_with),
-                    (self.trailing_comment_pat, self.do_trailing_comment)  # Should be last.
+                    # Tail: order matters.
+                    (self.trailing_comment_pat, self.do_trailing_comment)
                 )
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, g.splitLines(self.pre_pass(p.b))
@@ -1478,16 +1481,20 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             # Replace the alias for 'self' by 'this' *only* in specif contexts.
             # Do *not* replace the alias everywhere: that could do great harm.
-            # Also, some aliases may no longer be needed, b
             if self.alias:
                 s = re.sub(fr"\b{self.alias}\.", 'this.', s)
                 # Remove lines like `at = self`.
                 s = re.sub(fr"^\s*{self.alias}\s*=\s*this\s*\n", '', s, flags=re.MULTILINE)
                 # Remove lines like `at, c = self, self.c`.
-                s = re.sub(fr"^(\s*){self.alias}\s*,\s*c\s*=\s*this,\s*this.c\n", r'\1const c = this.c\n', s,
+                s = re.sub(
+                    fr"^(\s*){self.alias}\s*,\s*c\s*=\s*this,\s*this.c\n",
+                    r'\1c = this.c\n',  # do_assignment adds const.
+                    s,
                     flags=re.MULTILINE)
                 # Remove lines like `at, p = self, self.p`.
-                s = re.sub(fr"^(\s*){self.alias}\s*,\s*p\s*=\s*this,\s*this.p\n", r'\1const p = this.p\n', s,
+                s = re.sub(fr"^(\s*){self.alias}\s*,\s*p\s*=\s*this,\s*this.p\n",
+                    r'\1p = this.p\n',  # do_assignment adds const.
+                    s,
                     flags=re.MULTILINE)
                 # Do this last.
                 s = re.sub(fr"\b{self.alias},", 'this,', s)
@@ -1499,6 +1506,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.move_docstrings(lines)
             self.do_f_strings(lines)
             self.do_ternary(lines)
+            self.do_assignment(lines)  # Do this last, so it doesn't add 'const' to inserted comments.
             s = (''.join(lines)
                 .replace('@language python', '@language typescript')
                 .replace(self.kill_semicolons_flag, '\n')
@@ -1506,6 +1514,29 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return re.sub(r'\bNone\b', 'null', s)
 
             
+        #@+node:ekr.20211021061023.1: *7* py2ts.do_assignment
+        assignment_pat = re.compile(r'^([ \t]*)(.*?)\s+=\s+(.*)$')  # Require whitespace around the '='
+
+        def do_assignment(self, lines):
+            """Add const to all non-tuple assignments."""
+            # Do this late so that we can test for the ending semicolon.
+            
+            # Suppression table.
+            table = (
+                ',',  # Tuple assignment or  mutli-line argument lists.
+                '*',  # Docstring.
+                '`',  # f-string.
+                '//',  # Comment.
+                '=',  # Condition.
+                # Keywords that might be followed by '='
+                'class', 'def', 'elif', 'for', 'if', 'print', 'public', 'return', 'while',
+            )
+            for i, s in enumerate(lines):
+                m = self.assignment_pat.match(s)
+                if m:
+                    lws, lhs, rhs = m.group(1), m.group(2), m.group(3).rstrip()
+                    if not any(z in lhs for z in table):
+                        lines[i] = f"{lws}const {lhs} = {rhs}\n"
         #@+node:ekr.20211020185016.1: *7* py2ts.do_f_strings
         f_string_pat = re.compile(r'([ \t]*)(.*?)f"(.*?)"(.*)$')
 
