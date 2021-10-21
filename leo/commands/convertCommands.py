@@ -1509,11 +1509,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211020185016.1: *7* py2ts.do_f_strings
         f_string_pat = re.compile(r'([ \t]*)(.*?)f"(.*?)"(.*)$')
 
-        ### Always put the f-string as a comment, then try to replace it. ###
-
         def do_f_strings(self, lines):
-            """Kill all f-strings, attempting not to create syntax errors."""
-            indent = ' ' * 4
+
             i = 0
             while i < len(lines):
                 progress = i
@@ -1521,15 +1518,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 m = self.f_string_pat.match(s)
                 if m:
                     lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4)
-                    if '(' in head and ')' in tail:
-                        lines[i] = f"{lws}{head} // **fstring0\n"
-                        lines.insert(i + 1, f"{lws}{indent}// f\"{string} // **fstring1\n")
-                        lines.insert(i + 2, f"{lws}{tail} // **fstring2\n")
-                        i += 3
-                    else:
-                        # The semicolon is a guess. Sometimes a comma would be correct.
-                        lines[i] = f"{lws}{head} \"\"; //f\"{string}{tail} // **fstring3\n"
-                        i += 1
+                    string_s = (
+                        string.replace('{', '${')
+                        .replace('! ', 'not ')  # Undo erroneous replacement.
+                    )
+                    string_s = re.sub(r'$\{(.*?):.*?\}', r'${\1}', string_s)  # Remove format spec.
+                    lines[i] = f"{lws}// {s.strip()}\n"
+                    lines.insert(i + 1, f"{lws}{head}`{string_s}`{tail.rstrip()}\n")
+                    i += 2
                 else:
                     i += 1
                 assert i > progress
