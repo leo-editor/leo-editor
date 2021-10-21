@@ -1522,6 +1522,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Do this late so that we can test for the ending semicolon.
             
             # Suppression table.
+            # Missing elements are likely to cause this method to generate '= ='.
             table = (
                 ',',  # Tuple assignment or  mutli-line argument lists.
                 '*',  # Docstring.
@@ -1529,7 +1530,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 '//',  # Comment.
                 '=',  # Condition.
                 # Keywords that might be followed by '='
-                'class', 'def', 'elif', 'for', 'if', 'print', 'public', 'return', 'while',
+                'class', 'def', 'elif', 'for', 'if', 'print', 'public', 'return', 'with', 'while',
             )
             for i, s in enumerate(lines):
                 m = self.assignment_pat.match(s)
