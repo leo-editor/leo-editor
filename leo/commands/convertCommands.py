@@ -1525,7 +1525,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Missing elements are likely to cause this method to generate '= ='.
             table = (
                 ',',  # Tuple assignment or  mutli-line argument lists.
-                '*',  # Docstring.
+                '*',  # A converted docstring.
                 '`',  # f-string.
                 '//',  # Comment.
                 '=',  # Condition.
