@@ -1347,8 +1347,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             )
             for a, b in table:
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
-            # Plain text replacements.
-            lines[i] = lines[i].replace('f"', '"')
+            
         #@+node:ekr.20211017134103.1: *7* py2ts.do_semicolon
         def do_semicolon(self, i, lines, p):
             """
@@ -1464,7 +1463,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Rearrange the lines.
                 lines[i-1 : k + 1] = lines[j : k + 1] + [lines[i-1]]
                 i = k + 1
-            return lines
+            ### return lines
         #@+node:ekr.20211017044939.1: *6* py2ts.pre_pass
         def pre_pass(self, s):
 
@@ -1493,15 +1492,46 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Do this last.
                 s = re.sub(fr"\b{self.alias},", 'this,', s)
             return s
-        #@+node:ekr.20211016200908.1: *6* py2ts.post_pass
+        #@+node:ekr.20211016200908.1: *6* py2ts.post_pass & helper
         def post_pass(self, lines):
 
-            lines = self.move_docstrings(lines)
+            # Munge lines in place
+            self.move_docstrings(lines)
+            self.do_f_strings(lines)
             s = (''.join(lines)
                 .replace('@language python', '@language typescript')
                 .replace(self.kill_semicolons_flag, '\n')
             )
             return re.sub(r'\bNone\b', 'null', s)
+
+            
+        #@+node:ekr.20211020185016.1: *7* py2ts.do_f_strings
+        f_string_pat = re.compile(r'([ \t]*)(.*?)f"(.*?)"(.*)$')
+
+        ### Always put the f-string as a comment, then try to replace it. ###
+
+        def do_f_strings(self, lines):
+            """Kill all f-strings, attempting not to create syntax errors."""
+            indent = ' ' * 4
+            i = 0
+            while i < len(lines):
+                progress = i
+                s = lines[i]
+                m = self.f_string_pat.match(s)
+                if m:
+                    lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4)
+                    if '(' in head and ')' in tail:
+                        lines[i] = f"{lws}{head} // **fstring0\n"
+                        lines.insert(i + 1, f"{lws}{indent}// f\"{string} // **fstring1\n")
+                        lines.insert(i + 2, f"{lws}{tail} // **fstring2\n")
+                        i += 3
+                    else:
+                        # The semicolon is a guess. Sometimes a comma would be correct.
+                        lines[i] = f"{lws}{head} \"\"; //f\"{string}{tail} // **fstring3\n"
+                        i += 1
+                else:
+                    i += 1
+                assert i > progress
         #@+node:ekr.20211018154815.1: *5* py2ts: handlers
         #@+node:ekr.20211014023141.1: *6* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
