@@ -1559,8 +1559,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     string_s = re.sub(r'\![frs]', '', string_s)
                     # Add the original line as a comment as a check.
                     lines[i] = f"{lws}// {s.strip()}\n"
-                    # Add the replacement line.
-                    lines.insert(i + 1, f"{lws}{head}`{string_s}`{tail.rstrip()}\n")
+                    # Add the replacement line, again as a comment for now.
+                    lines.insert(i + 1, f"{lws}// // {head}`{string_s}`{tail.rstrip()}\n")
                     i += 2
                 else:
                     i += 1
