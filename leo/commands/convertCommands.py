@@ -1551,11 +1551,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if m:
                     lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4)
                     string_s = (
-                        string.replace('{', '${')
+                        string.replace('{', '${') # Add the '$'
                         .replace('! ', 'not ')  # Undo erroneous replacement.
                     )
-                    string_s = re.sub(r'$\{(.*?):.*?\}', r'${\1}', string_s)  # Remove format spec.
+                    # Remove format strings. Not perfect, but usually will work.
+                    string_s = re.sub(r'\:[0-9]\.+[0-9]+[frs]', '', string_s)
+                    string_s = re.sub(r'\![frs]', '', string_s)
+                    # Add the original line as a comment as a check.
                     lines[i] = f"{lws}// {s.strip()}\n"
+                    # Add the replacement line.
                     lines.insert(i + 1, f"{lws}{head}`{string_s}`{tail.rstrip()}\n")
                     i += 2
                 else:
