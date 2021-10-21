@@ -1492,12 +1492,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Do this last.
                 s = re.sub(fr"\b{self.alias},", 'this,', s)
             return s
-        #@+node:ekr.20211016200908.1: *6* py2ts.post_pass & helper
+        #@+node:ekr.20211016200908.1: *6* py2ts.post_pass & helpers
         def post_pass(self, lines):
 
             # Munge lines in place
             self.move_docstrings(lines)
             self.do_f_strings(lines)
+            self.do_ternary(lines)
             s = (''.join(lines)
                 .replace('@language python', '@language typescript')
                 .replace(self.kill_semicolons_flag, '\n')
@@ -1532,6 +1533,31 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     i += 1
                 assert i > progress
+        #@+node:ekr.20211021051033.1: *7* py2ts.do_ternary
+        ternary_pat1 = re.compile(r'^([ \t]*)(.*?)\s*=\s*(.*?) if (.*?) else (.*);$')  # assignment
+        ternary_pat2 = re.compile(r'^([ \t]*)return\s+(.*?) if (.*?) else (.*);$')  # return statement
+
+        def do_ternary(self, lines):
+            
+            i = 0
+            while i < len(lines):
+                progress = i
+                s = lines[i]
+                m1 = self.ternary_pat1.match(s)
+                m2 = self.ternary_pat2.match(s)
+                if m1:
+                    lws, target, a, cond, b = m1.group(1), m1.group(2), m1.group(3), m1.group(4), m1.group(5)
+                    lines[i] = f"{lws}// {s.strip()}\n"
+                    lines.insert(i + 1, f"{lws}{target} = {cond} ? {a} : {b};\n")
+                    i += 2
+                elif m2:
+                    lws, a, cond, b = m2.group(1), m2.group(2), m2.group(3), m2.group(4)
+                    lines[i] = f"{lws}// {s.strip()}\n"
+                    lines.insert(i + 1, f"{lws}return {cond} ? {a} : {b};\n")
+                    i += 2
+                else:
+                    i += 1
+                assert progress < i
         #@+node:ekr.20211018154815.1: *5* py2ts: handlers
         #@+node:ekr.20211014023141.1: *6* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
