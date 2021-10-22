@@ -9,6 +9,8 @@ Designed to be called from a script (or @command nodes) as follows:
     
     from leo.plugins.picture_viewer import Slides
     Slides().run()  # See below for defaults.
+    
+*Note*: there is no need to enable this plugin.
 
 **Key bindings**
     
