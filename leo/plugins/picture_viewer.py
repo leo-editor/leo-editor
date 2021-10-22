@@ -5,9 +5,7 @@
 """
 A plugin for displaying slides from a folder and its subfolders.
 
-**Script**
-
-Designed to be called from a script as follows:
+Designed to be called from a script (or @command nodes) as follows:
     
     from leo.plugins.picture_viewer import Slides
     Slides().run()  # See below for defaults.
