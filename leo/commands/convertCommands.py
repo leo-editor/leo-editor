@@ -1588,10 +1588,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines.insert(k, f"{lws}}}\n")
                 return i + 1
         #@+node:ekr.20211018125503.1: *7* py2ts.do_section_ref
-        section_ref_pat = re.compile(r"^[ \t]*\<\<.*?\>\>.*?$")
+        section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*?)$")
 
         def do_section_ref(self, i, lines, m, p):
-            # Don't change the line in any way!
+            # Handle trailing code.
+            lws, section_name, tail = m.group(1), m.group(2), m.group(3).strip()
+            if tail.startswith('#'):
+                lines[i] = f"{lws}{section_name}  // {tail[1:]}\n"
             return i + 1
         #@+node:ekr.20211014022506.1: *7* py2ts.do_try
         try_pat = re.compile(r'^([ \t]*)try:(.*?)\n')
