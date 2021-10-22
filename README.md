@@ -1,4 +1,4 @@
-Leo http://leoeditor.com 6.5b1 is now available on
+Leo http://leoeditor.com 6.5 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -8,6 +8,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Add python-to-typescript and view-recent-commands.
 - Add c.findCommands.interactive_search_helper.
 - Leo now uses only traditional unit tests.
+  Remove support for @test and @suite.
+  Remove leoTest.py.
 - Many code-level cleanups.
 - 450+ pull requests.
 

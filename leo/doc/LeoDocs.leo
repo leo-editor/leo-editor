@@ -31057,7 +31057,7 @@ Leo's source code. For this reason, the names of methods in Leo's core
 change rarely. Similarly, clients can usually assume that the names of Leo
 commands won't change.
 </t>
-<t tx="ekr.20210921102613.1">Leo http://leoeditor.com 6.5b1 is now available on
+<t tx="ekr.20210921102613.1">Leo http://leoeditor.com 6.5 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
