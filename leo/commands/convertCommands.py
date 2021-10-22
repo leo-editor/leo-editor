@@ -1732,8 +1732,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             j = s.find('>>')
             if -1 < i < j:
                 return False
-            # Return False if this line ends in '{', '(', '[', ':'.
-            if s.endswith(('{', '(', '[', ':', '||', '&&', '!', ',')):
+            # Return False if this line ends in any of the following:
+            if s.endswith(('{', '(', '[', ':', '||', '&&', '!', ',', '`')):
                 return False
             # Return False if the next line starts with '{', '(', '['.
             if next_line.lstrip().startswith(('[', '(', '[', '&&', '||', '!')):
@@ -1856,22 +1856,30 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 progress = i
                 s = lines[i]
                 m = self.f_string_pat.match(s)
-                if m:
-                    lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4)
-                    string_s = (
-                        string.replace('{', '${') # Add the '$'
-                        .replace('! ', 'not ')  # Undo erroneous replacement.
-                    )
-                    # Remove format strings. Not perfect, but usually will work.
-                    string_s = re.sub(r'\:[0-9]\.+[0-9]+[frs]', '', string_s)
-                    string_s = re.sub(r'\![frs]', '', string_s)
+                if not m:
+                    i += 1
+                    continue
+                lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4).rstrip()
+                string_s = (
+                    string.replace('{', '${') # Add the '$'
+                    .replace('! ', 'not ')  # Undo erroneous replacement.
+                )
+                # Remove format strings. Not perfect, but seemingly good enough.
+                string_s = re.sub(r'\:[0-9]\.+[0-9]+[frs]', '', string_s)
+                string_s = re.sub(r'\![frs]', '', string_s)
+                # A hack. If the fstring is on a line by itself, remove a trailing ';'
+                if not head.strip() and tail.endswith(';'):
+                    tail = tail[:-1].strip()
+                if 1:  # Just replace the line.
+                    lines[i] = f"{lws}{head}`{string_s}`{tail.rstrip()}\n"
+                    i += 1
+                else:
+                    # These comments quickly become annoying.
                     # Add the original line as a comment as a check.
                     lines[i] = f"{lws}// {s.strip()}\n"
-                    # Add the replacement line.
+                        # Add the replacement line.
                     lines.insert(i + 1, f"{lws}{head}`{string_s}`{tail.rstrip()}\n")
                     i += 2
-                else:
-                    i += 1
                 assert i > progress
         #@+node:ekr.20211021051033.1: *8* py2ts.do_ternary
         ternary_pat1 = re.compile(r'^([ \t]*)(.*?)\s*=\s*(.*?) if (.*?) else (.*);$')  # assignment
