@@ -280,7 +280,7 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run a qt About Leo dialog."""
         if g.unitTesting:
             return
-        dialog = QtWidgets.QMessageBox(c.frame.top)
+        dialog = QtWidgets.QMessageBox(c and c.frame.top)
         dialog.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
         dialog.setIcon(Icon.Information)
         yes = dialog.addButton('Ok', ButtonRole.YesRole)
@@ -367,7 +367,7 @@ class LeoQtGui(leoGui.LeoGui):
             step_min = {}
         if not init:
             init = datetime.datetime.now()
-        dialog = Calendar(c.frame.top, message=message, init=init, step_min=step_min)
+        dialog = Calendar(c and c.frame.top, message=message, init=init, step_min=step_min)
         dialog.setStyleSheet(c.active_stylesheet)
         dialog.setWindowTitle(title)
         try:
@@ -448,7 +448,7 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
             return
-        dialog = QtWidgets.QMessageBox(c.frame.top)
+        dialog = QtWidgets.QMessageBox(c and c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             dialog.setStyleSheet(stylesheet)
@@ -481,8 +481,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting:
             return None
-        b = QtWidgets.QMessageBox
-        dialog = b(c.frame.top)
+        dialog = QtWidgets.QMessageBox(c and c.frame.top)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             dialog.setStyleSheet(stylesheet)
@@ -528,8 +527,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting:
             return None
-        box = QtWidgets.QMessageBox
-        dialog = box(c.frame.top)
+        dialog = QtWidgets.QMessageBox(c and c.frame.top)
         # Creation order determines returned value.
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
         dialog.addButton('No', ButtonRole.NoRole)
@@ -695,7 +693,7 @@ class LeoQtGui(leoGui.LeoGui):
             #@-<< no dialog error >>
         #@+<< emergency fallback >>
         #@+node:ekr.20110605121601.18507: *5* << emergency fallback >>
-        dialog = QtWidgets.QMessageBox(None)  # c.frame.top)
+        dialog = QtWidgets.QMessageBox(None)
         dialog.setWindowFlags(WindowType.Dialog)
             # That is, not a fixed size dialog.
         dialog.setWindowTitle(title)
