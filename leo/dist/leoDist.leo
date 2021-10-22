@@ -177,8 +177,8 @@
 <v t="ekr.20190618104609.1"><vh>Merge master into devel</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
-<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
+<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -250,7 +250,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.5b1 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.5 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -260,6 +260,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Add python-to-typescript and view-recent-commands.
 - Add c.findCommands.interactive_search_helper.
 - Leo now uses only traditional unit tests.
+  Remove support for @test and @suite.
+  Remove leoTest.py.
 - Many code-level cleanups.
 - 450+ pull requests.
 
@@ -1523,10 +1525,11 @@ git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
-- Update date of the release.</t>
+- Update static date.
+- Update date of the release, in &lt;&lt; version dates &gt;&gt; section.</t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
     static version added to leoversion.py earlier.
-    #static version = '6.4-devel'
+    #static version = '6.N-devel'
 
 git checkout devel
 update version in leoVersion.py.
@@ -1989,7 +1992,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.4 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.NNN branch:
     
 - Push any changes to release branch.
 - git merge master
@@ -2014,20 +2017,22 @@ Public announcements, after creating a package.
 
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-   
-- Announce to comp.lang.python.announce:
-  https://groups.google.com/g/comp.lang.python.announce
-  
-- Register Leo at https://pypi.python.org/pypi/leo
 
+- Announce to Python-announce-list using email:
+   python-announce-list@python.org
+   **Paste source-forge or leo-editor announcement**.
+
+  - Check it by visiting the archive:
+    https://mail.python.org/archives/list/python-announce-list@python.org/
+  
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
 </t>
-<t tx="ekr.20200313063940.1">git checkout -b 6.4
-git push origin 6.4
+<t tx="ekr.20200313063940.1">git checkout -b 6.N
+git push origin 6.N
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
 # Processed in order listed
@@ -2062,25 +2067,28 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">**build**
 
-*** Delete old files in leo-editor/dist
-
-git checkout 6.5
-python -m build
-
-*** Check leo-editor/dist: make sure file names are reasonable.
-    valid: 6.xb1, invalid: 6.x-b1
+- git checkout 6.5
+- Delete files in leoeditor/dist
+- python -m build
 
 **upload**
 
-python -m twine upload --repository testpypi dist/*
+Testing
+- python -m twine upload --repository testpypi dist/*
 
 --or--
 
+Production
 python -m twine upload -r pypi dist/*
 
 username:  __token__
 password:  EKR: Copy contents ofleo_pypi_token.txt
            Then paste using "Paste" from console Edit menu.
+           
+File names must be unique.
+If there are conflicting names, add -NNN to the filename, like this:
+    leo-6.5-2-py3-none-any.whl
+    leo-6.5-2.tar.gz
 
 **install**
 
@@ -2096,11 +2104,11 @@ python -m leo.core.runLeo
 **uninstall after testint**
 
 python -m pip uninstall leo</t>
-<t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.4.  Base this branch on devel.
-   This branch holds all work for 6.4, including beta and rc releases.
+<t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.N.  Base this branch on devel.
+   This branch holds all work for 6.N, including beta and rc releases.
 
 2. Fix last-minute bugs in a **bug-fix branch**.
-   Then merge into devel and 6.4.
+   Then merge into devel and 6.N.
    
 3. Create pypi version by running `python -m build` in the leo-editor folder.
    

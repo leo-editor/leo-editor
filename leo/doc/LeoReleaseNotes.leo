@@ -26407,7 +26407,7 @@ Add settings for highlighting the selected line:
 PR: https://github.com/leo-editor/leo-editor/pull/1948</t>
 <t tx="ekr.20210917085922.9">https://github.com/leo-editor/leo-editor/issues/2005
 https://github.com/leo-editor/leo-editor/issues/1973</t>
-<t tx="ekr.20211015090213.1">Leo http://leoeditor.com 6.5b1 is now available on
+<t tx="ekr.20211015090213.1">Leo http://leoeditor.com 6.5 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -26417,6 +26417,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Add python-to-typescript and view-recent-commands.
 - Add c.findCommands.interactive_search_helper.
 - Leo now uses only traditional unit tests.
+  Remove support for @test and @suite.
+  Remove leoTest.py.
 - Many code-level cleanups.
 - 450+ pull requests.
 
