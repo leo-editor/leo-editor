@@ -49,6 +49,29 @@ class TestPythonToTypeScript(LeoUnitTest):
     def test_convert_position_class(self):
         # Convert a copy of the Position class
         self.x.convert(self.p)
+    #@+node:ekr.20211021075411.1: *3* test_py2ts.test_do_f_strings()
+    def test_do_f_strings(self):
+
+        x = self.x
+        tests = (
+            (
+                'g.es(f"{timestamp}created: {fileName}")\n',
+                'g.es(`${timestamp}created: ${fileName}`)\n',
+            ),
+            (
+                'g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")\n',
+                'g.es(`read ${len(files)} files in ${t2 - t1} seconds`)\n',
+            ),
+            (
+                'print(f"s: {s!r}")\n',
+                'print(`s: ${s}`)\n',
+            ),
+        )
+        for test in tests:
+            source, expected = test
+            lines = [source]
+            x.do_f_strings(lines)
+            self.assertEqual(lines[-1], expected)
     #@-others
 #@-others
 
