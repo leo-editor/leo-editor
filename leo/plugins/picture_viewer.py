@@ -6,16 +6,16 @@
 A plugin for displaying slides from a folder and its subfolders.
 
 Designed to be called from a script (or @command nodes) as follows:
-    
+
     from leo.plugins.picture_viewer import Slides
-    Slides().run()  # See below for defaults.
-    
+    Slides().run(c)  # See below for defaults.
+
 *Note*: there is no need to enable this plugin.
 
 **Key bindings**
-    
+
 Plain keys control the display of slides:
-    
+
       space: show the next slide.
   backspace: show the previous slide.
      escape: end the slideshow
@@ -29,7 +29,7 @@ arrows keys: pan the slide
 **Defaults**
 
 The following keyword arguments may be supplied to the run method:
-    
+
     background_color = "black",  # Default background color.
     delay = 100,  # Delay between slides, in seconds.
     extensions = ['.jpeg', '.jpg', '.png'],  # List of file extensions.
@@ -65,11 +65,11 @@ def init():
 if QtWidgets:
 
     class Slides(QtWidgets.QWidget):
-    
+
         scale = 1.0
         slide_number = -1
         timer = QtCore.QBasicTimer()
-        
+
         #@+others
         #@+node:ekr.20211021200821.4: *3* Slides.delete
         send_to_trash_warning_given = False
@@ -86,7 +86,7 @@ if QtWidgets:
                 return
             file_name = self.files_list[self.slide_number]
             result = g.app.gui.runAskYesNoDialog(
-                c = None,
+                c = self.c,
                 title = "Delete File?",
                 message = f"Delete file {g.shortFileName(file_name)}?"
             )
@@ -108,7 +108,7 @@ if QtWidgets:
             ]
         #@+node:ekr.20211021200821.5: *3* Slides.keyPressEvent
         def keyPressEvent (self, event):
-            
+
             i = event.key()
             s = event.text()
             mods = event.modifiers()
@@ -140,7 +140,7 @@ if QtWidgets:
                 self.move_right()
             else:
                 g.trace(repr(s), i, repr(mods))
-            
+
         #@+node:ekr.20211021200821.6: *3* Slides.move_up/down/left/right
         def move_down(self):
             self.scroll_area.scrollContentsBy(0, -400 * self.scale)
@@ -171,12 +171,14 @@ if QtWidgets:
                     self.raise_()
         #@+node:ekr.20211021200821.8: *3* Slides.next_slide
         def next_slide(self):
+
             if self.slide_number + 1 < len(self.files_list):
                 self.slide_number += 1  # Don't wrap.
             self.scale = 1.0
             self.show_slide()
         #@+node:ekr.20211021200821.9: *3* Slides.prev_slide
         def prev_slide(self):
+
             if self.slide_number > 0: # Don't wrap.
                 self.slide_number -= 1
             self.scale = 1.0
@@ -185,9 +187,11 @@ if QtWidgets:
         def quit(self):
             self.timer.stop()
             self.destroy()
+            g.app.permanentScriptDict ['picture_viewer'] = None
             print('done')
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
+            c,  # Required. The commander for this slideshow.
             background_color = "black",  # Default background color.
             delay = 100,  # Delay between slides, in seconds.
             extensions = None,  # List of file extensions.
@@ -201,6 +205,7 @@ if QtWidgets:
             w = self
             # Keep a reference to this class!
             g.app.permanentScriptDict ['picture_viewer'] = self
+            self.c = c
             # Init ivars.
             self.background_color = background_color or "black"
             self.delay = delay
@@ -237,26 +242,26 @@ if QtWidgets:
             w.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20211021200821.12: *4* Slides.make_widgets
         def make_widgets(self):
-            
+
             w = self
             # Init the window's attributes.
             w.setStyleSheet(f"background: {self.background_color}")
             w.setGeometry(0, 0, self._width, self._height)  # The non-full-screen sizes.
-            
+
             # Create the picture area.
             w.picture = QtWidgets.QLabel('picture', self)
-            
+
             # Create the scroll area.
             w.scroll_area = area =QtWidgets.QScrollArea()
             area.setWidget(self.picture)
             AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
             area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
-            
+
             # Disable scrollbars.
             ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
             area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
             area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
-            
+
             # Init the layout.
             layout = QtWidgets.QVBoxLayout()
             layout.addWidget(self.scroll_area)
@@ -342,7 +347,7 @@ if QtWidgets:
         def zoom_in(self):
             self.scale = self.scale * 1.05
             self.show_slide()
-            
+
         def zoom_out(self):
             self.scale = self.scale * (1.0 / 1.05)
             self.show_slide()
