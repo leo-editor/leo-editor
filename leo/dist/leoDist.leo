@@ -1525,7 +1525,8 @@ git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
-- Update date of the release.</t>
+- Update static date.
+- Update date of the release, in &lt;&lt; version dates &gt;&gt; section.</t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
     static version added to leoversion.py earlier.
     #static version = '6.N-devel'
@@ -1991,7 +1992,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.N branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.NNN branch:
     
 - Push any changes to release branch.
 - git merge master
@@ -2024,8 +2025,6 @@ Public announcements, after creating a package.
   - Check it by visiting the archive:
     https://mail.python.org/archives/list/python-announce-list@python.org/
   
-- Register Leo at https://pypi.python.org/pypi/leo
-
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
