@@ -16,6 +16,8 @@
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
+<v t="ekr.20211011090013.1"><vh>@@button cvt-comments</vh></v>
+<v t="ekr.20211020091540.1"><vh>@command b</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
@@ -28,7 +30,6 @@
 <v t="ekr.20210510071812.1"><vh>put_tnodes (new)</vh></v>
 </v>
 <v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
-<v t="ekr.20211011090013.1"><vh>@@button cvt-comments</vh></v>
 <v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
 <v t="ekr.20150413091056.1"><vh>@@button check-clones</vh></v>
 <v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
@@ -459,6 +460,7 @@
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file ../plugins/demo.py</vh></v>
+<v t="ekr.20211021200745.1"><vh>@file ../plugins/picture_viewer.py</vh></v>
 <v t="ekr.20120913110135.10579"><vh>@file ../plugins/screencast.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file ../plugins/screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file ../plugins/slideshow.py</vh></v>
@@ -759,7 +761,8 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">pylint
+<t tx="ekr.20150425145248.1">cvt-at-file
+pylint
 cov
 moz
 backup</t>
@@ -833,6 +836,32 @@ Valid values are (case is ignored):
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20160122104332.1">@language python
+</t>
+<t tx="ekr.20211011090013.1">"""Find hanging comments."""
+import re
+pat = re.compile(r'^(\s*)(.*?)\n(\s*)(.*?)\n')
+
+# Find:  ^(\s*)(.*?)\n(\s*)(.*?)\n
+# Repl: \1\2  \4\n      Single line (best)
+# Repl: \1\2\n\1\4\n
+    
+def predicate(p):
+    for m in pat.finditer(p.b):
+        if (
+            not m.group(2).startswith('def ')
+            and not m.group(2).startswith('#')
+            and m.group(4).startswith('#')
+            and len(m.group(1)) &lt; len(m.group(3))
+            and not (m.group(4).startswith('"""'))
+        ):
+            g.trace('Found', p.h)
+            return True
+    return False
+
+c.cloneFindByPredicate(p.self_and_subtree, predicate, flatten=True)
+print('done')
+</t>
+<t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
 </t>
@@ -990,30 +1019,6 @@ main(node_list = ['Startup', 'Notes', 'Code'])
 </t>
 <t tx="ekr.20210113054702.1">import os
 print(f"\nos.curdir: {os.path.abspath(os.curdir)}")</t>
-<t tx="ekr.20211011090013.1">"""Find hanging comments."""
-import re
-pat = re.compile(r'^(\s*)(.*?)\n(\s*)(.*?)\n')
-
-# Find:  ^(\s*)(.*?)\n(\s*)(.*?)\n
-# Repl: \1\2  \4\n      Single line (best)
-# Repl: \1\2\n\1\4\n
-    
-def predicate(p):
-    for m in pat.finditer(p.b):
-        if (
-            not m.group(2).startswith('def ')
-            and not m.group(2).startswith('#')
-            and m.group(4).startswith('#')
-            and len(m.group(1)) &lt; len(m.group(3))
-            and not (m.group(4).startswith('"""'))
-        ):
-            g.trace('Found', p.h)
-            return True
-    return False
-
-c.cloneFindByPredicate(p.self_and_subtree, predicate, flatten=True)
-print('done')
-</t>
 <t tx="ekr.20201013034659.1"></t>
 <t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
 
