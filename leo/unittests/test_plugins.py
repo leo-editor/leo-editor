@@ -82,6 +82,7 @@ class TestPlugins(LeoUnitTest):
             'backlink.py',  # Qt code is optional, disabled with module-level guard.
             'leoscreen.py',  # Qt imports are optional.
             'nodetags.py',  # #2031: Qt imports are optional.
+            'picture_viewer.py',  # Special case.
             'pyplot_backend.py',
             # 'free_layout.py',
         )
