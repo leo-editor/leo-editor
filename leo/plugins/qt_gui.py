@@ -221,10 +221,12 @@ class LeoQtGui(leoGui.LeoGui):
             # Fix #516: Do the following only once...
             if c:
                 dialog.setStyleSheet(c.active_stylesheet)
-            # Set the commander's FindTabManager.
-            assert g.app.globalFindTabManager
-            c.ftm = g.app.globalFindTabManager
-            fn = c.shortFileName() or 'Untitled'
+                # Set the commander's FindTabManager.
+                assert g.app.globalFindTabManager
+                c.ftm = g.app.globalFindTabManager
+                fn = c.shortFileName() or 'Untitled'
+            else:
+                fn = 'Untitled'
             dialog.setWindowTitle(f"Find in {fn}")
         if c:
             c.inCommand = False
@@ -240,7 +242,8 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20150619053138.1: *5* qt_gui.createFindDialog
     def createFindDialog(self, c):
         """Create and init a non-modal Find dialog."""
-        g.app.globalFindTabManager = c and c.findCommands.ftm
+        if c:
+            g.app.globalFindTabManager = c.findCommands.ftm
         top = c and c.frame.top  # top is the DynamicWindow class.
         w = top.findTab
         dialog = QtWidgets.QDialog()
@@ -257,7 +260,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.setLayout(layout)
         if c:
             c.styleSheetManager.set_style_sheets(w=dialog)
-        g.app.gui.setFilter(c, dialog, dialog, 'find-dialog')
+            g.app.gui.setFilter(c, dialog, dialog, 'find-dialog')
             # This makes most standard bindings available.
         dialog.setModal(False)
         return dialog
@@ -661,13 +664,13 @@ class LeoQtGui(leoGui.LeoGui):
                 None,  # parent
                 title,
                 # os.curdir,
-                g.init_dialog_folder(c, c.p, use_at_path=True),
+                g.init_dialog_folder(None, None, use_at_path=True),
                 self.makeFilter(filetypes or []),
             )
         # Bizarre: PyQt5 version can return a tuple!
         s = obj[0] if isinstance(obj, (list, tuple)) else obj
         s = s or ''
-        if s:
+        if c and s:
             c.last_dir = g.os_path_dirname(s)
         return s
     #@+node:ekr.20110605121601.18503: *4* qt_gui.runScrolledMessageDialog
