@@ -177,8 +177,8 @@
 <v t="ekr.20190618104609.1"><vh>Merge master into devel</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
-<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
+<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1528,7 +1528,7 @@ git push --follow-tags
 - Update date of the release.</t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
     static version added to leoversion.py earlier.
-    #static version = '6.NNN-devel'
+    #static version = '6.N-devel'
 
 git checkout devel
 update version in leoVersion.py.
@@ -2016,9 +2016,13 @@ Public announcements, after creating a package.
 
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-   
-- Announce to comp.lang.python.announce:
-  https://groups.google.com/g/comp.lang.python.announce
+
+- Announce to Python-announce-list using email:
+   python-announce-list@python.org
+   **Paste source-forge or leo-editor announcement**.
+
+  - Check it by visiting the archive:
+    https://mail.python.org/archives/list/python-announce-list@python.org/
   
 - Register Leo at https://pypi.python.org/pypi/leo
 
@@ -2064,25 +2068,28 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">**build**
 
-*** Delete old files in leo-editor/dist
-
-git checkout 6.5
-python -m build
-
-*** Check leo-editor/dist: make sure file names are reasonable.
-    valid: 6.xb1, invalid: 6.x-b1
+- git checkout 6.5
+- Delete files in leoeditor/dist
+- python -m build
 
 **upload**
 
-python -m twine upload --repository testpypi dist/*
+Testing
+- python -m twine upload --repository testpypi dist/*
 
 --or--
 
+Production
 python -m twine upload -r pypi dist/*
 
 username:  __token__
 password:  EKR: Copy contents ofleo_pypi_token.txt
            Then paste using "Paste" from console Edit menu.
+           
+File names must be unique.
+If there are conflicting names, add -NNN to the filename, like this:
+    leo-6.5-2-py3-none-any.whl
+    leo-6.5-2.tar.gz
 
 **install**
 
