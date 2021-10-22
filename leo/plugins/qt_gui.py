@@ -219,13 +219,15 @@ class LeoQtGui(leoGui.LeoGui):
             dialog = self.createFindDialog(c)
             self.globalFindDialog = dialog
             # Fix #516: Do the following only once...
-            dialog.setStyleSheet(c.active_stylesheet)
+            if c:
+                dialog.setStyleSheet(c.active_stylesheet)
             # Set the commander's FindTabManager.
             assert g.app.globalFindTabManager
             c.ftm = g.app.globalFindTabManager
             fn = c.shortFileName() or 'Untitled'
             dialog.setWindowTitle(f"Find in {fn}")
-        c.inCommand = False
+        if c:
+            c.inCommand = False
         if dialog.isVisible():
             # The order is important, and tricky.
             dialog.focusWidget()
@@ -238,8 +240,8 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20150619053138.1: *5* qt_gui.createFindDialog
     def createFindDialog(self, c):
         """Create and init a non-modal Find dialog."""
-        g.app.globalFindTabManager = c.findCommands.ftm
-        top = c.frame.top  # top is the DynamicWindow class.
+        g.app.globalFindTabManager = c and c.findCommands.ftm
+        top = c and c.frame.top  # top is the DynamicWindow class.
         w = top.findTab
         dialog = QtWidgets.QDialog()
         # Fix #516: Hide the dialog. Never delete it.
@@ -253,7 +255,8 @@ class LeoQtGui(leoGui.LeoGui):
         layout.addWidget(w)
         self.attachLeoIcon(dialog)
         dialog.setLayout(layout)
-        c.styleSheetManager.set_style_sheets(w=dialog)
+        if c:
+            c.styleSheetManager.set_style_sheets(w=dialog)
         g.app.gui.setFilter(c, dialog, dialog, 'find-dialog')
             # This makes most standard bindings available.
         dialog.setModal(False)
@@ -363,19 +366,24 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< define date/time classes >>
         if g.unitTesting:
             return None
+        if not c:
+            c = g.NullObject()
         if step_min is None:
             step_min = {}
         if not init:
             init = datetime.datetime.now()
         dialog = Calendar(c and c.frame.top, message=message, init=init, step_min=step_min)
-        dialog.setStyleSheet(c.active_stylesheet)
+        if c:
+            dialog.setStyleSheet(c.active_stylesheet)
         dialog.setWindowTitle(title)
         try:
-            c.in_qt_dialog = True
+            if c:
+                c.in_qt_dialog = True
             dialog.raise_()
             val = dialog.exec() if isQt6 else dialog.exec_()
         finally:
-            c.in_qt_dialog = False
+            if c:
+                c.in_qt_dialog = False
         if val == DialogCode.Accepted:
             return dialog.dt.dateTime().toPyDateTime()
         return None
@@ -403,7 +411,8 @@ class LeoQtGui(leoGui.LeoGui):
             return None
         # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
         dialog = QtWidgets.QInputDialog()
-        dialog.setStyleSheet(c.active_stylesheet)
+        if c:
+            dialog.setStyleSheet(c.active_stylesheet)
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
         if cancelButtonText:
@@ -429,7 +438,8 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         dialog = QtWidgets.QInputDialog()
-        dialog.setStyleSheet(c.active_stylesheet)
+        if c:
+            dialog.setStyleSheet(c.active_stylesheet)
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
         dialog.setTextValue(default)
@@ -536,18 +546,23 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.addButton('Yes To All', ButtonRole.YesRole)
         if no_all:
             dialog.addButton('No To All', ButtonRole.NoRole)
-        dialog.setStyleSheet(c.active_stylesheet)
+        if c:
+            dialog.setStyleSheet(c.active_stylesheet)
         dialog.setWindowTitle(title)
         if message:
             dialog.setText(message)
         dialog.setIcon(Information.Warning)
         dialog.setDefaultButton(yes)
-        try:
-            c.in_qt_dialog = True
+        if c:
+            try:
+                c.in_qt_dialog = True
+                dialog.raise_()
+                val = dialog.exec() if isQt6 else dialog.exec_()
+            finally:
+                c.in_qt_dialog = False
+        else:
             dialog.raise_()
             val = dialog.exec() if isQt6 else dialog.exec_()
-        finally:
-            c.in_qt_dialog = False
         # val is the same as the creation order.
         # Tested with both Qt6 and Qt5.
         return {
@@ -581,27 +596,31 @@ class LeoQtGui(leoGui.LeoGui):
         # - Use init_dialog_folder only if a path is not given
         # - *Never* Use os.curdir by default!
         if not startpath:
-            startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
+            startpath = g.init_dialog_folder(c, c and c.p, use_at_path=True)
                 # Returns c.last_dir or os.curdir
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
-        dialog.setStyleSheet(c.active_stylesheet)
+        if c:
+            dialog.setStyleSheet(c.active_stylesheet)
         self.attachLeoIcon(dialog)
         func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
-        try:
-            c.in_qt_dialog = True
+        if c:
+            try:
+                c.in_qt_dialog = True
+                val = func(parent=None, caption=title, directory=startpath, filter=filter_)
+            finally:
+                c.in_qt_dialog = False
+        else:
             val = func(parent=None, caption=title, directory=startpath, filter=filter_)
-        finally:
-            c.in_qt_dialog = False
         if isQt5 or isQt6:  # this is a *Py*Qt change rather than a Qt change
             val, junk_selected_filter = val
         if multiple:
             files = [g.os_path_normslashes(s) for s in val]
-            if files:
+            if c and files:
                 c.last_dir = g.os_path_dirname(files[-1])
             return files
         s = g.os_path_normslashes(val)
-        if s:
+        if c and s:
             c.last_dir = g.os_path_dirname(s)
         return s
     #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
@@ -622,10 +641,22 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return ''
         dialog = QtWidgets.QFileDialog()
-        dialog.setStyleSheet(c.active_stylesheet)
-        self.attachLeoIcon(dialog)
-        try:
-            c.in_qt_dialog = True
+        if c:
+            dialog.setStyleSheet(c.active_stylesheet)
+            self.attachLeoIcon(dialog)
+            try:
+                c.in_qt_dialog = True
+                obj = dialog.getSaveFileName(
+                    None,  # parent
+                    title,
+                    # os.curdir,
+                    g.init_dialog_folder(c, c.p, use_at_path=True),
+                    self.makeFilter(filetypes or []),
+                )
+            finally:
+                c.in_qt_dialog = False
+        else:
+            self.attachLeoIcon(dialog)
             obj = dialog.getSaveFileName(
                 None,  # parent
                 title,
@@ -633,8 +664,6 @@ class LeoQtGui(leoGui.LeoGui):
                 g.init_dialog_folder(c, c.p, use_at_path=True),
                 self.makeFilter(filetypes or []),
             )
-        finally:
-            c.in_qt_dialog = False
         # Bizarre: PyQt5 version can return a tuple!
         s = obj[0] if isinstance(obj, (list, tuple)) else obj
         s = s or ''
