@@ -1333,7 +1333,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             target.h = target.h.replace('__init__', 'constructor')
         #@+node:ekr.20211018154815.1: *6* handlers
         #@+node:ekr.20211014023141.1: *7* py2ts.do_class
-        class_pat = re.compile(r'^([ \t]*)class(.*?):(.*?)\n')
+        class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
 
         def do_class(self, i, lines, m, p):
 
@@ -1345,7 +1345,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211013165615.1: *7* py2ts.do_comment
-        comment_pat = re.compile(r'^([ \t]*)#(.*?)\n')
+        comment_pat = re.compile(r'^([ \t]*)#(.*)\n')
 
         def do_comment(self, i, lines, m, p):
             """Handle a stand-alone comment line."""
@@ -1356,7 +1356,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = '\n'  # Write blank line for an empty comment.
             return i + 1
         #@+node:ekr.20211013130041.1: *7* py2ts.do_def & helper
-        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\):(.*?)\n')
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\):(.*)\n')
         this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
 
         def do_def(self, i, lines, m, p):
@@ -1384,7 +1384,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     result.append(f"{arg}: {val}" if val else arg)
             return ', '.join(result)
         #@+node:ekr.20211013165952.1: *7* py2ts.do_docstring
-        docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*?)\n')
+        docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*)\n')
 
         def do_docstring(self, i, lines, m, p):
             """
@@ -1423,7 +1423,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 1
             return i
         #@+node:ekr.20211014030113.1: *7* py2ts.do_except
-        except_pat = re.compile(r'^([ \t]*)except(.*?):(.*?)\n')
+        except_pat = re.compile(r'^([ \t]*)except(.*):(.*)\n')
 
         def do_except(self, i, lines, m, p):
 
@@ -1435,10 +1435,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211013141725.1: *7* py2ts.do_for
-        ### for_pat = re.compile(r'^([ \t]*)for[ \t]+(.*?):(.*?)\n')
-
-        for1_s = r'^([ \t]*)for[ \t]+(.*?):(.*?)\n'  # for (cond):
-        for2_s = r'^([ \t]*)for[ \t]*\((.*?)\n'      # for (
+        for1_s = r'^([ \t]*)for[ \t]+(.*):(.*)\n'  # for (cond):
+        for2_s = r'^([ \t]*)for[ \t]*\((.*)\n'      # for (
 
         for1_pat = re.compile(for1_s)
         for2_pat = re.compile(for2_s)
@@ -1473,8 +1471,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines.insert(k, f"{lws}}}\n")
                 return i + 1
         #@+node:ekr.20211017202104.1: *7* py2ts.do_import
-        import_s = r'^([ \t]*)import[ \t]+(.*?)\n'
-        import_from_s = r'^([ \t]*)from[ \t]+(.*?)[ \t]+import[ \t]+(.*?)\n'
+        import_s = r'^([ \t]*)import[ \t]+(.*)\n'
+        import_from_s = r'^([ \t]*)from[ \t]+(.*)[ \t]+import[ \t]+(.*)\n'
         import_pat = re.compile(fr"{import_s}|{import_from_s}")  # Used by main loop.
         import1_pat = re.compile(import_s)
         import2_pat = re.compile(import_from_s)
@@ -1493,8 +1491,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f'{lws}// from "{module}" import {import_list}\n'
             return i + 1
         #@+node:ekr.20211014022432.1: *7* py2ts.do_elif
-        elif1_s = r'^([ \t]*)elif[ \t]+(.*?):(.*?)\n'  # elif (cond):
-        elif2_s = r'^([ \t]*)elif[ \t]*\((.*?)\n'      # elif (
+        elif1_s = r'^([ \t]*)elif[ \t]+(.*):(.*)\n'  # elif (cond):
+        elif2_s = r'^([ \t]*)elif[ \t]*\((.*)\n'      # elif (
 
         elif1_pat = re.compile(elif1_s)
         elif2_pat = re.compile(elif2_s)
@@ -1530,7 +1528,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return i + 1
 
         #@+node:ekr.20211014022445.1: *7* py2ts.do_else
-        else_pat = re.compile(r'^([ \t]*)else:(.*?)\n')
+        else_pat = re.compile(r'^([ \t]*)else:(.*)\n')
 
         def do_else(self, i, lines, m, p):
 
@@ -1541,7 +1539,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211014022453.1: *7* py2ts.do_finally
-        finally_pat = re.compile(r'^([ \t]*)finally:(.*?)\n')
+        finally_pat = re.compile(r'^([ \t]*)finally:(.*)\n')
 
         def do_finally(self, i, lines, m, p):
 
@@ -1552,8 +1550,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211013131016.1: *7* py2ts.do_if
-        if1_s = r'^([ \t]*)if[ \t]+(.*?):(.*?)\n'  # if (cond):
-        if2_s = r'^([ \t]*)if[ \t]*\((.*?)\n'      # if (
+        if1_s = r'^([ \t]*)if[ \t]+(.*):(.*)\n'  # if (cond):
+        if2_s = r'^([ \t]*)if[ \t]*\((.*)\n'      # if (
 
         if1_pat = re.compile(if1_s)
         if2_pat = re.compile(if2_s)
@@ -1588,7 +1586,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines.insert(k, f"{lws}}}\n")
                 return i + 1
         #@+node:ekr.20211018125503.1: *7* py2ts.do_section_ref
-        section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*?)$")
+        section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
 
         def do_section_ref(self, i, lines, m, p):
             # Handle trailing code.
@@ -1597,7 +1595,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}{section_name}  // {tail[1:]}\n"
             return i + 1
         #@+node:ekr.20211014022506.1: *7* py2ts.do_try
-        try_pat = re.compile(r'^([ \t]*)try:(.*?)\n')
+        try_pat = re.compile(r'^([ \t]*)try:(.*)\n')
 
         def do_try(self, i, lines, m, p):
 
@@ -1608,10 +1606,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211013141809.1: *7* py2ts.do_while
-        ### while_pat = re.compile(r'^([ \t]*)while[ \t]+(.*?):(.*?)\n')
-
-        while1_s = r'^([ \t]*)while[ \t]+(.*?):(.*?)\n'  # while (cond):
-        while2_s = r'^([ \t]*)while[ \t]*\((.*?)\n'      # while (
+        while1_s = r'^([ \t]*)while[ \t]+(.*):(.*)\n'  # while (cond):
+        while2_s = r'^([ \t]*)while[ \t]*\((.*)\n'      # while (
 
         while1_pat = re.compile(while1_s)
         while2_pat = re.compile(while2_s)
@@ -1647,7 +1643,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return i + 1
 
         #@+node:ekr.20211014022554.1: *7* py2ts.do_with
-        with_pat = re.compile(r'^([ \t]*)with(.*?):(.*?)\n')
+        with_pat = re.compile(r'^([ \t]*)with(.*):(.*)\n')
 
         def do_with(self, i, lines, m, p):
 
@@ -1659,7 +1655,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211013172540.1: *7* py2ts.do_trailing_comment
-        trailing_comment_pat = re.compile(r'^([ \t]*)(.*?)#(.*?)\n')
+        trailing_comment_pat = re.compile(r'^([ \t]*)(.*)#(.*)\n')
 
         def do_trailing_comment(self, i, lines, m, p):
             """
