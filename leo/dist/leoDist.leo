@@ -1528,7 +1528,7 @@ git push --follow-tags
 - Update date of the release.</t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
     static version added to leoversion.py earlier.
-    #static version = '6.N-devel'
+    #static version = '6.NNN-devel'
 
 git checkout devel
 update version in leoVersion.py.
