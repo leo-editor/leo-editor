@@ -366,8 +366,6 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< define date/time classes >>
         if g.unitTesting:
             return None
-        if not c:
-            c = g.NullObject()
         if step_min is None:
             step_min = {}
         if not init:
@@ -375,15 +373,17 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = Calendar(c and c.frame.top, message=message, init=init, step_min=step_min)
         if c:
             dialog.setStyleSheet(c.active_stylesheet)
-        dialog.setWindowTitle(title)
-        try:
-            if c:
+            dialog.setWindowTitle(title)
+            try:
                 c.in_qt_dialog = True
+                dialog.raise_()
+                val = dialog.exec() if isQt6 else dialog.exec_()
+            finally:
+                c.in_qt_dialog = False
+        else:
+            dialog.setWindowTitle(title)
             dialog.raise_()
             val = dialog.exec() if isQt6 else dialog.exec_()
-        finally:
-            if c:
-                c.in_qt_dialog = False
         if val == DialogCode.Accepted:
             return dialog.dt.dateTime().toPyDateTime()
         return None
