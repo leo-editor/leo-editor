@@ -664,6 +664,8 @@ class BaseJEditColorizer(BaseColorizer):
             name = 'tex'
                 # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
+        if 'coloring' in g.app.debug and not g.unitTesting:
+            print(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
