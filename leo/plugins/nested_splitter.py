@@ -659,7 +659,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         for i in range(self.count()):
             self.widget(i).setHidden(False)
         size = sum(self.sizes()) / self.count()
-        self.setSizes([size] * self.count())
+        self.setSizes([int(size)] * self.count())  # #2281
         if recurse:
             for i in range(self.count()):
                 if isinstance(self.widget(i), NestedSplitter):
