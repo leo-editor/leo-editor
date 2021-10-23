@@ -1792,7 +1792,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.36: *6* tog.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
-    # d2 = {val: key for key, val in d.iteritems()}
+    # d2 = {val: key for key, val in d}
 
     def do_DictComp(self, node):
 

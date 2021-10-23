@@ -1798,7 +1798,7 @@ class TestTOG(BaseTest):
     def test_DictComp(self):
         # leoGlobals.py, line 3028.
         contents = r"""\
-    d2 = {val: key for key, val in d.iteritems()}
+    d2 = {val: key for key, val in d}
     """
         self.make_data(contents)
     #@+node:ekr.20200112042410.1: *5* test_ExtSlice
