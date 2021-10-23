@@ -3,14 +3,22 @@
 #@+<< docstring (picture_viewer.py) >>
 #@+node:ekr.20211021202710.1: ** << docstring (picture_viewer.py) >>
 """
-A plugin for displaying slides from a folder and its subfolders.
+Display image files in a directory tree as a slide show.
 
-Designed to be called from a script (or @command nodes) as follows:
+This plugin will display all files in a directory tree that have image
+extensions. By default the recognized extensions are '.jpeg', '.jpg', and
+'.png'. Other types of image files can be displayed as long as the they are
+types known by the Qt PixMap class, including '.gif' and '.bmp'. See, for
+example:
+
+https://doc.qt.io/qt-5/qpixmap.html#reading-and-writing-image-files
+
+This plugin should be called from a script (or @command or @button node) as follows:
 
     from leo.plugins.picture_viewer import Slides
     Slides().run(c)  # See below for defaults.
 
-*Note*: there is no need to enable this plugin.
+*Note*: do not enable this plugin. It will be loaded by the calling script.
 
 **Key bindings**
 
@@ -36,6 +44,7 @@ The following keyword arguments may be supplied to the run method:
     full_screen = True,  # True: start in full-screen mode.
     height = 900,  # Window height (pixels) when not in full screen mode.
     path = None,  # If none, display a dialog.
+    reset_zoom = True,  # True, reset zoom factor when changing slides.
     sort_kind = 'random',  # 'date', 'name', 'none', 'random', or 'size'
     width = 1500,  # Window width (pixels) when not un full screen mode.
 
@@ -174,14 +183,16 @@ if QtWidgets:
 
             if self.slide_number + 1 < len(self.files_list):
                 self.slide_number += 1  # Don't wrap.
-            self.scale = 1.0
+            if self.reset_zoom:
+                self.scale = 1.0
             self.show_slide()
         #@+node:ekr.20211021200821.9: *3* Slides.prev_slide
         def prev_slide(self):
 
             if self.slide_number > 0: # Don't wrap.
                 self.slide_number -= 1
-            self.scale = 1.0
+            if self.reset_zoom:
+                self.scale = 1.0
             self.show_slide()
         #@+node:ekr.20211021200821.10: *3* Slides.quit
         def quit(self):
@@ -198,6 +209,7 @@ if QtWidgets:
             full_screen = False,  # True: start in full-screen mode.
             height = 900,  # Window height (pixels) when not in full screen mode.
             path = None,  # Root directory.
+            reset_zoom = True,  # True: reset zoom factor when changing slides.
             sort_kind = 'random',  # 'date', 'name', 'none', 'random', or 'size'
             verbose = False,  # True, print info messages.
             width = 1500,  # Window width (pixels) when not un full screen mode.
@@ -211,6 +223,7 @@ if QtWidgets:
             self.delay = delay
             self.extensions = extensions or ['.jpeg', '.jpg', '.png']
             self.full_screen = False
+            self.reset_zoom = reset_zoom
             self.verbose = verbose
             # Careful: width and height are QWidget methods.
             self._height = height
