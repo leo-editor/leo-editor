@@ -2612,31 +2612,19 @@ class KeyHandlerClass:
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
         g.es_print('', ''.join(lines), tabName=tabName)
-    #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
+    #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event):
         """Repeat the previously executed minibuffer command."""
         k = self
-        if k.mb_history:
-            k.setState('last-full-command', 1, handler=k.repeatComplexCommandHelper)
-            k.setLabelBlue(f"Redo: {str(k.mb_history[0])}")
-        else:
-            g.warning('no previous minibuffer command')
-    #@+node:ekr.20131017100903.16689: *5* repeatComplexCommandHelper
-    def repeatComplexCommandHelper(self, event):
-        c, k = self.c, self
-        char = event.char if event else ''
-        if char in ('\n', 'Return') and k.mb_history:
-            last = k.mb_history[0]
-            k.resetLabel()
-            k.clearState()  # Bug fix.
-            if last.isdigit():
-                # Special case: for the number Easter Egg.
-                c.goToLineNumber(int(last))
-            else:
-                c.commandsDict[last](event)
-        else:
-            k.keyboardQuit()
+        # #2286: Always call k.fullCommand.
+        k.setState('getArg', 0, handler=k.fullCommand)
+        k.fullCommand(event=None)
+        if not k.mb_history:
+            k.mb_history = list(reversed(k.commandHistory))
+        command = k.mb_history[0] if k.mb_history else ''
+        k.setLabelBlue(f"{k.altX_prompt}", protect=True)
+        k.extendLabel(command, select=False, protect=False)
     #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
     @cmd('set-command-state')
     def setCommandState(self, event):
@@ -3761,6 +3749,89 @@ class KeyHandlerClass:
         if k.inState():
             k.endMode()
         k.showStateAndMode()
+    #@+node:ekr.20120208064440.10199: *4* k.generalModeHandler
+    def generalModeHandler(self, event,
+        commandName=None,
+        func=None,
+        modeName=None,
+        nextMode=None,
+        prompt=None
+    ):
+        """Handle a mode defined by an @mode node in leoSettings.leo."""
+        c, k = self.c, self
+        state = k.getState(modeName)
+        if state == 0:
+            k.inputModeName = modeName
+            k.modePrompt = prompt or modeName
+            k.modeWidget = event and event.widget
+            k.setState(modeName, 1, handler=k.generalModeHandler)
+            self.initMode(event, modeName)
+            # Careful: k.initMode can execute commands that will destroy a commander.
+            if g.app.quitting or not c.exists:
+                return
+            if not k.silentMode:
+                if c.config.getBool('showHelpWhenEnteringModes'):
+                    k.modeHelp(event)
+                else:
+                    c.frame.log.hideTab('Mode')
+        elif not func:
+            g.trace('No func: improper key binding')
+        else:
+            if commandName == 'mode-help':
+                func(event)
+            else:
+                self.endMode()
+                # New in 4.4.1 b1: pass an event describing the original widget.
+                if event:
+                    event.w = event.widget = k.modeWidget
+                else:
+                    event = g.app.gui.create_key_event(c, w=k.modeWidget)
+                func(event)
+                if g.app.quitting or not c.exists:
+                    pass
+                elif nextMode in (None, 'none'):
+                    # Do *not* clear k.inputModeName or the focus here.
+                    # func may have put us in *another* mode.
+                    pass
+                elif nextMode == 'same':
+                    silent = k.silentMode
+                    k.setState(modeName, 1, handler=k.generalModeHandler)
+                    self.reinitMode(modeName)  # Re-enter this mode.
+                    k.silentMode = silent
+                else:
+                    k.silentMode = False  # All silent modes must do --> set-silent-mode.
+                    self.initMode(event, nextMode)  # Enter another mode.
+    #@+node:ekr.20061031131434.163: *4* k.initMode
+    def initMode(self, event, modeName):
+
+        c, k = self.c, self
+        if not modeName:
+            g.trace('oops: no modeName')
+            return
+        d = g.app.config.modeCommandsDict.get('enter-' + modeName)
+        if not d:
+            self.badMode(modeName)
+            return
+        k.modeBindingsDict = d
+        bi = d.get('*command-prompt*')
+        prompt = bi.kind if bi else modeName
+        k.inputModeName = modeName
+        k.silentMode = False
+        aList = d.get('*entry-commands*', [])
+        if aList:
+            for bi in aList:
+                commandName = bi.commandName
+                k.simulateCommand(commandName)
+                # Careful, the command can kill the commander.
+                if g.app.quitting or not c.exists:
+                    return
+                # New in Leo 4.5: a startup command can immediately transfer to another mode.
+                if commandName.startswith('enter-'):
+                    return
+        # Create bindings after we know whether we are in silent mode.
+        w = k.modeWidget if k.silentMode else k.w
+        k.createModeBindings(modeName, d, w)
+        k.showStateAndMode(prompt=prompt)
     #@+node:ekr.20061031131434.165: *4* k.modeHelp & helper
     @cmd('mode-help')
     def modeHelp(self, event):
@@ -3819,90 +3890,6 @@ class KeyHandlerClass:
         else:
             # Do not set the status line here.
             k.setLabelBlue(modeName + ': ')  # ,protect=True)
-    #@+node:ekr.20120208064440.10199: *4* k.generalModeHandler
-    def generalModeHandler(self, event,
-        commandName=None,
-        func=None,
-        modeName=None,
-        nextMode=None,
-        prompt=None
-    ):
-        """Handle a mode defined by an @mode node in leoSettings.leo."""
-        c, k = self.c, self
-        state = k.getState(modeName)
-        if state == 0:
-            k.inputModeName = modeName
-            k.modePrompt = prompt or modeName
-            k.modeWidget = event and event.widget
-            k.setState(modeName, 1, handler=k.generalModeHandler)
-            self.initMode(event, modeName)
-            # Careful: k.initMode can execute commands that will destroy a commander.
-            if g.app.quitting or not c.exists:
-                return
-            if not k.silentMode:
-                if c.config.getBool('showHelpWhenEnteringModes'):
-                    k.modeHelp(event)
-                else:
-                    c.frame.log.hideTab('Mode')
-        elif not func:
-            g.trace('No func: improper key binding')
-        else:
-            if commandName == 'mode-help':
-                func(event)
-            else:
-                self.endMode()
-                # New in 4.4.1 b1: pass an event describing the original widget.
-                if event:
-                    event.w = event.widget = k.modeWidget
-                else:
-                    event = g.app.gui.create_key_event(c, w=k.modeWidget)
-                func(event)
-                if g.app.quitting or not c.exists:
-                    pass
-                elif nextMode in (None, 'none'):
-                    # Do *not* clear k.inputModeName or the focus here.
-                    # func may have put us in *another* mode.
-                    pass
-                elif nextMode == 'same':
-                    silent = k.silentMode
-                    k.setState(modeName, 1, handler=k.generalModeHandler)
-                    self.reinitMode(modeName)  # Re-enter this mode.
-                    k.silentMode = silent
-                else:
-                    k.silentMode = False  # All silent modes must do --> set-silent-mode.
-                    self.initMode(event, nextMode)  # Enter another mode.
-    #@+node:ekr.20061031131434.156: *3* k.Modes
-    #@+node:ekr.20061031131434.163: *4* k.initMode
-    def initMode(self, event, modeName):
-
-        c, k = self.c, self
-        if not modeName:
-            g.trace('oops: no modeName')
-            return
-        d = g.app.config.modeCommandsDict.get('enter-' + modeName)
-        if not d:
-            self.badMode(modeName)
-            return
-        k.modeBindingsDict = d
-        bi = d.get('*command-prompt*')
-        prompt = bi.kind if bi else modeName
-        k.inputModeName = modeName
-        k.silentMode = False
-        aList = d.get('*entry-commands*', [])
-        if aList:
-            for bi in aList:
-                commandName = bi.commandName
-                k.simulateCommand(commandName)
-                # Careful, the command can kill the commander.
-                if g.app.quitting or not c.exists:
-                    return
-                # New in Leo 4.5: a startup command can immediately transfer to another mode.
-                if commandName.startswith('enter-'):
-                    return
-        # Create bindings after we know whether we are in silent mode.
-        w = k.modeWidget if k.silentMode else k.w
-        k.createModeBindings(modeName, d, w)
-        k.showStateAndMode(prompt=prompt)
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict(self):
