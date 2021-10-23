@@ -148,7 +148,7 @@ if QtWidgets:
             elif i == 16777236:
                 self.move_right()
             else:
-                g.trace(repr(s), i, repr(mods))
+                print(f"picture_viewer.py: ignoring {s!r} {i}, {mods!r}")
 
         #@+node:ekr.20211021200821.6: *3* Slides.move_up/down/left/right
         def move_down(self):
