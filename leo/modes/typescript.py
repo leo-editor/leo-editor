@@ -1,8 +1,6 @@
 # Leo colorizer control file for typescript mode.
 # This file is in the public domain.
 
-print(__file__)  ###
-
 # Properties for typescript mode.
 properties = {
     "commentEnd": "*/",
