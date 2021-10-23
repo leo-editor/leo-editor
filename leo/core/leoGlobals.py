@@ -3159,13 +3159,13 @@ def printStats(event=None, name=None):
         if not isinstance(name, str):
             name = repr(name)
     else:
-        name = g._callerName(n=2)  # Get caller name 2 levels back.
-    #
+        # Get caller name 2 levels back.
+        name = g._callerName(n=2)
     # Print the stats, organized by number of calls.
     d = g.app.statsDict
-    d2 = {val: key for key, val in d.iteritems()}
-    for key in reversed(sorted(d2.keys())):
-        print(f"{key:7} {d2.get(key)}")
+    print('g.app.statsDict...')
+    for key in reversed(sorted(d)):
+        print(f"{key:7} {d.get(key)}")
 #@+node:ekr.20031218072017.3136: *4* g.stat
 def stat(name=None):
     """Increments the statistic for name in g.app.statsDict
