@@ -251,7 +251,7 @@ if QtWidgets:
                 self.quit()
             elif s in '=+':
                 self.zoom_in()
-            elif s == '-_':
+            elif s in '-_':
                 self.zoom_out()
             elif i == 16777235:
                 self.move_up()
