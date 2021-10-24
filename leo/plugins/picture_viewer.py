@@ -77,20 +77,76 @@ def init():
     return g.app.gui.guiName().lower().startswith('qt')
 #@+node:ekr.20211023201914.1: ** main
 def main():
+    args = getargs()
     global gApp
     gApp = QtWidgets.QApplication(sys.argv)
-    Slides().run(
-        c=None,
-        delay= 1000,
-        full_screen=True,
-        reset_zoom=True,
-        sort_kind='random',
-        verbose=False,
-    )
+    scale_ = args.get('scale', None)
+    Slides.scale = float(scale_ or 1.0)
+    if scale_:
+        args.pop('scale')
+
+    Slides().run(c = None, **args)
     if isQt5:
         sys.exit(gApp.exec_())
     else:
         sys.exit(gApp.exec())
+#@+node:tom.20211023221408.1: *3* getargs
+def getargs():
+    args = {}
+    if len(sys.argv) == 1:
+        return args
+
+    argv = sys.argv[1:]
+    if '-h' in argv or '--help' in argv:
+        print(HELP)
+        sys.exit(0)
+
+    argsplits = [arg.replace('--', '').split('=') for arg in argv]
+    args = dict(argsplits)
+
+    for key in ('width', 'height'):
+        if key in args:
+            args[key] = int(args[key])
+
+    if key in ('delay'):
+        args['delay'] = float(args['delay'])
+
+    for key in ('full_screen', 'reset_zoom', 'verbose'):
+        if key in args:
+            args[key] = args[key].lower() == 'true'
+
+    if 'extensions' in args:
+        # Must be a comma separated list with no spaces
+        args['extensions'] = args['extensions'].split(',')
+    return args
+#@+node:tom.20211023234125.1: *3* HELP
+HELP = """Display images in a directory tree as a slide show.
+USAGE: python3 -m leo.plugins.picture_viewer [options]
+
+Options must have the form "--<name>=<value>".  For example:
+    
+    --delay=20
+
+AVAILABLE OPTIONS with defaults:
+    background_color -- a CSS color name. Default: black.
+    delay -- Delay between slides, in seconds. Default: 100 
+    extensions -- a comma-separated list of image file extensions.
+                  Default: .jpeg,.jpg,.png  (no spaces allowed)
+    full_screen -- start in full-screen mode. Any other value than true 
+                   or True will be treated as False.  Default: False.
+    height -- window height (pixels) when not in full screen mode.
+              Default: 900.
+    path -- path to image top directory. If not present, display a dialog.
+    reset_zoom -- reset zoom factor when changing slides. Any other 
+                  value than true or True will be treated as False.
+                  Default: True
+    scale -- relative size of the image frame.  Default: 1.0.
+    sort_kind -- one of random, date, name, none, random, or size
+    verbose -- whether to print info messages.  Any other value than true 
+               or True will be treated as False. Default: False
+    width -- window width (pixels) when not in full screen mode.
+             Default: 1500
+"""
 #@+node:ekr.20211021202356.1: ** class Slides
 if QtWidgets:
 
@@ -158,7 +214,7 @@ if QtWidgets:
                 self.quit()
             elif s in '=+':
                 self.zoom_in()
-            elif s == '-':
+            elif s == '-_':
                 self.zoom_out()
             elif i == 16777235:
                 self.move_up()
