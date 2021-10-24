@@ -54,6 +54,7 @@ The following keyword arguments may be supplied to the run method:
 #@+node:ekr.20211021202633.1: ** << imports >>
 import os
 import pathlib
+import sys
 import random
 import textwrap
 # Third-party imports
@@ -65,11 +66,31 @@ except ImportError:
 from leo.core import leoGlobals as g
 #@-<< imports >>
 
+# Globals to retain references to objects.
+gApp = None
+gWidget = None
+
 #@+others
 #@+node:ekr.20211021202802.1: ** init (picture_viewer.py)
 def init():
     """Return True if the plugin has loaded successfully."""
     return g.app.gui.guiName().lower().startswith('qt')
+#@+node:ekr.20211023201914.1: ** main
+def main():
+    global gApp
+    gApp = QtWidgets.QApplication(sys.argv)
+    Slides().run(
+        c=None,
+        delay= 1000,
+        full_screen=True,
+        reset_zoom=True,
+        sort_kind='random',
+        verbose=False,
+    )
+    if isQt5:
+        sys.exit(gApp.exec_())
+    else:
+        sys.exit(gApp.exec())
 #@+node:ekr.20211021202356.1: ** class Slides
 if QtWidgets:
 
@@ -170,7 +191,6 @@ if QtWidgets:
             if path:
                 new_path = os.path.join(path, os.path.basename(file_name))
                 if os.path.exists(new_path):
-                    # result = g.app.guirunAskYesNoDialog
                     print("File exists:", new_path)
                 else:
                     pathlib.Path(file_name).rename(new_path)
@@ -196,9 +216,10 @@ if QtWidgets:
             self.show_slide()
         #@+node:ekr.20211021200821.10: *3* Slides.quit
         def quit(self):
+            global gApp
             self.timer.stop()
             self.destroy()
-            g.app.permanentScriptDict ['picture_viewer'] = None
+            gApp = None
             print('done')
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
@@ -214,11 +235,12 @@ if QtWidgets:
             verbose = False,  # True, print info messages.
             width = 1500,  # Window width (pixels) when not un full screen mode.
         ):
-            w = self
             # Keep a reference to this class!
-            g.app.permanentScriptDict ['picture_viewer'] = self
-            self.c = c
+            global gWidget
+            gWidget = self
             # Init ivars.
+            w = self
+            self.c = c
             self.background_color = background_color or "black"
             self.delay = delay
             self.extensions = extensions or ['.jpeg', '.jpg', '.png']
@@ -300,7 +322,7 @@ if QtWidgets:
         def show_slide(self):
             # Reset the timer.
             self.timer.stop()
-            self.timer.start(self.delay * 1000.0, self)
+            self.timer.start(int(self.delay * 1000.0), self)
             # Get the file name.
             file_name = self.files_list[self.slide_number]
             # Change the title.
@@ -310,7 +332,7 @@ if QtWidgets:
             try:
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
                 image = pixmap.scaledToHeight(
-                    self.height() * self.scale,
+                    int(self.height() * self.scale),
                     TransformationMode.SmoothTransformation,
                 )
                 self.picture.setPixmap(image)
@@ -366,4 +388,7 @@ if QtWidgets:
             self.show_slide()
         #@-others
 #@-others
+
+if __name__ == '__main__':
+    main()
 #@-leo
