@@ -3471,6 +3471,8 @@ def getOutputNewline(c: Cmdr=None, name=None):
 #@+node:ekr.20200521075143.1: *3* g.inAtNosearch
 def inAtNosearch(p: Pos):
     """Return True if p or p's ancestors contain an @nosearch directive."""
+    if not p:
+        return False  # #2288.
     for p in p.self_and_parents():
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
             return True
