@@ -85,11 +85,12 @@ def main():
     if scale_:
         args.pop('scale')
 
-    Slides().run(c = None, **args)
-    if isQt5:
-        sys.exit(gApp.exec_())
-    else:
-        sys.exit(gApp.exec())
+    ok = Slides().run(c = None, **args)
+    if ok:
+        if isQt5:
+            sys.exit(gApp.exec_())
+        else:
+            sys.exit(gApp.exec())
 #@+node:tom.20211023221408.1: *3* getargs
 def getargs():
     args = {}
@@ -157,6 +158,10 @@ if QtWidgets:
         timer = QtCore.QBasicTimer()
 
         #@+others
+        #@+node:ekr.20211024030844.1: *3* Slides.closeEvent
+        def closeEvent(self, event):
+            """Override QWidget.closeEvent."""
+            self.quit()
         #@+node:ekr.20211021200821.4: *3* Slides.delete
         send_to_trash_warning_given = False
 
@@ -275,8 +280,11 @@ if QtWidgets:
             global gApp
             self.timer.stop()
             self.destroy()
-            gApp = None
-            print('done')
+            if gApp:  # Running externally.
+                gApp.exit()
+                gApp = None
+            else:
+                print('done')
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
             c,  # Required. The commander for this slideshow.
@@ -291,6 +299,10 @@ if QtWidgets:
             verbose = False,  # True, print info messages.
             width = 1500,  # Window width (pixels) when not un full screen mode.
         ):
+            """
+            Create the widgets and run the slideshow.
+            Return True if any pictures were found.
+            """
             # Keep a reference to this class!
             global gWidget
             gWidget = self
@@ -310,10 +322,12 @@ if QtWidgets:
             if not path:
                 path = QtWidgets.QFileDialog().getExistingDirectory()
             if not path:
-                return
+                print("No path given")
+                return False
             self.files_list = self.get_files(path)
             if not self.files_list:
                 print(f"No slides found in {path!r}")
+                return False
             n = len(self.files_list)
             if self.verbose:
                 print(f"Found {n} picture{g.plural(n)} in {path}")
@@ -331,6 +345,7 @@ if QtWidgets:
             # Show the next slide.
             self.sort(sort_kind)
             w.next_slide()  # show_slide resets the timer.
+            return True
         #@+node:ekr.20211021200821.12: *4* Slides.make_widgets
         def make_widgets(self):
 
