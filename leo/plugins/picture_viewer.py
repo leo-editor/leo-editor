@@ -52,18 +52,18 @@ The following keyword arguments may be supplied to the run method:
 #@-<< docstring (picture_viewer.py) >>
 #@+<< imports >>
 #@+node:ekr.20211021202633.1: ** << imports >>
+import argparse
 import os
 import pathlib
 import sys
 import random
 import textwrap
-# Third-party imports
+# Leo imports
+from leo.core import leoGlobals as g
 try:
     from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 except ImportError:
     QtWidgets = None
-# Leo imports
-from leo.core import leoGlobals as g
 #@-<< imports >>
 
 # Globals to retain references to objects.
@@ -75,85 +75,119 @@ gWidget = None
 def init():
     """Return True if the plugin has loaded successfully."""
     return g.app.gui.guiName().lower().startswith('qt')
+#@+node:tom.20211023221408.1: ** get_args & checkers
+def get_args():
+    
+    # Automatically implements the --help option.
+    description = "usage: python -m picture-viewer [options]"
+    parser = argparse.ArgumentParser(
+        description=description,
+        formatter_class=argparse.RawTextHelpFormatter)
+        
+    # Add args.
+    add = parser.add_argument
+    add('--background', dest='background', metavar='COLOR', 
+        help='Background color')
+    add('--delay', dest='delay', metavar='DELAY',
+        help='Delay (seconds)')
+    add('--extensions', dest='extensions', nargs='*', metavar='TYPES',
+        help='List of image file extensions.')
+        # Default: .jpeg,.jpg,.png  (no spaces allowed)
+    add('--full-screen', dest='fullscreen', action='store_true',
+        help='Start in full-screen mode')
+    add('--height', dest='height', metavar='PIXELS',
+        help='Height of window')
+    add('--path', dest='path', metavar='PATH',
+        help='Path to root directory')
+    add('--reset-zoom', dest='reset_zoom', action='store_true',
+        help='Reset zoom factor when changing slides')
+    add('--scale', dest='scale', metavar='FLOAT',
+        help='Initial scale (zoom) factor')
+    add('--sort-kind', dest='sort_kind', metavar="KIND",
+        help='Sort kind: (date, name, none, random, or size)')
+    add('--verbose', dest='verbose', action='store_true',
+        help='Enable status messages')
+    add('--width', dest='width', metavar='PIXELS',
+        help='Width of window')
+        
+    # Parse the options, and remove them from sys.argv.
+    args = parser.parse_args()
+        
+    # Check and return the args.
+    return {
+         'background_color': args.background or "black",
+         'extensions': get_extensions(args.extensions),
+         'full_screen': args.fullscreen,
+         'height': get_pixels('height', args.height),
+         'path': get_path(args.path),
+         'reset_zoom': args.reset_zoom,
+         'scale': get_scale(args.scale),
+         'sort_kind': get_sort_kind(args.sort_kind),
+         'verbose': args.verbose,
+         'width': get_pixels('width', args.width)
+    }
+#@+node:ekr.20211024034921.1: *3* get_extensions
+def get_extensions(aList):
+    
+    result = []
+    for z in aList or []:
+        if z.startswith('.'):
+            result.append(z)
+        else:
+            result.append('.' + z)
+    return result
+#@+node:ekr.20211024041658.1: *3* get_path
+def get_path(path):
+    
+    if path and not os.path.exists(path):
+        print("--path: not found: {path!r}")
+        path = None
+    return path
+#@+node:ekr.20211024035501.1: *3* get_pixels
+def get_pixels(kind, pixels):
+    
+    if pixels is None:
+        return None
+    try:
+        return int(pixels)
+    except ValueError:
+        print(f"Bad --{kind} value: {pixels!r}")
+        return None
+#@+node:ekr.20211024041359.1: *3* get_scale
+def get_scale(scale):
+    
+    try:
+        return float(scale or 1.0)
+    except ValueError:
+        print(f"Bad --scale: {scale!r}")
+        return 1.0
+#@+node:ekr.20211024040842.1: *3* get_sort_kind
+def get_sort_kind(kind):
+    
+    if not kind:
+        return None
+    kind = kind.lower()
+    if kind not in ('date', 'name', 'none', 'random', 'size'):
+        print(f"bad --sort-kind: {kind!r}")
+        kind = 'none'
+    return kind
 #@+node:ekr.20211023201914.1: ** main
 def main():
-    args = getargs()
     global gApp
     gApp = QtWidgets.QApplication(sys.argv)
-    scale_ = args.get('scale', None)
-    Slides.scale = float(scale_ or 1.0)
-    if scale_:
-        args.pop('scale')
-
+    args = get_args()
+   
     ok = Slides().run(c = None, **args)
     if ok:
         if isQt5:
             sys.exit(gApp.exec_())
         else:
             sys.exit(gApp.exec())
-#@+node:tom.20211023221408.1: *3* getargs
-def getargs():
-    args = {}
-    if len(sys.argv) == 1:
-        return args
-
-    argv = sys.argv[1:]
-    if '-h' in argv or '--help' in argv:
-        print(HELP)
-        sys.exit(0)
-
-    argsplits = [arg.replace('--', '').split('=') for arg in argv]
-    args = dict(argsplits)
-
-    for key in ('width', 'height'):
-        if key in args:
-            args[key] = int(args[key])
-
-    if key in ('delay'):
-        args['delay'] = float(args['delay'])
-
-    for key in ('full_screen', 'reset_zoom', 'verbose'):
-        if key in args:
-            args[key] = args[key].lower() == 'true'
-
-    if 'extensions' in args:
-        # Must be a comma separated list with no spaces
-        args['extensions'] = args['extensions'].split(',')
-    return args
-#@+node:tom.20211023234125.1: *3* HELP
-HELP = """Display images in a directory tree as a slide show.
-USAGE: python3 -m leo.plugins.picture_viewer [options]
-
-Options must have the form "--<name>=<value>".  For example:
-    
-    --delay=20
-
-AVAILABLE OPTIONS with defaults:
-    background_color -- a CSS color name. Default: black.
-    delay -- Delay between slides, in seconds. Default: 100 
-    extensions -- a comma-separated list of image file extensions.
-                  Default: .jpeg,.jpg,.png  (no spaces allowed)
-    full_screen -- start in full-screen mode. Any other value than true 
-                   or True will be treated as False.  Default: False.
-    height -- window height (pixels) when not in full screen mode.
-              Default: 900.
-    path -- path to image top directory. If not present, display a dialog.
-    reset_zoom -- reset zoom factor when changing slides. Any other 
-                  value than true or True will be treated as False.
-                  Default: True
-    scale -- relative size of the image frame.  Default: 1.0.
-    sort_kind -- one of random, date, name, none, random, or size
-    verbose -- whether to print info messages.  Any other value than true 
-               or True will be treated as False. Default: False
-    width -- window width (pixels) when not in full screen mode.
-             Default: 1500
-"""
 #@+node:ekr.20211021202356.1: ** class Slides
 if QtWidgets:
 
     class Slides(QtWidgets.QWidget):
 
-        scale = 1.0
         slide_number = -1
         timer = QtCore.QBasicTimer()
 
@@ -283,21 +317,22 @@ if QtWidgets:
             if gApp:  # Running externally.
                 gApp.exit()
                 gApp = None
-            else:
-                print('done')
+            if self.verbose:
+                print('picture_viewer: done')
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
             c,  # Required. The commander for this slideshow.
-            background_color = "black",  # Default background color.
-            delay = 100,  # Delay between slides, in seconds.
+            background_color = None,  # Default background color.
+            delay = None,  # Delay between slides, in seconds. Default 100.
             extensions = None,  # List of file extensions.
             full_screen = False,  # True: start in full-screen mode.
-            height = 900,  # Window height (pixels) when not in full screen mode.
+            height = None,  # Window height (default 1500 pixels) when not in full screen mode.
             path = None,  # Root directory.
+            scale = None,  # Initial scale factor. Default 1.0
             reset_zoom = True,  # True: reset zoom factor when changing slides.
             sort_kind = 'random',  # 'date', 'name', 'none', 'random', or 'size'
             verbose = False,  # True, print info messages.
-            width = 1500,  # Window width (pixels) when not un full screen mode.
+            width = None,  # Window width (default 1500 pixels) when not in full screen mode.
         ):
             """
             Create the widgets and run the slideshow.
@@ -310,14 +345,15 @@ if QtWidgets:
             w = self
             self.c = c
             self.background_color = background_color or "black"
-            self.delay = delay
+            self.delay = delay or 100
             self.extensions = extensions or ['.jpeg', '.jpg', '.png']
             self.full_screen = False
             self.reset_zoom = reset_zoom
+            self.scale = scale or 1.0
             self.verbose = verbose
             # Careful: width and height are QWidget methods.
-            self._height = height
-            self._width = width
+            self._height = height or 900
+            self._width = width or 1500
             # Compute the files list.
             if not path:
                 path = QtWidgets.QFileDialog().getExistingDirectory()
@@ -396,6 +432,8 @@ if QtWidgets:
             self.timer.start(int(self.delay * 1000.0), self)
             # Get the file name.
             file_name = self.files_list[self.slide_number]
+            if self.verbose:
+                print(file_name)
             # Change the title.
             self.setWindowTitle(file_name)
             # Display the picture.
