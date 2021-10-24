@@ -129,13 +129,11 @@ def get_args():
 #@+node:ekr.20211024034921.1: *3* get_extensions
 def get_extensions(aList):
     
-    result = []
-    for z in aList or []:
-        if z.startswith('.'):
-            result.append(z)
-        else:
-            result.append('.' + z)
-    return result
+    # Ensure extensions start with '.'
+    return [
+        z if z.startswith('.') else f".{z}"
+            for z in aList or []
+    ]
 #@+node:ekr.20211024041658.1: *3* get_path
 def get_path(path):
     
