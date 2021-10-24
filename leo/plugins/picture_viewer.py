@@ -50,8 +50,8 @@ The following keyword arguments may be supplied to the run method:
 
 """
 #@-<< docstring (picture_viewer.py) >>
-#@+<< imports >>
-#@+node:ekr.20211021202633.1: ** << imports >>
+#@+<< imports (picture_viewer.py) >>
+#@+node:ekr.20211021202633.1: ** << imports (picture_viewer.py) >>
 import argparse
 import os
 import pathlib
@@ -61,10 +61,11 @@ import textwrap
 # Leo imports
 from leo.core import leoGlobals as g
 try:
-    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import ButtonRole, Information
 except ImportError:
     QtWidgets = None
-#@-<< imports >>
+#@-<< imports (picture_viewer.py) >>
 
 # Globals to retain references to objects.
 gApp = None
@@ -97,7 +98,7 @@ def get_args():
         help='Start in full-screen mode')
     add('--height', dest='height', metavar='PIXELS',
         help='Height of window')
-    add('--path', dest='path', metavar='PATH',
+    add('--path', dest='path', metavar='DIRECTORY',
         help='Path to root directory')
     add('--reset-zoom', dest='reset_zoom', action='store_true',
         help='Reset zoom factor when changing slides')
@@ -105,6 +106,8 @@ def get_args():
         help='Initial scale (zoom) factor')
     add('--sort-kind', dest='sort_kind', metavar="KIND",
         help='Sort kind: (date, name, none, random, or size)')
+    add('--starting-directory', dest='starting_directory', metavar='DIRECTORY',
+        help='Starting directory for file dialogs')
     add('--verbose', dest='verbose', action='store_true',
         help='Enable status messages')
     add('--width', dest='width', metavar='PIXELS',
@@ -123,6 +126,7 @@ def get_args():
          'reset_zoom': args.reset_zoom,
          'scale': get_scale(args.scale),
          'sort_kind': get_sort_kind(args.sort_kind),
+         'starting_directory': get_path(args.starting_directory),
          'verbose': args.verbose,
          'width': get_pixels('width', args.width)
     }
@@ -138,7 +142,7 @@ def get_extensions(aList):
 def get_path(path):
     
     if path and not os.path.exists(path):
-        print("--path: not found: {path!r}")
+        print(f"--path: not found: {path!r}")
         path = None
     return path
 #@+node:ekr.20211024035501.1: *3* get_pixels
@@ -208,12 +212,18 @@ if QtWidgets:
                     print("pip install Send2Trash")
                 return
             file_name = self.files_list[self.slide_number]
-            result = g.app.gui.runAskYesNoDialog(
-                c = self.c,
-                title = "Delete File?",
-                message = f"Delete file {g.shortFileName(file_name)}?"
-            )
-            if result == 'yes':
+            # Create the dialog without relying on g.app.gui.
+            dialog = QtWidgets.QMessageBox(self)
+            dialog.setStyleSheet("background: white;")
+            yes = dialog.addButton('Yes', ButtonRole.YesRole)
+            dialog.addButton('No', ButtonRole.NoRole)
+            dialog.setWindowTitle("Delete File?")
+            dialog.setText( f"Delete file {g.shortFileName(file_name)}?")
+            dialog.setIcon(Information.Warning)
+            dialog.setDefaultButton(yes)
+            dialog.raise_()
+            result = dialog.exec() if isQt6 else dialog.exec_()
+            if result == 0:
                 # Move the file to the trash.
                 send2trash(file_name)
                 del self.files_list[self.slide_number]
@@ -234,7 +244,7 @@ if QtWidgets:
 
             i = event.key()
             s = event.text()
-            mods = event.modifiers()
+            # mods = event.modifiers()
             if s == 'd':
                 self.delete()
             elif s == 'f':
@@ -262,7 +272,7 @@ if QtWidgets:
             elif i == 16777236:
                 self.move_right()
             else:
-                print(f"picture_viewer.py: ignoring {s!r} {i}, {mods!r}")
+                print(f"picture_viewer.py: ignoring {s!r} {i}")
 
         #@+node:ekr.20211021200821.6: *3* Slides.move_up/down/left/right
         def move_down(self):
@@ -328,7 +338,8 @@ if QtWidgets:
             path = None,  # Root directory.
             scale = None,  # Initial scale factor. Default 1.0
             reset_zoom = True,  # True: reset zoom factor when changing slides.
-            sort_kind = 'random',  # 'date', 'name', 'none', 'random', or 'size'
+            sort_kind = None,  # 'date', 'name', 'none', 'random', or 'size'.  Default is 'random'.
+            starting_directory = None,  # Starting directory for file dialogs.
             verbose = False,  # True, print info messages.
             width = None,  # Window width (default 1500 pixels) when not in full screen mode.
         ):
@@ -348,13 +359,16 @@ if QtWidgets:
             self.full_screen = False
             self.reset_zoom = reset_zoom
             self.scale = scale or 1.0
+            self.sort_kind = sort_kind or 'random'
+            self.starting_directory = starting_directory or os.getcwd()
             self.verbose = verbose
             # Careful: width and height are QWidget methods.
             self._height = height or 900
             self._width = width or 1500
             # Compute the files list.
             if not path:
-                path = QtWidgets.QFileDialog().getExistingDirectory()
+                dialog = QtWidgets.QFileDialog(directory=self.starting_directory)
+                path = dialog.getExistingDirectory()
             if not path:
                 print("No path given")
                 return False
@@ -384,12 +398,14 @@ if QtWidgets:
         def make_widgets(self):
 
             w = self
+
             # Init the window's attributes.
             w.setStyleSheet(f"background: {self.background_color}")
             w.setGeometry(0, 0, self._width, self._height)  # The non-full-screen sizes.
-
+            
             # Create the picture area.
             w.picture = QtWidgets.QLabel('picture', self)
+            w.picture.keyPressEvent = w.keyPressEvent
 
             # Create the scroll area.
             w.scroll_area = area =QtWidgets.QScrollArea()
