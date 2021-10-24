@@ -3736,11 +3736,11 @@ class Commands:
             if p.isDirty():
                 return True
         return False
-    #@+node:ekr.20031218072017.2969: *7* c.canMarkChangedRoots (slow)
+    #@+node:ekr.20031218072017.2969: *7* c.canMarkChangedRoots
     def canMarkChangedRoots(self):
         c = self
         for p in c.all_unique_positions():
-            if p.isDirty and p.isAnyAtFileNode():
+            if p.isDirty() and p.isAnyAtFileNode():
                 return True
         return False
     #@+node:ekr.20031218072017.2990: *4* c.Selecting
