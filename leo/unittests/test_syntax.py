@@ -35,16 +35,14 @@ class TestSyntax(LeoUnitTest):
         join = g.os_path_finalize_join
         skip_list = [join(g.app.loadDir, '..', a, b) for a, b in skip_tuples]
         n = 0
-        for theDir in ('core', 'external', 'extensions', 'plugins', 'scripts', 'test'):
+        for theDir in ('core', 'external', 'extensions', 'modes', 'plugins', 'scripts', 'test'):
             path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
             self.assertTrue(g.os_path_exists(path), msg=path)
             aList = glob.glob(g.os_path_join(path, '*.py'))
             if g.isWindows:
                 aList = [z.replace('\\', '/') for z in aList]
             for z in aList:
-                if z in skip_list:
-                    pass
-                else:
+                if z not in skip_list:
                     n += 1
                     fn = g.shortFileName(z)
                     s, e = g.readFileIntoString(z)
