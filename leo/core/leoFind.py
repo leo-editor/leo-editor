@@ -606,10 +606,16 @@ class LeoFind:
             # #2161:
             old_reverse = self.reverse
             self.reverse = self.reverse_find_defs
+            # # 2288:
+            self.work_s = p.b
+            if self.reverse_find_defs:
+                self.work_sel = (len(p.b), len(p.b), len(p.b))
+            else:
+                self.work_sel = (0, 0, 0)
             while True:
                 p, pos, newpos = self.find_next_match(p)
                 found = pos is not None
-                if not found or not g.inAtNosearch(p):  # 2021/03/25: do *not* use c.p.
+                if found or not g.inAtNosearch(p):  # do *not* use c.p.
                     break
             if not found and def_flag and not strict:
                 # Leo 5.7.3: Look for an alternative defintion of function/methods.
