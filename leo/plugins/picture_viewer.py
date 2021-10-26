@@ -78,13 +78,13 @@ def init():
     return g.app.gui.guiName().lower().startswith('qt')
 #@+node:tom.20211023221408.1: ** get_args & checkers
 def get_args():
-    
+
     # Automatically implements the --help option.
     description = "usage: python -m picture-viewer [options]"
     parser = argparse.ArgumentParser(
         description=description,
         formatter_class=argparse.RawTextHelpFormatter)
-        
+
     # Add args.
     add = parser.add_argument
     add('--background', dest='background', metavar='COLOR', 
@@ -94,13 +94,13 @@ def get_args():
     add('--extensions', dest='extensions', nargs='*', metavar='TYPES',
         help='List of image file extensions.')
         # Default: .jpeg,.jpg,.png  (no spaces allowed)
-    add('--full-screen', dest='fullscreen', action='store_true', default=False,
+    add('--full-screen', dest='fullscreen', action='store_true',
         help='Start in full-screen mode')
     add('--height', dest='height', metavar='PIXELS',
         help='Height of window')
     add('--path', dest='path', metavar='DIRECTORY',
         help='Path to root directory')
-    add('--reset-zoom', dest='reset_zoom', action='store_true', default=True,
+    add('--reset-zoom', dest='reset_zoom', action='store_false',
         help='Reset zoom factor when changing slides')
     add('--scale', dest='scale', metavar='FLOAT',
         help='Initial scale (zoom) factor')
@@ -108,14 +108,14 @@ def get_args():
         help='Sort kind: (date, name, none, random, or size)')
     add('--starting-directory', dest='starting_directory', metavar='DIRECTORY',
         help='Starting directory for file dialogs')
-    add('--verbose', dest='verbose', action='store_true', default=False,
+    add('--verbose', dest='verbose', action='store_true',
         help='Enable status messages')
     add('--width', dest='width', metavar='PIXELS',
         help='Width of window')
-        
+
     # Parse the options, and remove them from sys.argv.
     args = parser.parse_args()
-        
+    print(args.fullscreen)
     # Check and return the args.
     return {
          'background_color': args.background or "black",
