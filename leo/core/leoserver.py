@@ -21,7 +21,11 @@ import textwrap
 import time
 import tkinter as Tk
 # Third-party.
-import websockets
+# #2300
+try:
+    import websockets
+except Exception:
+    websockets = None
 # Make sure leo-editor folder is on sys.path.
 core_dir = os.path.dirname(__file__)
 leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
@@ -3488,7 +3492,12 @@ class LeoServer:
 #@+node:felix.20210621233316.105: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
+    global websockets
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
+    if not websockets:
+        print('websockets not found')
+        print('pip install websockets')
+        return
 
     #@+others
     #@+node:felix.20210807214524.1: *3* function: cancel_tasks
@@ -3512,6 +3521,17 @@ def main():  # pragma: no cover (tested in client)
                         "task": task,
                     }
                 )
+    #@+node:ekr.20210825115746.1: *3* function: center_tk_frame
+    def center_tk_frame(top):
+        """Center the top-level Frame."""
+        # https://stackoverflow.com/questions/3352918
+        top.update_idletasks()
+        screen_width = top.winfo_screenwidth()
+        screen_height = top.winfo_screenheight()
+        size = tuple(int(_) for _ in top.geometry().split('+')[0].split('x'))
+        x = screen_width/2 - size[0]/2
+        y = screen_height/2 - size[1]/2
+        top.geometry("+%d+%d" % (x, y))
     #@+node:felix.20210804130751.1: *3* function: close_server
     def close_Server():
         """
@@ -3551,19 +3571,8 @@ def main():  # pragma: no cover (tested in client)
                 return None
             root = top = val = None  # Non-locals
             #@+others  # define helper functions
-            #@+node:ekr.20210825115746.1: *5* function: center
-            def center(toplevel):
-                """Center the top-level Frame."""
-                # https://stackoverflow.com/questions/3352918
-                toplevel.update_idletasks()
-                screen_width = toplevel.winfo_screenwidth()
-                screen_height = toplevel.winfo_screenheight()
-                size = tuple(int(_) for _ in toplevel.geometry().split('+')[0].split('x'))
-                x = screen_width/2 - size[0]/2
-                y = screen_height/2 - size[1]/2
-                toplevel.geometry("+%d+%d" % (x, y))
-            #@+node:ekr.20210801180311.4: *5* function: create_frame
-            def create_frame(message):
+            #@+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
+            def create_yes_no_frame(message, top):
                 """Create the dialog's frame."""
                 frame = Tk.Frame(top)
                 frame.pack(side="top", expand=1, fill="both")
@@ -3576,7 +3585,6 @@ def main():  # pragma: no cover (tested in client)
                 b.pack(side="left", padx=5, pady=10)
                 b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
                 b.pack(side="left", padx=5, pady=10)
-                return top
             #@+node:ekr.20210801180311.5: *5* function: callbacks
             def noButton(event=None):
                 """Do default click action in ok button."""
@@ -3597,9 +3605,8 @@ def main():  # pragma: no cover (tested in client)
             root.update()
 
             top = Tk.Toplevel(root)
-
             top.title("Saved changed outline?")
-            top = create_frame(message)
+            create_yes_no_frame(message, top)
             top.bind("<Return>", yesButton)
             top.bind("y", yesButton)
             top.bind("Y", yesButton)
@@ -3607,7 +3614,7 @@ def main():  # pragma: no cover (tested in client)
             top.bind("N", noButton)
             top.lift()
 
-            center(top)
+            center_tk_frame(top)
 
             top.grab_set()  # Make the dialog a modal dialog.
 
