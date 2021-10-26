@@ -115,7 +115,7 @@ def get_args():
 
     # Parse the options, and remove them from sys.argv.
     args = parser.parse_args()
-    print(args.fullscreen)
+
     # Check and return the args.
     return {
          'background_color': args.background or "black",
