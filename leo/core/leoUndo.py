@@ -1635,7 +1635,7 @@ class Undoer:
         u.bead -= 1
         u.setUndoTypes()
     #@+node:ekr.20110519074734.6093: *3* u.undo helpers
-    #@+node:ekr.20191213085246.1: *4*  u.undoHeoper
+    #@+node:ekr.20191213085246.1: *4*  u.undoHelper
     def undoHelper(self):
         """The default do-nothing undo helper."""
         pass
