@@ -1110,12 +1110,15 @@ class JEditColorizer(BaseJEditColorizer):
         self.restartDict = {}  # Keys are state numbers, values are restart functions.
         self.stateDict = {}  # Keys are state numbers, values state names.
         self.stateNameDict = {}  # Keys are state names, values are state numbers.
+        # #2276: Set by init_section_delims.
+        self.section_delim1 = '<<'
+        self.section_delim2 = '>>'
         #
         # Init common data...
         self.reloadSettings()
     #@+node:ekr.20110605121601.18580: *4* jedit.init
     def init(self, p=None):
-        """Init the colorizer, but *not* state. p is for tracing only."""
+        """Init the colorizer, but *not* state."""
         #
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
@@ -1131,6 +1134,7 @@ class JEditColorizer(BaseJEditColorizer):
         self.prev = None
         # Must be done to support per-language @font/@color settings.
         self.configure_tags()
+        self.init_section_delims()  # #2276
     #@+node:ekr.20170201082248.1: *4* jedit.init_all_state
     def init_all_state(self, v):
         """Completely init all state data."""
@@ -1141,6 +1145,26 @@ class JEditColorizer(BaseJEditColorizer):
         self.restartDict = {}
         self.stateDict = {}
         self.stateNameDict = {}
+    #@+node:ekr.20211029073553.1: *4* jedit.init_section_delims (new)
+    def init_section_delims(self):
+
+        p = self.c.p
+
+        def find_delims(v):
+            for s in g.splitLines(v.b):
+                m = g.g_section_delims_pat.match(s)
+                if m:
+                    return m
+            return None
+            
+        v = g.findAncestorVnodeByPredicate(p, v_predicate=find_delims)
+        if v:
+            m = find_delims(v)
+            self.section_delim1 = m.group(1)
+            self.section_delim2 = m.group(2)
+        else:
+            self.section_delim1 = '<<'
+            self.section_delim2 = '>>'
     #@+node:ekr.20190326183005.1: *4* jedit.reloadSettings
     def reloadSettings(self):
         """Complete the initialization of all settings."""
@@ -1415,22 +1439,29 @@ class JEditColorizer(BaseJEditColorizer):
             return j - i
         # Bug fix: allow rescan.  Affects @language patch.
         return 0
-    #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref
+    #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref (changed)
     def match_section_ref(self, s, i):
         p = self.c.p
         if self.trace_leo_matches:
-            g.trace()
+            g.trace(self.section_delim1, self.section_delim2, s)
         #
         # Special case for @language patch: section references are not honored.
         if self.language == 'patch':
             return 0
-        if not g.match(s, i, '<<'):
+        n1, n2 = len(self.section_delim1), len(self.section_delim2)
+        if not g.match(s, i, self.section_delim1):
             return 0
-        k = g.find_on_line(s, i + 2, '>>')
+        k = g.find_on_line(s, i + n1, self.section_delim2)
         if k == -1:
             return 0
-        j = k + 2
-        self.colorRangeWithTag(s, i, i + 2, 'namebrackets')
+        j = k + n2
+        # Special case for @section-delims.
+        if s.startswith('@section-delims'):
+            self.colorRangeWithTag(s, i, i + n1, 'namebrackets')
+            self.colorRangeWithTag(s, k, j, 'namebrackets')
+            return j - i
+        # An actual section reference.
+        self.colorRangeWithTag(s, i, i + n1, 'namebrackets')
         ref = g.findReference(s[i:j], p)
         if ref:
             if self.use_hyperlinks:
@@ -1442,9 +1473,9 @@ class JEditColorizer(BaseJEditColorizer):
                 ref.tagName = tagName
                 #@-<< set the hyperlink >>
             else:
-                self.colorRangeWithTag(s, i + 2, k, 'link')
+                self.colorRangeWithTag(s, i + n1, k, 'link')
         else:
-            self.colorRangeWithTag(s, i + 2, k, 'name')
+            self.colorRangeWithTag(s, i + n1, k, 'name')
         self.colorRangeWithTag(s, k, j, 'namebrackets')
         return j - i
     #@+node:ekr.20110605121601.18607: *5* jedit.match_tabs

@@ -2215,7 +2215,7 @@ class VNode:
         """Returns True if the receiver contains @others in its body at the start of a line."""
         flag, i = g.is_special(self._bodyString, "@others")
         return flag
-    #@+node:ekr.20031218072017.3353: *4* v.matchHeadline
+    #@+node:ekr.20031218072017.3353: *4* v.matchHeadline (DEPRECATED)
     def matchHeadline(self, pattern):
         """Returns True if the headline matches the pattern ignoring whitespace and case.
 

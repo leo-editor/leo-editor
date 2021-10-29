@@ -53,6 +53,9 @@ class AtFile:
         self.encoding = 'utf-8'  # 2014/08/13
         self.fileCommands = c.fileCommands
         self.errors = 0  # Make sure at.error() works even when not inited.
+        # #2276: allow different section delims.
+        self.section_delim1 = '<<'
+        self.section_delim2 = '>>'
         # **Only** at.writeAll manages these flags.
         self.unchangedFiles = 0
         # promptForDangerousWrite sets cancelFlag and yesToAll only if canCancelFlag is True.
@@ -189,6 +192,9 @@ class AtFile:
             targetFileName = root.h if g.unitTesting else None
             at.targetFileName = targetFileName  # For at.writeError only.
             return targetFileName
+        #
+        # #2276: scan for section delims
+        at.scanRootForSectionDelims(root)
         #
         # Do nothing more if the file already exists.
         if os.path.exists(targetFileName):
@@ -2009,30 +2015,41 @@ class AtFile:
                 f"undefined section: {g.truncate(name, 60)}\n"
                 f"  referenced from: {g.truncate(p.h, 60)}")
         return ref
-    #@+node:ekr.20041005105605.199: *7* at.findSectionName
+    #@+node:ekr.20041005105605.199: *7* at.findSectionName (changed)
     def findSectionName(self, s, i):
         """
         Return n1, n2 representing a section name.
         The section name, *including* brackes is s[n1:n2]
         """
+        at = self
         end = s.find('\n', i)
+        # #2276: Special case for @section-delims directive.
+        if i == 0 and s.startswith('@section-delims'):
+            return None, 0, 0
         if end == -1:
-            n1 = s.find("<<", i)
-            n2 = s.find(">>", i)
+            # n1 = s.find("<<", i)
+            # n2 = s.find(">>", i)
+            n1 = s.find(at.section_delim1, i)
+            n2 = s.find(at.section_delim2, i)
         else:
-            n1 = s.find("<<", i, end)
-            n2 = s.find(">>", i, end)
+            n1 = s.find(at.section_delim1, i, end)
+            n2 = s.find(at.section_delim2, i, end)
         ok = -1 < n1 < n2
         if ok:
             # Warn on extra brackets.
-            for ch, j in (('<', n1 + 2), ('>', n2 + 2)):
+            ###b for ch, j in (('<', n1 + 2), ('>', n2 + 2)):
+            for ch, j in (
+                ('<', n1 + len(at.section_delim1)),
+                ('>', n2 + len(at.section_delim2)),
+            ):
                 if g.match(s, j, ch):
                     line = g.get_line(s, i)
                     g.es('dubious brackets in', line)
                     break
             name = s[n1 : n2 + 2]
             return name, n1, n2 + 2
-        return None, n1, len(s)
+        ### return None, n1, len(s)
+        return None, 0, 0  ###
     #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
     def putAfterLastRef(self, s, start, delta):
         """Handle whatever follows the last ref of a line."""
@@ -2061,6 +2078,9 @@ class AtFile:
     #@+node:ekr.20041005105605.177: *7* at.putRefAt
     def putRefAt(self, name, ref, delta):
         at = self
+        # #2276: Section references do *not* contain the section delimiters,
+        #        so *no* changes are required here!
+        #
         # #132: Section Reference causes clone...
         #
         # Never put any @+middle or @-middle sentinels.
@@ -2243,17 +2263,6 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
-    #@+node:ekr.20190111112442.1: *5* at.isWritable
-    def isWritable(self, path):
-        """Return True if the path is writable."""
-        try:
-            # os.access() may not exist on all platforms.
-            ok = os.access(path, os.W_OK)
-        except AttributeError:
-            return True
-        if not ok:
-            g.es('read only:', repr(path), color='red')
-        return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False):
         """Perform python-related checks on root."""
@@ -2429,6 +2438,17 @@ class AtFile:
         if i > -1:
             return True, i + 2
         return False, -1
+    #@+node:ekr.20190111112442.1: *5* at.isWritable
+    def isWritable(self, path):
+        """Return True if the path is writable."""
+        try:
+            # os.access() may not exist on all platforms.
+            ok = os.access(path, os.W_OK)
+        except AttributeError:
+            return True
+        if not ok:
+            g.es('read only:', repr(path), color='red')
+        return ok
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
     def oblank(self):
@@ -2754,6 +2774,30 @@ class AtFile:
         s1 = s1.replace('\r', '')
         s2 = s2.replace('\r', '')
         return s1 == s2
+    #@+node:ekr.20211029052041.1: *5* at.scanRootForSectionDelims (new)
+    def scanRootForSectionDelims(self, root):
+        """
+        Scan root.b for an "@section-delims" directive.
+        Set section_delim1 and section_delim2 ivars.
+        """
+        at = self
+        # Set defaults.
+        at.section_delim1 = '<<'
+        at.section_delim2 = '>>'
+        # Scan root.b.
+        lines = []
+        for s in g.splitLines(root.b):
+            m = g.g_section_delims_pat.match(s)
+            if m:
+                lines.append(s)
+                at.section_delim1 = m.group(1)
+                at.section_delim2 = m.group(2)
+        # Disallow multiple directives.
+        if len(lines) > 1:
+            at.error(f"Multiple @section-delims directives in {root.h}")
+            g.es_print('using default delims')
+            at.section_delim1 = '<<'
+            at.section_delim2 = '>>'
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from putFile.
 
@@ -3076,12 +3120,12 @@ class FastAtRead:
     def __init__(self, c, gnx2vnode, test=False, TestVNode=None):
         self.c = c
         assert gnx2vnode is not None
-        self.gnx2vnode = gnx2vnode
-            # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        self.gnx2vnode = gnx2vnode # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.path = None
         self.root = None
         self.VNode = TestVNode if test else leoNodes.VNode
         self.test = test
+
     #@+others
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
@@ -3313,6 +3357,7 @@ class FastAtRead:
  # clears in_doc
             #@+<< 4. handle section refs >>
             #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
+            # Note: scan_header sets the section delims, so this code already handles @section-delims.
             m = ref_pat.match(line)
             if m:
                 in_doc = False
@@ -3321,13 +3366,10 @@ class FastAtRead:
                     body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
                     stack.append((gnx, indent, body))
                     indent += m.end(1)
-                    continue
-                if stack:
-                    # #1232: Only if the stack exists.
-                    # close sentinel.
+                elif stack:
                     # m.group(2) is '-' because the pattern matched.
-                    gnx, indent, body = stack.pop()
-                    continue
+                    gnx, indent, body = stack.pop()  # #1232: Only if the stack exists.
+                continue  # 2021/10/29: *always* continue.
             #@-<< 4. handle section refs >>
             #@afterref
  # clears in_doc.
