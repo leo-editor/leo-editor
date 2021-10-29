@@ -33,6 +33,7 @@ arrows keys: pan the slide
           d: prompt to move the slide to the trash
           h: show the help message
           m: move the file.
+          r: restart: choose another folder
 
 **Defaults**
 
@@ -259,6 +260,8 @@ if QtWidgets:
                 self.prev_slide()
             elif s == 'q' or s == '\x1b':  # ESC.
                 self.quit()
+            elif s == 'r':
+                self.restart()
             elif s in '=+':
                 self.zoom_in()
             elif s in '-_':
@@ -327,6 +330,17 @@ if QtWidgets:
                 gApp = None
             if self.verbose:
                 print('picture_viewer: done')
+        #@+node:ekr.20211029020533.1: *3* Slides.restart
+        def restart(self):
+            dialog = QtWidgets.QFileDialog(directory=self.starting_directory)
+            path = dialog.getExistingDirectory()
+            if not path:
+                if self.verbose:
+                    print("No path given")
+                self.quit()
+            self.files_list = self.get_files(path)
+            self.sort(self.sort_kind)
+            self.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
             c,  # Required. The commander for this slideshow.
@@ -370,7 +384,8 @@ if QtWidgets:
                 dialog = QtWidgets.QFileDialog(directory=self.starting_directory)
                 path = dialog.getExistingDirectory()
             if not path:
-                print("No path given")
+                if self.verbose():
+                    print("No path given")
                 return False
             self.files_list = self.get_files(path)
             if not self.files_list:
@@ -392,7 +407,7 @@ if QtWidgets:
                 w.toggle_full_screen()
             # Show the next slide.
             self.sort(sort_kind)
-            w.next_slide()  # show_slide resets the timer.
+            self.next_slide()  # show_slide resets the timer.
             return True
         #@+node:ekr.20211021200821.12: *4* Slides.make_widgets
         def make_widgets(self):
@@ -426,19 +441,20 @@ if QtWidgets:
         def show_help(self):
             """Show the help message."""
             print(textwrap.dedent('''\
-                            d delete slide
-                            f toggle full screen
-                            h show help
-                 n or <space> show next slide
-             p or <backspace> show previous slide
-                   q or <esc> end slideshow
-                            + zoom in
-                            - zoom out
-                     up arrow scroll up
-                   down arrow scroll down
-                   left arrow scroll left
-                  right arrow scroll right
-            '''))
+                    d delete slide
+                    f toggle full screen
+                    h show help
+                    n show next slide
+                    p show previous slide
+                    q end slideshow
+                    r restart slideshow in new folder
+                    + zoom in
+                    - zoom out
+                <esc> end slidshow
+              <space> show next slide
+          <backspace> show previous slide
+           arrow keys scroll picture
+        '''))
         #@+node:ekr.20211021200821.14: *3* Slides.show_slide
         def show_slide(self):
             # Reset the timer.
