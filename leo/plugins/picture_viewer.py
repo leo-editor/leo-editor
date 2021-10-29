@@ -384,7 +384,7 @@ if QtWidgets:
                 dialog = QtWidgets.QFileDialog(directory=self.starting_directory)
                 path = dialog.getExistingDirectory()
             if not path:
-                if self.verbose():
+                if self.verbose:
                     print("No path given")
                 return False
             self.files_list = self.get_files(path)
