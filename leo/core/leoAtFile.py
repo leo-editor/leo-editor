@@ -2009,7 +2009,7 @@ class AtFile:
                 break
             assert progress < i
         self.putAfterLastRef(s, i, delta)
-    #@+node:ekr.20131224085853.16443: *7* at.findReference (Test)
+    #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
         """
         Find a reference to name.  Raise an error if not found.
@@ -2058,7 +2058,8 @@ class AtFile:
         # The so-called name *must* include brackets for
         # g.findReference and v.mathHeadline.
         name = s[n1 : n2 + len(at.section_delim2)]
-        g.trace('FOUND', name)
+        if not g.unitTesting:  ###
+            g.trace('FOUND', name)  ###
         return name, n1, n2 + len(at.section_delim2)
     #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
     def putAfterLastRef(self, s, start, delta):
@@ -3140,12 +3141,12 @@ class FastAtRead:
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
 
-    def get_patterns(self, delims):
+    def get_patterns(self, comment_delims):
         """Create regex patterns for the given comment delims."""
         # This must be a function, because of @comments & @delims.
-        delim_start, delim_end = delims
-        delims = re.escape(delim_start), re.escape(delim_end or '')
-        delim1, delim2 = delims
+        comment_delim_start, comment_delim_end = comment_delims
+        delim1 = re.escape(comment_delim_start)
+        delim2 = re.escape(comment_delim_end or '')
         ref = g.angleBrackets(r'(.*)')
         patterns = (
             # The list of patterns, in alphabetical order.
@@ -3162,7 +3163,9 @@ class FastAtRead:
             fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$', # @node
             fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$', # @others
             fr'^\s*{delim1}@raw(.*){delim2}',               # @raw
-            fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'      # section ref
+            fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$',     # section ref (ref_pat)
+                                                            # @section-delims
+            fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$', 
         )
         # Return the compiled patterns, in alphabetical order.
         return (re.compile(pattern) for pattern in patterns)
@@ -3219,7 +3222,7 @@ class FastAtRead:
             first_lines.append(line)
         return None
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, delims, first_lines, lines, path, start):
+    def scan_lines(self, comment_delims, first_lines, lines, path, start):
         """Scan all lines of the file, creating vnodes."""
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
@@ -3227,26 +3230,26 @@ class FastAtRead:
         # Simple vars...
         afterref = False  # A special verbatim line follows @afterref.
         clone_v = None  # The root of the clone tree.
-        delim_start, delim_end = delims  # The start/end delims.
-        doc_skip = (delim_start + '\n', delim_end + '\n')  # To handle doc parts.
+        comment_delim1, comment_delim2 = comment_delims  # The start/end *comment* delims.
+        doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
         in_raw = False  # True: @raw seen.
-        is_cweb = delim_start == '@q@' and delim_end == '@>'  # True: cweb hack in effect.
+        is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
         level_stack = []  # Entries are (vnode, in_clone_tree)
         n_last_lines = 0  # The number of @@last directives seen.
         # #1065 so reads will not create spurious child nodes.
         root_seen = False  # False: The next +@node sentinel denotes the root, regardless of gnx.
-        sentinel = delim_start + '@'  # Faster than a regex!
+        section_delim1 = '<<'
+        section_delim2 = '>>'
+        section_reference_seen = False
+        sentinel = comment_delim1 + '@'  # Faster than a regex!
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack = []  # Entries are (gnx, indent, body)
-        verbline = delim_start + '@verbatim' + delim_end + '\n'  # The spelling of at-verbatim sentinel
+        # The spelling of at-verbatim sentinel
+        verbline = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
         verbatim = False  # True: the next line must be added without change.
-        #
-        # Init the data for the root node.
-        #
-
         #
         # Init the parent vnode for testing.
         #
@@ -3274,10 +3277,12 @@ class FastAtRead:
         # Body is the list of lines presently being accumulated.
         gnx2body[gnx] = body = first_lines
         #
-        # get the patterns.
-        data = self.get_patterns(delims)
-        # pylint: disable=line-too-long
-        after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat, end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = data
+        # Set the patterns
+        (
+            after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat,
+            end_raw_pat, first_pat, last_pat, node_start_pat, others_pat,
+            raw_pat, ref_pat, section_delims_pat, 
+        ) = self.get_patterns(comment_delims)
         #@-<< init scan_lines >>
         #@+<< define dump_v >>
         #@+node:ekr.20180613061743.1: *4* << define dump_v >>
@@ -3296,7 +3301,6 @@ class FastAtRead:
             g.printObj([v4.h for v4 in v.parents])
 
         #@-<< define dump_v >>
-
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Order matters.
@@ -3367,13 +3371,17 @@ class FastAtRead:
  # clears in_doc
             #@+<< 4. handle section refs >>
             #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
-            # Note: scan_header sets the section delims, so this code already handles @section-delims.
+            # Note: scan_header sets *comment* delims, not *section* delims.
+            # This section must coordinate with the section that handles @section-delims.
             m = ref_pat.match(line)
             if m:
                 in_doc = False
                 if m.group(2) == '+':
+                    # Any later @section-delims directive is a serious error.
+                    # This kind of error should have been caught by Leo's atFile write logic.
+                    section_reference_seen = True
                     # open sentinel.
-                    body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
+                    body.append(m.group(1) + section_delim1 + m.group(3) + section_delim2 + '\n')
                     stack.append((gnx, indent, body))
                     indent += m.end(1)
                 elif stack:
@@ -3460,8 +3468,8 @@ class FastAtRead:
                 #
                 # #1496: Retire the @doc convention.
                 #        An empty line is no longer a sentinel.
-                if delim_end and line in doc_skip:
-                    # doc_skip is (delim_start + '\n', delim_end + '\n')
+                if comment_delim2 and line in doc_skip:
+                    # doc_skip is (comment_delim1 + '\n', delim_end + '\n')
                     continue
                 #
                 # Check for @c or @code.
@@ -3539,27 +3547,27 @@ class FastAtRead:
                 delim1, delim2, delim3 = g.set_delims_from_string(delims)
                     # delim1 is always the single-line delimiter.
                 if delim1:
-                    delim_start, delim_end = delim1, ''
+                    comment_delim1, comment_delim2 = delim1, ''
                 else:
-                    delim_start, delim_end = delim2, delim3
+                    comment_delim1, comment_delim2 = delim2, delim3
                 #
                 # Within these delimiters:
                 # - double underscores represent a newline.
                 # - underscores represent a significant space,
-                delim_start = delim_start.replace('__', '\n').replace('_', ' ')
-                delim_end = delim_end.replace('__', '\n').replace('_', ' ')
+                comment_delim1 = comment_delim1.replace('__', '\n').replace('_', ' ')
+                comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
                 # Recalculate all delim-related values
-                doc_skip = (delim_start + '\n', delim_end + '\n')
-                is_cweb = delim_start == '@q@' and delim_end == '@>'
-                sentinel = delim_start + '@'
+                doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
+                is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
+                sentinel = comment_delim1 + '@'
                 #
                 # Recalculate the patterns.
-                delims = delim_start, delim_end
+                comment_delims = comment_delim1, comment_delim2
                 (
                     after_pat, all_pat, code_pat, comment_pat, delims_pat,
                     doc_pat, end_raw_pat, first_pat, last_pat,
-                    node_start_pat, others_pat, raw_pat, ref_pat
-                ) = self.get_patterns(delims)
+                    node_start_pat, others_pat, raw_pat, ref_pat, section_delims_pat, 
+                ) = self.get_patterns(comment_delims)
                 continue
             #@-<< handle @comment >>
             #@+<< handle @delims >>
@@ -3577,26 +3585,26 @@ class FastAtRead:
                 if not m2:
                     g.trace(f"Ignoring invalid @comment: {line!r}")
                     continue
-                delim_start = m2.group(1)
-                delim_end = m2.group(2) or ''
+                comment_delim1 = m2.group(1)
+                comment_delim2 = m2.group(2) or ''
                 #
                 # Within these delimiters:
                 # - double underscores represent a newline.
                 # - underscores represent a significant space,
-                delim_start = delim_start.replace('__', '\n').replace('_', ' ')
-                delim_end = delim_end.replace('__', '\n').replace('_', ' ')
+                comment_delim1 = comment_delim1.replace('__', '\n').replace('_', ' ')
+                comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
                 # Recalculate all delim-related values
-                doc_skip = (delim_start + '\n', delim_end + '\n')
-                is_cweb = delim_start == '@q@' and delim_end == '@>'
-                sentinel = delim_start + '@'
+                doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
+                is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
+                sentinel = comment_delim1 + '@'
                 #
                 # Recalculate the patterns
-                delims = delim_start, delim_end
+                comment_delims = comment_delim1, comment_delim2
                 (
                     after_pat, all_pat, code_pat, comment_pat, delims_pat,
                     doc_pat, end_raw_pat, first_pat, last_pat,
-                    node_start_pat, others_pat, raw_pat, ref_pat
-                ) = self.get_patterns(delims)
+                    node_start_pat, others_pat, raw_pat, ref_pat, 
+                ) = self.get_patterns(comment_delims)
                 continue
             #@-<< handle @delims >>
             #@+<< handle @raw >>
@@ -3609,9 +3617,24 @@ class FastAtRead:
                     # Avoid an extra test in the main loop.
                 continue
             #@-<< handle @raw >>
+            #@+<< handle @section-delims >>
+            #@+node:ekr.20211030033211.1: *4* << handle @section-delims >>
+            m = section_delims_pat.match(line)
+            if m:
+                if section_reference_seen:
+                    # This is a serious error.
+                    g.es_print('section-delims seen after a section reference', color='red')
+                else:
+                    # Carefully update the section reference pattern!
+                    section_delim1 = d1 = re.escape(m.group(1))
+                    section_delim2 = d2 = re.escape(m.group(2) or '')
+                    ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
+                continue
+            #@-<< handle @section-delims >>
             #@+<< handle @-leo >>
             #@+node:ekr.20180602103135.20: *4* << handle @-leo >>
-            if line.startswith(delim_start + '@-leo'):
+            if line.startswith(comment_delim1 + '@-leo'):
                 i += 1
                 break
             #@-<< handle @-leo >>
@@ -3620,23 +3643,23 @@ class FastAtRead:
             #@+node:ekr.20180603135602.1: *4* << Last 1. handle remaining @@ lines >>
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
-            if line.startswith(delim_start + '@@'):
-                ii = len(delim_start) + 1  # on second '@'
-                jj = line.rfind(delim_end) if delim_end else -1
+            if line.startswith(comment_delim1 + '@@'):
+                ii = len(comment_delim1) + 1  # on second '@'
+                jj = line.rfind(comment_delim2) if comment_delim2 else -1
                 body.append(line[ii:jj] + '\n')
                 continue
             #@-<< Last 1. handle remaining @@ lines >>
             #@+<< Last 2. handle remaining @doc lines >>
             #@+node:ekr.20180606054325.1: *4* << Last 2. handle remaining @doc lines >>
             if in_doc:
-                if delim_end:
+                if comment_delim2:
                     # doc lines are unchanged.
                     body.append(line)
                     continue
                 # Doc lines start with start_delim + one blank.
                 # #1496: Retire the @doc convention.
                 # #2194: Strip lws.
-                tail = line.lstrip()[len(delim_start) + 1 :]
+                tail = line.lstrip()[len(comment_delim1) + 1 :]
                 if tail.strip():
                     body.append(tail)
                 else:
@@ -3688,8 +3711,8 @@ class FastAtRead:
         # Clear all children.
         # Previously, this had been done in readOpenFile.
         root.v._deleteAllChildren()
-        delims, first_lines, start_i = data
-        self.scan_lines(delims, first_lines, lines, path, start_i)
+        comment_delims, first_lines, start_i = data
+        self.scan_lines(comment_delims, first_lines, lines, path, start_i)
         if trace:
             t2 = time.process_time()
             g.trace(f"{t2 - t1:5.2f} sec. {path}")
