@@ -3301,12 +3301,12 @@ def findLanguageDirectives(c: Cmdr, p: Pos):
                 parents.append(grand_parent_v)
     # Finally, fall back to the defaults.
     return c.target_language.lower() if c.target_language else 'python'
-#@+node:ekr.20031218072017.1385: *3* g.findReference (changed)
+#@+node:ekr.20031218072017.1385: *3* g.findReference
 # Called from the syntax coloring method that colorizes section references.
 # Also called from write at.putRefAt.
 
 def findReference(name, root):
-    """Find the section definition for name."""
+    """Return the position containing the section definition for name."""
     for p in root.subtree(copy=False):
         assert p != root
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
