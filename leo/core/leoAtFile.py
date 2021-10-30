@@ -1760,6 +1760,7 @@ class AtFile:
                 if at.raw:
                     at.putCodeLine(s, i)
                 else:
+                    # Important: the so-called "name" must include brackets.
                     name, n1, n2 = at.findSectionName(s, i)
                     if name:
                         at.putRefLine(s, i, n1, n2, name, p)
@@ -1967,7 +1968,11 @@ class AtFile:
             g.trace('Can not happen: completely empty line')
     #@+node:ekr.20041005105605.176: *6* at.putRefLine & helpers
     def putRefLine(self, s, i, n1, n2, name, p):
-        """Put a line containing one or more references."""
+        """
+        Put a line containing one or more references.
+        
+        Important: the so-called name *must* include brackets.
+        """
         at = self
         ref = at.findReference(name, p)
         is_clean = at.root.h.startswith('@clean')
@@ -2004,9 +2009,13 @@ class AtFile:
                 break
             assert progress < i
         self.putAfterLastRef(s, i, delta)
-    #@+node:ekr.20131224085853.16443: *7* at.findReference
+    #@+node:ekr.20131224085853.16443: *7* at.findReference (Test)
     def findReference(self, name, p):
-        """Find a reference to name.  Raise an error if not found."""
+        """
+        Find a reference to name.  Raise an error if not found.
+        
+        Important: the so-called name *must* include brackets.
+        """
         at = self
         ref = g.findReference(name, p)
         if not ref and not hasattr(at, 'allow_undefined_refs'):
@@ -2015,10 +2024,12 @@ class AtFile:
                 f"undefined section: {g.truncate(name, 60)}\n"
                 f"  referenced from: {g.truncate(p.h, 60)}")
         return ref
+
     #@+node:ekr.20041005105605.199: *7* at.findSectionName (changed)
     def findSectionName(self, s, i):
         """
         Return n1, n2 representing a section name.
+
         The section name, *including* brackes is s[n1:n2]
         """
         at = self
@@ -2027,29 +2038,28 @@ class AtFile:
         if i == 0 and s.startswith('@section-delims'):
             return None, 0, 0
         if end == -1:
-            # n1 = s.find("<<", i)
-            # n2 = s.find(">>", i)
             n1 = s.find(at.section_delim1, i)
             n2 = s.find(at.section_delim2, i)
         else:
             n1 = s.find(at.section_delim1, i, end)
             n2 = s.find(at.section_delim2, i, end)
         ok = -1 < n1 < n2
-        if ok:
-            # Warn on extra brackets.
-            ###b for ch, j in (('<', n1 + 2), ('>', n2 + 2)):
-            for ch, j in (
-                ('<', n1 + len(at.section_delim1)),
-                ('>', n2 + len(at.section_delim2)),
-            ):
-                if g.match(s, j, ch):
-                    line = g.get_line(s, i)
-                    g.es('dubious brackets in', line)
-                    break
-            name = s[n1 : n2 + 2]
-            return name, n1, n2 + 2
-        ### return None, n1, len(s)
-        return None, 0, 0  ###
+        if not ok:
+            return None, 0, 0
+        # Warn on extra brackets.
+        for ch, j in (
+            ('<', n1 + len(at.section_delim1)),
+            ('>', n2 + len(at.section_delim2)),
+        ):
+            if g.match(s, j, ch):
+                line = g.get_line(s, i)
+                g.es('dubious brackets in', line)
+                break
+        # The so-called name *must* include brackets for
+        # g.findReference and v.mathHeadline.
+        name = s[n1 : n2 + len(at.section_delim2)]
+        g.trace('FOUND', name)
+        return name, n1, n2 + len(at.section_delim2)
     #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
     def putAfterLastRef(self, s, start, delta):
         """Handle whatever follows the last ref of a line."""
