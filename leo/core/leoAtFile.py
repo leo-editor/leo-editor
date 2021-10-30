@@ -2438,14 +2438,16 @@ class AtFile:
     # returns (flag, end). end is the index of the character after the section name.
 
     def isSectionName(self, s, i):
-        # 2013/08/01: bug fix: allow leading periods.
+
+        at = self
+        # Allow leading periods.
         while i < len(s) and s[i] == '.':
             i += 1
-        if not g.match(s, i, "<<"):
+        if not g.match(s, i, at.section_delim1):
             return False, -1
-        i = g.find_on_line(s, i, ">>")
+        i = g.find_on_line(s, i, at.section_delim2)
         if i > -1:
-            return True, i + 2
+            return True, i + len(at.section_delim2)
         return False, -1
     #@+node:ekr.20190111112442.1: *5* at.isWritable
     def isWritable(self, path):
