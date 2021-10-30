@@ -4216,7 +4216,7 @@ def find_word(s: str, word, i: int=0):
         i += len(word)
         assert progress < i
     return -1
-#@+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate (new)
+#@+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
 def findAncestorVnodeByPredicate(p, v_predicate):
     """
     Return first ancestor vnode matching the predicate.

@@ -1145,7 +1145,7 @@ class JEditColorizer(BaseJEditColorizer):
         self.restartDict = {}
         self.stateDict = {}
         self.stateNameDict = {}
-    #@+node:ekr.20211029073553.1: *4* jedit.init_section_delims (new)
+    #@+node:ekr.20211029073553.1: *4* jedit.init_section_delims
     def init_section_delims(self):
 
         p = self.c.p
@@ -1439,7 +1439,7 @@ class JEditColorizer(BaseJEditColorizer):
             return j - i
         # Bug fix: allow rescan.  Affects @language patch.
         return 0
-    #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref (changed)
+    #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref
     def match_section_ref(self, s, i):
         p = self.c.p
         if self.trace_leo_matches:

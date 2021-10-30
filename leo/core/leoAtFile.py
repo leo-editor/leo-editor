@@ -2025,7 +2025,7 @@ class AtFile:
                 f"  referenced from: {g.truncate(p.h, 60)}")
         return ref
 
-    #@+node:ekr.20041005105605.199: *7* at.findSectionName (changed)
+    #@+node:ekr.20041005105605.199: *7* at.findSectionName
     def findSectionName(self, s, i):
         """
         Return n1, n2 representing a section name.
@@ -2058,8 +2058,6 @@ class AtFile:
         # The so-called name *must* include brackets for
         # g.findReference and v.mathHeadline.
         name = s[n1 : n2 + len(at.section_delim2)]
-        if not g.unitTesting:  ###
-            g.trace('FOUND', name)  ###
         return name, n1, n2 + len(at.section_delim2)
     #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
     def putAfterLastRef(self, s, start, delta):
@@ -2785,7 +2783,7 @@ class AtFile:
         s1 = s1.replace('\r', '')
         s2 = s2.replace('\r', '')
         return s1 == s2
-    #@+node:ekr.20211029052041.1: *5* at.scanRootForSectionDelims (new)
+    #@+node:ekr.20211029052041.1: *5* at.scanRootForSectionDelims
     def scanRootForSectionDelims(self, root):
         """
         Scan root.b for an "@section-delims" directive.
@@ -3623,6 +3621,7 @@ class FastAtRead:
             if m:
                 if section_reference_seen:
                     # This is a serious error.
+                    # This kind of error should have been caught by Leo's atFile write logic.
                     g.es_print('section-delims seen after a section reference', color='red')
                 else:
                     # Carefully update the section reference pattern!
