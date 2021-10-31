@@ -9,12 +9,11 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
-import leo.core.leoFileCommands as leoFileCommands
 
 #@+others
 #@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
 class TestAtFile(LeoUnitTest):
-    """Test cases for leoApp.py"""
+    """Test cases for leoAtFile.py"""
     #@+others
     #@+node:ekr.20200204095726.1: *3*  TestAtFile.bridge
     def bridge(self):
@@ -316,15 +315,16 @@ class TestAtFile(LeoUnitTest):
             child.b = '@language python\n# test #1889'
             path = g.fullPath(c, child)
             assert '~' not in path, repr(path)
-    #@+node:ekr.20210905052021.32: *3* TestAtFile.test_fast_readWithElementTree
-    def test_fast_readWithElementTree(self):
-        # Test the translation table and associated logic.
-        c = self.c
-        table = leoFileCommands.FastRead(c, {}).translate_table
-        s = chr(0) + "a" + chr(0) + "b"
-        self.assertEqual(len(s), 4)
-        s = s.translate(table)
-        self.assertEqual(len(s), 2)
+    #@-others
+#@+node:ekr.20211031085414.1: ** class TestFastAtRead(LeoUnitTest)
+class TestFastAtRead(LeoUnitTest):
+    """Test the FastAtRead class."""
+    #@+others
+    #@+node:ekr.20211031085620.1: *3*  FastAtRead.setUp
+    ###
+        # def setUp(self):
+            # super().setup()
+
     #@-others
 #@-others
 #@-leo

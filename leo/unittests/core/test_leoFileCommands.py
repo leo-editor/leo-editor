@@ -2,25 +2,19 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210910065135.1: * @file ../unittests/core/test_leoFileCommands.py
 #@@first
-"""Tests of leoFileCommands.py"""
+"""
+Tests of leoFileCommands.py.
 
-from leo.core import leoGlobals as g
-import leo.core.leoApp as leoApp
+test-file-commands runs these tests.
+"""
+
+import leo.core.leoFileCommands as leoFileCommands
 from leo.core.leoTest2 import LeoUnitTest
-import leo.core.leoExternalFiles as leoExternalFiles
 
 #@+others
 #@+node:ekr.20210910065135.2: ** class TestFileCommands (LeoUnitTest)
 class TestFileCommands(LeoUnitTest):
     #@+others
-    #@+node:ekr.20210910065135.3: *3* TestFileCommands.setUp
-    def setUp(self):
-        """setUp for TestFind class"""
-        super().setUp()
-        c = self.c
-        g.app.idleTimeManager = leoApp.IdleTimeManager()
-        g.app.idleTimeManager.start()
-        g.app.externalFilesController = leoExternalFiles.ExternalFilesController(c=c)
     #@+node:ekr.20210909194336.24: *3* TestFileCommands.test_fc_resolveArchivedPosition
     def test_fc_resolveArchivedPosition(self):
         c, root = self.c, self.root_p
@@ -100,6 +94,15 @@ class TestFileCommands(LeoUnitTest):
         s = fc.putUnknownAttributes(p.v)
         expected = ' unit_test="58040000006162636471002e"'
         self.assertEqual(s, expected)
+    #@+node:ekr.20210905052021.32: *3* TestFileCommands.test_fast_readWithElementTree
+    def test_fast_readWithElementTree(self):
+        # Test the translation table and associated logic.
+        c = self.c
+        table = leoFileCommands.FastRead(c, {}).translate_table
+        s = chr(0) + "a" + chr(0) + "b"
+        self.assertEqual(len(s), 4)
+        s = s.translate(table)
+        self.assertEqual(len(s), 2)
     #@-others
 #@-others
 #@-leo
