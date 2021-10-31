@@ -3300,23 +3300,6 @@ class FastAtRead:
         # Set the patterns
         self.get_patterns(comment_delims)
         #@-<< init scan_lines >>
-        #@+<< define dump_v >>
-        #@+node:ekr.20180613061743.1: *4* << define dump_v >>
-        def dump_v():
-            """Dump the level stack and v."""
-            print('----- LEVEL', level, v.h)
-            print('       PARENT', parent_v.h)
-            print('[')
-            for i, data in enumerate(level_stack):
-                v2, in_tree = data
-                print(f"{i+1:2} {in_tree:5} {v2.h}")
-            print(']')
-            print('PARENT.CHILDREN...')
-            g.printObj([v3.h for v3 in parent_v.children])
-            print('PARENTS...')
-            g.printObj([v4.h for v4 in v.parents])
-
-        #@-<< define dump_v >>
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Order matters.
@@ -3388,7 +3371,7 @@ class FastAtRead:
             #@+<< 4. handle section refs >>
             #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
             # Note: scan_header sets *comment* delims, not *section* delims.
-            # This section must coordinate with the section that handles @section-delims.
+            # This section coordinates with the section that handles @section-delims.
             m = self.ref_pat.match(line)
             if m:
                 in_doc = False
@@ -3471,12 +3454,11 @@ class FastAtRead:
                 assert v != root_v
                 parent_v.children.append(v)
                 v.parents.append(parent_v)
-                # dump_v()
                 continue
             #@-<< handle node_start >>
-            #@+<< handle end of @doc & @code parts >>
-            #@+node:ekr.20180602103135.16: *4* << handle end of @doc & @code parts >>
             if in_doc:
+                #@+<< handle @c or @code >>
+                #@+node:ekr.20211031033532.1: *4* << handle @c or @code >>
                 # When delim_end exists the doc block:
                 # - begins with the opening delim, alone on its own line
                 # - ends with the closing delim, alone on its own line.
@@ -3494,7 +3476,10 @@ class FastAtRead:
                     in_doc = False
                     body.append('@code\n' if m.group(1) else '@c\n')
                     continue
+                #@-<< handle @c or @code >>
             else:
+                #@+<< handle @ or @doc >>
+                #@+node:ekr.20211031033754.1: *4* << handle @ or @doc >>
                 m = self.doc_pat.match(line)
                 if m:
                     # @+at or @+doc?
@@ -3507,7 +3492,7 @@ class FastAtRead:
                     # Enter @doc mode.
                     in_doc = True
                     continue
-            #@-<< handle end of @doc & @code parts >>
+                #@-<< handle @ or @doc >>
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
             m = self.all_pat.match(line)
@@ -3643,7 +3628,7 @@ class FastAtRead:
             #@-<< handle @section-delims >>
             #@+<< handle @-leo >>
             #@+node:ekr.20180602103135.20: *4* << handle @-leo >>
-            if line.startswith(comment_delim1 + '@-leo'):
+            if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
                 i += 1
                 break
             #@-<< handle @-leo >>
@@ -3658,9 +3643,9 @@ class FastAtRead:
                 body.append(line[ii:jj] + '\n')
                 continue
             #@-<< Last 1. handle remaining @@ lines >>
-            #@+<< Last 2. handle remaining @doc lines >>
-            #@+node:ekr.20180606054325.1: *4* << Last 2. handle remaining @doc lines >>
             if in_doc:
+                #@+<< Last 2. handle remaining @doc lines >>
+                #@+node:ekr.20180606054325.1: *4* << Last 2. handle remaining @doc lines >>
                 if comment_delim2:
                     # doc lines are unchanged.
                     body.append(line)
@@ -3674,7 +3659,7 @@ class FastAtRead:
                 else:
                     body.append('\n')
                 continue
-            #@-<< Last 2. handle remaining @doc lines >>
+                #@-<< Last 2. handle remaining @doc lines >>
             #@+<< Last 3. handle remaining @ lines >>
             #@+node:ekr.20180602103135.17: *4* << Last 3. handle remaining @ lines >>
             # Handle an apparent sentinel line.
