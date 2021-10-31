@@ -3303,9 +3303,9 @@ class FastAtRead:
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Order matters.
-            #@+<< 1. common code for all lines >>
-            #@+node:ekr.20180602103135.10: *4* << 1. common code for all lines >>
             if verbatim:
+                #@+<< handle verbatim >>
+                #@+node:ekr.20211031041313.1: *4* << handle verbatim >>
                 # We are in raw mode, or other special situation.
                 # Previous line was verbatim sentinel. Append this line as it is.
                 if afterref:
@@ -3327,6 +3327,10 @@ class FastAtRead:
                     body.append(line)
                     verbatim = False
                 continue
+                #@-<< handle verbatim >>
+            #@+<< 1. common code for all lines >>
+            #@+node:ekr.20180602103135.10: *4* << 1. common code for all lines >>
+
             if line == verbline:  # <delim>@verbatim.
                 verbatim = True
                 continue
@@ -3341,19 +3345,11 @@ class FastAtRead:
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             #@-<< 1. common code for all lines >>
-            #@+<< 2. short-circuit later tests >>
-            #@+node:ekr.20180602103135.12: *4* << 2. short-circuit later tests >>
-            # This is valid because all following sections are either:
-            # 1. guarded by 'if in_doc' or
-            # 2. guarded by a pattern that matches the start of the sentinel.
-            #
-            if not in_doc and not strip_line.startswith(sentinel):
-                # lstrip() is faster than using a regex!
+            if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
                 body.append(line)
                 continue
-            #@-<< 2. short-circuit later tests >>
-            #@+<< 3. handle @others >>
-            #@+node:ekr.20180602103135.14: *4* << 3. handle @others >>
+            #@+<< 2. handle @others >>
+            #@+node:ekr.20180602103135.14: *4* << 2. handle @others >>
             m = self.others_pat.match(line)
             if m:
                 in_doc = False
@@ -3365,11 +3361,11 @@ class FastAtRead:
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
                 continue
-            #@-<< 3. handle @others >>
+            #@-<< 2. handle @others >>
             #@afterref
  # clears in_doc
-            #@+<< 4. handle section refs >>
-            #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
+            #@+<< 3. handle section refs >>
+            #@+node:ekr.20180602103135.18: *4* << 3. handle section refs >>
             # Note: scan_header sets *comment* delims, not *section* delims.
             # This section coordinates with the section that handles @section-delims.
             m = self.ref_pat.match(line)
@@ -3387,7 +3383,7 @@ class FastAtRead:
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()  # #1232: Only if the stack exists.
                 continue  # 2021/10/29: *always* continue.
-            #@-<< 4. handle section refs >>
+            #@-<< 3. handle section refs >>
             #@afterref
  # clears in_doc.
             # Order doesn't matter, but match more common sentinels first.
