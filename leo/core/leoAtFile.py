@@ -3304,7 +3304,6 @@ class FastAtRead:
         for i, line in enumerate(lines[start:]):
             # Strip the line only once.
             strip_line = line.strip()
-            # Order matters.
             if verbatim:
                 #@+<< handle verbatim >>
                 #@+node:ekr.20211031041313.1: *4* << handle verbatim >>
@@ -3333,20 +3332,21 @@ class FastAtRead:
             if line == verbline:  # <delim>@verbatim.
                 verbatim = True
                 continue
-            #@+<< 1. finalize line >>
-            #@+node:ekr.20180602103135.10: *4* << 1. finalize line >>
+            #@+<< finalize line >>
+            #@+node:ekr.20180602103135.10: *4* << finalize line >>
             # Undo the cweb hack.
             if is_cweb and line.startswith(sentinel):
                 line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
             # Adjust indentation.
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
-            #@-<< 1. finalize line >>
+            #@-<< finalize line >>
             if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
                 body.append(line)
                 continue
-            #@+<< 2. handle @others >>
-            #@+node:ekr.20180602103135.14: *4* << 2. handle @others >>
+            # These three handlers might clear in_doc.
+            #@+<< handle @others >>
+            #@+node:ekr.20180602103135.14: *4* << handle @others >>
             m = self.others_pat.match(line)
             if m:
                 in_doc = False
@@ -3358,11 +3358,9 @@ class FastAtRead:
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
                 continue
-            #@-<< 2. handle @others >>
-            #@afterref
- # clears in_doc
-            #@+<< 3. handle section refs >>
-            #@+node:ekr.20180602103135.18: *4* << 3. handle section refs >>
+            #@-<< handle @others >>
+            #@+<< handle section refs >>
+            #@+node:ekr.20180602103135.18: *4* << handle section refs >>
             # Note: scan_header sets *comment* delims, not *section* delims.
             # This section coordinates with the section that handles @section-delims.
             m = self.ref_pat.match(line)
@@ -3380,10 +3378,7 @@ class FastAtRead:
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()  # #1232: Only if the stack exists.
                 continue  # 2021/10/29: *always* continue.
-            #@-<< 3. handle section refs >>
-            #@afterref
- # clears in_doc.
-            # Order doesn't matter, but match more common sentinels first.
+            #@-<< handle section refs >>
             #@+<< handle node_start >>
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = self.node_start_pat.match(line)
@@ -3486,6 +3481,10 @@ class FastAtRead:
                     in_doc = True
                     continue
                 #@-<< handle @ or @doc >>
+            if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
+                i += 1
+                break
+            # Order doesn't matter, but match more common sentinels first.
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
             m = self.all_pat.match(line)
@@ -3506,9 +3505,9 @@ class FastAtRead:
             #@+node:ekr.20180603063102.1: *4* << handle afterref >>
             m = self.after_pat.match(line)
             if m:
+                # Avoid an extra test in the main loop.
                 afterref = True
                 verbatim = True
-                    # Avoid an extra test in the main loop.
                 continue
             #@-<< handle afterref >>
             #@+<< handle @first and @last >>
@@ -3619,15 +3618,9 @@ class FastAtRead:
                 body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
                 continue
             #@-<< handle @section-delims >>
-            #@+<< handle @-leo >>
-            #@+node:ekr.20180602103135.20: *4* << handle @-leo >>
-            if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
-                i += 1
-                break
-            #@-<< handle @-leo >>
-            # These must be last, in this order.
-            #@+<< Last 1. handle remaining @@ lines >>
-            #@+node:ekr.20180603135602.1: *4* << Last 1. handle remaining @@ lines >>
+            # These handlers must be last, in this order.
+            #@+<< handle remaining @@ lines >>
+            #@+node:ekr.20180603135602.1: *4* << handle remaining @@ lines >>
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
             if line.startswith(comment_delim1 + '@@'):
@@ -3635,10 +3628,10 @@ class FastAtRead:
                 jj = line.rfind(comment_delim2) if comment_delim2 else -1
                 body.append(line[ii:jj] + '\n')
                 continue
-            #@-<< Last 1. handle remaining @@ lines >>
+            #@-<< handle remaining @@ lines >>
             if in_doc:
-                #@+<< Last 2. handle remaining @doc lines >>
-                #@+node:ekr.20180606054325.1: *4* << Last 2. handle remaining @doc lines >>
+                #@+<< handle remaining @doc lines >>
+                #@+node:ekr.20180606054325.1: *4* << handle remaining @doc lines >>
                 if comment_delim2:
                     # doc lines are unchanged.
                     body.append(line)
@@ -3652,9 +3645,9 @@ class FastAtRead:
                 else:
                     body.append('\n')
                 continue
-                #@-<< Last 2. handle remaining @doc lines >>
-            #@+<< Last 3. handle remaining @ lines >>
-            #@+node:ekr.20180602103135.17: *4* << Last 3. handle remaining @ lines >>
+                #@-<< handle remaining @doc lines >>
+            #@+<< handle remaining @ lines >>
+            #@+node:ekr.20180602103135.17: *4* << handle remaining @ lines >>
             # Handle an apparent sentinel line.
             # This *can* happen after the git-diff or refresh-from-disk commands.
             #
@@ -3667,7 +3660,7 @@ class FastAtRead:
                 f"warning: inserting unexpected line: {line.rstrip()!r}"
             )
             body.append(line)
-            #@-<< Last 3. handle remaining @ lines >>
+            #@-<< handle remaining @ lines >>
         else:
             # No @-leo sentinel
             return None, []
