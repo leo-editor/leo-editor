@@ -3346,7 +3346,7 @@ class FastAtRead:
                 continue
             # These three handlers might clear in_doc.
             #@+<< handle @others >>
-            #@+node:ekr.20180602103135.14: *4* << handle @others >>
+            #@+node:ekr.20180602103135.14: *5* << handle @others >>
             m = self.others_pat.match(line)
             if m:
                 in_doc = False
@@ -3360,7 +3360,7 @@ class FastAtRead:
                 continue
             #@-<< handle @others >>
             #@+<< handle section refs >>
-            #@+node:ekr.20180602103135.18: *4* << handle section refs >>
+            #@+node:ekr.20180602103135.18: *5* << handle section refs >>
             # Note: scan_header sets *comment* delims, not *section* delims.
             # This section coordinates with the section that handles @section-delims.
             m = self.ref_pat.match(line)
@@ -3380,7 +3380,7 @@ class FastAtRead:
                 continue  # 2021/10/29: *always* continue.
             #@-<< handle section refs >>
             #@+<< handle node_start >>
-            #@+node:ekr.20180602103135.19: *4* << handle node_start >>
+            #@+node:ekr.20180602103135.19: *5* << handle node_start >>
             m = self.node_start_pat.match(line)
             if m:
                 in_doc, in_raw = False, False
@@ -3446,7 +3446,7 @@ class FastAtRead:
             #@-<< handle node_start >>
             if in_doc:
                 #@+<< handle @c or @code >>
-                #@+node:ekr.20211031033532.1: *4* << handle @c or @code >>
+                #@+node:ekr.20211031033532.1: *5* << handle @c or @code >>
                 # When delim_end exists the doc block:
                 # - begins with the opening delim, alone on its own line
                 # - ends with the closing delim, alone on its own line.
@@ -3467,7 +3467,7 @@ class FastAtRead:
                 #@-<< handle @c or @code >>
             else:
                 #@+<< handle @ or @doc >>
-                #@+node:ekr.20211031033754.1: *4* << handle @ or @doc >>
+                #@+node:ekr.20211031033754.1: *5* << handle @ or @doc >>
                 m = self.doc_pat.match(line)
                 if m:
                     # @+at or @+doc?
@@ -3484,9 +3484,9 @@ class FastAtRead:
             if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
                 i += 1
                 break
-            # Order doesn't matter, but match more common sentinels first.
+            # Order doesn't matter.
             #@+<< handle @all >>
-            #@+node:ekr.20180602103135.13: *4* << handle @all >>
+            #@+node:ekr.20180602103135.13: *5* << handle @all >>
             m = self.all_pat.match(line)
             if m:
                 # @all tells Leo's *write* code not to check for undefined sections.
@@ -3502,7 +3502,7 @@ class FastAtRead:
                 continue
             #@-<< handle @all >>
             #@+<< handle afterref >>
-            #@+node:ekr.20180603063102.1: *4* << handle afterref >>
+            #@+node:ekr.20180603063102.1: *5* << handle afterref >>
             m = self.after_pat.match(line)
             if m:
                 # Avoid an extra test in the main loop.
@@ -3511,7 +3511,7 @@ class FastAtRead:
                 continue
             #@-<< handle afterref >>
             #@+<< handle @first and @last >>
-            #@+node:ekr.20180606053919.1: *4* << handle @first and @last >>
+            #@+node:ekr.20180606053919.1: *5* << handle @first and @last >>
             m = self.first_pat.match(line)
             if m:
                 if 0 <= first_i < len(first_lines):
@@ -3529,7 +3529,7 @@ class FastAtRead:
                 continue
             #@-<< handle @first and @last >>
             #@+<< handle @comment >>
-            #@+node:ekr.20180621050901.1: *4* << handle @comment >>
+            #@+node:ekr.20180621050901.1: *5* << handle @comment >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
             m = self.comment_pat.match(line)
             if m:
@@ -3560,7 +3560,7 @@ class FastAtRead:
                 continue
             #@-<< handle @comment >>
             #@+<< handle @delims >>
-            #@+node:ekr.20180608104836.1: *4* << handle @delims >>
+            #@+node:ekr.20180608104836.1: *5* << handle @delims >>
             m = self.delims_pat.match(line)
             if m:
                 # Get 1 or 2 comment delims
@@ -3593,7 +3593,7 @@ class FastAtRead:
                 continue
             #@-<< handle @delims >>
             #@+<< handle @raw >>
-            #@+node:ekr.20180606080200.1: *4* << handle @raw >>
+            #@+node:ekr.20180606080200.1: *5* << handle @raw >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
             m = self.raw_pat.match(line)
             if m:
@@ -3603,7 +3603,7 @@ class FastAtRead:
                 continue
             #@-<< handle @raw >>
             #@+<< handle @section-delims >>
-            #@+node:ekr.20211030033211.1: *4* << handle @section-delims >>
+            #@+node:ekr.20211030033211.1: *5* << handle @section-delims >>
             m = self.section_delims_pat.match(line)
             if m:
                 if section_reference_seen:
@@ -3620,7 +3620,7 @@ class FastAtRead:
             #@-<< handle @section-delims >>
             # These handlers must be last, in this order.
             #@+<< handle remaining @@ lines >>
-            #@+node:ekr.20180603135602.1: *4* << handle remaining @@ lines >>
+            #@+node:ekr.20180603135602.1: *5* << handle remaining @@ lines >>
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
             if line.startswith(comment_delim1 + '@@'):
@@ -3631,7 +3631,7 @@ class FastAtRead:
             #@-<< handle remaining @@ lines >>
             if in_doc:
                 #@+<< handle remaining @doc lines >>
-                #@+node:ekr.20180606054325.1: *4* << handle remaining @doc lines >>
+                #@+node:ekr.20180606054325.1: *5* << handle remaining @doc lines >>
                 if comment_delim2:
                     # doc lines are unchanged.
                     body.append(line)
@@ -3647,7 +3647,7 @@ class FastAtRead:
                 continue
                 #@-<< handle remaining @doc lines >>
             #@+<< handle remaining @ lines >>
-            #@+node:ekr.20180602103135.17: *4* << handle remaining @ lines >>
+            #@+node:ekr.20180602103135.17: *5* << handle remaining @ lines >>
             # Handle an apparent sentinel line.
             # This *can* happen after the git-diff or refresh-from-disk commands.
             #
@@ -3671,6 +3671,12 @@ class FastAtRead:
             gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
         self.post_pass(gnx2body, gnx2vnode, root_v)
         return root_v, last_lines
+    #@+node:ekr.20211031043442.1: *4* first handlers
+    # These handlers must appear before the test on in_doc.
+    #@+node:ekr.20211031043544.1: *4* middle handlers
+    # Order doesn't matter
+    #@+node:ekr.20211031043427.1: *4* last handlers
+    # Order *does* matter.
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
     def read_into_root(self, contents, path, root):
         """
