@@ -3302,6 +3302,8 @@ class FastAtRead:
         #@-<< init scan_lines >>
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
+            # Strip the line only once.
+            strip_line = line.strip()
             # Order matters.
             if verbatim:
                 #@+<< handle verbatim >>
@@ -3326,25 +3328,20 @@ class FastAtRead:
                 else:
                     body.append(line)
                     verbatim = False
-                continue
                 #@-<< handle verbatim >>
-            #@+<< 1. common code for all lines >>
-            #@+node:ekr.20180602103135.10: *4* << 1. common code for all lines >>
-
+                continue
             if line == verbline:  # <delim>@verbatim.
                 verbatim = True
                 continue
-            #
-            # Strip the line only once.
-            strip_line = line.strip()
-            #
+            #@+<< 1. finalize line >>
+            #@+node:ekr.20180602103135.10: *4* << 1. finalize line >>
             # Undo the cweb hack.
             if is_cweb and line.startswith(sentinel):
                 line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
             # Adjust indentation.
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
-            #@-<< 1. common code for all lines >>
+            #@-<< 1. finalize line >>
             if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
                 body.append(line)
                 continue
