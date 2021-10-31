@@ -3128,7 +3128,10 @@ class FastAtRead:
     This is Vitalije's code, edited by EKR.
     """
 
+    #@+others
+    #@+node:ekr.20211030193146.1: *3* fast_at.__init__
     def __init__(self, c, gnx2vnode, test=False, TestVNode=None):
+
         self.c = c
         assert gnx2vnode is not None
         self.gnx2vnode = gnx2vnode # The global fc.gnxDict. Keys are gnx's, values are vnodes.
@@ -3136,8 +3139,22 @@ class FastAtRead:
         self.root = None
         self.VNode = TestVNode if test else leoNodes.VNode
         self.test = test
-
-    #@+others
+        #
+        # compiled patterns.
+        self.after_pat = None
+        self.all_pat = None   
+        self.code_pat = None
+        self.comment_pat = None   
+        self.delims_pat = None   
+        self.doc_pat = None
+        self.end_raw_pat = None   
+        self.first_pat = None   
+        self.last_pat = None 
+        self.node_start_pat = None  
+        self.others_pat = None
+        self.raw_pat = None   
+        self.ref_pat = None   
+        self.section_delims_pat = None
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
 
@@ -3148,27 +3165,30 @@ class FastAtRead:
         delim1 = re.escape(comment_delim_start)
         delim2 = re.escape(comment_delim_end or '')
         ref = g.angleBrackets(r'(.*)')
-        patterns = (
-            # The list of patterns, in alphabetical order.
+        table = (
             # These patterns must be mutually exclusive.
-            fr'^\s*{delim1}@afterref{delim2}$',             # @afterref
-            fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$',    # @all
-            fr'^\s*{delim1}@@c(ode)?{delim2}$',             # @c and @code
-            fr'^\s*{delim1}@comment(.*){delim2}',           # @comment
-            fr'^\s*{delim1}@delims(.*){delim2}',            # @delims
-            fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n', # @doc or @
-            fr'^\s*{delim1}@end_raw\s*{delim2}',            # @end_raw
-            fr'^\s*{delim1}@@first{delim2}$',               # @first
-            fr'^\s*{delim1}@@last{delim2}$',                # @last
-            fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$', # @node
-            fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$', # @others
-            fr'^\s*{delim1}@raw(.*){delim2}',               # @raw
-            fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$',     # section ref (ref_pat)
-                                                            # @section-delims
-            fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$', 
+            ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
+            ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),    # @all
+            ('code',        fr'^\s*{delim1}@@c(ode)?{delim2}$'),             # @c and @code
+            ('comment',     fr'^\s*{delim1}@comment(.*){delim2}'),           # @comment
+            ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
+            ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
+            ('end_raw',     fr'^\s*{delim1}@end_raw\s*{delim2}'),            # @end_raw
+            ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
+            ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
+            # @node
+            ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
+            ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
+            ('raw',         fr'^\s*{delim1}@raw(.*){delim2}'),               # @raw
+            ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
+            # @section-delims
+            ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'), 
         )
-        # Return the compiled patterns, in alphabetical order.
-        return (re.compile(pattern) for pattern in patterns)
+        # Set the ivars.
+        for (name, pattern) in table:
+            ivar = f"{name}_pat"
+            assert hasattr(self, ivar), ivar
+            setattr(self, ivar, re.compile(pattern))
     #@+node:ekr.20180603060721.1: *3* fast_at.post_pass
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         """Set all body text."""
@@ -3278,11 +3298,7 @@ class FastAtRead:
         gnx2body[gnx] = body = first_lines
         #
         # Set the patterns
-        (
-            after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat,
-            end_raw_pat, first_pat, last_pat, node_start_pat, others_pat,
-            raw_pat, ref_pat, section_delims_pat, 
-        ) = self.get_patterns(comment_delims)
+        self.get_patterns(comment_delims)
         #@-<< init scan_lines >>
         #@+<< define dump_v >>
         #@+node:ekr.20180613061743.1: *4* << define dump_v >>
@@ -3317,7 +3333,7 @@ class FastAtRead:
                         body = [line]
                     verbatim = False
                 elif in_raw:
-                    m = end_raw_pat.match(line)
+                    m = self.end_raw_pat.match(line)
                     if m:
                         in_raw = False
                         verbatim = False
@@ -3355,7 +3371,7 @@ class FastAtRead:
             #@-<< 2. short-circuit later tests >>
             #@+<< 3. handle @others >>
             #@+node:ekr.20180602103135.14: *4* << 3. handle @others >>
-            m = others_pat.match(line)
+            m = self.others_pat.match(line)
             if m:
                 in_doc = False
                 if m.group(2) == '+':  # opening sentinel
@@ -3373,7 +3389,7 @@ class FastAtRead:
             #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
             # Note: scan_header sets *comment* delims, not *section* delims.
             # This section must coordinate with the section that handles @section-delims.
-            m = ref_pat.match(line)
+            m = self.ref_pat.match(line)
             if m:
                 in_doc = False
                 if m.group(2) == '+':
@@ -3394,7 +3410,7 @@ class FastAtRead:
             # Order doesn't matter, but match more common sentinels first.
             #@+<< handle node_start >>
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
-            m = node_start_pat.match(line)
+            m = self.node_start_pat.match(line)
             if m:
                 in_doc, in_raw = False, False
                 gnx, head = m.group(2), m.group(5)
@@ -3473,13 +3489,13 @@ class FastAtRead:
                     continue
                 #
                 # Check for @c or @code.
-                m = code_pat.match(line)
+                m = self.code_pat.match(line)
                 if m:
                     in_doc = False
                     body.append('@code\n' if m.group(1) else '@c\n')
                     continue
             else:
-                m = doc_pat.match(line)
+                m = self.doc_pat.match(line)
                 if m:
                     # @+at or @+doc?
                     doc = '@doc' if m.group(1) == 'doc' else '@'
@@ -3494,7 +3510,7 @@ class FastAtRead:
             #@-<< handle end of @doc & @code parts >>
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
-            m = all_pat.match(line)
+            m = self.all_pat.match(line)
             if m:
                 # @all tells Leo's *write* code not to check for undefined sections.
                 # Here, in the read code, we merely need to add it to the body.
@@ -3510,7 +3526,7 @@ class FastAtRead:
             #@-<< handle @all >>
             #@+<< handle afterref >>
             #@+node:ekr.20180603063102.1: *4* << handle afterref >>
-            m = after_pat.match(line)
+            m = self.after_pat.match(line)
             if m:
                 afterref = True
                 verbatim = True
@@ -3519,7 +3535,7 @@ class FastAtRead:
             #@-<< handle afterref >>
             #@+<< handle @first and @last >>
             #@+node:ekr.20180606053919.1: *4* << handle @first and @last >>
-            m = first_pat.match(line)
+            m = self.first_pat.match(line)
             if m:
                 if 0 <= first_i < len(first_lines):
                     body.append('@first ' + first_lines[first_i])
@@ -3530,7 +3546,7 @@ class FastAtRead:
                     g.printObj(first_lines, tag='first_lines')
                     g.printObj(lines[start : i + 2], tag='lines[start:i+2]')
                 continue
-            m = last_pat.match(line)
+            m = self.last_pat.match(line)
             if m:
                 n_last_lines += 1
                 continue
@@ -3538,7 +3554,7 @@ class FastAtRead:
             #@+<< handle @comment >>
             #@+node:ekr.20180621050901.1: *4* << handle @comment >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
-            m = comment_pat.match(line)
+            m = self.comment_pat.match(line)
             if m:
                 # <1, 2 or 3 comment delims>
                 delims = m.group(1).strip()
@@ -3563,16 +3579,12 @@ class FastAtRead:
                 #
                 # Recalculate the patterns.
                 comment_delims = comment_delim1, comment_delim2
-                (
-                    after_pat, all_pat, code_pat, comment_pat, delims_pat,
-                    doc_pat, end_raw_pat, first_pat, last_pat,
-                    node_start_pat, others_pat, raw_pat, ref_pat, section_delims_pat, 
-                ) = self.get_patterns(comment_delims)
+                self.get_patterns(comment_delims)
                 continue
             #@-<< handle @comment >>
             #@+<< handle @delims >>
             #@+node:ekr.20180608104836.1: *4* << handle @delims >>
-            m = delims_pat.match(line)
+            m = self.delims_pat.match(line)
             if m:
                 # Get 1 or 2 comment delims
                 # Whatever happens, retain the original @delims line.
@@ -3580,8 +3592,8 @@ class FastAtRead:
                 body.append(f"@delims {delims}\n")
                 #
                 # Parse the delims.
-                delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
-                m2 = delims_pat.match(delims)
+                self.delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+                m2 = self.delims_pat.match(delims)
                 if not m2:
                     g.trace(f"Ignoring invalid @comment: {line!r}")
                     continue
@@ -3600,17 +3612,13 @@ class FastAtRead:
                 #
                 # Recalculate the patterns
                 comment_delims = comment_delim1, comment_delim2
-                (
-                    after_pat, all_pat, code_pat, comment_pat, delims_pat,
-                    doc_pat, end_raw_pat, first_pat, last_pat,
-                    node_start_pat, others_pat, raw_pat, ref_pat, 
-                ) = self.get_patterns(comment_delims)
+                self.get_patterns(comment_delims)
                 continue
             #@-<< handle @delims >>
             #@+<< handle @raw >>
             #@+node:ekr.20180606080200.1: *4* << handle @raw >>
             # http://leoeditor.com/directives.html#part-4-dangerous-directives
-            m = raw_pat.match(line)
+            m = self.raw_pat.match(line)
             if m:
                 in_raw = True
                 verbatim = True
@@ -3619,7 +3627,7 @@ class FastAtRead:
             #@-<< handle @raw >>
             #@+<< handle @section-delims >>
             #@+node:ekr.20211030033211.1: *4* << handle @section-delims >>
-            m = section_delims_pat.match(line)
+            m = self.section_delims_pat.match(line)
             if m:
                 if section_reference_seen:
                     # This is a serious error.
@@ -3629,7 +3637,7 @@ class FastAtRead:
                     # Carefully update the section reference pattern!
                     section_delim1 = d1 = re.escape(m.group(1))
                     section_delim2 = d2 = re.escape(m.group(2) or '')
-                    ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
                 body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
                 continue
             #@-<< handle @section-delims >>
