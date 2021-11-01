@@ -3130,7 +3130,7 @@ class FastAtRead:
 
     #@+others
     #@+node:ekr.20211030193146.1: *3* fast_at.__init__
-    def __init__(self, c, gnx2vnode, test=False, TestVNode=None):
+    def __init__(self, c, gnx2vnode, test=False, TestVNode=None):  ###
 
         self.c = c
         assert gnx2vnode is not None
@@ -3193,7 +3193,7 @@ class FastAtRead:
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         """Set all body text."""
         # Set the body text.
-        if self.test:
+        if False: ### self.test:
             # Check the keys.
             bkeys = sorted(gnx2body.keys())
             vkeys = sorted(gnx2vnode.keys())
@@ -3201,8 +3201,8 @@ class FastAtRead:
                 g.trace('KEYS MISMATCH')
                 g.printObj(bkeys)
                 g.printObj(vkeys)
-                if self.test:
-                    sys.exit(1)
+                ### if self.test:
+                ###    sys.exit(1)
             # Set the body text.
             for key in vkeys:
                 v = gnx2vnode.get(key)
@@ -3273,7 +3273,7 @@ class FastAtRead:
         #
         # Init the parent vnode for testing.
         #
-        if self.test:
+        if False: ### self.test:
             # Start with the gnx for the @file node.
             root_gnx = gnx = 'root-gnx'  # The node that we are reading.
             gnx_head = '<hidden top vnode>'  # The headline of the root node.
@@ -3427,7 +3427,8 @@ class FastAtRead:
                     v.children = []
                 else:
                     # Make a new vnode.
-                    v = self.VNode(context=context, gnx=gnx)
+                    ### v = self.VNode(context=context, gnx=gnx)
+                    v = leoNodes.VNode(context=context, gnx=gnx)
                 #
                 # The last version of the body and headline wins.
                 gnx2vnode[gnx] = v

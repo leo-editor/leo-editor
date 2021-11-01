@@ -7,14 +7,14 @@ import os
 import tempfile
 import textwrap
 from leo.core import leoGlobals as g
+from leo.core import leoAtFile
 from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
-import leo.core.leoFileCommands as leoFileCommands
 
 #@+others
 #@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
 class TestAtFile(LeoUnitTest):
-    """Test cases for leoApp.py"""
+    """Test cases for leoAtFile.py"""
     #@+others
     #@+node:ekr.20200204095726.1: *3*  TestAtFile.bridge
     def bridge(self):
@@ -316,15 +316,64 @@ class TestAtFile(LeoUnitTest):
             child.b = '@language python\n# test #1889'
             path = g.fullPath(c, child)
             assert '~' not in path, repr(path)
-    #@+node:ekr.20210905052021.32: *3* TestAtFile.test_fast_readWithElementTree
-    def test_fast_readWithElementTree(self):
-        # Test the translation table and associated logic.
-        c = self.c
-        table = leoFileCommands.FastRead(c, {}).translate_table
-        s = chr(0) + "a" + chr(0) + "b"
-        self.assertEqual(len(s), 4)
-        s = s.translate(table)
-        self.assertEqual(len(s), 2)
+    #@-others
+#@+node:ekr.20211031085414.1: ** class TestFastAtRead(LeoUnitTest)
+class TestFastAtRead(LeoUnitTest):
+    """Test the FastAtRead class."""
+    #@+others
+    #@+node:ekr.20211031085620.1: *3*  FastAtRead.setUp
+    def setUp(self):
+        super().setUp()
+        self.x = leoAtFile.FastAtRead(
+            self.c,
+            gnx2vnode={},
+            ### test=False,  ### Should this be true?
+            ### TestVNode=None,
+        )
+
+    #@+node:ekr.20211031093209.1: *3* FastAtRead.test_round_trip_of_sentinels_delim
+    def test_round_trip_of_sentinels_delim(self):
+
+        c, x = self.c, self.x
+        #@+<< define contents >>
+        #@+node:ekr.20211101050923.1: *4* << define contents >>
+        contents = textwrap.dedent('''\
+        # -*- coding: utf-8 -*-
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211029054120.1: * @file c:\test\section_delims_test.py
+        #AT@first
+
+        """Classes to read and write @file nodes."""
+
+        #AT@section-delims <!< >!>
+
+        #AT+<!< test >!>
+        #AT+node:ekr.20211029054238.1: ** <!< test >!>
+        print('in test section')
+        print('done')
+        #AT-<!< test >!>
+
+        #AT+others
+        #AT+node:ekr.20211030052810.1: ** spam
+        def spam():
+        pass
+        #AT+node:ekr.20211030053502.1: ** eggs
+        def eggs():
+        pass
+        #AT-others
+
+        #AT@language python
+        #AT-leo
+        ''').replace('#AT', '#@')
+        #@-<< define contents >>
+        if '@section-delims' not in g.globalDirectiveList:
+            self.skipTest('@section-delims not supported')
+        root = c.rootPosition()
+        x.read_into_root(contents, path='test', root=root)
+        if 0: ### Not ready yet.
+            self.dump_tree()
+            s = c.atFileCommands.atFileToString(root, sentinels=True)
+            self.assertEqual(contents, s)
     #@-others
 #@-others
 #@-leo
