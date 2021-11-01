@@ -332,10 +332,11 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         #@+<< define contents >>
         #@+node:ekr.20211101050923.1: *4* << define contents >>
+        # The contents of a personal test file, slightly altered.
         contents = textwrap.dedent('''\
         # -*- coding: utf-8 -*-
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211029054120.1: * @file c:\test\section_delims_test.py
+        #AT+node:ekr.20211029054120.1: * @file /test/section_delims_test.py
         #AT@first
 
         """Classes to read and write @file nodes."""
@@ -362,11 +363,20 @@ class TestFastAtRead(LeoUnitTest):
         ''').replace('#AT', '#@')
         #@-<< define contents >>
         root = c.rootPosition()
+        root.h = '@file /test/section_delims_test.py' # To match contents.
         x.read_into_root(contents, path='test', root=root)
-        if 0: ### Not ready yet.
-            self.dump_tree()
-            s = c.atFileCommands.atFileToString(root, sentinels=True)
-            self.assertEqual(contents, s)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+        child1 = root.firstChild()
+        child2 = child1.next()
+        child3 = child2.next()
+        table = (
+            (child1, '<!< test >!>'),
+            (child2, 'spam'),
+            (child3, 'eggs'),
+        )
+        for child, h in table:
+            self.assertEqual(child.h, h)
     #@-others
 #@-others
 #@-leo
