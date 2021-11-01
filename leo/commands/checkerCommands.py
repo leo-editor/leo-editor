@@ -46,7 +46,7 @@ from leo.core import leoGlobals as g
 @g.command('find-long-lines')
 def find_long_lines(event):
     """Report long lines in the log, with clickable links."""
-    c = event.get('c')
+    c = event and event.get('c')
     if not c:
         return
     #@+others # helper functions
@@ -98,7 +98,7 @@ def find_long_lines(event):
 @g.command('find-missing-docstrings')
 def find_missing_docstrings(event):
     """Report missing docstrings in the log, with clickable links."""
-    c = event.get('c')
+    c = event and event.get('c')
     if not c:
         return
     #@+others # Define functions
@@ -167,7 +167,7 @@ def flake8_command(event):
     if not flake8:
         g.es_print(f"{tag} can not import flake8")
         return
-    c = event.get('c')
+    c = event and event.get('c')
     if not c or not c.p:
         return
     python = sys.executable
@@ -209,7 +209,7 @@ def mypy_command(event):
 
     See leoSettings.leo for details.
     """
-    c = event.get('c')
+    c = event and event.get('c')
     if not c:
         return
     if c.isChanged():
@@ -225,7 +225,7 @@ def pyflakes_command(event):
     Run pyflakes on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
     """
-    c = event.get('c')
+    c = event and event.get('c')
     if c:
         if c.isChanged():
             c.save()
@@ -244,7 +244,7 @@ def pylint_command(event):
     or the last checked @<file> node.
     """
     global last_pylint_path
-    c = event.get('c')
+    c = event and event.get('c')
     if c:
         if c.isChanged():
             c.save()
