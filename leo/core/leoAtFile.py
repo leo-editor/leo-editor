@@ -3167,7 +3167,7 @@ class FastAtRead:
             ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
             ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),    # @all
             ('code',        fr'^\s*{delim1}@@c(ode)?{delim2}$'),             # @c and @code
-            ('comment',     fr'^\s*{delim1}@comment(.*){delim2}'),           # @comment
+            ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
             ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
             ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
             ('end_raw',     fr'^\s*{delim1}@end_raw\s*{delim2}'),            # @end_raw
@@ -3486,11 +3486,12 @@ class FastAtRead:
             #@+node:ekr.20180606053919.1: *4* << handle @first and @last >>
             m = self.first_pat.match(line)
             if m:
+                # pylint: disable=no-else-continue
                 if 0 <= first_i < len(first_lines):
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
                     continue
-                else:  # pragma: no cover
+                else: # pragma: no cover
                     g.trace(f"\ntoo many @first lines: {path}")
                     print('@first is valid only at the start of @<file> nodes\n')
                     g.printObj(first_lines, tag='first_lines')
