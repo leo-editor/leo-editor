@@ -3637,7 +3637,7 @@ class FastAtRead:
             #@-<< handle remaining @ lines >>
         else:
             # No @-leo sentinel
-            return None, []
+            return None, []  # pragma: no cover
         # Handle @last lines.
         last_lines = lines[start + i :]
         if last_lines:
@@ -3659,7 +3659,7 @@ class FastAtRead:
         contents = contents.replace('\r', '')
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
-        if not data:
+        if not data:  # pragma: no cover
             g.trace(f"Invalid external file: {sfn}")
             return False
         # Clear all children.
