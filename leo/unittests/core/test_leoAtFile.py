@@ -414,18 +414,16 @@ class TestFastAtRead(LeoUnitTest):
 
         !!!AT@language plain
         !!!AT-leo
-        ''').replace('#AT', '#@').replace('LB', '<<')
+        ''').replace('!!!AT', '!!!@').replace('LB', '<<')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        print('')
-        g.printObj(s)
         self.assertEqual(contents, s)
         child1 = root.firstChild()
         child2 = child1.next()
         child3 = child2.next()
         table = (
-            (child1, '<!< test >!>'),
+            (child1, g.angleBrackets(' test ')),
             (child2, 'spam'),
             (child3, 'eggs'),
         )
