@@ -387,6 +387,7 @@ class TestFastAtRead(LeoUnitTest):
         root.h = h # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101090447.1: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         !!! -*- coding: utf-8 -*-
         !!!AT+leo-ver=5-thin
@@ -414,7 +415,7 @@ class TestFastAtRead(LeoUnitTest):
 
         !!!AT@language plain
         !!!AT-leo
-        ''').replace('!!!AT', '!!!@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
