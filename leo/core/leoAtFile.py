@@ -3545,8 +3545,8 @@ class FastAtRead:
                 # Parse the delims.
                 self.delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
                 m2 = self.delims_pat.match(delims)
-                if not m2:
-                    g.trace(f"Ignoring invalid @comment: {line!r}")
+                if not m2:  # pragma: no cover
+                    g.trace(f"Ignoring invalid @delims: {line!r}")
                     continue
                 comment_delim1 = m2.group(1)
                 comment_delim2 = m2.group(2) or ''
@@ -3580,7 +3580,7 @@ class FastAtRead:
             #@+node:ekr.20211030033211.1: *4* << handle @section-delims >>
             m = self.section_delims_pat.match(line)
             if m:
-                if section_reference_seen:
+                if section_reference_seen:  # pragma: no cover
                     # This is a serious error.
                     # This kind of error should have been caught by Leo's atFile write logic.
                     g.es_print('section-delims seen after a section reference', color='red')
