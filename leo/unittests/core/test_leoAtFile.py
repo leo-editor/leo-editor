@@ -429,6 +429,55 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
+    #@+node:ekr.20211101111636.1: *3* TestFast.test_at_delims
+    def test_at_delims(self):
+        c, x = self.c, self.x
+        h = '@file /test/test_at_delims.txt'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211101111652.1: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+        !! -*- coding: utf-8 -*-
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211101111409.1: * {h}
+        #AT@first
+
+        #ATdelims !! 
+
+        !!AT+LB test >>
+        !!AT+node:ekr.20211101111409.2: ** LB test >>
+        print('in test section')
+        print('done')
+        !!AT-LB test >>
+
+        !!AT+others
+        !!AT+node:ekr.20211101111409.3: ** spam
+        def spam():
+            pass
+        !!AT+node:ekr.20211101111409.4: ** eggs
+        def eggs():
+            pass
+        !!AT-others
+
+        !!AT@language python
+        !!AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+        child1 = root.firstChild()
+        child2 = child1.next()
+        child3 = child2.next()
+        table = (
+            (child1, g.angleBrackets(' test ')),
+            (child2, 'spam'),
+            (child3, 'eggs'),
+        )
+        for child, h in table:
+            self.assertEqual(child.h, h)
     #@-others
 #@-others
 #@-leo
