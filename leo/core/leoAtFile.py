@@ -18,11 +18,11 @@ from leo.core import leoNodes
 #@-<< imports >>
 #@+others
 #@+node:ekr.20150509194251.1: ** cmd (decorator)
-def cmd(name):
+def cmd(name):  # pragma: no cover
     """Command decorator for the AtFileCommands class."""
     return g.new_cmd_decorator(name, ['c', 'atFileCommands',])
 #@+node:ekr.20160514120655.1: ** class AtFile
-class AtFile:
+class AtFile:  # pragma: no cover (temporary)
     """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
     #@+node:ekr.20131224053735.16380: *3* << define class constants >>
@@ -3221,7 +3221,7 @@ class FastAtRead:
                 delims = m.group(1), m.group(8) or ''
                 return delims, first_lines, i + 1
             first_lines.append(line)
-        return None
+        return None  # pragma: no cover (defensive)
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
     def scan_lines(self, comment_delims, first_lines, lines, path, start):
         """Scan all lines of the file, creating vnodes."""
@@ -3623,15 +3623,16 @@ class FastAtRead:
             # Handle an apparent sentinel line.
             # This *can* happen after the git-diff or refresh-from-disk commands.
             #
-            # This assert verifies the short-circuit test.
-            assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
-            #
-            # #2213: *Do* insert the line, with a warning.
-            g.trace(
-                f"{g.shortFileName(self.path)}: "
-                f"warning: inserting unexpected line: {line.rstrip()!r}"
-            )
-            body.append(line)
+            if 1:   # pragma: no cover (defensive)
+                # This assert verifies the short-circuit test.
+                assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
+                # A useful trace.
+                g.trace(
+                    f"{g.shortFileName(self.path)}: "
+                    f"warning: inserting unexpected line: {line.rstrip()!r}"
+                )
+                # #2213: *Do* insert the line, with a warning.
+                body.append(line)
             #@-<< handle remaining @ lines >>
         else:
             # No @-leo sentinel
