@@ -3286,7 +3286,7 @@ class FastAtRead:
                     if body:  # a List of lines.
                         body[-1] = body[-1].rstrip() + line
                     else:
-                        body = [line]
+                        body = [line]  # pragma: no cover
                     verbatim = False
                 elif in_raw:
                     m = self.end_raw_pat.match(line)

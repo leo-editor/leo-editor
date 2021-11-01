@@ -590,16 +590,37 @@ class TestFastAtRead(LeoUnitTest):
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-        # child1 = root.firstChild()
-        # child2 = child1.next()
-        # child3 = child2.next()
-        # table = (
-            # (child1, g.angleBrackets(' test ')),
-            # (child2, 'spam'),
-            # (child3, 'eggs'),
-        # )
-        # for child, h in table:
-            # self.assertEqual(child.h, h)
+    #@+node:ekr.20211101180354.1: *3* TestFast.test_verbatim
+    def test_verbatim(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_verbatim.py'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211101180404.1: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211101175710.1: * {h}
+        #AT@language python
+
+        #AT+LB test >>
+        #AT+node:ekr.20211101175745.1: ** LB test >>
+        print('hi')
+        #AT-LB test >>
+        #ATafterref
+         #AT+LB after
+
+        #ATverbatim
+        #AT+node (should be protected by verbatim)
+
+        #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
     #@-others
 #@-others
 #@-leo
