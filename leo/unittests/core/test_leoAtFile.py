@@ -479,6 +479,34 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
+    #@+node:ekr.20211101181101.1: *3* TestFast.test_at_raw
+    def test_at_raw(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_at_raw.py'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211101181835.1: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211101181142.1: * {h}
+        #AT@language python
+
+        #AT@raw
+
+        # LB test >>
+
+        #AT@end_raw
+
+        print('hi')
+        #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
     #@+node:ekr.20211101155930.1: *3* TestFast.test_clones
     def test_clones(self):
 

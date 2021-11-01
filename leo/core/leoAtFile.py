@@ -3170,13 +3170,13 @@ class FastAtRead:
             ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
             ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
             ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ('end_raw',     fr'^\s*{delim1}@end_raw\s*{delim2}'),            # @end_raw
+            ('end_raw',     fr'^\s*{delim1}@@end_raw\s*{delim2}'),           # @end_raw (6.6: changed)
             ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
             ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
             # @node
             ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
             ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
-            ('raw',         fr'^\s*{delim1}@raw(.*){delim2}'),               # @raw
+            ('raw',         fr'^\s*{delim1}@@raw\s*{delim2}$'),              # @raw (6.6: changed)
             ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
             # @section-delims
             ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'), 
@@ -3277,10 +3277,9 @@ class FastAtRead:
             # Strip the line only once.
             strip_line = line.strip()
             if verbatim:
-                #@+<< handle verbatim >>
-                #@+node:ekr.20211031041313.1: *4* << handle verbatim >>
-                # We are in raw mode, or other special situation.
-                # Previous line was verbatim sentinel. Append this line as it is.
+                #@+<< handle verbatim mode >>
+                #@+node:ekr.20211031041313.1: *4* << handle verbatim mode >>
+                # We are in verbatim *mode*, which is set by @verbatim sentinels, @raw or @afterref
                 if afterref:
                     afterref = False
                     if body:  # a List of lines.
@@ -3293,13 +3292,16 @@ class FastAtRead:
                     if m:
                         in_raw = False
                         verbatim = False
+                        # Leo 6.6: Bug fix: Insert the directive.
+                        body.append('@end_raw\n')
                     else:
                         # Continue verbatim/raw mode.
                         body.append(line)
                 else:
+                    # Previous line was verbatim *sentinel*. Append this line as it is.
                     body.append(line)
                     verbatim = False
-                #@-<< handle verbatim >>
+                #@-<< handle verbatim mode >>
                 continue
             if line == verbline:  # <delim>@verbatim.
                 verbatim = True
@@ -3477,8 +3479,8 @@ class FastAtRead:
             #@+node:ekr.20180603063102.1: *4* << handle afterref >>
             m = self.after_pat.match(line)
             if m:
-                # Avoid an extra test in the main loop.
                 afterref = True
+                # Set the verbatim flag to avoid an extra test in the main loop.
                 verbatim = True
                 continue
             #@-<< handle afterref >>
@@ -3572,8 +3574,10 @@ class FastAtRead:
             m = self.raw_pat.match(line)
             if m:
                 in_raw = True
+                # Set the verbatim flag to avoid an extra test in the main loop.
                 verbatim = True
-                    # Avoid an extra test in the main loop.
+                # Leo 6.6: Bug fix: Insert the directive.
+                body.append('@raw\n')
                 continue
             #@-<< handle @raw >>
             #@+<< handle @section-delims >>
