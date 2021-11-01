@@ -324,12 +324,7 @@ class TestFastAtRead(LeoUnitTest):
     #@+node:ekr.20211031085620.1: *3*  FastAtRead.setUp
     def setUp(self):
         super().setUp()
-        self.x = leoAtFile.FastAtRead(
-            self.c,
-            gnx2vnode={},
-            ### test=False,  ### Should this be true?
-            ### TestVNode=None,
-        )
+        self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
 
     #@+node:ekr.20211031093209.1: *3* FastAtRead.test_round_trip_of_sentinels_delim
     def test_round_trip_of_sentinels_delim(self):
@@ -366,8 +361,6 @@ class TestFastAtRead(LeoUnitTest):
         #AT-leo
         ''').replace('#AT', '#@')
         #@-<< define contents >>
-        if '@section-delims' not in g.globalDirectiveList:
-            self.skipTest('@section-delims not supported')
         root = c.rootPosition()
         x.read_into_root(contents, path='test', root=root)
         if 0: ### Not ready yet.

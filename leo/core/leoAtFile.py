@@ -3130,17 +3130,14 @@ class FastAtRead:
 
     #@+others
     #@+node:ekr.20211030193146.1: *3* fast_at.__init__
-    def __init__(self, c, gnx2vnode, test=False, TestVNode=None):  ###
+    def __init__(self, c, gnx2vnode):
 
         self.c = c
         assert gnx2vnode is not None
         self.gnx2vnode = gnx2vnode # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.path = None
         self.root = None
-        self.VNode = TestVNode if test else leoNodes.VNode
-        self.test = test
-        #
-        # compiled patterns.
+        # compiled patterns...
         self.after_pat = None
         self.all_pat = None   
         self.code_pat = None
@@ -3193,29 +3190,13 @@ class FastAtRead:
     def post_pass(self, gnx2body, gnx2vnode, root_v):
         """Set all body text."""
         # Set the body text.
-        if False: ### self.test:
-            # Check the keys.
-            bkeys = sorted(gnx2body.keys())
-            vkeys = sorted(gnx2vnode.keys())
-            if bkeys != vkeys:
-                g.trace('KEYS MISMATCH')
-                g.printObj(bkeys)
-                g.printObj(vkeys)
-                ### if self.test:
-                ###    sys.exit(1)
-            # Set the body text.
-            for key in vkeys:
-                v = gnx2vnode.get(key)
-                body = gnx2body.get(key)
-                v._bodyString = ''.join(body)
-        else:
-            assert root_v.gnx in gnx2vnode, root_v
-            assert root_v.gnx in gnx2body, root_v
-            for key in gnx2body:
-                body = gnx2body.get(key)
-                v = gnx2vnode.get(key)
-                assert v, (key, v)
-                v._bodyString = g.toUnicode(''.join(body))
+        assert root_v.gnx in gnx2vnode, root_v
+        assert root_v.gnx in gnx2body, root_v
+        for key in gnx2body:
+            body = gnx2body.get(key)
+            v = gnx2vnode.get(key)
+            assert v, (key, v)
+            v._bodyString = g.toUnicode(''.join(body))
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(
         r'''
@@ -3271,20 +3252,11 @@ class FastAtRead:
         verbline = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
         verbatim = False  # True: the next line must be added without change.
         #
-        # Init the parent vnode for testing.
+        # Init the parent vnode.
         #
-        if False: ### self.test:
-            # Start with the gnx for the @file node.
-            root_gnx = gnx = 'root-gnx'  # The node that we are reading.
-            gnx_head = '<hidden top vnode>'  # The headline of the root node.
-            context = None
-            parent_v = self.VNode(context=context, gnx=gnx)
-            parent_v._headString = gnx_head  # Corresponds to the @files node itself.
-        else:
-            # Production.
-            root_gnx = gnx = self.root.gnx
-            context = self.c
-            parent_v = self.root.v
+        root_gnx = gnx = self.root.gnx
+        context = self.c
+        parent_v = self.root.v
         root_v = parent_v  # Does not change.
         level_stack.append((root_v, False),)
         #
@@ -3427,7 +3399,6 @@ class FastAtRead:
                     v.children = []
                 else:
                     # Make a new vnode.
-                    ### v = self.VNode(context=context, gnx=gnx)
                     v = leoNodes.VNode(context=context, gnx=gnx)
                 #
                 # The last version of the body and headline wins.
