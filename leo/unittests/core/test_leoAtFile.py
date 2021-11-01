@@ -479,6 +479,104 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
+    #@+node:ekr.20211101152817.1: *3* TestFast.test_directives
+    def test_directives(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_directives.py'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211101152843.1: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211101152532.1: * {h}
+        #AT@language python
+
+        a = 1
+
+        #AT+at A doc part
+        # Line 2.
+        #AT@c
+
+        #AT+doc
+        # Line 2
+        #
+        # Line 3
+        #AT@c
+
+        #AT+others
+        #AT+node:ekr.20211101152631.1: ** cloned node
+        a = 2
+        #AT+node:ekr.20211101153300.1: *3* child
+        a = 3
+        #AT+node:ekr.20211101152631.1: ** cloned node
+        a = 2
+        #AT+node:ekr.20211101153300.1: *3* child
+        a = 3
+        #AT-others
+        #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+        child1 = root.firstChild()
+        child2 = child1.next()
+        grand_child1 = child1.firstChild()
+        grand_child2 = child2.firstChild()
+        table = (
+            (child1, 'cloned node'),
+            (child2, 'cloned node'),
+            (grand_child1, 'child'),
+            (grand_child2, 'child'),
+        )
+        for child, h in table:
+            self.assertEqual(child.h, h)
+        self.assertTrue(child1.isCloned())
+        self.assertTrue(child2.isCloned())
+        self.assertEqual(child1.v, child2.v)
+        self.assertFalse(grand_child1.isCloned())
+        self.assertFalse(grand_child2.isCloned())
+    #@+node:ekr.20211101154632.1: *3* TestFast.test_html_doc_part
+    def test_html_doc_part(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_html_doc_part.py'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211101154651.1: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+        <!--AT+leo-ver=5-thin-->
+        <!--AT+node:ekr.20211101154334.1: * {h}-->
+        <!--AT@language html-->
+
+        <!--AT+at-->
+        <!--
+        Line 1.
+
+        Line 2.
+        -->
+        <!--AT@c-->
+        <!--AT-leo-->
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+        # child1 = root.firstChild()
+        # child2 = child1.next()
+        # child3 = child2.next()
+        # table = (
+            # (child1, g.angleBrackets(' test ')),
+            # (child2, 'spam'),
+            # (child3, 'eggs'),
+        # )
+        # for child, h in table:
+            # self.assertEqual(child.h, h)
     #@-others
 #@-others
 #@-leo
