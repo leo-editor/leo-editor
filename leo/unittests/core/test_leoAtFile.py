@@ -7,6 +7,7 @@ import os
 import tempfile
 import textwrap
 from leo.core import leoGlobals as g
+from leo.core import leoAtFile
 from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -321,10 +322,58 @@ class TestFastAtRead(LeoUnitTest):
     """Test the FastAtRead class."""
     #@+others
     #@+node:ekr.20211031085620.1: *3*  FastAtRead.setUp
-    ###
-        # def setUp(self):
-            # super().setup()
+    def setUp(self):
+        super().setUp()
+        self.x = leoAtFile.FastAtRead(
+            self.c,
+            gnx2vnode={},
+            ### test=False,  ### Should this be true?
+            ### TestVNode=None,
+        )
 
+    #@+node:ekr.20211031093209.1: *3* FastAtRead.test_round_trip_of_sentinels_delim
+    def test_round_trip_of_sentinels_delim(self):
+
+        c, x = self.c, self.x
+        #@+<< define contents >>
+        #@+node:ekr.20211101050923.1: *4* << define contents >>
+        contents = textwrap.dedent('''\
+        # -*- coding: utf-8 -*-
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211029054120.1: * @file c:\test\section_delims_test.py
+        #AT@first
+
+        """Classes to read and write @file nodes."""
+
+        #AT@section-delims <!< >!>
+
+        #AT+<!< test >!>
+        #AT+node:ekr.20211029054238.1: ** <!< test >!>
+        print('in test section')
+        print('done')
+        #AT-<!< test >!>
+
+        #AT+others
+        #AT+node:ekr.20211030052810.1: ** spam
+        def spam():
+        pass
+        #AT+node:ekr.20211030053502.1: ** eggs
+        def eggs():
+        pass
+        #AT-others
+
+        #AT@language python
+        #AT-leo
+        ''').replace('#AT', '#@')
+        #@-<< define contents >>
+        if '@section-delims' not in g.globalDirectiveList:
+            self.skipTest('@section-delims not supported')
+        root = c.rootPosition()
+        x.read_into_root(contents, path='test', root=root)
+        if 0: ### Not ready yet.
+            self.dump_tree()
+            s = c.atFileCommands.atFileToString(root, sentinels=True)
+            self.assertEqual(contents, s)
     #@-others
 #@-others
 #@-leo
