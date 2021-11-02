@@ -1673,10 +1673,8 @@ class AtFile:
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
                 s = s + '\n'
-        at.raw = False  # Bug fix.
-        i = 0
         
-        
+
         class Status:
             at_comment_seen=False
             at_delims_seen=False
@@ -1685,23 +1683,15 @@ class AtFile:
             in_code=True
         
         
+        at.raw = False  # Bug fix.
+        i = 0
         status = Status()
-        
-        # status = g.Bunch(
-            # at_comment_seen=False,
-            # at_delims_seen=False,
-            # at_warning_given=False,
-            # has_at_others=False,
-            # in_code=True,
-        # )
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
             kind = at.directiveKind4(s, i)
             at.putLine(i, kind, p, s, status)
             i = next_i
-        # g.bunch *does* have .in_code and has_at_others members.
-        # py---lint: disable=no-member
         if not status.in_code:
             at.putEndDocLine()
         return status.has_at_others
