@@ -46,29 +46,6 @@ class TestAtFile(LeoUnitTest):
 
         if not g.unitTesting:  # A hand test of at.syntaxError
             at.checkPythonSyntax(p, s2)
-    #@+node:ekr.20210920165831.1: *3* TestAtFile.test_at_doc_part
-    def test_at_doc_part(self):
-        
-        # From leoBeautify.py.
-        # The following text *does* survive round-tripping.
-        # However, the actual text in leoBeautify.py
-        # (In the @doc part of the node cpp.tokenize & helper) does *not* survive.
-        s = textwrap.dedent("""\
-            @ The following could be added to the 'else' clause::
-            # Accumulate everything else.
-            while (
-                j < n and
-                not s[j].isspace() and
-                not s[j].isalpha() and
-                not s[j] in '"\'_@' and
-                    # start of strings, identifiers, and single-character tokens.
-                not g.match(s,j,'//') and
-                not g.match(s,j,'/*') and
-                not g.match(s,j,'-->')
-            ):
-                j += 1
-        """)
-        assert s
     #@+node:ekr.20210905052021.19: *3* TestAtFile.test_at_directiveKind4
     def test_at_directiveKind4(self):
         c = self.c
@@ -117,6 +94,29 @@ class TestAtFile(LeoUnitTest):
         for expected, s in table:
             result = at.directiveKind4(s, 0)
             self.assertEqual(expected, result, msg=repr(s))
+    #@+node:ekr.20210920165831.1: *3* TestAtFile.test_at_doc_part
+    def test_at_doc_part(self):
+        
+        # From leoBeautify.py.
+        # The following text *does* survive round-tripping.
+        # However, the actual text in leoBeautify.py
+        # (In the @doc part of the node cpp.tokenize & helper) does *not* survive.
+        s = textwrap.dedent("""\
+            @ The following could be added to the 'else' clause::
+            # Accumulate everything else.
+            while (
+                j < n and
+                not s[j].isspace() and
+                not s[j].isalpha() and
+                not s[j] in '"\'_@' and
+                    # start of strings, identifiers, and single-character tokens.
+                not g.match(s,j,'//') and
+                not g.match(s,j,'/*') and
+                not g.match(s,j,'-->')
+            ):
+                j += 1
+        """)
+        assert s
     #@+node:ekr.20210905052021.21: *3* TestAtFile.test_at_get_setPathUa
     def test_at_get_setPathUa(self):
         c = self.c
@@ -316,28 +316,6 @@ class TestAtFile(LeoUnitTest):
             child.b = '@language python\n# test #1889'
             path = g.fullPath(c, child)
             assert '~' not in path, repr(path)
-    #@+node:ekr.20211102102024.1: *3* TestAtFile.test_put_body_unterminated_at_doc_part
-    def test_put_body_unterminated_at_doc_part(self):
-        
-        c = self.c
-        at = leoAtFile.AtFile(c)
-        root = c.rootPosition()
-        root.h = '@file test.html'
-        contents = textwrap.dedent('''\
-            @doc
-            Unterminated @doc parts (not an error)
-        ''')
-        expected = textwrap.dedent('''\
-            <!--@+doc-->
-            <!--
-            Unterminated @doc parts (not an error)
-            -->
-        ''')
-        root.b = contents
-        at.initWriteIvars(root)
-        at.putBody(root)
-        result = ''.join(at.outputList)
-        self.assertEqual(result, expected)
     #@+node:ekr.20211102110237.1: *3* TestAtFile.test_put_body_adjacent_at_doc_part
     def test_put_body_adjacent_at_doc_part(self):
         
@@ -415,6 +393,28 @@ class TestAtFile(LeoUnitTest):
             # doc line 1
             # ATall
         ''').replace('AT', '@')
+        root.b = contents
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList)
+        self.assertEqual(result, expected)
+    #@+node:ekr.20211102102024.1: *3* TestAtFile.test_put_body_unterminated_at_doc_part
+    def test_put_body_unterminated_at_doc_part(self):
+        
+        c = self.c
+        at = leoAtFile.AtFile(c)
+        root = c.rootPosition()
+        root.h = '@file test.html'
+        contents = textwrap.dedent('''\
+            @doc
+            Unterminated @doc parts (not an error)
+        ''')
+        expected = textwrap.dedent('''\
+            <!--@+doc-->
+            <!--
+            Unterminated @doc parts (not an error)
+            -->
+        ''')
         root.b = contents
         at.initWriteIvars(root)
         at.putBody(root)
