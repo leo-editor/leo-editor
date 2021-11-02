@@ -1787,18 +1787,26 @@ class AtFile:
             # Suppress orphans check.
         if at.sentinels and s and s[-1] != '\n':
             s = s + '\n'
-        i, inCode = 0, True
+        i = 0
+        # Leo 6.6. This code never changes at.in_code status!
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert next_i > i
-            if inCode:
-                # Use verbatim sentinels to write all directives.
-                at.putCodeLine(s, i)
-            else:
-                at.putDocLine(s, i)
+            at.putCodeLine(s, i)
             i = next_i
-        if not inCode:
-            at.putEndDocLine()
+        ###
+            # i, inCode = 0, True
+            # while i < len(s):
+                # next_i = g.skip_line(s, i)
+                # assert next_i > i
+                # if inCode:
+                    # # Use verbatim sentinels to write all directives.
+                    # at.putCodeLine(s, i)
+                # else:
+                    # at.putDocLine(s, i)
+                # i = next_i
+            # if not inCode:
+                # at.putEndDocLine()
     #@+node:ekr.20041005105605.169: *7* at.putAtAllChild
     def putAtAllChild(self, p):
         """
@@ -1894,7 +1902,7 @@ class AtFile:
         elif line:
             at.os(line)  # Bug fix: 2013/09/16
         else:
-            g.trace('Can not happen: completely empty line')
+            g.trace('Can not happen: completely empty line')  # pragma: no cover
     #@+node:ekr.20041005105605.176: *6* at.putRefLine & helpers
     def putRefLine(self, s, i, n1, n2, name, p):
         """

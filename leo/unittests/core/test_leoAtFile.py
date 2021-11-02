@@ -375,7 +375,12 @@ class TestAtFile(LeoUnitTest):
         root.h = '@file test.py'
         child = root.insertAsLastChild()
         child.h = 'child'
-        child.b = 'def spam():\n    pass'
+        ### child.b = 'def spam():\n    pass'
+        child.b = textwrap.dedent('''\
+            def spam():
+                pass
+                
+            @ A single-line doc part.''')
         child.v.fileIndex = '<GNX>'
         contents = textwrap.dedent('''\
             ATall
@@ -385,6 +390,8 @@ class TestAtFile(LeoUnitTest):
             #AT+node:<GNX>: ** child
             def spam():
                 pass
+                
+            @ A single-line doc part.
             #AT-all
         ''').replace('AT', '@')
         root.b = contents
