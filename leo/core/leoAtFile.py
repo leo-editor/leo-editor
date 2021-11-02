@@ -3170,13 +3170,11 @@ class FastAtRead:
             ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
             ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
             ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ### ('end_raw',     fr'^\s*{delim1}@@end_raw\s*{delim2}'),           # @end_raw (6.6: changed)
             ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
             ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
             # @node
             ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
             ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
-            ### ('raw',         fr'^\s*{delim1}@@raw\s*{delim2}$'),              # @raw (6.6: changed)
             ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
             # @section-delims
             ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'), 
@@ -3235,7 +3233,6 @@ class FastAtRead:
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
-        ### in_raw = False  # True: @raw seen.
         is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
         level_stack = []  # Entries are (vnode, in_clone_tree)
@@ -3279,14 +3276,14 @@ class FastAtRead:
             if afterref:
                 #@+<< handle afterref line>>
                 #@+node:ekr.20211102052251.1: *4* << handle afterref line >>
-                afterref = False
                 if body:  # a List of lines.
                     body[-1] = body[-1].rstrip() + line
                 else:
                     body = [line]  # pragma: no cover
+                afterref = False
                 #@-<< handle afterref line>>
                 continue
-            elif verbatim:
+            if verbatim:
                 #@+<< handle verbatim line >>
                 #@+node:ekr.20211102052518.1: *4* << handle verbatim line >>
                 # Previous line was verbatim *sentinel*. Append this line as it is.
@@ -3348,7 +3345,6 @@ class FastAtRead:
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = self.node_start_pat.match(line)
             if m:
-                ### in_doc, in_raw = False, False
                 in_doc = False
                 gnx, head = m.group(2), m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
