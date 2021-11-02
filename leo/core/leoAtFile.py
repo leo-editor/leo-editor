@@ -3170,13 +3170,13 @@ class FastAtRead:
             ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
             ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
             ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ('end_raw',     fr'^\s*{delim1}@@end_raw\s*{delim2}'),           # @end_raw (6.6: changed)
+            ### ('end_raw',     fr'^\s*{delim1}@@end_raw\s*{delim2}'),           # @end_raw (6.6: changed)
             ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
             ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
             # @node
             ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
             ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
-            ('raw',         fr'^\s*{delim1}@@raw\s*{delim2}$'),              # @raw (6.6: changed)
+            ### ('raw',         fr'^\s*{delim1}@@raw\s*{delim2}$'),              # @raw (6.6: changed)
             ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
             # @section-delims
             ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'), 
@@ -3229,13 +3229,13 @@ class FastAtRead:
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>
         #
         # Simple vars...
-        afterref = False  # A special verbatim line follows @afterref.
+        afterref = False  # True: the next line follows @afterref.
         clone_v = None  # The root of the clone tree.
         comment_delim1, comment_delim2 = comment_delims  # The start/end *comment* delims.
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
-        in_raw = False  # True: @raw seen.
+        ### in_raw = False  # True: @raw seen.
         is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
         level_stack = []  # Entries are (vnode, in_clone_tree)
@@ -3249,7 +3249,7 @@ class FastAtRead:
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack = []  # Entries are (gnx, indent, body)
         # The spelling of at-verbatim sentinel
-        verbline = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
+        verbatim_line = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3276,34 +3276,25 @@ class FastAtRead:
         for i, line in enumerate(lines[start:]):
             # Strip the line only once.
             strip_line = line.strip()
-            if verbatim:
-                #@+<< handle verbatim mode >>
-                #@+node:ekr.20211031041313.1: *4* << handle verbatim mode >>
-                # We are in verbatim *mode*, which is set by @verbatim sentinels, @raw or @afterref
-                if afterref:
-                    afterref = False
-                    if body:  # a List of lines.
-                        body[-1] = body[-1].rstrip() + line
-                    else:
-                        body = [line]  # pragma: no cover
-                    verbatim = False
-                elif in_raw:
-                    m = self.end_raw_pat.match(line)
-                    if m:
-                        in_raw = False
-                        verbatim = False
-                        # Leo 6.6: Bug fix: Insert the directive.
-                        body.append('@end_raw\n')
-                    else:
-                        # Continue verbatim/raw mode.
-                        body.append(line)
+            if afterref:
+                #@+<< handle afterref line>>
+                #@+node:ekr.20211102052251.1: *4* << handle afterref line >>
+                afterref = False
+                if body:  # a List of lines.
+                    body[-1] = body[-1].rstrip() + line
                 else:
-                    # Previous line was verbatim *sentinel*. Append this line as it is.
-                    body.append(line)
-                    verbatim = False
-                #@-<< handle verbatim mode >>
+                    body = [line]  # pragma: no cover
+                #@-<< handle afterref line>>
                 continue
-            if line == verbline:  # <delim>@verbatim.
+            elif verbatim:
+                #@+<< handle verbatim line >>
+                #@+node:ekr.20211102052518.1: *4* << handle verbatim line >>
+                # Previous line was verbatim *sentinel*. Append this line as it is.
+                body.append(line)
+                verbatim = False
+                #@-<< handle verbatim line >>
+                continue
+            if line == verbatim_line:  # <delim>@verbatim.
                 verbatim = True
                 continue
             #@+<< finalize line >>
@@ -3318,7 +3309,7 @@ class FastAtRead:
             if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
                 body.append(line)
                 continue
-            # These three handlers might clear in_doc.
+            # These three sections might clear in_doc.
             #@+<< handle @others >>
             #@+node:ekr.20180602103135.14: *4* << handle @others >>
             m = self.others_pat.match(line)
@@ -3357,7 +3348,8 @@ class FastAtRead:
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = self.node_start_pat.match(line)
             if m:
-                in_doc, in_raw = False, False
+                ### in_doc, in_raw = False, False
+                in_doc = False
                 gnx, head = m.group(2), m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
                     # m.group(3) is the level number, m.group(4) is the number of stars.
@@ -3480,8 +3472,6 @@ class FastAtRead:
             m = self.after_pat.match(line)
             if m:
                 afterref = True
-                # Set the verbatim flag to avoid an extra test in the main loop.
-                verbatim = True
                 continue
             #@-<< handle afterref >>
             #@+<< handle @first and @last >>
@@ -3568,18 +3558,6 @@ class FastAtRead:
                 self.get_patterns(comment_delims)
                 continue
             #@-<< handle @delims >>
-            #@+<< handle @raw >>
-            #@+node:ekr.20180606080200.1: *4* << handle @raw >>
-            # http://leoeditor.com/directives.html#part-4-dangerous-directives
-            m = self.raw_pat.match(line)
-            if m:
-                in_raw = True
-                # Set the verbatim flag to avoid an extra test in the main loop.
-                verbatim = True
-                # Leo 6.6: Bug fix: Insert the directive.
-                body.append('@raw\n')
-                continue
-            #@-<< handle @raw >>
             #@+<< handle @section-delims >>
             #@+node:ekr.20211030033211.1: *4* << handle @section-delims >>
             m = self.section_delims_pat.match(line)
@@ -3596,7 +3574,7 @@ class FastAtRead:
                 body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
                 continue
             #@-<< handle @section-delims >>
-            # These handlers must be last, in this order.
+            # These sections must be last, in this order.
             #@+<< handle remaining @@ lines >>
             #@+node:ekr.20180603135602.1: *4* << handle remaining @@ lines >>
             # @first, @last, @delims and @comment generate @@ sentinels,
