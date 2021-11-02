@@ -22,7 +22,7 @@ def cmd(name):  # pragma: no cover
     """Command decorator for the AtFileCommands class."""
     return g.new_cmd_decorator(name, ['c', 'atFileCommands',])
 #@+node:ekr.20160514120655.1: ** class AtFile
-class AtFile:  # pragma: no cover (temporary)
+class AtFile:
     """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
     #@+node:ekr.20131224053735.16380: *3* << define class constants >>
@@ -140,7 +140,7 @@ class AtFile:  # pragma: no cover (temporary)
         """
         at, c = self, self.c
         if not c and c.config:
-            return None
+            return None  # pragma: no cover
         make_dirs = c.config.create_nonexistent_directories
         assert root
         self.initCommonIvars()
@@ -180,7 +180,7 @@ class AtFile:  # pragma: no cover (temporary)
         # Clean root.v.
         if not at.errors and at.root:
             if hasattr(at.root.v, 'tnodeList'):
-                delattr(at.root.v, 'tnodeList')
+                delattr(at.root.v, 'tnodeList')  # pragma: no cover
             at.root.v._p_changed = True
         #
         # #1907: Compute the file name and create directories as needed.
@@ -188,7 +188,7 @@ class AtFile:  # pragma: no cover (temporary)
         at.targetFileName = targetFileName  # For at.writeError only.
         #
         # targetFileName can be empty for unit tests & @command nodes.
-        if not targetFileName:
+        if not targetFileName:  # pragma: no cover
             targetFileName = root.h if g.unitTesting else None
             at.targetFileName = targetFileName  # For at.writeError only.
             return targetFileName
@@ -202,7 +202,7 @@ class AtFile:  # pragma: no cover (temporary)
         #
         # Create directories if enabled.
         root_dir = g.os_path_dirname(targetFileName)
-        if make_dirs and root_dir:
+        if make_dirs and root_dir:  # pragma: no cover
             ok = g.makeAllNonExistentDirectories(root_dir)
             if not ok:
                 g.error(f"Error creating directories: {root_dir}")
@@ -214,7 +214,7 @@ class AtFile:  # pragma: no cover (temporary)
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile
     @cmd('check-external-file')
-    def checkExternalFile(self, event=None):
+    def checkExternalFile(self, event=None):  # pragma: no cover
         """Make sure an external file written by Leo may be read properly."""
         c, p = self.c, self.c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
@@ -241,28 +241,28 @@ class AtFile:  # pragma: no cover (temporary)
         """
         at, c = self, self.c
         is_at_shadow = self.root.isAtShadowFileNode()
-        if fromString:
-            if is_at_shadow:
+        if fromString:  # pragma: no cover
+            if is_at_shadow:  # pragma: no cover
                 return at.error(
                     'can not call at.read from string for @shadow files')
             at.initReadLine(fromString)
             return None, None
         #
         # Not from a string. Carefully read the file.
+        # Returns full path, including file name.
         fn = g.fullPath(c, at.root)
-            # Returns full path, including file name.
+        # Remember the full path to this node.
         at.setPathUa(at.root, fn)
-            # Remember the full path to this node.
-        if is_at_shadow:
+        if is_at_shadow:  # pragma: no cover
             fn = at.openAtShadowFileForReading(fn)
             if not fn:
                 return None, None
         assert fn
         try:
+            # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             s = at.readFileToUnicode(fn)
-                # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             # #1466.
-            if s is None:
+            if s is None:  # pragma: no cover
                 # The error has been given.
                 at._file_bytes = g.toEncodedString('')
                 return None, None
@@ -273,7 +273,7 @@ class AtFile:  # pragma: no cover (temporary)
             fn, s = None, None
         return fn, s
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
-    def openAtShadowFileForReading(self, fn):
+    def openAtShadowFileForReading(self, fn):  # pragma: no cover
         """Open an @shadow for reading and return shadow_fn."""
         at = self
         x = at.c.shadowController
@@ -293,25 +293,25 @@ class AtFile:  # pragma: no cover (temporary)
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = g.fullPath(c, root)  # #1341. #1889.
-        if not fileName:
+        if not fileName:  # pragma: no cover
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
+        # Fix bug 760531: always mark the root as read, even if there was an error.
+        # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(g.fullPath(c, root), root)
-            # Fix bug 760531: always mark the root as read, even if there was an error.
-            # Fix bug 889175: Remember the full fileName.
         at.initReadIvars(root, fileName)
         at.fromString = fromString
         if at.errors:
-            return False
+            return False  # pragma: no cover
         fileName, file_s = at.openFileForReading(fromString=fromString)
         # #1798:
         if file_s is None:
-            return False
+            return False  # pragma: no cover
         #
         # Set the time stamp.
         if fileName:
             c.setFileTimeStamp(fileName)
-        elif not fileName and not fromString and not file_s:
+        elif not fileName and not fromString and not file_s:  # pragma: no cover
             return False
         root.clearVisitedInTree()
         at.scanAllDirectives(root)
@@ -328,7 +328,7 @@ class AtFile:  # pragma: no cover (temporary)
         root.clearDirty()
         return True
     #@+node:ekr.20100122130101.6174: *6* at.deleteTnodeList
-    def deleteTnodeList(self, p):  # AtFile method.
+    def deleteTnodeList(self, p):  # pragma: no cover
         """Remove p's tnodeList."""
         v = p.v
         if hasattr(v, "tnodeList"):
@@ -336,8 +336,8 @@ class AtFile:  # pragma: no cover (temporary)
                 # g.blue("deleting tnodeList for " + repr(v))
             delattr(v, "tnodeList")
             v._p_changed = True
-    #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
-    def deleteUnvisitedNodes(self, root, redraw=True):
+    #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes
+    def deleteUnvisitedNodes(self, root, redraw=True):  # pragma: no cover
         """
         Delete unvisited nodes in root's subtree, not including root.
 
@@ -348,66 +348,7 @@ class AtFile:  # pragma: no cover (temporary)
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            # new-read: Never create resurrected nodes.
-                # r = at.createResurrectedNodesNode()
-                # callback = at.defineResurrectedNodeCallback(r, root)
-                # # Move the nodes using the callback.
-                # at.c.deletePositionsInList(aList, callback)
             at.c.deletePositionsInList(aList, redraw=redraw)
-    #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
-    def createResurrectedNodesNode(self):
-        """Create a 'Resurrected Nodes' node as the last top-level node."""
-        c = self.c
-        tag = 'Resurrected Nodes'
-        # Find the last top-level node.
-        last = c.rootPosition()
-        while last.hasNext():
-            last.moveToNext()
-        # Create the node after last if it doesn't exist.
-        if last.h == tag:
-            p = last
-        else:
-            p = last.insertAfter()
-            p.setHeadString(tag)
-        p.expand()
-        return p
-    #@+node:ekr.20100803073751.5818: *7* defineResurrectedNodeCallback
-    def defineResurrectedNodeCallback(self, r, root):
-        """Define a callback that moves node p as r's last child."""
-
-        def callback(p, r=r.copy(), root=root):
-            """The resurrected nodes callback."""
-            child = r.insertAsLastChild()
-            child.h = f"From {root.h}"
-            v = p.v
-            # new code: based on vnodes.
-            for parent_v in v.parents:
-                assert isinstance(parent_v, leoNodes.VNode), parent_v
-                if v in parent_v.children:
-                    childIndex = parent_v.children.index(v)
-                    v._cutLink(childIndex, parent_v)
-                    v._addLink(len(child.v.children), child.v)
-                else:
-                    # This would be surprising.
-                    g.trace('**already deleted**', parent_v, v)
-            if not g.unitTesting:
-                g.error('resurrected node:', v.h)
-                g.blue('in file:', root.h)
-
-        return callback
-    #@+node:ekr.20100224050618.11547: *6* at.isFileLike
-    def isFileLike(self, s):
-        """Return True if s has file-like sentinels."""
-        at = self
-        tag = "@+leo"
-        s = g.checkUnicode(s)
-        i = s.find(tag)
-        if i == -1:
-            return True  # Don't use the cache.
-        j, k = g.getLine(s, i)
-        line = s[j:k]
-        valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
-        return not isThin
     #@+node:ekr.20041005105605.26: *5* at.readAll & helpers
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
@@ -416,7 +357,7 @@ class AtFile:  # pragma: no cover (temporary)
         if force:
             # Capture the current headline only if
             # we aren't doing the initial read.
-            c.endEditing()
+            c.endEditing()  # pragma: no cover
         t1 = time.time()
         c.init_error_dialogs()
         files = at.findFilesToRead(force, root)
@@ -424,7 +365,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.readFileAtPosition(force, p)
         for p in files:
             p.v.clearDirty()
-        if not g.unitTesting:
+        if not g.unitTesting:  # pragma: no cover
             if files:
                 t2 = time.time()
                 g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
@@ -433,7 +374,7 @@ class AtFile:  # pragma: no cover (temporary)
         c.changed = old_changed
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
-    def findFilesToRead(self, force, root):
+    def findFilesToRead(self, force, root):  # pragma: no cover
 
         c = self.c
         p = root.copy()
@@ -471,7 +412,7 @@ class AtFile:  # pragma: no cover (temporary)
                 p.moveToThreadNext()
         return files
     #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
-    def readFileAtPosition(self, force, p):
+    def readFileAtPosition(self, force, p):  # pragma: no cover
         """Read the @<file> node at p."""
         at, c, fileName = self, self.c, p.anyAtFileNodeName()
         if p.isAtThinFileNode() or p.isAtFileNode():
@@ -487,7 +428,7 @@ class AtFile:  # pragma: no cover (temporary)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
-    def readAtShadowNodes(self, p):
+    def readAtShadowNodes(self, p):  # pragma: no cover
         """Read all @shadow nodes in the p's tree."""
         at = self
         after = p.nodeAfterTree()
@@ -500,7 +441,7 @@ class AtFile:  # pragma: no cover (temporary)
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
-    def readOneAtAutoNode(self, p):
+    def readOneAtAutoNode(self, p):  # pragma: no cover
         """Read an @auto file into p. Return the *new* position."""
         at, c, ic = self, self.c, self.c.importCommands
         fileName = g.fullPath(c, p)  # #1521, #1341, #1914.
@@ -537,7 +478,7 @@ class AtFile:  # pragma: no cover (temporary)
             g.doHook('after-auto', c=c, p=p)
         return p
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
-    def readOneAtEditNode(self, fn, p):
+    def readOneAtEditNode(self, fn, p):  # pragma: no cover
         at = self
         c = at.c
         ic = c.importCommands
@@ -569,7 +510,7 @@ class AtFile:  # pragma: no cover (temporary)
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
-    def readOneAtAsisNode(self, fn, p):
+    def readOneAtAsisNode(self, fn, p):  # pragma: no cover
         """Read one @asis node. Used only by refresh-from-disk"""
         at, c = self, self.c
         # #1521 & #1341.
@@ -590,7 +531,7 @@ class AtFile:  # pragma: no cover (temporary)
         if not c.isChanged() and p.b != old_body:
             c.setChanged()
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
-    def readOneAtCleanNode(self, root):
+    def readOneAtCleanNode(self, root):  # pragma: no cover
         """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
         fileName = g.fullPath(c, root)
@@ -626,13 +567,13 @@ class AtFile:  # pragma: no cover (temporary)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
-    def dump(self, lines, tag):
+    def dump(self, lines, tag):  # pragma: no cover
         """Dump all lines."""
         print(f"***** {tag} lines...\n")
         for s in lines:
             print(s.rstrip())
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
-    def read_at_clean_lines(self, fn):
+    def read_at_clean_lines(self, fn):  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
         at = self
         s = at.openFileHelper(fn)
@@ -647,7 +588,7 @@ class AtFile:  # pragma: no cover (temporary)
                 # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
     #@+node:ekr.20150204165040.9: *6* at.write_at_clean_sentinels
-    def write_at_clean_sentinels(self, root):
+    def write_at_clean_sentinels(self, root):  # pragma: no cover
         """
         Return all lines of the @clean tree as if it were
         written as an @file node.
@@ -657,7 +598,7 @@ class AtFile:  # pragma: no cover (temporary)
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
-    def readOneAtShadowNode(self, fn, p):
+    def readOneAtShadowNode(self, fn, p):  # pragma: no cover
 
         at, c = self, self.c
         x = c.shadowController
@@ -682,7 +623,7 @@ class AtFile:  # pragma: no cover (temporary)
                 # Create the private file automatically.
                 at.writeOneAtShadowNode(p)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
-    def importAtShadowNode(self, p):
+    def importAtShadowNode(self, p):  # pragma: no cover
         c, ic = self.c, self.c.importCommands
         fn = g.fullPath(c, p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fn):
@@ -699,12 +640,12 @@ class AtFile:  # pragma: no cover (temporary)
             p.clearDirty()
         return ic.errors == 0
     #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root
-    def fast_read_into_root(self, c, contents, gnx2vnode, path, root):
+    def fast_read_into_root(self, c, contents, gnx2vnode, path, root):  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
-    def createImportedNode(self, root, headline):
+    def createImportedNode(self, root, headline):  # pragma: no cover
         at = self
         if at.importRootSeen:
             p = root.insertAsLastChild()
@@ -758,7 +699,7 @@ class AtFile:  # pragma: no cover (temporary)
                     readVersion = m.group(3)
                     readVersion5 = readVersion >= '5'
                 else:
-                    valid = False
+                    valid = False  # pragma: no cover
         if valid:
             # set isThin
             isThin = bool(m.group(4))
@@ -768,7 +709,7 @@ class AtFile:  # pragma: no cover (temporary)
             if encoding and encoding.endswith(','):
                 # Leo 4.2 or after.
                 encoding = encoding[:-1]
-            if not g.isValidEncoding(encoding):
+            if not g.isValidEncoding(encoding):  # pragma: no cover
                 g.es_print("bad encoding in derived file:", encoding)
                 valid = False
         if valid:
@@ -779,7 +720,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.readVersion5 = readVersion5
         return valid, new_df, start, end, isThin
     #@+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fileName):
+    def readFileToUnicode(self, fileName):  # pragma: no cover
         """
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -834,7 +775,7 @@ class AtFile:  # pragma: no cover (temporary)
         present, or the previous value of at.encoding otherwise.
         """
         at = self
-        if at.errors:
+        if at.errors:  # pragma: no cover
             g.trace('can not happen: at.errors > 0', g.callers())
             e = at.encoding
             if g.unitTesting:
@@ -862,7 +803,8 @@ class AtFile:  # pragma: no cover (temporary)
             s = at.read_lines[at.read_i]
             at.read_i += 1
             return s
-        return ''  # Not an error.
+        # Not an error.
+        return ''  # pragma: no cover
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
     def scanHeader(self, fileName, giveErrors=True):
         """
@@ -885,12 +827,12 @@ class AtFile:  # pragma: no cover (temporary)
         if valid:
             at.startSentinelComment = start
             at.endSentinelComment = end
-        elif giveErrors:
+        elif giveErrors:  # pragma: no cover
             at.error(f"No @+leo sentinel in: {fileName}")
             g.trace(g.callers())
         return firstLines, new_df, isThinDerivedFile
     #@+node:ekr.20041005105605.130: *6* at.scanFirstLines
-    def scanFirstLines(self, firstLines):
+    def scanFirstLines(self, firstLines):  # pragma: no cover
         """
         Append all lines before the @+leo line to firstLines.
 
@@ -907,7 +849,7 @@ class AtFile:  # pragma: no cover (temporary)
             s = at.readLine()
         return s
     #@+node:ekr.20050103163224: *5* at.scanHeaderForThin (import code)
-    def scanHeaderForThin(self, fileName):
+    def scanHeaderForThin(self, fileName):  # pragma: no cover
         """
         Return true if the derived file is a thin file.
 
@@ -924,14 +866,14 @@ class AtFile:  # pragma: no cover (temporary)
     #@+node:ekr.20190111153551.1: *5* at.commands
     #@+node:ekr.20070806105859: *6* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
     @cmd('write-at-auto-nodes')
-    def writeAtAutoNodes(self, event=None):
+    def writeAtAutoNodes(self, event=None):  # pragma: no cover
         """Write all @auto nodes in the selected outline."""
         at, c = self, self.c
         c.init_error_dialogs()
         at.writeAtAutoNodesHelper(writeDirtyOnly=False)
         c.raise_error_dialogs(kind='write')
 
-    @cmd('write-dirty-at-auto-nodes')
+    @cmd('write-dirty-at-auto-nodes')  # pragma: no cover
     def writeDirtyAtAutoNodes(self, event=None):
         """Write all dirty @auto nodes in the selected outline."""
         at, c = self, self.c
@@ -939,7 +881,7 @@ class AtFile:  # pragma: no cover (temporary)
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
-    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):
+    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):  # pragma: no cover
         """Write @auto nodes in the selected outline"""
         at, c = self, self.c
         p = c.p
@@ -967,7 +909,7 @@ class AtFile:  # pragma: no cover (temporary)
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
     @cmd('write-at-shadow-nodes')
-    def writeAtShadowNodes(self, event=None):
+    def writeAtShadowNodes(self, event=None):  # pragma: no cover
         """Write all @shadow nodes in the selected outline."""
         at, c = self, self.c
         c.init_error_dialogs()
@@ -976,7 +918,7 @@ class AtFile:  # pragma: no cover (temporary)
         return val
 
     @cmd('write-dirty-at-shadow-nodes')
-    def writeDirtyAtShadowNodes(self, event=None):
+    def writeDirtyAtShadowNodes(self, event=None):  # pragma: no cover
         """Write all dirty @shadow nodes in the selected outline."""
         at, c = self, self.c
         c.init_error_dialogs()
@@ -984,7 +926,7 @@ class AtFile:  # pragma: no cover (temporary)
         c.raise_error_dialogs(kind='write')
         return val
     #@+node:ekr.20190109153627.13: *7* at.writeAtShadowNodesHelper
-    def writeAtShadowNodesHelper(self, writeDirtyOnly=True):
+    def writeAtShadowNodesHelper(self, writeDirtyOnly=True):  # pragma: no cover
         """Write @shadow nodes in the selected outline"""
         at, c = self, self.c
         p = c.p
@@ -1054,7 +996,7 @@ class AtFile:  # pragma: no cover (temporary)
             # Save the outline if only persistence data nodes are dirty.
             at.saveOutlineIfPossible()
     #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
-    def findFilesToWrite(self, force):
+    def findFilesToWrite(self, force):  # pragma: no cover
         """
         Return a list of files to write.
         We must do this in a prepass, so as to avoid errors later.
@@ -1101,7 +1043,7 @@ class AtFile:  # pragma: no cover (temporary)
             g.printObj([z.h for z in files], tag='Files to be saved')
         return files, root
     #@+node:ekr.20190108053115.1: *6* at.internalWriteError
-    def internalWriteError(self, p):
+    def internalWriteError(self, p):  # pragma: no cover
         """
         Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
         Give a more urgent, more specific, more helpful message.
@@ -1113,7 +1055,7 @@ class AtFile:  # pragma: no cover (temporary)
         g.es('Warning: changes to this file will be lost', color='red')
         g.es('unless you can save the file successfully.', color='red')
     #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
-    def reportEndOfWrite(self, files, all, dirty):
+    def reportEndOfWrite(self, files, all, dirty):  # pragma: no cover
 
         at = self
         if g.unitTesting:
@@ -1134,7 +1076,7 @@ class AtFile:  # pragma: no cover (temporary)
             c.persistenceController and
             c.persistenceController.has_at_persistence_node()
         )
-        if at_persistence:
+        if at_persistence:  # pragma: no cover
             changed_positions = [p for p in changed_positions
                 if not at_persistence.isAncestorOf(p)]
         if not changed_positions:
@@ -1153,7 +1095,7 @@ class AtFile:  # pragma: no cover (temporary)
         """
         at = self
         at.root = root
-        if p.isAtIgnoreNode():
+        if p.isAtIgnoreNode():  # pragma: no cover
             # Should have been handled in findFilesToWrite.
             g.trace(f"Can not happen: {p.h} is an @ignore node")
             return
@@ -1175,7 +1117,7 @@ class AtFile:  # pragma: no cover (temporary)
             if pred():
                 func(p)  # type:ignore
                 break
-        else:
+        else:  # pragma: no cover
             g.trace(f"Can not happen: {p.h}")
             return
         #
@@ -1184,7 +1126,7 @@ class AtFile:  # pragma: no cover (temporary)
         for p2 in p.self_and_subtree(copy=False):
             p2.v.clearDirty()
     #@+node:ekr.20190108105509.1: *7* at.writePathChanged
-    def writePathChanged(self, p):
+    def writePathChanged(self, p):  # pragma: no cover
         """
         raise IOError if p's path has changed *and* user forbids the write.
         """
@@ -1192,7 +1134,7 @@ class AtFile:  # pragma: no cover (temporary)
         #
         # Suppress this message during save-as and save-to commands.
         if c.ignoreChangedPaths:
-            return
+            return  # pragma: no cover
         oldPath = g.os_path_normcase(at.getPathUa(p))
         newPath = g.os_path_normcase(g.fullPath(c, p))
         try:  # #1367: samefile can throw an exception.
@@ -1212,7 +1154,7 @@ class AtFile:  # pragma: no cover (temporary)
             raise IOError
         at.setPathUa(p, newPath)  # Remember that we have changed paths.
     #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
-    def writeAtAutoContents(self, fileName, root):
+    def writeAtAutoContents(self, fileName, root):  # pragma: no cover
         """Common helper for atAutoToString and writeOneAtAutoNode."""
         at, c = self, self.c
         # Dispatch the proper writer.
@@ -1242,7 +1184,7 @@ class AtFile:  # pragma: no cover (temporary)
                 delattr(at, ivar)
     #@+node:ekr.20190111153522.1: *5* at.writeX...
     #@+node:ekr.20041005105605.154: *6* at.asisWrite & helper
-    def asisWrite(self, root):
+    def asisWrite(self, root):  # pragma: no cover
         at, c = self, self.c
         try:
             c.endEditing()
@@ -1263,7 +1205,7 @@ class AtFile:  # pragma: no cover (temporary)
 
     silentWrite = asisWrite  # Compatibility with old scripts.
     #@+node:ekr.20170331141933.1: *7* at.writeAsisNode
-    def writeAsisNode(self, p):
+    def writeAsisNode(self, p):  # pragma: no cover
         """Write the p's node to an @asis file."""
         at = self
 
@@ -1287,7 +1229,7 @@ class AtFile:  # pragma: no cover (temporary)
         if s:
             put(s)
     #@+node:ekr.20041005105605.151: *6* at.writeMissing & helper
-    def writeMissing(self, p):
+    def writeMissing(self, p):  # pragma: no cover
         at, c = self, self.c
         writtenFiles = False
         c.init_error_dialogs()
@@ -1319,7 +1261,7 @@ class AtFile:  # pragma: no cover (temporary)
                 g.es("no @file node in the selected tree")
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20041005105605.152: *7* at.writeMissingNode
-    def writeMissingNode(self, p):
+    def writeMissingNode(self, p):  # pragma: no cover
 
         at = self
         table = (
@@ -1338,7 +1280,7 @@ class AtFile:  # pragma: no cover (temporary)
                 return
         g.trace(f"Can not happen unknown @<file> kind: {p.h}")
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self, p):
+    def writeOneAtAutoNode(self, p):  # pragma: no cover
         """
         Write p, an @auto node.
         File indices *must* have already been assigned.
@@ -1370,13 +1312,13 @@ class AtFile:  # pragma: no cover (temporary)
             at.writeException(fileName, root)
             return False
     #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
-    def dispatch(self, ext, p):
+    def dispatch(self, ext, p):  # pragma: no cover
         """Return the correct writer function for p, an @auto node."""
         at = self
         # Match @auto type before matching extension.
         return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
     #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
-    def writer_for_at_auto(self, root):
+    def writer_for_at_auto(self, root):  # pragma: no cover
         """A factory returning a writer function for the given kind of @auto directive."""
         at = self
         d = g.app.atAutoWritersDict
@@ -1397,7 +1339,7 @@ class AtFile:  # pragma: no cover (temporary)
                 return writer_for_at_auto_cb
         return None
     #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
-    def writer_for_ext(self, ext):
+    def writer_for_ext(self, ext):  # pragma: no cover
         """A factory returning a writer function for the given file extension."""
         at = self
         d = g.app.writersDispatchDict
@@ -1415,7 +1357,7 @@ class AtFile:  # pragma: no cover (temporary)
 
         return None
     #@+node:ekr.20210501064359.1: *6* at.writeOneAtCleanNode
-    def writeOneAtCleanNode(self, root):
+    def writeOneAtCleanNode(self, root):  # pragma: no cover
         """Write one @clean file..
         root is the position of an @clean node.
         """
@@ -1440,7 +1382,7 @@ class AtFile:  # pragma: no cover (temporary)
                 delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
     #@+node:ekr.20090225080846.5: *6* at.writeOneAtEditNode
-    def writeOneAtEditNode(self, p):
+    def writeOneAtEditNode(self, p):  # pragma: no cover
         """Write one @edit node."""
         at, c = self, self.c
         root = p.copy()
@@ -1468,7 +1410,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.writeException(fileName, root)
             return False
     #@+node:ekr.20210501075610.1: *6* at.writeOneAtFileNode
-    def writeOneAtFileNode(self, root):
+    def writeOneAtFileNode(self, root):  # pragma: no cover
         """Write @file or @thin file."""
         at, c = self, self.c
         try:
@@ -1493,7 +1435,7 @@ class AtFile:  # pragma: no cover (temporary)
                 delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
-    def writeOneAtNosentNode(self, root):
+    def writeOneAtNosentNode(self, root):  # pragma: no cover
         """Write one @nosent node.
         root is the position of an @<file> node.
         sentinels will be False for @clean and @nosent nodes.
@@ -1518,8 +1460,8 @@ class AtFile:  # pragma: no cover (temporary)
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
-    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helpers
-    def writeOneAtShadowNode(self, p, testing=False):
+    #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helper
+    def writeOneAtShadowNode(self, p, testing=False):  # pragma: no cover
         """
         Write p, an @shadow node.
         File indices *must* have already been assigned.
@@ -1589,7 +1531,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.writeException(full_path, root)
             return False
     #@+node:ekr.20080819075811.13: *7* at.adjustTargetLanguage
-    def adjustTargetLanguage(self, fn):
+    def adjustTargetLanguage(self, fn):  # pragma: no cover
         """Use the language implied by fn's extension if
         there is a conflict between it and c.target_language."""
         at = self
@@ -1607,7 +1549,7 @@ class AtFile:  # pragma: no cover (temporary)
                 pass
     #@+node:ekr.20190111153506.1: *5* at.XToString
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
-    def atAsisToString(self, root):
+    def atAsisToString(self, root):  # pragma: no cover
         """Write the @asis node to a string."""
         at, c = self, self.c
         try:
@@ -1621,7 +1563,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.writeException(fileName, root)
             return ''
     #@+node:ekr.20190109160056.2: *6* at.atAutoToString
-    def atAutoToString(self, root):
+    def atAutoToString(self, root):  # pragma: no cover
         """Write the root @auto node to a string, and return it."""
         at, c = self, self.c
         try:
@@ -1637,7 +1579,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.writeException(fileName, root)
             return ''
     #@+node:ekr.20190109160056.3: *6* at.atEditToString
-    def atEditToString(self, root):
+    def atEditToString(self, root):  # pragma: no cover
         """Write one @edit node."""
         at, c = self, self.c
         try:
@@ -1660,7 +1602,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.writeException(fileName, root)
             return ''
     #@+node:ekr.20190109142026.1: *6* at.atFileToString
-    def atFileToString(self, root, sentinels=True):
+    def atFileToString(self, root, sentinels=True):  # pragma: no cover
         """Write an external file to a string, and return its contents."""
         at, c = self, self.c
         try:
@@ -1684,7 +1626,7 @@ class AtFile:  # pragma: no cover (temporary)
             root.v._p_changed = True
             return ''
     #@+node:ekr.20050506084734: *6* at.stringToString
-    def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):
+    def stringToString(self, root, s, forcePythonSentinels=True, sentinels=True):  # pragma: no cover
         """
         Write an external file from a string.
 
@@ -2018,7 +1960,7 @@ class AtFile:  # pragma: no cover (temporary)
         """
         at = self
         ref = g.findReference(name, p)
-        if not ref and not hasattr(at, 'allow_undefined_refs'):
+        if not ref and not hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
             # Do give this error even if unit testing.
             at.writeError(
                 f"undefined section: {g.truncate(name, 60)}\n"
@@ -2026,7 +1968,7 @@ class AtFile:  # pragma: no cover (temporary)
         return ref
 
     #@+node:ekr.20041005105605.199: *7* at.findSectionName
-    def findSectionName(self, s, i):
+    def findSectionName(self, s, i):  # pragma: no cover
         """
         Return n1, n2 representing a section name.
 
@@ -2133,7 +2075,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.oblank()
         at.os(s)
         if not s.endswith('\n'):
-            at.onl()
+            at.onl()  # pragma: no cover
     #@+node:ekr.20041005105605.185: *6* at.putEndDocLine
     def putEndDocLine(self):
         """Write the conclusion of a doc part."""
@@ -2273,7 +2215,7 @@ class AtFile:  # pragma: no cover (temporary)
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
-    def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False):
+    def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False):  # pragma: no cover
         """Perform python-related checks on root."""
         at = self
         if (
@@ -2309,7 +2251,7 @@ class AtFile:  # pragma: no cover (temporary)
             g.es_exception()
         return False
     #@+node:ekr.20090514111518.5666: *7* at.syntaxError (leoAtFile)
-    def syntaxError(self, p, body):
+    def syntaxError(self, p, body):  # pragma: no cover
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
@@ -2333,7 +2275,7 @@ class AtFile:  # pragma: no cover (temporary)
             else:
                 g.es_print(f"{j+1:5}: {line}")
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
-    def runPyflakes(self, root, pyflakes_errors_only):
+    def runPyflakes(self, root, pyflakes_errors_only):  # pragma: no cover
         """Run pyflakes on the selected node."""
         try:
             from leo.commands import checkerCommands
@@ -2437,7 +2379,7 @@ class AtFile:  # pragma: no cover (temporary)
     #@+node:ekr.20041005105605.200: *5* at.isSectionName
     # returns (flag, end). end is the index of the character after the section name.
 
-    def isSectionName(self, s, i):
+    def isSectionName(self, s, i):  # pragma: no cover
 
         at = self
         # Allow leading periods.
@@ -2450,7 +2392,7 @@ class AtFile:  # pragma: no cover (temporary)
             return True, i + len(at.section_delim2)
         return False, -1
     #@+node:ekr.20190111112442.1: *5* at.isWritable
-    def isWritable(self, path):
+    def isWritable(self, path):  # pragma: no cover
         """Return True if the path is writable."""
         try:
             # os.access() may not exist on all platforms.
@@ -2465,10 +2407,10 @@ class AtFile:  # pragma: no cover (temporary)
     def oblank(self):
         self.os(' ')
 
-    def oblanks(self, n):
+    def oblanks(self, n):  # pragma: no cover
         self.os(' ' * abs(n))
 
-    def otabs(self, n):
+    def otabs(self, n):  # pragma: no cover
         self.os('\t' * abs(n))
     #@+node:ekr.20041005105605.203: *6* at.onl & onl_sent
     def onl(self):
@@ -2487,7 +2429,7 @@ class AtFile:  # pragma: no cover (temporary)
         All output produced by leoAtFile module goes here.
         """
         at = self
-        if s.startswith(self.underindentEscapeString):
+        if s.startswith(self.underindentEscapeString):  # pragma: no cover
             try:
                 junk, s = at.parseUnderindentTag(s)
             except Exception:
@@ -2496,7 +2438,7 @@ class AtFile:  # pragma: no cover (temporary)
         s = g.toUnicode(s, at.encoding)
         at.outputList.append(s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
-    def outputStringWithLineEndings(self, s):
+    def outputStringWithLineEndings(self, s):  # pragma: no cover
         """
         Write the string s as-is except that we replace '\n' with the proper line ending.
 
@@ -2507,7 +2449,7 @@ class AtFile:  # pragma: no cover (temporary)
         s = s.replace('\n', at.output_newline)
         self.os(s)
     #@+node:ekr.20190111045822.1: *5* at.precheck (calls shouldPrompt...)
-    def precheck(self, fileName, root):
+    def precheck(self, fileName, root):  # pragma: no cover
         """
         Check whether a dirty, potentially dangerous, file should be written.
 
@@ -2648,9 +2590,9 @@ class AtFile:  # pragma: no cover (temporary)
                 i += 1
             at.endSentinelComment = s[j:i] if j < i else ""
         else:
-            at.writeError("Bad @delims directive")
+            at.writeError("Bad @delims directive")  # pragma: no cover
     #@+node:ekr.20041005105605.210: *5* at.putIndent
-    def putIndent(self, n, s=''):
+    def putIndent(self, n, s=''):  # pragma: no cover
         """Put tabs and spaces corresponding to n spaces,
         assuming that we are at the start of a line.
 
@@ -2673,7 +2615,7 @@ class AtFile:  # pragma: no cover (temporary)
             else:
                 self.oblanks(n)
     #@+node:ekr.20041005105605.211: *5* at.putInitialComment
-    def putInitialComment(self):
+    def putInitialComment(self):  # pragma: no cover
         c = self.c
         s2 = c.config.output_initial_comment
         if s2:
@@ -2693,7 +2635,7 @@ class AtFile:  # pragma: no cover (temporary)
             root.clearDirty()
         #
         # Create the timestamp (only for messages).
-        if c.config.getBool('log-show-save-time', default=False):
+        if c.config.getBool('log-show-save-time', default=False):  # pragma: no cover
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
@@ -2701,7 +2643,7 @@ class AtFile:  # pragma: no cover (temporary)
         #
         # Adjust the contents.
         assert isinstance(contents, str), g.callers()
-        if at.output_newline != '\n':
+        if at.output_newline != '\n':  # pragma: no cover
             contents = contents.replace('\r', '').replace('\n', at.output_newline)
         #
         # If file does not exist, create it from the contents.
@@ -2718,7 +2660,7 @@ class AtFile:  # pragma: no cover (temporary)
                     at.rememberReadPath(fileName, root)
                     at.checkPythonCode(contents, fileName, root)
             else:
-                at.addToOrphanList(root)
+                at.addToOrphanList(root)   # pragma: no cover
             # No original file to change. Return value tested by a unit test.
             return False  # No change to original file.
         #
@@ -2735,7 +2677,7 @@ class AtFile:  # pragma: no cover (temporary)
             at.unchangedFiles += 1
             if not g.unitTesting and c.config.getBool(
                 'report-unchanged-files', default=True):
-                g.es(f"{timestamp}unchanged: {sfn}")
+                g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
             return False  # No change to original file.
@@ -2747,7 +2689,7 @@ class AtFile:  # pragma: no cover (temporary)
                 ignoreBlankLines and at.compareIgnoringLineEndings(
                 old_contents, contents))
             if not ok:
-                g.warning("correcting line endings in:", fileName)
+                g.warning("correcting line endings in:", fileName)  # pragma: no cover
         #
         # Write a changed file.
         ok = g.writeFile(contents, encoding, fileName)
@@ -2755,7 +2697,7 @@ class AtFile:  # pragma: no cover (temporary)
             c.setFileTimeStamp(fileName)
             if not g.unitTesting:
                 g.es(f"{timestamp}wrote: {sfn}")
-        else:
+        else:  # pragma: no cover
             g.error('error writing', sfn)
             g.es('not written:', sfn)
             at.addToOrphanList(root)
@@ -2763,7 +2705,7 @@ class AtFile:  # pragma: no cover (temporary)
             # Check *after* writing the file.
         return ok
     #@+node:ekr.20190114061452.27: *6* at.compareIgnoringBlankLines
-    def compareIgnoringBlankLines(self, s1, s2):
+    def compareIgnoringBlankLines(self, s1, s2):  # pragma: no cover
         """Compare two strings, ignoring blank lines."""
         assert isinstance(s1, str), g.callers()
         assert isinstance(s2, str), g.callers()
@@ -2773,7 +2715,7 @@ class AtFile:  # pragma: no cover (temporary)
         s2 = g.removeBlankLines(s2)
         return s1 == s2
     #@+node:ekr.20190114061452.28: *6* at.compareIgnoringLineEndings
-    def compareIgnoringLineEndings(self, s1, s2):
+    def compareIgnoringLineEndings(self, s1, s2):  # pragma: no cover
         """Compare two strings, ignoring line endings."""
         assert isinstance(s1, str), (repr(s1), g.callers())
         assert isinstance(s2, str), (repr(s2), g.callers())
@@ -2804,7 +2746,7 @@ class AtFile:  # pragma: no cover (temporary)
                 at.section_delim1 = m.group(1)
                 at.section_delim2 = m.group(2)
         # Disallow multiple directives.
-        if len(lines) > 1:
+        if len(lines) > 1:  # pragma: no cover
             at.error(f"Multiple @section-delims directives in {root.h}")
             g.es_print('using default delims')
             at.section_delim1 = '<<'
@@ -2812,7 +2754,7 @@ class AtFile:  # pragma: no cover (temporary)
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from putFile.
 
-    def warnAboutOrphandAndIgnoredNodes(self):
+    def warnAboutOrphandAndIgnoredNodes(self):  # pragma: no cover
         # Always warn, even when language=="cweb"
         at, root = self, self.root
         if at.errors:
@@ -2835,7 +2777,7 @@ class AtFile:  # pragma: no cover (temporary)
                         g.blue("parent node:", p.parent().h)
                 p.moveToThreadNext()
     #@+node:ekr.20041005105605.217: *5* at.writeError
-    def writeError(self, message):
+    def writeError(self, message):  # pragma: no cover
         """Issue an error while writing an @<file> node."""
         at = self
         if at.errors == 0:
@@ -2844,7 +2786,7 @@ class AtFile:  # pragma: no cover (temporary)
         at.error(message)
         at.addToOrphanList(at.root)
     #@+node:ekr.20041005105605.218: *5* at.writeException
-    def writeException(self, fileName, root):
+    def writeException(self, fileName, root):  # pragma: no cover
         at = self
         g.error("exception writing:", fileName)
         g.es_exception()
@@ -2856,12 +2798,12 @@ class AtFile:  # pragma: no cover (temporary)
         at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilites
     #@+node:ekr.20041005105605.220: *4* at.error & printError
-    def error(self, *args):
+    def error(self, *args):  # pragma: no cover
         at = self
         at.printError(*args)
         at.errors += 1
 
-    def printError(self, *args):
+    def printError(self, *args):  # pragma: no cover
         """Print an error message that may contain non-ascii characters."""
         at = self
         if at.errors:
@@ -2869,13 +2811,13 @@ class AtFile:  # pragma: no cover (temporary)
         else:
             g.warning(*args)
     #@+node:ekr.20041005105605.221: *4* at.exception
-    def exception(self, message):
+    def exception(self, message):  # pragma: no cover
         self.error(message)
         g.es_exception()
     #@+node:ekr.20050104131929: *4* at.file operations...
     # Error checking versions of corresponding functions in Python's os module.
     #@+node:ekr.20050104131820: *5* at.chmod
-    def chmod(self, fileName, mode):
+    def chmod(self, fileName, mode):  # pragma: no cover
         # Do _not_ call self.error here.
         if mode is None:
             return
@@ -2886,7 +2828,7 @@ class AtFile:  # pragma: no cover (temporary)
             g.es_exception()
 
     #@+node:ekr.20050104132018: *5* at.remove
-    def remove(self, fileName):
+    def remove(self, fileName):  # pragma: no cover
         if not fileName:
             g.trace('No file name', g.callers())
             return False
@@ -2899,7 +2841,7 @@ class AtFile:  # pragma: no cover (temporary)
                 g.es_exception()
             return False
     #@+node:ekr.20050104132026: *5* at.stat
-    def stat(self, fileName):
+    def stat(self, fileName):  # pragma: no cover
         """Return the access mode of named file, removing any setuid, setgid, and sticky bits."""
         # Do _not_ call self.error here.
         try:
@@ -2925,7 +2867,7 @@ class AtFile:  # pragma: no cover (temporary)
     # Important: this is part of the *write* logic.
     # It is called from at.os and at.putIndent.
 
-    def parseUnderindentTag(self, s):
+    def parseUnderindentTag(self, s):  # pragma: no cover
         tag = self.underindentEscapeString
         s2 = s[len(tag) :]
         # To be valid, the escape must be followed by at least one digit.
@@ -2941,7 +2883,7 @@ class AtFile:  # pragma: no cover (temporary)
             return n, s2[i:]
         return 0, s
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
-    def promptForDangerousWrite(self, fileName, message=None):
+    def promptForDangerousWrite(self, fileName, message=None):  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
         if at.cancelFlag:
@@ -2989,7 +2931,7 @@ class AtFile:  # pragma: no cover (temporary)
         v = p.v
         # Fix bug #50: body text lost switching @file to @auto-rst
         if not hasattr(v, 'at_read'):
-            v.at_read = {}
+            v.at_read = {}  # pragma: no cover
         d = v.at_read
         aSet = d.get(fn, set())
         aSet.add(p.h)
@@ -3030,7 +2972,9 @@ class AtFile:  # pragma: no cover (temporary)
         elif delim2 and delim3:
             at.startSentinelComment = delim2
             at.endSentinelComment = delim3
-        else:  # Emergency!
+        else:  # pragma: no cover
+            #
+            # Emergency!
             #
             # Issue an error only if at.language has been set.
             # This suppresses a message from the markdown importer.
@@ -3058,7 +3002,7 @@ class AtFile:  # pragma: no cover (temporary)
             "tabwidth": at.tab_width,
         }
     #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
-    def shouldPromptForDangerousWrite(self, fn, p):
+    def shouldPromptForDangerousWrite(self, fn, p):  # pragma: no cover
         """
         Return True if Leo should warn the user that p is an @<file> node that
         was not read during startup. Writing that file might cause data loss.
@@ -3118,7 +3062,7 @@ class AtFile:  # pragma: no cover (temporary)
         except AttributeError:
             read_only = False
         if read_only:
-            g.error("read only:", fn)
+            g.error("read only:", fn)  # pragma: no cover
     #@-others
 atFile = AtFile  # compatibility
 #@+node:ekr.20180602102448.1: ** class FastAtRead
@@ -3144,12 +3088,10 @@ class FastAtRead:
         self.comment_pat = None   
         self.delims_pat = None   
         self.doc_pat = None
-        self.end_raw_pat = None   
         self.first_pat = None   
         self.last_pat = None 
         self.node_start_pat = None  
         self.others_pat = None
-        self.raw_pat = None   
         self.ref_pat = None   
         self.section_delims_pat = None
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
