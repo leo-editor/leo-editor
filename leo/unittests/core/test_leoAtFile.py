@@ -375,7 +375,6 @@ class TestAtFile(LeoUnitTest):
         root.h = '@file test.py'
         child = root.insertAsLastChild()
         child.h = 'child'
-        ### child.b = 'def spam():\n    pass'
         child.b = textwrap.dedent('''\
             def spam():
                 pass

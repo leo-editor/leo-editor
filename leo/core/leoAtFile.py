@@ -1794,19 +1794,6 @@ class AtFile:
             assert next_i > i
             at.putCodeLine(s, i)
             i = next_i
-        ###
-            # i, inCode = 0, True
-            # while i < len(s):
-                # next_i = g.skip_line(s, i)
-                # assert next_i > i
-                # if inCode:
-                    # # Use verbatim sentinels to write all directives.
-                    # at.putCodeLine(s, i)
-                # else:
-                    # at.putDocLine(s, i)
-                # i = next_i
-            # if not inCode:
-                # at.putEndDocLine()
     #@+node:ekr.20041005105605.169: *7* at.putAtAllChild
     def putAtAllChild(self, p):
         """
@@ -1823,7 +1810,7 @@ class AtFile:
             # Suppress warnings about @file nodes.
         at.putAtAllBody(p)
         for child in p.children():
-            at.putAtAllChild(child)
+            at.putAtAllChild(child)  # pragma: no cover (recursive call)
         at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.170: *6* at.@others (write)
     #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helpers
@@ -1860,7 +1847,7 @@ class AtFile:
         at.putOpenNodeSentinel(p)
         at.putBody(p)
         at.putCloseNodeSentinel(p)
-    #@+node:ekr.20041005105605.171: *8* at.validInAtOthers (write)
+    #@+node:ekr.20041005105605.171: *8* at.validInAtOthers
     def validInAtOthers(self, p):
         """
         Return True if p should be included in the expansion of the @others
@@ -1874,7 +1861,7 @@ class AtFile:
         if at.sentinels:
             # @ignore must not stop expansion here!
             return True
-        if p.isAtIgnoreNode():
+        if p.isAtIgnoreNode():  # pragma: no cover
             g.error('did not write @ignore node', p.v.h)
             return False
         return True
@@ -1913,7 +1900,7 @@ class AtFile:
         at = self
         ref = at.findReference(name, p)
         is_clean = at.root.h.startswith('@clean')
-        if not ref:
+        if not ref:  # pragma: no cover
             if hasattr(at, 'allow_undefined_refs'):
                 # Allow apparent section reference: just write the line.
                 at.putCodeLine(s, i)
@@ -2104,7 +2091,7 @@ class AtFile:
         """Return the text of a @+node or @-node sentinel for p."""
         at = self
         h = at.removeCommentDelims(p)
-        if getattr(at, 'at_shadow_test_hack', False):
+        if getattr(at, 'at_shadow_test_hack', False):  # pragma: no cover
             # A hack for @shadow unit testing.
             # see AtShadowTestCase.makePrivateLines.
             return h
@@ -2162,7 +2149,7 @@ class AtFile:
         if at.sentinels or hasattr(at, 'force_sentinels'):
             s = s + "-thin"
             encoding = at.encoding.lower()
-            if encoding != "utf-8":
+            if encoding != "utf-8":  # pragma: no cover
                 # New in 4.2: encoding fields end in ",."
                 s = s + f"-encoding={encoding},."
             at.putSentinel(s)
@@ -2171,7 +2158,7 @@ class AtFile:
         """Write @+node sentinel for p."""
         # Note: lineNumbers.py overrides this method.
         at = self
-        if not inAtAll and p.isAtFileNode() and p != at.root:
+        if not inAtAll and p.isAtFileNode() and p != at.root:  # pragma: no cover
             at.writeError("@file not valid in: " + p.h)
             return
         s = at.nodeSentinelText(p)
@@ -2203,7 +2190,7 @@ class AtFile:
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing utils...
     #@+node:ekr.20181024134823.1: *5* at.addToOrphanList
-    def addToOrphanList(self, root):
+    def addToOrphanList(self, root):  # pragma: no cover
         """Mark the root as erroneous for c.raise_error_dialogs()."""
         c = self.c
         # Fix #1050:
@@ -2649,7 +2636,7 @@ class AtFile:
             if ok:
                 c.setFileTimeStamp(fileName)
                 if not g.unitTesting:
-                    g.es(f"{timestamp}created: {fileName}")
+                    g.es(f"{timestamp}created: {fileName}")  # pragma: no cover
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(fileName, root)
@@ -2678,20 +2665,20 @@ class AtFile:
             return False  # No change to original file.
         #
         # Warn if we are only adjusting the line endings.
-        if at.explicitLineEnding:
+        if at.explicitLineEnding:  # pragma: no cover
             ok = (
                 at.compareIgnoringLineEndings(old_contents, contents) or
                 ignoreBlankLines and at.compareIgnoringLineEndings(
                 old_contents, contents))
             if not ok:
-                g.warning("correcting line endings in:", fileName)  # pragma: no cover
+                g.warning("correcting line endings in:", fileName)
         #
         # Write a changed file.
         ok = g.writeFile(contents, encoding, fileName)
         if ok:
             c.setFileTimeStamp(fileName)
             if not g.unitTesting:
-                g.es(f"{timestamp}wrote: {sfn}")
+                g.es(f"{timestamp}wrote: {sfn}")  # pragma: no cover
         else:  # pragma: no cover
             g.error('error writing', sfn)
             g.es('not written:', sfn)
