@@ -1701,24 +1701,26 @@ class AtFile:
         at = self
         if kind == at.noDirective:
             if status.in_code:
-                if at.raw:
-                    at.putCodeLine(s, i)
+                ###
+                    # if at.raw:
+                        # at.putCodeLine(s, i)
+                    # else:
+                # Important: the so-called "name" must include brackets.
+                name, n1, n2 = at.findSectionName(s, i)
+                if name:
+                    at.putRefLine(s, i, n1, n2, name, p)
                 else:
-                    # Important: the so-called "name" must include brackets.
-                    name, n1, n2 = at.findSectionName(s, i)
-                    if name:
-                        at.putRefLine(s, i, n1, n2, name, p)
-                    else:
-                        at.putCodeLine(s, i)
+                    at.putCodeLine(s, i)
             else:
                 at.putDocLine(s, i)
-        elif at.raw:
-            if kind == at.endRawDirective:
-                at.raw = False
-                at.putSentinel("@@end_raw")
-            else:
-                # Fix bug 784920: @raw mode does not ignore directives
-                at.putCodeLine(s, i)
+        ###
+            # elif at.raw:
+                # if kind == at.endRawDirective:
+                    # at.raw = False
+                    # at.putSentinel("@@end_raw")
+                # else:
+                    # # Fix bug 784920: @raw mode does not ignore directives
+                    # at.putCodeLine(s, i)
         elif kind in (at.docDirective, at.atDirective):
             if not status.in_code:
                 # Bug fix 12/31/04: handle adjacent doc parts.
@@ -1736,23 +1738,24 @@ class AtFile:
                 if p == self.root:
                     at.putAtAllLine(s, i, p)
                 else:
-                    at.error(f"@all not valid in: {p.h}")
+                    at.error(f"@all not valid in: {p.h}")  # pragma: no cover
             else: at.putDocLine(s, i)
         elif kind == at.othersDirective:
             if status.in_code:
                 if status.has_at_others:
-                    at.error(f"multiple @others in: {p.h}")
+                    at.error(f"multiple @others in: {p.h}")  # pragma: no cover
                 else:
                     at.putAtOthersLine(s, i, p)
                     status.has_at_others = True
             else:
                 at.putDocLine(s, i)
-        elif kind == at.rawDirective:
-            at.raw = True
-            at.putSentinel("@@raw")
-        elif kind == at.endRawDirective:
-            # Fix bug 784920: @raw mode does not ignore directives
-            at.error(f"unmatched @end_raw directive: {p.h}")
+        ###
+            # elif kind == at.rawDirective:
+                # at.raw = True
+                # at.putSentinel("@@raw")
+            # elif kind == at.endRawDirective:
+                # # Fix bug 784920: @raw mode does not ignore directives
+                # at.error(f"unmatched @end_raw directive: {p.h}")
         elif kind == at.startVerbatim:
             # Fix bug 778204: @verbatim not a valid Leo directive.
             if g.unitTesting:

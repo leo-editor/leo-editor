@@ -316,6 +316,28 @@ class TestAtFile(LeoUnitTest):
             child.b = '@language python\n# test #1889'
             path = g.fullPath(c, child)
             assert '~' not in path, repr(path)
+    #@+node:ekr.20211102102024.1: *3* TestAtFile.test_put_body_unterminated_doc_part
+    def test_put_body(self):
+        
+        c = self.c
+        at = leoAtFile.AtFile(c)
+        root = c.rootPosition()
+        root.h = '@file test.html'
+        contents = textwrap.dedent('''\
+            @doc
+            Unterminated @doc parts (not an error)
+        ''')
+        expected = textwrap.dedent('''\
+            <!--@+doc-->
+            <!--
+            Unterminated @doc parts (not an error)
+            -->
+        ''')
+        root.b = contents
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList)
+        self.assertEqual(result, expected)
     #@-others
 #@+node:ekr.20211031085414.1: ** class TestFastAtRead(LeoUnitTest)
 class TestFastAtRead(LeoUnitTest):
