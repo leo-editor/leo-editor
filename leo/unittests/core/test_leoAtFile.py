@@ -316,8 +316,8 @@ class TestAtFile(LeoUnitTest):
             child.b = '@language python\n# test #1889'
             path = g.fullPath(c, child)
             assert '~' not in path, repr(path)
-    #@+node:ekr.20211102102024.1: *3* TestAtFile.test_put_body_unterminated_doc_part
-    def test_put_body(self):
+    #@+node:ekr.20211102102024.1: *3* TestAtFile.test_put_body_unterminated_at_doc_part
+    def test_put_body_unterminated_at_doc_part(self):
         
         c = self.c
         at = leoAtFile.AtFile(c)
@@ -331,6 +331,34 @@ class TestAtFile(LeoUnitTest):
             <!--@+doc-->
             <!--
             Unterminated @doc parts (not an error)
+            -->
+        ''')
+        root.b = contents
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList)
+        self.assertEqual(result, expected)
+    #@+node:ekr.20211102110237.1: *3* TestAtFile.test_adjacent_at_doc_part
+    def test_adjacent_at_doc_part(self):
+        
+        c = self.c
+        at = leoAtFile.AtFile(c)
+        root = c.rootPosition()
+        root.h = '@file test.html'
+        contents = textwrap.dedent('''\
+            @doc
+            First @doc part
+            @doc
+            Second @doc part
+        ''')
+        expected = textwrap.dedent('''\
+            <!--@+doc-->
+            <!--
+            First @doc part
+            -->
+            <!--@+doc-->
+            <!--
+            Second @doc part
             -->
         ''')
         root.b = contents
