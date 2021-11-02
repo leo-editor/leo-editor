@@ -1675,21 +1675,33 @@ class AtFile:
                 s = s + '\n'
         at.raw = False  # Bug fix.
         i = 0
-        status = g.Bunch(
-            at_comment_seen=False,
-            at_delims_seen=False,
-            at_warning_given=False,
-            has_at_others=False,
-            in_code=True,
-        )
+        
+        
+        class Status:
+            at_comment_seen=False
+            at_delims_seen=False
+            at_warning_given=False
+            has_at_others=False
+            in_code=True
+        
+        
+        status = Status()
+        
+        # status = g.Bunch(
+            # at_comment_seen=False,
+            # at_delims_seen=False,
+            # at_warning_given=False,
+            # has_at_others=False,
+            # in_code=True,
+        # )
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
             kind = at.directiveKind4(s, i)
             at.putLine(i, kind, p, s, status)
             i = next_i
-        # pylint: disable=no-member
-            # g.bunch *does* have .in_code and has_at_others members.
+        # g.bunch *does* have .in_code and has_at_others members.
+        # py---lint: disable=no-member
         if not status.in_code:
             at.putEndDocLine()
         return status.has_at_others
