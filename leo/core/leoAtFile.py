@@ -1701,10 +1701,6 @@ class AtFile:
         at = self
         if kind == at.noDirective:
             if status.in_code:
-                ###
-                    # if at.raw:
-                        # at.putCodeLine(s, i)
-                    # else:
                 # Important: the so-called "name" must include brackets.
                 name, n1, n2 = at.findSectionName(s, i)
                 if name:
@@ -1713,14 +1709,6 @@ class AtFile:
                     at.putCodeLine(s, i)
             else:
                 at.putDocLine(s, i)
-        ###
-            # elif at.raw:
-                # if kind == at.endRawDirective:
-                    # at.raw = False
-                    # at.putSentinel("@@end_raw")
-                # else:
-                    # # Fix bug 784920: @raw mode does not ignore directives
-                    # at.putCodeLine(s, i)
         elif kind in (at.docDirective, at.atDirective):
             if not status.in_code:
                 # Bug fix 12/31/04: handle adjacent doc parts.
@@ -1739,7 +1727,8 @@ class AtFile:
                     at.putAtAllLine(s, i, p)
                 else:
                     at.error(f"@all not valid in: {p.h}")  # pragma: no cover
-            else: at.putDocLine(s, i)
+            else:
+                at.putDocLine(s, i)
         elif kind == at.othersDirective:
             if status.in_code:
                 if status.has_at_others:
@@ -1749,14 +1738,7 @@ class AtFile:
                     status.has_at_others = True
             else:
                 at.putDocLine(s, i)
-        ###
-            # elif kind == at.rawDirective:
-                # at.raw = True
-                # at.putSentinel("@@raw")
-            # elif kind == at.endRawDirective:
-                # # Fix bug 784920: @raw mode does not ignore directives
-                # at.error(f"unmatched @end_raw directive: {p.h}")
-        elif kind == at.startVerbatim:
+        elif kind == at.startVerbatim:  # pragma: no cover
             # Fix bug 778204: @verbatim not a valid Leo directive.
             if g.unitTesting:
                 # A hack: unit tests for @shadow use @verbatim as a kind of directive.
@@ -1773,12 +1755,12 @@ class AtFile:
                 status.at_comment_seen and
                 status.at_delims_seen and not
                 status.at_warning_given
-            ):
+            ):  # pragma: no cover
                 status.at_warning_given = True
                 at.error(f"@comment and @delims in node {p.h}")
             at.putDirective(s, i, p)
         else:
-            at.error(f"putBody: can not happen: unknown directive kind: {kind}")
+            at.error(f"putBody: can not happen: unknown directive kind: {kind}")  # pragma: no cover
     #@+node:ekr.20041005105605.164: *5* writing code lines...
     #@+node:ekr.20041005105605.165: *6* at.@all
     #@+node:ekr.20041005105605.166: *7* at.putAtAllLine
