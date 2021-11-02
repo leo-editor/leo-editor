@@ -338,8 +338,8 @@ class TestAtFile(LeoUnitTest):
         at.putBody(root)
         result = ''.join(at.outputList)
         self.assertEqual(result, expected)
-    #@+node:ekr.20211102110237.1: *3* TestAtFile.test_adjacent_at_doc_part
-    def test_adjacent_at_doc_part(self):
+    #@+node:ekr.20211102110237.1: *3* TestAtFile.test_put_body_adjacent_at_doc_part
+    def test_put_body_adjacent_at_doc_part(self):
         
         c = self.c
         at = leoAtFile.AtFile(c)
@@ -361,6 +361,47 @@ class TestAtFile(LeoUnitTest):
             Second @doc part
             -->
         ''')
+        root.b = contents
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList)
+        self.assertEqual(result, expected)
+    #@+node:ekr.20211102110833.1: *3* TestAtFile.test_put_body_at_all
+    def test_put_body_at_all(self):
+        
+        c = self.c
+        at = leoAtFile.AtFile(c)
+        root = c.rootPosition()
+        root.h = '@file test.py'
+        contents = textwrap.dedent('''\
+            ATall
+        ''').replace('AT', '@')
+        expected = textwrap.dedent('''\
+            #AT+all
+            #AT-all
+        ''').replace('AT', '@')
+        root.b = contents
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList)
+        self.assertEqual(result, expected)
+    #@+node:ekr.20211102111413.1: *3* TestAtFile.test_put_body_at_all_after_at_doc
+    def test_put_body_at_all_after_at_doc(self):
+        
+        c = self.c
+        at = leoAtFile.AtFile(c)
+        root = c.rootPosition()
+        root.h = '@file test.py'
+        contents = textwrap.dedent('''\
+            ATdoc
+            doc line 1
+            ATall
+        ''').replace('AT', '@')
+        expected = textwrap.dedent('''\
+            #AT+doc
+            # doc line 1
+            # ATall
+        ''').replace('AT', '@')
         root.b = contents
         at.initWriteIvars(root)
         at.putBody(root)
