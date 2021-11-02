@@ -373,11 +373,18 @@ class TestAtFile(LeoUnitTest):
         at = leoAtFile.AtFile(c)
         root = c.rootPosition()
         root.h = '@file test.py'
+        child = root.insertAsLastChild()
+        child.h = 'child'
+        child.b = 'def spam():\n    pass'
+        child.v.fileIndex = '<GNX>'
         contents = textwrap.dedent('''\
             ATall
         ''').replace('AT', '@')
         expected = textwrap.dedent('''\
             #AT+all
+            #AT+node:<GNX>: ** child
+            def spam():
+                pass
             #AT-all
         ''').replace('AT', '@')
         root.b = contents
