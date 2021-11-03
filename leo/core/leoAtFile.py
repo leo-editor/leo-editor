@@ -37,9 +37,7 @@ class AtFile:
     cDirective      =  6 # @c<space> or @c<newline>
     othersDirective =  7 # at-others
     miscDirective   =  8 # All other directives
-    rawDirective    =  9 # @raw
-    endRawDirective = 10 # @end_raw
-    startVerbatim   = 11 # @verbatim  Not a real directive. Used to issue warnings.
+    startVerbatim   =  9 # @verbatim  Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
@@ -95,7 +93,6 @@ class AtFile:
         at.language = None
         at.output_newline = g.getOutputNewline(c=c)
         at.page_width = None
-        at.raw = False  # True: in @raw mode
         at.root = None  # The root (a position) of tree being read or written.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
@@ -965,7 +962,7 @@ class AtFile:
         at.putInitialComment()
         at.putOpenNodeSentinel(root)
         at.putBody(root, fromString=fromString)
-        at.putCloseNodeSentinel(root)
+        ### at.putCloseNodeSentinel(root)
         # The -leo sentinel is required to handle @last.
         at.putSentinel("@-leo")
         root.setVisited()
@@ -1683,7 +1680,6 @@ class AtFile:
             in_code=True
         
         
-        at.raw = False  # Bug fix.
         i = 0
         status = Status()
         while i < len(s):
@@ -1811,7 +1807,7 @@ class AtFile:
         at.putAtAllBody(p)
         for child in p.children():
             at.putAtAllChild(child)  # pragma: no cover (recursive call)
-        at.putCloseNodeSentinel(p)
+        ### at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.170: *6* at.@others (write)
     #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helpers
     def putAtOthersLine(self, s, i, p):
@@ -1821,9 +1817,9 @@ class AtFile:
         k = g.skip_to_end_of_line(s, i)
         at.putLeadInSentinel(s, i, j, delta)
         at.indent += delta
+        # s[j:k] starts with '@others'
+        # Never write lws in new sentinels.
         at.putSentinel("@+" + s[j + 1 : k].strip())
-            # s[j:k] starts with '@others'
-            # Never write lws in new sentinels.
         for child in p.children():
             p = child.copy()
             after = p.nodeAfterTree()
@@ -1831,7 +1827,7 @@ class AtFile:
                 if at.validInAtOthers(p):
                     at.putOpenNodeSentinel(p)
                     at_others_flag = at.putBody(p)
-                    at.putCloseNodeSentinel(p)
+                    ### at.putCloseNodeSentinel(p)
                     if at_others_flag:
                         p.moveToNodeAfterTree()
                     else:
@@ -1846,7 +1842,7 @@ class AtFile:
         at = self
         at.putOpenNodeSentinel(p)
         at.putBody(p)
-        at.putCloseNodeSentinel(p)
+        ### at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.171: *8* at.validInAtOthers
     def validInAtOthers(self, p):
         """
@@ -1877,8 +1873,7 @@ class AtFile:
         line = s[i:j]
         # Don't put any whitespace in otherwise blank lines.
         if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
-            if not at.raw:
-                at.putIndent(at.indent, line)
+            at.putIndent(at.indent, line)
             if line[-1:] == '\n':
                 at.os(line[:-1])
                 at.onl()
@@ -2021,7 +2016,7 @@ class AtFile:
         at.putSentinel("@+" + name)
         at.putOpenNodeSentinel(ref)
         at.putBody(ref)
-        at.putCloseNodeSentinel(ref)
+        ### at.putCloseNodeSentinel(ref)
         at.putSentinel("@-" + name)
         at.indent -= delta
     #@+node:ekr.20041005105605.180: *5* writing doc lines...
@@ -2137,11 +2132,10 @@ class AtFile:
             self.putIndent(at.indent)  # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
             at.onl_sent()
-    #@+node:ekr.20041005105605.191: *5* at.putCloseNodeSentinel
-    def putCloseNodeSentinel(self, p):
-        """End a node."""
-        at = self
-        at.raw = False  # Bug fix: 2010/07/04
+    #@+node:ekr.20041005105605.191: *5* at.putCloseNodeSentinel (no longer used)
+    ###
+        # def putCloseNodeSentinel(self, p):
+            # """End a node."""
     #@+node:ekr.20041005105605.192: *5* at.putOpenLeoSentinel 4.x
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
@@ -2329,10 +2323,10 @@ class AtFile:
             ("@c", at.cDirective),
             ("@code", at.codeDirective),
             ("@doc", at.docDirective),
-            ("@end_raw", at.endRawDirective),
             ("@others", at.othersDirective),
-            ("@raw", at.rawDirective),
             ("@verbatim", at.startVerbatim))
+            # ("@end_raw", at.endRawDirective),  # #2276.
+            # ("@raw", at.rawDirective),  # #2276
         # Rewritten 6/8/2005.
         if i + 1 >= n or s[i + 1] in (' ', '\t', '\n'):
             # Bare '@' not recognized in cweb mode.

@@ -62,10 +62,10 @@ class TestAtFile(LeoUnitTest):
             ("@c", 0, at.cDirective),
             ("@code", 0, at.codeDirective),
             ("@doc", 0, at.docDirective),
-            ("@end_raw", 0, at.endRawDirective),
             ('@others', 0, at.othersDirective),
             ('    @others', 4, at.othersDirective),
-            ("@raw", 0, at.rawDirective),
+            # ("@end_raw", 0, at.endRawDirective), # #2276.
+            # ("@raw", 0, at.rawDirective), # #2276.
         ]
         for name in g.globalDirectiveList:
             # Note: entries in g.globalDirectiveList do not start with '@'
@@ -392,6 +392,32 @@ class TestAtFile(LeoUnitTest):
             #AT+doc
             # doc line 1
             # ATall
+        ''').replace('AT', '@')
+        root.b = contents
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList)
+        self.assertEqual(result, expected)
+    #@+node:ekr.20211102150707.1: *3* TestAtFile.test_put_body_at_others
+    def test_put_body_at_others(self):
+        
+        c = self.c
+        at = leoAtFile.AtFile(c)
+        root = c.rootPosition()
+        root.h = '@file test_put_body_at_others.py'
+        child = root.insertAsLastChild()
+        child.h = 'child'
+        child.b = '@others\n'
+        child.v.fileIndex = '<GNX>'
+        contents = textwrap.dedent('''\
+            ATothers
+        ''').replace('AT', '@')
+        expected = textwrap.dedent('''\
+            #AT+others
+            #AT+node:<GNX>: ** child
+            #AT+others
+            #AT-others
+            #AT-others
         ''').replace('AT', '@')
         root.b = contents
         at.initWriteIvars(root)
