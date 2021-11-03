@@ -1807,7 +1807,7 @@ class AtFile:
         for child in p.children():
             at.putAtAllChild(child)  # pragma: no cover (recursive call)
     #@+node:ekr.20041005105605.170: *6* at.@others (write)
-    #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helpers
+    #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helper
     def putAtOthersLine(self, s, i, p):
         """Put the expansion of @others."""
         at = self
@@ -1834,11 +1834,6 @@ class AtFile:
         # This is the same in both old and new sentinels.
         at.putSentinel("@-others")
         at.indent -= delta
-    #@+node:ekr.20041005105605.172: *8* at.putAtOthersChild
-    def putAtOthersChild(self, p):
-        at = self
-        at.putOpenNodeSentinel(p)
-        at.putBody(p)
     #@+node:ekr.20041005105605.171: *8* at.validInAtOthers
     def validInAtOthers(self, p):
         """
