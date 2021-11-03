@@ -456,6 +456,40 @@ class TestFastAtRead(LeoUnitTest):
         super().setUp()
         self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
 
+    #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all
+    def test_at_all(self):
+        
+        c, x = self.c, self.x
+        h = '@file /test/test_at_all.txt'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211103093424.1: *4* << define contents >>
+        contents = textwrap.dedent(f'''\
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211102114151.1: * {h}
+        # This is Leo's final resting place for dead code.
+        # Much easier to access than a git repo.
+
+        #AT@language python
+        #AT@killbeautify
+        #AT+all
+        #AT+node:ekr.20211103093559.1: ** node 1
+        Section references can be undefined.
+
+        LB missing reference >>
+        #AT+node:ekr.20211103093633.1: ** node 2
+        # ATothers doesn't matter
+
+        ATothers
+        #AT-all
+        #AT@nosearch
+        #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
     #@+node:ekr.20211031093209.1: *3* TestFast.test_at_section_delim
     def test_at_section_delim(self):
 
