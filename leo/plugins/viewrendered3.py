@@ -669,7 +669,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 #@+node:TomP.20191215195433.4: ** << imports >>
 #
 # Stdlib...
-from configparser import ConfigParser
+from configparser import ConfigParser, MissingSectionHeaderError
 from contextlib import redirect_stdout
 from enum import Enum, auto
 import html
@@ -680,6 +680,7 @@ import os
 import os.path
 from pathlib import PurePath
 import shutil
+import site
 import string
 import subprocess
 import sys
@@ -1349,6 +1350,11 @@ def markup_to_editor(event):
     # pylint: disable = consider-using-with
     subprocess.Popen(cmd)
 
+#@+node:tom.20211103011049.1: *3* g.command('vr3-plot-2d')
+@g.command('vr3-plot-2d')
+def vr3_plot_2d(event):
+    vr3 = getVr3(event)
+    vr3.plot_2d()
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
@@ -1570,6 +1576,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _default_type_button = QtWidgets.QPushButton("Default Kind")
         _toolbar.addWidget(_default_type_button)
 
+        _other_actions_button = QtWidgets.QPushButton("Other Actions")
+
         #@+others  # functions.
         #@+node:TomP.20200329223820.7: *5* function: vr3.set_action
         def set_action(label, menu_var_name):
@@ -1661,6 +1669,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_group_action('Text', TEXT)
         set_group_action('Asciidoc', ASCIIDOC)
         _default_type_button.setMenu(menu)
+
+        menu = QtWidgets.QMenu()
+        _action = QAction('Plot 2D', self, checkable=False)
+        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-plot-2d'))
+        menu.addAction(_action)
+
+        _action =  QAction('Reload', self, checkable=False)
+        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-update'))
+        menu.addAction(_action)
+        _other_actions_button.setMenu(menu)
         #@-<< vr3: create menus >>
         #@+<< vr3: finish toolbar >>
         #@+node:TomP.20200329223820.14: *5* << vr3: finish toolbar >>
@@ -1669,15 +1687,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _export_button.clicked.connect(lambda: c.k.simulateCommand('vr3-export-rst-html'))
         _toolbar.addWidget(_export_button)
 
-        _reload_button = QtWidgets.QPushButton("Reload")
-        _reload_button.setDefault(True)
-        _reload_button.clicked.connect(lambda: c.k.simulateCommand('vr3-update'))
-        _toolbar.addWidget(_reload_button)
+        # _reload_button = QtWidgets.QPushButton("Reload")
+        # _reload_button.setDefault(True)
+        # _reload_button.clicked.connect(lambda: c.k.simulateCommand('vr3-update'))
+        # _toolbar.addWidget(_reload_button)
 
         _execute_button = QtWidgets.QPushButton('Execute')
         _execute_button.setDefault(True)
         _execute_button.clicked.connect(lambda: c.k.simulateCommand('vr3-execute'))
         _toolbar.addWidget(_execute_button)
+
+        _toolbar.addWidget(_other_actions_button)
 
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
@@ -1833,6 +1853,198 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def dbg_print(self, *args):
         if self.DEBUG:
             g.es(*args)
+    #@+node:tom.20211103005455.1: *4* vr3.plot_2d
+    def plot_2d(self):
+        #@+<< docstring >>
+        #@+node:tom.20211103005455.2: *5* << docstring >>
+        #@@language python
+        """Show a plot of x-y data in the selected node.
+
+        The data can be either a one-column or two-column list
+        of rows.  Columns are separated by whitespace.  Alternatively,
+        the node may contain a config file-like set of sections 
+        that define the data, labels, and appearance.
+
+        TYPE 1 - list of data rows
+        ---------------------------
+        Whether the data contains one or two columns is determined
+        from the first non-comment, non-blank, all numeric rows.  
+        If one-column, an implicit first column is added starting
+        with zero.
+
+        Comment lines start with one of ";", "#".  Blank lines are ignored.
+
+        TYPE 2 - Config file style
+        ---------------------------
+        """
+        #@-<< docstring >>
+        page = self.c.p.b
+
+        #@+others
+        #@+node:tom.20211103005455.3: *5* declarations
+        STYLEFILE = 'local_mplstyle' # Must be in site.getuserbase()
+        #@+node:tom.20211103005455.4: *5* functions
+        #@+others
+        #@+node:tom.20211103005455.5: *6* has_config_section()
+        def has_config_section(config, page):
+            """Return True if the data page contains a config-file section.
+            
+            ARGUMENTS
+            config -- a ConfigParser instance.
+            page -- a string of text.
+            
+            RETURNS
+            True if there is a config file-style section, else False
+            """
+            try:
+                config.read_string(page)
+                return True
+            except MissingSectionHeaderError:
+                return False
+        #@+node:tom.20211103005455.6: *6* plot_sections()
+        def plot_sections(page):
+            # Helper functions
+            #@+<< parse_data >>
+            #@+node:tom.20211103005455.7: *7* << parse_data >>
+            def parse_data(data):
+                """Return x, y sequences from 2-column string data.
+                
+                RETURNS
+                a tuple (x, y) of data sequences.
+                """
+                lines = [line for line in data.split('\n')]
+                lines = [line for line in lines if line.strip()]
+
+                xy = [line.split() for line in lines]
+                xs, ys = zip(*xy)
+                x = [float(a) for a in xs]
+                y = [float(b) for b in ys]
+
+                return x, y
+            #@-<< parse_data >>
+            #@+<< set plot styles >>
+            #@+node:tom.20211103005455.8: *7* << set plot styles >>
+            def set_plot_styles():
+                style_dir=site.getuserbase()
+                style_file=os.path.join(style_dir, STYLEFILE)
+                if os.path.exists(style_file):
+                    plt.style.use(style_file)
+                else:
+                    g.es(f'Pyplot style file "{style_file}" not present, using default styles')
+            #@-<< set plot styles >>
+
+            config_sections = config.sections()
+            if 'config' in config_sections:
+                do_config = config['config']['configure_plot']
+            data = config['data']['data']
+            x, y = parse_data(data)
+
+            if do_config:
+                set_plot_styles()
+            fig, _ = plt.subplots()
+            fig.clear()
+
+            plt.ion()
+            #@+<< configure plot >>
+            #@+node:tom.20211103005455.9: *7* << configure plot >>
+            config_sections = config.sections()
+            if 'labels' in config_sections:
+                labels = config['labels']
+                title = labels.get('title')
+                xaxis = labels.get('xaxis')
+                yaxis = labels.get('yaxis')
+                legend = labels.get('legend')
+
+            if title: plt.title(title)
+            if xaxis: plt.xlabel(xaxis)
+            if yaxis: plt.ylabel(yaxis)
+            if legend: plt.legend(legend)
+            #@-<< configure plot >>
+
+            plt.plot(x,y)
+            plt.show()
+
+        #@+node:tom.20211103005455.10: *6* plot_plain_data()
+        def plot_plain_data(page):
+            """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
+
+
+            # from leo.plugins import viewrendered3 as vr3
+            # from leo.plugins import viewrendered as vr
+
+            style_dir=site.getuserbase()
+            style_file=os.path.join(style_dir,'local_mplstyle')
+            if os.path.exists(style_file):
+                plt.style.use(style_file)
+
+            # Helper functions
+            #@+<< is_numeric >>
+            #@+node:tom.20211103005455.11: *7* << is_numeric >>
+            def is_numeric(line):
+                """Test if first or 1st and 2nd cols are numeric"""
+                fields = line.split()
+                numfields = len(fields)
+                numeric = fields[0].replace('.', '').isnumeric()
+                if numfields > 1 and numeric:
+                    numeric = numeric and fields[1].replace('.', '').isnumeric()
+                return numeric
+            #@-<< is_numeric >>
+            #@+<< plot2d >>
+            #@+node:tom.20211103005455.12: *7* << plot2d >>
+            def plot2d(data):
+                num_cols = 0
+                lines = data.split('\n')
+
+                # Skip lines starting with """ or '''
+                lines = [line.replace('"""', '') for line in lines]
+                lines = [line.replace("'''", '') for line in lines]
+
+                # Skip blank lines
+                lines = [line for line in lines if line.strip()]
+
+                # skip non-data lines (first or 2nd col is not a number)
+                t = []
+                for line in lines:
+                    line = line.replace(',', '') # remove formatting commas
+                    if is_numeric(line):
+                        t.append(line.strip())
+                        # Check if first all-numeric row has one or more fields
+                        if not num_cols:
+                            num_cols = min(len(t[0].split()), 2)
+
+                # Extract x, y values into separate lists; ignore columns after col. 2
+                if t: 
+                    if num_cols == 1:
+                        x = [i for i in range(len(t))]
+                        y = [float(b.strip()) for b in t]
+                    else:
+                        xy = [line.split()[:2] for line in t]
+                        xs, ys = zip(*xy)
+                        x = [float(a) for a in xs]
+                        y = [float(b) for b in ys]
+
+                    # Plot
+                    plt.ion()
+                    #set_plot_styles()
+                    fig, _ = plt.subplots()
+                    fig.clear()
+                    plt.plot(x,y)
+                    plt.show()
+                else:
+                    g.es('No Data')
+            #@-<< plot2d >>
+
+            try:
+                plot2d(page)
+            except Exception as e:
+                g.es('VR3:', e)
+        #@-others
+        #@-others
+
+        config = ConfigParser()
+        process_sections = has_config_section(config, page)
+        plot_sections(page) if process_sections else plot_plain_data(page)
+
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
