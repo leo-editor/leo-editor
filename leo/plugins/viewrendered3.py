@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.46
+About Viewrendered3 V3.47
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -3282,7 +3282,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
                         url = fields[1]
-                        line = f'\n.. image:: {url}\n\n'
+                        line = f'\n.. image:: {url}\n      :width: 100%\n\n'
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
