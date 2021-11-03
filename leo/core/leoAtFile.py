@@ -962,7 +962,6 @@ class AtFile:
         at.putInitialComment()
         at.putOpenNodeSentinel(root)
         at.putBody(root, fromString=fromString)
-        ### at.putCloseNodeSentinel(root)
         # The -leo sentinel is required to handle @last.
         at.putSentinel("@-leo")
         root.setVisited()
@@ -1807,7 +1806,6 @@ class AtFile:
         at.putAtAllBody(p)
         for child in p.children():
             at.putAtAllChild(child)  # pragma: no cover (recursive call)
-        ### at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.170: *6* at.@others (write)
     #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helpers
     def putAtOthersLine(self, s, i, p):
@@ -1827,7 +1825,6 @@ class AtFile:
                 if at.validInAtOthers(p):
                     at.putOpenNodeSentinel(p)
                     at_others_flag = at.putBody(p)
-                    ### at.putCloseNodeSentinel(p)
                     if at_others_flag:
                         p.moveToNodeAfterTree()
                     else:
@@ -1842,7 +1839,6 @@ class AtFile:
         at = self
         at.putOpenNodeSentinel(p)
         at.putBody(p)
-        ### at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.171: *8* at.validInAtOthers
     def validInAtOthers(self, p):
         """
@@ -2016,7 +2012,6 @@ class AtFile:
         at.putSentinel("@+" + name)
         at.putOpenNodeSentinel(ref)
         at.putBody(ref)
-        ### at.putCloseNodeSentinel(ref)
         at.putSentinel("@-" + name)
         at.indent -= delta
     #@+node:ekr.20041005105605.180: *5* writing doc lines...
@@ -2132,10 +2127,6 @@ class AtFile:
             self.putIndent(at.indent)  # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
             at.onl_sent()
-    #@+node:ekr.20041005105605.191: *5* at.putCloseNodeSentinel (no longer used)
-    ###
-        # def putCloseNodeSentinel(self, p):
-            # """End a node."""
     #@+node:ekr.20041005105605.192: *5* at.putOpenLeoSentinel 4.x
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
