@@ -659,6 +659,54 @@ class TestFastAtRead(LeoUnitTest):
         self.assertEqual(child1.v, child2.v)
         self.assertFalse(grand_child1.isCloned())
         self.assertFalse(grand_child2.isCloned())
+    #@+node:ekr.20211103080718.1: *3* TestFast.test_cweb
+    #@@language python
+
+    def test_cweb(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_cweb.w'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211103080718.2: *4* << define contents >>
+        contents = textwrap.dedent(f'''\
+            ATq@@+leo-ver=5-thin@>
+            ATq@@+node:ekr.20211103080829.1: * @{h}@>
+            ATq@@@@language cweb@>
+            ATq@@@@comment @@q@@ @@>@>
+            
+            % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
+            % The following should not be colorized: class,if,else.
+            
+            @* this is a _cweb_ comment.  Code is written in \c.
+            "strings" should not be colorized.
+            It should be colored in \LaTeX mode.
+            The following are not keywords in latex mode: if, else, etc.
+            Section references are _valid_ in cweb comments!
+            ATq@@+LB section ref 1 >>@>
+            ATq@@+node:ekr.20211103082104.1: ** LB section ref 1 >>@>
+            This is section 1.
+            ATq@@-LB section ref 1 >>@>
+            @c
+            
+            and this is C code. // It is colored in \LaTeX mode by default.
+            /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
+            
+            // Section refs are valid in code too, of course.
+            ATq@@+LB section ref 2 >>@>
+            ATq@@+node:ekr.20211103083538.1: ** LB section ref 2 >>@>
+            This is section 2.
+            ATq@@-LB section ref 2 >>@>
+            
+            \LaTeX and \c should not be colored.
+            if else, while, do // C keywords.
+            ATq@@-leo@>
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
     #@+node:ekr.20211101152817.1: *3* TestFast.test_doc_parts
     def test_doc_parts(self):
 
