@@ -609,6 +609,34 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
+    #@+node:ekr.20211103092228.1: *3* TestFast.test_at_others
+    def test_at_others(self):
+        
+        # In particular, we want to test indented @others.
+        c, x = self.c, self.x
+        h = '@file /test/test_at_others'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211103092228.2: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+        #AT+leo-ver=5-thin
+        #AT+node:ekr.20211103092338.1: * {h}
+        #AT@language python
+
+        class AtOthersTestClass:
+            #AT+others
+            #AT+node:ekr.20211103092443.1: ** method1
+            def method1(self):
+                pass
+            #AT-others
+        #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
     #@+node:ekr.20211101155930.1: *3* TestFast.test_clones
     def test_clones(self):
 
@@ -677,12 +705,12 @@ class TestFastAtRead(LeoUnitTest):
             ATq@@@@language cweb@>
             ATq@@@@comment @@q@@ @@>@>
             
-            % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
+            % This is limbo in cweb mode... It should be in BSLaTeX mode, not BSc mode.
             % The following should not be colorized: class,if,else.
             
-            @* this is a _cweb_ comment.  Code is written in \c.
+            @* this is a _cweb_ comment.  Code is written in BSc.
             "strings" should not be colorized.
-            It should be colored in \LaTeX mode.
+            It should be colored in BSLaTeX mode.
             The following are not keywords in latex mode: if, else, etc.
             Section references are _valid_ in cweb comments!
             ATq@@+LB section ref 1 >>@>
@@ -691,8 +719,8 @@ class TestFastAtRead(LeoUnitTest):
             ATq@@-LB section ref 1 >>@>
             @c
             
-            and this is C code. // It is colored in \LaTeX mode by default.
-            /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
+            and this is C code. // It is colored in BSLaTeX mode by default.
+            /* This is a C block comment.  It may also be colored in restricted BSLaTeX mode. */
             
             // Section refs are valid in code too, of course.
             ATq@@+LB section ref 2 >>@>
@@ -700,10 +728,10 @@ class TestFastAtRead(LeoUnitTest):
             This is section 2.
             ATq@@-LB section ref 2 >>@>
             
-            \LaTeX and \c should not be colored.
+            BSLaTeX and BSc should not be colored.
             if else, while, do // C keywords.
             ATq@@-leo@>
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<').replace('BS', '\\')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
