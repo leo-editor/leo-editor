@@ -670,7 +670,7 @@ class TestFastAtRead(LeoUnitTest):
         root.h = h # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211103080718.2: *4* << define contents >>
-        contents = textwrap.dedent(f'''\
+        contents = textwrap.dedent(fr'''\
             ATq@@+leo-ver=5-thin@>
             ATq@@+node:ekr.20211103080829.1: * @{h}@>
             ATq@@@@language cweb@>
