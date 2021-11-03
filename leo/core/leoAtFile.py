@@ -2509,7 +2509,7 @@ class AtFile:
             self.putSentinel("@" + directive)
         elif g.match_word(s, k, "@last"):
             # #1307.
-            if p.isAtCleanNode():
+            if p.isAtCleanNode():  # pragma: no cover
                 at.error(f"ignoring @last directive in {p.h!r}")
                 g.es_print('@last is not valid in @clean nodes')
             # #1297.
@@ -2517,10 +2517,10 @@ class AtFile:
                 self.putSentinel("@@last")
                     # Convert to an verbatim line _without_ anything else.
             else:
-                at.error(f"ignoring @last directive in {p.h!r}")
+                at.error(f"ignoring @last directive in {p.h!r}")  # pragma: no cover
         elif g.match_word(s, k, "@first"):
             # #1307.
-            if p.isAtCleanNode():
+            if p.isAtCleanNode():  # pragma: no cover
                 at.error(f"ignoring @first directive in {p.h!r}")
                 g.es_print('@first is not valid in @clean nodes')
             # #1297.
@@ -2528,7 +2528,7 @@ class AtFile:
                 self.putSentinel("@@first")
                     # Convert to an verbatim line _without_ anything else.
             else:
-                at.error(f"ignoring @first directive in {p.h!r}")
+                at.error(f"ignoring @first directive in {p.h!r}")  # pragma: no cover
         else:
             self.putSentinel("@" + directive)
         i = g.skip_line(s, k)
