@@ -1902,7 +1902,7 @@ class AtFile:
             i = n2
             n_refs += 1
             name, n1, n2 = at.findSectionName(s, i)
-            if is_clean and n_refs > 1:
+            if is_clean and n_refs > 1:  # pragma: no cover
                 # #1232: allow only one section reference per line in @clean.
                 i1, i2 = g.getLine(s, i)
                 line = s[i1:i2].rstrip()
@@ -3155,7 +3155,7 @@ class FastAtRead:
         #
         # Init the parent vnode.
         #
-        root_gnx = gnx = self.root.gnx
+        gnx = self.root.gnx
         context = self.c
         parent_v = self.root.v
         root_v = parent_v  # Does not change.
@@ -3348,6 +3348,7 @@ class FastAtRead:
                     continue
                 #@-<< handle @ or @doc >>
             if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
+                # The @-leo sentinel adds *nothing* to the text.
                 i += 1
                 break
             # Order doesn't matter.
@@ -3391,6 +3392,8 @@ class FastAtRead:
                     continue
             m = self.last_pat.match(line)
             if m:
+                # Just increment the count of the expected last lines.
+                # We'll fill in the @last line directives after we see the @-leo directive.
                 n_last_lines += 1
                 continue
             #@-<< handle @first and @last >>
@@ -3521,13 +3524,21 @@ class FastAtRead:
         else:
             # No @-leo sentinel
             return None, []  # pragma: no cover
-        # Handle @last lines.
-        last_lines = lines[start + i :]
-        if last_lines:
-            last_lines = ['@last ' + z for z in last_lines]
-            gnx2body[root_gnx] = gnx2body[root_gnx] + last_lines
+        #@+<< insert @last lines >>
+        #@+node:ekr.20211103101453.1: *4* << insert @last lines >>
+        tail_lines = lines[start + i :]
+        if tail_lines:
+            # Convert the trailing lines to @last directives.
+            last_lines = [f"@last {z.rstrip()}\n" for z in tail_lines]
+            # Add the lines to the dictionary of lines.
+            gnx2body[gnx] = gnx2body[gnx] + last_lines
+            # Warn if there is an unexpected number of last lines.
+            if n_last_lines != len(last_lines):  # pragma: no cover
+                n1 = n_last_lines
+                n2 = len(last_lines)
+                g.trace(f"Expected {n1} trailing line{g.plural(n1)}, got {n2}")
+        #@-<< insert @last lines >>
         self.post_pass(gnx2body, gnx2vnode, root_v)
-        return root_v, last_lines
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
     def read_into_root(self, contents, path, root):
         """
