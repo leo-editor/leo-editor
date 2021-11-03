@@ -70,7 +70,8 @@ globalDirectiveList = [
     'beautify',
     'colorcache', 'code', 'color', 'comment', 'c',
     'delims', 'doc',
-    'encoding', 'end_raw',
+    'encoding',
+    # 'end_raw',  # #2276.
     'first', 'header', 'ignore',
     'killbeautify', 'killcolor',
     'language', 'last', 'lineending',
@@ -80,7 +81,7 @@ globalDirectiveList = [
     'nopyflakes',  # Leo 6.1.
     'nosearch',  # Leo 5.3.
     'others', 'pagewidth', 'path', 'quiet',
-    'raw',
+    # 'raw',  # #2276.
     'section-delims', # Leo 6.6. #2276.
     'silent',
     'tabwidth', 'terse',
