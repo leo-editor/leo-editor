@@ -2481,7 +2481,8 @@ class AtFile:
                 j -= 1
             elif not line.strip():
                 j -= 1
-            else: break
+            else:
+                break  # pragma: no cover (coverage bug)
         # Write the @last lines.
         for line in lines[j + 1 : k + 1]:
             if g.match(line, 0, tag):
@@ -3130,6 +3131,7 @@ class FastAtRead:
         indent = 0  # The current indentation.
         level_stack = []  # Entries are (vnode, in_clone_tree)
         n_last_lines = 0  # The number of @@last directives seen.
+        root_gnx_adjusted = False  # True: suppress final checks.
         # #1065 so reads will not create spurious child nodes.
         root_seen = False  # False: The next +@node sentinel denotes the root, regardless of gnx.
         section_delim1 = '<<'
@@ -3245,12 +3247,17 @@ class FastAtRead:
                 v = gnx2vnode.get(gnx)
                 #
                 # Case 1: The root @file node. Don't change the headline.
+                if not root_seen and not v and not g.unitTesting:
+                    # Don't warn about a gnx mismatch in the root.
+                    root_gnx_adjusted = True
                 if not root_seen:
                     # Fix #1064: The node represents the root, regardless of the gnx!
                     root_seen = True
                     clone_v = None
                     gnx2body[gnx] = body = []
-                    if not v:
+                    # This case can happen, but unit tests ensure that it doesn't happen.
+                    # As a result, this case is hard to cover!
+                    if not v:  # pragma: no cover
                         # Fix #1064.
                         v = root_v
                         # This message is annoying when using git-diff.
@@ -3518,11 +3525,14 @@ class FastAtRead:
         if g.unitTesting:
             assert not stack, stack
             assert root_gnx == gnx, (root_gnx, gnx)
-        elif stack or root_gnx != gnx:
+        elif root_gnx_adjusted:
+            pass  # Don't worry, be happy.
+        elif stack or root_gnx != gnx:  # pragma: no cover
             g.error(f"Possibly corrupted file: {root_v.h}")
             g.es_print('Unbalanced sentinels lines')
             g.printObj(stack, tag='stack')
             g.es_print(f"root_gnx: {root_gnx}, gnx: {gnx}")
+            g.trace(g.callers())
         #@-<< final checks >>
         #@+<< insert @last lines >>
         #@+node:ekr.20211103101453.1: *4* << insert @last lines >>
