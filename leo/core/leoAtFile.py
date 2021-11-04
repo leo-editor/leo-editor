@@ -3249,14 +3249,13 @@ class FastAtRead:
                 # Case 1: The root @file node. Don't change the headline.
                 if not root_seen and not v and not g.unitTesting:
                     # Don't warn about a gnx mismatch in the root.
-                    root_gnx_adjusted = True
+                    root_gnx_adjusted = True  # pragma: no cover
                 if not root_seen:
                     # Fix #1064: The node represents the root, regardless of the gnx!
                     root_seen = True
                     clone_v = None
                     gnx2body[gnx] = body = []
-                    # This case can happen, but unit tests ensure that it doesn't happen.
-                    # As a result, this case is hard to cover!
+                    # This case can happen, but not in unit tests.
                     if not v:  # pragma: no cover
                         # Fix #1064.
                         v = root_v
@@ -3523,10 +3522,12 @@ class FastAtRead:
         #@+<< final checks >>
         #@+node:ekr.20211104054823.1: *4* << final checks >>
         if g.unitTesting:
+            # Unit tests must use the proper value for root.gnx.
+            assert not root_gnx_adjusted
             assert not stack, stack
             assert root_gnx == gnx, (root_gnx, gnx)
-        elif root_gnx_adjusted:
-            pass  # Don't worry, be happy.
+        elif root_gnx_adjusted:  # pragma: no cover
+            pass  # Don't check!
         elif stack or root_gnx != gnx:  # pragma: no cover
             g.error(f"Possibly corrupted file: {root_v.h}")
             g.es_print('Unbalanced sentinels lines')
