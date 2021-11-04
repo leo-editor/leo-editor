@@ -450,12 +450,12 @@ class TestAtFile(LeoUnitTest):
 #@+node:ekr.20211031085414.1: ** class TestFastAtRead(LeoUnitTest)
 class TestFastAtRead(LeoUnitTest):
     """Test the FastAtRead class."""
-    #@+others
-    #@+node:ekr.20211031085620.1: *3*  TestFast.setUp
+    
     def setUp(self):
         super().setUp()
         self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
 
+    #@+others
     #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all
     def test_at_all(self):
         
@@ -465,9 +465,10 @@ class TestFastAtRead(LeoUnitTest):
         root.h = h # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211103093424.1: *4* << define contents >> (test_at_all)
+        # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211102114151.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         # This is Leo's final resting place for dead code.
         # Much easier to access than a git repo.
 
@@ -503,7 +504,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = textwrap.dedent(f'''\
         !!! -*- coding: utf-8 -*-
         !!!AT+leo-ver=5-thin
-        !!!AT+node:ekr.20211101090015.1: * {h}
+        !!!AT+node:{root.gnx}: * {h}
         !!!AT@first
 
         """Classes to read and write @file nodes."""
@@ -554,7 +555,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = textwrap.dedent(f'''\
         !! -*- coding: utf-8 -*-
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211101111409.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         #AT@first
 
         #ATdelims !! 
@@ -642,7 +643,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211103092338.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         #AT@language python
 
         class AtOthersTestClass:
@@ -670,7 +671,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = textwrap.dedent(f'''\
         # -*- coding: utf-8 -*-
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211029054120.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         #AT@first
 
         """Classes to read and write @file nodes."""
@@ -721,7 +722,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211101152532.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         #AT@language python
 
         a = 1
@@ -773,7 +774,7 @@ class TestFastAtRead(LeoUnitTest):
         # pylint: disable=anomalous-backslash-in-string
         contents = textwrap.dedent(f'''\
             ATq@@+leo-ver=5-thin@>
-            ATq@@+node:ekr.20211103080829.1: * @{h}@>
+            ATq@@+node:{root.gnx}: * @{h}@>
             ATq@@@@language cweb@>
             ATq@@@@comment @@q@@ @@>@>
             
@@ -820,7 +821,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211101152532.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         #AT@language python
 
         a = 1
@@ -853,7 +854,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         <!--AT+leo-ver=5-thin-->
-        <!--AT+node:ekr.20211101154334.1: * {h}-->
+        <!--AT+node:{root.gnx}: * {h}-->
         <!--AT@language html-->
 
         <!--AT+at-->
@@ -881,7 +882,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211101175710.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         #AT@language python
 
         #AT+LB test >>
