@@ -323,6 +323,13 @@ class TestAtFile(LeoUnitTest):
         )
         for line in table:
             at.putCodeLine(line, 0)
+    #@+node:ekr.20211104155139.1: *3* TestAtFile.test_putLeadInSentinel
+    def test_putLeadInSentinel(self):
+        
+        at, p = self.at, self.c.p
+        at.initWriteIvars(p)
+        s = '    @others\n'
+        at.putLeadInSentinel(s, 0, 4)
     #@+node:ekr.20211104142459.1: *3* TestAtFile.test_putLine
     def test_putLine(self):
 

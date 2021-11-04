@@ -1764,7 +1764,7 @@ class AtFile:
         at = self
         j, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
         k = g.skip_to_end_of_line(s, i)
-        at.putLeadInSentinel(s, i, j, delta)
+        at.putLeadInSentinel(s, i, j)
         at.indent += delta
         at.putSentinel("@+" + s[j + 1 : k].strip())
             # s[j:k] starts with '@all'
@@ -1813,7 +1813,7 @@ class AtFile:
         at = self
         j, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
         k = g.skip_to_end_of_line(s, i)
-        at.putLeadInSentinel(s, i, j, delta)
+        at.putLeadInSentinel(s, i, j)
         at.indent += delta
         # s[j:k] starts with '@others'
         # Never write lws in new sentinels.
@@ -1894,7 +1894,7 @@ class AtFile:
         # Compute delta only once.
         junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
         # Write the lead-in sentinel only once.
-        at.putLeadInSentinel(s, i, n1, delta)
+        at.putLeadInSentinel(s, i, n1) ###, delta)
         self.putRefAt(name, ref, delta)
         n_refs = 0
         while 1:
@@ -2101,13 +2101,12 @@ class AtFile:
             h = h.replace(end, "")
         return h
     #@+node:ekr.20041005105605.190: *5* at.putLeadInSentinel
-    def putLeadInSentinel(self, s, i, j, delta):
+    def putLeadInSentinel(self, s, i, j):
         """
         Set at.leadingWs as needed for @+others and @+<< sentinels.
 
         i points at the start of a line.
         j points at @others or a section reference.
-        delta is the change in at.indent that is about to happen and hasn't happened yet.
         """
         at = self
         at.leadingWs = ""  # Set the default.
@@ -2115,9 +2114,8 @@ class AtFile:
             return  # The @others or ref starts a line.
         k = g.skip_ws(s, i)
         if j == k:
-            # Only whitespace before the @others or ref.
-            at.leadingWs = s[
-                i:j]  # Remember the leading whitespace, including its spelling.
+            # Remember the leading whitespace, including its spelling.
+            at.leadingWs = s[i:j]
         else:
             self.putIndent(at.indent)  # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
