@@ -3144,7 +3144,7 @@ class FastAtRead:
         #
         # Init the parent vnode.
         #
-        gnx = self.root.gnx
+        root_gnx = gnx = self.root.gnx
         context = self.c
         parent_v = self.root.v
         root_v = parent_v  # Does not change.
@@ -3513,6 +3513,17 @@ class FastAtRead:
         else:
             # No @-leo sentinel
             return None, []  # pragma: no cover
+        #@+<< final checks >>
+        #@+node:ekr.20211104054823.1: *4* << final checks >>
+        if g.unitTesting:
+            assert not stack, stack
+            assert root_gnx == gnx, (root_gnx, gnx)
+        elif stack or root_gnx != gnx:
+            g.error(f"Possibly corrupted file: {root_v.h}")
+            g.es_print('Unbalanced sentinels lines')
+            g.printObj(stack, tag='stack')
+            g.es_print(f"root_gnx: {root_gnx}, gnx: {gnx}")
+        #@-<< final checks >>
         #@+<< insert @last lines >>
         #@+node:ekr.20211103101453.1: *4* << insert @last lines >>
         tail_lines = lines[start + i :]

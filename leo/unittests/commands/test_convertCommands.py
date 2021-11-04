@@ -4,6 +4,7 @@
 #@@first
 """Tests of leo.commands.leoConvertCommands."""
 import os
+import re
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -28,6 +29,13 @@ class TestPythonToTypeScript(LeoUnitTest):
         path = os.path.join(core_dir, 'leoNodes.py')
         with open(path) as f:
             contents = f.read()
+        # Set the gnx of the @file nodes in the contents to root.gnx.
+        # This is necessary because of a check in fast_at.scan_lines.
+        pat = re.compile(r'^\s*#@\+node:([^:]+): \* @file leoNodes\.py$')
+        line3 = g.splitLines(contents)[2]
+        m = pat.match(line3)
+        assert m, "Can not replace gnx"
+        contents = contents.replace(m.group(1), root.gnx)
         # Replace c's outline with leoNodes.py.
         gnx2vnode = {}
         ok = c.atFileCommands.fast_read_into_root(c, contents, gnx2vnode, path, root)
