@@ -3517,8 +3517,8 @@ class FastAtRead:
                 body.append(line)
             #@-<< handle remaining @ lines >>
         else:
-            # No @-leo sentinel
-            return None, []  # pragma: no cover
+            # No @-leo sentinel!
+            return  # pragma: no cover
         #@+<< final checks >>
         #@+node:ekr.20211104054823.1: *4* << final checks >>
         if g.unitTesting:
