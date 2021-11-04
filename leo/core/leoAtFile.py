@@ -3088,17 +3088,6 @@ class FastAtRead:
             ivar = f"{name}_pat"
             assert hasattr(self, ivar), ivar
             setattr(self, ivar, re.compile(pattern))
-    #@+node:ekr.20180603060721.1: *3* fast_at.post_pass
-    def post_pass(self, gnx2body, gnx2vnode, root_v):
-        """Set all body text."""
-        # Set the body text.
-        assert root_v.gnx in gnx2vnode, root_v
-        assert root_v.gnx in gnx2body, root_v
-        for key in gnx2body:
-            body = gnx2body.get(key)
-            v = gnx2vnode.get(key)
-            assert v, (key, v)
-            v._bodyString = g.toUnicode(''.join(body))
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(
         r'''
@@ -3538,7 +3527,17 @@ class FastAtRead:
                 n2 = len(last_lines)
                 g.trace(f"Expected {n1} trailing line{g.plural(n1)}, got {n2}")
         #@-<< insert @last lines >>
-        self.post_pass(gnx2body, gnx2vnode, root_v)
+        #@+<< post pass: set all body text>>
+        #@+node:ekr.20211104054426.1: *4* << post pass: set all body text>>
+        # Set the body text.
+        assert root_v.gnx in gnx2vnode, root_v
+        assert root_v.gnx in gnx2body, root_v
+        for key in gnx2body:
+            body = gnx2body.get(key)
+            v = gnx2vnode.get(key)
+            assert v, (key, v)
+            v._bodyString = g.toUnicode(''.join(body))
+        #@-<< post pass: set all body text>>
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
     def read_into_root(self, contents, path, root):
         """
