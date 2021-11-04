@@ -15,6 +15,12 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
 class TestAtFile(LeoUnitTest):
     """Test cases for leoAtFile.py"""
+    
+    def setUp(self):
+        # Create a pristine instance of the AtFile class.
+        super().setUp()
+        self.at = leoAtFile.AtFile(self.c)
+        
     #@+others
     #@+node:ekr.20200204095726.1: *3*  TestAtFile.bridge
     def bridge(self):
@@ -25,10 +31,9 @@ class TestAtFile(LeoUnitTest):
             silent=True,
             verbose=False,
         )
-    #@+node:ekr.20210901140645.13: *3* TestAtFile.test_at_checkPythonSyntax
-    def test_at_checkPythonSyntax(self):
-        c, p = self.c, self.c.p
-        at = c.atFileCommands
+    #@+node:ekr.20210901140645.13: *3* TestAtFile.test_checkPythonSyntax
+    def test_checkPythonSyntax(self):
+        at, p = self.at, self.c.p
         s = textwrap.dedent('''\
     # no error
     def spam():
@@ -46,10 +51,9 @@ class TestAtFile(LeoUnitTest):
 
         if not g.unitTesting:  # A hand test of at.syntaxError
             at.checkPythonSyntax(p, s2)
-    #@+node:ekr.20210905052021.19: *3* TestAtFile.test_at_directiveKind4
-    def test_at_directiveKind4(self):
-        c = self.c
-        at = c.atFileCommands
+    #@+node:ekr.20210905052021.19: *3* TestAtFile.test_directiveKind4
+    def test_directiveKind4(self):
+        at = self.at
         at.language = 'python'  # Usually set by atFile read/write logic.
         table = [
             ('@=', 0, at.noDirective),
@@ -74,10 +78,9 @@ class TestAtFile(LeoUnitTest):
         for s, i, expected in table:
             result = at.directiveKind4(s, i)
             self.assertEqual(result, expected, msg=f"i: {i}, s: {s!r}")
-    #@+node:ekr.20210905052021.20: *3* TestAtFile.test_at_directiveKind4_new
-    def test_at_directiveKind4_new(self):
-        c = self.c
-        at = c.atFileCommands
+    #@+node:ekr.20210905052021.20: *3* TestAtFile.test_directiveKind4_new
+    def test_directiveKind4_new(self):
+        at = self.at
         at.language = 'python'  # Usually set by atFile read/write logic.
         table = (
             (at.othersDirective, '@others'),
@@ -94,34 +97,10 @@ class TestAtFile(LeoUnitTest):
         for expected, s in table:
             result = at.directiveKind4(s, 0)
             self.assertEqual(expected, result, msg=repr(s))
-    #@+node:ekr.20210920165831.1: *3* TestAtFile.test_at_doc_part
-    def test_at_doc_part(self):
-        
-        # From leoBeautify.py.
-        # The following text *does* survive round-tripping.
-        # However, the actual text in leoBeautify.py
-        # (In the @doc part of the node cpp.tokenize & helper) does *not* survive.
-        s = textwrap.dedent("""\
-            @ The following could be added to the 'else' clause::
-            # Accumulate everything else.
-            while (
-                j < n and
-                not s[j].isspace() and
-                not s[j].isalpha() and
-                not s[j] in '"\'_@' and
-                    # start of strings, identifiers, and single-character tokens.
-                not g.match(s,j,'//') and
-                not g.match(s,j,'/*') and
-                not g.match(s,j,'-->')
-            ):
-                j += 1
-        """)
-        assert s
-    #@+node:ekr.20210905052021.21: *3* TestAtFile.test_at_get_setPathUa
-    def test_at_get_setPathUa(self):
-        c = self.c
-        p = c.p
-        at = c.atFileCommands
+    #@+node:ekr.20210905052021.21: *3* TestAtFile.test_setPathUa
+    def test_setPathUa(self):
+        p = self.c.p
+        at = self.at
         at.setPathUa(p, 'abc')
         d = p.v.tempAttributes
         d2 = d.get('read-path')
@@ -133,10 +112,10 @@ class TestAtFile(LeoUnitTest):
         )
         for kind, val in table:
             self.assertEqual(val, 'abc', msg=kind)
-    #@+node:ekr.20210905052021.23: *3* TestAtFile.test_at_parseLeoSentinel
-    def test_at_parseLeoSentinel(self):
-        c = self.c
-        at = c.atFileCommands  # self is a dummy argument.
+    #@+node:ekr.20210905052021.23: *3* TestAtFile.test_parseLeoSentinel
+    def test_parseLeoSentinel(self):
+
+        at = self.at
         table = (
             # start, end, new_df, isThin, encoding
             # pre 4.2 formats...
@@ -159,6 +138,29 @@ class TestAtFile(LeoUnitTest):
                 self.assertEqual(at.encoding, encoding, msg=repr(s))
         finally:
             at.encoding = 'utf-8'
+    #@+node:ekr.20211104142459.1: *3* TestAtFile.test_putLine
+    def test_putLine(self):
+
+        at = self.at
+        p = self.c.p
+        at.initWriteIvars(p)
+
+        class Status:  # at.putBody defines the status class.
+            at_comment_seen=False
+            at_delims_seen=False
+            at_warning_given=True  # Always suppress warning messages.
+            has_at_others=False
+            in_code=True
+            
+        # For now, test only the case that hasn't been covered:
+        # kind == at.othersDirective and not status.in_code
+        status = Status()
+        status.in_code = False
+        i, kind = 0, at.othersDirective
+        s = 'A doc line\n'
+        at.putLine(i, kind, p, s, status)
+        
+            
     #@+node:ekr.20210905052021.24: *3* TestAtFile.test_at_remove
     def test_at_remove(self):
         c = self.c
