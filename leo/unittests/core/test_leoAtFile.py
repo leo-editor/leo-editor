@@ -310,6 +310,19 @@ class TestAtFile(LeoUnitTest):
         at.putBody(root)
         result = ''.join(at.outputList)
         self.assertEqual(result, expected)
+    #@+node:ekr.20211104154501.1: *3* TestAtFile.test_putCodeLine
+    def test_putCodeLine(self):
+        
+        at, p = self.at, self.c.p
+        at.initWriteIvars(p)
+        at.startSentinelComment = '#'
+        table = (
+            'Line without newline',
+            'Line with newline',
+            ' ',
+        )
+        for line in table:
+            at.putCodeLine(line, 0)
     #@+node:ekr.20211104142459.1: *3* TestAtFile.test_putLine
     def test_putLine(self):
 
