@@ -124,6 +124,7 @@ class TestAtFile(LeoUnitTest):
             ('@\n', 0, at.atDirective),
             ('@all', 0, at.allDirective),
             ('    @all', 4, at.allDirective),
+            ('    @all', 0, at.allDirective),  # 2021/11/04
             ("@c", 0, at.cDirective),
             ("@code", 0, at.codeDirective),
             ("@doc", 0, at.docDirective),
@@ -139,8 +140,8 @@ class TestAtFile(LeoUnitTest):
         for s, i, expected in table:
             result = at.directiveKind4(s, i)
             self.assertEqual(result, expected, msg=f"i: {i}, s: {s!r}")
-    #@+node:ekr.20210905052021.20: *3* TestAtFile.test_directiveKind4_new
-    def test_directiveKind4_new(self):
+    #@+node:ekr.20210905052021.20: *3* TestAtFile.test_directiveKind4_2
+    def test_directiveKind4_2(self):
 
         at = self.at
         at.language = 'python'  # Usually set by atFile read/write logic.
@@ -328,8 +329,9 @@ class TestAtFile(LeoUnitTest):
         
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
+        # Cover the special case code.
         s = '    @others\n'
-        at.putLeadInSentinel(s, 0, 4)
+        at.putLeadInSentinel(s, 0, 2)
     #@+node:ekr.20211104142459.1: *3* TestAtFile.test_putLine
     def test_putLine(self):
 
