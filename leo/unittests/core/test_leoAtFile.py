@@ -156,6 +156,7 @@ class TestAtFile(LeoUnitTest):
             (at.noDirective, '@encoding("abc")'),
             (at.noDirective, 'encoding = "abc"'),
             (at.noDirective, '@directive'),  # A crucial new test.
+            (at.noDirective, '@raw'),  # 2021/11/04.
         )
         for expected, s in table:
             result = at.directiveKind4(s, 0)
@@ -186,8 +187,8 @@ class TestAtFile(LeoUnitTest):
                 self.assertEqual(at.encoding, encoding, msg=repr(s))
         finally:
             at.encoding = 'utf-8'
-    #@+node:ekr.20211102110237.1: *3* TestAtFile.test_put_body_adjacent_at_doc_part
-    def test_put_body_adjacent_at_doc_part(self):
+    #@+node:ekr.20211102110237.1: *3* TestAtFile.test_putBody_adjacent_at_doc_part
+    def test_putBody_adjacent_at_doc_part(self):
 
         at, c = self.at, self.c
         root = c.rootPosition()
@@ -213,8 +214,8 @@ class TestAtFile(LeoUnitTest):
         at.putBody(root)
         result = ''.join(at.outputList)
         self.assertEqual(result, expected)
-    #@+node:ekr.20211102110833.1: *3* TestAtFile.test_put_body_at_all
-    def test_put_body_at_all(self):
+    #@+node:ekr.20211102110833.1: *3* TestAtFile.test_putBody_at_all
+    def test_putBody_at_all(self):
         
         at, c = self.at, self.c
         root = c.rootPosition()
@@ -244,8 +245,8 @@ class TestAtFile(LeoUnitTest):
         at.putBody(root)
         result = ''.join(at.outputList)
         self.assertEqual(result, expected)
-    #@+node:ekr.20211102111413.1: *3* TestAtFile.test_put_body_at_all_after_at_doc
-    def test_put_body_at_all_after_at_doc(self):
+    #@+node:ekr.20211102111413.1: *3* TestAtFile.test_putBody_at_all_after_at_doc
+    def test_putBody_at_all_after_at_doc(self):
         
         at, c = self.at, self.c
         root = c.rootPosition()
@@ -265,12 +266,12 @@ class TestAtFile(LeoUnitTest):
         at.putBody(root)
         result = ''.join(at.outputList)
         self.assertEqual(result, expected)
-    #@+node:ekr.20211102150707.1: *3* TestAtFile.test_put_body_at_others
-    def test_put_body_at_others(self):
+    #@+node:ekr.20211102150707.1: *3* TestAtFile.test_putBody_at_others
+    def test_putBody_at_others(self):
         
         at, c = self.at, self.c
         root = c.rootPosition()
-        root.h = '@file test_put_body_at_others.py'
+        root.h = '@file test_putBody_at_others.py'
         child = root.insertAsLastChild()
         child.h = 'child'
         child.b = '@others\n'
@@ -290,8 +291,8 @@ class TestAtFile(LeoUnitTest):
         at.putBody(root)
         result = ''.join(at.outputList)
         self.assertEqual(result, expected)
-    #@+node:ekr.20211102102024.1: *3* TestAtFile.test_put_body_unterminated_at_doc_part
-    def test_put_body_unterminated_at_doc_part(self):
+    #@+node:ekr.20211102102024.1: *3* TestAtFile.test_putBody_unterminated_at_doc_part
+    def test_putBody_unterminated_at_doc_part(self):
         
         at, c = self.at, self.c
         root = c.rootPosition()
@@ -324,6 +325,15 @@ class TestAtFile(LeoUnitTest):
         )
         for line in table:
             at.putCodeLine(line, 0)
+    #@+node:ekr.20211104161927.1: *3* TestAtFile.test_putDelims
+    def test_putDelims(self):
+        
+        at, p = self.at, self.c.p
+        at.initWriteIvars(p)
+        # Cover the missing code.
+        directive = '@delims'
+        s = '    @delims <! !>\n'
+        at.putDelims(directive, s, 0)
     #@+node:ekr.20211104155139.1: *3* TestAtFile.test_putLeadInSentinel
     def test_putLeadInSentinel(self):
         

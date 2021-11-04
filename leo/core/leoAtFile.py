@@ -2335,7 +2335,8 @@ class AtFile:
             if s3 and s3[0] in ".(":
                 return at.noDirective
             return at.miscDirective
-        return at.noDirective
+        # An unusual case.
+        return at.noDirective  # pragma: no cover
     #@+node:ekr.20041005105605.200: *5* at.isSectionName
     # returns (flag, end). end is the index of the character after the section name.
 
