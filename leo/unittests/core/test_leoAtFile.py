@@ -33,6 +33,7 @@ class TestAtFile(LeoUnitTest):
         )
     #@+node:ekr.20210901140645.13: *3* TestAtFile.test_checkPythonSyntax
     def test_checkPythonSyntax(self):
+
         at, p = self.at, self.c.p
         s = textwrap.dedent('''\
     # no error
@@ -53,6 +54,7 @@ class TestAtFile(LeoUnitTest):
             at.checkPythonSyntax(p, s2)
     #@+node:ekr.20210905052021.19: *3* TestAtFile.test_directiveKind4
     def test_directiveKind4(self):
+
         at = self.at
         at.language = 'python'  # Usually set by atFile read/write logic.
         table = [
@@ -80,6 +82,7 @@ class TestAtFile(LeoUnitTest):
             self.assertEqual(result, expected, msg=f"i: {i}, s: {s!r}")
     #@+node:ekr.20210905052021.20: *3* TestAtFile.test_directiveKind4_new
     def test_directiveKind4_new(self):
+
         at = self.at
         at.language = 'python'  # Usually set by atFile read/write logic.
         table = (
@@ -99,8 +102,8 @@ class TestAtFile(LeoUnitTest):
             self.assertEqual(expected, result, msg=repr(s))
     #@+node:ekr.20210905052021.21: *3* TestAtFile.test_setPathUa
     def test_setPathUa(self):
-        p = self.c.p
-        at = self.at
+
+        at, p = self.at, self.c.p
         at.setPathUa(p, 'abc')
         d = p.v.tempAttributes
         d2 = d.get('read-path')
@@ -141,8 +144,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20211104142459.1: *3* TestAtFile.test_putLine
     def test_putLine(self):
 
-        at = self.at
-        p = self.c.p
+        at, p = self.at, self.c.p
         at.initWriteIvars(p)
 
         class Status:  # at.putBody defines the status class.
@@ -161,10 +163,10 @@ class TestAtFile(LeoUnitTest):
         at.putLine(i, kind, p, s, status)
         
             
-    #@+node:ekr.20210905052021.24: *3* TestAtFile.test_at_remove
-    def test_at_remove(self):
-        c = self.c
-        at = c.atFileCommands
+    #@+node:ekr.20210905052021.24: *3* TestAtFile.test_remove
+    def test_remove(self):
+        
+        at = self.at
         exists = g.os_path_exists
 
         path = g.os_path_join(g.app.testDir, 'xyzzy')
@@ -181,10 +183,10 @@ class TestAtFile(LeoUnitTest):
         assert exists(path)
         assert at.remove(path)
         assert not exists(path)
-    #@+node:ekr.20210905052021.25: *3* TestAtFile.test_at_replaceFile_different_contents
-    def test_at_replaceFile_different_contents(self):
-        c = self.c
-        at = c.atFileCommands
+    #@+node:ekr.20210905052021.25: *3* TestAtFile.test_replaceFile_different_contents
+    def test_replaceFile_different_contents(self):
+        
+        at, c = self.at, self.c
         # Duplicate init logic...
         at.initCommonIvars()
         at.scanAllDirectives(c.p)
@@ -199,10 +201,10 @@ class TestAtFile(LeoUnitTest):
         finally:
             f.close()
             os.unlink(f.name)
-    #@+node:ekr.20210905052021.26: *3* TestAtFile.test_at_replaceFile_no_target_file
-    def test_at_replaceFile_no_target_file(self):
-        c = self.c
-        at = c.atFileCommands
+    #@+node:ekr.20210905052021.26: *3* TestAtFile.test_replaceFile_no_target_file
+    def test_replaceFile_no_target_file(self):
+        
+        at, c = self.at, self.c
         # Duplicate init logic...
         at.initCommonIvars()
         at.scanAllDirectives(c.p)
@@ -218,10 +220,10 @@ class TestAtFile(LeoUnitTest):
         finally:
             f.close()
             os.unlink(f.name)
-    #@+node:ekr.20210905052021.27: *3* TestAtFile.test_at_replaceFile_same_contents
-    def test_at_replaceFile_same_contents(self):
-        c = self.c
-        at = c.atFileCommands
+    #@+node:ekr.20210905052021.27: *3* TestAtFile.test_replaceFile_same_contents
+    def test_replaceFile_same_contents(self):
+
+        at, c = self.at, self.c
         # Duplicate init logic...
         at.initCommonIvars()
         at.scanAllDirectives(c.p)
@@ -240,21 +242,24 @@ class TestAtFile(LeoUnitTest):
             os.unlink(f.name)
     #@+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
-        c = self.c
-        d = c.atFileCommands.scanAllDirectives(c.p)
+        
+        at, c = self.at, self.c
+        d = at.scanAllDirectives(c.p)
         # These are the commander defaults, without any settings.
         self.assertEqual(d.get('language'), 'python')
         self.assertEqual(d.get('tabwidth'), -4)
         self.assertEqual(d.get('pagewidth'), 132)
     #@+node:ekr.20210905052021.29: *3* TestAtFile.test_at_scanAllDirectives_minimal_
     def test_at_scanAllDirectives_minimal_(self):
-        c = self.c
+        
+        at, c = self.at, self.c
+        d = at.scanAllDirectives(c.p)
         d = c.atFileCommands.scanAllDirectives(c.p)
         assert d
-    #@+node:ekr.20210901140645.14: *3* TestAtFile.test_at_tabNannyNode
-    def test_at_tabNannyNode(self):
-        c, p = self.c, self.c.p
-        at = c.atFileCommands
+    #@+node:ekr.20210901140645.14: *3* TestAtFile.test_tabNannyNode
+    def test_tabNannyNode(self):
+        
+        at, p = self.at, self.c.p
         # Test 1.
         s = textwrap.dedent("""\
             # no error
@@ -303,9 +308,7 @@ class TestAtFile(LeoUnitTest):
             self.assertEqual(p1.h, "@file 1_renamed")
     #@+node:ekr.20210421035527.1: *3* TestAtFile.test_bug_1889
     def test_bug_1889(self):
-        """
-        Test #1889: Honor ~ in ancestor @path nodes.
-        """
+        # Test #1889: Honor ~ in ancestor @path nodes.
         # Create a new outline with @file node and save it
         bridge = self.bridge()
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -320,9 +323,8 @@ class TestAtFile(LeoUnitTest):
             assert '~' not in path, repr(path)
     #@+node:ekr.20211102110237.1: *3* TestAtFile.test_put_body_adjacent_at_doc_part
     def test_put_body_adjacent_at_doc_part(self):
-        
-        c = self.c
-        at = leoAtFile.AtFile(c)
+
+        at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.html'
         contents = textwrap.dedent('''\
@@ -349,8 +351,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20211102110833.1: *3* TestAtFile.test_put_body_at_all
     def test_put_body_at_all(self):
         
-        c = self.c
-        at = leoAtFile.AtFile(c)
+        at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.py'
         child = root.insertAsLastChild()
@@ -381,8 +382,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20211102111413.1: *3* TestAtFile.test_put_body_at_all_after_at_doc
     def test_put_body_at_all_after_at_doc(self):
         
-        c = self.c
-        at = leoAtFile.AtFile(c)
+        at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.py'
         contents = textwrap.dedent('''\
@@ -403,8 +403,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20211102150707.1: *3* TestAtFile.test_put_body_at_others
     def test_put_body_at_others(self):
         
-        c = self.c
-        at = leoAtFile.AtFile(c)
+        at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test_put_body_at_others.py'
         child = root.insertAsLastChild()
@@ -429,8 +428,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20211102102024.1: *3* TestAtFile.test_put_body_unterminated_at_doc_part
     def test_put_body_unterminated_at_doc_part(self):
         
-        c = self.c
-        at = leoAtFile.AtFile(c)
+        at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.html'
         contents = textwrap.dedent('''\
