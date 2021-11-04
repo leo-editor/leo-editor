@@ -464,7 +464,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211103093424.1: *4* << define contents >>
+        #@+node:ekr.20211103093424.1: *4* << define contents >> (test_at_all)
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
         #AT+node:ekr.20211102114151.1: * {h}
@@ -498,7 +498,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211101090447.1: *4* << define contents >>
+        #@+node:ekr.20211101090447.1: *4* << define contents >> (test_at_comment)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         !!! -*- coding: utf-8 -*-
@@ -549,7 +549,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211101111652.1: *4* << define contents >>
+        #@+node:ekr.20211101111652.1: *4* << define contents >> (test_at_delims)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         !! -*- coding: utf-8 -*-
@@ -599,11 +599,11 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211103095959.1: *4* << define contents >>
+        #@+node:ekr.20211103095959.1: *4* << define contents >> (test_at_last)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
-        #AT+node:ekr.20211103095722.1: * {h}
+        #AT+node:{root.gnx}: * {h}
         # Test of ATlast
         #AT+others
         #AT+node:ekr.20211103095810.1: ** spam
@@ -616,7 +616,17 @@ class TestFastAtRead(LeoUnitTest):
         # last line
         ''').replace('AT', '@')
         #@-<< define contents >>
+        #@+<< define expected_body >>
+        #@+node:ekr.20211104052937.1: *4* << define expected_body >> (test_at_last)
+        expected_body = textwrap.dedent('''\
+        # Test of ATlast
+        ATothers
+        ATlanguage python
+        ATlast # last line
+        ''').replace('AT', '@')
+        #@-<< define expected_body >>
         x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
     #@+node:ekr.20211103092228.1: *3* TestFast.test_at_others
@@ -628,7 +638,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211103092228.2: *4* << define contents >>
+        #@+node:ekr.20211103092228.2: *4* << define contents >> (test_at_others)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
@@ -655,7 +665,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h =  h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211101050923.1: *4* << define contents >>
+        #@+node:ekr.20211101050923.1: *4* << define contents >> (test_at_section_delim)
         # The contents of a personal test file, slightly altered.
         contents = textwrap.dedent(f'''\
         # -*- coding: utf-8 -*-
@@ -707,7 +717,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211101155930.2: *4* << define contents >>
+        #@+node:ekr.20211101155930.2: *4* << define contents >> (test_clones)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
@@ -759,7 +769,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211103080718.2: *4* << define contents >>
+        #@+node:ekr.20211103080718.2: *4* << define contents >> (test_cweb)
         # pylint: disable=anomalous-backslash-in-string
         contents = textwrap.dedent(f'''\
             ATq@@+leo-ver=5-thin@>
@@ -806,7 +816,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211101152843.1: *4* << define contents >>
+        #@+node:ekr.20211101152843.1: *4* << define contents >> (test_doc_parts)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
@@ -839,7 +849,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211101154651.1: *4* << define contents >>
+        #@+node:ekr.20211101154651.1: *4* << define contents >> (test_html_doc_part)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         <!--AT+leo-ver=5-thin-->
@@ -867,7 +877,7 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211101180404.1: *4* << define contents >>
+        #@+node:ekr.20211101180404.1: *4* << define contents >> (test_verbatim)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
         #AT+leo-ver=5-thin
