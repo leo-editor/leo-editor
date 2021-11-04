@@ -1894,7 +1894,7 @@ class AtFile:
         # Compute delta only once.
         junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
         # Write the lead-in sentinel only once.
-        at.putLeadInSentinel(s, i, n1) ###, delta)
+        at.putLeadInSentinel(s, i, n1)
         self.putRefAt(name, ref, delta)
         n_refs = 0
         while 1:
@@ -1909,14 +1909,13 @@ class AtFile:
                 at.writeError(f"Too many section references:\n{line!s}")
                 break
             if name:
-                ref = at.findReference(name, p)
-                    # Issues error if not found.
+                ref = at.findReference(name, p)  # Issues error if not found.
                 if ref:
                     middle_s = s[i:n1]
                     self.putAfterMiddleRef(middle_s, delta)
                     self.putRefAt(name, ref, delta)
             else:
-                break
+                break  # pragma: no cover (coverage bug?)
             assert progress < i
         self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20131224085853.16443: *7* at.findReference
