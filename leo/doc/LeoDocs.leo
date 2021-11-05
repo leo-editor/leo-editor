@@ -1532,6 +1532,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
@@ -1695,6 +1696,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20211105051031.1"><vh>Leo 6.6 release notes</vh></v>
 <v t="ekr.20210921102613.1"><vh>Leo 6.5 release notes</vh>
 <v t="ekr.20210921102613.13"><vh>6.5: Commands</vh></v>
 <v t="ekr.20210921102613.20"><vh>6.5: Features</vh></v>
@@ -2376,8 +2378,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20210921103230.1"></v>
-<v t="ekr.20210921102613.1"></v>
+<v t="ekr.20211105051309.1"></v>
+<v t="ekr.20211105051031.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -7604,13 +7606,6 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
     Specifies the Unicode encoding for an external file.
 
 .. index::
-    pair: @end_raw; Glossary
-
-\@end_raw
-
-    Ends a section of 'raw' text.
-
-.. index::
     pair: @file; Glossary
 
 \@file &lt;filename&gt;
@@ -7710,13 +7705,6 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 @path &lt;path&gt;
 
   Sets the path prefix for relative filenames for descendant \@&lt;file&gt; directives.
-
-.. index::
-    pair: @raw; Glossary
-
-\@raw
-    Starts a section of "raw" text that ends *only* with the
-    @end_raw directive or the end of the body text.
 
 .. index::
     pair: @tabwidth; Glossary
@@ -8197,8 +8185,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
     \@code is a deprecated synonym for @c.
 
-    Leo does not recognize this directive in @asis trees or when the
-    @all or @raw directives are in effect.
+    Leo does not recognize this directive in @asis trees.
 
 .. index::
     pair: @chapter; Reference
@@ -8771,17 +8758,6 @@ Nevertheless, these sentinels can be useful in special situations.
     **Note**: The @delims directive can not be used to change the comment
     strings at the start of the external file, that is, the comment strings for
     the @+leo sentinel and the initial @+body and @+node sentinels.
-
-.. index::
-    pair: @raw; Reference
-    pair: @end_raw; Reference
-
-\@raw and \@end_raw
-
-    \@raw starts a section of "raw" text that ends *only* with the @end_raw directive
-    or the end of the body text containing the @raw directive. Within this
-    range, Leo ignores all section references and directives, and Leo generates
-    no additional leading whitespace.
 </t>
 <t tx="ekr.20100806170836.4411">These control how Leo places text when writing external files. They are two of the most important directives in Leo.
 
@@ -15596,7 +15572,6 @@ See the `Directives reference &lt;directives.html&gt;`_ for full details::
     @lineending lineending
     @nosearch               # suppress searching for cff &amp; cfa commands.
     @pagewidth 100
-    @raw, @end_raw          # @file only.
     @tabwidth -4            # use spaces
     @tabwidth 8             # use tabs
     @nowrap
@@ -31175,6 +31150,51 @@ gnx: ekr.20191216061356.27
 unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
+</t>
+<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.6**
+
+- Replace @raw and @end_raw with @section-delims.
+- Leo recognizes section references only when they appear on an otherwise blank line.
+- Leo does not recognized section references in @doc parts.
+- Many improvements to python-to-typescript command.
+- The user may choose *other* commands after starting repeat-complex-command.
+- Complete coverage testing for leoAtFile.py.
+
+**6.6 Links**
+
+- [6.6 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6)
+- [6.6 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6)
+- [6.6 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6+)
+- [6.6 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6+label%3Aenhancement+)
+- [6.6 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6+label%3Acode+)
+
+**General Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20211105051309.1">- Replace @raw and @end_raw with @section-delims.
+- Leo recognizes section references only when they appear on an otherwise blank line.
+- Leo does not recognized section references in @doc parts.
+- Many improvements to python-to-typescript command.
+- The user may choose *other* commands after starting repeat-complex-command.
+- Complete coverage testing for leoAtFile.py.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
