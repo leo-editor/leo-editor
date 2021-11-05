@@ -120,6 +120,7 @@ def get_args():
     # Check and return the args.
     return {
          'background_color': args.background or "black",
+         'delay': get_delay(args.delay),
          'extensions': get_extensions(args.extensions),
          'full_screen': args.fullscreen,
          'height': get_pixels('height', args.height),
@@ -131,6 +132,15 @@ def get_args():
          'verbose': args.verbose,
          'width': get_pixels('width', args.width)
     }
+#@+node:ekr.20211101064157.1: *3* get_delay
+def get_delay(delay):
+    if delay is None:
+        return None
+    try:
+        return float(delay)
+    except ValueError:
+        print(f"Bad delay value: {delay!r}")
+        return None
 #@+node:ekr.20211024034921.1: *3* get_extensions
 def get_extensions(aList):
     
