@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.47
+About Viewrendered3 V3.5
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -290,7 +290,7 @@ Commands
 ========
 
 viewrendered3-specific commands all start with a "vr3-" prefix.  There is
-rarely a reason to invoke any of them, except two:
+rarely a reason to invoke any of them, except three:
 
     1. ``vr3-toggle``, which shows or hides the VR3 pane.
     This is best bound to a hot key (see `Hot Key`_).
@@ -301,6 +301,9 @@ rarely a reason to invoke any of them, except two:
     the setting ``@string external-editor``, by the environmental
     variable ``EDITOR`` or ``LEO-EDITOR``, or is the default
     editor chosen by Leo.
+
+    3. ``vr3-help-plot-2d`` opens a help page in the system browser
+    for the *Plot 2D* capability.
 
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
@@ -427,7 +430,7 @@ node or subtree.
 
 #@+node:TomP.20200820170225.1: *4* Rendering Asciidoc
 Rendering Asciidoc
-------------------
+===================
 
 The VR3 plugin will render a node using Asciidoc if
 an Asciidoc or Asciidoc3 processor has been installed and the node type
@@ -642,6 +645,21 @@ relative to Leo's load directory.
   .. note:: if the first character of the body text is ``<`` after removing
             Leo directives, the contents of body pane is taken to svg code.
 
+#@+node:tom.20211104225431.1: *3* Easy Plotting Of X-Y Data
+Easy Plotting Of X-Y Data
+--------------------------
+
+If the selected node contains data in one or two columns, VR3 can
+plot the data as an X-Y graph. The labeling and appearance of the
+plot can optionally and easily adjusted. The graph is produced
+when the toolbar menu labeled *Other Actions* is pressed and
+*Plot 2D* is clicked.
+
+Help for the plotting capability is displayed in the system
+browser when *Other Actions/Help For Plot 2D* is clicked. This
+help is also invoked by the minibuffer command
+*vr3-help-plot-2d*.
+
 #@+node:TomP.20200115200833.1: *3* Acknowledgments
 Acknowledgments
 ================
@@ -657,7 +675,8 @@ adding the ability to change from RsT to Python and back within a node.
 
 Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality with
 Python 3/QT5. VR3 brings more enhancements to ReStructured Text and Markdown
-rendering, and adds Asciidoc rendering.  Other functionality is the same as for the Viewrendered plugin.
+rendering, and adds Asciidoc rendering.  Most functionality of the Viewrendered 
+is included, and some additional capability has been added..
 
 Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
@@ -669,19 +688,22 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 #@+node:TomP.20191215195433.4: ** << imports >>
 #
 # Stdlib...
-from configparser import ConfigParser, MissingSectionHeaderError
+from configparser import ConfigParser
 from contextlib import redirect_stdout
 from enum import Enum, auto
 import html
-import io
-from io import StringIO
+from inspect import cleandoc
+from io import StringIO, open as ioOpen
+
 import json
 import os
 import os.path
 from pathlib import PurePath
+import re
 import shutil
 import site
 import string
+
 import subprocess
 import sys
 import textwrap
@@ -1268,12 +1290,13 @@ def export_rst_html(event):
         return
     if not _html:
         return
+    print(_html)
     _html = g.toUnicode(_html)
     # Write to temp file
     c = vr3.c
     path = c.getNodePath(c.rootPosition())
     pathname = g.os_path_finalize_join(path, VR3_TEMP_FILE)
-    with io.open(pathname, 'w', encoding='utf-8') as f:
+    with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 #@+node:TomP.20200113230428.1: *3* g.command('vr3-lock-unlock-tree')
@@ -1355,6 +1378,42 @@ def markup_to_editor(event):
 def vr3_plot_2d(event):
     vr3 = getVr3(event)
     vr3.plot_2d()
+#@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
+@g.command('vr3-help-plot-2d')
+def vr3_help_for_plot_2d(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+
+    doc_ = vr3.plot_2d.__doc__
+    doclines = doc_.split('\n')
+    doclines = [line for line in doclines
+                if not line.lstrip().startswith('#@')]
+    doc = '\n'.join(doclines)
+    docstr = cleandoc(doc)
+    docstr = ('Help For VR3 Plot 2D\n'
+              '=====================\n'
+              + docstr)
+
+    args = {'output_encoding': 'utf-8'}
+    if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
+        args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
+        args['embed_stylesheet'] = True
+        args['report_level'] = RST_NO_WARNINGS
+
+    try:
+        _html = publish_string(docstr, writer_name='html', settings_overrides=args)
+        _html = _html.decode(ENCODING)
+    except SystemMessage as sm:
+        msg = sm.args[0]
+        if 'SEVERE' in msg or 'FATAL' in msg:
+            output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
+            output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
+
+    path = c.getNodePath(c.rootPosition())
+    pathname = g.os_path_finalize_join(path, VR3_TEMP_FILE)
+    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+        f.write(_html)
+    webbrowser.open_new_tab(pathname)
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
@@ -1675,9 +1734,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _action.triggered.connect(lambda: c.k.simulateCommand('vr3-plot-2d'))
         menu.addAction(_action)
 
+        _action = QAction('Help For Plot 2D', self, checkable=False)
+        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-help-plot-2d'))
+        menu.addAction(_action)
+
         _action =  QAction('Reload', self, checkable=False)
         _action.triggered.connect(lambda: c.k.simulateCommand('vr3-update'))
         menu.addAction(_action)
+
         _other_actions_button.setMenu(menu)
         #@-<< vr3: create menus >>
         #@+<< vr3: finish toolbar >>
@@ -1768,11 +1832,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if not os.path.exists(style_path):
                 args = [cmdline.__name__, '-S', 'default', '-f', 'html']
                 # pygments cmdline() writes to stdout; we have to redirect it to a file
-                with io.open(style_path, 'w') as out:
+                with ioOpen(style_path, 'w') as out:
                     with redirect_stdout(out):
                         cmdline.main(args)
                 # Add some fine-tuning css
-                with io.open(style_path, 'a') as out:
+                with ioOpen(style_path, 'a') as out:
                     out.write(MD_STYLESHEET_APPEND)
             self.md_stylesheet = 'file:///' + style_path
 
@@ -1853,133 +1917,199 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def dbg_print(self, *args):
         if self.DEBUG:
             g.es(*args)
-    #@+node:tom.20211103005455.1: *4* vr3.plot_2d
+    #@+node:tom.20211104105903.1: *4* vr3.plot_2d
     def plot_2d(self):
+        """
         #@+<< docstring >>
-        #@+node:tom.20211103005455.2: *5* << docstring >>
-        #@@language python
-        """Show a plot of x-y data in the selected node.
+        #@+node:tom.20211104105903.2: *5* << docstring >>
+        Show a plot of x-y data in the selected node.
 
         The data can be either a one-column or two-column list
-        of rows.  Columns are separated by whitespace.  Alternatively,
-        the node may contain a config file-like set of sections 
-        that define the data, labels, and appearance.
+        of rows.  Columns are separated by whitespace.  Optionally,
+        the node may contain a config file-like set of sections
+        that define the labels, and plot styling.
 
-        TYPE 1 - list of data rows
-        ---------------------------
+        The matplotlib package is required for plotting.
+
+        #@+others
+        #@+node:tom.20211104105903.3: *6* Data Format
+        Data Format
+        ------------
+        Data must be in one or two columns separated by whitespace  Here
+        is an example of two-column data::
+
+            1 1
+            2 2
+            3 4
+            # comment
+            ; comment
+
+            4 16
+            5 32
+
+        Comment lines start with one of ";", "#". Comment, non-numeric, and 
+        blank lines are ignored.
+
+        Here is an example of one-column data - the missing first column will 
+        assigned integers starting with 0::
+
+            1
+            .5
+            6
+            # comment
+            ; comment
+
+            16
+            32
+
         Whether the data contains one or two columns is determined
-        from the first non-comment, non-blank, all numeric rows.  
+        from the first non-comment, non-blank, all numeric row.
         If one-column, an implicit first column is added starting
         with zero.
 
-        Comment lines start with one of ";", "#".  Blank lines are ignored.
 
-        TYPE 2 - Config file style
-        ---------------------------
-        """
+        #@+node:tom.20211104105903.4: *6* Labels
+        Graph And Data Labels
+        ----------------------
+
+        A figure title and axis labels can optionally be added. These are
+        specified by adding a configuration section *[labels]*. The
+        section name must be left-justified. The section is ended by a
+        blank line or the end of the node. The section may be placed
+        anywhere in the node.
+
+        Here is an example::
+
+            [labels]
+            title = Plot Example
+            xaxis = Days
+            yaxis = Values
+
+        Any or all of the entries may be omitted.
+
+        #@+node:tom.20211104183046.1: *6* Plot Styling
+        Plot Styling
+        -------------
+
+        The appearance of the plot can optionally be changed in several
+        ways. By default, a certain Matplotlib style file will be used if
+        present (see below), or default Matplotlib styling will be
+        applied. If the data node has a section *[style]*, one of two
+        styling methods can be used:
+
+        1. A named style. Matplotlib has a number of named
+           styles, such as *ggplot*. One of these built-in
+           style names can be specified by the *stylename*
+           key. The style *xkcd* can also be used even
+           though it is not one of the named styles.
+
+        2. A Matplotlib style file. The name of this file
+           is specified by the *stylefile* key. The file
+           can be located Leo's home directory, typically
+           *~/.leo* or its equivalent in Windows.
+
+        Here is an example *[data]* section, with explanatory comments added::
+
+            [style]
+            # For VR3 "Plot 2D", only one of these 
+            # will be used. "stylename" has priority
+            # over "stylefile".
+            stylename = ggplot
+            #stylefile = styles.mpl
+
+        The section may be placed anywhere in the node.
+
+        The Default Style File
+        ........................
+
+        When no *[data]* section is present, a style file named
+        *local_mplstyle* will be used if found. It will first be looked
+        for in Leo's home directory, and then in the *site.userbase()*
+        directory. On Windows, this is usually the *%APPDATA%\\Python*
+        directory. On Linux, this is usually *~/.local*.
+
+        When no style file can be found, Matplotlib will use its default
+        styling, as modified by a *.matplotlib.rc* file if Matplotlib can
+        find one.
+        #@-others
         #@-<< docstring >>
+        """
+        if not matplotlib:
+            g.es('VR3 -- Matplotlib is needed to plot 2D data')
+            return
+
         page = self.c.p.b
+        page_lines = page.split('\n')
 
         #@+others
-        #@+node:tom.20211103005455.3: *5* declarations
+        #@+node:tom.20211104105903.5: *5* declarations
         STYLEFILE = 'local_mplstyle' # Must be in site.getuserbase()
-        #@+node:tom.20211103005455.4: *5* functions
-        #@+others
-        #@+node:tom.20211103005455.5: *6* has_config_section()
-        def has_config_section(config, page):
-            """Return True if the data page contains a config-file section.
+        SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
+        #@+node:tom.20211104105903.6: *5* functions
+        #@+node:tom.20211104105903.7: *6* has_config_section()
+        def has_config_section(pagelines):
+            """Find config-like sections in the data page.
             
-            ARGUMENTS
-            config -- a ConfigParser instance.
-            page -- a string of text.
+            Sections are defined by:
+                1. A left-justified term in [brackets].
+                2. A blank line or the end of the list of lines.
+            
+            ARGUMENT
+            pagelines -- a list of text lines.
             
             RETURNS
-            True if there is a config file-style section, else False
+            a dictionary keyed by section label: {label: line_num, ...}
             """
-            try:
-                config.read_string(page)
-                return True
-            except MissingSectionHeaderError:
-                return False
-        #@+node:tom.20211103005455.6: *6* plot_sections()
-        def plot_sections(page):
-            # Helper functions
-            #@+<< parse_data >>
-            #@+node:tom.20211103005455.7: *7* << parse_data >>
-            def parse_data(data):
-                """Return x, y sequences from 2-column string data.
-                
-                RETURNS
-                a tuple (x, y) of data sequences.
-                """
-                lines = [line for line in data.split('\n')]
-                lines = [line for line in lines if line.strip()]
+            sections = {}
+            for i, line in enumerate(pagelines):
+                m = SECTION_RE.match(line)
+                if m:
+                    sections[m[1]] = i
+            return sections
+        #@+node:tom.20211104105903.8: *6* set custom_style()
+        #@@pagewidth 65
+        def set_custom_style():
+            """Apply custom matplotlib styles from a file.
+            
+            The style file has the name given by STYLEFILE. The .leo
+            directory (usually ~/.leo) will be checked first for the
+            style file.
 
-                xy = [line.split() for line in lines]
-                xs, ys = zip(*xy)
-                x = [float(a) for a in xs]
-                y = [float(b) for b in ys]
-
-                return x, y
-            #@-<< parse_data >>
-            #@+<< set plot styles >>
-            #@+node:tom.20211103005455.8: *7* << set plot styles >>
-            def set_plot_styles():
+            If not found, the site.getuserbase() directory will be
+            checked for the style file. On Windows, this is usually the
+            %APPDATA%\Python directory. On Linux, this is usually at
+            /home/tom/.local.
+            
+            """
+            found_styles = False
+            lm = g.app.loadManager
+            style_dir = lm.computeHomeLeoDir()
+            if g.isWindows:
+                style_dir = style_dir.replace('/', '\\')
+            style_file=os.path.join(style_dir, STYLEFILE)
+            if os.path.exists(style_file):
+                plt.style.use(style_file)
+                found_styles = True
+            else:
                 style_dir=site.getuserbase()
                 style_file=os.path.join(style_dir, STYLEFILE)
                 if os.path.exists(style_file):
                     plt.style.use(style_file)
-                else:
-                    g.es(f'Pyplot style file "{style_file}" not present, using default styles')
-            #@-<< set plot styles >>
+                    found_styles = True
 
-            config_sections = config.sections()
-            if 'config' in config_sections:
-                do_config = config['config']['configure_plot']
-            data = config['data']['data']
-            x, y = parse_data(data)
-
-            if do_config:
-                set_plot_styles()
-            fig, _ = plt.subplots()
-            fig.clear()
-
-            plt.ion()
-            #@+<< configure plot >>
-            #@+node:tom.20211103005455.9: *7* << configure plot >>
-            config_sections = config.sections()
-            if 'labels' in config_sections:
-                labels = config['labels']
-                title = labels.get('title')
-                xaxis = labels.get('xaxis')
-                yaxis = labels.get('yaxis')
-                legend = labels.get('legend')
-
-            if title: plt.title(title)
-            if xaxis: plt.xlabel(xaxis)
-            if yaxis: plt.ylabel(yaxis)
-            if legend: plt.legend(legend)
-            #@-<< configure plot >>
-
-            plt.plot(x,y)
-            plt.show()
-
-        #@+node:tom.20211103005455.10: *6* plot_plain_data()
-        def plot_plain_data(page):
+            if not found_styles:
+                g.es(f'Pyplot style file "{style_file}" not found, using default styles')
+        #@+node:tom.20211104105903.12: *6* plot_plain_data()
+        def plot_plain_data(pagelines):
             """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
 
 
             # from leo.plugins import viewrendered3 as vr3
             # from leo.plugins import viewrendered as vr
 
-            style_dir=site.getuserbase()
-            style_file=os.path.join(style_dir,'local_mplstyle')
-            if os.path.exists(style_file):
-                plt.style.use(style_file)
-
             # Helper functions
             #@+<< is_numeric >>
-            #@+node:tom.20211103005455.11: *7* << is_numeric >>
+            #@+node:tom.20211104105903.13: *7* << is_numeric >>
             def is_numeric(line):
                 """Test if first or 1st and 2nd cols are numeric"""
                 fields = line.split()
@@ -1989,14 +2119,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     numeric = numeric and fields[1].replace('.', '').isnumeric()
                 return numeric
             #@-<< is_numeric >>
-            #@+<< plot2d >>
-            #@+node:tom.20211103005455.12: *7* << plot2d >>
-            def plot2d(data):
+            #@+<< get_data >>
+            #@+node:tom.20211104105903.14: *7* << get_data >>
+            def get_data(pagelines):
                 num_cols = 0
-                lines = data.split('\n')
 
                 # Skip lines starting with """ or '''
-                lines = [line.replace('"""', '') for line in lines]
+                lines = [line.replace('"""', '') for line in pagelines]
                 lines = [line.replace("'''", '') for line in lines]
 
                 # Skip blank lines
@@ -2011,39 +2140,120 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         # Check if first all-numeric row has one or more fields
                         if not num_cols:
                             num_cols = min(len(t[0].split()), 2)
+                if not t:
+                    return None, None
 
                 # Extract x, y values into separate lists; ignore columns after col. 2
-                if t: 
-                    if num_cols == 1:
-                        x = [i for i in range(len(t))]
-                        y = [float(b.strip()) for b in t]
-                    else:
-                        xy = [line.split()[:2] for line in t]
-                        xs, ys = zip(*xy)
-                        x = [float(a) for a in xs]
-                        y = [float(b) for b in ys]
-
-                    # Plot
-                    plt.ion()
-                    #set_plot_styles()
-                    fig, _ = plt.subplots()
-                    fig.clear()
-                    plt.plot(x,y)
-                    plt.show()
+                if num_cols == 1:
+                    x = [i for i in range(len(t))]
+                    y = [float(b.strip()) for b in t]
                 else:
-                    g.es('No Data')
-            #@-<< plot2d >>
+                    xy = [line.split()[:2] for line in t]
+                    xs, ys = zip(*xy)
+                    x = [float(a) for a in xs]
+                    y = [float(b) for b in ys]
 
-            try:
-                plot2d(page)
-            except Exception as e:
-                g.es('VR3:', e)
-        #@-others
+                return x, y
+            #@-<< get_data >>
+
+            x, y = get_data(pagelines)
+            if not x:
+                g.es('VR3 -- cannot find data')
+                return
+
+            plt.plot(x,y)
+            plt.show()
+
+
+            # try:
+                # plot2d(page)
+            # except Exception as e:
+                # g.es('VR3:', e)
+        #@+node:tom.20211104155447.1: *6* set_user_style()
+        #@@pagewidth 65
+        def set_user_style(style_config_lines):
+            """Set special plot styles.
+
+            If the data node has a section [style], then if there is a
+            key "stylename", apply that named style; otherwise if there
+            is a key "stylefile", look for a file of that name ins the
+            user's Leo home directory (usually ~/.leo) and use those
+            styles.
+            
+            The stylename must be one of the built-in style names, such
+            as "ggplot". "xkcd" also works even though it is not actually
+            one of the style names.
+            
+            ARGUMENT style_config_lines -- a sequence of lines starting
+            at the [style] section of the data node.
+            
+            RETURNS
+            True if a style was set.
+            """
+            set_style = False
+            for line in style_config_lines:
+                if not line.strip:
+                    break
+                fields = line.split('=')
+                if len(fields) < 2:
+                    continue
+                kind, val = fields[0].strip(), fields[1].strip()
+                if kind == 'stylename':
+                    if val == 'xkcd':
+                        plt.xkcd()
+                    else:
+                        plt.style.use(val)
+                    set_style = True
+                    break
+                elif kind == 'stylefile':
+                    lm = g.app.loadManager
+                    style_dir = lm.computeHomeLeoDir()
+                    if g.isWindows:
+                        style_dir = style_dir.replace('/', '\\')
+                    style_file = os.path.join(style_dir, val)
+                    if os.path.exists(style_file):
+                        plt.style.use(style_file)
+                        set_style = True
+                    break
+
+            return set_style
         #@-others
 
-        config = ConfigParser()
-        process_sections = has_config_section(config, page)
-        plot_sections(page) if process_sections else plot_plain_data(page)
+        config_sections = has_config_section(page_lines)
+        style_start = config_sections.get('style', -1)
+        if style_start >= 0:
+            if not set_user_style(page_lines[style_start:]):
+                set_custom_style()
+        else:
+            set_custom_style()
+
+        plt.ion()
+        fig, ax = plt.subplots()
+        fig.clear()
+
+        label_start = config_sections.get('labels', -1)
+        if label_start >= 0:
+            #@+<< configure labels >>
+            #@+node:tom.20211104105903.11: *5* << configure labels >>
+            # Get lines for the labels section
+            for line in page_lines[label_start:]:
+                if not line.strip:
+                    break
+                fields = line.split('=')
+                if len(fields) < 2:
+                    continue
+                kind, val = fields[0].strip(), fields[1].strip()
+                if kind == 'title':
+                    plt.title(val)
+                elif kind == 'xaxis':
+                    plt.xlabel(val)
+                elif kind == 'yaxis':
+                    plt.ylabel(val)
+
+            #@-<< configure labels >>
+
+        plot_plain_data(page_lines)
+        plt.rcdefaults()
 
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
@@ -2338,8 +2548,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # in case using the imported processor fails,
                 # fall back to launching external asciidoc program
                 asciidoc = AsciiDocAPI() # pylint: disable=E0602 # Undefined variable 'AsciiDocAPI
-                infile = io.StringIO(s)
-                outfile = io.StringIO()
+                infile = StringIO(s)
+                outfile = StringIO()
                 asciidoc.attributes['stem'] = 'latexmath'
                 asciidoc.execute(infile, outfile, backend='html5')
                 h = outfile.getvalue()
@@ -2371,8 +2581,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     raise AttributeError
                 from asciidoc3.asciidoc3api import AsciiDoc3API #pylint: disable=import-outside-toplevel
                 adoc = AsciiDoc3API()
-                infile = io.StringIO(s)
-                outfile = io.StringIO()
+                infile = StringIO(s)
+                outfile = StringIO()
                 adoc.execute(infile, outfile, backend='html5')
                 h = outfile.getvalue()
                 self.rst_html = h
@@ -2424,6 +2634,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # Call the external program to write the output file.
         # Assume that the command line may be different between asciidoc and asciidoc3
+        print(f'self.prefer_external: {self.prefer_external}')
+        print(f'self.asciidoc_proc: {self.asciidoc_proc}')
         if 'asciidoctor' in self.prefer_external:
             command = f"del {o_path} & {self.prefer_external} -b html5 -a mathjax {i_path}"
         elif self.asciidoc_proc == asciidoctor_exec:
