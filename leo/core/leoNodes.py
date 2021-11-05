@@ -2217,9 +2217,11 @@ class VNode:
         return flag
     #@+node:ekr.20031218072017.3353: *4* v.matchHeadline
     def matchHeadline(self, pattern):
-        """Returns True if the headline matches the pattern ignoring whitespace and case.
+        """
+        Returns True if the headline matches the pattern ignoring whitespace and case.
 
-        The headline may contain characters following the successfully matched pattern."""
+        The headline may contain characters following the successfully matched pattern.
+        """
         v = self
         h = g.toUnicode(v.headString())
         h = h.lower().replace(' ', '').replace('\t', '')

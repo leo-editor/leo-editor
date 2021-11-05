@@ -63,13 +63,15 @@ isWindows = sys.platform.startswith('win')
 #@+<< define g.globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
+# The atFile write logic uses this, but not the atFile read logic.
 globalDirectiveList = [
     # Order does not matter.
     'all',
     'beautify',
     'colorcache', 'code', 'color', 'comment', 'c',
     'delims', 'doc',
-    'encoding', 'end_raw',
+    'encoding',
+    # 'end_raw',  # #2276.
     'first', 'header', 'ignore',
     'killbeautify', 'killcolor',
     'language', 'last', 'lineending',
@@ -79,7 +81,8 @@ globalDirectiveList = [
     'nopyflakes',  # Leo 6.1.
     'nosearch',  # Leo 5.3.
     'others', 'pagewidth', 'path', 'quiet',
-    'raw',
+    # 'raw',  # #2276.
+    'section-delims', # Leo 6.6. #2276.
     'silent',
     'tabwidth', 'terse',
     'unit', 'verbose', 'wrap',
@@ -306,6 +309,8 @@ g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
 g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
+# #2267: Support for @section-delims.
+g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*$')
 #@-<< define regex's >>
 tree_popup_handlers: List[Callable] = []  # Set later.
 user_dict: Dict[Any, Any] = {}
@@ -3302,23 +3307,11 @@ def findLanguageDirectives(c: Cmdr, p: Pos):
 # Also called from write at.putRefAt.
 
 def findReference(name, root):
-    """Find the section definition for name.
-
-    If a search of the descendants fails,
-    and an ancestor is an @root node,
-    search all the descendants of the @root node.
-    """
+    """Return the position containing the section definition for name."""
     for p in root.subtree(copy=False):
         assert p != root
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p.copy()
-    # New in Leo 4.7: expand the search for @root trees.
-    for p in root.self_and_parents(copy=False):
-        d = g.get_directives_dict(p)
-        if 'root' in d:
-            for p2 in p.subtree(copy=False):
-                if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
-                    return p2.copy()
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
@@ -3487,7 +3480,7 @@ def isDirective(s: str):
             return False
         return bool(m.group(1) in g.globalDirectiveList)
     return False
-#@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
+#@+node:ekr.20200810074755.1: *3* g.isValidLanguage
 def isValidLanguage(language):
     """True if language exists in leo/modes."""
     # 2020/08/12: A hack for c++
@@ -3555,7 +3548,7 @@ def scanAtPagewidthDirectives(aList, issue_error_flag=False):
             if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @pagewidth", s)
     return None
-#@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives scanAllAtPathDirectives
+#@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives
 def scanAtPathDirectives(c: Cmdr, aList):
     path = c.scanAtPathDirectives(aList)
     return path
@@ -3564,7 +3557,7 @@ def scanAllAtPathDirectives(c: Cmdr, p: Pos):
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
-#@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
+#@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives
 def scanAtTabwidthDirectives(aList, issue_error_flag=False):
     """Scan aList for @tabwidth directives."""
     for d in aList:
@@ -3586,7 +3579,7 @@ def scanAllAtTabWidthDirectives(c: Cmdr, p: Pos):
     else:
         ret = None
     return ret
-#@+node:ekr.20080831084419.4: *3* g.scanAtWrapDirectives & scanAllAtWrapDirectives
+#@+node:ekr.20080831084419.4: *3* g.scanAtWrapDirectives
 def scanAtWrapDirectives(aList, issue_error_flag=False):
     """Scan aList for @wrap and @nowrap directives."""
     for d in aList:
@@ -3738,7 +3731,7 @@ def stripPathCruft(path):
         path = path[1:-1].strip()
     # We want a *relative* path, not an absolute path.
     return path
-#@+node:ekr.20090214075058.10: *3* g.update_directives_pat (new)
+#@+node:ekr.20090214075058.10: *3* g.update_directives_pat
 def update_directives_pat():
     """Init/update g.directives_pat"""
     global globalDirectiveList, directives_pat
@@ -4224,6 +4217,35 @@ def find_word(s: str, word, i: int=0):
         i += len(word)
         assert progress < i
     return -1
+#@+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
+def findAncestorVnodeByPredicate(p, v_predicate):
+    """
+    Return first ancestor vnode matching the predicate.
+    
+    The predicate must must be a function of a single vnode argument.
+    """
+    if not p:
+        return None
+    # First, look up the tree.
+    for p2 in p.self_and_parents():
+        if v_predicate(p2.v):
+            return p2.v
+    # Look at parents of all cloned nodes.
+    if not p.isCloned():
+        return None
+    seen = []  # vnodes that have already been searched.
+    parents = p.v.parents[:]  # vnodes to be searched.
+    while parents:
+        parent_v = parents.pop()
+        if parent_v in seen:
+            continue
+        seen.append(parent_v)
+        if v_predicate(parent_v):
+            return parent_v
+        for grand_parent_v in parent_v.parents:
+            if grand_parent_v not in seen:
+                parents.append(grand_parent_v)
+    return None
 #@+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
 def findRootsWithPredicate(c: Cmdr, root, predicate=None):
     """
@@ -4465,28 +4487,6 @@ def scanf(s: str, pat):
         if part and len(result) < count:
             result.append(part)
     return result
-#@+node:ekr.20201127143342.1: *3* g.see_more_lines
-def see_more_lines(s: str, ins, n=4):
-    """
-    Extend index i within string s to include n more lines.
-    """
-    # Show more lines, if they exist.
-    if n > 0:
-        for z in range(n):
-            if ins >= len(s):
-                break
-            i, j = g.getLine(s, ins)
-            ins = j
-    return max(0, min(ins, len(s)))
-#@+node:ekr.20031218072017.3195: *3* g.splitLines
-def splitLines(s: str):
-    """
-    Split s into lines, preserving the number of lines and
-    the endings of all lines, including the last line.
-    """
-    return s.splitlines(True) if s else []  # This is a Python string function!
-
-splitlines = splitLines
 #@+node:ekr.20031218072017.3158: *3* g.Scanners: calling scanError
 #@+at These scanners all call g.scanError() directly or indirectly, so they
 # will call g.es if they find an error. g.scanError() also bumps
@@ -4766,6 +4766,28 @@ def skip_typedef(s: str, i: int):
         i = g.skip_braces(s, i)
         i = g.skip_to_semicolon(s, i)
     return i
+#@+node:ekr.20201127143342.1: *3* g.see_more_lines
+def see_more_lines(s: str, ins, n=4):
+    """
+    Extend index i within string s to include n more lines.
+    """
+    # Show more lines, if they exist.
+    if n > 0:
+        for z in range(n):
+            if ins >= len(s):
+                break
+            i, j = g.getLine(s, ins)
+            ins = j
+    return max(0, min(ins, len(s)))
+#@+node:ekr.20031218072017.3195: *3* g.splitLines
+def splitLines(s: str):
+    """
+    Split s into lines, preserving the number of lines and
+    the endings of all lines, including the last line.
+    """
+    return s.splitlines(True) if s else []  # This is a Python string function!
+
+splitlines = splitLines
 #@+node:ekr.20031218072017.3173: *3* Scanners: no error messages
 #@+node:ekr.20031218072017.3174: *4* g.escaped
 # Returns True if s[i] is preceded by an odd number of backslashes.
