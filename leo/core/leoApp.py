@@ -471,7 +471,7 @@ class LeoApp:
         self.extra_extension_dict = {
             'pod'   : 'perl',
             'unknown_language': 'none',
-            'w'     : 'none', # cweb
+            'w'     : 'c',
         }
     #@+node:ekr.20031218072017.1417: *5* app.define_global_constants
     def define_global_constants(self):
