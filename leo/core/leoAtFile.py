@@ -1943,7 +1943,7 @@ class AtFile:
         """
         at = self
         end = s.find('\n', i)
-        if 0:  # 2309
+        if 1:  # 2309
             j = len(s) if end == -1 else end
             n1 = s.find(at.section_delim1, i)
             n2 = s.find(at.section_delim2, i)
@@ -1955,6 +1955,7 @@ class AtFile:
             ):
                 return s[n1 : n3], n1, n3
             if -1 < n1 < n2 and i == n1:  # Give the message only once!
+                ### print(f"{ok:1} {n1:2} {n2:2} {n3:2} {s[:n1]!r} {s[n1:n3]!r} {s[n3:]!r}")
                 if not g.unitTesting:
                     i1, i2 = g.getLine(s, i)
                     print(f" ignoring apparent section reference: {s[i1 : i2]}")
