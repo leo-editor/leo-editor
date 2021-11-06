@@ -1860,16 +1860,28 @@ class AtFile:
         The section name, *including* brackes is s[n1:n2]
         """
         at = self
+        
+        def is_space(i, j):
+            """This method reduces stress on the GC"""
+            return i == j or all(s[z] in ' \t\n' for z in range(i, j + 1))
+
         end = s.find('\n', i)
-       
         j = len(s) if end == -1 else end
         n1 = s.find(at.section_delim1, i)
         n2 = s.find(at.section_delim2, i)
         n3 = n2 + len(at.section_delim2)
+        if 0:
+            if is_space(i, n1) != (i == n1 or s[i : n1].isspace()):
+                g.trace('1', i, n1, (i == n1 or is_space(i, n1)), s[i : n1].isspace(), repr(s[i : n1]))
+            if is_space(n3, j) != (n3 == j or s[n3 : j].isspace()):
+                g.trace('2', n3, j, (n3 == j or is_space(n3, j)), s[n3 : j].isspace(), repr(s[n3 : j]))
+        # The section reference must appear alone on the line.
         if (
             -1 < n1 < n2
             and (i == n1 or s[i : n1].isspace())
             and (n3 == j or s[n3 : j].isspace())
+            # and is_space(i, n1)
+            # and is_space(n3, j)
         ):
             return s[n1 : n3], n1, n3
         if -1 < n1 < n2 and i == n1:  # Give the message only once!

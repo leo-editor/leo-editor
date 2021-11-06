@@ -737,7 +737,7 @@ class TestFastAtRead(LeoUnitTest):
     def test_at_section_delim(self):
 
         c, x = self.c, self.x
-        h = '@file /test/section_delims_test.py'
+        h = '@file /test/at_section_delim.py'
         root = c.rootPosition()
         root.h =  h # To match contents.
         #@+<< define contents >>
