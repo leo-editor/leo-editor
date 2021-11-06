@@ -1862,9 +1862,8 @@ class AtFile:
         at = self
         
         def is_space(i1, i2):
-            """This method reduces stress on the GC"""
+            """A replacement for s[i1 : i2] that doesn't create any substring."""
             return i == j or all(s[z] in ' \t\n' for z in range(i1, i2))
-            ### return i1 == i2 or s[i1: i2].isspace()
 
         end = s.find('\n', i)
         j = len(s) if end == -1 else end
@@ -1876,19 +1875,9 @@ class AtFile:
             n1 = s.find(at.section_delim1, i, end)
             n2 = s.find(at.section_delim2, i, end)
         n3 = n2 + len(at.section_delim2)
-        if -1 < n1 < n2:
-            if is_space(i, n1) != (i == n1 or s[i : n1].isspace()):
-                g.trace('1', i, n1, is_space(i, n1), (i == n1 or s[i : n1].isspace()), repr(s[i : n1]))
-            if is_space(n3, j) != (n3 == j or s[n3 : j].isspace()):
-                g.trace('2', n3, j, is_space(n3, j), (n3 == j or s[n3 : j].isspace()), repr(s[n3 : j]))
+        
         # The section reference must appear alone on the line.
-        if (
-            -1 < n1 < n2
-            and (i == n1 or s[i : n1].isspace())
-            and (n3 == j or s[n3 : j].isspace())
-            # and is_space(i, n1)
-            # and is_space(n3, j)
-        ):
+        if -1 < n1 < n2 and is_space(i, n1) and is_space(n3, j):
             return s[n1 : n3], n1, n3
         if -1 < n1 < n2 and i == n1:  # Give the message only once!
             if not g.unitTesting:
