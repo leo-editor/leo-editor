@@ -1757,7 +1757,7 @@ class AtFile:
         else:
             at.error(f"putBody: can not happen: unknown directive kind: {kind}")  # pragma: no cover
     #@+node:ekr.20041005105605.164: *5* writing code lines...
-    #@+node:ekr.20041005105605.165: *6* at.@all
+    #@+node:ekr.20041005105605.165: *6* at: @all
     #@+node:ekr.20041005105605.166: *7* at.putAtAllLine
     def putAtAllLine(self, s, i, p):
         """Put the expansion of @all."""
@@ -1806,7 +1806,7 @@ class AtFile:
         at.putAtAllBody(p)
         for child in p.children():
             at.putAtAllChild(child)  # pragma: no cover (recursive call)
-    #@+node:ekr.20041005105605.170: *6* at.@others (write)
+    #@+node:ekr.20041005105605.170: *6* at: @others
     #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helper
     def putAtOthersLine(self, s, i, p):
         """Put the expansion of @others."""
@@ -1852,59 +1852,7 @@ class AtFile:
             g.error('did not write @ignore node', p.v.h)
             return False
         return True
-    #@+node:ekr.20041005105605.174: *6* at.putCodeLine
-    def putCodeLine(self, s, i):
-        """Put a normal code line."""
-        at = self
-        # Put @verbatim sentinel if required.
-        k = g.skip_ws(s, i)
-        if g.match(s, k, self.startSentinelComment + '@'):
-            self.putSentinel('@verbatim')
-        j = g.skip_line(s, i)
-        line = s[i:j]
-        # Don't put any whitespace in otherwise blank lines.
-        if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
-            at.putIndent(at.indent, line)
-            if line[-1:] == '\n':
-                at.os(line[:-1])
-                at.onl()
-            else:
-                at.os(line)
-        elif line and line[-1] == '\n':
-            at.onl()
-        elif line:
-            at.os(line)  # Bug fix: 2013/09/16
-        else:
-            g.trace('Can not happen: completely empty line')  # pragma: no cover
-    #@+node:ekr.20041005105605.176: *6* at.putRefLine & helpers
-    def putRefLine(self, s, i, n1, n2, name, p):
-        """
-        Put a line containing one or more references.
-        
-        Important: the so-called name *must* include brackets.
-        """
-        at = self
-        ### ref = at.findReference(name, p)
-        ref = g.findReference(name, p)
-        if ref:
-            junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
-            at.putLeadInSentinel(s, i, n1)
-            at.indent += delta
-            at.putSentinel("@+" + name)
-            at.putOpenNodeSentinel(ref)
-            at.putBody(ref)
-            at.putSentinel("@-" + name)
-            at.indent -= delta
-            return
-        if hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
-            # Allow apparent section reference: just write the line.
-            at.putCodeLine(s, i)
-        else:  # pragma: no cover
-            # Do give this error even if unit testing.
-            at.writeError(
-                f"undefined section: {g.truncate(name, 60)}\n"
-                f"  referenced from: {g.truncate(p.h, 60)}")
-    #@+node:ekr.20041005105605.199: *7* at.findSectionName
+    #@+node:ekr.20041005105605.199: *6* at.findSectionName
     def findSectionName(self, s, i):  # pragma: no cover
         """
         Return n1, n2 representing a section name.
@@ -1925,7 +1873,6 @@ class AtFile:
             ):
                 return s[n1 : n3], n1, n3
             if -1 < n1 < n2 and i == n1:  # Give the message only once!
-                ### print(f"{ok:1} {n1:2} {n2:2} {n3:2} {s[:n1]!r} {s[n1:n3]!r} {s[n3:]!r}")
                 if not g.unitTesting:
                     i1, i2 = g.getLine(s, i)
                     print(f" ignoring apparent section reference: {s[i1 : i2]}")
@@ -1955,6 +1902,57 @@ class AtFile:
         # g.findReference and v.mathHeadline.
         name = s[n1 : n2 + len(at.section_delim2)]
         return name, n1, n2 + len(at.section_delim2)
+    #@+node:ekr.20041005105605.174: *6* at.putCodeLine
+    def putCodeLine(self, s, i):
+        """Put a normal code line."""
+        at = self
+        # Put @verbatim sentinel if required.
+        k = g.skip_ws(s, i)
+        if g.match(s, k, self.startSentinelComment + '@'):
+            self.putSentinel('@verbatim')
+        j = g.skip_line(s, i)
+        line = s[i:j]
+        # Don't put any whitespace in otherwise blank lines.
+        if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
+            at.putIndent(at.indent, line)
+            if line[-1:] == '\n':
+                at.os(line[:-1])
+                at.onl()
+            else:
+                at.os(line)
+        elif line and line[-1] == '\n':
+            at.onl()
+        elif line:
+            at.os(line)  # Bug fix: 2013/09/16
+        else:
+            g.trace('Can not happen: completely empty line')  # pragma: no cover
+    #@+node:ekr.20041005105605.176: *6* at.putRefLine
+    def putRefLine(self, s, i, n1, n2, name, p):
+        """
+        Put a line containing one or more references.
+        
+        Important: the so-called name *must* include brackets.
+        """
+        at = self
+        ref = g.findReference(name, p)
+        if ref:
+            junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
+            at.putLeadInSentinel(s, i, n1)
+            at.indent += delta
+            at.putSentinel("@+" + name)
+            at.putOpenNodeSentinel(ref)
+            at.putBody(ref)
+            at.putSentinel("@-" + name)
+            at.indent -= delta
+            return
+        if hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
+            # Allow apparent section reference: just write the line.
+            at.putCodeLine(s, i)
+        else:  # pragma: no cover
+            # Do give this error even if unit testing.
+            at.writeError(
+                f"undefined section: {g.truncate(name, 60)}\n"
+                f"  referenced from: {g.truncate(p.h, 60)}")
     #@+node:ekr.20041005105605.180: *5* writing doc lines...
     #@+node:ekr.20041005105605.181: *6* at.putBlankDocLine
     def putBlankDocLine(self):
