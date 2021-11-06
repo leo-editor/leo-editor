@@ -1884,36 +1884,26 @@ class AtFile:
         Important: the so-called name *must* include brackets.
         """
         at = self
-        ref = at.findReference(name, p)
-        if not ref:  # pragma: no cover
-            if hasattr(at, 'allow_undefined_refs'):
-                # Allow apparent section reference: just write the line.
-                at.putCodeLine(s, i)
-            return
-        junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
-        at.putLeadInSentinel(s, i, n1)
-        at.indent += delta
-        at.putSentinel("@+" + name)
-        at.putOpenNodeSentinel(ref)
-        at.putBody(ref)
-        at.putSentinel("@-" + name)
-        at.indent -= delta
-    #@+node:ekr.20131224085853.16443: *7* at.findReference
-    def findReference(self, name, p):
-        """
-        Find a reference to name.  Raise an error if not found.
-        
-        Important: the so-called name *must* include brackets.
-        """
-        at = self
+        ### ref = at.findReference(name, p)
         ref = g.findReference(name, p)
-        if not ref and not hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
+        if ref:
+            junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
+            at.putLeadInSentinel(s, i, n1)
+            at.indent += delta
+            at.putSentinel("@+" + name)
+            at.putOpenNodeSentinel(ref)
+            at.putBody(ref)
+            at.putSentinel("@-" + name)
+            at.indent -= delta
+            return
+        if hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
+            # Allow apparent section reference: just write the line.
+            at.putCodeLine(s, i)
+        else:  # pragma: no cover
             # Do give this error even if unit testing.
             at.writeError(
                 f"undefined section: {g.truncate(name, 60)}\n"
                 f"  referenced from: {g.truncate(p.h, 60)}")
-        return ref
-
     #@+node:ekr.20041005105605.199: *7* at.findSectionName
     def findSectionName(self, s, i):  # pragma: no cover
         """
