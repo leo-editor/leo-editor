@@ -1885,17 +1885,19 @@ class AtFile:
         """
         at = self
         ref = at.findReference(name, p)
-        ### is_clean = at.root.h.startswith('@clean')
         if not ref:  # pragma: no cover
             if hasattr(at, 'allow_undefined_refs'):
                 # Allow apparent section reference: just write the line.
                 at.putCodeLine(s, i)
             return
-        # Compute delta only once.
         junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
-        # Write the lead-in sentinel only once.
         at.putLeadInSentinel(s, i, n1)
-        self.putRefAt(name, ref, delta)
+        at.indent += delta
+        at.putSentinel("@+" + name)
+        at.putOpenNodeSentinel(ref)
+        at.putBody(ref)
+        at.putSentinel("@-" + name)
+        at.indent -= delta
     #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
         """
@@ -1963,21 +1965,6 @@ class AtFile:
         # g.findReference and v.mathHeadline.
         name = s[n1 : n2 + len(at.section_delim2)]
         return name, n1, n2 + len(at.section_delim2)
-    #@+node:ekr.20041005105605.177: *7* at.putRefAt
-    def putRefAt(self, name, ref, delta):
-        at = self
-        # #2276: Section references do *not* contain the section delimiters,
-        #        so *no* changes are required here!
-        #
-        # #132: Section Reference causes clone...
-        #
-        # Never put any @+middle or @-middle sentinels.
-        at.indent += delta
-        at.putSentinel("@+" + name)
-        at.putOpenNodeSentinel(ref)
-        at.putBody(ref)
-        at.putSentinel("@-" + name)
-        at.indent -= delta
     #@+node:ekr.20041005105605.180: *5* writing doc lines...
     #@+node:ekr.20041005105605.181: *6* at.putBlankDocLine
     def putBlankDocLine(self):
