@@ -1880,7 +1880,7 @@ class AtFile:
         if -1 < n1 < n2 and is_space(i, n1) and is_space(n3, j):
             return s[n1 : n3], n1, n3
         if -1 < n1 < n2 and i == n1:  # Give the message only once!
-            if not g.unitTesting:
+            if 'sections' in g.app.debug and not g.unitTesting:
                 i1, i2 = g.getLine(s, i)
                 print(f" ignoring apparent section reference: {s[i1 : i2]}")
         return None, 0, 0
