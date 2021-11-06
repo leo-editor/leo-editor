@@ -1861,47 +1861,22 @@ class AtFile:
         """
         at = self
         end = s.find('\n', i)
-        if 1:  # 2309
-            j = len(s) if end == -1 else end
-            n1 = s.find(at.section_delim1, i)
-            n2 = s.find(at.section_delim2, i)
-            n3 = n2 + len(at.section_delim2)
-            if (
-                -1 < n1 < n2
-                and (i == n1 or s[i : n1].isspace())
-                and (n3 == j or s[n3 : j].isspace())
-            ):
-                return s[n1 : n3], n1, n3
-            if -1 < n1 < n2 and i == n1:  # Give the message only once!
-                if not g.unitTesting:
-                    i1, i2 = g.getLine(s, i)
-                    print(f" ignoring apparent section reference: {s[i1 : i2]}")
-            return None, 0, 0
-        # #2276: Special case for @section-delims directive.
-        if i == 0 and s.startswith('@section-delims'):
-            return None, 0, 0
-        if end == -1:
-            n1 = s.find(at.section_delim1, i)
-            n2 = s.find(at.section_delim2, i)
-        else:
-            n1 = s.find(at.section_delim1, i, end)
-            n2 = s.find(at.section_delim2, i, end)
-        ok = -1 < n1 < n2
-        if not ok:
-            return None, 0, 0
-        # Warn on extra brackets.
-        for ch, j in (
-            ('<', n1 + len(at.section_delim1)),
-            ('>', n2 + len(at.section_delim2)),
+       
+        j = len(s) if end == -1 else end
+        n1 = s.find(at.section_delim1, i)
+        n2 = s.find(at.section_delim2, i)
+        n3 = n2 + len(at.section_delim2)
+        if (
+            -1 < n1 < n2
+            and (i == n1 or s[i : n1].isspace())
+            and (n3 == j or s[n3 : j].isspace())
         ):
-            if g.match(s, j, ch):
-                line = g.get_line(s, i)
-                g.es('dubious brackets in', line)
-                break
-        # The so-called name *must* include brackets for
-        # g.findReference and v.mathHeadline.
-        name = s[n1 : n2 + len(at.section_delim2)]
-        return name, n1, n2 + len(at.section_delim2)
+            return s[n1 : n3], n1, n3
+        if -1 < n1 < n2 and i == n1:  # Give the message only once!
+            if not g.unitTesting:
+                i1, i2 = g.getLine(s, i)
+                print(f" ignoring apparent section reference: {s[i1 : i2]}")
+        return None, 0, 0
     #@+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s, i):
         """Put a normal code line."""
@@ -3111,7 +3086,7 @@ class FastAtRead:
         for i, line in enumerate(lines[start:]):
             # Strip the line only once.
             strip_line = line.strip()
-            if afterref:
+            if afterref:  # pragma: no cover (obsolete sentinel)
                 #@+<< handle afterref line>>
                 #@+node:ekr.20211102052251.1: *4* << handle afterref line >>
                 if body:  # a List of lines.
@@ -3309,7 +3284,7 @@ class FastAtRead:
             #@+<< handle afterref >>
             #@+node:ekr.20180603063102.1: *4* << handle afterref >>
             m = self.after_pat.match(line)
-            if m:
+            if m:  # pragma: no cover (obsolete sentinel)
                 afterref = True
                 continue
             #@-<< handle afterref >>
