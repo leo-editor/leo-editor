@@ -31,20 +31,6 @@ class TestAtFile(LeoUnitTest):
             silent=True,
             verbose=False,
         )
-    #@+node:ekr.20211104162514.1: *3* TestAtFile.test_afterLastRef
-    def test_afterLastRef(self):
-        
-        at, p = self.at, self.c.p
-        at.initWriteIvars(p)
-        s = 'line without newline'
-        at.putAfterLastRef(s, 0, 4)
-    #@+node:ekr.20211104162937.1: *3* TestAtFile.test_afterMiddleRef
-    def test_afterMiddleRef(self):
-        
-        at, p = self.at, self.c.p
-        at.initWriteIvars(p)
-        s = 'tail\n'
-        at.putAfterMiddleRef(s, 4)
     #@+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
         
@@ -400,31 +386,19 @@ class TestAtFile(LeoUnitTest):
         
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
-        if True: # #2309
-            # Create one section definition node.
-            name1 = g.angleBrackets('section 1')
-            child1 = p.insertAsLastChild()
-            child1.h = name1
-            child1.b = "print('test_putRefLine')\n"
-            # Create the valid section reference.
-            s = f"  {name1}\n"
-            # Careful: init n2 and n2.
-            name, n1, n2 = at.findSectionName(s, 0)
-            at.putRefLine(s, 0, n1, n2, name, p)
+        # Create one section definition node.
+        name1 = g.angleBrackets('section 1')
+        child1 = p.insertAsLastChild()
+        child1.h = name1
+        child1.b = "print('test_putRefLine')\n"
+        # Create the valid section reference.
+        s = f"  {name1}\n"
+        # Careful: init n2 and n2.
+        name, n1, n2 = at.findSectionName(s, 0)
+        self.assertTrue(name)
+        at.putRefLine(s, 0, n1, n2, name, p)
         
-        else:
-            # Create two section definition nodes.
-            child1 = p.insertAsLastChild()
-            name1 = g.angleBrackets('section 1')
-            name2 = g.angleBrackets('section 2')
-            child1.h = name1
-            child2 = child1.insertAfter()
-            child2.h = name2
-            s = f"if {name1} or {name2}:\n"
-            # Careful: init n2 and n2.
-            name, n1, n2 = at.findSectionName(s, 0)
-            self.assertTrue(name)
-            at.putRefLine(s, 0, n1, n2, name, p)
+       
     #@+node:ekr.20210905052021.24: *3* TestAtFile.test_remove
     def test_remove(self):
         

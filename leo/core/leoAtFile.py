@@ -1885,7 +1885,7 @@ class AtFile:
         """
         at = self
         ref = at.findReference(name, p)
-        is_clean = at.root.h.startswith('@clean')
+        ### is_clean = at.root.h.startswith('@clean')
         if not ref:  # pragma: no cover
             if hasattr(at, 'allow_undefined_refs'):
                 # Allow apparent section reference: just write the line.
@@ -1896,29 +1896,6 @@ class AtFile:
         # Write the lead-in sentinel only once.
         at.putLeadInSentinel(s, i, n1)
         self.putRefAt(name, ref, delta)
-        if 0: # #2309:
-            n_refs = 0
-            while 1:
-                progress = i
-                i = n2
-                n_refs += 1
-                name, n1, n2 = at.findSectionName(s, i)
-                if is_clean and n_refs > 1:  # pragma: no cover
-                    # #1232: allow only one section reference per line in @clean.
-                    i1, i2 = g.getLine(s, i)
-                    line = s[i1:i2].rstrip()
-                    at.writeError(f"Too many section references:\n{line!s}")
-                    break
-                if name:
-                    ref = at.findReference(name, p)  # Issues error if not found.
-                    if ref:
-                        middle_s = s[i:n1]
-                        self.putAfterMiddleRef(middle_s, delta)
-                        self.putRefAt(name, ref, delta)
-                else:
-                    break  # pragma: no cover (coverage bug?)
-                assert progress < i
-            self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
         """
@@ -1986,31 +1963,6 @@ class AtFile:
         # g.findReference and v.mathHeadline.
         name = s[n1 : n2 + len(at.section_delim2)]
         return name, n1, n2 + len(at.section_delim2)
-    #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
-    def putAfterLastRef(self, s, start, delta):
-        """Handle whatever follows the last ref of a line."""
-        at = self
-        j = g.skip_ws(s, start)
-        if j < len(s) and s[j] != '\n':
-            # Temporarily readjust delta to make @afterref look better.
-            at.indent += delta
-            at.putSentinel("@afterref")
-            end = g.skip_line(s, start)
-            after = s[start:end]
-            at.os(after)
-            if at.sentinels and after and after[-1] != '\n':
-                at.onl()  # Add a newline if the line didn't end with one.
-            at.indent -= delta
-    #@+node:ekr.20041005105605.179: *7* at.putAfterMiddleRef
-    def putAfterMiddleRef(self, s, delta):
-        """Handle whatever follows a ref that is not the last ref of a line."""
-        at = self
-        if s:
-            at.indent += delta
-            at.putSentinel("@afterref")
-            at.os(s)
-            at.onl_sent()  # Not a real newline.
-            at.indent -= delta
     #@+node:ekr.20041005105605.177: *7* at.putRefAt
     def putRefAt(self, name, ref, delta):
         at = self
