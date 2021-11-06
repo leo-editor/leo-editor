@@ -1861,20 +1861,26 @@ class AtFile:
         """
         at = self
         
-        def is_space(i, j):
+        def is_space(i1, i2):
             """This method reduces stress on the GC"""
-            return i == j or all(s[z] in ' \t\n' for z in range(i, j + 1))
+            return i == j or all(s[z] in ' \t\n' for z in range(i1, i2))
+            ### return i1 == i2 or s[i1: i2].isspace()
 
         end = s.find('\n', i)
         j = len(s) if end == -1 else end
-        n1 = s.find(at.section_delim1, i)
-        n2 = s.find(at.section_delim2, i)
+        # Careful: don't look beyond the end of the line!
+        if end == -1:
+            n1 = s.find(at.section_delim1, i)
+            n2 = s.find(at.section_delim2, i)
+        else:
+            n1 = s.find(at.section_delim1, i, end)
+            n2 = s.find(at.section_delim2, i, end)
         n3 = n2 + len(at.section_delim2)
-        if 0:
+        if -1 < n1 < n2:
             if is_space(i, n1) != (i == n1 or s[i : n1].isspace()):
-                g.trace('1', i, n1, (i == n1 or is_space(i, n1)), s[i : n1].isspace(), repr(s[i : n1]))
+                g.trace('1', i, n1, is_space(i, n1), (i == n1 or s[i : n1].isspace()), repr(s[i : n1]))
             if is_space(n3, j) != (n3 == j or s[n3 : j].isspace()):
-                g.trace('2', n3, j, (n3 == j or is_space(n3, j)), s[n3 : j].isspace(), repr(s[n3 : j]))
+                g.trace('2', n3, j, is_space(n3, j), (n3 == j or s[n3 : j].isspace()), repr(s[n3 : j]))
         # The section reference must appear alone on the line.
         if (
             -1 < n1 < n2
