@@ -1943,7 +1943,7 @@ class AtFile:
         """
         at = self
         end = s.find('\n', i)
-        if 0:  # 2309
+        if 1:  # 2309
             j = end if end == -1 else len(s)
             n1 = s.find(at.section_delim1, i)
             n2 = s.find(at.section_delim2, i)
@@ -1954,6 +1954,9 @@ class AtFile:
                 and (n3 == end  or s[n3 : end].isspace())
             ):
                 return s[n1 : n3], n1, n3
+            if -1 < n1 < n2 and i == n1:  # Give the message only once!
+                i1, i2 = g.getLine(s, i)
+                print(f" ignoring apparent section reference: {s[i1 : i2]}")
             return None, 0, 0
         # #2276: Special case for @section-delims directive.
         if i == 0 and s.startswith('@section-delims'):
