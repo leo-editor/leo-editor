@@ -1665,7 +1665,7 @@ class AtFile:
             # Make sure v is never expanded again.
             # Suppress orphans check.
         #
-        # Fix #1048 & #1037: regularize most trailing whitespace.
+        # #1048 & #1037: regularize most trailing whitespace.
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
                 s = s + '\n'
@@ -1928,6 +1928,7 @@ class AtFile:
             at.indent -= delta
             return
         if hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
+            p.v.setVisited()  # #2311
             # Allow apparent section reference: just write the line.
             at.putCodeLine(s, i)
         else:  # pragma: no cover
