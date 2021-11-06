@@ -175,6 +175,23 @@ class TestAtFile(LeoUnitTest):
         for expected, s in table:
             result = at.directiveKind4(s, 0)
             self.assertEqual(expected, result, msg=repr(s))
+    #@+node:ekr.20211106034202.1: *3* TsetAtFile.test_findSectionName
+    def test_findSectionName(self):
+        # Test code per #2303.
+        at, p = self.at, self.c.p
+        at.initWriteIvars(p)
+        ref = g.angleBrackets(' abc ')
+        table = (
+            (True, f"{ref}\n"),
+            (True, f"{ref}"),
+            (True, f"  {ref}  \n"),
+            (False, f"if {ref}:\n"),
+            (False, f"{ref} # comment\n"),
+            (False, f"# {ref}\n"),
+        )
+        for valid, s in table:
+            name, n1, n2 = at.findSectionName(s, 0)
+            self.assertEqual(valid, bool(name), msg=repr(s))
     #@+node:ekr.20210905052021.23: *3* TestAtFile.test_parseLeoSentinel
     def test_parseLeoSentinel(self):
 
