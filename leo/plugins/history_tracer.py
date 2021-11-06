@@ -42,8 +42,6 @@ from leo.core.leoQt import QtCore
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
-#@afterref
- # history_tracer.py
 
 idle_checker = None
 
