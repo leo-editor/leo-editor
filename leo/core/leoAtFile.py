@@ -1896,28 +1896,29 @@ class AtFile:
         # Write the lead-in sentinel only once.
         at.putLeadInSentinel(s, i, n1)
         self.putRefAt(name, ref, delta)
-        n_refs = 0
-        while 1:
-            progress = i
-            i = n2
-            n_refs += 1
-            name, n1, n2 = at.findSectionName(s, i)
-            if is_clean and n_refs > 1:  # pragma: no cover
-                # #1232: allow only one section reference per line in @clean.
-                i1, i2 = g.getLine(s, i)
-                line = s[i1:i2].rstrip()
-                at.writeError(f"Too many section references:\n{line!s}")
-                break
-            if name:
-                ref = at.findReference(name, p)  # Issues error if not found.
-                if ref:
-                    middle_s = s[i:n1]
-                    self.putAfterMiddleRef(middle_s, delta)
-                    self.putRefAt(name, ref, delta)
-            else:
-                break  # pragma: no cover (coverage bug?)
-            assert progress < i
-        self.putAfterLastRef(s, i, delta)
+        if 0: # #2309:
+            n_refs = 0
+            while 1:
+                progress = i
+                i = n2
+                n_refs += 1
+                name, n1, n2 = at.findSectionName(s, i)
+                if is_clean and n_refs > 1:  # pragma: no cover
+                    # #1232: allow only one section reference per line in @clean.
+                    i1, i2 = g.getLine(s, i)
+                    line = s[i1:i2].rstrip()
+                    at.writeError(f"Too many section references:\n{line!s}")
+                    break
+                if name:
+                    ref = at.findReference(name, p)  # Issues error if not found.
+                    if ref:
+                        middle_s = s[i:n1]
+                        self.putAfterMiddleRef(middle_s, delta)
+                        self.putRefAt(name, ref, delta)
+                else:
+                    break  # pragma: no cover (coverage bug?)
+                assert progress < i
+            self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
         """

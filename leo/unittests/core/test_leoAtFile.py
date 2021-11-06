@@ -400,17 +400,31 @@ class TestAtFile(LeoUnitTest):
         
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
-        # Create two section definition nodes.
-        child1 = p.insertAsLastChild()
-        name1 = g.angleBrackets('section 1')
-        name2 = g.angleBrackets('section 2')
-        child1.h = name1
-        child2 = child1.insertAfter()
-        child2.h = name2
-        s = f"if {name1} or {name2}:\n"
-        # Careful: init n2 and n2.
-        name, n1, n2 = at.findSectionName(s, 0)
-        at.putRefLine(s, 0, n1, n2, name, p)
+        if True: # #2309
+            # Create one section definition node.
+            name1 = g.angleBrackets('section 1')
+            child1 = p.insertAsLastChild()
+            child1.h = name1
+            child1.b = "print('test_putRefLine')\n"
+            # Create the valid section reference.
+            s = f"  {name1}\n"
+            # Careful: init n2 and n2.
+            name, n1, n2 = at.findSectionName(s, 0)
+            at.putRefLine(s, 0, n1, n2, name, p)
+        
+        else:
+            # Create two section definition nodes.
+            child1 = p.insertAsLastChild()
+            name1 = g.angleBrackets('section 1')
+            name2 = g.angleBrackets('section 2')
+            child1.h = name1
+            child2 = child1.insertAfter()
+            child2.h = name2
+            s = f"if {name1} or {name2}:\n"
+            # Careful: init n2 and n2.
+            name, n1, n2 = at.findSectionName(s, 0)
+            self.assertTrue(name)
+            at.putRefLine(s, 0, n1, n2, name, p)
     #@+node:ekr.20210905052021.24: *3* TestAtFile.test_remove
     def test_remove(self):
         
@@ -971,21 +985,24 @@ class TestFastAtRead(LeoUnitTest):
         #AT+leo-ver=5-thin
         #AT+node:{root.gnx}: * {h}
         #AT@language python
-
-        #AT+LB test >>
-        #AT+node:ekr.20211101175745.1: ** LB test >>
+        # Test of @verbatim
         print('hi')
-        #AT-LB test >>
-        #ATafterref
-         #AT+LB after
-
         #ATverbatim
         #AT+node (should be protected by verbatim)
-
         #AT-leo
         ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
+        #@+<< define expected_body >>
+        #@+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)
+        expected_body = textwrap.dedent('''\
+        ATlanguage python
+        # Test of @verbatim
+        print('hi')
+        #AT+node (should be protected by verbatim)
+        ''').replace('AT', '@')
+        #@-<< define expected_body >>
         x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
     #@-others
