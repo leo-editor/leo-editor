@@ -2069,7 +2069,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:tom.20211104105903.8: *6* set custom_style()
         #@@pagewidth 65
         def set_custom_style():
-            """Apply custom matplotlib styles from a file.
+            r"""Apply custom matplotlib styles from a file.
             
             The style file has the name given by STYLEFILE. The .leo
             directory (usually ~/.leo) will be checked first for the
