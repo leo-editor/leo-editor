@@ -3433,7 +3433,7 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
             if grand_parent_v not in seen:
                 parents.append(grand_parent_v)
     #
-    # #2308: Phase 2: search all nodes.
+    # #2308: Phase 2: search *all* nodes.
     #
     # Phase 2, part 1: Search *all* direct parents.
     #
