@@ -3095,7 +3095,7 @@ class FastAtRead:
         for i, line in enumerate(lines[start:]):
             # Strip the line only once.
             strip_line = line.strip()
-            if afterref:  # pragma: no cover (obsolete sentinel)
+            if afterref:
                 #@+<< handle afterref line>>
                 #@+node:ekr.20211102052251.1: *4* << handle afterref line >>
                 if body:  # a List of lines.
@@ -3293,7 +3293,7 @@ class FastAtRead:
             #@+<< handle afterref >>
             #@+node:ekr.20180603063102.1: *4* << handle afterref >>
             m = self.after_pat.match(line)
-            if m:  # pragma: no cover (obsolete sentinel)
+            if m:
                 afterref = True
                 continue
             #@-<< handle afterref >>

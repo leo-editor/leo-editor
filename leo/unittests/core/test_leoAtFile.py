@@ -531,14 +531,8 @@ class TestFastAtRead(LeoUnitTest):
         self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
 
     #@+others
-    #@+node:ekr.20211104162514.1: *3* TestFast.test_afterLastRef
-    def test_afterLastRef(self):
-        
-        # at, p = self.at, self.c.p
-        # at.initWriteIvars(p)
-        # s = 'line without newline'
-        # at.putAfterLastRef(s, 0, 4)
-        
+    #@+node:ekr.20211104162514.1: *3* TestFast.test_afterref
+    def test_afterref(self):
         
         c, x = self.c, self.x
         h = '@file /test/test_afterLastRef.py'
@@ -546,49 +540,57 @@ class TestFastAtRead(LeoUnitTest):
         root.h = h # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211106112233.1: *4* << define contents >>
-        contents = textwrap.dedent('''\
-
-        ''')
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+            #AT+leo-ver=5-thin
+            #AT+node:{root.gnx}: * {h}
+            #AT@language python
+            
+            a = 1
+            if (
+            #AT+LB test >>
+            #AT+node:ekr.20211107051401.1: ** LB test >>
+            a == 2
+            #AT-LB test >>
+            #ATafterref
+             ):
+                a = 2
+            #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106115654.1: *4* << define expected_body >>
         expected_body = textwrap.dedent('''\
-
-        ''')
+            ATlanguage python
+            
+            a = 1
+            if (
+            LB test >> ):
+                a = 2
+        ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define expected_body >>
+        #@+<< define expected_contents >>
+        #@+node:ekr.20211107053133.1: *4* << define expected_contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        expected_contents = textwrap.dedent(f'''\
+            #AT+leo-ver=5-thin
+            #AT+node:{root.gnx}: * {h}
+            #AT@language python
+            
+            a = 1
+            if (
+            LB test >> ):
+                a = 2
+            #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define expected_contents >>
         x.read_into_root(contents, path='test', root=root)
-        self.assertEqual(root.b, expected_body)
+        self.assertEqual(root.b, expected_body, msg='mismatch in body')
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s)
-
-    #@+node:ekr.20211104162937.1: *3* TestFast.test_afterMiddleRef
-    def test_afterMiddleRef(self):
-        
-        # at, p = self.at, self.c.p
-        # at.initWriteIvars(p)
-        # s = 'tail\n'
-        # at.putAfterMiddleRef(s, 4)
-
-        c, x = self.c, self.x
-        h = '@file /test/test_afterMiddleRef.py'
-        root = c.rootPosition()
-        root.h = h # To match contents.
-        #@+<< define contents >>
-        #@+node:ekr.20211106112425.1: *4* << define contents >>
-        contents = textwrap.dedent('''\
-
-        ''')
-        #@-<< define contents >>
-        #@+<< define expected_body >>
-        #@+node:ekr.20211106115729.1: *4* << define expected_body >>
-        expected_body = textwrap.dedent('''\
-
-        ''')
-        #@-<< define expected_body >>
-        x.read_into_root(contents, path='test', root=root)
-        self.assertEqual(root.b, expected_body)
-        s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s)
+        # Leo has *never* round-tripped the contents without change!
+        ### g.printObj(s, tag='s')
+        ### g.printObj(expected_contents, tag='expected_contents')
+        self.assertEqual(s, expected_contents, msg='mismatch in contents')
 
     #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all
     def test_at_all(self):
