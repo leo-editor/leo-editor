@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.5
+About Viewrendered3 V3.51
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -2040,9 +2040,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         page = self.c.p.b
         page_lines = page.split('\n')
+        data_lines = []
 
         #@+others
         #@+node:tom.20211104105903.5: *5* declarations
+        ENCODING = 'utf-8'
         STYLEFILE = 'local_mplstyle' # Must be in site.getuserbase()
         SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
         #@+node:tom.20211104105903.6: *5* functions
@@ -2205,21 +2207,57 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         plt.style.use(val)
                     set_style = True
                     break
-                elif kind == 'stylefile':
-                    lm = g.app.loadManager
-                    style_dir = lm.computeHomeLeoDir()
-                    if g.isWindows:
-                        style_dir = style_dir.replace('/', '\\')
-                    style_file = os.path.join(style_dir, val)
-                    if os.path.exists(style_file):
-                        plt.style.use(style_file)
-                        set_style = True
-                    break
+            if not set_style:
+                for line in style_config_lines:
+                    if not line.strip:
+                        break
+                    fields = line.split('=')
+                    if len(fields) < 2:
+                        continue
+                    kind, val = fields[0].strip(), fields[1].strip()
+
+                    if kind == 'stylefile':
+                        lm = g.app.loadManager
+                        style_dir = lm.computeHomeLeoDir()
+                        if g.isWindows:
+                            style_dir = style_dir.replace('/', '\\')
+                        style_file = os.path.join(style_dir, val)
+                        if os.path.exists(style_file):
+                            plt.style.use(style_file)
+                            set_style = True
+                        break
 
             return set_style
         #@-others
 
         config_sections = has_config_section(page_lines)
+        source_start = config_sections.get('source', -1)
+        if source_start > 0:
+            #@+<< set_data >>
+            #@+node:tom.20211106174814.1: *5* << set_data >>
+            for line in page_lines[source_start:]:
+                if not line.strip:
+                    break
+                fields = line.split('=')
+                if len(fields) < 2:
+                    continue
+                kind, val = fields[0].strip(), fields[1].strip()
+                if kind == 'file':
+                    _, filename = fields[0].strip(), fields[1].strip()
+                    if os.path.exists(filename):
+                        with open(filename, encoding = ENCODING) as f:
+                            data_lines = f.readlines()
+                        if not data_lines:
+                            g.es(f'VR3 -- no data in file {filename}')
+                    else:
+                        g.es(f'VR3 -- cannot open data file {filename}')
+            #@-<< set_data >>
+        else:
+            data_lines = page_lines
+
+        if not data_lines:
+            return
+
         style_start = config_sections.get('style', -1)
         if style_start >= 0:
             if not set_user_style(page_lines[style_start:]):
@@ -2252,9 +2290,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             #@-<< configure labels >>
 
-        plot_plain_data(page_lines)
+        plot_plain_data(data_lines)
         plt.rcdefaults()
-
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
