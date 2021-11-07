@@ -1697,7 +1697,7 @@ class AtFile:
         if kind == at.noDirective:
             if status.in_code:
                 # Important: the so-called "name" must include brackets.
-                name, n1, n2 = at.findSectionName(s, i)
+                name, n1, n2 = at.findSectionName(s, i, p)
                 if name:
                     at.putRefLine(s, i, n1, n2, name, p)
                 else:
@@ -1853,11 +1853,11 @@ class AtFile:
             return False
         return True
     #@+node:ekr.20041005105605.199: *6* at.findSectionName
-    def findSectionName(self, s, i):  # pragma: no cover
+    def findSectionName(self, s, i, p):
         """
         Return n1, n2 representing a section name.
 
-        The section name, *including* brackes is s[n1:n2]
+        Return the reference, *including* brackes.
         """
         at = self
         
@@ -1875,14 +1875,15 @@ class AtFile:
             n1 = s.find(at.section_delim1, i, end)
             n2 = s.find(at.section_delim2, i, end)
         n3 = n2 + len(at.section_delim2)
-        
-        # The section reference must appear alone on the line.
-        if -1 < n1 < n2 and is_space(i, n1) and is_space(n3, j):
-            return s[n1 : n3], n1, n3
-        if -1 < n1 < n2 and i == n1:  # Give the message only once!
+        if -1 < n1 < n2:  # A *possible* section reference.
+            if is_space(i, n1) and is_space(n3, j):  # A *real* section reference.
+                return s[n1 : n3], n1, n3
+            # An apparent section reference.
             if 'sections' in g.app.debug and not g.unitTesting:
                 i1, i2 = g.getLine(s, i)
-                print(f" ignoring apparent section reference: {s[i1 : i2]}")
+                g.es_print('Ignoring apparent section reference:', color='red')
+                g.es_print('Node: ', p.h)
+                g.es_print('Line: ', s[i1 : i2].rstrip())
         return None, 0, 0
     #@+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s, i):

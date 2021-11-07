@@ -176,7 +176,7 @@ class TestAtFile(LeoUnitTest):
             (False, f"# {ref}\n"),
         )
         for valid, s in table:
-            name, n1, n2 = at.findSectionName(s, 0)
+            name, n1, n2 = at.findSectionName(s, 0, p)
             self.assertEqual(valid, bool(name), msg=repr(s))
     #@+node:ekr.20210905052021.23: *3* TestAtFile.test_parseLeoSentinel
     def test_parseLeoSentinel(self):
@@ -394,7 +394,7 @@ class TestAtFile(LeoUnitTest):
         # Create the valid section reference.
         s = f"  {name1}\n"
         # Careful: init n2 and n2.
-        name, n1, n2 = at.findSectionName(s, 0)
+        name, n1, n2 = at.findSectionName(s, 0, p)
         self.assertTrue(name)
         at.putRefLine(s, 0, n1, n2, name, p)
         
@@ -531,6 +531,65 @@ class TestFastAtRead(LeoUnitTest):
         self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
 
     #@+others
+    #@+node:ekr.20211104162514.1: *3* TestFast.test_afterLastRef
+    def test_afterLastRef(self):
+        
+        # at, p = self.at, self.c.p
+        # at.initWriteIvars(p)
+        # s = 'line without newline'
+        # at.putAfterLastRef(s, 0, 4)
+        
+        
+        c, x = self.c, self.x
+        h = '@file /test/test_afterLastRef.py'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211106112233.1: *4* << define contents >>
+        contents = textwrap.dedent('''\
+
+        ''')
+        #@-<< define contents >>
+        #@+<< define expected_body >>
+        #@+node:ekr.20211106115654.1: *4* << define expected_body >>
+        expected_body = textwrap.dedent('''\
+
+        ''')
+        #@-<< define expected_body >>
+        x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+
+    #@+node:ekr.20211104162937.1: *3* TestFast.test_afterMiddleRef
+    def test_afterMiddleRef(self):
+        
+        # at, p = self.at, self.c.p
+        # at.initWriteIvars(p)
+        # s = 'tail\n'
+        # at.putAfterMiddleRef(s, 4)
+
+        c, x = self.c, self.x
+        h = '@file /test/test_afterMiddleRef.py'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211106112425.1: *4* << define contents >>
+        contents = textwrap.dedent('''\
+
+        ''')
+        #@-<< define contents >>
+        #@+<< define expected_body >>
+        #@+node:ekr.20211106115729.1: *4* << define expected_body >>
+        expected_body = textwrap.dedent('''\
+
+        ''')
+        #@-<< define expected_body >>
+        x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+
     #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all
     def test_at_all(self):
         

@@ -2681,8 +2681,8 @@ class LoadManager:
             '--use-docks',
         )
         trace_m = textwrap.dedent("""\
-            abbrev, beauty, cache, coloring, drawing, events, focus, git,
-            gnx, importers, ipython, keys, layouts, plugins, save, select,
+            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+            importers, ipython, keys, layouts, plugins, save, select, sections,
             shutdown, size, speed, startup, themes, undo, verbose, zoom
         """)
         for bad_option in table:
