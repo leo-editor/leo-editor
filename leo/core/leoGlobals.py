@@ -3388,31 +3388,31 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
         # #1693: Scan v.b for an *unambiguous* @language directive.
         languages = g.findAllValidLanguageDirectives(v.b)
         if len(languages) == 1:  # An unambiguous language
-            language = languages[0]
-            return language
+            return languages[0]
         if v.isAnyAtFileNode():
             # Use the file's extension.
             name = v.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
-            ext = ext[1:]  # strip the leading .
+            ext = ext[1:]  # strip the leading period.
             language = g.app.extension_dict.get(ext)
             if g.isValidLanguage(language):
                 return language
         return None
+
     # First, see if p contains any @language directive.
     language = g.findFirstValidAtLanguageDirective(p.b)
     if language:
         return language
-    # Phase 1 search only @<file> nodes: #2308.
-    # Phase 2 search all nodes.
+    # Phase 1: search only @<file> nodes: #2308.
+    # Phase 2: search all nodes.
     for phase in (1, 2):
         # 1: Search direct parents.
         for p2 in p.self_and_parents(copy=False):
             language = find_language(p2.v, phase)
             if language:
                 return language
-        # 2: Search nodes in all parents of clones.
-        #    This search includes all parents of cloned parents!
+        # 2: Search nodes in all parents of clones,
+        #    including all parents of cloned parents!
         seen = []  # vnodes that have already been searched.
         parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
         while parents:
