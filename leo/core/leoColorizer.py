@@ -107,13 +107,7 @@ class BaseColorizer:
     def scanLanguageDirectives(self, p, use_default=True):
         """Return language based on the directives in p's ancestors."""
         c = self.c
-        root = p.copy()
-        # Look for the first @language directive only in p itself.
-        language = g.findFirstValidAtLanguageDirective(p.b)
-        if language:
-            return language
-        # #2308: Always scan ancestors, prefering @<file> nodes.
-        language = g.getLanguageFromAncestorAtFileNode(root)
+        language = g.getLanguageFromAncestorAtFileNode(p)
         if not language and use_default:
             language = c.target_language
         return language
