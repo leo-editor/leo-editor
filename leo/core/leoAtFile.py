@@ -1879,7 +1879,7 @@ class AtFile:
             if is_space(i, n1) and is_space(n3, j):  # A *real* section reference.
                 return s[n1 : n3], n1, n3
             # An apparent section reference.
-            if 'sections' in g.app.debug and not g.unitTesting:
+            if 'sections' in g.app.debug and not g.unitTesting:  # pragma: no cover
                 i1, i2 = g.getLine(s, i)
                 g.es_print('Ignoring apparent section reference:', color='red')
                 g.es_print('Node: ', p.h)
