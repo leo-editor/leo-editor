@@ -109,15 +109,16 @@ class BaseColorizer:
         c = self.c
         root = p.copy()
         # Look for the first @language directive only in p itself.
-        language = g.findFirstValidAtLanguageDirective(p)
+        language = g.findFirstValidAtLanguageDirective(p.b)
         if language:
             return language
-        for p in root.parents():
-            languages = g.findAllValidLanguageDirectives(p)
-            if len(languages) == 1:  # An unambiguous language
-                language = languages[0]
-                return language
-        #  Get the language from the nearest ancestor @<file> node.
+        if 0:  ### Always use full scan.
+            for p in root.parents():
+                languages = g.findAllValidLanguageDirectives(p.b)
+                if len(languages) == 1:  # An unambiguous language
+                    language = languages[0]
+                    return language
+        # #2308: Scan ancestors, prefering @<file> nodes.
         language = g.getLanguageFromAncestorAtFileNode(root)
         if not language and use_default:
             language = c.target_language
@@ -2930,7 +2931,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         root = p.copy()
         for p in root.self_and_parents(copy=False):
-            language = g.findFirstValidAtLanguageDirective(p)
+            language = g.findFirstValidAtLanguageDirective(p.b)
             if language:
                 return language
         #  Get the language from the nearest ancestor @<file> node.

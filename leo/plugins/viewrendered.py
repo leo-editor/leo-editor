@@ -1675,7 +1675,7 @@ if QtWidgets:  # NOQA
                         return word
                 # Look for @language directives.
                 # Warning: (see #344): don't use c.target_language as a default.
-                return g.findFirstValidAtLanguageDirective(p.copy())
+                return g.findFirstValidAtLanguageDirective(p.b)
             #
             #  #1287: Honor both kind of directives node by node.
             for p in p.self_and_parents(p):
