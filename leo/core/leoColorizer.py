@@ -112,13 +112,7 @@ class BaseColorizer:
         language = g.findFirstValidAtLanguageDirective(p.b)
         if language:
             return language
-        if 0:  ### Always use full scan.
-            for p in root.parents():
-                languages = g.findAllValidLanguageDirectives(p.b)
-                if len(languages) == 1:  # An unambiguous language
-                    language = languages[0]
-                    return language
-        # #2308: Scan ancestors, prefering @<file> nodes.
+        # #2308: Always scan ancestors, prefering @<file> nodes.
         language = g.getLanguageFromAncestorAtFileNode(root)
         if not language and use_default:
             language = c.target_language

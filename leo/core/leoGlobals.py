@@ -3376,17 +3376,15 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
     1. An unambiguous @language directive of the @<file> node.
     2. The file extension of the @<file> node.
     """
-    trace = not g.unitTesting and '<< test' in p.h  ###
-    p0 = p.copy()
     v0 = p.v
 
     def find_language(v):
-        # #1693: 1: scan v.b for an *unambiguous* @language directive.
+        """A helper for all searches."""
+        # #1693: scan v.b for an *unambiguous* @language directive.
         if v.b.strip():
             languages = g.findAllValidLanguageDirectives(v.b)
             if len(languages) == 1:  # An unambiguous language
                 language = languages[0]
-                if trace: g.trace('@language', language, v.h) ###
                 return language
         # Second: use the file's extension.
         if v.isAnyAtFileNode():
@@ -3395,31 +3393,31 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
             ext = ext[1:]  # strip the leading .
             language = g.app.extension_dict.get(ext)
             if g.isValidLanguage(language):
-                if trace: g.trace('extention', language, v.h) ###
                 return language
-        if trace: g.trace('no language', v.h) ###
         return None
-        
-    # 1: Use legacy code for non clones.
+    
+    #
+    # Phase 0: Scan only ancestors for non clones.
+    #
     if not p.isCloned():
         for p2 in p.self_and_parents(copy=False):
             language = find_language(p2.v)
             if language:
                 return language
-        if trace: g.trace('No language', v0.h) ###
         return None
-    assert p == p0
     #
-    # #2308: p is a clone. First, look for @language directives only in @<file> nodes.
+    # #2308: Phase 1: search only @<file> nodes.
     #
-    # 2: Search @<file> nodes in direct parents.
+    # Phase 1, part 1: Search @<file> nodes in direct parents.
+    #
     for p2 in p.self_and_parents(copy=False):
         if p2.isAnyAtFileNode():
             language = find_language(p2.v)
             if language:
                 return language
     #
-    # 3: Search @<file> nodes in all parents of clones.
+    # Phase 1, part 2: Search @<file> nodes in all parents of clones.
+    #
     seen = []  # vnodes that have already been searched.
     parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
     while parents:
@@ -3435,14 +3433,17 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
             if grand_parent_v not in seen:
                 parents.append(grand_parent_v)
     #
-    # 4: Search *all* direct parents.
-    assert p == p0
+    # #2308: Phase 2: search all nodes.
+    #
+    # Phase 2, part 1: Search *all* direct parents.
+    #
     for p2 in p.self_and_parents(copy=False):
         language = find_language(p2.v)
         if language:
             return language
     #
-    # 5: Search *all* parents of the clone.
+    # Phase 2, part 2: Search *all* parents of the clone.
+    #
     seen = []  # vnodes that have already been searched.
     parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
     while parents:
@@ -3456,7 +3457,6 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
         for grand_parent_v in parent_v.parents:
             if grand_parent_v not in seen:
                 parents.append(grand_parent_v)
-    if trace: g.trace('NO LANGUAGE', v0.h)
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c: Cmdr, p: Pos):
