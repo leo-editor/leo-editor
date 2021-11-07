@@ -3395,16 +3395,6 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
             if g.isValidLanguage(language):
                 return language
         return None
-    
-    #
-    # Phase 0: Scan only ancestors for non clones.
-    #
-    if not p.isCloned():
-        for p2 in p.self_and_parents(copy=False):
-            language = find_language(p2.v)
-            if language:
-                return language
-        return None
     #
     # #2308: Phase 1: search only @<file> nodes.
     #
@@ -3424,11 +3414,15 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
         parent_v = parents.pop()
         if parent_v in seen:
             continue
+        ### g.trace('phase 1, part 2', parent_v.h)
         seen.append(parent_v)
         if parent_v.isAnyAtFileNode():
             language = find_language(parent_v)
             if language:
                 return language
+        if parent_v.isCloned():
+            ### g.printObj(parent_v.parents[:], tag='phase 1')
+            parents.extend(parent_v.parents[:]) ### Search all clones!
         for grand_parent_v in parent_v.parents:
             if grand_parent_v not in seen:
                 parents.append(grand_parent_v)
@@ -3450,10 +3444,13 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
         parent_v = parents.pop()
         if parent_v in seen:
             continue
+        ### g.trace('phase 2, part 2', parent_v.h) ###
         seen.append(parent_v)
         language = find_language(parent_v)
         if language:
             return language
+        if parent_v.isCloned():
+            parents.extend(parent_v.parents[:]) ### Search all clones!
         for grand_parent_v in parent_v.parents:
             if grand_parent_v not in seen:
                 parents.append(grand_parent_v)
