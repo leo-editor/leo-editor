@@ -1520,62 +1520,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904123047.1: *3* Typescript tests
-    #@+node:ekr.20210904065459.103: *4* TestImport.test_TypeScript_class
-    def test_TypeScript_class(self):
-        c = self.c
-        s = '''
-
-        class Greeter {
-            greeting: string;
-            constructor (message: string) {
-                this.greeting = message;
-            }
-            greet() {
-                return "Hello, " + this.greeting;
-            }
-        }
-
-        var greeter = new Greeter("world");
-
-        var button = document.createElement('button')
-        button.innerText = "Say Hello"
-        button.onclick = function() {
-            alert(greeter.greet())
-        }
-
-        document.body.appendChild(button)
-
-        '''
-
-        c.importCommands.typeScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.104: *4* TestImport.test_TypeScript_module
-    def test_TypeScript_module(self):
-        c = self.c
-        s = textwrap.dedent('''\
-            module Sayings {
-                export class Greeter {
-                    greeting: string;
-                    constructor (message: string) {
-                        this.greeting = message;
-                    }
-                    greet() {
-                        return "Hello, " + this.greeting;
-                    }
-                }
-            }
-            var greeter = new Sayings.Greeter("world");
-
-            var button = document.createElement('button')
-            button.innerText = "Say Hello"
-            button.onclick = function() {
-                alert(greeter.greet())
-            }
-
-            document.body.appendChild(button)
-        ''')
-
-        c.importCommands.typeScriptUnitTest(c.p, s=s)
     #@+node:ekr.20210904071422.1: *3* All other tests
     #@+node:ekr.20210904065459.122: *4* TestImport.test_at_auto_importers
     def test_at_auto_importers(self):
@@ -4446,6 +4390,68 @@ class TestRst(BaseTestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
+class TestTypescript (BaseTestImporter):
+    
+    ext = '.ts'
+    
+    #@+others
+    #@+node:ekr.20210904065459.103: *3* TestTypescript.test_class
+    def test_class(self):
+        c = self.c
+        s = '''
+
+        class Greeter {
+            greeting: string;
+            constructor (message: string) {
+                this.greeting = message;
+            }
+            greet() {
+                return "Hello, " + this.greeting;
+            }
+        }
+
+        var greeter = new Greeter("world");
+
+        var button = document.createElement('button')
+        button.innerText = "Say Hello"
+        button.onclick = function() {
+            alert(greeter.greet())
+        }
+
+        document.body.appendChild(button)
+
+        '''
+
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.104: *3* TestTypescript.test_module
+    def test_module(self):
+        c = self.c
+        s = textwrap.dedent('''\
+            module Sayings {
+                export class Greeter {
+                    greeting: string;
+                    constructor (message: string) {
+                        this.greeting = message;
+                    }
+                    greet() {
+                        return "Hello, " + this.greeting;
+                    }
+                }
+            }
+            var greeter = new Sayings.Greeter("world");
+
+            var button = document.createElement('button')
+            button.innerText = "Say Hello"
+            button.onclick = function() {
+                alert(greeter.greet())
+            }
+
+            document.body.appendChild(button)
+        ''')
+
+        self.run_test(c.p, s)
     #@-others
 #@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
 class TestXML (BaseTestImporter):

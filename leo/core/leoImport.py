@@ -1197,36 +1197,6 @@ class LeoImportCommands:
             return obj.run(s, parent, parse_body=True)
 
         return body_parser_for_class if aClass else None
-    #@+node:ekr.20070713075450: *3* ic.Unit tests
-    def textUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.txt')
-
-    def typeScriptUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.ts')
-    #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
-    def scannerUnitTest(self, p, s, ext):
-        """
-        Run a unit test of an import scanner,
-        i.e., create a tree from string s at location p.
-        """
-        assert ext, g.callers()
-        self.treeType = '@file'  # Fix #352.
-        fileName = 'test'
-        # Run the test.
-        parent = p.insertAsLastChild()
-        kind = self.compute_unit_test_kind(ext)
-        parent.h = f"{kind} {fileName}"
-        self.createOutline(parent=parent.copy(), ext=ext, s=s)
-    #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
-    def compute_unit_test_kind(self, ext):
-        """Return kind from the given extention."""
-        aClass = g.app.classDispatchDict.get(ext)
-        if aClass:
-            d2 = g.app.atAutoDict
-            for z in d2:
-                if d2.get(z) == aClass:
-                    return z
-        return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p, s):
