@@ -54,6 +54,11 @@ class TestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z
         return '@file'
+    #@-others
+#@+node:ekr.20211108052633.1: ** class TempImporterTest (TestImporter)
+class TempImporterTest (TestImporter):
+    
+    #@+others  ### To be moved to other classes.
     #@+node:ekr.20210904065613.1: *3* Tests of @auto
     #@+node:ekr.20210904143515.1: *4* .ini tests
     #@+node:ekr.20210904065459.29: *5* TestImport.test_ini_test_1
