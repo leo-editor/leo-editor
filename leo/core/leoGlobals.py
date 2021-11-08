@@ -3381,6 +3381,8 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
     v0 = p.v
     
     # The same generator as in v.setAllAncestorAtFileNodesDirty.
+    # Original idea by Виталије Милошевић (Vitalije Milosevic).
+    # Modified by EKR.
 
     def v_and_parents(v):
         if v not in seen:
