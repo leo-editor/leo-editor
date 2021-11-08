@@ -373,6 +373,11 @@ class TestCoffeescript (BaseTestImporter):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
+    def test_scan_line(self):
+        c = self.c
+        x = cs.CS_Importer(c.importCommands, atAuto=True)
+        self.assertEqual(x.single_comment, '#')
     #@-others
 #@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
 class TestCSharp(BaseTestImporter):
@@ -500,6 +505,17 @@ class TestDart (BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
+    #@+node:ekr.20210904065459.127: *3* TestDart.test_clean_headline
+    def test_clean_headline(self):
+        c = self.c
+        x = dart.Dart_Importer(c.importCommands, atAuto=False)
+        table = (
+            ('func(abc) {', 'func'),
+            ('void foo() {', 'void foo'),
+        )
+        for s, expected in table:
+            got = x.clean_headline(s)
+            self.assertEqual(got, expected)
     #@-others
 #@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
 class TestElisp (BaseTestImporter):
@@ -1515,92 +1531,8 @@ class TestMarkdown(BaseTestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@-others
-#@+node:ekr.20211108052633.1: ** class TestMisc (BaseTestImporter) ===========
-class TestMisc (BaseTestImporter):
-    
-    #@+others
-    #@+node:ekr.20210904071422.1: *3* All other tests
-    #@+node:ekr.20210904065459.122: *4* TestImport.test_at_auto_importers
-    def test_at_auto_importers(self):
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
-        assert g.os_path_exists(path), repr(path)
-        pattern = g.os_path_finalize_join(path, '*.py')
-        for fn in glob.glob(pattern):
-            sfn = g.shortFileName(fn)
-            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
-            assert m
-    #@+node:ekr.20210904065459.123: *4* TestImport.test_Importer_get_leading_indent
-    def test_Importer_get_leading_indent(self):
-        c = self.c
-        lines_table = [
-            'abc',
-            '    xyz',
-            '    ',
-            '  # comment',
-        ]
-        for language in ('python', 'coffeescript'):
-            importer = linescanner.Importer(
-                c.importCommands,
-                language=language,
-            )
-            self.assertEqual(importer.single_comment, '#')
-            if 0:
-                for line in lines_table:
-                    lines = [line]
-                    n = importer.get_leading_indent(lines, 0)
-                    print('%s %r' % (n, line))
-    #@+node:ekr.20210904065459.124: *4* TestImport.test_Importer_get_str_lws
-    def test_Importer_get_str_lws(self):
-        c = self.c
-        table = [
-            ('', 'abc\n'),
-            ('    ', '    xyz\n'),
-            ('    ', '    \n'),
-            ('  ', '  # comment\n'),
-            ('', '\n'),
-        ]
-        importer = linescanner.Importer(c.importCommands, language='python')
-        for val, s in table:
-            self.assertEqual(val, importer.get_str_lws(s), msg=repr(s))
-    #@+node:ekr.20210904065459.125: *4* TestImport.test_Importer_is_ws_line
-    def test_Importer_is_ws_line(self):
-        c = self.c
-        table = [
-            (False, 'abc'),
-            (False, '    xyz'),
-            (True, '    '),
-            (True, '  # comment'),
-        ]
-        importer = linescanner.Importer(c.importCommands, language='python')
-        for val, s in table:
-            self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
-    #@+node:ekr.20210904065459.126: *4* TestImport.test_importers_coffee_scan_line
-    def test_importers_coffee_scan_line(self):
-        c = self.c
-        table = []  # State after line, line
-        x = cs.CS_Importer(c.importCommands, atAuto=True)
-        self.assertEqual(x.single_comment, '#')
-        for new_state, line in table:
-            print('%5s %r' % (new_state, line))
-        if 0:
-            for line in table:
-                lines = [line]
-                n = x.get_leading_indent(lines, 0)
-                print('%s %r' % (n, line))
-    #@+node:ekr.20210904065459.127: *4* TestImport.test_importers_dart_clean_headline
-    def test_importers_dart_clean_headline(self):
-        c = self.c
-        x = dart.Dart_Importer(c.importCommands, atAuto=False)
-        table = (
-            ('func(abc) {', 'func'),
-            ('void foo() {', 'void foo'),
-        )
-        for s, expected in table:
-            got = x.clean_headline(s)
-            self.assertEqual(got, expected)
-    #@+node:ekr.20210904065459.128: *4* TestImport.test_importers_markdown_is_hash
-    def test_importers_markdown_is_hash(self):
+    #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
+    def test_is_hash(self):
         c = self.c
         ic = c.importCommands
         x = markdown.Markdown_Importer(ic, atAuto=False)
@@ -1619,8 +1551,8 @@ class TestMisc (BaseTestImporter):
         level3, name = x.is_hash('Not a hash')
         assert level3 is None
         assert name is None
-    #@+node:ekr.20210904065459.129: *4* TestImport.test_importers_markdown_is_underline
-    def test_importers_markdown_is_underline(self):
+    #@+node:ekr.20210904065459.129: *3* TestMarkdown.test_is_underline
+    def test_is_underline(self):
         c = self.c
         ic = c.importCommands
         x = markdown.Markdown_Importer(ic, atAuto=False)
@@ -1630,34 +1562,41 @@ class TestMisc (BaseTestImporter):
         for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n', '==-==\n', 'abc\n'):
             got = x.is_underline(line)
             assert not got, repr(line)
-    #@+node:ekr.20210904065459.130: *4* TestImport.test_importers_pascal_methods
-    def test_importers_pascal_methods(self):
+    #@-others
+#@+node:ekr.20211108052633.1: ** class TestMisc (BaseTestImporter) ===========
+class TestMisc (BaseTestImporter):
+    
+    #@+others
+    #@+node:ekr.20210904065459.122: *3* TestImport.test_at_auto_importers
+    def test_at_auto_importers(self):
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
+        assert g.os_path_exists(path), repr(path)
+        pattern = g.os_path_finalize_join(path, '*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+            assert m
+    #@+node:ekr.20210904065459.123: *3* TestImport.test_get_leading_indent
+    def test_get_leading_indent(self):
         c = self.c
-        x = pascal.Pascal_Importer(c.importCommands, atAuto=False)
-        table = (
-            ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
-        )
-        state = g.Bunch(context='')
-        for line, cleaned in table:
-            assert x.starts_block(0, [line], state, state)
-            self.assertEqual(x.clean_headline(line), cleaned)
-    #@+node:ekr.20210904065459.132: *4* TestImport.test_importers_xml_is_ws_line
-    def test_importers_xml_is_ws_line(self):
-        c = self.c
-        x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
-        table = (
-           (1, ' \n'),
-           (1, '\n'),
-           (1, ' '),
-           (1, '<!-- comment -->'),
-           (0, '  <!-- comment --> Help'),
-           (0, 'x <!-- comment -->'),
-           (0, 'Help'),
-        )
-        for expected, line in table:
-            got = x.is_ws_line(line)
-            self.assertEqual(expected, got, msg=repr(line))
-    #@+node:ekr.20210904065459.133: *4* TestImport.test_importers_xml_scan_line
+        lines_table = [
+            'abc',
+            '    xyz',
+            '    ',
+            '  # comment',
+        ]
+        for language in ('python', 'coffeescript'):
+            importer = linescanner.Importer(
+                c.importCommands,
+                language=language,
+            )
+            self.assertEqual(importer.single_comment, '#')
+            if 0:
+                for line in lines_table:
+                    lines = [line]
+                    n = importer.get_leading_indent(lines, 0)
+                    print('%s %r' % (n, line))
+    #@+node:ekr.20210904065459.133: *3* TestImport.test_importers_xml_scan_line
     def test_importers_xml_scan_line(self):
         c = self.c
         x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
@@ -1678,7 +1617,7 @@ class TestMisc (BaseTestImporter):
             self.assertEqual(prev_state.tag_level, 0, msg=line)
             new_state = x.scan_line(line, prev_state)
             self.assertEqual(new_state.tag_level, level, msg=line)
-    #@+node:ekr.20210904065459.131: *4* TestImport.test_importers_python_test_scan_state
+    #@+node:ekr.20210904065459.131: *3* TestImport.test_importers_python_test_scan_state
     def test_importers_python_test_scan_state(self):
         c = self.c
         State = python.Python_ScanState
@@ -1986,6 +1925,17 @@ class TestPascal (BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
+    #@+node:ekr.20210904065459.130: *3* TestPascal.test_methods
+    def test_methods(self):
+        c = self.c
+        x = pascal.Pascal_Importer(c.importCommands, atAuto=False)
+        table = (
+            ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
+        )
+        state = g.Bunch(context='')
+        for line, cleaned in table:
+            assert x.starts_block(0, [line], state, state)
+            self.assertEqual(x.clean_headline(line), cleaned)
     #@-others
 #@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
 class TestPerl (BaseTestImporter):
@@ -2230,91 +2180,6 @@ class TestPython (BaseTestImporter):
     ext = '.py'
     
     #@+others
-    #@+node:ekr.20210904065459.60: *3* TestPython.test_i_scan_state
-    def test_i_scan_state(self):
-        c = self.c
-        # A list of dictionaries.
-        tests = (
-            g.Bunch(line='\n'),
-            g.Bunch(line='\\\n'),
-            g.Bunch(line='s = "\\""', ctx=('', '')),  # empty string.
-            g.Bunch(line="s = '\\''", ctx=('', '')),  # empty string.
-            g.Bunch(line='# comment'),
-            g.Bunch(line='  # comment'),
-            g.Bunch(line='    # comment'),
-            g.Bunch(line='a = "string"'),
-            g.Bunch(line='a = "Continued string', ctx=('', '"')),
-            g.Bunch(line='end of continued string"', ctx=('"', '')),
-            g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
-            g.Bunch(line='a = """#', ctx=('', '"""')),
-            g.Bunch(line='end of continued string"""', ctx=('"""', '')),
-            g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
-            g.Bunch(line="end of continued string'''", ctx=("'''", '')),
-            g.Bunch(line='a = {[(')
-        )
-        importer = python.Py_Importer(c.importCommands)
-        importer.test_scan_state(tests, State=python.Python_ScanState)
-    #@+node:ekr.20210904065459.61: *3* TestPython.test_leoApp_fail
-    def test_leoApp_fail(self):
-        c = self.c
-        s = textwrap.dedent('''
-            def isValidPython(self):
-                if sys.platform == 'cli':
-                    return True
-                minimum_python_version = '2.6'
-                message = """\
-            Leo requires Python %s or higher.
-            You may download Python from
-            http://python.org/download/
-            """ % minimum_python_version
-                try:
-                    version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-                    ok = g.CheckVersion(version, minimum_python_version)
-                    if not ok:
-                        print(message)
-                        try:
-                            # g.app.gui does not exist yet.
-                            import Tkinter as Tk
-                            class EmergencyDialog(object):
-                                def run(self):
-                                    """Run the modal emergency dialog."""
-                                    self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
-                                    self.top.lift()
-                                    self.top.grab_set() # Make the dialog a modal dialog.
-                                    self.root.wait_window(self.top)
-                            d = EmergencyDialog(
-                                title='Python Version Error',
-                                message=message)
-                            d.run()
-                        except Exception:
-                            pass
-                    return ok
-                except Exception:
-                    print("isValidPython: unexpected exception: g.CheckVersion")
-                    traceback.print_exc()
-                    return 0
-            def loadLocalFile(self, fn, gui, old_c):
-                trace = (False or g.trace_startup) and not g.unitTesting
-        ''')
-        table = (
-            (1, 'isValidPython'),
-            # (2, 'class EmergencyDialog'),
-            # (3, 'run'),
-            (1, 'loadLocalFile'),
-        )
-        p = c.p
-        self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-
     #@+node:ekr.20210904065459.62: *3* TestPython.test_bad_class_test
     def test_bad_class_test(self):
         c = self.c
@@ -3205,6 +3070,43 @@ class TestPython (BaseTestImporter):
                     pass
         """)
         self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.124: *3* TestPython.test_get_str_lws
+    def test_get_str_lws(self):
+        c = self.c
+        table = [
+            ('', 'abc\n'),
+            ('    ', '    xyz\n'),
+            ('    ', '    \n'),
+            ('  ', '  # comment\n'),
+            ('', '\n'),
+        ]
+        importer = linescanner.Importer(c.importCommands, language='python')
+        for val, s in table:
+            self.assertEqual(val, importer.get_str_lws(s), msg=repr(s))
+    #@+node:ekr.20210904065459.60: *3* TestPython.test_i_scan_state
+    def test_i_scan_state(self):
+        c = self.c
+        # A list of dictionaries.
+        tests = (
+            g.Bunch(line='\n'),
+            g.Bunch(line='\\\n'),
+            g.Bunch(line='s = "\\""', ctx=('', '')),  # empty string.
+            g.Bunch(line="s = '\\''", ctx=('', '')),  # empty string.
+            g.Bunch(line='# comment'),
+            g.Bunch(line='  # comment'),
+            g.Bunch(line='    # comment'),
+            g.Bunch(line='a = "string"'),
+            g.Bunch(line='a = "Continued string', ctx=('', '"')),
+            g.Bunch(line='end of continued string"', ctx=('"', '')),
+            g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+            g.Bunch(line='a = """#', ctx=('', '"""')),
+            g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+            g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+            g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+            g.Bunch(line='a = {[(')
+        )
+        importer = python.Py_Importer(c.importCommands)
+        importer.test_scan_state(tests, State=python.Python_ScanState)
     #@+node:ekr.20210904065459.84: *3* TestPython.test_indent_decls
     def test_indent_decls(self):
         c = self.c
@@ -3262,6 +3164,79 @@ class TestPython (BaseTestImporter):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.125: *3* TestPython.test_is_ws_line
+    def test_is_ws_line(self):
+        c = self.c
+        table = [
+            (False, 'abc'),
+            (False, '    xyz'),
+            (True, '    '),
+            (True, '  # comment'),
+        ]
+        importer = linescanner.Importer(c.importCommands, language='python')
+        for val, s in table:
+            self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
+    #@+node:ekr.20210904065459.61: *3* TestPython.test_leoApp_fail
+    def test_leoApp_fail(self):
+        c = self.c
+        s = textwrap.dedent('''
+            def isValidPython(self):
+                if sys.platform == 'cli':
+                    return True
+                minimum_python_version = '2.6'
+                message = """\
+            Leo requires Python %s or higher.
+            You may download Python from
+            http://python.org/download/
+            """ % minimum_python_version
+                try:
+                    version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
+                    ok = g.CheckVersion(version, minimum_python_version)
+                    if not ok:
+                        print(message)
+                        try:
+                            # g.app.gui does not exist yet.
+                            import Tkinter as Tk
+                            class EmergencyDialog(object):
+                                def run(self):
+                                    """Run the modal emergency dialog."""
+                                    self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+                                    self.top.lift()
+                                    self.top.grab_set() # Make the dialog a modal dialog.
+                                    self.root.wait_window(self.top)
+                            d = EmergencyDialog(
+                                title='Python Version Error',
+                                message=message)
+                            d.run()
+                        except Exception:
+                            pass
+                    return ok
+                except Exception:
+                    print("isValidPython: unexpected exception: g.CheckVersion")
+                    traceback.print_exc()
+                    return 0
+            def loadLocalFile(self, fn, gui, old_c):
+                trace = (False or g.trace_startup) and not g.unitTesting
+        ''')
+        table = (
+            (1, 'isValidPython'),
+            # (2, 'class EmergencyDialog'),
+            # (3, 'run'),
+            (1, 'loadLocalFile'),
+        )
+        p = c.p
+        self.run_test(p, s=s)
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+
     #@+node:ekr.20210904065459.85: *3* TestPython.test_leoImport_py_small_
     def test_leoImport_py_small_(self):
         c = self.c
@@ -4541,6 +4516,22 @@ class TestXML (BaseTestImporter):
             <_.ÌÑ>
         """)
         self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.132: *3* TestXml.test_is_ws_line
+    def test_is_ws_line(self):
+        c = self.c
+        x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
+        table = (
+           (1, ' \n'),
+           (1, '\n'),
+           (1, ' '),
+           (1, '<!-- comment -->'),
+           (0, '  <!-- comment --> Help'),
+           (0, 'x <!-- comment -->'),
+           (0, 'Help'),
+        )
+        for expected, line in table:
+            got = x.is_ws_line(line)
+            self.assertEqual(expected, got, msg=repr(line))
     #@-others
 #@-others
 
