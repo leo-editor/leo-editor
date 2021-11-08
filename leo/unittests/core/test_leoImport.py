@@ -57,6 +57,20 @@ class BaseTestImporter(LeoUnitTest):
                     return z
         return '@file'
     #@-others
+#@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
+class TestAtAuto (BaseTestImporter):
+    
+    #@+others
+    #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
+    def test_importers_can_be_imported(self):
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
+        assert g.os_path_exists(path), repr(path)
+        pattern = g.os_path_finalize_join(path, '*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+            assert m
+    #@-others
 #@+node:ekr.20211108062025.1: ** class TestC (BaseTestImporter)
 class TestC(BaseTestImporter):
     
@@ -376,7 +390,7 @@ class TestCoffeescript (BaseTestImporter):
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
-        importer = linescanner.Importer(c.importCommands, language='coffeescrip')
+        importer = linescanner.Importer(c.importCommands, language='coffeescript')
         self.assertEqual(importer.single_comment, '#')
     #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
     def test_scan_line(self):
@@ -1567,20 +1581,6 @@ class TestMarkdown(BaseTestImporter):
         for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n', '==-==\n', 'abc\n'):
             got = x.is_underline(line)
             assert not got, repr(line)
-    #@-others
-#@+node:ekr.20211108052633.1: ** class TestMisc (BaseTestImporter) ===========
-class TestMisc (BaseTestImporter):
-    
-    #@+others
-    #@+node:ekr.20210904065459.122: *3* TestImport.test_at_auto_importers
-    def test_at_auto_importers(self):
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
-        assert g.os_path_exists(path), repr(path)
-        pattern = g.os_path_finalize_join(path, '*.py')
-        for fn in glob.glob(pattern):
-            sfn = g.shortFileName(fn)
-            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
-            assert m
     #@-others
 #@+node:ekr.20211108080955.1: ** class TestOrg (BaseTestImporter)
 class TestOrg (BaseTestImporter):
