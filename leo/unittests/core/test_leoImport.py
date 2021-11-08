@@ -1129,6 +1129,179 @@ class TestJava (BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
+#@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
+class TestJavascript (BaseTestImporter):
+    
+    ext = '.js'
+    
+    #@+others
+    #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
+    def test_regex_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            String.prototype.toJSONString = function()
+            {
+                if(/["\\\\\\x00-\\x1f]/.test(this))
+                    return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+
+                return '"' + this + '"';
+            };
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.35: *3* TestJavascript.test_3
+    def test_3(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            // Restarting
+            function restart()
+            {
+                invokeParamifier(params,"onstart");
+                if(story.isEmpty()) {
+                    var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
+                    for(var t=0; t<tiddlers.length; t++) {
+                        story.displayTiddler("bottom",tiddlers[t].title);
+                    }
+                }
+                window.scrollTo(0,0);
+            }
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.36: *3* TestJavascript.test_4
+    def test_4(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            var c3 = (function () {
+                "use strict";
+
+                // Globals
+                var c3 = { version: "0.0.1"   };
+
+                c3.someFunction = function () {
+                    console.log("Just a demo...");
+                };
+
+                return c3;
+            }());
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.37: *3* TestJavascript.test_5
+    def test_5(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            var express = require('express');
+
+            var app = express.createServer(express.logger());
+
+            app.get('/', function(request, response) {
+            response.send('Hello World!');
+            });
+
+            var port = process.env.PORT || 5000;
+            app.listen(port, function() {
+            console.log("Listening on " + port);
+            });
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.38: *3* TestJavascript.test_639_many_top_level_nodes
+    def test_639_many_top_level_nodes(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
+
+            //=============================================================================
+            // rpg_core.js v1.3.0
+            //=============================================================================
+
+            //-----------------------------------------------------------------------------
+            /**
+             * This is not a class, but contains some methods that will be added to the
+             * standard Javascript objects.
+             *
+             * @class JsExtensions
+             */
+            function JsExtensions() {
+                throw new Error('This is not a class');
+            }
+
+            /**
+             * Returns a number whose value is limited to the given range.
+             *
+             * @method Number.prototype.clamp
+             * @param {Number} min The lower boundary
+             * @param {Number} max The upper boundary
+             * @return {Number} A number in the range (min, max)
+             */
+            Number.prototype.clamp = function(min, max) {
+                return Math.min(Math.max(this, min), max);
+            };
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.39: *3* TestJavascript.test_639_acid_test_1
+    def test_639_acid_test_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+            require([
+                'jquery',
+            ], function(
+                    $,
+                    termjs,
+            ){
+                var header = $("#header")[0];
+                function calculate_size() {
+                    var height = $(window).height() - header.offsetHeight;
+                }
+                page.show_header();
+                window.onresize = function() {
+                  terminal.socket.send(JSON.stringify([
+                        "set_size", geom.rows, geom.cols,
+                        $(window).height(), $(window).width()])
+                    );
+                };
+                window.terminal = terminal;
+            });
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.40: *3* TestJavascript.test_639_acid_test_2
+    def test_639_acid_test_2(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+            require([
+                'jquery',
+            ], function(
+                    $,
+                    termjs,
+            ){
+                var head = "head"
+                function f1() {
+                    var head1 = "head1"
+                    function f11 () {
+                        var v11 ="v1.1"
+                    }
+                    var middle1 = "middle1"
+                    function f12 () {
+                        var v12 ="v1.2"
+                    }
+                    var tail1 = "tail1"
+                }
+                var middle = "middle"
+                function f2() {
+                    var head2 = "head2"
+                    function f21 () {
+                        var v21 ="2.1"
+                    }
+                    var middle2 = "middle2"
+                    function f22 () {
+                        var v22 = "2.2.1"
+                    }
+                    var tail2 = "tail2"
+                }
+                var tail = "tail"
+            });
+        """)
+        self.run_test(c.p, s)
+    #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
     
@@ -1347,173 +1520,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904122826.1: *3* Javascript tests
-    #@+node:ekr.20210904065459.34: *4* TestImport.test_Javascript_regex_1
-    def test_Javascript_regex_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            String.prototype.toJSONString = function()
-            {
-                if(/["\\\\\\x00-\\x1f]/.test(this))
-                    return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-
-                return '"' + this + '"';
-            };
-        """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.35: *4* TestImport.test_Javascript_3
-    def test_Javascript_3(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            // Restarting
-            function restart()
-            {
-                invokeParamifier(params,"onstart");
-                if(story.isEmpty()) {
-                    var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
-                    for(var t=0; t<tiddlers.length; t++) {
-                        story.displayTiddler("bottom",tiddlers[t].title);
-                    }
-                }
-                window.scrollTo(0,0);
-            }
-        """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.36: *4* TestImport.test_Javascript_4
-    def test_Javascript_4(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            var c3 = (function () {
-                "use strict";
-
-                // Globals
-                var c3 = { version: "0.0.1"   };
-
-                c3.someFunction = function () {
-                    console.log("Just a demo...");
-                };
-
-                return c3;
-            }());
-        """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.37: *4* TestImport.test_Javascript_5
-    def test_Javascript_5(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            var express = require('express');
-
-            var app = express.createServer(express.logger());
-
-            app.get('/', function(request, response) {
-            response.send('Hello World!');
-            });
-
-            var port = process.env.PORT || 5000;
-            app.listen(port, function() {
-            console.log("Listening on " + port);
-            });
-        """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.38: *4* TestImport.test_Javascript_639_many_top_level_nodes
-    def test_Javascript_639_many_top_level_nodes(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
-
-            //=============================================================================
-            // rpg_core.js v1.3.0
-            //=============================================================================
-
-            //-----------------------------------------------------------------------------
-            /**
-             * This is not a class, but contains some methods that will be added to the
-             * standard Javascript objects.
-             *
-             * @class JsExtensions
-             */
-            function JsExtensions() {
-                throw new Error('This is not a class');
-            }
-
-            /**
-             * Returns a number whose value is limited to the given range.
-             *
-             * @method Number.prototype.clamp
-             * @param {Number} min The lower boundary
-             * @param {Number} max The upper boundary
-             * @return {Number} A number in the range (min, max)
-             */
-            Number.prototype.clamp = function(min, max) {
-                return Math.min(Math.max(this, min), max);
-            };
-        """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.39: *4* TestImport.test_Javascript_639_acid_test_1
-    def test_Javascript_639_acid_test_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
-            require([
-                'jquery',
-            ], function(
-                    $,
-                    termjs,
-            ){
-                var header = $("#header")[0];
-                function calculate_size() {
-                    var height = $(window).height() - header.offsetHeight;
-                }
-                page.show_header();
-                window.onresize = function() {
-                  terminal.socket.send(JSON.stringify([
-                        "set_size", geom.rows, geom.cols,
-                        $(window).height(), $(window).width()])
-                    );
-                };
-                window.terminal = terminal;
-            });
-        """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.40: *4* TestImport.test_Javascript_639_acid_test_2
-    def test_Javascript_639_acid_test_2(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
-            require([
-                'jquery',
-            ], function(
-                    $,
-                    termjs,
-            ){
-                var head = "head"
-                function f1() {
-                    var head1 = "head1"
-                    function f11 () {
-                        var v11 ="v1.1"
-                    }
-                    var middle1 = "middle1"
-                    function f12 () {
-                        var v12 ="v1.2"
-                    }
-                    var tail1 = "tail1"
-                }
-                var middle = "middle"
-                function f2() {
-                    var head2 = "head2"
-                    function f21 () {
-                        var v21 ="2.1"
-                    }
-                    var middle2 = "middle2"
-                    function f22 () {
-                        var v22 = "2.2.1"
-                    }
-                    var tail2 = "tail2"
-                }
-                var tail = "tail"
-            });
-        """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
     #@+node:ekr.20210904122840.1: *3* Org mode tests
     #@+node:ekr.20210904065459.41: *4* TestImport.test_org_pattern
     def test_org_pattern(self):
