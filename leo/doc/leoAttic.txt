@@ -6897,7 +6897,7 @@ def convert_node(self, c, p, target):
     result.append(f"{indent}self.runTest(before, after, i, j, func)\n")
     # Set the body text!
     test_node.b = ''.join(result)
-#@+node:ekr.20070713082220: *3* ic.scannerUnitTest (uses GeneralTestCase)
+#@+node:ekr.20070713082220: *3* ic.scannerUnitTest
 def scannerUnitTest(self, p, s, ext):
     """
     Run a unit test of an import scanner,
