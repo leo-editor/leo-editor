@@ -348,7 +348,11 @@ if QtWidgets:
                 if self.verbose:
                     print("No path given")
                 self.quit()
+                return
+            self.starting_directory = path
+            os.chdir(path)
             self.files_list = self.get_files(path)
+            self.slide_number = -1
             self.sort(self.sort_kind)
             self.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
@@ -401,6 +405,8 @@ if QtWidgets:
             if not self.files_list:
                 print(f"No slides found in {path!r}")
                 return False
+            self.starting_directory = path
+            os.chdir(path)
             n = len(self.files_list)
             if self.verbose:
                 print(f"Found {n} picture{g.plural(n)} in {path}")

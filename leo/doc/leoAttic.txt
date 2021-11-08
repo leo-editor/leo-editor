@@ -6897,6 +6897,30 @@ def convert_node(self, c, p, target):
     result.append(f"{indent}self.runTest(before, after, i, j, func)\n")
     # Set the body text!
     test_node.b = ''.join(result)
+#@+node:ekr.20070713082220: *3* ic.scannerUnitTest
+def scannerUnitTest(self, p, s, ext):
+    """
+    Run a unit test of an import scanner,
+    i.e., create a tree from string s at location p.
+    """
+    assert ext, g.callers()
+    self.treeType = '@file'  # Fix #352.
+    fileName = 'test'
+    # Run the test.
+    parent = p.insertAsLastChild()
+    kind = self.compute_unit_test_kind(ext)
+    parent.h = f"{kind} {fileName}"
+    self.createOutline(parent=parent.copy(), ext=ext, s=s)
+#@+node:ekr.20170405201254.1: *4* ic.compute_unit_test_kind
+def compute_unit_test_kind(self, ext):
+    """Return kind from the given extention."""
+    aClass = g.app.classDispatchDict.get(ext)
+    if aClass:
+        d2 = g.app.atAutoDict
+        for z in d2:
+            if d2.get(z) == aClass:
+                return z
+    return '@file'
 #@-all
 #@@nosearch
 #@-leo
