@@ -1198,9 +1198,6 @@ class LeoImportCommands:
 
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
-    def orgUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.org')
-
     def otlUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.otl')
 

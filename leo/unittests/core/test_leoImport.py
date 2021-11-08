@@ -1520,165 +1520,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904122840.1: *3* Org mode tests
-    #@+node:ekr.20210904065459.41: *4* TestImport.test_org_pattern
-    def test_org_pattern(self):
-        c = self.c
-        x = org.Org_Importer(c.importCommands, atAuto=False)
-        pattern = x.org_pattern
-        table = (
-            # 'body * line',
-            '* line 1',
-            '** level 2',
-        )
-        for line in table:
-            m = pattern.match(line)
-            # print('%20s ==> (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
-            assert m, repr(line)
-    #@+node:ekr.20210904065459.42: *4* TestImport.test_org_1
-    def test_org_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            * Section 1
-            Sec 1.
-            * Section 2
-            Sec 2.
-            ** Section 2-1
-            Sec 2.1
-            *** Section 2-1-1
-            Sec 2.1.1
-            * Section 3
-            ** Section 3.1
-            Sec 3.1
-        """)
-        table = (
-            'Section 1',
-            'Section 2', 'Section 2-1', 'Section 2-1-1',
-            'Section 3', 'Section 3.1',
-        )
-        c.importCommands.orgUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.43: *4* TestImport.test_org_tags
-    def test_org_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            * Section 1 :tag1:
-            * Section 2 :tag2:
-            * Section 3 :tag3:tag4:
-        """)
-        table = (
-            'Section 1 :tag1:',
-            'Section 2 :tag2:',
-            'Section 3 :tag3:tag4:',
-        )
-        c.importCommands.orgUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.44: *4* TestImport.test_org_intro
-    def test_org_intro(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            Intro line.
-            * Section 1
-            Sec 1.
-            * Section 2
-            Sec 2.
-        """)
-        table = (
-            'Section 1',
-            'Section 2',
-        )
-        c.importCommands.orgUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.45: *4* TestImport.test_org_552
-    def test_org_552(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            * Events
-              :PROPERTIES:
-              :CATEGORY: events
-              :END:
-            ** 整理个人生活
-            *** 每周惯例
-        """)
-        table = (
-            'Events',
-            '整理个人生活',
-            '每周惯例',
-        )
-        c.importCommands.orgUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, g.toUnicode(h))
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.46: *4* TestImport.test_org_1074
-    def test_org_1074(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            *  Test
-            First line.
-        """)
-        table = (
-            ' Test',
-        )
-        c.importCommands.orgUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, g.toUnicode(h))
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.47: *4* TestImport.test_org_placeholder
-    def test_org_placeholder(self):
-        c = self.c
-        # insert test for org here.
-        s = textwrap.dedent("""\
-            * Section 1
-            Sec 1.
-            * Section 2
-            Sec 2.
-            ** Section 2-1
-            Sec 2.1
-            *** Section 2-1-1
-            Sec 2.1.1
-            * Section 3
-            ****** Section 3-1-1-1-1-1
-            : Sec 3-1-1-1-1-1
-            ** Section 3.1
-            Sec 3.1
-        """)
-        table = (
-            'Section 1',
-            'Section 2', 'Section 2-1', 'Section 2-1-1',
-            'Section 3',
-            'placeholder', 'placeholder', 'placeholder', 'placeholder',
-            'Section 3-1-1-1-1-1',
-            'Section 3.1',
-        )
-        g.app.suppressImportChecks = True
-        c.importCommands.orgUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904122853.1: *3* Otl tests
     #@+node:ekr.20210904065459.48: *4* TestImport.test_otl_vim_outline_mode
     def test_otl_vim_outline_mode(self):
@@ -4103,6 +3944,171 @@ class TestMisc (BaseTestImporter):
             ]
         importer = python.Py_Importer(c.importCommands, atAuto=True)
         importer.test_scan_state(tests, State)
+    #@-others
+#@+node:ekr.20211108080955.1: ** class TestOrg (BaseTestImporter)
+class TestOrg (BaseTestImporter):
+    
+    ext = '.org'
+    
+    #@+others
+    #@+node:ekr.20210904065459.42: *3* TestOrg.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            * Section 1
+            Sec 1.
+            * Section 2
+            Sec 2.
+            ** Section 2-1
+            Sec 2.1
+            *** Section 2-1-1
+            Sec 2.1.1
+            * Section 3
+            ** Section 3.1
+            Sec 3.1
+        """)
+        table = (
+            'Section 1',
+            'Section 2', 'Section 2-1', 'Section 2-1-1',
+            'Section 3', 'Section 3.1',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
+    def test_1074(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            *  Test
+            First line.
+        """)
+        table = (
+            ' Test',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, g.toUnicode(h))
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
+    def test_552(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            * Events
+              :PROPERTIES:
+              :CATEGORY: events
+              :END:
+            ** 整理个人生活
+            *** 每周惯例
+        """)
+        table = (
+            'Events',
+            '整理个人生活',
+            '每周惯例',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, g.toUnicode(h))
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
+    def test_intro(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            Intro line.
+            * Section 1
+            Sec 1.
+            * Section 2
+            Sec 2.
+        """)
+        table = (
+            'Section 1',
+            'Section 2',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
+    def test_pattern(self):
+        c = self.c
+        x = org.Org_Importer(c.importCommands, atAuto=False)
+        pattern = x.org_pattern
+        table = (
+            # 'body * line',
+            '* line 1',
+            '** level 2',
+        )
+        for line in table:
+            m = pattern.match(line)
+            # print('%20s ==> (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
+            assert m, repr(line)
+    #@+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
+    def test_placeholder(self):
+        c = self.c
+        # insert test for org here.
+        s = textwrap.dedent("""\
+            * Section 1
+            Sec 1.
+            * Section 2
+            Sec 2.
+            ** Section 2-1
+            Sec 2.1
+            *** Section 2-1-1
+            Sec 2.1.1
+            * Section 3
+            ****** Section 3-1-1-1-1-1
+            : Sec 3-1-1-1-1-1
+            ** Section 3.1
+            Sec 3.1
+        """)
+        table = (
+            'Section 1',
+            'Section 2', 'Section 2-1', 'Section 2-1-1',
+            'Section 3',
+            'placeholder', 'placeholder', 'placeholder', 'placeholder',
+            'Section 3-1-1-1-1-1',
+            'Section 3.1',
+        )
+        g.app.suppressImportChecks = True
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
+    def test_tags(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            * Section 1 :tag1:
+            * Section 2 :tag2:
+            * Section 3 :tag3:tag4:
+        """)
+        table = (
+            'Section 1 :tag1:',
+            'Section 2 :tag2:',
+            'Section 3 :tag3:tag4:',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
