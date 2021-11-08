@@ -1198,20 +1198,8 @@ class LeoImportCommands:
 
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
-    def ctextUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.txt')
-
     def elispUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.el')
-
-    def htmlUnitTest(self, p, s):
-        c = self.c
-        # Simulate @data import-html-tags, with *only* standard tags.
-        tags_list = ['html', 'body', 'head', 'div', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
-        c.config.settingsDict = settingsDict
-        c.config.set(p, 'data', 'import-html-tags', tags_list, warn=True)
-        self.scannerUnitTest(p, s, ext='.htm')
 
     def javaUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.java')
@@ -1242,18 +1230,6 @@ class LeoImportCommands:
 
     def typeScriptUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.ts')
-
-    def xmlUnitTest(self, p, s):
-        c = self.c
-        # Simulate @data import-xml-tags with *only* standard tags.
-        tags_list = ['html', 'body', 'head', 'div', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
-        c.config.settingsDict = settingsDict
-        c.config.set(p, 'data', 'import-xml-tags', tags_list, warn=True)
-        self.scannerUnitTest(p, s, ext='.xml')
-
-    def defaultImporterUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
     def scannerUnitTest(self, p, s, ext):
         """

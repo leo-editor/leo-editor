@@ -501,6 +501,425 @@ class TestDart (BaseTestImporter):
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
     #@-others
+#@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
+class TestHtml (BaseTestImporter):
+    
+    ext = '.htm'
+    
+    def setUp(self):
+        super().setUp()
+        c = self.c
+        # Simulate @data import-html-tags, with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
+    
+    #@+others
+    #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
+    def test_lowercase_tags(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class="bodystring">
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
+        table = (
+            '<html>',
+            '<head>',
+            '<body class="bodystring">',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
+    def test_multiple_tags_on_a_line(self):
+        c = self.c
+        # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
+        # NOT: tr, td, tbody, etc.
+        s = textwrap.dedent("""\
+        <html>
+        <body>
+            <table id="0">
+                <tr valign="top">
+                <td width="619">
+                <table id="2"> <tr valign="top"> <td width="377">
+                    <table id="3">
+                    <tr>
+                    <td width="368">
+                    <table id="4">
+                        <tbody id="5">
+                        <tr valign="top">
+                        <td width="550">
+                        <table id="6">
+                            <tbody id="6">
+                            <tr>
+                            <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </td>
+                        </tr><tr>
+                        <td width="100%" colspan="2">
+                        <br />
+                        </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </td>
+                    </tr>
+                </table>
+                <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
+                <!-- View Second part --> </td> </tr></table>
+            <DIV class="webonly">
+                <script src="/scripts/footer.js"></script>
+            </DIV>
+            </td>
+            </tr>
+            <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+            <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+            <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+        </body>
+        </html>
+        """)
+        table = (
+            '<html>',
+            '<body>',
+            '<table id="0">',
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
+    def test_multple_node_completed_on_a_line(self):
+        c = self.c
+
+        s = textwrap.dedent("""\
+            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
+            <html><head>headline</head><body>body</body></html>
+        """)
+        table = (
+            # The new xml scanner doesn't generate any new nodes,
+            # because the scan state hasn't changed at the end of the line!
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            assert p2
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
+    def test_multple_node_starts_on_a_line(self):
+        c = self.c
+        s = '''
+        @language html
+        <html>
+        <head>headline</head>
+        <body>body</body>
+        </html>
+        '''
+        table = (
+            '<html>',
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            assert p2
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
+    def test_underindented_comment(self):
+        c = self.c
+        s = r'''
+        <td width="550">
+        <table cellspacing="0" cellpadding="0" width="600" border="0">
+            <td class="blutopgrabot" height="28"></td>
+
+            <!-- The indentation of this element causes the problem. -->
+            <table>
+
+        <!--
+        <div align="center">
+        <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+        </div>
+        -->
+
+        </table>
+        </table>
+
+        <p>Paragraph</p>
+        </td>
+
+        '''
+        table = (
+            '<table cellspacing="0" cellpadding="0" width="600" border="0">',
+            '<table>',
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+
+
+    #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
+    def test_uppercase_tags(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <HTML>
+            <HEAD>
+                <title>Bodystring</title>
+            </HEAD>
+            <BODY class='bodystring'>
+            <DIV id='bodydisplay'></DIV>
+            </BODY>
+            </HTML>
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
+    def test_improperly_nested_tags(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <body>
+
+            <!-- OOPS: the div and p elements not properly nested.-->
+            <!-- OOPS: this table got generated twice. -->
+
+            <p id="P1">
+            <div id="D666">Paragraph</p> <!-- P1 -->
+            <p id="P2">
+
+            <TABLE id="T666"></TABLE></p> <!-- P2 -->
+            </div>
+            </p> <!-- orphan -->
+
+            </body>
+        """)
+        table = (
+            ('<body>'),
+            ('<div id="D666">'),
+        )
+
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+
+    #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
+    def test_improperly_terminated_tags(self):
+        c = self.c
+        s = r'''
+        <html>
+
+        <head>
+            <!-- oops: link elements terminated two different ways -->
+            <link id="L1">
+            <link id="L2">
+            <link id="L3" />
+            <link id='L4' />
+
+            <title>TITLE</title>
+
+        <!-- oops: missing tags. -->
+        '''
+        table = (
+            '<html>',
+            '<head>',
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
+    def test_improperly_terminated_tags2(self):
+        c = self.c
+        s = '''
+        <html>
+        <head>
+            <!-- oops: link elements terminated two different ways -->
+            <link id="L1">
+            <link id="L2">
+            <link id="L3" />
+            <link id='L4' />
+
+            <title>TITLE</title>
+
+        </head>
+        </html>
+        '''
+        table = ('<html>', '<head>')  # , '<link id="L1">'
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.28: *3* TestHtml.test_brython
+    def test_brython(self):
+        c = self.c
+        # https://github.com/leo-editor/leo-editor/issues/479
+        s = textwrap.dedent('''\
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <script type="text/python3">
+            """Code for the header menu"""
+            from browser import document as doc
+            from browser import html
+            import header
+
+            qs_lang,language = header.show()
+
+            doc["content"].html = doc["content_%s" %language].html
+
+            if qs_lang:
+                doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
+
+            def ch_lang(ev):
+                sel = ev.target
+                new_lang = sel.options[sel.selectedIndex].value
+                doc.location.href = 'index.html?lang=%s' %new_lang
+
+            for elt in doc[html.SELECT]:
+                if elt.id.startswith('change_lang_'):
+                    doc[elt.id].bind('change',ch_lang)
+            </script>
+
+            <script type="text/python3">
+            """Code for the clock"""
+
+            import time
+            import math
+            import datetime
+
+            from browser import document as doc
+            import browser.timer
+
+            sin,cos = math.sin,math.cos
+            width,height = 250,250 # canvas dimensions
+            ray = 100 # clock ray
+
+            def needle(angle,r1,r2,color="#000000"):
+                # draw a needle at specified angle in specified color
+                # r1 and r2 are percentages of clock ray
+                x1 = width/2-ray*cos(angle)*r1
+                y1 = height/2-ray*sin(angle)*r1
+                x2 = width/2+ray*cos(angle)*r2
+                y2 = height/2+ray*sin(angle)*r2
+                ctx.beginPath()
+                ctx.strokeStyle = color
+                ctx.moveTo(x1,y1)
+                ctx.lineTo(x2,y2)
+                ctx.stroke()
+
+            def set_clock():
+                # erase clock
+                ctx.beginPath()
+                ctx.fillStyle = "#FFF"
+                ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
+                ctx.fill()
+
+                # redraw hours
+                show_hours()
+
+                # print day
+                now = datetime.datetime.now()
+                day = now.day
+                ctx.font = "bold 14px Arial"
+                ctx.textAlign = "center"
+                ctx.textBaseline = "middle"
+                ctx.fillStyle="#FFF"
+                ctx.fillText(day,width*0.7,height*0.5)
+
+                # draw needles for hour, minute, seconds
+                ctx.lineWidth = 3
+                hour = now.hour%12 + now.minute/60
+                angle = hour*2*math.pi/12 - math.pi/2
+                needle(angle,0.05,0.5)
+                minute = now.minute
+                angle = minute*2*math.pi/60 - math.pi/2
+                needle(angle,0.05,0.85)
+                ctx.lineWidth = 1
+                second = now.second+now.microsecond/1000000
+                angle = second*2*math.pi/60 - math.pi/2
+                needle(angle,0.05,0.85,"#FF0000") # in red
+
+            def show_hours():
+                ctx.beginPath()
+                ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
+                ctx.fillStyle = "#000"
+                ctx.fill()
+                for i in range(1,13):
+                    angle = i*math.pi/6-math.pi/2
+                    x3 = width/2+ray*cos(angle)*0.75
+                    y3 = height/2+ray*sin(angle)*0.75
+                    ctx.font = "20px Arial"
+                    ctx.textAlign = "center"
+                    ctx.textBaseline = "middle"
+                    ctx.fillText(i,x3,y3)
+                # cell for day
+                ctx.fillStyle = "#000"
+                ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
+
+            canvas = doc["clock"]
+            # draw clock border
+            if hasattr(canvas,'getContext'):
+                ctx = canvas.getContext("2d")
+                ctx.beginPath()
+                ctx.lineWidth = 10
+                ctx.arc(width/2,height/2,ray,0,2*math.pi)
+                ctx.stroke()
+
+                for i in range(60):
+                    ctx.lineWidth = 1
+                    if i%5 == 0:
+                        ctx.lineWidth = 3
+                    angle = i*2*math.pi/60 - math.pi/3
+                    x1 = width/2+ray*cos(angle)
+                    y1 = height/2+ray*sin(angle)
+                    x2 = width/2+ray*cos(angle)*0.9
+                    y2 = height/2+ray*sin(angle)*0.9
+                    ctx.beginPath()
+                    ctx.moveTo(x1,y1)
+                    ctx.lineTo(x2,y2)
+                    ctx.stroke()
+                browser.timer.set_interval(set_clock,100)
+                show_hours()
+            else:
+                doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
+            </script>
+
+            <title>Brython</title>
+            <link rel="stylesheet" href="Brython_files/doc_brython.css">
+            </head>
+            <body onload="brython({debug:1, cache:'none'})">
+            </body></html>
+        ''')
+        table = (
+            '<html>',
+            '<head>',
+            '<body onload="brython({debug:1, cache:\'none\'})">',
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        assert p2
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+
+    #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
     
@@ -779,410 +1198,6 @@ class TestMisc (BaseTestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904122741.1: *3* HTML tests
-    #@+node:ekr.20210904065459.19: *4* TestImport.test_html_lowercase_tags
-    def test_html_lowercase_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class="bodystring">
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """)
-        table = (
-            '<html>',
-            '<head>',
-            '<body class="bodystring">',
-        )
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.20: *4* TestImport.test_html_multiple_tags_on_a_line
-    def test_html_multiple_tags_on_a_line(self):
-        c = self.c
-        # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
-        # NOT: tr, td, tbody, etc.
-        s = textwrap.dedent("""\
-        <html>
-        <body>
-            <table id="0">
-                <tr valign="top">
-                <td width="619">
-                <table id="2"> <tr valign="top"> <td width="377">
-                    <table id="3">
-                    <tr>
-                    <td width="368">
-                    <table id="4">
-                        <tbody id="5">
-                        <tr valign="top">
-                        <td width="550">
-                        <table id="6">
-                            <tbody id="6">
-                            <tr>
-                            <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        </td>
-                        </tr><tr>
-                        <td width="100%" colspan="2">
-                        <br />
-                        </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    </td>
-                    </tr>
-                </table>
-                <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
-                <!-- View Second part --> </td> </tr></table>
-            <DIV class="webonly">
-                <script src="/scripts/footer.js"></script>
-            </DIV>
-            </td>
-            </tr>
-            <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
-            <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
-            <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
-        </body>
-        </html>
-        """)
-        table = (
-            '<html>',
-            '<body>',
-            '<table id="0">',
-        )
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.21: *4* TestImport.test_html_multple_node_completed_on_a_line
-    def test_html_multple_node_completed_on_a_line(self):
-        c = self.c
-
-        s = textwrap.dedent("""\
-            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
-            <html><head>headline</head><body>body</body></html>
-        """)
-        table = (
-            # The new xml scanner doesn't generate any new nodes,
-            # because the scan state hasn't changed at the end of the line!
-        )
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.22: *4* TestImport.test_html_multple_node_starts_on_a_line
-    def test_html_multple_node_starts_on_a_line(self):
-        c = self.c
-        s = '''
-        @language html
-        <html>
-        <head>headline</head>
-        <body>body</body>
-        </html>
-        '''
-        table = (
-            '<html>',
-        )
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.23: *4* TestImport.test_html_underindented_comment
-    def test_html_underindented_comment(self):
-        c = self.c
-        s = r'''
-        <td width="550">
-        <table cellspacing="0" cellpadding="0" width="600" border="0">
-            <td class="blutopgrabot" height="28"></td>
-
-            <!-- The indentation of this element causes the problem. -->
-            <table>
-
-        <!--
-        <div align="center">
-        <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
-        </div>
-        -->
-
-        </table>
-        </table>
-
-        <p>Paragraph</p>
-        </td>
-
-        '''
-        table = (
-            '<table cellspacing="0" cellpadding="0" width="600" border="0">',
-            '<table>',
-        )
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-
-
-    #@+node:ekr.20210904065459.24: *4* TestImport.test_html_uppercase_tags
-    def test_html_uppercase_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <HTML>
-            <HEAD>
-                <title>Bodystring</title>
-            </HEAD>
-            <BODY class='bodystring'>
-            <DIV id='bodydisplay'></DIV>
-            </BODY>
-            </HTML>
-        """)
-        c.importCommands.htmlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.25: *4* TestImport.test_html_improperly_nested_tags
-    def test_html_improperly_nested_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <body>
-
-            <!-- OOPS: the div and p elements not properly nested.-->
-            <!-- OOPS: this table got generated twice. -->
-
-            <p id="P1">
-            <div id="D666">Paragraph</p> <!-- P1 -->
-            <p id="P2">
-
-            <TABLE id="T666"></TABLE></p> <!-- P2 -->
-            </div>
-            </p> <!-- orphan -->
-
-            </body>
-        """)
-        table = (
-            ('<body>'),
-            ('<div id="D666">'),
-        )
-
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-
-    #@+node:ekr.20210904065459.26: *4* TestImport.test_html_improperly_terminated_tags
-    def test_html_improperly_terminated_tags(self):
-        c = self.c
-        s = r'''
-        <html>
-
-        <head>
-            <!-- oops: link elements terminated two different ways -->
-            <link id="L1">
-            <link id="L2">
-            <link id="L3" />
-            <link id='L4' />
-
-            <title>TITLE</title>
-
-        <!-- oops: missing tags. -->
-        '''
-        table = (
-            '<html>',
-            '<head>',
-        )
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.27: *4* TestImport.test_html_improperly_terminated_tags2
-    def test_html_improperly_terminated_tags2(self):
-        c = self.c
-        s = '''
-        <html>
-        <head>
-            <!-- oops: link elements terminated two different ways -->
-            <link id="L1">
-            <link id="L2">
-            <link id="L3" />
-            <link id='L4' />
-
-            <title>TITLE</title>
-
-        </head>
-        </html>
-        '''
-        table = ('<html>', '<head>')  # , '<link id="L1">'
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.28: *4* TestImport.test_html_brython
-    def test_html_brython(self):
-        c = self.c
-        # https://github.com/leo-editor/leo-editor/issues/479
-        s = textwrap.dedent('''\
-            <!DOCTYPE html>
-            <html>
-            <head>
-            <script type="text/python3">
-            """Code for the header menu"""
-            from browser import document as doc
-            from browser import html
-            import header
-
-            qs_lang,language = header.show()
-
-            doc["content"].html = doc["content_%s" %language].html
-
-            if qs_lang:
-                doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
-
-            def ch_lang(ev):
-                sel = ev.target
-                new_lang = sel.options[sel.selectedIndex].value
-                doc.location.href = 'index.html?lang=%s' %new_lang
-
-            for elt in doc[html.SELECT]:
-                if elt.id.startswith('change_lang_'):
-                    doc[elt.id].bind('change',ch_lang)
-            </script>
-
-            <script type="text/python3">
-            """Code for the clock"""
-
-            import time
-            import math
-            import datetime
-
-            from browser import document as doc
-            import browser.timer
-
-            sin,cos = math.sin,math.cos
-            width,height = 250,250 # canvas dimensions
-            ray = 100 # clock ray
-
-            def needle(angle,r1,r2,color="#000000"):
-                # draw a needle at specified angle in specified color
-                # r1 and r2 are percentages of clock ray
-                x1 = width/2-ray*cos(angle)*r1
-                y1 = height/2-ray*sin(angle)*r1
-                x2 = width/2+ray*cos(angle)*r2
-                y2 = height/2+ray*sin(angle)*r2
-                ctx.beginPath()
-                ctx.strokeStyle = color
-                ctx.moveTo(x1,y1)
-                ctx.lineTo(x2,y2)
-                ctx.stroke()
-
-            def set_clock():
-                # erase clock
-                ctx.beginPath()
-                ctx.fillStyle = "#FFF"
-                ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
-                ctx.fill()
-
-                # redraw hours
-                show_hours()
-
-                # print day
-                now = datetime.datetime.now()
-                day = now.day
-                ctx.font = "bold 14px Arial"
-                ctx.textAlign = "center"
-                ctx.textBaseline = "middle"
-                ctx.fillStyle="#FFF"
-                ctx.fillText(day,width*0.7,height*0.5)
-
-                # draw needles for hour, minute, seconds
-                ctx.lineWidth = 3
-                hour = now.hour%12 + now.minute/60
-                angle = hour*2*math.pi/12 - math.pi/2
-                needle(angle,0.05,0.5)
-                minute = now.minute
-                angle = minute*2*math.pi/60 - math.pi/2
-                needle(angle,0.05,0.85)
-                ctx.lineWidth = 1
-                second = now.second+now.microsecond/1000000
-                angle = second*2*math.pi/60 - math.pi/2
-                needle(angle,0.05,0.85,"#FF0000") # in red
-
-            def show_hours():
-                ctx.beginPath()
-                ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
-                ctx.fillStyle = "#000"
-                ctx.fill()
-                for i in range(1,13):
-                    angle = i*math.pi/6-math.pi/2
-                    x3 = width/2+ray*cos(angle)*0.75
-                    y3 = height/2+ray*sin(angle)*0.75
-                    ctx.font = "20px Arial"
-                    ctx.textAlign = "center"
-                    ctx.textBaseline = "middle"
-                    ctx.fillText(i,x3,y3)
-                # cell for day
-                ctx.fillStyle = "#000"
-                ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
-
-            canvas = doc["clock"]
-            # draw clock border
-            if hasattr(canvas,'getContext'):
-                ctx = canvas.getContext("2d")
-                ctx.beginPath()
-                ctx.lineWidth = 10
-                ctx.arc(width/2,height/2,ray,0,2*math.pi)
-                ctx.stroke()
-
-                for i in range(60):
-                    ctx.lineWidth = 1
-                    if i%5 == 0:
-                        ctx.lineWidth = 3
-                    angle = i*2*math.pi/60 - math.pi/3
-                    x1 = width/2+ray*cos(angle)
-                    y1 = height/2+ray*sin(angle)
-                    x2 = width/2+ray*cos(angle)*0.9
-                    y2 = height/2+ray*sin(angle)*0.9
-                    ctx.beginPath()
-                    ctx.moveTo(x1,y1)
-                    ctx.lineTo(x2,y2)
-                    ctx.stroke()
-                browser.timer.set_interval(set_clock,100)
-                show_hours()
-            else:
-                doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
-            </script>
-
-            <title>Brython</title>
-            <link rel="stylesheet" href="Brython_files/doc_brython.css">
-            </head>
-            <body onload="brython({debug:1, cache:'none'})">
-            </body></html>
-        ''')
-        table = (
-            '<html>',
-            '<head>',
-            '<body onload="brython({debug:1, cache:\'none\'})">',
-        )
-        c.importCommands.htmlUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        assert p2
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-
     #@+node:ekr.20210904122815.1: *3* Java tests
     #@+node:ekr.20210904065459.30: *4* TestImport.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
@@ -3882,80 +3897,6 @@ class TestMisc (BaseTestImporter):
         ''')
 
         c.importCommands.typeScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904123056.1: *3* XML tests
-    #@+node:ekr.20210904065459.105: *4* TestImport.test_xml_with_standard_opening_elements
-    def test_xml_with_standard_opening_elements(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <?xml version="1.0" encoding="UTF-8"?>
-            <!DOCTYPE note SYSTEM "Note.dtd">
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class='bodystring'>
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """)
-        table = (
-            (1, "<html>"),
-            (2, "<head>"),
-            (2, "<body class='bodystring'>"),
-        )
-        p = c.p
-        c.importCommands.xmlUnitTest(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.106: *4* TestImport.test_xml_1
-    def test_xml_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class='bodystring'>
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """)
-        table = (
-            (1, "<html>"),
-            (2, "<head>"),
-            (2, "<body class='bodystring'>"),
-        )
-        p = c.p
-        c.importCommands.xmlUnitTest(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p = root.firstChild()
-        assert p, g.tree_to_string(c)
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-
-    #@+node:ekr.20210904065459.108: *4* TestImport.test_xml_non_ascii_tags
-    def test_xml_non_ascii_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <:À.Ç>
-            <Ì>
-            <_.ÌÑ>
-        """)
-        c.importCommands.xmlUnitTest(c.p, s=s)
     #@+node:ekr.20210904071422.1: *3* All other tests
     #@+node:ekr.20210904065459.122: *4* TestImport.test_at_auto_importers
     def test_at_auto_importers(self):
@@ -4453,6 +4394,95 @@ class TestRst(BaseTestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
+class TestXML (BaseTestImporter):
+    
+    ext = '.xml'
+    
+    def setUp(self):
+        super().setUp()
+        c = self.c
+        # Simulate @data import-xml-tags, with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
+    
+    #@+others
+    #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
+    def test_standard_opening_elements(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE note SYSTEM "Note.dtd">
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class='bodystring'>
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
+        table = (
+            (1, "<html>"),
+            (2, "<head>"),
+            (2, "<body class='bodystring'>"),
+        )
+        p = c.p
+        self.run_test(p, s)
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.106: *3* TestXml.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class='bodystring'>
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
+        table = (
+            (1, "<html>"),
+            (2, "<head>"),
+            (2, "<body class='bodystring'>"),
+        )
+        p = c.p
+        self.run_test(p, s)
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p = root.firstChild()
+        assert p, g.tree_to_string(c)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+
+    #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
+    def test_non_ascii_tags(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <:À.Ç>
+            <Ì>
+            <_.ÌÑ>
+        """)
+        self.run_test(c.p, s)
     #@-others
 #@-others
 
