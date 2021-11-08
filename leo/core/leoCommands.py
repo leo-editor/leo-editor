@@ -889,9 +889,6 @@ class Commands:
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-
-        The generator yields all **root** anywhere in the outline that satisfy
-        the predicate. Once a root is found, the generator skips its subtree.
         """
         c = self
         if predicate is None:
@@ -935,9 +932,6 @@ class Commands:
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-
-        The generator yields all **root** anywhere in the outline that satisfy
-        the predicate. Once a root is found, the generator skips its subtree.
         """
         c = self
         if predicate is None:

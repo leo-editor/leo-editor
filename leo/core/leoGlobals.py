@@ -3223,12 +3223,12 @@ def comment_delims_from_extension(filename):
         f"root: {root!r}")
     return '', '', ''
 #@+node:ekr.20170201150505.1: *3* g.findAllValidLanguageDirectives
-def findAllValidLanguageDirectives(p: Pos):
+def findAllValidLanguageDirectives(s: str):
     """Return list of all valid @language directives in p.b"""
-    if not p:
+    if not s.strip():
         return []
     languages = set()
-    for m in g.g_language_pat.finditer(p.b):
+    for m in g.g_language_pat.finditer(s):
         language = m.group(1)
         if g.isValidLanguage(language):
             languages.add(language)
@@ -3256,11 +3256,11 @@ def findTabWidthDirectives(c: Cmdr, p: Pos):
                     w = None
     return w
 #@+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
-def findFirstValidAtLanguageDirective(p: Pos):
-    """Return the first *valid* @language directive in p.b."""
-    if not p:
+def findFirstValidAtLanguageDirective(s: str):
+    """Return the first *valid* @language directive ins."""
+    if not s.strip():
         return None
-    for m in g.g_language_pat.finditer(p.b):
+    for m in g.g_language_pat.finditer(s):
         language = m.group(1)
         if g.isValidLanguage(language):
             return language
@@ -3372,49 +3372,59 @@ def get_directives_dict_list(p: Pos):
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p: Pos):
     """
-    Return the language in effect from the nearest enclosing @<file> node:
-    1. An unambiguous @language directive of the @<file> node.
-    2. The file extension of the @<file> node.
+    Return the language in effect at node p.
+    
+    1. Use an unambiguous @language directive in p itself.
+    2. Search p's "extended parents" for an @<file> node.
+    3. Search p's "extended parents" for an unambiguous @language directive.
     """
     v0 = p.v
 
-    def find_language(p):
-        # #1693: First, scan p.b for an *unambiguous* @language directive.
-        if p.b.strip():
-            languages = g.findAllValidLanguageDirectives(p)
-            if len(languages) == 1:  # An unambiguous language
-                language = languages[0]
-                return language
-        # Second: use the file's extension.
-        if p.isAnyAtFileNode():
-            name = p.anyAtFileNodeName()
+    def find_language(v, phase):
+        """
+        A helper for all searches.
+        Phase one searches only @<file> nodes.
+        """
+        if phase == 1 and not v.isAnyAtFileNode():
+            return None
+        # #1693: Scan v.b for an *unambiguous* @language directive.
+        languages = g.findAllValidLanguageDirectives(v.b)
+        if len(languages) == 1:  # An unambiguous language
+            return languages[0]
+        if v.isAnyAtFileNode():
+            # Use the file's extension.
+            name = v.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
-            ext = ext[1:]  # strip the leading .
+            ext = ext[1:]  # strip the leading period.
             language = g.app.extension_dict.get(ext)
             if g.isValidLanguage(language):
                 return language
         return None
 
-    # First, look at the direct parents.
-    for p in p.self_and_parents(copy=False):
-        language = find_language(p)
-        if language:
-            return language
-    #
-    # #1625: Expand the search for cloned nodes.
-    seen = []  # vnodes that have already been searched.
-    parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
-    while parents:
-        parent_v = parents.pop()
-        if parent_v in seen:
-            continue
-        seen.append(parent_v)
-        language = find_language(parent_v)
-        if language:
-            return language
-        for grand_parent_v in parent_v.parents:
-            if grand_parent_v not in seen:
-                parents.append(grand_parent_v)
+    # First, see if p contains any @language directive.
+    language = g.findFirstValidAtLanguageDirective(p.b)
+    if language:
+        return language
+    # Phase 1: search only @<file> nodes: #2308.
+    # Phase 2: search all nodes.
+    for phase in (1, 2):
+        # Search direct parents.
+        for p2 in p.self_and_parents(copy=False):
+            language = find_language(p2.v, phase)
+            if language:
+                return language
+        # Search all extended parents.
+        seen = []
+        parents = v0.parents[:]  # vnodes whose extended parents are to be searched.
+        while parents:
+            parent_v = parents.pop()
+            if parent_v in seen:
+                continue
+            seen.append(parent_v)
+            language = find_language(parent_v, phase)
+            if language:
+                return language
+            parents.extend(list(z for z in parent_v.parents if z not in seen))
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c: Cmdr, p: Pos):
