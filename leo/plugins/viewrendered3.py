@@ -2148,9 +2148,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 """Test if first or 1st and 2nd cols are numeric"""
                 fields = line.split()
                 numfields = len(fields)
-                numeric = fields[0].replace('.', '').isnumeric()
-                if numfields > 1 and numeric:
-                    numeric = numeric and fields[1].replace('.', '').isnumeric()
+                fields = line.split()
+                numfields = len(fields)
+
+                numeric = False
+                try:
+                    _ = float(fields[0])
+                    if numfields > 1:
+                        _ = float(fields[1])
+                    numeric = True
+                except ValueError:
+                    pass
+
                 return numeric
             #@-<< is_numeric >>
             #@+<< get_data >>
