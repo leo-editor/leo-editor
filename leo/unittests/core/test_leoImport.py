@@ -23,11 +23,12 @@ import leo.plugins.importers.xml as xml
 #@+node:ekr.20210904064440.3: ** class TestImporter(LeoUnitTest):
 class TestImporter(LeoUnitTest):
     """Test cases for leoImport.py"""
-    #@+others
-    #@+node:ekr.20210904064548.1: *3* TestImporter.setUp
+    
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
+
+    #@+others
     #@+node:ekr.20210904065613.1: *3* Tests of @auto
     #@+node:ekr.20210904143515.1: *4* .ini tests
     #@+node:ekr.20210904065459.29: *5* TestImport.test_ini_test_1
@@ -3679,215 +3680,6 @@ class TestImporter(LeoUnitTest):
             <_.ÌÑ>
         """)
         c.importCommands.xmlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904071301.1: *3* Tests of @auto-md
-    #@+node:ekr.20210904065459.109: *4* TestImport.test_md_import_test
-    def test_md_import_test(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #Top
-            The top section
-
-            ##Section 1
-            section 1, line 1
-            section 1, line 2
-
-            ##Section 2
-            section 2, line 1
-
-            ###Section 2.1
-            section 2.1, line 1
-
-            ####Section 2.1.1
-            section 2.2.1 line 1
-            The next section is empty. It must not be deleted.
-
-            ###Section 2.2
-
-            ##Section 3
-            Section 3, line 1
-    """)
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        after = c.p.nodeAfterTree()
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.110: *4* TestImport.test_md_import_test_rst_style
-    def test_md_import_test_rst_style(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            Top
-            ====
-
-            The top section
-
-            Section 1
-            ---------
-
-            section 1, line 1
-            -- Not an underline
-            secttion 1, line 2
-
-            Section 2
-            ---------
-
-            section 2, line 1
-
-            ###Section 2.1
-
-            section 2.1, line 1
-
-            ####Section 2.1.1
-
-            section 2.2.1 line 1
-
-            ###Section 2.2
-            section 2.2, line 1.
-
-            Section 3
-            ---------
-
-            section 3, line 1
-    """)
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        p = c.p
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.111: *4* TestImport.test_markdown_importer_basic
-    def test_markdown_importer_basic(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            After header text
-
-            ##Subheader
-
-            Not an underline
-
-            ----------------
-
-            After subheader text
-
-            #Last header: no text
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                'Last header: no text',
-        )
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.112: *4* TestImport.test_markdown_importer_implicit_section
-    def test_markdown_importer_implicit_section(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            After header text
-
-            ##Subheader
-
-            Not an underline
-
-            ----------------
-
-            This *should* be a section
-            ==========================
-
-            After subheader text
-
-            #Last header: no text
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                    'This *should* be a section',
-                'Last header: no text',
-        )
-        g.app.suppressImportChecks = True
-            # Required, because the implicit underlining *must*
-            # cause the perfect-import test to fail!
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.114: *4* TestImport.test_markdown_github_syntax
-    def test_markdown_github_syntax(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            `​``python
-            loads.init = {
-                Chloride: 11.5,
-                TotalP: 0.002,
-            }
-            `​``
-            #Last header
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-            'Last header',
-        )
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904071345.1: *3* Tests of @auto-rst
     #@+node:ekr.20210904065459.115: *4* TestImport.test_rST_import_test
     def test_rST_import_test(self):
@@ -4379,6 +4171,219 @@ class TestImporter(LeoUnitTest):
             ]
         importer = python.Py_Importer(c.importCommands, atAuto=True)
         importer.test_scan_state(tests, State)
+    #@-others
+#@+node:ekr.20211108043230.1: ** class TestMarkdownImporter(TestImporter):
+class TestMarkdownImporter(TestImporter):
+    
+    #@+others
+    #@+node:ekr.20210904065459.109: *3* TestImport.test_md_import_test
+    def test_md_import_test(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            #Top
+            The top section
+
+            ##Section 1
+            section 1, line 1
+            section 1, line 2
+
+            ##Section 2
+            section 2, line 1
+
+            ###Section 2.1
+            section 2.1, line 1
+
+            ####Section 2.1.1
+            section 2.2.1 line 1
+            The next section is empty. It must not be deleted.
+
+            ###Section 2.2
+
+            ##Section 3
+            Section 3, line 1
+    """)
+        table = (
+            (1, 'Top'),
+            (2, 'Section 1'),
+            (2, 'Section 2'),
+            (3, 'Section 2.1'),
+            (4, 'Section 2.1.1'),
+            (3, 'Section 2.2'),
+            (2, 'Section 3'),
+        )
+        c.importCommands.markdownUnitTest(c.p, s=s)
+        after = c.p.nodeAfterTree()
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.110: *3* TestImport.test_md_import_test_rst_style
+    def test_md_import_test_rst_style(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            Top
+            ====
+
+            The top section
+
+            Section 1
+            ---------
+
+            section 1, line 1
+            -- Not an underline
+            secttion 1, line 2
+
+            Section 2
+            ---------
+
+            section 2, line 1
+
+            ###Section 2.1
+
+            section 2.1, line 1
+
+            ####Section 2.1.1
+
+            section 2.2.1 line 1
+
+            ###Section 2.2
+            section 2.2, line 1.
+
+            Section 3
+            ---------
+
+            section 3, line 1
+    """)
+        c.importCommands.markdownUnitTest(c.p, s=s)
+        table = (
+            (1, 'Top'),
+            (2, 'Section 1'),
+            (2, 'Section 2'),
+            (3, 'Section 2.1'),
+            (4, 'Section 2.1.1'),
+            (3, 'Section 2.2'),
+            (2, 'Section 3'),
+        )
+        p = c.p
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.111: *3* TestImport.test_markdown_importer_basic
+    def test_markdown_importer_basic(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            After header text
+
+            ##Subheader
+
+            Not an underline
+
+            ----------------
+
+            After subheader text
+
+            #Last header: no text
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+                'Subheader',
+                'Last header: no text',
+        )
+        c.importCommands.markdownUnitTest(c.p, s=s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.112: *3* TestImport.test_markdown_importer_implicit_section
+    def test_markdown_importer_implicit_section(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            After header text
+
+            ##Subheader
+
+            Not an underline
+
+            ----------------
+
+            This *should* be a section
+            ==========================
+
+            After subheader text
+
+            #Last header: no text
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+                'Subheader',
+                    'This *should* be a section',
+                'Last header: no text',
+        )
+        g.app.suppressImportChecks = True
+            # Required, because the implicit underlining *must*
+            # cause the perfect-import test to fail!
+        c.importCommands.markdownUnitTest(c.p, s=s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.114: *3* TestImport.test_markdown_github_syntax
+    def test_markdown_github_syntax(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            `​``python
+            loads.init = {
+                Chloride: 11.5,
+                TotalP: 0.002,
+            }
+            `​``
+            #Last header
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+            'Last header',
+        )
+        c.importCommands.markdownUnitTest(c.p, s=s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
 #@-others
 
