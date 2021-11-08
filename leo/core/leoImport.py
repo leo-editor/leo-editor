@@ -1198,12 +1198,6 @@ class LeoImportCommands:
 
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
-    def perlUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.pl')
-
-    def phpUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.php')
-
     def pythonUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.py')
 

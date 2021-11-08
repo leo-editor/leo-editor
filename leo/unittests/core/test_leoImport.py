@@ -1520,100 +1520,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904122920.1: *3* PHP tests
-    #@+node:ekr.20210904065459.56: *4* TestImport.test_php_import_class
-    def test_php_import_class(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <?php
-
-            $type = 'cc';
-            $obj = new $type; // outputs "hi!"
-
-            class cc {
-                function __construct() {
-                    echo 'hi!';
-                }
-            }
-
-            ?>
-        """)
-        c.importCommands.phpUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.57: *4* TestImport.test_php_import_conditional_class
-    def test_php_import_conditional_class(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <?php
-
-            if (expr) {
-                class cc {
-                    // version 1
-                }
-            } else {
-                class cc {
-                    // version 2
-                }
-            }
-
-            ?>
-        """)
-        c.importCommands.phpUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.58: *4* TestImport.test_php_import_classes__functions
-    def test_php_import_classes__functions(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <?php
-            class Enum {
-                protected $self = array();
-                public function __construct( /*...*/ ) {
-                    $args = func_get_args();
-                    for( $i=0, $n=count($args); $i<$n; $i++ )
-                        $this->add($args[$i]);
-                }
-
-                public function __get( /*string*/ $name = null ) {
-                    return $this->self[$name];
-                }
-
-                public function add( /*string*/ $name = null, /*int*/ $enum = null ) {
-                    if( isset($enum) )
-                        $this->self[$name] = $enum;
-                    else
-                        $this->self[$name] = end($this->self) + 1;
-                }
-            }
-
-            class DefinedEnum extends Enum {
-                public function __construct( /*array*/ $itms ) {
-                    foreach( $itms as $name => $enum )
-                        $this->add($name, $enum);
-                }
-            }
-
-            class FlagsEnum extends Enum {
-                public function __construct( /*...*/ ) {
-                    $args = func_get_args();
-                    for( $i=0, $n=count($args), $f=0x1; $i<$n; $i++, $f *= 0x2 )
-                        $this->add($args[$i], $f);
-                }
-            }
-            ?>
-        """)
-        c.importCommands.phpUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.59: *4* TestImport.test_php_here_doc
-    def test_php_here_doc(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <?php
-            class foo {
-                public $bar = <<<EOT
-            a test.
-            bar
-            EOT;
-            }
-            ?>
-        """)
-        c.importCommands.phpUnitTest(c.p, s=s)
     #@+node:ekr.20210904122944.1: *3* Python tests
     #@+node:ekr.20210904065459.60: *4* TestImport.test_i_scan_state_for_python_
     def test_i_scan_state_for_python_(self):
@@ -4125,6 +4031,106 @@ class TestPerl (BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
+    #@-others
+#@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
+class TestPhp (BaseTestImporter):
+    
+    ext = '.php'
+    
+    #@+others
+    #@+node:ekr.20210904065459.56: *3* TestPhp.test_import_class
+    def test_import_class(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <?php
+
+            $type = 'cc';
+            $obj = new $type; // outputs "hi!"
+
+            class cc {
+                function __construct() {
+                    echo 'hi!';
+                }
+            }
+
+            ?>
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.57: *3* TestPhp.test_import_conditional_class
+    def test_import_conditional_class(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <?php
+
+            if (expr) {
+                class cc {
+                    // version 1
+                }
+            } else {
+                class cc {
+                    // version 2
+                }
+            }
+
+            ?>
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
+    def test_import_classes__functions(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <?php
+            class Enum {
+                protected $self = array();
+                public function __construct( /*...*/ ) {
+                    $args = func_get_args();
+                    for( $i=0, $n=count($args); $i<$n; $i++ )
+                        $this->add($args[$i]);
+                }
+
+                public function __get( /*string*/ $name = null ) {
+                    return $this->self[$name];
+                }
+
+                public function add( /*string*/ $name = null, /*int*/ $enum = null ) {
+                    if( isset($enum) )
+                        $this->self[$name] = $enum;
+                    else
+                        $this->self[$name] = end($this->self) + 1;
+                }
+            }
+
+            class DefinedEnum extends Enum {
+                public function __construct( /*array*/ $itms ) {
+                    foreach( $itms as $name => $enum )
+                        $this->add($name, $enum);
+                }
+            }
+
+            class FlagsEnum extends Enum {
+                public function __construct( /*...*/ ) {
+                    $args = func_get_args();
+                    for( $i=0, $n=count($args), $f=0x1; $i<$n; $i++, $f *= 0x2 )
+                        $this->add($args[$i], $f);
+                }
+            }
+            ?>
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
+    def test_here_doc(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            <?php
+            class foo {
+                public $bar = <<<EOT
+            a test.
+            bar
+            EOT;
+            }
+            ?>
+        """)
+        self.run_test(c.p, s)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
