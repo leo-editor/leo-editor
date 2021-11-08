@@ -56,6 +56,13 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904065632.1: *4* C tests
+    #@+node:ekr.20211108042415.1: *5* TestImport.test_c_apparent_section_reference
+    def test_c_apparent_section_reference(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            a = 1 << 2 >> 3
+        """)
+        c.importCommands.cUnitTest(c.p, s=s)
     #@+node:ekr.20210904065459.3: *5* TestImport.test_c_class_1
     def test_c_class_1(self):
         c = self.c
