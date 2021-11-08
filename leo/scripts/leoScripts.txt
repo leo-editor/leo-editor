@@ -13800,6 +13800,374 @@ def build_mmap(data):
 #@+node:tom.20210808144800.30: *4* Main
 @language python
 c.build_mmap = build_mmap
+#@+node:tom.20211108175236.1: ** Plots and Graphs
+#@+node:tom.20211108175243.1: *3* Plot From Clipboard
+@language rest
+This script takes X-Y data from the clipboard and plots it using Matplotlib.
+
+It is a slight modification of the script used by Viewrendered3 to plot data. It does not require Viewrendered3 to be installed or used.
+
+The script requires the pyperclip package to access the clipboard. This could easily by changed to use some other clipboard handling package or Leo's clipboard handling. Pyperclip is the easiest to use and works across all the big three operating systems.  Matplotlib is required to do the actual plotting.
+
+By X-Y data is meant data in two whitespace-separated columns; or if there is just one column, it is considered to be the Y-axis data, and the script constructs an X-axis data sequence.
+
+Any line that contains non-numeric fields is ignored except for configuration sections, which work the same way as with Viewrendered3.  Consult the docstring for this script or the help for VR3's plot2d capability for more details.
+
+Here is an example of X-Y data::
+
+    1 1
+    2 .5
+    3 -6
+    # comment
+    ; comment
+
+    4 -16
+    5 -2
+    6  5
+    7  10
+
+To install this script, add "@command " to the headline and copy it to myLeoSettings.leo.  Then reload settings or restart Leo.  There will be a command named "plot-2d-clipboard" available from the minibuffer.  It could also be bound to a menu, button, or keystroke.
+
+First release: 11-8-2021 by Thomas B. Passin.
+#@+node:tom.20211108175319.1: *4* plot-2d-clipboard
+def plot_2d():
+    """
+    << docstring >>
+    """
+    import re, os, site
+    from matplotlib import pyplot as plt
+    import pyperclip
+
+    data = pyperclip.paste()
+    data_lines = data.split('\n')
+
+    section_lines = c.p.b.split('\n')
+
+    @others
+
+    config_sections = has_config_section(section_lines)
+    style_start = config_sections.get('style', -1)
+    if style_start >= 0:
+        if not set_user_style(section_lines[style_start:]):
+            set_custom_style()
+    else:
+        set_custom_style()
+
+    plt.ion()
+    fig, ax = plt.subplots()
+    fig.clear()
+
+    label_start = config_sections.get('labels', -1)
+    if label_start >= 0:
+        << configure labels >>
+
+    plot_plain_data(data_lines)
+    plt.rcdefaults()
+
+plot_2d()
+#@+node:tom.20211108175319.2: *5* << docstring >>
+Show a plot of x-y data in the clipboard.
+
+The data can be either a one-column or two-column list
+of rows.  Columns are separated by whitespace.  
+
+The selected node may optionally contain the node may contain 
+a config file-like set of sections that define the labels
+and plot styling.
+
+The pyperclip package is requied to read the clipboard. The 
+matplotlib package is required for plotting.
+
+@others
+#@+node:tom.20211108175319.3: *6* Data Format
+Data Format
+------------
+Data must be in one or two columns separated by whitespace  Here
+is an example of two-column data::
+
+    1 1
+    2 2
+    3 4
+    # comment
+    ; comment
+
+    4 16
+    5 32
+
+Comment lines start with one of ";", "#". Comment, non-numeric, and 
+blank lines are ignored.
+
+Here is an example of one-column data - the missing first column will 
+assigned integers starting with 0::
+
+    1
+    .5
+    6
+    # comment
+    ; comment
+
+    16
+    32
+
+Whether the data contains one or two columns is determined
+from the first non-comment, non-blank, all numeric row.
+If one-column, an implicit first column is added starting
+with zero.
+
+
+#@+node:tom.20211108175319.4: *6* Graph And Data Labels
+Graph And Data Labels
+----------------------
+
+A figure title and axis labels can optionally be added. These are
+specified by adding a configuration section *[labels]*. The
+section name must be left-justified. The section is ended by a
+blank line or the end of the node. The section may be placed
+anywhere in the node.
+
+Here is an example::
+
+    [labels]
+    title = Plot Example
+    xaxis = Days
+    yaxis = Values
+
+Any or all of the entries may be omitted.
+
+#@+node:tom.20211108175319.5: *6* Plot Styling
+Plot Styling
+-------------
+
+The appearance of the plot can optionally be changed in several
+ways. By default, a certain Matplotlib style file will be used if
+present (see below), or default Matplotlib styling will be
+applied. If the data node has a section *[style]*, one of two
+styling methods can be used:
+
+1. A named style. Matplotlib has a number of named
+   styles, such as *ggplot*. One of these built-in
+   style names can be specified by the *stylename*
+   key. The style *xkcd* can also be used even
+   though it is not one of the named styles.
+
+2. A Matplotlib style file. The name of this file
+   is specified by the *stylefile* key. The file
+   can be located Leo's home directory, typically
+   *~/.leo* or its equivalent in Windows.
+
+Here is an example *[data]* section, with explanatory comments added::
+
+    [style]
+    # For VR3 "Plot 2D", only one of these 
+    # will be used. "stylename" has priority
+    # over "stylefile".
+    stylename = ggplot
+    #stylefile = styles.mpl
+
+The section may be placed anywhere in the node.
+
+The Default Style File
+........................
+
+When no *[data]* section is present, a style file named
+*local_mplstyle* will be used if found. It will first be looked
+for in Leo's home directory, and then in the *site.userbase()*
+directory. On Windows, this is usually the *%APPDATA%\\Python*
+directory. On Linux, this is usually *~/.local*.
+
+When no style file can be found, Matplotlib will use its default
+styling, as modified by a *.matplotlib.rc* file if Matplotlib can
+find one.
+#@+node:tom.20211108175319.6: *5* declarations
+STYLEFILE = 'local_mplstyle' # Must be in site.getuserbase()
+SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
+#@+node:tom.20211108175319.7: *5* functions
+#@+node:tom.20211108175319.8: *6* has_config_section()
+def has_config_section(pagelines):
+    """Find config-like sections in the data page.
+
+    Sections are defined by:
+        1. A left-justified term in [brackets].
+        2. A blank line or the end of the list of lines.
+
+    ARGUMENT
+    pagelines -- a list of text lines.
+
+    RETURNS
+    a dictionary keyed by section label: {label: line_num, ...}
+    """
+    sections = {}
+    for i, line in enumerate(pagelines):
+        m = SECTION_RE.match(line)
+        if m:
+            sections[m[1]] = i
+    return sections
+#@+node:tom.20211108175319.9: *6* set custom_style()
+@pagewidth 65
+def set_custom_style():
+    r"""Apply custom matplotlib styles from a file.
+    
+    The style file has the name given by STYLEFILE. The .leo
+    directory (usually ~/.leo) will be checked first for the
+    style file.
+
+    If not found, the site.getuserbase() directory will be
+    checked for the style file. On Windows, this is usually the
+    %APPDATA%\Python directory. On Linux, this is usually at
+    /home/tom/.local.
+    
+    """
+    found_styles = False
+    lm = g.app.loadManager
+    style_dir = lm.computeHomeLeoDir()
+    if g.isWindows:
+        style_dir = style_dir.replace('/', '\\')
+    style_file=os.path.join(style_dir, STYLEFILE)
+    if os.path.exists(style_file):
+        plt.style.use(style_file)
+        found_styles = True
+    else:
+        style_dir=site.getuserbase()
+        style_file=os.path.join(style_dir, STYLEFILE)
+        if os.path.exists(style_file):
+            plt.style.use(style_file)
+            found_styles = True
+
+    if not found_styles:
+        g.es(f'Pyplot style file "{style_file}" not found, using default styles')
+#@+node:tom.20211108175319.10: *6* plot_plain_data()
+def plot_plain_data(datalines):
+    """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
+
+
+    # from leo.plugins import viewrendered3 as vr3
+    # from leo.plugins import viewrendered as vr
+
+    # Helper functions
+    << is_numeric >>
+    << get_data >>
+
+    x, y = get_data(datalines)
+    if not x:
+        g.es('VR3 -- cannot find data')
+        return
+
+    plt.plot(x,y)
+    plt.show()
+
+#@+node:tom.20211108175319.11: *7* << is_numeric >>
+def is_numeric(line):
+    """Test if first or 1st and 2nd cols are numeric"""
+    fields = line.split()
+    numfields = len(fields)
+    numeric = False
+    try:
+        _ = float(fields[0])
+        if numfields > 1:
+            _ = float(fields[1])
+        numeric = True
+    except ValueError:
+        pass
+
+    return numeric
+#@+node:tom.20211108175319.12: *7* << get_data >>
+def get_data(pagelines):
+    num_cols = 0
+
+    # Skip lines starting with """ or '''
+    lines = [line.replace('"""', '') for line in pagelines]
+    lines = [line.replace("'''", '') for line in lines]
+
+    # Skip blank lines
+    lines = [line for line in lines if line.strip()]
+
+    # skip non-data lines (first or 2nd col is not a number)
+    t = []
+    for line in lines:
+        line = line.replace(',', '') # remove formatting commas
+        if is_numeric(line):
+            t.append(line.strip())
+            # Check if first all-numeric row has one or more fields
+            if not num_cols:
+                num_cols = min(len(t[0].split()), 2)
+    if not t:
+        return None, None
+
+    # Extract x, y values into separate lists; ignore columns after col. 2
+    if num_cols == 1:
+        x = [i for i in range(len(t))]
+        y = [float(b.strip()) for b in t]
+    else:
+        xy = [line.split()[:2] for line in t]
+        xs, ys = zip(*xy)
+        x = [float(a) for a in xs]
+        y = [float(b) for b in ys]
+
+    return x, y
+#@+node:tom.20211108175319.13: *6* set_user_style()
+@pagewidth 65
+def set_user_style(style_config_lines):
+    """Set special plot styles.
+
+    If the data node has a section [style], then if there is a
+    key "stylename", apply that named style; otherwise if there
+    is a key "stylefile", look for a file of that name ins the
+    user's Leo home directory (usually ~/.leo) and use those
+    styles.
+
+    The stylename must be one of the built-in style names, such
+    as "ggplot". "xkcd" also works even though it is not actually
+    one of the style names.
+
+    ARGUMENT style_config_lines -- a sequence of lines starting
+    at the [style] section of the data node.
+
+    RETURNS
+    True if a style was set.
+    """
+    set_style = False
+    for line in style_config_lines:
+        if not line.strip:
+            break
+        fields = line.split('=')
+        if len(fields) < 2:
+            continue
+        kind, val = fields[0].strip(), fields[1].strip()
+        if kind == 'stylename':
+            if val == 'xkcd':
+                plt.xkcd()
+            else:
+                plt.style.use(val)
+            set_style = True
+            break
+        elif kind == 'stylefile':
+            lm = g.app.loadManager
+            style_dir = lm.computeHomeLeoDir()
+            if g.isWindows:
+                style_dir = style_dir.replace('/', '\\')
+            style_file = os.path.join(style_dir, val)
+            if os.path.exists(style_file):
+                plt.style.use(style_file)
+                set_style = True
+            break
+
+    return set_style
+#@+node:tom.20211108175319.14: *5* << configure labels >>
+# Get lines for the labels section
+for line in section_lines[label_start:]:
+    if not line.strip:
+        break
+    fields = line.split('=')
+    if len(fields) < 2:
+        continue
+    kind, val = fields[0].strip(), fields[1].strip()
+    if kind == 'title':
+        plt.title(val)
+    elif kind == 'xaxis':
+        plt.xlabel(val)
+    elif kind == 'yaxis':
+        plt.ylabel(val)
+
 #@+node:ekr.20211009081233.1: ** Prototypes
 #@+node:ville.20090508224531.9800: *3* script: Prototype: pos_to_archive, archive_to_pos
 def pos_to_archive(p):
