@@ -82,11 +82,6 @@ class BaseColorizer:
     def init(self, p):
         """May be over-ridden in subclasses."""
         pass
-    #@+node:ekr.20190324120640.1: *3* bc.scanLanguageDirectives
-    # def scanLanguageDirectives(self, p):
-        # """May be over-ridden in subclasses."""
-        # self.enabled = True
-        # self.language = 'python'
     #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
 
