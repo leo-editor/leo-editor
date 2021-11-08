@@ -293,6 +293,87 @@ class TestC(BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
+#@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
+class TestCoffeescript (BaseTestImporter):
+    
+    ext = '.coffee'
+    
+    #@+others
+    #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
+    def test_1(self):
+        c = self.c
+        s = r'''
+
+        # Js2coffee relies on Narcissus's parser.
+
+        {parser} = @Narcissus or require('./narcissus_packed')
+
+        # Main entry point
+
+        buildCoffee = (str) ->
+          str  = str.replace /\r/g, ''
+          str += "\n"
+
+          builder    = new Builder
+          scriptNode = parser.parse str
+        '''
+        table = (
+            'buildCoffee = (str) ->',
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
+    #@@tabwidth -2 # Required
+
+    def test_2(self):
+        c = self.c
+
+        s = textwrap.dedent("""\
+        class Builder
+          constructor: ->
+            @transformer = new Transformer
+          # `build()`
+
+          build: (args...) ->
+            node = args[0]
+            @transform node
+
+            name = 'other'
+            name = node.typeName()  if node != undefined and node.typeName
+
+            fn  = (@[name] or @other)
+            out = fn.apply(this, args)
+
+            if node.parenthesized then paren(out) else out
+          # `transform()`
+
+          transform: (args...) ->
+            @transformer.transform.apply(@transformer, args)
+
+          # `body()`
+
+          body: (node, opts={}) ->
+            str = @build(node, opts)
+            str = blockTrim(str)
+            str = unshift(str)
+            if str.length > 0 then str else ""
+        """)
+        table = (
+          'class Builder',
+          'constructor: ->',
+          'build: (args...) ->',
+          'transform: (args...) ->',
+          'body: (node, opts={}) ->',
+        )
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@-others
 #@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
 class TestCSharp(BaseTestImporter):
     
@@ -593,39 +674,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904084324.1: *3* Cython tests
-    #@+node:ekr.20210904065459.11: *4* TestImport.test_cython_importer
-    def test_cython_importer(self):
-        c = self.c
-        s = textwrap.dedent('''\
-            from libc.math cimport pow
-
-            cdef double square_and_add (double x):
-                """Compute x^2 + x as double.
-
-                This is a cdef function that can be called from within
-                a Cython program, but not from Python.
-                """
-                return pow(x, 2.0) + x
-
-            cpdef print_result (double x):
-                """This is a cpdef function that can be called from Python."""
-                print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
-
-        ''')
-        table = (
-            'Declarations',
-            'double',
-            'print_result',
-        )
-        c.importCommands.cythonUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904144021.1: *3* Dart tests
     #@+node:ekr.20210904065459.17: *4* TestImport.test_dart_hello_world
     def test_dart_hello_world(self):
@@ -4364,87 +4412,42 @@ class TestRst(BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
-#@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
-class TestCoffeescript (BaseTestImporter):
+#@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
+class TestCython (BaseTestImporter):
     
-    ext = '.coffee'
-    
-    #@+others
-    #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
-    def test_1(self):
-        c = self.c
-        s = r'''
+    ext = '.pyx'
+#@+node:ekr.20210904065459.11: *3* TestCython.test_importer
+def test_importer(self):
+    c = self.c
+    s = textwrap.dedent('''\
+        from libc.math cimport pow
 
-        # Js2coffee relies on Narcissus's parser.
+        cdef double square_and_add (double x):
+            """Compute x^2 + x as double.
 
-        {parser} = @Narcissus or require('./narcissus_packed')
+            This is a cdef function that can be called from within
+            a Cython program, but not from Python.
+            """
+            return pow(x, 2.0) + x
 
-        # Main entry point
+        cpdef print_result (double x):
+            """This is a cpdef function that can be called from Python."""
+            print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
 
-        buildCoffee = (str) ->
-          str  = str.replace /\r/g, ''
-          str += "\n"
-
-          builder    = new Builder
-          scriptNode = parser.parse str
-        '''
-        table = (
-            'buildCoffee = (str) ->',
-        )
-        self.run_test(c.p, s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
-    #@@tabwidth -2 # Required
-
-    def test_2(self):
-        c = self.c
-
-        s = textwrap.dedent("""\
-        class Builder
-          constructor: ->
-            @transformer = new Transformer
-          # `build()`
-
-          build: (args...) ->
-            node = args[0]
-            @transform node
-
-            name = 'other'
-            name = node.typeName()  if node != undefined and node.typeName
-
-            fn  = (@[name] or @other)
-            out = fn.apply(this, args)
-
-            if node.parenthesized then paren(out) else out
-          # `transform()`
-
-          transform: (args...) ->
-            @transformer.transform.apply(@transformer, args)
-
-          # `body()`
-
-          body: (node, opts={}) ->
-            str = @build(node, opts)
-            str = blockTrim(str)
-            str = unshift(str)
-            if str.length > 0 then str else ""
-        """)
-        table = (
-          'class Builder',
-          'constructor: ->',
-          'build: (args...) ->',
-          'transform: (args...) ->',
-          'body: (node, opts={}) ->',
-        )
-        self.run_test(c.p, s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@-others
+    ''')
+    table = (
+        'Declarations',
+        'double',
+        'print_result',
+    )
+    self.run_test(c.p, s)
+    root = c.p.lastChild()
+    self.assertEqual(root.h, '@file test')
+    p2 = root.firstChild()
+    for h in table:
+        self.assertEqual(p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 #@-others
 
 
