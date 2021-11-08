@@ -20,51 +20,65 @@ import leo.plugins.importers.pascal as pascal
 import leo.plugins.importers.python as python
 import leo.plugins.importers.xml as xml
 #@+others
-#@+node:ekr.20210904064440.3: ** class TestImporter(LeoUnitTest):
-class TestImporter(LeoUnitTest):
-    """Test cases for leoImport.py"""
-    #@+others
-    #@+node:ekr.20210904064548.1: *3* TestImporter.setUp
+#@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
+class BaseTestImporter(LeoUnitTest):
+    """The base class for tests of leoImport.py"""
+    
+    ext = None  # Subclasses must set this to the language's extension.
+    
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
-    #@+node:ekr.20210904065613.1: *3* Tests of @auto
-    #@+node:ekr.20210904143515.1: *4* .ini tests
-    #@+node:ekr.20210904065459.29: *5* TestImport.test_ini_test_1
-    def test_ini_test_1(self):
-        c = self.c
-        s = textwrap.dedent(r'''\
-            ; last modified 1 April 2001 by John Doe
-            [owner]
-            name=John Doe
-            organization=Acme Widgets Inc.
+        
+    def run_test(self, p, s):  # #2316: was ic.scannerUnitTest.
+        """
+        Run a unit test of an import scanner,
+        i.e., create a tree from string s at location p.
+        """
+        c, ext = self.c, self.ext
+        self.assertTrue(ext)
+        self.treeType = '@file'  # Fix #352.
+        fileName = 'test'
+        # Run the test.
+        parent = p.insertAsLastChild()
+        kind = self.compute_unit_test_kind(ext)
+        parent.h = f"{kind} {fileName}"
+        c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
 
-            ; [ not a section ]
-
-            [database]
-            server=192.0.2.62
-                ; use IP address
-            port=143
-            file = "payroll.dat"
-        ''')
-        table = ('[owner]', '[database]')
-        c.importCommands.iniUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065632.1: *4* C tests
-    #@+node:ekr.20211108042415.1: *5* TestImport.test_c_apparent_section_reference
-    def test_c_apparent_section_reference(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            a = 1 << 2 >> 3
-        """)
-        c.importCommands.cUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.3: *5* TestImport.test_c_class_1
-    def test_c_class_1(self):
+    #@+others
+    #@+node:ekr.20211108044605.1: *3*  BaseTestImporter.compute_unit_test_kind
+    def compute_unit_test_kind(self, ext):
+        """Return kind from the given extention."""
+        aClass = g.app.classDispatchDict.get(ext)
+        if aClass:
+            d2 = g.app.atAutoDict
+            for z in d2:
+                if d2.get(z) == aClass:
+                    return z
+        return '@file'
+    #@-others
+#@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
+class TestAtAuto (BaseTestImporter):
+    
+    #@+others
+    #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
+    def test_importers_can_be_imported(self):
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
+        assert g.os_path_exists(path), repr(path)
+        pattern = g.os_path_finalize_join(path, '*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+            assert m
+    #@-others
+#@+node:ekr.20211108062025.1: ** class TestC (BaseTestImporter)
+class TestC(BaseTestImporter):
+    
+    ext = '.c'
+    
+    #@+others
+    #@+node:ekr.20210904065459.3: *3* TestC.test_class_1
+    def test_class_1(self):
         c = self.c
         s = textwrap.dedent("""\
             class cTestClass1 {
@@ -83,7 +97,7 @@ class TestImporter(LeoUnitTest):
             'int foo',
             'char bar',
         )
-        c.importCommands.cUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -92,8 +106,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.4: *5* TestImport.test_c_class_underindented_line
-    def test_c_class_underindented_line(self):
+    #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
+    def test_class_underindented_line(self):
         c = self.c
         s = textwrap.dedent("""\
             class cTestClass1 {
@@ -115,7 +129,7 @@ class TestImporter(LeoUnitTest):
             'int foo',
             'char bar',
         )
-        c.importCommands.cUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -124,8 +138,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.5: *5* TestImport.test_c_comment_follows_arg_list
-    def test_c_comment_follows_arg_list(self):
+    #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
+    def test_comment_follows_arg_list(self):
         c = self.c
         s = textwrap.dedent("""\
             void
@@ -150,7 +164,7 @@ class TestImporter(LeoUnitTest):
             'void aaa::bbb::doit',
             'bool aaa::bbb::dothat',
         )
-        c.importCommands.cUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -159,8 +173,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.6: *5* TestImport.test_c_comment_follows_block_delim
-    def test_c_comment_follows_block_delim(self):
+    #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
+    def test_comment_follows_block_delim(self):
         c = self.c
         s = textwrap.dedent("""\
             void
@@ -185,7 +199,7 @@ class TestImporter(LeoUnitTest):
             'void aaa::bbb::doit',
             'bool aaa::bbb::dothat',
         )
-        c.importCommands.cUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -195,8 +209,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.10: *5* TestImport.test_c_extern
-    def test_c_extern(self):
+    #@+node:ekr.20210904065459.10: *3* TestC.test_extern
+    def test_extern(self):
         c = self.c
         s = textwrap.dedent("""\
             extern "C"
@@ -210,7 +224,7 @@ class TestImporter(LeoUnitTest):
             'extern "C"',
         )
         p = c.p
-        c.importCommands.cUnitTest(p, s=s)
+        self.run_test(c.p, s)
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -218,8 +232,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.7: *5* TestImport.test_c_intermixed_blanks_and_tabs
-    def test_c_intermixed_blanks_and_tabs(self):
+    #@+node:ekr.20210904065459.7: *3* TestC.test_intermixed_blanks_and_tabs
+    def test_intermixed_blanks_and_tabs(self):
         c = self.c
         s = textwrap.dedent("""\
             void
@@ -235,7 +249,7 @@ class TestImporter(LeoUnitTest):
             'void aaa::bbb::doit',
         )
 
-        c.importCommands.cUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -244,8 +258,8 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
-    #@+node:ekr.20210904065459.8: *5* TestImport.test_c_old_style_decl_1
-    def test_c_old_style_decl_1(self):
+    #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
+    def test_old_style_decl_1(self):
         c = self.c
         s = textwrap.dedent("""\
             static void
@@ -261,7 +275,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'static void ReleaseCharSet',
         )
-        c.importCommands.cUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test', root.h)
         p2 = root.firstChild()
@@ -269,8 +283,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.9: *5* TestImport.test_c_old_style_decl_2
-    def test_c_old_style_decl_2(self):
+    #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
+    def test_old_style_decl_2(self):
         c = self.c
         s = textwrap.dedent("""\
             Tcl_Obj *
@@ -284,7 +298,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'Tcl_Obj * Tcl_NewLongObj',
         )
-        c.importCommands.cUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -292,53 +306,15 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904144251.1: *4* C# tests
-    #@+node:ekr.20210904065459.12: *5* TestImport.test_c_sharp_namespace_indent
-    def test_c_sharp_namespace_indent(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            namespace {
-                class cTestClass1 {
-                    ;
-                }
-            }
-        """)
-        table = (
-            'namespace',
-            'class cTestClass1',
-        )
-        c.importCommands.cSharpUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.13: *5* TestImport.test_c_sharp_namespace_no_indent
-    def test_c_sharp_namespace_no_indent(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            namespace {
-            class cTestClass1 {
-                ;
-            }
-            }
-        """)
-        c.importCommands.cSharpUnitTest(c.p, s=s)
-        table = (
-            'namespace',
-            'class cTestClass1',
-        )
-        root = c.p.firstChild()
-        # assert root.h.endswith('c# namespace no indent'), root.h
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904122726.1: *4* Coffeescript tests
-    #@+node:ekr.20210904065459.15: *5* TestImport.test_coffeescript_2
-    def test_coffeescript_2(self):
+    #@-others
+#@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
+class TestCoffeescript (BaseTestImporter):
+    
+    ext = '.coffee'
+    
+    #@+others
+    #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
+    def test_1(self):
         c = self.c
         s = r'''
 
@@ -358,16 +334,15 @@ class TestImporter(LeoUnitTest):
         table = (
             'buildCoffee = (str) ->',
         )
-        c.importCommands.coffeeScriptUnitTest(c.p, s=s)
-        if 1:
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              self.assertEqual(p2.h, h)
-              p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.16: *5* TestImport.test_coffeescript_3
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
     #@@tabwidth -2 # Required
 
-    def test_coffeescript_3(self):
+    def test_2(self):
         c = self.c
 
         s = textwrap.dedent("""\
@@ -407,48 +382,116 @@ class TestImporter(LeoUnitTest):
           'transform: (args...) ->',
           'body: (node, opts={}) ->',
         )
-        c.importCommands.coffeeScriptUnitTest(c.p, s=s)
-        if 1:
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              self.assertEqual(p2.h, h)
-              p2.moveToThreadNext()
-    #@+node:ekr.20210904084324.1: *4* Cython tests
-    #@+node:ekr.20210904065459.11: *5* TestImport.test_cython_importer
-    def test_cython_importer(self):
-        c = self.c
-        s = textwrap.dedent('''\
-            from libc.math cimport pow
-
-            cdef double square_and_add (double x):
-                """Compute x^2 + x as double.
-
-                This is a cdef function that can be called from within
-                a Cython program, but not from Python.
-                """
-                return pow(x, 2.0) + x
-
-            cpdef print_result (double x):
-                """This is a cpdef function that can be called from Python."""
-                print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
-
-        ''')
-        table = (
-            'Declarations',
-            'double',
-            'print_result',
-        )
-        c.importCommands.cythonUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
+        self.run_test(c.p, s)
+        p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904144021.1: *4* Dart tests
-    #@+node:ekr.20210904065459.17: *5* TestImport.test_dart_hello_world
-    def test_dart_hello_world(self):
+    #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
+    def test_get_leading_indent(self):
+        c = self.c
+        importer = linescanner.Importer(c.importCommands, language='coffeescript')
+        self.assertEqual(importer.single_comment, '#')
+    #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
+    def test_scan_line(self):
+        c = self.c
+        x = cs.CS_Importer(c.importCommands, atAuto=True)
+        self.assertEqual(x.single_comment, '#')
+    #@-others
+#@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
+class TestCSharp(BaseTestImporter):
+    
+    ext = '.c#'
+    
+    #@+others
+    #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
+    def test_namespace_indent(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            namespace {
+                class cTestClass1 {
+                    ;
+                }
+            }
+        """)
+        table = (
+            'namespace',
+            'class cTestClass1',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.13: *3* TestImport.test_namespace_no_indent
+    def test_namespace_no_indent(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            namespace {
+            class cTestClass1 {
+                ;
+            }
+            }
+        """)
+        self.run_test(c.p, s)
+        table = (
+            'namespace',
+            'class cTestClass1',
+        )
+        root = c.p.firstChild()
+        # assert root.h.endswith('c# namespace no indent'), root.h
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@-others
+#@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
+class TestCython (BaseTestImporter):
+    
+    ext = '.pyx'
+#@+node:ekr.20210904065459.11: *3* TestCython.test_importer
+def test_importer(self):
+    c = self.c
+    s = textwrap.dedent('''\
+        from libc.math cimport pow
+
+        cdef double square_and_add (double x):
+            """Compute x^2 + x as double.
+
+            This is a cdef function that can be called from within
+            a Cython program, but not from Python.
+            """
+            return pow(x, 2.0) + x
+
+        cpdef print_result (double x):
+            """This is a cpdef function that can be called from Python."""
+            print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
+
+    ''')
+    table = (
+        'Declarations',
+        'double',
+        'print_result',
+    )
+    self.run_test(c.p, s)
+    root = c.p.lastChild()
+    self.assertEqual(root.h, '@file test')
+    p2 = root.firstChild()
+    for h in table:
+        self.assertEqual(p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+#@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
+class TestDart (BaseTestImporter):
+    
+    ext = '.dart'
+    
+    #@+others
+    #@+node:ekr.20210904065459.17: *3* TestDart.test_hello_world
+    def test_hello_world(self):
         c = self.c
         s = r'''
         var name = 'Bob';
@@ -473,7 +516,7 @@ class TestImporter(LeoUnitTest):
             'printNumber',
             'void main',
         )
-        c.importCommands.dartUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -481,9 +524,26 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
-    #@+node:ekr.20210904143920.1: *4* Elisp tests
-    #@+node:ekr.20210904065459.18: *5* TestImport.test_elisp
-    def test_elisp(self):
+    #@+node:ekr.20210904065459.127: *3* TestDart.test_clean_headline
+    def test_clean_headline(self):
+        c = self.c
+        x = dart.Dart_Importer(c.importCommands, atAuto=False)
+        table = (
+            ('func(abc) {', 'func'),
+            ('void foo() {', 'void foo'),
+        )
+        for s, expected in table:
+            got = x.clean_headline(s)
+            self.assertEqual(got, expected)
+    #@-others
+#@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
+class TestElisp (BaseTestImporter):
+    
+    ext = '.el'
+    
+    #@+others
+    #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
+    def test_1(self):
         c = self.c
         s = textwrap.dedent("""\
             ;;; comment
@@ -501,7 +561,7 @@ class TestImporter(LeoUnitTest):
             'defun abc',
             'defun cde',
         )
-        c.importCommands.elispUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -509,9 +569,24 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904122741.1: *4* HTML tests
-    #@+node:ekr.20210904065459.19: *5* TestImport.test_html_lowercase_tags
-    def test_html_lowercase_tags(self):
+    #@-others
+#@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
+class TestHtml (BaseTestImporter):
+    
+    ext = '.htm'
+    
+    def setUp(self):
+        super().setUp()
+        c = self.c
+        # Simulate @data import-html-tags, with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
+    
+    #@+others
+    #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
+    def test_lowercase_tags(self):
         c = self.c
         s = textwrap.dedent("""\
             <html>
@@ -528,15 +603,15 @@ class TestImporter(LeoUnitTest):
             '<head>',
             '<body class="bodystring">',
         )
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.firstChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.20: *5* TestImport.test_html_multiple_tags_on_a_line
-    def test_html_multiple_tags_on_a_line(self):
+    #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
+    def test_multiple_tags_on_a_line(self):
         c = self.c
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
         # NOT: tr, td, tbody, etc.
@@ -590,13 +665,13 @@ class TestImporter(LeoUnitTest):
             '<body>',
             '<table id="0">',
         )
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.21: *5* TestImport.test_html_multple_node_completed_on_a_line
-    def test_html_multple_node_completed_on_a_line(self):
+    #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
+    def test_multple_node_completed_on_a_line(self):
         c = self.c
 
         s = textwrap.dedent("""\
@@ -607,14 +682,14 @@ class TestImporter(LeoUnitTest):
             # The new xml scanner doesn't generate any new nodes,
             # because the scan state hasn't changed at the end of the line!
         )
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             assert p2
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.22: *5* TestImport.test_html_multple_node_starts_on_a_line
-    def test_html_multple_node_starts_on_a_line(self):
+    #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
+    def test_multple_node_starts_on_a_line(self):
         c = self.c
         s = '''
         @language html
@@ -626,14 +701,14 @@ class TestImporter(LeoUnitTest):
         table = (
             '<html>',
         )
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             assert p2
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.23: *5* TestImport.test_html_underindented_comment
-    def test_html_underindented_comment(self):
+    #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
+    def test_underindented_comment(self):
         c = self.c
         s = r'''
         <td width="550">
@@ -660,15 +735,15 @@ class TestImporter(LeoUnitTest):
             '<table cellspacing="0" cellpadding="0" width="600" border="0">',
             '<table>',
         )
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
 
 
-    #@+node:ekr.20210904065459.24: *5* TestImport.test_html_uppercase_tags
-    def test_html_uppercase_tags(self):
+    #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
+    def test_uppercase_tags(self):
         c = self.c
         s = textwrap.dedent("""\
             <HTML>
@@ -680,9 +755,9 @@ class TestImporter(LeoUnitTest):
             </BODY>
             </HTML>
         """)
-        c.importCommands.htmlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.25: *5* TestImport.test_html_improperly_nested_tags
-    def test_html_improperly_nested_tags(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
+    def test_improperly_nested_tags(self):
         c = self.c
         s = textwrap.dedent("""\
             <body>
@@ -705,14 +780,14 @@ class TestImporter(LeoUnitTest):
             ('<div id="D666">'),
         )
 
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
 
-    #@+node:ekr.20210904065459.26: *5* TestImport.test_html_improperly_terminated_tags
-    def test_html_improperly_terminated_tags(self):
+    #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
+    def test_improperly_terminated_tags(self):
         c = self.c
         s = r'''
         <html>
@@ -732,13 +807,13 @@ class TestImporter(LeoUnitTest):
             '<html>',
             '<head>',
         )
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.27: *5* TestImport.test_html_improperly_terminated_tags2
-    def test_html_improperly_terminated_tags2(self):
+    #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
+    def test_improperly_terminated_tags2(self):
         c = self.c
         s = '''
         <html>
@@ -755,13 +830,13 @@ class TestImporter(LeoUnitTest):
         </html>
         '''
         table = ('<html>', '<head>')  # , '<link id="L1">'
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.28: *5* TestImport.test_html_brython
-    def test_html_brython(self):
+    #@+node:ekr.20210904065459.28: *3* TestHtml.test_brython
+    def test_brython(self):
         c = self.c
         # https://github.com/leo-editor/leo-editor/issues/479
         s = textwrap.dedent('''\
@@ -906,15 +981,53 @@ class TestImporter(LeoUnitTest):
             '<head>',
             '<body onload="brython({debug:1, cache:\'none\'})">',
         )
-        c.importCommands.htmlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         p2 = c.p.firstChild().firstChild()
         assert p2
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
 
-    #@+node:ekr.20210904122815.1: *4* Java tests
-    #@+node:ekr.20210904065459.30: *5* TestImport.test_from_AdminPermission_java
+    #@-others
+#@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
+class TestIni(BaseTestImporter):
+    
+    ext = '.ini'
+    
+    #@+others
+    #@+node:ekr.20210904065459.29: *3* TestIni.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent(r'''\
+            ; last modified 1 April 2001 by John Doe
+            [owner]
+            name=John Doe
+            organization=Acme Widgets Inc.
+
+            ; [ not a section ]
+
+            [database]
+            server=192.0.2.62
+                ; use IP address
+            port=143
+            file = "payroll.dat"
+        ''')
+        table = ('[owner]', '[database]')
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
+class TestJava (BaseTestImporter):
+    
+    ext = '.java'
+    
+    #@+others
+    #@+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -937,7 +1050,7 @@ class TestImporter(LeoUnitTest):
             'public final class AdminPermission extends BasicPermission',
             'public AdminPermission',
         )
-        c.importCommands.javaUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -946,7 +1059,7 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
-    #@+node:ekr.20210904065459.31: *5* TestImport.test_from_BundleException_java
+    #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1002,7 +1115,7 @@ class TestImporter(LeoUnitTest):
             'public class BundleException extends Exception',
             'public BundleException',
         )
-        c.importCommands.javaUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -1010,8 +1123,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.32: *5* TestImport.test_java_interface_test1
-    def test_java_interface_test1(self):
+    #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
+    def test_interface_test1(self):
         c = self.c
         s = textwrap.dedent("""\
             interface Bicycle {
@@ -1022,7 +1135,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'interface Bicycle',
         )
-        c.importCommands.javaUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -1030,8 +1143,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.33: *5* TestImport.test_java_interface_test2
-    def test_java_interface_test2(self):
+    #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
+    def test_interface_test2(self):
         c = self.c
         s = textwrap.dedent("""\
             interface Bicycle {
@@ -1042,7 +1155,7 @@ class TestImporter(LeoUnitTest):
         table = (
             'interface Bicycle',
         )
-        c.importCommands.javaUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -1050,9 +1163,15 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904122826.1: *4* Javascript tests
-    #@+node:ekr.20210904065459.34: *5* TestImport.test_Javascript_regex_1
-    def test_Javascript_regex_1(self):
+    #@-others
+#@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
+class TestJavascript (BaseTestImporter):
+    
+    ext = '.js'
+    
+    #@+others
+    #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
+    def test_regex_1(self):
         c = self.c
         s = textwrap.dedent("""\
             String.prototype.toJSONString = function()
@@ -1063,9 +1182,9 @@ class TestImporter(LeoUnitTest):
                 return '"' + this + '"';
             };
         """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.35: *5* TestImport.test_Javascript_3
-    def test_Javascript_3(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.35: *3* TestJavascript.test_3
+    def test_3(self):
         c = self.c
         s = textwrap.dedent("""\
             // Restarting
@@ -1081,9 +1200,9 @@ class TestImporter(LeoUnitTest):
                 window.scrollTo(0,0);
             }
         """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.36: *5* TestImport.test_Javascript_4
-    def test_Javascript_4(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.36: *3* TestJavascript.test_4
+    def test_4(self):
         c = self.c
         s = textwrap.dedent("""\
             var c3 = (function () {
@@ -1099,9 +1218,9 @@ class TestImporter(LeoUnitTest):
                 return c3;
             }());
         """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.37: *5* TestImport.test_Javascript_5
-    def test_Javascript_5(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.37: *3* TestJavascript.test_5
+    def test_5(self):
         c = self.c
         s = textwrap.dedent("""\
             var express = require('express');
@@ -1117,9 +1236,9 @@ class TestImporter(LeoUnitTest):
             console.log("Listening on " + port);
             });
         """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.38: *5* TestImport.test_Javascript_639_many_top_level_nodes
-    def test_Javascript_639_many_top_level_nodes(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.38: *3* TestJavascript.test_639_many_top_level_nodes
+    def test_639_many_top_level_nodes(self):
         c = self.c
         s = textwrap.dedent("""\
             // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
@@ -1151,9 +1270,9 @@ class TestImporter(LeoUnitTest):
                 return Math.min(Math.max(this, min), max);
             };
         """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.39: *5* TestImport.test_Javascript_639_acid_test_1
-    def test_Javascript_639_acid_test_1(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.39: *3* TestJavascript.test_639_acid_test_1
+    def test_639_acid_test_1(self):
         c = self.c
         s = textwrap.dedent("""\
             // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
@@ -1177,9 +1296,9 @@ class TestImporter(LeoUnitTest):
                 window.terminal = terminal;
             });
         """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.40: *5* TestImport.test_Javascript_639_acid_test_2
-    def test_Javascript_639_acid_test_2(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.40: *3* TestJavascript.test_639_acid_test_2
+    def test_639_acid_test_2(self):
         c = self.c
         s = textwrap.dedent("""\
             // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
@@ -1216,24 +1335,261 @@ class TestImporter(LeoUnitTest):
                 var tail = "tail"
             });
         """)
-        c.importCommands.javaScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904122840.1: *4* Org mode tests
-    #@+node:ekr.20210904065459.41: *5* TestImport.test_org_pattern
-    def test_org_pattern(self):
+        self.run_test(c.p, s)
+    #@-others
+#@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
+class TestMarkdown(BaseTestImporter):
+    
+    ext = '.md'
+    
+    #@+others
+    #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import_test
+    def test_md_import_test(self):
         c = self.c
-        x = org.Org_Importer(c.importCommands, atAuto=False)
-        pattern = x.org_pattern
+        s = textwrap.dedent("""\
+            #Top
+            The top section
+
+            ##Section 1
+            section 1, line 1
+            section 1, line 2
+
+            ##Section 2
+            section 2, line 1
+
+            ###Section 2.1
+            section 2.1, line 1
+
+            ####Section 2.1.1
+            section 2.2.1 line 1
+            The next section is empty. It must not be deleted.
+
+            ###Section 2.2
+
+            ##Section 3
+            Section 3, line 1
+    """)
         table = (
-            # 'body * line',
-            '* line 1',
-            '** level 2',
+            (1, 'Top'),
+            (2, 'Section 1'),
+            (2, 'Section 2'),
+            (3, 'Section 2.1'),
+            (4, 'Section 2.1.1'),
+            (3, 'Section 2.2'),
+            (2, 'Section 3'),
         )
-        for line in table:
-            m = pattern.match(line)
-            # print('%20s ==> (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
-            assert m, repr(line)
-    #@+node:ekr.20210904065459.42: *5* TestImport.test_org_1
-    def test_org_1(self):
+        self.run_test(c.p, s)
+        after = c.p.nodeAfterTree()
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_test_rst_style
+    def test_md_import_test_rst_style(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            Top
+            ====
+
+            The top section
+
+            Section 1
+            ---------
+
+            section 1, line 1
+            -- Not an underline
+            secttion 1, line 2
+
+            Section 2
+            ---------
+
+            section 2, line 1
+
+            ###Section 2.1
+
+            section 2.1, line 1
+
+            ####Section 2.1.1
+
+            section 2.2.1 line 1
+
+            ###Section 2.2
+            section 2.2, line 1.
+
+            Section 3
+            ---------
+
+            section 3, line 1
+    """)
+        self.run_test(c.p, s)
+        table = (
+            (1, 'Top'),
+            (2, 'Section 1'),
+            (2, 'Section 2'),
+            (3, 'Section 2.1'),
+            (4, 'Section 2.1.1'),
+            (3, 'Section 2.2'),
+            (2, 'Section 3'),
+        )
+        p = c.p
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
+    def test_markdown_importer_basic(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            After header text
+
+            ##Subheader
+
+            Not an underline
+
+            ----------------
+
+            After subheader text
+
+            #Last header: no text
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+                'Subheader',
+                'Last header: no text',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
+    def test_markdown_importer_implicit_section(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            After header text
+
+            ##Subheader
+
+            Not an underline
+
+            ----------------
+
+            This *should* be a section
+            ==========================
+
+            After subheader text
+
+            #Last header: no text
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+                'Subheader',
+                    'This *should* be a section',
+                'Last header: no text',
+        )
+        # Implicit underlining *must* cause the perfect-import test to fail!
+        g.app.suppressImportChecks = True
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
+    def test_markdown_github_syntax(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            `​``python
+            loads.init = {
+                Chloride: 11.5,
+                TotalP: 0.002,
+            }
+            `​``
+            #Last header
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+            'Last header',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
+    def test_is_hash(self):
+        c = self.c
+        ic = c.importCommands
+        x = markdown.Markdown_Importer(ic, atAuto=False)
+        # insert test for markdown here.
+        assert x.md_pattern_table
+        table = (
+            (1, 'name', '# name\n'),
+            (2, 'a test', '## a test\n'),
+            (3, 'a test', '### a test\n'),
+        )
+        for data in table:
+            level, name, line = data
+            level2, name2 = x.is_hash(line)
+            self.assertEqual(level, level2)
+            self.assertEqual(name, name2)
+        level3, name = x.is_hash('Not a hash')
+        assert level3 is None
+        assert name is None
+    #@+node:ekr.20210904065459.129: *3* TestMarkdown.test_is_underline
+    def test_is_underline(self):
+        c = self.c
+        ic = c.importCommands
+        x = markdown.Markdown_Importer(ic, atAuto=False)
+        for line in ('----\n', '-----\n', '====\n', '====\n'):
+            got = x.is_underline(line)
+            assert got, repr(line)
+        for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n', '==-==\n', 'abc\n'):
+            got = x.is_underline(line)
+            assert not got, repr(line)
+    #@-others
+#@+node:ekr.20211108080955.1: ** class TestOrg (BaseTestImporter)
+class TestOrg (BaseTestImporter):
+    
+    ext = '.org'
+    
+    #@+others
+    #@+node:ekr.20210904065459.42: *3* TestOrg.test_1
+    def test_1(self):
         c = self.c
         s = textwrap.dedent("""\
             * Section 1
@@ -1253,56 +1609,32 @@ class TestImporter(LeoUnitTest):
             'Section 2', 'Section 2-1', 'Section 2-1-1',
             'Section 3', 'Section 3.1',
         )
-        c.importCommands.orgUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.43: *5* TestImport.test_org_tags
-    def test_org_tags(self):
+    #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
+    def test_1074(self):
         c = self.c
         s = textwrap.dedent("""\
-            * Section 1 :tag1:
-            * Section 2 :tag2:
-            * Section 3 :tag3:tag4:
+            *  Test
+            First line.
         """)
         table = (
-            'Section 1 :tag1:',
-            'Section 2 :tag2:',
-            'Section 3 :tag3:tag4:',
+            ' Test',
         )
-        c.importCommands.orgUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
-            self.assertEqual(p2.h, h)
+            self.assertEqual(p2.h, g.toUnicode(h))
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.44: *5* TestImport.test_org_intro
-    def test_org_intro(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            Intro line.
-            * Section 1
-            Sec 1.
-            * Section 2
-            Sec 2.
-        """)
-        table = (
-            'Section 1',
-            'Section 2',
-        )
-        c.importCommands.orgUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.45: *5* TestImport.test_org_552
-    def test_org_552(self):
+    #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
+    def test_552(self):
         c = self.c
         s = textwrap.dedent("""\
             * Events
@@ -1317,32 +1649,50 @@ class TestImporter(LeoUnitTest):
             '整理个人生活',
             '每周惯例',
         )
-        c.importCommands.orgUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, g.toUnicode(h))
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.46: *5* TestImport.test_org_1074
-    def test_org_1074(self):
+    #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
+    def test_intro(self):
         c = self.c
         s = textwrap.dedent("""\
-            *  Test
-            First line.
+            Intro line.
+            * Section 1
+            Sec 1.
+            * Section 2
+            Sec 2.
         """)
         table = (
-            ' Test',
+            'Section 1',
+            'Section 2',
         )
-        c.importCommands.orgUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
-            self.assertEqual(p2.h, g.toUnicode(h))
+            self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.47: *5* TestImport.test_org_placeholder
-    def test_org_placeholder(self):
+    #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
+    def test_pattern(self):
+        c = self.c
+        x = org.Org_Importer(c.importCommands, atAuto=False)
+        pattern = x.org_pattern
+        table = (
+            # 'body * line',
+            '* line 1',
+            '** level 2',
+        )
+        for line in table:
+            m = pattern.match(line)
+            # print('%20s ==> (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
+            assert m, repr(line)
+    #@+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
+    def test_placeholder(self):
         c = self.c
         # insert test for org here.
         s = textwrap.dedent("""\
@@ -1369,31 +1719,42 @@ class TestImporter(LeoUnitTest):
             'Section 3.1',
         )
         g.app.suppressImportChecks = True
-        c.importCommands.orgUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904122853.1: *4* Otl tests
-    #@+node:ekr.20210904065459.48: *5* TestImport.test_otl_vim_outline_mode
-    def test_otl_vim_outline_mode(self):
+    #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
+    def test_tags(self):
         c = self.c
-        x = otl.Otl_Importer(c.importCommands, atAuto=False)
-        pattern = x.otl_pattern
+        s = textwrap.dedent("""\
+            * Section 1 :tag1:
+            * Section 2 :tag2:
+            * Section 3 :tag3:tag4:
+        """)
         table = (
-            'body line',
-            '\tline 1',
-            '  \tlevel 2',
+            'Section 1 :tag1:',
+            'Section 2 :tag2:',
+            'Section 3 :tag3:tag4:',
         )
-        for line in table:
-            m = pattern.match(line)
-            # print('%20r ==> (%r)(%r)' % (
-                # line, m and m.group(1), m and m.group(2)))
-            assert m
-    #@+node:ekr.20210904065459.49: *5* TestImport.test_otl_1
-    def test_otl_1(self):
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
+class TestOtl (BaseTestImporter):
+    
+    ext = '.otl'
+    
+    #@+others
+    #@+node:ekr.20210904065459.49: *3* TestOtl.test_1
+    def test_1(self):
         c = self.c
         s = textwrap.dedent("""\
             preamble.
@@ -1415,7 +1776,7 @@ class TestImporter(LeoUnitTest):
             'Section 2', 'Section 2-1', 'Section 2-1-1',
             'Section 3', 'Section 3.1',
         )
-        c.importCommands.otlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         if 0:
             root = c.p.firstChild()
             p2 = root.firstChild()
@@ -1424,9 +1785,28 @@ class TestImporter(LeoUnitTest):
                 p2.moveToThreadNext()
             assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
-    #@+node:ekr.20210904143328.1: *4* Pascal tests
-    #@+node:ekr.20210904065459.50: *5* TestImport.test_pascal_to_delphi_interface
-    def test_pascal_to_delphi_interface(self):
+    #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
+    def test_vim_outline_mode(self):
+        c = self.c
+        x = otl.Otl_Importer(c.importCommands, atAuto=False)
+        pattern = x.otl_pattern
+        table = (
+            'body line',
+            '\tline 1',
+            '  \tlevel 2',
+        )
+        for line in table:
+            m = pattern.match(line)
+            self.assertTrue(m, msg=repr(line))
+    #@-others
+#@+node:ekr.20211108081719.1: ** class TestPascal (BaseTestImporter)
+class TestPascal (BaseTestImporter):
+    
+    ext = '.pas'
+    
+    #@+others
+    #@+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
+    def test_delphi_interface(self):
         c = self.c
         s = textwrap.dedent("""\
             unit Unit1;
@@ -1469,7 +1849,7 @@ class TestImporter(LeoUnitTest):
             'procedure FormCreate',
             'procedure TForm1.FormCreate',
         )
-        c.importCommands.pascalUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         assert root
         self.assertEqual(root.h, '@file test')
@@ -1479,9 +1859,26 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
-    #@+node:ekr.20210904122909.1: *4* Perl tests
-    #@+node:ekr.20210904065459.51: *5* TestImport.test_perl_1
-    def test_perl_1(self):
+    #@+node:ekr.20210904065459.130: *3* TestPascal.test_methods
+    def test_methods(self):
+        c = self.c
+        x = pascal.Pascal_Importer(c.importCommands, atAuto=False)
+        table = (
+            ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
+        )
+        state = g.Bunch(context='')
+        for line, cleaned in table:
+            assert x.starts_block(0, [line], state, state)
+            self.assertEqual(x.clean_headline(line), cleaned)
+    #@-others
+#@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
+class TestPerl (BaseTestImporter):
+    
+    ext = '.pl'
+    
+    #@+others
+    #@+node:ekr.20210904065459.51: *3* TestPerl.test_1
+    def test_1(self):
         c = self.c
         s = textwrap.dedent("""\
             #!/usr/bin/perl
@@ -1506,8 +1903,24 @@ class TestImporter(LeoUnitTest):
             # Function call
             Hello();
         """)
-        c.importCommands.perlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.52: *5* TestImport.test_perlpod_comment
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
+    def test_multi_line_string(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+
+            # This would print with a line break in the middle
+            print "Hello
+
+            sub World {
+                print "This is not a funtion!"
+            }
+
+            world\n";
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
     def test_perlpod_comment(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -1528,25 +1941,9 @@ class TestImporter(LeoUnitTest):
                print "Hello, World!\n";
             }
         """)
-        c.importCommands.perlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.53: *5* TestImport.test_perl_multi_line_string
-    def test_perl_multi_line_string(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #!/usr/bin/perl
-
-            # This would print with a line break in the middle
-            print "Hello
-
-            sub World {
-                print "This is not a funtion!"
-            }
-
-            world\n";
-        """)
-        c.importCommands.perlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.54: *5* TestImport.test_perl_regex_1
-    def test_perl_regex_1(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.54: *3* TestPerl.test_regex_1
+    def test_regex_1(self):
         c = self.c
         # ('len',   'tr///', '/',       context,  0,       0,       0),
         # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -1571,10 +1968,10 @@ class TestImporter(LeoUnitTest):
                 s = tr///{/;
             }
         """)
-        c.importCommands.perlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
 
-    #@+node:ekr.20210904065459.55: *5* TestImport.test_perl_regex_2
-    def test_perl_regex_2(self):
+    #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex_2
+    def test_regex_2(self):
         c = self.c
         s = textwrap.dedent("""\
             #!/usr/bin/perl
@@ -1601,7 +1998,7 @@ class TestImporter(LeoUnitTest):
             'sub test3',
             'sub test4'
         )
-        c.importCommands.perlUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
@@ -1610,9 +2007,15 @@ class TestImporter(LeoUnitTest):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
-    #@+node:ekr.20210904122920.1: *4* PHP tests
-    #@+node:ekr.20210904065459.56: *5* TestImport.test_php_import_class
-    def test_php_import_class(self):
+    #@-others
+#@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
+class TestPhp (BaseTestImporter):
+    
+    ext = '.php'
+    
+    #@+others
+    #@+node:ekr.20210904065459.56: *3* TestPhp.test_import_class
+    def test_import_class(self):
         c = self.c
         s = textwrap.dedent("""\
             <?php
@@ -1628,9 +2031,9 @@ class TestImporter(LeoUnitTest):
 
             ?>
         """)
-        c.importCommands.phpUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.57: *5* TestImport.test_php_import_conditional_class
-    def test_php_import_conditional_class(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.57: *3* TestPhp.test_import_conditional_class
+    def test_import_conditional_class(self):
         c = self.c
         s = textwrap.dedent("""\
             <?php
@@ -1647,9 +2050,9 @@ class TestImporter(LeoUnitTest):
 
             ?>
         """)
-        c.importCommands.phpUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.58: *5* TestImport.test_php_import_classes__functions
-    def test_php_import_classes__functions(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
+    def test_import_classes__functions(self):
         c = self.c
         s = textwrap.dedent("""\
             <?php
@@ -1689,9 +2092,9 @@ class TestImporter(LeoUnitTest):
             }
             ?>
         """)
-        c.importCommands.phpUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.59: *5* TestImport.test_php_here_doc
-    def test_php_here_doc(self):
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
+    def test_here_doc(self):
         c = self.c
         s = textwrap.dedent("""\
             <?php
@@ -1703,95 +2106,16 @@ class TestImporter(LeoUnitTest):
             }
             ?>
         """)
-        c.importCommands.phpUnitTest(c.p, s=s)
-    #@+node:ekr.20210904122944.1: *4* Python tests
-    #@+node:ekr.20210904065459.60: *5* TestImport.test_i_scan_state_for_python_
-    def test_i_scan_state_for_python_(self):
-        c = self.c
-        # A list of dictionaries.
-        tests = (
-            g.Bunch(line='\n'),
-            g.Bunch(line='\\\n'),
-            g.Bunch(line='s = "\\""', ctx=('', '')),  # empty string.
-            g.Bunch(line="s = '\\''", ctx=('', '')),  # empty string.
-            g.Bunch(line='# comment'),
-            g.Bunch(line='  # comment'),
-            g.Bunch(line='    # comment'),
-            g.Bunch(line='a = "string"'),
-            g.Bunch(line='a = "Continued string', ctx=('', '"')),
-            g.Bunch(line='end of continued string"', ctx=('"', '')),
-            g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
-            g.Bunch(line='a = """#', ctx=('', '"""')),
-            g.Bunch(line='end of continued string"""', ctx=('"""', '')),
-            g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
-            g.Bunch(line="end of continued string'''", ctx=("'''", '')),
-            g.Bunch(line='a = {[(')
-        )
-        importer = python.Py_Importer(c.importCommands)
-        importer.test_scan_state(tests, State=python.Python_ScanState)
-    #@+node:ekr.20210904065459.61: *5* TestImport.test_leoApp_fail
-    def test_leoApp_fail(self):
-        c = self.c
-        s = textwrap.dedent('''
-            def isValidPython(self):
-                if sys.platform == 'cli':
-                    return True
-                minimum_python_version = '2.6'
-                message = """\
-            Leo requires Python %s or higher.
-            You may download Python from
-            http://python.org/download/
-            """ % minimum_python_version
-                try:
-                    version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-                    ok = g.CheckVersion(version, minimum_python_version)
-                    if not ok:
-                        print(message)
-                        try:
-                            # g.app.gui does not exist yet.
-                            import Tkinter as Tk
-                            class EmergencyDialog(object):
-                                def run(self):
-                                    """Run the modal emergency dialog."""
-                                    self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
-                                    self.top.lift()
-                                    self.top.grab_set() # Make the dialog a modal dialog.
-                                    self.root.wait_window(self.top)
-                            d = EmergencyDialog(
-                                title='Python Version Error',
-                                message=message)
-                            d.run()
-                        except Exception:
-                            pass
-                    return ok
-                except Exception:
-                    print("isValidPython: unexpected exception: g.CheckVersion")
-                    traceback.print_exc()
-                    return 0
-            def loadLocalFile(self, fn, gui, old_c):
-                trace = (False or g.trace_startup) and not g.unitTesting
-        ''')
-        table = (
-            (1, 'isValidPython'),
-            # (2, 'class EmergencyDialog'),
-            # (3, 'run'),
-            (1, 'loadLocalFile'),
-        )
-        p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-
-    #@+node:ekr.20210904065459.62: *5* TestImport.test_python_bad_class_test
-    def test_python_bad_class_test(self):
+        self.run_test(c.p, s)
+    #@-others
+#@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
+class TestPython (BaseTestImporter):
+    
+    ext = '.py'
+    
+    #@+others
+    #@+node:ekr.20210904065459.62: *3* TestPython.test_bad_class_test
+    def test_bad_class_test(self):
         c = self.c
         s = textwrap.dedent("""\
             class testClass1 # no colon
@@ -1800,9 +2124,9 @@ class TestImporter(LeoUnitTest):
             def spam():
                 pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.63: *5* TestImport.test_python_basic_nesting_test
-    def test_python_basic_nesting_test(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.63: *3* TestPython.test_basic_nesting_test
+    def test_basic_nesting_test(self):
         c = self.c
         # Was unittest/at_auto-unit-test.py
         s = textwrap.dedent("""\
@@ -1828,7 +2152,7 @@ class TestImporter(LeoUnitTest):
             (2, 'class2_method2'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -1840,8 +2164,8 @@ class TestImporter(LeoUnitTest):
             p.moveToThreadNext()
         self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.64: *5* TestImport.test_python_bug_346
-    def test_python_bug_346(self):
+    #@+node:ekr.20210904065459.64: *3* TestPython.test_bug_346
+    def test_bug_346(self):
         c = self.c
         s = textwrap.dedent('''\
             import sys
@@ -1876,7 +2200,7 @@ class TestImporter(LeoUnitTest):
             (1, 'make_parser'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -1887,8 +2211,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.65: *5* TestImport.test_python_bug_354
-    def test_python_bug_354(self):
+    #@+node:ekr.20210904065459.65: *3* TestPython.test_bug_354
+    def test_bug_354(self):
         c = self.c
         s = """
         if isPython3:
@@ -1912,7 +2236,7 @@ class TestImporter(LeoUnitTest):
             # (1, 'ue'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -1923,8 +2247,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.66: *5* TestImport.test_python_bug_357
-    def test_python_bug_357(self):
+    #@+node:ekr.20210904065459.66: *3* TestPython.test_bug_357
+    def test_bug_357(self):
         c = self.c
         s = textwrap.dedent('''
             """
@@ -2199,7 +2523,7 @@ class TestImporter(LeoUnitTest):
             (1, "main"),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         assert root
@@ -2212,8 +2536,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.67: *5* TestImport.test_python_bug_360
-    def test_python_bug_360(self):
+    #@+node:ekr.20210904065459.67: *3* TestPython.test_bug_360
+    def test_bug_360(self):
         c = self.c
         s = textwrap.dedent("""\
             @base_task(
@@ -2228,7 +2552,7 @@ class TestImporter(LeoUnitTest):
             (1, '@base_task make_map'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2239,8 +2563,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.68: *5* TestImport.test_python_bug_390
-    def test_python_bug_390(self):
+    #@+node:ekr.20210904065459.68: *3* TestPython.test_bug_390
+    def test_bug_390(self):
         c = self.c
         s = textwrap.dedent("""\
             import sys
@@ -2262,7 +2586,7 @@ class TestImporter(LeoUnitTest):
             (1, 'main'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2274,8 +2598,8 @@ class TestImporter(LeoUnitTest):
             p.moveToThreadNext()
         self.assertEqual(p, after)
         assert "if __name__ == '__main__':" in root.b
-    #@+node:ekr.20210904065459.70: *5* TestImport.test_python_bug_603720
-    def test_python_bug_603720(self):
+    #@+node:ekr.20210904065459.70: *3* TestPython.test_bug_603720
+    def test_bug_603720(self):
         c = self.c
         # Leo bug 603720
         # Within the docstring we must change '\' to '\\'
@@ -2292,9 +2616,9 @@ class TestImporter(LeoUnitTest):
 
             foo()
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.69: *5* TestImport.test_python_bug_978
-    def test_python_bug_978(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.69: *3* TestPython.test_bug_978
+    def test_bug_978(self):
         c = self.c
         s = textwrap.dedent("""\
             import foo
@@ -2314,7 +2638,7 @@ class TestImporter(LeoUnitTest):
             (1, 'class C(bar.Bar)'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         assert root
@@ -2326,16 +2650,16 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.72: *5* TestImport.test_python_class_test_2
-    def test_python_class_test_2(self):
+    #@+node:ekr.20210904065459.72: *3* TestPython.test_class_test_2
+    def test_class_test_2(self):
         c = self.c
         s = textwrap.dedent("""\
             class testClass2:
                 pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.73: *5* TestImport.test_python_class_tests_1
-    def test_python_class_tests_1(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.73: *3* TestPython.test_class_tests_1
+    def test_class_tests_1(self):
         c = self.c
         s = textwrap.dedent('''\
         class testClass1:
@@ -2345,9 +2669,9 @@ class TestImporter(LeoUnitTest):
             def f1(self):
                 pass
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.74: *5* TestImport.test_python_comment_after_dict_assign
-    def test_python_comment_after_dict_assign(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.74: *3* TestPython.test_comment_after_dict_assign
+    def test_comment_after_dict_assign(self):
         c = self.c
         s = textwrap.dedent("""\
             NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
@@ -2360,7 +2684,7 @@ class TestImporter(LeoUnitTest):
             (1, 'Declarations'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2371,8 +2695,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.75: *5* TestImport.test_python_decls_test_1
-    def test_python_decls_test_1(self):
+    #@+node:ekr.20210904065459.75: *3* TestPython.test_decls_test_1
+    def test_decls_test_1(self):
         c = self.c
         s = textwrap.dedent("""\
             import leo.core.leoGlobals as g
@@ -2383,7 +2707,7 @@ class TestImporter(LeoUnitTest):
             (1, 'Declarations'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2394,8 +2718,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.76: *5* TestImport.test_python_decorator
-    def test_python_decorator(self):
+    #@+node:ekr.20210904065459.76: *3* TestPython.test_decorator
+    def test_decorator(self):
         c = self.c
         s = textwrap.dedent('''\
             class Index:
@@ -2409,7 +2733,7 @@ class TestImporter(LeoUnitTest):
                 def abc(self):
                     return "abc"
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s)  # Must be true.
+        self.run_test(c.p, s=s)  # Must be true.
         index = g.findNodeInTree(c, c.p, '@cherrypy.nocolor index')
         assert index
         lines = g.splitLines(index.b)
@@ -2418,8 +2742,8 @@ class TestImporter(LeoUnitTest):
         abc = g.findNodeInTree(c, c.p, "@cmd('abc') abc")
         lines = g.splitLines(abc.b)
         self.assertEqual(lines[0], "@cmd('abc')\n")
-    #@+node:ekr.20210904065459.77: *5* TestImport.test_python_decorator_2
-    def test_python_decorator_2(self):
+    #@+node:ekr.20210904065459.77: *3* TestPython.test_decorator_2
+    def test_decorator_2(self):
         c = self.c
         s = textwrap.dedent('''\
             """
@@ -2512,7 +2836,7 @@ class TestImporter(LeoUnitTest):
             (1, '@command("Exit") exit_'),
             (1, "main"),
         )
-        c.importCommands.pythonUnitTest(c.p, s=s)
+        self.run_test(c.p, s=s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2528,8 +2852,8 @@ class TestImporter(LeoUnitTest):
         lines = g.splitLines(target.b)
         self.assertEqual(lines[0], '@command("Exit")\n')
 
-    #@+node:ekr.20210904065459.78: *5* TestImport.test_python_def_inside_def
-    def test_python_def_inside_def(self):
+    #@+node:ekr.20210904065459.78: *3* TestPython.test_def_inside_def
+    def test_def_inside_def(self):
         c = self.c
         s = textwrap.dedent('''\
         class aClass:
@@ -2548,7 +2872,7 @@ class TestImporter(LeoUnitTest):
             # (3, 'pr'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2560,8 +2884,8 @@ class TestImporter(LeoUnitTest):
             p.moveToThreadNext()
         self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.79: *5* TestImport.test_python_def_test_1
-    def test_python_def_test_1(self):
+    #@+node:ekr.20210904065459.79: *3* TestPython.test_def_test_1
+    def test_def_test_1(self):
         c = self.c
         s = textwrap.dedent("""\
             class test:
@@ -2587,7 +2911,7 @@ class TestImporter(LeoUnitTest):
             (2, 'convertMoreStringToOutlineAfter'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2599,8 +2923,8 @@ class TestImporter(LeoUnitTest):
             p.moveToThreadNext()
         self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.80: *5* TestImport.test_python_def_test_2
-    def test_python_def_test_2(self):
+    #@+node:ekr.20210904065459.80: *3* TestPython.test_def_test_2
+    def test_def_test_2(self):
         c = self.c
         s = textwrap.dedent("""\
             class test:
@@ -2618,7 +2942,7 @@ class TestImporter(LeoUnitTest):
             (2, 'foo'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2630,25 +2954,25 @@ class TestImporter(LeoUnitTest):
             p.moveToThreadNext()
         self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.81: *5* TestImport.test_python_docstring_only
-    def test_python_docstring_only(self):
+    #@+node:ekr.20210904065459.81: *3* TestPython.test_docstring_only
+    def test_docstring_only(self):
         c = self.c
         s = textwrap.dedent('''\
             """A file consisting only of a docstring.
             """
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.82: *5* TestImport.test_python_empty_decls
-    def test_python_empty_decls(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.82: *3* TestPython.test_empty_decls
+    def test_empty_decls(self):
         c = self.c
         s = textwrap.dedent("""\
             import leo.core.leoGlobals as g
 
             a = 3
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.71: *5* TestImport.test_python_enhancement_481
-    def test_python_enhancement_481(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.71: *3* TestPython.test_enhancement_481
+    def test_enhancement_481(self):
         c = self.c
         s = textwrap.dedent("""\
             @g.cmd('my-command')
@@ -2660,7 +2984,7 @@ class TestImporter(LeoUnitTest):
             (1, "@g.cmd('my-command') myCommand"),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2671,17 +2995,60 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.83: *5* TestImport.test_python_extra_leading_ws_test
-    def test_python_extra_leading_ws_test(self):
+    #@+node:ekr.20210904065459.83: *3* TestPython.test_extra_leading_ws_test
+    def test_extra_leading_ws_test(self):
         c = self.c
         s = textwrap.dedent("""\
             class cls:
                  def fun(): # one extra space.
                     pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.84: *5* TestImport.test_python_indent_decls
-    def test_python_indent_decls(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20211108084817.1: *3* TestPython.test_get_leading_indent
+    def test_get_leading_indent(self):
+        c = self.c
+        importer = linescanner.Importer(c.importCommands, language='python')
+        self.assertEqual(importer.single_comment, '#')
+           
+    #@+node:ekr.20210904065459.124: *3* TestPython.test_get_str_lws
+    def test_get_str_lws(self):
+        c = self.c
+        table = [
+            ('', 'abc\n'),
+            ('    ', '    xyz\n'),
+            ('    ', '    \n'),
+            ('  ', '  # comment\n'),
+            ('', '\n'),
+        ]
+        importer = linescanner.Importer(c.importCommands, language='python')
+        for val, s in table:
+            self.assertEqual(val, importer.get_str_lws(s), msg=repr(s))
+    #@+node:ekr.20210904065459.60: *3* TestPython.test_i_scan_state
+    def test_i_scan_state(self):
+        c = self.c
+        # A list of dictionaries.
+        tests = (
+            g.Bunch(line='\n'),
+            g.Bunch(line='\\\n'),
+            g.Bunch(line='s = "\\""', ctx=('', '')),  # empty string.
+            g.Bunch(line="s = '\\''", ctx=('', '')),  # empty string.
+            g.Bunch(line='# comment'),
+            g.Bunch(line='  # comment'),
+            g.Bunch(line='    # comment'),
+            g.Bunch(line='a = "string"'),
+            g.Bunch(line='a = "Continued string', ctx=('', '"')),
+            g.Bunch(line='end of continued string"', ctx=('"', '')),
+            g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+            g.Bunch(line='a = """#', ctx=('', '"""')),
+            g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+            g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+            g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+            g.Bunch(line='a = {[(')
+        )
+        importer = python.Py_Importer(c.importCommands)
+        importer.test_scan_state(tests, State=python.Python_ScanState)
+    #@+node:ekr.20210904065459.84: *3* TestPython.test_indent_decls
+    def test_indent_decls(self):
         c = self.c
         s = textwrap.dedent('''\
             class mammalProviderBase(object):
@@ -2726,7 +3093,7 @@ class TestImporter(LeoUnitTest):
             (2, 'provide'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2737,8 +3104,81 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.85: *5* TestImport.test_python_leoImport_py_small_
-    def test_python_leoImport_py_small_(self):
+    #@+node:ekr.20210904065459.125: *3* TestPython.test_is_ws_line
+    def test_is_ws_line(self):
+        c = self.c
+        table = [
+            (False, 'abc'),
+            (False, '    xyz'),
+            (True, '    '),
+            (True, '  # comment'),
+        ]
+        importer = linescanner.Importer(c.importCommands, language='python')
+        for val, s in table:
+            self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
+    #@+node:ekr.20210904065459.61: *3* TestPython.test_leoApp_fail
+    def test_leoApp_fail(self):
+        c = self.c
+        s = textwrap.dedent('''
+            def isValidPython(self):
+                if sys.platform == 'cli':
+                    return True
+                minimum_python_version = '2.6'
+                message = """\
+            Leo requires Python %s or higher.
+            You may download Python from
+            http://python.org/download/
+            """ % minimum_python_version
+                try:
+                    version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
+                    ok = g.CheckVersion(version, minimum_python_version)
+                    if not ok:
+                        print(message)
+                        try:
+                            # g.app.gui does not exist yet.
+                            import Tkinter as Tk
+                            class EmergencyDialog(object):
+                                def run(self):
+                                    """Run the modal emergency dialog."""
+                                    self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+                                    self.top.lift()
+                                    self.top.grab_set() # Make the dialog a modal dialog.
+                                    self.root.wait_window(self.top)
+                            d = EmergencyDialog(
+                                title='Python Version Error',
+                                message=message)
+                            d.run()
+                        except Exception:
+                            pass
+                    return ok
+                except Exception:
+                    print("isValidPython: unexpected exception: g.CheckVersion")
+                    traceback.print_exc()
+                    return 0
+            def loadLocalFile(self, fn, gui, old_c):
+                trace = (False or g.trace_startup) and not g.unitTesting
+        ''')
+        table = (
+            (1, 'isValidPython'),
+            # (2, 'class EmergencyDialog'),
+            # (3, 'run'),
+            (1, 'loadLocalFile'),
+        )
+        p = c.p
+        self.run_test(p, s=s)
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+
+    #@+node:ekr.20210904065459.85: *3* TestPython.test_leoImport_py_small_
+    def test_leoImport_py_small_(self):
         c = self.c
 
         s = textwrap.dedent("""\
@@ -2808,7 +3248,7 @@ class TestImporter(LeoUnitTest):
             (2, "init_import"),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2819,8 +3259,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.86: *5* TestImport.test_python_looks_like_section_ref
-    def test_python_looks_like_section_ref(self):
+    #@+node:ekr.20210904065459.86: *3* TestPython.test_looks_like_section_ref
+    def test_looks_like_section_ref(self):
         c = self.c
         # ~/at-auto-test.py
 
@@ -2829,9 +3269,9 @@ class TestImporter(LeoUnitTest):
             # This is valid Python, but it looks like a section reference.
             a = b < < c > > d
         """).replace('> >', '>>').replace('< <', '<<')
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.87: *5* TestImport.test_python_minimal_class_1
-    def test_python_minimal_class_1(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.87: *3* TestPython.test_minimal_class_1
+    def test_minimal_class_1(self):
         c = self.c
         s = textwrap.dedent('''\
             class ItasException(Exception):
@@ -2846,9 +3286,9 @@ class TestImporter(LeoUnitTest):
 
                     log('gp: %s: %s\\n' % (cmd, str(args)))
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.88: *5* TestImport.test_python_minimal_class_2
-    def test_python_minimal_class_2(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.88: *3* TestPython.test_minimal_class_2
+    def test_minimal_class_2(self):
         c = self.c
         s = textwrap.dedent("""\
             class emptyClass: pass
@@ -2856,9 +3296,9 @@ class TestImporter(LeoUnitTest):
             def followingDef():
                 pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.89: *5* TestImport.test_python_minimal_class_3
-    def test_python_minimal_class_3(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.89: *3* TestPython.test_minimal_class_3
+    def test_minimal_class_3(self):
         c = self.c
         s = textwrap.dedent("""\
             class emptyClass: pass # comment
@@ -2866,9 +3306,9 @@ class TestImporter(LeoUnitTest):
             def followingDef(): # comment
                 pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.90: *5* TestImport.test_python_overindent_def_no_following_def
-    def test_python_overindent_def_no_following_def(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.90: *3* TestPython.test_overindent_def_no_following_def
+    def test_overindent_def_no_following_def(self):
         c = self.c
         s = textwrap.dedent("""\
             class aClass:
@@ -2882,9 +3322,9 @@ class TestImporter(LeoUnitTest):
 
                     pr('input...')
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.91: *5* TestImport.test_python_overindent_def_one_following_def
-    def test_python_overindent_def_one_following_def(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.91: *3* TestPython.test_overindent_def_one_following_def
+    def test_overindent_def_one_following_def(self):
         c = self.c
         s = textwrap.dedent("""\
             class aClass:
@@ -2901,9 +3341,9 @@ class TestImporter(LeoUnitTest):
                 def def2(self):
                     pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.92: *5* TestImport.test_python_overindented_def_3
-    def test_python_overindented_def_3(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.92: *3* TestPython.test_overindented_def_3
+    def test_overindented_def_3(self):
         # This caused PyParse.py not to be imported properly.
         c = self.c
         s = textwrap.dedent(r'''
@@ -2922,7 +3362,7 @@ class TestImporter(LeoUnitTest):
             (1, 'class testClass1'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(c.p, s=s)
+        self.run_test(c.p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -2933,8 +3373,38 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.93: *5* TestImport.test_python_string_test_extra_indent
-    def test_python_string_test_extra_indent(self):
+    #@+node:ekr.20210904065459.131: *3* TestPython.test_scan_state
+    def test_scan_state(self):
+        c = self.c
+        State = python.Python_ScanState
+        # A list of dictionaries.
+        if 0:
+            tests = [
+                g.Bunch(line='s = "\\""', ctx=('', '')),
+            ]
+        else:
+            tests = [
+                g.Bunch(line='\n'),
+                g.Bunch(line='\\\n'),
+                g.Bunch(line='s = "\\""', ctx=('', '')),
+                g.Bunch(line="s = '\\''", ctx=('', '')),
+                g.Bunch(line='# comment'),
+                g.Bunch(line='  # comment'),
+                g.Bunch(line='    # comment'),
+                g.Bunch(line='a = "string"'),
+                g.Bunch(line='a = "Continued string', ctx=('', '"')),
+                g.Bunch(line='end of continued string"', ctx=('"', '')),
+                g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+                g.Bunch(line='a = """#', ctx=('', '"""')),
+                g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+                g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+                g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+                g.Bunch(line='a = {[(')
+            ]
+        importer = python.Py_Importer(c.importCommands, atAuto=True)
+        importer.test_scan_state(tests, State)
+    #@+node:ekr.20210904065459.93: *3* TestPython.test_string_test_extra_indent
+    def test_string_test_extra_indent(self):
         c = self.c
         s = textwrap.dedent('''\
         class BaseScanner:
@@ -2949,9 +3419,9 @@ class TestImporter(LeoUnitTest):
                     # g.trace("parent,headline:",parent,headline)
                     return p
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.94: *5* TestImport.test_python_string_underindent_lines
-    def test_python_string_underindent_lines(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.94: *3* TestPython.test_string_underindent_lines
+    def test_string_underindent_lines(self):
         c = self.c
         s = textwrap.dedent("""\
             class BaseScanner:
@@ -2963,9 +3433,9 @@ class TestImporter(LeoUnitTest):
                 def empty(self):
                     pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.95: *5* TestImport.test_python_string_underindent_lines_2
-    def test_python_string_underindent_lines_2(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.95: *3* TestPython.test_string_underindent_lines_2
+    def test_string_underindent_lines_2(self):
         c = self.c
         s = textwrap.dedent("""\
             class BaseScanner:
@@ -2978,9 +3448,9 @@ class TestImporter(LeoUnitTest):
                 def empty(self):
                     pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.96: *5* TestImport.test_python_top_level_later_decl
-    def test_python_top_level_later_decl(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.96: *3* TestPython.test_top_level_later_decl
+    def test_top_level_later_decl(self):
         # From xo.py.
         c = self.c
         # The first line *must* be blank.
@@ -3021,7 +3491,7 @@ class TestImporter(LeoUnitTest):
             (1, 'retab'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         root = p.lastChild()
         assert root
         self.assertEqual(root.h, '@file test')
@@ -3034,8 +3504,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.97: *5* TestImport.test_python_trailing_comment
-    def test_python_trailing_comment(self):
+    #@+node:ekr.20210904065459.97: *3* TestPython.test_trailing_comment
+    def test_trailing_comment(self):
         c = self.c
         s = textwrap.dedent("""\
             class aClass: # trailing comment
@@ -3044,17 +3514,17 @@ class TestImporter(LeoUnitTest):
                 def def1(self):             # trailing comment
                     pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.98: *5* TestImport.test_python_trailing_comment_outer_levels
-    def test_python_trailing_comment_outer_levels(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.98: *3* TestPython.test_trailing_comment_outer_levels
+    def test_trailing_comment_outer_levels(self):
         c = self.c
         s = textwrap.dedent("""\
             xyz = 6 # trailing comment
             pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.99: *5* TestImport.test_python_two_functions
-    def test_python_two_functions(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.99: *3* TestPython.test_two_functions
+    def test_two_functions(self):
         # For comparison with unindent does not end function.
         c = self.c
         s = textwrap.dedent("""\
@@ -3064,9 +3534,9 @@ class TestImporter(LeoUnitTest):
             def bar():
                 pass
         """)
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.100: *5* TestImport.test_python_underindent_method
-    def test_python_underindent_method(self):
+        self.run_test(c.p, s=s)
+    #@+node:ekr.20210904065459.100: *3* TestPython.test_underindent_method
+    def test_underindent_method(self):
         c = self.c
         s = textwrap.dedent('''\
             class emptyClass:
@@ -3085,7 +3555,7 @@ class TestImporter(LeoUnitTest):
             (1, 'followingDef'),
         )
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, '@file test')
@@ -3096,8 +3566,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.101: *5* TestImport.test_python_unindent_in_triple_string_does_not_end_function
-    def test_python_unindent_in_triple_string_does_not_end_function(self):
+    #@+node:ekr.20210904065459.101: *3* TestPython.test_unindent_in_triple_string_does_not_end_function
+    def test_unindent_in_triple_string_does_not_end_function(self):
         c = self.c
         s = textwrap.dedent('''\
             def foo():
@@ -3112,12 +3582,12 @@ class TestImporter(LeoUnitTest):
                 pass
         ''')
         p = c.p
-        c.importCommands.pythonUnitTest(p, s=s)
+        self.run_test(p, s=s)
         child = p.firstChild()
         n = child.numberOfChildren()
         self.assertEqual(n, 2)
-    #@+node:ekr.20210904065459.102: *5* TestImport.test_python_unittest_perfectImport_formatter_py
-    def test_python_unittest_perfectImport_formatter_py(self):
+    #@+node:ekr.20210904065459.102: *3* TestPython.test_unittest_perfectImport_formatter_py
+    def test_unittest_perfectImport_formatter_py(self):
         c = self.c
 
         s = textwrap.dedent('''\
@@ -3555,349 +4025,16 @@ class TestImporter(LeoUnitTest):
             if __name__ == '__main__':
                 test()
         ''')
-        c.importCommands.pythonUnitTest(c.p, s=s)
-    #@+node:ekr.20210904123047.1: *4* Typescript tests
-    #@+node:ekr.20210904065459.103: *5* TestImport.test_TypeScript_class
-    def test_TypeScript_class(self):
-        c = self.c
-        s = '''
-
-        class Greeter {
-            greeting: string;
-            constructor (message: string) {
-                this.greeting = message;
-            }
-            greet() {
-                return "Hello, " + this.greeting;
-            }
-        }
-
-        var greeter = new Greeter("world");
-
-        var button = document.createElement('button')
-        button.innerText = "Say Hello"
-        button.onclick = function() {
-            alert(greeter.greet())
-        }
-
-        document.body.appendChild(button)
-
-        '''
-
-        c.importCommands.typeScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.104: *5* TestImport.test_TypeScript_module
-    def test_TypeScript_module(self):
-        c = self.c
-        s = textwrap.dedent('''\
-            module Sayings {
-                export class Greeter {
-                    greeting: string;
-                    constructor (message: string) {
-                        this.greeting = message;
-                    }
-                    greet() {
-                        return "Hello, " + this.greeting;
-                    }
-                }
-            }
-            var greeter = new Sayings.Greeter("world");
-
-            var button = document.createElement('button')
-            button.innerText = "Say Hello"
-            button.onclick = function() {
-                alert(greeter.greet())
-            }
-
-            document.body.appendChild(button)
-        ''')
-
-        c.importCommands.typeScriptUnitTest(c.p, s=s)
-    #@+node:ekr.20210904123056.1: *4* XML tests
-    #@+node:ekr.20210904065459.105: *5* TestImport.test_xml_with_standard_opening_elements
-    def test_xml_with_standard_opening_elements(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <?xml version="1.0" encoding="UTF-8"?>
-            <!DOCTYPE note SYSTEM "Note.dtd">
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class='bodystring'>
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """)
-        table = (
-            (1, "<html>"),
-            (2, "<head>"),
-            (2, "<body class='bodystring'>"),
-        )
-        p = c.p
-        c.importCommands.xmlUnitTest(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.106: *5* TestImport.test_xml_1
-    def test_xml_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class='bodystring'>
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """)
-        table = (
-            (1, "<html>"),
-            (2, "<head>"),
-            (2, "<body class='bodystring'>"),
-        )
-        p = c.p
-        c.importCommands.xmlUnitTest(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p = root.firstChild()
-        assert p, g.tree_to_string(c)
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-
-    #@+node:ekr.20210904065459.108: *5* TestImport.test_xml_non_ascii_tags
-    def test_xml_non_ascii_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            <:À.Ç>
-            <Ì>
-            <_.ÌÑ>
-        """)
-        c.importCommands.xmlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904071301.1: *3* Tests of @auto-md
-    #@+node:ekr.20210904065459.109: *4* TestImport.test_md_import_test
-    def test_md_import_test(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #Top
-            The top section
-
-            ##Section 1
-            section 1, line 1
-            section 1, line 2
-
-            ##Section 2
-            section 2, line 1
-
-            ###Section 2.1
-            section 2.1, line 1
-
-            ####Section 2.1.1
-            section 2.2.1 line 1
-            The next section is empty. It must not be deleted.
-
-            ###Section 2.2
-
-            ##Section 3
-            Section 3, line 1
-    """)
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        after = c.p.nodeAfterTree()
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.110: *4* TestImport.test_md_import_test_rst_style
-    def test_md_import_test_rst_style(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            Top
-            ====
-
-            The top section
-
-            Section 1
-            ---------
-
-            section 1, line 1
-            -- Not an underline
-            secttion 1, line 2
-
-            Section 2
-            ---------
-
-            section 2, line 1
-
-            ###Section 2.1
-
-            section 2.1, line 1
-
-            ####Section 2.1.1
-
-            section 2.2.1 line 1
-
-            ###Section 2.2
-            section 2.2, line 1.
-
-            Section 3
-            ---------
-
-            section 3, line 1
-    """)
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        p = c.p
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.111: *4* TestImport.test_markdown_importer_basic
-    def test_markdown_importer_basic(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            After header text
-
-            ##Subheader
-
-            Not an underline
-
-            ----------------
-
-            After subheader text
-
-            #Last header: no text
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                'Last header: no text',
-        )
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.112: *4* TestImport.test_markdown_importer_implicit_section
-    def test_markdown_importer_implicit_section(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            After header text
-
-            ##Subheader
-
-            Not an underline
-
-            ----------------
-
-            This *should* be a section
-            ==========================
-
-            After subheader text
-
-            #Last header: no text
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                    'This *should* be a section',
-                'Last header: no text',
-        )
-        g.app.suppressImportChecks = True
-            # Required, because the implicit underlining *must*
-            # cause the perfect-import test to fail!
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.114: *4* TestImport.test_markdown_github_syntax
-    def test_markdown_github_syntax(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            `​``python
-            loads.init = {
-                Chloride: 11.5,
-                TotalP: 0.002,
-            }
-            `​``
-            #Last header
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-            'Last header',
-        )
-        c.importCommands.markdownUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904071345.1: *3* Tests of @auto-rst
-    #@+node:ekr.20210904065459.115: *4* TestImport.test_rST_import_test
-    def test_rST_import_test(self):
+        self.run_test(c.p, s=s)
+    #@-others
+#@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
+class TestRst(BaseTestImporter):
+    
+    ext = '.rst'
+    
+    #@+others
+    #@+node:ekr.20210904065459.115: *3* TestRst.test_test1
+    def test_test1(self):
         c = self.c
         try:
             import docutils
@@ -3957,7 +4094,7 @@ class TestImporter(LeoUnitTest):
             'placeholder',
             'section 3.1.1',
         )
-        c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -3965,8 +4102,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.116: *4* TestImport.test_rST_import_test_simple
-    def test_rST_import_test_simple(self):
+    #@+node:ekr.20210904065459.116: *3* TestRst.test_simple
+    def test_simple(self):
         c = self.c
         try:
             import docutils
@@ -3989,7 +4126,7 @@ class TestImporter(LeoUnitTest):
             "!Dummy chapter",
             "Chapter",
         )
-        c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -3997,8 +4134,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.117: *4* TestImport.test_rST_import_test_no_double_underlines
-    def test_rST_import_test_no_double_underlines(self):
+    #@+node:ekr.20210904065459.117: *3* TestRst.test_no_double_underlines
+    def test_no_double_underlines(self):
         c = self.c
         try:
             import docutils
@@ -4057,7 +4194,7 @@ class TestImporter(LeoUnitTest):
             'placeholder',
             'section 3.1.1',
         )
-        c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -4065,8 +4202,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.118: *4* TestImport.test_rST_import_test_long_underlines
-    def test_rST_import_test_long_underlines(self):
+    #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
+    def test_long_underlines(self):
         c = self.c
         try:
             import docutils
@@ -4086,7 +4223,7 @@ class TestImporter(LeoUnitTest):
             '!Dummy chapter',
             'top',
         )
-        c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -4094,8 +4231,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.119: *4* TestImport.test_rST_import_test_long_overlines
-    def test_rST_import_test_long_overlines(self):
+    #@+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
+    def test_test_long_overlines(self):
         c = self.c
         try:
             import docutils
@@ -4116,7 +4253,7 @@ class TestImporter(LeoUnitTest):
             "!Dummy chapter",
             "top",
         )
-        c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -4124,8 +4261,8 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.120: *4* TestImport.test_rST_import_test_trailing_whitespace
-    def test_rST_import_test_trailing_whitespace(self):
+    #@+node:ekr.20210904065459.120: *3* TestRst.test_trailing_whitespace
+    def test_trailing_whitespace(self):
         c = self.c
         try:
             import docutils
@@ -4149,7 +4286,7 @@ class TestImporter(LeoUnitTest):
             "top",
         )
         p = c.p
-        c.importCommands.rstUnitTest(p, s=s)
+        self.run_test(c.p, s)
         root = p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -4157,7 +4294,7 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.121: *4* TestImport.test_leo_rst
+    #@+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
     def test_leo_rst(self):
         c = self.c
         try:
@@ -4189,7 +4326,7 @@ class TestImporter(LeoUnitTest):
             'section 1',
             'section 2',
         )
-        c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
         p2 = root.firstChild()
@@ -4198,129 +4335,159 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904071422.1: *3* All other tests
-    #@+node:ekr.20210904065459.122: *4* TestImport.test_at_auto_importers
-    def test_at_auto_importers(self):
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
-        assert g.os_path_exists(path), repr(path)
-        pattern = g.os_path_finalize_join(path, '*.py')
-        for fn in glob.glob(pattern):
-            sfn = g.shortFileName(fn)
-            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
-            assert m
-    #@+node:ekr.20210904065459.123: *4* TestImport.test_Importer_get_leading_indent
-    def test_Importer_get_leading_indent(self):
+    #@-others
+#@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
+class TestTypescript (BaseTestImporter):
+    
+    ext = '.ts'
+    
+    #@+others
+    #@+node:ekr.20210904065459.103: *3* TestTypescript.test_class
+    def test_class(self):
         c = self.c
-        lines_table = [
-            'abc',
-            '    xyz',
-            '    ',
-            '  # comment',
-        ]
-        for language in ('python', 'coffeescript'):
-            importer = linescanner.Importer(
-                c.importCommands,
-                language=language,
-            )
-            self.assertEqual(importer.single_comment, '#')
-            if 0:
-                for line in lines_table:
-                    lines = [line]
-                    n = importer.get_leading_indent(lines, 0)
-                    print('%s %r' % (n, line))
-    #@+node:ekr.20210904065459.124: *4* TestImport.test_Importer_get_str_lws
-    def test_Importer_get_str_lws(self):
+        s = '''
+
+        class Greeter {
+            greeting: string;
+            constructor (message: string) {
+                this.greeting = message;
+            }
+            greet() {
+                return "Hello, " + this.greeting;
+            }
+        }
+
+        var greeter = new Greeter("world");
+
+        var button = document.createElement('button')
+        button.innerText = "Say Hello"
+        button.onclick = function() {
+            alert(greeter.greet())
+        }
+
+        document.body.appendChild(button)
+
+        '''
+
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.104: *3* TestTypescript.test_module
+    def test_module(self):
         c = self.c
-        table = [
-            ('', 'abc\n'),
-            ('    ', '    xyz\n'),
-            ('    ', '    \n'),
-            ('  ', '  # comment\n'),
-            ('', '\n'),
-        ]
-        importer = linescanner.Importer(c.importCommands, language='python')
-        for val, s in table:
-            self.assertEqual(val, importer.get_str_lws(s), msg=repr(s))
-    #@+node:ekr.20210904065459.125: *4* TestImport.test_Importer_is_ws_line
-    def test_Importer_is_ws_line(self):
+        s = textwrap.dedent('''\
+            module Sayings {
+                export class Greeter {
+                    greeting: string;
+                    constructor (message: string) {
+                        this.greeting = message;
+                    }
+                    greet() {
+                        return "Hello, " + this.greeting;
+                    }
+                }
+            }
+            var greeter = new Sayings.Greeter("world");
+
+            var button = document.createElement('button')
+            button.innerText = "Say Hello"
+            button.onclick = function() {
+                alert(greeter.greet())
+            }
+
+            document.body.appendChild(button)
+        ''')
+
+        self.run_test(c.p, s)
+    #@-others
+#@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
+class TestXML (BaseTestImporter):
+    
+    ext = '.xml'
+    
+    def setUp(self):
+        super().setUp()
         c = self.c
-        table = [
-            (False, 'abc'),
-            (False, '    xyz'),
-            (True, '    '),
-            (True, '  # comment'),
-        ]
-        importer = linescanner.Importer(c.importCommands, language='python')
-        for val, s in table:
-            self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
-    #@+node:ekr.20210904065459.126: *4* TestImport.test_importers_coffee_scan_line
-    def test_importers_coffee_scan_line(self):
+        # Simulate @data import-xml-tags, with *only* standard tags.
+        tags_list = ['html', 'body', 'head', 'div', 'table']
+        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        c.config.settingsDict = settingsDict
+        c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
+    
+    #@+others
+    #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
+    def test_standard_opening_elements(self):
         c = self.c
-        table = []  # State after line, line
-        x = cs.CS_Importer(c.importCommands, atAuto=True)
-        self.assertEqual(x.single_comment, '#')
-        for new_state, line in table:
-            print('%5s %r' % (new_state, line))
-        if 0:
-            for line in table:
-                lines = [line]
-                n = x.get_leading_indent(lines, 0)
-                print('%s %r' % (n, line))
-    #@+node:ekr.20210904065459.127: *4* TestImport.test_importers_dart_clean_headline
-    def test_importers_dart_clean_headline(self):
-        c = self.c
-        x = dart.Dart_Importer(c.importCommands, atAuto=False)
+        s = textwrap.dedent("""\
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE note SYSTEM "Note.dtd">
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class='bodystring'>
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
         table = (
-            ('func(abc) {', 'func'),
-            ('void foo() {', 'void foo'),
+            (1, "<html>"),
+            (2, "<head>"),
+            (2, "<body class='bodystring'>"),
         )
-        for s, expected in table:
-            got = x.clean_headline(s)
-            self.assertEqual(got, expected)
-    #@+node:ekr.20210904065459.128: *4* TestImport.test_importers_markdown_is_hash
-    def test_importers_markdown_is_hash(self):
+        p = c.p
+        self.run_test(p, s)
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.106: *3* TestXml.test_1
+    def test_1(self):
         c = self.c
-        ic = c.importCommands
-        x = markdown.Markdown_Importer(ic, atAuto=False)
-        # insert test for markdown here.
-        assert x.md_pattern_table
+        s = textwrap.dedent("""\
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class='bodystring'>
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """)
         table = (
-            (1, 'name', '# name\n'),
-            (2, 'a test', '## a test\n'),
-            (3, 'a test', '### a test\n'),
+            (1, "<html>"),
+            (2, "<head>"),
+            (2, "<body class='bodystring'>"),
         )
-        for data in table:
-            level, name, line = data
-            level2, name2 = x.is_hash(line)
-            self.assertEqual(level, level2)
-            self.assertEqual(name, name2)
-        level3, name = x.is_hash('Not a hash')
-        assert level3 is None
-        assert name is None
-    #@+node:ekr.20210904065459.129: *4* TestImport.test_importers_markdown_is_underline
-    def test_importers_markdown_is_underline(self):
+        p = c.p
+        self.run_test(p, s)
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p = root.firstChild()
+        assert p, g.tree_to_string(c)
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+
+    #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
+    def test_non_ascii_tags(self):
         c = self.c
-        ic = c.importCommands
-        x = markdown.Markdown_Importer(ic, atAuto=False)
-        for line in ('----\n', '-----\n', '====\n', '====\n'):
-            got = x.is_underline(line)
-            assert got, repr(line)
-        for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n', '==-==\n', 'abc\n'):
-            got = x.is_underline(line)
-            assert not got, repr(line)
-    #@+node:ekr.20210904065459.130: *4* TestImport.test_importers_pascal_methods
-    def test_importers_pascal_methods(self):
-        c = self.c
-        x = pascal.Pascal_Importer(c.importCommands, atAuto=False)
-        table = (
-            ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
-        )
-        state = g.Bunch(context='')
-        for line, cleaned in table:
-            assert x.starts_block(0, [line], state, state)
-            self.assertEqual(x.clean_headline(line), cleaned)
-    #@+node:ekr.20210904065459.132: *4* TestImport.test_importers_xml_is_ws_line
-    def test_importers_xml_is_ws_line(self):
+        s = textwrap.dedent("""\
+            <:À.Ç>
+            <Ì>
+            <_.ÌÑ>
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.132: *3* TestXml.test_is_ws_line
+    def test_is_ws_line(self):
         c = self.c
         x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
         table = (
@@ -4335,8 +4502,8 @@ class TestImporter(LeoUnitTest):
         for expected, line in table:
             got = x.is_ws_line(line)
             self.assertEqual(expected, got, msg=repr(line))
-    #@+node:ekr.20210904065459.133: *4* TestImport.test_importers_xml_scan_line
-    def test_importers_xml_scan_line(self):
+    #@+node:ekr.20210904065459.133: *3* TestXml.test_scan_line
+    def test_scan_line(self):
         c = self.c
         x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
         x.start_tags.append('html')  # Don't rely on settings.
@@ -4356,36 +4523,6 @@ class TestImporter(LeoUnitTest):
             self.assertEqual(prev_state.tag_level, 0, msg=line)
             new_state = x.scan_line(line, prev_state)
             self.assertEqual(new_state.tag_level, level, msg=line)
-    #@+node:ekr.20210904065459.131: *4* TestImport.test_importers_python_test_scan_state
-    def test_importers_python_test_scan_state(self):
-        c = self.c
-        State = python.Python_ScanState
-        # A list of dictionaries.
-        if 0:
-            tests = [
-                g.Bunch(line='s = "\\""', ctx=('', '')),
-            ]
-        else:
-            tests = [
-                g.Bunch(line='\n'),
-                g.Bunch(line='\\\n'),
-                g.Bunch(line='s = "\\""', ctx=('', '')),
-                g.Bunch(line="s = '\\''", ctx=('', '')),
-                g.Bunch(line='# comment'),
-                g.Bunch(line='  # comment'),
-                g.Bunch(line='    # comment'),
-                g.Bunch(line='a = "string"'),
-                g.Bunch(line='a = "Continued string', ctx=('', '"')),
-                g.Bunch(line='end of continued string"', ctx=('"', '')),
-                g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
-                g.Bunch(line='a = """#', ctx=('', '"""')),
-                g.Bunch(line='end of continued string"""', ctx=('"""', '')),
-                g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
-                g.Bunch(line="end of continued string'''", ctx=("'''", '')),
-                g.Bunch(line='a = {[(')
-            ]
-        importer = python.Py_Importer(c.importCommands, atAuto=True)
-        importer.test_scan_state(tests, State)
     #@-others
 #@-others
 
