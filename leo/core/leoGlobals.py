@@ -3381,8 +3381,10 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
     v0 = p.v
 
     def find_language(v, phase):
-        """A helper for all searches."""
-        # #2308: Phase one searches only @<file> nodes.
+        """
+        A helper for all searches.
+        Phase one searches only @<file> nodes.
+        """
         if phase == 1 and not v.isAnyAtFileNode():
             return None
         # #1693: Scan v.b for an *unambiguous* @language directive.
@@ -3406,15 +3408,14 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
     # Phase 1: search only @<file> nodes: #2308.
     # Phase 2: search all nodes.
     for phase in (1, 2):
-        # 1: Search direct parents.
+        # Search direct parents.
         for p2 in p.self_and_parents(copy=False):
             language = find_language(p2.v, phase)
             if language:
                 return language
-        # 2: Search nodes in all parents of clones,
-        #    including all parents of cloned parents!
-        seen = []  # vnodes that have already been searched.
-        parents = v0.parents[:]  # vnodes whose ancestors are to be searched.
+        # Search all extended parents.
+        seen = []
+        parents = v0.parents[:]  # vnodes whose extended parents are to be searched.
         while parents:
             parent_v = parents.pop()
             if parent_v in seen:
@@ -3423,11 +3424,7 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
             language = find_language(parent_v, phase)
             if language:
                 return language
-            if parent_v.isCloned():
-                parents.extend(parent_v.parents[:]) # Search all clones!
-            for grand_parent_v in parent_v.parents:
-                if grand_parent_v not in seen:
-                    parents.append(grand_parent_v)
+            parents.extend(list(z for z in parent_v.parents if z not in seen))
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c: Cmdr, p: Pos):
