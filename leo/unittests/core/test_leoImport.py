@@ -20,9 +20,9 @@ import leo.plugins.importers.pascal as pascal
 import leo.plugins.importers.python as python
 import leo.plugins.importers.xml as xml
 #@+others
-#@+node:ekr.20210904064440.3: **  class TestImporter(LeoUnitTest)
-class TestImporter(LeoUnitTest):
-    """Test cases for leoImport.py"""
+#@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
+class BaseTestImporter(LeoUnitTest):
+    """The base class for tests of leoImport.py"""
     
     def setUp(self):
         super().setUp()
@@ -44,7 +44,7 @@ class TestImporter(LeoUnitTest):
         c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
 
     #@+others
-    #@+node:ekr.20211108044605.1: *3*  TestImporter.compute_unit_test_kind
+    #@+node:ekr.20211108044605.1: *3*  BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
@@ -55,8 +55,8 @@ class TestImporter(LeoUnitTest):
                     return z
         return '@file'
     #@-others
-#@+node:ekr.20211108052633.1: ** class TempImporterTest (TestImporter)
-class TempImporterTest (TestImporter):
+#@+node:ekr.20211108052633.1: ** class TempImporterTest (BaseTestImporter)
+class TempImporterTest (BaseTestImporter):
     
     #@+others  ### To be moved to other classes.
     #@+node:ekr.20210904065613.1: *3* Tests of @auto
@@ -383,11 +383,10 @@ class TempImporterTest (TestImporter):
             'buildCoffee = (str) ->',
         )
         c.importCommands.coffeeScriptUnitTest(c.p, s=s)
-        if 1:
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              self.assertEqual(p2.h, h)
-              p2.moveToThreadNext()
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
     #@+node:ekr.20210904065459.16: *5* TestImport.test_coffeescript_3
     #@@tabwidth -2 # Required
 
@@ -432,11 +431,10 @@ class TempImporterTest (TestImporter):
           'body: (node, opts={}) ->',
         )
         c.importCommands.coffeeScriptUnitTest(c.p, s=s)
-        if 1:
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              self.assertEqual(p2.h, h)
-              p2.moveToThreadNext()
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
     #@+node:ekr.20210904084324.1: *4* Cython tests
     #@+node:ekr.20210904065459.11: *5* TestImport.test_cython_importer
     def test_cython_importer(self):
@@ -3899,9 +3897,10 @@ class TempImporterTest (TestImporter):
         importer = python.Py_Importer(c.importCommands, atAuto=True)
         importer.test_scan_state(tests, State)
     #@-others
-#@+node:ekr.20211108043230.1: ** class TestMarkdown(TestImporter)
-class TestMarkdown(TestImporter):
-    
+#@+node:ekr.20211108043230.1: ** class TestMarkdown(BaseTestImporter)
+class TestMarkdown(BaseTestImporter):
+
+    # pylint: disable=arguments-differ
     def run_test(self, p, s):
         super().run_test(p, s, ext='.md')
     
@@ -4114,9 +4113,10 @@ class TestMarkdown(TestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
-#@+node:ekr.20211108050827.1: ** class TestRst(TestImporter)
-class TestRst(TestImporter):
+#@+node:ekr.20211108050827.1: ** class TestRst(BaseTestImporter)
+class TestRst(BaseTestImporter):
     
+    # pylint: disable=arguments-differ
     def run_test(self, p, s):
         super().run_test(p, s, ext='.rst')
     
