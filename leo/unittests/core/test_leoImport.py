@@ -61,50 +61,6 @@ class BaseTestImporter(LeoUnitTest):
 class TempImporterTest (BaseTestImporter):
     
     #@+others  ### To be moved to other classes.
-    #@+node:ekr.20210904144251.1: *3* C# tests
-    #@+node:ekr.20210904065459.12: *4* TestImport.test_c_sharp_namespace_indent
-    def test_c_sharp_namespace_indent(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            namespace {
-                class cTestClass1 {
-                    ;
-                }
-            }
-        """)
-        table = (
-            'namespace',
-            'class cTestClass1',
-        )
-        c.importCommands.cSharpUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.13: *4* TestImport.test_c_sharp_namespace_no_indent
-    def test_c_sharp_namespace_no_indent(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            namespace {
-            class cTestClass1 {
-                ;
-            }
-            }
-        """)
-        c.importCommands.cSharpUnitTest(c.p, s=s)
-        table = (
-            'namespace',
-            'class cTestClass1',
-        )
-        root = c.p.firstChild()
-        # assert root.h.endswith('c# namespace no indent'), root.h
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
     #@+node:ekr.20210904122726.1: *3* Coffeescript tests
     #@+node:ekr.20210904065459.15: *4* TestImport.test_coffeescript_2
     def test_coffeescript_2(self):
@@ -4432,6 +4388,56 @@ class TestIni(BaseTestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108062958.1: ** class TestCSharp(BaseTestImporter)
+class TestCSharp(BaseTestImporter):
+    
+    ext = '.c#'
+    
+    #@+others
+    #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
+    def test_namespace_indent(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            namespace {
+                class cTestClass1 {
+                    ;
+                }
+            }
+        """)
+        table = (
+            'namespace',
+            'class cTestClass1',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.13: *3* TestImport.test_namespace_no_indent
+    def test_namespace_no_indent(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            namespace {
+            class cTestClass1 {
+                ;
+            }
+            }
+        """)
+        self.run_test(c.p, s)
+        table = (
+            'namespace',
+            'class cTestClass1',
+        )
+        root = c.p.firstChild()
+        # assert root.h.endswith('c# namespace no indent'), root.h
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
     #@-others
 #@-others
 
