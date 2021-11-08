@@ -1520,54 +1520,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904122853.1: *3* Otl tests
-    #@+node:ekr.20210904065459.48: *4* TestImport.test_otl_vim_outline_mode
-    def test_otl_vim_outline_mode(self):
-        c = self.c
-        x = otl.Otl_Importer(c.importCommands, atAuto=False)
-        pattern = x.otl_pattern
-        table = (
-            'body line',
-            '\tline 1',
-            '  \tlevel 2',
-        )
-        for line in table:
-            m = pattern.match(line)
-            # print('%20r ==> (%r)(%r)' % (
-                # line, m and m.group(1), m and m.group(2)))
-            assert m
-    #@+node:ekr.20210904065459.49: *4* TestImport.test_otl_1
-    def test_otl_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            preamble.
-            Section 1
-            : Sec 1.
-            Section 2
-            : Sec 2.
-            \tSection 2-1
-            : Sec 2-1
-            \t\tSection 2-1-1
-            : Sect 2-1-1
-            Section 3
-            : Sec 3
-            \tSection 3.1
-            : Sec 3.1
-        """)
-        table = (
-            'Section 1',
-            'Section 2', 'Section 2-1', 'Section 2-1-1',
-            'Section 3', 'Section 3.1',
-        )
-        c.importCommands.otlUnitTest(c.p, s=s)
-        if 0:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                self.assertEqual(p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
     #@+node:ekr.20210904143328.1: *3* Pascal tests
     #@+node:ekr.20210904065459.50: *4* TestImport.test_pascal_to_delphi_interface
     def test_pascal_to_delphi_interface(self):
@@ -4109,6 +4061,58 @@ class TestOrg (BaseTestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
+class TestOtl (BaseTestImporter):
+    
+    ext = '.otl'
+    
+    #@+others
+    #@+node:ekr.20210904065459.49: *3* TestOtl.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            preamble.
+            Section 1
+            : Sec 1.
+            Section 2
+            : Sec 2.
+            \tSection 2-1
+            : Sec 2-1
+            \t\tSection 2-1-1
+            : Sect 2-1-1
+            Section 3
+            : Sec 3
+            \tSection 3.1
+            : Sec 3.1
+        """)
+        table = (
+            'Section 1',
+            'Section 2', 'Section 2-1', 'Section 2-1-1',
+            'Section 3', 'Section 3.1',
+        )
+        self.run_test(c.p, s)
+        if 0:
+            root = c.p.firstChild()
+            p2 = root.firstChild()
+            for h in table:
+                self.assertEqual(p2.h, h)
+                p2.moveToThreadNext()
+            assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
+    #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
+    def test_vim_outline_mode(self):
+        c = self.c
+        x = otl.Otl_Importer(c.importCommands, atAuto=False)
+        pattern = x.otl_pattern
+        table = (
+            'body line',
+            '\tline 1',
+            '  \tlevel 2',
+        )
+        for line in table:
+            m = pattern.match(line)
+            self.assertTrue(m, msg=repr(line))
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
