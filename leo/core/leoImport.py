@@ -1225,9 +1225,6 @@ class LeoImportCommands:
         c.config.set(p, 'data', 'import-html-tags', tags_list, warn=True)
         self.scannerUnitTest(p, s, ext='.htm')
 
-    def iniUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.ini')
-
     def javaUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.java')
 
