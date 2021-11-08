@@ -373,6 +373,11 @@ class TestCoffeescript (BaseTestImporter):
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
+    #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
+    def test_get_leading_indent(self):
+        c = self.c
+        importer = linescanner.Importer(c.importCommands, language='coffeescrip')
+        self.assertEqual(importer.single_comment, '#')
     #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
     def test_scan_line(self):
         c = self.c
@@ -1576,77 +1581,6 @@ class TestMisc (BaseTestImporter):
             sfn = g.shortFileName(fn)
             m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
             assert m
-    #@+node:ekr.20210904065459.123: *3* TestImport.test_get_leading_indent
-    def test_get_leading_indent(self):
-        c = self.c
-        lines_table = [
-            'abc',
-            '    xyz',
-            '    ',
-            '  # comment',
-        ]
-        for language in ('python', 'coffeescript'):
-            importer = linescanner.Importer(
-                c.importCommands,
-                language=language,
-            )
-            self.assertEqual(importer.single_comment, '#')
-            if 0:
-                for line in lines_table:
-                    lines = [line]
-                    n = importer.get_leading_indent(lines, 0)
-                    print('%s %r' % (n, line))
-    #@+node:ekr.20210904065459.133: *3* TestImport.test_importers_xml_scan_line
-    def test_importers_xml_scan_line(self):
-        c = self.c
-        x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
-        x.start_tags.append('html')  # Don't rely on settings.
-        table = (
-            (0, '<tag>'),
-            (0, '<tag></tag'),
-            (1, '<html'),
-            (1, '<html attrib="<">'),
-            (0, '<html attrib="<" />'),
-            (0, '<html>x</html>'),
-            (0, '</br>'),  # Tag underflow
-            (0, '<br />'),
-            (0, '<br/>'),
-        )
-        for level, line in table:
-            prev_state = x.state_class()  # Start in level 0
-            self.assertEqual(prev_state.tag_level, 0, msg=line)
-            new_state = x.scan_line(line, prev_state)
-            self.assertEqual(new_state.tag_level, level, msg=line)
-    #@+node:ekr.20210904065459.131: *3* TestImport.test_importers_python_test_scan_state
-    def test_importers_python_test_scan_state(self):
-        c = self.c
-        State = python.Python_ScanState
-        # A list of dictionaries.
-        if 0:
-            tests = [
-                g.Bunch(line='s = "\\""', ctx=('', '')),
-            ]
-        else:
-            tests = [
-                g.Bunch(line='\n'),
-                g.Bunch(line='\\\n'),
-                g.Bunch(line='s = "\\""', ctx=('', '')),
-                g.Bunch(line="s = '\\''", ctx=('', '')),
-                g.Bunch(line='# comment'),
-                g.Bunch(line='  # comment'),
-                g.Bunch(line='    # comment'),
-                g.Bunch(line='a = "string"'),
-                g.Bunch(line='a = "Continued string', ctx=('', '"')),
-                g.Bunch(line='end of continued string"', ctx=('"', '')),
-                g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
-                g.Bunch(line='a = """#', ctx=('', '"""')),
-                g.Bunch(line='end of continued string"""', ctx=('"""', '')),
-                g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
-                g.Bunch(line="end of continued string'''", ctx=("'''", '')),
-                g.Bunch(line='a = {[(')
-            ]
-        importer = python.Py_Importer(c.importCommands, atAuto=True)
-        importer.test_scan_state(tests, State)
     #@-others
 #@+node:ekr.20211108080955.1: ** class TestOrg (BaseTestImporter)
 class TestOrg (BaseTestImporter):
@@ -3070,6 +3004,12 @@ class TestPython (BaseTestImporter):
                     pass
         """)
         self.run_test(c.p, s=s)
+    #@+node:ekr.20211108084817.1: *3* TestPython.test_get_leading_indent
+    def test_get_leading_indent(self):
+        c = self.c
+        importer = linescanner.Importer(c.importCommands, language='python')
+        self.assertEqual(importer.single_comment, '#')
+           
     #@+node:ekr.20210904065459.124: *3* TestPython.test_get_str_lws
     def test_get_str_lws(self):
         c = self.c
@@ -3433,6 +3373,36 @@ class TestPython (BaseTestImporter):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.131: *3* TestPython.test_scan_state
+    def test_scan_state(self):
+        c = self.c
+        State = python.Python_ScanState
+        # A list of dictionaries.
+        if 0:
+            tests = [
+                g.Bunch(line='s = "\\""', ctx=('', '')),
+            ]
+        else:
+            tests = [
+                g.Bunch(line='\n'),
+                g.Bunch(line='\\\n'),
+                g.Bunch(line='s = "\\""', ctx=('', '')),
+                g.Bunch(line="s = '\\''", ctx=('', '')),
+                g.Bunch(line='# comment'),
+                g.Bunch(line='  # comment'),
+                g.Bunch(line='    # comment'),
+                g.Bunch(line='a = "string"'),
+                g.Bunch(line='a = "Continued string', ctx=('', '"')),
+                g.Bunch(line='end of continued string"', ctx=('"', '')),
+                g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+                g.Bunch(line='a = """#', ctx=('', '"""')),
+                g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+                g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+                g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+                g.Bunch(line='a = {[(')
+            ]
+        importer = python.Py_Importer(c.importCommands, atAuto=True)
+        importer.test_scan_state(tests, State)
     #@+node:ekr.20210904065459.93: *3* TestPython.test_string_test_extra_indent
     def test_string_test_extra_indent(self):
         c = self.c
@@ -4532,6 +4502,27 @@ class TestXML (BaseTestImporter):
         for expected, line in table:
             got = x.is_ws_line(line)
             self.assertEqual(expected, got, msg=repr(line))
+    #@+node:ekr.20210904065459.133: *3* TestXml.test_scan_line
+    def test_scan_line(self):
+        c = self.c
+        x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
+        x.start_tags.append('html')  # Don't rely on settings.
+        table = (
+            (0, '<tag>'),
+            (0, '<tag></tag'),
+            (1, '<html'),
+            (1, '<html attrib="<">'),
+            (0, '<html attrib="<" />'),
+            (0, '<html>x</html>'),
+            (0, '</br>'),  # Tag underflow
+            (0, '<br />'),
+            (0, '<br/>'),
+        )
+        for level, line in table:
+            prev_state = x.state_class()  # Start in level 0
+            self.assertEqual(prev_state.tag_level, 0, msg=line)
+            new_state = x.scan_line(line, prev_state)
+            self.assertEqual(new_state.tag_level, level, msg=line)
     #@-others
 #@-others
 
