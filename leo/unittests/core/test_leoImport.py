@@ -4177,7 +4177,6 @@ class TestRst(TestImporter):
             'placeholder',
             'section 3.1.1',
         )
-        # c.importCommands.rstUnitTest(c.p, s=s)
         self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
@@ -4210,7 +4209,6 @@ class TestRst(TestImporter):
             "!Dummy chapter",
             "Chapter",
         )
-        ### c.importCommands.rstUnitTest(c.p, s=s)
         self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
@@ -4279,7 +4277,6 @@ class TestRst(TestImporter):
             'placeholder',
             'section 3.1.1',
         )
-        ### c.importCommands.rstUnitTest(c.p, s=s)
         self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
@@ -4309,7 +4306,6 @@ class TestRst(TestImporter):
             '!Dummy chapter',
             'top',
         )
-        ### c.importCommands.rstUnitTest(c.p, s=s)
         self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
@@ -4340,7 +4336,6 @@ class TestRst(TestImporter):
             "!Dummy chapter",
             "top",
         )
-        ### c.importCommands.rstUnitTest(c.p, s=s)
         self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
@@ -4374,7 +4369,6 @@ class TestRst(TestImporter):
             "top",
         )
         p = c.p
-        ### c.importCommands.rstUnitTest(p, s=s)
         self.run_test(c.p, s)
         root = p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
@@ -4415,7 +4409,6 @@ class TestRst(TestImporter):
             'section 1',
             'section 2',
         )
-        ### c.importCommands.rstUnitTest(c.p, s=s)
         self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-rst test')
