@@ -501,6 +501,40 @@ class TestDart (BaseTestImporter):
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
     #@-others
+#@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
+class TestElisp (BaseTestImporter):
+    
+    ext = '.el'
+    
+    #@+others
+    #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            ;;; comment
+            ;;; continue
+            ;;;
+
+            (defun abc (a b)
+               (+ 1 2 3))
+
+            ; comm
+            (defun cde (a b)
+               (+ 1 2 3))
+        """)
+        table = (
+            'defun abc',
+            'defun cde',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
 #@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
 class TestHtml (BaseTestImporter):
     
@@ -952,6 +986,149 @@ class TestIni(BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
+#@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
+class TestJava (BaseTestImporter):
+    
+    ext = '.java'
+    
+    #@+others
+    #@+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
+    def test_from_AdminPermission_java(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            /**
+             * Indicates the caller's authority to perform lifecycle operations on
+             */
+
+            public final class AdminPermission extends BasicPermission
+            {
+                /**
+                 * Creates a new <tt>AdminPermission</tt> object.
+                 */
+                public AdminPermission()
+                {
+                    super("AdminPermission");
+                }
+            }
+        """)
+        table = (
+            'public final class AdminPermission extends BasicPermission',
+            'public AdminPermission',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
+    #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
+    def test_from_BundleException_java(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            /*
+             * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
+             *
+             * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
+             *
+             * This program and the accompanying materials are made available under the
+             * terms of the Eclipse Public License v1.0 which accompanies this
+             * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+             */
+
+            package org.osgi.framework;
+
+            /**
+             * A Framework exception used to indicate that a bundle lifecycle problem
+             * occurred.
+             *
+             * <p>
+             * <code>BundleException</code> object is created by the Framework to denote
+             * an exception condition in the lifecycle of a bundle.
+             * <code>BundleException</code>s should not be created by bundle developers.
+             *
+             * <p>
+             * This exception is updated to conform to the general purpose exception
+             * chaining mechanism.
+             *
+             * @version $Revision: 1.247 $
+             */
+
+            public class BundleException extends Exception {
+                static final long	serialVersionUID	= 3571095144220455665L;
+                /**
+                 * Nested exception.
+                 */
+                private Throwable	cause;
+
+                /**
+                 * Creates a <code>BundleException</code> that wraps another exception.
+                 *
+                 * @param msg The associated message.
+                 * @param cause The cause of this exception.
+                 */
+                public BundleException(String msg, Throwable cause) {
+                    super(msg);
+                    this.cause = cause;
+                }
+            }
+
+        """)
+        table = (
+            'public class BundleException extends Exception',
+            'public BundleException',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
+    def test_interface_test1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            interface Bicycle {
+                void changeCadence(int newValue);
+                void changeGear(int newValue);
+            }
+        """)
+        table = (
+            'interface Bicycle',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
+    def test_interface_test2(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            interface Bicycle {
+            void changeCadence(int newValue);
+            void changeGear(int newValue);
+            }
+        """)
+        table = (
+            'interface Bicycle',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
     
@@ -1170,143 +1347,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904122815.1: *3* Java tests
-    #@+node:ekr.20210904065459.30: *4* TestImport.test_from_AdminPermission_java
-    def test_from_AdminPermission_java(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            /**
-             * Indicates the caller's authority to perform lifecycle operations on
-             */
-
-            public final class AdminPermission extends BasicPermission
-            {
-                /**
-                 * Creates a new <tt>AdminPermission</tt> object.
-                 */
-                public AdminPermission()
-                {
-                    super("AdminPermission");
-                }
-            }
-        """)
-        table = (
-            'public final class AdminPermission extends BasicPermission',
-            'public AdminPermission',
-        )
-        c.importCommands.javaUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
-    #@+node:ekr.20210904065459.31: *4* TestImport.test_from_BundleException_java
-    def test_from_BundleException_java(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            /*
-             * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
-             *
-             * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
-             *
-             * This program and the accompanying materials are made available under the
-             * terms of the Eclipse Public License v1.0 which accompanies this
-             * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
-             */
-
-            package org.osgi.framework;
-
-            /**
-             * A Framework exception used to indicate that a bundle lifecycle problem
-             * occurred.
-             *
-             * <p>
-             * <code>BundleException</code> object is created by the Framework to denote
-             * an exception condition in the lifecycle of a bundle.
-             * <code>BundleException</code>s should not be created by bundle developers.
-             *
-             * <p>
-             * This exception is updated to conform to the general purpose exception
-             * chaining mechanism.
-             *
-             * @version $Revision: 1.247 $
-             */
-
-            public class BundleException extends Exception {
-                static final long	serialVersionUID	= 3571095144220455665L;
-                /**
-                 * Nested exception.
-                 */
-                private Throwable	cause;
-
-                /**
-                 * Creates a <code>BundleException</code> that wraps another exception.
-                 *
-                 * @param msg The associated message.
-                 * @param cause The cause of this exception.
-                 */
-                public BundleException(String msg, Throwable cause) {
-                    super(msg);
-                    this.cause = cause;
-                }
-            }
-
-        """)
-        table = (
-            'public class BundleException extends Exception',
-            'public BundleException',
-        )
-        c.importCommands.javaUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.32: *4* TestImport.test_java_interface_test1
-    def test_java_interface_test1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            interface Bicycle {
-                void changeCadence(int newValue);
-                void changeGear(int newValue);
-            }
-        """)
-        table = (
-            'interface Bicycle',
-        )
-        c.importCommands.javaUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.33: *4* TestImport.test_java_interface_test2
-    def test_java_interface_test2(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            interface Bicycle {
-            void changeCadence(int newValue);
-            void changeGear(int newValue);
-            }
-        """)
-        table = (
-            'interface Bicycle',
-        )
-        c.importCommands.javaUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904122826.1: *3* Javascript tests
     #@+node:ekr.20210904065459.34: *4* TestImport.test_Javascript_regex_1
     def test_Javascript_regex_1(self):
@@ -4455,40 +4495,6 @@ class TestXML (BaseTestImporter):
             <_.ÌÑ>
         """)
         self.run_test(c.p, s)
-    #@-others
-#@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
-class TestElisp (BaseTestImporter):
-    
-    ext = '.el'
-    
-    #@+others
-    #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
-    def test_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            ;;; comment
-            ;;; continue
-            ;;;
-
-            (defun abc (a b)
-               (+ 1 2 3))
-
-            ; comm
-            (defun cde (a b)
-               (+ 1 2 3))
-        """)
-        table = (
-            'defun abc',
-            'defun cde',
-        )
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
 #@-others
 
