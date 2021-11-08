@@ -1520,137 +1520,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904122909.1: *3* Perl tests
-    #@+node:ekr.20210904065459.51: *4* TestImport.test_perl_1
-    def test_perl_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #!/usr/bin/perl
-
-            # Function definition
-            sub Hello{
-               print "Hello, World!\n";
-            }
-
-            sub Test{
-               print "Test!\n";
-            }
-            "\N{LATIN SMALL LIGATURE FI}" =~ /fi/i;
-
-            $bar = "foo";
-            if ($bar =~ /foo/){
-               print "Second time is matching\n";
-            }else{
-               print "Second time is not matching\n";
-            }
-
-            # Function call
-            Hello();
-        """)
-        c.importCommands.perlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.52: *4* TestImport.test_perlpod_comment
-    def test_perlpod_comment(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #!/usr/bin/perl
-
-            sub Test{
-               print "Test!\n";
-            }
-
-            =begin comment
-            sub World {
-                print "This is not a funtion!"
-            }
-            =cut
-
-            # Function definition
-            sub Hello{
-               print "Hello, World!\n";
-            }
-        """)
-        c.importCommands.perlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.53: *4* TestImport.test_perl_multi_line_string
-    def test_perl_multi_line_string(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #!/usr/bin/perl
-
-            # This would print with a line break in the middle
-            print "Hello
-
-            sub World {
-                print "This is not a funtion!"
-            }
-
-            world\n";
-        """)
-        c.importCommands.perlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904065459.54: *4* TestImport.test_perl_regex_1
-    def test_perl_regex_1(self):
-        c = self.c
-        # ('len',   'tr///', '/',       context,  0,       0,       0),
-        # ('len',   's///',  '/',       context,  0,       0,       0),
-        # ('len',   'm//',   '/',       context,  0,       0,       0),
-        # ('len',   '/',     '/',       '',       0,       0,       0),
-        s = textwrap.dedent("""\
-            #!/usr/bin/perl
-
-            sub test1 {
-                s = /{/g;
-            }
-
-            sub test2 {
-                s = m//{/;
-            }
-
-            sub test3 {
-                s = s///{/;
-            }
-
-            sub test4 {
-                s = tr///{/;
-            }
-        """)
-        c.importCommands.perlUnitTest(c.p, s=s)
-
-    #@+node:ekr.20210904065459.55: *4* TestImport.test_perl_regex_2
-    def test_perl_regex_2(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #!/usr/bin/perl
-
-            sub test1 {
-                s = /}/g;
-            }
-
-            sub test2 {
-                s = m//}/;
-            }
-
-            sub test3 {
-                s = s///}/;
-            }
-
-            sub test4 {
-                s = tr///}/;
-            }
-        """)
-        table = (
-            'sub test1',
-            'sub test2',
-            'sub test3',
-            'sub test4'
-        )
-        c.importCommands.perlUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
     #@+node:ekr.20210904122920.1: *3* PHP tests
     #@+node:ekr.20210904065459.56: *4* TestImport.test_php_import_class
     def test_php_import_class(self):
@@ -4115,6 +3984,143 @@ class TestPascal (BaseTestImporter):
         self.assertEqual(root.h, '@file test')
         p2 = root.firstChild()
         for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
+    #@-others
+#@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
+class TestPerl (BaseTestImporter):
+    
+    ext = '.pl'
+    
+    #@+others
+    #@+node:ekr.20210904065459.51: *3* TestPerl.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+
+            # Function definition
+            sub Hello{
+               print "Hello, World!\n";
+            }
+
+            sub Test{
+               print "Test!\n";
+            }
+            "\N{LATIN SMALL LIGATURE FI}" =~ /fi/i;
+
+            $bar = "foo";
+            if ($bar =~ /foo/){
+               print "Second time is matching\n";
+            }else{
+               print "Second time is not matching\n";
+            }
+
+            # Function call
+            Hello();
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
+    def test_multi_line_string(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+
+            # This would print with a line break in the middle
+            print "Hello
+
+            sub World {
+                print "This is not a funtion!"
+            }
+
+            world\n";
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
+    def test_perlpod_comment(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+
+            sub Test{
+               print "Test!\n";
+            }
+
+            =begin comment
+            sub World {
+                print "This is not a funtion!"
+            }
+            =cut
+
+            # Function definition
+            sub Hello{
+               print "Hello, World!\n";
+            }
+        """)
+        self.run_test(c.p, s)
+    #@+node:ekr.20210904065459.54: *3* TestPerl.test_regex_1
+    def test_regex_1(self):
+        c = self.c
+        # ('len',   'tr///', '/',       context,  0,       0,       0),
+        # ('len',   's///',  '/',       context,  0,       0,       0),
+        # ('len',   'm//',   '/',       context,  0,       0,       0),
+        # ('len',   '/',     '/',       '',       0,       0,       0),
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+
+            sub test1 {
+                s = /{/g;
+            }
+
+            sub test2 {
+                s = m//{/;
+            }
+
+            sub test3 {
+                s = s///{/;
+            }
+
+            sub test4 {
+                s = tr///{/;
+            }
+        """)
+        self.run_test(c.p, s)
+
+    #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex_2
+    def test_regex_2(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            #!/usr/bin/perl
+
+            sub test1 {
+                s = /}/g;
+            }
+
+            sub test2 {
+                s = m//}/;
+            }
+
+            sub test3 {
+                s = s///}/;
+            }
+
+            sub test4 {
+                s = tr///}/;
+            }
+        """)
+        table = (
+            'sub test1',
+            'sub test2',
+            'sub test3',
+            'sub test4'
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
