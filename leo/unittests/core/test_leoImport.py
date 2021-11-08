@@ -24,16 +24,18 @@ import leo.plugins.importers.xml as xml
 class BaseTestImporter(LeoUnitTest):
     """The base class for tests of leoImport.py"""
     
+    ext = None  # Subclasses must set this to the language's extension.
+    
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
         
-    def run_test(self, p, s, ext):  # #2316: was ic.scannerUnitTest.
+    def run_test(self, p, s):  # #2316: was ic.scannerUnitTest.
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        c = self.c
+        c, ext = self.c, self.ext
         self.assertTrue(ext)
         self.treeType = '@file'  # Fix #352.
         fileName = 'test'
@@ -3899,10 +3901,8 @@ class TempImporterTest (BaseTestImporter):
     #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown(BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
-
-    # pylint: disable=arguments-differ
-    def run_test(self, p, s):
-        super().run_test(p, s, ext='.md')
+    
+    ext = '.md'
     
     #@+others
     #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import_test
@@ -4116,9 +4116,7 @@ class TestMarkdown(BaseTestImporter):
 #@+node:ekr.20211108050827.1: ** class TestRst(BaseTestImporter)
 class TestRst(BaseTestImporter):
     
-    # pylint: disable=arguments-differ
-    def run_test(self, p, s):
-        super().run_test(p, s, ext='.rst')
+    ext = '.rst'
     
     #@+others
     #@+node:ekr.20210904065459.115: *3* TestRst.test_test1
