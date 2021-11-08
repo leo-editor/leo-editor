@@ -191,7 +191,7 @@ def test_checker_commands(event=None):
 @g.command('test-colorizer')
 def test_colorizer(event=None):
     """Run all unit tests for leoColorizer.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoColorizer.TestColorizer')
+    g.run_unit_tests('leo.unittests.core.test_leoColorizer')
 #@+node:ekr.20211013080906.1: *3* test-convert
 @g.command('test-convert')
 def test_convert(event=None):
@@ -207,7 +207,7 @@ def test_commands(event=None):
 @g.command('test-config')
 def test_config(event=None):
     """Run all unit tests for leoConfig.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoConfig.TestConfig')
+    g.run_unit_tests('leo.unittests.core.test_leoConfig')
 #@+node:ekr.20210926051147.1: *3* test-doctests
 @g.command('test-doctests')
 def test_doctests(event=None):
@@ -217,7 +217,7 @@ def test_doctests(event=None):
 @g.command('test-edit-commands')
 def test_edit_commands(event=None):
     """Run all unit tests for leo.commands.editCommands."""
-    g.run_unit_tests('leo.unittests.commands.test_editCommands.TestEditCommands')
+    g.run_unit_tests('leo.unittests.commands.test_editCommands')
 #@+node:ekr.20210907103024.20: *3* test-external-files
 @g.command('test-external-files')
 def test_external_files(event=None):
@@ -227,27 +227,27 @@ def test_external_files(event=None):
 @g.command('test-file-commands')
 def test_file_commands(event=None):
     """Run all unit tests for leoFileCommands.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoFileCommands.TestFileCommands')
+    g.run_unit_tests('leo.unittests.core.test_leoFileCommands')
 #@+node:ekr.20210907103024.21: *3* test-find
 @g.command('test-find')
 def test_find(event=None):
     """Run all unit tests for leoFind.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoFind.TestFind')
+    g.run_unit_tests('leo.unittests.core.test_leoFind.')
 #@+node:ekr.20210907103024.22: *3* test-frame
 @g.command('test-frame')
 def test_frame(event=None):
     """Run all unit tests for leoFrame.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoFrame.TestFrame')
+    g.run_unit_tests('leo.unittests.core.test_leoFrame')
 #@+node:ekr.20210907103024.23: *3* test-globals
 @g.command('test-globals')
 def test_globals(event=None):
     """Run all unit tests for leoGlobals.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoGlobals.TestGlobals')
+    g.run_unit_tests('leo.unittests.core.test_leoGlobals')
 #@+node:ekr.20210907103024.24: *3* test-import
 @g.command('test-import')
 def test_import(event=None):
     """Run all unit tests for leoImport.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoImport.TestImporter')
+    g.run_unit_tests('leo.unittests.core.test_leoImport')
 #@+node:ekr.20210907103024.25: *3* test-keys
 @g.command('test-keys')
 def test_keys(event=None):
@@ -257,7 +257,7 @@ def test_keys(event=None):
 @g.command('test-leoserver')
 def test_leoserver(event=None):
     """Run all unittests for leoserver.py"""
-    g.run_unit_tests('leo.unittests.core.test_leoserver.TestLeoServer')
+    g.run_unit_tests('leo.unittests.core.test_leoserver')
 #@+node:ekr.20210907103024.10: *3* test-leoserver-with-leoclient
 @g.command('test-leoserver-with-leoclient')
 def test_leo_client_and_server(event=None):
@@ -278,42 +278,42 @@ def test_leo_client_and_server(event=None):
 @g.command('test-nodes')
 def test_nodes(event=None):
     """Run all unit tests for leoNodes.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoNodes.TestNodes')
+    g.run_unit_tests('leo.unittests.core.test_leoNodes')
 #@+node:ekr.20210909091424.1: *3* test-persistence
 @g.command('test-persistence')
 def test_persistence(event=None):
     """Run all unit tests for leoPersistence.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoPersistence.TestPersistence')
+    g.run_unit_tests('leo.unittests.core.test_leoPersistence')
 #@+node:ekr.20210907103024.27: *3* test-plugins
 @g.command('test-plugins')
 def test_plugins(event=None):
     """Run all unit tests relating to plugins."""
-    g.run_unit_tests('leo.unittests.test_plugins.TestPlugins')
+    g.run_unit_tests('leo.unittests.test_plugins')
 #@+node:ekr.20210907103024.28: *3* test-rst
 @g.command('test-rst')
 def test_rst3(event=None):
     """Run all unit tests for leoRst.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoRst.TestRst')
+    g.run_unit_tests('leo.unittests.core.test_leoRst')
 #@+node:ekr.20210907103024.30: *3* test-shadow
 @g.command('test-shadow')
 def test_shadow(event=None):
     """Run all unit tests for leoShadow.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoShadow.TestAtShadow')
+    g.run_unit_tests('leo.unittests.core.test_leoShadow')
 #@+node:ekr.20210907103024.31: *3* test-syntax
 @g.command('test-syntax')
 def test_syntax(event=None):
     """Run all testss in test_syntax.py."""
-    g.run_unit_tests('leo.unittests.test_syntax.TestSyntax')
+    g.run_unit_tests('leo.unittests.test_syntax')
 #@+node:ekr.20210907103024.32: *3* test-undo
 @g.command('test-undo')
 def test_undo(event=None):
     """Run all unit tests for leoUndo.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoUndo.TestUndo')
+    g.run_unit_tests('leo.unittests.core.test_leoUndo')
 #@+node:ekr.20210910073036.1: *3* test-vim
 @g.command('test-vim')
 def test_vim(event=None):
     """Run all unit tests for leoVim.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoVim.TestVim')
+    g.run_unit_tests('leo.unittests.core.test_leoVim')
 #@+node:ekr.20210910085337.1: *3* test_gui
 @g.command('test-gui')
 def test_gui(event=None):
