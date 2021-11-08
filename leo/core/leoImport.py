@@ -1198,9 +1198,6 @@ class LeoImportCommands:
 
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
-    def cUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.c')
-
     def cSharpUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.c#')
 
