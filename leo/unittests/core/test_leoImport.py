@@ -424,6 +424,83 @@ class TestCSharp(BaseTestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@-others
+#@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
+class TestCython (BaseTestImporter):
+    
+    ext = '.pyx'
+#@+node:ekr.20210904065459.11: *3* TestCython.test_importer
+def test_importer(self):
+    c = self.c
+    s = textwrap.dedent('''\
+        from libc.math cimport pow
+
+        cdef double square_and_add (double x):
+            """Compute x^2 + x as double.
+
+            This is a cdef function that can be called from within
+            a Cython program, but not from Python.
+            """
+            return pow(x, 2.0) + x
+
+        cpdef print_result (double x):
+            """This is a cpdef function that can be called from Python."""
+            print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
+
+    ''')
+    table = (
+        'Declarations',
+        'double',
+        'print_result',
+    )
+    self.run_test(c.p, s)
+    root = c.p.lastChild()
+    self.assertEqual(root.h, '@file test')
+    p2 = root.firstChild()
+    for h in table:
+        self.assertEqual(p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+#@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
+class TestDart (BaseTestImporter):
+    
+    ext = '.dart'
+    
+    #@+others
+    #@+node:ekr.20210904065459.17: *3* TestDart.test_hello_world
+    def test_hello_world(self):
+        c = self.c
+        s = r'''
+        var name = 'Bob';
+
+        hello() {
+          print('Hello, World!');
+        }
+
+        // Define a function.
+        printNumber(num aNumber) {
+          print('The number is $aNumber.'); // Print to console.
+        }
+
+        // This is where the app starts executing.
+        void main() {
+          var number = 42; // Declare and initialize a variable.
+          printNumber(number); // Call a function.
+        }
+        '''
+        table = (
+            'hello',
+            'printNumber',
+            'void main',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
+    #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
     
@@ -674,41 +751,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904144021.1: *3* Dart tests
-    #@+node:ekr.20210904065459.17: *4* TestImport.test_dart_hello_world
-    def test_dart_hello_world(self):
-        c = self.c
-        s = r'''
-        var name = 'Bob';
-
-        hello() {
-          print('Hello, World!');
-        }
-
-        // Define a function.
-        printNumber(num aNumber) {
-          print('The number is $aNumber.'); // Print to console.
-        }
-
-        // This is where the app starts executing.
-        void main() {
-          var number = 42; // Declare and initialize a variable.
-          printNumber(number); // Call a function.
-        }
-        '''
-        table = (
-            'hello',
-            'printNumber',
-            'void main',
-        )
-        c.importCommands.dartUnitTest(c.p, s=s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
     #@+node:ekr.20210904143920.1: *3* Elisp tests
     #@+node:ekr.20210904065459.18: *4* TestImport.test_elisp
     def test_elisp(self):
@@ -4412,42 +4454,6 @@ class TestRst(BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
-#@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
-class TestCython (BaseTestImporter):
-    
-    ext = '.pyx'
-#@+node:ekr.20210904065459.11: *3* TestCython.test_importer
-def test_importer(self):
-    c = self.c
-    s = textwrap.dedent('''\
-        from libc.math cimport pow
-
-        cdef double square_and_add (double x):
-            """Compute x^2 + x as double.
-
-            This is a cdef function that can be called from within
-            a Cython program, but not from Python.
-            """
-            return pow(x, 2.0) + x
-
-        cpdef print_result (double x):
-            """This is a cpdef function that can be called from Python."""
-            print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
-
-    ''')
-    table = (
-        'Declarations',
-        'double',
-        'print_result',
-    )
-    self.run_test(c.p, s)
-    root = c.p.lastChild()
-    self.assertEqual(root.h, '@file test')
-    p2 = root.firstChild()
-    for h in table:
-        self.assertEqual(p2.h, h)
-        p2.moveToThreadNext()
-    assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 #@-others
 
 

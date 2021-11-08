@@ -1201,9 +1201,6 @@ class LeoImportCommands:
     def ctextUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.txt')
 
-    def dartUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.dart')
-
     def elispUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.el')
 
