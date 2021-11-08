@@ -20,7 +20,7 @@ import leo.plugins.importers.pascal as pascal
 import leo.plugins.importers.python as python
 import leo.plugins.importers.xml as xml
 #@+others
-#@+node:ekr.20210904064440.3: ** class TestImporter(LeoUnitTest):
+#@+node:ekr.20210904064440.3: **  class TestImporter(LeoUnitTest)
 class TestImporter(LeoUnitTest):
     """Test cases for leoImport.py"""
     
@@ -3705,309 +3705,6 @@ class TestImporter(LeoUnitTest):
             <_.ÌÑ>
         """)
         c.importCommands.xmlUnitTest(c.p, s=s)
-    #@+node:ekr.20210904071345.1: *3* Tests of @auto-rst
-    #@+node:ekr.20210904065459.115: *4* TestImport.test_rST_import_test
-    def test_rST_import_test(self):
-        c = self.c
-        try:
-            import docutils
-            assert docutils
-        except Exception:
-            self.skipTest('no docutils')
-
-        s = textwrap.dedent("""\
-            .. toc
-
-            ====
-            top
-            ====
-
-            The top section
-
-            section 1
-            ---------
-
-            section 1, line 1
-            --
-            section 1, line 2
-
-            section 2
-            ---------
-
-            section 2, line 1
-
-            section 2.1
-            ~~~~~~~~~~~
-
-            section 2.1, line 1
-
-            section 2.1.1
-            .............
-
-            section 2.2.1 line 1
-
-            section 3
-            ---------
-
-            section 3, line 1
-
-            section 3.1.1
-            .............
-
-            section 3.1.1, line 1
-        """)
-        table = (
-            '!Dummy chapter',
-            'top',
-            'section 1',
-            'section 2',
-            'section 2.1',
-            'section 2.1.1',
-            'section 3',
-            'placeholder',
-            'section 3.1.1',
-        )
-        c.importCommands.rstUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.116: *4* TestImport.test_rST_import_test_simple
-    def test_rST_import_test_simple(self):
-        c = self.c
-        try:
-            import docutils
-            assert docutils
-        except Exception:
-            self.skipTest('no docutils')
-
-        s = textwrap.dedent("""\
-            .. toc
-
-            .. The section name contains trailing whitespace.
-
-            =======
-            Chapter
-            =======
-
-            The top chapter.
-        """)
-        table = (
-            "!Dummy chapter",
-            "Chapter",
-        )
-        c.importCommands.rstUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.117: *4* TestImport.test_rST_import_test_no_double_underlines
-    def test_rST_import_test_no_double_underlines(self):
-        c = self.c
-        try:
-            import docutils
-            assert docutils
-        except Exception:
-            self.skipTest('no docutils')
-
-        s = textwrap.dedent("""\
-            .. toc
-
-            top
-            ====
-
-            The top section
-
-            section 1
-            ---------
-
-            section 1, line 1
-            --
-            section 1, line 2
-
-            section 2
-            ---------
-
-            section 2, line 1
-
-            section 2.1
-            ~~~~~~~~~~~
-
-            section 2.1, line 1
-
-            section 2.1.1
-            .............
-
-            section 2.2.1 line 1
-
-            section 3
-            ---------
-
-            section 3, line 1
-
-            section 3.1.1
-            .............
-
-            section 3.1.1, line 1
-        """)
-        table = (
-            '!Dummy chapter',
-            'top',
-            'section 1',
-            'section 2',
-            'section 2.1',
-            'section 2.1.1',
-            'section 3',
-            'placeholder',
-            'section 3.1.1',
-        )
-        c.importCommands.rstUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.118: *4* TestImport.test_rST_import_test_long_underlines
-    def test_rST_import_test_long_underlines(self):
-        c = self.c
-        try:
-            import docutils
-            assert docutils
-        except Exception:
-            self.skipTest('no docutils')
-
-        s = textwrap.dedent("""\
-            .. toc
-
-            top
-            -------------
-
-            The top section
-        """)
-        table = (
-            '!Dummy chapter',
-            'top',
-        )
-        c.importCommands.rstUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.119: *4* TestImport.test_rST_import_test_long_overlines
-    def test_rST_import_test_long_overlines(self):
-        c = self.c
-        try:
-            import docutils
-            assert docutils
-        except Exception:
-            self.skipTest('no docutils')
-
-        s = textwrap.dedent("""\
-            .. toc
-
-            ======
-            top
-            ======
-
-            The top section
-        """)
-        table = (
-            "!Dummy chapter",
-            "top",
-        )
-        c.importCommands.rstUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.120: *4* TestImport.test_rST_import_test_trailing_whitespace
-    def test_rST_import_test_trailing_whitespace(self):
-        c = self.c
-        try:
-            import docutils
-            assert docutils
-        except Exception:
-            self.skipTest('no docutils')
-
-        s = textwrap.dedent("""\
-            .. toc
-
-            .. The section name contains trailing whitespace.
-
-            ======
-            top
-            ======
-
-            The top section.
-        """)
-        table = (
-            "!Dummy chapter",
-            "top",
-        )
-        p = c.p
-        c.importCommands.rstUnitTest(p, s=s)
-        root = p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.121: *4* TestImport.test_leo_rst
-    def test_leo_rst(self):
-        c = self.c
-        try:
-            import docutils
-            assert docutils
-        except Exception:
-            self.skipTest('no docutils')
-
-        # All heading must be followed by an empty line.
-        s = textwrap.dedent("""\
-            #########
-            Chapter 1
-            #########
-
-            It was a dark and stormy night.
-
-            section 1
-            +++++++++
-
-            Sec 1.
-
-            section 2
-            +++++++++
-
-            Sec 2.
-        """)
-        table = (
-            'Chapter 1',
-            'section 1',
-            'section 2',
-        )
-        c.importCommands.rstUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
-        p2 = root.firstChild()
-        assert p2, g.tree_to_string(c)
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904071422.1: *3* All other tests
     #@+node:ekr.20210904065459.122: *4* TestImport.test_at_auto_importers
     def test_at_auto_importers(self):
@@ -4197,14 +3894,14 @@ class TestImporter(LeoUnitTest):
         importer = python.Py_Importer(c.importCommands, atAuto=True)
         importer.test_scan_state(tests, State)
     #@-others
-#@+node:ekr.20211108043230.1: ** class TestMarkdownImporter(TestImporter):
-class TestMarkdownImporter(TestImporter):
+#@+node:ekr.20211108043230.1: ** class TestMarkdown(TestImporter)
+class TestMarkdown(TestImporter):
     
     def run_test(self, p, s):
         super().run_test(p, s, ext='.md')
     
     #@+others
-    #@+node:ekr.20210904065459.109: *3* TestImport.test_md_import_test
+    #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import_test
     def test_md_import_test(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -4250,7 +3947,7 @@ class TestMarkdownImporter(TestImporter):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.110: *3* TestImport.test_md_import_test_rst_style
+    #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_test_rst_style
     def test_md_import_test_rst_style(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -4308,7 +4005,7 @@ class TestMarkdownImporter(TestImporter):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.111: *3* TestImport.test_markdown_importer_basic
+    #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
         c = self.c
         # insert test for markdown here.
@@ -4342,7 +4039,7 @@ class TestMarkdownImporter(TestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.112: *3* TestImport.test_markdown_importer_implicit_section
+    #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
         c = self.c
         # insert test for markdown here.
@@ -4382,7 +4079,7 @@ class TestMarkdownImporter(TestImporter):
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.114: *3* TestImport.test_markdown_github_syntax
+    #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
         c = self.c
         # insert test for markdown here.
@@ -4407,6 +4104,323 @@ class TestMarkdownImporter(TestImporter):
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-md test')
         p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108050827.1: ** class TestRst(TestImporter)
+class TestRst(TestImporter):
+    
+    def run_test(self, p, s):
+        super().run_test(p, s, ext='.rst')
+    
+    #@+others
+    #@+node:ekr.20210904065459.115: *3* TestRst.test_test1
+    def test_test1(self):
+        c = self.c
+        try:
+            import docutils
+            assert docutils
+        except Exception:
+            self.skipTest('no docutils')
+
+        s = textwrap.dedent("""\
+            .. toc
+
+            ====
+            top
+            ====
+
+            The top section
+
+            section 1
+            ---------
+
+            section 1, line 1
+            --
+            section 1, line 2
+
+            section 2
+            ---------
+
+            section 2, line 1
+
+            section 2.1
+            ~~~~~~~~~~~
+
+            section 2.1, line 1
+
+            section 2.1.1
+            .............
+
+            section 2.2.1 line 1
+
+            section 3
+            ---------
+
+            section 3, line 1
+
+            section 3.1.1
+            .............
+
+            section 3.1.1, line 1
+        """)
+        table = (
+            '!Dummy chapter',
+            'top',
+            'section 1',
+            'section 2',
+            'section 2.1',
+            'section 2.1.1',
+            'section 3',
+            'placeholder',
+            'section 3.1.1',
+        )
+        # c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-rst test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.116: *3* TestRst.test_simple
+    def test_simple(self):
+        c = self.c
+        try:
+            import docutils
+            assert docutils
+        except Exception:
+            self.skipTest('no docutils')
+
+        s = textwrap.dedent("""\
+            .. toc
+
+            .. The section name contains trailing whitespace.
+
+            =======
+            Chapter
+            =======
+
+            The top chapter.
+        """)
+        table = (
+            "!Dummy chapter",
+            "Chapter",
+        )
+        ### c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-rst test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.117: *3* TestRst.test_no_double_underlines
+    def test_no_double_underlines(self):
+        c = self.c
+        try:
+            import docutils
+            assert docutils
+        except Exception:
+            self.skipTest('no docutils')
+
+        s = textwrap.dedent("""\
+            .. toc
+
+            top
+            ====
+
+            The top section
+
+            section 1
+            ---------
+
+            section 1, line 1
+            --
+            section 1, line 2
+
+            section 2
+            ---------
+
+            section 2, line 1
+
+            section 2.1
+            ~~~~~~~~~~~
+
+            section 2.1, line 1
+
+            section 2.1.1
+            .............
+
+            section 2.2.1 line 1
+
+            section 3
+            ---------
+
+            section 3, line 1
+
+            section 3.1.1
+            .............
+
+            section 3.1.1, line 1
+        """)
+        table = (
+            '!Dummy chapter',
+            'top',
+            'section 1',
+            'section 2',
+            'section 2.1',
+            'section 2.1.1',
+            'section 3',
+            'placeholder',
+            'section 3.1.1',
+        )
+        ### c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-rst test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
+    def test_long_underlines(self):
+        c = self.c
+        try:
+            import docutils
+            assert docutils
+        except Exception:
+            self.skipTest('no docutils')
+
+        s = textwrap.dedent("""\
+            .. toc
+
+            top
+            -------------
+
+            The top section
+        """)
+        table = (
+            '!Dummy chapter',
+            'top',
+        )
+        ### c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-rst test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
+    def test_test_long_overlines(self):
+        c = self.c
+        try:
+            import docutils
+            assert docutils
+        except Exception:
+            self.skipTest('no docutils')
+
+        s = textwrap.dedent("""\
+            .. toc
+
+            ======
+            top
+            ======
+
+            The top section
+        """)
+        table = (
+            "!Dummy chapter",
+            "top",
+        )
+        ### c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-rst test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.120: *3* TestRst.test_trailing_whitespace
+    def test_trailing_whitespace(self):
+        c = self.c
+        try:
+            import docutils
+            assert docutils
+        except Exception:
+            self.skipTest('no docutils')
+
+        s = textwrap.dedent("""\
+            .. toc
+
+            .. The section name contains trailing whitespace.
+
+            ======
+            top
+            ======
+
+            The top section.
+        """)
+        table = (
+            "!Dummy chapter",
+            "top",
+        )
+        p = c.p
+        ### c.importCommands.rstUnitTest(p, s=s)
+        self.run_test(c.p, s)
+        root = p.lastChild()
+        self.assertEqual(root.h, '@auto-rst test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
+    def test_leo_rst(self):
+        c = self.c
+        try:
+            import docutils
+            assert docutils
+        except Exception:
+            self.skipTest('no docutils')
+
+        # All heading must be followed by an empty line.
+        s = textwrap.dedent("""\
+            #########
+            Chapter 1
+            #########
+
+            It was a dark and stormy night.
+
+            section 1
+            +++++++++
+
+            Sec 1.
+
+            section 2
+            +++++++++
+
+            Sec 2.
+        """)
+        table = (
+            'Chapter 1',
+            'section 1',
+            'section 2',
+        )
+        ### c.importCommands.rstUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-rst test')
+        p2 = root.firstChild()
+        assert p2, g.tree_to_string(c)
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()

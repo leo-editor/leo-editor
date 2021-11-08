@@ -1237,9 +1237,6 @@ class LeoImportCommands:
     def javaScriptUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.js')
 
-    def markdownUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.md')
-
     def orgUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.org')
 
@@ -1257,9 +1254,6 @@ class LeoImportCommands:
 
     def pythonUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.py')
-
-    def rstUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.rst')
 
     def textUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.txt')
