@@ -3820,7 +3820,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Look for @language directives.
         # Warning: (see #344): don't use c.target_language as a default.
         colorizer = getattr(c.frame.body.colorizer, 'findFirstValidAtLanguageDirective', g)
-        return colorizer.findFirstValidAtLanguageDirective(p.copy())
+        return colorizer.findFirstValidAtLanguageDirective(p.b)
     #@+node:TomP.20191215195433.82: *5* vr3.get_fn
     def get_fn(self, s, tag):
         pc = self
