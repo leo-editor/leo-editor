@@ -3387,7 +3387,8 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
             seen.add(v)
             yield v
         for parent_v in v.parents:
-            yield from v_and_parents(parent_v)
+            if parent_v not in seen:
+                yield from v_and_parents(parent_v)
 
     def find_language(v, phase):
         """
