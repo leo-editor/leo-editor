@@ -1922,7 +1922,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(*args)
     #@+node:tom.20211104105903.1: *4* vr3.plot_2d
     def plot_2d(self):
-        """
+        r"""
         #@+<< docstring >>
         #@+node:tom.20211104105903.2: *5* << docstring >>
         Show a plot of x-y data in the selected node.
