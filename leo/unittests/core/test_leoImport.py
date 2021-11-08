@@ -27,8 +27,33 @@ class TestImporter(LeoUnitTest):
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
+        
+    def run_test(self, p, s, ext):  # #2316: was ic.scannerUnitTest.
+        """
+        Run a unit test of an import scanner,
+        i.e., create a tree from string s at location p.
+        """
+        c = self.c
+        self.assertTrue(ext)
+        self.treeType = '@file'  # Fix #352.
+        fileName = 'test'
+        # Run the test.
+        parent = p.insertAsLastChild()
+        kind = self.compute_unit_test_kind(ext)
+        parent.h = f"{kind} {fileName}"
+        c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
 
     #@+others
+    #@+node:ekr.20211108044605.1: *3*  TestImporter.compute_unit_test_kind
+    def compute_unit_test_kind(self, ext):
+        """Return kind from the given extention."""
+        aClass = g.app.classDispatchDict.get(ext)
+        if aClass:
+            d2 = g.app.atAutoDict
+            for z in d2:
+                if d2.get(z) == aClass:
+                    return z
+        return '@file'
     #@+node:ekr.20210904065613.1: *3* Tests of @auto
     #@+node:ekr.20210904143515.1: *4* .ini tests
     #@+node:ekr.20210904065459.29: *5* TestImport.test_ini_test_1
@@ -4175,6 +4200,9 @@ class TestImporter(LeoUnitTest):
 #@+node:ekr.20211108043230.1: ** class TestMarkdownImporter(TestImporter):
 class TestMarkdownImporter(TestImporter):
     
+    def run_test(self, p, s):
+        super().run_test(p, s, ext='.md')
+    
     #@+others
     #@+node:ekr.20210904065459.109: *3* TestImport.test_md_import_test
     def test_md_import_test(self):
@@ -4211,7 +4239,7 @@ class TestMarkdownImporter(TestImporter):
             (3, 'Section 2.2'),
             (2, 'Section 3'),
         )
-        c.importCommands.markdownUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-md test')
@@ -4259,7 +4287,7 @@ class TestMarkdownImporter(TestImporter):
 
             section 3, line 1
     """)
-        c.importCommands.markdownUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         table = (
             (1, 'Top'),
             (2, 'Section 1'),
@@ -4306,7 +4334,7 @@ class TestMarkdownImporter(TestImporter):
                 'Subheader',
                 'Last header: no text',
         )
-        c.importCommands.markdownUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-md test')
         p2 = root.firstChild()
@@ -4344,10 +4372,9 @@ class TestMarkdownImporter(TestImporter):
                     'This *should* be a section',
                 'Last header: no text',
         )
+        # Implicit underlining *must* cause the perfect-import test to fail!
         g.app.suppressImportChecks = True
-            # Required, because the implicit underlining *must*
-            # cause the perfect-import test to fail!
-        c.importCommands.markdownUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-md test')
         p2 = root.firstChild()
@@ -4376,7 +4403,7 @@ class TestMarkdownImporter(TestImporter):
             'Header',
             'Last header',
         )
-        c.importCommands.markdownUnitTest(c.p, s=s)
+        self.run_test(c.p, s)
         root = c.p.lastChild()
         self.assertEqual(root.h, '@auto-md test')
         p2 = root.firstChild()
