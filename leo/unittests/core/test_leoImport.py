@@ -57,85 +57,542 @@ class BaseTestImporter(LeoUnitTest):
                     return z
         return '@file'
     #@-others
-#@+node:ekr.20211108052633.1: ** class TempImporterTest (BaseTestImporter)
-class TempImporterTest (BaseTestImporter):
+#@+node:ekr.20211108062025.1: ** class TestC (BaseTestImporter)
+class TestC(BaseTestImporter):
     
-    #@+others  ### To be moved to other classes.
-    #@+node:ekr.20210904122726.1: *3* Coffeescript tests
-    #@+node:ekr.20210904065459.15: *4* TestImport.test_coffeescript_2
-    def test_coffeescript_2(self):
+    ext = '.c'
+    
+    #@+others
+    #@+node:ekr.20210904065459.3: *3* TestC.test_class_1
+    def test_class_1(self):
         c = self.c
-        s = r'''
-
-        # Js2coffee relies on Narcissus's parser.
-
-        {parser} = @Narcissus or require('./narcissus_packed')
-
-        # Main entry point
-
-        buildCoffee = (str) ->
-          str  = str.replace /\r/g, ''
-          str += "\n"
-
-          builder    = new Builder
-          scriptNode = parser.parse str
-        '''
-        table = (
-            'buildCoffee = (str) ->',
-        )
-        c.importCommands.coffeeScriptUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.16: *4* TestImport.test_coffeescript_3
-    #@@tabwidth -2 # Required
-
-    def test_coffeescript_3(self):
-        c = self.c
-
         s = textwrap.dedent("""\
-        class Builder
-          constructor: ->
-            @transformer = new Transformer
-          # `build()`
+            class cTestClass1 {
 
-          build: (args...) ->
-            node = args[0]
-            @transform node
+                int foo (int a) {
+                    a = 2 ;
+                }
 
-            name = 'other'
-            name = node.typeName()  if node != undefined and node.typeName
-
-            fn  = (@[name] or @other)
-            out = fn.apply(this, args)
-
-            if node.parenthesized then paren(out) else out
-          # `transform()`
-
-          transform: (args...) ->
-            @transformer.transform.apply(@transformer, args)
-
-          # `body()`
-
-          body: (node, opts={}) ->
-            str = @build(node, opts)
-            str = blockTrim(str)
-            str = unshift(str)
-            if str.length > 0 then str else ""
+                char bar (float c) {
+                    ;
+                }
+            }
         """)
         table = (
-          'class Builder',
-          'constructor: ->',
-          'build: (args...) ->',
-          'transform: (args...) ->',
-          'body: (node, opts={}) ->',
+            'class cTestClass1',
+            'int foo',
+            'char bar',
         )
-        c.importCommands.coffeeScriptUnitTest(c.p, s=s)
-        p2 = c.p.firstChild().firstChild()
+        self.run_test(c.p, s)
+        # Check structure
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
+    def test_class_underindented_line(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            class cTestClass1 {
+
+                int foo (int a) {
+            // an underindented line.
+                    a = 2 ;
+                }
+
+                // This should go with the next function.
+
+                char bar (float c) {
+                    ;
+                }
+            }
+        """)
+        table = (
+            'class cTestClass1',
+            'int foo',
+            'char bar',
+        )
+        self.run_test(c.p, s)
+        # Check structure
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
+    def test_comment_follows_arg_list(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            void
+            aaa::bbb::doit
+                (
+                awk* b
+                )
+            {
+                assert(false);
+            }
+
+            bool
+            aaa::bbb::dothat
+                (
+                xyz *b
+                ) //  <---------------------problem
+            {
+                return true;
+            }
+        """)
+        table = (
+            'void aaa::bbb::doit',
+            'bool aaa::bbb::dothat',
+        )
+        self.run_test(c.p, s)
+        # Check structure
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
+    def test_comment_follows_block_delim(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            void
+            aaa::bbb::doit
+                (
+                awk* b
+                )
+            {
+                assert(false);
+            }
+
+            bool
+            aaa::bbb::dothat
+                (
+                xyz *b
+                )
+            {
+                return true;
+            } //  <---------------------problem
+        """)
+        table = (
+            'void aaa::bbb::doit',
+            'bool aaa::bbb::dothat',
+        )
+        self.run_test(c.p, s)
+        # Check structure
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        assert p2, g.tree_to_string(c)
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.10: *3* TestC.test_extern
+    def test_extern(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            extern "C"
+            {
+            #include "stuff.h"
+            void    init(void);
+            #include "that.h"
+            }
+        """)
+        table = (
+            'extern "C"',
+        )
+        p = c.p
+        self.run_test(c.p, s)
+        root = p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.7: *3* TestC.test_intermixed_blanks_and_tabs
+    def test_intermixed_blanks_and_tabs(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            void
+            aaa::bbb::doit
+                (
+                awk* b  // leading blank
+                )
+            {
+                assert(false); // leading tab
+            }
+        """)
+        table = (
+            'void aaa::bbb::doit',
+        )
+
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
+    #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
+    def test_old_style_decl_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            static void
+            ReleaseCharSet(cset)
+                CharSet *cset;
+            {
+                ckfree((char *)cset->chars);
+                if (cset->ranges) {
+                ckfree((char *)cset->ranges);
+                }
+            }
+        """)
+        table = (
+            'static void ReleaseCharSet',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test', root.h)
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
+    def test_old_style_decl_2(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            Tcl_Obj *
+            Tcl_NewLongObj(longValue)
+                register long longValue;	/* Long integer used to initialize the
+                     * new object. */
+            {
+                return Tcl_DbNewLongObj(longValue, "unknown", 0);
+            }
+        """)
+        table = (
+            'Tcl_Obj * Tcl_NewLongObj',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
+class TestCSharp(BaseTestImporter):
+    
+    ext = '.c#'
+    
+    #@+others
+    #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
+    def test_namespace_indent(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            namespace {
+                class cTestClass1 {
+                    ;
+                }
+            }
+        """)
+        table = (
+            'namespace',
+            'class cTestClass1',
+        )
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@+node:ekr.20210904065459.13: *3* TestImport.test_namespace_no_indent
+    def test_namespace_no_indent(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            namespace {
+            class cTestClass1 {
+                ;
+            }
+            }
+        """)
+        self.run_test(c.p, s)
+        table = (
+            'namespace',
+            'class cTestClass1',
+        )
+        root = c.p.firstChild()
+        # assert root.h.endswith('c# namespace no indent'), root.h
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+    #@-others
+#@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
+class TestIni(BaseTestImporter):
+    
+    ext = '.ini'
+    
+    #@+others
+    #@+node:ekr.20210904065459.29: *3* TestIni.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent(r'''\
+            ; last modified 1 April 2001 by John Doe
+            [owner]
+            name=John Doe
+            organization=Acme Widgets Inc.
+
+            ; [ not a section ]
+
+            [database]
+            server=192.0.2.62
+                ; use IP address
+            port=143
+            file = "payroll.dat"
+        ''')
+        table = ('[owner]', '[database]')
+        self.run_test(c.p, s)
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
+class TestMarkdown(BaseTestImporter):
+    
+    ext = '.md'
+    
+    #@+others
+    #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import_test
+    def test_md_import_test(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            #Top
+            The top section
+
+            ##Section 1
+            section 1, line 1
+            section 1, line 2
+
+            ##Section 2
+            section 2, line 1
+
+            ###Section 2.1
+            section 2.1, line 1
+
+            ####Section 2.1.1
+            section 2.2.1 line 1
+            The next section is empty. It must not be deleted.
+
+            ###Section 2.2
+
+            ##Section 3
+            Section 3, line 1
+    """)
+        table = (
+            (1, 'Top'),
+            (2, 'Section 1'),
+            (2, 'Section 2'),
+            (3, 'Section 2.1'),
+            (4, 'Section 2.1.1'),
+            (3, 'Section 2.2'),
+            (2, 'Section 3'),
+        )
+        self.run_test(c.p, s)
+        after = c.p.nodeAfterTree()
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_test_rst_style
+    def test_md_import_test_rst_style(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            Top
+            ====
+
+            The top section
+
+            Section 1
+            ---------
+
+            section 1, line 1
+            -- Not an underline
+            secttion 1, line 2
+
+            Section 2
+            ---------
+
+            section 2, line 1
+
+            ###Section 2.1
+
+            section 2.1, line 1
+
+            ####Section 2.1.1
+
+            section 2.2.1 line 1
+
+            ###Section 2.2
+            section 2.2, line 1.
+
+            Section 3
+            ---------
+
+            section 3, line 1
+    """)
+        self.run_test(c.p, s)
+        table = (
+            (1, 'Top'),
+            (2, 'Section 1'),
+            (2, 'Section 2'),
+            (3, 'Section 2.1'),
+            (4, 'Section 2.1.1'),
+            (3, 'Section 2.2'),
+            (2, 'Section 3'),
+        )
+        p = c.p
+        after = p.nodeAfterTree()
+        root = p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p = root.firstChild()
+        for n, h in table:
+            n2 = p.level() - root.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+        self.assertEqual(p, after)
+    #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
+    def test_markdown_importer_basic(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            After header text
+
+            ##Subheader
+
+            Not an underline
+
+            ----------------
+
+            After subheader text
+
+            #Last header: no text
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+                'Subheader',
+                'Last header: no text',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
+    def test_markdown_importer_implicit_section(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            After header text
+
+            ##Subheader
+
+            Not an underline
+
+            ----------------
+
+            This *should* be a section
+            ==========================
+
+            After subheader text
+
+            #Last header: no text
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+                'Subheader',
+                    'This *should* be a section',
+                'Last header: no text',
+        )
+        # Implicit underlining *must* cause the perfect-import test to fail!
+        g.app.suppressImportChecks = True
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
+    def test_markdown_github_syntax(self):
+        c = self.c
+        # insert test for markdown here.
+        s = textwrap.dedent("""\
+            Decl line.
+            #Header
+
+            `​``python
+            loads.init = {
+                Chloride: 11.5,
+                TotalP: 0.002,
+            }
+            `​``
+            #Last header
+        """)
+        table = (
+            '!Declarations',
+            'Header',
+            'Last header',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@auto-md test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    #@-others
+#@+node:ekr.20211108052633.1: ** class TestMisc (BaseTestImporter) ===========
+class TestMisc (BaseTestImporter):
+    
+    #@+others
     #@+node:ekr.20210904084324.1: *3* Cython tests
     #@+node:ekr.20210904065459.11: *4* TestImport.test_cython_importer
     def test_cython_importer(self):
@@ -3598,221 +4055,7 @@ class TempImporterTest (BaseTestImporter):
         importer = python.Py_Importer(c.importCommands, atAuto=True)
         importer.test_scan_state(tests, State)
     #@-others
-#@+node:ekr.20211108043230.1: ** class TestMarkdown(BaseTestImporter)
-class TestMarkdown(BaseTestImporter):
-    
-    ext = '.md'
-    
-    #@+others
-    #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import_test
-    def test_md_import_test(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            #Top
-            The top section
-
-            ##Section 1
-            section 1, line 1
-            section 1, line 2
-
-            ##Section 2
-            section 2, line 1
-
-            ###Section 2.1
-            section 2.1, line 1
-
-            ####Section 2.1.1
-            section 2.2.1 line 1
-            The next section is empty. It must not be deleted.
-
-            ###Section 2.2
-
-            ##Section 3
-            Section 3, line 1
-    """)
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        self.run_test(c.p, s)
-        after = c.p.nodeAfterTree()
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_test_rst_style
-    def test_md_import_test_rst_style(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            Top
-            ====
-
-            The top section
-
-            Section 1
-            ---------
-
-            section 1, line 1
-            -- Not an underline
-            secttion 1, line 2
-
-            Section 2
-            ---------
-
-            section 2, line 1
-
-            ###Section 2.1
-
-            section 2.1, line 1
-
-            ####Section 2.1.1
-
-            section 2.2.1 line 1
-
-            ###Section 2.2
-            section 2.2, line 1.
-
-            Section 3
-            ---------
-
-            section 3, line 1
-    """)
-        self.run_test(c.p, s)
-        table = (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
-        )
-        p = c.p
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
-    def test_markdown_importer_basic(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            After header text
-
-            ##Subheader
-
-            Not an underline
-
-            ----------------
-
-            After subheader text
-
-            #Last header: no text
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                'Last header: no text',
-        )
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
-    def test_markdown_importer_implicit_section(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            After header text
-
-            ##Subheader
-
-            Not an underline
-
-            ----------------
-
-            This *should* be a section
-            ==========================
-
-            After subheader text
-
-            #Last header: no text
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                    'This *should* be a section',
-                'Last header: no text',
-        )
-        # Implicit underlining *must* cause the perfect-import test to fail!
-        g.app.suppressImportChecks = True
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
-    def test_markdown_github_syntax(self):
-        c = self.c
-        # insert test for markdown here.
-        s = textwrap.dedent("""\
-            Decl line.
-            #Header
-
-            `​``python
-            loads.init = {
-                Chloride: 11.5,
-                TotalP: 0.002,
-            }
-            `​``
-            #Last header
-        """)
-        table = (
-            '!Declarations',
-            'Header',
-            'Last header',
-        )
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@-others
-#@+node:ekr.20211108050827.1: ** class TestRst(BaseTestImporter)
+#@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
     
     ext = '.rst'
@@ -4121,321 +4364,84 @@ class TestRst(BaseTestImporter):
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
-#@+node:ekr.20211108062025.1: ** class TestC(BaseTestImporter)
-class TestC(BaseTestImporter):
+#@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
+class TestCoffeescript (BaseTestImporter):
     
-    ext = '.c'
-    
-    #@+others
-    #@+node:ekr.20210904065459.3: *3* TestC.test_class_1
-    def test_class_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            class cTestClass1 {
-
-                int foo (int a) {
-                    a = 2 ;
-                }
-
-                char bar (float c) {
-                    ;
-                }
-            }
-        """)
-        table = (
-            'class cTestClass1',
-            'int foo',
-            'char bar',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
-    def test_class_underindented_line(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            class cTestClass1 {
-
-                int foo (int a) {
-            // an underindented line.
-                    a = 2 ;
-                }
-
-                // This should go with the next function.
-
-                char bar (float c) {
-                    ;
-                }
-            }
-        """)
-        table = (
-            'class cTestClass1',
-            'int foo',
-            'char bar',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
-    def test_comment_follows_arg_list(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            void
-            aaa::bbb::doit
-                (
-                awk* b
-                )
-            {
-                assert(false);
-            }
-
-            bool
-            aaa::bbb::dothat
-                (
-                xyz *b
-                ) //  <---------------------problem
-            {
-                return true;
-            }
-        """)
-        table = (
-            'void aaa::bbb::doit',
-            'bool aaa::bbb::dothat',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
-    def test_comment_follows_block_delim(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            void
-            aaa::bbb::doit
-                (
-                awk* b
-                )
-            {
-                assert(false);
-            }
-
-            bool
-            aaa::bbb::dothat
-                (
-                xyz *b
-                )
-            {
-                return true;
-            } //  <---------------------problem
-        """)
-        table = (
-            'void aaa::bbb::doit',
-            'bool aaa::bbb::dothat',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        assert p2, g.tree_to_string(c)
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.10: *3* TestC.test_extern
-    def test_extern(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            extern "C"
-            {
-            #include "stuff.h"
-            void    init(void);
-            #include "that.h"
-            }
-        """)
-        table = (
-            'extern "C"',
-        )
-        p = c.p
-        self.run_test(c.p, s)
-        root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.7: *3* TestC.test_intermixed_blanks_and_tabs
-    def test_intermixed_blanks_and_tabs(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            void
-            aaa::bbb::doit
-                (
-                awk* b  // leading blank
-                )
-            {
-                assert(false); // leading tab
-            }
-        """)
-        table = (
-            'void aaa::bbb::doit',
-        )
-
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
-    #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
-    def test_old_style_decl_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            static void
-            ReleaseCharSet(cset)
-                CharSet *cset;
-            {
-                ckfree((char *)cset->chars);
-                if (cset->ranges) {
-                ckfree((char *)cset->ranges);
-                }
-            }
-        """)
-        table = (
-            'static void ReleaseCharSet',
-        )
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test', root.h)
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
-    def test_old_style_decl_2(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            Tcl_Obj *
-            Tcl_NewLongObj(longValue)
-                register long longValue;	/* Long integer used to initialize the
-                     * new object. */
-            {
-                return Tcl_DbNewLongObj(longValue, "unknown", 0);
-            }
-        """)
-        table = (
-            'Tcl_Obj * Tcl_NewLongObj',
-        )
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@-others
-#@+node:ekr.20211108062617.1: ** class TestIni(BaseTestImporter)
-class TestIni(BaseTestImporter):
-    
-    ext = '.ini'
+    ext = '.coffee'
     
     #@+others
-    #@+node:ekr.20210904065459.29: *3* TestIni.test_1
+    #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
     def test_1(self):
         c = self.c
-        s = textwrap.dedent(r'''\
-            ; last modified 1 April 2001 by John Doe
-            [owner]
-            name=John Doe
-            organization=Acme Widgets Inc.
+        s = r'''
 
-            ; [ not a section ]
+        # Js2coffee relies on Narcissus's parser.
 
-            [database]
-            server=192.0.2.62
-                ; use IP address
-            port=143
-            file = "payroll.dat"
-        ''')
-        table = ('[owner]', '[database]')
+        {parser} = @Narcissus or require('./narcissus_packed')
+
+        # Main entry point
+
+        buildCoffee = (str) ->
+          str  = str.replace /\r/g, ''
+          str += "\n"
+
+          builder    = new Builder
+          scriptNode = parser.parse str
+        '''
+        table = (
+            'buildCoffee = (str) ->',
+        )
         self.run_test(c.p, s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
+        p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-    #@-others
-#@+node:ekr.20211108062958.1: ** class TestCSharp(BaseTestImporter)
-class TestCSharp(BaseTestImporter):
-    
-    ext = '.c#'
-    
-    #@+others
-    #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
-    def test_namespace_indent(self):
+    #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
+    #@@tabwidth -2 # Required
+
+    def test_2(self):
         c = self.c
+
         s = textwrap.dedent("""\
-            namespace {
-                class cTestClass1 {
-                    ;
-                }
-            }
+        class Builder
+          constructor: ->
+            @transformer = new Transformer
+          # `build()`
+
+          build: (args...) ->
+            node = args[0]
+            @transform node
+
+            name = 'other'
+            name = node.typeName()  if node != undefined and node.typeName
+
+            fn  = (@[name] or @other)
+            out = fn.apply(this, args)
+
+            if node.parenthesized then paren(out) else out
+          # `transform()`
+
+          transform: (args...) ->
+            @transformer.transform.apply(@transformer, args)
+
+          # `body()`
+
+          body: (node, opts={}) ->
+            str = @build(node, opts)
+            str = blockTrim(str)
+            str = unshift(str)
+            if str.length > 0 then str else ""
         """)
         table = (
-            'namespace',
-            'class cTestClass1',
+          'class Builder',
+          'constructor: ->',
+          'build: (args...) ->',
+          'transform: (args...) ->',
+          'body: (node, opts={}) ->',
         )
         self.run_test(c.p, s)
-        root = c.p.firstChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-    #@+node:ekr.20210904065459.13: *3* TestImport.test_namespace_no_indent
-    def test_namespace_no_indent(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            namespace {
-            class cTestClass1 {
-                ;
-            }
-            }
-        """)
-        self.run_test(c.p, s)
-        table = (
-            'namespace',
-            'class cTestClass1',
-        )
-        root = c.p.firstChild()
-        # assert root.h.endswith('c# namespace no indent'), root.h
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
+        p2 = c.p.firstChild().firstChild()
+        for h in table:
             self.assertEqual(p2.h, h)
             p2.moveToThreadNext()
     #@-others

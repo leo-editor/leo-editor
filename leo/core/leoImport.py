@@ -1201,9 +1201,6 @@ class LeoImportCommands:
     def cythonUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.pyx')
 
-    def coffeeScriptUnitTest(self, p, s):
-        self.scannerUnitTest(p, s, ext='.coffee')
-
     def ctextUnitTest(self, p, s):
         self.scannerUnitTest(p, s, ext='.txt')
 
