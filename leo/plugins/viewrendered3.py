@@ -54,7 +54,7 @@ the plugin can:
        will be displayed.
 
 A number of other special types of nodes can be rendered (see the
-section *Special Renderings*)
+section `Special Renderings`_.
 
 @setting nodes in an @settings tree can modify the behavior of the plugin.
 #@+node:TomP.20200309205046.1: *3* Compatibility
@@ -654,6 +654,9 @@ plot the data as an X-Y graph. The labeling and appearance of the
 plot can optionally and easily adjusted. The graph is produced
 when the toolbar menu labeled *Other Actions* is pressed and
 *Plot 2D* is clicked.
+
+If the selected node has an optional section *[source]* containing the key *file*, the value of the key will be used as the path to
+the data, instead of using the selected node itself as the data source.
 
 Help for the plotting capability is displayed in the system
 browser when *Other Actions/Help For Plot 2D* is clicked. This
@@ -1929,6 +1932,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the node may contain a config file-like set of sections
         that define the labels, and plot styling.
 
+        Optionally, the data can be read from a file instead of taken 
+        from the selected node.
+
         The matplotlib package is required for plotting.
 
         #@+others
@@ -1968,15 +1974,41 @@ class ViewRenderedController3(QtWidgets.QWidget):
         with zero.
 
 
-        #@+node:tom.20211104105903.4: *6* Labels
+        #@+node:tom.20211108101908.1: *6* Configuration Sections
+        Configuration Sections
+        -----------------------
+        The labeling, styling, and data source for the plot can be
+        specified in configuration sections.  Each section starts with
+        a *[name]*, has zero or more lines in the form *key = value*,
+        and must end with a blank line or the end of the node.
+
+        Sections may be placed anywhere in the selected node.  The 
+        *[sectionname]* must be left-justified.  Currently the
+        following sections are recognized::
+
+            [style]
+            [labels]
+            [source]
+
+        #@+node:tom.20211108100421.1: *6* Optional Data Source
+        Optional Data Source
+        ---------------------
+        Data to be plotted can be read from a file.  The selected node must
+        contain a section *[source]* with a *file* key, like this::
+
+            [source]
+            file = c:\example\datafile.txt
+
+        If the file exists, it will be used as the data source instead of the
+        selected Leo node.  All configuration sections in the selected nodes 
+        will still take effect.
+
+        #@+node:tom.20211104105903.4: *6* Graph And Data Labels
         Graph And Data Labels
         ----------------------
 
         A figure title and axis labels can optionally be added. These are
-        specified by adding a configuration section *[labels]*. The
-        section name must be left-justified. The section is ended by a
-        blank line or the end of the node. The section may be placed
-        anywhere in the node.
+        specified by the configuration section *[labels]*.
 
         Here is an example::
 
@@ -2029,7 +2061,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         directory. On Linux, this is usually *~/.local*.
 
         When no style file can be found, Matplotlib will use its default
-        styling, as modified by a *.matplotlib.rc* file if Matplotlib can
+        styling, as modified by a *matplotlibrc* file if Matplotlib can
         find one.
         #@-others
         #@-<< docstring >>
@@ -2244,6 +2276,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 kind, val = fields[0].strip(), fields[1].strip()
                 if kind == 'file':
                     _, filename = fields[0].strip(), fields[1].strip()
+                    g.es(filename)
                     if os.path.exists(filename):
                         with open(filename, encoding = ENCODING) as f:
                             data_lines = f.readlines()
