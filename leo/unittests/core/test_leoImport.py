@@ -1170,34 +1170,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904143920.1: *3* Elisp tests
-    #@+node:ekr.20210904065459.18: *4* TestImport.test_elisp
-    def test_elisp(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            ;;; comment
-            ;;; continue
-            ;;;
-
-            (defun abc (a b)
-               (+ 1 2 3))
-
-            ; comm
-            (defun cde (a b)
-               (+ 1 2 3))
-        """)
-        table = (
-            'defun abc',
-            'defun cde',
-        )
-        c.importCommands.elispUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@+node:ekr.20210904122815.1: *3* Java tests
     #@+node:ekr.20210904065459.30: *4* TestImport.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
@@ -4483,6 +4455,40 @@ class TestXML (BaseTestImporter):
             <_.ÌÑ>
         """)
         self.run_test(c.p, s)
+    #@-others
+#@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
+class TestElisp (BaseTestImporter):
+    
+    ext = '.el'
+    
+    #@+others
+    #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
+    def test_1(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            ;;; comment
+            ;;; continue
+            ;;;
+
+            (defun abc (a b)
+               (+ 1 2 3))
+
+            ; comm
+            (defun cde (a b)
+               (+ 1 2 3))
+        """)
+        table = (
+            'defun abc',
+            'defun cde',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
     #@-others
 #@-others
 
