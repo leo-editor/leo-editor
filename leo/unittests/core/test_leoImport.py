@@ -1520,61 +1520,6 @@ class TestMarkdown(BaseTestImporter):
 class TestMisc (BaseTestImporter):
     
     #@+others
-    #@+node:ekr.20210904143328.1: *3* Pascal tests
-    #@+node:ekr.20210904065459.50: *4* TestImport.test_pascal_to_delphi_interface
-    def test_pascal_to_delphi_interface(self):
-        c = self.c
-        s = textwrap.dedent("""\
-            unit Unit1;
-
-            interface
-
-            uses
-            Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
-            Forms,
-            Dialogs;
-
-            type
-            TForm1 = class(TForm)
-            procedure FormCreate(Sender: TObject);
-            private
-            { Private declarations }
-            public
-            { Public declarations }
-            end;
-
-            var
-            Form1: TForm1;
-
-            implementation
-
-            {$R *.dfm}
-
-            procedure TForm1.FormCreate(Sender: TObject);
-            var
-            x,y: double;
-            begin
-            x:= 4;
-            Y := x/2;
-            end;
-
-            end. // interface
-        """)
-        table = (
-            'interface',
-            'procedure FormCreate',
-            'procedure TForm1.FormCreate',
-        )
-        c.importCommands.pascalUnitTest(c.p, s=s)
-        root = c.p.lastChild()
-        assert root
-        self.assertEqual(root.h, '@file test')
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
     #@+node:ekr.20210904122909.1: *3* Perl tests
     #@+node:ekr.20210904065459.51: *4* TestImport.test_perl_1
     def test_perl_1(self):
@@ -4113,6 +4058,67 @@ class TestOtl (BaseTestImporter):
         for line in table:
             m = pattern.match(line)
             self.assertTrue(m, msg=repr(line))
+    #@-others
+#@+node:ekr.20211108081719.1: ** class TestPascal (BaseTestImporter)
+class TestPascal (BaseTestImporter):
+    
+    ext = '.pas'
+    
+    #@+others
+    #@+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
+    def test_delphi_interface(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            unit Unit1;
+
+            interface
+
+            uses
+            Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
+            Forms,
+            Dialogs;
+
+            type
+            TForm1 = class(TForm)
+            procedure FormCreate(Sender: TObject);
+            private
+            { Private declarations }
+            public
+            { Public declarations }
+            end;
+
+            var
+            Form1: TForm1;
+
+            implementation
+
+            {$R *.dfm}
+
+            procedure TForm1.FormCreate(Sender: TObject);
+            var
+            x,y: double;
+            begin
+            x:= 4;
+            Y := x/2;
+            end;
+
+            end. // interface
+        """)
+        table = (
+            'interface',
+            'procedure FormCreate',
+            'procedure TForm1.FormCreate',
+        )
+        self.run_test(c.p, s)
+        root = c.p.lastChild()
+        assert root
+        self.assertEqual(root.h, '@file test')
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
