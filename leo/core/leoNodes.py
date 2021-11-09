@@ -2505,19 +2505,20 @@ class VNode:
         Modified by EKR.
         """
         v = self
-        hiddenRootVnode = v.context.hiddenRootNode
+        seen = set([v.context.hiddenRootNode])
 
         def v_and_parents(v):
-            if v != hiddenRootVnode:
-                yield v
-                for parent_v in v.parents:
+            if v in seen:
+                return
+            seen.add(v)
+            yield v
+            for parent_v in v.parents:
+                if parent_v not in seen:
                     yield from v_and_parents(parent_v)
-
-        # There is no harm in calling v2.setDirty redundantly.
 
         for v2 in v_and_parents(v):
             if v2.isAnyAtFileNode():
-                v2.setDirty()
+                v2.setDirty()  # Faster than testing v2.isDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString(self, s):
         v = self
