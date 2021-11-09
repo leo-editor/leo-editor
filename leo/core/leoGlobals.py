@@ -3385,9 +3385,10 @@ def getLanguageFromAncestorAtFileNode(p: Pos):
     # Modified by EKR.
 
     def v_and_parents(v):
-        if v not in seen:
-            seen.add(v)
-            yield v
+        if v in seen:
+            return
+        seen.add(v)
+        yield v
         for parent_v in v.parents:
             if parent_v not in seen:
                 yield from v_and_parents(parent_v)
