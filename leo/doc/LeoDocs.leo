@@ -694,7 +694,6 @@
 <v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
 <v t="ekr.20191002072123.1"><vh>Themes aren't working for me. What should I do?</vh></v>
-<v t="ekr.20170612101117.1"><vh>What about code that looks like a section reference?</vh></v>
 <v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @clean outline as expected?</vh></v>
 <v t="ekr.20120229094652.15130"><vh>Why do Qt windows disappear in my scripts?</vh></v>
 <v t="ekr.20180212070758.1"><vh>Why isn't the Spell tab showing?</vh></v>
@@ -2380,6 +2379,9 @@
 </v>
 <v t="ekr.20211105051309.1"></v>
 <v t="ekr.20211105051031.1"></v>
+<v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20170217093636.1"></v>
+<v t="ekr.20170314060926.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -22179,7 +22181,12 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
         @others
     Controller(c).run # c *is* defined.
 
-**Important**: Leo recognizes section references *everywhere*, even inside strings or comments. See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
+**(New in Leo 6.6)**: Leo recognizes section references only if they appear *alone* on a line.  Therefore the following are *not* section references:
+
+    # &lt;&lt; reference 1 &gt;&gt;
+    " &lt;&lt; reference 2 &gt;&gt;
+    a = b &lt;&lt; c &gt;&gt; 2;
+</t>
 <t tx="ekr.20170217093639.1">.. _`commander`: tutorial-basics.html#accessing-outline-data
 .. _`position`: tutorial-scripting.html#positions-and-vnodes
 
@@ -23001,21 +23008,6 @@ The &lt;&lt; imports &gt;&gt; section reference ensures that imports appear firs
     @others
     
 This ensures that base classes are defined before their subclasses.
-</t>
-<t tx="ekr.20170612101117.1">Leo recognizes section references *everywhere*, even inside strings or comments. If a source code line contains &lt;&lt; followed by &gt;&gt; on the same line, you must rewrite the line.  For example, suppose your C code contains::
-
-    a = 1 &lt;&lt; 5 + 2 &gt;&gt; 3;
-    
-You could rewrite this as::
-
-    a = 1 &lt;&lt; 5 + \
-        2 &gt;&gt; 3;
-
-.. Smart quotes are probably causing problems here:
-
-g.angleBrackets(s) returns string s enclosed in angle brackets.
-
-For example, h = g.anglebrackets(\"abc\") sets h to &lt;&lt;abc&gt;&gt;.
 </t>
 <t tx="ekr.20170618015524.1">I thought I would write my own testimonial. I don't ever do this, as I often roll my eyes at testimonials, but my enthusiasm is at such a degree about Leo, that I must give "props" where props are due.
 
