@@ -1630,9 +1630,11 @@ class JEditColorizer(BaseJEditColorizer):
         j = i
         n = len(s)
         chars = self.word_chars
-        # A kludge just for Haskell:
+        # Special cases...
         if self.language in ('haskell', 'clojure'):
             chars["'"] = "'"
+        if self.language == 'c':
+            chars['_'] = '_'
         while j < n and s[j] in chars:
             j += 1
         word = s[i:j]
