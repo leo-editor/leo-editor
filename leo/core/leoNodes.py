@@ -2518,7 +2518,7 @@ class VNode:
 
         for v2 in v_and_parents(v):
             if v2.isAnyAtFileNode():
-                v2.setDirty()  # Faster than testing v2.isDirty()
+                v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString(self, s):
         v = self
