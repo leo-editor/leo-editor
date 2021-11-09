@@ -951,7 +951,7 @@ class AtFile:
             else:
                 g.es("no @shadow nodes in the selected tree")
         return found
-    #@+node:ekr.20041005105605.157: *5* at.putFile & helper
+    #@+node:ekr.20041005105605.157: *5* at.putFile
     def putFile(self, root, fromString='', sentinels=True):
         """Write the contents of the file to the output stream."""
         at = self
@@ -1665,7 +1665,7 @@ class AtFile:
             # Make sure v is never expanded again.
             # Suppress orphans check.
         #
-        # Fix #1048 & #1037: regularize most trailing whitespace.
+        # #1048 & #1037: regularize most trailing whitespace.
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
                 s = s + '\n'
@@ -1697,7 +1697,7 @@ class AtFile:
         if kind == at.noDirective:
             if status.in_code:
                 # Important: the so-called "name" must include brackets.
-                name, n1, n2 = at.findSectionName(s, i)
+                name, n1, n2 = at.findSectionName(s, i, p)
                 if name:
                     at.putRefLine(s, i, n1, n2, name, p)
                 else:
@@ -1757,7 +1757,7 @@ class AtFile:
         else:
             at.error(f"putBody: can not happen: unknown directive kind: {kind}")  # pragma: no cover
     #@+node:ekr.20041005105605.164: *5* writing code lines...
-    #@+node:ekr.20041005105605.165: *6* at.@all
+    #@+node:ekr.20041005105605.165: *6* at: @all
     #@+node:ekr.20041005105605.166: *7* at.putAtAllLine
     def putAtAllLine(self, s, i, p):
         """Put the expansion of @all."""
@@ -1806,7 +1806,7 @@ class AtFile:
         at.putAtAllBody(p)
         for child in p.children():
             at.putAtAllChild(child)  # pragma: no cover (recursive call)
-    #@+node:ekr.20041005105605.170: *6* at.@others (write)
+    #@+node:ekr.20041005105605.170: *6* at: @others
     #@+node:ekr.20041005105605.173: *7* at.putAtOthersLine & helper
     def putAtOthersLine(self, s, i, p):
         """Put the expansion of @others."""
@@ -1852,6 +1852,39 @@ class AtFile:
             g.error('did not write @ignore node', p.v.h)
             return False
         return True
+    #@+node:ekr.20041005105605.199: *6* at.findSectionName
+    def findSectionName(self, s, i, p):
+        """
+        Return n1, n2 representing a section name.
+
+        Return the reference, *including* brackes.
+        """
+        at = self
+        
+        def is_space(i1, i2):
+            """A replacement for s[i1 : i2] that doesn't create any substring."""
+            return i == j or all(s[z] in ' \t\n' for z in range(i1, i2))
+
+        end = s.find('\n', i)
+        j = len(s) if end == -1 else end
+        # Careful: don't look beyond the end of the line!
+        if end == -1:
+            n1 = s.find(at.section_delim1, i)
+            n2 = s.find(at.section_delim2, i)
+        else:
+            n1 = s.find(at.section_delim1, i, end)
+            n2 = s.find(at.section_delim2, i, end)
+        n3 = n2 + len(at.section_delim2)
+        if -1 < n1 < n2:  # A *possible* section reference.
+            if is_space(i, n1) and is_space(n3, j):  # A *real* section reference.
+                return s[n1 : n3], n1, n3
+            # An apparent section reference.
+            if 'sections' in g.app.debug and not g.unitTesting:  # pragma: no cover
+                i1, i2 = g.getLine(s, i)
+                g.es_print('Ignoring apparent section reference:', color='red')
+                g.es_print('Node: ', p.h)
+                g.es_print('Line: ', s[i1 : i2].rstrip())
+        return None, 0, 0
     #@+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s, i):
         """Put a normal code line."""
@@ -1876,7 +1909,7 @@ class AtFile:
             at.os(line)  # Bug fix: 2013/09/16
         else:
             g.trace('Can not happen: completely empty line')  # pragma: no cover
-    #@+node:ekr.20041005105605.176: *6* at.putRefLine & helpers
+    #@+node:ekr.20041005105605.176: *6* at.putRefLine
     def putRefLine(self, s, i, n1, n2, name, p):
         """
         Put a line containing one or more references.
@@ -1884,130 +1917,26 @@ class AtFile:
         Important: the so-called name *must* include brackets.
         """
         at = self
-        ref = at.findReference(name, p)
-        is_clean = at.root.h.startswith('@clean')
-        if not ref:  # pragma: no cover
-            if hasattr(at, 'allow_undefined_refs'):
-                # Allow apparent section reference: just write the line.
-                at.putCodeLine(s, i)
-            return
-        # Compute delta only once.
-        junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
-        # Write the lead-in sentinel only once.
-        at.putLeadInSentinel(s, i, n1)
-        self.putRefAt(name, ref, delta)
-        n_refs = 0
-        while 1:
-            progress = i
-            i = n2
-            n_refs += 1
-            name, n1, n2 = at.findSectionName(s, i)
-            if is_clean and n_refs > 1:  # pragma: no cover
-                # #1232: allow only one section reference per line in @clean.
-                i1, i2 = g.getLine(s, i)
-                line = s[i1:i2].rstrip()
-                at.writeError(f"Too many section references:\n{line!s}")
-                break
-            if name:
-                ref = at.findReference(name, p)  # Issues error if not found.
-                if ref:
-                    middle_s = s[i:n1]
-                    self.putAfterMiddleRef(middle_s, delta)
-                    self.putRefAt(name, ref, delta)
-            else:
-                break  # pragma: no cover (coverage bug?)
-            assert progress < i
-        self.putAfterLastRef(s, i, delta)
-    #@+node:ekr.20131224085853.16443: *7* at.findReference
-    def findReference(self, name, p):
-        """
-        Find a reference to name.  Raise an error if not found.
-        
-        Important: the so-called name *must* include brackets.
-        """
-        at = self
         ref = g.findReference(name, p)
-        if not ref and not hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
+        if ref:
+            junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
+            at.putLeadInSentinel(s, i, n1)
+            at.indent += delta
+            at.putSentinel("@+" + name)
+            at.putOpenNodeSentinel(ref)
+            at.putBody(ref)
+            at.putSentinel("@-" + name)
+            at.indent -= delta
+            return
+        if hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
+            p.v.setVisited()  # #2311
+            # Allow apparent section reference: just write the line.
+            at.putCodeLine(s, i)
+        else:  # pragma: no cover
             # Do give this error even if unit testing.
             at.writeError(
                 f"undefined section: {g.truncate(name, 60)}\n"
                 f"  referenced from: {g.truncate(p.h, 60)}")
-        return ref
-
-    #@+node:ekr.20041005105605.199: *7* at.findSectionName
-    def findSectionName(self, s, i):  # pragma: no cover
-        """
-        Return n1, n2 representing a section name.
-
-        The section name, *including* brackes is s[n1:n2]
-        """
-        at = self
-        end = s.find('\n', i)
-        # #2276: Special case for @section-delims directive.
-        if i == 0 and s.startswith('@section-delims'):
-            return None, 0, 0
-        if end == -1:
-            n1 = s.find(at.section_delim1, i)
-            n2 = s.find(at.section_delim2, i)
-        else:
-            n1 = s.find(at.section_delim1, i, end)
-            n2 = s.find(at.section_delim2, i, end)
-        ok = -1 < n1 < n2
-        if not ok:
-            return None, 0, 0
-        # Warn on extra brackets.
-        for ch, j in (
-            ('<', n1 + len(at.section_delim1)),
-            ('>', n2 + len(at.section_delim2)),
-        ):
-            if g.match(s, j, ch):
-                line = g.get_line(s, i)
-                g.es('dubious brackets in', line)
-                break
-        # The so-called name *must* include brackets for
-        # g.findReference and v.mathHeadline.
-        name = s[n1 : n2 + len(at.section_delim2)]
-        return name, n1, n2 + len(at.section_delim2)
-    #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
-    def putAfterLastRef(self, s, start, delta):
-        """Handle whatever follows the last ref of a line."""
-        at = self
-        j = g.skip_ws(s, start)
-        if j < len(s) and s[j] != '\n':
-            # Temporarily readjust delta to make @afterref look better.
-            at.indent += delta
-            at.putSentinel("@afterref")
-            end = g.skip_line(s, start)
-            after = s[start:end]
-            at.os(after)
-            if at.sentinels and after and after[-1] != '\n':
-                at.onl()  # Add a newline if the line didn't end with one.
-            at.indent -= delta
-    #@+node:ekr.20041005105605.179: *7* at.putAfterMiddleRef
-    def putAfterMiddleRef(self, s, delta):
-        """Handle whatever follows a ref that is not the last ref of a line."""
-        at = self
-        if s:
-            at.indent += delta
-            at.putSentinel("@afterref")
-            at.os(s)
-            at.onl_sent()  # Not a real newline.
-            at.indent -= delta
-    #@+node:ekr.20041005105605.177: *7* at.putRefAt
-    def putRefAt(self, name, ref, delta):
-        at = self
-        # #2276: Section references do *not* contain the section delimiters,
-        #        so *no* changes are required here!
-        #
-        # #132: Section Reference causes clone...
-        #
-        # Never put any @+middle or @-middle sentinels.
-        at.indent += delta
-        at.putSentinel("@+" + name)
-        at.putOpenNodeSentinel(ref)
-        at.putBody(ref)
-        at.putSentinel("@-" + name)
-        at.indent -= delta
     #@+node:ekr.20041005105605.180: *5* writing doc lines...
     #@+node:ekr.20041005105605.181: *6* at.putBlankDocLine
     def putBlankDocLine(self):

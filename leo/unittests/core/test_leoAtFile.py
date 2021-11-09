@@ -31,20 +31,6 @@ class TestAtFile(LeoUnitTest):
             silent=True,
             verbose=False,
         )
-    #@+node:ekr.20211104162514.1: *3* TestAtFile.test_afterLastRef
-    def test_afterLastRef(self):
-        
-        at, p = self.at, self.c.p
-        at.initWriteIvars(p)
-        s = 'line without newline'
-        at.putAfterLastRef(s, 0, 4)
-    #@+node:ekr.20211104162937.1: *3* TestAtFile.test_afterMiddleRef
-    def test_afterMiddleRef(self):
-        
-        at, p = self.at, self.c.p
-        at.initWriteIvars(p)
-        s = 'tail\n'
-        at.putAfterMiddleRef(s, 4)
     #@+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
         
@@ -175,6 +161,23 @@ class TestAtFile(LeoUnitTest):
         for expected, s in table:
             result = at.directiveKind4(s, 0)
             self.assertEqual(expected, result, msg=repr(s))
+    #@+node:ekr.20211106034202.1: *3* TsetAtFile.test_findSectionName
+    def test_findSectionName(self):
+        # Test code per #2303.
+        at, p = self.at, self.c.p
+        at.initWriteIvars(p)
+        ref = g.angleBrackets(' abc ')
+        table = (
+            (True, f"{ref}\n"),
+            (True, f"{ref}"),
+            (True, f"  {ref}  \n"),
+            (False, f"if {ref}:\n"),
+            (False, f"{ref} # comment\n"),
+            (False, f"# {ref}\n"),
+        )
+        for valid, s in table:
+            name, n1, n2 = at.findSectionName(s, 0, p)
+            self.assertEqual(valid, bool(name), msg=repr(s))
     #@+node:ekr.20210905052021.23: *3* TestAtFile.test_parseLeoSentinel
     def test_parseLeoSentinel(self):
 
@@ -383,17 +386,19 @@ class TestAtFile(LeoUnitTest):
         
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
-        # Create two section definition nodes.
-        child1 = p.insertAsLastChild()
+        # Create one section definition node.
         name1 = g.angleBrackets('section 1')
-        name2 = g.angleBrackets('section 2')
+        child1 = p.insertAsLastChild()
         child1.h = name1
-        child2 = child1.insertAfter()
-        child2.h = name2
-        s = f"if {name1} or {name2}:\n"
+        child1.b = "print('test_putRefLine')\n"
+        # Create the valid section reference.
+        s = f"  {name1}\n"
         # Careful: init n2 and n2.
-        name, n1, n2 = at.findSectionName(s, 0)
+        name, n1, n2 = at.findSectionName(s, 0, p)
+        self.assertTrue(name)
         at.putRefLine(s, 0, n1, n2, name, p)
+        
+       
     #@+node:ekr.20210905052021.24: *3* TestAtFile.test_remove
     def test_remove(self):
         
@@ -526,6 +531,67 @@ class TestFastAtRead(LeoUnitTest):
         self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
 
     #@+others
+    #@+node:ekr.20211104162514.1: *3* TestFast.test_afterref
+    def test_afterref(self):
+        
+        c, x = self.c, self.x
+        h = '@file /test/test_afterLastRef.py'
+        root = c.rootPosition()
+        root.h = h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211106112233.1: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+            #AT+leo-ver=5-thin
+            #AT+node:{root.gnx}: * {h}
+            #AT@language python
+            
+            a = 1
+            if (
+            #AT+LB test >>
+            #AT+node:ekr.20211107051401.1: ** LB test >>
+            a == 2
+            #AT-LB test >>
+            #ATafterref
+             ):
+                a = 2
+            #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define contents >>
+        #@+<< define expected_body >>
+        #@+node:ekr.20211106115654.1: *4* << define expected_body >>
+        expected_body = textwrap.dedent('''\
+            ATlanguage python
+            
+            a = 1
+            if (
+            LB test >> ):
+                a = 2
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define expected_body >>
+        #@+<< define expected_contents >>
+        #@+node:ekr.20211107053133.1: *4* << define expected_contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        expected_contents = textwrap.dedent(f'''\
+            #AT+leo-ver=5-thin
+            #AT+node:{root.gnx}: * {h}
+            #AT@language python
+            
+            a = 1
+            if (
+            LB test >> ):
+                a = 2
+            #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define expected_contents >>
+        x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body, msg='mismatch in body')
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        # Leo has *never* round-tripped the contents without change!
+        ### g.printObj(s, tag='s')
+        ### g.printObj(expected_contents, tag='expected_contents')
+        self.assertEqual(s, expected_contents, msg='mismatch in contents')
+
     #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all
     def test_at_all(self):
         
@@ -732,7 +798,7 @@ class TestFastAtRead(LeoUnitTest):
     def test_at_section_delim(self):
 
         c, x = self.c, self.x
-        h = '@file /test/section_delims_test.py'
+        h = '@file /test/at_section_delim.py'
         root = c.rootPosition()
         root.h =  h # To match contents.
         #@+<< define contents >>
@@ -954,21 +1020,24 @@ class TestFastAtRead(LeoUnitTest):
         #AT+leo-ver=5-thin
         #AT+node:{root.gnx}: * {h}
         #AT@language python
-
-        #AT+LB test >>
-        #AT+node:ekr.20211101175745.1: ** LB test >>
+        # Test of @verbatim
         print('hi')
-        #AT-LB test >>
-        #ATafterref
-         #AT+LB after
-
         #ATverbatim
         #AT+node (should be protected by verbatim)
-
         #AT-leo
         ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
+        #@+<< define expected_body >>
+        #@+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)
+        expected_body = textwrap.dedent('''\
+        ATlanguage python
+        # Test of @verbatim
+        print('hi')
+        #AT+node (should be protected by verbatim)
+        ''').replace('AT', '@')
+        #@-<< define expected_body >>
         x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
     #@-others
