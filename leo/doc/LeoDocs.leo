@@ -2379,9 +2379,6 @@
 </v>
 <v t="ekr.20211105051309.1"></v>
 <v t="ekr.20211105051031.1"></v>
-<v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20170217093636.1"></v>
-<v t="ekr.20170314060926.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31146,7 +31143,7 @@ unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
-<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -31154,8 +31151,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 - Replace @raw and @end_raw with @section-delims.
 - Leo recognizes section references only when they appear on an otherwise blank line.
-- Leo does not recognized section references in @doc parts.
 - Many improvements to python-to-typescript command.
+- picture_viewer.py is a stand-alone app that displays images in a folder.
 - The user may choose *other* commands after starting repeat-complex-command.
 - Complete coverage testing for leoAtFile.py.
 
@@ -31186,8 +31183,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 </t>
 <t tx="ekr.20211105051309.1">- Replace @raw and @end_raw with @section-delims.
 - Leo recognizes section references only when they appear on an otherwise blank line.
-- Leo does not recognized section references in @doc parts.
 - Many improvements to python-to-typescript command.
+- picture_viewer.py is a stand-alone app that displays images in a folder.
 - The user may choose *other* commands after starting repeat-complex-command.
 - Complete coverage testing for leoAtFile.py.
 </t>
