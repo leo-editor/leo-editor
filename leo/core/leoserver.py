@@ -1353,8 +1353,7 @@ class LeoServer:
     def clone_node(self, param):
         """
         Clone a node.
-        If it was also the current selection, return it,
-        otherwise try not to select it.
+        Try to keep selection, then return the selected node that remains.
         """
         c = self._check_c()
         p = self._get_p(param)
@@ -1640,30 +1639,46 @@ class LeoServer:
     #@+node:felix.20210621233316.64: *5* server.toggle_mark
     def toggle_mark(self, param):
         """
-        Toggle the mark at position p, where p is c.p if package["ap"] is missing.
-        Do not necessarily select the position.
+        Toggle the mark at position p.
+        Try to keep selection, then return the selected node that remains.
         """
-        self._check_c()
+        c = self._check_c()
         p = self._get_p(param)
-        if p.isMarked():
-            p.clearMarked()
+        if p == c.p:
+            c.markHeadline()
         else:
-            p.setMarked()
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.markHeadline()
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+        # return selected node either ways
         return self._make_response()
     #@+node:felix.20210621233316.65: *5* server.mark_node
     def mark_node(self, param):
-        """Mark a node, without selecting it"""
-        self._check_c()
+        """
+        Mark a node.
+        Try to keep selection, then return the selected node that remains.
+        """
+        c = self._check_c()
         p = self._get_p(param)
-        p.setMarked()
-        return self._make_response()
+        if p.isMarked():
+            return self._make_response()
+        else:
+            return self.toggle_mark(param)
+
     #@+node:felix.20210621233316.66: *5* server.unmark_node
     def unmark_node(self, param):
-        """Unmark a node, without selecting it"""
-        self._check_c()
+        """
+        Unmark a node.
+        Try to keep selection, then return the selected node that remains.
+        """
+        c = self._check_c()
         p = self._get_p(param)
-        p.clearMarked()
-        return self._make_response()
+        if not p.isMarked():
+            return self._make_response()
+        else:
+            return self.toggle_mark(param)
     #@+node:felix.20210621233316.67: *5* server.undo
     def undo(self, param):
         """Undo last un-doable operation"""
