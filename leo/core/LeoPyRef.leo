@@ -128,25 +128,25 @@
 <v t="ekr.20210509083811.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191729.1"><vh>@data:@auto ../test/external_files/at-auto-line-number-test.py</vh>
-<v t="ekr.20210922120132.1"><vh>@gnxs</vh></v>
+<v t="ekr.20211107080227.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191730.1"><vh>@data:@auto ../test/external_files/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20210922120133.1"><vh>@gnxs</vh></v>
+<v t="ekr.20211107080227.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191730.3"><vh>@data:@auto ../test/external_files/at-auto-section-ref-test.py</vh>
-<v t="ekr.20210922120133.2"><vh>@gnxs</vh></v>
+<v t="ekr.20211107080227.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.1"><vh>@data:@auto ../test/external_files/at-auto-test.py</vh>
-<v t="ekr.20210922120133.3"><vh>@gnxs</vh></v>
+<v t="ekr.20211107080227.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.3"><vh>@data:@auto ../test/external_files/at-auto-unit-test.py</vh>
-<v t="ekr.20210922120133.4"><vh>@gnxs</vh></v>
+<v t="ekr.20211107080227.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.5"><vh>@data:@auto-org ../test/external_files/at-auto-org-line-number-test.org</vh>
-<v t="ekr.20210922120133.5"><vh>@gnxs</vh></v>
+<v t="ekr.20211107080227.6"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.7"><vh>@data:@auto-otl ../test/external_files/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20210922120133.6"><vh>@gnxs</vh></v>
+<v t="ekr.20211107080227.7"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
@@ -1872,12 +1872,12 @@ unl: Declarations (leo_cloud_server.py)
 </t>
 <t tx="ekr.20210911191729.1">gnx: ekr.20190113123439.5
 </t>
-<t tx="ekr.20210922120132.1">gnx: ekr.20210911191226.3
+<t tx="ekr.20211107080227.1">gnx: ekr.20210911191226.3
 unl: at_auto_child (at-auto-line-number-test.py)
 </t>
 <t tx="ekr.20210911191730.1">gnx: ekr.20190113123439.7
 </t>
-<t tx="ekr.20210922120133.1">gnx: ekr.20210911191226.4
+<t tx="ekr.20211107080227.2">gnx: ekr.20210911191226.4
 unl: !Declarations
 gnx: ekr.20210911191226.5
 unl: section 1
@@ -1886,19 +1886,19 @@ unl: section 2
 </t>
 <t tx="ekr.20210911191730.3">gnx: ekr.20190113123439.11
 </t>
-<t tx="ekr.20210922120133.2">gnx: ekr.20210911191226.7
+<t tx="ekr.20211107080227.3">gnx: ekr.20210911191226.7
 unl: Declarations (at-auto-section-ref-test.py)
 </t>
 <t tx="ekr.20210911191731.1">gnx: ekr.20190113121550.1
 </t>
-<t tx="ekr.20210922120133.3">gnx: ekr.20210911191226.8
+<t tx="ekr.20211107080227.4">gnx: ekr.20210911191226.8
 unl: spam (at-auto-test.py)
 gnx: ekr.20210911191226.9
 unl: eggs (at-auto-test.py)
 </t>
 <t tx="ekr.20210911191731.3">gnx: ekr.20190113123439.16
 </t>
-<t tx="ekr.20210922120133.4">gnx: ekr.20210911191226.10
+<t tx="ekr.20211107080227.5">gnx: ekr.20210911191226.10
 unl: class class1
 gnx: ekr.20210911191226.11
 unl: class class1--&gt;class1_method1
@@ -1913,14 +1913,14 @@ unl: class class2--&gt;class2_method2
 </t>
 <t tx="ekr.20210911191731.5">gnx: ekr.20190113123635.2
 </t>
-<t tx="ekr.20210922120133.5">gnx: ekr.20210911191226.16
+<t tx="ekr.20211107080227.6">gnx: ekr.20210911191226.16
 unl: section 1
 gnx: ekr.20210911191226.17
 unl: section 2
 </t>
 <t tx="ekr.20210911191731.7">gnx: ekr.20190113123635.5
 </t>
-<t tx="ekr.20210922120133.6">gnx: ekr.20210911191226.18
+<t tx="ekr.20211107080227.7">gnx: ekr.20210911191226.18
 unl: First line.
 gnx: ekr.20210911191226.19
 unl: section 1
@@ -1958,12 +1958,13 @@ if 0:
     import leo.core.leoImport as leoImport
     importlib.reload(leoImport)
 # dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\black.py'
-dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+# dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+dir_ = r'C:\Users\Edward Ream\Python\python39\Lib\site-packages\mypy'
 assert g.os_path_exists(dir_), repr(dir_)
 c.recursiveImport(
     add_context = False,
     dir_ = dir_,
-    kind = '@edit', # '@clean', '@edit', '@nosent','@auto','@file',
+    kind = '@clean', # '@clean', '@edit', '@nosent','@auto','@file',
     recursive = False,
     safe_at_file = False,
     theTypes = ['.py',]

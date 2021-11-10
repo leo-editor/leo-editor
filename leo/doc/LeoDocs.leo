@@ -449,6 +449,7 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
+<v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
 <v t="ekr.20170215075612.1"><vh>@rst html\leo_toc.html</vh></v>
@@ -1531,7 +1532,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
+<v t="ekr.20211105051309.1"></v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
@@ -2377,7 +2378,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20211105051309.1"></v>
 <v t="ekr.20211105051031.1"></v>
 </vnodes>
 <tnodes>
