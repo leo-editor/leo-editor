@@ -1664,7 +1664,8 @@ class LeoServer:
         Mark a node.
         Try to keep selection, then return the selected node that remains.
         """
-        c = self._check_c()
+        # pylint: disable=no-else-return
+        self._check_c()
         p = self._get_p(param)
         if p.isMarked():
             return self._make_response()
@@ -1677,7 +1678,8 @@ class LeoServer:
         Unmark a node.
         Try to keep selection, then return the selected node that remains.
         """
-        c = self._check_c()
+        # pylint: disable=no-else-return
+        self._check_c()
         p = self._get_p(param)
         if not p.isMarked():
             return self._make_response()
