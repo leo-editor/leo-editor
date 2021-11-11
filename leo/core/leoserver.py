@@ -1234,6 +1234,8 @@ class LeoServer:
             or c.config.getLanguage('target-language')
             or 'plain'
         )
+        # Get the body wrap state
+        wrap = g.scanAllAtWrapDirectives(c, p)
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
@@ -1241,6 +1243,7 @@ class LeoServer:
             scroll = wrapper.getYScrollPosition()
             states = {
                 'language': language.lower(),
+                'wrap': wrap,
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
@@ -1256,6 +1259,7 @@ class LeoServer:
             scroll = p.v.scrollBarSpot
             states = {
                 'language': language.lower(),
+                'wrap': wrap,
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
