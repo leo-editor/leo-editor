@@ -31,6 +31,8 @@ class Py_Importer(Importer):
         
         Return True if perfect import checks pass, making additional allowances
         for underindented comment lines.
+        
+        Raise AssertionError if the checks fail while unit testing.
         """
         if g.app.suppressImportChecks:
             g.app.suppressImportChecks = False
@@ -43,7 +45,7 @@ class Py_Importer(Importer):
         # #2327: Ignore blank lines and lws in comment lines.
         test_lines1 = self.strip_blank_and_comment_lines(lines1)
         test_lines2 = self.strip_blank_and_comment_lines(lines2)
-        # #2327: Any remaining mismatches are serious.
+        # #2327: Report all remaining mismatches.
         ok = test_lines1 == test_lines2
         if not ok:
             self.show_failure(lines1, lines2, g.shortFileName(self.root.h))
