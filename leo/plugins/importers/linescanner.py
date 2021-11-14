@@ -801,8 +801,11 @@ class Importer:
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         """
+        return ###
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
+            if not p.next():
+                continue ### Can't promote!!!
             lines = self.get_lines(p)
             tail = []
             while lines:
@@ -818,6 +821,13 @@ class Importer:
                     if n == abs(self.tab_width):
                         new_line = line[len(m.group(0)) :]
                         tail.append(new_line)
+                        
+                        if 1:  ###
+                            print('')
+                            tag = f"ESCAPE: {self.root.h}: {p.h}"
+                            print('OLD line', repr(line))
+                            print('NEW line', repr(new_line))
+                            print('')
                     else:
                         g.trace('unexpected unindent value', n)
                         g.trace(line)
@@ -828,11 +838,26 @@ class Importer:
                 else:
                     break
             if tail:
-                parent = p.parent()
-                if parent.parent() == self.root:
-                    parent = parent.parent()
-                self.set_lines(p, lines)
-                self.extend_lines(parent, reversed(tail))
+                if 1:  ###
+                    print('')
+                    tag = f"tail underindented lines: {self.root.h}: {p.h}"
+                    g.printObj(list(reversed(tail)), tag=tag)
+                    print('')
+                if 1:  ### New
+                    next = p.next()
+                    g.trace(next and next.h or 'NO NEXT')
+                    tail = list(reversed(tail))
+                    if next:
+                        self.set_lines(p, lines)
+                        self.extend_lines(next, tail)
+                    else:
+                        self.set_lines(p, lines + tail)
+                else:  ### Legacy.
+                    parent = p.parent()
+                    if parent.parent() == self.root:
+                        parent = parent.parent()
+                    self.set_lines(p, lines)
+                    self.extend_lines(parent, reversed(tail))
     #@+node:ekr.20161110130337.1: *5* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         """Unindent all nodes in parent's tree."""
@@ -933,10 +958,6 @@ class Importer:
         if not ok:
             self.show_failure(lines1, lines2, sfn)
         return ok
-    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines (not used)
-    def clean_blank_lines(self, lines):
-        """Remove all blanks and tabs in all blank lines."""
-        return [self.lstrip_line(z) if z.isspace() else z for z in lines]
     #@+node:ekr.20161124030004.1: *5* i.clean_last_lines
     def clean_last_lines(self, lines):
         """Remove blank lines from the end of lines."""

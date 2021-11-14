@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18149: * @file ../plugins/importers/python.py
 """The new, line-based, @auto importer for Python."""
 # Legacy version of this file is in the attic.
+# pylint: disable=unreachable
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -23,28 +24,69 @@ class Py_Importer(Importer):
         self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
 
     #@+others
+    #@+node:ekr.20211114083503.1: *3* pi_i.check & helper (new)
+    def check(self, unused_s, parent):
+        """
+        Py_Importer.check:  override Importer.check.
+        
+        Return True if perfect import checks pass, making additional allowances
+        for underindented comment lines.
+        """
+        assert self.strict
+        if g.app.suppressImportChecks:
+            g.app.suppressImportChecks = False
+            return True
+        s1 = g.toUnicode(self.file_s, self.encoding)
+        s2 = self.trial_write()
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        # #2327: Ignore blank lines and lws in comment lines.
+        test_lines1 = self.strip_blank_and_comment_lines(lines1)
+        test_lines2 = self.strip_blank_and_comment_lines(lines2)
+        # Regularize the last line.
+        if test_lines1 and test_lines2 and test_lines1 != test_lines2:
+            test_lines1[-1] = test_lines1[-1].rstrip() + '\n'
+            test_lines2[-1] = test_lines2[-1].rstrip() + '\n'
+        # #2327: Any remaining mismatches are serious.
+        ok = lines1 == lines2
+        if not ok:
+            self.show_failure(lines1, lines2, g.shortFileName(self.root.h))
+        return ok
+    #@+node:ekr.20211114083943.1: *4* pi_i.strip_blank_and_comment_lines
+    def strip_blank_and_comment_lines(self, lines):
+        """Strip all blank lines and strip lws from comment lines."""
+
+        def strip(s):
+            return s.strip() if s.isspace() else s.lstrip() if s.strip().startswith('#') else s
+        
+        return [strip(z) for z in lines]
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
+    class_pat = re.compile(r'\s*class\s+(\w+)\s*(\([\w.]+\))?')
+    def_pat = re.compile(r'\s*def\s+(\w+)')
+
     def clean_headline(self, s, p=None):
         """Return a cleaned up headline s."""
         if p:  # Called from clean_all_headlines:
             return self.get_decorator(p) + p.h
         # Handle defs.
-        m = re.match(r'\s*def\s+(\w+)', s)
+        m = self.def_pat.match(s)
         if m:
             return m.group(1)
         # Handle classes.
         #913: Show base classes in python importer.
         #978: Better regex handles class C(bar.Bar)
-        m = re.match(r'\s*class\s+(\w+)\s*(\([\w.]+\))?', s)
+        m = self.class_pat.match(s)
         if m:
             return 'class %s%s' % (m.group(1), m.group(2) or '')
         return s.strip()
+        
+    decorator_pat = re.compile(r'\s*@\s*([\w\.]+)')
 
     def get_decorator(self, p):
         if g.unitTesting or self.put_decorators:
             for s in self.get_lines(p):
                 if not s.isspace():
-                    m = re.match(r'\s*@\s*([\w\.]+)', s)
+                    m = self.decorator_pat.match(s)
                     if m:
                         s = s.strip()
                         if s.endswith('('):
@@ -142,7 +184,8 @@ class Py_Importer(Importer):
         if self.skip:
             g.trace('can not happen: self.skip > 0', color='red')
         if self.decorator_lines:
-            g.trace('can not happen: unused decorator lines...', color='red')
+            msg = f"unused decorator lines! {self.root.h}"
+            g.trace(msg, color='red')
             g.printObj(self.decorator_lines)
 
     #@+node:ekr.20161220171728.1: *4* py_i.common_lws
@@ -286,7 +329,7 @@ class Py_Importer(Importer):
             return False
         return True
     #@+node:ekr.20170305105047.1: *4* py_i.starts_decorator
-    decorator_pattern = re.compile(r'^\s*@\s*(\w+)')
+    starts_decorator_pat = re.compile(r'^\s*@\s*(\w+)')
 
     def starts_decorator(self, i, lines, prev_state):
         """
@@ -295,6 +338,7 @@ class Py_Importer(Importer):
         Puts the entire decorator into the self.decorator_lines list,
         and sets self.skip so that the next line to be handled is a class/def line.
         """
+        ### return False  ###
         assert self.skip == 0
         if prev_state.context:
             # Only test for docstrings, not [{(.
@@ -302,7 +346,7 @@ class Py_Importer(Importer):
         old_skip = self.skip
         old_decorator_lines = self.decorator_lines[:]
         line = lines[i]
-        m = self.decorator_pattern.match(line)
+        m = self.starts_decorator_pat.match(line)
         if m and m.group(1) not in g.globalDirectiveList:
             # Fix #360: allow multiline matches
             # Carefully skip all lines until a class/def.
@@ -392,60 +436,90 @@ class Py_Importer(Importer):
             h = self.clean_headline(p.h, p=p)
             if h and h != p.h:
                 p.h = h
-    #@+node:ekr.20161222123105.1: *4* py_i.promote_last_lines
-    def promote_last_lines(self, parent):
-        """python_i.promote_last_lines."""
-        last = parent.lastNode()
-        if not last or last.h == 'Declarations':
-            return
-        if last.parent() != parent:
-            return  # The indentation would be wrong.
-        lines = self.get_lines(last)
-        prev_state = self.state_class()
-        if_pattern = re.compile(r'^\s*if\b')
-        # Scan for a top-level if statement.
-        for i, line in enumerate(lines):
-            new_state = self.scan_line(line, prev_state)
-            m = if_pattern.match(line)
-            if m and not prev_state.context and new_state.indent == 0:
-                self.set_lines(last, lines[:i])
-                self.extend_lines(parent, lines[i:])
+    #@+node:ekr.20211112002911.1: *4* py_i.find_tail
+    def find_tail(self, p):
+        """
+        Find the tail (trailing unindented) lines.
+        return head, tail
+        """
+        lines = self.get_lines(p)[:]
+        tail = []
+        # First, find all potentially tail lines, including blank lines.
+        while lines:
+            line = lines.pop()
+            if line.lstrip() == line or not line.strip():
+                tail.append(line)
+            else:
+                break
+        # Next, remove leading blank lines from the tail.
+        while tail:
+            line = tail[-1]
+            if line.strip():
                 break
             else:
-                prev_state = new_state
-    #@+node:ekr.20161222112801.1: *4* py_i.promote_trailing_underindented_lines
-    def promote_trailing_underindented_lines(self, parent):
+                tail.pop(0)
+        if 0:
+            g.printObj(lines, tag=f"lines: find_tail: {p.h}")
+            g.printObj(tail, tag=f"tail: find_tail: {p.h}")
+    #@+node:ekr.20161222123105.1: *4* py_i.promote_last_lines
+    at_others_pat = re.compile(r'\s*@others\b')
+
+    def promote_last_lines(self, parent):
         """
-        Promote all trailing underindent lines to the node's parent node,
-        deleting one tab's worth of indentation. Typically, this will remove
-        the underindent escape.
+        python_i.promote_last_lines.
+        
+        Promote the last lines of nodes if possible.
         """
-        pattern = self.escape_pattern  # A compiled regex pattern
-        for p in parent.children():  # 2018/05/24.
-            lines = self.get_lines(p)
-            tail = []
-            while lines:
-                line = lines[-1]
-                m = pattern.match(line)
-                if m:
-                    lines.pop()
-                    n_str = m.group(1)
-                    try:
-                        n = int(n_str)
-                    except ValueError:
-                        break
-                    if n == abs(self.tab_width):
-                        new_line = line[len(m.group(0)) :]
-                        tail.append(new_line)
-                    else:
-                        g.trace('unexpected unindent value', n)
-                        break
-                else:
+        ### return ###
+        assert parent == self.root, (parent, self.root)
+        #
+        # Promote the entire last child if
+        # 1) 
+        n = parent.numberOfChildren()
+        last = parent.lastNode()
+        if not last:
+            return  # Nothing to promote.
+        if n == 1 and last.h == 'Declarations':
+            # There is only one child and it is a Declarations node.
+            # Promote the entire last child and delete the @others line.
+            new_lines = [z for z in self.get_lines(parent) + self.get_lines(last)
+                if z.lstrip() != '@others\n']
+            self.set_lines(parent, new_lines)
+            # Remove the only child.
+            last = parent.lastNode()
+            last.doDelete()
+            return
+        # For every node containing an '@others' promote only the tail of
+        # its last child.
+        for p in parent.self_and_subtree():
+            if list(self.at_others_pat.finditer(p.b)):
+                print(p.h)
+                g.printObj(p.b)
+        
+        
+            
+        if 0:
+            for p in parent.subtree():
+                self.find_tail(p)
+        if 0:  ### Legacy code: hopeless!
+            last = parent.lastNode()
+            if not last or last.h == 'Declarations':
+                return
+            if last.parent() != parent:
+                return  # The indentation would be wrong.
+            lines = self.get_lines(last)
+            prev_state = self.state_class()
+            if_pattern = re.compile(r'^\s*if\b')
+            # Scan for a top-level if statement.
+            for i, line in enumerate(lines):
+                new_state = self.scan_line(line, prev_state)
+                m = if_pattern.match(line)
+                if m and not prev_state.context and new_state.indent == 0:
+                    self.set_lines(last, lines[:i])
+                    self.extend_lines(parent, lines[i:])
                     break
-            if tail:
-                parent = p.parent()
-                self.set_lines(p, lines)
-                self.extend_lines(parent, reversed(tail))
+                else:
+                    prev_state = new_state
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
