@@ -3858,7 +3858,8 @@ class Commands:
         safe_at_file=True,
         theTypes=None,
         # force_at_others=False, # tag:no-longer-used
-        ignore_pattern=None
+        ignore_pattern=None,
+        verbose=True,  # legacy value.
     ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -3891,11 +3892,11 @@ class Commands:
                     add_context=add_context,
                     add_file_context=add_file_context,
                     add_path=add_path,
+                    ignore_pattern=ignore_pattern,
                     recursive=recursive,
                     safe_at_file=safe_at_file,
                     theTypes=['.py'] if not theTypes else theTypes,
-                    # force_at_others = force_at_others,  # tag:no-longer-used
-                    ignore_pattern=ignore_pattern
+                    verbose=verbose,
                 )
                 cc.run(dir_)
             finally:
