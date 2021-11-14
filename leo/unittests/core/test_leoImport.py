@@ -2215,20 +2215,20 @@ class TestPython (BaseTestImporter):
     def test_bug_354(self):
         c = self.c
         s = textwrap.dedent("""\
-        if isPython3:
-            def u(s):
-                '''Return s, converted to unicode from Qt widgets.'''
-                return s
-
-            def ue(s, encoding):
-                return s if g.isUnicode(s) else str(s, encoding)
-        else:
-            def u(s):
-                '''Return s, converted to unicode from Qt widgets.'''
-                return builtins.unicode(s) # Suppress pyflakes complaint.
-
-            def ue(s, encoding):
-                return builtins.unicode(s, encoding)
+            if isPython3:
+                def u(s):
+                    '''Return s, converted to unicode from Qt widgets.'''
+                    return s
+        
+                def ue(s, encoding):
+                    return s if g.isUnicode(s) else str(s, encoding)
+            else:
+                def u(s):
+                    '''Return s, converted to unicode from Qt widgets.'''
+                    return builtins.unicode(s) # Suppress pyflakes complaint.
+        
+                def ue(s, encoding):
+                    return builtins.unicode(s, encoding)
         """)
         table = (
             (1, 'Declarations'),
@@ -3637,138 +3637,6 @@ class TestPython (BaseTestImporter):
         child = p.firstChild()
         n = child.numberOfChildren()
         self.assertEqual(n, 2)
-    #@+node:ekr.20210904065459.102: *3* TestPython.test_unittest_perfectImport_formatter_py
-    def test_unittest_perfectImport_formatter_py(self):
-        c = self.c
-        #@+<< define s >>
-        #@+node:ekr.20211114143332.1: *4* << define s >>
-        # Note: apparently there were strange characters in the original text that messed up textwrap.dedent.
-        s = textwrap.dedent('''\
-
-            """Generic output formatting.
-            """
-
-            import sys
-
-
-            AS_IS = None
-
-
-            class NullFormatter:
-                """A formatter which does nothing.
-
-                If the writer parameter is omitted, a NullWriter instance is created.
-                No methods of the writer are called by NullFormatter instances.
-
-                Implementations should inherit from this class if implementing a writer
-                interface but don't need to inherit any implementation.
-
-                """
-
-                def __init__(self, writer=None):
-                    if writer is None:
-                        writer = NullWriter()
-                    self.writer = writer
-                def end_paragraph(self, blankline): pass
-                def add_line_break(self): pass
-                def add_hor_rule(self, *args, **kw): pass
-                def add_label_data(self, format, counter, blankline=None): pass
-                def add_flowing_data(self, data): pass
-                def add_literal_data(self, data): pass
-                def flush_softspace(self): pass
-                def push_alignment(self, align): pass
-                def pop_alignment(self): pass
-                def push_font(self, x): pass
-                def pop_font(self): pass
-                def push_margin(self, margin): pass
-                def pop_margin(self): pass
-                def set_spacing(self, spacing): pass
-                def push_style(self, *styles): pass
-                def pop_style(self, n=1): pass
-                def assert_line_data(self, flag=1): pass
-
-            class AbstractWriter(NullWriter):
-                """A writer which can be used in debugging formatters, but not much else.
-
-                Each method simply announces itself by printing its name and
-                arguments on standard output.
-
-                """
-
-                def new_alignment(self, align):
-                    print "new_alignment(%s)" % `align`
-
-                def new_font(self, font):
-                    print "new_font(%s)" % `font`
-
-                def new_margin(self, margin, level):
-                    print "new_margin(%s, %d)" % (`margin`, level)
-
-                def new_spacing(self, spacing):
-                    print "new_spacing(%s)" % `spacing`
-
-                def new_styles(self, styles):
-                    print "new_styles(%s)" % `styles`
-
-                def send_paragraph(self, blankline):
-                    print "send_paragraph(%s)" % `blankline`
-
-                def send_line_break(self):
-                    print "send_line_break()"
-
-                def send_hor_rule(self, *args, **kw):
-                    print "send_hor_rule()"
-
-                def send_label_data(self, data):
-                    print "send_label_data(%s)" % `data`
-
-                def send_flowing_data(self, data):
-                    print "send_flowing_data(%s)" % `data`
-
-                def send_literal_data(self, data):
-                    print "send_literal_data(%s)" % `data`
-                    
-            class DumbWriter(NullWriter):
-                """Simple writer class which writes output on the file object passed in
-                as the file parameter or, if file is omitted, on standard output.  The
-                output is simply word-wrapped to the number of columns specified by
-                the maxcol parameter.  This class is suitable for reflowing a sequence
-                of paragraphs.
-
-                """
-
-                def __init__(self, file=None, maxcol=72):
-                    self.file = file or sys.stdout
-                    self.maxcol = maxcol
-                    NullWriter.__init__(self)
-                    self.reset()
-                    
-                def reset(self):
-                    self.col = 0
-                    self.atbreak = 0
-
-            def test(file = None):
-                w = DumbWriter()
-                f = AbstractFormatter(w)
-                if file is not None:
-                    fp = open(file)
-                elif sys.argv[1:]:
-                    fp = open(sys.argv[1])
-                else:
-                    fp = sys.stdin
-                while 1:
-                    line = fp.readline()
-                    if not line:
-                        break
-                f.end_paragraph(0)
-
-            if __name__ == '__main__':
-                test()
-
-        ''')
-        #@-<< define s >>
-        self.run_test(c.p, s=s)
-
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
