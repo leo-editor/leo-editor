@@ -663,7 +663,6 @@ class LeoImportCommands:
             s = s.replace('\r', '')
             # func is actually a factory: it instantiates the importer class.
             func(c=c, parent=p, s=s)
-                # force_at_others=force_at_others #tag:no-longer-used
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)

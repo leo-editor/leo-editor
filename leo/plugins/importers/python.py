@@ -51,6 +51,8 @@ class Py_Importer(Importer):
         ok = lines1 == lines2
         if not ok:
             self.show_failure(lines1, lines2, g.shortFileName(self.root.h))
+            if g.unitTesting:
+                assert False, 'Perfect import failed!'
         return ok
     #@+node:ekr.20211114083943.1: *4* pi_i.strip_blank_and_comment_lines
     def strip_blank_and_comment_lines(self, lines):

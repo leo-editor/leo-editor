@@ -1453,6 +1453,8 @@ class LeoApp:
                         scanner = aClass(importCommands=ic, **kwargs)
                         return scanner.run(s, parent)
                     except Exception:
+                        if g.unitTesting:  # #2327
+                            raise
                         g.es_print('Exception running', aClass.__name__)
                         g.es_exception()
                         return None
@@ -1473,6 +1475,8 @@ class LeoApp:
                     scanner = aClass(importCommands=ic, **kwargs)
                     return scanner.run(s, parent)
                 except Exception:
+                    if g.unitTesting:  # #2327
+                        raise
                     g.es_print('Exception running', aClass.__name__)
                     g.es_exception()
                     return None
