@@ -37,17 +37,14 @@ class Py_Importer(Importer):
             return True
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
+        # Regularize the lines first.
+        lines1 = g.splitLines(s1.rstrip() + '\n')
+        lines2 = g.splitLines(s2.rstrip() + '\n')
         # #2327: Ignore blank lines and lws in comment lines.
         test_lines1 = self.strip_blank_and_comment_lines(lines1)
         test_lines2 = self.strip_blank_and_comment_lines(lines2)
-        # Regularize the last line.
-        if test_lines1 and test_lines2 and test_lines1 != test_lines2:
-            test_lines1[-1] = test_lines1[-1].rstrip() + '\n'
-            test_lines2[-1] = test_lines2[-1].rstrip() + '\n'
         # #2327: Any remaining mismatches are serious.
-        ok = lines1 == lines2
+        ok = test_lines1 == test_lines2
         if not ok:
             self.show_failure(lines1, lines2, g.shortFileName(self.root.h))
             if g.unitTesting:
@@ -339,7 +336,7 @@ class Py_Importer(Importer):
         Puts the entire decorator into the self.decorator_lines list,
         and sets self.skip so that the next line to be handled is a class/def line.
         """
-        ### return False  ###
+        return False  ###
         assert self.skip == 0
         if prev_state.context:
             # Only test for docstrings, not [{(.
@@ -471,7 +468,7 @@ class Py_Importer(Importer):
         
         Promote the last lines of nodes if possible.
         """
-        ### return ###
+        return ###
         assert parent == self.root, (parent, self.root)
         #
         # Promote the entire last child if
