@@ -3414,9 +3414,10 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         # self.assertEqual(p.numberOfChildren(), 0)
         # root = p.lastChild()
-        for p2 in p.self_and_subtree():
-            g.printObj(p2.b, tag=p2.h)
-            print('')
+        if 0:  ###
+            for p2 in p.self_and_subtree():
+                g.printObj(p2.b, tag=p2.h)
+                print('')
 
         if 0: ###
             for child in p.children():

@@ -32,7 +32,6 @@ class Py_Importer(Importer):
         Return True if perfect import checks pass, making additional allowances
         for underindented comment lines.
         """
-        assert self.strict
         if g.app.suppressImportChecks:
             g.app.suppressImportChecks = False
             return True

@@ -957,6 +957,8 @@ class Importer:
                 print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
             self.show_failure(lines1, lines2, sfn)
+            if g.unitTesting:
+                assert False, 'Perfect import failed!'
         return ok
     #@+node:ekr.20161124030004.1: *5* i.clean_last_lines
     def clean_last_lines(self, lines):
