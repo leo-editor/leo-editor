@@ -4003,8 +4003,8 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210905064816.6: *4* TestEditCommands.test_extendHelper
     def test_extendHelper(self):
         c = self.c
-        ec = c.editCommands; w = c.frame.body.wrapper
-
+        ec = c.editCommands
+        w = c.frame.body.wrapper
         for i, j, python in (
             # ('1.0','4.5',False),
             (5, 50, True),
@@ -4104,7 +4104,8 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210905064816.10: *4* TestEditCommands.test_moveToHelper
     def test_moveToHelper(self):
         c = self.c
-        ec = c.editCommands; w = c.frame.body.wrapper
+        ec = c.editCommands
+        w = c.frame.body.wrapper
         for i, j, python in (
             #('1.0','4.5',False),
             (5, 50, True),
@@ -4158,7 +4159,8 @@ class TestEditCommands(LeoUnitTest):
     def test_paste_and_undo_in_headline__with_selection(self):
         c = self.c
         k = c.keyHandler
-        frame = c.frame; tree = frame.tree
+        frame = c.frame
+        tree = frame.tree
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h

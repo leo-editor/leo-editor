@@ -2582,6 +2582,48 @@ class LinterTable():
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
         return sorted([z for z in aList if z not in remove])
+    #@+node:ekr.20160520093506.1: *4* get_files (LinterTable)
+    def get_files(self, pattern):
+        """Return the list of absolute file names matching the pattern."""
+        aList = sorted([
+            fn for fn in g.glob_glob(pattern)
+                if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
+        return aList
+    #@+node:ekr.20160518074545.9: *4* get_files_for_scope
+    def get_files_for_scope(self, scope, fn):
+        """Return a list of absolute filenames for external linters."""
+        d = {
+            'all': [self.core, self.commands, self.external, self.plugins],
+            'commands': [self.commands],
+            'core': [self.core, self.commands, self.external, self.gui_plugins],
+            'external': [self.external],
+            'file': [fn],
+            'gui': [self.gui_plugins],
+            'modes': [self.modes],
+            'plugins': [self.plugins],
+            'tests': [self.tests],
+        }
+        suppress_list = ['freewin.py',]
+        functions = d.get(scope)
+        paths = []
+        if functions:
+            for func in functions:
+                files = [func] if isinstance(func, str) else func()
+                    # Bug fix: 2016/10/15
+                for fn in files:
+                    fn = g.os_path_abspath(fn)
+                    if g.shortFileName(fn) in suppress_list:
+                        print(f"\npylint-leo: skip {fn}")
+                        continue
+                    if g.os_path_exists(fn):
+                        if g.os_path_isfile(fn):
+                            paths.append(fn)
+                    else:
+                        print(f"does not exist: {fn}")
+            paths = sorted(set(paths))
+            return paths
+        print('LinterTable.get_table: bad scope', scope)
+        return []
     #@+node:ekr.20160518074545.5: *4* gui_plugins
     def gui_plugins(self):
         """Return list of all of Leo's gui-related files."""
@@ -2629,47 +2671,18 @@ class LinterTable():
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
         aList = sorted([z for z in aList if z not in remove])
         return sorted(set(aList))
-    #@+node:ekr.20160520093506.1: *4* get_files (LinterTable)
-    def get_files(self, pattern):
-        """Return the list of absolute file names matching the pattern."""
-        aList = sorted([
-            fn for fn in g.glob_glob(pattern)
-                if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
-        return aList
-    #@+node:ekr.20160518074545.9: *4* get_files_for_scope
-    def get_files_for_scope(self, scope, fn):
-        """Return a list of absolute filenames for external linters."""
-        d = {
-            'all': [self.core, self.commands, self.external, self.plugins],
-            'commands': [self.commands],
-            'core': [self.core, self.commands, self.external, self.gui_plugins],
-            'external': [self.external],
-            'file': [fn],
-            'gui': [self.gui_plugins],
-            'modes': [self.modes],
-            'plugins': [self.plugins],
-        }
-        suppress_list = ['freewin.py',]
-        functions = d.get(scope)
-        paths = []
-        if functions:
-            for func in functions:
-                files = [func] if isinstance(func, str) else func()
-                    # Bug fix: 2016/10/15
-                for fn in files:
-                    fn = g.os_path_abspath(fn)
-                    if g.shortFileName(fn) in suppress_list:
-                        print(f"\npylint-leo: skip {fn}")
-                        continue
-                    if g.os_path_exists(fn):
-                        if g.os_path_isfile(fn):
-                            paths.append(fn)
-                    else:
-                        print(f"does not exist: {fn}")
-            paths = sorted(set(paths))
-            return paths
-        print('LinterTable.get_table: bad scope', scope)
-        return []
+    #@+node:ekr.20211115103929.1: *4* tests (LinterTable)
+    def tests(self):
+        """Return list of files in leo/unittests"""
+        aList = []
+        for theDir in ('', 'commands', 'core', 'plugins'):
+            pattern = g.os_path_finalize_join(self.loadDir, 'unittests', theDir, '*.py')
+            aList.extend(self.get_files(pattern))
+        remove = [
+            'py3_test_grammar.py',
+        ]
+        remove = [g.os_path_finalize_join(self.loadDir, 'unittests', fn) for fn in remove]
+        return sorted([z for z in aList if z not in remove])
     #@-others
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
