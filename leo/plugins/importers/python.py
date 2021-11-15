@@ -259,7 +259,7 @@ class Py_Importer(Importer):
                 self.skip += 1  # Indicate that the line has been assigned to top.p.
             assert progress < i, repr(line)
         return top.p
-    #@+node:ekr.20161220073836.1: *4* py_i.ends_block
+    #@+node:ekr.20161220073836.1: *4* py_i.ends_block (*** change ???)
     def ends_block(self, line, new_state, prev_state, stack):
         """True if line ends the block."""
         # Comparing new_state against prev_state does not work for python.
