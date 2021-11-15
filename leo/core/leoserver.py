@@ -1236,6 +1236,9 @@ class LeoServer:
         )
         # Get the body wrap state
         wrap = g.scanAllAtWrapDirectives(c, p)
+        tabWidth = g.scanAllAtTabWidthDirectives(c, p)
+        if not type(tabWidth) == int:
+            tabWidth = False;
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
@@ -1244,6 +1247,7 @@ class LeoServer:
             states = {
                 'language': language.lower(),
                 'wrap': wrap,
+                'tabWidth': tabWidth,
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
@@ -1260,6 +1264,7 @@ class LeoServer:
             states = {
                 'language': language.lower(),
                 'wrap': wrap,
+                'tabWidth': tabWidth,
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
@@ -1639,6 +1644,30 @@ class LeoServer:
         v.insertSpot = insert
         v.selectionStart = startSel
         v.selectionLength = abs(startSel - endSel)
+        return self._make_response()
+    #@+node:felix.20211114202046.1: *5* server.set_ua_member
+    def set_ua_member(self, param):
+        """
+        Set a single member of a node's ua.
+        """
+        c = self._check_c()
+        p = self._get_p(param)
+        name = param.get('name')
+        value = param.get('value', '')
+        if not p.v.u:
+            p.v.u = {}  # assert at least an empty dict if null or non existent
+        if name and type(name) == str:
+            p.v.u[name] = value
+        return self._make_response()
+    #@+node:felix.20211114202058.1: *5* server.set_ua
+    def set_ua(self, param):
+        """
+        Replace / set the whole user attribute dict of a node.
+        """
+        c = self._check_c()
+        p = self._get_p(param)
+        ua = param.get('ua', {})
+        p.v.u = ua
         return self._make_response()
     #@+node:felix.20210621233316.64: *5* server.toggle_mark
     def toggle_mark(self, param):
@@ -3313,10 +3342,13 @@ class LeoServer:
         d = self._p_to_ap(p)
         d['headline'] = p.h
         d['level'] = p.level()
-        # TODO : Send p.v.u as simple boolean flag and let user inspect.
         if p.v.u:
-            d['u'] = p.v.u
-        # TODO : Maybe Send body length, icon#, non-optional names, and/or other...
+            if g.leoServer.leoServerConfig and g.leoServer.leoServerConfig.get("uAsBoolean", False):
+                # uAsBoolean is 'thruthy'
+                d['u'] = True
+            else:
+                # Normal output if no options set
+                d['u'] = p.v.u
         if bool(p.b):
             d['hasBody'] = True
         if p.hasChildren():
