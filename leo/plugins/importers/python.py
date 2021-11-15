@@ -13,8 +13,11 @@ Target = linescanner.Target
 class Py_Importer(Importer):
     """A class to store and update scanning state."""
     
+    # Temporary.
     promote_lines = False
-    scan_for_decorators = False
+    scan_for_decorators = True
+        ### Misplaced/missing decorators in:
+        ### backports.py, teststubgen.py, support.py. test_shutil.py.
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -27,7 +30,7 @@ class Py_Importer(Importer):
         self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
 
     #@+others
-    #@+node:ekr.20211114083503.1: *3* pi_i.check & helper (new)
+    #@+node:ekr.20211114083503.1: *3* pi_i.check & helper
     def check(self, unused_s, parent):
         """
         Py_Importer.check:  override Importer.check.
