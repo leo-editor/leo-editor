@@ -474,9 +474,9 @@ class PyflakesCommand:
 class PylintCommand:
     """A class to run pylint on all Python @<file> nodes in c.p's tree."""
 
+    # m.group(1) is the line number.
+    # m.group(2) is the (unused) test name.
     link_pattern = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
-        # m.group(1) is the line number.
-        # m.group(2) is the (unused) test name.
 
     # Example message: file-name:3966:12: R1705:xxxx (no-else-return)
 
