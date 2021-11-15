@@ -23,8 +23,8 @@ from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
 from leo.core.leoQt import Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
-from leo.core.leoQt import Shadow, Shape
-from leo.core.leoQt import TextInteractionFlag, ToolBarArea, Type, WindowState, WrapMode
+from leo.core.leoQt import Shadow, Shape, Style
+from leo.core.leoQt import TextInteractionFlag, ToolBarArea, Type, Weight, WindowState, WrapMode
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
@@ -3183,15 +3183,14 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18335: *4* LeoQtLog.createFontPicker
     def createFontPicker(self, tabName):
         # log = self
-        QFont = QtGui.QFont
         font, ok = QtWidgets.QFontDialog.getFont()
         if not (font and ok):
             return
         style = font.style()
         table1 = (
-            (QFont.StyleNormal, 'normal'),
-            (QFont.StyleItalic, 'italic'),
-            (QFont.StyleOblique, 'oblique'))
+            (Style.StyleNormal, 'normal'),  # #2330.
+            (Style.StyleItalic, 'italic'),
+            (Style.StyleOblique, 'oblique'))
         for val, name in table1:
             if style == val:
                 style = name
@@ -3200,11 +3199,11 @@ class LeoQtLog(leoFrame.LeoLog):
             style = ''
         weight = font.weight()
         table2 = (
-            (QFont.Light, 'light'),
-            (QFont.Normal, 'normal'),
-            (QFont.DemiBold, 'demibold'),
-            (QFont.Bold, 'bold'),
-            (QFont.Black, 'black'))
+            (Weight.Light, 'light'),  # #2330.
+            (Weight.Normal, 'normal'),
+            (Weight.DemiBold, 'demibold'),
+            (Weight.Bold, 'bold'),
+            (Weight.Black, 'black'))
         for val, name in table2:
             if weight == val:
                 weight = name
