@@ -801,6 +801,7 @@ class Importer:
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         """
+        # pylint: disable=unreachable.
         return ###
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
@@ -1147,8 +1148,10 @@ class Importer:
     def undent(self, p):
         """Remove maximal leading whitespace from the start of all lines."""
         # Called from i.post_pass, i.unindent_all_nodes.
+        c = self.c
         if self.is_rst:
             return p.b  # Never unindent rst code.
+        escape = c.atFileCommands.underindentEscapeString
         lines = self.get_lines(p)
         ws = self.common_lws(lines)
         result = []
@@ -1160,12 +1163,12 @@ class Importer:
                 result.append(s)
             else:
                 # Indicate that the line is underindented.
-                g.trace('UNDERINDENT', repr(s))
-                result.append("%s%s.%s" % (
-                    self.c.atFileCommands.underindentEscapeString,
-                    ### This is wrong.
-                    g.computeWidth(ws, self.tab_width),
-                    s.lstrip()))
+                lws = g.get_leading_ws(s)
+                # Bug fix 2021/11/15: Use n1 - n2, not n1!
+                n1 = g.computeWidth(ws, self.tab_width)
+                n2 = g.computeWidth(lws, self.tab_width)
+                assert n1 > n2, (n1, n2)
+                result.append(f"{escape}{n1-n2}.{s.lstrip()}")
         return result
     #@+node:ekr.20161108131153.20: *5* i.common_lws
     def common_lws(self, lines):

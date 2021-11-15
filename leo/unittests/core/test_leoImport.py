@@ -3655,7 +3655,6 @@ class TestPython (BaseTestImporter):
          'write_io_runtime_us': 43690}"""
         ''')
         #@-<< define s >>
-        g.printObj(s)
         p = c.p
         self.run_test(p, s=s)
     #@+node:ekr.20211114185222.1: *3* TestPython.test_data_docstring_2
@@ -3663,6 +3662,8 @@ class TestPython (BaseTestImporter):
         # From mypy\test-data\stdlib-samples\3.2\test\test_textwrap.py
         c = self.c
         s = textwrap.dedent("""\
+        
+    class IndentTestCases(BaseTestCase):  # Line 443
 
         def test_subsequent_indent(self) -> None:
             # Test subsequent_indent parameter
@@ -3679,10 +3680,9 @@ class TestPython (BaseTestImporter):
             
     # Despite the similar names, DedentTestCase is *not* the inverse
     # of IndentTestCase!
-    class DedentTestCase(unittest.TestCase):
+    class DedentTestCase(unittest.TestCase):  # Line 494.
         pass
         """)
-        g.printObj(s)
         p = c.p
         try:
             self.run_test(p, s=s)
