@@ -2619,7 +2619,7 @@ class KeyHandlerClass:
         k = self
         # #2286: Always call k.fullCommand.
         k.setState('getArg', 0, handler=k.fullCommand)
-        k.fullCommand(event=None)
+        k.fullCommand(event)  # #2334
         if not k.mb_history:
             k.mb_history = list(reversed(k.commandHistory))
         command = k.mb_history[0] if k.mb_history else ''

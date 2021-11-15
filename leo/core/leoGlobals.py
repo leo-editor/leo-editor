@@ -46,6 +46,7 @@ import webbrowser
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
+    from leo.core.leoNodes import VNode
 else:
     Cmdr = Pos = Any
 #
@@ -5406,8 +5407,8 @@ def dummy_act_on_node(c: Cmdr, p: Pos, event):
 
 act_on_node = dummy_act_on_node
 #@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
-childrenModifiedSet: Set[bool] = set()
-contentModifiedSet: Set[bool] = set()
+childrenModifiedSet: Set["VNode"] = set()
+contentModifiedSet: Set["VNode"] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
 def doHook(tag, *args, **keywords):
     """
