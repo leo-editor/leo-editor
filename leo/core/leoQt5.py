@@ -99,6 +99,7 @@ SizeAdjustPolicy = QtWidgets.QComboBox
 SliderAction = QtWidgets.QAbstractSlider
 StandardButton = QtWidgets.QDialogButtonBox
 StandardPixmap = QtWidgets.QStyle
+Style = QtGui.QFont
 TextInteractionFlag = QtCore.Qt
 TextOption = QtGui.QTextOption
 ToolBarArea = QtCore.Qt
