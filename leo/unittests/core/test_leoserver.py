@@ -176,22 +176,26 @@ class TestLeoServer(LeoUnitTest):
         # Batch find commands: The answer is a count of found nodes.
         for method in ('!find_all', '!clone_find_all', '!clone_find_all_flattened'):
             answer = self._request(method, {"log": log, "find_text": "def"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+            if log:
+                g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Find commands that may select text: The answer is (p, pos, newpos).
         for method in ('!find_next', '!find_previous', '!find_def', '!find_var'):
             answer = self._request(method, {"log": log, "find_text": "def"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+            if log:
+                g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Change commands: The answer is a count of changed nodes.
         for method in ('!replace_all', '!replace_then_find'):
             answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+            if log:
+                g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Tag commands. Why they are in leoFind.py??
         for method in ('!clone_find_tag', '!tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})
-            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+            if log:
+                g.printObj(answer, tag=f"{tag}:{method}: answer")
 
     #@-others
 #@-others

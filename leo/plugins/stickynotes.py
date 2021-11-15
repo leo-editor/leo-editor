@@ -71,7 +71,7 @@ except ImportError:
 # Leo imports.
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import QAction
+from leo.core.leoQt import QAction, Weight
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -398,9 +398,9 @@ class SimpleRichText(QTextEdit):
     def setBold(self):
         format = QTextCharFormat()
         if self.boldAct.isChecked():
-            weight = QFont.Bold
+            weight = Weight.Bold
         else:
-            weight = QFont.Normal
+            weight = Weight.Normal
         format.setFontWeight(weight)
         self.setFormat(format)
 
