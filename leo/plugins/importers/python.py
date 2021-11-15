@@ -12,6 +12,9 @@ Target = linescanner.Target
 #@+node:ekr.20161029103615.1: ** class Py_Importer(Importer)
 class Py_Importer(Importer):
     """A class to store and update scanning state."""
+    
+    promote_lines = False
+    scan_for_decorators = False
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -250,7 +253,7 @@ class Py_Importer(Importer):
             elif not self.is_ws_line(line) and new_state.indent <= end_indent:
                 break
             else:
-                self.skip += 1
+                self.skip += 1  # Indicate that the line has been assigned to top.p.
             assert progress < i, repr(line)
         return top.p
     #@+node:ekr.20161220073836.1: *4* py_i.ends_block
@@ -338,7 +341,8 @@ class Py_Importer(Importer):
         Puts the entire decorator into the self.decorator_lines list,
         and sets self.skip so that the next line to be handled is a class/def line.
         """
-        return False  ###
+        if not self.scan_for_decorators:
+            return False
         assert self.skip == 0
         if prev_state.context:
             # Only test for docstrings, not [{(.
@@ -436,7 +440,7 @@ class Py_Importer(Importer):
             h = self.clean_headline(p.h, p=p)
             if h and h != p.h:
                 p.h = h
-    #@+node:ekr.20211112002911.1: *4* py_i.find_tail
+    #@+node:ekr.20211112002911.1: *4* py_i.find_tail (not used yet)
     def find_tail(self, p):
         """
         Find the tail (trailing unindented) lines.
@@ -470,7 +474,8 @@ class Py_Importer(Importer):
         
         Promote the last lines of nodes if possible.
         """
-        return ###
+        if not self.promote_lines:
+            return
         assert parent == self.root, (parent, self.root)
         #
         # Promote the entire last child if

@@ -165,9 +165,17 @@ class LeoUnitTest(unittest.TestCase):
     def dump_tree(self, tag=''):
         c = self.c
         print('')
-        g.trace(tag)
-        for p in c.all_positions():
-            print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
+        if tag:
+            g.trace(tag)
+        if 1:  # verbose
+            for p in c.all_positions():
+                print('')
+                print(p.level(), p.h)
+                print('-----')
+                g.printObj(p.b)
+        else:
+            for p in c.all_positions():
+                print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
     #@-others
 #@-others
 #@-leo

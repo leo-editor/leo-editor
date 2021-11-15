@@ -1146,6 +1146,7 @@ class Importer:
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):
         """Remove maximal leading whitespace from the start of all lines."""
+        # Called from i.post_pass, i.unindent_all_nodes.
         if self.is_rst:
             return p.b  # Never unindent rst code.
         lines = self.get_lines(p)
@@ -1159,8 +1160,10 @@ class Importer:
                 result.append(s)
             else:
                 # Indicate that the line is underindented.
+                g.trace('UNDERINDENT', repr(s))
                 result.append("%s%s.%s" % (
                     self.c.atFileCommands.underindentEscapeString,
+                    ### This is wrong.
                     g.computeWidth(ws, self.tab_width),
                     s.lstrip()))
         return result

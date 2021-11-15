@@ -2110,6 +2110,7 @@ class TestPhp (BaseTestImporter):
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython (BaseTestImporter):
     
+    check_tree = False
     ext = '.py'
 
     #@+others
@@ -2154,7 +2155,6 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        ### self.assertEqual(root.h, f"@file {self.id()}")
         self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
@@ -2237,7 +2237,7 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        if 0:  ### Not ready yet.
+        if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
             self.assertEqual(root.h, f"@file {self.id()}")
@@ -2554,7 +2554,7 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        if 0:  ### Not ready yet.
+        if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
             self.assertEqual(root.h, f"@file {self.id()}")
@@ -2652,7 +2652,7 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        if 0:  ### Not ready yet
+        if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
             self.assertEqual(root.h, f"@file {self.id()}")
@@ -2676,7 +2676,7 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        if 0: ### Not ready yet.
+        if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
             self.assertEqual(root.h, f"@file {self.id()}")
@@ -2703,7 +2703,7 @@ class TestPython (BaseTestImporter):
                     return "abc"
         ''')
         self.run_test(c.p, s=s)
-        if 0:  ### Not ready yet.
+        if self.check_tree:
             index = g.findNodeInTree(c, c.p, '@cherrypy.nocolor index')
             assert index
             lines = g.splitLines(index.b)
@@ -2807,7 +2807,7 @@ class TestPython (BaseTestImporter):
             (1, "main"),
         )
         self.run_test(c.p, s=s)
-        if 0:  ### Not ready yet.
+        if self.check_tree:
             after = c.p.nodeAfterTree()
             root = c.p.lastChild()
             self.assertEqual(root.h, f"@file {self.id()}")
@@ -2956,7 +2956,7 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        if 0: ### Not ready yet.
+        if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
             self.assertEqual(root.h, f"@file {self.id()}")
@@ -3389,7 +3389,7 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        if 0:  ### Not ready yet
+        if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
             self.assertEqual(root.h, f"@file {self.id()}")
@@ -3401,11 +3401,7 @@ class TestPython (BaseTestImporter):
                 p.moveToThreadNext()
             self.assertEqual(p, after)
             assert "if __name__ == '__main__':" in root.b
-            if 1: ###
-                for p in c.all_positions():
-                    # print(f"{' '*p.level()} {p.h}")
-                    g.printObj(p.b, tag=p.h)
-                    print('')
+            # self.dump_tree()
     #@+node:ekr.20211112135034.1: *3* TestPython.test_promote_only_decls
     def test_promote_only_decls(self):
         # Test #390: was test_bug_390.
@@ -3418,16 +3414,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         # self.assertEqual(p.numberOfChildren(), 0)
         # root = p.lastChild()
-        if 0:  ###
-            for p2 in p.self_and_subtree():
-                g.printObj(p2.b, tag=p2.h)
-                print('')
-
-        if 0: ###
-            for child in p.children():
-                # print(f"{' '*p.level()} {p.h}")
-                g.printObj(child.b, tag=child.h)
-                print('')
+        # self.dump_tree()
     #@+node:ekr.20210904065459.131: *3* TestPython.test_scan_state
     def test_scan_state(self):
         c = self.c
@@ -3697,7 +3684,11 @@ class TestPython (BaseTestImporter):
         """)
         g.printObj(s)
         p = c.p
-        self.run_test(p, s=s)
+        try:
+            self.run_test(p, s=s)
+        except AssertionError:
+            self.dump_tree()
+            raise
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
