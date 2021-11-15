@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TL.20090225102340.32: * @file ../plugins/nodeActions.py
+#@+node:TL.20090225102340.32: * @file nodeActions.py
 #@+<< docstring >>
 #@+node:TL.20080507213950.3: ** << docstring >> (nodeActions.py)
 r""" Allows the definition of double-click actions.
@@ -311,7 +311,7 @@ def doNodeAction(pClicked, c):
                 if pClicked.isAnyAtFileNode():
                     clickedAtFileTypeNode = True  #Tell "write @file type nodes" code
                     #Replace "@files" in pattern with clicked node's @file type
-                    pattern = re.sub("^@files", pNA.h.split(' ')[0], pattern)
+                    pattern = re.sub("^@files", hClicked.split(' ')[0], pattern)
                     if messageLevel >= 4:
                         g.blue("nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
 
