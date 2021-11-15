@@ -3641,6 +3641,63 @@ class TestPython (BaseTestImporter):
         child = p.firstChild()
         n = child.numberOfChildren()
         self.assertEqual(n, 2)
+    #@+node:ekr.20211114184047.1: *3* TestPython.test_data_docstring
+    def test_data_docstring(self):
+        # From mypy\test-data\stdlib-samples\3.2\test\test_pprint.py
+        c = self.c
+        #@+<< define s >>
+        #@+node:ekr.20211114184337.1: *4* << define s >>
+        s = textwrap.dedent('''\
+
+            def test_basic_line_wrap(self) -> None:
+                # verify basic line-wrapping operation
+                o = {'RPM_cal': 0,
+                     'RPM_cal2': 48059,
+                     'Speed_cal': 0,
+                     'controldesk_runtime_us': 0,
+                     'main_code_runtime_us': 0,
+                     'read_io_runtime_us': 0,
+                     'write_io_runtime_us': 43690}
+                exp = """\\
+        {'RPM_cal': 0,
+         'RPM_cal2': 48059,
+         'Speed_cal': 0,
+         'controldesk_runtime_us': 0,
+         'main_code_runtime_us': 0,
+         'read_io_runtime_us': 0,
+         'write_io_runtime_us': 43690}"""
+        ''')
+        #@-<< define s >>
+        g.printObj(s)
+        p = c.p
+        self.run_test(p, s=s)
+    #@+node:ekr.20211114185222.1: *3* TestPython.test_data_docstring_2
+    def test_data_docstring_2(self):
+        # From mypy\test-data\stdlib-samples\3.2\test\test_textwrap.py
+        c = self.c
+        s = textwrap.dedent("""\
+
+        def test_subsequent_indent(self) -> None:
+            # Test subsequent_indent parameter
+
+            expect = '''\\
+      * This paragraph will be filled, first
+        without any indentation, and then
+        with some (including a hanging
+        indent).'''
+
+            result = fill(self.text, 40,
+                          initial_indent="  * ", subsequent_indent="    ")
+            self.check(result, expect)
+            
+    # Despite the similar names, DedentTestCase is *not* the inverse
+    # of IndentTestCase!
+    class DedentTestCase(unittest.TestCase):
+        pass
+        """)
+        g.printObj(s)
+        p = c.p
+        self.run_test(p, s=s)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
