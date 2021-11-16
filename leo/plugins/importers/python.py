@@ -233,11 +233,11 @@ class Py_Importer(Importer):
             g.trace('==========')
             print('NEW', new_indent, "TOP", top_indent, repr(line))
             g.printObj(stack, tag='stack')
-        assert new_indent <= top_indent, (new_indent, top_indent)
-        while new_indent <= top_indent and len(stack) > 1:
+        assert new_indent <= self.top.state.indent, (new_indent, top_indent)
+        # Don't pop the parent if the indents are the same.
+        while new_indent < top_indent and len(stack) > 1:
             stack.pop()
             self.top = stack[-1]
-            top_indent = self.top.state.indent
     #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
     def gen_ref(self, line, parent, target):
         """
