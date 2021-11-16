@@ -145,55 +145,46 @@ class Py_Importer(Importer):
             assert progress < i
         return None, -1, -1
     #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & overrides
+    class_or_def_pattern = re.compile(r'\s*(class|def)\s+')
+
     def gen_lines(self, s, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         """
         self.tail_p = None
-        prev_state = self.state_class()
+        prev_state = self.state_class()  ### was var
         target = PythonTarget(parent, prev_state)
-        stack = [target, target]
+        self.top = None  ### was var
+        self.stack = [target, target]
         self.decorator_lines = []
         self.inject_lines_ivar(parent)
-        lines = g.splitLines(s)
-        self.skip = 0
-        first = True
-        for i, line in enumerate(lines):
-            new_state = self.scan_line(line, prev_state)
-            top = stack[-1]
-            if self.skip > 0:
-                self.skip -= 1
-            elif self.starts_decorator(i, lines, new_state):
-                pass  # Sets self.skip and self.decorator_lines.
-            elif self.starts_block(i, lines, new_state, prev_state, stack):
-                first = False
-                self.tail_p = None
-                self.start_new_block(i, lines, new_state, prev_state, stack)
-            elif first:
-                if self.is_ws_line(line):
-                    p = self.tail_p or top.p
-                    self.add_line(p, line)
-                else:
-                    first = False
-                    h = 'Declarations'
-                    self.gen_ref(line, parent, target)
-                    p = self.create_child_node(parent, body=line, headline=h)
-                    stack.append(PythonTarget(p, new_state))
-            elif self.ends_block(line, new_state, prev_state, stack):
-                first = False
-                self.tail_p = self.end_block(i, lines, new_state, prev_state, stack)
-            else:
-                p = self.tail_p or top.p
+        self.lines = g.splitLines(s)  ### was var.
+        for i, line in enumerate(self.lines):
+            self.line = line
+            self.prev_state = prev_state
+            self.new_state = new_state = self.scan_line(line, self.prev_state)
+            self.top = top = self.stack[-1]
+            p = top.p  ### self.tail_p or top.p  ### new
+            #
+            # Add blank lines, comment lines or lines within strings to p.
+            # Note: ws_pattern also matches comment lines.
+            if self.prev_state.context or self.ws_pattern.match(line): 
                 self.add_line(p, line)
-            prev_state = new_state
-        if self.skip:
-            g.trace('can not happen: self.skip > 0', color='red')
-        if self.decorator_lines:
-            msg = f"unused decorator lines! {self.root.h}"
-            g.trace(msg, color='red')
-            g.printObj(self.decorator_lines)
-
+            elif self.class_or_def_pattern.match(line):
+                self.end_previous_blocks()
+                self.start_new_block()
+            elif new_state.level() < top.state.level():  # ends_block
+                # Any non-blank, non-comment line ends the present block.
+                self.end_previous_blocks()
+            else:
+                self.add_line(p, line)
+            prev_state = self.new_state
+        # Handle decorators, adjust tails.
+        self.adjust_lines()
+    #@+node:ekr.20211116061415.1: *4* py_i.adjust_lines (*** to do)
+    def adjust_lines(self):
+        """Adjust decorator and tail lines."""
     #@+node:ekr.20161220171728.1: *4* py_i.common_lws
     def common_lws(self, lines):
         """Return the lws (a string) common to all lines."""
@@ -224,50 +215,39 @@ class Py_Importer(Importer):
         if len(stack) == 1:
             stack.append(stack[-1])
         assert len(stack) > 1  # Fail on exit.
-    #@+node:ekr.20161116173901.1: *4* py_i.end_block
-    def end_block(self, i, lines, new_state, prev_state, stack):
+    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks (*** new ***)
+    def end_previous_blocks(self):
         """
-        Handle a line that terminates the previous class/def. The line is
-        neither a class/def line, and we are not in a multi-line token.
-
-        Skip all lines that are at the same level as the class/def.
+        End all blocks terminated by self.line, adjusting the stack as necessary.
         """
-        # pylint: disable=arguments-differ
-        top = stack[-1]
-        assert new_state.indent < top.state.indent, (
-            '\nnew: %s\ntop: %s' % (new_state, top.state))
-        assert self.skip == 0, self.skip
-        end_indent = new_state.indent
-        while i < len(lines):
-            progress = i
-            self.cut_stack(new_state, stack, append=True)
-            top = stack[-1]
-            # Add the line.
-            line = lines[i]
-            self.add_line(top.p, line)
-            # Move to the next line.
-            i += 1
-            if i >= len(lines):
-                break
-            prev_state = new_state
-            new_state = self.scan_line(line, prev_state)
-            if self.starts_block(i, lines, new_state, prev_state, stack):
-                break
-            elif not self.is_ws_line(line) and new_state.indent <= end_indent:
-                break
-            else:
-                self.skip += 1  # Indicate that the line has been assigned to top.p.
-            assert progress < i, repr(line)
-        return top.p
-    #@+node:ekr.20161220073836.1: *4* py_i.ends_block (*** change ???)
-    def ends_block(self, line, new_state, prev_state, stack):
-        """True if line ends the block."""
-        # Comparing new_state against prev_state does not work for python.
-        if self.is_ws_line(line) or prev_state.in_context():
-            return False
-        # *Any* underindented non-blank line ends the class/def.
-        top = stack[-1]
-        return new_state.level() < top.state.level()
+        ### line, new_state, top = self.line, self.new_state, self.top
+        
+        ###
+            # assert new_state.indent < top.state.indent, (
+                # '\nnew: %s\ntop: %s' % (new_state, top.state))
+            # assert self.skip == 0, self.skip
+            # end_indent = new_state.indent
+            # while i < len(lines):
+                # progress = i
+                # self.cut_stack(new_state, stack, append=True)
+                # top = stack[-1]
+                # # Add the line.
+                # line = lines[i]
+                # self.add_line(top.p, line)
+                # # Move to the next line.
+                # i += 1
+                # if i >= len(lines):
+                    # break
+                # prev_state = new_state
+                # new_state = self.scan_line(line, prev_state)
+                # if self.starts_block(i, lines, new_state, prev_state, stack):
+                    # break
+                # elif not self.is_ws_line(line) and new_state.indent <= end_indent:
+                    # break
+                # else:
+                    # self.skip += 1  # Indicate that the line has been assigned to top.p.
+                # assert progress < i, repr(line)
+            # return top.p
     #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
     def gen_ref(self, line, parent, target):
         """
@@ -282,27 +262,17 @@ class Py_Importer(Importer):
             ref = '%s@others\n' % indent_ws
             self.add_line(parent, ref)
         return h
-    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block
-    def start_new_block(self, i, lines, new_state, prev_state, stack):
-        """Create a child node and update the stack."""
-        assert not prev_state.in_context(), prev_state
-        line = lines[i]
-        top = stack[-1]
-        # Adjust the stack.
-        if new_state.indent > top.state.indent:
-            pass
-        elif new_state.indent == top.state.indent:
-            stack.pop()
-        else:
-            self.cut_stack(new_state, stack)
-        # Create the child.
+    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block (changed)
+    def start_new_block(self):  # pylint: disable=arguments-differ
+        """Create a child node and push a new target on the stack."""
+        line, new_state, stack = self.line, self.new_state, self.stack
         top = stack[-1]
         parent = top.p
+        # Create the child.
         self.gen_ref(line, parent, top)
         h = self.clean_headline(line, p=None)
         child = self.create_child_node(parent, line, h)
-        self.prepend_lines(child, self.decorator_lines)
-        self.decorator_lines = []
+        # Push a new target on the stack.
         target = PythonTarget(child, new_state)
         target.kind = 'class' if h.startswith('class') else 'def'
         stack.append(target)

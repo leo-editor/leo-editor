@@ -32,7 +32,7 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:ekr.20211111174517.1: *3* BaseTestImporter.run_test & helper
-    def run_test(self, p, s):  # #2316: was ic.scannerUnitTest.
+    def run_test(self, p, s, verbose=False):  # #2316: was ic.scannerUnitTest.
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -44,7 +44,13 @@ class BaseTestImporter(LeoUnitTest):
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {self.id()}"
-        c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
+        try:
+            c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
+        except AssertionError:
+            if verbose:
+                self.dump_tree()
+            raise
+
     #@+node:ekr.20211108044605.1: *4* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
@@ -2125,8 +2131,8 @@ class TestPython (BaseTestImporter):
                 pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.63: *3* TestPython.test_basic_nesting_test
-    def test_basic_nesting_test(self):
+    #@+node:ekr.20210904065459.63: *3* TestPython.test_basic_nesting
+    def test_basic_nesting(self):
         c = self.c
         # Was unittest/at_auto-unit-test.py
         s = textwrap.dedent("""\
@@ -2152,17 +2158,18 @@ class TestPython (BaseTestImporter):
             (2, 'class2_method2'),
         )
         p = c.p
-        self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        self.run_test(p, s=s, verbose=True)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
 
     #@+node:ekr.20210904065459.64: *3* TestPython.test_bug_346
     def test_bug_346(self):
