@@ -2870,9 +2870,9 @@ class Commands:
     warnings_dict = {}
 
     def raise_error_dialogs(self, kind='read'):
-        """Warn abouit read/write failures."""
+        """Warn about read/write failures."""
         c = self
-        use_dialogs = True
+        use_dialogs = False
         if g.unitTesting:
             c.init_error_dialogs()
             return
@@ -2888,27 +2888,29 @@ class Commands:
             return
         if c.import_error_nodes:
             files = '\n'.join(sorted(set(c.import_error_nodes)))  # type:ignore
-            import_message1 = 'The following were not imported properly.'
-            import_message2 = f"Inserted @ignore in...\n{files}"
-            g.es_print(import_message1, color='red')
-            g.es_print(import_message2)
-            if use_dialogs and files not in self.warnings_dict:
+            if files not in self.warnings_dict:
                 self.warnings_dict[files] = True
-                import_dialog_message = f"{import_message1}\n{import_message2}"
-                g.app.gui.runAskOkDialog(c,
-                    message=import_dialog_message, title='Import errors')
+                import_message1 = 'The following were not imported properly.'
+                import_message2 = f"Inserted @ignore in...\n{files}"
+                g.es_print(import_message1, color='red')
+                g.es_print(import_message2)
+                if use_dialogs:
+                    import_dialog_message = f"{import_message1}\n{import_message2}"
+                    g.app.gui.runAskOkDialog(c,
+                        message=import_dialog_message, title='Import errors')
         if c.ignored_at_file_nodes:
             files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
-            ignored_message = f"The following were not {kind} because they contain @ignore:"
-            kind = 'read' if kind.startswith('read') else 'written'
-            g.es_print(ignored_message, color='red')
-            g.es_print(files)
-            if use_dialogs and files not in self.warnings_dict:
+            if files not in self.warnings_dict:
                 self.warnings_dict[files] = True
-                ignored_dialog_message = f"{ignored_message}\n{files}"
-                g.app.gui.runAskOkDialog(c,
-                    message=ignored_dialog_message, title=f"Not {kind.capitalize()}")
-            
+                kind_s = 'read' if kind == 'read' else 'written'
+                ignored_message = f"The following were not {kind_s} because they contain @ignore:"
+                kind = 'read' if kind.startswith('read') else 'written'
+                g.es_print(ignored_message, color='red')
+                g.es_print(files)
+                if use_dialogs:
+                    ignored_dialog_message = f"{ignored_message}\n{files}"
+                    g.app.gui.runAskOkDialog(c,
+                        message=ignored_dialog_message, title=f"Not {kind.capitalize()}")
         #
         # #1050: always raise a dialog for orphan @<file> nodes.
         if c.orphan_at_file_nodes:
