@@ -1237,7 +1237,7 @@ class LeoServer:
         # Get the body wrap state
         wrap = g.scanAllAtWrapDirectives(c, p)
         tabWidth = g.scanAllAtTabWidthDirectives(c, p)
-        if not type(tabWidth) == int:
+        if not isinstance(tabWidth, int):
             tabWidth = False;
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
