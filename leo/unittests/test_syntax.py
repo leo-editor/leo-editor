@@ -22,7 +22,7 @@ class TestSyntax(LeoUnitTest):
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
         except SyntaxError:
-            raise SyntaxError(fileName)
+            raise SyntaxError(fileName)  # pylint: disable=raise-missing-from
         except Exception:
             g.trace("unexpected error in:", fileName)
             raise

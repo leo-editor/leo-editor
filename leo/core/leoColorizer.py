@@ -28,10 +28,10 @@ from leo.core.leoColor import leo_color_database
 # Qt imports. May fail from the bridge.
 try:  # #1973
     from leo.core.leoQt import Qsci, QtGui, QtWidgets
-    from leo.core.leoQt import UnderlineStyle
+    from leo.core.leoQt import UnderlineStyle, Weight  # #2330
 except Exception:
     Qsci = QtGui = QtWidgets = None
-    UnderlineStyle = None
+    UnderlineStyle = Weight = None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
@@ -2523,17 +2523,17 @@ if QtGui:
                     elif key == 'bgcolor':
                         result.setBackground(self._get_brush(value))
                     elif key == 'bold':
-                        result.setFontWeight(QtGui.QFont.Bold)
+                        result.setFontWeight(Weight.Bold)
                     elif key == 'italic':
                         result.setFontItalic(True)
                     elif key == 'underline':
-                        result.setUnderlineStyle(QtGui.QTextCharFormat.SingleUnderline)
+                        result.setUnderlineStyle(UnderlineStyle.SingleUnderline)
                     elif key == 'sans':
-                        result.setFontStyleHint(QtGui.QFont.SansSerif)
+                        result.setFontStyleHint(Weight.SansSerif)
                     elif key == 'roman':
-                        result.setFontStyleHint(QtGui.QFont.Times)
+                        result.setFontStyleHint(Weight.Times)
                     elif key == 'mono':
-                        result.setFontStyleHint(QtGui.QFont.TypeWriter)
+                        result.setFontStyleHint(Weight.TypeWriter)
             return result
         #@+node:ekr.20190320153958.1: *4* leo_h.setStyle
         def setStyle(self, style):

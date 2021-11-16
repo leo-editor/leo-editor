@@ -117,6 +117,7 @@ Shape = QtWidgets.QFrame.Shape
 SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
 SliderAction = QtWidgets.QAbstractSlider.SliderAction
 StandardPixmap = QtWidgets.QStyle.StandardPixmap
+Style = QtGui.QFont.Style
 TextOption = QtGui.QTextOption
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
