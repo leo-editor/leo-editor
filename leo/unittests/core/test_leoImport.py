@@ -31,7 +31,7 @@ class BaseTestImporter(LeoUnitTest):
         g.app.loadManager.createAllImporterData()
 
     #@+others
-    #@+node:ekr.20211111174517.1: *3* BaseTestImporter.run_test & helper
+    #@+node:ekr.20211111174517.1: *3* BaseTestImporter.run_test
     def run_test(self, p, s, verbose=False):  # #2316: was ic.scannerUnitTest.
         """
         Run a unit test of an import scanner,
@@ -48,10 +48,11 @@ class BaseTestImporter(LeoUnitTest):
             c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
         except AssertionError:
             if verbose:
+                g.printObj(s, tag=self.id())
                 self.dump_tree()
             raise
 
-    #@+node:ekr.20211108044605.1: *4* BaseTestImporter.compute_unit_test_kind
+    #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
@@ -2134,13 +2135,13 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.63: *3* TestPython.test_basic_nesting
     def test_basic_nesting(self):
         c = self.c
-        # Was unittest/at_auto-unit-test.py
         s = textwrap.dedent("""\
             class class1:
                 def class1_method1():
                     pass
                 def class1_method2():
-                    pass
+                    def helper():
+                        pass
                 # After @others in child1.
             class class2:
                 def class2_method1():
@@ -2158,7 +2159,7 @@ class TestPython (BaseTestImporter):
             (2, 'class2_method2'),
         )
         p = c.p
-        self.run_test(p, s=s, verbose=True)
+        self.run_test(p, s=s, verbose=False)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()

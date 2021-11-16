@@ -164,18 +164,14 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20210831101111.1: *3* LeoUnitTest.dump_tree
     def dump_tree(self, tag=''):
         c = self.c
-        print('')
         if tag:
+            print('')
             g.trace(tag)
-        if 1:  # verbose
-            for p in c.all_positions():
-                print('')
-                print(p.level(), p.h)
-                print('-----')
-                g.printObj(p.b)
-        else:
-            for p in c.all_positions():
-                print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
+        for p in c.all_positions():
+            print('')
+            print('level:', p.level(), p.h)
+            print('-----')
+            g.printObj(p.b)
     #@-others
 #@-others
 #@-leo

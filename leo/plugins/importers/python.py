@@ -153,28 +153,31 @@ class Py_Importer(Importer):
         nodes as needed.
         """
         self.tail_p = None
-        prev_state = self.state_class()  ### was var
+        prev_state = self.state_class()
         target = PythonTarget(parent, prev_state)
-        self.top = None  ### was var
-        self.stack = [target, target]
-        self.decorator_lines = []
+        self.top = None
+        self.stack = [target] ### [target, target] ### Probably don't need the extra item.
         self.inject_lines_ivar(parent)
-        self.lines = g.splitLines(s)  ### was var.
+        self.lines = g.splitLines(s)
         for i, line in enumerate(self.lines):
             self.line = line
             self.prev_state = prev_state
-            self.new_state = new_state = self.scan_line(line, self.prev_state)
-            self.top = top = self.stack[-1]
-            p = top.p  ### self.tail_p or top.p  ### new
+            self.new_state = self.scan_line(line, self.prev_state)
+            self.top =self.stack[-1]
+            p = self.top.p
             #
             # Add blank lines, comment lines or lines within strings to p.
             # Note: ws_pattern also matches comment lines.
             if self.prev_state.context or self.ws_pattern.match(line): 
                 self.add_line(p, line)
-            elif self.class_or_def_pattern.match(line):
-                self.end_previous_blocks()
-                self.start_new_block()
-            elif new_state.level() < top.state.level():  # ends_block
+                continue
+            m = self.class_or_def_pattern.match(line)
+            if m:
+                if self.new_state.indent <= self.top.state.indent:
+                    self.end_previous_blocks()
+                self.start_new_block(kind=m.group(1))
+            ### elif self.new_state.level() < self.top.state.level():  # ends_block
+            elif self.new_state.indent < self.top.state.indent:  # ends_block
                 # Any non-blank, non-comment line ends the present block.
                 self.end_previous_blocks()
             else:
@@ -215,11 +218,27 @@ class Py_Importer(Importer):
         if len(stack) == 1:
             stack.append(stack[-1])
         assert len(stack) > 1  # Fail on exit.
-    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks (*** new ***)
+    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks (*** new)
     def end_previous_blocks(self):
         """
         End all blocks terminated by self.line, adjusting the stack as necessary.
+        
+        if new_indent == top_indent, self.line is a class or def.
         """
+        line, stack = self.line, self.stack
+        new_indent = self.new_state.indent
+        top_indent = self.top.state.indent
+        if 1: ###
+            g.trace('==========')
+            print('NEW', new_indent, "TOP", top_indent, repr(line))
+            g.printObj(stack, tag='stack')
+        assert new_indent <= top_indent, (new_indent, top_indent)
+        while new_indent <= top_indent and len(stack) > 1:
+            stack.pop()
+            self.top = stack[-1]
+            top_indent = self.top.state.indent
+        
+        ### assert self.new_state.indent < self.top.state.indent, (self.new_state.indent, self.top.state.indent)
         ### line, new_state, top = self.line, self.new_state, self.top
         
         ###
@@ -262,20 +281,6 @@ class Py_Importer(Importer):
             ref = '%s@others\n' % indent_ws
             self.add_line(parent, ref)
         return h
-    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block (changed)
-    def start_new_block(self):  # pylint: disable=arguments-differ
-        """Create a child node and push a new target on the stack."""
-        line, new_state, stack = self.line, self.new_state, self.stack
-        top = stack[-1]
-        parent = top.p
-        # Create the child.
-        self.gen_ref(line, parent, top)
-        h = self.clean_headline(line, p=None)
-        child = self.create_child_node(parent, line, h)
-        # Push a new target on the stack.
-        target = PythonTarget(child, new_state)
-        target.kind = 'class' if h.startswith('class') else 'def'
-        stack.append(target)
     #@+node:ekr.20161116040557.1: *4* py_i.starts_block
     # Matches lines that apparently start a class or def.
     starts_pattern = re.compile(r'\s*(class|def)\s+')
@@ -342,6 +347,29 @@ class Py_Importer(Importer):
         self.skip = old_skip
         self.decorator_lines = old_decorator_lines
         return False
+    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block (***changed)
+    def start_new_block(self, kind):  # pylint: disable=arguments-differ
+        """Create a child node and push a new target on the stack."""
+        line, new_state, stack = self.line, self.new_state, self.stack
+        top = stack[-1]
+        parent = top.p
+        # Don't create nested def nodes.
+        if kind == 'def' and top.kind == 'def' and new_state.indent > top.state.indent:
+            g.trace('===== NESTED DEF')
+            self.add_line(top.p, line)
+        else:
+            if kind == 'class':
+                self.gen_ref(line, parent, target=top)
+            # Create the child.
+            h = self.clean_headline(line, p=None)
+            child = self.create_child_node(parent, line, h)
+            # Push a new target on the stack.
+            target = PythonTarget(child, new_state)
+            target.kind = kind ### 'class' if h.startswith('class') else 'def'
+            stack.append(target)
+        if 1: ###
+            g.trace('line:', repr(line))
+            g.printObj(stack, tag='stack')
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -520,15 +548,21 @@ class Python_ScanState:
             self.indent = 0
 
     #@+others
-    #@+node:ekr.20161114152246.1: *3* py_state.__repr__
+    #@+node:ekr.20161114152246.1: *3* py_state.__repr__ & short_description
     def __repr__(self):
         """Py_State.__repr__"""
-        return 'PyState: %7r indent: %2s {%s} (%s) [%s] bs-nl: %s' % (
-            self.context, self.indent,
-            self.curlies, self.parens, self.squares,
-            int(self.bs_nl))
+        return self.short_description()
 
     __str__ = __repr__
+
+    def short_description(self):  # pylint: disable=no-else-return
+        bsnl = 'bs-nl' if self.bs_nl else ''
+        context = f"{self.context} " if self.context else ''
+        indent = self.indent
+        curlies = f"{{{self.curlies}}}" if self.curlies else ''
+        parens = f"({self.parens})" if self.parens else ''
+        squares = f"[{self.squares}]" if self.squares else ''
+        return f"{context}indent:{indent}{curlies}{parens}{squares}{bsnl}"
     #@+node:ekr.20161119115700.1: *3* py_state.level
     def level(self):
         """Python_ScanState.level."""
@@ -572,14 +606,20 @@ class PythonTarget:
         self.kind = 'None'  # in ('None', 'class', 'def')
         self.p = p
         self.state = state
-
+        
+    #@+others
+    #@+node:ekr.20211116102050.1: *3* PythonTarget.short_description
     def __repr__(self):
-        return 'PyTarget: %s kind: %s @others: %s p: %s' % (
-            self.state,
-            self.kind,
-            int(self.at_others_flag),
-            g.shortFileName(self.p.h),
-        )
+        return self.short_description()
+        
+    def short_description(self):
+        h = self.p.h
+        flag = int(self.at_others_flag)
+        h_s = h.split('.')[-1] if '.' in h else h
+        return f"kind: {(self.kind or 'None'):>5} @others: {flag} py_state:<{self.state}> {h_s}"
+    #@-others
+
+    
 #@-others
 importer_dict = {
     'class': Py_Importer,
