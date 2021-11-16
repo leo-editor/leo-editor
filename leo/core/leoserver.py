@@ -1238,7 +1238,7 @@ class LeoServer:
         wrap = g.scanAllAtWrapDirectives(c, p)
         tabWidth = g.scanAllAtTabWidthDirectives(c, p)
         if not isinstance(tabWidth, int):
-            tabWidth = False;
+            tabWidth = False
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
@@ -1650,13 +1650,13 @@ class LeoServer:
         """
         Set a single member of a node's ua.
         """
-        c = self._check_c()
+        self._check_c()
         p = self._get_p(param)
         name = param.get('name')
         value = param.get('value', '')
         if not p.v.u:
             p.v.u = {}  # assert at least an empty dict if null or non existent
-        if name and type(name) == str:
+        if name and isinstance(name, str):
             p.v.u[name] = value
         return self._make_response()
     #@+node:felix.20211114202058.1: *5* server.set_ua
@@ -1664,7 +1664,7 @@ class LeoServer:
         """
         Replace / set the whole user attribute dict of a node.
         """
-        c = self._check_c()
+        self._check_c()
         p = self._get_p(param)
         ua = param.get('ua', {})
         p.v.u = ua
