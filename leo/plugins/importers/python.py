@@ -225,10 +225,11 @@ class Py_Importer(Importer):
         
         if new_indent == top_indent, self.line is a class or def.
         """
+        trace = False ###
         line, stack = self.line, self.stack
         new_indent = self.new_state.indent
         top_indent = self.top.state.indent
-        if 1: ###
+        if trace:  ###
             g.trace('==========')
             print('NEW', new_indent, "TOP", top_indent, repr(line))
             g.printObj(stack, tag='stack')
@@ -237,36 +238,6 @@ class Py_Importer(Importer):
             stack.pop()
             self.top = stack[-1]
             top_indent = self.top.state.indent
-        
-        ### assert self.new_state.indent < self.top.state.indent, (self.new_state.indent, self.top.state.indent)
-        ### line, new_state, top = self.line, self.new_state, self.top
-        
-        ###
-            # assert new_state.indent < top.state.indent, (
-                # '\nnew: %s\ntop: %s' % (new_state, top.state))
-            # assert self.skip == 0, self.skip
-            # end_indent = new_state.indent
-            # while i < len(lines):
-                # progress = i
-                # self.cut_stack(new_state, stack, append=True)
-                # top = stack[-1]
-                # # Add the line.
-                # line = lines[i]
-                # self.add_line(top.p, line)
-                # # Move to the next line.
-                # i += 1
-                # if i >= len(lines):
-                    # break
-                # prev_state = new_state
-                # new_state = self.scan_line(line, prev_state)
-                # if self.starts_block(i, lines, new_state, prev_state, stack):
-                    # break
-                # elif not self.is_ws_line(line) and new_state.indent <= end_indent:
-                    # break
-                # else:
-                    # self.skip += 1  # Indicate that the line has been assigned to top.p.
-                # assert progress < i, repr(line)
-            # return top.p
     #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
     def gen_ref(self, line, parent, target):
         """
@@ -355,11 +326,11 @@ class Py_Importer(Importer):
         parent = top.p
         # Don't create nested def nodes.
         if kind == 'def' and top.kind == 'def' and new_state.indent > top.state.indent:
-            g.trace('===== NESTED DEF')
+            ### g.trace('===== NESTED DEF')
             self.add_line(top.p, line)
         else:
-            if kind == 'class':
-                self.gen_ref(line, parent, target=top)
+            # Generate the @others in the parent, if necessary.
+            self.gen_ref(line, parent, target=top)
             # Create the child.
             h = self.clean_headline(line, p=None)
             child = self.create_child_node(parent, line, h)
@@ -367,7 +338,7 @@ class Py_Importer(Importer):
             target = PythonTarget(child, new_state)
             target.kind = kind ### 'class' if h.startswith('class') else 'def'
             stack.append(target)
-        if 1: ###
+        if 0: ###
             g.trace('line:', repr(line))
             g.printObj(stack, tag='stack')
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
