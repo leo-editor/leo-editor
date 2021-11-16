@@ -2144,6 +2144,7 @@ class TestPython (BaseTestImporter):
                         pass
                 # After @others in child1.
             class class2:
+                @my_decorator
                 def class2_method1():
                     pass
                 def class2_method2():

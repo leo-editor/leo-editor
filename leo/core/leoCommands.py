@@ -2867,6 +2867,8 @@ class Commands:
         c = self
         g.app.gui.put_help(c, s, short_title)
     #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
+    warnings_dict = {}
+
     def raise_error_dialogs(self, kind='read'):
         """Warn abouit read/write failures."""
         c = self
@@ -2890,7 +2892,8 @@ class Commands:
             import_message2 = f"Inserted @ignore in...\n{files}"
             g.es_print(import_message1, color='red')
             g.es_print(import_message2)
-            if use_dialogs:
+            if use_dialogs and files not in self.warnings_dict:
+                self.warnings_dict[files] = True
                 import_dialog_message = f"{import_message1}\n{import_message2}"
                 g.app.gui.runAskOkDialog(c,
                     message=import_dialog_message, title='Import errors')
@@ -2900,7 +2903,8 @@ class Commands:
             kind = 'read' if kind.startswith('read') else 'written'
             g.es_print(ignored_message, color='red')
             g.es_print(files)
-            if use_dialogs:
+            if use_dialogs and files not in self.warnings_dict:
+                self.warnings_dict[files] = True
                 ignored_dialog_message = f"{ignored_message}\n{files}"
                 g.app.gui.runAskOkDialog(c,
                     message=ignored_dialog_message, title=f"Not {kind.capitalize()}")
