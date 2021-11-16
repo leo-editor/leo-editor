@@ -2886,27 +2886,25 @@ class Commands:
             return
         if c.import_error_nodes:
             files = '\n'.join(sorted(set(c.import_error_nodes)))  # type:ignore
+            import_message1 = 'The following were not imported properly.'
+            import_message2 = f"Inserted @ignore in...\n{files}"
+            g.es_print(import_message1, color='red')
+            g.es_print(import_message2)
             if use_dialogs:
-                message = (
-                    'The following were not imported properly. '
-                    f"Inserted @ignore in...\n{files}")
-                g.app.gui.runAskOkDialog(c, message=message, title='Import errors')
-            else:
-                g.es('import errors...', color='red')
-                g.es('\n'.join(sorted(files)), color='blue')
+                import_dialog_message = f"{import_message1}\n{import_message2}"
+                g.app.gui.runAskOkDialog(c,
+                    message=import_dialog_message, title='Import errors')
         if c.ignored_at_file_nodes:
             files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
+            ignored_message = f"The following were not {kind} because they contain @ignore:"
             kind = 'read' if kind.startswith('read') else 'written'
+            g.es_print(ignored_message, color='red')
+            g.es_print(files)
             if use_dialogs:
-                message = (
-                    f"The following were not {kind} "
-                    f"because they contain @ignore:\n{files}")
+                ignored_dialog_message = f"{ignored_message}\n{files}"
                 g.app.gui.runAskOkDialog(c,
-                    message=message,
-                    title=f"Not {kind.capitalize()}")
-            else:
-                g.es(f"not {kind} (@ignore)...", color='red')
-                g.es(files, color='blue')
+                    message=ignored_dialog_message, title=f"Not {kind.capitalize()}")
+            
         #
         # #1050: always raise a dialog for orphan @<file> nodes.
         if c.orphan_at_file_nodes:

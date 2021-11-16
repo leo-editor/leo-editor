@@ -234,7 +234,7 @@ class Py_Importer(Importer):
             print('NEW', new_indent, "TOP", top_indent, repr(line))
             g.printObj(stack, tag='stack')
         assert new_indent <= self.top.state.indent, (new_indent, top_indent)
-        # Don't pop the parent if the indents are the same.
+        # Pop the parent until the indents are the same.
         while new_indent < top_indent and len(stack) > 1:
             stack.pop()
             self.top = stack[-1]
