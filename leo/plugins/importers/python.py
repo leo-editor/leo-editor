@@ -15,9 +15,9 @@ class Py_Importer(Importer):
     
     # Temporary.
     promote_lines = False
+    
+
     scan_for_decorators = True
-        ### Misplaced/missing decorators in:
-        ### backports.py, teststubgen.py, support.py. test_shutil.py.
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -156,7 +156,7 @@ class Py_Importer(Importer):
         prev_state = self.state_class()
         target = PythonTarget(parent, prev_state)
         self.top = None
-        self.stack = [target] ### [target, target] ### Probably don't need the extra item.
+        self.stack = [target]
         self.inject_lines_ivar(parent)
         self.lines = g.splitLines(s)
         for i, line in enumerate(self.lines):
@@ -176,10 +176,10 @@ class Py_Importer(Importer):
                 if self.new_state.indent <= self.top.state.indent:
                     self.end_previous_blocks()
                 self.start_new_block(kind=m.group(1))
-            ### elif self.new_state.level() < self.top.state.level():  # ends_block
             elif self.new_state.indent < self.top.state.indent:  # ends_block
                 # Any non-blank, non-comment line ends the present block.
-                self.end_previous_blocks()
+                self.end_previous_blocks()  # May change self.top
+                self.add_line(self.top.p, line)
             else:
                 self.add_line(p, line)
             prev_state = self.new_state
@@ -225,11 +225,10 @@ class Py_Importer(Importer):
         
         if new_indent == top_indent, self.line is a class or def.
         """
-        trace = False ###
         line, stack = self.line, self.stack
         new_indent = self.new_state.indent
         top_indent = self.top.state.indent
-        if trace:  ###
+        if 0:  ###
             g.trace('==========')
             print('NEW', new_indent, "TOP", top_indent, repr(line))
             g.printObj(stack, tag='stack')
@@ -326,7 +325,6 @@ class Py_Importer(Importer):
         parent = top.p
         # Don't create nested def nodes.
         if kind == 'def' and top.kind == 'def' and new_state.indent > top.state.indent:
-            ### g.trace('===== NESTED DEF')
             self.add_line(top.p, line)
         else:
             # Generate the @others in the parent, if necessary.
@@ -336,7 +334,7 @@ class Py_Importer(Importer):
             child = self.create_child_node(parent, line, h)
             # Push a new target on the stack.
             target = PythonTarget(child, new_state)
-            target.kind = kind ### 'class' if h.startswith('class') else 'def'
+            target.kind = kind
             stack.append(target)
         if 0: ###
             g.trace('line:', repr(line))
@@ -473,30 +471,6 @@ class Py_Importer(Importer):
                 print(p.h)
                 g.printObj(p.b)
         
-        
-            
-        if 0:
-            for p in parent.subtree():
-                self.find_tail(p)
-        if 0:  ### Legacy code: hopeless!
-            last = parent.lastNode()
-            if not last or last.h == 'Declarations':
-                return
-            if last.parent() != parent:
-                return  # The indentation would be wrong.
-            lines = self.get_lines(last)
-            prev_state = self.state_class()
-            if_pattern = re.compile(r'^\s*if\b')
-            # Scan for a top-level if statement.
-            for i, line in enumerate(lines):
-                new_state = self.scan_line(line, prev_state)
-                m = if_pattern.match(line)
-                if m and not prev_state.context and new_state.indent == 0:
-                    self.set_lines(last, lines[:i])
-                    self.extend_lines(parent, lines[i:])
-                    break
-                else:
-                    prev_state = new_state
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:

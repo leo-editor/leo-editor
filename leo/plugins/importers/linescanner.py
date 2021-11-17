@@ -794,7 +794,7 @@ class Importer:
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
         """A placeholder for python_i.promote_last_lines."""
-    #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines
+    #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines (*** disabled ***)
     def promote_trailing_underindented_lines(self, parent):
         """
         Promote all trailing underindent lines to the node's parent node,
@@ -987,7 +987,8 @@ class Importer:
         n1, n2 = len(lines1), len(lines2)
         print('\n===== PERFECT IMPORT FAILED =====', sfn)
         print('len(s1): %s len(s2): %s' % (n1, n2))
-        for i in range(min(n1, n2)):
+        n_min = min(n1, n2)
+        for i in range(n_min):
             line1, line2 = lines1[i], lines2[i]
             if line1 != line2:
                 print('first mismatched line: %s' % (i + 1))
@@ -995,11 +996,12 @@ class Importer:
                 print(''.join(self.context_lines(lines1, i)))
                 print('s2...')
                 print(''.join(self.context_lines(lines2, i)))
-                # print(repr(line1))
-                # print(repr(line2))
                 break
         else:
-            print('all common lines match')
+            lines_s = 'n2' if n1 > n2 else 'n1'
+            print(f"missing tail lines in {lines_s}")
+            g.printObj(lines1, tag='lines1')
+            g.printObj(lines2, tag='lines2')
     #@+node:ekr.20161108131153.5: *5* i.strip_*
     def lstrip_line(self, s):
         """Delete leading whitespace, *without* deleting the trailing newline!"""

@@ -2210,16 +2210,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.65: *3* TestPython.test_bug_354
     def test_bug_354(self):
         c = self.c
@@ -2534,18 +2535,19 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            assert p, h
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            assert root
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                assert p, h
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.67: *3* TestPython.test_bug_360
     def test_bug_360(self):
         c = self.c
@@ -2615,17 +2617,18 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        assert root
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            assert root
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.72: *3* TestPython.test_class_test_2
     def test_class_test_2(self):
         c = self.c
@@ -2853,16 +2856,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
 
     #@+node:ekr.20210904065459.79: *3* TestPython.test_def_test_1
     def test_def_test_1(self):
@@ -2892,16 +2896,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
 
     #@+node:ekr.20210904065459.80: *3* TestPython.test_def_test_2
     def test_def_test_2(self):
@@ -2923,16 +2928,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
 
     #@+node:ekr.20210904065459.81: *3* TestPython.test_docstring_only
     def test_docstring_only(self):
@@ -3075,16 +3081,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.125: *3* TestPython.test_is_ws_line
     def test_is_ws_line(self):
         c = self.c
@@ -3147,16 +3154,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
 
     #@+node:ekr.20210904065459.85: *3* TestPython.test_leoImport_py_small_
     def test_leoImport_py_small_(self):
@@ -3230,16 +3238,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.86: *3* TestPython.test_looks_like_section_ref
     def test_looks_like_section_ref(self):
         c = self.c
@@ -3362,17 +3371,18 @@ class TestPython (BaseTestImporter):
             (1, 'class testClass1'),
         )
         p = c.p
-        self.run_test(c.p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        self.run_test(c.p, s=s, verbose=True)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.68: *3* TestPython.test_promote_if_name_eq_main
     def test_promote_if_name_eq_main(self):
         # Test #390: was test_bug_390.
@@ -3543,18 +3553,19 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        root = p.lastChild()
-        assert root
-        self.assertEqual(root.h, f"@file {self.id()}")
-        after = p.nodeAfterTree()
-        p = root.firstChild()
-        for n, h in table:
-            assert p, h
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            root = p.lastChild()
+            assert root
+            self.assertEqual(root.h, f"@file {self.id()}")
+            after = p.nodeAfterTree()
+            p = root.firstChild()
+            for n, h in table:
+                assert p, h
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.97: *3* TestPython.test_trailing_comment
     def test_trailing_comment(self):
         c = self.c
@@ -3607,16 +3618,17 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(p, s=s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
     #@+node:ekr.20210904065459.101: *3* TestPython.test_unindent_in_triple_string_does_not_end_function
     def test_unindent_in_triple_string_does_not_end_function(self):
         c = self.c
@@ -3634,9 +3646,10 @@ class TestPython (BaseTestImporter):
         ''')
         p = c.p
         self.run_test(p, s=s)
-        child = p.firstChild()
-        n = child.numberOfChildren()
-        self.assertEqual(n, 2)
+        if self.check_tree:
+            child = p.firstChild()
+            n = child.numberOfChildren()
+            self.assertEqual(n, 2)
     #@+node:ekr.20211114184047.1: *3* TestPython.test_data_docstring
     def test_data_docstring(self):
         # From mypy\test-data\stdlib-samples\3.2\test\test_pprint.py
@@ -3693,11 +3706,7 @@ class TestPython (BaseTestImporter):
         pass
         """)
         p = c.p
-        try:
-            self.run_test(p, s=s)
-        except AssertionError:
-            self.dump_tree()
-            raise
+        self.run_test(p, s=s)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
