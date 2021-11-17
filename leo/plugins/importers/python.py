@@ -12,12 +12,6 @@ Target = linescanner.Target
 #@+node:ekr.20161029103615.1: ** class Py_Importer(Importer)
 class Py_Importer(Importer):
     """A class to store and update scanning state."""
-    
-    # Temporary.
-    promote_lines = False
-    
-
-    scan_for_decorators = True
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -110,16 +104,18 @@ class Py_Importer(Importer):
         # Called from Leo's core to implement two minor commands.
         prev_state = Python_ScanState()
         target = Target(parent, prev_state)
-        stack = [target, target]
+        stack = [target]  ###, target]
         lines = g.splitlines(parent.b)
         index = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
-            if self.starts_block(i, lines, new_state, prev_state, stack):
-                    # Bug fix 2019/06/05: added "stack" arg(!)
-                return self.skip_block(i, index, lines, new_state, stack)
+            if self.prev_state.context or self.ws_pattern.match(line):
+                pass
+            else:
+                m = self.class_or_def_pattern.match(line)
+                if m:
+                    return self.skip_block(i, index, lines, new_state, stack)
             prev_state = new_state
-            index += len(line)
         return None, -1, -1
     #@+node:ekr.20161205052712.1: *4* py_i.skip_block
     def skip_block(self, i, index, lines, prev_state, stack):
@@ -127,14 +123,13 @@ class Py_Importer(Importer):
         Find the end of a class/def starting at index
         on line i of lines.
 
-        Return (kind, i, j), where kind in (None, 'class', 'def')
-        ."""
+        Return (kind, i, j), where kind in (None, 'class', 'def').
+        """
         index1 = index
         line = lines[i]
         kind = 'class' if line.strip().startswith('class') else 'def'
         i += 1
         while i < len(lines):
-            progress = i
             line = lines[i]
             index += len(line)
             new_state = self.scan_line(line, prev_state)
@@ -142,7 +137,6 @@ class Py_Importer(Importer):
                 return kind, index1, index
             prev_state = new_state
             i += 1
-            assert progress < i
         return None, -1, -1
     #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & overrides
     class_or_def_pattern = re.compile(r'\s*(class|def)\s+')
@@ -170,6 +164,7 @@ class Py_Importer(Importer):
             # Note: ws_pattern also matches comment lines.
             if self.prev_state.context or self.ws_pattern.match(line): 
                 self.add_line(p, line)
+                prev_state = self.new_state
                 continue
             m = self.class_or_def_pattern.match(line)
             if m:
@@ -251,72 +246,6 @@ class Py_Importer(Importer):
             ref = '%s@others\n' % indent_ws
             self.add_line(parent, ref)
         return h
-    #@+node:ekr.20161116040557.1: *4* py_i.starts_block
-    # Matches lines that apparently start a class or def.
-    starts_pattern = re.compile(r'\s*(class|def)\s+')
-
-    def starts_block(self, i, lines, new_state, prev_state, stack):
-        """True if the line startswith class or def outside any context."""
-        # pylint: disable=arguments-differ
-        if prev_state.in_context():
-            return False
-        line = lines[i]
-        m = self.starts_pattern.match(line)
-        if not m:
-            return False
-        top = stack[-1]
-        prev_indent = top.state.indent
-        if top.kind == 'None' and new_state.indent > 0:
-            # Underindented top-level class/def.
-            return False
-        if top.kind == 'def' and new_state.indent > prev_indent:
-            # class/def within a def.
-            # #1493: Insert decorators.
-            p = self.tail_p or top.p
-            for line in self.decorator_lines:
-                self.add_line(p, line)
-            return False
-        if top.at_others_flag and new_state.indent > prev_indent:
-            return False
-        return True
-    #@+node:ekr.20170305105047.1: *4* py_i.starts_decorator
-    starts_decorator_pat = re.compile(r'^\s*@\s*(\w+)')
-
-    def starts_decorator(self, i, lines, prev_state):
-        """
-        True if the line looks like a decorator outside any context.
-
-        Puts the entire decorator into the self.decorator_lines list,
-        and sets self.skip so that the next line to be handled is a class/def line.
-        """
-        if not self.scan_for_decorators:
-            return False
-        assert self.skip == 0
-        if prev_state.context:
-            # Only test for docstrings, not [{(.
-            return False
-        old_skip = self.skip
-        old_decorator_lines = self.decorator_lines[:]
-        line = lines[i]
-        m = self.starts_decorator_pat.match(line)
-        if m and m.group(1) not in g.globalDirectiveList:
-            # Fix #360: allow multiline matches
-            # Carefully skip all lines until a class/def.
-            self.decorator_lines = [line]
-            for i, line in enumerate(lines[i + 1 :]):
-                new_state = self.scan_line(line, prev_state)
-                m = self.starts_pattern.match(line)
-                if m:
-                    # 2018/05/24: don't check in_context!
-                    # The class or def could start a context.
-                    return True
-                self.decorator_lines.append(line)
-                self.skip += 1
-                prev_state = new_state
-        # Recover froma a bare decorator, without a class or def.
-        self.skip = old_skip
-        self.decorator_lines = old_decorator_lines
-        return False
     #@+node:ekr.20161116034633.7: *4* py_i.start_new_block (***changed)
     def start_new_block(self, kind):  # pylint: disable=arguments-differ
         """Create a child node and push a new target on the stack."""
@@ -435,17 +364,16 @@ class Py_Importer(Importer):
         if 0:
             g.printObj(lines, tag=f"lines: find_tail: {p.h}")
             g.printObj(tail, tag=f"tail: find_tail: {p.h}")
-    #@+node:ekr.20161222123105.1: *4* py_i.promote_last_lines
+    #@+node:ekr.20161222123105.1: *4* py_i.promote_last_lines (*** disabled ***)
     at_others_pat = re.compile(r'\s*@others\b')
 
-    def promote_last_lines(self, parent):
+    def promote_last_lines(self, parent):  # pylint: disable=unreachable  ###
         """
         python_i.promote_last_lines.
         
         Promote the last lines of nodes if possible.
         """
-        if not self.promote_lines:
-            return
+        return  ###
         assert parent == self.root, (parent, self.root)
         #
         # Promote the entire last child if
