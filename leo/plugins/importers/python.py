@@ -140,7 +140,7 @@ class Py_Importer(Importer):
             prev_state = new_state
             i += 1
         return None, -1, -1
-    #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & overrides
+    #@+node:ekr.20161119161953.1: *3* py_i.gen_lines, helpers & overrides
     class_or_def_pattern = re.compile(r'\s*(class|def)\s+')
 
     def gen_lines(self, s, parent):
@@ -184,42 +184,44 @@ class Py_Importer(Importer):
                 else:
                     self.add_line(self.top.p, line)
             prev_state = self.new_state
-        # Handle decorators, adjust tails.
-        self.adjust_lines()
-    #@+node:ekr.20211116061415.1: *4* py_i.adjust_lines (*** to do)
-    def adjust_lines(self):
-        """Adjust decorator and tail lines."""
-    #@+node:ekr.20161220171728.1: *4* py_i.common_lws
+        #
+        # Explicit post-pass, adapted for python.
+        self.promote_first_child(parent)
+        self.adjust_decorator_lines(parent)
+        self.promote_if_name_lines(parent)
+    #@+node:ekr.20211118073549.1: *4* py_i: overrides
+    #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
         """Return the lws (a string) common to all lines."""
         return self.get_str_lws(lines[0]) if lines else ''
             # We must unindent the class/def line fully.
             # It would be wrong to examine the indentation of other lines.
-    #@+node:ekr.20161116034633.2: *4* py_i.cut_stack
-    def cut_stack(self, new_state, stack, append=False):
+    #@+node:ekr.20161116034633.2: *5* py_i.cut_stack
+    def cut_stack(self, new_state, stack):
         """Cut back the stack until stack[-1] matches new_state."""
-        # pylint: disable=arguments-differ
-        assert len(stack) > 1  # Fail on entry.
-        while stack:
-            top_state = stack[-1].state
-            if new_state.level() < top_state.level():
-                assert len(stack) > 1, stack  # <
-                stack.pop()
-            elif top_state.level() == new_state.level():
-                assert len(stack) > 1, stack  # ==
-                if append:
-                    pass  # Append line to the previous node.
-                else:
-                    stack.pop()  # Create a new node.
-                break
-            else:
-                # This happens often in valid Python programs.
-                break
-        # Restore the guard entry if necessary.
-        if len(stack) == 1:
-            stack.append(stack[-1])
-        assert len(stack) > 1  # Fail on exit.
-    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
+        assert False, g.callers()
+        # # pylint: disable=arguments-differ
+        # assert len(stack) > 1  # Fail on entry.
+        # while stack:
+            # top_state = stack[-1].state
+            # if new_state.level() < top_state.level():
+                # assert len(stack) > 1, stack  # <
+                # stack.pop()
+            # elif top_state.level() == new_state.level():
+                # assert len(stack) > 1, stack  # ==
+                # if append:
+                    # pass  # Append line to the previous node.
+                # else:
+                    # stack.pop()  # Create a new node.
+                # break
+            # else:
+                # # This happens often in valid Python programs.
+                # break
+        # # Restore the guard entry if necessary.
+        # if len(stack) == 1:
+            # stack.append(stack[-1])
+        # assert len(stack) > 1  # Fail on exit.
+    #@+node:ekr.20211116054138.1: *5* py_i.end_previous_blocks
     def end_previous_blocks(self):
         """
         End all blocks terminated by self.line, adjusting the stack as necessary.
@@ -234,7 +236,7 @@ class Py_Importer(Importer):
         while new_indent < top_indent and len(stack) > 1:
             stack.pop()
             self.top = stack[-1]
-    #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
+    #@+node:ekr.20161220064822.1: *5* py_i.gen_ref
     def gen_ref(self, line, parent, target):
         """Generate the at-others directive and set target.at_others_flag."""
         indent_ws = self.get_str_lws(line)
@@ -244,7 +246,7 @@ class Py_Importer(Importer):
             ref = '%s@others\n' % indent_ws
             self.add_line(parent, ref)
         return h
-    #@+node:ekr.20211118032332.1: *4* py_i.is_bare_function (*** new)
+    #@+node:ekr.20211118032332.1: *5* py_i.is_bare_function (*** new)
     def is_bare_function(self):
         """
         The present line looks like a def line.
@@ -258,7 +260,7 @@ class Py_Importer(Importer):
         if not any(z.kind == 'class' for z in stack):
             return True  # No enclosing class.
         return False
-    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block
+    #@+node:ekr.20161116034633.7: *5* py_i.start_new_block
     def start_new_block(self, kind):  # pylint: disable=arguments-differ
         """Create a child node and push a new target on the stack."""
         line, new_state, stack = self.line, self.new_state, self.stack
@@ -273,6 +275,16 @@ class Py_Importer(Importer):
         target = PythonTarget(child, new_state)
         target.kind = kind
         stack.append(target)
+    #@+node:ekr.20211118073744.1: *4* py_i: explicit post-pass (to do)
+    #@+node:ekr.20211116061415.1: *5* py_i.adjust_decorator_lines (to do)
+    def adjust_decorator_lines(self, parent):
+        """Move decorator lines (only) to the next sibling node."""
+    #@+node:ekr.20211118073900.1: *5* py_i.promote_if_name_lines (to do)
+    def promote_if_name_lines(self, parent):
+        """Move `if __name__ == '__main__ to the end of parent."""
+    #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
+    def promote_first_child(self, parent):
+        """Move a smallish first child to the start of parent."""
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -331,7 +343,7 @@ class Py_Importer(Importer):
             if block1 and block2:
                 add_key(d, block1[0], ('len', block1, block1, None))
         return d
-    #@+node:ekr.20180524173510.1: *3* py_i: post_pass
+    #@+node:ekr.20180524173510.1: *3* py_i: post_pass overrides
     #@+node:ekr.20170617125213.1: *4* py_i.clean_all_headlines
     def clean_all_headlines(self, parent):
         """
