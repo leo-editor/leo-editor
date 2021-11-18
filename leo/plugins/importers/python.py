@@ -94,7 +94,7 @@ class Py_Importer(Importer):
                         return s + ' '
                     return ''
         return ''
-    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper (*** changed)
+    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
     def find_class(self, parent):
         """
         Find the start and end of a class/def in a node.
@@ -104,7 +104,7 @@ class Py_Importer(Importer):
         # Called from Leo's core to implement two minor commands.
         prev_state = Python_ScanState()
         target = Target(parent, prev_state)
-        stack = [target]  ###, target]
+        stack = [target]
         lines = g.splitlines(parent.b)
         index = 0
         for i, line in enumerate(lines):
@@ -220,20 +220,16 @@ class Py_Importer(Importer):
         if len(stack) == 1:
             stack.append(stack[-1])
         assert len(stack) > 1  # Fail on exit.
-    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks (*** new)
+    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
     def end_previous_blocks(self):
         """
         End all blocks terminated by self.line, adjusting the stack as necessary.
         
         if new_indent == top_indent, self.line is a class or def.
         """
-        line, stack = self.line, self.stack
+        stack = self.stack
         new_indent = self.new_state.indent
         top_indent = self.top.state.indent
-        if 0:  ###
-            g.trace('==========')
-            print('NEW', new_indent, "TOP", top_indent, repr(line))
-            g.printObj(stack, tag='stack')
         assert new_indent <= self.top.state.indent, (new_indent, top_indent)
         # Pop the parent until the indents are the same.
         while new_indent < top_indent and len(stack) > 1:
@@ -263,7 +259,7 @@ class Py_Importer(Importer):
         if not any(z.kind == 'class' for z in stack):
             return True  # No enclosing class.
         return False
-    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block (***changed)
+    #@+node:ekr.20161116034633.7: *4* py_i.start_new_block
     def start_new_block(self, kind):  # pylint: disable=arguments-differ
         """Create a child node and push a new target on the stack."""
         line, new_state, stack = self.line, self.new_state, self.stack
@@ -378,41 +374,6 @@ class Py_Importer(Importer):
         if 0:
             g.printObj(lines, tag=f"lines: find_tail: {p.h}")
             g.printObj(tail, tag=f"tail: find_tail: {p.h}")
-    #@+node:ekr.20161222123105.1: *4* py_i.promote_last_lines (*** disabled ***)
-    at_others_pat = re.compile(r'\s*@others\b')
-
-    def promote_last_lines(self, parent):  # pylint: disable=unreachable  ###
-        """
-        python_i.promote_last_lines.
-        
-        Promote the last lines of nodes if possible.
-        """
-        return  ###
-        assert parent == self.root, (parent, self.root)
-        #
-        # Promote the entire last child if
-        # 1) 
-        n = parent.numberOfChildren()
-        last = parent.lastNode()
-        if not last:
-            return  # Nothing to promote.
-        if n == 1 and last.h == 'Declarations':
-            # There is only one child and it is a Declarations node.
-            # Promote the entire last child and delete the @others line.
-            new_lines = [z for z in self.get_lines(parent) + self.get_lines(last)
-                if z.lstrip() != '@others\n']
-            self.set_lines(parent, new_lines)
-            # Remove the only child.
-            last = parent.lastNode()
-            last.doDelete()
-            return
-        # For every node containing an '@others' promote only the tail of
-        # its last child.
-        for p in parent.self_and_subtree():
-            if list(self.at_others_pat.finditer(p.b)):
-                print(p.h)
-                g.printObj(p.b)
-        
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:

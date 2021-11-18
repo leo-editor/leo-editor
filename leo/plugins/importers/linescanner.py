@@ -793,7 +793,7 @@ class Importer:
                 # Suppress redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
-        """A placeholder for python_i.promote_last_lines."""
+        """A placeholder for rust_i.promote_last_lines."""
     #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines (*** disabled ***)
     def promote_trailing_underindented_lines(self, parent):
         """
