@@ -94,7 +94,7 @@ class Py_Importer(Importer):
                         return s + ' '
                     return ''
         return ''
-    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
+    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper (*** changed)
     def find_class(self, parent):
         """
         Find the start and end of a class/def in a node.
@@ -117,7 +117,7 @@ class Py_Importer(Importer):
                     return self.skip_block(i, index, lines, new_state, stack)
             prev_state = new_state
         return None, -1, -1
-    #@+node:ekr.20161205052712.1: *4* py_i.skip_block
+    #@+node:ekr.20161205052712.1: *4* py_i.skip_block (*** changed)
     def skip_block(self, i, index, lines, prev_state, stack):
         """
         Find the end of a class/def starting at index
@@ -128,12 +128,14 @@ class Py_Importer(Importer):
         index1 = index
         line = lines[i]
         kind = 'class' if line.strip().startswith('class') else 'def'
+        top = stack[-1]  ### new
         i += 1
         while i < len(lines):
             line = lines[i]
             index += len(line)
             new_state = self.scan_line(line, prev_state)
-            if self.ends_block(line, new_state, prev_state, stack):
+            ### if self.ends_block(line, new_state, prev_state, stack):
+            if new_state.indent < top.state.indent:
                 return kind, index1, index
             prev_state = new_state
             i += 1
