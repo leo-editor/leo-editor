@@ -184,10 +184,12 @@ class Py_Importer(Importer):
                 else:
                     self.add_line(self.top.p, line)
             prev_state = self.new_state
+        ###
+        ### self.dump_tree(parent)
         #
         # Explicit post-pass, adapted for python.
         self.promote_first_child(parent)
-        self.adjust_decorator_lines(parent)
+        self.adjust_all_decorator_lines(parent)
         self.promote_if_name_lines(parent)
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
@@ -276,9 +278,18 @@ class Py_Importer(Importer):
         target.kind = kind
         stack.append(target)
     #@+node:ekr.20211118073744.1: *4* py_i: explicit post-pass (to do)
-    #@+node:ekr.20211116061415.1: *5* py_i.adjust_decorator_lines (to do)
-    def adjust_decorator_lines(self, parent):
+    #@+node:ekr.20211116061415.1: *5* py_i.adjust_all_decorator_lines & helper
+    def adjust_all_decorator_lines(self, parent):
         """Move decorator lines (only) to the next sibling node."""
+        for p in parent.subtree():
+            for child in p.children():
+                if child.hasNext():
+                    self.adjust_decorator_lines(child)
+                    
+    def adjust_decorator_lines(p):
+        g.trace(p.h)
+                
+        
     #@+node:ekr.20211118073900.1: *5* py_i.promote_if_name_lines (to do)
     def promote_if_name_lines(self, parent):
         """Move `if __name__ == '__main__ to the end of parent."""

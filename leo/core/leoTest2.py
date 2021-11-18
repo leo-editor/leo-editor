@@ -162,16 +162,15 @@ class LeoUnitTest(unittest.TestCase):
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
     #@+node:ekr.20210831101111.1: *3* LeoUnitTest.dump_tree
-    def dump_tree(self, tag=''):
+    def dump_tree(self):
         c = self.c
-        if tag:
-            print('')
-            g.trace(tag)
         for p in c.all_positions():
             print('')
             print('level:', p.level(), p.h)
             print('-----')
-            g.printObj(p.b)
+            lines = p.v._import_lines if hasattr(p.v, '_import_lines') else p.v.b
+            g.printObj(lines, tag=p.h)
+
     #@-others
 #@-others
 #@-leo

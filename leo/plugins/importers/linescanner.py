@@ -1021,6 +1021,17 @@ class Importer:
                 delattr(at, ivar)
         return g.toUnicode(result, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils
+    #@+node:ekr.20211118082436.1: *4* i.dump_tree
+    def dump_tree(self, root):
+        """
+        Like LeoUnitTest.dump_tree.
+        """
+        for p in root.self_and_subtree():
+            print('')
+            print('level:', p.level(), p.h)
+            print('-----')
+            lines = p.v._import_lines if hasattr(p.v, '_import_lines') else p.v.b
+            g.printObj(lines, tag = p.h)
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
         """
