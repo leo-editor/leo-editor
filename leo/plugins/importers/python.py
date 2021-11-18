@@ -370,6 +370,9 @@ class Py_Importer(Importer):
         if 0:
             g.printObj(lines, tag=f"lines: find_tail: {p.h}")
             g.printObj(tail, tag=f"tail: find_tail: {p.h}")
+    #@+node:ekr.20211118070957.1: *4* py_i.promote_last_lines
+    def promote_last_lines(self, parent):
+        """A do-nothing override."""
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
