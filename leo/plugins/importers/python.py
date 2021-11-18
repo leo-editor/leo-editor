@@ -166,19 +166,24 @@ class Py_Importer(Importer):
             # Note: ws_pattern also matches comment lines.
             if self.prev_state.context or self.ws_pattern.match(line): 
                 self.add_line(p, line)
-                prev_state = self.new_state
-                continue
-            m = self.class_or_def_pattern.match(line)
-            if m:
-                if self.new_state.indent <= self.top.state.indent:
-                    self.end_previous_blocks()
-                self.start_new_block(kind=m.group(1))
-            elif self.new_state.indent < self.top.state.indent:  # ends_block
-                # Any non-blank, non-comment line ends the present block.
-                self.end_previous_blocks()  # May change self.top
-                self.add_line(self.top.p, line)
             else:
-                self.add_line(p, line)
+                m = self.class_or_def_pattern.match(line)
+                if m:
+                    kind = m.group(1)
+                    # Don't create nodes for outer or nested functions.
+                    if kind == 'def' and self.is_bare_function():
+                        self.add_line(p, line)
+                    else:
+                        # Don't end the previous block for inner classes or methods.
+                        if self.new_state.indent <= self.top.state.indent:
+                            self.end_previous_blocks()
+                        self.start_new_block(kind)
+                elif self.new_state.indent < self.top.state.indent: 
+                    # Any non-blank, non-comment line ends the present block.
+                    self.end_previous_blocks()  # May change self.top
+                    self.add_line(self.top.p, line)
+                else:
+                    self.add_line(p, line)
             prev_state = self.new_state
         # Handle decorators, adjust tails.
         self.adjust_lines()
@@ -236,11 +241,7 @@ class Py_Importer(Importer):
             self.top = stack[-1]
     #@+node:ekr.20161220064822.1: *4* py_i.gen_ref
     def gen_ref(self, line, parent, target):
-        """
-        Generate the at-others and a flag telling this method whether a previous
-        #@+others
-        #@-others
-        """
+        """Generate the at-others directive and set target.at_others_flag."""
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line, p=None)
         if not target.at_others_flag:
@@ -248,25 +249,35 @@ class Py_Importer(Importer):
             ref = '%s@others\n' % indent_ws
             self.add_line(parent, ref)
         return h
+    #@+node:ekr.20211118032332.1: *4* py_i.is_bare_function (*** new)
+    def is_bare_function(self):
+        """
+        The present line looks like a def line.
+        
+        Return True if the def is a nested def or an outer def.
+        """
+        stack = self.stack
+        top = stack[-1]
+        if top.kind == 'def':
+            return True  # A nested def.
+        if not any(z.kind == 'class' for z in stack):
+            return True  # No enclosing class.
+        return False
     #@+node:ekr.20161116034633.7: *4* py_i.start_new_block (***changed)
     def start_new_block(self, kind):  # pylint: disable=arguments-differ
         """Create a child node and push a new target on the stack."""
         line, new_state, stack = self.line, self.new_state, self.stack
         top = stack[-1]
         parent = top.p
-        # Don't create nested def nodes.
-        if kind == 'def' and top.kind == 'def' and new_state.indent > top.state.indent:
-            self.add_line(top.p, line)
-        else:
-            # Generate the @others in the parent, if necessary.
-            self.gen_ref(line, parent, target=top)
-            # Create the child.
-            h = self.clean_headline(line, p=None)
-            child = self.create_child_node(parent, line, h)
-            # Push a new target on the stack.
-            target = PythonTarget(child, new_state)
-            target.kind = kind
-            stack.append(target)
+        # Generate the @others in the parent, if necessary.
+        self.gen_ref(line, parent, target=top)
+        # Create the child.
+        h = self.clean_headline(line, p=None)
+        child = self.create_child_node(parent, line, h)
+        # Push a new target on the stack.
+        target = PythonTarget(child, new_state)
+        target.kind = kind
+        stack.append(target)
         if 0: ###
             g.trace('line:', repr(line))
             g.printObj(stack, tag='stack')
