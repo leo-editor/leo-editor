@@ -160,19 +160,18 @@ class Py_Importer(Importer):
             self.prev_state = prev_state
             self.new_state = self.scan_line(line, self.prev_state)
             self.top =self.stack[-1]
-            p = self.top.p
             #
             # Add blank lines, comment lines or lines within strings to p.
             # Note: ws_pattern also matches comment lines.
             if self.prev_state.context or self.ws_pattern.match(line): 
-                self.add_line(p, line)
+                self.add_line(self.top.p, line)
             else:
                 m = self.class_or_def_pattern.match(line)
                 if m:
                     kind = m.group(1)
                     # Don't create nodes for outer or nested functions.
                     if kind == 'def' and self.is_bare_function():
-                        self.add_line(p, line)
+                        self.add_line(self.top.p, line)
                     else:
                         # Don't end the previous block for inner classes or methods.
                         if self.new_state.indent <= self.top.state.indent:
