@@ -2136,21 +2136,22 @@ class TestPython (BaseTestImporter):
     def test_basic_nesting(self):
         c = self.c
         s = textwrap.dedent("""\
-            class class1:
+            class Class1:
                 def class1_method1():
                     pass
                 def class1_method2():
                     def helper():
                         pass
-                # After @others in child1.
-            class class2:
+                # After @others in Class1
+            class Class2:
                 @my_decorator
                 def class2_method1():
                     pass
                 @my_decorator
                 def class2_method2():
                     pass
-            # last line 1
+            def main():
+                pass
             if __name__ == '__main__':
                 main()
         """)

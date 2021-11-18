@@ -140,7 +140,7 @@ class Py_Importer(Importer):
             prev_state = new_state
             i += 1
         return None, -1, -1
-    #@+node:ekr.20161119161953.1: *3* py_i.gen_lines, helpers & overrides
+    #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & helpers
     class_or_def_pattern = re.compile(r'\s*(class|def)\s+')
 
     def gen_lines(self, s, parent):
@@ -169,7 +169,7 @@ class Py_Importer(Importer):
                 if m:
                     kind = m.group(1)
                     # Don't create nodes for outer or nested functions.
-                    if kind == 'def' and self.is_bare_function():
+                    if kind == 'def' and self.is_bare_or_nested():
                         self.add_line(self.top.p, line)
                     else:
                         # Don't end the previous block for inner classes or methods.
@@ -183,18 +183,84 @@ class Py_Importer(Importer):
                 else:
                     self.add_line(self.top.p, line)
             prev_state = self.new_state
-        if 1:  ###
-            g.trace('==== 2')
+        if 0:  ###
+            g.trace('==== 1')
             self.dump_tree(parent)
         #
         # Explicit post-pass, adapted for python.
         self.promote_first_child(parent)
         self.adjust_all_decorator_lines(parent)
-        self.promote_if_name_lines(parent)
         if 0:
             g.trace('==== 2')
             self.dump_tree(parent)
+    #@+node:ekr.20211118073744.1: *4* py_i: explicit post-pass (to do)
+    #@+node:ekr.20211116061415.1: *5* py_i.adjust_all_decorator_lines & helper
+    def adjust_all_decorator_lines(self, parent):
+        """Move decorator lines (only) to the next sibling node."""
+        for p in parent.self_and_subtree():
+            ### g.trace('----', p.h)
+            for child in p.children():
+                if child.hasNext():
+                    self.adjust_decorator_lines(child)
+                    
+    def adjust_decorator_lines(self, p):
+        """Move decorator lines from the end of p.b to the start of p.next().b."""
+        ### g.trace(p.h)
+    #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
+    def promote_first_child(self, parent):
+        """Move a smallish first child to the start of parent."""
+    #@+node:ekr.20211118085059.1: *4* py_i: helpers
+    #@+node:ekr.20211116054138.1: *5* py_i.end_previous_blocks
+    def end_previous_blocks(self):
+        """
+        End all blocks terminated by self.line, adjusting the stack as necessary.
+        
+        if new_indent == top_indent, self.line is a class or def.
+        """
+        stack = self.stack
+        new_indent = self.new_state.indent
+        top_indent = self.top.state.indent
+        assert new_indent <= self.top.state.indent, (new_indent, top_indent)
+        # Pop the parent until the indents are the same.
+        while new_indent < top_indent and len(stack) > 1:
+            stack.pop()
+            self.top = stack[-1]
+    #@+node:ekr.20211118032332.1: *5* py_i.is_bare_or_nested
+    def is_bare_or_nested(self):
+        """
+        The present line looks like a def line.
+        
+        Return True if the def is a nested def or an outer def.
+        """
+        # Compute the *new* stack.  Like end_previous_blocks.
+        stack = self.stack[:]  # Don't change the actual stack!
+        new_indent = self.new_state.indent
+        top_indent = self.top.state.indent
+        # Pop the parent until the indents are the same.
+        while new_indent < top_indent and len(stack) > 1:
+            stack.pop()
+        # Compute the flags.
+        top1 = stack[-1]
+        top2 = None if len(stack) < 2 else stack[-2] 
+        in_class = any(z.kind == 'class' for z in stack)
+        nested = in_class and top2 and top1.kind == top2.kind == 'def'
+        bare = not in_class
+        ### g.trace('bare', int(bare), 'nested', int(nested), repr(self.line))
+        ### if nested: g.printObj(stack)
+        return bare or nested
+
+
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
+    #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
+    def add_line(self, p, s):
+        """Append the line s to p.v._import_lines."""
+        assert s and isinstance(s, str), (repr(s), g.callers())
+        # *Never* change p unexpectedly!
+        assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
+        if 0:  ###
+            h = g.truncate(p.h, 20)
+            g.trace(f"{h:25}", repr(s))  ###
+        p.v._import_lines.append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
         """Return the lws (a string) common to all lines."""
@@ -226,21 +292,6 @@ class Py_Importer(Importer):
         # if len(stack) == 1:
             # stack.append(stack[-1])
         # assert len(stack) > 1  # Fail on exit.
-    #@+node:ekr.20211116054138.1: *5* py_i.end_previous_blocks
-    def end_previous_blocks(self):
-        """
-        End all blocks terminated by self.line, adjusting the stack as necessary.
-        
-        if new_indent == top_indent, self.line is a class or def.
-        """
-        stack = self.stack
-        new_indent = self.new_state.indent
-        top_indent = self.top.state.indent
-        assert new_indent <= self.top.state.indent, (new_indent, top_indent)
-        # Pop the parent until the indents are the same.
-        while new_indent < top_indent and len(stack) > 1:
-            stack.pop()
-            self.top = stack[-1]
     #@+node:ekr.20161220064822.1: *5* py_i.gen_ref
     def gen_ref(self, line, parent, target):
         """Generate the at-others directive and set target.at_others_flag."""
@@ -251,20 +302,6 @@ class Py_Importer(Importer):
             ref = '%s@others\n' % indent_ws
             self.add_line(parent, ref)
         return h
-    #@+node:ekr.20211118032332.1: *5* py_i.is_bare_function (*** new)
-    def is_bare_function(self):
-        """
-        The present line looks like a def line.
-        
-        Return True if the def is a nested def or an outer def.
-        """
-        stack = self.stack
-        top = stack[-1]
-        if top.kind == 'def':
-            return True  # A nested def.
-        if not any(z.kind == 'class' for z in stack):
-            return True  # No enclosing class.
-        return False
     #@+node:ekr.20161116034633.7: *5* py_i.start_new_block
     def start_new_block(self, kind):  # pylint: disable=arguments-differ
         """Create a child node and push a new target on the stack."""
@@ -280,25 +317,6 @@ class Py_Importer(Importer):
         target = PythonTarget(child, new_state)
         target.kind = kind
         stack.append(target)
-    #@+node:ekr.20211118073744.1: *4* py_i: explicit post-pass (to do)
-    #@+node:ekr.20211116061415.1: *5* py_i.adjust_all_decorator_lines & helper
-    def adjust_all_decorator_lines(self, parent):
-        """Move decorator lines (only) to the next sibling node."""
-        for p in parent.self_and_subtree():
-            ### g.trace('----', p.h)
-            for child in p.children():
-                if child.hasNext():
-                    self.adjust_decorator_lines(child)
-                    
-    def adjust_decorator_lines(self, p):
-        """Move decorator lines from the end of p.b to the start of p.next().b."""
-        ### g.trace(p.h)
-    #@+node:ekr.20211118073900.1: *5* py_i.promote_if_name_lines (to do)
-    def promote_if_name_lines(self, parent):
-        """Move `if __name__ == '__main__ to the end of parent."""
-    #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
-    def promote_first_child(self, parent):
-        """Move a smallish first child to the start of parent."""
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
