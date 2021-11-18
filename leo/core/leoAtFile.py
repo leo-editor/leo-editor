@@ -969,7 +969,7 @@ class AtFile:
     #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self, all=False, dirty=False):
         """Write @file nodes in all or part of the outline"""
-        at, c = self, self.c
+        at = self
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
         at.unchangedFiles = 0
@@ -988,9 +988,7 @@ class AtFile:
         at.yesToAll = False
         # Say the command is finished.
         at.reportEndOfWrite(files, all, dirty)
-        if c.isChanged():
-            # Save the outline if only persistence data nodes are dirty.
-            at.saveOutlineIfPossible()
+        # #2338: Never call at.saveOutlineIfPossible().
     #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
     def findFilesToWrite(self, force):  # pragma: no cover
         """
@@ -1063,22 +1061,6 @@ class AtFile:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
             g.es("no dirty @<file> nodes in the selected tree")
-    #@+node:ekr.20140727075002.18108: *6* at.saveOutlineIfPossible
-    def saveOutlineIfPossible(self):
-        """Save the outline if only persistence data nodes are dirty."""
-        c = self.c
-        changed_positions = [p for p in c.all_unique_positions() if p.v.isDirty()]
-        at_persistence = (
-            c.persistenceController and
-            c.persistenceController.has_at_persistence_node()
-        )
-        if at_persistence:  # pragma: no cover
-            changed_positions = [p for p in changed_positions
-                if not at_persistence.isAncestorOf(p)]
-        if not changed_positions:
-            # g.warning('auto-saving @persistence tree.')
-            c.clearChanged()  # Clears all dirty bits.
-            c.redraw()
     #@+node:ekr.20041005105605.149: *6* at.writeAllHelper & helper
     def writeAllHelper(self, p, root):
         """
