@@ -2147,9 +2147,12 @@ class TestPython (BaseTestImporter):
                 @my_decorator
                 def class2_method1():
                     pass
+                @my_decorator
                 def class2_method2():
                     pass
-            # last line
+            # last line 1
+            if __name__ == '__main__':
+                main()
         """)
         table = (
             (1, 'class class1'),
