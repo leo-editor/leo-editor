@@ -569,12 +569,12 @@ class Importer:
                 self.add_line(p, line)
             prev_state = new_state
     #@+node:ekr.20161108160409.7: *5* i.create_child_node
-    def create_child_node(self, parent, body, headline):
+    def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
         self.inject_lines_ivar(child)
-        if body:
-            self.add_line(child, body)
+        if line:
+            self.add_line(child, line)
         assert isinstance(headline, str), repr(headline)
         child.h = headline.strip()
         return child

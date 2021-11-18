@@ -3367,7 +3367,7 @@ class TestPython (BaseTestImporter):
                 pass
         ''')
         table = (
-            (1, 'Declarations'),
+            # (1, 'Declarations'),
             (1, 'class testClass1'),
         )
         p = c.p

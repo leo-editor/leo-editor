@@ -55,7 +55,7 @@ class Otl_Importer(Importer):
         while level >= len(self.parents):
             child = self.create_child_node(
                 parent=self.parents[-1],
-                body=None,
+                line=None,
                 headline=h,
             )
             self.parents.append(child)

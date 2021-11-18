@@ -71,14 +71,14 @@ class Markdown_Importer(Importer):
             while level > len(self.stack):
                 child = self.create_child_node(
                     parent=top,
-                    body=None,
+                    line=None,
                     headline='INSERTED NODE'
                 )
                 self.stack.append(child)
         assert level == len(self.stack), (level, len(self.stack))
         child = self.create_child_node(
             parent=top,
-            body=None,
+            line=None,
             headline=h,  # Leave the headline alone
         )
         self.stack.append(child)
@@ -133,7 +133,7 @@ class Markdown_Importer(Importer):
         assert parent == self.root, repr(parent)
         child = self.create_child_node(
             parent=self.stack[-1],
-            body=line,
+            line=line,
             headline='!Declarations',
         )
         self.stack.append(child)

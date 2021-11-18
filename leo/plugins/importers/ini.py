@@ -51,7 +51,7 @@ class Ini_Importer(Importer):
         # Create the new node.
         return self.create_child_node(
             parent=self.root,
-            body=line,
+            line=line,
             headline=line.strip())
     #@-others
 #@-others

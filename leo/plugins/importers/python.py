@@ -271,7 +271,7 @@ class Py_Importer(Importer):
         parent = top.p
         # Generate the @others in the parent, if necessary.
         self.gen_ref(line, parent, target=top)
-        # Create the child.
+        # Create the child, setting headline and body text.
         h = self.clean_headline(line, p=None)
         child = self.create_child_node(parent, line, h)
         # Push a new target on the stack.
@@ -281,6 +281,7 @@ class Py_Importer(Importer):
         if 0: ###
             g.trace('line:', repr(line))
             g.printObj(stack, tag='stack')
+
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
