@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.51
+About Viewrendered3 V3.6
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -187,26 +187,66 @@ example for the VR3 plugin::
 Stylesheets
 ===========
 
-ReStructured Text
+#@+node:tom.20211118000408.1: *5* ReStructuredText
+ReStructuredText
 ------------------
 
-Default CSS stylesheets are located in Leo's plugin/viewrendered3 directory.  For Restructured Text, stylesheet handling is quite flexible.
+Default CSS stylesheets are located in Leo's plugin/viewrendered3 directory. For
+Restructured Text, stylesheet handling is quite flexible.
 
-There are dark-theme and light-theme default stylesheets for RsT.  If no related settings are present, then VR3 chooses the dark one if the Leo theme name contains "dark" or the theme name is "DefaultTheme".
+There are dark-theme and light-theme default stylesheets for RsT and MD. If no
+related settings are present, then VR3 chooses the dark one if the Leo
+theme name contains "dark" or the theme name is "DefaultTheme".
 
-If the setting ``@bool vr3-rst-use-dark-theme = True``, then the dark theme will be used.  If it is set to ``False``, then the light one will be used.
+If the setting ``@bool vr3-rst-use-dark-theme = True``, then the dark theme will
+be used. If it is set to ``False``, then the light one will be used.
 
-The use of these default stylesheets can be overridden by the setting ``@string vr3-rst-stylesheet``.  This setting must be set to the path of a .css stylesheet file.  If it is a relative path, it is taken to be relative to the user's .leo/vr3 directory.  If it is an absolute path, then the string ``file:///`` may be prepended to the path; it will be removed if present.
+The use of these default stylesheets can be overridden by the setting ``@string
+vr3-rst-stylesheet``. This setting must be set to the path of a .css stylesheet
+file. If it is a relative path, it is taken to be relative to the user's
+.leo/vr3 directory. If it is an absolute path, then the string ``file:///`` may
+be prepended to the path; it will be removed if present.
 
-These stylesheet settings can be changed and will take effect when the settings are reloaded, and VR3 is refreshed or restarted.  There is no need to close Leo and restart it.
+These stylesheet settings can be changed and will take effect when the settings
+are reloaded, and VR3 is refreshed or restarted. There is no need to close Leo
+and restart it.
 
-These settings can be placed into the @settings tree of an outline, and then that outline's settings will be used when that outline is active.  It is possible for one outline to use the dark stylesheet, another to use the light stylesheet, and a third to use a custom one.
-
+These settings can be placed into the @settings tree of an outline, and then
+that outline's settings will be used when that outline is active. It is possible
+for one outline to use the dark stylesheet, another to use the light stylesheet,
+and a third to use a custom one.
+#@+node:tom.20211118000432.1: *5* Markdown
 Markdown
 ---------
-If the default MD stylesheet is removed, the
-plugin will re-create it on startup, but the RsT stylesheet will not be
-recreated if removed.
+
+Markdown stylesheets can be specified in very flexible ways. Css stylesheets are
+looked for first in the user's `~/.leo/vr3 directory`, and then in the
+`leo/plugins/viewrendered3` directory.  The choice of stylesheet is as follows:
+
+- If the string setting `vr3-md-stylesheet` contains an absolute path, that file will
+  be used if it is found;  if it contains a file name, it will be used if it can 
+  be found in either of the two stylesheet directories.
+
+Otherwise:
+
+- If the boolean setting `vr3-md-style-auto` is ``True``, then the current Leo theme
+  will be examined to see if it is a dark theme or not.  If the theme is dark (light),
+  a stylesheet named `md_styles_solarized_dark.css` (`md_styles_solarized_light.css`)
+  will be looked for in the two stylesheet directories and used if found.
+
+Otherwise:
+
+- A default stylesheet named `md_styles.css` will be looked for in the two stylesheet
+  directories. If is not found, the plugin will re-create it on startup
+  (however, the RsT stylesheet will not be recreated if removed).
+
+The dark, light, and default stylesheets are included in the `leo/plugins/viewrendered3` directory.
+
+This priority scheme allow a user to modify any of the standard stylesheets in the default location
+(`leo/plugins/viewrendered3`) and put them in the `~/.leo/vr3` in order to override the standard ones.
+
+When a specific stylesheet path is specified by the `vr3-md-stylesheet` setting, the path separators
+can be any mix of Windows and Linux separators.
 #@+node:tom.20210612193820.1: *4* Mathjax
 MathJax Script Location
 =======================
@@ -869,6 +909,12 @@ VR3_TEMP_FILE = 'leo_rst_html.html'
 XML = 'xml'
 ZOOM_FACTOR = 1.1
 
+#@+<< MD stylesheets >>
+#@+node:tom.20211117122509.1: *3* << MD stylesheets >>
+MD_BASE_STYLESHEET_NAME = 'md_styles.css'
+MD_STYLESHEET_DARK = 'md_styles_solarized_dark.css'
+MD_STYLESHEET_LIGHT = 'md_styles_solarized_light.css'
+
 MD_STYLESHEET_APPEND = '''pre {
    font-size: 110%;
    border: 1px solid gray;
@@ -882,13 +928,28 @@ body, th, td {
 }
 '''
 
+MD_STYLESHEET_DARK_APPEND = '''pre {
+   font-size: 110%;
+   border: 1px solid gray;
+   border-radius: .7em; padding: 1em;
+   background-color: #fff8f8
+}
+body, th, td {
+  font-family: Verdana,Arial,"Bitstream Vera Sans", sans-serif;
+  color: #839496;
+  background: #002b36;
+  font-size: 90%;
+}
+'''
+#@-<< MD stylesheets >>
+
 TEXT_HTML_HEADER = f'''<html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset={ENCODING}">
 </head>
 '''
+
 LEO_THEME_NAME = 'DefaultTheme.leo'
-MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
 RST_USE_DARK = False
@@ -1585,8 +1646,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if self.md_math_output and self.mathjax_url:
             self.md_header = fr'''
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    <head xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
     <script type="text/javascript" src="{self.mathjax_url}"></script>
@@ -1778,8 +1838,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
 
-        self.set_rst_stylesheet()
-
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
         self.rst_math_output = 'mathjax ' + self.mathjax_url
@@ -1788,7 +1846,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
         self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
+        self.md_style_switch_auto = c.config.getBool('vr3-md-style-auto', default=True)
+
         self.set_md_stylesheet()
+        self.set_rst_stylesheet()
         self.create_md_header()
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
@@ -1807,41 +1868,126 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
-        """Verify or create css stylesheet for Markdown node.
+        """Set or create css stylesheet for Markdown node.
 
-        If there is no custom css stylesheet specified by self.md_stylesheet,
-        check if there is one at the standard location.  If not, create
-        a default stylesheet and write it to a file at that place.
+        Stylesheet files are looked for first in ~/.leo/vr3,
+        then in the default location of leo/plugins/viewrendered3,
+        if their full path is not given.
 
-        The default location is assumed to be at leo/plugins/viewrendered3.
+        If a stylesheet file is specified by the setting "vr3-md-stylesheet",
+        then use this stylesheet if it is found.  
 
-        VARIABLE USED
+        Otherwise, if the setting "vr3-md-style-auto" is True, then attempt to
+        use a dark-vs-light theme according to whether the Leo theme
+        is marked dark or not.
+
+        Otherwise use the default stylesheet at leo/plugins/viewrendered3. 
+        If not present, create a default stylesheet and write it to a 
+        file at that place.
+
+
+        VARIABLES USED
         self.md_stylesheet -- The URL to the stylesheet.  Need not include
                               the "file:///", and must be an absolute path
                               if it is a local file.
 
                               Set by @string vr3-md-stylesheet.
+
+        self.md_style_switch_auto -- If True, try to use a dark-vs-light
+                                     stylesheet according to the Leo theme
+                                     in use.
         """
+
+        #@+others
+        #@+node:tom.20211117180937.1: *5* check_paths()
+        def check_paths(filename, dir_list):
+            """Given a file name, check for its existence in one of
+            a sequence of directories.  Return the first full path where 
+            the file is found, or None.
+            """
+
+            for direc in dir_list:
+                abs_file = os.path.join(direc, filename)
+                if os.path.exists(abs_file):
+                    return abs_file
+            return None
+        #@-others
+
+        # Style file locations
+        default_style_dir = os.path.join(g.app.leoDir, 'plugins', 'viewrendered3')
+        home_style_dir = os.path.join(g.app.homeDir, '.leo', 'vr3')
+        if g.isWindows:
+            default_style_dir = default_style_dir.replace('/', '\\')
+            home_style_dir = home_style_dir.replace('/', '\\')
+        style_dirs = (home_style_dir, default_style_dir)
+
+        style_path = ''
+
+        # If user has specified a stylesheet file, try to use it.
+        # Can be absolute path or file name. Can use either path separator.
+        if self.md_stylesheet:
+            #@+<< fix path separators >>
+            #@+node:tom.20211117161459.1: *5* << fix path separators >>
+            # Fix up path
+            if self.md_stylesheet.startswith('file:///'):
+                stylefile = self.md_stylesheet.replace('file:///', '')
+            if g.isWindows:
+                stylefile = stylefile.replace('/', '\\')
+            else:
+                stylefile = stylefile.replace('\\', '/')
+            #@-<< fix path separators >>
+            #@+<< check existence >>
+            #@+node:tom.20211117161734.1: *5* << check existence >>
+            # Check for style file's existence
+            style_path = None
+            if os.path.isabs(stylefile):
+                style_path = stylefile
+            else:
+                style_path = check_paths(stylefile, style_dirs)
+            #@-<< check existence >>
+            if style_path:
+                self.md_stylesheet = 'file:///' + style_path
+                g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+                return
+
+        # See if we should try to use stylesheet for Leo theme's light/dark character
+        if self.md_style_switch_auto:
+            dict_ = g.app.loadManager.globalSettingsDict
+            is_dark = dict_.get_setting('color-theme-is-dark')
+            stylefile = MD_STYLESHEET_DARK if is_dark else MD_STYLESHEET_LIGHT
+            style_path = check_paths(stylefile, style_dirs)
+            if style_path:
+                self.md_stylesheet = 'file:///' + style_path
+                g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+                return
+            g.es("Can't find light/dark style file")
 
         # If no custom stylesheet specified, use standard one.
         if not self.md_stylesheet:
             # Look for the standard one
-            vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
-            style_path = g.os_path_join(vr_style_dir, MD_BASE_STYLESHEET_NAME)
+            style_path = check_paths(MD_BASE_STYLESHEET_NAME, style_dirs)
+            if style_path:
+                self.md_stylesheet = 'file:///' + style_path
+                g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+                return
 
             # If there is no stylesheet at the standard location, have Pygments
             # generate a default stylesheet there.
             # Note: "cmdline" is a function imported from pygments
-            if not os.path.exists(style_path):
-                args = [cmdline.__name__, '-S', 'default', '-f', 'html']
-                # pygments cmdline() writes to stdout; we have to redirect it to a file
-                with ioOpen(style_path, 'w') as out:
-                    with redirect_stdout(out):
-                        cmdline.main(args)
-                # Add some fine-tuning css
-                with ioOpen(style_path, 'a') as out:
-                    out.write(MD_STYLESHEET_APPEND)
+            args = [cmdline.__name__, '-S', 'default', '-f', 'html']
+            # pygments cmdline() writes to stdout; we have to redirect it to a file
+            g.es('VR3-- creating new MD style sheet')
+            style_path = os.path.join(default_style_dir, MD_BASE_STYLESHEET_NAME)
+            with ioOpen(style_path, 'w') as out:
+                with redirect_stdout(out):
+                    cmdline.main(args)
+            # Add some fine-tuning css
+            with ioOpen(style_path, 'a') as out:
+                out.write(MD_STYLESHEET_APPEND)
             self.md_stylesheet = 'file:///' + style_path
+
+        g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+
 
     #@+node:TomP.20200329223820.17: *4* vr3.set_rst_stylesheet
     #@@language python
@@ -1901,7 +2047,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 stylesheet = RST_DEFAULT_STYLESHEET_NAME
             self.rst_stylesheet = g.os_path_join(vr_style_dir, stylesheet)
-        g.es('VR3 stylesheet:', self.rst_stylesheet)
+        g.es('VR3 RsT stylesheet:', self.rst_stylesheet)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
         # pylint: disable=import-outside-toplevel
@@ -2066,6 +2212,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@-others
         #@-<< docstring >>
         """
+        # pylint: disable = too-many-branches, too-many-locals
+        # pylint: disable = too-many-statements
         if not matplotlib:
             g.es('VR3 -- Matplotlib is needed to plot 2D data')
             return
@@ -2188,7 +2336,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
                 # Extract x, y values into separate lists; ignore columns after col. 2
                 if num_cols == 1:
-                    x = [i for i in range(len(t))]
+                    x = range(len(t))
                     y = [float(b.strip()) for b in t]
                 else:
                     xy = [line.split()[:2] for line in t]
