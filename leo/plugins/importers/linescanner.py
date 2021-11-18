@@ -794,19 +794,15 @@ class Importer:
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
         """A placeholder for rust_i.promote_last_lines."""
-    #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines (*** disabled ***)
+    #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
         """
         Promote all trailing underindent lines to the node's parent node,
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         """
-        # pylint: disable=unreachable.
-        return ###
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
-            if not p.next():
-                continue ### Can't promote!!!
             lines = self.get_lines(p)
             tail = []
             while lines:
@@ -822,13 +818,6 @@ class Importer:
                     if n == abs(self.tab_width):
                         new_line = line[len(m.group(0)) :]
                         tail.append(new_line)
-                        
-                        if 1:  ###
-                            print('')
-                            tag = f"ESCAPE: {self.root.h}: {p.h}"
-                            print('OLD line', repr(line))
-                            print('NEW line', repr(new_line))
-                            print('')
                     else:
                         g.trace('unexpected unindent value', n)
                         g.trace(line)
@@ -839,26 +828,11 @@ class Importer:
                 else:
                     break
             if tail:
-                if 1:  ###
-                    print('')
-                    tag = f"tail underindented lines: {self.root.h}: {p.h}"
-                    g.printObj(list(reversed(tail)), tag=tag)
-                    print('')
-                if 1:  ### New
-                    next = p.next()
-                    g.trace(next and next.h or 'NO NEXT')
-                    tail = list(reversed(tail))
-                    if next:
-                        self.set_lines(p, lines)
-                        self.extend_lines(next, tail)
-                    else:
-                        self.set_lines(p, lines + tail)
-                else:  ### Legacy.
-                    parent = p.parent()
-                    if parent.parent() == self.root:
-                        parent = parent.parent()
-                    self.set_lines(p, lines)
-                    self.extend_lines(parent, reversed(tail))
+                parent = p.parent()
+                if parent.parent() == self.root:
+                    parent = parent.parent()
+                self.set_lines(p, lines)
+                self.extend_lines(parent, reversed(tail))
     #@+node:ekr.20161110130337.1: *5* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         """Unindent all nodes in parent's tree."""

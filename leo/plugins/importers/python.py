@@ -274,10 +274,6 @@ class Py_Importer(Importer):
         target = PythonTarget(child, new_state)
         target.kind = kind
         stack.append(target)
-        if 0: ###
-            g.trace('line:', repr(line))
-            g.printObj(stack, tag='stack')
-
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
