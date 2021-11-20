@@ -149,6 +149,7 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         """
+        self.trace = False
         self.new_state = self.state_class()
         target = PythonTarget(parent, self.new_state)
         target.kind = 'outer'
@@ -165,7 +166,7 @@ class Py_Importer(Importer):
             self.line = line
             self.top = self.stack[-1]
             assert self.top.kind in ('outer', 'organizer', 'class', 'def'), repr(self.new_state)
-            if 1:
+            if self.trace:
                 print('')
                 g.trace(f"{self.top.kind:9} {self.new_state.indent:2} {self.top.state.indent:2} {line!r}")
                 print('')
@@ -188,7 +189,7 @@ class Py_Importer(Importer):
                     self.add_line(self.top.p, line, 'nested def')
                 elif kind == 'def' and self.top.kind == 'outer':
                     self.end_previous_blocks()
-                    child = self.start_new_block('outer organizer')
+                    child = self.start_new_block('organizer')
                     self.add_line(child, line, 'outer organizer')
                 else:
                     self.end_previous_blocks()
@@ -210,11 +211,17 @@ class Py_Importer(Importer):
                 self.end_previous_blocks()  # May change self.top
                 child = self.start_new_block('organizer')
                 self.add_line(child, line, 'organizer')
-        if 1:  ###
-            # minimal post-pass
-            for p in parent.subtree():
-                s = ''.join(p.v._import_lines)
-                p.v._import_lines = g.splitLines(textwrap.dedent(s))
+        #
+        ### Temporary?
+        # minimal post-pass
+        for p in parent.subtree():
+            s = ''.join(p.v._import_lines)
+            if not p.hasChildren():
+                # Remove the unnecessary @others line.
+                s = s.replace('@others\n', '')
+                if self.trace:
+                    g.trace('===== REMOVE @others', p.h)
+            p.v._import_lines = g.splitLines(textwrap.dedent(s))
         if 1:  ###
             g.trace('==== 1')
             self.dump_tree(parent)
@@ -242,8 +249,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
     def promote_first_child(self, parent):
         """Move a smallish first child to the start of parent."""
-    #@+node:ekr.20211118085059.1: *4* py_i: helpers
-    #@+node:ekr.20211116054138.1: *5* py_i.end_previous_blocks
+    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
     def end_previous_blocks(self):
         """
         End all blocks blocks whose level is <= the new block's level.
@@ -255,14 +261,20 @@ class Py_Importer(Importer):
         while new_indent < top_indent and len(stack) > 1:
             stack.pop()
             self.top = stack[-1]
+        # Pop an organizer block at the same level.
+        if len(stack) > 1 and new_indent == top_indent and self.top.kind in ('def', 'class', 'organizer'):
+            if self.trace:
+                g.trace(f"===== pop {self.top.kind:9} {self.top.p.h}")
+            stack.pop()
+            self.top = stack[-1]
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
-    def add_line(self, p, s, tag='NO TAG'):
+    def add_line(self, p, s, tag='NO TAG'):  # pylint: disable=arguments-differ
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
         # *Never* change p unexpectedly!
         assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
-        if 1:
+        if self.trace:
             h = g.truncate(p.h, 20)
             g.trace(f" {tag:20} {self.top.kind:10} {g.caller():20} {h:25} {s!r}")
         p.v._import_lines.append(s)
@@ -320,7 +332,12 @@ class Py_Importer(Importer):
         return h
     #@+node:ekr.20161116034633.7: *5* py_i.start_new_block
     def start_new_block(self, kind):  # pylint: disable=arguments-differ
-        """Create a child node and push a new target on the stack."""
+        """
+        Create a child node and push a new target on the stack.
+        
+        Unlike Importer.start_new_block, this method does not add self.line to the child's body.
+        """
+        assert kind in ('organizer', 'class', 'def'), g.callers()
         line, new_state, stack = self.line, self.new_state, self.stack
         top = stack[-1]
         parent = top.p
@@ -328,15 +345,11 @@ class Py_Importer(Importer):
         self.gen_ref(line, parent, target=top)
         # Create the child, setting headline and body text.
         h = self.clean_headline(line, p=None)
-        if 'organizer' in kind:
-            h = f"{kind.capitalize()}: {h}"
-        # # # if kind == 'organizer':
-            # # # h = f"Organizer: {h}"
-        ###child = self.create_child_node(parent, line, h)
+        if kind == 'organizer':
+            h = f"Organizer: {h}"
         child = parent.insertAsLastChild()
         child.h = h.strip()
         self.inject_lines_ivar(child)
-        ######## self.add_line(child, line, 'NODE (headline)')
         # Push a new target on the stack.
         target = PythonTarget(child, new_state)
         target.kind = kind
