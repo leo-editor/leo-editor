@@ -238,14 +238,13 @@ class Py_Importer(Importer):
     def adjust_all_decorator_lines(self, parent):
         """Move decorator lines (only) to the next sibling node."""
         for p in parent.self_and_subtree():
-            ### g.trace('----', p.h)
             for child in p.children():
                 if child.hasNext():
                     self.adjust_decorator_lines(child)
                     
     def adjust_decorator_lines(self, p):
         """Move decorator lines from the end of p.b to the start of p.next().b."""
-        ### g.trace(p.h)
+        ### To do ###
     #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
     def promote_first_child(self, parent):
         """Move a smallish first child to the start of parent."""

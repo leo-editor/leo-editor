@@ -3387,7 +3387,6 @@ class TestPython (BaseTestImporter):
         )
         p = c.p
         self.run_test(c.p, s=s, verbose=True)
-        ### self.dump_tree()
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
