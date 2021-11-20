@@ -4,6 +4,7 @@
 # Legacy version of this file is in the attic.
 # pylint: disable=unreachable
 import re
+import textwrap
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -148,48 +149,80 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         """
-        prev_state = self.state_class()
-        target = PythonTarget(parent, prev_state)
+        self.new_state = self.state_class()
+        target = PythonTarget(parent, self.new_state)
+        target.kind = 'outer'
         self.top = None
         self.stack = [target]
         self.inject_lines_ivar(parent)
         self.lines = g.splitLines(s)
+        # Handle each line.
         for i, line in enumerate(self.lines):
-            self.line = line
-            self.prev_state = prev_state
+            # Update the state, remembering the previous state.
+            self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)
-            self.top =self.stack[-1]
+            # Update the ivars.
+            self.line = line
+            self.top = self.stack[-1]
+            assert self.top.kind in ('outer', 'organizer', 'class', 'def'), repr(self.new_state)
+            if 1:
+                print('')
+                g.trace(f"{self.top.kind:9} {self.new_state.indent:2} {self.top.state.indent:2} {line!r}")
+                print('')
+            # Update abbreviations
+            old_indent = self.top.state.indent
+            new_indent = self.new_state.indent
             #
-            # Add blank lines, comment lines or lines within strings to p.
-            # Note: ws_pattern also matches comment lines.
-            if self.prev_state.context or self.ws_pattern.match(line): 
-                self.add_line(self.top.p, line)
-            else:
-                m = self.class_or_def_pattern.match(line)
-                if m:
-                    kind = m.group(1)
-                    # Don't create nodes for outer or nested functions.
-                    if kind == 'def' and self.is_bare_or_nested():
-                        self.add_line(self.top.p, line)
-                    else:
-                        # Don't end the previous block for inner classes or methods.
-                        if self.new_state.indent <= self.top.state.indent:
-                            self.end_previous_blocks()
-                        self.start_new_block(kind)
-                elif self.new_state.indent < self.top.state.indent: 
-                    # Any non-blank, non-comment line ends the present block.
-                    self.end_previous_blocks()  # May change self.top
-                    self.add_line(self.top.p, line)
+            # The big switch
+            if self.prev_state.context or self.ws_pattern.match(line):
+                # Case 1: a blank, comment line, or line within strings.
+                #         ws_pattern matches blank and comment lines.
+                self.add_line(self.top.p, line, 'blank, etc')
+                continue
+            m = self.class_or_def_pattern.match(line)
+            if m:
+                # Case 2: A class or def line.
+                kind = m.group(1)
+                if kind == 'def' and self.top.kind == 'def' and new_indent > old_indent:
+                    # Nested function. Don't create a node.
+                    self.add_line(self.top.p, line, 'nested def')
+                elif kind == 'def' and self.top.kind == 'outer':
+                    self.end_previous_blocks()
+                    child = self.start_new_block('outer organizer')
+                    self.add_line(child, line, 'outer organizer')
                 else:
-                    self.add_line(self.top.p, line)
-            prev_state = self.new_state
-        if 0:  ###
+                    self.end_previous_blocks()
+                    child = self.start_new_block(kind)
+                    self.add_line(child, line, kind)
+            elif new_indent > old_indent:
+                # Case 3: An indented line within the present block.
+                if self.top.kind == 'outer':
+                    # Put all prefix lines into the 'Declarations' nodes.
+                    child = self.start_new_block('organizer')
+                    self.add_line(child, 'Declarations', 'outer indented')
+                else:
+                    self.add_line(self.top.p, line, 'indented')
+            elif new_indent == old_indent and self.top.kind == 'organizer':
+                # Case 4: A line at the level of the organizer node.
+                self.add_line(self.top.p, line, 'organizer')
+            else:
+                # Case 5: Start a new organizer block.
+                self.end_previous_blocks()  # May change self.top
+                child = self.start_new_block('organizer')
+                self.add_line(child, line, 'organizer')
+        if 1:  ###
+            # minimal post-pass
+            for p in parent.subtree():
+                s = ''.join(p.v._import_lines)
+                p.v._import_lines = g.splitLines(textwrap.dedent(s))
+        if 1:  ###
             g.trace('==== 1')
             self.dump_tree(parent)
         #
         # Explicit post-pass, adapted for python.
-        self.promote_first_child(parent)
-        self.adjust_all_decorator_lines(parent)
+        if 0:
+            self.promote_first_child(parent)
+            self.adjust_all_decorator_lines(parent)
         if 0:
             g.trace('==== 2')
             self.dump_tree(parent)
@@ -213,53 +246,25 @@ class Py_Importer(Importer):
     #@+node:ekr.20211116054138.1: *5* py_i.end_previous_blocks
     def end_previous_blocks(self):
         """
-        End all blocks terminated by self.line, adjusting the stack as necessary.
-        
-        if new_indent == top_indent, self.line is a class or def.
+        End all blocks blocks whose level is <= the new block's level.
         """
         stack = self.stack
         new_indent = self.new_state.indent
         top_indent = self.top.state.indent
-        assert new_indent <= self.top.state.indent, (new_indent, top_indent)
         # Pop the parent until the indents are the same.
         while new_indent < top_indent and len(stack) > 1:
             stack.pop()
             self.top = stack[-1]
-    #@+node:ekr.20211118032332.1: *5* py_i.is_bare_or_nested
-    def is_bare_or_nested(self):
-        """
-        The present line looks like a def line.
-        
-        Return True if the def is a nested def or an outer def.
-        """
-        # Compute the *new* stack.  Like end_previous_blocks.
-        stack = self.stack[:]  # Don't change the actual stack!
-        new_indent = self.new_state.indent
-        top_indent = self.top.state.indent
-        # Pop the parent until the indents are the same.
-        while new_indent < top_indent and len(stack) > 1:
-            stack.pop()
-        # Compute the flags.
-        top1 = stack[-1]
-        top2 = None if len(stack) < 2 else stack[-2] 
-        in_class = any(z.kind == 'class' for z in stack)
-        nested = in_class and top2 and top1.kind == top2.kind == 'def'
-        bare = not in_class
-        ### g.trace('bare', int(bare), 'nested', int(nested), repr(self.line))
-        ### if nested: g.printObj(stack)
-        return bare or nested
-
-
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
-    def add_line(self, p, s):
+    def add_line(self, p, s, tag='NO TAG'):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
         # *Never* change p unexpectedly!
         assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
-        if 0:  ###
+        if 1:
             h = g.truncate(p.h, 20)
-            g.trace(f"{h:25}", repr(s))  ###
+            g.trace(f" {tag:20} {self.top.kind:10} {g.caller():20} {h:25} {s!r}")
         p.v._import_lines.append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
@@ -267,6 +272,17 @@ class Py_Importer(Importer):
         return self.get_str_lws(lines[0]) if lines else ''
             # We must unindent the class/def line fully.
             # It would be wrong to examine the indentation of other lines.
+    #@+node:ekr.20211120093621.1: *5* py_i.create_child_node
+    def create_child_node(self, parent, line, headline):
+        """Create a child node of parent."""
+        assert False, g.callers()
+        # child = parent.insertAsLastChild()
+        # self.inject_lines_ivar(child)
+        # if line:
+            # self.add_line(child, line)
+        # assert isinstance(headline, str), repr(headline)
+        # child.h = headline.strip()
+        # return child
     #@+node:ekr.20161116034633.2: *5* py_i.cut_stack
     def cut_stack(self, new_state, stack):
         """Cut back the stack until stack[-1] matches new_state."""
@@ -299,8 +315,8 @@ class Py_Importer(Importer):
         h = self.clean_headline(line, p=None)
         if not target.at_others_flag:
             target.at_others_flag = True
-            ref = '%s@others\n' % indent_ws
-            self.add_line(parent, ref)
+            ref = f"{indent_ws}@others\n"
+            self.add_line(parent, ref, 'ref')
         return h
     #@+node:ekr.20161116034633.7: *5* py_i.start_new_block
     def start_new_block(self, kind):  # pylint: disable=arguments-differ
@@ -312,11 +328,20 @@ class Py_Importer(Importer):
         self.gen_ref(line, parent, target=top)
         # Create the child, setting headline and body text.
         h = self.clean_headline(line, p=None)
-        child = self.create_child_node(parent, line, h)
+        if 'organizer' in kind:
+            h = f"{kind.capitalize()}: {h}"
+        # # # if kind == 'organizer':
+            # # # h = f"Organizer: {h}"
+        ###child = self.create_child_node(parent, line, h)
+        child = parent.insertAsLastChild()
+        child.h = h.strip()
+        self.inject_lines_ivar(child)
+        ######## self.add_line(child, line, 'NODE (headline)')
         # Push a new target on the stack.
         target = PythonTarget(child, new_state)
         target.kind = kind
         stack.append(target)
+        return child
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -534,7 +559,7 @@ class PythonTarget:
         """Target ctor."""
         self.at_others_flag = False
             # True: @others has been generated for this target.
-        self.kind = 'None'  # in ('None', 'class', 'def')
+        self.kind = None # in ('outer', 'organizer', 'class', 'def')
         self.p = p
         self.state = state
         

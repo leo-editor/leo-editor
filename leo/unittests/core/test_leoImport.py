@@ -2136,13 +2136,24 @@ class TestPython (BaseTestImporter):
     def test_basic_nesting(self):
         c = self.c
         s = textwrap.dedent("""\
+            import sys
+            def outer_def1():
+                pass
             class Class1:
                 def class1_method1():
                     pass
                 def class1_method2():
                     def helper():
                         pass
-                # After @others in Class1
+                # tail of Class1
+                m2 = class1_method2
+            if 1:
+                def outer_def2():
+                    pass
+                # After def2
+            def outer_def3():
+                pass
+            # An outer comment
             class Class2:
                 @my_decorator
                 def class2_method1():
@@ -2164,7 +2175,7 @@ class TestPython (BaseTestImporter):
             (2, 'class2_method2'),
         )
         p = c.p
-        self.run_test(p, s=s, verbose=True)
+        self.run_test(p, s=s, verbose=False)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
