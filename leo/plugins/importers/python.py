@@ -198,7 +198,7 @@ class Py_Importer(Importer):
                 if kind == 'class':
                     # Case 2: A class.
                     p = self.end_previous_blocks(p)
-                    p = self.start_new_block(kind, line, p)
+                    p = self.start_python_block(kind, line, p)
                     self.add_line(p, line, tag='class')
                 elif old_kind == 'org':
                     # Case 2: A def in an organizer.
@@ -206,7 +206,7 @@ class Py_Importer(Importer):
                     if kind2 == 'class':
                         # End the organizer and create a node for the method.
                         p = self.end_previous_blocks(p)
-                        p = self.start_new_block(kind, line, p)
+                        p = self.start_python_block(kind, line, p)
                         self.add_line(p, line, tag='method 2')
                     else:
                         # Add the def to the organizer
@@ -217,19 +217,19 @@ class Py_Importer(Importer):
                 elif old_kind == 'outer':
                     # Case 2E: A def at the top level.
                     p = self.end_previous_blocks(p)
-                    p = self.start_new_block('org', line, p)
+                    p = self.start_python_block('org', line, p)
                     self.add_line(p, line, tag='outer def')
                 else:
                     # Case 2F: A method, presumably.
                     p = self.end_previous_blocks(p)
-                    p = self.start_new_block(kind, line, p)
+                    p = self.start_python_block(kind, line, p)
                     self.add_line(p, line, tag='method')
             elif new_indent > old_indent:
                 # Case 3: An indented line within the present block.
                 if old_kind == 'outer':
                     # Put all prefix lines into the 'Declarations' nodes.
                     p = self.end_previous_blocks(p)
-                    p = self.start_new_block('org', line, p)
+                    p = self.start_python_block('org', line, p)
                     self.add_line(p, line, tag='outer indented')
                 else:
                     self.add_line(p, line, tag='indented')
@@ -239,7 +239,7 @@ class Py_Importer(Importer):
             else:
                 # Case 5: Start a new organizer block.
                 p = self.end_previous_blocks(p)
-                p = self.start_new_block('org', line, p)
+                p = self.start_python_block('org', line, p)
                 self.add_line(p, line, tag='organizer')
         #
         ### Temporary?
@@ -297,59 +297,12 @@ class Py_Importer(Importer):
         if self.trace:
             g.trace(f"NEW TOP: {p.h}")
         return p
-    #@+node:ekr.20211118073549.1: *4* py_i: overrides
-    #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
-    def add_line(self, p, s, tag='NO TAG'):  # pylint: disable=arguments-differ
-        """Append the line s to p.v._import_lines."""
-        assert s and isinstance(s, str), (repr(s), g.callers())
-        # *Never* change p unexpectedly!
-        for ivar in ('_import_indent', '_import_kind', '_import_lines'):
-            assert hasattr(p.v, ivar), (ivar, g.callers())
-        if self.trace:
-            h = g.truncate(p.h, 20)
-            kind = p.v._import_kind
-            g.trace(f" {tag:>20}:{kind:10} {g.caller():10} {h:25} {s!r}")
-        p.v._import_lines.append(s)
-    #@+node:ekr.20211121061741.1: *5* py_i.add_root_directives (do-nothing)
-    def add_root_directives(self, parent):
-        """Do-nothing override of Importer.add_root_directives."""
-    #@+node:ekr.20211121085222.1: *5* py_i.trace_status
-    def trace_status(self, line, new_state, prev_state, stack, top):
-        """Do-nothing override of Import.trace_status."""
-        
-    #@+node:ekr.20161220171728.1: *5* py_i.common_lws
-    def common_lws(self, lines):
-        """Return the lws (a string) common to all lines."""
-        return self.get_str_lws(lines[0]) if lines else ''
-            # We must unindent the class/def line fully.
-            # It would be wrong to examine the indentation of other lines.
-    #@+node:ekr.20211120093621.1: *5* py_i.create_child_node
-    def create_child_node(self, parent, line, headline):
-        """Create a child node of parent."""
-        assert False, g.callers()
-        
-    #@+node:ekr.20161116034633.2: *5* py_i.cut_stack
-    def cut_stack(self, new_state, stack):
-        """Cut back the stack until stack[-1] matches new_state."""
-        assert False, g.callers()
-    #@+node:ekr.20161220064822.1: *5* py_i.gen_ref (do-nothing)
-    def gen_ref(self, line, parent, target):
-        """Do-nothing override of Importer.gen_ref."""
-        ###
-            # # # """Generate the at-others directive and set target.at_others_flag."""
-            # # # indent_ws = self.get_str_lws(line)
-            # # # h = self.clean_headline(line, p=None)
-            # # # if not target.at_others_flag:
-                # # # target.at_others_flag = True
-                # # # ref = f"{indent_ws}@others\n"
-                # # # self.add_line(parent, ref, 'ref')
-            # # # return h
-    #@+node:ekr.20161116034633.7: *5* py_i.start_new_block (REVISED)
-    def start_new_block(self, kind, line, parent):  # pylint: disable=arguments-differ
+    #@+node:ekr.20161116034633.7: *4* py_i.start_python_block (new)
+    def start_python_block(self, kind, line, parent):
         """
-        Create a child node and push a new target on the stack.
+        Create, p as the last child of parent and initialize the p.v._import_* ivars.
         
-        Unlike Importer.start_new_block, this method does not add self.line to the child's body.
+        Return p.
         """
         assert kind in ('org', 'class', 'def'), g.callers()
         # Create a new node p.
@@ -367,6 +320,60 @@ class Py_Importer(Importer):
             p.v._import_lines = []
             p.v._import_indent = parent.v._import_indent
         return p
+    #@+node:ekr.20211118073549.1: *4* py_i: overrides
+    #@+node:ekr.20211121085759.1: *5* py_i: do-nothing overrides
+    #@+node:ekr.20211121061741.1: *6* py_i.add_root_directives (do-nothing)
+    def add_root_directives(self, parent):
+        """Do-nothing override of Importer.add_root_directives."""
+    #@+node:ekr.20211120093621.1: *6* py_i.create_child_node
+    def create_child_node(self, parent, line, headline):
+        """Create a child node of parent."""
+        assert False, g.callers()
+        
+    #@+node:ekr.20161116034633.2: *6* py_i.cut_stack
+    def cut_stack(self, new_state, stack):
+        """Cut back the stack until stack[-1] matches new_state."""
+        assert False, g.callers()
+    #@+node:ekr.20161220064822.1: *6* py_i.gen_ref (do-nothing)
+    def gen_ref(self, line, parent, target):
+        """Do-nothing override of Importer.gen_ref."""
+        assert False, g.callers()
+        ###
+            # # # """Generate the at-others directive and set target.at_others_flag."""
+            # # # indent_ws = self.get_str_lws(line)
+            # # # h = self.clean_headline(line, p=None)
+            # # # if not target.at_others_flag:
+                # # # target.at_others_flag = True
+                # # # ref = f"{indent_ws}@others\n"
+                # # # self.add_line(parent, ref, 'ref')
+            # # # return h
+    #@+node:ekr.20211121085222.1: *6* py_i.trace_status (do-nothing)
+    def trace_status(self, line, new_state, prev_state, stack, top):
+        """Do-nothing override of Import.trace_status."""
+        
+    #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
+    def add_line(self, p, s, tag='NO TAG'):  # pylint: disable=arguments-differ
+        """Append the line s to p.v._import_lines."""
+        assert s and isinstance(s, str), (repr(s), g.callers())
+        # *Never* change p unexpectedly!
+        for ivar in ('_import_indent', '_import_kind', '_import_lines'):
+            assert hasattr(p.v, ivar), (ivar, g.callers())
+        if self.trace:
+            h = g.truncate(p.h, 20)
+            kind = p.v._import_kind
+            g.trace(f" {tag:>20}:{kind:10} {g.caller():10} {h:25} {s!r}")
+        p.v._import_lines.append(s)
+    #@+node:ekr.20161220171728.1: *5* py_i.common_lws
+    def common_lws(self, lines):
+        """
+        Override Importer.common_lws.
+        
+        Return the lws (a string) common to all lines.
+        
+        We must unindent the class/def line fully.
+        It would be wrong to examine the indentation of other lines.
+        """
+        return self.get_str_lws(lines[0]) if lines else ''
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
