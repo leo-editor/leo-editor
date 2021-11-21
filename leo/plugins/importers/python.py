@@ -256,10 +256,10 @@ class Py_Importer(Importer):
         if self.dump:  ###
             g.trace('==== dump of tree 1')
             self.dump_tree(parent)
-        
+            
         if g.unitTesting:
             import unittest
-            unittest.TestCase().skipTest('unit tests are hanging!!!')
+            unittest.TestCase().skipTest('skip python tests for now')
         #
         # Explicit post-pass, adapted for python.
         if 0:
@@ -510,13 +510,13 @@ class Py_Importer(Importer):
         v._import_lines lists.
         """
         # set p.b from p.v._import_lines.
-        
-        super().finish(parent)
-        # Remove v._indent.
+        super().finalize_ivars(parent)
+        # Remove v._indent
         for p in parent.self_and_subtree():
             v = p.v
-            if hasattr(v, '_indent'):
-                delattr(v, '_indent')
+            for ivar in ('_import_indent', '_import_kind'):
+                ### if hasattr(v, '_indent'):
+                delattr(v, ivar)
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
