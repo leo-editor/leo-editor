@@ -3324,6 +3324,60 @@ class TestPython (BaseTestImporter):
                 pass
         """)
         self.run_test(c.p, s=s)
+    #@+node:ekr.20211121055721.1: *3* TestPython.test_minimal_nesting
+    def test_minimal_nesting(self):
+        c = self.c
+        s = textwrap.dedent("""\
+            import sys
+            def outer_def1():
+                pass
+            class Class1:
+                def class1_method1():
+                    pass
+                def class1_method2():
+                    def helper():
+                        pass
+            def outer_def2():
+                pass
+            # An outer comment
+            class Class2:
+                def class2_method1():
+                    pass
+                def class2_method2():
+                    pass
+     
+            def main():
+                pass
+        
+            if __name__ == '__main__':
+                main()
+        """)
+        table = (
+            (1, 'Declarations'),
+            (1, 'outer_def1'),
+            (1, 'class Class1'),
+            (2, 'class1_method1'),
+            (2, 'class1_method2'),
+            (1, 'outer_def2'),
+            (1, 'class Class2'),
+            (2, 'class2_method1'),
+            (2, 'class2_method2'),
+            (1, 'main'),
+        )
+        p = c.p
+        self.run_test(p, s=s, verbose=False)
+        if self.check_tree:
+            after = p.nodeAfterTree()
+            root = p.lastChild()
+            self.assertEqual(root.h, f"@file {self.id()}")
+            p = root.firstChild()
+            for n, h in table:
+                n2 = p.level() - root.level()
+                self.assertEqual(h, p.h)
+                self.assertEqual(n, n2)
+                p.moveToThreadNext()
+            self.assertEqual(p, after)
+
     #@+node:ekr.20210904065459.90: *3* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):
         c = self.c
