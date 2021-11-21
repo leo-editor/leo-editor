@@ -2145,8 +2145,18 @@ class TestPython (BaseTestImporter):
                 def class1_method2():
                     def helper():
                         pass
+                if False or g.unitTesting:
+
+                    def pr(*args,**keys): # reportMismatch test
+                        g.es_print(color='blue',*args,**keys)
+
+                    pr('input...')
+
+                def class1_method3(self):
+                    pass
                 # tail of Class1
                 m2 = class1_method2
+
             if 1:
                 def outer_def2():
                     pass
@@ -2161,8 +2171,10 @@ class TestPython (BaseTestImporter):
                 @my_decorator
                 def class2_method2():
                     pass
+     
             def main():
                 pass
+        
             if __name__ == '__main__':
                 main()
         """)
