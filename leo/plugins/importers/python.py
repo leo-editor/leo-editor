@@ -150,7 +150,7 @@ class Py_Importer(Importer):
         nodes as needed.
         """
         self.trace = False
-        self.dump = False
+        self.dump = True
         assert self.root == parent, (self.root, parent)
         # Init the state.
         self.new_state = Python_ScanState()
@@ -257,7 +257,7 @@ class Py_Importer(Importer):
             g.trace('==== dump of tree 1')
             self.dump_tree(parent)
             
-        if g.unitTesting:
+        if False:  ###g.unitTesting:
             import unittest
             unittest.TestCase().skipTest('skip python tests for now')
         #
@@ -272,6 +272,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20211116061415.1: *5* py_i.adjust_all_decorator_lines & helper
     def adjust_all_decorator_lines(self, parent):
         """Move decorator lines (only) to the next sibling node."""
+        g.trace(parent.h)
         for p in parent.self_and_subtree():
             for child in p.children():
                 if child.hasNext():
@@ -297,9 +298,6 @@ class Py_Importer(Importer):
             g.trace(f"NEW TOP: {p.h}")
         return p
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
-    #@+node:ekr.20211121061741.1: *5* py_i.add_root_directives (do-nothing)
-    def add_root_directives(self, parent):
-        """Do-nothing override of Importer.add_root_directives."""
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
     def add_line(self, p, s, tag='NO TAG'):  # pylint: disable=arguments-differ
         """Append the line s to p.v._import_lines."""
@@ -312,6 +310,13 @@ class Py_Importer(Importer):
             kind = p.v._import_kind
             g.trace(f" {tag:>20}:{kind:10} {g.caller():10} {h:25} {s!r}")
         p.v._import_lines.append(s)
+    #@+node:ekr.20211121061741.1: *5* py_i.add_root_directives (do-nothing)
+    def add_root_directives(self, parent):
+        """Do-nothing override of Importer.add_root_directives."""
+    #@+node:ekr.20211121085222.1: *5* py_i.trace_status
+    def trace_status(self, line, new_state, prev_state, stack, top):
+        """Do-nothing override of Import.trace_status."""
+        
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
         """Return the lws (a string) common to all lines."""
@@ -509,14 +514,12 @@ class Py_Importer(Importer):
         Update the body text of all nodes in parent's tree using the injected
         v._import_lines lists.
         """
-        # set p.b from p.v._import_lines.
+        # set p.b from p.v._import_lines and remove p.v._import_lines.
         super().finalize_ivars(parent)
-        # Remove v._indent
+        # Remove v._import_indent and v._import_kind.
         for p in parent.self_and_subtree():
-            v = p.v
             for ivar in ('_import_indent', '_import_kind'):
-                ### if hasattr(v, '_indent'):
-                delattr(v, ivar)
+                delattr(p.v, ivar)
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
