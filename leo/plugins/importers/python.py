@@ -150,7 +150,7 @@ class Py_Importer(Importer):
         nodes as needed.
         """
         self.trace = False
-        self.dump = True
+        self.dump = False
         assert self.root == parent, (self.root, parent)
         # Init the state.
         self.new_state = Python_ScanState()
