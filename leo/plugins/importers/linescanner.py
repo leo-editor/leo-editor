@@ -1133,7 +1133,13 @@ class Importer:
         return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):
-        """Remove maximal leading whitespace from the start of all lines."""
+        """
+        Remove the *maximum* whitespace of any line from the start of *all* lines,
+        appending the underindent escape sequence for all underindented lines.
+        
+        This is *not* the same as textwrap.dedent!
+        
+        """
         # Called from i.post_pass, i.unindent_all_nodes.
         c = self.c
         if self.is_rst:
