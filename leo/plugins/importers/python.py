@@ -155,20 +155,12 @@ class Py_Importer(Importer):
         # Init the state.
         self.new_state = Python_ScanState()
         assert self.new_state.indent == 0
-        # Init the parent
-        parent.v._import_lines = [
-            '@language python\n'
-            '@others\n'
-            '@tabwidth -4\n'
-        ]
+        # Importer.add_root_directives is part of the finisher, not the post-pass
+        parent.v._import_lines = ['@others\n']
         parent.v._import_indent = 0
         parent.v._import_kind = 'outer'
         # Create a Declarations node.
-        p = parent.insertAsLastChild()
-        p.h = 'Declarations'
-        p.v._import_lines = []
-        p.v._import_indent = 0
-        p.v._import_kind = 'org'  # An organizer node.
+        p = self.start_python_block('org', '', parent)
         #
         # The main importer loop: handle each line.
         for i, line in enumerate(g.splitLines(s)):
@@ -257,7 +249,7 @@ class Py_Importer(Importer):
             g.trace('==== dump of tree 1')
             self.dump_tree(parent)
             
-        if False:  ###g.unitTesting:
+        if False and g.unitTesting:
             import unittest
             unittest.TestCase().skipTest('skip python tests for now')
         #
@@ -322,15 +314,12 @@ class Py_Importer(Importer):
         return p
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
     #@+node:ekr.20211121085759.1: *5* py_i: do-nothing overrides
-    #@+node:ekr.20211121061741.1: *6* py_i.add_root_directives (do-nothing)
-    def add_root_directives(self, parent):
-        """Do-nothing override of Importer.add_root_directives."""
-    #@+node:ekr.20211120093621.1: *6* py_i.create_child_node
+    #@+node:ekr.20211120093621.1: *6* py_i.create_child_node (do-nothing)
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         assert False, g.callers()
         
-    #@+node:ekr.20161116034633.2: *6* py_i.cut_stack
+    #@+node:ekr.20161116034633.2: *6* py_i.cut_stack (do-nothing)
     def cut_stack(self, new_state, stack):
         """Cut back the stack until stack[-1] matches new_state."""
         assert False, g.callers()
@@ -350,7 +339,10 @@ class Py_Importer(Importer):
     #@+node:ekr.20211121085222.1: *6* py_i.trace_status (do-nothing)
     def trace_status(self, line, new_state, prev_state, stack, top):
         """Do-nothing override of Import.trace_status."""
-        
+        assert False, g.callers()
+    #@+node:ekr.20211121142418.1: *6* py_i.post_pass (do-nothing)
+    def post_pass(self, parent):
+        """Override Importer.post_pass."""
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
     def add_line(self, p, s, tag='NO TAG'):  # pylint: disable=arguments-differ
         """Append the line s to p.v._import_lines."""
