@@ -305,16 +305,6 @@ class Py_Importer(Importer):
     def gen_end(self, parent):
         """Handle end-of-scan precessing."""
         assert self.root == parent, (self.root, parent)
-        if 0:  ### No longer needed, and would ruin the importer.
-            # For now, switch to standard interface.
-            if self.trace or self.dump:
-                print("\n\n===== Switch to standard interface =====\n")
-            for p in parent.self_and_subtree():
-                d = self.vnode_info.get(p.v)
-                assert d is not None, p.h
-                p.v._import_lines = d.get('lines') or []
-        #
-        ### Temporary?
         # minimal post-pass
         if 0:
             for p in parent.subtree():
@@ -429,17 +419,14 @@ class Py_Importer(Importer):
     def add_line(self, p, s, tag=None):  # pylint: disable=arguments-differ
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
-        ###
-            # for ivar in ('_import_indent', '_import_kind', '_import_lines'):
-                # assert hasattr(p.v, ivar), (ivar, g.callers())
         if self.trace:
             g.trace(f" {(tag or g.caller()):>20} {g.truncate(p.h, 20)!r:25} {s!r}")
-        ### p.v._import_lines.append(s)
-        d = self.vnode_info.get(p.v)
-        assert d is not None, p.h  # *Never* change p unexpectedly!
-        lines = d.get('lines')
-        assert lines is not None, (p.h, repr(s))
-        d ['lines'].append(s)
+        self.vnode_info [p.v] ['lines'].append(s)
+        ###
+            # assert d is not None, p.h  # *Never* change p unexpectedly!
+            # lines = d.get('lines')
+            # assert lines is not None, (p.h, repr(s))
+            # d ['lines'].append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
         """
@@ -489,32 +476,6 @@ class Py_Importer(Importer):
         if 0:
             g.printObj(lines, tag=f"lines: find_tail: {p.h}")
             g.printObj(tail, tag=f"tail: find_tail: {p.h}")
-    #@+node:ekr.20211120235850.1: *6* py_i.finalize_ivars
-    def finalize_ivars(self, parent):
-        """
-        Update the body text of all nodes in parent's tree using the injected
-        v._import_lines lists.
-        """
-        if 1:  # for now, gen_lines converts to the _import_lines interface.
-            # set p.b from p.v._import_lines and remove p.v._import_lines.
-            super().finalize_ivars(parent)
-            ###
-                # # Remove v._import_indent and v._import_kind.
-                # for p in parent.self_and_subtree():
-                    # for ivar in ('_import_indent', '_import_kind'):
-                        # delattr(p.v, ivar)
-        else:  # Maybe later
-            d = self.vnode_info
-            for p in parent.self_and_subtree():
-                v = p.v
-                assert not hasattr(v, '_import_lines', p.h)
-                assert not v._bodyString, (p.h, repr(v._bodyString))
-                info = d.get(v)
-                assert info, p.h
-                lines = info.get('lines')
-                if not lines:
-                    g.trace('NO LINES', p.h)  # The node should have been eliminated.
-                v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
     #@+node:ekr.20211118070957.1: *6* py_i.promote_last_lines
     def promote_last_lines(self, parent):
         """A do-nothing override."""

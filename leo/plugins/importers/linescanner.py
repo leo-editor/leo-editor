@@ -570,7 +570,6 @@ class Importer:
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        ### self.inject_lines_ivar(child)
         self.vnode_info [child.v] = { 'lines': [] }
         if line:
             self.add_line(child, line)
@@ -883,15 +882,10 @@ class Importer:
             v = p.v
             # Make sure that no code in x.post_pass has mistakenly set p.b.
             assert not v._bodyString, repr(v._bodyString)
-            ### lines = v._import_lines
             lines = self.vnode_info [v] ['lines']
-            if lines:
-                if not lines[-1].endswith('\n'):
-                    lines[-1] += '\n'
+            if lines and not lines[-1].endswith('\n'):
+                lines[-1] += '\n'
             v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
-                # Bug fix: 2017/01/24: must convert to unicode!
-                # This was the source of the internal error in the p.b getter.
-            ### delattr(v, '_import_lines')
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent):
         """True if perfect import checks pass."""
