@@ -175,16 +175,16 @@ class Importer:
         assert s and isinstance(s, str), (repr(s), g.callers())
         self.vnode_info [p.v] ['lines'].append(s)
 
-    def extend_lines(self, p, lines):
-        self.vnode_info [p.v] ['lines'].extend(list(lines))
+    ###
+        # def extend_lines(self, p, lines):
+            # self.vnode_info [p.v] ['lines'].extend(list(lines))
 
     def has_lines(self, p):
         d = self.vnode_info.get(p.v)
         return d is not None and d.get('lines') is not None
 
     def prepend_lines(self, p, lines):
-        d = self.vnode_info [p.v]
-        d ['lines'] = list(lines) + d ['lines']
+        self.vnode_info [p.v] ['lines'] = list(lines) + self.vnode_info [p.v] ['lines']
 
     def set_lines(self, p, lines):
         self.vnode_info [p.v] ['lines'] = list(lines)
@@ -772,7 +772,8 @@ class Importer:
                 lines = self.vnode_info [p.v] ['lines']
                 # Move the whitespace from p to back.
                 if all(z.isspace() for z in lines):
-                    self.extend_lines(back, lines)
+                    ### self.extend_lines(back, lines)
+                    self.vnode_info [back.v] ['lines'].extend(list(lines))
                     # New in Leo 5.7: empty nodes may have children.
                     if p.hasChildren():
                         # Don't delete p.
@@ -827,7 +828,8 @@ class Importer:
                 if parent.parent() == self.root:
                     parent = parent.parent()
                 self.set_lines(p, lines)
-                self.extend_lines(parent, reversed(tail))
+                ### self.extend_lines(parent, reversed(tail))
+                self.vnode_info [parent.v] ['lines'].extend(list(reversed(tail)))
     #@+node:ekr.20161110130337.1: *5* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         """Unindent all nodes in parent's tree."""
@@ -869,7 +871,8 @@ class Importer:
                 last_line = lines.pop()
                 last_line = last_line.rstrip() + '\n'
                 self.add_line(parent, last_line)
-            self.extend_lines(parent, table)
+            ### self.extend_lines(parent, table)
+            self.vnode_info [parent.v] ['lines'].extend(table)
         else:
             self.set_lines(parent, table)
     #@+node:ekr.20161110042020.1: *5* i.finalize_ivars

@@ -110,7 +110,8 @@ class Lua_Importer(Importer):
             prev_state = new_state
         if self.tail_lines:
             target = stack[-1]
-            self.extend_lines(target.p, self.tail_lines)
+            ### self.extend_lines(target.p, self.tail_lines)
+            self.vnode_info [target.p.v] ['lines'].extend(self.tail_lines)
             self.tail_lines = []
 
     #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
