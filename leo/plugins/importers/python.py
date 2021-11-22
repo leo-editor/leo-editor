@@ -175,13 +175,13 @@ class Py_Importer(Importer):
         # Create a Declarations node.
         p = self.start_python_block('org', 'Declarations', parent)
         #
-        # The main importer loop.
+        # The main importer loop. Don't worry about the speed of this loop.
         for i, line in enumerate(g.splitLines(s)):
             # Update the state, remembering the previous state.
             self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)
+            # Check and trace.
             if self.debug or self.trace:
-                # Check the data.
                 p_info = self.python_info.get(p.v)
                 old_kind = p_info ['kind']
                 assert old_kind in ('outer', 'org', 'class', 'def'), repr(old_kind)
@@ -194,21 +194,25 @@ class Py_Importer(Importer):
                     g.trace(f"{old_kind:5} {old_indent:>2}->{new_indent:<2} {line.rstrip()}")
                     print('')
             # Handle the line.
-            if self.prev_state.context or self.ws_pattern.match(line):
-                # Case 1: a blank, comment line, or line within strings.
-                #         ws_pattern matches blank and comment lines.
-                self.add_line(p, line, tag='blank, etc')
-                continue
-            m = self.class_or_def_pattern.match(line)
-            if m:
-                kind = m.group(1)
-                assert kind in ('def', 'class'), repr(kind)
-                if kind == 'class':
-                    p = self.do_class(line, p)
-                else:
-                    p = self.do_def(line, p)
+            if self.prev_state.context:
+                # A line with a string or docstring.
+                self.add_line(p, line, tag='in string')
+            elif self.ws_pattern.match(line):
+                # A blank or comment line.
+                self.add_line(p, line, tag='whitespace')
             else:
-                p = self.do_default(line, p)
+                m = self.class_or_def_pattern.match(line)
+                if m:
+                    # A class or def line.
+                    kind = m.group(1)
+                    assert kind in ('def', 'class'), repr(kind)
+                    if kind == 'class':
+                        p = self.do_class(line, p)
+                    else:
+                        p = self.do_def(line, p)
+                else:
+                    # All other lines.
+                    p = self.do_default(line, p)
         self.gen_end(parent)
     #@+node:ekr.20211122031133.1: *4* py_i.do_class
     def do_class(self, line, p):
