@@ -49,7 +49,8 @@ class C_Importer(Importer):
         """
         if not p:
             return s.strip()
-        lines = self.get_lines(p)
+        ### lines = self.get_lines(p)
+        lines = self.vnode_info [p.v] ['lines']
         if s.startswith('template') and len(lines) > 1:
             line = lines[1]
             # Filter out all keywords and cruft.

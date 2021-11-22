@@ -93,7 +93,8 @@ class Py_Importer(Importer):
 
     def get_decorator(self, p):
         if g.unitTesting or self.put_decorators:
-            for s in self.get_lines(p):
+            ### for s in self.get_lines(p):
+            for s in self.vnode_info [p.v] ['lines']:
                 if not s.isspace():
                     m = self.decorator_pat.match(s)
                     if m:
@@ -457,7 +458,8 @@ class Py_Importer(Importer):
         Find the tail (trailing unindented) lines.
         return head, tail
         """
-        lines = self.get_lines(p)[:]
+        ### lines = self.get_lines(p)[:]
+        lines = self.vnode_info [p.v] ['lines'] [:]
         tail = []
         # First, find all potentially tail lines, including blank lines.
         while lines:
@@ -481,45 +483,8 @@ class Py_Importer(Importer):
         """A do-nothing override."""
     #@+node:ekr.20211118072555.1: *6* py_i.promote_trailing_underindented_lines (do-nothing override)
     def promote_trailing_underindented_lines(self, parent):
-        """
-        Promote all trailing underindent lines to the node's parent node,
-        deleting one tab's worth of indentation. Typically, this will remove
-        the underindent escape.
-        """
-        pass
-        ###
-            # pattern = self.escape_pattern  # A compiled regex pattern
-            # for p in parent.subtree():
-                # lines = self.get_lines(p)
-                # tail = []
-                # while lines:
-                    # line = lines[-1]
-                    # m = pattern.match(line)
-                    # if m:
-                        # lines.pop()
-                        # n_str = m.group(1)
-                        # try:
-                            # n = int(n_str)
-                        # except ValueError:
-                            # break
-                        # if n == abs(self.tab_width):
-                            # new_line = line[len(m.group(0)) :]
-                            # tail.append(new_line)
-                        # else:
-                            # g.trace('unexpected unindent value', n)
-                            # g.trace(line)
-                            # # Fix #652 by restoring the line.
-                            # new_line = line[len(m.group(0)) :].lstrip()
-                            # lines.append(new_line)
-                            # break
-                    # else:
-                        # break
-                # if tail:
-                    # parent = p.parent()
-                    # if parent.parent() == self.root:
-                        # parent = parent.parent()
-                    # self.set_lines(p, lines)
-                    # self.extend_lines(parent, reversed(tail))
+        """A do-nothing override."""
+        
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 

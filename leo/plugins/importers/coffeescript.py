@@ -176,7 +176,8 @@ class CS_Importer(Importer):
             last = p.copy()
         if prev_lines:
             # These should go after the @others lines in the parent.
-            lines = self.get_lines(parent)
+            ### lines = self.get_lines(parent)
+            lines = self.vnode_info [parent.v] ['lines']
             for i, s in enumerate(lines):
                 if s.strip().startswith('@others'):
                     lines = lines[: i + 1] + prev_lines + lines[i + 2 :]
@@ -190,7 +191,7 @@ class CS_Importer(Importer):
     def delete_trailing_lines(self, p):
         """Delete the trailing lines of p and return them."""
         body_lines, trailing_lines = [], []
-        for s in self.get_lines(p):
+        for s in self.vnode_info [p.v] ['lines']:
             if s.isspace():
                 trailing_lines.append(s)
             else:

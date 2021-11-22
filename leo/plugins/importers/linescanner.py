@@ -175,14 +175,16 @@ class Importer:
         assert s and isinstance(s, str), (repr(s), g.callers())
         self.vnode_info [p.v] ['lines'].append(s)
 
-    def clear_lines(self, p):
-        self.vnode_info [p.v] ['lines'] = []
+    ###
+        # def clear_lines(self, p):
+            # self.vnode_info [p.v] ['lines'] = []
 
     def extend_lines(self, p, lines):
         self.vnode_info [p.v] ['lines'].extend(list(lines))
 
-    def get_lines(self, p):
-        return self.vnode_info [p.v] ['lines']
+    ###
+        # def get_lines(self, p):
+            # return self.vnode_info [p.v] ['lines']
 
     def has_lines(self, p):
         d = self.vnode_info.get(p.v)
@@ -774,7 +776,8 @@ class Importer:
         for p in parent.subtree():
             back = p.threadBack()
             if back and back.v != parent.v and back.v != self.root.v and not p.isCloned():
-                lines = self.get_lines(p)
+                ### lines = self.get_lines(p)
+                lines = self.vnode_info [p.v] ['lines']
                 # Move the whitespace from p to back.
                 if all(z.isspace() for z in lines):
                     self.extend_lines(back, lines)
@@ -782,7 +785,8 @@ class Importer:
                     if p.hasChildren():
                         # Don't delete p.
                         p.h = 'organizer'
-                        self.clear_lines(p)
+                        ### self.clear_lines(p)
+                        self.vnode_info [p.v] ['lines'] = []
                     else:
                         # Do delete p.
                         aList.append(p.copy())
@@ -801,7 +805,8 @@ class Importer:
         """
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
-            lines = self.get_lines(p)
+            ### lines = self.get_lines(p)
+            lines = self.vnode_info [p.v] ['lines']
             tail = []
             while lines:
                 line = lines[-1]
@@ -835,10 +840,12 @@ class Importer:
     def unindent_all_nodes(self, parent):
         """Unindent all nodes in parent's tree."""
         for p in parent.subtree():
-            lines = self.get_lines(p)
+            ### lines = self.get_lines(p)
+            lines = self.vnode_info [p.v] ['lines']
             if all(z.isspace() for z in lines):
                 # Somewhat dubious, but i.check covers for us.
-                self.clear_lines(p)
+                ### self.clear_lines(p)
+                self.vnode_info [p.v] ['lines'] = []
             else:
                 self.set_lines(p, self.undent(p))
     #@+node:ekr.20161111023249.1: *4* Stage 3: i.finish & helpers
@@ -864,7 +871,8 @@ class Importer:
             pass
         elif self.has_lines(parent):
             # Make sure the last line ends with a newline.
-            lines = self.get_lines(parent)
+            ### lines = self.get_lines(parent)
+            lines = self.vnode_info [parent.v] ['lines']
             if lines:
                 last_line = lines.pop()
                 last_line = last_line.rstrip() + '\n'
@@ -1139,7 +1147,8 @@ class Importer:
         if self.is_rst:
             return p.b  # Never unindent rst code.
         escape = c.atFileCommands.underindentEscapeString
-        lines = self.get_lines(p)
+        ### lines = self.get_lines(p)
+        lines = self.vnode_info [p.v] ['lines']
         ws = self.common_lws(lines)
         result = []
         for s in lines:
