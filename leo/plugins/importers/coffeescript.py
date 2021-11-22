@@ -190,7 +190,6 @@ class CS_Importer(Importer):
     def delete_trailing_lines(self, p):
         """Delete the trailing lines of p and return them."""
         body_lines, trailing_lines = [], []
-        ### for s in self.vnode_info [p.v] ['lines']:
         for s in self.get_lines(p):
             if s.isspace():
                 trailing_lines.append(s)

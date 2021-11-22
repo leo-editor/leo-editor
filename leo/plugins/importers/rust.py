@@ -79,7 +79,6 @@ class Rust_Importer(Importer):
             next = p.threadNext()
             if not next:
                 continue
-            ### lines = self.vnode_info [p.v] ['lines']
             lines = self.get_lines(p)
             if '@others' in ''.join(lines):
                 # Don't move anything.

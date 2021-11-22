@@ -31,7 +31,6 @@ class Perl_Importer(Importer):
             next = p.threadNext()
                 # This can be a node *outside* parent's tree!
             if next and self.has_lines(next):
-                ### lines = self.vnode_info [p.v] ['lines']
                 lines = self.get_lines(p)
                 if lines:
                     tail = []

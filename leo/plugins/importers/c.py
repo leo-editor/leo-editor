@@ -49,7 +49,6 @@ class C_Importer(Importer):
         """
         if not p:
             return s.strip()
-        ### lines = self.vnode_info [p.v] ['lines']
         lines = self.get_lines(p)
         if s.startswith('template') and len(lines) > 1:
             line = lines[1]
