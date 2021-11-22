@@ -75,7 +75,6 @@ class Lua_Importer(Importer):
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
-        ### self.inject_lines_ivar(parent)
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
             parent.v: {
@@ -110,8 +109,7 @@ class Lua_Importer(Importer):
             prev_state = new_state
         if self.tail_lines:
             target = stack[-1]
-            ### self.extend_lines(target.p, self.tail_lines)
-            self.vnode_info [target.p.v] ['lines'].extend(self.tail_lines)
+            self.extend_lines(target.p, self.tail_lines)
             self.tail_lines = []
 
     #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict

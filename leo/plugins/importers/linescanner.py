@@ -167,17 +167,14 @@ class Importer:
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
 
-    #@+node:ekr.20161110042512.1: *3* i.API for setting body text
-    # All code in passes 1 and 2 *must* use this API to change body text.
-
-    def add_line(self, p, s):
+    #@+node:ekr.20161110042512.1: *3* i.Convenience methods for vnode_info dict
+    def add_line(self, p, s, tag=None):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
         self.vnode_info [p.v] ['lines'].append(s)
 
-    ###
-        # def extend_lines(self, p, lines):
-            # self.vnode_info [p.v] ['lines'].extend(list(lines))
+    def extend_lines(self, p, lines):
+        self.vnode_info [p.v] ['lines'].extend(list(lines))
 
     def has_lines(self, p):
         d = self.vnode_info.get(p.v)
@@ -528,7 +525,6 @@ class Importer:
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
-        ### self.inject_lines_ivar(parent)
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
             parent.v: {
@@ -768,17 +764,14 @@ class Importer:
         for p in parent.subtree():
             back = p.threadBack()
             if back and back.v != parent.v and back.v != self.root.v and not p.isCloned():
-                ### lines = self.get_lines(p)
                 lines = self.vnode_info [p.v] ['lines']
                 # Move the whitespace from p to back.
                 if all(z.isspace() for z in lines):
-                    ### self.extend_lines(back, lines)
-                    self.vnode_info [back.v] ['lines'].extend(list(lines))
+                    self.extend_lines(back, lines)
                     # New in Leo 5.7: empty nodes may have children.
                     if p.hasChildren():
                         # Don't delete p.
                         p.h = 'organizer'
-                        ### self.clear_lines(p)
                         self.vnode_info [p.v] ['lines'] = []
                     else:
                         # Do delete p.
@@ -798,7 +791,6 @@ class Importer:
         """
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
-            ### lines = self.get_lines(p)
             lines = self.vnode_info [p.v] ['lines']
             tail = []
             while lines:
@@ -828,17 +820,14 @@ class Importer:
                 if parent.parent() == self.root:
                     parent = parent.parent()
                 self.set_lines(p, lines)
-                ### self.extend_lines(parent, reversed(tail))
-                self.vnode_info [parent.v] ['lines'].extend(list(reversed(tail)))
+                self.extend_lines(parent, reversed(tail))
     #@+node:ekr.20161110130337.1: *5* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         """Unindent all nodes in parent's tree."""
         for p in parent.subtree():
-            ### lines = self.get_lines(p)
             lines = self.vnode_info [p.v] ['lines']
             if all(z.isspace() for z in lines):
                 # Somewhat dubious, but i.check covers for us.
-                ### self.clear_lines(p)
                 self.vnode_info [p.v] ['lines'] = []
             else:
                 self.set_lines(p, self.undent(p))
@@ -865,14 +854,12 @@ class Importer:
             pass
         elif self.has_lines(parent):
             # Make sure the last line ends with a newline.
-            ### lines = self.get_lines(parent)
             lines = self.vnode_info [parent.v] ['lines']
             if lines:
                 last_line = lines.pop()
                 last_line = last_line.rstrip() + '\n'
                 self.add_line(parent, last_line)
-            ### self.extend_lines(parent, table)
-            self.vnode_info [parent.v] ['lines'].extend(table)
+            self.extend_lines(parent, table)
         else:
             self.set_lines(parent, table)
     #@+node:ekr.20161110042020.1: *5* i.finalize_ivars
@@ -1142,7 +1129,6 @@ class Importer:
         if self.is_rst:
             return p.b  # Never unindent rst code.
         escape = c.atFileCommands.underindentEscapeString
-        ### lines = self.get_lines(p)
         lines = self.vnode_info [p.v] ['lines']
         ws = self.common_lws(lines)
         result = []

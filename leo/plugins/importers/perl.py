@@ -33,7 +33,6 @@ class Perl_Importer(Importer):
                 # This can be a node *outside* parent's tree!
             if next and self.has_lines(next):
                 if 1:
-                    ### lines = self.get_lines(p)
                     lines = self.vnode_info [p.v] ['lines']
                     if lines:
                         tail = []

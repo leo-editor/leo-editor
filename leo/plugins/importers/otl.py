@@ -27,7 +27,6 @@ class Otl_Importer(Importer):
 
     def gen_lines(self, s, parent):
         """Node generator for otl (vim-outline) mode."""
-        ### self.inject_lines_ivar(parent)
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
             parent.v: {

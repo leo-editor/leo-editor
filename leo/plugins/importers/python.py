@@ -93,7 +93,6 @@ class Py_Importer(Importer):
 
     def get_decorator(self, p):
         if g.unitTesting or self.put_decorators:
-            ### for s in self.get_lines(p):
             for s in self.vnode_info [p.v] ['lines']:
                 if not s.isspace():
                     m = self.decorator_pat.match(s)
@@ -417,17 +416,12 @@ class Py_Importer(Importer):
     def post_pass(self, parent):
         """Override Importer.post_pass."""
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
-    def add_line(self, p, s, tag=None):  # pylint: disable=arguments-differ
+    def add_line(self, p, s, tag=None):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
         if self.trace:
             g.trace(f" {(tag or g.caller()):>20} {g.truncate(p.h, 20)!r:25} {s!r}")
         self.vnode_info [p.v] ['lines'].append(s)
-        ###
-            # assert d is not None, p.h  # *Never* change p unexpectedly!
-            # lines = d.get('lines')
-            # assert lines is not None, (p.h, repr(s))
-            # d ['lines'].append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
         """
