@@ -175,16 +175,8 @@ class Importer:
         assert s and isinstance(s, str), (repr(s), g.callers())
         self.vnode_info [p.v] ['lines'].append(s)
 
-    ###
-        # def clear_lines(self, p):
-            # self.vnode_info [p.v] ['lines'] = []
-
     def extend_lines(self, p, lines):
         self.vnode_info [p.v] ['lines'].extend(list(lines))
-
-    ###
-        # def get_lines(self, p):
-            # return self.vnode_info [p.v] ['lines']
 
     def has_lines(self, p):
         d = self.vnode_info.get(p.v)

@@ -44,20 +44,16 @@ class JS_Importer(Importer):
         for p in parent.subtree():
             if p.numberOfChildren() == 1:
                 child = p.firstChild()
-                ### lines = self.get_lines(p)
                 lines = self.vnode_info [p.v] ['lines']
                 matches = [i for i, s in enumerate(lines) if self.at_others.match(s)]
                 if len(matches) == 1:
                     found = True
                     i = matches[0]
-                    ### lines = lines[:i] + self.get_lines(child) + lines[i + 1 :]
                     child_lines = self.vnode_info [child.v] ['lines']
                     lines = lines[:i] + child_lines + lines[i + 1 :]
                     self.set_lines(p, lines)
                     # Delete child later. Is this enough???
-                    ### self.clear_lines(child)
                     self.vnode_info [child.v] ['lines'] = []
-                    # g.trace('Clear', child.h)
         return found
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
@@ -76,7 +72,6 @@ class JS_Importer(Importer):
     def clean_all_nodes(self, parent):
         """Remove common leading whitespace from all nodes."""
         for p in parent.subtree():
-            ### lines = self.get_lines(p)
             lines = self.vnode_info [p.v] ['lines']
             s = textwrap.dedent(''.join(lines))
             self.set_lines(p, g.splitLines(s))
@@ -86,12 +81,10 @@ class JS_Importer(Importer):
         for p in parent.subtree():
             next = p.next()
             if next:
-                ### lines = self.get_lines(p)
                 lines = self.vnode_info [p.v] ['lines']
                 head_lines, tail_lines = self.get_trailing_comments(lines)
                 if tail_lines:
                     self.set_lines(p, head_lines)
-                    ### next_lines = self.get_lines(next)
                     next_lines = self.vnode_info [next.v] ['lines']
                     self.set_lines(next, tail_lines + next_lines)
     #@+node:ekr.20200202092332.1: *5* js_i.get_trailing_comments
