@@ -2,7 +2,6 @@
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
 """The @auto importer for Perl."""
 import re
-from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
@@ -32,21 +31,16 @@ class Perl_Importer(Importer):
             next = p.threadNext()
                 # This can be a node *outside* parent's tree!
             if next and self.has_lines(next):
-                if 1:
-                    lines = self.vnode_info [p.v] ['lines']
-                    if lines:
-                        tail = []
-                        while lines and lines[-1].strip().startswith('#'):
-                            tail.append(lines.pop())
-                        if tail:
-                            self.set_lines(p, lines)
-                            self.prepend_lines(next, reversed(tail))
-                else:  # Alter p.b directly.
-                    lines = g.splitLines(p.b)
-                    if lines:
-                        while lines and lines[-1].strip().startswith('#'):
-                            next.b = lines.pop() + next.b
-                        p.b = ''.join(lines)
+                ### lines = self.vnode_info [p.v] ['lines']
+                lines = self.get_lines(p)
+                if lines:
+                    tail = []
+                    while lines and lines[-1].strip().startswith('#'):
+                        tail.append(lines.pop())
+                    if tail:
+                        self.set_lines(p, lines)
+                        self.prepend_lines(next, reversed(tail))
+                
     #@+node:ekr.20161129024520.1: *3* perl_i.get_new_dict (test)
     #@@nobeautify
 

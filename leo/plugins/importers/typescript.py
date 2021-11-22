@@ -107,8 +107,7 @@ class TS_Importer(Importer):
             ok = next and self.root.isAncestorOf(next) and self.has_lines(next)
             if not ok:
                 continue
-            ### lines = self.get_lines(p)
-            lines = self.vnode_info [p.v] ['lines']
+            lines = self.get_lines(p)
             if not lines:
                 continue
             all_s = ''.join(lines)

@@ -175,6 +175,9 @@ class Importer:
 
     def extend_lines(self, p, lines):
         self.vnode_info [p.v] ['lines'].extend(list(lines))
+        
+    def get_lines(self, p):
+        return self.vnode_info [p.v] ['lines']
 
     def has_lines(self, p):
         d = self.vnode_info.get(p.v)
@@ -764,7 +767,8 @@ class Importer:
         for p in parent.subtree():
             back = p.threadBack()
             if back and back.v != parent.v and back.v != self.root.v and not p.isCloned():
-                lines = self.vnode_info [p.v] ['lines']
+                ### lines = self.vnode_info [p.v] ['lines']
+                lines = self.get_lines(p)
                 # Move the whitespace from p to back.
                 if all(z.isspace() for z in lines):
                     self.extend_lines(back, lines)
@@ -791,7 +795,8 @@ class Importer:
         """
         pattern = self.escape_pattern  # A compiled regex pattern
         for p in parent.subtree():
-            lines = self.vnode_info [p.v] ['lines']
+            ### lines = self.vnode_info [p.v] ['lines']
+            lines = self.get_lines(p)
             tail = []
             while lines:
                 line = lines[-1]
@@ -825,7 +830,8 @@ class Importer:
     def unindent_all_nodes(self, parent):
         """Unindent all nodes in parent's tree."""
         for p in parent.subtree():
-            lines = self.vnode_info [p.v] ['lines']
+            ### lines = self.vnode_info [p.v] ['lines']
+            lines = self.get_lines(p)
             if all(z.isspace() for z in lines):
                 # Somewhat dubious, but i.check covers for us.
                 self.vnode_info [p.v] ['lines'] = []
@@ -1129,7 +1135,8 @@ class Importer:
         if self.is_rst:
             return p.b  # Never unindent rst code.
         escape = c.atFileCommands.underindentEscapeString
-        lines = self.vnode_info [p.v] ['lines']
+        ### lines = self.vnode_info [p.v] ['lines']
+        lines = self.get_lines(p)
         ws = self.common_lws(lines)
         result = []
         for s in lines:

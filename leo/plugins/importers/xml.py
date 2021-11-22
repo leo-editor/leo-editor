@@ -204,8 +204,7 @@ class Xml_Importer(Importer):
         """
         result, w = [], self.tab_width
         indent = ' ' * abs(w) if w < 0 else '\t'
-        ### for s in self.get_lines(p):
-        for s in self.vnode_info [p.v] ['lines']:
+        for s in self.get_lines(p):
             ls = '\n' if s.isspace() else s.lstrip()
             if ls.startswith('@others'):
                 if p == self.root:

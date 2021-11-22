@@ -93,7 +93,8 @@ class Py_Importer(Importer):
 
     def get_decorator(self, p):
         if g.unitTesting or self.put_decorators:
-            for s in self.vnode_info [p.v] ['lines']:
+            ### for s in self.vnode_info [p.v] ['lines']:
+            for s in self.get_lines(p):
                 if not s.isspace():
                     m = self.decorator_pat.match(s)
                     if m:
@@ -453,7 +454,8 @@ class Py_Importer(Importer):
         return head, tail
         """
         ### lines = self.get_lines(p)[:]
-        lines = self.vnode_info [p.v] ['lines'] [:]
+        ### lines = self.vnode_info [p.v] ['lines'] [:]
+        lines = self.get_lines(p) [:]
         tail = []
         # First, find all potentially tail lines, including blank lines.
         while lines:

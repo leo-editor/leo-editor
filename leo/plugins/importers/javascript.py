@@ -44,7 +44,8 @@ class JS_Importer(Importer):
         for p in parent.subtree():
             if p.numberOfChildren() == 1:
                 child = p.firstChild()
-                lines = self.vnode_info [p.v] ['lines']
+                ### lines = self.vnode_info [p.v] ['lines']
+                lines = self.get_lines(p)
                 matches = [i for i, s in enumerate(lines) if self.at_others.match(s)]
                 if len(matches) == 1:
                     found = True
@@ -63,7 +64,8 @@ class JS_Importer(Importer):
         while found:
             found = False
             for p in parent.subtree():
-                lines = self.vnode_info [p.v] ['lines']
+                ### lines = self.vnode_info [p.v] ['lines']
+                lines = self.get_lines(p)
                 if p.h.lower() == 'organizer' and not lines:
                     p.promote()
                     p.doDelete()
@@ -72,7 +74,8 @@ class JS_Importer(Importer):
     def clean_all_nodes(self, parent):
         """Remove common leading whitespace from all nodes."""
         for p in parent.subtree():
-            lines = self.vnode_info [p.v] ['lines']
+            ### lines = self.vnode_info [p.v] ['lines']
+            lines = self.get_lines(p)
             s = textwrap.dedent(''.join(lines))
             self.set_lines(p, g.splitLines(s))
     #@+node:ekr.20200202091613.1: *4* js_i.move_trailing_comments & helper (new)
@@ -81,7 +84,8 @@ class JS_Importer(Importer):
         for p in parent.subtree():
             next = p.next()
             if next:
-                lines = self.vnode_info [p.v] ['lines']
+                ### lines = self.vnode_info [p.v] ['lines']
+                lines = self.get_lines(p)
                 head_lines, tail_lines = self.get_trailing_comments(lines)
                 if tail_lines:
                     self.set_lines(p, head_lines)
