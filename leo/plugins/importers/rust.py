@@ -93,7 +93,7 @@ class Rust_Importer(Importer):
                 else:
                     lines.pop()
             if ''.join(comment_lines).strip():
-                next_lines = self.vnode_info [next.v] ['lines']
+                next_lines = self.get_lines(next)
                 self.set_lines(next, comment_lines + next_lines)
                 self.set_lines(p, lines)
     #@+node:ekr.20200316101240.5: *3* rust_i.start_new_block

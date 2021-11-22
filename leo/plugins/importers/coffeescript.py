@@ -176,7 +176,7 @@ class CS_Importer(Importer):
             last = p.copy()
         if prev_lines:
             # These should go after the @others lines in the parent.
-            lines = self.vnode_info [parent.v] ['lines']
+            lines = self.get_lines(parent)
             for i, s in enumerate(lines):
                 if s.strip().startswith('@others'):
                     lines = lines[: i + 1] + prev_lines + lines[i + 2 :]

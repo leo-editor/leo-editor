@@ -563,7 +563,9 @@ class Importer:
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.vnode_info [child.v] = { 'lines': [] }
+        self.vnode_info [child.v] = {
+            'lines': [],
+        }
         if line:
             self.add_line(child, line)
         assert isinstance(headline, str), repr(headline)
@@ -775,7 +777,7 @@ class Importer:
                     if p.hasChildren():
                         # Don't delete p.
                         p.h = 'organizer'
-                        self.vnode_info [p.v] ['lines'] = []
+                        self.get_lines(p, [])
                     else:
                         # Do delete p.
                         aList.append(p.copy())
@@ -831,7 +833,7 @@ class Importer:
             lines = self.get_lines(p)
             if all(z.isspace() for z in lines):
                 # Somewhat dubious, but i.check covers for us.
-                self.vnode_info [p.v] ['lines'] = []
+                self.set_lines(p, [])
             else:
                 self.set_lines(p, self.undent(p))
     #@+node:ekr.20161111023249.1: *4* Stage 3: i.finish & helpers
@@ -857,7 +859,7 @@ class Importer:
             pass
         elif self.has_lines(parent):
             # Make sure the last line ends with a newline.
-            lines = self.vnode_info [parent.v] ['lines']
+            lines = self.get_lines(parent)
             if lines:
                 last_line = lines.pop()
                 last_line = last_line.rstrip() + '\n'
@@ -875,7 +877,7 @@ class Importer:
             v = p.v
             # Make sure that no code in x.post_pass has mistakenly set p.b.
             assert not v._bodyString, repr(v._bodyString)
-            lines = self.vnode_info [v] ['lines']
+            lines = self.get_lines(p)
             if lines and not lines[-1].endswith('\n'):
                 lines[-1] += '\n'
             v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)

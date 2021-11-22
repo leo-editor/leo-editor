@@ -49,11 +49,11 @@ class JS_Importer(Importer):
                 if len(matches) == 1:
                     found = True
                     i = matches[0]
-                    child_lines = self.vnode_info [child.v] ['lines']
+                    child_lines = self.get_lines(child)
                     lines = lines[:i] + child_lines + lines[i + 1 :]
                     self.set_lines(p, lines)
                     # Delete child later. Is this enough???
-                    self.vnode_info [child.v] ['lines'] = []
+                    self.set_lines(child, [])
         return found
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
@@ -85,7 +85,7 @@ class JS_Importer(Importer):
                 head_lines, tail_lines = self.get_trailing_comments(lines)
                 if tail_lines:
                     self.set_lines(p, head_lines)
-                    next_lines = self.vnode_info [next.v] ['lines']
+                    next_lines = self.get_lines(next)
                     self.set_lines(next, tail_lines + next_lines)
     #@+node:ekr.20200202092332.1: *5* js_i.get_trailing_comments
     def get_trailing_comments(self, lines):

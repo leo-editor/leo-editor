@@ -452,8 +452,6 @@ class Py_Importer(Importer):
         Find the tail (trailing unindented) lines.
         return head, tail
         """
-        ### lines = self.get_lines(p)[:]
-        ### lines = self.vnode_info [p.v] ['lines'] [:]
         lines = self.get_lines(p) [:]
         tail = []
         # First, find all potentially tail lines, including blank lines.
