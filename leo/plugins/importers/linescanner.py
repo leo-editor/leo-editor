@@ -173,35 +173,50 @@ class Importer:
     def add_line(self, p, s):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
-        # *Never* change p unexpectedly!
-        assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
-        p.v._import_lines.append(s)
+        ### OLD
+            # # *Never* change p unexpectedly!
+            # assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
+            # p.v._import_lines.append(s)
+        d = self.vnode_info [p.v]
+        assert d is not None, p.h  # *Never* change p unexpectedly!
+        d ['lines'].append(s)
 
     def clear_lines(self, p):
-        p.v._import_lines = []
+        ### p.v._import_lines = []
+        self.vnode_info [p.v] ['lines'] = []
 
     def extend_lines(self, p, lines):
-        p.v._import_lines.extend(list(lines))
+        ### p.v._import_lines.extend(list(lines))
+        d = self.vnode_info [p.v]
+        d ['lines'].extend(list(lines))
 
     def get_lines(self, p):
-        # *Never* change p unexpectedly!
-        assert hasattr(p.v, '_import_lines'), (p and p.h, g.callers())
-        return p.v._import_lines
+        ###
+            # # *Never* change p unexpectedly!
+            # assert hasattr(p.v, '_import_lines'), (p and p.h, g.callers())
+            # return p.v._import_lines
+        return self.vnode_info [p.v] ['lines']
 
     def has_lines(self, p):
-        return hasattr(p.v, '_import_lines')
+        ### return hasattr(p.v, '_import_lines')
+        d = self.vnode_info.get(p.v)
+        return d is not None and d.get('lines') is not None
 
-    def inject_lines_ivar(self, p):
-        """Inject _import_lines into p.v."""
-        # *Never* change p unexpectedly!
-        assert not p.v._bodyString, (p and p.h, g.callers(10))
-        p.v._import_lines = []
+    ###
+    # def inject_lines_ivar(self, p):
+        # """Inject _import_lines into p.v."""
+        # # *Never* change p unexpectedly!
+        # assert not p.v._bodyString, (p and p.h, g.callers(10))
+        # p.v._import_lines = []
 
     def prepend_lines(self, p, lines):
-        p.v._import_lines = list(lines) + p.v._import_lines
+        ### p.v._import_lines = list(lines) + p.v._import_lines
+        d = self.vnode_info [p.v]
+        d ['lines'] = list(lines) + d ['lines']
 
     def set_lines(self, p, lines):
-        p.v._import_lines = list(lines)
+        ### p.v._import_lines = list(lines)
+        self.vnode_info [p.v] ['lines'] = list(lines)
     #@+node:ekr.20161108131153.7: *3* i.Overrides
     # These can be overridden in subclasses.
     #@+node:ekr.20161108131153.8: *4* i.adjust_parent
@@ -542,7 +557,13 @@ class Importer:
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
-        self.inject_lines_ivar(parent)
+        ### self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         lines = g.splitLines(s)
         self.skip = 0
         for i, line in enumerate(lines):
@@ -572,7 +593,8 @@ class Importer:
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.inject_lines_ivar(child)
+        ### self.inject_lines_ivar(child)
+        self.vnode_info [child.v] = { 'lines': [] }
         if line:
             self.add_line(child, line)
         assert isinstance(headline, str), repr(headline)
@@ -884,14 +906,15 @@ class Importer:
             v = p.v
             # Make sure that no code in x.post_pass has mistakenly set p.b.
             assert not v._bodyString, repr(v._bodyString)
-            lines = v._import_lines
+            ### lines = v._import_lines
+            lines = self.vnode_info [v] ['lines']
             if lines:
                 if not lines[-1].endswith('\n'):
                     lines[-1] += '\n'
             v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
                 # Bug fix: 2017/01/24: must convert to unicode!
                 # This was the source of the internal error in the p.b getter.
-            delattr(v, '_import_lines')
+            ### delattr(v, '_import_lines')
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent):
         """True if perfect import checks pass."""

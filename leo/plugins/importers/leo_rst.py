@@ -39,7 +39,13 @@ class Rst_Importer(Importer):
         """Node generator for reStructuredText importer."""
         if not s or s.isspace():
             return
-        self.inject_lines_ivar(parent)
+        ### self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         # We may as well do this first.  See note below.
         self.stack = [parent]
         skip = 0

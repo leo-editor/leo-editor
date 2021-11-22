@@ -49,7 +49,13 @@ class Org_Importer(Importer):
 
     def gen_lines(self, s, parent):
         """Node generator for org mode."""
-        self.inject_lines_ivar(parent)
+        ### self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         self.parents = [parent]
         for line in g.splitLines(s):
             m = self.org_pattern.match(line)
@@ -86,7 +92,8 @@ class Org_Importer(Importer):
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.inject_lines_ivar(child)
+        ### self.inject_lines_ivar(child)
+        self.vnode_info [child.v] = { 'lines': [] }
         if line:
             self.add_line(child, line)
         assert isinstance(headline, str), repr(headline)

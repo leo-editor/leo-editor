@@ -75,7 +75,13 @@ class Lua_Importer(Importer):
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
-        self.inject_lines_ivar(parent)
+        ### self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         lines = g.splitLines(s)
         self.skip = 0
         for i, line in enumerate(lines):

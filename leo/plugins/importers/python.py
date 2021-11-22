@@ -17,9 +17,9 @@ class Py_Importer(Importer):
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
     debug = True
-    dump = True
-    skip = False
-    trace = True
+    dump = False
+    skip_flag = True  # Careful: Importer.skip exists.
+    trace = False
     #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
@@ -161,7 +161,7 @@ class Py_Importer(Importer):
         # Init the state.
         self.new_state = Python_ScanState()
         assert self.new_state.indent == 0
-        self.python_info = {
+        self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
             parent.v: {
                 ### '@others': True,
@@ -182,7 +182,7 @@ class Py_Importer(Importer):
             self.new_state = self.scan_line(line, self.prev_state)
             # Check and trace.
             if self.debug or self.trace:
-                p_info = self.python_info.get(p.v)
+                p_info = self.vnode_info.get(p.v)
                 old_kind = p_info ['kind']
                 assert old_kind in ('outer', 'org', 'class', 'def'), repr(old_kind)
                 assert p_info is not None, (p.h, repr(line))
@@ -217,7 +217,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122031133.1: *4* py_i.do_class
     def do_class(self, line, p):
 
-        # p_info = self.python_info.get(p.v)
+        # p_info = self.vnode_info.get(p.v)
         new_indent = self.new_state.indent
         p = self.end_previous_blocks(p)
         p = self.start_python_block('class', line, p)
@@ -229,7 +229,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
     def do_def(self, line, p):
         
-        p_info = self.python_info.get(p.v)
+        p_info = self.vnode_info.get(p.v)
         old_kind = p_info ['kind']
         old_indent = p_info ['indent']
         new_indent = self.new_state.indent
@@ -258,7 +258,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122031418.1: *4* py_i.do_default
     def do_default(self, line, p):
         
-        p_info = self.python_info.get(p.v)
+        p_info = self.vnode_info.get(p.v)
         old_kind = p_info ['kind']
         if old_kind in ('class', 'def', 'org'):
             self.add_line(p, line, tag=f"{old_kind}:normal")
@@ -277,7 +277,7 @@ class Py_Importer(Importer):
         if self.trace:
             g.trace('END BLOCK', p.h, new_indent)
         while p and p != self.root:  ### and p.v._import_indent >= new_indent:
-            d = self.python_info.get(p.v)
+            d = self.vnode_info.get(p.v)
             indent = d.get('indent')
             assert indent is not None, p.h
             if indent < new_indent:
@@ -305,13 +305,14 @@ class Py_Importer(Importer):
     def gen_end(self, parent):
         """Handle end-of-scan precessing."""
         assert self.root == parent, (self.root, parent)
-        # For now, switch to standard interface.
-        if self.trace or self.dump:
-            print("\n\n===== Switch to standard interface =====\n")
-        for p in parent.self_and_subtree():
-            d = self.python_info.get(p.v)
-            assert d is not None, p.h
-            p.v._import_lines = d.get('lines') or []
+        if 0:  ### No longer needed, and would ruin the importer.
+            # For now, switch to standard interface.
+            if self.trace or self.dump:
+                print("\n\n===== Switch to standard interface =====\n")
+            for p in parent.self_and_subtree():
+                d = self.vnode_info.get(p.v)
+                assert d is not None, p.h
+                p.v._import_lines = d.get('lines') or []
         #
         ### Temporary?
         # minimal post-pass
@@ -328,7 +329,7 @@ class Py_Importer(Importer):
             g.trace('==== dump of tree 1')
             self.dump_tree(parent)
             
-        if self.skip and g.unitTesting:  ###
+        if self.skip_flag and g.unitTesting:  ###
             import unittest
             unittest.TestCase().skipTest('skip python tests for now')
         #
@@ -357,13 +358,13 @@ class Py_Importer(Importer):
         #
         # Compute the indentation at p.
         ### To do: wait until there is a reference!
-        parent_info = self.python_info.get(parent.v)
+        parent_info = self.vnode_info.get(parent.v)
         assert parent_info, (parent.h, g.callers())
         parent_indent = parent_info.get('indent')
         indent = parent_indent + 4 if kind == 'class' else parent_indent
-        # Update python_info for p.v
-        assert not v in self.python_info, (p.h, g.callers())
-        self.python_info [v] = {
+        # Update vnode_info for p.v
+        assert not v in self.vnode_info, (p.h, g.callers())
+        self.vnode_info [v] = {
             'indent': indent,
             'kind': kind,
             'lines': [],
@@ -434,9 +435,8 @@ class Py_Importer(Importer):
         if self.trace:
             g.trace(f" {(tag or g.caller()):>20} {g.truncate(p.h, 20)!r:25} {s!r}")
         ### p.v._import_lines.append(s)
-        d = self.python_info.get(p.v)
+        d = self.vnode_info.get(p.v)
         assert d is not None, p.h  # *Never* change p unexpectedly!
-        # Lines can be None when called in the post-pass.
         lines = d.get('lines')
         assert lines is not None, (p.h, repr(s))
         d ['lines'].append(s)
@@ -504,7 +504,7 @@ class Py_Importer(Importer):
                     # for ivar in ('_import_indent', '_import_kind'):
                         # delattr(p.v, ivar)
         else:  # Maybe later
-            d = self.python_info
+            d = self.vnode_info
             for p in parent.self_and_subtree():
                 v = p.v
                 assert not hasattr(v, '_import_lines', p.h)
