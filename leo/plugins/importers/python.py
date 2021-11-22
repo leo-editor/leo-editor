@@ -13,6 +13,14 @@ Target = linescanner.Target
 #@+node:ekr.20161029103615.1: ** class Py_Importer(Importer)
 class Py_Importer(Importer):
     """A class to store and update scanning state."""
+    
+    #@+<< Py_Importer debug vars >>
+    #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
+    debug = True
+    dump = True
+    skip = False
+    trace = True
+    #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -149,15 +157,12 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         """
-        self.trace = False
-        self.dump = False
         assert self.root == parent, (self.root, parent)
         # Init the state.
         self.new_state = Python_ScanState()
         assert self.new_state.indent == 0
-        # Init the info dict, an alternative to injecting data into vnodes.
-        # Keys are vnodes, values are inner dicts.
         self.python_info = {
+            # Keys are vnodes, values are inner dicts.
             parent.v: {
                 ### '@others': True,
                 'indent': 0,
@@ -175,22 +180,20 @@ class Py_Importer(Importer):
             # Update the state, remembering the previous state.
             self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)
-            # Update abbreviations
-            info = self.python_info.get(p.v)
-            assert info is not None, (p.h, repr(line))
-            ### old_indent = p.v._import_indent
-            ### old_kind = p.v._import_kind
-            assert info ['lines'] is not None, p.h
-            old_indent = info ['indent']
-            old_kind = info ['kind']
-            new_indent = self.new_state.indent
-            assert old_kind in ('outer', 'org', 'class', 'def'), repr(old_kind)
-            if self.trace:
-                print('')
-                g.trace(f"{old_kind:5} {old_indent:>2}->{new_indent:<2} {line.rstrip()}")
-                print('')
-            #
-            # The big switch
+            if self.debug or self.trace:
+                # Check the data.
+                p_info = self.python_info.get(p.v)
+                old_kind = p_info ['kind']
+                assert old_kind in ('outer', 'org', 'class', 'def'), repr(old_kind)
+                assert p_info is not None, (p.h, repr(line))
+                assert p_info ['lines'] is not None, p.h
+                if self.trace:
+                    old_indent = p_info ['indent']
+                    new_indent = self.new_state.indent
+                    print('')
+                    g.trace(f"{old_kind:5} {old_indent:>2}->{new_indent:<2} {line.rstrip()}")
+                    print('')
+            # Handle the line.
             if self.prev_state.context or self.ws_pattern.match(line):
                 # Case 1: a blank, comment line, or line within strings.
                 #         ws_pattern matches blank and comment lines.
@@ -200,95 +203,67 @@ class Py_Importer(Importer):
             if m:
                 kind = m.group(1)
                 assert kind in ('def', 'class'), repr(kind)
-                # Case 2: A new class.
                 if kind == 'class':
-                    p = self.end_previous_blocks(p)
-                    p = self.start_python_block('class', line, p)
-                    self.add_line(p, line, tag='class')
-                    lws = ' '*new_indent
-                    self.add_line(p, f"{lws}    @others\n", tag='class:@others')
-                    continue
-                # Case 3: A def.
-                if old_kind == 'class':
-                    if new_indent == old_indent + 4:
-                        # A method.
-                        p = self.end_previous_blocks(p)
-                        ### p = self.end_method(p)  ###
-                        p = self.start_python_block('def', line, p)
-                        self.add_line(p, line, tag='class:def')
-                    else:
-                        pass
-                elif old_kind == 'def' and new_indent == old_indent + 4:
-                    # Calse 3B: a nested def
-                    self.add_line(p, line, tag='def:def')
-                elif old_kind == 'org':
-                    # Case 3C: A def inside an organizer node.
-                    self.add_line(p, line, tag='org:def')
+                    p = self.do_class(line, p)
                 else:
-                    assert old_kind in ('def', 'outer'), repr(old_kind)
-                    p = self.end_previous_blocks(p)
-                    p = self.start_python_block('org', line, p)
-                    self.add_line(p, line, tag='outer:def')
+                    p = self.do_def(line, p)
             else:
-                # Case 4: A "normal" line.
-                if old_kind in ('class', 'def', 'org'):
-                    self.add_line(p, line, tag=f"{old_kind}:normal")
-                else:
-                    assert old_kind == 'outer', repr(old_kind)
-                    p = self.end_previous_blocks(p)
-                    p = self.start_python_block('org', line, p)
-                    self.add_line(p, line, tag='org:normal')
-        #
-        # For now, switch to standard interface.
-        if self.trace or self.dump:
-            print("\n\n===== Switch to standard interface =====\n")
-        for p in parent.self_and_subtree():
-            d = self.python_info.get(p.v)
-            assert d is not None, p.h
-            p.v._import_lines = d.get('lines') or []
-        #
-        ### Temporary?
-        # minimal post-pass
-        if 0:
-            for p in parent.subtree():
-                s = ''.join(p.v._import_lines)
-                if not p.hasChildren():
-                    # Remove the unnecessary @others line.
-                    s = s.replace('@others\n', '')
-                    if self.trace:
-                        g.trace('===== REMOVE @others', p.h)
-                p.v._import_lines = g.splitLines(textwrap.dedent(s))
-        if self.dump:  ###
-            g.trace('==== dump of tree 1')
-            self.dump_tree(parent)
-            
-        if True and g.unitTesting:  ###
-            import unittest
-            unittest.TestCase().skipTest('skip python tests for now')
-        #
-        # Explicit post-pass, adapted for python.
-        if 0:
-            self.promote_first_child(parent)
-            self.adjust_all_decorator_lines(parent)
-        if 0:
-            g.trace('==== dump of tree 2')
-            self.dump_tree(parent)
-    #@+node:ekr.20211118073744.1: *4* py_i: explicit post-pass (to do)
-    #@+node:ekr.20211116061415.1: *5* py_i.adjust_all_decorator_lines & helper
-    def adjust_all_decorator_lines(self, parent):
-        """Move decorator lines (only) to the next sibling node."""
-        g.trace(parent.h)
-        for p in parent.self_and_subtree():
-            for child in p.children():
-                if child.hasNext():
-                    self.adjust_decorator_lines(child)
-                    
-    def adjust_decorator_lines(self, p):
-        """Move decorator lines from the end of p.b to the start of p.next().b."""
-        ### To do ###
-    #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
-    def promote_first_child(self, parent):
-        """Move a smallish first child to the start of parent."""
+                p = self.do_default(line, p)
+        self.gen_end(parent)
+    #@+node:ekr.20211122031133.1: *4* py_i.do_class
+    def do_class(self, line, p):
+
+        # p_info = self.python_info.get(p.v)
+        new_indent = self.new_state.indent
+        p = self.end_previous_blocks(p)
+        p = self.start_python_block('class', line, p)
+        self.add_line(p, line, tag='class')
+        ### This must be wrong.
+        lws = ' '*new_indent
+        self.add_line(p, f"{lws}    @others\n", tag='class:@others')
+        return p
+    #@+node:ekr.20211122031256.1: *4* py_i.do_def
+    def do_def(self, line, p):
+        
+        p_info = self.python_info.get(p.v)
+        old_kind = p_info ['kind']
+        old_indent = p_info ['indent']
+        new_indent = self.new_state.indent
+        if old_kind == 'class':
+            if new_indent == old_indent + 4:
+                # A method.
+                p = self.end_previous_blocks(p)
+                ### p = self.end_method(p)  ###
+                p = self.start_python_block('def', line, p)
+                self.add_line(p, line, tag='class:def')
+            else:
+                pass
+        elif old_kind == 'def' and new_indent == old_indent + 4:
+            # Calse 3B: a nested def
+            self.add_line(p, line, tag='def:def')
+        elif old_kind == 'org':
+            # Case 3C: A def inside an organizer node.
+            self.add_line(p, line, tag='org:def')
+        else:
+            assert old_kind in ('def', 'outer'), repr(old_kind)
+            p = self.end_previous_blocks(p)
+            p = self.start_python_block('org', line, p)
+            self.add_line(p, line, tag='outer:def')
+        return p
+        
+    #@+node:ekr.20211122031418.1: *4* py_i.do_default
+    def do_default(self, line, p):
+        
+        p_info = self.python_info.get(p.v)
+        old_kind = p_info ['kind']
+        if old_kind in ('class', 'def', 'org'):
+            self.add_line(p, line, tag=f"{old_kind}:normal")
+        else:
+            assert old_kind == 'outer', repr(old_kind)
+            p = self.end_previous_blocks(p)
+            p = self.start_python_block('org', line, p)
+            self.add_line(p, line, tag='org:normal')
+        return p
     #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
     def end_previous_blocks(self, p):
         """
@@ -322,6 +297,44 @@ class Py_Importer(Importer):
         if self.trace:
             g.trace(f"NEW TOP: {p.h}")
         return p
+    #@+node:ekr.20211122032257.1: *4* py_i.gen_end
+    def gen_end(self, parent):
+        """Handle end-of-scan precessing."""
+        assert self.root == parent, (self.root, parent)
+        # For now, switch to standard interface.
+        if self.trace or self.dump:
+            print("\n\n===== Switch to standard interface =====\n")
+        for p in parent.self_and_subtree():
+            d = self.python_info.get(p.v)
+            assert d is not None, p.h
+            p.v._import_lines = d.get('lines') or []
+        #
+        ### Temporary?
+        # minimal post-pass
+        if 0:
+            for p in parent.subtree():
+                s = ''.join(p.v._import_lines)
+                if not p.hasChildren():
+                    # Remove the unnecessary @others line.
+                    s = s.replace('@others\n', '')
+                    if self.trace:
+                        g.trace('===== REMOVE @others', p.h)
+                p.v._import_lines = g.splitLines(textwrap.dedent(s))
+        if self.dump:  ###
+            g.trace('==== dump of tree 1')
+            self.dump_tree(parent)
+            
+        if self.skip and g.unitTesting:  ###
+            import unittest
+            unittest.TestCase().skipTest('skip python tests for now')
+        #
+        # Explicit post-pass, adapted for python.
+        if 0:
+            self.promote_first_child(parent)
+            self.adjust_all_decorator_lines(parent)
+        if 0:
+            g.trace('==== dump of tree 2')
+            self.dump_tree(parent)
     #@+node:ekr.20161116034633.7: *4* py_i.start_python_block (new)
     def start_python_block(self, kind, line, parent):
         """
@@ -362,6 +375,22 @@ class Py_Importer(Importer):
             # else:
                 # p.v._import_indent = parent.v._import_indent
         return p
+    #@+node:ekr.20211118073744.1: *4* py_i: explicit post-pass (to do)
+    #@+node:ekr.20211116061415.1: *5* py_i.adjust_all_decorator_lines & helper
+    def adjust_all_decorator_lines(self, parent):
+        """Move decorator lines (only) to the next sibling node."""
+        g.trace(parent.h)
+        for p in parent.self_and_subtree():
+            for child in p.children():
+                if child.hasNext():
+                    self.adjust_decorator_lines(child)
+                    
+    def adjust_decorator_lines(self, p):
+        """Move decorator lines from the end of p.b to the start of p.next().b."""
+        ### To do ###
+    #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
+    def promote_first_child(self, parent):
+        """Move a smallish first child to the start of parent."""
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
     #@+node:ekr.20211121085759.1: *5* py_i: do-nothing overrides
     #@+node:ekr.20211120093621.1: *6* py_i.create_child_node (do-nothing)
@@ -373,19 +402,17 @@ class Py_Importer(Importer):
     def cut_stack(self, new_state, stack):
         """Cut back the stack until stack[-1] matches new_state."""
         assert False, g.callers()
-    #@+node:ekr.20161220064822.1: *6* py_i.gen_ref (do-nothing)
-    def gen_ref(self, line, parent, target):
-        """Do-nothing override of Importer.gen_ref."""
-        assert False, g.callers()
+    #@+node:ekr.20161220064822.1: *6* py_i.gen_python_ref (TO DO)
+    def gen_python_ref(self, line, parent):
+        """Generate the at-others directive and set target.at_others_flag."""
+        # indent_ws = self.get_str_lws(line)
+        # h = self.clean_headline(line, p=None)
         ###
-            # # # """Generate the at-others directive and set target.at_others_flag."""
-            # # # indent_ws = self.get_str_lws(line)
-            # # # h = self.clean_headline(line, p=None)
-            # # # if not target.at_others_flag:
-                # # # target.at_others_flag = True
-                # # # ref = f"{indent_ws}@others\n"
-                # # # self.add_line(parent, ref, 'ref')
-            # # # return h
+        # if not target.at_others_flag:
+            # target.at_others_flag = True
+            # ref = f"{indent_ws}@others\n"
+            # self.add_line(parent, ref, 'ref')
+            # return h
     #@+node:ekr.20211121085222.1: *6* py_i.trace_status (do-nothing)
     def trace_status(self, line, new_state, prev_state, stack, top):
         """Do-nothing override of Import.trace_status."""
