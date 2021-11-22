@@ -1986,7 +1986,8 @@ class VNode:
         'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
         'unknownAttributes',
         # Injected by importer classes.
-        '_import_indent', '_import_kind', '_import_lines',
+        '_import_lines',  ### To be eliiminate3d
+        ### '_import_indent', '_import_kind',
         # Injected by read code.
         'at_read', 'tempAttributes',
         # Not written to any file.

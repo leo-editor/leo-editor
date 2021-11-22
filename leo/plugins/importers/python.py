@@ -150,26 +150,39 @@ class Py_Importer(Importer):
         nodes as needed.
         """
         self.trace = False
-        self.dump = True
+        self.dump = False
         assert self.root == parent, (self.root, parent)
         # Init the state.
         self.new_state = Python_ScanState()
         assert self.new_state.indent == 0
-        # Importer.add_root_directives is part of the finisher, not the post-pass
-        parent.v._import_lines = ['@others\n']
-        parent.v._import_indent = 0
-        parent.v._import_kind = 'outer'
+        # Init the info dict, an alternative to injecting data into vnodes.
+        # Keys are vnodes, values are inner dicts.
+        self.python_info = {
+            parent.v: {
+                ### '@others': True,
+                'indent': 0,
+                'kind': 'outer',
+                'lines': ['@others\n'],
+            }
+        }
+        # Keys are indents (ints), values are vnodes with an @others at that level.
+        self.indent_dict = { 0: parent.v }
         # Create a Declarations node.
-        p = self.start_python_block('org', '', parent)
+        p = self.start_python_block('org', 'Declarations', parent)
         #
-        # The main importer loop: handle each line.
+        # The main importer loop.
         for i, line in enumerate(g.splitLines(s)):
             # Update the state, remembering the previous state.
             self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)
             # Update abbreviations
-            old_indent = p.v._import_indent
-            old_kind = p.v._import_kind
+            info = self.python_info.get(p.v)
+            assert info is not None, (p.h, repr(line))
+            ### old_indent = p.v._import_indent
+            ### old_kind = p.v._import_kind
+            assert info ['lines'] is not None, p.h
+            old_indent = info ['indent']
+            old_kind = info ['kind']
             new_indent = self.new_state.indent
             assert old_kind in ('outer', 'org', 'class', 'def'), repr(old_kind)
             if self.trace:
@@ -187,52 +200,52 @@ class Py_Importer(Importer):
             if m:
                 kind = m.group(1)
                 assert kind in ('def', 'class'), repr(kind)
+                # Case 2: A new class.
                 if kind == 'class':
-                    # Case 2: A class.
                     p = self.end_previous_blocks(p)
-                    p = self.start_python_block(kind, line, p)
+                    p = self.start_python_block('class', line, p)
                     self.add_line(p, line, tag='class')
-                elif old_kind == 'org':
-                    # Case 2: A def in an organizer.
-                    kind2 = p.parent().v._import_kind
-                    if kind2 == 'class':
-                        # End the organizer and create a node for the method.
+                    lws = ' '*new_indent
+                    self.add_line(p, f"{lws}    @others\n", tag='class:@others')
+                    continue
+                # Case 3: A def.
+                if old_kind == 'class':
+                    if new_indent == old_indent + 4:
+                        # A method.
                         p = self.end_previous_blocks(p)
-                        p = self.start_python_block(kind, line, p)
-                        self.add_line(p, line, tag='method 2')
+                        ### p = self.end_method(p)  ###
+                        p = self.start_python_block('def', line, p)
+                        self.add_line(p, line, tag='class:def')
                     else:
-                        # Add the def to the organizer
-                        self.add_line(p, line, tag='bare def')
-                elif old_kind == 'def' and new_indent > old_indent:
-                    # Case 2D: Nested function.
-                    self.add_line(p, line, tag='nested def')
-                elif old_kind == 'outer':
-                    # Case 2E: A def at the top level.
+                        pass
+                elif old_kind == 'def' and new_indent == old_indent + 4:
+                    # Calse 3B: a nested def
+                    self.add_line(p, line, tag='def:def')
+                elif old_kind == 'org':
+                    # Case 3C: A def inside an organizer node.
+                    self.add_line(p, line, tag='org:def')
+                else:
+                    assert old_kind in ('def', 'outer'), repr(old_kind)
                     p = self.end_previous_blocks(p)
                     p = self.start_python_block('org', line, p)
-                    self.add_line(p, line, tag='outer def')
-                else:
-                    # Case 2F: A method, presumably.
-                    p = self.end_previous_blocks(p)
-                    p = self.start_python_block(kind, line, p)
-                    self.add_line(p, line, tag='method')
-            elif new_indent > old_indent:
-                # Case 3: An indented line within the present block.
-                if old_kind == 'outer':
-                    # Put all prefix lines into the 'Declarations' nodes.
-                    p = self.end_previous_blocks(p)
-                    p = self.start_python_block('org', line, p)
-                    self.add_line(p, line, tag='outer indented')
-                else:
-                    self.add_line(p, line, tag='indented')
-            elif new_indent == old_indent and old_kind == 'organizer':
-                # Case 4: A line at the level of the organizer node.
-                self.add_line(p, line, tag='organizer')
+                    self.add_line(p, line, tag='outer:def')
             else:
-                # Case 5: Start a new organizer block.
-                p = self.end_previous_blocks(p)
-                p = self.start_python_block('org', line, p)
-                self.add_line(p, line, tag='organizer')
+                # Case 4: A "normal" line.
+                if old_kind in ('class', 'def', 'org'):
+                    self.add_line(p, line, tag=f"{old_kind}:normal")
+                else:
+                    assert old_kind == 'outer', repr(old_kind)
+                    p = self.end_previous_blocks(p)
+                    p = self.start_python_block('org', line, p)
+                    self.add_line(p, line, tag='org:normal')
+        #
+        # For now, switch to standard interface.
+        if self.trace or self.dump:
+            print("\n\n===== Switch to standard interface =====\n")
+        for p in parent.self_and_subtree():
+            d = self.python_info.get(p.v)
+            assert d is not None, p.h
+            p.v._import_lines = d.get('lines') or []
         #
         ### Temporary?
         # minimal post-pass
@@ -249,7 +262,7 @@ class Py_Importer(Importer):
             g.trace('==== dump of tree 1')
             self.dump_tree(parent)
             
-        if False and g.unitTesting:
+        if True and g.unitTesting:  ###
             import unittest
             unittest.TestCase().skipTest('skip python tests for now')
         #
@@ -280,6 +293,26 @@ class Py_Importer(Importer):
     def end_previous_blocks(self, p):
         """
         End all blocks blocks whose level is <= the new block's level.
+        """
+        new_indent = self.new_state.indent
+        if self.trace:
+            g.trace('END BLOCK', p.h, new_indent)
+        while p and p != self.root:  ### and p.v._import_indent >= new_indent:
+            d = self.python_info.get(p.v)
+            indent = d.get('indent')
+            assert indent is not None, p.h
+            if indent < new_indent:
+                break
+            if self.trace:
+                g.trace(f"    POP: {p.h}")
+            p = p.parent()
+        if self.trace:
+            g.trace(f"NEW TOP: {p.h}")
+        return p
+    #@+node:ekr.20211121180759.1: *4* py_i.end_previous_method (not used yet)
+    def end_previous_method(self, p):
+        """
+        End all blocks blocks whose level is <= the new block's level.
         """ 
         new_indent = self.new_state.indent
         while p and p != self.root and p.v._import_indent >= new_indent:
@@ -299,18 +332,35 @@ class Py_Importer(Importer):
         assert kind in ('org', 'class', 'def'), g.callers()
         # Create a new node p.
         p = parent.insertAsLastChild()
+        v = p.v
         # Set p.h.
         p.h = self.clean_headline(line, p=None).strip()
         if kind == 'org':
             p.h = f"Organizer: {p.h}"
-        # Inject updated ivars.
-        p.v._import_kind = kind
-        if kind == 'class':
-            p.v._import_lines = ['    @others\n']
-            p.v._import_indent = parent.v._import_indent + 4
-        else:
-            p.v._import_lines = []
-            p.v._import_indent = parent.v._import_indent
+        #
+        # Compute the indentation at p.
+        ### To do: wait until there is a reference!
+        parent_info = self.python_info.get(parent.v)
+        assert parent_info, (parent.h, g.callers())
+        parent_indent = parent_info.get('indent')
+        indent = parent_indent + 4 if kind == 'class' else parent_indent
+        # Update python_info for p.v
+        assert not v in self.python_info, (p.h, g.callers())
+        self.python_info [v] = {
+            'indent': indent,
+            'kind': kind,
+            'lines': [],
+        }
+        # Update self.indent_dict.
+        self.indent_dict = { indent: p.v }
+        ###
+            # # Inject updated ivars.
+            # p.v._import_kind = kind
+            # p.v._import_lines = []
+            # if kind == 'class':
+                # p.v._import_indent = parent.v._import_indent + 4
+            # else:
+                # p.v._import_indent = parent.v._import_indent
         return p
     #@+node:ekr.20211118073549.1: *4* py_i: overrides
     #@+node:ekr.20211121085759.1: *5* py_i: do-nothing overrides
@@ -344,17 +394,21 @@ class Py_Importer(Importer):
     def post_pass(self, parent):
         """Override Importer.post_pass."""
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
-    def add_line(self, p, s, tag='NO TAG'):  # pylint: disable=arguments-differ
+    def add_line(self, p, s, tag=None):  # pylint: disable=arguments-differ
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
-        # *Never* change p unexpectedly!
-        for ivar in ('_import_indent', '_import_kind', '_import_lines'):
-            assert hasattr(p.v, ivar), (ivar, g.callers())
+        ###
+            # for ivar in ('_import_indent', '_import_kind', '_import_lines'):
+                # assert hasattr(p.v, ivar), (ivar, g.callers())
         if self.trace:
-            h = g.truncate(p.h, 20)
-            kind = p.v._import_kind
-            g.trace(f" {tag:>20}:{kind:10} {g.caller():10} {h:25} {s!r}")
-        p.v._import_lines.append(s)
+            g.trace(f" {(tag or g.caller()):>20} {g.truncate(p.h, 20)!r:25} {s!r}")
+        ### p.v._import_lines.append(s)
+        d = self.python_info.get(p.v)
+        assert d is not None, p.h  # *Never* change p unexpectedly!
+        # Lines can be None when called in the post-pass.
+        lines = d.get('lines')
+        assert lines is not None, (p.h, repr(s))
+        d ['lines'].append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
         """
@@ -366,6 +420,114 @@ class Py_Importer(Importer):
         It would be wrong to examine the indentation of other lines.
         """
         return self.get_str_lws(lines[0]) if lines else ''
+    #@+node:ekr.20180524173510.1: *5* py_i: i.post_pass overrides
+    #@+node:ekr.20170617125213.1: *6* py_i.clean_all_headlines
+    def clean_all_headlines(self, parent):
+        """
+        Clean all headlines in parent's tree by calling the language-specific
+        clean_headline method.
+        """
+        for p in parent.subtree():
+            # Important: i.gen_ref does not know p when it calls
+            # self.clean_headline.
+            h = self.clean_headline(p.h, p=p)
+            if h and h != p.h:
+                p.h = h
+    #@+node:ekr.20211112002911.1: *6* py_i.find_tail (not used yet)
+    def find_tail(self, p):
+        """
+        Find the tail (trailing unindented) lines.
+        return head, tail
+        """
+        lines = self.get_lines(p)[:]
+        tail = []
+        # First, find all potentially tail lines, including blank lines.
+        while lines:
+            line = lines.pop()
+            if line.lstrip() == line or not line.strip():
+                tail.append(line)
+            else:
+                break
+        # Next, remove leading blank lines from the tail.
+        while tail:
+            line = tail[-1]
+            if line.strip():
+                break
+            else:
+                tail.pop(0)
+        if 0:
+            g.printObj(lines, tag=f"lines: find_tail: {p.h}")
+            g.printObj(tail, tag=f"tail: find_tail: {p.h}")
+    #@+node:ekr.20211120235850.1: *6* py_i.finalize_ivars
+    def finalize_ivars(self, parent):
+        """
+        Update the body text of all nodes in parent's tree using the injected
+        v._import_lines lists.
+        """
+        if 1:  # for now, gen_lines converts to the _import_lines interface.
+            # set p.b from p.v._import_lines and remove p.v._import_lines.
+            super().finalize_ivars(parent)
+            ###
+                # # Remove v._import_indent and v._import_kind.
+                # for p in parent.self_and_subtree():
+                    # for ivar in ('_import_indent', '_import_kind'):
+                        # delattr(p.v, ivar)
+        else:  # Maybe later
+            d = self.python_info
+            for p in parent.self_and_subtree():
+                v = p.v
+                assert not hasattr(v, '_import_lines', p.h)
+                assert not v._bodyString, (p.h, repr(v._bodyString))
+                info = d.get(v)
+                assert info, p.h
+                lines = info.get('lines')
+                if not lines:
+                    g.trace('NO LINES', p.h)  # The node should have been eliminated.
+                v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
+    #@+node:ekr.20211118070957.1: *6* py_i.promote_last_lines
+    def promote_last_lines(self, parent):
+        """A do-nothing override."""
+    #@+node:ekr.20211118072555.1: *6* py_i.promote_trailing_underindented_lines (do-nothing override)
+    def promote_trailing_underindented_lines(self, parent):
+        """
+        Promote all trailing underindent lines to the node's parent node,
+        deleting one tab's worth of indentation. Typically, this will remove
+        the underindent escape.
+        """
+        pass
+        ###
+            # pattern = self.escape_pattern  # A compiled regex pattern
+            # for p in parent.subtree():
+                # lines = self.get_lines(p)
+                # tail = []
+                # while lines:
+                    # line = lines[-1]
+                    # m = pattern.match(line)
+                    # if m:
+                        # lines.pop()
+                        # n_str = m.group(1)
+                        # try:
+                            # n = int(n_str)
+                        # except ValueError:
+                            # break
+                        # if n == abs(self.tab_width):
+                            # new_line = line[len(m.group(0)) :]
+                            # tail.append(new_line)
+                        # else:
+                            # g.trace('unexpected unindent value', n)
+                            # g.trace(line)
+                            # # Fix #652 by restoring the line.
+                            # new_line = line[len(m.group(0)) :].lstrip()
+                            # lines.append(new_line)
+                            # break
+                    # else:
+                        # break
+                # if tail:
+                    # parent = p.parent()
+                    # if parent.parent() == self.root:
+                        # parent = parent.parent()
+                    # self.set_lines(p, lines)
+                    # self.extend_lines(parent, reversed(tail))
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -424,101 +586,6 @@ class Py_Importer(Importer):
             if block1 and block2:
                 add_key(d, block1[0], ('len', block1, block1, None))
         return d
-    #@+node:ekr.20180524173510.1: *3* py_i: i.post_pass overrides
-    #@+node:ekr.20170617125213.1: *4* py_i.clean_all_headlines
-    def clean_all_headlines(self, parent):
-        """
-        Clean all headlines in parent's tree by calling the language-specific
-        clean_headline method.
-        """
-        for p in parent.subtree():
-            # Important: i.gen_ref does not know p when it calls
-            # self.clean_headline.
-            h = self.clean_headline(p.h, p=p)
-            if h and h != p.h:
-                p.h = h
-    #@+node:ekr.20211112002911.1: *4* py_i.find_tail (not used yet)
-    def find_tail(self, p):
-        """
-        Find the tail (trailing unindented) lines.
-        return head, tail
-        """
-        lines = self.get_lines(p)[:]
-        tail = []
-        # First, find all potentially tail lines, including blank lines.
-        while lines:
-            line = lines.pop()
-            if line.lstrip() == line or not line.strip():
-                tail.append(line)
-            else:
-                break
-        # Next, remove leading blank lines from the tail.
-        while tail:
-            line = tail[-1]
-            if line.strip():
-                break
-            else:
-                tail.pop(0)
-        if 0:
-            g.printObj(lines, tag=f"lines: find_tail: {p.h}")
-            g.printObj(tail, tag=f"tail: find_tail: {p.h}")
-    #@+node:ekr.20211118070957.1: *4* py_i.promote_last_lines
-    def promote_last_lines(self, parent):
-        """A do-nothing override."""
-    #@+node:ekr.20211118072555.1: *4* py_i.promote_trailing_underindented_lines (do-nothing override)
-    def promote_trailing_underindented_lines(self, parent):
-        """
-        Promote all trailing underindent lines to the node's parent node,
-        deleting one tab's worth of indentation. Typically, this will remove
-        the underindent escape.
-        """
-        pass
-        ###
-            # pattern = self.escape_pattern  # A compiled regex pattern
-            # for p in parent.subtree():
-                # lines = self.get_lines(p)
-                # tail = []
-                # while lines:
-                    # line = lines[-1]
-                    # m = pattern.match(line)
-                    # if m:
-                        # lines.pop()
-                        # n_str = m.group(1)
-                        # try:
-                            # n = int(n_str)
-                        # except ValueError:
-                            # break
-                        # if n == abs(self.tab_width):
-                            # new_line = line[len(m.group(0)) :]
-                            # tail.append(new_line)
-                        # else:
-                            # g.trace('unexpected unindent value', n)
-                            # g.trace(line)
-                            # # Fix #652 by restoring the line.
-                            # new_line = line[len(m.group(0)) :].lstrip()
-                            # lines.append(new_line)
-                            # break
-                    # else:
-                        # break
-                # if tail:
-                    # parent = p.parent()
-                    # if parent.parent() == self.root:
-                        # parent = parent.parent()
-                    # self.set_lines(p, lines)
-                    # self.extend_lines(parent, reversed(tail))
-    #@+node:ekr.20211120235800.1: *3* py_i: i.finish overrides
-    #@+node:ekr.20211120235850.1: *4* py_i.finalize_ivars
-    def finalize_ivars(self, parent):
-        """
-        Update the body text of all nodes in parent's tree using the injected
-        v._import_lines lists.
-        """
-        # set p.b from p.v._import_lines and remove p.v._import_lines.
-        super().finalize_ivars(parent)
-        # Remove v._import_indent and v._import_kind.
-        for p in parent.self_and_subtree():
-            for ivar in ('_import_indent', '_import_kind'):
-                delattr(p.v, ivar)
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:

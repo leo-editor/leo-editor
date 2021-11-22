@@ -3337,21 +3337,21 @@ class TestPython (BaseTestImporter):
                 def class1_method2():
                     def helper():
                         pass
-            def outer_def2():
-                pass
-            # An outer comment
-            class Class2:
-                def class2_method1():
-                    pass
-                def class2_method2():
-                    pass
-     
-            def main():
-                pass
-        
-            if __name__ == '__main__':
-                main()
         """)
+            # def outer_def2():
+                # pass
+            # # An outer comment
+            # class Class2:
+                # def class2_method1():
+                    # pass
+                # def class2_method2():
+                    # pass
+     
+            # def main():
+                # pass
+        
+            # if __name__ == '__main__':
+                # main()
         table = (
             (1, 'Declarations'),
             (1, 'outer_def1'),
