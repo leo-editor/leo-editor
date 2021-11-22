@@ -173,49 +173,26 @@ class Importer:
     def add_line(self, p, s):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
-        ### OLD
-            # # *Never* change p unexpectedly!
-            # assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
-            # p.v._import_lines.append(s)
-        d = self.vnode_info [p.v]
-        assert d is not None, p.h  # *Never* change p unexpectedly!
-        d ['lines'].append(s)
+        self.vnode_info [p.v] ['lines'].append(s)
 
     def clear_lines(self, p):
-        ### p.v._import_lines = []
         self.vnode_info [p.v] ['lines'] = []
 
     def extend_lines(self, p, lines):
-        ### p.v._import_lines.extend(list(lines))
-        d = self.vnode_info [p.v]
-        d ['lines'].extend(list(lines))
+        self.vnode_info [p.v] ['lines'].extend(list(lines))
 
     def get_lines(self, p):
-        ###
-            # # *Never* change p unexpectedly!
-            # assert hasattr(p.v, '_import_lines'), (p and p.h, g.callers())
-            # return p.v._import_lines
         return self.vnode_info [p.v] ['lines']
 
     def has_lines(self, p):
-        ### return hasattr(p.v, '_import_lines')
         d = self.vnode_info.get(p.v)
         return d is not None and d.get('lines') is not None
 
-    ###
-    # def inject_lines_ivar(self, p):
-        # """Inject _import_lines into p.v."""
-        # # *Never* change p unexpectedly!
-        # assert not p.v._bodyString, (p and p.h, g.callers(10))
-        # p.v._import_lines = []
-
     def prepend_lines(self, p, lines):
-        ### p.v._import_lines = list(lines) + p.v._import_lines
         d = self.vnode_info [p.v]
         d ['lines'] = list(lines) + d ['lines']
 
     def set_lines(self, p, lines):
-        ### p.v._import_lines = list(lines)
         self.vnode_info [p.v] ['lines'] = list(lines)
     #@+node:ekr.20161108131153.7: *3* i.Overrides
     # These can be overridden in subclasses.
