@@ -16,7 +16,7 @@ class Py_Importer(Importer):
     
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
-    debug = True
+    debug = False
     dump = False
     skip_flag = True  # Careful: Importer.skip exists.
     trace = False
@@ -164,7 +164,8 @@ class Py_Importer(Importer):
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
             parent.v: {
-                ### '@others': True,
+                '@others': True,
+                'child-indent': 0,
                 'indent': 0,
                 'kind': 'outer',
                 'lines': ['@others\n'],

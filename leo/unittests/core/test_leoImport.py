@@ -44,6 +44,7 @@ class BaseTestImporter(LeoUnitTest):
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {self.id()}"
+        ### contents = textwrap.dedent(s.strip()) + '\n\n'  ### Experimental.
         try:
             c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
         except AssertionError:
@@ -2121,6 +2122,78 @@ class TestPython (BaseTestImporter):
     ext = '.py'
 
     #@+others
+    #@+node:ekr.20211125084921.1: *3*  TestPython.run_python_test
+    def run_python_test(self, p, s, verbose=False):  ### input_string, expected_string):
+        """
+        Create a test from two strings, both of which should be dedented:
+
+        - input_string:    a string containing a test file.
+        - expected_string: a string containing a representation of the expected output,
+                           in "enhanced MORE" format.
+        """
+        ### BaseTestImporter.run_test
+        c, ext = self.c, self.ext
+        self.assertTrue(ext)
+        self.treeType = '@file'  # Fix #352.
+        # Run the test.
+        parent = p.insertAsLastChild()
+        kind = self.compute_unit_test_kind(ext)
+        parent.h = f"{kind} {self.id()}"
+        try:
+            c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
+        except AssertionError:
+            if verbose:
+                g.printObj(s, tag=self.id())
+                self.dump_tree()
+            raise
+
+    #@+node:ekr.20211125101517.2: *4* clean
+    def clean(self, s):
+        """Create a valid unit test name."""
+        clean_s = ''.join(z for z in s.replace(' ','_') if z.isalnum() or z == '_') 
+        return f"test_{clean_s}"
+    #@+node:ekr.20211125101517.3: *4* convert
+    def convert(self, p1, result_root):
+        
+        test_p = result_root.insertAsLastChild()
+        test_p.h = self.clean(p1.h)
+        s1, s2 = p1.b.split('# Expect:\n')
+        input_lines = g.splitLines(s1.strip() + '\n\n')
+        expected_lines = g.splitLines(s2.strip() + '\n\n')
+        self.create_test(test_p, input_lines, expected_lines)
+    #@+node:ekr.20211125101517.4: *4* create_test
+    def  create_test(self, test_p, input_lines, expected_lines):
+
+        # g.printObj(input_lines, tag='input_lines')
+        g.printObj(expected_lines, tag='expected_lines')
+
+        stack = [(-1, test_p)]  # (level, p)
+        for s in expected_lines:
+            g.trace(repr(s))
+            if s.strip().startswith('-'):
+                n = len(s) - len(s.lstrip())
+                lws = s[:n]
+                assert n == 0 or lws.isspace(), repr(lws)
+                while stack:
+                    level, p = stack.pop()
+                    if n > level:
+                        child = p.insertAsLastChild()
+                        child.h = s.strip()
+                        p = child
+                        stack.append((n, p))
+                        break
+                    elif n == level:
+                        child = p.insertAfter()
+                        child.h = s.strip()
+                        p = child
+                        stack.append((n, p))
+                        break
+                    else:
+                        pass  # Look for next entry.
+                else:
+                    # g.printObj(input_lines, tag='input_lines')
+                    g.printObj(expected_lines, tag='expected_lines')
+                    assert False, f"No node at level {n}"
     #@+node:ekr.20210904065459.62: *3* TestPython.test_bad_class_test
     def test_bad_class_test(self):
         c = self.c
@@ -3329,8 +3402,6 @@ class TestPython (BaseTestImporter):
         c = self.c
         s = textwrap.dedent("""\
             import sys
-            def outer_def1():
-                pass
             class Class1:
                 def class1_method1():
                     pass
@@ -3338,6 +3409,8 @@ class TestPython (BaseTestImporter):
                     def helper():
                         pass
         """)
+            # def outer_def1():
+                # pass
             # def outer_def2():
                 # pass
             # # An outer comment
