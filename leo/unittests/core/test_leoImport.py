@@ -2168,8 +2168,9 @@ class TestPython (BaseTestImporter):
         stack = [(-1, expected_parent)]  # (level, p)
         for s in expected_lines:
             if s.strip().startswith('- outer:'):
-                # Just ignore. Provides a place to specify non-standard top-level text.
-                pass
+                # The lines following `- outer` can specify non-standard top-level text.
+                # If none are given, assume the standard top-level text below.
+                pass  # ignore.
             elif s.strip().startswith('-'):
                 n = len(s) - len(s.lstrip())
                 lws = s[:n]
@@ -2200,7 +2201,7 @@ class TestPython (BaseTestImporter):
             else:
                 junk_level, p = stack[-1]
                 p.b += s
-        # Create default outer node if expected_parent.b is empty.
+        # Create standard outer node body if expected_parent.b is empty.
         if not expected_parent.b:
             expected_parent.b = textwrap.dedent("""
                 ATothers
