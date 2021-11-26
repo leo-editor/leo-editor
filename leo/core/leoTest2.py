@@ -168,9 +168,9 @@ class LeoUnitTest(unittest.TestCase):
         def dump(p):
             print('')
             print('level:', p.level(), p.h)
-            print('-----')
+            # print('-----')
             lines = p.v._import_lines if hasattr(p.v, '_import_lines') else p.v.b
-            g.printObj(lines, tag=p.h)
+            g.printObj(lines) ###, tag=p.h)
 
         if tag:
             print('')

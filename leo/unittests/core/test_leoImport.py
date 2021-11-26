@@ -2173,15 +2173,22 @@ class TestPython (BaseTestImporter):
                 assert n == 0 or lws.isspace(), repr(lws)
                 while stack:
                     level, p = stack.pop()
+                    g.trace('----', repr(s))
+                    if s.strip().startswith('- '):
+                        aList = s.strip()[2:].split(':')
+                        g.trace(aList)
+                        kind, h = aList[0].strip(), ':'.join(aList[1:])
+                        self.assertTrue(kind in ('outer', 'org', 'class', 'def'), msg=repr(s))
                     if n > level:
+                        p.b = p.b.strip()
                         child = p.insertAsLastChild()
-                        child.h = s.strip()[2:]
+                        child.h = h  ### s.strip()[2:]
                         p = child
                         stack.append((n, p))
                         break
                     elif n == level:
                         child = p.insertAfter()
-                        child.h = s.strip()[2:]
+                        child.h = h  ### s.strip()[2:]
                         p = child
                         stack.append((n, p))
                         break
@@ -2205,16 +2212,24 @@ class TestPython (BaseTestImporter):
         g.printObj(d, tag='===== vnode_info')
         p1, p2 = created_p.copy(), expected_p.copy()
         try:
-            while p1 and p2:
+            after1, after2 = p1.nodeAfterTree(), p2.nodeAfterTree()
+            while p1 and p2 and p1 != after1 and p2 != after2:
+                # aList1 = d.get(p1.v)['kind'].split(':')
+                # kind1, h1 = aList1[:1], ':'.join(aList1[1:])
+                # aList2 = p2.h.split(':')
+                # kind2, h2 = aList2[:1], ':'.join(aList2[1:])
+                ### kind2 = aList2[:1]
+                ### h2 = ':'.join(aList[1:])
+                ### g.trace('-----', kind1, kind2, p1.h, p2.h)
+                g.trace(p1.h, p2.h)
                 self.assertEqual(p1.h, p2.h)
                 self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
-                kind1 = d.get(p1.v)  
-                kind2 = p2.h.split(':')[0].strip()
-                self.assertEqual(kind1, kind2, msg=p1.h)
+                ## if 0:
+                ###    self.assertEqual(kind1, kind2, msg=p1.h)
                 p1.moveToThreadNext()
                 p2.moveToThreadNext()
-            self.assertFalse(p1)
-            self.assertFalse(p2)
+            self.assertTrue(not p1 or p1 == after1)
+            self.assertTrue(not p2 or p2 == after2)
         except AssertionError:
             self.dump_tree(created_p, tag='===== Created')
             self.dump_tree(expected_p, tag='===== Expected')
@@ -3895,14 +3910,14 @@ class TestPython (BaseTestImporter):
             switch = 1
             
             # Expect:
-                
-            - outer:root
-            #@+others
-            #@-others
-              - org:Declarations
+
+            ATothers
+            ATlanguage python
+            ATtabwidth -4
+              - org:Organizer: Declarations
             """A docstring"""
             switch = 1
-        '''
+        '''.replace('AT','@')
         self.run_python_test(s)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
