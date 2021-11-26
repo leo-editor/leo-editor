@@ -2123,45 +2123,41 @@ class TestPython (BaseTestImporter):
 
     #@+others
     #@+node:ekr.20211125084921.1: *3*  TestPython.run_python_test & helpers
-    def run_python_test(self, p, s, verbose=False):  ### input_string, expected_string):
+    def run_python_test(self, s, verbose=False):  ### input_string, expected_string):
         """
-        Create a tree whose root is p from string s.
+        Create a tree whose root is c.p from string s.
         
         If a line that starts with "# Expect:" exists in s, the following lines
         represent the expected tree in enhanced MORE format.
         """
-        # Create the parent node.
+        # Create the parent nodes.
+        c = self.c
+        root = c.p
         c, ext = self.c, self.ext
         self.assertTrue(ext)
         self.treeType = '@file'
         kind = self.compute_unit_test_kind(ext)
-        parent = p.insertAsLastChild()
+        # Create the parent and the expected parent nodes.
+        parent = root.insertAsLastChild()
         parent.h = f"{kind} {self.id()}"
+        expected_parent = root.insertAsLastChild()
+        expected_parent.h = parent.h
         # Compute input_s and expect_s
         dedent_s = textwrap.dedent(s)
-        if '\n# Expect:' in s:
+        if '\n# Expect:' in dedent_s:
             input_s, expected_s = dedent_s.split('# Expect:\n')
         else:
             input_s = dedent_s
+            
             expected_s = None
         # Part 1: Create the outline.
-        try:
-            c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=input_s)
-        except AssertionError:
-            if verbose:
-                g.printObj(s, tag=self.id())
-                self.dump_tree()
-            raise
-        # Part 2: Compare the outline to the expected outline.
+        c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=input_s)
+        # Part 2: Compare the created and expected outlines.
         if expected_s:
-            expected_parent = p.insertAsLastChild()
-            expected_parent.h = parent.h
-            expected_outline = self.create_expected_outline(expected_parent, expected_s)
+            self.create_expected_outline(expected_parent, expected_s)
             self.compare_outlines(parent, expected_parent)
-
-
     #@+node:ekr.20211125101517.4: *4* create_expected_outline
-    def  create_test_outline(self, expected_parent, expected_s):
+    def  create_expected_outline(self, expected_parent, expected_s):
         """
         Create the expected outline.
         
@@ -2169,11 +2165,8 @@ class TestPython (BaseTestImporter):
         expect_s:   A string representing the outline in enhanced MORE format.
         """
         expected_lines = g.splitLines(expected_s.strip() + '\n\n')
-        # g.printObj(input_lines, tag='input_lines')
-        # g.printObj(expected_lines, tag='expected_lines')
-        stack = [(-1, root_p)]  # (level, p)
+        stack = [(-1, expected_parent)]  # (level, p)
         for s in expected_lines:
-            g.trace(repr(s))
             if s.strip().startswith('-'):
                 n = len(s) - len(s.lstrip())
                 lws = s[:n]
@@ -2182,22 +2175,25 @@ class TestPython (BaseTestImporter):
                     level, p = stack.pop()
                     if n > level:
                         child = p.insertAsLastChild()
-                        child.h = s.strip()
+                        child.h = s.strip()[2:]
                         p = child
                         stack.append((n, p))
                         break
                     elif n == level:
                         child = p.insertAfter()
-                        child.h = s.strip()
+                        child.h = s.strip()[2:]
                         p = child
                         stack.append((n, p))
                         break
                     else:
                         pass  # Look for next entry.
                 else:
-                    # g.printObj(input_lines, tag='input_lines')
                     g.printObj(expected_lines, tag='expected_lines')
                     assert False, f"No node at level {n}"
+            else:
+                junk_level, p = stack[-1]
+                p.b += s
+                
     #@+node:ekr.20211126052156.1: *4* compare_outlines
     def compare_outlines(self, created_p, expected_p):
         """
@@ -2205,20 +2201,26 @@ class TestPython (BaseTestImporter):
         
         Also ensure that all created nodes have the expected node kind.
         """
-        d = self.vnode_info
+        d = g.vnode_info
+        g.printObj(d, tag='===== vnode_info')
         p1, p2 = created_p.copy(), expected_p.copy()
-        while p1 and p2:
-            self.assertEqual(p1.h, p2.h)
-            self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
-            kind1 = d.get(p1.v)  
-            kind2 = p2.split(':')[0].strip()
-            self.assertEqual(kind1, kind2, msg=p1.h)
-            p1.moveToThreadNext()
-            p2.moveToThreadNext()
-        self.assertFalse(p1)
-        self.assertFalse(p2)
-            
-    #@+node:ekr.20210904065459.62: *3* TestPython.test_bad_class_test
+        try:
+            while p1 and p2:
+                self.assertEqual(p1.h, p2.h)
+                self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
+                kind1 = d.get(p1.v)  
+                kind2 = p2.h.split(':')[0].strip()
+                self.assertEqual(kind1, kind2, msg=p1.h)
+                p1.moveToThreadNext()
+                p2.moveToThreadNext()
+            self.assertFalse(p1)
+            self.assertFalse(p2)
+        except AssertionError:
+            self.dump_tree(created_p, tag='===== Created')
+            self.dump_tree(expected_p, tag='===== Expected')
+            raise
+    #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
+    #@+node:ekr.20210904065459.62: *4* TestPython.test_bad_class_test
     def test_bad_class_test(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2229,7 +2231,7 @@ class TestPython (BaseTestImporter):
                 pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.63: *3* TestPython.test_basic_nesting
+    #@+node:ekr.20210904065459.63: *4* TestPython.test_basic_nesting
     def test_basic_nesting(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2297,7 +2299,7 @@ class TestPython (BaseTestImporter):
                 p.moveToThreadNext()
             self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.64: *3* TestPython.test_bug_346
+    #@+node:ekr.20210904065459.64: *4* TestPython.test_bug_346
     def test_bug_346(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -2345,7 +2347,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.65: *3* TestPython.test_bug_354
+    #@+node:ekr.20210904065459.65: *4* TestPython.test_bug_354
     def test_bug_354(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2382,7 +2384,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.66: *3* TestPython.test_bug_357
+    #@+node:ekr.20210904065459.66: *4* TestPython.test_bug_357
     def test_bug_357(self):
         c = self.c
         s = textwrap.dedent('''
@@ -2672,7 +2674,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.67: *3* TestPython.test_bug_360
+    #@+node:ekr.20210904065459.67: *4* TestPython.test_bug_360
     def test_bug_360(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2700,7 +2702,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.70: *3* TestPython.test_bug_603720
+    #@+node:ekr.20210904065459.70: *4* TestPython.test_bug_603720
     def test_bug_603720(self):
         c = self.c
         # Leo bug 603720
@@ -2719,7 +2721,7 @@ class TestPython (BaseTestImporter):
             foo()
         ''')
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.69: *3* TestPython.test_bug_978
+    #@+node:ekr.20210904065459.69: *4* TestPython.test_bug_978
     def test_bug_978(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2753,7 +2755,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.72: *3* TestPython.test_class_test_2
+    #@+node:ekr.20210904065459.72: *4* TestPython.test_class_test_2
     def test_class_test_2(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2761,7 +2763,7 @@ class TestPython (BaseTestImporter):
                 pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.73: *3* TestPython.test_class_tests_1
+    #@+node:ekr.20210904065459.73: *4* TestPython.test_class_tests_1
     def test_class_tests_1(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -2773,7 +2775,7 @@ class TestPython (BaseTestImporter):
                 pass
         ''')
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.74: *3* TestPython.test_comment_after_dict_assign
+    #@+node:ekr.20210904065459.74: *4* TestPython.test_comment_after_dict_assign
     def test_comment_after_dict_assign(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2799,7 +2801,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.75: *3* TestPython.test_decls_1
+    #@+node:ekr.20210904065459.75: *4* TestPython.test_decls_1
     def test_decls_1(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -2823,7 +2825,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.76: *3* TestPython.test_decorator
+    #@+node:ekr.20210904065459.76: *4* TestPython.test_decorator
     def test_decorator(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -2848,7 +2850,7 @@ class TestPython (BaseTestImporter):
             abc = g.findNodeInTree(c, c.p, "@cmd('abc') abc")
             lines = g.splitLines(abc.b)
             self.assertEqual(lines[0], "@cmd('abc')\n")
-    #@+node:ekr.20210904065459.77: *3* TestPython.test_decorator_2
+    #@+node:ekr.20210904065459.77: *4* TestPython.test_decorator_2
     def test_decorator_2(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -2959,7 +2961,7 @@ class TestPython (BaseTestImporter):
             lines = g.splitLines(target.b)
             self.assertEqual(lines[0], '@command("Exit")\n')
         
-    #@+node:ekr.20210904065459.78: *3* TestPython.test_def_inside_def
+    #@+node:ekr.20210904065459.78: *4* TestPython.test_def_inside_def
     def test_def_inside_def(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -2992,7 +2994,7 @@ class TestPython (BaseTestImporter):
                 p.moveToThreadNext()
             self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.79: *3* TestPython.test_def_test_1
+    #@+node:ekr.20210904065459.79: *4* TestPython.test_def_test_1
     def test_def_test_1(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3032,7 +3034,7 @@ class TestPython (BaseTestImporter):
                 p.moveToThreadNext()
             self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.80: *3* TestPython.test_def_test_2
+    #@+node:ekr.20210904065459.80: *4* TestPython.test_def_test_2
     def test_def_test_2(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3064,7 +3066,7 @@ class TestPython (BaseTestImporter):
                 p.moveToThreadNext()
             self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.81: *3* TestPython.test_docstring_only
+    #@+node:ekr.20210904065459.81: *4* TestPython.test_docstring_only
     def test_docstring_only(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -3072,7 +3074,7 @@ class TestPython (BaseTestImporter):
             """
         ''')
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.82: *3* TestPython.test_empty_decls
+    #@+node:ekr.20210904065459.82: *4* TestPython.test_empty_decls
     def test_empty_decls(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3081,7 +3083,7 @@ class TestPython (BaseTestImporter):
             a = 3
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.71: *3* TestPython.test_enhancement_481
+    #@+node:ekr.20210904065459.71: *4* TestPython.test_enhancement_481
     def test_enhancement_481(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3106,7 +3108,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.83: *3* TestPython.test_extra_leading_ws_test
+    #@+node:ekr.20210904065459.83: *4* TestPython.test_extra_leading_ws_test
     def test_extra_leading_ws_test(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3115,13 +3117,13 @@ class TestPython (BaseTestImporter):
                     pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20211108084817.1: *3* TestPython.test_get_leading_indent
+    #@+node:ekr.20211108084817.1: *4* TestPython.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
         importer = linescanner.Importer(c.importCommands, language='python')
         self.assertEqual(importer.single_comment, '#')
            
-    #@+node:ekr.20210904065459.124: *3* TestPython.test_get_str_lws
+    #@+node:ekr.20210904065459.124: *4* TestPython.test_get_str_lws
     def test_get_str_lws(self):
         c = self.c
         table = [
@@ -3134,7 +3136,7 @@ class TestPython (BaseTestImporter):
         importer = linescanner.Importer(c.importCommands, language='python')
         for val, s in table:
             self.assertEqual(val, importer.get_str_lws(s), msg=repr(s))
-    #@+node:ekr.20210904065459.60: *3* TestPython.test_i_scan_state
+    #@+node:ekr.20210904065459.60: *4* TestPython.test_i_scan_state
     def test_i_scan_state(self):
         c = self.c
         # A list of dictionaries.
@@ -3158,7 +3160,7 @@ class TestPython (BaseTestImporter):
         )
         importer = python.Py_Importer(c.importCommands)
         importer.test_scan_state(tests, State=python.Python_ScanState)
-    #@+node:ekr.20210904065459.84: *3* TestPython.test_indent_decls
+    #@+node:ekr.20210904065459.84: *4* TestPython.test_indent_decls
     def test_indent_decls(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -3216,7 +3218,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.125: *3* TestPython.test_is_ws_line
+    #@+node:ekr.20210904065459.125: *4* TestPython.test_is_ws_line
     def test_is_ws_line(self):
         c = self.c
         table = [
@@ -3228,7 +3230,7 @@ class TestPython (BaseTestImporter):
         importer = linescanner.Importer(c.importCommands, language='python')
         for val, s in table:
             self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
-    #@+node:ekr.20210904065459.61: *3* TestPython.test_leoApp_fail
+    #@+node:ekr.20210904065459.61: *4* TestPython.test_leoApp_fail
     def test_leoApp_fail(self):
         c = self.c
         s = textwrap.dedent('''
@@ -3290,7 +3292,7 @@ class TestPython (BaseTestImporter):
                 p.moveToThreadNext()
             self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.85: *3* TestPython.test_leoImport_py_small_
+    #@+node:ekr.20210904065459.85: *4* TestPython.test_leoImport_py_small_
     def test_leoImport_py_small_(self):
         c = self.c
 
@@ -3373,7 +3375,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.86: *3* TestPython.test_looks_like_section_ref
+    #@+node:ekr.20210904065459.86: *4* TestPython.test_looks_like_section_ref
     def test_looks_like_section_ref(self):
         c = self.c
         # ~/at-auto-test.py
@@ -3384,7 +3386,7 @@ class TestPython (BaseTestImporter):
             a = b < < c > > d
         """).replace('> >', '>>').replace('< <', '<<')
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.87: *3* TestPython.test_minimal_class_1
+    #@+node:ekr.20210904065459.87: *4* TestPython.test_minimal_class_1
     def test_minimal_class_1(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -3401,7 +3403,7 @@ class TestPython (BaseTestImporter):
                     log('gp: %s: %s\\n' % (cmd, str(args)))
         ''')
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.88: *3* TestPython.test_minimal_class_2
+    #@+node:ekr.20210904065459.88: *4* TestPython.test_minimal_class_2
     def test_minimal_class_2(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3411,7 +3413,7 @@ class TestPython (BaseTestImporter):
                 pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.89: *3* TestPython.test_minimal_class_3
+    #@+node:ekr.20210904065459.89: *4* TestPython.test_minimal_class_3
     def test_minimal_class_3(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3421,7 +3423,7 @@ class TestPython (BaseTestImporter):
                 pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20211121055721.1: *3* TestPython.test_minimal_nesting
+    #@+node:ekr.20211121055721.1: *4* TestPython.test_minimal_nesting
     def test_minimal_nesting(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3475,7 +3477,7 @@ class TestPython (BaseTestImporter):
                 p.moveToThreadNext()
             self.assertEqual(p, after)
 
-    #@+node:ekr.20210904065459.90: *3* TestPython.test_overindent_def_no_following_def
+    #@+node:ekr.20210904065459.90: *4* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3491,7 +3493,7 @@ class TestPython (BaseTestImporter):
                     pr('input...')
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.91: *3* TestPython.test_overindent_def_one_following_def
+    #@+node:ekr.20210904065459.91: *4* TestPython.test_overindent_def_one_following_def
     def test_overindent_def_one_following_def(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3510,7 +3512,7 @@ class TestPython (BaseTestImporter):
                     pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20211113052244.1: *3* TestPython.test_comment_after_class
+    #@+node:ekr.20211113052244.1: *4* TestPython.test_comment_after_class
     def test_comment_after_class(self):
         # From mypy.errors.py
         
@@ -3529,7 +3531,7 @@ class TestPython (BaseTestImporter):
             ErrorTuple = Tuple[Optional[str], int, int]
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.92: *3* TestPython.test_overindented_def_3
+    #@+node:ekr.20210904065459.92: *4* TestPython.test_overindented_def_3
     def test_overindented_def_3(self):
         # This caused PyParse.py not to be imported properly.
         c = self.c
@@ -3561,7 +3563,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.68: *3* TestPython.test_promote_if_name_eq_main
+    #@+node:ekr.20210904065459.68: *4* TestPython.test_promote_if_name_eq_main
     def test_promote_if_name_eq_main(self):
         # Test #390: was test_bug_390.
         c = self.c
@@ -3599,7 +3601,7 @@ class TestPython (BaseTestImporter):
             self.assertEqual(p, after)
             assert "if __name__ == '__main__':" in root.b
             # self.dump_tree()
-    #@+node:ekr.20211112135034.1: *3* TestPython.test_promote_only_decls
+    #@+node:ekr.20211112135034.1: *4* TestPython.test_promote_only_decls
     def test_promote_only_decls(self):
         # Test #390: was test_bug_390.
         c = self.c
@@ -3612,7 +3614,7 @@ class TestPython (BaseTestImporter):
         # self.assertEqual(p.numberOfChildren(), 0)
         # root = p.lastChild()
         # self.dump_tree()
-    #@+node:ekr.20210904065459.131: *3* TestPython.test_scan_state
+    #@+node:ekr.20210904065459.131: *4* TestPython.test_scan_state
     def test_scan_state(self):
         c = self.c
         State = python.Python_ScanState
@@ -3642,7 +3644,7 @@ class TestPython (BaseTestImporter):
             ]
         importer = python.Py_Importer(c.importCommands, atAuto=True)
         importer.test_scan_state(tests, State)
-    #@+node:ekr.20210904065459.93: *3* TestPython.test_string_test_extra_indent
+    #@+node:ekr.20210904065459.93: *4* TestPython.test_string_test_extra_indent
     def test_string_test_extra_indent(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -3659,7 +3661,7 @@ class TestPython (BaseTestImporter):
                     return p
         ''')
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.94: *3* TestPython.test_string_underindent_lines
+    #@+node:ekr.20210904065459.94: *4* TestPython.test_string_underindent_lines
     def test_string_underindent_lines(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3673,7 +3675,7 @@ class TestPython (BaseTestImporter):
                     pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.95: *3* TestPython.test_string_underindent_lines_2
+    #@+node:ekr.20210904065459.95: *4* TestPython.test_string_underindent_lines_2
     def test_string_underindent_lines_2(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3688,7 +3690,7 @@ class TestPython (BaseTestImporter):
                     pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.96: *3* TestPython.test_top_level_later_decl
+    #@+node:ekr.20210904065459.96: *4* TestPython.test_top_level_later_decl
     def test_top_level_later_decl(self):
         # From xo.py.
         c = self.c
@@ -3744,7 +3746,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.97: *3* TestPython.test_trailing_comment
+    #@+node:ekr.20210904065459.97: *4* TestPython.test_trailing_comment
     def test_trailing_comment(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3755,7 +3757,7 @@ class TestPython (BaseTestImporter):
                     pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.98: *3* TestPython.test_trailing_comment_outer_levels
+    #@+node:ekr.20210904065459.98: *4* TestPython.test_trailing_comment_outer_levels
     def test_trailing_comment_outer_levels(self):
         c = self.c
         s = textwrap.dedent("""\
@@ -3763,7 +3765,7 @@ class TestPython (BaseTestImporter):
             pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.99: *3* TestPython.test_two_functions
+    #@+node:ekr.20210904065459.99: *4* TestPython.test_two_functions
     def test_two_functions(self):
         # For comparison with unindent does not end function.
         c = self.c
@@ -3775,7 +3777,7 @@ class TestPython (BaseTestImporter):
                 pass
         """)
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.100: *3* TestPython.test_underindent_method
+    #@+node:ekr.20210904065459.100: *4* TestPython.test_underindent_method
     def test_underindent_method(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -3807,7 +3809,7 @@ class TestPython (BaseTestImporter):
                 self.assertEqual(n, n2)
                 p.moveToThreadNext()
             self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.101: *3* TestPython.test_unindent_in_triple_string_does_not_end_function
+    #@+node:ekr.20210904065459.101: *4* TestPython.test_unindent_in_triple_string_does_not_end_function
     def test_unindent_in_triple_string_does_not_end_function(self):
         c = self.c
         s = textwrap.dedent('''\
@@ -3828,12 +3830,12 @@ class TestPython (BaseTestImporter):
             child = p.firstChild()
             n = child.numberOfChildren()
             self.assertEqual(n, 2)
-    #@+node:ekr.20211114184047.1: *3* TestPython.test_data_docstring
+    #@+node:ekr.20211114184047.1: *4* TestPython.test_data_docstring
     def test_data_docstring(self):
         # From mypy\test-data\stdlib-samples\3.2\test\test_pprint.py
         c = self.c
         #@+<< define s >>
-        #@+node:ekr.20211114184337.1: *4* << define s >>
+        #@+node:ekr.20211114184337.1: *5* << define s >>
         s = textwrap.dedent('''\
 
             def test_basic_line_wrap(self) -> None:
@@ -3857,7 +3859,7 @@ class TestPython (BaseTestImporter):
         #@-<< define s >>
         p = c.p
         self.run_test(p, s=s)
-    #@+node:ekr.20211114185222.1: *3* TestPython.test_data_docstring_2
+    #@+node:ekr.20211114185222.1: *4* TestPython.test_data_docstring_2
     def test_data_docstring_2(self):
         # From mypy\test-data\stdlib-samples\3.2\test\test_textwrap.py
         c = self.c
@@ -3885,6 +3887,23 @@ class TestPython (BaseTestImporter):
         """)
         p = c.p
         self.run_test(p, s=s)
+    #@+node:ekr.20211126055349.1: *3* TestPython.test_docstring_vars ****
+    def test_docstring_vars(self): 
+
+        s = '''
+            """A docstring"""
+            switch = 1
+            
+            # Expect:
+                
+            - outer:root
+            #@+others
+            #@-others
+              - org:Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(s)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):

@@ -18,7 +18,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
     debug = False
     dump = False
-    skip_flag = True  # Careful: Importer.skip exists.
+    skip_flag = False  # Careful: Importer.skip exists.
     trace = False
     #@-<< Py_Importer debug vars >>
 
@@ -171,6 +171,8 @@ class Py_Importer(Importer):
                 'lines': ['@others\n'],
             }
         }
+        if g.unitTesting:
+            g.vnode_info = self.vnode_info  # A hack.
         # Keys are indents (ints), values are vnodes with an @others at that level.
         self.indent_dict = { 0: parent.v }
         # Create a Declarations node.
