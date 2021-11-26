@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.6
+About Viewrendered3 V3.61
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -1931,6 +1931,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Fix up path
             if self.md_stylesheet.startswith('file:///'):
                 stylefile = self.md_stylesheet.replace('file:///', '')
+            else:
+                stylefile = self.md_stylesheet
             if g.isWindows:
                 stylefile = stylefile.replace('/', '\\')
             else:
