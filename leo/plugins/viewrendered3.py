@@ -1931,6 +1931,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Fix up path
             if self.md_stylesheet.startswith('file:///'):
                 stylefile = self.md_stylesheet.replace('file:///', '')
+            else:
+                stylefile = self.md_stylesheet
             if g.isWindows:
                 stylefile = stylefile.replace('/', '\\')
             else:
