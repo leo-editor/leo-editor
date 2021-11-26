@@ -2154,16 +2154,24 @@ class TestPython (BaseTestImporter):
         c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=input_s)
         # Part 2: Compare the created and expected outlines.
         if expected_s:
+            # Inject the expected kind for the outer node.
+            # (python_i.gen_lines creates g.vnode_info.)
+            ### g.vnode_info [expected_parent.v] = { 'kind': 'outer' }
             self.create_expected_outline(expected_parent, expected_s)
             self.compare_outlines(parent, expected_parent)
     #@+node:ekr.20211125101517.4: *4* create_expected_outline
     def  create_expected_outline(self, expected_parent, expected_s):
         """
-        Create the expected outline.
+        Create the expected outline, making 'kind' entries in g.vnode_info for
+        all *created* vnodes.
         
         root_p:     The root of the expected outline.
         expect_s:   A string representing the outline in enhanced MORE format.
+        
         """
+        d = g.vnode_info
+        # Special case for the top-level node.
+        d [expected_parent.v] = { 'kind': 'outer' }
         expected_lines = g.splitLines(expected_s.strip() + '\n\n')
         stack = [(-1, expected_parent)]  # (level, p)
         for s in expected_lines:
@@ -2173,29 +2181,25 @@ class TestPython (BaseTestImporter):
                 assert n == 0 or lws.isspace(), repr(lws)
                 while stack:
                     level, p = stack.pop()
-                    g.trace('----', repr(s))
                     if s.strip().startswith('- '):
                         aList = s.strip()[2:].split(':')
-                        g.trace(aList)
                         kind, h = aList[0].strip(), ':'.join(aList[1:])
                         self.assertTrue(kind in ('outer', 'org', 'class', 'def'), msg=repr(s))
-                    if n > level:
+                    if n >= level:
                         p.b = p.b.strip()
-                        child = p.insertAsLastChild()
-                        child.h = h  ### s.strip()[2:]
-                        p = child
-                        stack.append((n, p))
-                        break
-                    elif n == level:
-                        child = p.insertAfter()
-                        child.h = h  ### s.strip()[2:]
+                        if n > level:
+                            child = p.insertAsLastChild()
+                        else:
+                            child = p.insertAfter()
+                        child.h = h
+                        d [child.v] = { 'kind': kind }
                         p = child
                         stack.append((n, p))
                         break
                     else:
                         pass  # Look for next entry.
                 else:
-                    g.printObj(expected_lines, tag='expected_lines')
+                    g.printObj(expected_lines, tag='===== Expected')
                     assert False, f"No node at level {n}"
             else:
                 junk_level, p = stack[-1]
@@ -2209,31 +2213,32 @@ class TestPython (BaseTestImporter):
         Also ensure that all created nodes have the expected node kind.
         """
         d = g.vnode_info
-        g.printObj(d, tag='===== vnode_info')
+        ### g.printObj(d, tag='===== vnode_info')
         p1, p2 = created_p.copy(), expected_p.copy()
         try:
             after1, after2 = p1.nodeAfterTree(), p2.nodeAfterTree()
             while p1 and p2 and p1 != after1 and p2 != after2:
-                # aList1 = d.get(p1.v)['kind'].split(':')
-                # kind1, h1 = aList1[:1], ':'.join(aList1[1:])
-                # aList2 = p2.h.split(':')
-                # kind2, h2 = aList2[:1], ':'.join(aList2[1:])
-                ### kind2 = aList2[:1]
-                ### h2 = ':'.join(aList[1:])
-                ### g.trace('-----', kind1, kind2, p1.h, p2.h)
-                g.trace(p1.h, p2.h)
+                # Compute the created and expected kinds.
+                aList1 = d.get(p1.v)['kind'].split(':')
+                aList2 = d.get(p2.v)['kind'].split(':')
+                kind1 = aList1[0]
+                kind2 = aList2[0]
                 self.assertEqual(p1.h, p2.h)
                 self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
-                ## if 0:
-                ###    self.assertEqual(kind1, kind2, msg=p1.h)
+                self.assertEqual(p1.b.strip(), p2.b.strip(), msg=p1.h)
+                self.assertEqual(kind1, kind2, msg=p1.h)
                 p1.moveToThreadNext()
                 p2.moveToThreadNext()
             self.assertTrue(not p1 or p1 == after1)
             self.assertTrue(not p2 or p2 == after2)
         except AssertionError:
+            g.es_exception()
             self.dump_tree(created_p, tag='===== Created')
             self.dump_tree(expected_p, tag='===== Expected')
             raise
+        if 0:
+            self.dump_tree(created_p, tag='===== Created')
+            self.dump_tree(expected_p, tag='===== Expected')
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
     #@+node:ekr.20210904065459.62: *4* TestPython.test_bad_class_test
     def test_bad_class_test(self):
