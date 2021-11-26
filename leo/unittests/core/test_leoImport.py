@@ -2146,7 +2146,10 @@ class TestPython (BaseTestImporter):
             parent=parent.copy(), ext=ext, s=textwrap.dedent(input_s))
         # Compare the created and expected outlines.
         if expected_s:
-            self.create_expected_outline(expected_parent, textwrap.dedent(expected_s))
+            self.create_expected_outline(
+                expected_parent,
+                textwrap.dedent(expected_s.replace('AT', '@')),
+            )
             self.compare_outlines(parent, expected_parent)
     #@+node:ekr.20211125101517.4: *4* create_expected_outline
     def  create_expected_outline(self, expected_parent, expected_s):
@@ -2164,12 +2167,16 @@ class TestPython (BaseTestImporter):
         expected_lines = g.splitLines(expected_s.strip() + '\n\n')
         stack = [(-1, expected_parent)]  # (level, p)
         for s in expected_lines:
-            if s.strip().startswith('-'):
+            if s.strip().startswith('- outer:'):
+                # Just ignore. Provides a place to specify non-standard top-level text.
+                pass
+            elif s.strip().startswith('-'):
                 n = len(s) - len(s.lstrip())
                 lws = s[:n]
                 assert n == 0 or lws.isspace(), repr(lws)
                 while stack:
                     level, p = stack.pop()
+                    
                     if s.strip().startswith('- '):
                         aList = s.strip()[2:].split(':')
                         kind, h = aList[0].strip(), ':'.join(aList[1:])
@@ -2193,7 +2200,13 @@ class TestPython (BaseTestImporter):
             else:
                 junk_level, p = stack[-1]
                 p.b += s
-                
+        # Create default outer node if expected_parent.b is empty.
+        if not expected_parent.b:
+            expected_parent.b = textwrap.dedent("""
+                ATothers
+                ATlanguage python
+                ATtabwidth -4
+            """).replace('AT', '@')
     #@+node:ekr.20211126052156.1: *4* compare_outlines
     def compare_outlines(self, created_p, expected_p):
         """
@@ -3894,22 +3907,39 @@ class TestPython (BaseTestImporter):
         """)
         p = c.p
         self.run_test(p, s=s)
-    #@+node:ekr.20211126055349.1: *3* TestPython.test_docstring_vars
-    def test_docstring_vars(self): 
+    #@+node:ekr.20211126055349.1: *3* TestPython.test_run_python_test
+    def test_run_python_test(self): 
 
         input_s = '''
             """A docstring"""
             switch = 1
         '''
-        expected_s = '''
+        # Test explicit specification of outer node.
+        expected_s1 = '''
+            - outer:
             ATothers
             ATlanguage python
             ATtabwidth -4
               - org:Organizer: Declarations
             """A docstring"""
             switch = 1
-        '''.replace('AT','@')
-        self.run_python_test(input_s, expected_s)
+        '''
+        self.run_python_test(input_s, expected_s1)
+        # Test standard contents of outer node.
+        expected_s2 = '''
+            - outer:
+              - org:Organizer: Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(input_s, expected_s2)
+         # Test implict contents of outer node.
+        expected_s3 = '''
+              - org:Organizer: Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(input_s, expected_s3)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
