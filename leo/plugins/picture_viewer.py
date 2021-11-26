@@ -352,6 +352,7 @@ if QtWidgets:
             self.starting_directory = path
             os.chdir(path)
             self.files_list = self.get_files(path)
+            print(f"Found {len(self.files_list)} files")
             self.slide_number = -1
             self.sort(self.sort_kind)
             self.next_slide()  # show_slide resets the timer.
@@ -405,6 +406,7 @@ if QtWidgets:
             if not self.files_list:
                 print(f"No slides found in {path!r}")
                 return False
+            print(f"Found {len(self.files_list)} files")
             self.starting_directory = path
             os.chdir(path)
             n = len(self.files_list)
