@@ -44,7 +44,6 @@ class BaseTestImporter(LeoUnitTest):
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {self.id()}"
-        ### contents = textwrap.dedent(s.strip()) + '\n\n'  ### Experimental.
         try:
             c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
         except AssertionError:
@@ -2123,7 +2122,7 @@ class TestPython (BaseTestImporter):
 
     #@+others
     #@+node:ekr.20211125084921.1: *3*  TestPython.run_python_test & helpers
-    def run_python_test(self, s, verbose=False):  ### input_string, expected_string):
+    def run_python_test(self, s, verbose=False):
         """
         Create a tree whose root is c.p from string s.
         
@@ -2142,21 +2141,16 @@ class TestPython (BaseTestImporter):
         parent.h = f"{kind} {self.id()}"
         expected_parent = root.insertAsLastChild()
         expected_parent.h = parent.h
-        # Compute input_s and expect_s
+        # Compute input_s and expect_s, automatically dedenting s.
         dedent_s = textwrap.dedent(s)
         if '\n# Expect:' in dedent_s:
             input_s, expected_s = dedent_s.split('# Expect:\n')
         else:
-            input_s = dedent_s
-            
-            expected_s = None
-        # Part 1: Create the outline.
+            input_s, expected_s = dedent_s, None
+        # Part 1: Create the outline. This calls py_i.gen_lines.
         c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=input_s)
         # Part 2: Compare the created and expected outlines.
         if expected_s:
-            # Inject the expected kind for the outer node.
-            # (python_i.gen_lines creates g.vnode_info.)
-            ### g.vnode_info [expected_parent.v] = { 'kind': 'outer' }
             self.create_expected_outline(expected_parent, expected_s)
             self.compare_outlines(parent, expected_parent)
     #@+node:ekr.20211125101517.4: *4* create_expected_outline
@@ -2213,22 +2207,20 @@ class TestPython (BaseTestImporter):
         Also ensure that all created nodes have the expected node kind.
         """
         d = g.vnode_info
-        ### g.printObj(d, tag='===== vnode_info')
         p1, p2 = created_p.copy(), expected_p.copy()
         try:
             after1, after2 = p1.nodeAfterTree(), p2.nodeAfterTree()
             while p1 and p2 and p1 != after1 and p2 != after2:
-                # Compute the created and expected kinds.
                 aList1 = d.get(p1.v)['kind'].split(':')
                 aList2 = d.get(p2.v)['kind'].split(':')
-                kind1 = aList1[0]
-                kind2 = aList2[0]
+                kind1, kind2 = aList1[0], aList2[0]
                 self.assertEqual(p1.h, p2.h)
                 self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
                 self.assertEqual(p1.b.strip(), p2.b.strip(), msg=p1.h)
                 self.assertEqual(kind1, kind2, msg=p1.h)
                 p1.moveToThreadNext()
                 p2.moveToThreadNext()
+            # Make sure both trees end at the same time.
             self.assertTrue(not p1 or p1 == after1)
             self.assertTrue(not p2 or p2 == after2)
         except AssertionError:
@@ -2236,7 +2228,7 @@ class TestPython (BaseTestImporter):
             self.dump_tree(created_p, tag='===== Created')
             self.dump_tree(expected_p, tag='===== Expected')
             raise
-        if 0:
+        if 0:  ###
             self.dump_tree(created_p, tag='===== Created')
             self.dump_tree(expected_p, tag='===== Expected')
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
@@ -3907,10 +3899,11 @@ class TestPython (BaseTestImporter):
         """)
         p = c.p
         self.run_test(p, s=s)
-    #@+node:ekr.20211126055349.1: *3* TestPython.test_docstring_vars ****
+    #@+node:ekr.20211126055349.1: *3* TestPython.test_docstring_vars
     def test_docstring_vars(self): 
 
         s = '''
+
             """A docstring"""
             switch = 1
             
@@ -3922,6 +3915,7 @@ class TestPython (BaseTestImporter):
               - org:Organizer: Declarations
             """A docstring"""
             switch = 1
+
         '''.replace('AT','@')
         self.run_python_test(s)
     #@-others
