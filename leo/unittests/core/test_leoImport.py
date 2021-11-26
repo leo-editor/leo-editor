@@ -2122,7 +2122,7 @@ class TestPython (BaseTestImporter):
 
     #@+others
     #@+node:ekr.20211125084921.1: *3*  TestPython.run_python_test & helpers
-    def run_python_test(self, s, verbose=False):
+    def run_python_test(self, input_s, expected_s=None, verbose=False):
         """
         Create a tree whose root is c.p from string s.
         
@@ -2141,17 +2141,12 @@ class TestPython (BaseTestImporter):
         parent.h = f"{kind} {self.id()}"
         expected_parent = root.insertAsLastChild()
         expected_parent.h = parent.h
-        # Compute input_s and expect_s, automatically dedenting s.
-        dedent_s = textwrap.dedent(s)
-        if '\n# Expect:' in dedent_s:
-            input_s, expected_s = dedent_s.split('# Expect:\n')
-        else:
-            input_s, expected_s = dedent_s, None
         # Part 1: Create the outline. This calls py_i.gen_lines.
-        c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=input_s)
+        c.importCommands.createOutline(
+            parent=parent.copy(), ext=ext, s=textwrap.dedent(input_s))
         # Part 2: Compare the created and expected outlines.
         if expected_s:
-            self.create_expected_outline(expected_parent, expected_s)
+            self.create_expected_outline(expected_parent, textwrap.dedent(expected_s))
             self.compare_outlines(parent, expected_parent)
     #@+node:ekr.20211125101517.4: *4* create_expected_outline
     def  create_expected_outline(self, expected_parent, expected_s):
@@ -3902,12 +3897,14 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20211126055349.1: *3* TestPython.test_docstring_vars
     def test_docstring_vars(self): 
 
-        s = '''
+        input_s = '''
 
             """A docstring"""
             switch = 1
             
-            # Expect:
+        '''
+        
+        expected_s = '''
 
             ATothers
             ATlanguage python
@@ -3917,7 +3914,7 @@ class TestPython (BaseTestImporter):
             switch = 1
 
         '''.replace('AT','@')
-        self.run_python_test(s)
+        self.run_python_test(input_s, expected_s)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
