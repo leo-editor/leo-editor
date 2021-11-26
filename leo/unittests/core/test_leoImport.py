@@ -2122,52 +2122,56 @@ class TestPython (BaseTestImporter):
     ext = '.py'
 
     #@+others
-    #@+node:ekr.20211125084921.1: *3*  TestPython.run_python_test
+    #@+node:ekr.20211125084921.1: *3*  TestPython.run_python_test & helpers
     def run_python_test(self, p, s, verbose=False):  ### input_string, expected_string):
         """
-        Create a test from two strings, both of which should be dedented:
-
-        - input_string:    a string containing a test file.
-        - expected_string: a string containing a representation of the expected output,
-                           in "enhanced MORE" format.
+        Create a tree whose root is p from string s.
+        
+        If a line that starts with "# Expect:" exists in s, the following lines
+        represent the expected tree in enhanced MORE format.
         """
-        ### BaseTestImporter.run_test
+        # Create the parent node.
         c, ext = self.c, self.ext
         self.assertTrue(ext)
-        self.treeType = '@file'  # Fix #352.
-        # Run the test.
-        parent = p.insertAsLastChild()
+        self.treeType = '@file'
         kind = self.compute_unit_test_kind(ext)
+        parent = p.insertAsLastChild()
         parent.h = f"{kind} {self.id()}"
+        # Compute input_s and expect_s
+        dedent_s = textwrap.dedent(s)
+        if '\n# Expect:' in s:
+            input_s, expected_s = dedent_s.split('# Expect:\n')
+        else:
+            input_s = dedent_s
+            expected_s = None
+        # Part 1: Create the outline.
         try:
-            c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
+            c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=input_s)
         except AssertionError:
             if verbose:
                 g.printObj(s, tag=self.id())
                 self.dump_tree()
             raise
+        # Part 2: Compare the outline to the expected outline.
+        if expected_s:
+            expected_parent = p.insertAsLastChild()
+            expected_parent.h = parent.h
+            expected_outline = self.create_expected_outline(expected_parent, expected_s)
+            self.compare_outlines(parent, expected_parent)
 
-    #@+node:ekr.20211125101517.2: *4* clean
-    def clean(self, s):
-        """Create a valid unit test name."""
-        clean_s = ''.join(z for z in s.replace(' ','_') if z.isalnum() or z == '_') 
-        return f"test_{clean_s}"
-    #@+node:ekr.20211125101517.3: *4* convert
-    def convert(self, p1, result_root):
+
+    #@+node:ekr.20211125101517.4: *4* create_expected_outline
+    def  create_test_outline(self, expected_parent, expected_s):
+        """
+        Create the expected outline.
         
-        test_p = result_root.insertAsLastChild()
-        test_p.h = self.clean(p1.h)
-        s1, s2 = p1.b.split('# Expect:\n')
-        input_lines = g.splitLines(s1.strip() + '\n\n')
-        expected_lines = g.splitLines(s2.strip() + '\n\n')
-        self.create_test(test_p, input_lines, expected_lines)
-    #@+node:ekr.20211125101517.4: *4* create_test
-    def  create_test(self, test_p, input_lines, expected_lines):
-
+        root_p:     The root of the expected outline.
+        expect_s:   A string representing the outline in enhanced MORE format.
+        """
+        expected_lines = g.splitLines(expected_s.strip() + '\n\n')
         # g.printObj(input_lines, tag='input_lines')
-        g.printObj(expected_lines, tag='expected_lines')
-
-        stack = [(-1, test_p)]  # (level, p)
+        # g.printObj(expected_lines, tag='expected_lines')
+        stack = [(-1, root_p)]  # (level, p)
         for s in expected_lines:
             g.trace(repr(s))
             if s.strip().startswith('-'):
@@ -2194,6 +2198,26 @@ class TestPython (BaseTestImporter):
                     # g.printObj(input_lines, tag='input_lines')
                     g.printObj(expected_lines, tag='expected_lines')
                     assert False, f"No node at level {n}"
+    #@+node:ekr.20211126052156.1: *4* compare_outlines
+    def compare_outlines(self, created_p, expected_p):
+        """
+        Ensure that the created and expected trees have equal shape and contents.
+        
+        Also ensure that all created nodes have the expected node kind.
+        """
+        d = self.vnode_info
+        p1, p2 = created_p.copy(), expected_p.copy()
+        while p1 and p2:
+            self.assertEqual(p1.h, p2.h)
+            self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
+            kind1 = d.get(p1.v)  
+            kind2 = p2.split(':')[0].strip()
+            self.assertEqual(kind1, kind2, msg=p1.h)
+            p1.moveToThreadNext()
+            p2.moveToThreadNext()
+        self.assertFalse(p1)
+        self.assertFalse(p2)
+            
     #@+node:ekr.20210904065459.62: *3* TestPython.test_bad_class_test
     def test_bad_class_test(self):
         c = self.c
