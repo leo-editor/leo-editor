@@ -2129,7 +2129,7 @@ class TestPython (BaseTestImporter):
         If a line that starts with "# Expect:" exists in s, the following lines
         represent the expected tree in enhanced MORE format.
         """
-        # Create the parent nodes.
+        # Init, as in the base class.
         c = self.c
         root = c.p
         c, ext = self.c, self.ext
@@ -2141,10 +2141,10 @@ class TestPython (BaseTestImporter):
         parent.h = f"{kind} {self.id()}"
         expected_parent = root.insertAsLastChild()
         expected_parent.h = parent.h
-        # Part 1: Create the outline. This calls py_i.gen_lines.
+        # Create the outline. This calls py_i.gen_lines.
         c.importCommands.createOutline(
             parent=parent.copy(), ext=ext, s=textwrap.dedent(input_s))
-        # Part 2: Compare the created and expected outlines.
+        # Compare the created and expected outlines.
         if expected_s:
             self.create_expected_outline(expected_parent, textwrap.dedent(expected_s))
             self.compare_outlines(parent, expected_parent)
@@ -3898,21 +3898,16 @@ class TestPython (BaseTestImporter):
     def test_docstring_vars(self): 
 
         input_s = '''
-
             """A docstring"""
             switch = 1
-            
         '''
-        
         expected_s = '''
-
             ATothers
             ATlanguage python
             ATtabwidth -4
               - org:Organizer: Declarations
             """A docstring"""
             switch = 1
-
         '''.replace('AT','@')
         self.run_python_test(input_s, expected_s)
     #@-others
