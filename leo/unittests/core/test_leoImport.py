@@ -55,9 +55,9 @@ class BaseTestImporter(LeoUnitTest):
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {fileName}"
-        ok = c.importCommands.createOutline(
+        result_p = c.importCommands.createOutline(
             parent=parent.copy(), ext=ext, s=textwrap.dedent(s))
-        self.assertTrue(ok)
+        self.assertTrue(result_p is not None)
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto (BaseTestImporter):
