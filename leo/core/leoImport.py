@@ -661,17 +661,18 @@ class LeoImportCommands:
         if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            # func is actually a factory: it instantiates the importer class.
-            func(c=c, parent=p, s=s)
+            # func is a factory that instantiates the importer class.
+            ok = func(c=c, parent=p, s=s)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            self.scanUnknownFileType(s, p, ext)
-        if not g.unitTesting:
-            # Fix bug 488894: unsettling dialog when saving Leo file
-            # Fix bug 889175: Remember the full fileName.
-            c.atFileCommands.rememberReadPath(fileName, p)
+            ok = self.scanUnknownFileType(s, p, ext)
+        if g.unitTesting:
+            return ok
+        # #488894: unsettling dialog when saving Leo file
+        # #889175: Remember the full fileName.
+        c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
         w.setInsertPoint(0)
