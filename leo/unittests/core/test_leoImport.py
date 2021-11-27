@@ -50,11 +50,10 @@ class BaseTestImporter(LeoUnitTest):
         c, ext = self.c, self.ext
         self.assertTrue(ext)
         self.treeType = '@file'  # Fix #352.
-        fileName = 'test'
         # Run the test.
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
-        parent.h = f"{kind} {fileName}"
+        parent.h = f"{kind} {self.id()}"
         result_p = c.importCommands.createOutline(
             parent=parent.copy(), ext=ext, s=textwrap.dedent(s))
         self.assertTrue(result_p is not None)
@@ -102,7 +101,7 @@ class TestC(BaseTestImporter):
         self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -134,7 +133,7 @@ class TestC(BaseTestImporter):
         self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -169,7 +168,7 @@ class TestC(BaseTestImporter):
         self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -204,7 +203,7 @@ class TestC(BaseTestImporter):
         self.run_test(c.p, s)
         # Check structure
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         assert p2, g.tree_to_string(c)
         for h in table:
@@ -228,7 +227,7 @@ class TestC(BaseTestImporter):
         p = c.p
         self.run_test(c.p, s)
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -253,7 +252,7 @@ class TestC(BaseTestImporter):
 
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -279,7 +278,7 @@ class TestC(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test', root.h)
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -302,7 +301,7 @@ class TestC(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -422,7 +421,7 @@ class TestCSharp(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.firstChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -444,7 +443,7 @@ class TestCSharp(BaseTestImporter):
         )
         root = c.p.firstChild()
         # assert root.h.endswith('c# namespace no indent'), root.h
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -480,7 +479,7 @@ def test_importer(self):
     )
     self.run_test(c.p, s)
     root = c.p.lastChild()
-    self.assertEqual(root.h, '@file test')
+    self.assertEqual(root.h, f"@file {self.id()}")
     p2 = root.firstChild()
     for h in table:
         self.assertEqual(p2.h, h)
@@ -565,7 +564,7 @@ class TestElisp (BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -607,7 +606,7 @@ class TestHtml (BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.firstChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -693,13 +692,12 @@ class TestHtml (BaseTestImporter):
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
         c = self.c
-        ### ATlanguage html
         s = '''
         <html>
         <head>headline</head>
         <body>body</body>
         </html>
-        ''' ###.replace('AT', '@')
+        '''
         table = (
             '<html>',
         )
@@ -1054,7 +1052,7 @@ class TestJava (BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -1119,7 +1117,7 @@ class TestJava (BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -1139,7 +1137,7 @@ class TestJava (BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -1159,7 +1157,7 @@ class TestJava (BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -1383,7 +1381,7 @@ class TestMarkdown(BaseTestImporter):
         self.run_test(c.p, s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
+        self.assertEqual(root.h, f"@auto-md {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -1441,7 +1439,7 @@ class TestMarkdown(BaseTestImporter):
         p = c.p
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
+        self.assertEqual(root.h, f"@auto-md {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -1477,7 +1475,7 @@ class TestMarkdown(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
+        self.assertEqual(root.h, f"@auto-md {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -1517,7 +1515,7 @@ class TestMarkdown(BaseTestImporter):
         g.app.suppressImportChecks = True
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
+        self.assertEqual(root.h, f"@auto-md {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -1546,7 +1544,7 @@ class TestMarkdown(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-md test')
+        self.assertEqual(root.h, f"@auto-md {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -1774,18 +1772,18 @@ class TestOtl (BaseTestImporter):
             : Sec 3.1
         """)
         table = (
+            'preamble.',
             'Section 1',
             'Section 2', 'Section 2-1', 'Section 2-1-1',
             'Section 3', 'Section 3.1',
         )
         self.run_test(c.p, s)
-        if 0:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                self.assertEqual(p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            self.assertEqual(p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
 
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
@@ -1854,7 +1852,7 @@ class TestPascal (BaseTestImporter):
         self.run_test(c.p, s)
         root = c.p.lastChild()
         assert root
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -2002,7 +2000,7 @@ class TestPerl (BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -2157,7 +2155,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2205,7 +2203,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2241,7 +2239,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2529,7 +2527,7 @@ class TestPython (BaseTestImporter):
         after = p.nodeAfterTree()
         root = p.lastChild()
         assert root
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             assert p, h
@@ -2557,7 +2555,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2591,7 +2589,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2644,7 +2642,7 @@ class TestPython (BaseTestImporter):
         after = p.nodeAfterTree()
         root = p.lastChild()
         assert root
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2689,7 +2687,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2712,7 +2710,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2841,7 +2839,7 @@ class TestPython (BaseTestImporter):
         self.run_test(c.p, s=s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2877,7 +2875,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2916,7 +2914,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2947,7 +2945,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -2989,7 +2987,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -3098,7 +3096,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -3170,7 +3168,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -3253,7 +3251,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -3367,7 +3365,7 @@ class TestPython (BaseTestImporter):
         self.run_test(c.p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -3496,7 +3494,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         root = p.lastChild()
         assert root
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         after = p.nodeAfterTree()
         p = root.firstChild()
         for n, h in table:
@@ -3560,7 +3558,7 @@ class TestPython (BaseTestImporter):
         self.run_test(p, s=s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -4098,7 +4096,7 @@ class TestRst(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
+        self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4130,7 +4128,7 @@ class TestRst(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
+        self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4198,7 +4196,7 @@ class TestRst(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
+        self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4227,7 +4225,7 @@ class TestRst(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
+        self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4257,7 +4255,7 @@ class TestRst(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
+        self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4290,7 +4288,7 @@ class TestRst(BaseTestImporter):
         p = c.p
         self.run_test(c.p, s)
         root = p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
+        self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -4330,7 +4328,7 @@ class TestRst(BaseTestImporter):
         )
         self.run_test(c.p, s)
         root = c.p.lastChild()
-        self.assertEqual(root.h, '@auto-rst test')
+        self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
         assert p2, g.tree_to_string(c)
         for h in table:
@@ -4439,7 +4437,7 @@ class TestXML (BaseTestImporter):
         self.run_test(p, s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()
@@ -4469,7 +4467,7 @@ class TestXML (BaseTestImporter):
         self.run_test(p, s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, '@file test')
+        self.assertEqual(root.h, f"@file {self.id()}")
         p = root.firstChild()
         assert p, g.tree_to_string(c)
         for n, h in table:
