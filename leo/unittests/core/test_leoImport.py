@@ -45,6 +45,7 @@ class BaseTestImporter(LeoUnitTest):
         kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {self.id()}"
         try:
+            ### s2 = textwrap.dedent(s)
             c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
         except AssertionError:
             if verbose:
@@ -3940,7 +3941,8 @@ class TestPython (BaseTestImporter):
         '''
         self.run_python_test(input_s, expected_s3)
     #@+node:ekr.20211127031823.1: *3* Generated Tests
-    #@+node:ekr.20211127031823.2: *4* test_docstring_vars
+    #@+node:ekr.20211127032323.1: *4* pass...
+    #@+node:ekr.20211127031823.2: *5* test_docstring_vars
     def test_docstring_vars(self):
 
         input_s = '''
@@ -3948,12 +3950,13 @@ class TestPython (BaseTestImporter):
             switch = 1
         '''
         expected_s = '''
-            - org:Declarations
+            - org:Organizer: Declarations
             """A docstring"""
             switch = 1
         '''
         self.run_python_test(input_s, expected_s)
 
+    #@+node:ekr.20211127032346.1: *4* fail...
     #@+node:ekr.20211127031823.3: *4* test_docstring_vars_outer_def
     def test_docstring_vars_outer_def(self):
 
@@ -3966,9 +3969,8 @@ class TestPython (BaseTestImporter):
         '''
         expected_s = '''
             - outer:
-              - org:Declarations
+              - org: Organizer Declarations
             """A docstring"""
-            
             switch = 1
               - def:function: d1
             def d1:
