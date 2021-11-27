@@ -439,15 +439,11 @@ class Importer:
         # Insert an @ignore directive if there were any serious problems.
         if not ok:
             self.insert_ignore_directive(parent)
-        # It's always useless for an an import to dirty the outline.
+        # Importers should never dirty the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
-        # #1451: The caller should be responsible for this.
-            # if changed:
-                # c.setChanged()
-            # else:
-                # c.clearChanged()
-        return ok
+        # #1451: Do not change the outline's change status.
+        return ok  # For unit tests.
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
     def regularize_whitespace(self, s):
         """

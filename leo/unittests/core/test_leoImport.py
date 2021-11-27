@@ -29,21 +29,6 @@ class BaseTestImporter(LeoUnitTest):
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
-        
-    def run_test(self, p, s):  # #2316: was ic.scannerUnitTest.
-        """
-        Run a unit test of an import scanner,
-        i.e., create a tree from string s at location p.
-        """
-        c, ext = self.c, self.ext
-        self.assertTrue(ext)
-        self.treeType = '@file'  # Fix #352.
-        fileName = 'test'
-        # Run the test.
-        parent = p.insertAsLastChild()
-        kind = self.compute_unit_test_kind(ext)
-        parent.h = f"{kind} {fileName}"
-        c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
 
     #@+others
     #@+node:ekr.20211108044605.1: *3*  BaseTestImporter.compute_unit_test_kind
@@ -56,6 +41,23 @@ class BaseTestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z
         return '@file'
+    #@+node:ekr.20211127042843.1: *3*  BaseTestImporter.run_test
+    def run_test(self, p, s):
+        """
+        Run a unit test of an import scanner,
+        i.e., create a tree from string s at location p.
+        """
+        c, ext = self.c, self.ext
+        self.assertTrue(ext)
+        self.treeType = '@file'  # Fix #352.
+        fileName = 'test'
+        # Run the test.
+        parent = p.insertAsLastChild()
+        kind = self.compute_unit_test_kind(ext)
+        parent.h = f"{kind} {fileName}"
+        ok = c.importCommands.createOutline(
+            parent=parent.copy(), ext=ext, s=textwrap.dedent(s))
+        self.assertTrue(ok)
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto (BaseTestImporter):
@@ -691,13 +693,13 @@ class TestHtml (BaseTestImporter):
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
         c = self.c
+        ### ATlanguage html
         s = '''
-        @language html
         <html>
         <head>headline</head>
         <body>body</body>
         </html>
-        '''
+        ''' ###.replace('AT', '@')
         table = (
             '<html>',
         )
@@ -2117,13 +2119,13 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.62: *3* TestPython.test_bad_class_test
     def test_bad_class_test(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class testClass1 # no colon
                 pass
 
             def spam():
                 pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.63: *3* TestPython.test_basic_nesting_test
     def test_basic_nesting_test(self):
@@ -2540,14 +2542,14 @@ class TestPython (BaseTestImporter):
     def test_bug_360(self):
         c = self.c
         s = textwrap.dedent("""\
-            @base_task(
+            ATbase_task(
                 targets=['img/who_map.png', 'img/who_map.pdf'],
                 file_dep=[data_path('phyto')],
                 task_dep=['load_data'],
             )
             def make_map():
                 '''make_map - plot the Thompson / Bartsh / WHO map'''
-        """)
+        """).replace('AT', '@')
         table = (
             (1, '@base_task make_map'),
         )
@@ -2620,7 +2622,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.69: *3* TestPython.test_bug_978
     def test_bug_978(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = textwrap.dedent("""
             import foo
             import bar
 
@@ -2653,10 +2655,10 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.72: *3* TestPython.test_class_test_2
     def test_class_test_2(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class testClass2:
                 pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.73: *3* TestPython.test_class_tests_1
     def test_class_tests_1(self):
@@ -2673,13 +2675,13 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.74: *3* TestPython.test_comment_after_dict_assign
     def test_comment_after_dict_assign(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
                   's': 'http://www.w3.org/2000/svg',
                   'xlink' : 'http://www.w3.org/1999/xlink'}
 
             tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
-        """)
+        """
         table = (
             (1, 'Declarations'),
         )
@@ -2698,11 +2700,11 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.75: *3* TestPython.test_decls_test_1
     def test_decls_test_1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             import leo.core.leoGlobals as g
 
             a = 3
-        """)
+        """
         table = (
             (1, 'Declarations'),
         )
@@ -2887,7 +2889,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.79: *3* TestPython.test_def_test_1
     def test_def_test_1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = textwrap.dedent("""
             class test:
 
                 def importFilesCommand (self,files=None,treeType=None,
@@ -2926,7 +2928,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.80: *3* TestPython.test_def_test_2
     def test_def_test_2(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class test:
                 def spam(b):
                     pass
@@ -2935,7 +2937,7 @@ class TestPython (BaseTestImporter):
 
                 def foo(a):
                     pass
-        """)
+        """
         table = (
             (1, 'class test'),
             (2, 'spam'),
@@ -2965,20 +2967,20 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.82: *3* TestPython.test_empty_decls
     def test_empty_decls(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             import leo.core.leoGlobals as g
 
             a = 3
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.71: *3* TestPython.test_enhancement_481
     def test_enhancement_481(self):
         c = self.c
         s = textwrap.dedent("""\
-            @g.cmd('my-command')
+            ATg.cmd('my-command')
             def myCommand(event=None):
                 pass
-        """)
+        """).replace('AT', '@')
         table = (
             # (1, '@g.cmd myCommand'),
             (1, "@g.cmd('my-command') myCommand"),
@@ -2998,11 +3000,11 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.83: *3* TestPython.test_extra_leading_ws_test
     def test_extra_leading_ws_test(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class cls:
                  def fun(): # one extra space.
                     pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20211108084817.1: *3* TestPython.test_get_leading_indent
     def test_get_leading_indent(self):
@@ -3265,10 +3267,10 @@ class TestPython (BaseTestImporter):
         # ~/at-auto-test.py
 
         # Careful: don't put a section reference in the string.
-        s = textwrap.dedent("""\
+        s = """
             # This is valid Python, but it looks like a section reference.
             a = b < < c > > d
-        """).replace('> >', '>>').replace('< <', '<<')
+        """.replace('> >', '>>').replace('< <', '<<')
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.87: *3* TestPython.test_minimal_class_1
     def test_minimal_class_1(self):
@@ -3290,27 +3292,27 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.88: *3* TestPython.test_minimal_class_2
     def test_minimal_class_2(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class emptyClass: pass
 
             def followingDef():
                 pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.89: *3* TestPython.test_minimal_class_3
     def test_minimal_class_3(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class emptyClass: pass # comment
 
             def followingDef(): # comment
                 pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.90: *3* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class aClass:
                 def def1(self):
                     pass
@@ -3321,12 +3323,12 @@ class TestPython (BaseTestImporter):
                         g.es_print(color='blue',*args,**keys)
 
                     pr('input...')
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.91: *3* TestPython.test_overindent_def_one_following_def
     def test_overindent_def_one_following_def(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class aClass:
                 def def1(self):
                     pass
@@ -3340,7 +3342,7 @@ class TestPython (BaseTestImporter):
 
                 def def2(self):
                     pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.92: *3* TestPython.test_overindented_def_3
     def test_overindented_def_3(self):
@@ -3423,7 +3425,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.94: *3* TestPython.test_string_underindent_lines
     def test_string_underindent_lines(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class BaseScanner:
                 def containsUnderindentedComment(self):
                     a = 2
@@ -3432,12 +3434,12 @@ class TestPython (BaseTestImporter):
                 # This underindented comment should be placed with next function.
                 def empty(self):
                     pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.95: *3* TestPython.test_string_underindent_lines_2
     def test_string_underindent_lines_2(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class BaseScanner:
                 def containsUnderindentedComment(self):
                     a = 2
@@ -3447,7 +3449,7 @@ class TestPython (BaseTestImporter):
 
                 def empty(self):
                     pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.96: *3* TestPython.test_top_level_later_decl
     def test_top_level_later_decl(self):
@@ -3507,33 +3509,33 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.97: *3* TestPython.test_trailing_comment
     def test_trailing_comment(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class aClass: # trailing comment
 
 
                 def def1(self):             # trailing comment
                     pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.98: *3* TestPython.test_trailing_comment_outer_levels
     def test_trailing_comment_outer_levels(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             xyz = 6 # trailing comment
             pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.99: *3* TestPython.test_two_functions
     def test_two_functions(self):
         # For comparison with unindent does not end function.
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             def foo():
                 pass
 
             def bar():
                 pass
-        """)
+        """
         self.run_test(c.p, s=s)
     #@+node:ekr.20210904065459.100: *3* TestPython.test_underindent_method
     def test_underindent_method(self):
