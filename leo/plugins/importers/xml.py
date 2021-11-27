@@ -191,7 +191,7 @@ class Xml_Importer(Importer):
         return new_state.tag_level > prev_state.tag_level
     #@+node:ekr.20161121212858.1: *3* xml_i.is_ws_line
     # Warning: base Importer class defines ws_pattern.
-    xml_ws_pattern = re.compile(r'\s*(<!--.*-->\s*)*$')
+    xml_ws_pattern = re.compile(r'\s*(<!--([^-]|-[^-])*-->\s*)*$')
 
     def is_ws_line(self, s):
         """True if s is nothing but whitespace or single-line comments."""
