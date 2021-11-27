@@ -2146,10 +2146,8 @@ class TestPython (BaseTestImporter):
             parent=parent.copy(), ext=ext, s=textwrap.dedent(input_s))
         # Compare the created and expected outlines.
         if expected_s:
-            self.create_expected_outline(
-                expected_parent,
-                textwrap.dedent(expected_s.replace('AT', '@')),
-            )
+            expected_s2 = textwrap.dedent(expected_s).strip().replace('AT', '@') + '\n'
+            self.create_expected_outline(expected_parent, expected_s2)
             self.compare_outlines(parent, expected_parent)
     #@+node:ekr.20211125101517.4: *4* create_expected_outline
     def  create_expected_outline(self, expected_parent, expected_s):
@@ -3941,6 +3939,69 @@ class TestPython (BaseTestImporter):
             switch = 1
         '''
         self.run_python_test(input_s, expected_s3)
+    #@+node:ekr.20211127031823.1: *3* Generated Tests
+    #@+node:ekr.20211127031823.2: *4* test_docstring_vars
+    def test_docstring_vars(self):
+
+        input_s = '''
+            """A docstring"""
+            switch = 1
+        '''
+        expected_s = '''
+            - org:Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(input_s, expected_s)
+
+    #@+node:ekr.20211127031823.3: *4* test_docstring_vars_outer_def
+    def test_docstring_vars_outer_def(self):
+
+        input_s = '''
+            """A docstring"""
+            switch = 1
+            
+            def d1:
+                pass
+        '''
+        expected_s = '''
+            - outer:
+              - org:Declarations
+            """A docstring"""
+            
+            switch = 1
+              - def:function: d1
+            def d1:
+                pass
+        '''
+        self.run_python_test(input_s, expected_s)
+
+    #@+node:ekr.20211127031823.4: *4* test_docstring_vars_class
+    def test_docstring_vars_class(self):
+
+        input_s = '''
+            """A docstring"""
+            switch = 1
+            
+            class Class1:
+                def method1(self):
+                    pass
+        '''
+        expected_s = '''
+            - outer:
+              - Declarations
+            """A docstring"""
+            switch = 1
+            
+              - class:class Class1
+            class Class1:
+                ATothers
+                - def: method1:
+            def method1(self):
+                pass
+        '''
+        self.run_python_test(input_s, expected_s)
+
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
