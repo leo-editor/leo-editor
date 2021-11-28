@@ -1548,12 +1548,13 @@ class TestOrg (BaseTestImporter):
 class TestOtl (BaseTestImporter):
     
     ext = '.otl'
+    treeType = '@auto-otl'
     
     #@+others
     #@+node:ekr.20210904065459.49: *3* TestOtl.test_1
     def test_1(self):
-        c = self.c
-        s = """
+
+        s = """\
             preamble.
             Section 1
             : Sec 1.
@@ -1568,22 +1569,20 @@ class TestOtl (BaseTestImporter):
             \tSection 3.1
             : Sec 3.1
         """
-        table = (
-            'Section 1',
-            'Section 2', 'Section 2-1', 'Section 2-1-1',
-            'Section 3', 'Section 3.1',
-        )
-        self.run_test(s)
-        if 0:
-            root = c.p.firstChild()
-            p2 = root.firstChild()
-            for h in table:
-                self.assertEqual(p2.h, h)
-                p2.moveToThreadNext()
-            assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
+        p = self.run_test(s)
+        if 0: ### Fails
+            self.check_headlines(p, (
+                (1, 'preamble.'),
+                (1, 'Section 1'),
+                (1, 'Section 2'),
+                (2, 'Section 2-1'),
+                (3, 'Section 2-1-1'),
+                (1, 'Section 3'),
+                (2, 'Section 3.1'),
+            ))
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
+
         c = self.c
         x = otl.Otl_Importer(c.importCommands, atAuto=False)
         pattern = x.otl_pattern
