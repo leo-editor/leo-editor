@@ -1407,11 +1407,12 @@ class TestMarkdown(BaseTestImporter):
 class TestOrg (BaseTestImporter):
     
     ext = '.org'
+    treeType = '@auto-org'
     
     #@+others
     #@+node:ekr.20210904065459.42: *3* TestOrg.test_1
     def test_1(self):
-        c = self.c
+
         s = """
             * Section 1
             Sec 1.
@@ -1425,38 +1426,30 @@ class TestOrg (BaseTestImporter):
             ** Section 3.1
             Sec 3.1
         """
-        table = (
-            'Section 1',
-            'Section 2', 'Section 2-1', 'Section 2-1-1',
-            'Section 3', 'Section 3.1',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Section 1'),
+            (1, 'Section 2'),
+            (2, 'Section 2-1'),
+            (3, 'Section 2-1-1'),
+            (1, 'Section 3'),
+            (2, 'Section 3.1'),
+        ))
+        
     #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
-        c = self.c
+
         s = """
             *  Test
             First line.
         """
-        table = (
-            ' Test',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, g.toUnicode(h))
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, ' Test'),
+        ))
     #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
     def test_552(self):
-        c = self.c
+
         s = """
             * Events
               :PROPERTIES:
@@ -1465,21 +1458,15 @@ class TestOrg (BaseTestImporter):
             ** 整理个人生活
             *** 每周惯例
         """
-        table = (
-            'Events',
-            '整理个人生活',
-            '每周惯例',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, g.toUnicode(h))
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Events'),
+            (2, '整理个人生活'),
+            (3, '每周惯例'),
+        ))
     #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
     def test_intro(self):
-        c = self.c
+
         s = """
             Intro line.
             * Section 1
@@ -1487,19 +1474,14 @@ class TestOrg (BaseTestImporter):
             * Section 2
             Sec 2.
         """
-        table = (
-            'Section 1',
-            'Section 2',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Section 1'),
+            (1, 'Section 2'),
+        ))
     #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
     def test_pattern(self):
+
         c = self.c
         x = org.Org_Importer(c.importCommands, atAuto=False)
         pattern = x.org_pattern
@@ -1514,7 +1496,7 @@ class TestOrg (BaseTestImporter):
             assert m, repr(line)
     #@+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
     def test_placeholder(self):
-        c = self.c
+
         # insert test for org here.
         s = """
             * Section 1
@@ -1531,42 +1513,36 @@ class TestOrg (BaseTestImporter):
             ** Section 3.1
             Sec 3.1
         """
-        table = (
-            'Section 1',
-            'Section 2', 'Section 2-1', 'Section 2-1-1',
-            'Section 3',
-            'placeholder', 'placeholder', 'placeholder', 'placeholder',
-            'Section 3-1-1-1-1-1',
-            'Section 3.1',
-        )
+        # Suppress perfect import checks.
         g.app.suppressImportChecks = True
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Section 1'),
+            (1, 'Section 2'),
+            (2, 'Section 2-1'),
+            (3, 'Section 2-1-1'),
+            (1, 'Section 3'),
+            (2, 'placeholder'),
+            (3, 'placeholder'),
+            (4, 'placeholder'),
+            (5, 'placeholder'),
+            (6, 'Section 3-1-1-1-1-1'),
+            (2, 'Section 3.1'),
+        ))
     #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
-        c = self.c
+
         s = """
             * Section 1 :tag1:
             * Section 2 :tag2:
             * Section 3 :tag3:tag4:
         """
-        table = (
-            'Section 1 :tag1:',
-            'Section 2 :tag2:',
-            'Section 3 :tag3:tag4:',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Section 1 :tag1:'),
+            (1, 'Section 2 :tag2:'),
+            (1, 'Section 3 :tag3:tag4:'),
+        ))
     #@-others
 #@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
 class TestOtl (BaseTestImporter):
