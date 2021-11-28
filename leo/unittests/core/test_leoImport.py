@@ -4128,7 +4128,7 @@ class TestXML (BaseTestImporter):
         self.assertEqual(p, after)
     #@+node:ekr.20210904065459.106: *3* TestXml.test_1
     def test_1(self):
-        c = self.c
+
         s = """
             <html>
             <head>
@@ -4139,25 +4139,12 @@ class TestXML (BaseTestImporter):
             </body>
             </html>
         """
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
             (1, "<html>"),
             (2, "<head>"),
             (2, "<body class='bodystring'>"),
-        )
-        p = c.p
-        self.run_test(s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p = root.firstChild()
-        assert p, g.tree_to_string(c)
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
-
+        ))
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = """
