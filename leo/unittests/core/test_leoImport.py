@@ -1760,7 +1760,7 @@ class TestPerl (BaseTestImporter):
 
     #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex_2
     def test_regex_2(self):
-        c = self.c
+
         s = """
             #!/usr/bin/perl
 
@@ -1780,21 +1780,13 @@ class TestPerl (BaseTestImporter):
                 s = tr///}/;
             }
         """
-        table = (
-            'sub test1',
-            'sub test2',
-            'sub test3',
-            'sub test4'
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'sub test1'),
+            (1, 'sub test2'),
+            (1, 'sub test3'),
+            (1, 'sub test4'),
+        ))
     #@-others
 #@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
 class TestPhp (BaseTestImporter):
