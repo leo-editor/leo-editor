@@ -2113,17 +2113,6 @@ class TestPython (BaseTestImporter):
         self.run_python_test(input_s, expected_s)
 
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
-    #@+node:ekr.20210904065459.62: *4* TestPython.test_bad_class
-    def test_bad_class(self):
-
-        s = """
-            class testClass1 # no colon
-                pass
-
-            def spam():
-                pass
-        """
-        self.run_test(s)
     #@+node:ekr.20210904065459.63: *4* TestPython.test_basic_nesting
     def test_basic_nesting(self):
         c = self.c
@@ -3323,10 +3312,10 @@ class TestPython (BaseTestImporter):
             class Class1:
                 def class1_method1():
                     pass
-                def class1_method2():
-                    def helper():
-                        pass
         """
+                # def class1_method2():
+                    # def helper():
+                        # pass
             # def outer_def1():
                 # pass
             # def outer_def2():

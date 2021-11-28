@@ -17,8 +17,8 @@ class Py_Importer(Importer):
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
     debug = False
-    dump = False
-    skip_flag = True  # Careful: Importer.skip exists.
+    dump = True
+    skip_flag = False  # Careful: Importer.skip exists.
     trace = False
     #@-<< Py_Importer debug vars >>
 
