@@ -57,6 +57,7 @@ class BaseTestImporter(LeoUnitTest):
         result_p = c.importCommands.createOutline(
             parent=parent.copy(), ext=ext, s=textwrap.dedent(s).strip() + '\n')
         self.assertTrue(result_p is not None)
+        return result_p
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto (BaseTestImporter):
@@ -3342,7 +3343,7 @@ class TestPython (BaseTestImporter):
                     pass
         """
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.92: *3* TestPython.test_overindented_def_3
+    #@+node:ekr.20210904065459.92: *3* TestPython.test_overindented_def_3 (Structure FAILS)
     def test_overindented_def_3(self):
         # This caused PyParse.py not to be imported properly.
         c = self.c
@@ -3358,22 +3359,17 @@ class TestPython (BaseTestImporter):
                 pass
         '''
         table = (
-            (1, 'Declarations'),
-            (1, 'class testClass1'),
+            (1, f"@file {self.id()}"),
+            (2, 'Declarations'),
+            # (1, 'class testClass1'),
         )
-        p = c.p
-        self.run_test(c.p, s=s)
-        if 0:  ### Fail.
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        p = self.run_test(c.p, s=s)
+        for n, h in table:
+            n2 = p.level()
+            self.assertEqual(h, p.h)
+            self.assertEqual(n, n2)
+            p.moveToThreadNext()
+
     #@+node:ekr.20210904065459.131: *3* TestPython.test_scan_state
     def test_scan_state(self):
         c = self.c
@@ -3450,7 +3446,7 @@ class TestPython (BaseTestImporter):
                     pass
         """
         self.run_test(c.p, s=s)
-    #@+node:ekr.20210904065459.96: *3* TestPython.test_top_level_later_decl
+    #@+node:ekr.20210904065459.96: *3* TestPython.test_top_level_later_decl (Structure FAILS)
     def test_top_level_later_decl(self):
         # From xo.py.
         c = self.c
