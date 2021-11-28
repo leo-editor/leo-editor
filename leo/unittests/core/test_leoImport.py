@@ -26,6 +26,7 @@ class BaseTestImporter(LeoUnitTest):
     
     ext = None  # Subclasses must set this to the language's extension.
     skip_flag = False  # Subclasses can set this to suppress perfect-import checks.
+    treeType = '@file'  # Fix #352.
     
     def setUp(self):
         super().setUp()
@@ -39,7 +40,7 @@ class BaseTestImporter(LeoUnitTest):
         p1 = p.copy()
         after = p1.nodeAfterTree()
         try:
-            self.assertEqual(p1.h, f"@file {self.id()}")
+            self.assertEqual(p1.h, f"{self.treeType} {self.id()}")
             p.moveToThreadNext()
             for data in table:
                 n, h = data
@@ -70,7 +71,7 @@ class BaseTestImporter(LeoUnitTest):
         """
         c, ext, p = self.c, self.ext, self.c.p
         self.assertTrue(ext)
-        self.treeType = '@file'  # Fix #352.
+        ### self.treeType = '@file'  # Fix #352.
         # Run the test.
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
@@ -1205,11 +1206,12 @@ class TestJavascript (BaseTestImporter):
 class TestMarkdown(BaseTestImporter):
     
     ext = '.md'
+    treeType = '@auto-md'
     
     #@+others
     #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
-        c = self.c
+
         s = """\
             #Top
             The top section
@@ -1233,7 +1235,8 @@ class TestMarkdown(BaseTestImporter):
             ##Section 3
             Section 3, line 1
         """
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
             (1, 'Top'),
             (2, 'Section 1'),
             (2, 'Section 2'),
@@ -1241,21 +1244,10 @@ class TestMarkdown(BaseTestImporter):
             (4, 'Section 2.1.1'),
             (3, 'Section 2.2'),
             (2, 'Section 3'),
-        )
-        self.run_test(s)
-        after = c.p.nodeAfterTree()
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-md {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
     def test_md_import_rst_style(self):
-        c = self.c
+
         s = """\
             Top
             ====
@@ -1290,8 +1282,8 @@ class TestMarkdown(BaseTestImporter):
 
             section 3, line 1
         """
-        self.run_test(s)
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
             (1, 'Top'),
             (2, 'Section 1'),
             (2, 'Section 2'),
@@ -1299,21 +1291,10 @@ class TestMarkdown(BaseTestImporter):
             (4, 'Section 2.1.1'),
             (3, 'Section 2.2'),
             (2, 'Section 3'),
-        )
-        p = c.p
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@auto-md {self.id()}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
-        c = self.c
+
         # insert test for markdown here.
         s = """
             Decl line.
@@ -1331,24 +1312,16 @@ class TestMarkdown(BaseTestImporter):
 
             #Last header: no text
         """
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                'Last header: no text',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-md {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '!Declarations'),
+            (1, 'Header'),
+            (2, 'Subheader'),
+            (1, 'Last header: no text'),
+        ))
     #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
-        c = self.c
-        # insert test for markdown here.
+
         s = """
             Decl line.
             #Header
@@ -1368,27 +1341,19 @@ class TestMarkdown(BaseTestImporter):
 
             #Last header: no text
         """
-        table = (
-            '!Declarations',
-            'Header',
-                'Subheader',
-                    'This *should* be a section',
-                'Last header: no text',
-        )
         # Implicit underlining *must* cause the perfect-import test to fail!
         g.app.suppressImportChecks = True
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-md {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '!Declarations'),
+            (1, 'Header'),
+            (2, 'Subheader'),
+            (1, 'This *should* be a section'),
+            (1, 'Last header: no text'),
+        ))
     #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
-        c = self.c
-        # insert test for markdown here.
+
         s = """
             Decl line.
             #Header
@@ -1401,25 +1366,17 @@ class TestMarkdown(BaseTestImporter):
             `​``
             #Last header
         """
-        table = (
-            '!Declarations',
-            'Header',
-            'Last header',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-md {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '!Declarations'),
+            (1, 'Header'),
+            (1, 'Last header'),
+        ))
     #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
     def test_is_hash(self):
         c = self.c
         ic = c.importCommands
         x = markdown.Markdown_Importer(ic, atAuto=False)
-        # insert test for markdown here.
         assert x.md_pattern_table
         table = (
             (1, 'name', '# name\n'),
