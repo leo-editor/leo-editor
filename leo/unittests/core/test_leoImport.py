@@ -4031,29 +4031,27 @@ class TestTypescript (BaseTestImporter):
     def test_class(self):
 
         s = '''
-
-        class Greeter {
-            greeting: string;
-            constructor (message: string) {
-                this.greeting = message;
+            class Greeter {
+                greeting: string;
+                constructor (message: string) {
+                    this.greeting = message;
+                }
+                greet() {
+                    return "Hello, " + this.greeting;
+                }
             }
-            greet() {
-                return "Hello, " + this.greeting;
+        
+            var greeter = new Greeter("world");
+        
+            var button = document.createElement('button')
+            button.innerText = "Say Hello"
+            button.onclick = function() {
+                alert(greeter.greet())
             }
-        }
-
-        var greeter = new Greeter("world");
-
-        var button = document.createElement('button')
-        button.innerText = "Say Hello"
-        button.onclick = function() {
-            alert(greeter.greet())
-        }
-
-        document.body.appendChild(button)
+        
+            document.body.appendChild(button)
 
         '''
-
         self.run_test(s)
     #@+node:ekr.20210904065459.104: *3* TestTypescript.test_module
     def test_module(self):
