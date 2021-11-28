@@ -137,7 +137,7 @@
 <v t="ekr.20211107080227.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.1"><vh>@data:@auto ../test/external_files/at-auto-test.py</vh>
-<v t="ekr.20211107080227.4"><vh>@gnxs</vh></v>
+<v t="ekr.20211118024343.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20210911191731.3"><vh>@data:@auto ../test/external_files/at-auto-unit-test.py</vh>
 <v t="ekr.20211107080227.5"><vh>@gnxs</vh></v>
@@ -677,45 +677,6 @@
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
-<v t="ekr.20210911191231.1"><vh>External files test</vh>
-<v t="ekr.20190113120734.1"><vh>@@@asis ../test/external_files/at-asis-test.py</vh>
-<v t="ekr.20190113120734.2"><vh>spam</vh></v>
-<v t="ekr.20190113120734.3"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20200205065723.1"><vh>@@@asis ../test/external_files/at-asis-test2.txt</vh>
-<v t="ekr.20200205065723.2"><vh>spam</vh></v>
-<v t="ekr.20200205065723.3"><vh>@@eggs</vh></v>
-</v>
-<v t="ekr.20190113123439.5"><vh>@auto ../test/external_files/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20190113123439.7"><vh>@auto ../test/external_files/at-auto-md-line-number-test.md</vh></v>
-<v t="ekr.20190113123439.11"><vh>@auto ../test/external_files/at-auto-section-ref-test.py</vh></v>
-<v t="ekr.20190113121550.1"><vh>@auto ../test/external_files/at-auto-test.py</vh></v>
-<v t="ekr.20190113123439.16"><vh>@auto ../test/external_files/at-auto-unit-test.py</vh></v>
-<v t="ekr.20190113123635.2"><vh>@auto-org ../test/external_files/at-auto-org-line-number-test.org</vh></v>
-<v t="ekr.20190113123635.5"><vh>@auto-otl ../test/external_files/at-auto-otl-line-number-test.otl</vh></v>
-<v t="ekr.20190113123822.1"><vh>@clean ../test/external_files/at-clean-line-number-test.c</vh>
-<v t="ekr.20190113123822.2"><vh>spam</vh></v>
-<v t="ekr.20190113123822.3"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20190113123853.1"><vh>@clean ../test/external_files/at-clean-line-number-test.py</vh>
-<v t="ekr.20190113123853.2"><vh>spam</vh></v>
-<v t="ekr.20190113123853.3"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20191207060251.1"><vh>@clean ../test/external_files/at-clean-write-test.py</vh>
-<v t="ekr.20191207060251.2"><vh>spam</vh></v>
-<v t="ekr.20191207060251.3"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20160403123754.1"><vh>@file ../test/external_files/at-file-line-number-test.c</vh></v>
-<v t="ekr.20080904102243.2"><vh>@file ../test/external_files/at-file-line-number-test.py</vh></v>
-<v t="ekr.20111021115306.3697"><vh>@file ../test/external_files/tex-error.tex</vh></v>
-<v t="ekr.20130912092638.4150"><vh>@file ../test/external_files/utf-16-test.txt</vh></v>
-<v t="ekr.20190113124135.1"><vh>@nosent ../test/external_files/at-nosent-line-number-test.py</vh>
-<v t="ekr.20190113124135.2"><vh>spam</vh></v>
-<v t="ekr.20190113124135.3"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20100731163237.5782"><vh>@thin ../test/external_files/at-thin-html-test.html</vh></v>
-<v t="ekr.20090704085350.5022"><vh>@thin ../test/external_files/at-thin-test.py</vh></v>
-</v>
 </v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
 <v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
@@ -761,10 +722,9 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">cvt-at-file
+<t tx="ekr.20150425145248.1">test-one
+test-import
 pylint
-cov
-moz
 backup</t>
 <t tx="ekr.20210530065000.2"># This node contains the commands needed to execute a program in a particular language.
 # Format: language-name: command
@@ -1891,7 +1851,7 @@ unl: Declarations (at-auto-section-ref-test.py)
 </t>
 <t tx="ekr.20210911191731.1">gnx: ekr.20190113121550.1
 </t>
-<t tx="ekr.20211107080227.4">gnx: ekr.20210911191226.8
+<t tx="ekr.20211118024343.1">gnx: ekr.20210911191226.8
 unl: spam (at-auto-test.py)
 gnx: ekr.20210911191226.9
 unl: eggs (at-auto-test.py)
@@ -2163,7 +2123,7 @@ x.diff_pull_request()
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='af93a09b', # Before.
+    rev1='fc48ebca97ea430', # Before.
     rev2='HEAD',   # After.
 )
 </t>
@@ -3238,67 +3198,6 @@ from .eveventhandler import Event
 <t tx="ekr.20180225010850.1"></t>
 <t tx="ekr.20210710031237.1"></t>
 <t tx="ekr.20080730161153.8"></t>
-<t tx="ekr.20210911191231.1"></t>
-<t tx="ekr.20190113120734.1">
-</t>
-<t tx="ekr.20190113120734.2">def spam():
-    pass
-</t>
-<t tx="ekr.20190113120734.3">def eggs():
-    pass
-</t>
-<t tx="ekr.20200205065723.1">@language python
-@others
-</t>
-<t tx="ekr.20200205065723.2">def spam():
-    pass</t>
-<t tx="ekr.20200205065723.3">def eggs():
-    pass
-</t>
-<t tx="ekr.20190113123822.1">@language c
-@tabwidth -4
-// before @others // line 1
-@others
-// last line: line 6
-</t>
-<t tx="ekr.20190113123822.2">def spam(): // line 2
-    pass
-</t>
-<t tx="ekr.20190113123822.3">def eggs(): // line 4
-    pass
-</t>
-<t tx="ekr.20190113123853.1">@language python
-@tabwidth -4
-# Before @others: line 1
-@others
-# Last line: line 6
-</t>
-<t tx="ekr.20190113123853.2">def spam(): # line 2
-    pass
-</t>
-<t tx="ekr.20190113123853.3">def eggs(): # line 4
-    pass
-</t>
-<t tx="ekr.20191207060251.1">@language python
-@tabwidth -4
-@others
-</t>
-<t tx="ekr.20191207060251.2">def spam():
-    pass
-</t>
-<t tx="ekr.20191207060251.3">def eggs():
-    pass
-</t>
-<t tx="ekr.20190113124135.1">@language python
-@tabwidth -4
-# before @others: line 1
-@others
-# last line: line 6</t>
-<t tx="ekr.20190113124135.2">def spam(): # line 2
-    pass
-</t>
-<t tx="ekr.20190113124135.3">def eggs(): # line 4
-    pass</t>
 <t tx="ekr.20201202144529.1"></t>
 <t tx="ekr.20210912064148.1"></t>
 <t tx="ekr.20210912064205.1"></t>
