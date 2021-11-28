@@ -3766,11 +3766,12 @@ class TestPython (BaseTestImporter):
 class TestRst(BaseTestImporter):
     
     ext = '.rst'
+    treeType = '@auto-rst'
     
     #@+others
     #@+node:ekr.20210904065459.115: *3* TestRst.test_test1
     def test_test1(self):
-        c = self.c
+
         try:
             import docutils
             assert docutils
@@ -3818,28 +3819,21 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        table = (
-            '!Dummy chapter',
-            'top',
-            'section 1',
-            'section 2',
-            'section 2.1',
-            'section 2.1.1',
-            'section 3',
-            'placeholder',
-            'section 3.1.1',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-rst {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '!Dummy chapter'),
+            (1, 'top'),
+            (1, 'section 1'),
+            (1, 'section 2'),
+            (2, 'section 2.1'),
+            (3, 'section 2.1.1'),
+            (1, 'section 3'),
+            (2, 'placeholder'),
+            (3, 'section 3.1.1'),
+        ))
     #@+node:ekr.20210904065459.116: *3* TestRst.test_simple
     def test_simple(self):
-        c = self.c
+
         try:
             import docutils
             assert docutils
@@ -3857,21 +3851,14 @@ class TestRst(BaseTestImporter):
 
             The top chapter.
         """
-        table = (
-            "!Dummy chapter",
-            "Chapter",
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-rst {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, "!Dummy chapter"),
+            (1, "Chapter"),
+        ))
     #@+node:ekr.20210904065459.117: *3* TestRst.test_no_double_underlines
     def test_no_double_underlines(self):
-        c = self.c
+
         try:
             import docutils
             assert docutils
@@ -3918,28 +3905,21 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        table = (
-            '!Dummy chapter',
-            'top',
-            'section 1',
-            'section 2',
-            'section 2.1',
-            'section 2.1.1',
-            'section 3',
-            'placeholder',
-            'section 3.1.1',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-rst {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '!Dummy chapter'),
+            (1, 'top'),
+            (1, 'section 1'),
+            (1, 'section 2'),
+            (2, 'section 2.1'),
+            (3, 'section 2.1.1'),
+            (1, 'section 3'),
+            (2, 'placeholder'),
+            (3, 'section 3.1.1'),
+        ))
     #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
     def test_long_underlines(self):
-        c = self.c
+
         try:
             import docutils
             assert docutils
@@ -3954,21 +3934,14 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        table = (
-            '!Dummy chapter',
-            'top',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-rst {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '!Dummy chapter'),
+            (1, 'top'),
+        ))
     #@+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
     def test_test_long_overlines(self):
-        c = self.c
+
         try:
             import docutils
             assert docutils
@@ -3984,21 +3957,14 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        table = (
-            "!Dummy chapter",
-            "top",
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-rst {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, "!Dummy chapter"),
+            (1, "top"),
+        ))
     #@+node:ekr.20210904065459.120: *3* TestRst.test_trailing_whitespace
     def test_trailing_whitespace(self):
-        c = self.c
+
         try:
             import docutils
             assert docutils
@@ -4016,22 +3982,14 @@ class TestRst(BaseTestImporter):
 
             The top section.
         """
-        table = (
-            "!Dummy chapter",
-            "top",
-        )
-        p = c.p
-        self.run_test(s)
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@auto-rst {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, "!Dummy chapter"),
+            (1, "top"),
+        ))
     #@+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
     def test_leo_rst(self):
-        c = self.c
+
         try:
             import docutils
             assert docutils
@@ -4056,20 +4014,12 @@ class TestRst(BaseTestImporter):
 
             Sec 2.
         """
-        table = (
-            'Chapter 1',
-            'section 1',
-            'section 2',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@auto-rst {self.id()}")
-        p2 = root.firstChild()
-        assert p2, g.tree_to_string(c)
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Chapter 1'),
+            (2, 'section 1'),
+            (2, 'section 2'),
+        ))
     #@-others
 #@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
 class TestTypescript (BaseTestImporter):
