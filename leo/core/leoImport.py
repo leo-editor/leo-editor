@@ -669,7 +669,7 @@ class LeoImportCommands:
             s = s.replace('\r', '')
             ok = self.scanUnknownFileType(s, p, ext)
         if g.unitTesting:
-            return ok
+            return p if ok else None
         # #488894: unsettling dialog when saving Leo file
         # #889175: Remember the full fileName.
         c.atFileCommands.rememberReadPath(fileName, p)

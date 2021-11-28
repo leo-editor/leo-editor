@@ -25,14 +25,45 @@ class BaseTestImporter(LeoUnitTest):
     """The base class for tests of leoImport.py"""
     
     ext = None  # Subclasses must set this to the language's extension.
+    skip_flag = False  # Subclasses can set this to suppress perfect-import checks.
     
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
 
     #@+others
-    #@+node:ekr.20211111174517.1: *3* BaseTestImporter.run_test
-    def run_test(self, p, s, verbose=False):  # #2316: was ic.scannerUnitTest.
+    #@+node:ekr.20211128045212.1: *3* BaseTestImporter.check_headlines
+    def check_headlines(self, p, table):
+        """Check that p and its subtree have the structure given in the table."""
+        # Check structure
+        p1 = p.copy()
+        after = p1.nodeAfterTree()
+        try:
+            self.assertEqual(p1.h, f"@file {self.id()}")
+            p.moveToThreadNext()
+            for data in table:
+                n, h = data
+                self.assertEqual(p.h, h)
+                self.assertEqual(p.level() - p1.level(), n, msg=p.h)
+                p.moveToThreadNext()
+            # Make sure there are no extra nodes in p's tree.
+            self.assertFalse(p1.isAncestorOf(p), msg=p.h)
+            self.assertEqual(p, after, msg=p and p.h or "No Node")
+        except AssertionError:
+            self.dump_tree(p1)
+            raise
+    #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
+    def compute_unit_test_kind(self, ext):
+        """Return kind from the given extention."""
+        aClass = g.app.classDispatchDict.get(ext)
+        if aClass:
+            d2 = g.app.atAutoDict
+            for z in d2:
+                if d2.get(z) == aClass:
+                    return z
+        return '@file'
+    #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
+    def run_test(self, p, s, verbose=False):
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -44,42 +75,15 @@ class BaseTestImporter(LeoUnitTest):
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
         parent.h = f"{kind} {self.id()}"
-        try:
-            ### s2 = textwrap.dedent(s)
-            c.importCommands.createOutline(parent=parent.copy(), ext=ext, s=s)
-        except AssertionError:
-            if verbose:
-                g.printObj(s, tag=self.id())
-                self.dump_tree()
-            raise
-
-    #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
-    def compute_unit_test_kind(self, ext):
-        """Return kind from the given extention."""
-        aClass = g.app.classDispatchDict.get(ext)
-        if aClass:
-            d2 = g.app.atAutoDict
-            for z in d2:
-                if d2.get(z) == aClass:
-                    return z
-        return '@file'
-    #@+node:ekr.20211127042843.1: *3*  BaseTestImporter.run_test
-    def run_test(self, p, s):
-        """
-        Run a unit test of an import scanner,
-        i.e., create a tree from string s at location p.
-        """
-        c, ext = self.c, self.ext
-        self.assertTrue(ext)
-        self.treeType = '@file'  # Fix #352.
-        fileName = 'test'
-        # Run the test.
-        parent = p.insertAsLastChild()
-        kind = self.compute_unit_test_kind(ext)
-        parent.h = f"{kind} {fileName}"
+        # Suppress perfect-import checks if self.skip_flag is True
+        if self.skip_flag:
+            g.trace('SKIP', p.h)
+            g.app.suppressImportChecks = True
+        # createOutline calls Importer.gen_lines and Importer.check.
         ok = c.importCommands.createOutline(
             parent=parent.copy(), ext=ext, s=textwrap.dedent(s))
         self.assertTrue(ok)
+        return parent
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto (BaseTestImporter):
@@ -116,20 +120,12 @@ class TestC(BaseTestImporter):
                 }
             }
         """)
-        table = (
-            'class cTestClass1',
-            'int foo',
-            'char bar',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(c.p, s)
+        self.check_headlines(p, (
+            (1, 'class cTestClass1'),
+            (2, 'int foo'),
+            (2, 'char bar'),
+        ))
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
         c = self.c
@@ -2159,6 +2155,9 @@ class TestPython (BaseTestImporter):
         parent.h = f"{kind} {self.id()}"
         expected_parent = root.insertAsLastChild()
         expected_parent.h = parent.h
+        # Suppress perfect-import checks if self.skip_flag is True
+        if self.skip_flag:
+            g.app.suppressImportChecks = True
         # Create the outline. This calls py_i.gen_lines.
         c.importCommands.createOutline(
             parent=parent.copy(), ext=ext, s=textwrap.dedent(input_s))
@@ -2257,8 +2256,8 @@ class TestPython (BaseTestImporter):
             self.dump_tree(created_p, tag='===== Created')
             self.dump_tree(expected_p, tag='===== Expected')
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
-    #@+node:ekr.20210904065459.62: *4* TestPython.test_bad_class_test
-    def test_bad_class_test(self):
+    #@+node:ekr.20210904065459.62: *4* TestPython.test_bad_class
+    def test_bad_class(self):
         c = self.c
         s = """
             class testClass1 # no colon
