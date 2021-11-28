@@ -1603,7 +1603,7 @@ class TestPascal (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
     def test_delphi_interface(self):
-        c = self.c
+
         s = """
             unit Unit1;
 
@@ -1640,23 +1640,15 @@ class TestPascal (BaseTestImporter):
 
             end. // interface
         """
-        table = (
-            'interface',
-            'procedure FormCreate',
-            'procedure TForm1.FormCreate',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        assert root
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'interface'),
+            (2, 'procedure FormCreate'),
+            (2, 'procedure TForm1.FormCreate'),
+        ))
     #@+node:ekr.20210904065459.130: *3* TestPascal.test_methods
     def test_methods(self):
+
         c = self.c
         x = pascal.Pascal_Importer(c.importCommands, atAuto=False)
         table = (
