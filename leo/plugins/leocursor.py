@@ -59,7 +59,7 @@ class AM_Colon(AttribManager):
 
     """
 
-    pattern = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)(:)(\s+(\S.*))*$")
+    pattern = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)(:)(\s+(\S+))*$")
 
     def filterBody(self, b):
         return '\n'.join(
