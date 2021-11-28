@@ -511,7 +511,7 @@ class TestHtml (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
     def test_lowercase_tags(self):
-        c = self.c
+
         s = """
             <html>
             <head>
@@ -522,21 +522,16 @@ class TestHtml (BaseTestImporter):
             </body>
             </html>
         """
-        table = (
-            '<html>',
-            '<head>',
-            '<body class="bodystring">',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<html>'),
+            (2, '<head>'),
+            (2, '<body class="bodystring">'),
+        ))
+        
     #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
     def test_multiple_tags_on_a_line(self):
-        c = self.c
+
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
         # NOT: tr, td, tbody, etc.
         s = """
@@ -584,88 +579,73 @@ class TestHtml (BaseTestImporter):
             </body>
             </html>
         """
-        table = (
-            '<html>',
-            '<body>',
-            '<table id="0">',
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<html>'),
+            (2, '<body>'),
+            (3, '<table id="0">'),
+            (4, '<table id="2">'),
+            (5, '<table id="3">'),
+            (6, '<table id="4">'),
+            (7, '<table id="6">'),
+            (4, '<DIV class="webonly">'),
+        ))
+      
     #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
-        c = self.c
 
         s = """
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html><head>headline</head><body>body</body></html>
         """
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
             # The new xml scanner doesn't generate any new nodes,
             # because the scan state hasn't changed at the end of the line!
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        ))
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
-        c = self.c
-        ### ATlanguage html
+
         s = '''
-        <html>
-        <head>headline</head>
-        <body>body</body>
-        </html>
-        ''' ###.replace('AT', '@')
-        table = (
-            '<html>',
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            assert p2
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+            <html>
+            <head>headline</head>
+            <body>body</body>
+            </html>
+        '''
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<html>'),
+            # (2, '<head>'),
+            # (2, '<body>'),
+        ))
     #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
     def test_underindented_comment(self):
-        c = self.c
+
         s = r'''
-        <td width="550">
-        <table cellspacing="0" cellpadding="0" width="600" border="0">
-            <td class="blutopgrabot" height="28"></td>
-
-            <!-- The indentation of this element causes the problem. -->
-            <table>
-
-        <!--
-        <div align="center">
-        <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
-        </div>
-        -->
-
-        </table>
-        </table>
-
-        <p>Paragraph</p>
-        </td>
-
+            <td width="550">
+            <table cellspacing="0" cellpadding="0" width="600" border="0">
+                <td class="blutopgrabot" height="28"></td>
+        
+                <!-- The indentation of this element causes the problem. -->
+                <table>
+        
+            <!--
+            <div align="center">
+            <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+            </div>
+            -->
+        
+            </table>
+            </table>
+        
+            <p>Paragraph</p>
+            </td>
         '''
-        table = (
-            '<table cellspacing="0" cellpadding="0" width="600" border="0">',
-            '<table>',
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-
-
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">'),
+            (2, '<table>'),
+        ))
     #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
     def test_uppercase_tags(self):
 
@@ -679,10 +659,16 @@ class TestHtml (BaseTestImporter):
             </BODY>
             </HTML>
         """
-        self.run_test(s)
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<HTML>'),
+            (2, '<HEAD>'),
+            (2, "<BODY class='bodystring'>"),
+            # (3, "<DIV id='bodydisplay'></DIV>"),
+        ))
     #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
-        c = self.c
+
         s = """
             <body>
 
@@ -699,69 +685,61 @@ class TestHtml (BaseTestImporter):
 
             </body>
         """
-        table = (
-            ('<body>'),
-            ('<div id="D666">'),
-        )
-
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<body>'),
+            (2, '<div id="D666">'),
+        ))
+       
     #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
     def test_improperly_terminated_tags(self):
-        c = self.c
-        s = r'''
-        <html>
 
-        <head>
-            <!-- oops: link elements terminated two different ways -->
-            <link id="L1">
-            <link id="L2">
-            <link id="L3" />
-            <link id='L4' />
-
-            <title>TITLE</title>
-
-        <!-- oops: missing tags. -->
+        s = '''
+            <html>
+        
+            <head>
+                <!-- oops: link elements terminated two different ways -->
+                <link id="L1">
+                <link id="L2">
+                <link id="L3" />
+                <link id='L4' />
+        
+                <title>TITLE</title>
+        
+            <!-- oops: missing tags. -->
         '''
-        table = (
-            '<html>',
-            '<head>',
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<html>'),
+            (2, '<head>'),
+        ))
+        
     #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
     def test_improperly_terminated_tags2(self):
-        c = self.c
+
         s = '''
-        <html>
-        <head>
-            <!-- oops: link elements terminated two different ways -->
-            <link id="L1">
-            <link id="L2">
-            <link id="L3" />
-            <link id='L4' />
-
-            <title>TITLE</title>
-
-        </head>
-        </html>
+            <html>
+            <head>
+                <!-- oops: link elements terminated two different ways -->
+                <link id="L1">
+                <link id="L2">
+                <link id="L3" />
+                <link id='L4' />
+        
+                <title>TITLE</title>
+        
+            </head>
+            </html>
         '''
-        table = ('<html>', '<head>')  # , '<link id="L1">'
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<html>'),
+            (2, '<head>'),
+        ))
+        
     #@+node:ekr.20210904065459.28: *3* TestHtml.test_brython
     def test_brython(self):
-        c = self.c
+
         # https://github.com/leo-editor/leo-editor/issues/479
         s = '''
             <!DOCTYPE html>
@@ -900,18 +878,12 @@ class TestHtml (BaseTestImporter):
             <body onload="brython({debug:1, cache:'none'})">
             </body></html>
         '''
-        table = (
-            '<html>',
-            '<head>',
-            '<body onload="brython({debug:1, cache:\'none\'})">',
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        assert p2
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '<html>'),
+            (2, '<head>'),
+            (2, '<body onload="brython({debug:1, cache:\'none\'})">'),
+        ))
     #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
