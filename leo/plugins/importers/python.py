@@ -8,7 +8,7 @@ from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
 #@+others
-#@+node:ekr.20211128161017.2: ** class Py_Importer(Importer)
+#@+node:ekr.20211128161017.2: ** class Py_Importer(Importer) (live)
 class Py_Importer(Importer):
     """A class to store and update scanning state."""
 
@@ -96,7 +96,7 @@ class Py_Importer(Importer):
             i += 1
             assert progress < i
         return None, -1, -1
-    #@+node:ekr.20211128161017.6: *3* py_i.gen_lines & overrides
+    #@+node:ekr.20211128161017.6: *3* py_i.gen_lines & overrides (live, minimal changes)
     def gen_lines(self, s, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
@@ -107,7 +107,19 @@ class Py_Importer(Importer):
         target = PythonTarget(parent, prev_state)
         stack = [target, target]
         self.decorator_lines = []
-        self.inject_lines_ivar(parent)
+        ### self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                '@others': True,
+                'child-indent': 0,
+                'indent': 0,
+                'kind': 'outer',
+                'lines': ['@others\n'],
+            }
+        }
+        if g.unitTesting:
+            g.vnode_info = self.vnode_info  # A hack.
         lines = g.splitLines(s)
         self.skip = 0
         first = True
@@ -130,7 +142,7 @@ class Py_Importer(Importer):
                     first = False
                     h = 'Declarations'
                     self.gen_ref(line, parent, target)
-                    p = self.create_child_node(parent, body=line, headline=h)
+                    p = self.create_child_node(parent, line, h)
                     stack.append(PythonTarget(p, new_state))
             elif self.ends_block(line, new_state, prev_state, stack):
                 first = False
