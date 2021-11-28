@@ -280,7 +280,7 @@ class TestCoffeescript (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
     def test_1(self):
-        c = self.c
+
         s = r'''
 
         # Js2coffee relies on Narcissus's parser.
@@ -296,19 +296,14 @@ class TestCoffeescript (BaseTestImporter):
           builder    = new Builder
           scriptNode = parser.parse str
         '''
-        table = (
-            'buildCoffee = (str) ->',
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'buildCoffee = (str) ->'),
+        ))
     #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
     #@@tabwidth -2 # Required
 
     def test_2(self):
-        c = self.c
 
         s = """
           class Builder
@@ -340,18 +335,15 @@ class TestCoffeescript (BaseTestImporter):
               str = unshift(str)
               if str.length > 0 then str else ""
         """
-        table = (
-          'class Builder',
-          'constructor: ->',
-          'build: (args...) ->',
-          'transform: (args...) ->',
-          'body: (node, opts={}) ->',
-        )
-        self.run_test(s)
-        p2 = c.p.firstChild().firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+          (1, 'class Builder'),
+          (2, 'constructor: ->'),
+          (2, 'build: (args...) ->'),
+          (2, 'transform: (args...) ->'),
+          (2, 'body: (node, opts={}) ->'),
+        ))
+       
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
@@ -371,7 +363,7 @@ class TestCSharp(BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
-        c = self.c
+
         s = """
             namespace {
                 class cTestClass1 {
@@ -379,20 +371,14 @@ class TestCSharp(BaseTestImporter):
                 }
             }
         """
-        table = (
-            'namespace',
-            'class cTestClass1',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'namespace'),
+            (2, 'class cTestClass1'),
+        ))
     #@+node:ekr.20210904065459.13: *3* TestImport.test_namespace_no_indent
     def test_namespace_no_indent(self):
-        c = self.c
+
         s = """
             namespace {
             class cTestClass1 {
@@ -400,18 +386,11 @@ class TestCSharp(BaseTestImporter):
             }
             }
         """
-        self.run_test(s)
-        table = (
-            'namespace',
-            'class cTestClass1',
-        )
-        root = c.p.firstChild()
-        # assert root.h.endswith('c# namespace no indent'), root.h
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'namespace'),
+            (2, 'class cTestClass1')
+        ))
     #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
 class TestCython (BaseTestImporter):
@@ -419,7 +398,7 @@ class TestCython (BaseTestImporter):
     ext = '.pyx'
 #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
 def test_importer(self):
-    c = self.c
+
     s = '''
         from libc.math cimport pow
 
@@ -436,19 +415,12 @@ def test_importer(self):
             print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
 
     '''
-    table = (
-        'Declarations',
-        'double',
-        'print_result',
-    )
-    self.run_test(s)
-    root = c.p.lastChild()
-    self.assertEqual(root.h, f"@file {self.id()}")
-    p2 = root.firstChild()
-    for h in table:
-        self.assertEqual(p2.h, h)
-        p2.moveToThreadNext()
-    assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+    p = self.run_test(s)
+    self.check_headlines(p, (
+        (1, 'Declarations'),
+        (1, 'double'),
+        (1, 'print_result'),
+    ))
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart (BaseTestImporter):
     
@@ -457,7 +429,7 @@ class TestDart (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.17: *3* TestDart.test_hello_world
     def test_hello_world(self):
-        c = self.c
+
         s = r'''
         var name = 'Bob';
 
@@ -476,19 +448,12 @@ class TestDart (BaseTestImporter):
           printNumber(number); // Call a function.
         }
         '''
-        table = (
-            'hello',
-            'printNumber',
-            'void main',
-        )
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'hello'), 
+            (1, 'printNumber'),
+            (1, 'void main'),
+        ))
     #@+node:ekr.20210904065459.127: *3* TestDart.test_clean_headline
     def test_clean_headline(self):
         c = self.c
@@ -509,7 +474,7 @@ class TestElisp (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
     def test_1(self):
-        c = self.c
+
         s = """
             ;;; comment
             ;;; continue
@@ -522,18 +487,12 @@ class TestElisp (BaseTestImporter):
             (defun cde (a b)
                (+ 1 2 3))
         """
-        table = (
-            'defun abc',
-            'defun cde',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'defun abc'),
+            (1, 'defun cde'),
+        ))
+        
     #@-others
 #@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
 class TestHtml (BaseTestImporter):
