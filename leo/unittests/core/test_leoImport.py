@@ -893,7 +893,7 @@ class TestIni(BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.29: *3* TestIni.test_1
     def test_1(self):
-        c = self.c
+
         s = '''
             ; last modified 1 April 2001 by John Doe
             [owner]
@@ -908,14 +908,11 @@ class TestIni(BaseTestImporter):
             port=143
             file = "payroll.dat"
         '''
-        table = ('[owner]', '[database]')
-        self.run_test(s)
-        root = c.p.firstChild()
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '[owner]'),
+            (1, '[database]'),
+        ))
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava (BaseTestImporter):
