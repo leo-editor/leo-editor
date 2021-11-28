@@ -1570,16 +1570,16 @@ class TestOtl (BaseTestImporter):
             : Sec 3.1
         """
         p = self.run_test(s)
-        if 0: ### Fails
-            self.check_headlines(p, (
-                (1, 'preamble.'),
-                (1, 'Section 1'),
-                (1, 'Section 2'),
-                (2, 'Section 2-1'),
-                (3, 'Section 2-1-1'),
-                (1, 'Section 3'),
-                (2, 'Section 3.1'),
-            ))
+        self.check_headlines(p, (
+            # Is this table correct?
+            (1, 'preamble.'),
+            (1, 'Section 1'),
+            (1, 'Section 2'),
+            (1, 'Section 2-1'),
+            (1, 'Section 2-1-1'),
+            (1, 'Section 3'),
+            (1, 'Section 3.1'),
+        ))
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
 
