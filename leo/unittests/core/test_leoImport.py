@@ -63,12 +63,12 @@ class BaseTestImporter(LeoUnitTest):
                     return z
         return '@file'
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
-    def run_test(self, p, s, verbose=False):
+    def run_test(self, s, verbose=False):
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        c, ext = self.c, self.ext
+        c, ext, p = self.c, self.ext, self.c.p
         self.assertTrue(ext)
         self.treeType = '@file'  # Fix #352.
         # Run the test.
@@ -107,7 +107,7 @@ class TestC(BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.3: *3* TestC.test_class_1
     def test_class_1(self):
-        c = self.c
+
         s = """
             class cTestClass1 {
 
@@ -120,7 +120,7 @@ class TestC(BaseTestImporter):
                 }
             }
         """
-        p = self.run_test(c.p, s)
+        p = self.run_test(s)
         self.check_headlines(p, (
             (1, 'class cTestClass1'),
             (2, 'int foo'),
@@ -128,7 +128,7 @@ class TestC(BaseTestImporter):
         ))
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
-        c = self.c
+
         s = """
             class cTestClass1 {
 
@@ -144,7 +144,7 @@ class TestC(BaseTestImporter):
                 }
             }
         """
-        p = self.run_test(c.p, s)
+        p = self.run_test(s)
         self.check_headlines(p, (
             (1, 'class cTestClass1'),
             (2, 'int foo'),
@@ -153,7 +153,7 @@ class TestC(BaseTestImporter):
        
     #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
     def test_comment_follows_arg_list(self):
-        c = self.c
+
         s = """
             void
             aaa::bbb::doit
@@ -173,14 +173,14 @@ class TestC(BaseTestImporter):
                 return true;
             }
         """
-        p = self.run_test(c.p, s)
+        p = self.run_test(s)
         self.check_headlines(p, (
             (1, 'void aaa::bbb::doit'),
             (1, 'bool aaa::bbb::dothat'),
         ))
     #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
     def test_comment_follows_block_delim(self):
-        c = self.c
+
         s = """
             void
             aaa::bbb::doit
@@ -200,14 +200,14 @@ class TestC(BaseTestImporter):
                 return true;
             } //  <--------------------- problem
         """
-        p = self.run_test(c.p, s)
+        p = self.run_test(s)
         self.check_headlines(p, (
             (1, 'void aaa::bbb::doit'),
             (1, 'bool aaa::bbb::dothat'),
         ))
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
-        c = self.c
+
         s = """
             extern "C"
             {
@@ -216,13 +216,13 @@ class TestC(BaseTestImporter):
             #include "that.h"
             }
         """
-        p = self.run_test(c.p, s)
+        p = self.run_test(s)
         self.check_headlines(p, (
             (1, 'extern "C"'),
         ))
     #@+node:ekr.20210904065459.7: *3* TestC.test_intermixed_blanks_and_tabs
     def test_intermixed_blanks_and_tabs(self):
-        c = self.c
+
         s = """
             void
             aaa::bbb::doit
@@ -233,14 +233,14 @@ class TestC(BaseTestImporter):
                 assert(false); // leading tab
             }
         """
-        p = self.run_test(c.p, s)
+        p = self.run_test(s)
         self.check_headlines(p, (
             (1, 'void aaa::bbb::doit'),
         ))
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             static void
             ReleaseCharSet(cset)
                 CharSet *cset;
@@ -250,22 +250,15 @@ class TestC(BaseTestImporter):
                 ckfree((char *)cset->ranges);
                 }
             }
-        """)
-        table = (
-            'static void ReleaseCharSet',
-        )
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        """
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'static void ReleaseCharSet'),
+        ))
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
                 register long longValue;	/* Long integer used to initialize the
@@ -273,18 +266,11 @@ class TestC(BaseTestImporter):
             {
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
             }
-        """)
-        table = (
-            'Tcl_Obj * Tcl_NewLongObj',
-        )
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        """
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Tcl_Obj * Tcl_NewLongObj'),
+        ))
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript (BaseTestImporter):
@@ -313,7 +299,7 @@ class TestCoffeescript (BaseTestImporter):
         table = (
             'buildCoffee = (str) ->',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -324,36 +310,36 @@ class TestCoffeescript (BaseTestImporter):
     def test_2(self):
         c = self.c
 
-        s = textwrap.dedent("""\
-        class Builder
-          constructor: ->
-            @transformer = new Transformer
-          # `build()`
-
-          build: (args...) ->
-            node = args[0]
-            @transform node
-
-            name = 'other'
-            name = node.typeName()  if node != undefined and node.typeName
-
-            fn  = (@[name] or @other)
-            out = fn.apply(this, args)
-
-            if node.parenthesized then paren(out) else out
-          # `transform()`
-
-          transform: (args...) ->
-            @transformer.transform.apply(@transformer, args)
-
-          # `body()`
-
-          body: (node, opts={}) ->
-            str = @build(node, opts)
-            str = blockTrim(str)
-            str = unshift(str)
-            if str.length > 0 then str else ""
-        """)
+        s = """
+          class Builder
+            constructor: ->
+              @transformer = new Transformer
+            # `build()`
+      
+            build: (args...) ->
+              node = args[0]
+              @transform node
+      
+              name = 'other'
+              name = node.typeName()  if node != undefined and node.typeName
+      
+              fn  = (@[name] or @other)
+              out = fn.apply(this, args)
+      
+              if node.parenthesized then paren(out) else out
+            # `transform()`
+      
+            transform: (args...) ->
+              @transformer.transform.apply(@transformer, args)
+      
+            # `body()`
+      
+            body: (node, opts={}) ->
+              str = @build(node, opts)
+              str = blockTrim(str)
+              str = unshift(str)
+              if str.length > 0 then str else ""
+        """
         table = (
           'class Builder',
           'constructor: ->',
@@ -361,7 +347,7 @@ class TestCoffeescript (BaseTestImporter):
           'transform: (args...) ->',
           'body: (node, opts={}) ->',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -386,18 +372,18 @@ class TestCSharp(BaseTestImporter):
     #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             namespace {
                 class cTestClass1 {
                     ;
                 }
             }
-        """)
+        """
         table = (
             'namespace',
             'class cTestClass1',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -407,14 +393,14 @@ class TestCSharp(BaseTestImporter):
     #@+node:ekr.20210904065459.13: *3* TestImport.test_namespace_no_indent
     def test_namespace_no_indent(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             namespace {
             class cTestClass1 {
                 ;
             }
             }
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
         table = (
             'namespace',
             'class cTestClass1',
@@ -434,7 +420,7 @@ class TestCython (BaseTestImporter):
 #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
 def test_importer(self):
     c = self.c
-    s = textwrap.dedent('''\
+    s = '''
         from libc.math cimport pow
 
         cdef double square_and_add (double x):
@@ -449,13 +435,13 @@ def test_importer(self):
             """This is a cpdef function that can be called from Python."""
             print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
 
-    ''')
+    '''
     table = (
         'Declarations',
         'double',
         'print_result',
     )
-    self.run_test(c.p, s)
+    self.run_test(s)
     root = c.p.lastChild()
     self.assertEqual(root.h, f"@file {self.id()}")
     p2 = root.firstChild()
@@ -495,7 +481,7 @@ class TestDart (BaseTestImporter):
             'printNumber',
             'void main',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -524,7 +510,7 @@ class TestElisp (BaseTestImporter):
     #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
     def test_1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             ;;; comment
             ;;; continue
             ;;;
@@ -535,12 +521,12 @@ class TestElisp (BaseTestImporter):
             ; comm
             (defun cde (a b)
                (+ 1 2 3))
-        """)
+        """
         table = (
             'defun abc',
             'defun cde',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -567,7 +553,7 @@ class TestHtml (BaseTestImporter):
     #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
     def test_lowercase_tags(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             <html>
             <head>
                 <title>Bodystring</title>
@@ -576,13 +562,13 @@ class TestHtml (BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </html>
-        """)
+        """
         table = (
             '<html>',
             '<head>',
             '<body class="bodystring">',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -594,57 +580,57 @@ class TestHtml (BaseTestImporter):
         c = self.c
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
         # NOT: tr, td, tbody, etc.
-        s = textwrap.dedent("""\
-        <html>
-        <body>
-            <table id="0">
-                <tr valign="top">
-                <td width="619">
-                <table id="2"> <tr valign="top"> <td width="377">
-                    <table id="3">
-                    <tr>
-                    <td width="368">
-                    <table id="4">
-                        <tbody id="5">
-                        <tr valign="top">
-                        <td width="550">
-                        <table id="6">
-                            <tbody id="6">
-                            <tr>
-                            <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+        s = """
+            <html>
+            <body>
+                <table id="0">
+                    <tr valign="top">
+                    <td width="619">
+                    <table id="2"> <tr valign="top"> <td width="377">
+                        <table id="3">
+                        <tr>
+                        <td width="368">
+                        <table id="4">
+                            <tbody id="5">
+                            <tr valign="top">
+                            <td width="550">
+                            <table id="6">
+                                <tbody id="6">
+                                <tr>
+                                <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </td>
+                            </tr><tr>
+                            <td width="100%" colspan="2">
+                            <br />
+                            </td>
                             </tr>
                             </tbody>
                         </table>
                         </td>
-                        </tr><tr>
-                        <td width="100%" colspan="2">
-                        <br />
-                        </td>
                         </tr>
-                        </tbody>
                     </table>
-                    </td>
-                    </tr>
-                </table>
-                <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
-                <!-- View Second part --> </td> </tr></table>
-            <DIV class="webonly">
-                <script src="/scripts/footer.js"></script>
-            </DIV>
-            </td>
-            </tr>
-            <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
-            <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
-            <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
-        </body>
-        </html>
-        """)
+                    <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
+                    <!-- View Second part --> </td> </tr></table>
+                <DIV class="webonly">
+                    <script src="/scripts/footer.js"></script>
+                </DIV>
+                </td>
+                </tr>
+                <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+                <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+                <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+            </body>
+            </html>
+        """
         table = (
             '<html>',
             '<body>',
             '<table id="0">',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -653,15 +639,15 @@ class TestHtml (BaseTestImporter):
     def test_multple_node_completed_on_a_line(self):
         c = self.c
 
-        s = textwrap.dedent("""\
+        s = """
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html><head>headline</head><body>body</body></html>
-        """)
+        """
         table = (
             # The new xml scanner doesn't generate any new nodes,
             # because the scan state hasn't changed at the end of the line!
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             assert p2
@@ -680,7 +666,7 @@ class TestHtml (BaseTestImporter):
         table = (
             '<html>',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             assert p2
@@ -714,7 +700,7 @@ class TestHtml (BaseTestImporter):
             '<table cellspacing="0" cellpadding="0" width="600" border="0">',
             '<table>',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -723,8 +709,8 @@ class TestHtml (BaseTestImporter):
 
     #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
     def test_uppercase_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             <HTML>
             <HEAD>
                 <title>Bodystring</title>
@@ -733,12 +719,12 @@ class TestHtml (BaseTestImporter):
             <DIV id='bodydisplay'></DIV>
             </BODY>
             </HTML>
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             <body>
 
             <!-- OOPS: the div and p elements not properly nested.-->
@@ -753,13 +739,13 @@ class TestHtml (BaseTestImporter):
             </p> <!-- orphan -->
 
             </body>
-        """)
+        """
         table = (
             ('<body>'),
             ('<div id="D666">'),
         )
 
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -786,7 +772,7 @@ class TestHtml (BaseTestImporter):
             '<html>',
             '<head>',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for i, h in enumerate(table):
             self.assertEqual(p2.h, h)
@@ -809,7 +795,7 @@ class TestHtml (BaseTestImporter):
         </html>
         '''
         table = ('<html>', '<head>')  # , '<link id="L1">'
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         for h in table:
             self.assertEqual(p2.h, h)
@@ -818,7 +804,7 @@ class TestHtml (BaseTestImporter):
     def test_brython(self):
         c = self.c
         # https://github.com/leo-editor/leo-editor/issues/479
-        s = textwrap.dedent('''\
+        s = '''
             <!DOCTYPE html>
             <html>
             <head>
@@ -954,13 +940,13 @@ class TestHtml (BaseTestImporter):
             </head>
             <body onload="brython({debug:1, cache:'none'})">
             </body></html>
-        ''')
+        '''
         table = (
             '<html>',
             '<head>',
             '<body onload="brython({debug:1, cache:\'none\'})">',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         p2 = c.p.firstChild().firstChild()
         assert p2
         for h in table:
@@ -977,7 +963,7 @@ class TestIni(BaseTestImporter):
     #@+node:ekr.20210904065459.29: *3* TestIni.test_1
     def test_1(self):
         c = self.c
-        s = textwrap.dedent(r'''\
+        s = '''
             ; last modified 1 April 2001 by John Doe
             [owner]
             name=John Doe
@@ -990,9 +976,9 @@ class TestIni(BaseTestImporter):
                 ; use IP address
             port=143
             file = "payroll.dat"
-        ''')
+        '''
         table = ('[owner]', '[database]')
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1009,7 +995,7 @@ class TestJava (BaseTestImporter):
     #@+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             /**
              * Indicates the caller's authority to perform lifecycle operations on
              */
@@ -1024,12 +1010,12 @@ class TestJava (BaseTestImporter):
                     super("AdminPermission");
                 }
             }
-        """)
+        """
         table = (
             'public final class AdminPermission extends BasicPermission',
             'public AdminPermission',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -1041,7 +1027,7 @@ class TestJava (BaseTestImporter):
     #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             /*
              * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
              *
@@ -1089,12 +1075,12 @@ class TestJava (BaseTestImporter):
                 }
             }
 
-        """)
+        """
         table = (
             'public class BundleException extends Exception',
             'public BundleException',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -1105,16 +1091,16 @@ class TestJava (BaseTestImporter):
     #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             interface Bicycle {
                 void changeCadence(int newValue);
                 void changeGear(int newValue);
             }
-        """)
+        """
         table = (
             'interface Bicycle',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -1125,16 +1111,16 @@ class TestJava (BaseTestImporter):
     #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             interface Bicycle {
             void changeCadence(int newValue);
             void changeGear(int newValue);
             }
-        """)
+        """
         table = (
             'interface Bicycle',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -1151,8 +1137,8 @@ class TestJavascript (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
     def test_regex_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             String.prototype.toJSONString = function()
             {
                 if(/["\\\\\\x00-\\x1f]/.test(this))
@@ -1160,12 +1146,12 @@ class TestJavascript (BaseTestImporter):
 
                 return '"' + this + '"';
             };
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.35: *3* TestJavascript.test_3
     def test_3(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             // Restarting
             function restart()
             {
@@ -1178,12 +1164,12 @@ class TestJavascript (BaseTestImporter):
                 }
                 window.scrollTo(0,0);
             }
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.36: *3* TestJavascript.test_4
     def test_4(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             var c3 = (function () {
                 "use strict";
 
@@ -1196,12 +1182,12 @@ class TestJavascript (BaseTestImporter):
 
                 return c3;
             }());
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.37: *3* TestJavascript.test_5
     def test_5(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             var express = require('express');
 
             var app = express.createServer(express.logger());
@@ -1214,12 +1200,12 @@ class TestJavascript (BaseTestImporter):
             app.listen(port, function() {
             console.log("Listening on " + port);
             });
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.38: *3* TestJavascript.test_639_many_top_level_nodes
     def test_639_many_top_level_nodes(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
 
             //=============================================================================
@@ -1248,12 +1234,12 @@ class TestJavascript (BaseTestImporter):
             Number.prototype.clamp = function(min, max) {
                 return Math.min(Math.max(this, min), max);
             };
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.39: *3* TestJavascript.test_639_acid_test_1
     def test_639_acid_test_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
             require([
                 'jquery',
@@ -1274,12 +1260,12 @@ class TestJavascript (BaseTestImporter):
                 };
                 window.terminal = terminal;
             });
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.40: *3* TestJavascript.test_639_acid_test_2
     def test_639_acid_test_2(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
             require([
                 'jquery',
@@ -1313,8 +1299,8 @@ class TestJavascript (BaseTestImporter):
                 }
                 var tail = "tail"
             });
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
@@ -1322,10 +1308,10 @@ class TestMarkdown(BaseTestImporter):
     ext = '.md'
     
     #@+others
-    #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import_test
-    def test_md_import_test(self):
+    #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
+    def test_md_import(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """\
             #Top
             The top section
 
@@ -1347,7 +1333,7 @@ class TestMarkdown(BaseTestImporter):
 
             ##Section 3
             Section 3, line 1
-    """)
+        """
         table = (
             (1, 'Top'),
             (2, 'Section 1'),
@@ -1357,7 +1343,7 @@ class TestMarkdown(BaseTestImporter):
             (3, 'Section 2.2'),
             (2, 'Section 3'),
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         after = c.p.nodeAfterTree()
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-md {self.id()}")
@@ -1368,10 +1354,10 @@ class TestMarkdown(BaseTestImporter):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_test_rst_style
-    def test_md_import_test_rst_style(self):
+    #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
+    def test_md_import_rst_style(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """\
             Top
             ====
 
@@ -1404,8 +1390,8 @@ class TestMarkdown(BaseTestImporter):
             ---------
 
             section 3, line 1
-    """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
         table = (
             (1, 'Top'),
             (2, 'Section 1'),
@@ -1430,7 +1416,7 @@ class TestMarkdown(BaseTestImporter):
     def test_markdown_importer_basic(self):
         c = self.c
         # insert test for markdown here.
-        s = textwrap.dedent("""\
+        s = """
             Decl line.
             #Header
 
@@ -1445,14 +1431,14 @@ class TestMarkdown(BaseTestImporter):
             After subheader text
 
             #Last header: no text
-        """)
+        """
         table = (
             '!Declarations',
             'Header',
                 'Subheader',
                 'Last header: no text',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-md {self.id()}")
         p2 = root.firstChild()
@@ -1464,7 +1450,7 @@ class TestMarkdown(BaseTestImporter):
     def test_markdown_importer_implicit_section(self):
         c = self.c
         # insert test for markdown here.
-        s = textwrap.dedent("""\
+        s = """
             Decl line.
             #Header
 
@@ -1482,7 +1468,7 @@ class TestMarkdown(BaseTestImporter):
             After subheader text
 
             #Last header: no text
-        """)
+        """
         table = (
             '!Declarations',
             'Header',
@@ -1492,7 +1478,7 @@ class TestMarkdown(BaseTestImporter):
         )
         # Implicit underlining *must* cause the perfect-import test to fail!
         g.app.suppressImportChecks = True
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-md {self.id()}")
         p2 = root.firstChild()
@@ -1504,7 +1490,7 @@ class TestMarkdown(BaseTestImporter):
     def test_markdown_github_syntax(self):
         c = self.c
         # insert test for markdown here.
-        s = textwrap.dedent("""\
+        s = """
             Decl line.
             #Header
 
@@ -1515,13 +1501,13 @@ class TestMarkdown(BaseTestImporter):
             }
             `​``
             #Last header
-        """)
+        """
         table = (
             '!Declarations',
             'Header',
             'Last header',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-md {self.id()}")
         p2 = root.firstChild()
@@ -1570,7 +1556,7 @@ class TestOrg (BaseTestImporter):
     #@+node:ekr.20210904065459.42: *3* TestOrg.test_1
     def test_1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             * Section 1
             Sec 1.
             * Section 2
@@ -1582,13 +1568,13 @@ class TestOrg (BaseTestImporter):
             * Section 3
             ** Section 3.1
             Sec 3.1
-        """)
+        """
         table = (
             'Section 1',
             'Section 2', 'Section 2-1', 'Section 2-1-1',
             'Section 3', 'Section 3.1',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1598,14 +1584,14 @@ class TestOrg (BaseTestImporter):
     #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             *  Test
             First line.
-        """)
+        """
         table = (
             ' Test',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1615,20 +1601,20 @@ class TestOrg (BaseTestImporter):
     #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
     def test_552(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             * Events
               :PROPERTIES:
               :CATEGORY: events
               :END:
             ** 整理个人生活
             *** 每周惯例
-        """)
+        """
         table = (
             'Events',
             '整理个人生活',
             '每周惯例',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1638,18 +1624,18 @@ class TestOrg (BaseTestImporter):
     #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
     def test_intro(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             Intro line.
             * Section 1
             Sec 1.
             * Section 2
             Sec 2.
-        """)
+        """
         table = (
             'Section 1',
             'Section 2',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1674,7 +1660,7 @@ class TestOrg (BaseTestImporter):
     def test_placeholder(self):
         c = self.c
         # insert test for org here.
-        s = textwrap.dedent("""\
+        s = """
             * Section 1
             Sec 1.
             * Section 2
@@ -1688,7 +1674,7 @@ class TestOrg (BaseTestImporter):
             : Sec 3-1-1-1-1-1
             ** Section 3.1
             Sec 3.1
-        """)
+        """
         table = (
             'Section 1',
             'Section 2', 'Section 2-1', 'Section 2-1-1',
@@ -1698,7 +1684,7 @@ class TestOrg (BaseTestImporter):
             'Section 3.1',
         )
         g.app.suppressImportChecks = True
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1708,17 +1694,17 @@ class TestOrg (BaseTestImporter):
     #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             * Section 1 :tag1:
             * Section 2 :tag2:
             * Section 3 :tag3:tag4:
-        """)
+        """
         table = (
             'Section 1 :tag1:',
             'Section 2 :tag2:',
             'Section 3 :tag3:tag4:',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
@@ -1735,7 +1721,7 @@ class TestOtl (BaseTestImporter):
     #@+node:ekr.20210904065459.49: *3* TestOtl.test_1
     def test_1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             preamble.
             Section 1
             : Sec 1.
@@ -1749,13 +1735,13 @@ class TestOtl (BaseTestImporter):
             : Sec 3
             \tSection 3.1
             : Sec 3.1
-        """)
+        """
         table = (
             'Section 1',
             'Section 2', 'Section 2-1', 'Section 2-1-1',
             'Section 3', 'Section 3.1',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         if 0:
             root = c.p.firstChild()
             p2 = root.firstChild()
@@ -1787,7 +1773,7 @@ class TestPascal (BaseTestImporter):
     #@+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
     def test_delphi_interface(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             unit Unit1;
 
             interface
@@ -1822,13 +1808,13 @@ class TestPascal (BaseTestImporter):
             end;
 
             end. // interface
-        """)
+        """
         table = (
             'interface',
             'procedure FormCreate',
             'procedure TForm1.FormCreate',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         assert root
         self.assertEqual(root.h, f"@file {self.id()}")
@@ -1858,8 +1844,8 @@ class TestPerl (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.51: *3* TestPerl.test_1
     def test_1(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             #!/usr/bin/perl
 
             # Function definition
@@ -1881,12 +1867,12 @@ class TestPerl (BaseTestImporter):
 
             # Function call
             Hello();
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
     def test_multi_line_string(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             #!/usr/bin/perl
 
             # This would print with a line break in the middle
@@ -1897,12 +1883,12 @@ class TestPerl (BaseTestImporter):
             }
 
             world\n";
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
     def test_perlpod_comment(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             #!/usr/bin/perl
 
             sub Test{
@@ -1919,16 +1905,16 @@ class TestPerl (BaseTestImporter):
             sub Hello{
                print "Hello, World!\n";
             }
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.54: *3* TestPerl.test_regex_1
     def test_regex_1(self):
-        c = self.c
+
         # ('len',   'tr///', '/',       context,  0,       0,       0),
         # ('len',   's///',  '/',       context,  0,       0,       0),
         # ('len',   'm//',   '/',       context,  0,       0,       0),
         # ('len',   '/',     '/',       '',       0,       0,       0),
-        s = textwrap.dedent("""\
+        s = """
             #!/usr/bin/perl
 
             sub test1 {
@@ -1946,13 +1932,13 @@ class TestPerl (BaseTestImporter):
             sub test4 {
                 s = tr///{/;
             }
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
 
     #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex_2
     def test_regex_2(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             #!/usr/bin/perl
 
             sub test1 {
@@ -1970,14 +1956,14 @@ class TestPerl (BaseTestImporter):
             sub test4 {
                 s = tr///}/;
             }
-        """)
+        """
         table = (
             'sub test1',
             'sub test2',
             'sub test3',
             'sub test4'
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
         p2 = root.firstChild()
@@ -1995,8 +1981,8 @@ class TestPhp (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.56: *3* TestPhp.test_import_class
     def test_import_class(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             <?php
 
             $type = 'cc';
@@ -2009,12 +1995,12 @@ class TestPhp (BaseTestImporter):
             }
 
             ?>
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.57: *3* TestPhp.test_import_conditional_class
     def test_import_conditional_class(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             <?php
 
             if (expr) {
@@ -2028,12 +2014,12 @@ class TestPhp (BaseTestImporter):
             }
 
             ?>
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
     def test_import_classes__functions(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             <?php
             class Enum {
                 protected $self = array();
@@ -2070,12 +2056,12 @@ class TestPhp (BaseTestImporter):
                 }
             }
             ?>
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
     def test_here_doc(self):
-        c = self.c
-        s = textwrap.dedent("""\
+
+        s = """
             <?php
             class foo {
                 public $bar = <<<EOT
@@ -2084,8 +2070,8 @@ class TestPhp (BaseTestImporter):
             EOT;
             }
             ?>
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@-others
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython (BaseTestImporter):
@@ -2217,7 +2203,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
     #@+node:ekr.20210904065459.62: *4* TestPython.test_bad_class
     def test_bad_class(self):
-        c = self.c
+
         s = """
             class testClass1 # no colon
                 pass
@@ -2225,11 +2211,11 @@ class TestPython (BaseTestImporter):
             def spam():
                 pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.63: *4* TestPython.test_basic_nesting
     def test_basic_nesting(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             import sys
             def outer_def1():
                 pass
@@ -2271,7 +2257,7 @@ class TestPython (BaseTestImporter):
         
             if __name__ == '__main__':
                 main()
-        """)
+        """
         table = (
             (1, 'class class1'),
             (2, 'class1_method1'),
@@ -2281,7 +2267,7 @@ class TestPython (BaseTestImporter):
             (2, 'class2_method2'),
         )
         p = c.p
-        self.run_test(p, s=s, verbose=False)
+        self.run_test(s, verbose=False)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2297,7 +2283,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.64: *4* TestPython.test_bug_346
     def test_bug_346(self):
         c = self.c
-        s = textwrap.dedent('''\
+        s = '''
             import sys
 
             if sys.version_info[0] >= 3:
@@ -2324,13 +2310,13 @@ class TestPython (BaseTestImporter):
                     as needed to match.""",
                     formatter_class=argparse.ArgumentDefaultsHelpFormatter
             )
-        ''')
+        '''
         table = (
             (1, 'Declarations'),
             (1, 'make_parser'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2345,7 +2331,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.65: *4* TestPython.test_bug_354
     def test_bug_354(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             if isPython3:
                 def u(s):
                     '''Return s, converted to unicode from Qt widgets.'''
@@ -2360,14 +2346,14 @@ class TestPython (BaseTestImporter):
         
                 def ue(s, encoding):
                     return builtins.unicode(s, encoding)
-        """)
+        """
         table = (
             (1, 'Declarations'),
             # (1, 'u'),
             # (1, 'ue'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2382,7 +2368,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.66: *4* TestPython.test_bug_357
     def test_bug_357(self):
         c = self.c
-        s = textwrap.dedent('''
+        s = '''
             """
             sheet_stats.py - report column stats for spreadsheets
 
@@ -2641,7 +2627,7 @@ class TestPython (BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-        ''')
+        '''
         table = (
             (1, "Declarations"),
             (1, "class AttrDict(dict)"),
@@ -2655,7 +2641,7 @@ class TestPython (BaseTestImporter):
             (1, "main"),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2672,7 +2658,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.67: *4* TestPython.test_bug_360
     def test_bug_360(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             ATbase_task(
                 targets=['img/who_map.png', 'img/who_map.pdf'],
                 file_dep=[data_path('phyto')],
@@ -2680,12 +2666,12 @@ class TestPython (BaseTestImporter):
             )
             def make_map():
                 '''make_map - plot the Thompson / Bartsh / WHO map'''
-        """).replace('AT', '@')
+        """.replace('AT', '@')
         table = (
             (1, '@base_task make_map'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2699,10 +2685,10 @@ class TestPython (BaseTestImporter):
             self.assertEqual(p, after)
     #@+node:ekr.20210904065459.70: *4* TestPython.test_bug_603720
     def test_bug_603720(self):
-        c = self.c
+
         # Leo bug 603720
         # Within the docstring we must change '\' to '\\'
-        s = textwrap.dedent('''\
+        s = '''
             def foo():
                 s = \\
             """#!/bin/bash
@@ -2714,12 +2700,12 @@ class TestPython (BaseTestImporter):
                 pass
 
             foo()
-        ''')
-        self.run_test(c.p, s=s)
+        '''
+        self.run_test(s)
     #@+node:ekr.20210904065459.69: *4* TestPython.test_bug_978
     def test_bug_978(self):
         c = self.c
-        s = textwrap.dedent("""
+        s = """
             import foo
             import bar
 
@@ -2729,7 +2715,7 @@ class TestPython (BaseTestImporter):
                 pass
             class C(bar.Bar):
                 pass
-        """)
+        """
         table = (
             (1, 'Declarations'),
             (1, 'class A(object)'),
@@ -2737,7 +2723,7 @@ class TestPython (BaseTestImporter):
             (1, 'class C(bar.Bar)'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2752,24 +2738,24 @@ class TestPython (BaseTestImporter):
             self.assertEqual(p, after)
     #@+node:ekr.20210904065459.72: *4* TestPython.test_class_test_2
     def test_class_test_2(self):
-        c = self.c
+
         s = """
             class testClass2:
                 pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.73: *4* TestPython.test_class_tests_1
     def test_class_tests_1(self):
-        c = self.c
-        s = textwrap.dedent('''\
-        class testClass1:
-            """A docstring"""
-            def __init__ (self):
-                pass
-            def f1(self):
-                pass
-        ''')
-        self.run_test(c.p, s=s)
+
+        s = '''
+            class testClass1:
+                """A docstring"""
+                def __init__ (self):
+                    pass
+                def f1(self):
+                    pass
+        '''
+        self.run_test(s)
     #@+node:ekr.20210904065459.74: *4* TestPython.test_comment_after_dict_assign
     def test_comment_after_dict_assign(self):
         c = self.c
@@ -2784,7 +2770,7 @@ class TestPython (BaseTestImporter):
             (1, 'Declarations'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2808,7 +2794,7 @@ class TestPython (BaseTestImporter):
             (1, 'Declarations'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2823,7 +2809,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.76: *4* TestPython.test_decorator
     def test_decorator(self):
         c = self.c
-        s = textwrap.dedent('''\
+        s = '''
             class Index:
                 """docstring"""
                 @cherrypy.nocolor
@@ -2834,8 +2820,8 @@ class TestPython (BaseTestImporter):
                 @cmd('abc')
                 def abc(self):
                     return "abc"
-        ''')
-        self.run_test(c.p, s=s)
+        '''
+        self.run_test(s)
         if self.check_tree:
             index = g.findNodeInTree(c, c.p, '@cherrypy.nocolor index')
             assert index
@@ -2848,7 +2834,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.77: *4* TestPython.test_decorator_2
     def test_decorator_2(self):
         c = self.c
-        s = textwrap.dedent('''\
+        s = '''
             """
             A PyQt "task launcher" for quick access to python scripts.
 
@@ -2928,7 +2914,7 @@ class TestPython (BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-        ''')
+        '''
         table = (
             (1, "Declarations"),
             (1, "class Draggable(QtGui.QWidget)"),
@@ -2939,7 +2925,7 @@ class TestPython (BaseTestImporter):
             (1, '@command("Exit") exit_'),
             (1, "main"),
         )
-        self.run_test(c.p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = c.p.nodeAfterTree()
             root = c.p.lastChild()
@@ -2959,24 +2945,24 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.78: *4* TestPython.test_def_inside_def
     def test_def_inside_def(self):
         c = self.c
-        s = textwrap.dedent('''\
-        class aClass:
-            def outerDef(self):
-                """docstring.
-                line two."""
-
-                def pr(*args,**keys):
-                    g.es_print(color='blue',*args,**keys)
-
-                a = 3
-        ''')
+        s = '''
+            class aClass:
+                def outerDef(self):
+                    """docstring.
+                    line two."""
+        
+                    def pr(*args,**keys):
+                        g.es_print(color='blue',*args,**keys)
+        
+                    a = 3
+        '''
         table = (
             (1, 'class aClass'),
             (2, 'outerDef'),
             # (3, 'pr'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -2992,7 +2978,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.79: *4* TestPython.test_def_test_1
     def test_def_test_1(self):
         c = self.c
-        s = textwrap.dedent("""
+        s = """
             class test:
 
                 def importFilesCommand (self,files=None,treeType=None,
@@ -3009,14 +2995,14 @@ class TestPython (BaseTestImporter):
                     s = string.replace(s,"\\r","")
                     strings = string.split(s,"\\n")
                     return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
-        """)
+        """
         table = (
             (1, 'class test'),
             (2, 'importFilesCommand'),
             (2, 'convertMoreStringToOutlineAfter'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3048,7 +3034,7 @@ class TestPython (BaseTestImporter):
             (2, 'foo'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3063,35 +3049,35 @@ class TestPython (BaseTestImporter):
 
     #@+node:ekr.20210904065459.81: *4* TestPython.test_docstring_only
     def test_docstring_only(self):
-        c = self.c
-        s = textwrap.dedent('''\
+
+        s = '''
             """A file consisting only of a docstring.
             """
-        ''')
-        self.run_test(c.p, s=s)
+        '''
+        self.run_test(s)
     #@+node:ekr.20210904065459.82: *4* TestPython.test_empty_decls
     def test_empty_decls(self):
-        c = self.c
+
         s = """
             import leo.core.leoGlobals as g
 
             a = 3
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.71: *4* TestPython.test_enhancement_481
     def test_enhancement_481(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             ATg.cmd('my-command')
             def myCommand(event=None):
                 pass
-        """).replace('AT', '@')
+        """.replace('AT', '@')
         table = (
             # (1, '@g.cmd myCommand'),
             (1, "@g.cmd('my-command') myCommand"),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3105,13 +3091,13 @@ class TestPython (BaseTestImporter):
             self.assertEqual(p, after)
     #@+node:ekr.20210904065459.83: *4* TestPython.test_extra_leading_ws_test
     def test_extra_leading_ws_test(self):
-        c = self.c
+
         s = """
             class cls:
                  def fun(): # one extra space.
                     pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20211108084817.1: *4* TestPython.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
@@ -3158,7 +3144,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.84: *4* TestPython.test_indent_decls
     def test_indent_decls(self):
         c = self.c
-        s = textwrap.dedent('''\
+        s = '''
             class mammalProviderBase(object):
                 """Root class for content providers used by DWEtree.py"""
                 def __init__(self, params):
@@ -3191,7 +3177,7 @@ class TestPython (BaseTestImporter):
                     if what == 'doctitle':
                         return ELE('base', href=self.params['/BASE/']+'main/')
                     return ans
-        ''')
+        '''
         table = (
             (1, 'class mammalProviderBase(object)'),
             (2, '__init__'),
@@ -3201,7 +3187,7 @@ class TestPython (BaseTestImporter):
             (2, 'provide'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3228,7 +3214,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.61: *4* TestPython.test_leoApp_fail
     def test_leoApp_fail(self):
         c = self.c
-        s = textwrap.dedent('''
+        s = '''
             def isValidPython(self):
                 if sys.platform == 'cli':
                     return True
@@ -3266,7 +3252,7 @@ class TestPython (BaseTestImporter):
                     return 0
             def loadLocalFile(self, fn, gui, old_c):
                 trace = (False or g.trace_startup) and not g.unitTesting
-        ''')
+        '''
         table = (
             (1, 'isValidPython'),
             # (2, 'class EmergencyDialog'),
@@ -3274,7 +3260,7 @@ class TestPython (BaseTestImporter):
             (1, 'loadLocalFile'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3291,7 +3277,7 @@ class TestPython (BaseTestImporter):
     def test_leoImport_py_small_(self):
         c = self.c
 
-        s = textwrap.dedent("""\
+        s = """
             # -*- coding: utf-8 -*-
             import leo.core.leoGlobals as g
             class LeoImportCommands(object):
@@ -3346,7 +3332,7 @@ class TestPython (BaseTestImporter):
 
                 def init_import(self, ext, fileName, s):
                     '''Init ivars & vars for imports.'''
-        """)
+        """
         table = (
             (1, 'Declarations'),
             (1, "class LeoImportCommands(object)"),
@@ -3358,7 +3344,7 @@ class TestPython (BaseTestImporter):
             (2, "init_import"),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3372,19 +3358,18 @@ class TestPython (BaseTestImporter):
             self.assertEqual(p, after)
     #@+node:ekr.20210904065459.86: *4* TestPython.test_looks_like_section_ref
     def test_looks_like_section_ref(self):
-        c = self.c
-        # ~/at-auto-test.py
 
+        # ~/at-auto-test.py
         # Careful: don't put a section reference in the string.
         s = """
             # This is valid Python, but it looks like a section reference.
-            a = b < < c > > d
-        """.replace('> >', '>>').replace('< <', '<<')
-        self.run_test(c.p, s=s)
+            a = b < < c >> d
+        """.replace('< <', '<<')
+        self.run_test(s)
     #@+node:ekr.20210904065459.87: *4* TestPython.test_minimal_class_1
     def test_minimal_class_1(self):
-        c = self.c
-        s = textwrap.dedent('''\
+
+        s = '''
             class ItasException(Exception):
 
                 pass
@@ -3396,32 +3381,32 @@ class TestPython (BaseTestImporter):
                 if log:
 
                     log('gp: %s: %s\\n' % (cmd, str(args)))
-        ''')
-        self.run_test(c.p, s=s)
+        '''
+        self.run_test(s)
     #@+node:ekr.20210904065459.88: *4* TestPython.test_minimal_class_2
     def test_minimal_class_2(self):
-        c = self.c
+
         s = """
             class emptyClass: pass
 
             def followingDef():
                 pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.89: *4* TestPython.test_minimal_class_3
     def test_minimal_class_3(self):
-        c = self.c
+
         s = """
             class emptyClass: pass # comment
 
             def followingDef(): # comment
                 pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20211121055721.1: *4* TestPython.test_minimal_nesting
     def test_minimal_nesting(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             import sys
             class Class1:
                 def class1_method1():
@@ -3429,7 +3414,7 @@ class TestPython (BaseTestImporter):
                 def class1_method2():
                     def helper():
                         pass
-        """)
+        """
             # def outer_def1():
                 # pass
             # def outer_def2():
@@ -3459,7 +3444,7 @@ class TestPython (BaseTestImporter):
             (1, 'main'),
         )
         p = c.p
-        self.run_test(p, s=s, verbose=True)
+        self.run_test(s, verbose=True)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3474,7 +3459,7 @@ class TestPython (BaseTestImporter):
 
     #@+node:ekr.20210904065459.90: *4* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):
-        c = self.c
+
         s = """
             class aClass:
                 def def1(self):
@@ -3487,10 +3472,10 @@ class TestPython (BaseTestImporter):
 
                     pr('input...')
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.91: *4* TestPython.test_overindent_def_one_following_def
     def test_overindent_def_one_following_def(self):
-        c = self.c
+
         s = """
             class aClass:
                 def def1(self):
@@ -3506,17 +3491,11 @@ class TestPython (BaseTestImporter):
                 def def2(self):
                     pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20211113052244.1: *4* TestPython.test_comment_after_class
     def test_comment_after_class(self):
         # From mypy.errors.py
-        
-         # def __init__(self,
-                        # a = 1,
-                        # b = 2) -> None:
-                    # self.import_ctx = import_ctx
-        c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class ErrorInfo:  # Line 22 of errors.py.
                 def __init__(self, a) -> None
                     self.a = a
@@ -3524,13 +3503,13 @@ class TestPython (BaseTestImporter):
             # Type used internally to represent errors:
             #   (path, line, column, severity, message, allow_dups, code)
             ErrorTuple = Tuple[Optional[str], int, int]
-        """)
-        self.run_test(c.p, s=s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.92: *4* TestPython.test_overindented_def_3
     def test_overindented_def_3(self):
         # This caused PyParse.py not to be imported properly.
         c = self.c
-        s = textwrap.dedent(r'''
+        s = '''
             import re
             if 0: # Causes the 'overindent'
                if 0:   # for throwaway debugging output
@@ -3540,13 +3519,13 @@ class TestPython (BaseTestImporter):
                _tran[ord(ch)] = '('
             class testClass1:
                 pass
-        ''')
+        '''
         table = (
             # (1, 'Declarations'),
             (1, 'class testClass1'),
         )
         p = c.p
-        self.run_test(c.p, s=s, verbose=True)
+        self.run_test(s, verbose=True)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3562,7 +3541,7 @@ class TestPython (BaseTestImporter):
     def test_promote_if_name_eq_main(self):
         # Test #390: was test_bug_390.
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             import sys
 
             class Foo():
@@ -3575,14 +3554,14 @@ class TestPython (BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-        """)
+        """
         table = (
             (1, 'Declarations'),
             (1, 'class Foo'),
             (1, 'main'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3599,13 +3578,11 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20211112135034.1: *4* TestPython.test_promote_only_decls
     def test_promote_only_decls(self):
         # Test #390: was test_bug_390.
-        c = self.c
-        s = textwrap.dedent("""\
+        s = """
             a = 1
             b = 2
-        """)
-        p = c.p
-        self.run_test(p, s=s)
+        """
+        self.run_test(s)
         # self.assertEqual(p.numberOfChildren(), 0)
         # root = p.lastChild()
         # self.dump_tree()
@@ -3641,8 +3618,8 @@ class TestPython (BaseTestImporter):
         importer.test_scan_state(tests, State)
     #@+node:ekr.20210904065459.93: *4* TestPython.test_string_test_extra_indent
     def test_string_test_extra_indent(self):
-        c = self.c
-        s = textwrap.dedent('''\
+
+        s = '''
         class BaseScanner:
 
                 """The base class for all import scanner classes."""
@@ -3654,11 +3631,11 @@ class TestPython (BaseTestImporter):
                 def createHeadline (self,parent,body,headline):
                     # g.trace("parent,headline:",parent,headline)
                     return p
-        ''')
-        self.run_test(c.p, s=s)
+        '''
+        self.run_test(s)
     #@+node:ekr.20210904065459.94: *4* TestPython.test_string_underindent_lines
     def test_string_underindent_lines(self):
-        c = self.c
+
         s = """
             class BaseScanner:
                 def containsUnderindentedComment(self):
@@ -3669,10 +3646,10 @@ class TestPython (BaseTestImporter):
                 def empty(self):
                     pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.95: *4* TestPython.test_string_underindent_lines_2
     def test_string_underindent_lines_2(self):
-        c = self.c
+
         s = """
             class BaseScanner:
                 def containsUnderindentedComment(self):
@@ -3684,13 +3661,13 @@ class TestPython (BaseTestImporter):
                 def empty(self):
                     pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.96: *4* TestPython.test_top_level_later_decl
     def test_top_level_later_decl(self):
         # From xo.py.
         c = self.c
         # The first line *must* be blank.
-        s = textwrap.dedent(r'''
+        s = '''
 
             #!/usr/bin/env python3
 
@@ -3718,7 +3695,7 @@ class TestPython (BaseTestImporter):
             if __name__=="__main__":
                 main()
 
-        ''')
+        '''
         table = (
             (1, 'Declarations'),
             (1, 'merge_value'),
@@ -3727,7 +3704,7 @@ class TestPython (BaseTestImporter):
             (1, 'retab'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             root = p.lastChild()
             assert root
@@ -3743,7 +3720,7 @@ class TestPython (BaseTestImporter):
             self.assertEqual(p, after)
     #@+node:ekr.20210904065459.97: *4* TestPython.test_trailing_comment
     def test_trailing_comment(self):
-        c = self.c
+
         s = """
             class aClass: # trailing comment
 
@@ -3751,19 +3728,18 @@ class TestPython (BaseTestImporter):
                 def def1(self):             # trailing comment
                     pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.98: *4* TestPython.test_trailing_comment_outer_levels
     def test_trailing_comment_outer_levels(self):
-        c = self.c
+
         s = """
             xyz = 6 # trailing comment
             pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.99: *4* TestPython.test_two_functions
     def test_two_functions(self):
         # For comparison with unindent does not end function.
-        c = self.c
         s = """
             def foo():
                 pass
@@ -3771,11 +3747,11 @@ class TestPython (BaseTestImporter):
             def bar():
                 pass
         """
-        self.run_test(c.p, s=s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.100: *4* TestPython.test_underindent_method
     def test_underindent_method(self):
         c = self.c
-        s = textwrap.dedent('''\
+        s = '''
             class emptyClass:
 
                 def spam():
@@ -3785,14 +3761,14 @@ class TestPython (BaseTestImporter):
 
             def followingDef(): # comment
                 pass
-        ''')
+        '''
         table = (
             (1, 'class emptyClass'),
             (2, 'spam'),
             (1, 'followingDef'),
         )
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
@@ -3807,7 +3783,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.101: *4* TestPython.test_unindent_in_triple_string_does_not_end_function
     def test_unindent_in_triple_string_does_not_end_function(self):
         c = self.c
-        s = textwrap.dedent('''\
+        s = '''
             def foo():
 
                 error("""line1
@@ -3818,9 +3794,9 @@ class TestPython (BaseTestImporter):
 
             def bar():
                 pass
-        ''')
+        '''
         p = c.p
-        self.run_test(p, s=s)
+        self.run_test(s)
         if self.check_tree:
             child = p.firstChild()
             n = child.numberOfChildren()
@@ -3828,11 +3804,7 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20211114184047.1: *4* TestPython.test_data_docstring
     def test_data_docstring(self):
         # From mypy\test-data\stdlib-samples\3.2\test\test_pprint.py
-        c = self.c
-        #@+<< define s >>
-        #@+node:ekr.20211114184337.1: *5* << define s >>
-        s = textwrap.dedent('''\
-
+        s = '''
             def test_basic_line_wrap(self) -> None:
                 # verify basic line-wrapping operation
                 o = {'RPM_cal': 0,
@@ -3850,38 +3822,33 @@ class TestPython (BaseTestImporter):
          'main_code_runtime_us': 0,
          'read_io_runtime_us': 0,
          'write_io_runtime_us': 43690}"""
-        ''')
-        #@-<< define s >>
-        p = c.p
-        self.run_test(p, s=s)
+        '''
+        self.run_test(s)
     #@+node:ekr.20211114185222.1: *4* TestPython.test_data_docstring_2
     def test_data_docstring_2(self):
         # From mypy\test-data\stdlib-samples\3.2\test\test_textwrap.py
-        c = self.c
-        s = textwrap.dedent("""\
-        
-    class IndentTestCases(BaseTestCase):  # Line 443
-
-        def test_subsequent_indent(self) -> None:
-            # Test subsequent_indent parameter
-
-            expect = '''\\
-      * This paragraph will be filled, first
-        without any indentation, and then
-        with some (including a hanging
-        indent).'''
-
-            result = fill(self.text, 40,
-                          initial_indent="  * ", subsequent_indent="    ")
-            self.check(result, expect)
+        s = """
+            class IndentTestCases(BaseTestCase):  # Line 443
             
-    # Despite the similar names, DedentTestCase is *not* the inverse
-    # of IndentTestCase!
-    class DedentTestCase(unittest.TestCase):  # Line 494.
-        pass
-        """)
-        p = c.p
-        self.run_test(p, s=s)
+                def test_subsequent_indent(self) -> None:
+                    # Test subsequent_indent parameter
+            
+                    expect = '''\\
+              * This paragraph will be filled, first
+                without any indentation, and then
+                with some (including a hanging
+                indent).'''
+            
+                    result = fill(self.text, 40,
+                                  initial_indent="  * ", subsequent_indent="    ")
+                    self.check(result, expect)
+                    
+            # Despite the similar names, DedentTestCase is *not* the inverse
+            # of IndentTestCase!
+            class DedentTestCase(unittest.TestCase):  # Line 494.
+                pass
+        """
+        self.run_test(s)
     #@+node:ekr.20211126055349.1: *3* TestPython.test_run_python_test
     def test_run_python_test(self): 
 
@@ -3995,7 +3962,7 @@ class TestRst(BaseTestImporter):
         except Exception:
             self.skipTest('no docutils')
 
-        s = textwrap.dedent("""\
+        s = """
             .. toc
 
             ====
@@ -4035,7 +4002,7 @@ class TestRst(BaseTestImporter):
             .............
 
             section 3.1.1, line 1
-        """)
+        """
         table = (
             '!Dummy chapter',
             'top',
@@ -4047,7 +4014,7 @@ class TestRst(BaseTestImporter):
             'placeholder',
             'section 3.1.1',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
@@ -4064,7 +4031,7 @@ class TestRst(BaseTestImporter):
         except Exception:
             self.skipTest('no docutils')
 
-        s = textwrap.dedent("""\
+        s = """
             .. toc
 
             .. The section name contains trailing whitespace.
@@ -4074,12 +4041,12 @@ class TestRst(BaseTestImporter):
             =======
 
             The top chapter.
-        """)
+        """
         table = (
             "!Dummy chapter",
             "Chapter",
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
@@ -4096,7 +4063,7 @@ class TestRst(BaseTestImporter):
         except Exception:
             self.skipTest('no docutils')
 
-        s = textwrap.dedent("""\
+        s = """
             .. toc
 
             top
@@ -4135,7 +4102,7 @@ class TestRst(BaseTestImporter):
             .............
 
             section 3.1.1, line 1
-        """)
+        """
         table = (
             '!Dummy chapter',
             'top',
@@ -4147,7 +4114,7 @@ class TestRst(BaseTestImporter):
             'placeholder',
             'section 3.1.1',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
@@ -4164,19 +4131,19 @@ class TestRst(BaseTestImporter):
         except Exception:
             self.skipTest('no docutils')
 
-        s = textwrap.dedent("""\
+        s = """
             .. toc
 
             top
             -------------
 
             The top section
-        """)
+        """
         table = (
             '!Dummy chapter',
             'top',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
@@ -4193,7 +4160,7 @@ class TestRst(BaseTestImporter):
         except Exception:
             self.skipTest('no docutils')
 
-        s = textwrap.dedent("""\
+        s = """
             .. toc
 
             ======
@@ -4201,12 +4168,12 @@ class TestRst(BaseTestImporter):
             ======
 
             The top section
-        """)
+        """
         table = (
             "!Dummy chapter",
             "top",
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
@@ -4223,7 +4190,7 @@ class TestRst(BaseTestImporter):
         except Exception:
             self.skipTest('no docutils')
 
-        s = textwrap.dedent("""\
+        s = """
             .. toc
 
             .. The section name contains trailing whitespace.
@@ -4233,13 +4200,13 @@ class TestRst(BaseTestImporter):
             ======
 
             The top section.
-        """)
+        """
         table = (
             "!Dummy chapter",
             "top",
         )
         p = c.p
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = p.lastChild()
         self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
@@ -4257,7 +4224,7 @@ class TestRst(BaseTestImporter):
             self.skipTest('no docutils')
 
         # All heading must be followed by an empty line.
-        s = textwrap.dedent("""\
+        s = """\
             #########
             Chapter 1
             #########
@@ -4273,13 +4240,13 @@ class TestRst(BaseTestImporter):
             +++++++++
 
             Sec 2.
-        """)
+        """
         table = (
             'Chapter 1',
             'section 1',
             'section 2',
         )
-        self.run_test(c.p, s)
+        self.run_test(s)
         root = c.p.lastChild()
         self.assertEqual(root.h, f"@auto-rst {self.id()}")
         p2 = root.firstChild()
@@ -4297,7 +4264,7 @@ class TestTypescript (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.103: *3* TestTypescript.test_class
     def test_class(self):
-        c = self.c
+
         s = '''
 
         class Greeter {
@@ -4322,11 +4289,10 @@ class TestTypescript (BaseTestImporter):
 
         '''
 
-        self.run_test(c.p, s)
+        self.run_test(s)
     #@+node:ekr.20210904065459.104: *3* TestTypescript.test_module
     def test_module(self):
-        c = self.c
-        s = textwrap.dedent('''\
+        s = '''
             module Sayings {
                 export class Greeter {
                     greeting: string;
@@ -4347,9 +4313,8 @@ class TestTypescript (BaseTestImporter):
             }
 
             document.body.appendChild(button)
-        ''')
-
-        self.run_test(c.p, s)
+        '''
+        self.run_test(s)
     #@-others
 #@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
 class TestXML (BaseTestImporter):
@@ -4369,7 +4334,7 @@ class TestXML (BaseTestImporter):
     #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE note SYSTEM "Note.dtd">
             <html>
@@ -4380,14 +4345,14 @@ class TestXML (BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </html>
-        """)
+        """
         table = (
             (1, "<html>"),
             (2, "<head>"),
             (2, "<body class='bodystring'>"),
         )
         p = c.p
-        self.run_test(p, s)
+        self.run_test(s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
@@ -4401,7 +4366,7 @@ class TestXML (BaseTestImporter):
     #@+node:ekr.20210904065459.106: *3* TestXml.test_1
     def test_1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             <html>
             <head>
                 <title>Bodystring</title>
@@ -4410,14 +4375,14 @@ class TestXML (BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </html>
-        """)
+        """
         table = (
             (1, "<html>"),
             (2, "<head>"),
             (2, "<body class='bodystring'>"),
         )
         p = c.p
-        self.run_test(p, s)
+        self.run_test(s)
         after = p.nodeAfterTree()
         root = p.lastChild()
         self.assertEqual(root.h, f"@file {self.id()}")
@@ -4432,13 +4397,12 @@ class TestXML (BaseTestImporter):
 
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
-        c = self.c
-        s = textwrap.dedent("""\
+        s = """
             <:À.Ç>
             <Ì>
             <_.ÌÑ>
-        """)
-        self.run_test(c.p, s)
+        """
+        self.run_test(s)
     #@+node:ekr.20210904065459.132: *3* TestXml.test_is_ws_line
     def test_is_ws_line(self):
         c = self.c
