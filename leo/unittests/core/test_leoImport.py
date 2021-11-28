@@ -922,7 +922,7 @@ class TestJava (BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
-        c = self.c
+
         s = """
             /**
              * Indicates the caller's authority to perform lifecycle operations on
@@ -939,22 +939,14 @@ class TestJava (BaseTestImporter):
                 }
             }
         """
-        table = (
-            'public final class AdminPermission extends BasicPermission',
-            'public AdminPermission',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'public final class AdminPermission extends BasicPermission'),
+            (2, 'public AdminPermission'),
+        ))
     #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
-        c = self.c
+
         s = """
             /*
              * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
@@ -1004,58 +996,37 @@ class TestJava (BaseTestImporter):
             }
 
         """
-        table = (
-            'public class BundleException extends Exception',
-            'public BundleException',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'public class BundleException extends Exception'),
+            (2, 'public BundleException'),
+        ))
     #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
-        c = self.c
+
         s = """
             interface Bicycle {
                 void changeCadence(int newValue);
                 void changeGear(int newValue);
             }
         """
-        table = (
-            'interface Bicycle',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'interface Bicycle'),
+        ))
     #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
-        c = self.c
+
         s = """
             interface Bicycle {
             void changeCadence(int newValue);
             void changeGear(int newValue);
             }
         """
-        table = (
-            'interface Bicycle',
-        )
-        self.run_test(s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for i, h in enumerate(table):
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'interface Bicycle'),
+        ))
     #@-others
 #@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
 class TestJavascript (BaseTestImporter):
