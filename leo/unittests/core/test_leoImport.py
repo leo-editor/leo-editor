@@ -2080,7 +2080,7 @@ class TestPython (BaseTestImporter):
     ext = '.py'
 
     #@+others
-    #@+node:ekr.20211125084921.1: *3*  TestPython.run_python_test & helpers
+    #@+node:ekr.20211125084921.1: *3* TestPython.run_python_test & helpers
     def run_python_test(self, input_s, expected_s=None, verbose=False):
         """
         Create a tree whose root is c.p from string s.
@@ -2200,6 +2200,103 @@ class TestPython (BaseTestImporter):
         if 0:  ###
             self.dump_tree(created_p, tag='===== Created')
             self.dump_tree(expected_p, tag='===== Expected')
+    #@+node:ekr.20211126055349.1: *3* TestPython.test_run_python_test
+    def test_run_python_test(self): 
+
+        input_s = '''
+            """A docstring"""
+            switch = 1
+        '''
+        # Test explicit specification of outer node.
+        expected_s1 = '''
+            - outer:
+            ATothers
+            ATlanguage python
+            ATtabwidth -4
+              - org:Organizer: Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(input_s, expected_s1)
+        # Test standard contents of outer node.
+        expected_s2 = '''
+            - outer:
+              - org:Organizer: Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(input_s, expected_s2)
+         # Test implict contents of outer node.
+        expected_s3 = '''
+              - org:Organizer: Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(input_s, expected_s3)
+    #@+node:ekr.20211127031823.1: *3* TestPython: New (generated) tests
+    #@+node:ekr.20211127032323.1: *4* pass...
+    #@+node:ekr.20211127031823.2: *5* test_docstring_vars
+    def test_docstring_vars(self):
+
+        input_s = '''
+            """A docstring"""
+            switch = 1
+        '''
+        expected_s = '''
+            - org:Organizer: Declarations
+            """A docstring"""
+            switch = 1
+        '''
+        self.run_python_test(input_s, expected_s)
+
+    #@+node:ekr.20211127032346.1: *4* fail...
+    #@+node:ekr.20211127031823.3: *4* test_docstring_vars_outer_def
+    def test_docstring_vars_outer_def(self):
+
+        input_s = '''
+            """A docstring"""
+            switch = 1
+            
+            def d1:
+                pass
+        '''
+        expected_s = '''
+            - outer:
+              - org: Organizer Declarations
+            """A docstring"""
+            switch = 1
+              - def:function: d1
+            def d1:
+                pass
+        '''
+        self.run_python_test(input_s, expected_s)
+
+    #@+node:ekr.20211127031823.4: *4* test_docstring_vars_class
+    def test_docstring_vars_class(self):
+
+        input_s = '''
+            """A docstring"""
+            switch = 1
+            
+            class Class1:
+                def method1(self):
+                    pass
+        '''
+        expected_s = '''
+            - outer:
+              - Declarations
+            """A docstring"""
+            switch = 1
+            
+              - class:class Class1
+            class Class1:
+                ATothers
+                - def: method1:
+            def method1(self):
+                pass
+        '''
+        self.run_python_test(input_s, expected_s)
+
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
     #@+node:ekr.20210904065459.62: *4* TestPython.test_bad_class
     def test_bad_class(self):
@@ -3849,103 +3946,6 @@ class TestPython (BaseTestImporter):
                 pass
         """
         self.run_test(s)
-    #@+node:ekr.20211126055349.1: *3* TestPython.test_run_python_test
-    def test_run_python_test(self): 
-
-        input_s = '''
-            """A docstring"""
-            switch = 1
-        '''
-        # Test explicit specification of outer node.
-        expected_s1 = '''
-            - outer:
-            ATothers
-            ATlanguage python
-            ATtabwidth -4
-              - org:Organizer: Declarations
-            """A docstring"""
-            switch = 1
-        '''
-        self.run_python_test(input_s, expected_s1)
-        # Test standard contents of outer node.
-        expected_s2 = '''
-            - outer:
-              - org:Organizer: Declarations
-            """A docstring"""
-            switch = 1
-        '''
-        self.run_python_test(input_s, expected_s2)
-         # Test implict contents of outer node.
-        expected_s3 = '''
-              - org:Organizer: Declarations
-            """A docstring"""
-            switch = 1
-        '''
-        self.run_python_test(input_s, expected_s3)
-    #@+node:ekr.20211127031823.1: *3* Generated Tests
-    #@+node:ekr.20211127032323.1: *4* pass...
-    #@+node:ekr.20211127031823.2: *5* test_docstring_vars
-    def test_docstring_vars(self):
-
-        input_s = '''
-            """A docstring"""
-            switch = 1
-        '''
-        expected_s = '''
-            - org:Organizer: Declarations
-            """A docstring"""
-            switch = 1
-        '''
-        self.run_python_test(input_s, expected_s)
-
-    #@+node:ekr.20211127032346.1: *4* fail...
-    #@+node:ekr.20211127031823.3: *4* test_docstring_vars_outer_def
-    def test_docstring_vars_outer_def(self):
-
-        input_s = '''
-            """A docstring"""
-            switch = 1
-            
-            def d1:
-                pass
-        '''
-        expected_s = '''
-            - outer:
-              - org: Organizer Declarations
-            """A docstring"""
-            switch = 1
-              - def:function: d1
-            def d1:
-                pass
-        '''
-        self.run_python_test(input_s, expected_s)
-
-    #@+node:ekr.20211127031823.4: *4* test_docstring_vars_class
-    def test_docstring_vars_class(self):
-
-        input_s = '''
-            """A docstring"""
-            switch = 1
-            
-            class Class1:
-                def method1(self):
-                    pass
-        '''
-        expected_s = '''
-            - outer:
-              - Declarations
-            """A docstring"""
-            switch = 1
-            
-              - class:class Class1
-            class Class1:
-                ATothers
-                - def: method1:
-            def method1(self):
-                pass
-        '''
-        self.run_python_test(input_s, expected_s)
-
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
