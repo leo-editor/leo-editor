@@ -108,7 +108,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.3: *3* TestC.test_class_1
     def test_class_1(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -119,7 +119,7 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """)
+        """
         p = self.run_test(c.p, s)
         self.check_headlines(p, (
             (1, 'class cTestClass1'),
@@ -129,7 +129,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -143,25 +143,18 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """)
-        table = (
-            'class cTestClass1',
-            'int foo',
-            'char bar',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        """
+        p = self.run_test(c.p, s)
+        self.check_headlines(p, (
+            (1, 'class cTestClass1'),
+            (2, 'int foo'),
+            (2, 'char bar'),
+        ))
+       
     #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
     def test_comment_follows_arg_list(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             void
             aaa::bbb::doit
                 (
@@ -179,24 +172,16 @@ class TestC(BaseTestImporter):
             {
                 return true;
             }
-        """)
-        table = (
-            'void aaa::bbb::doit',
-            'bool aaa::bbb::dothat',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        """
+        p = self.run_test(c.p, s)
+        self.check_headlines(p, (
+            (1, 'void aaa::bbb::doit'),
+            (1, 'bool aaa::bbb::dothat'),
+        ))
     #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
     def test_comment_follows_block_delim(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             void
             aaa::bbb::doit
                 (
@@ -213,49 +198,32 @@ class TestC(BaseTestImporter):
                 )
             {
                 return true;
-            } //  <---------------------problem
-        """)
-        table = (
-            'void aaa::bbb::doit',
-            'bool aaa::bbb::dothat',
-        )
-        self.run_test(c.p, s)
-        # Check structure
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        assert p2, g.tree_to_string(c)
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+            } //  <--------------------- problem
+        """
+        p = self.run_test(c.p, s)
+        self.check_headlines(p, (
+            (1, 'void aaa::bbb::doit'),
+            (1, 'bool aaa::bbb::dothat'),
+        ))
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             extern "C"
             {
             #include "stuff.h"
             void    init(void);
             #include "that.h"
             }
-        """)
-        table = (
-            'extern "C"',
-        )
-        p = c.p
-        self.run_test(c.p, s)
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
+        """
+        p = self.run_test(c.p, s)
+        self.check_headlines(p, (
+            (1, 'extern "C"'),
+        ))
     #@+node:ekr.20210904065459.7: *3* TestC.test_intermixed_blanks_and_tabs
     def test_intermixed_blanks_and_tabs(self):
         c = self.c
-        s = textwrap.dedent("""\
+        s = """
             void
             aaa::bbb::doit
                 (
@@ -264,20 +232,11 @@ class TestC(BaseTestImporter):
             {
                 assert(false); // leading tab
             }
-        """)
-        table = (
-            'void aaa::bbb::doit',
-        )
-
-        self.run_test(c.p, s)
-        root = c.p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
-        p2 = root.firstChild()
-        for h in table:
-            self.assertEqual(p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h  # Extra nodes
-
+        """
+        p = self.run_test(c.p, s)
+        self.check_headlines(p, (
+            (1, 'void aaa::bbb::doit'),
+        ))
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
         c = self.c
