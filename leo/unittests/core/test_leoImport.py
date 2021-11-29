@@ -38,19 +38,20 @@ class BaseTestImporter(LeoUnitTest):
         """Check that p and its subtree have the structure given in the table."""
         # Check structure
         p1 = p.copy()
-        after = p1.nodeAfterTree()
         try:
             self.assertEqual(p1.h, f"{self.treeType} {self.id()}")
-            p.moveToThreadNext()
-            for data in table:
+            i = 0
+            for p in p1.subtree():
+                self.assertTrue(i < len(table), msg=repr(p.h))
+                data = table [i]
+                i += 1
                 n, h = data
                 self.assertEqual(p.h, h)
                 self.assertEqual(p.level() - p1.level(), n, msg=p.h)
-                p.moveToThreadNext()
             # Make sure there are no extra nodes in p's tree.
-            self.assertFalse(p1.isAncestorOf(p), msg=p.h)
-            self.assertEqual(p, after, msg=p and p.h or "No Node")
+            self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:
+            g.trace(self.id())
             self.dump_tree(p1)
             raise
     #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result (Test)
@@ -166,6 +167,14 @@ class BaseTestImporter(LeoUnitTest):
                 ATlanguage python
                 ATtabwidth -4
             """).replace('AT', '@')
+    #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
+    def dump_tree(self, root):
+        """
+        Dump the tree's headlines only.
+        This is *not* the same as Importer.dump_tree!
+        """
+        for p in root.self_and_subtree():
+            print(' ' * (p.level() - root.level()), repr(p.h))
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s, verbose=False):
         """
@@ -180,7 +189,6 @@ class BaseTestImporter(LeoUnitTest):
         parent.h = f"{kind} {self.id()}"
         # Suppress perfect-import checks if self.skip_flag is True
         if self.skip_flag:
-            g.trace('SKIP', p.h)
             g.app.suppressImportChecks = True
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n\n'
@@ -1673,7 +1681,6 @@ class TestOtl (BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_headlines(p, (
-            # Is this table correct?
             (1, 'preamble.'),
             (1, 'Section 1'),
             (1, 'Section 2'),
@@ -1681,6 +1688,7 @@ class TestOtl (BaseTestImporter):
             (1, 'Section 2-1-1'),
             (1, 'Section 3'),
             (1, 'Section 3.1'),
+            (1, ''),  # Due to the added blank line?
         ))
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):

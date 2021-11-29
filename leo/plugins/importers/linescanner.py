@@ -1011,7 +1011,7 @@ class Importer:
         """
         Like LeoUnitTest.dump_tree.
         """
-        d = self.vnode_info
+        d = self.vnode_info if hasattr(self, 'vnode_info') else {}
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)
