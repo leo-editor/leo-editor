@@ -53,7 +53,7 @@ class BaseTestImporter(LeoUnitTest):
         except AssertionError:
             self.dump_tree(p1)
             raise
-    #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result (new)
+    #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result (Test)
     def check_result(self, root, expected_s):
         """
         Check that the generated outline matches the expected outline.
@@ -174,7 +174,6 @@ class BaseTestImporter(LeoUnitTest):
         """
         c, ext, p = self.c, self.ext, self.c.p
         self.assertTrue(ext)
-        ### self.treeType = '@file'  # Fix #352.
         # Run the test.
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
@@ -184,8 +183,8 @@ class BaseTestImporter(LeoUnitTest):
             g.trace('SKIP', p.h)
             g.app.suppressImportChecks = True
         # createOutline calls Importer.gen_lines and Importer.check.
-        ok = c.importCommands.createOutline(
-            parent=parent.copy(), ext=ext, s=textwrap.dedent(s))
+        test_s = textwrap.dedent(s).strip() + '\n\n'
+        ok = c.importCommands.createOutline(parent.copy(), ext, test_s)
         self.assertTrue(ok)
         return parent
     #@-others
@@ -2036,8 +2035,7 @@ class TestPython (BaseTestImporter):
         p = self.run_test(input_s)
         self.check_result(p, expected_s3)
     #@+node:ekr.20211127031823.1: *3* TestPython: New (generated) tests
-    #@+node:ekr.20211127032323.1: *4* pass...
-    #@+node:ekr.20211127031823.2: *5* test_docstring_vars
+    #@+node:ekr.20211127031823.2: *4* test_docstring_vars
     def test_docstring_vars(self):
 
         input_s = '''
@@ -2052,7 +2050,6 @@ class TestPython (BaseTestImporter):
         p = self.run_test(input_s)
         self.check_result(p, expected_s)
 
-    #@+node:ekr.20211127032346.1: *4* fail...
     #@+node:ekr.20211127031823.3: *4* test_docstring_vars_outer_def
     def test_docstring_vars_outer_def(self):
 
@@ -3296,7 +3293,7 @@ class TestPython (BaseTestImporter):
         self.run_test(s)
     #@+node:ekr.20211121055721.1: *4* TestPython.test_minimal_nesting
     def test_minimal_nesting(self):
-        c = self.c
+
         s = """
             import sys
             class Class1:
@@ -3334,19 +3331,19 @@ class TestPython (BaseTestImporter):
             (2, 'class2_method2'),
             (1, 'main'),
         )
-        p = c.p
+        assert table
         self.run_test(s, verbose=True)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        # if self.check_tree:
+            # after = p.nodeAfterTree()
+            # root = p.lastChild()
+            # self.assertEqual(root.h, f"@file {self.id()}")
+            # p = root.firstChild()
+            # for n, h in table:
+                # n2 = p.level() - root.level()
+                # self.assertEqual(h, p.h)
+                # self.assertEqual(n, n2)
+                # p.moveToThreadNext()
+            # self.assertEqual(p, after)
 
     #@+node:ekr.20210904065459.90: *4* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):

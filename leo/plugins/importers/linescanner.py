@@ -951,9 +951,9 @@ class Importer:
             line1, line2 = lines1[i], lines2[i]
             if line1 != line2:
                 print('first mismatched line: %s' % (i + 1))
-                print('s1...')
+                print('Expected...')
                 print(''.join(self.context_lines(lines1, i)))
-                print('s2...')
+                print('Got...')
                 print(''.join(self.context_lines(lines2, i)))
                 break
         else:
@@ -1011,12 +1011,12 @@ class Importer:
         """
         Like LeoUnitTest.dump_tree.
         """
+        d = self.vnode_info
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)
-            print('-----')
-            lines = p.v._import_lines if hasattr(p.v, '_import_lines') else p.v.b
-            g.printObj(lines, tag = p.h)
+            lines = d [p.v] ['lines'] if p.v in d else g.splitLines(p.v.b)
+            g.printObj(lines)
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
         """

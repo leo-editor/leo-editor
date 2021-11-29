@@ -17,8 +17,8 @@ class Py_Importer(Importer):
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
     debug = False
-    dump = False
-    skip_flag = True  # Careful: Importer.skip exists.
+    dump = True
+    skip_flag = False  # Careful: Importer.skip exists.
     trace = False
     #@-<< Py_Importer debug vars >>
 
@@ -179,7 +179,9 @@ class Py_Importer(Importer):
         p = self.start_python_block('org', 'Declarations', parent)
         #
         # The main importer loop. Don't worry about the speed of this loop.
-        for i, line in enumerate(g.splitLines(s)):
+        lines = g.splitLines(s)
+        ### g.pdb()
+        for line in lines:
             # Update the state, remembering the previous state.
             self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)
