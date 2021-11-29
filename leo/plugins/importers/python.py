@@ -179,9 +179,7 @@ class Py_Importer(Importer):
         p = self.start_python_block('org', 'Declarations', parent)
         #
         # The main importer loop. Don't worry about the speed of this loop.
-        lines = g.splitLines(s)
-        ### g.pdb()
-        for line in lines:
+        for line in g.splitLines(s):
             # Update the state, remembering the previous state.
             self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)
@@ -239,19 +237,15 @@ class Py_Importer(Importer):
         old_indent = p_info ['indent']
         new_indent = self.new_state.indent
         if old_kind == 'class':
-            if new_indent == old_indent + 4:
-                # A method.
-                p = self.end_previous_blocks(p)
-                ### p = self.end_method(p)  ###
-                p = self.start_python_block('def', line, p)
-                self.add_line(p, line, tag='class:def')
-            else:
-                pass
+            # A method.
+            p = self.end_previous_blocks(p)
+            p = self.start_python_block('def', line, p)
+            self.add_line(p, line, tag='class:def')
         elif old_kind == 'def' and new_indent == old_indent + 4:
-            # Calse 3B: a nested def
+            # A nested def
             self.add_line(p, line, tag='def:def')
         elif old_kind == 'org':
-            # Case 3C: A def inside an organizer node.
+            # A def inside an organizer node.
             self.add_line(p, line, tag='org:def')
         else:
             assert old_kind in ('def', 'outer'), repr(old_kind)
