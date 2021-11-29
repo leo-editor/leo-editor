@@ -543,15 +543,17 @@ Rendering Equations and Formulas
 ---------------------------------
 When the setting *@bool vr3-math-output* is set to *True*, then a MathJax script
 will be included in the HTML output. Mathjax interprets a subset of Latex to
-render mathematics.  The Latex expressions must be enclosed by delimiters.  Several
-sets of delimiters can be used, and the different processors may accept different ones.
-The following seem to work with all three, although  you may need to experiment if
+render mathematics.  The Latex expressions must be enclosed by delimiters. The following seem to work with all three processors, although  you may need to experiment if
 math renderings do not look right.
 
-1. Inline math: enclose the latex with single $ signs.
+1. Inline math: enclose the latex with ``\( ....\ \)`` characters, where where ``....`` represents the Latex math expression.  Example::
 
-2. Blocks, such as aligned equations: enclose the latex block with ``\[ .... \]``,
-where *....* represents the Latex expressions.
+    \(a = \sqrt{b}\ \)
+
+.. Note:: There must be a backslash following the last character of the inline math, with no space bfore that added backslash.
+
+2. Blocks, such as aligned equations: enclose the latex block with ``$$ .... $$``,
+where ``....`` represents the Latex expressions.
 
 Asciidoc Dialects
 =================
