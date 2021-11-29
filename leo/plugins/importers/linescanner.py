@@ -1007,11 +1007,13 @@ class Importer:
         return g.toUnicode(result, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20211118082436.1: *4* i.dump_tree
-    def dump_tree(self, root):
+    def dump_tree(self, root, tag=None):
         """
         Like LeoUnitTest.dump_tree.
         """
         d = self.vnode_info if hasattr(self, 'vnode_info') else {}
+        if tag:
+            print(tag)
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)

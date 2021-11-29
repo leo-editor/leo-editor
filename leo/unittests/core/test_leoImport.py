@@ -54,7 +54,7 @@ class BaseTestImporter(LeoUnitTest):
             g.trace(self.id())
             self.dump_tree(p1)
             raise
-    #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result (Test)
+    #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result
     def check_result(self, root, expected_s):
         """
         Check that the generated outline matches the expected outline.
@@ -62,11 +62,11 @@ class BaseTestImporter(LeoUnitTest):
         - root: the root of the imported outline.
         - expected s: A (string) description of the expected outline, in augmented MORE format.
         """
-        expected_parent = root.insertAfter()  ### New.  Correct ???
-        expected_parent.h = expected_parent.h
-        expected_parent = self.create_expected_outline(expected_parent, expected_s)
+        expected_parent = root.insertAfter()
+        expected_parent.h = root.h
+        self.create_expected_outline(expected_parent, expected_s)
         self.compare_outlines(root, expected_parent)
-    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines (new)
+    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines
     def compare_outlines(self, created_p, expected_p):
         """
         Ensure that the created and expected trees have equal shape and contents.
@@ -168,11 +168,13 @@ class BaseTestImporter(LeoUnitTest):
                 ATtabwidth -4
             """).replace('AT', '@')
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
-    def dump_tree(self, root):
+    def dump_tree(self, root, tag=None):
         """
         Dump the tree's headlines only.
         This is *not* the same as Importer.dump_tree!
         """
+        if tag:
+            print(tag)
         for p in root.self_and_subtree():
             print(' ' * (p.level() - root.level()), repr(p.h))
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
@@ -2007,7 +2009,7 @@ class TestPython (BaseTestImporter):
 
     #@+others
     #@+node:ekr.20211126055349.1: *3* TestPython.test_check_result
-    def test_check_result(self): 
+    def test_check_result(self):
 
         input_s = '''
             """A docstring"""
@@ -3307,10 +3309,10 @@ class TestPython (BaseTestImporter):
             class Class1:
                 def class1_method1():
                     pass
+                def class1_method2():
+                    def helper():
+                        pass
         """
-                # def class1_method2():
-                    # def helper():
-                        # pass
             # def outer_def1():
                 # pass
             # def outer_def2():
