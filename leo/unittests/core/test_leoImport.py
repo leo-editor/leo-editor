@@ -53,6 +53,48 @@ class BaseTestImporter(LeoUnitTest):
         except AssertionError:
             self.dump_tree(p1)
             raise
+    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines
+    def compare_outlines(self, created_p, expected_p):
+        """
+        Ensure that the created and expected trees have equal shape and contents.
+        
+        Also ensure that all created nodes have the expected node kind.
+        """
+        d = g.vnode_info
+        p1, p2 = created_p.copy(), expected_p.copy()
+        try:
+            after1, after2 = p1.nodeAfterTree(), p2.nodeAfterTree()
+            while p1 and p2 and p1 != after1 and p2 != after2:
+                aList1 = d.get(p1.v)['kind'].split(':')
+                aList2 = d.get(p2.v)['kind'].split(':')
+                kind1, kind2 = aList1[0], aList2[0]
+                self.assertEqual(p1.h, p2.h)
+                self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
+                self.assertEqual(p1.b.strip(), p2.b.strip(), msg=p1.h)
+                self.assertEqual(kind1, kind2, msg=p1.h)
+                p1.moveToThreadNext()
+                p2.moveToThreadNext()
+            # Make sure both trees end at the same time.
+            self.assertTrue(not p1 or p1 == after1)
+            self.assertTrue(not p2 or p2 == after2)
+        except AssertionError:
+            g.es_exception()
+            self.dump_tree(created_p, tag='===== Created')
+            self.dump_tree(expected_p, tag='===== Expected')
+            raise
+        if 0:  ###
+            self.dump_tree(created_p, tag='===== Created')
+            self.dump_tree(expected_p, tag='===== Expected')
+    #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
+    def compute_unit_test_kind(self, ext):
+        """Return kind from the given extention."""
+        aClass = g.app.classDispatchDict.get(ext)
+        if aClass:
+            d2 = g.app.atAutoDict
+            for z in d2:
+                if d2.get(z) == aClass:
+                    return z
+        return '@file'
     #@+node:ekr.20211125101517.4: *3* BaseTestImporter.create_expected_outline
     def  create_expected_outline(self, expected_parent, expected_s):
         """
@@ -110,16 +152,6 @@ class BaseTestImporter(LeoUnitTest):
                 ATlanguage python
                 ATtabwidth -4
             """).replace('AT', '@')
-    #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
-    def compute_unit_test_kind(self, ext):
-        """Return kind from the given extention."""
-        aClass = g.app.classDispatchDict.get(ext)
-        if aClass:
-            d2 = g.app.atAutoDict
-            for z in d2:
-                if d2.get(z) == aClass:
-                    return z
-        return '@file'
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s, verbose=False):
         """
@@ -1952,7 +1984,7 @@ class TestPython (BaseTestImporter):
     ext = '.py'
 
     #@+others
-    #@+node:ekr.20211125084921.1: *3* TestPython.run_python_test & helpers
+    #@+node:ekr.20211125084921.1: *3* TestPython.run_python_test
     def run_python_test(self, input_s, expected_s=None, verbose=False):
         """
         Create a tree whose root is c.p from string s.
@@ -1983,38 +2015,6 @@ class TestPython (BaseTestImporter):
             expected_s2 = textwrap.dedent(expected_s).strip().replace('AT', '@') + '\n'
             self.create_expected_outline(expected_parent, expected_s2)
             self.compare_outlines(parent, expected_parent)
-    #@+node:ekr.20211126052156.1: *4* compare_outlines
-    def compare_outlines(self, created_p, expected_p):
-        """
-        Ensure that the created and expected trees have equal shape and contents.
-        
-        Also ensure that all created nodes have the expected node kind.
-        """
-        d = g.vnode_info
-        p1, p2 = created_p.copy(), expected_p.copy()
-        try:
-            after1, after2 = p1.nodeAfterTree(), p2.nodeAfterTree()
-            while p1 and p2 and p1 != after1 and p2 != after2:
-                aList1 = d.get(p1.v)['kind'].split(':')
-                aList2 = d.get(p2.v)['kind'].split(':')
-                kind1, kind2 = aList1[0], aList2[0]
-                self.assertEqual(p1.h, p2.h)
-                self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
-                self.assertEqual(p1.b.strip(), p2.b.strip(), msg=p1.h)
-                self.assertEqual(kind1, kind2, msg=p1.h)
-                p1.moveToThreadNext()
-                p2.moveToThreadNext()
-            # Make sure both trees end at the same time.
-            self.assertTrue(not p1 or p1 == after1)
-            self.assertTrue(not p2 or p2 == after2)
-        except AssertionError:
-            g.es_exception()
-            self.dump_tree(created_p, tag='===== Created')
-            self.dump_tree(expected_p, tag='===== Expected')
-            raise
-        if 0:  ###
-            self.dump_tree(created_p, tag='===== Created')
-            self.dump_tree(expected_p, tag='===== Expected')
     #@+node:ekr.20211126055349.1: *3* TestPython.test_run_python_test
     def test_run_python_test(self): 
 
