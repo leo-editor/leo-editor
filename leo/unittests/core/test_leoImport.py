@@ -2081,7 +2081,6 @@ class TestPython (BaseTestImporter):
         '''.replace('AT', '@')
         p = self.run_test(input_s)
         self.check_result(p, expected_s)
-
     #@+node:ekr.20211127031823.4: *4* test_docstring_vars_class
     def test_docstring_vars_class(self):
 
@@ -2095,20 +2094,19 @@ class TestPython (BaseTestImporter):
         '''
         expected_s = '''
             - outer:
-              - Declarations
+              - org:Declarations
             """A docstring"""
             switch = 1
             
               - class:class Class1
             class Class1:
                 ATothers
-                - def: method1:
+                - def:method1:
             def method1(self):
                 pass
         '''.replace('AT', '@')
         p = self.run_test(input_s)
         self.check_result(p, expected_s)
-
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
     #@+node:ekr.20210904065459.63: *4* TestPython.test_basic_nesting
     def test_basic_nesting(self):
@@ -3109,9 +3107,9 @@ class TestPython (BaseTestImporter):
         importer = linescanner.Importer(c.importCommands, language='python')
         for val, s in table:
             self.assertEqual(val, importer.is_ws_line(s), msg=repr(s))
-    #@+node:ekr.20210904065459.61: *4* TestPython.test_leoApp_fail
-    def test_leoApp_fail(self):
-        c = self.c
+    #@+node:ekr.20210904065459.61: *4* TestPython.test_leoApp
+    def test_leoApp(self):
+
         s = '''
             def isValidPython(self):
                 if sys.platform == 'cli':
@@ -3151,26 +3149,15 @@ class TestPython (BaseTestImporter):
             def loadLocalFile(self, fn, gui, old_c):
                 trace = (False or g.trace_startup) and not g.unitTesting
         '''
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
             (1, 'isValidPython'),
             # (2, 'class EmergencyDialog'),
             # (3, 'run'),
             (1, 'loadLocalFile'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
-
+        ))
+        
+        
     #@+node:ekr.20210904065459.85: *4* TestPython.test_leoImport_py_small_
     def test_leoImport_py_small_(self):
         c = self.c
@@ -3563,7 +3550,6 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.96: *4* TestPython.test_top_level_later_decl
     def test_top_level_later_decl(self):
         # From xo.py.
-        c = self.c
         # The first line *must* be blank.
         s = '''
 
@@ -3594,28 +3580,14 @@ class TestPython (BaseTestImporter):
                 main()
 
         '''
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
             (1, 'Declarations'),
             (1, 'merge_value'),
             (1, 'class MainDisplay(object)'),
             (2, 'save_file'),
             (1, 'retab'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            root = p.lastChild()
-            assert root
-            self.assertEqual(root.h, f"@file {self.id()}")
-            after = p.nodeAfterTree()
-            p = root.firstChild()
-            for n, h in table:
-                assert p, h
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.97: *4* TestPython.test_trailing_comment
     def test_trailing_comment(self):
 
