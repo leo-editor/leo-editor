@@ -53,7 +53,19 @@ class BaseTestImporter(LeoUnitTest):
         except AssertionError:
             self.dump_tree(p1)
             raise
-    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines
+    #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result (new)
+    def check_result(self, root, expected_s):
+        """
+        Check that the generated outline matches the expected outline.
+        
+        - root: the root of the imported outline.
+        - expected s: A (string) description of the expected outline, in augmented MORE format.
+        """
+        expected_parent = root.insertAfter()  ### New.  Correct ???
+        expected_parent.h = expected_parent.h
+        expected_parent = self.create_expected_outline(expected_parent, expected_s)
+        self.compare_outlines(root, expected_parent)
+    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines (new)
     def compare_outlines(self, created_p, expected_p):
         """
         Ensure that the created and expected trees have equal shape and contents.
@@ -108,7 +120,9 @@ class BaseTestImporter(LeoUnitTest):
         d = g.vnode_info
         # Special case for the top-level node.
         d [expected_parent.v] = { 'kind': 'outer' }
-        expected_lines = g.splitLines(expected_s.strip() + '\n\n')
+        # Munge expected_s
+        expected_s2 = textwrap.dedent(expected_s).strip() + '\n\n'
+        expected_lines = g.splitLines(expected_s2) ### expected_s.strip() + '\n\n')
         stack = [(-1, expected_parent)]  # (level, p)
         for s in expected_lines:
             if s.strip().startswith('- outer:'):
@@ -1982,41 +1996,11 @@ class TestPython (BaseTestImporter):
     
     check_tree = False
     ext = '.py'
+    treeType = '@file'
 
     #@+others
-    #@+node:ekr.20211125084921.1: *3* TestPython.run_python_test
-    def run_python_test(self, input_s, expected_s=None, verbose=False):
-        """
-        Create a tree whose root is c.p from string s.
-        
-        If a line that starts with "# Expect:" exists in s, the following lines
-        represent the expected tree in enhanced MORE format.
-        """
-        # Init, as in the base class.
-        c = self.c
-        root = c.p
-        c, ext = self.c, self.ext
-        self.assertTrue(ext)
-        self.treeType = '@file'
-        kind = self.compute_unit_test_kind(ext)
-        # Create the parent and the expected parent nodes.
-        parent = root.insertAsLastChild()
-        parent.h = f"{kind} {self.id()}"
-        expected_parent = root.insertAsLastChild()
-        expected_parent.h = parent.h
-        # Suppress perfect-import checks if self.skip_flag is True
-        if self.skip_flag:
-            g.app.suppressImportChecks = True
-        # Create the outline. This calls py_i.gen_lines.
-        c.importCommands.createOutline(
-            parent=parent.copy(), ext=ext, s=textwrap.dedent(input_s))
-        # Compare the created and expected outlines.
-        if expected_s:
-            expected_s2 = textwrap.dedent(expected_s).strip().replace('AT', '@') + '\n'
-            self.create_expected_outline(expected_parent, expected_s2)
-            self.compare_outlines(parent, expected_parent)
-    #@+node:ekr.20211126055349.1: *3* TestPython.test_run_python_test
-    def test_run_python_test(self): 
+    #@+node:ekr.20211126055349.1: *3* TestPython.test_check_result
+    def test_check_result(self): 
 
         input_s = '''
             """A docstring"""
@@ -2031,23 +2015,26 @@ class TestPython (BaseTestImporter):
               - org:Organizer: Declarations
             """A docstring"""
             switch = 1
-        '''
-        self.run_python_test(input_s, expected_s1)
+        '''.replace('AT', '@')
+        p = self.run_test(input_s)
+        self.check_result(p, expected_s1)
         # Test standard contents of outer node.
         expected_s2 = '''
             - outer:
               - org:Organizer: Declarations
             """A docstring"""
             switch = 1
-        '''
-        self.run_python_test(input_s, expected_s2)
+        '''.replace('AT', '@')
+        p = self.run_test(input_s)
+        self.check_result(p, expected_s2)
          # Test implict contents of outer node.
         expected_s3 = '''
               - org:Organizer: Declarations
             """A docstring"""
             switch = 1
-        '''
-        self.run_python_test(input_s, expected_s3)
+        '''.replace('AT', '@')
+        p = self.run_test(input_s)
+        self.check_result(p, expected_s3)
     #@+node:ekr.20211127031823.1: *3* TestPython: New (generated) tests
     #@+node:ekr.20211127032323.1: *4* pass...
     #@+node:ekr.20211127031823.2: *5* test_docstring_vars
@@ -2061,8 +2048,9 @@ class TestPython (BaseTestImporter):
             - org:Organizer: Declarations
             """A docstring"""
             switch = 1
-        '''
-        self.run_python_test(input_s, expected_s)
+        '''.replace('AT', '@')
+        p = self.run_test(input_s)
+        self.check_result(p, expected_s)
 
     #@+node:ekr.20211127032346.1: *4* fail...
     #@+node:ekr.20211127031823.3: *4* test_docstring_vars_outer_def
@@ -2083,8 +2071,9 @@ class TestPython (BaseTestImporter):
               - def:function: d1
             def d1:
                 pass
-        '''
-        self.run_python_test(input_s, expected_s)
+        '''.replace('AT', '@')
+        p = self.run_test(input_s)
+        self.check_result(p, expected_s)
 
     #@+node:ekr.20211127031823.4: *4* test_docstring_vars_class
     def test_docstring_vars_class(self):
@@ -2109,8 +2098,9 @@ class TestPython (BaseTestImporter):
                 - def: method1:
             def method1(self):
                 pass
-        '''
-        self.run_python_test(input_s, expected_s)
+        '''.replace('AT', '@')
+        p = self.run_test(input_s)
+        self.check_result(p, expected_s)
 
     #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
     #@+node:ekr.20210904065459.63: *4* TestPython.test_basic_nesting
