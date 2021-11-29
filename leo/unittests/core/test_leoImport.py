@@ -53,6 +53,63 @@ class BaseTestImporter(LeoUnitTest):
         except AssertionError:
             self.dump_tree(p1)
             raise
+    #@+node:ekr.20211125101517.4: *3* BaseTestImporter.create_expected_outline
+    def  create_expected_outline(self, expected_parent, expected_s):
+        """
+        Create the expected outline, making 'kind' entries in g.vnode_info for
+        all *created* vnodes.
+        
+        root_p:     The root of the expected outline.
+        expect_s:   A string representing the outline in enhanced MORE format.
+        
+        """
+        d = g.vnode_info
+        # Special case for the top-level node.
+        d [expected_parent.v] = { 'kind': 'outer' }
+        expected_lines = g.splitLines(expected_s.strip() + '\n\n')
+        stack = [(-1, expected_parent)]  # (level, p)
+        for s in expected_lines:
+            if s.strip().startswith('- outer:'):
+                # The lines following `- outer` can specify non-standard top-level text.
+                # If none are given, assume the standard top-level text below.
+                pass  # ignore.
+            elif s.strip().startswith('-'):
+                n = len(s) - len(s.lstrip())
+                lws = s[:n]
+                assert n == 0 or lws.isspace(), repr(lws)
+                while stack:
+                    level, p = stack.pop()
+                    
+                    if s.strip().startswith('- '):
+                        aList = s.strip()[2:].split(':')
+                        kind, h = aList[0].strip(), ':'.join(aList[1:])
+                        self.assertTrue(kind in ('outer', 'org', 'class', 'def'), msg=repr(s))
+                    if n >= level:
+                        p.b = p.b.strip()
+                        if n > level:
+                            child = p.insertAsLastChild()
+                        else:
+                            child = p.insertAfter()
+                        child.h = h
+                        d [child.v] = { 'kind': kind }
+                        p = child
+                        stack.append((n, p))
+                        break
+                    else:
+                        pass  # Look for next entry.
+                else:
+                    g.printObj(expected_lines, tag='===== Expected')
+                    assert False, f"No node at level {n}"
+            else:
+                junk_level, p = stack[-1]
+                p.b += s
+        # Create standard outer node body if expected_parent.b is empty.
+        if not expected_parent.b:
+            expected_parent.b = textwrap.dedent("""
+                ATothers
+                ATlanguage python
+                ATtabwidth -4
+            """).replace('AT', '@')
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
@@ -1926,63 +1983,6 @@ class TestPython (BaseTestImporter):
             expected_s2 = textwrap.dedent(expected_s).strip().replace('AT', '@') + '\n'
             self.create_expected_outline(expected_parent, expected_s2)
             self.compare_outlines(parent, expected_parent)
-    #@+node:ekr.20211125101517.4: *4* create_expected_outline
-    def  create_expected_outline(self, expected_parent, expected_s):
-        """
-        Create the expected outline, making 'kind' entries in g.vnode_info for
-        all *created* vnodes.
-        
-        root_p:     The root of the expected outline.
-        expect_s:   A string representing the outline in enhanced MORE format.
-        
-        """
-        d = g.vnode_info
-        # Special case for the top-level node.
-        d [expected_parent.v] = { 'kind': 'outer' }
-        expected_lines = g.splitLines(expected_s.strip() + '\n\n')
-        stack = [(-1, expected_parent)]  # (level, p)
-        for s in expected_lines:
-            if s.strip().startswith('- outer:'):
-                # The lines following `- outer` can specify non-standard top-level text.
-                # If none are given, assume the standard top-level text below.
-                pass  # ignore.
-            elif s.strip().startswith('-'):
-                n = len(s) - len(s.lstrip())
-                lws = s[:n]
-                assert n == 0 or lws.isspace(), repr(lws)
-                while stack:
-                    level, p = stack.pop()
-                    
-                    if s.strip().startswith('- '):
-                        aList = s.strip()[2:].split(':')
-                        kind, h = aList[0].strip(), ':'.join(aList[1:])
-                        self.assertTrue(kind in ('outer', 'org', 'class', 'def'), msg=repr(s))
-                    if n >= level:
-                        p.b = p.b.strip()
-                        if n > level:
-                            child = p.insertAsLastChild()
-                        else:
-                            child = p.insertAfter()
-                        child.h = h
-                        d [child.v] = { 'kind': kind }
-                        p = child
-                        stack.append((n, p))
-                        break
-                    else:
-                        pass  # Look for next entry.
-                else:
-                    g.printObj(expected_lines, tag='===== Expected')
-                    assert False, f"No node at level {n}"
-            else:
-                junk_level, p = stack[-1]
-                p.b += s
-        # Create standard outer node body if expected_parent.b is empty.
-        if not expected_parent.b:
-            expected_parent.b = textwrap.dedent("""
-                ATothers
-                ATlanguage python
-                ATtabwidth -4
-            """).replace('AT', '@')
     #@+node:ekr.20211126052156.1: *4* compare_outlines
     def compare_outlines(self, created_p, expected_p):
         """
