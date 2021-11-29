@@ -241,17 +241,28 @@ class Py_Importer(Importer):
             p = self.end_previous_blocks(p)
             p = self.start_python_block('def', line, p)
             self.add_line(p, line, tag='class:def')
-        elif old_kind == 'def' and new_indent == old_indent + 4:
-            # A nested def
-            self.add_line(p, line, tag='def:def')
+        elif old_kind == 'def':
+            if new_indent > old_indent:
+                # A nested def
+                self.add_line(p, line, tag='def:def')
+            elif new_indent == old_indent:
+                # A method of the present class.
+                self.add_line(p, line, tag='class:def')
+            else:
+                # Either an outer def or a method of *another* class.
+                p = self.end_previous_blocks(p)
+                ### Not ready yet!
+                ### p = self.start_python_block('def', line, p)
+                self.add_line(p, line, tag='class:def')
         elif old_kind == 'org':
             # A def inside an organizer node.
             self.add_line(p, line, tag='org:def')
-        else:
-            assert old_kind in ('def', 'outer'), repr(old_kind)
+        elif old_kind == 'outer':
             p = self.end_previous_blocks(p)
             p = self.start_python_block('org', line, p)
             self.add_line(p, line, tag='outer:def')
+        else:
+            assert False, repr(old_kind)
         return p
         
     #@+node:ekr.20211122031418.1: *4* py_i.do_default
