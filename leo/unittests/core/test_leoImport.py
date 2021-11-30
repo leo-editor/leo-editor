@@ -3321,7 +3321,7 @@ class TestPython (BaseTestImporter):
                 # main()
 
         p = self.run_test(s)
-        if 0:
+        if 1:
              self.check_headlines(p, (
                 (2, 'Organizer: Declarations'),
                 (2, 'def1'),

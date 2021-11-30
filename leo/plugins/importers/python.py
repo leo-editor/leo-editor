@@ -207,8 +207,12 @@ class Py_Importer(Importer):
         d = self.vnode_info [parent.v]
         parent_kind = d ['kind']
         if parent_kind in ('outer', 'class'):
+            # Create a new parent.
             self.gen_python_ref(line, parent)
             p = self.start_python_block('class', line, parent)
+        else:
+            # Don't change parent.
+            p = parent
         self.add_line(p, line, tag='class')
         return p
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
