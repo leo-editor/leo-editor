@@ -47,7 +47,7 @@ class BaseTestImporter(LeoUnitTest):
                 i += 1
                 n, h = data
                 self.assertEqual(p.h, h)
-                self.assertTrue(p.level() == n, msg=f"{p.h}: expected level {n}, got {p.level()}")
+                self.assertEqual(p.level(), n, msg=f"{p.h}: expected level {n}, got {p.level()}")
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:
@@ -3302,9 +3302,9 @@ class TestPython (BaseTestImporter):
                 def class1_method2():
                     def helper():
                         pass
+        """
             # def outer_def1():
                 # pass
-        """
             # def outer_def2():
                 # pass
             # # An outer comment
@@ -3321,18 +3321,17 @@ class TestPython (BaseTestImporter):
                 # main()
 
         p = self.run_test(s)
-        if 1:
-            self.check_headlines(p, (
-                (2, 'Organizer: Declarations'),
-                # (1, 'outer_def1'),
-                (2, 'class Class1'),
-                (3, 'class1_method1'),
-                (3, 'class1_method2'),
-                (2, 'outer_def2'),
-                # (2, 'class Class2'),
-                # (3, 'class2_method1'),
-                # (3, 'class2_method2'),
-                # (2, 'main'),
+        self.check_headlines(p, (
+            (2, 'Organizer: Declarations'),
+            # (1, 'outer_def1'),
+            (2, 'class Class1'),
+            (3, 'class1_method1'),
+            (3, 'class1_method2'),
+            (2, 'outer_def2'),
+            # (2, 'class Class2'),
+            # (3, 'class2_method1'),
+            # (3, 'class2_method2'),
+            # (2, 'main'),
         ))
     #@+node:ekr.20210904065459.90: *4* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):
