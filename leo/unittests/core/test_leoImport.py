@@ -47,7 +47,7 @@ class BaseTestImporter(LeoUnitTest):
                 i += 1
                 n, h = data
                 self.assertEqual(p.h, h)
-                self.assertEqual(p.level() - p1.level(), n, msg=p.h)
+                self.assertTrue(p.level() == n, msg=f"{p.h}: expected level {n}, got {p.level()}")
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:
@@ -3319,32 +3319,21 @@ class TestPython (BaseTestImporter):
         
             # if __name__ == '__main__':
                 # main()
-        table = (
-            (1, 'Declarations'),
-            (1, 'outer_def1'),
-            (1, 'class Class1'),
-            (2, 'class1_method1'),
-            (2, 'class1_method2'),
-            (1, 'outer_def2'),
-            (1, 'class Class2'),
-            (2, 'class2_method1'),
-            (2, 'class2_method2'),
-            (1, 'main'),
-        )
-        assert table
-        self.run_test(s, verbose=True)
-        # if self.check_tree:
-            # after = p.nodeAfterTree()
-            # root = p.lastChild()
-            # self.assertEqual(root.h, f"@file {self.short_id}")
-            # p = root.firstChild()
-            # for n, h in table:
-                # n2 = p.level() - root.level()
-                # self.assertEqual(h, p.h)
-                # self.assertEqual(n, n2)
-                # p.moveToThreadNext()
-            # self.assertEqual(p, after)
 
+        p = self.run_test(s)
+        if 1:
+            self.check_headlines(p, (
+                (2, 'Organizer: Declarations'),
+                # (1, 'outer_def1'),
+                (2, 'class Class1'),
+                (3, 'class1_method1'),
+                (3, 'class1_method2'),
+                (2, 'outer_def2'),
+                # (2, 'class Class2'),
+                # (3, 'class2_method1'),
+                # (3, 'class2_method2'),
+                # (2, 'main'),
+        ))
     #@+node:ekr.20210904065459.90: *4* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):
 
