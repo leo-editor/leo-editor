@@ -214,11 +214,16 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
     def do_def(self, line, parent):
         
-        ### d = self.vnode_info [parent.v]
-        ### parent_kind = d ['kind']
-        self.gen_python_ref(line, parent)
-        p = self.start_python_block('def', line, parent)
-        self.add_line(p, line, tag='def')
+        d = self.vnode_info [parent.v]
+        parent_kind = d ['kind']
+        if parent_kind in ('outer', 'class'):
+            # Create a new parent.
+            self.gen_python_ref(line, parent)
+            p = self.start_python_block('def', line, parent)
+        else:
+            # Don't change parents.
+            p = parent
+        self.add_line(p, line, tag=f"{parent_kind}:def")
         return p
     #@+node:ekr.20211122031418.1: *4* py_i.do_default
     def do_default(self, line, p):
