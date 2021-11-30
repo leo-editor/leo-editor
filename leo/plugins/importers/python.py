@@ -228,11 +228,13 @@ class Py_Importer(Importer):
         grand_parent_info = self.vnode_info.get(grand_parent.v)
         grand_parent_kind = grand_parent_info ['kind']
         grand_parent_indent = grand_parent_info ['indent']
-        assert grand_parent_kind in ('outer', 'org', 'def', 'class')
+        # Check the info.
+        # 'outer' is *not* a valid parent_kind!
+        assert parent_kind in ('org', 'class', 'def'), repr(parent_kind)
+        # 'outer' *is* a valid grand_parent_kind.
+        assert grand_parent_kind in ('outer', 'org', 'def', 'class'), repr(grand_parent_kind)
         assert grand_parent_indent is not None
-        ### g.printObj(parent_info, tag=p.h)
         if parent_kind == 'org':
-            ### print('INDENT', parent_indent, new_indent)
             if parent_indent == 0:
                 # An outer def.
                 p = self.end_previous_blocks(p)
@@ -240,6 +242,7 @@ class Py_Importer(Importer):
                 self.add_line(p, line, tag='outer:def')
             else:
                 # A def inside an organizer node.
+                # The def is strangely-indented if new_indent is not a multiple of 4. 
                 self.add_line(p, line, tag='org:def')
         elif parent_kind == 'class':
             # The *first* method of a class.
@@ -247,27 +250,30 @@ class Py_Importer(Importer):
             p = self.start_python_block('def', line, p)
             self.add_line(p, line, tag='class:def')
         elif parent_kind == 'def':
-            # Depending on level and parents, could be:
-            # - following method of *this* class,
+            # The hard case. Depending on level and parents, the 'def' could be:
+            # - A following method of *this* class,
             # - An inner function of the present method of *this* class.
-            # - first or following method of a *previous* class.
-            # - top-level def.
-            # However, the def can *not* be contained in an organizer node,
-            # because in that case the parent_kind would be 'org'.
-            
-            #### WRONG.  Look at the grandparent! ###
-            if new_indent > parent_indent:
-                # A nested def
-                self.add_line(p, line, tag='def:def')
-            elif new_indent == parent_indent:
-                # A method of the present class.
-                self.add_line(p, line, tag='class:def')
+            # - The first or following method of a *previous* class.
+            # - A top-level def.
+            # But the def is *not* strangely-indented because parent_kind is not 'org'.
+            in_class = grand_parent_kind == 'class'
+            if in_class:
+                if new_indent == parent_indent:
+                    # A following method of the present class.
+                    self.add_line(p, line, tag='class:def')
+                if new_indent > parent_indent:
+                    # A nested def
+                    self.add_line(p, line, tag='nested def')
+                else:
+                    ### Recompute data ###
+                    # Either an outer def or a method of *another* class.
+                    p = self.end_previous_blocks(p)
+                    p = self.start_python_block('def', line, p)
+                    self.add_line(p, line, tag='new class:def')
             else:
-                # Either an outer def or a method of *another* class.
                 p = self.end_previous_blocks(p)
-                ### Not ready yet!
-                ### p = self.start_python_block('def', line, p)
-                self.add_line(p, line, tag='class:def')
+                p = self.start_python_block('def', line, p)
+                self.add_line(p, line, tag='outer def')
         else:
             # parent_kind == 'outer' is not possible here!
             # - gen_lines creates an 'org' node for prefix lines.

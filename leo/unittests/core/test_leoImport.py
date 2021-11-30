@@ -3296,9 +3296,9 @@ class TestPython (BaseTestImporter):
 
         s = """
             import sys
-            def outer_def1():
+            def def1():
                 pass
-            def outer_def2():
+            def def2():
                 pass
         """
             # class Class1:
@@ -3324,17 +3324,17 @@ class TestPython (BaseTestImporter):
         if 0:
              self.check_headlines(p, (
                 (2, 'Organizer: Declarations'),
-                (2, 'outer_def1'),
-                (2, 'outer_def2'),
+                (2, 'def1'),
+                (2, 'def2'),
             ))
         if 0:
             self.check_headlines(p, (
                 (2, 'Organizer: Declarations'),
-                # (1, 'outer_def1'),
+                # (1, 'def1'),
                 (2, 'class Class1'),
                 (3, 'class1_method1'),
                 (3, 'class1_method2'),
-                (2, 'outer_def2'),
+                (2, 'def2'),
                 # (2, 'class Class2'),
                 # (3, 'class2_method1'),
                 # (3, 'class2_method2'),
