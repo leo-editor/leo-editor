@@ -214,10 +214,9 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
     def do_def(self, line, parent):
         
-        d = self.vnode_info [parent.v]
-        parent_kind = d ['kind']
-        if parent_kind == 'class':
-            self.gen_python_ref(line, parent)
+        ### d = self.vnode_info [parent.v]
+        ### parent_kind = d ['kind']
+        self.gen_python_ref(line, parent)
         p = self.start_python_block('def', line, parent)
         self.add_line(p, line, tag='def')
         return p
@@ -244,26 +243,23 @@ class Py_Importer(Importer):
         parent of a new child of parent.
         """
         new_indent = self.new_state.indent
+        ### if kind == 'def': g.pdb()
         while p:
             d = self.vnode_info [p.v]
             parent_indent, parent_kind = d ['indent'], d ['kind']
-            if parent_kind == 'outer' or parent_indent == 0:
+            if parent_kind == 'outer':
                 return p
             if new_indent > parent_indent:
                 return p
             if new_indent < parent_indent:
                 p = p.parent()
+            # new_indent == parent_indent.
             # The context-dependent cases...
-            # new_indent == parent_indent and parent_indent > 0.
-            return p
-            ### Experimental ###
-                # if parent_kind in ('def', 'outer', 'org'):
-                    # return p
-                # assert parent_kind == 'class', repr(parent_kind)
-                # if kind == 'def':
-                    # return p
-                # else:
-                    # p = p.parent()
+            if kind == 'normal':
+                # Don't change parent.
+                return p
+            # The 'def' or 'class' line deserves a new parent.
+            return p.parent()
         assert False, 'No parent'
     #@+node:ekr.20211122032257.1: *4* py_i.gen_end
     def gen_end(self, parent):
