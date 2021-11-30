@@ -190,143 +190,80 @@ class Py_Importer(Importer):
                 self.add_line(p, line, tag='whitespace')
             else:
                 m = self.class_or_def_pattern.match(line)
-                if m:
-                    # A class or def line.
-                    kind = m.group(1)
-                    if kind == 'class':
-                        p = self.do_class(line, p)
-                    else:
-                        assert kind == 'def', repr(kind)
-                        p = self.do_def(line, p)
+                kind = m.group(1) if m else 'normal'
+                assert kind in ('class', 'def', 'normal'), repr(kind)
+                p = self.end_previous_blocks(kind, p)
+                if kind == 'class':
+                    p = self.do_class(line, p)
+                elif kind == 'def':
+                    p = self.do_def(line, p)
                 else:
-                    # All other lines.
                     p = self.do_default(line, p)
         self.gen_end(parent)
     #@+node:ekr.20211122031133.1: *4* py_i.do_class
     def do_class(self, line, p):
-
-        # p_info = self.vnode_info.get(p.v)
-        new_indent = self.new_state.indent
-        p = self.end_previous_blocks(p)
-        p = self.start_python_block('class', line, p)
+        
+        d = self.vnode_info [p.v]
+        parent_kind = d ['kind']
+        if parent_kind in ('outer', 'class'):
+            p = self.start_python_block('class', line, p)
+            self.gen_python_ref(line, p)
         self.add_line(p, line, tag='class')
-        ### This must be wrong.
-        lws = ' '*new_indent
-        self.add_line(p, f"{lws}    @others\n", tag='class:@others')
         return p
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
     def do_def(self, line, p):
         
-        new_indent = self.new_state.indent
-        # Get parent info.
-        parent_info = self.vnode_info.get(p.v)
-        parent_kind = parent_info ['kind']
-        parent_indent = parent_info ['indent']
-        # Get grand-parent info.
-        grand_parent = p.parent()
-        assert grand_parent, p.h
-        grand_parent_info = self.vnode_info.get(grand_parent.v)
-        grand_parent_kind = grand_parent_info ['kind']
-        grand_parent_indent = grand_parent_info ['indent']
-        # Check the info.
-        # 'outer' is *not* a valid parent_kind!
-        assert parent_kind in ('org', 'class', 'def'), repr(parent_kind)
-        # 'outer' *is* a valid grand_parent_kind.
-        assert grand_parent_kind in ('outer', 'org', 'def', 'class'), repr(grand_parent_kind)
-        assert grand_parent_indent is not None
-        if parent_kind == 'org':
-            if parent_indent == 0:
-                # An outer def.
-                p = self.end_previous_blocks(p)
-                p = self.start_python_block('def', line, p)
-                self.add_line(p, line, tag='outer:def')
-            else:
-                # A def inside an organizer node.
-                # The def is strangely-indented if new_indent is not a multiple of 4. 
-                self.add_line(p, line, tag='org:def')
-        elif parent_kind == 'class':
-            # The *first* method of a class.
-            p = self.end_previous_blocks(p)
+        d = self.vnode_info [p.v]
+        parent_kind = d ['kind']
+        if parent_kind in ('outer', 'org', 'class'):
             p = self.start_python_block('def', line, p)
-            self.add_line(p, line, tag='class:def')
-        elif parent_kind == 'def':
-            # The hard case. Depending on level and parents, the 'def' could be:
-            # - A following method of *this* class,
-            # - An inner function of the present method of *this* class.
-            # - The first or following method of a *previous* class.
-            # - A top-level def.
-            # But the def is *not* strangely-indented because parent_kind is not 'org'.
-            in_class = grand_parent_kind == 'class'
-            if in_class:
-                if new_indent == parent_indent:
-                    # A following method of the present class.
-                    self.add_line(p, line, tag='class:def')
-                if new_indent > parent_indent:
-                    # A nested def
-                    self.add_line(p, line, tag='nested def')
-                else:
-                    ### Recompute data ###
-                    # Either an outer def or a method of *another* class.
-                    p = self.end_previous_blocks(p)
-                    p = self.start_python_block('def', line, p)
-                    self.add_line(p, line, tag='new class:def')
-            else:
-                p = self.end_previous_blocks(p)
-                p = self.start_python_block('def', line, p)
-                self.add_line(p, line, tag='outer def')
-        else:
-            # parent_kind == 'outer' is not possible here!
-            # - gen_lines creates an 'org' node for prefix lines.
-            # - Thereafter, all lines are allocated to 'org', 'def' or 'class' nodes.
-            assert False, repr(parent_kind)
+            self.gen_python_ref(line, p)
+        self.add_line(p, line, tag='outer:def')
         return p
     #@+node:ekr.20211122031418.1: *4* py_i.do_default
     def do_default(self, line, p):
-        
-        p_info = self.vnode_info.get(p.v)
-        old_kind = p_info ['kind']
-        if old_kind in ('class', 'def', 'org'):
-            self.add_line(p, line, tag=f"in {old_kind}")
-        else:
-            assert old_kind == 'outer', repr(old_kind)
-            p = self.end_previous_blocks(p)
+
+        parent_kind = self.vnode_info [p.v] ['kind']
+        if parent_kind in ('def', 'org'):
+            self.add_line(p, line, tag=f"in {parent_kind}")
+        elif parent_kind in ('class', 'outer'):
             p = self.start_python_block('org', line, p)
             self.add_line(p, line, tag='in org')
+        else:
+            assert False, repr(parent_kind)
         return p
     #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
-    def end_previous_blocks(self, p):
+    def end_previous_blocks(self, kind, p):
         """
-        End all blocks blocks whose level is <= the new block's level.
+        End blocks that are incompatible with the new line.
+        - kind:         The kind of the incoming line: 'class', 'def' or 'normal'.
+        - new_indent:   The indentation of the incoming line.
+        
+        Return p, a parent that will either contain the new line or will be the
+        parent of a new child of parent.
         """
         new_indent = self.new_state.indent
-        trace = False and self.trace
-        if trace:
-            g.trace('END BLOCK', p.h, new_indent)
-        while p and p != self.root:  ### and p.v._import_indent >= new_indent:
-            d = self.vnode_info.get(p.v)
-            indent = d.get('indent')
-            assert indent is not None, p.h
-            if indent < new_indent:
-                break
-            if trace:
-                g.trace(f"    POP: {p.h}")
-            p = p.parent()
-        if trace:
-            g.trace(f"NEW TOP: {p.h}")
-        return p
-    #@+node:ekr.20211121180759.1: *4* py_i.end_previous_method (not used yet)
-    def end_previous_method(self, p):
-        """
-        End all blocks blocks whose level is <= the new block's level.
-        """ 
-        new_indent = self.new_state.indent
-        while p and p != self.root and p.v._import_indent >= new_indent:
-            if self.trace:
-                g.trace(f"    POP: {p.h}")
-            p = p.parent()
-        if self.trace:
-            g.trace(f"NEW TOP: {p.h}")
-        return p
+        while p:
+            d = self.vnode_info [p.v]
+            parent_indent, parent_kind = d ['indent'], d ['kind']
+            if parent_kind == 'outer' or parent_indent == 0:
+                return p
+            if new_indent > parent_indent:
+                return p
+            if new_indent < parent_indent:
+                p = p.parent()
+            # The context-dependent cases...
+            # new_indent == parent_indent and parent_indent > 0.
+            return p
+            ### Experimental ###
+                # if parent_kind in ('def', 'outer', 'org'):
+                    # return p
+                # assert parent_kind == 'class', repr(parent_kind)
+                # if kind == 'def':
+                    # return p
+                # else:
+                    # p = p.parent()
+        assert False, 'No parent'
     #@+node:ekr.20211122032257.1: *4* py_i.gen_end
     def gen_end(self, parent):
         """Handle end-of-scan precessing."""
@@ -356,6 +293,16 @@ class Py_Importer(Importer):
         if 0:
             g.trace('==== dump of tree 2')
             self.dump_tree(parent)
+    #@+node:ekr.20161220064822.1: *4* py_i.gen_python_ref
+    def gen_python_ref(self, line, p):
+        """Generate the at-others directive and set p's at-others flag"""
+        d = self.vnode_info [p.v]
+        if d ['@others']:
+            return
+        d ['@others'] = True
+        indent_ws = self.get_str_lws(line)
+        ref_line = f"{indent_ws}@others\n"
+        self.add_line(p, ref_line, '@others')
     #@+node:ekr.20161116034633.7: *4* py_i.start_python_block (new)
     def start_python_block(self, kind, line, parent):
         """
@@ -381,6 +328,7 @@ class Py_Importer(Importer):
         # Update vnode_info for p.v
         assert not v in self.vnode_info, (p.h, g.callers())
         self.vnode_info [v] = {
+            '@others': False,
             'indent': indent,
             'kind': kind,
             'lines': [],
@@ -423,17 +371,6 @@ class Py_Importer(Importer):
     def cut_stack(self, new_state, stack):
         """Cut back the stack until stack[-1] matches new_state."""
         assert False, g.callers()
-    #@+node:ekr.20161220064822.1: *6* py_i.gen_python_ref (TO DO)
-    def gen_python_ref(self, line, parent):
-        """Generate the at-others directive and set target.at_others_flag."""
-        # indent_ws = self.get_str_lws(line)
-        # h = self.clean_headline(line, p=None)
-        ###
-        # if not target.at_others_flag:
-            # target.at_others_flag = True
-            # ref = f"{indent_ws}@others\n"
-            # self.add_line(parent, ref, 'ref')
-            # return h
     #@+node:ekr.20211121085222.1: *6* py_i.trace_status (do-nothing)
     def trace_status(self, line, new_state, prev_state, stack, top):
         """Do-nothing override of Import.trace_status."""
