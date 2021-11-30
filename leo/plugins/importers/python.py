@@ -189,6 +189,7 @@ class Py_Importer(Importer):
                 # A blank or comment line.
                 self.add_line(p, line, tag='whitespace')
             else:
+                # The leading whitespace of all other lines are significant.
                 m = self.class_or_def_pattern.match(line)
                 kind = m.group(1) if m else 'normal'
                 assert kind in ('class', 'def', 'normal'), repr(kind)
@@ -201,24 +202,24 @@ class Py_Importer(Importer):
                     p = self.do_default(line, p)
         self.gen_end(parent)
     #@+node:ekr.20211122031133.1: *4* py_i.do_class
-    def do_class(self, line, p):
+    def do_class(self, line, parent):
         
-        d = self.vnode_info [p.v]
+        d = self.vnode_info [parent.v]
         parent_kind = d ['kind']
         if parent_kind in ('outer', 'class'):
-            p = self.start_python_block('class', line, p)
-            self.gen_python_ref(line, p)
+            self.gen_python_ref(line, parent)
+            p = self.start_python_block('class', line, parent)
         self.add_line(p, line, tag='class')
         return p
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
-    def do_def(self, line, p):
+    def do_def(self, line, parent):
         
-        d = self.vnode_info [p.v]
+        d = self.vnode_info [parent.v]
         parent_kind = d ['kind']
-        if parent_kind in ('outer', 'org', 'class'):
-            p = self.start_python_block('def', line, p)
-            self.gen_python_ref(line, p)
-        self.add_line(p, line, tag='outer:def')
+        if parent_kind == 'class':
+            self.gen_python_ref(line, parent)
+        p = self.start_python_block('def', line, parent)
+        self.add_line(p, line, tag='def')
         return p
     #@+node:ekr.20211122031418.1: *4* py_i.do_default
     def do_default(self, line, p):
