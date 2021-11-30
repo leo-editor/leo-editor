@@ -16,10 +16,9 @@ class Py_Importer(Importer):
     
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
-    debug = False
-    dump = False
-    skip_flag = False  # Careful: Importer.skip exists.
-    trace = True
+    dump = True        # Dump contents of nodes.
+    skip_flag = False   # Careful: Importer.skip exists.
+    trace = True        # Enable trace in add_lines.
     #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
@@ -182,19 +181,6 @@ class Py_Importer(Importer):
             # Update the state, remembering the previous state.
             self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)
-            # Check and trace.
-            if self.debug or self.trace:
-                p_info = self.vnode_info.get(p.v)
-                old_kind = p_info ['kind']
-                assert old_kind in ('outer', 'org', 'class', 'def'), repr(old_kind)
-                assert p_info is not None, (p.h, repr(line))
-                assert p_info ['lines'] is not None, p.h
-                if False and self.trace:
-                    old_indent = p_info ['indent']
-                    new_indent = self.new_state.indent
-                    print('')
-                    g.trace(f"{old_kind:5} {old_indent:>2}->{new_indent:<2} {line.rstrip()}")
-                    print('')
             # Handle the line.
             if self.prev_state.context:
                 # A line with a string or docstring.
@@ -207,10 +193,10 @@ class Py_Importer(Importer):
                 if m:
                     # A class or def line.
                     kind = m.group(1)
-                    assert kind in ('def', 'class'), repr(kind)
                     if kind == 'class':
                         p = self.do_class(line, p)
                     else:
+                        assert kind == 'def', repr(kind)
                         p = self.do_def(line, p)
                 else:
                     # All other lines.
@@ -231,20 +217,49 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
     def do_def(self, line, p):
         
-        p_info = self.vnode_info.get(p.v)
-        old_kind = p_info ['kind']
-        old_indent = p_info ['indent']
         new_indent = self.new_state.indent
-        if old_kind == 'class':
-            # A method.
+        # Get parent info.
+        parent_info = self.vnode_info.get(p.v)
+        parent_kind = parent_info ['kind']
+        parent_indent = parent_info ['indent']
+        # Get grand-parent info.
+        grand_parent = p.parent()
+        assert grand_parent, p.h
+        grand_parent_info = self.vnode_info.get(grand_parent.v)
+        grand_parent_kind = grand_parent_info ['kind']
+        grand_parent_indent = grand_parent_info ['indent']
+        assert grand_parent_kind in ('outer', 'org', 'def', 'class')
+        assert grand_parent_indent is not None
+        ### g.printObj(parent_info, tag=p.h)
+        if parent_kind == 'org':
+            ### print('INDENT', parent_indent, new_indent)
+            if parent_indent == 0:
+                # An outer def.
+                p = self.end_previous_blocks(p)
+                p = self.start_python_block('def', line, p)
+                self.add_line(p, line, tag='outer:def')
+            else:
+                # A def inside an organizer node.
+                self.add_line(p, line, tag='org:def')
+        elif parent_kind == 'class':
+            # The *first* method of a class.
             p = self.end_previous_blocks(p)
             p = self.start_python_block('def', line, p)
             self.add_line(p, line, tag='class:def')
-        elif old_kind == 'def':
-            if new_indent > old_indent:
+        elif parent_kind == 'def':
+            # Depending on level and parents, could be:
+            # - following method of *this* class,
+            # - An inner function of the present method of *this* class.
+            # - first or following method of a *previous* class.
+            # - top-level def.
+            # However, the def can *not* be contained in an organizer node,
+            # because in that case the parent_kind would be 'org'.
+            
+            #### WRONG.  Look at the grandparent! ###
+            if new_indent > parent_indent:
                 # A nested def
                 self.add_line(p, line, tag='def:def')
-            elif new_indent == old_indent:
+            elif new_indent == parent_indent:
                 # A method of the present class.
                 self.add_line(p, line, tag='class:def')
             else:
@@ -253,29 +268,24 @@ class Py_Importer(Importer):
                 ### Not ready yet!
                 ### p = self.start_python_block('def', line, p)
                 self.add_line(p, line, tag='class:def')
-        elif old_kind == 'org':
-            # A def inside an organizer node.
-            self.add_line(p, line, tag='org:def')
-        elif old_kind == 'outer':
-            p = self.end_previous_blocks(p)
-            p = self.start_python_block('org', line, p)
-            self.add_line(p, line, tag='outer:def')
         else:
-            assert False, repr(old_kind)
+            # parent_kind == 'outer' is not possible here!
+            # - gen_lines creates an 'org' node for prefix lines.
+            # - Thereafter, all lines are allocated to 'org', 'def' or 'class' nodes.
+            assert False, repr(parent_kind)
         return p
-        
     #@+node:ekr.20211122031418.1: *4* py_i.do_default
     def do_default(self, line, p):
         
         p_info = self.vnode_info.get(p.v)
         old_kind = p_info ['kind']
         if old_kind in ('class', 'def', 'org'):
-            self.add_line(p, line, tag=f"{old_kind}:normal")
+            self.add_line(p, line, tag=f"in {old_kind}")
         else:
             assert old_kind == 'outer', repr(old_kind)
             p = self.end_previous_blocks(p)
             p = self.start_python_block('org', line, p)
-            self.add_line(p, line, tag='org:normal')
+            self.add_line(p, line, tag='in org')
         return p
     #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
     def end_previous_blocks(self, p):
