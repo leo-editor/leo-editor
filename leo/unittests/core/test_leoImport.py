@@ -39,7 +39,7 @@ class BaseTestImporter(LeoUnitTest):
         # Check structure
         p1 = p.copy()
         try:
-            self.assertEqual(p1.h, f"{self.treeType} {self.id()}")
+            self.assertEqual(p1.h, f"{self.treeType} {self.short_id}")
             i = 0
             for p in p1.subtree():
                 self.assertTrue(i < len(table), msg=repr(p.h))
@@ -51,7 +51,7 @@ class BaseTestImporter(LeoUnitTest):
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:
-            g.trace(self.id())
+            g.trace(self.short_id)
             self.dump_tree(p1)
             raise
     #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result
@@ -188,7 +188,10 @@ class BaseTestImporter(LeoUnitTest):
         # Run the test.
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
-        parent.h = f"{kind} {self.id()}"
+        # TestCase.id() has the form leo.unittests.core.file.class.test_name
+        id_parts = self.id().split('.')
+        self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
+        parent.h = f"{kind} {self.short_id}"
         # Suppress perfect-import checks if self.skip_flag is True
         if self.skip_flag:
             g.app.suppressImportChecks = True
@@ -2167,7 +2170,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2216,7 +2219,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2253,7 +2256,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2542,7 +2545,7 @@ class TestPython (BaseTestImporter):
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 assert p, h
@@ -2571,7 +2574,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2624,7 +2627,7 @@ class TestPython (BaseTestImporter):
             after = p.nodeAfterTree()
             root = p.lastChild()
             assert root
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2670,7 +2673,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2694,7 +2697,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2825,7 +2828,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = c.p.nodeAfterTree()
             root = c.p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2862,7 +2865,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2902,7 +2905,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2934,7 +2937,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -2977,7 +2980,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -3087,7 +3090,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -3233,7 +3236,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -3299,9 +3302,9 @@ class TestPython (BaseTestImporter):
                 def class1_method2():
                     def helper():
                         pass
-        """
             # def outer_def1():
                 # pass
+        """
             # def outer_def2():
                 # pass
             # # An outer comment
@@ -3333,7 +3336,7 @@ class TestPython (BaseTestImporter):
         # if self.check_tree:
             # after = p.nodeAfterTree()
             # root = p.lastChild()
-            # self.assertEqual(root.h, f"@file {self.id()}")
+            # self.assertEqual(root.h, f"@file {self.short_id}")
             # p = root.firstChild()
             # for n, h in table:
                 # n2 = p.level() - root.level()
@@ -3414,7 +3417,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -3450,7 +3453,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -3642,7 +3645,7 @@ class TestPython (BaseTestImporter):
         if self.check_tree:
             after = p.nodeAfterTree()
             root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.id()}")
+            self.assertEqual(root.h, f"@file {self.short_id}")
             p = root.firstChild()
             for n, h in table:
                 n2 = p.level() - root.level()
@@ -4076,7 +4079,7 @@ class TestXML (BaseTestImporter):
         self.run_test(s)
         after = p.nodeAfterTree()
         root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.id()}")
+        self.assertEqual(root.h, f"@file {self.short_id}")
         p = root.firstChild()
         for n, h in table:
             n2 = p.level() - root.level()

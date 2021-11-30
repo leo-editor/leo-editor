@@ -19,7 +19,7 @@ class Py_Importer(Importer):
     debug = False
     dump = False
     skip_flag = False  # Careful: Importer.skip exists.
-    trace = False
+    trace = True
     #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
@@ -165,10 +165,9 @@ class Py_Importer(Importer):
             # Keys are vnodes, values are inner dicts.
             parent.v: {
                 '@others': True,
-                'child-indent': 0,
-                'indent': 0,
+                'indent': 0,  # None denotes a to-be-defined value.
                 'kind': 'outer',
-                'lines': ['@others\n'],
+                'lines': ['@others\n'],  # The post pass adds @language and @tabwidth directives.
             }
         }
         if g.unitTesting:
@@ -190,7 +189,7 @@ class Py_Importer(Importer):
                 assert old_kind in ('outer', 'org', 'class', 'def'), repr(old_kind)
                 assert p_info is not None, (p.h, repr(line))
                 assert p_info ['lines'] is not None, p.h
-                if self.trace:
+                if False and self.trace:
                     old_indent = p_info ['indent']
                     new_indent = self.new_state.indent
                     print('')
@@ -284,7 +283,8 @@ class Py_Importer(Importer):
         End all blocks blocks whose level is <= the new block's level.
         """
         new_indent = self.new_state.indent
-        if self.trace:
+        trace = False and self.trace
+        if trace:
             g.trace('END BLOCK', p.h, new_indent)
         while p and p != self.root:  ### and p.v._import_indent >= new_indent:
             d = self.vnode_info.get(p.v)
@@ -292,10 +292,10 @@ class Py_Importer(Importer):
             assert indent is not None, p.h
             if indent < new_indent:
                 break
-            if self.trace:
+            if trace:
                 g.trace(f"    POP: {p.h}")
             p = p.parent()
-        if self.trace:
+        if trace:
             g.trace(f"NEW TOP: {p.h}")
         return p
     #@+node:ekr.20211121180759.1: *4* py_i.end_previous_method (not used yet)
@@ -426,11 +426,22 @@ class Py_Importer(Importer):
     def post_pass(self, parent):
         """Override Importer.post_pass."""
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
+    heading_printed = False
+
+
     def add_line(self, p, s, tag=None):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
         if self.trace:
-            g.trace(f" {(tag or g.caller()):>20} {g.truncate(p.h, 20)!r:25} {s!r}")
+            h = p.h
+            if h.startswith('@'):
+                h_parts = p.h.split('.')
+                h = h_parts[-1]
+            if not self.heading_printed:
+                self.heading_printed = True
+                g.trace(f"{'tag or caller':>20} {' '*8+'top node':26} line")
+                g.trace(f"{'-' * 13:>20} {' '*8+'-' * 8:26} {'-' * 4}")
+            g.trace(f"{(tag or g.caller()):>20} {g.truncate(h, 20)!r:26} {s!r}")
         self.vnode_info [p.v] ['lines'].append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
