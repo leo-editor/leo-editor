@@ -2253,7 +2253,8 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.66: *4* TestPython.test_bug_357
     def test_bug_357(self):
 
-        s = '''
+        # Must be a raw string!
+        s = r'''
             """
             sheet_stats.py - report column stats for spreadsheets
 
@@ -2518,6 +2519,7 @@ class TestPython (BaseTestImporter):
             (2, "Organizer: Declarations"),
             (2, "class AttrDict(dict)"),  ###
             (3, "__init__"),
+            (2, "Organizer: FIELDS = [  # fields in outout table"),
             (2, "make_parser"),
             (2, "get_options"),
             (2, "get_aggregate"),
@@ -3315,7 +3317,9 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.92: *4* TestPython.test_overindented_def_3
     def test_overindented_def_3(self):
         # This caused PyParse.py not to be imported properly.
-        s = '''
+
+        # Must be a raw string!
+        s = r'''
             import re
             if 0: # Causes the 'overindent'
                if 0:   # for throwaway debugging output
@@ -3327,11 +3331,10 @@ class TestPython (BaseTestImporter):
                 pass
         '''
         p = self.run_test(s)
-        if 1:  ###
-            self.check_headlines(p, (
-                (2, 'Organizer: Declarations'),
-                (2, 'class testClass1'),   ###
-            ))
+        self.check_headlines(p, (
+            (2, 'Organizer: Declarations'),
+            (2, 'class testClass1'),
+        ))
     #@+node:ekr.20210904065459.68: *4* TestPython.test_promote_if_name_eq_main
     def test_promote_if_name_eq_main(self):
         # Test #390: was test_bug_390.
