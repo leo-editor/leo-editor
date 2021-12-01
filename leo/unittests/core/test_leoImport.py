@@ -2252,7 +2252,7 @@ class TestPython (BaseTestImporter):
             self.assertEqual(p, after)
     #@+node:ekr.20210904065459.66: *4* TestPython.test_bug_357
     def test_bug_357(self):
-        c = self.c
+
         s = '''
             """
             sheet_stats.py - report column stats for spreadsheets
@@ -2513,33 +2513,19 @@ class TestPython (BaseTestImporter):
             if __name__ == '__main__':
                 main()
         '''
-        table = (
-            (1, "Declarations"),
-            (1, "class AttrDict(dict)"),
-            (2, "__init__"),
-            (1, "make_parser"),
-            (1, "get_options"),
-            (1, "get_aggregate"),
-            (1, "proc_file"),
-            (1, "get_answers"),
-            (1, "get_table_rows"),
-            (1, "main"),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            assert root
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                assert p, h
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (2, "Organizer: Declarations"),
+            (2, "class AttrDict(dict)"),  ###
+            (3, "__init__"),
+            (2, "make_parser"),
+            (2, "get_options"),
+            (2, "get_aggregate"),
+            (2, "proc_file"),
+            (2, "get_answers"),
+            (2, "get_table_rows"),
+            (2, "main"),
+        ))
     #@+node:ekr.20210904065459.67: *4* TestPython.test_bug_360
     def test_bug_360(self):
         c = self.c
@@ -3341,10 +3327,10 @@ class TestPython (BaseTestImporter):
                 pass
         '''
         p = self.run_test(s)
-        if 0:
+        if 1:  ###
             self.check_headlines(p, (
                 (2, 'Organizer: Declarations'),
-                (2, 'class testClass1'),
+                (2, 'class testClass1'),   ###
             ))
     #@+node:ekr.20210904065459.68: *4* TestPython.test_promote_if_name_eq_main
     def test_promote_if_name_eq_main(self):
