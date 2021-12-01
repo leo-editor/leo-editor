@@ -188,14 +188,15 @@ class Py_Importer(Importer):
                 # The leading whitespace of all other lines are significant.
                 m = self.class_or_def_pattern.match(line)
                 kind = m.group(1) if m else 'normal'
-                assert kind in ('class', 'def', 'normal'), repr(kind)
                 p = self.end_previous_blocks(kind, line, p)
-                if kind == 'class':
-                    p = self.do_class(line, p)
-                elif kind == 'def':
-                    p = self.do_def(line, p)
+                if m:
+                    assert kind in ('class', 'def'), repr(kind)
+                    if kind == 'class':
+                        p = self.do_class(line, p)
+                    else:
+                        p = self.do_def(line, p)
                 else:
-                    p = self.do_default(line, p)
+                    self.add_line(p, line, tag='normal')
     #@+node:ekr.20211122031133.1: *4* py_i.do_class
     def do_class(self, line, parent):
         
@@ -223,10 +224,6 @@ class Py_Importer(Importer):
             # Don't change parents.
             p = parent
         self.add_line(p, line, tag='def')
-        return p
-    #@+node:ekr.20211122031418.1: *4* py_i.do_default
-    def do_default(self, line, p):
-        self.add_line(p, line, tag='normal')
         return p
     #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks ***
     def end_previous_blocks(self, kind, line, p):
@@ -368,12 +365,12 @@ class Py_Importer(Importer):
                 h = h_parts[-1]
             if not self.heading_printed:
                 self.heading_printed = True
-                g.trace(f"{'tag or caller':>20} {' '*8+'top node':26} line")
-                g.trace(f"{'-' * 13:>20} {' '*8+'-' * 8:26} {'-' * 4}")
+                g.trace(f"{'tag or caller  ':>20} {' '*8+'top node':30} line")
+                g.trace(f"{'-' * 13 + '  ':>20} {' '*8+'-' * 8:30} {'-' * 4}")
             if tag:
                 kind = self.vnode_info [p.v] ['kind']
                 tag = f"{kind:>5}:{tag:<10}"
-            g.trace(f"{(tag or g.caller()):>20} {g.truncate(h, 20)!r:26} {s!r}")
+            g.trace(f"{(tag or g.caller()):>20} {h[:30]!r:30} {s!r}")
         self.vnode_info [p.v] ['lines'].append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
     def common_lws(self, lines):
