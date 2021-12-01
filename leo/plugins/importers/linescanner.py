@@ -530,6 +530,8 @@ class Importer:
                 'lines': [],
             }
         }
+        if g.unitTesting:
+            g.vnode_info = self.vnode_info  # A hack.
         lines = g.splitLines(s)
         self.skip = 0
         for i, line in enumerate(lines):

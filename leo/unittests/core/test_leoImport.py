@@ -47,7 +47,8 @@ class BaseTestImporter(LeoUnitTest):
                 i += 1
                 n, h = data
                 self.assertEqual(p.h, h)
-                self.assertEqual(p.level(), n, msg=f"{p.h}: expected level {n}, got {p.level()}")
+                # Subtract 1 for compatibility with values in previous tables.
+                self.assertEqual(p.level() -1 , n, msg=f"{p.h}: expected level {n}, got {p.level()}")
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:
@@ -95,9 +96,6 @@ class BaseTestImporter(LeoUnitTest):
             self.dump_tree(created_p, tag='===== Created')
             self.dump_tree(expected_p, tag='===== Expected')
             raise
-        if 0:  ###
-            self.dump_tree(created_p, tag='===== Created')
-            self.dump_tree(expected_p, tag='===== Expected')
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
@@ -123,7 +121,7 @@ class BaseTestImporter(LeoUnitTest):
         d [expected_parent.v] = { 'kind': 'outer' }
         # Munge expected_s
         expected_s2 = textwrap.dedent(expected_s).strip() + '\n\n'
-        expected_lines = g.splitLines(expected_s2) ### expected_s.strip() + '\n\n')
+        expected_lines = g.splitLines(expected_s2)
         stack = [(-1, expected_parent)]  # (level, p)
         for s in expected_lines:
             if s.strip().startswith('- outer:'):
@@ -225,8 +223,8 @@ class TestC(BaseTestImporter):
     ext = '.c'
     
     #@+others
-    #@+node:ekr.20210904065459.3: *3* TestC.test_class_1
-    def test_class_1(self):
+    #@+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
+    def test_c_class_1(self):
 
         s = """
             class cTestClass1 {
@@ -1670,8 +1668,8 @@ class TestOtl (BaseTestImporter):
     treeType = '@auto-otl'
     
     #@+others
-    #@+node:ekr.20210904065459.49: *3* TestOtl.test_1
-    def test_1(self):
+    #@+node:ekr.20210904065459.49: *3* TestOtl.test_otl_1
+    def test_otl_1(self):
 
         s = """\
             preamble.
@@ -2152,18 +2150,18 @@ class TestPython (BaseTestImporter):
         """
         p = self.run_test(s, verbose=False)
         self.check_headlines(p, (
-            (2, 'Organizer: Declarations'),
-            (2, 'f1'),
-            (2, 'class Class1'),
-            (3, 'method11'),
-            (3, 'method12'),
-            (2, 'Organizer: a = 2'),
-            (2, 'f2'),
-            (2, 'class Class2'),
-            (3, 'method21'),
-            (3, 'method22'),
-            (2, 'main'),
-            # (2, "Organizer: if __name__ == '__main__':"),
+            (1, 'Organizer: Declarations'),
+            (1, 'f1'),
+            (1, 'class Class1'),
+            (2, 'method11'),
+            (2, 'method12'),
+            (1, 'Organizer: a = 2'),
+            (1, 'f2'),
+            (1, 'class Class2'),
+            (2, 'method21'),
+            (2, 'method22'),
+            (1, 'main'),
+            # (1, "Organizer: if __name__ == '__main__':"),
         ))
     #@+node:ekr.20210904065459.64: *4* TestPython.test_bug_346
     def test_bug_346(self):
@@ -2516,17 +2514,17 @@ class TestPython (BaseTestImporter):
         '''
         p = self.run_test(s)
         self.check_headlines(p, (
-            (2, "Organizer: Declarations"),
-            (2, "class AttrDict(dict)"),  ###
-            (3, "__init__"),
-            (2, "Organizer: FIELDS = [  # fields in outout table"),
-            (2, "make_parser"),
-            (2, "get_options"),
-            (2, "get_aggregate"),
-            (2, "proc_file"),
-            (2, "get_answers"),
-            (2, "get_table_rows"),
-            (2, "main"),
+            (1, "Organizer: Declarations"),
+            (1, "class AttrDict(dict)"),
+            (2, "__init__"),
+            (1, "Organizer: FIELDS = [  # fields in outout table"),
+            (1, "make_parser"),
+            (1, "get_options"),
+            (1, "get_aggregate"),
+            (1, "proc_file"),
+            (1, "get_answers"),
+            (1, "get_table_rows"),
+            (1, "main"),
         ))
     #@+node:ekr.20210904065459.67: *4* TestPython.test_bug_360
     def test_bug_360(self):
@@ -3128,11 +3126,11 @@ class TestPython (BaseTestImporter):
         '''
         p = self.run_test(s)
         self.check_headlines(p, (
-            (2, 'Organizer: Declarations'),
-            (2, 'isValidPython'),
-            # (2, 'class EmergencyDialog'),
-            # (3, 'run'),
-            (2, 'loadLocalFile'),
+            (1, 'Organizer: Declarations'),
+            (1, 'isValidPython'),
+            # (1, 'class EmergencyDialog'),
+            # (2, 'run'),
+            (1, 'loadLocalFile'),
         ))
         
         
@@ -3332,8 +3330,8 @@ class TestPython (BaseTestImporter):
         '''
         p = self.run_test(s)
         self.check_headlines(p, (
-            (2, 'Organizer: Declarations'),
-            (2, 'class testClass1'),
+            (1, 'Organizer: Declarations'),
+            (1, 'class testClass1'),
         ))
     #@+node:ekr.20210904065459.68: *4* TestPython.test_promote_if_name_eq_main
     def test_promote_if_name_eq_main(self):
@@ -3354,10 +3352,10 @@ class TestPython (BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_headlines(p, (
-            (2, 'Organizer: Declarations'),
-            (2, 'class Foo'),
-            (2, 'Organizer: a = 2'),
-            (2, 'main'),
+            (1, 'Organizer: Declarations'),
+            (1, 'class Foo'),
+            (1, 'Organizer: a = 2'),
+            (1, 'main'),
         ))
     #@+node:ekr.20211112135034.1: *4* TestPython.test_promote_only_decls
     def test_promote_only_decls(self):
@@ -3446,8 +3444,9 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.96: *4* TestPython.test_top_level_later_decl
     def test_top_level_later_decl(self):
         # From xo.py.
-        # The first line *must* be blank.
-        s = '''
+        
+        # Must be a raw string.
+        s = r'''
 
             #!/usr/bin/env python3
 
@@ -3477,14 +3476,14 @@ class TestPython (BaseTestImporter):
 
         '''
         p = self.run_test(s)
-        if 0:  ###
-            self.check_headlines(p, (
-                (2, 'Organizer: Declarations'),
-                (2, 'merge_value'),
-                (2, 'class MainDisplay(object)'),
-                (3, 'save_file'),
-                (2, 'retab'),
-            ))
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
+            (1, 'merge_value'),
+            (1, 'class MainDisplay(object)'),
+            (2, 'save_file'),
+            (1, r"Organizer: ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'"),
+            (1, 'retab'),
+        ))
     #@+node:ekr.20210904065459.97: *4* TestPython.test_trailing_comment
     def test_trailing_comment(self):
 
@@ -3624,8 +3623,8 @@ class TestRst(BaseTestImporter):
     treeType = '@auto-rst'
     
     #@+others
-    #@+node:ekr.20210904065459.115: *3* TestRst.test_test1
-    def test_test1(self):
+    #@+node:ekr.20210904065459.115: *3* TestRst.test_rst_1
+    def test_rst_1(self):
 
         try:
             import docutils
@@ -3981,8 +3980,8 @@ class TestXML (BaseTestImporter):
             self.assertEqual(n, n2)
             p.moveToThreadNext()
         self.assertEqual(p, after)
-    #@+node:ekr.20210904065459.106: *3* TestXml.test_1
-    def test_1(self):
+    #@+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
+    def test_xml_11(self):
 
         s = """
             <html>
