@@ -194,7 +194,7 @@ class Py_Importer(Importer):
                     else:
                         p = self.do_def(line, p)
                 else:
-                    self.add_line(p, line, tag='normal')
+                    p = self.do_normal_line(line,p)
     #@+node:ekr.20211122031133.1: *4* py_i.do_class
     def do_class(self, line, parent):
         
@@ -222,6 +222,16 @@ class Py_Importer(Importer):
             # Don't change parents.
             p = parent
         self.add_line(p, line, tag='def')
+        return p
+
+    #@+node:ekr.20211201093912.1: *4* py_i.do_normal_line
+    def do_normal_line(self, line, p):
+
+        d = self.vnode_info [p.v]
+        parent_kind = d ['kind']
+        if parent_kind == 'outer':
+            p = self.start_python_block('org', line, p)
+        self.add_line(p, line, tag='normal')        
         return p
     #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
     def end_previous_blocks(self, kind, line, p):

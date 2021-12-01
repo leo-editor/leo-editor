@@ -199,8 +199,9 @@ class BaseTestImporter(LeoUnitTest):
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n\n'
         ok = c.importCommands.createOutline(parent.copy(), ext, test_s)
-        if not ok:
+        if verbose or not ok:
             self.dump_tree(parent)
+        if not ok:
             self.fail('Perfect import failed')
         return parent
     #@-others
@@ -2121,32 +2122,42 @@ class TestPython (BaseTestImporter):
             import sys
             def f1():
                 pass
+
             class Class1:
                 def method11():
                     pass
                 def method12():
                     pass
+                    
+            a = 2
+            
             def f2():
                 pass
+        
             # An outer comment
+            @myClassDecorator
             class Class2:
+                @myDecorator
                 def method21():
                     pass
                 def method22():
                     pass
+                    
+            # About main.
             def main():
                 pass
         
             if __name__ == '__main__':
                 main()
         """
-        p = self.run_test(s)
+        p = self.run_test(s, verbose=False)
         self.check_headlines(p, (
             (2, 'Organizer: Declarations'),
             (2, 'f1'),
             (2, 'class Class1'),
             (3, 'method11'),
             (3, 'method12'),
+            (2, 'Organizer: a = 2'),
             (2, 'f2'),
             (2, 'class Class2'),
             (3, 'method21'),
@@ -3318,7 +3329,6 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.92: *4* TestPython.test_overindented_def_3
     def test_overindented_def_3(self):
         # This caused PyParse.py not to be imported properly.
-        c = self.c
         s = '''
             import re
             if 0: # Causes the 'overindent'
@@ -3330,23 +3340,12 @@ class TestPython (BaseTestImporter):
             class testClass1:
                 pass
         '''
-        table = (
-            # (1, 'Declarations'),
-            (1, 'class testClass1'),
-        )
-        p = c.p
-        self.run_test(s, verbose=True)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        p = self.run_test(s)
+        if 0:
+            self.check_headlines(p, (
+                (2, 'Organizer: Declarations'),
+                (2, 'class testClass1'),
+            ))
     #@+node:ekr.20210904065459.68: *4* TestPython.test_promote_if_name_eq_main
     def test_promote_if_name_eq_main(self):
         # Test #390: was test_bug_390.
@@ -3360,14 +3359,15 @@ class TestPython (BaseTestImporter):
 
             def main(self):
                 pass
-
+                
             if __name__ == '__main__':
                 main()
         """
         p = self.run_test(s)
         self.check_headlines(p, (
-            (2, 'Declarations'),
+            (2, 'Organizer: Declarations'),
             (2, 'class Foo'),
+            (2, 'Organizer: a = 2'),
             (2, 'main'),
         ))
     #@+node:ekr.20211112135034.1: *4* TestPython.test_promote_only_decls
