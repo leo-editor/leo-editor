@@ -3267,22 +3267,6 @@ class TestPython (BaseTestImporter):
                 pass
         """
         self.run_test(s)
-    #@+node:ekr.20211121055721.1: *4* TestPython.test_outer_defs
-    def test_outer_defs(self):
-
-        s = """
-            import sys
-            def def1():
-                pass
-            def def2():
-                pass
-        """
-        p = self.run_test(s)
-        self.check_headlines(p, (
-            (2, 'Organizer: Declarations'),
-            (2, 'def1'),
-            (2, 'def2'),
-        ))
     #@+node:ekr.20210904065459.90: *4* TestPython.test_overindent_def_no_following_def
     def test_overindent_def_no_following_def(self):
 
