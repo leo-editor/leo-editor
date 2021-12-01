@@ -169,11 +169,8 @@ class BaseTestImporter(LeoUnitTest):
             """).replace('AT', '@')
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
     def dump_tree(self, root, tag=None):
-        """
-        Same as Importer.dump_tree!
-        (Uses g.vnode_info instead of Importer.vnode_info)
-        """    
-        d = g.vnode_info
+        """Dump root's tree just as as Importer.dump_tree."""
+        d = g.vnode_info  # Same as Importer.vnode_info!
         if tag:
             print(tag)
         for p in root.self_and_subtree():
@@ -2128,7 +2125,6 @@ class TestPython (BaseTestImporter):
                 def method22():
                     def helper():
                         pass
-                
         """
             # def f2():
                 # pass
