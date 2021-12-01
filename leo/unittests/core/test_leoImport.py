@@ -2124,9 +2124,8 @@ class TestPython (BaseTestImporter):
             class Class1:
                 def method11():
                     pass
-                def method22():
-                    def helper():
-                        pass
+                def method12():
+                    pass
         """
             # def f2():
                 # pass

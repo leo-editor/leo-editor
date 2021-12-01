@@ -4,7 +4,6 @@
 # Legacy version of this file is in the attic.
 # pylint: disable=unreachable
 import re
-import textwrap
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -16,8 +15,8 @@ class Py_Importer(Importer):
     
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
-    skip_flag = False   # Careful: Importer.skip exists.
-    trace = False       # Enable trace in add_lines.
+    # Enable trace in add_lines.
+    trace = False
     #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
@@ -190,14 +189,13 @@ class Py_Importer(Importer):
                 m = self.class_or_def_pattern.match(line)
                 kind = m.group(1) if m else 'normal'
                 assert kind in ('class', 'def', 'normal'), repr(kind)
-                p = self.end_previous_blocks(kind, p)
+                p = self.end_previous_blocks(kind, line, p)
                 if kind == 'class':
                     p = self.do_class(line, p)
                 elif kind == 'def':
                     p = self.do_def(line, p)
                 else:
                     p = self.do_default(line, p)
-        self.gen_end(parent)
     #@+node:ekr.20211122031133.1: *4* py_i.do_class
     def do_class(self, line, parent):
         
@@ -238,8 +236,8 @@ class Py_Importer(Importer):
         else:
             assert False, repr(parent_kind)
         return p
-    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
-    def end_previous_blocks(self, kind, p):
+    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks ***
+    def end_previous_blocks(self, kind, line, p):
         """
         End blocks that are incompatible with the new line.
         - kind:         The kind of the incoming line: 'class', 'def' or 'normal'.
@@ -272,40 +270,17 @@ class Py_Importer(Importer):
             # The context-dependent cases...
             assert new_indent > 0 and new_indent == parent_indent, (new_indent, parent_indent)
             assert kind in ('class', 'def')
-            ### parent_d = self.vnode_info [p.parent().v]
-            ### grand_parent_indent, grand_parent_kind = d ['indent'], d ['kind']
             if kind == 'class':
                 return p.parent()
             assert kind == 'def', repr(kind)
+            if parent_kind in ('class', 'outer'):
+                return p
+            d2 = self.vnode_info [p.parent().v]
+            grand_kind = d2 ['kind']
+            if parent_kind == 'def' and grand_kind in ('class', 'outer'):
+                return p.parent()
             return p
-            ### return p.parent()
         assert False, 'No parent'
-    #@+node:ekr.20211122032257.1: *4* py_i.gen_end
-    def gen_end(self, parent):
-        """Handle end-of-scan precessing."""
-        assert self.root == parent, (self.root, parent)
-        # minimal post-pass
-        if 0:
-            for p in parent.subtree():
-                s = ''.join(p.v._import_lines)
-                if not p.hasChildren():
-                    # Remove the unnecessary @others line.
-                    s = s.replace('@others\n', '')
-                    if self.trace:
-                        g.trace('===== REMOVE @others', p.h)
-                p.v._import_lines = g.splitLines(textwrap.dedent(s))
-
-        if self.skip_flag and g.unitTesting:  ###
-            import unittest
-            unittest.TestCase().skipTest('skip python tests for now')
-        #
-        # Explicit post-pass, adapted for python.
-        if 0:
-            self.promote_first_child(parent)
-            self.adjust_all_decorator_lines(parent)
-        if 0:
-            g.trace('==== dump of tree 2')
-            self.dump_tree(parent)
     #@+node:ekr.20161220064822.1: *4* py_i.gen_python_ref
     def gen_python_ref(self, line, p):
         """Generate the at-others directive and set p's at-others flag"""
@@ -388,9 +363,6 @@ class Py_Importer(Importer):
     def trace_status(self, line, new_state, prev_state, stack, top):
         """Do-nothing override of Import.trace_status."""
         assert False, g.callers()
-    #@+node:ekr.20211121142418.1: *6* py_i.post_pass (do-nothing)
-    def post_pass(self, parent):
-        """Override Importer.post_pass."""
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
     heading_printed = False
 
