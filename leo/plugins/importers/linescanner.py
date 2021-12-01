@@ -775,7 +775,7 @@ class Importer:
                     if p.hasChildren():
                         # Don't delete p.
                         p.h = 'organizer'
-                        self.get_lines(p, [])
+                        self.get_lines(p)
                     else:
                         # Do delete p.
                         aList.append(p.copy())
