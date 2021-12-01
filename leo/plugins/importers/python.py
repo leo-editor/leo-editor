@@ -16,9 +16,8 @@ class Py_Importer(Importer):
     
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
-    dump = False        # Dump contents of nodes.
     skip_flag = False   # Careful: Importer.skip exists.
-    trace = True       # Enable trace in add_lines.
+    trace = False       # Enable trace in add_lines.
     #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
@@ -259,6 +258,7 @@ class Py_Importer(Importer):
                 return p
             if new_indent < parent_indent:
                 p = p.parent()
+                continue
             assert new_indent == parent_indent, (new_indent, parent_indent)
             if kind == 'normal':
                 # Don't change parent, whatever it is.
@@ -294,10 +294,7 @@ class Py_Importer(Importer):
                     if self.trace:
                         g.trace('===== REMOVE @others', p.h)
                 p.v._import_lines = g.splitLines(textwrap.dedent(s))
-        if self.dump:  ###
-            g.trace('==== dump of tree 1')
-            self.dump_tree(parent)
-            
+
         if self.skip_flag and g.unitTesting:  ###
             import unittest
             unittest.TestCase().skipTest('skip python tests for now')

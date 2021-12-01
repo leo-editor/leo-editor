@@ -202,8 +202,6 @@ class BaseTestImporter(LeoUnitTest):
         if not ok:
             self.dump_tree(parent)
             self.fail('Perfect import failed')
-            return parent
-        ### self.assertTrue(ok)
         return parent
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
