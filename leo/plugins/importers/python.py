@@ -167,8 +167,6 @@ class Py_Importer(Importer):
         }
         if g.unitTesting:
             g.vnode_info = self.vnode_info  # A hack.
-        # Keys are indents (ints), values are vnodes with an @others at that level.
-        self.indent_dict = { 0: parent.v }
         # Create a Declarations node.
         p = self.start_python_block('org', 'Declarations', parent)
         #
@@ -225,7 +223,7 @@ class Py_Importer(Importer):
             p = parent
         self.add_line(p, line, tag='def')
         return p
-    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks ***
+    #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks
     def end_previous_blocks(self, kind, line, p):
         """
         End blocks that are incompatible with the new line.
@@ -280,7 +278,7 @@ class Py_Importer(Importer):
         indent_ws = self.get_str_lws(line)
         ref_line = f"{indent_ws}@others\n"
         self.add_line(p, ref_line, tag='@others')
-    #@+node:ekr.20161116034633.7: *4* py_i.start_python_block (new)
+    #@+node:ekr.20161116034633.7: *4* py_i.start_python_block
     def start_python_block(self, kind, line, parent):
         """
         Create, p as the last child of parent and initialize the p.v._import_* ivars.
@@ -297,7 +295,6 @@ class Py_Importer(Importer):
             p.h = f"Organizer: {p.h}"
         #
         # Compute the indentation at p.
-        ### To do: wait until there is a reference!
         parent_info = self.vnode_info.get(parent.v)
         assert parent_info, (parent.h, g.callers())
         parent_indent = parent_info.get('indent')
@@ -310,16 +307,6 @@ class Py_Importer(Importer):
             'kind': kind,
             'lines': [],
         }
-        # Update self.indent_dict.
-        self.indent_dict = { indent: p.v }
-        ###
-            # # Inject updated ivars.
-            # p.v._import_kind = kind
-            # p.v._import_lines = []
-            # if kind == 'class':
-                # p.v._import_indent = parent.v._import_indent + 4
-            # else:
-                # p.v._import_indent = parent.v._import_indent
         return p
     #@+node:ekr.20211118073744.1: *4* py_i: explicit post-pass (to do)
     #@+node:ekr.20211116061415.1: *5* py_i.adjust_all_decorator_lines & helper

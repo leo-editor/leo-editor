@@ -2126,33 +2126,32 @@ class TestPython (BaseTestImporter):
                     pass
                 def method12():
                     pass
-        """
-            # def f2():
-                # pass
-            # # An outer comment
-            # class Class2:
-                # def method21():
-                    # pass
-                # def method22():
-                    # pass
-     
-            # def main():
-                # pass
+            def f2():
+                pass
+            # An outer comment
+            class Class2:
+                def method21():
+                    pass
+                def method22():
+                    pass
+            def main():
+                pass
         
-            # if __name__ == '__main__':
-                # main()
-        p = self.run_test(s, verbose=False)
+            if __name__ == '__main__':
+                main()
+        """
+        p = self.run_test(s)
         self.check_headlines(p, (
             (2, 'Organizer: Declarations'),
             (2, 'f1'),
             (2, 'class Class1'),
             (3, 'method11'),
             (3, 'method12'),
-            # (2, 'f2'),
-            # (2, 'class class2'),
-            # (3, 'method21'),
-            # (3, 'method22'),
-            # (2, 'main'),
+            (2, 'f2'),
+            (2, 'class Class2'),
+            (3, 'method21'),
+            (3, 'method22'),
+            (2, 'main'),
             # (2, "Organizer: if __name__ == '__main__':"),
         ))
     #@+node:ekr.20210904065459.64: *4* TestPython.test_bug_346
