@@ -199,7 +199,11 @@ class BaseTestImporter(LeoUnitTest):
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n\n'
         ok = c.importCommands.createOutline(parent.copy(), ext, test_s)
-        self.assertTrue(ok)
+        if not ok:
+            self.dump_tree(parent)
+            self.fail('Perfect import failed')
+            return parent
+        ### self.assertTrue(ok)
         return parent
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
@@ -3366,7 +3370,6 @@ class TestPython (BaseTestImporter):
     #@+node:ekr.20210904065459.68: *4* TestPython.test_promote_if_name_eq_main
     def test_promote_if_name_eq_main(self):
         # Test #390: was test_bug_390.
-        c = self.c
         s = """
             import sys
 
@@ -3381,26 +3384,12 @@ class TestPython (BaseTestImporter):
             if __name__ == '__main__':
                 main()
         """
-        table = (
-            (1, 'Declarations'),
-            (1, 'class Foo'),
-            (1, 'main'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
-            assert "if __name__ == '__main__':" in root.b
-            # self.dump_tree()
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (2, 'Declarations'),
+            (2, 'class Foo'),
+            (2, 'main'),
+        ))
     #@+node:ekr.20211112135034.1: *4* TestPython.test_promote_only_decls
     def test_promote_only_decls(self):
         # Test #390: was test_bug_390.
@@ -3409,9 +3398,6 @@ class TestPython (BaseTestImporter):
             b = 2
         """
         self.run_test(s)
-        # self.assertEqual(p.numberOfChildren(), 0)
-        # root = p.lastChild()
-        # self.dump_tree()
     #@+node:ekr.20210904065459.131: *4* TestPython.test_scan_state
     def test_scan_state(self):
         c = self.c

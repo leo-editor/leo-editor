@@ -18,7 +18,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
     dump = False        # Dump contents of nodes.
     skip_flag = False   # Careful: Importer.skip exists.
-    trace = False       # Enable trace in add_lines.
+    trace = True       # Enable trace in add_lines.
     #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
@@ -57,8 +57,6 @@ class Py_Importer(Importer):
         ok = test_lines1 == test_lines2
         if not ok:
             self.show_failure(lines1, lines2, g.shortFileName(self.root.h))
-            if g.unitTesting:
-                assert False, 'Perfect import failed!'
         return ok
     #@+node:ekr.20211114083943.1: *4* pi_i.strip_blank_and_comment_lines
     def strip_blank_and_comment_lines(self, lines):
@@ -252,7 +250,6 @@ class Py_Importer(Importer):
         parent of a new child of parent.
         """
         new_indent = self.new_state.indent
-        ### if kind == 'def': g.pdb()
         while p:
             d = self.vnode_info [p.v]
             parent_indent, parent_kind = d ['indent'], d ['kind']
@@ -262,13 +259,26 @@ class Py_Importer(Importer):
                 return p
             if new_indent < parent_indent:
                 p = p.parent()
-            # new_indent == parent_indent.
-            # The context-dependent cases...
+            assert new_indent == parent_indent, (new_indent, parent_indent)
             if kind == 'normal':
-                # Don't change parent.
+                # Don't change parent, whatever it is.
                 return p
-            # The 'def' or 'class' line deserves a new parent.
-            return p.parent()
+            if new_indent == 0:
+                # Continue until we get to the outer level.
+                if parent_kind == 'outer':
+                    return p
+                p = p.parent()
+                continue
+            # The context-dependent cases...
+            assert new_indent > 0 and new_indent == parent_indent, (new_indent, parent_indent)
+            assert kind in ('class', 'def')
+            ### parent_d = self.vnode_info [p.parent().v]
+            ### grand_parent_indent, grand_parent_kind = d ['indent'], d ['kind']
+            if kind == 'class':
+                return p.parent()
+            assert kind == 'def', repr(kind)
+            return p
+            ### return p.parent()
         assert False, 'No parent'
     #@+node:ekr.20211122032257.1: *4* py_i.gen_end
     def gen_end(self, parent):
