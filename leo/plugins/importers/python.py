@@ -16,9 +16,9 @@ class Py_Importer(Importer):
     
     #@+<< Py_Importer debug vars >>
     #@+node:ekr.20211122032408.1: *3* << Py_Importer debug vars >>
-    dump = True        # Dump contents of nodes.
+    dump = False        # Dump contents of nodes.
     skip_flag = False   # Careful: Importer.skip exists.
-    trace = True        # Enable trace in add_lines.
+    trace = False       # Enable trace in add_lines.
     #@-<< Py_Importer debug vars >>
 
     def __init__(self, importCommands, language='python', **kwargs):
