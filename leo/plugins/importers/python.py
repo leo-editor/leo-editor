@@ -180,7 +180,7 @@ class Py_Importer(Importer):
             # Handle the line.
             if self.prev_state.context:
                 # A line with a string or docstring.
-                self.add_line(p, line, tag='in string')
+                self.add_line(p, line, tag='string')
             elif self.ws_pattern.match(line):
                 # A blank or comment line.
                 self.add_line(p, line, tag='whitespace')
@@ -201,7 +201,7 @@ class Py_Importer(Importer):
         
         d = self.vnode_info [parent.v]
         parent_kind = d ['kind']
-        if parent_kind in ('outer', 'class'):
+        if parent_kind in ('outer', 'org', 'class'):
             # Create a new parent.
             self.gen_python_ref(line, parent)
             p = self.start_python_block('class', line, parent)
@@ -222,19 +222,11 @@ class Py_Importer(Importer):
         else:
             # Don't change parents.
             p = parent
-        self.add_line(p, line, tag=f"{parent_kind}:def")
+        self.add_line(p, line, tag='def')
         return p
     #@+node:ekr.20211122031418.1: *4* py_i.do_default
     def do_default(self, line, p):
-
-        parent_kind = self.vnode_info [p.v] ['kind']
-        if parent_kind in ('def', 'org'):
-            self.add_line(p, line, tag=f"in {parent_kind}")
-        elif parent_kind in ('class', 'outer'):
-            p = self.start_python_block('org', line, p)
-            self.add_line(p, line, tag='in org')
-        else:
-            assert False, repr(parent_kind)
+        self.add_line(p, line, tag='normal')
         return p
     #@+node:ekr.20211116054138.1: *4* py_i.end_previous_blocks ***
     def end_previous_blocks(self, kind, line, p):
@@ -290,7 +282,7 @@ class Py_Importer(Importer):
         d ['@others'] = True
         indent_ws = self.get_str_lws(line)
         ref_line = f"{indent_ws}@others\n"
-        self.add_line(p, ref_line, '@others')
+        self.add_line(p, ref_line, tag='@others')
     #@+node:ekr.20161116034633.7: *4* py_i.start_python_block (new)
     def start_python_block(self, kind, line, parent):
         """
@@ -366,7 +358,6 @@ class Py_Importer(Importer):
     #@+node:ekr.20211118092311.1: *5* py_i.add_line (tracing version)
     heading_printed = False
 
-
     def add_line(self, p, s, tag=None):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
@@ -379,6 +370,9 @@ class Py_Importer(Importer):
                 self.heading_printed = True
                 g.trace(f"{'tag or caller':>20} {' '*8+'top node':26} line")
                 g.trace(f"{'-' * 13:>20} {' '*8+'-' * 8:26} {'-' * 4}")
+            if tag:
+                kind = self.vnode_info [p.v] ['kind']
+                tag = f"{kind:>5}:{tag:<10}"
             g.trace(f"{(tag or g.caller()):>20} {g.truncate(h, 20)!r:26} {s!r}")
         self.vnode_info [p.v] ['lines'].append(s)
     #@+node:ekr.20161220171728.1: *5* py_i.common_lws
