@@ -212,24 +212,42 @@ class Py_Importer(Importer):
     #@+node:ekr.20211122031256.1: *4* py_i.do_def
     def do_def(self, line, parent):
         
-        d = self.vnode_info [parent.v]
-        parent_kind = d ['kind']
+        new_indent = self.new_state.indent
+        d = self.vnode_info 
+        parent_indent = d [parent.v] ['indent']
+        parent_kind = d [parent.v] ['kind']
         if parent_kind in ('outer', 'class'):
             # Create a new parent.
             self.gen_python_ref(line, parent)
             p = self.start_python_block('def', line, parent)
-        else:
-            # Don't change parents.
-            p = parent
-        self.add_line(p, line, tag='def')
-        return p
+            self.add_line(p, line, tag='def')
+            return p
+        # For 'org' parents, look at the grand parent kind.
+        if parent_kind == 'org':
+            grand_kind = d [parent.parent().v] ['kind']
+            if grand_kind == 'class' and new_indent <= parent_indent:
+                self.gen_python_ref(line, parent)
+                p = parent.parent()
+                p = self.start_python_block('def', line, p)
+                self.add_line(p, line, tag='def')
+                return p
+        # The default: don't change parent.
+        self.add_line(parent, line, tag='def')
+        return parent
+     
 
     #@+node:ekr.20211201093912.1: *4* py_i.do_normal_line
     def do_normal_line(self, line, p):
 
         d = self.vnode_info [p.v]
-        parent_kind = d ['kind']
+        parent_indent, parent_kind = d ['indent'], d ['kind']
+        new_indent = self.new_state.indent
         if parent_kind == 'outer':
+            # Create an organizer node, regardless of indentation.
+            p = self.start_python_block('org', line, p)
+        elif parent_kind == 'class' and new_indent < parent_indent:
+            # Create an organizer node.
+            self.gen_python_ref(line, p)
             p = self.start_python_block('org', line, p)
         self.add_line(p, line, tag='normal')        
         return p
@@ -268,7 +286,8 @@ class Py_Importer(Importer):
             assert new_indent > 0 and new_indent == parent_indent, (new_indent, parent_indent)
             assert kind in ('class', 'def')
             if kind == 'class':
-                return p.parent()
+                # Allow nested classes.
+                return p.parent() if new_indent < parent_indent else p
             assert kind == 'def', repr(kind)
             if parent_kind in ('class', 'outer'):
                 return p
