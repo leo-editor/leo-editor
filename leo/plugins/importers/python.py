@@ -240,12 +240,16 @@ class Py_Importer(Importer):
     def do_normal_line(self, line, p):
 
         d = self.vnode_info [p.v]
-        parent_indent, parent_kind = d ['indent'], d ['kind']
+        parent_indent = d ['indent']
+        parent_kind = d ['kind']
         new_indent = self.new_state.indent
+        ### parent_at_others = d ['@others']
+        if 0: ###
+            g.trace('=====', parent_kind, parent_indent, new_indent, repr(line))
         if parent_kind == 'outer':
             # Create an organizer node, regardless of indentation.
             p = self.start_python_block('org', line, p)
-        elif parent_kind == 'class' and new_indent < parent_indent:
+        elif parent_kind == 'class' and new_indent < parent_indent: ### and parent_at_others 
             # Create an organizer node.
             self.gen_python_ref(line, p)
             p = self.start_python_block('org', line, p)
@@ -265,6 +269,7 @@ class Py_Importer(Importer):
         while p:
             d = self.vnode_info [p.v]
             parent_indent, parent_kind = d ['indent'], d ['kind']
+            ### g.trace('LOOP', parent_kind, parent_indent, new_indent, repr(line)) ###
             if parent_kind == 'outer':
                 return p
             if new_indent > parent_indent:
@@ -327,7 +332,9 @@ class Py_Importer(Importer):
         parent_info = self.vnode_info.get(parent.v)
         assert parent_info, (parent.h, g.callers())
         parent_indent = parent_info.get('indent')
+        indent = parent_indent  ### Don't set the indentation until 
         indent = parent_indent + 4 if kind == 'class' else parent_indent
+        ### indent = parent_indent ### experimental.
         # Update vnode_info for p.v
         assert not v in self.vnode_info, (p.h, g.callers())
         self.vnode_info [v] = {
@@ -349,7 +356,7 @@ class Py_Importer(Importer):
                     
     def adjust_decorator_lines(self, p):
         """Move decorator lines from the end of p.b to the start of p.next().b."""
-        ### To do ###
+        ### To do
     #@+node:ekr.20211118073811.1: *5* py_i.promote_first_child (to do)
     def promote_first_child(self, parent):
         """Move a smallish first child to the start of parent."""

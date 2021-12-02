@@ -2049,7 +2049,7 @@ class TestPython (BaseTestImporter):
         '''.replace('AT', '@')
         p = self.run_test(input_s)
         self.check_result(p, expected_s3)
-    #@+node:ekr.20211127031823.1: *3* TestPython: New (generated) tests
+    #@+node:ekr.20211127031823.1: *3* TestPython: Use check_result
     #@+node:ekr.20211127031823.2: *4* test_docstring_vars
     def test_docstring_vars(self):
 
@@ -2113,7 +2113,7 @@ class TestPython (BaseTestImporter):
         p = self.run_test(input_s)
         if 0: ###
             self.check_result(p, expected_s)
-    #@+node:ekr.20211126055225.1: *3* TestPython: Old tests
+    #@+node:ekr.20211126055225.1: *3* TestPython: Existing tests
     #@+node:ekr.20210904065459.63: *4* TestPython.test_basic_nesting_1
     def test_basic_nesting_1(self):
 
@@ -2158,13 +2158,10 @@ class TestPython (BaseTestImporter):
             (2, 'method12'),
             (1, 'Organizer: a = 2'),
             (1, 'f2'),
-            ### (2, '@myClassDecorator Organizer: @myClassDecorator'), ###
             (1, 'class Class2'),
-            ### (2, '@myDecorator Organizer: @myDecorator'), ###
             (2, 'method21'),
             (2, 'method22'),
             (1, 'main'),
-            # (1, "Organizer: if __name__ == '__main__':"),
         ))
     #@+node:ekr.20210904065459.64: *4* TestPython.test_bug_346
     def test_bug_346(self):
@@ -2519,7 +2516,6 @@ class TestPython (BaseTestImporter):
         self.check_headlines(p, (
             (1, "Organizer: Declarations"),
             (1, "class AttrDict(dict)"),
-            ### (1, 'Organizer: """allow d.attr instead of d['attr']'
             (2, "__init__"),
             (1, "Organizer: FIELDS = [  # fields in outout table"),
             (1, "make_parser"),
@@ -3637,23 +3633,34 @@ class TestPython (BaseTestImporter):
         self.check_headlines(p, (
             (1, 'Organizer: Declarations'),
             (1, 'class TestCopyFile(unittest.TestCase)'),
-            ## (2, 'Organizer: _delete = False'),
             (2, 'class Faux(object)'),
-            ### (3, 'Organizer: _entered = False'),
         ))
+    #@+node:ekr.20211202094115.1: *3* TestPython: test_strange_indentation
+    def test_strange_indentation(self):
         
-        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
-        # s = """
-            # test_classes.append(test__get_candidate_names)
-        
-        
-            # class test__mkstemp_inner(TC):
-                # """Test the internal function _mkstemp_inner."""
+        s = """
+            if 1:
+             print('1')
+            if 2:
+              print('2')
+            if 3:
+               print('3')
             
-                # class mkstemped:
-                    # _bflags = tempfile._bin_openflags
-                    # _tflags = tempfile._text_openflags
-        # """
+            class StrangeClass:
+             a = 1
+             if 1:
+              print('1')
+             if 2:
+               print('2')
+             if 3:
+                print('3')   
+        """
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
+            (1, 'class StrangeClass'),
+            (2, 'Organizer: a = 1'),
+        ))
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
