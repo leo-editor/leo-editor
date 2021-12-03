@@ -239,17 +239,14 @@ class Py_Importer(Importer):
     #@+node:ekr.20211201093912.1: *4* py_i.do_normal_line
     def do_normal_line(self, line, p):
 
+        new_indent = self.new_state.indent
         d = self.vnode_info [p.v]
         parent_indent = d ['indent']
         parent_kind = d ['kind']
-        new_indent = self.new_state.indent
-        ### parent_at_others = d ['@others']
-        if 0: ###
-            g.trace('=====', parent_kind, parent_indent, new_indent, repr(line))
         if parent_kind == 'outer':
             # Create an organizer node, regardless of indentation.
             p = self.start_python_block('org', line, p)
-        elif parent_kind == 'class' and new_indent < parent_indent: ### and parent_at_others 
+        elif parent_kind == 'class' and new_indent < parent_indent:
             # Create an organizer node.
             self.gen_python_ref(line, p)
             p = self.start_python_block('org', line, p)
@@ -269,7 +266,6 @@ class Py_Importer(Importer):
         while p:
             d = self.vnode_info [p.v]
             parent_indent, parent_kind = d ['indent'], d ['kind']
-            ### g.trace('LOOP', parent_kind, parent_indent, new_indent, repr(line)) ###
             if parent_kind == 'outer':
                 return p
             if new_indent > parent_indent:
@@ -332,9 +328,8 @@ class Py_Importer(Importer):
         parent_info = self.vnode_info.get(parent.v)
         assert parent_info, (parent.h, g.callers())
         parent_indent = parent_info.get('indent')
-        indent = parent_indent  ### Don't set the indentation until 
+        ### Dubious: prevents proper handling of strangely-indented code.
         indent = parent_indent + 4 if kind == 'class' else parent_indent
-        ### indent = parent_indent ### experimental.
         # Update vnode_info for p.v
         assert not v in self.vnode_info, (p.h, g.callers())
         self.vnode_info [v] = {
