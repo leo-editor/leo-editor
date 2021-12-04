@@ -285,7 +285,7 @@ if QtWidgets:
             elif i == 16777236:
                 self.move_right()
             else:
-                print(f"picture_viewer.py: ignoring {s!r} {i}")
+                print(f"picture_viewer.py: ignoring key: {s!r} {i}")
 
         #@+node:ekr.20211021200821.6: *3* Slides.move_up/down/left/right
         def move_down(self):
@@ -308,15 +308,18 @@ if QtWidgets:
                 new_path = os.path.join(path, os.path.basename(file_name))
                 if os.path.exists(new_path):
                     print("File exists:", new_path)
+                    pathlib.Path(file_name).unlink(new_path)
                 else:
                     pathlib.Path(file_name).rename(new_path)
-                    del self.files_list[self.slide_number]
-                    self.slide_number = max(0, self.slide_number - 1)
-                    self.next_slide()
-                    self.raise_()
+                del self.files_list[self.slide_number]
+                self.slide_number = max(0, self.slide_number - 1)
+                self.next_slide()
+                self.raise_()
         #@+node:ekr.20211021200821.8: *3* Slides.next_slide
         def next_slide(self):
 
+            if not self.files_list:
+                self.quit()
             if self.slide_number + 1 < len(self.files_list):
                 self.slide_number += 1  # Don't wrap.
             if self.reset_zoom:
