@@ -27,7 +27,12 @@ class Ini_Importer(Importer):
         """
         self.at_others_flag = False
         p = self.root
-        self.inject_lines_ivar(p)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            p.v: {
+                'lines': [],
+            }
+        }
         for line in g.splitLines(s):
             if self.starts_block(line):
                 p = self.start_block(line)
@@ -51,7 +56,7 @@ class Ini_Importer(Importer):
         # Create the new node.
         return self.create_child_node(
             parent=self.root,
-            body=line,
+            line=line,
             headline=line.strip())
     #@-others
 #@-others

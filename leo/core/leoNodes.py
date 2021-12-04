@@ -1985,8 +1985,8 @@ class VNode:
         '_bodyString', '_headString', '_p_changed',
         'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
         'unknownAttributes',
-        # Were injected.
-        '_import_lines', 'at_read', 'tempAttributes',
+        # Injected by read code.
+        'at_read', 'tempAttributes',
         # Not written to any file.
         'context', 'expandedPositions', 'insertSpot',
         'scrollBarSpot', 'selectionLength', 'selectionStart',

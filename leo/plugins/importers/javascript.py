@@ -35,25 +35,6 @@ class JS_Importer(Importer):
         self.remove_singleton_at_others(parent)
         self.clean_all_nodes(parent)
         self.move_trailing_comments(parent)
-        if 0:
-            self.unindent_all_nodes(parent)
-            #
-            # This sub-pass must follow unindent_all_nodes.
-            self.promote_trailing_underindented_lines(parent)
-            self.promote_last_lines(parent)
-            #
-            # Usually the last sub-pass, but not in javascript.
-            self.delete_all_empty_nodes(parent)
-            #
-            # Must follow delete_all_empty_nodes.
-            self.remove_organizer_nodes(parent)
-            #
-            # Remove up to 5 more levels of @others.
-            for i in range(5):
-                if self.remove_singleton_at_others(parent):
-                    self.remove_organizer_nodes(parent)
-                else:
-                    break
     #@+node:ekr.20180123051401.1: *4* js_i.remove_singleton_at_others
     at_others = re.compile(r'^\s*@others\b')
 
@@ -68,10 +49,11 @@ class JS_Importer(Importer):
                 if len(matches) == 1:
                     found = True
                     i = matches[0]
-                    lines = lines[:i] + self.get_lines(child) + lines[i + 1 :]
+                    child_lines = self.get_lines(child)
+                    lines = lines[:i] + child_lines + lines[i + 1 :]
                     self.set_lines(p, lines)
-                    self.clear_lines(child)  # Delete child later. Is this enough???
-                    # g.trace('Clear', child.h)
+                    # Delete child later. Is this enough???
+                    self.set_lines(child, [])
         return found
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
@@ -81,7 +63,8 @@ class JS_Importer(Importer):
         while found:
             found = False
             for p in parent.subtree():
-                if p.h.lower() == 'organizer' and not self.get_lines(p):
+                lines = self.get_lines(p)
+                if p.h.lower() == 'organizer' and not lines:
                     p.promote()
                     p.doDelete()
                     found = True  # Restart the loop.

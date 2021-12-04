@@ -167,41 +167,27 @@ class Importer:
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
 
-    #@+node:ekr.20161110042512.1: *3* i.API for setting body text
-    # All code in passes 1 and 2 *must* use this API to change body text.
-
-    def add_line(self, p, s):
+    #@+node:ekr.20161110042512.1: *3* i.Convenience methods for vnode_info dict
+    def add_line(self, p, s, tag=None):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
-        # *Never* change p unexpectedly!
-        assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
-        p.v._import_lines.append(s)
-
-    def clear_lines(self, p):
-        p.v._import_lines = []
+        self.vnode_info [p.v] ['lines'].append(s)
 
     def extend_lines(self, p, lines):
-        p.v._import_lines.extend(list(lines))
-
+        self.vnode_info [p.v] ['lines'].extend(list(lines))
+        
     def get_lines(self, p):
-        # *Never* change p unexpectedly!
-        assert hasattr(p.v, '_import_lines'), (p and p.h, g.callers())
-        return p.v._import_lines
+        return self.vnode_info [p.v] ['lines']
 
     def has_lines(self, p):
-        return hasattr(p.v, '_import_lines')
-
-    def inject_lines_ivar(self, p):
-        """Inject _import_lines into p.v."""
-        # *Never* change p unexpectedly!
-        assert not p.v._bodyString, (p and p.h, g.callers(10))
-        p.v._import_lines = []
+        d = self.vnode_info.get(p.v)
+        return d is not None and d.get('lines') is not None
 
     def prepend_lines(self, p, lines):
-        p.v._import_lines = list(lines) + p.v._import_lines
+        self.vnode_info [p.v] ['lines'] = list(lines) + self.vnode_info [p.v] ['lines']
 
     def set_lines(self, p, lines):
-        p.v._import_lines = list(lines)
+        self.vnode_info [p.v] ['lines'] = list(lines)
     #@+node:ekr.20161108131153.7: *3* i.Overrides
     # These can be overridden in subclasses.
     #@+node:ekr.20161108131153.8: *4* i.adjust_parent
@@ -439,15 +425,11 @@ class Importer:
         # Insert an @ignore directive if there were any serious problems.
         if not ok:
             self.insert_ignore_directive(parent)
-        # It's always useless for an an import to dirty the outline.
+        # Importers should never dirty the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
-        # #1451: The caller should be responsible for this.
-            # if changed:
-                # c.setChanged()
-            # else:
-                # c.clearChanged()
-        return ok
+        # #1451: Do not change the outline's change status.
+        return ok  # For unit tests.
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
     def regularize_whitespace(self, s):
         """
@@ -542,7 +524,14 @@ class Importer:
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
-        self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
+        if g.unitTesting:
+            g.vnode_info = self.vnode_info  # A hack.
         lines = g.splitLines(s)
         self.skip = 0
         for i, line in enumerate(lines):
@@ -569,12 +558,14 @@ class Importer:
                 self.add_line(p, line)
             prev_state = new_state
     #@+node:ekr.20161108160409.7: *5* i.create_child_node
-    def create_child_node(self, parent, body, headline):
+    def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.inject_lines_ivar(child)
-        if body:
-            self.add_line(child, body)
+        self.vnode_info [child.v] = {
+            'lines': [],
+        }
+        if line:
+            self.add_line(child, line)
         assert isinstance(headline, str), repr(headline)
         child.h = headline.strip()
         return child
@@ -784,7 +775,7 @@ class Importer:
                     if p.hasChildren():
                         # Don't delete p.
                         p.h = 'organizer'
-                        self.clear_lines(p)
+                        self.get_lines(p)
                     else:
                         # Do delete p.
                         aList.append(p.copy())
@@ -793,7 +784,7 @@ class Importer:
                 # Suppress redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
-        """A placeholder for python_i.promote_last_lines."""
+        """A placeholder for rust_i.promote_last_lines."""
     #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
         """
@@ -840,7 +831,7 @@ class Importer:
             lines = self.get_lines(p)
             if all(z.isspace() for z in lines):
                 # Somewhat dubious, but i.check covers for us.
-                self.clear_lines(p)
+                self.set_lines(p, [])
             else:
                 self.set_lines(p, self.undent(p))
     #@+node:ekr.20161111023249.1: *4* Stage 3: i.finish & helpers
@@ -884,14 +875,10 @@ class Importer:
             v = p.v
             # Make sure that no code in x.post_pass has mistakenly set p.b.
             assert not v._bodyString, repr(v._bodyString)
-            lines = v._import_lines
-            if lines:
-                if not lines[-1].endswith('\n'):
-                    lines[-1] += '\n'
+            lines = self.get_lines(p)
+            if lines and not lines[-1].endswith('\n'):
+                lines[-1] += '\n'
             v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
-                # Bug fix: 2017/01/24: must convert to unicode!
-                # This was the source of the internal error in the p.b getter.
-            delattr(v, '_import_lines')
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent):
         """True if perfect import checks pass."""
@@ -932,11 +919,9 @@ class Importer:
                 print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
             self.show_failure(lines1, lines2, sfn)
+            if g.unitTesting:
+                assert False, 'Perfect import failed!'
         return ok
-    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines (not used)
-    def clean_blank_lines(self, lines):
-        """Remove all blanks and tabs in all blank lines."""
-        return [self.lstrip_line(z) if z.isspace() else z for z in lines]
     #@+node:ekr.20161124030004.1: *5* i.clean_last_lines
     def clean_last_lines(self, lines):
         """Remove blank lines from the end of lines."""
@@ -963,19 +948,21 @@ class Importer:
         n1, n2 = len(lines1), len(lines2)
         print('\n===== PERFECT IMPORT FAILED =====', sfn)
         print('len(s1): %s len(s2): %s' % (n1, n2))
-        for i in range(min(n1, n2)):
+        n_min = min(n1, n2)
+        for i in range(n_min):
             line1, line2 = lines1[i], lines2[i]
             if line1 != line2:
                 print('first mismatched line: %s' % (i + 1))
-                print('s1...')
+                print('Expected...')
                 print(''.join(self.context_lines(lines1, i)))
-                print('s2...')
+                print('Got...')
                 print(''.join(self.context_lines(lines2, i)))
-                # print(repr(line1))
-                # print(repr(line2))
                 break
         else:
-            print('all common lines match')
+            lines_s = 'n2' if n1 > n2 else 'n1'
+            print(f"missing tail lines in {lines_s}")
+            g.printObj(lines1, tag='lines1')
+            g.printObj(lines2, tag='lines2')
     #@+node:ekr.20161108131153.5: *5* i.strip_*
     def lstrip_line(self, s):
         """Delete leading whitespace, *without* deleting the trailing newline!"""
@@ -1021,6 +1008,19 @@ class Importer:
                 delattr(at, ivar)
         return g.toUnicode(result, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils
+    #@+node:ekr.20211118082436.1: *4* i.dump_tree
+    def dump_tree(self, root, tag=None):
+        """
+        Like LeoUnitTest.dump_tree.
+        """
+        d = self.vnode_info if hasattr(self, 'vnode_info') else {}
+        if tag:
+            print(tag)
+        for p in root.self_and_subtree():
+            print('')
+            print('level:', p.level(), p.h)
+            lines = d [p.v] ['lines'] if p.v in d else g.splitLines(p.v.b)
+            g.printObj(lines)
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
         """
@@ -1122,9 +1122,18 @@ class Importer:
         return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):
-        """Remove maximal leading whitespace from the start of all lines."""
+        """
+        Remove the *maximum* whitespace of any line from the start of *all* lines,
+        appending the underindent escape sequence for all underindented lines.
+        
+        This is *not* the same as textwrap.dedent!
+        
+        """
+        # Called from i.post_pass, i.unindent_all_nodes.
+        c = self.c
         if self.is_rst:
             return p.b  # Never unindent rst code.
+        escape = c.atFileCommands.underindentEscapeString
         lines = self.get_lines(p)
         ws = self.common_lws(lines)
         result = []
@@ -1136,10 +1145,12 @@ class Importer:
                 result.append(s)
             else:
                 # Indicate that the line is underindented.
-                result.append("%s%s.%s" % (
-                    self.c.atFileCommands.underindentEscapeString,
-                    g.computeWidth(ws, self.tab_width),
-                    s.lstrip()))
+                lws = g.get_leading_ws(s)
+                # Bug fix 2021/11/15: Use n1 - n2, not n1!
+                n1 = g.computeWidth(ws, self.tab_width)
+                n2 = g.computeWidth(lws, self.tab_width)
+                assert n1 > n2, (n1, n2)
+                result.append(f"{escape}{n1-n2}.{s.lstrip()}")
         return result
     #@+node:ekr.20161108131153.20: *5* i.common_lws
     def common_lws(self, lines):

@@ -161,13 +161,6 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
-    #@+node:ekr.20210831101111.1: *3* LeoUnitTest.dump_tree
-    def dump_tree(self, tag=''):
-        c = self.c
-        print('')
-        g.trace(tag)
-        for p in c.all_positions():
-            print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
     #@-others
 #@-others
 #@-leo

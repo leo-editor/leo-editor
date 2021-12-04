@@ -27,7 +27,12 @@ class Otl_Importer(Importer):
 
     def gen_lines(self, s, parent):
         """Node generator for otl (vim-outline) mode."""
-        self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         self.parents = [parent]
         for line in g.splitLines(s):
             m = self.otl_body_pattern.match(line)
@@ -55,7 +60,7 @@ class Otl_Importer(Importer):
         while level >= len(self.parents):
             child = self.create_child_node(
                 parent=self.parents[-1],
-                body=None,
+                line=None,
                 headline=h,
             )
             self.parents.append(child)

@@ -105,22 +105,22 @@ class TestAtShadow(LeoUnitTest):
         old = p.insertAsLastChild()
         old.h = 'old'
         old.b = textwrap.dedent("""\
-            at-others
+            ATothers
             node 1 line 1
             node 1 line 2
             node 2 line 1
             node 2 line 2
-        """).replace('at-others', '@others')
+        """).replace('AT', '@')
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
         new.b = textwrap.dedent("""\
-            at-others
+            ATothers
             node 1 line 1
             node 1 line 1 changed
             node 2 line 1
             node 2 line 2
-        """).replace('at-others', '@others')
+        """).replace('AT', '@')
         # Run the test.
         results, expected = self.make_lines(old, new)
         self.assertEqual(results, expected)

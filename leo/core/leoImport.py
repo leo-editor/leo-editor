@@ -217,6 +217,7 @@ class LeoImportCommands:
         self.output_newline = g.getOutputNewline(c=c)  # Value of @bool output_newline
         self.tab_width = c.tab_width
         self.treeType = "@file"  # None or "@file"
+        self.verbose = True  # Leo 6.6
         self.webType = "@noweb"  # "cweb" or "noweb"
         self.web_st = []  # noweb symbol table.
         self.reload_settings()
@@ -660,18 +661,18 @@ class LeoImportCommands:
         if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            # func is actually a factory: it instantiates the importer class.
-            func(c=c, parent=p, s=s)
-                # force_at_others=force_at_others #tag:no-longer-used
+            # func is a factory that instantiates the importer class.
+            ok = func(c=c, parent=p, s=s)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            self.scanUnknownFileType(s, p, ext)
-        if not g.unitTesting:
-            # Fix bug 488894: unsettling dialog when saving Leo file
-            # Fix bug 889175: Remember the full fileName.
-            c.atFileCommands.rememberReadPath(fileName, p)
+            ok = self.scanUnknownFileType(s, p, ext)
+        if g.unitTesting:
+            return p if ok else None
+        # #488894: unsettling dialog when saving Leo file
+        # #889175: Remember the full fileName.
+        c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
         w.setInsertPoint(0)
@@ -814,6 +815,7 @@ class LeoImportCommands:
         redrawFlag=True,
         shortFn=False,
         treeType=None,
+        verbose=True,  # Legacy value.
     ):
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
@@ -821,6 +823,7 @@ class LeoImportCommands:
             return
         self.tab_width = c.getTabWidth(c.p)
         self.treeType = treeType or '@file'
+        self.verbose = verbose
         if not parent:
             g.trace('===== no parent', g.callers())
             return
@@ -835,7 +838,7 @@ class LeoImportCommands:
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(parent=p)
                 if p:  # createOutline may fail.
-                    if not g.unitTesting:
+                    if self.verbose and not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
                     p.contract()
                     p.setDirty()
@@ -1657,17 +1660,19 @@ class RecursiveImportController:
         safe_at_file=True,
         theTypes=None,
         ignore_pattern=None,
+        verbose=True,  # legacy value.
     ):
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.add_path = add_path
         self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
+        self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
         self.root = None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
-        self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
+        self.verbose = verbose
         # #1605:
 
         def set_bool(setting, val):
@@ -1698,7 +1703,8 @@ class RecursiveImportController:
             # Leo 5.6: Special case for a single file.
             self.n_files = 0
             if g.os_path_isfile(dir_):
-                g.es_print('\nimporting file:', dir_)
+                if self.verbose:
+                    g.es_print('\nimporting file:', dir_)
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
@@ -1725,7 +1731,8 @@ class RecursiveImportController:
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
-            g.es_print('importing directory:', dir_)
+            if self.verbose:
+                g.es_print('importing directory:', dir_)
             files = os.listdir(dir_)
         dirs, files2 = [], []
         for path in files:
@@ -1774,6 +1781,7 @@ class RecursiveImportController:
             redrawFlag=False,
             shortFn=True,
             treeType='@file',  # '@auto','@clean','@nosent' cause problems.
+            verbose=self.verbose,  # Leo 6.6.
         )
         p = parent.lastChild()
         p.h = self.kind + p.h[5:]
