@@ -81,7 +81,7 @@ class Lua_Importer(Importer):
                 'lines': [],
             }
         }
-        #lines = g.splitLines(s)
+
         self.skip = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)

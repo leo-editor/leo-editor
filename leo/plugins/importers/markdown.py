@@ -34,7 +34,7 @@ class Markdown_Importer(Importer):
         # We may as well do this first.  See warning below.
         self.stack = [parent]
         in_code = False
-        #lines = g.splitLines(s)
+
         skip = 0
         for i, line in enumerate(lines):
             top = self.stack[-1]

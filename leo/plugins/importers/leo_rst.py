@@ -48,7 +48,7 @@ class Rst_Importer(Importer):
         # We may as well do this first.  See note below.
         self.stack = [parent]
         skip = 0
-        #lines = g.splitLines(s)
+
         for i, line in enumerate(lines):
             if skip > 0:
                 skip -= 1
