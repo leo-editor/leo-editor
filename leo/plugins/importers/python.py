@@ -147,7 +147,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & helpers
     class_or_def_pattern = re.compile(r'\s*(class|def)\s+')
 
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
@@ -171,7 +171,7 @@ class Py_Importer(Importer):
         p = self.start_python_block('org', 'Declarations', parent)
         #
         # The main importer loop. Don't worry about the speed of this loop.
-        for line in g.splitLines(s):
+        for line in lines:
             # Update the state, remembering the previous state.
             self.prev_state = self.new_state
             self.new_state = self.scan_line(line, self.prev_state)

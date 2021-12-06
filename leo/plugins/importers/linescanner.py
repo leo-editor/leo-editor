@@ -409,13 +409,14 @@ class Importer:
         self.parse_body = parse_body
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
-        ws_ok = self.check_blanks_and_tabs(s)  # Only issues warnings.
+        lines = g.splitLines(s)
+        ws_ok = self.check_blanks_and_tabs(lines)  # Only issues warnings.
         # Regularize leading whitespace
         if not ws_ok:
-            s = self.regularize_whitespace(s)
+            lines = self.regularize_whitespace(lines)
         # Generate the nodes, including directives and section references.
         # Completely generate all nodes.
-        self.generate_nodes(s, parent)
+        self.generate_nodes(lines, parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
         if parse_body:
@@ -431,7 +432,7 @@ class Importer:
         # #1451: Do not change the outline's change status.
         return ok  # For unit tests.
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
-    def regularize_whitespace(self, s):
+    def regularize_whitespace(self, lines):
         """
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -439,7 +440,7 @@ class Importer:
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
         fn = g.shortFileName(self.root.h)
-        lines = g.splitLines(s)
+        #lines = g.splitLines(s)
         count, result, tab_width = 0, [], self.tab_width
         self.ws_error = False  # 2016/11/23
         if tab_width < 0:  # Convert tabs to blanks.
@@ -466,15 +467,18 @@ class Importer:
                     kind2, kind, count, g.plural(count), fn))
             if g.unitTesting:  # Sets flag for unit tests.
                 self.report('changed %s lines' % count)
-        return ''.join(result)
+        return result
     #@+node:ekr.20161111024447.1: *5* i.generate_nodes
-    def generate_nodes(self, s, parent):
+    def generate_nodes(self, lines, parent):
         """
         A three-stage pipeline to generate all imported nodes.
         """
         # Stage 1: generate nodes.
         # After this stage, the p.v._import_lines list contains p's future body text.
-        self.gen_lines(s, parent)
+        if type(lines) is str:
+            g.trace(g.callers(10))
+            raise ValueError
+        self.gen_lines(lines, parent)
         #
         # Optional Stage 2, consisting of zero or more sub-stages.
         # Subclasses may freely override this method, **provided**
@@ -493,7 +497,7 @@ class Importer:
         fn = g.shortFileName(self.root.h)
         w = self.tab_width
         blanks = tabs = 0
-        for s in g.splitLines(lines):
+        for s in lines:
             lws = self.get_str_lws(s)
             blanks += lws.count(' ')
             tabs += lws.count('\t')
@@ -514,7 +518,7 @@ class Importer:
                 g.es(message)
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
@@ -532,7 +536,7 @@ class Importer:
         }
         if g.unitTesting:
             g.vnode_info = self.vnode_info  # A hack.
-        lines = g.splitLines(s)
+        #lines = g.splitLines(s)
         self.skip = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)

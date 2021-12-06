@@ -47,7 +47,7 @@ class Org_Importer(Importer):
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
 
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for org mode."""
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
@@ -56,7 +56,7 @@ class Org_Importer(Importer):
             }
         }
         self.parents = [parent]
-        for line in g.splitLines(s):
+        for line in lines:
             m = self.org_pattern.match(line)
             if m:
                 # Cut back the stack, then allocate a new node.

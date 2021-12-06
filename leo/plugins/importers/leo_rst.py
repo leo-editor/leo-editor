@@ -35,9 +35,9 @@ class Rst_Importer(Importer):
         """
         return True
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for reStructuredText importer."""
-        if not s or s.isspace():
+        if all(s.isspace() for s in lines):
             return
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
@@ -48,7 +48,7 @@ class Rst_Importer(Importer):
         # We may as well do this first.  See note below.
         self.stack = [parent]
         skip = 0
-        lines = g.splitLines(s)
+        #lines = g.splitLines(s)
         for i, line in enumerate(lines):
             if skip > 0:
                 skip -= 1

@@ -65,7 +65,7 @@ class Lua_Importer(Importer):
             g.trace('unmatched "end" statement at line', i)
         return False
     #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
@@ -81,7 +81,7 @@ class Lua_Importer(Importer):
                 'lines': [],
             }
         }
-        lines = g.splitLines(s)
+        #lines = g.splitLines(s)
         self.skip = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)

@@ -20,7 +20,7 @@ class Ini_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines & helpers
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
@@ -33,7 +33,7 @@ class Ini_Importer(Importer):
                 'lines': [],
             }
         }
-        for line in g.splitLines(s):
+        for line in lines:
             if self.starts_block(line):
                 p = self.start_block(line)
             else:
