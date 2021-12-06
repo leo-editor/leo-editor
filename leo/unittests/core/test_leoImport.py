@@ -2165,7 +2165,7 @@ class TestPython (BaseTestImporter):
         ))
     #@+node:ekr.20210904065459.64: *4* TestPython.test_bug_346
     def test_bug_346(self):
-        c = self.c
+
         s = '''
             import sys
 
@@ -2194,26 +2194,14 @@ class TestPython (BaseTestImporter):
                     formatter_class=argparse.ArgumentDefaultsHelpFormatter
             )
         '''
-        table = (
-            (1, 'Declarations'),
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
             (1, 'make_parser'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.65: *4* TestPython.test_bug_354
     def test_bug_354(self):
-        c = self.c
+
         s = """
             if isPython3:
                 def u(s):
@@ -2230,24 +2218,12 @@ class TestPython (BaseTestImporter):
                 def ue(s, encoding):
                     return builtins.unicode(s, encoding)
         """
-        table = (
-            (1, 'Declarations'),
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
             # (1, 'u'),
             # (1, 'ue'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.66: *4* TestPython.test_bug_357
     def test_bug_357(self):
 
@@ -2528,7 +2504,7 @@ class TestPython (BaseTestImporter):
         ))
     #@+node:ekr.20210904065459.67: *4* TestPython.test_bug_360
     def test_bug_360(self):
-        c = self.c
+
         s = """
             ATbase_task(
                 targets=['img/who_map.png', 'img/who_map.pdf'],
@@ -2538,22 +2514,11 @@ class TestPython (BaseTestImporter):
             def make_map():
                 '''make_map - plot the Thompson / Bartsh / WHO map'''
         """.replace('AT', '@')
-        table = (
-            (1, '@base_task make_map'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, '@base_task Organizer: Declarations'), # Poor headline.
+            (1, 'make_map'),
+        ))
     #@+node:ekr.20210904065459.70: *4* TestPython.test_bug_603720
     def test_bug_603720(self):
 
@@ -2575,7 +2540,7 @@ class TestPython (BaseTestImporter):
         self.run_test(s)
     #@+node:ekr.20210904065459.69: *4* TestPython.test_bug_978
     def test_bug_978(self):
-        c = self.c
+
         s = """
             import foo
             import bar
@@ -2587,26 +2552,13 @@ class TestPython (BaseTestImporter):
             class C(bar.Bar):
                 pass
         """
-        table = (
-            (1, 'Declarations'),
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
             (1, 'class A(object)'),
             (1, 'class B(foo)'),
             (1, 'class C(bar.Bar)'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            assert root
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.72: *4* TestPython.test_class_test_2
     def test_class_test_2(self):
 
@@ -2629,7 +2581,7 @@ class TestPython (BaseTestImporter):
         self.run_test(s)
     #@+node:ekr.20210904065459.74: *4* TestPython.test_comment_after_dict_assign
     def test_comment_after_dict_assign(self):
-        c = self.c
+
         s = """
             NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
                   's': 'http://www.w3.org/2000/svg',
@@ -2637,46 +2589,22 @@ class TestPython (BaseTestImporter):
 
             tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
         """
-        table = (
-            (1, 'Declarations'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
+        ))
     #@+node:ekr.20210904065459.75: *4* TestPython.test_decls_1
     def test_decls_1(self):
-        c = self.c
+
         s = """
             import leo.core.leoGlobals as g
 
             a = 3
         """
-        table = (
-            (1, 'Declarations'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
+        ))
     #@+node:ekr.20210904065459.76: *4* TestPython.test_decorator
     def test_decorator(self):
         c = self.c
@@ -2704,7 +2632,7 @@ class TestPython (BaseTestImporter):
             self.assertEqual(lines[0], "@cmd('abc')\n")
     #@+node:ekr.20210904065459.77: *4* TestPython.test_decorator_2
     def test_decorator_2(self):
-        c = self.c
+
         s = '''
             """
             A PyQt "task launcher" for quick access to python scripts.
@@ -2786,36 +2714,20 @@ class TestPython (BaseTestImporter):
             if __name__ == '__main__':
                 main()
         '''
-        table = (
-            (1, "Declarations"),
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, "Organizer: Declarations"),
             (1, "class Draggable(QtGui.QWidget)"),
             (2, "__init__"),
             (2, "mousePressEvent"),
             (2, "mouseMoveEvent"),
             (1, "command"),
-            (1, '@command("Exit") exit_'),
+            (1, 'exit_'),
             (1, "main"),
-        )
-        self.run_test(s)
-        if self.check_tree:
-            after = c.p.nodeAfterTree()
-            root = c.p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
-            target = g.findNodeInTree(c, root, '@command("Exit") exit_')
-            assert target
-            lines = g.splitLines(target.b)
-            self.assertEqual(lines[0], '@command("Exit")\n')
-        
+        ))
     #@+node:ekr.20210904065459.78: *4* TestPython.test_def_inside_def
     def test_def_inside_def(self):
-        c = self.c
+
         s = '''
             class aClass:
                 def outerDef(self):
@@ -2827,28 +2739,16 @@ class TestPython (BaseTestImporter):
         
                     a = 3
         '''
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),  ### Wrong.
             (1, 'class aClass'),
             (2, 'outerDef'),
             # (3, 'pr'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
-
+        ))
     #@+node:ekr.20210904065459.79: *4* TestPython.test_def_test_1
     def test_def_test_1(self):
-        c = self.c
+
         s = """
             class test:
 
@@ -2867,28 +2767,16 @@ class TestPython (BaseTestImporter):
                     strings = string.split(s,"\\n")
                     return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
         """
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),  ### Wrong.
             (1, 'class test'),
             (2, 'importFilesCommand'),
             (2, 'convertMoreStringToOutlineAfter'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
-
+        ))
     #@+node:ekr.20210904065459.80: *4* TestPython.test_def_test_2
     def test_def_test_2(self):
-        c = self.c
+
         s = """
             class test:
                 def spam(b):
@@ -2899,25 +2787,13 @@ class TestPython (BaseTestImporter):
                 def foo(a):
                     pass
         """
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),  ### Wrong.
             (1, 'class test'),
             (2, 'spam'),
             (2, 'foo'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
-
+        ))
     #@+node:ekr.20210904065459.81: *4* TestPython.test_docstring_only
     def test_docstring_only(self):
 
@@ -2937,29 +2813,17 @@ class TestPython (BaseTestImporter):
         self.run_test(s)
     #@+node:ekr.20210904065459.71: *4* TestPython.test_enhancement_481
     def test_enhancement_481(self):
-        c = self.c
+
         s = """
             ATg.cmd('my-command')
             def myCommand(event=None):
                 pass
         """.replace('AT', '@')
-        table = (
-            # (1, '@g.cmd myCommand'),
-            (1, "@g.cmd('my-command') myCommand"),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, "@g.cmd('my-command') Organizer: Declarations"),  # Poor headline.
+            (1, 'myCommand'),
+        ))
     #@+node:ekr.20210904065459.83: *4* TestPython.test_extra_leading_ws_test
     def test_extra_leading_ws_test(self):
 
@@ -3014,7 +2878,7 @@ class TestPython (BaseTestImporter):
         importer.test_scan_state(tests, State=python.Python_ScanState)
     #@+node:ekr.20210904065459.84: *4* TestPython.test_indent_decls
     def test_indent_decls(self):
-        c = self.c
+
         s = '''
             class mammalProviderBase(object):
                 """Root class for content providers used by DWEtree.py"""
@@ -3049,27 +2913,16 @@ class TestPython (BaseTestImporter):
                         return ELE('base', href=self.params['/BASE/']+'main/')
                     return ans
         '''
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),  ### Wrong.
             (1, 'class mammalProviderBase(object)'),
             (2, '__init__'),
             (2, 'provide'),
             (2, 'imagePath'),
             (1, 'class mainPages(mammalProviderBase)'),
             (2, 'provide'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.125: *4* TestPython.test_is_ws_line
     def test_is_ws_line(self):
         c = self.c
@@ -3136,7 +2989,6 @@ class TestPython (BaseTestImporter):
         
     #@+node:ekr.20210904065459.85: *4* TestPython.test_leoImport_py_small_
     def test_leoImport_py_small_(self):
-        c = self.c
 
         s = """
             # -*- coding: utf-8 -*-
@@ -3194,8 +3046,9 @@ class TestPython (BaseTestImporter):
                 def init_import(self, ext, fileName, s):
                     '''Init ivars & vars for imports.'''
         """
-        table = (
-            (1, 'Declarations'),
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),
             (1, "class LeoImportCommands(object)"),
             (2, "createOutline"),
             (2, "dispatch"),
@@ -3203,20 +3056,7 @@ class TestPython (BaseTestImporter):
             (2, "scanner_for_ext"),
             (2, "get_import_filename"),
             (2, "init_import"),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.86: *4* TestPython.test_looks_like_section_ref
     def test_looks_like_section_ref(self):
 
@@ -3516,7 +3356,7 @@ class TestPython (BaseTestImporter):
         self.run_test(s)
     #@+node:ekr.20210904065459.100: *4* TestPython.test_underindent_method
     def test_underindent_method(self):
-        c = self.c
+
         s = '''
             class emptyClass:
 
@@ -3528,24 +3368,13 @@ class TestPython (BaseTestImporter):
             def followingDef(): # comment
                 pass
         '''
-        table = (
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Organizer: Declarations'),  ### Wrong.
             (1, 'class emptyClass'),
             (2, 'spam'),
             (1, 'followingDef'),
-        )
-        p = c.p
-        self.run_test(s)
-        if self.check_tree:
-            after = p.nodeAfterTree()
-            root = p.lastChild()
-            self.assertEqual(root.h, f"@file {self.short_id}")
-            p = root.firstChild()
-            for n, h in table:
-                n2 = p.level() - root.level()
-                self.assertEqual(h, p.h)
-                self.assertEqual(n, n2)
-                p.moveToThreadNext()
-            self.assertEqual(p, after)
+        ))
     #@+node:ekr.20210904065459.101: *4* TestPython.test_unindent_in_triple_string_does_not_end_function
     def test_unindent_in_triple_string_does_not_end_function(self):
         c = self.c
