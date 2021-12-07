@@ -512,33 +512,35 @@ class TestCSharp(BaseTestImporter):
     #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
 class TestCython (BaseTestImporter):
-    
+
     ext = '.pyx'
-#@+node:ekr.20210904065459.11: *3* TestCython.test_importer
-def test_importer(self):
+    #@+others
+    #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
+    def test_importer(self):
 
-    s = '''
-        from libc.math cimport pow
+        s = '''
+            from libc.math cimport pow
 
-        cdef double square_and_add (double x):
-            """Compute x^2 + x as double.
+            cdef double square_and_add (double x):
+                """Compute x^2 + x as double.
 
-            This is a cdef function that can be called from within
-            a Cython program, but not from Python.
-            """
-            return pow(x, 2.0) + x
+                This is a cdef function that can be called from within
+                a Cython program, but not from Python.
+                """
+                return pow(x, 2.0) + x
 
-        cpdef print_result (double x):
-            """This is a cpdef function that can be called from Python."""
-            print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
+            cpdef print_result (double x):
+                """This is a cpdef function that can be called from Python."""
+                print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
 
-    '''
-    p = self.run_test(s)
-    self.check_headlines(p, (
-        (1, 'Declarations'),
-        (1, 'double'),
-        (1, 'print_result'),
-    ))
+        '''
+        p = self.run_test(s)
+        self.check_headlines(p, (
+            (1, 'Declarations'),
+            (1, 'double'),
+            (1, 'print_result'),
+        ))
+    #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart (BaseTestImporter):
     
