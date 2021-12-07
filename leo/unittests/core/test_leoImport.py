@@ -2408,7 +2408,7 @@ class TestPython (BaseTestImporter):
                 ' if 12:\n'
                 "     print('12')\n"
                 ' def a(self):\n'
-                '   pass'
+                '   pass\n'
             )
         exp_nodes = [
             (0, 'ignored h',
@@ -2597,6 +2597,77 @@ class TestPython (BaseTestImporter):
             (2, '__init__',
                        'def __init__(self):\n'
                        '    pass\n'
+                       '\n'
+            )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
+    def test_large_class_no_methods(self):
+        txt = ( 'class A:\n'
+                '    a=1\n'
+                '    b=1\n'
+                '    c=1\n'
+                '    d=1\n'
+                '    e=1\n'
+                '    f=1\n'
+                '    g=1\n'
+                '    h=1\n'
+                '    i=1\n'
+                '    j=1\n'
+                '    k=1\n'
+                '    l=1\n'
+                '    m=1\n'
+                '    n=1\n'
+                '    o=1\n'
+                '    p=1\n'
+                '    q=1\n'
+                '    r=1\n'
+                '    s=1\n'
+                '    t=1\n'
+                '    u=1\n'
+                '    v=1\n'
+                '    w=1\n'
+                '    x=1\n'
+                '    y=1\n'
+                '    x=1\n'
+                '\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       '@others\n'
+            ),
+            (1, 'A',
+                       'class A:\n'
+                       '    a=1\n'
+                       '    b=1\n'
+                       '    c=1\n'
+                       '    d=1\n'
+                       '    e=1\n'
+                       '    f=1\n'
+                       '    g=1\n'
+                       '    h=1\n'
+                       '    i=1\n'
+                       '    j=1\n'
+                       '    k=1\n'
+                       '    l=1\n'
+                       '    m=1\n'
+                       '    n=1\n'
+                       '    o=1\n'
+                       '    p=1\n'
+                       '    q=1\n'
+                       '    r=1\n'
+                       '    s=1\n'
+                       '    t=1\n'
+                       '    u=1\n'
+                       '    v=1\n'
+                       '    w=1\n'
+                       '    x=1\n'
+                       '    y=1\n'
+                       '    x=1\n'
                        '\n'
             )
         ]

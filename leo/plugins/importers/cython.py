@@ -16,7 +16,7 @@ class Cython_Importer(Importer):
     # Matches lines that apparently start a class or def.
     class_pat = re.compile(r'\s*class\s+(\w+)\s*(\([\w.]+\))?')
     def_pat = re.compile(r'\s*(cdef|cpdef|def)\s+(\w+)')
-    trace = True
+    trace = False
     #@+others
     #@+node:ekr.20200619144343.1: *3* cy_i.ctor
     def __init__(self, importCommands, **kwargs):
