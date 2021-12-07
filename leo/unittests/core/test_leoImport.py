@@ -2293,6 +2293,7 @@ class TestPython (BaseTestImporter):
         p = self.run_test(s, verbose=False)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
+
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
         txt = ( 'class TestCopyFile(unittest.TestCase):\n'
