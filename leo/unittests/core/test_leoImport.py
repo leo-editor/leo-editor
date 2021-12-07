@@ -542,7 +542,7 @@ class TestCython (BaseTestImporter):
         '''
         p = self.run_test(s)
         self.check_headlines(p, (
-            (1, 'Declarations'),
+            (1, 'Organizer: Declarations'),
             (1, 'double'),
             (1, 'print_result'),
         ))
