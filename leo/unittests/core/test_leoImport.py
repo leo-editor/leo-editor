@@ -17,7 +17,6 @@ import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
 import leo.plugins.importers.pascal as pascal
-import leo.plugins.importers.python as python
 import leo.plugins.importers.xml as xml
 #@+others
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
@@ -2015,7 +2014,7 @@ class TestPhp (BaseTestImporter):
     #@-others
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython (BaseTestImporter):
-    
+
     check_tree = False
     ext = '.py'
     treeType = '@file'
@@ -2458,6 +2457,147 @@ class TestPython (BaseTestImporter):
             (2, 'a',
                        'def a(self):\n'
                        '  pass\n\n'
+            )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211207183645.1: *3* TestPython: test_no_defs
+    def test_no_defs(self):
+        txt = ( 'a = 1\n'
+                'if 1:\n'
+                " print('1')\n"
+                'if 2:\n'
+                "  print('2')\n"
+                'if 3:\n'
+                "   print('3')\n"
+                'if 4:\n'
+                "    print('4')\n"
+                'if 5:\n'
+                "    print('5')\n"
+                'if 6:\n'
+                "    print('6')\n"
+                'if 7:\n'
+                "    print('7')\n"
+                'if 8:\n'
+                "    print('8')\n"
+                'if 9:\n'
+                "    print('9')\n"
+                'if 10:\n'
+                "    print('10')\n"
+                'if 11:\n'
+                "    print('11')\n"
+                'if 12:\n'
+                "    print('12')\n"
+            )
+        exp_nodes = [
+            (0, 'ignored h',   '@language python\n'
+                               '@tabwidth -4\n'
+                               'a = 1\n'
+                               'if 1:\n'
+                               " print('1')\n"
+                               'if 2:\n'
+                               "  print('2')\n"
+                               'if 3:\n'
+                               "   print('3')\n"
+                               'if 4:\n'
+                               "    print('4')\n"
+                               'if 5:\n'
+                               "    print('5')\n"
+                               'if 6:\n'
+                               "    print('6')\n"
+                               'if 7:\n'
+                               "    print('7')\n"
+                               'if 8:\n'
+                               "    print('8')\n"
+                               'if 9:\n'
+                               "    print('9')\n"
+                               'if 10:\n'
+                               "    print('10')\n"
+                               'if 11:\n'
+                               "    print('11')\n"
+                               'if 12:\n'
+                               "    print('12')\n\n"
+                    )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211207185708.1: *3* TestPython: test_only_docs
+    def test_only_docs(self):
+        txt = ( 'class A:\n'
+                '    """\n'
+                '    dummy doc\n'
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                '    """\n'
+                '    def __init__(self):\n'
+                '        pass\n'
+                '\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       '@others\n'
+            ),
+            (1, 'A',
+                       'class A:\n'
+                       '    @others\n'
+            ),
+            (2, '__doc__',
+                       '"""\n'
+                       'dummy doc\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       'another line\n'
+                       '"""\n'
+            ),
+            (2, '__init__',
+                       'def __init__(self):\n'
+                       '    pass\n'
+                       '\n'
             )
         ]
         p = self.run_test(txt)
