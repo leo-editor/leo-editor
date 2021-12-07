@@ -217,7 +217,7 @@ class TS_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': TS_Importer,
+    'func': TS_Importer.do_import(),
     'extensions': ['.ts',],
 }
 #@@language python

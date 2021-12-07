@@ -160,9 +160,11 @@ class JSON_Scanner:
             return True
     #@-others
 #@-others
+def do_import(c, s, parent):
+    return JSON_Scanner(c.importCommands).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-json',],
-    'class': JSON_Scanner,
+    'func': do_import,
     'extensions': ['.json',],
 }
 #@@language python

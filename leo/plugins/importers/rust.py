@@ -233,7 +233,7 @@ class Rust_ScanState:
 
 #@-others
 importer_dict = {
-    'class': Rust_Importer,
+    'func': Rust_Importer.do_import(),
     'extensions': ['.rs',],
 }
 #@@language python

@@ -210,9 +210,11 @@ class Rst_ScanState:
         return i
     #@-others
 #@-others
+def do_import(c, s, parent):
+    return Rst_Importer(c.importCommands).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read
-    'class': Rst_Importer,
+    'func': Rst_Importer.do_import(),
     'extensions': ['.rst', '.rest'],
 }
 #@@language python

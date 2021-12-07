@@ -107,8 +107,10 @@ class TreePad_Scanner():
         return ok
     #@-others
 #@-others
+def do_import(c, s, parent):
+    return TreePad_Scanner(c.importCommands).run(s, parent)
 importer_dict = {
-    'class': TreePad_Scanner,
+    'func': do_import,
     'extensions': ['.hjt',],
 }
 #@@language python

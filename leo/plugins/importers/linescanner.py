@@ -1212,6 +1212,12 @@ class Importer:
                 result.append(s)
         return ''.join(result)
     #@-others
+
+    @classmethod
+    def do_import(cls):
+        def f(c, s, parent):
+            return cls(c.importCommands).run(s, parent)
+        return f
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:
     """

@@ -255,7 +255,7 @@ class Lua_ScanState:
 
 #@-others
 importer_dict = {
-    'class': Lua_Importer,
+    'func': Lua_Importer.do_import(),
     'extensions': ['.lua',],
 }
 #@@language python

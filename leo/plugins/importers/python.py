@@ -322,7 +322,7 @@ class Python_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Py_Importer,
+    'func': Py_Importer.do_import(),
     'extensions': ['.py', '.pyw', '.pyi'],
         # mypy uses .pyi extension.
 }

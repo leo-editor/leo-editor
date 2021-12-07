@@ -158,7 +158,7 @@ class Perl_ScanState:
 
 #@-others
 importer_dict = {
-    'class': Perl_Importer,
+    'func': Perl_Importer.do_import(),
     'extensions': ['.pl',],
 }
 #@@language python

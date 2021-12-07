@@ -100,6 +100,12 @@ class BaseTestImporter(LeoUnitTest):
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
+        kind = { '.md': '@auto-md'
+               , '.org': '@auto-org'
+               , '.otl': '@auto-otl'
+               , '.rst': '@auto-rst'
+               }.get(ext)
+        if kind: return kind
         if aClass:
             d2 = g.app.atAutoDict
             for z in d2:

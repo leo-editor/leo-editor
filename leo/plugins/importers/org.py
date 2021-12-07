@@ -126,7 +126,7 @@ class Org_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-org', '@auto-org-mode',],
-    'class': Org_Importer,
+    'func': Org_Importer.do_import(),
     'extensions': ['.org'],
 }
 #@@language python

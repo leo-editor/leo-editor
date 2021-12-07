@@ -69,7 +69,7 @@ class Dart_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Dart_Importer,
+    'func': Dart_Importer.do_import(),
     'extensions': ['.dart'],
 }
 #@@language python

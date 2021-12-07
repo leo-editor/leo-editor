@@ -84,7 +84,7 @@ class Otl_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-otl', '@auto-vim-outline',],
-    'class': Otl_Importer,
+    'func': Otl_Importer.do_import(),
     'extensions': ['.otl',],
 }
 #@@language python

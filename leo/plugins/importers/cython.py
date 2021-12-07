@@ -66,7 +66,7 @@ class CythonTarget:
         )
 #@-others
 importer_dict = {
-    'class': Cython_Importer,
+    'func': Cython_Importer.do_import(),
     'extensions': ['.pyx',],
 }
 #@@language python

@@ -161,7 +161,7 @@ class Markdown_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-md', '@auto-markdown',],
-    'class': Markdown_Importer,
+    'func': Markdown_Importer.do_import(),
     'extensions': ['.md', '.rmd', '.Rmd',],
 }
 #@@language python

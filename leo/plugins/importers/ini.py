@@ -61,7 +61,7 @@ class Ini_Importer(Importer):
     #@-others
 #@-others
 importer_dict = {
-    'class': Ini_Importer,
+    'func': Ini_Importer.do_import(),
     'extensions': ['.ini',],
 }
 #@@language python
