@@ -266,7 +266,7 @@ def split_root(root, lines):
     rawtokens = list(tokenize.generate_tokens(mkreadline(lines)))
 
     # lntokens - line tokens are tokens groupped by the line number
-    #            where they are from
+    #            where they originate froms
     lntokens = defaultdict(list)
     for i, t in enumerate(rawtokens):
         row = t[2][0]
