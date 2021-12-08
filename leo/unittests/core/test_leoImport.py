@@ -2027,14 +2027,22 @@ class TestPython (BaseTestImporter):
             '"""A docstring"""\n'
             'switch = 1\n'
             'print(3)\n'
-            'print(4)\n'
-            'print(5)\n'
             'print(6)\n'
             'def a():\n'
             '    pass\n'
             'print(7)\n'
         )
-        exp_nodes = [ (0, 'ignored h', f'@language python\n@tabwidth -4\n{input_s}\n') ]
+        exp_nodes = [ (0, 'ignored h',
+               '@language python\n'
+               '@tabwidth -4\n'
+               '"""A docstring"""\n'
+               'switch = 1\n'
+               'print(3)\n'
+               'print(6)\n'
+               'def a():\n'
+               '    pass\n'
+               'print(7)\n\n'
+               )]
         p = self.run_test(input_s)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
@@ -2332,37 +2340,35 @@ class TestPython (BaseTestImporter):
                        '@tabwidth -4\n'
                        '@others\n'
             ),
-            (1, 'TestCopyFile(unittest.TestCase)',
+            (1, 'TestCopyFile',
                        'class TestCopyFile(unittest.TestCase):\n'
+                       '\n'
+                       '    _delete = False\n'
+                       '    a00 = 1\n'
+                       '    a01 = 1\n'
+                       '    a02 = 1\n'
+                       '    a03 = 1\n'
+                       '    a04 = 1\n'
+                       '    a05 = 1\n'
+                       '    a06 = 1\n'
+                       '    a07 = 1\n'
+                       '    a08 = 1\n'
+                       '    a09 = 1\n'
+                       '    a10 = 1\n'
+                       '    a11 = 1\n'
+                       '    a12 = 1\n'
+                       '    a13 = 1\n'
+                       '    a14 = 1\n'
+                       '    a15 = 1\n'
+                       '    a16 = 1\n'
+                       '    a17 = 1\n'
+                       '    a18 = 1\n'
+                       '    a19 = 1\n'
+                       '    a20 = 1\n'
+                       '    a21 = 1\n'
                        '    @others\n'
             ),
-            (2, '...some declarations',
-                       '\n'
-                       '_delete = False\n'
-                       'a00 = 1\n'
-                       'a01 = 1\n'
-                       'a02 = 1\n'
-                       'a03 = 1\n'
-                       'a04 = 1\n'
-                       'a05 = 1\n'
-                       'a06 = 1\n'
-                       'a07 = 1\n'
-                       'a08 = 1\n'
-                       'a09 = 1\n'
-                       'a10 = 1\n'
-                       'a11 = 1\n'
-                       'a12 = 1\n'
-                       'a13 = 1\n'
-                       'a14 = 1\n'
-                       'a15 = 1\n'
-                       'a16 = 1\n'
-                       'a17 = 1\n'
-                       'a18 = 1\n'
-                       'a19 = 1\n'
-                       'a20 = 1\n'
-                       'a21 = 1\n'
-            ),
-            (2, 'Faux(object)',
+            (2, 'Faux',
                        'class Faux(object):\n'
                        '    _entered = False\n'
                        '    _exited_with = None # type: tuple\n'
@@ -2426,34 +2432,32 @@ class TestPython (BaseTestImporter):
             ),
             (1, 'StrangeClass',
                        'class StrangeClass:\n'
+                       ' a = 1\n'
+                       ' if 1:\n'
+                       "  print('1')\n"
+                       ' if 2:\n'
+                       "   print('2')\n"
+                       ' if 3:\n'
+                       "    print('3')\n"
+                       ' if 4:\n'
+                       "     print('4')\n"
+                       ' if 5:\n'
+                       "     print('5')\n"
+                       ' if 6:\n'
+                       "     print('6')\n"
+                       ' if 7:\n'
+                       "     print('7')\n"
+                       ' if 8:\n'
+                       "     print('8')\n"
+                       ' if 9:\n'
+                       "     print('9')\n"
+                       ' if 10:\n'
+                       "     print('10')\n"
+                       ' if 11:\n'
+                       "     print('11')\n"
+                       ' if 12:\n'
+                       "     print('12')\n"
                        ' @others\n'
-            ),
-            (2, '...some declarations',
-                       'a = 1\n'
-                       'if 1:\n'
-                       " print('1')\n"
-                       'if 2:\n'
-                       "  print('2')\n"
-                       'if 3:\n'
-                       "   print('3')\n"
-                       'if 4:\n'
-                       "    print('4')\n"
-                       'if 5:\n'
-                       "    print('5')\n"
-                       'if 6:\n'
-                       "    print('6')\n"
-                       'if 7:\n'
-                       "    print('7')\n"
-                       'if 8:\n'
-                       "    print('8')\n"
-                       'if 9:\n'
-                       "    print('9')\n"
-                       'if 10:\n'
-                       "    print('10')\n"
-                       'if 11:\n'
-                       "    print('11')\n"
-                       'if 12:\n'
-                       "    print('12')\n"
             ),
             (2, 'a',
                        'def a(self):\n'
@@ -2565,35 +2569,33 @@ class TestPython (BaseTestImporter):
             ),
             (1, 'A',
                        'class A:\n'
+                       '    """\n'
+                       '    dummy doc\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    """\n'
                        '    @others\n'
-            ),
-            (2, '__doc__',
-                       '"""\n'
-                       'dummy doc\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       'another line\n'
-                       '"""\n'
             ),
             (2, '__init__',
                        'def __init__(self):\n'
