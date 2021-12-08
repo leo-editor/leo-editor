@@ -2257,6 +2257,8 @@ class TestPython (BaseTestImporter):
               'a = 2\n'
               '@dec_for_f2\n'
               'def f2(): pass\n'
+              '\n'
+              '\n'
               'class A: pass\n'
               '# About main.\n'
               'def main():\n'
@@ -2287,6 +2289,8 @@ class TestPython (BaseTestImporter):
                     (1, 'f2',
                                '@dec_for_f2\n'
                                'def f2(): pass\n'
+                               '\n'
+                               '\n'
                     ),
                     (1, 'A',
                                'class A: pass\n'
