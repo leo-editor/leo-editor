@@ -614,7 +614,7 @@ class TestJSImporter(unittest.TestCase):
     #@-others
 #@-others
 importer_dict = {
-    'class': JS_Importer,
+    'func': JS_Importer.do_import(),
     'extensions': ['.js',],
 }
 if __name__ == '__main__':

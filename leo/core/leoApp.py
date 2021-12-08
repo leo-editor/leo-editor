@@ -1444,47 +1444,14 @@ class LeoApp:
         d = g.app.atAutoDict
         for key in d:
             # pylint: disable=cell-var-from-loop
-            aClass = d.get(key)
-            if aClass and g.match_word(p.h, 0, key):
-
-                def scanner_for_at_auto_cb(c, parent, s, **kwargs):
-                    try:
-                        ic = c.importCommands
-                        scanner = aClass(importCommands=ic, **kwargs)
-                        return scanner.run(s, parent)
-                    except Exception:
-                        if g.unitTesting:  # #2327
-                            raise
-                        g.es_print('Exception running', aClass.__name__)
-                        g.es_exception()
-                        return None
-
-                scanner_for_at_auto_cb.scanner_name = aClass.__name__  # type:ignore
-                    # For traces in ic.createOutline.
-                return scanner_for_at_auto_cb
+            func = d.get(key)
+            if func and g.match_word(p.h, 0, key):
+                return func
         return None
     #@+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
     def scanner_for_ext(self, c, ext, **kwargs):
         """A factory returning a scanner function for the given file extension."""
-        aClass = g.app.classDispatchDict.get(ext)
-        if aClass:
-
-            def scanner_for_ext_cb(c, parent, s, **kwargs):
-                try:
-                    ic = c.importCommands
-                    scanner = aClass(importCommands=ic, **kwargs)
-                    return scanner.run(s, parent)
-                except Exception:
-                    if g.unitTesting:  # #2327
-                        raise
-                    g.es_print('Exception running', aClass.__name__)
-                    g.es_exception()
-                    return None
-
-            scanner_for_ext_cb.scanner_name = aClass.__name__  # type:ignore
-                # For traces in ic.createOutline.
-            return scanner_for_ext_cb
-        return None
+        return g.app.classDispatchDict.get(ext)
     #@+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
@@ -2502,21 +2469,21 @@ class LoadManager:
         importer_d = getattr(m, 'importer_dict', None)
         if importer_d:
             at_auto = importer_d.get('@auto', [])
-            scanner_class = importer_d.get('class', None)
+            scanner_func = importer_d.get('func', None)
             # scanner_name = scanner_class.__name__
             extensions = importer_d.get('extensions', [])
             if at_auto:
                 # Make entries for each @auto type.
                 d = g.app.atAutoDict
                 for s in at_auto:
-                    d[s] = scanner_class
-                    g.app.atAutoDict[s] = scanner_class
+                    d[s] = scanner_func
+                    g.app.atAutoDict[s] = scanner_func
                     g.app.atAutoNames.add(s)
             if extensions:
                 # Make entries for each extension.
                 d = g.app.classDispatchDict
                 for ext in extensions:
-                    d[ext] = scanner_class
+                    d[ext] = scanner_func #importer_d.get('func')#scanner_class
         elif sfn not in (
             # These are base classes, not real plugins.
             'basescanner.py',

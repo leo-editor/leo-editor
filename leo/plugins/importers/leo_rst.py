@@ -35,9 +35,9 @@ class Rst_Importer(Importer):
         """
         return True
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for reStructuredText importer."""
-        if not s or s.isspace():
+        if all(s.isspace() for s in lines):
             return
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
@@ -48,7 +48,7 @@ class Rst_Importer(Importer):
         # We may as well do this first.  See note below.
         self.stack = [parent]
         skip = 0
-        lines = g.splitLines(s)
+
         for i, line in enumerate(lines):
             if skip > 0:
                 skip -= 1
@@ -210,9 +210,11 @@ class Rst_ScanState:
         return i
     #@-others
 #@-others
+def do_import(c, s, parent):
+    return Rst_Importer(c.importCommands).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read
-    'class': Rst_Importer,
+    'func': Rst_Importer.do_import(),
     'extensions': ['.rst', '.rest'],
 }
 #@@language python

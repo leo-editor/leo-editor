@@ -233,7 +233,7 @@ class Php_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Php_Importer,
+    'func': Php_Importer.do_import(),
     'extensions': ['.php'],
 }
 #@@language python

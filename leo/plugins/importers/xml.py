@@ -244,7 +244,7 @@ class Xml_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Xml_Importer,
+    'func': Xml_Importer.do_import(),
     'extensions': ['.xml',],
 }
 #@@language python

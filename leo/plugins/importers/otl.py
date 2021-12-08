@@ -25,7 +25,7 @@ class Otl_Importer(Importer):
     otl_body_pattern = re.compile(r'^: (.*)$')
     otl_pattern = re.compile(r'^[ ]*(\t*)(.*)$')
 
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for otl (vim-outline) mode."""
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
@@ -34,7 +34,8 @@ class Otl_Importer(Importer):
             }
         }
         self.parents = [parent]
-        for line in g.splitLines(s):
+
+        for line in lines:
             m = self.otl_body_pattern.match(line)
             if m:
                 p = self.parents[-1]
@@ -83,7 +84,7 @@ class Otl_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-otl', '@auto-vim-outline',],
-    'class': Otl_Importer,
+    'func': Otl_Importer.do_import(),
     'extensions': ['.otl',],
 }
 #@@language python
