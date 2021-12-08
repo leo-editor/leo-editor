@@ -328,6 +328,10 @@ def split_root(root, lines):
 def do_import(c, s, parent):
     split_root(parent, s.splitlines(True))
     parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
+    if c.config.getBool('put-class-in-imported-headlines'):
+        for p in parent.self_and_subtree():
+            if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
+                p.h = f'class {p.h}'
     return True
 importer_dict = {
     'func': do_import,

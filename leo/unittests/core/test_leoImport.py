@@ -2471,6 +2471,95 @@ class TestPython (BaseTestImporter):
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
+    #@+node:vitalije.20211208210459.1: *3* TestPython: test_strange_indentation
+    def test_strange_indentation_with_added_class_in_the_headline(self):
+        self.c.config.set(None, 'bool', 'put-class-in-imported-headlines', True)
+        txt = ( 'if 1:\n'
+                " print('1')\n"
+                'if 2:\n'
+                "  print('2')\n"
+                'if 3:\n'
+                "   print('3')\n"
+                '\n'
+                'class StrangeClass:\n'
+                ' a = 1\n'
+                ' if 1:\n'
+                "  print('1')\n"
+                ' if 2:\n'
+                "   print('2')\n"
+                ' if 3:\n'
+                "    print('3')\n"
+                ' if 4:\n'
+                "     print('4')\n"
+                ' if 5:\n'
+                "     print('5')\n"
+                ' if 6:\n'
+                "     print('6')\n"
+                ' if 7:\n'
+                "     print('7')\n"
+                ' if 8:\n'
+                "     print('8')\n"
+                ' if 9:\n'
+                "     print('9')\n"
+                ' if 10:\n'
+                "     print('10')\n"
+                ' if 11:\n'
+                "     print('11')\n"
+                ' if 12:\n'
+                "     print('12')\n"
+                ' def a(self):\n'
+                '   pass\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       'if 1:\n'
+                       " print('1')\n"
+                       'if 2:\n'
+                       "  print('2')\n"
+                       'if 3:\n'
+                       "   print('3')\n"
+                       '\n'
+                       '@others\n'
+            ),
+            (1, 'class StrangeClass',
+                       'class StrangeClass:\n'
+                       ' a = 1\n'
+                       ' if 1:\n'
+                       "  print('1')\n"
+                       ' if 2:\n'
+                       "   print('2')\n"
+                       ' if 3:\n'
+                       "    print('3')\n"
+                       ' if 4:\n'
+                       "     print('4')\n"
+                       ' if 5:\n'
+                       "     print('5')\n"
+                       ' if 6:\n'
+                       "     print('6')\n"
+                       ' if 7:\n'
+                       "     print('7')\n"
+                       ' if 8:\n'
+                       "     print('8')\n"
+                       ' if 9:\n'
+                       "     print('9')\n"
+                       ' if 10:\n'
+                       "     print('10')\n"
+                       ' if 11:\n'
+                       "     print('11')\n"
+                       ' if 12:\n'
+                       "     print('12')\n"
+                       ' @others\n'
+            ),
+            (2, 'a',
+                       'def a(self):\n'
+                       '  pass\n\n'
+            )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
     #@+node:vitalije.20211207183645.1: *3* TestPython: test_no_defs
     def test_no_defs(self):
         txt = ( 'a = 1\n'
